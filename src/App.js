@@ -1,10 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { FormEdit } from "react-formio";
+import Formiojs from "formiojs/Formio";
 
 function App() {
+  const path = `http://localhost:3001/forerhund`;
+  const formio = new Formiojs(path);
+
+  const [form, setForm] = useState();
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    formio.loadForm().then(form => setForm(form));
+  }, [formio]);
+
   return (
     <div className="App">
+      {form && (
+        <FormEdit
+          options={{ src: "http://localhost:3001/forerhund" }}
+          form={form}
+        />
+      )}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
