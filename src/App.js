@@ -14,7 +14,7 @@ function App() {
   const [forms, setForms] = useState();
 
   useEffect(() => {
-    fetch(`${projectURL}/form?type=form`)
+    fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
       .then(res => res.json())
       .then(forms => {
         setForms(forms);
