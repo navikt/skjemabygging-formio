@@ -11,8 +11,8 @@ import components from "./Custom";
 Components.setComponents(components);
 
 function App() {
-  const [forms, setForms] = useState();
-  const [submission, setSubmission] = useState();
+  const [forms, setForms] = useState([]);
+  const [submission, setSubmission] = useState({});
 
   useEffect(() => {
     fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
@@ -41,37 +41,57 @@ function App() {
         <Route
           exact
           path="/:formpath"
-          render={routeProps => (
-            <>
-              <h1>Fyll ut søknaden</h1>
-              <Form
-                key="1"
-                src={`${projectURL}${routeProps.match.params.formpath}`}
-                options={{ readOnly: false }}
-                onSubmit={submission => {
-                  setSubmission(submission);
-                  routeProps.history.push(
-                    `/${routeProps.match.params.formpath}/result/${submission._id}`
-                  );
-                }}
-              />
-            </>
-          )}
+          render={routeProps => {
+            const form = forms.find(
+              form => form.path === routeProps.match.params.formpath
+            );
+            if (!form) {
+              return <h1>Laster..</h1>;
+            }
+            return (
+              <>
+                <h1>{form.title}</h1>
+                <h2>Fyll ut</h2>
+                <Form
+                  key="1"
+                  url={`${projectURL}${form.path}`}
+                  form={form}
+                  options={{ readOnly: false }}
+                  onSubmit={submission => {
+                    setSubmission({ [form.path]: submission });
+                    routeProps.history.push(
+                      `/${routeProps.match.params.formpath}/result`
+                    );
+                  }}
+                />
+              </>
+            );
+          }}
         />
         <Route
-          path="/:formpath/result/:id"
-          render={routeProps => (
-            <>
-              <h1>Din søknad</h1>
-              <Form
-                key="2"
-                src={`${projectURL}${routeProps.match.params.formpath}`}
-                options={{ readOnly: true }}
-                submission={submission}
-              />
-              <button onClick={window.print}>Skriv ut</button>
-            </>
-          )}
+          path="/:formpath/result"
+          render={routeProps => {
+            const form = forms.find(
+              form => form.path === routeProps.match.params.formpath
+            );
+            if (!form) {
+              return <h1>Laster..</h1>;
+            }
+            return (
+              <>
+                <h1>{form.title}</h1>
+                <h2>Din søknad</h2>
+                <Form
+                  key="2"
+                  url={`${projectURL}${form.path}`}
+                  form={form}
+                  options={{ readOnly: true }}
+                  submission={submission[form.path]}
+                />
+                <button onClick={window.print}>Skriv ut</button>
+              </>
+            );
+          }}
         />
       </Switch>
     </div>
