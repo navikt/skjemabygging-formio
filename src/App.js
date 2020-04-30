@@ -10,7 +10,7 @@ import {
 import { projectURL } from "./config";
 import components from "./Custom";
 
-import "~nav-frontend-typografi-style";
+import "nav-frontend-typografi-style";
 import "../node_modules/formiojs/dist/formio.full.min.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.less";
