@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Route, Link } from "react-router-dom";
+import { Components, Form } from "react-formio";
+import {
+  Innholdstittel,
+  Normaltekst,
+  Sidetittel
+} from "nav-frontend-typografi";
+
+import { projectURL } from "./config";
+import components from "./Custom";
+
+import "~nav-frontend-typografi-style";
 import "../node_modules/formiojs/dist/formio.full.min.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import { Components, Form } from "react-formio";
-import { projectURL } from "./config";
-
-import components from "./Custom";
+import "./App.less";
 
 Components.setComponents(components);
 
@@ -30,7 +37,9 @@ function App() {
           <ul>
             {forms.map(form => (
               <li key={form._id}>
-                <Link to={`/${form.path}`}>{form.title}</Link>
+                <Link to={`/${form.path}`}>
+                  <Normaltekst>{form.title}</Normaltekst>
+                </Link>
               </li>
             ))}
           </ul>
@@ -50,8 +59,8 @@ function App() {
             }
             return (
               <>
-                <h1>{form.title}</h1>
-                <h2>Fyll ut</h2>
+                <Sidetittel>{form.title}</Sidetittel>
+                <Innholdstittel>Fyll ut</Innholdstittel>
                 <Form
                   key="1"
                   url={`${projectURL}${form.path}`}
@@ -79,8 +88,8 @@ function App() {
             }
             return (
               <>
-                <h1>{form.title}</h1>
-                <h2>Din søknad</h2>
+                <Sidetittel>{form.title}</Sidetittel>
+                <Innholdstittel>Din søknad</Innholdstittel>
                 <Form
                   key="2"
                   url={`${projectURL}${form.path}`}
