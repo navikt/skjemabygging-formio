@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { FormEdit, Components } from "react-formio";
 import Formiojs from "formiojs/Formio";
 
 import components from "./Custom";
+import FormEdit from "./formio/FormEdit";
+import * as Components from "formiojs";
 
 Components.setComponents(components);
 
