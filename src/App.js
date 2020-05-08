@@ -1,98 +1,68 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import FormEdit from "./react-formio/FormEdit";
+import Form from "./react-formio/Form";
 import Formiojs from "formiojs/Formio";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 
-import components from "./Custom";
-import FormEdit from "./formio/FormEdit";
-import * as Components from "formiojs";
+const formPath = 'nav100750soknadomforerhund';
 
-Components.setComponents(components);
-
-function App() {
-  const path = `http://localhost:3001/forerhund`;
+function App({projectURL}) {
+  const path = `${projectURL}/${formPath}`;
   const formio = new Formiojs(path);
 
   const [form, setForm] = useState();
-
-  const dummyUser = {
-    data: { email: "admin@example.com", password: "CHANGEME", submit: true },
-    metadata: {
-      timezone: "Europe/Oslo",
-      offset: 120,
-      referrer: "",
-      browserName: "Netscape",
-      userAgent:
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.92 Safari/537.36",
-      pathName: "/",
-      onLine: true
-    },
-    state: "submitted"
-  };
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    async function login(data = {}) {
-      return await fetch("http://localhost:3001/user/login/submission?live=1", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
+    if (Formiojs.getUser()) {
+      setAuthenticated(true);
     }
-
-    login(dummyUser)
-      .then(response => {
-        Formiojs.setToken(response.headers.get("x-jwt-token"));
-        return response.json();
-      })
-      .then(user => Formiojs.setUser(user));
-
     formio.loadForm().then(form => setForm(form));
   }, []);
 
   const onSave = form =>
     formio.saveForm(form).then(changedForm => setForm(changedForm));
 
-  console.log(Formiojs.getToken());
   return (
-    <div className="App">
-      {form && (
-        <FormEdit
-          form={form}
-          options={{
-            src: "http://localhost:3001/forerhund",
-            builder: {
-              customFlesk: {
-                title: "Alfa komponenter",
-                weight: 100,
-                components: {
-                  email: true,
-                  phoneNumber: true
-                }
-              },
-              customBasic: {
-                title: "Generiske komponenter",
-                default: true,
-                weight: 100,
-                components: {
-                  toggleCustomComp: true,
-                  textfield: true,
-                  textarea: true,
-                  email: true,
-                  phoneNumber: true
-                }
-              },
-              basic: {
-                title: "Basiske snutter"
-              },
-              advanced: false
-            }
-          }}
-          saveForm={onSave}
-          saveText="LAGRE"
-        />
-      )}
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path={`/${formPath}`}>
+          {authenticated ? (
+            <>
+              {form && (
+                <FormEdit
+                  form={form}
+                  options={{
+                    src: `${projectURL}/${formPath}`
+                  }}
+                  saveForm={onSave}
+                  saveText="LAGRE"
+                />
+              )}
+            </>
+          ) : (
+            <Redirect to="/" />
+          )}
+        </Route>
+        <Route exact path="/">
+          <>
+            {authenticated ? (
+              <Redirect to={`/${formPath}`} />
+            ) : (
+              <Form
+                src={`${projectURL}/admin/login`}
+                onSubmitDone={() => setAuthenticated(true)}
+              />
+            )}
+          </>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
