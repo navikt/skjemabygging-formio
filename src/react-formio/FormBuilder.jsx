@@ -74,7 +74,7 @@ export default class FormBuilder extends Component {
   };
 
   render = () => {
-    return <div ref={element => this.element = element}>
+    return <div data-testid="builderMountParent" ref={element => this.element = element}>
       <div></div>
     </div>;
   };

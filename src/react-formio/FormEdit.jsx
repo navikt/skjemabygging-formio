@@ -63,7 +63,7 @@ export default class FormEdit extends Component {
       // If setting title, autogenerate name and path as well.
       if (path === 'title' && !form._id) {
         form.name = _camelCase(value);
-        form.path = value.toLowerCase();
+        form.path = _camelCase(value).toLowerCase();
       }
 
       return {
@@ -75,6 +75,7 @@ export default class FormEdit extends Component {
 
   // handleChange - metadata, formchange - sendes i formbuilder
   formChange = (form) => {
+    // React warns that reading this.state is not safe. Use callback form instead
     this.setState({
       form: {...this.state.form, ...form}
     });
@@ -95,6 +96,7 @@ export default class FormEdit extends Component {
   render() {
     const {form} = this.state;
     const {saveText} = this.props;
+    // console.log('form state vs props', form.components, this.props.form.components);
 
     return (
       <div>
