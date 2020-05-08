@@ -9,7 +9,8 @@ import {
   Redirect
 } from "react-router-dom";
 
-const formPath = 'nav100750soknadomforerhund';
+// const formPath = 'nav100750soknadomforerhund';
+const formPath = 'debug';
 
 function App({projectURL}) {
   const path = `${projectURL}/${formPath}`;
