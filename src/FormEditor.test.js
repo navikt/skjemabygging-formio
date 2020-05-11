@@ -1,14 +1,28 @@
 import React from "react";
 import FormEditorPage from "./FormEditorPage";
-import {TestContext} from "./testTools";
+import {FakeBackendTestContext} from "./FakeBackendTestContext";
 
-const context = new TestContext();
+const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
 describe('FormEditor', () => {
-  it('should load the form into the form builder', async () => {
-    context.render(<FormEditorPage src="http://www.example.org/flesk/flesk" />);
+  let oldFormioFetch;
+  beforeEach(() => {
+    oldFormioFetch = Formio.fetch;
+    Formio.fetch = global.fetch;
+  });
+  afterEach(() => {
+    Formio.fetch = oldFormioFetch;
+  });
+  it('should load the form from REST into the state', async () => {
+    context.render(<FormEditorPage src="http://api.example.org/testForm" />);
     const editor = await context.waitForComponentToLoad(FormEditorPage);
-    console.log(editor);
+    expect(editor.instance.state.form).toEqual(context.backend.form());
+  });
+
+  it('should render the form builder from loaded state', async () => {
+    context.render(<FormEditorPage src="http://api.example.org/testForm" />);
+    const editor = await context.waitForComponentToLoad(FormEditorPage);
+
   });
 });
