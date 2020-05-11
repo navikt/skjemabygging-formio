@@ -11,7 +11,7 @@ describe('FormEdit', () => {
         renderer.unmount();
     });
 
-    it('displays form', () => {
+    xit('displays form', () => {
         renderer = ReactTestRenderer.create(
             <FormEdit form={form} saveForm={jest.fn()} />,
             {
