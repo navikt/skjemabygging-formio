@@ -16,6 +16,10 @@ export function dispatcherWithBackend(backend) {
   return parseQueryParams(dispatch({
     '/testForm': (req, res) => {
       res.json(backend.form());
+    },
+    '/form': (req, res) => {
+      console.log(req.params);
+      res.json([]);
     }
   }));
 }

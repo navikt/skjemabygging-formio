@@ -32,7 +32,7 @@ class FormEditorPage extends Component {
         form={this.state.form}
         options={this.props.options}
         builder={this.props.builder}
-        onChange={this.formChanged}
+        onChange={(form) => this.formChanged(form)}
       />
     );
   }

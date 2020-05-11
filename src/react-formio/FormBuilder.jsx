@@ -61,7 +61,7 @@ export default class FormBuilder extends Component {
     });
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const {options, form} = this.props;
 
     if (

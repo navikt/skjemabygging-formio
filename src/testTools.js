@@ -6,20 +6,6 @@ import waitForExpect from "wait-for-expect";
 
 
 export class TestContext {
-  defaultNodeMock = {
-    createNodeMock: (element) => {
-      if (element.type === 'input') {
-        // return document.createElement('input');
-        //console.log('createNodeMock got input', element.props);
-      }
-      if (element.type === 'textarea') {
-        // console.log('createNodeMock got textarea', element.props);
-        return document.createElement('textarea');
-      }
-      return null;
-    }
-  };
-
   testRenderer = {unmount: () => {}}; // hihi :-) null object
 
   setup() {
@@ -43,10 +29,6 @@ export class TestContext {
   render(jsx, options) {
     this.testRenderer = TestRenderer.create(jsx, options);
     return this.testRenderer;
-  }
-
-  renderWithDefaultNodeMock(jsx) {
-    return this.render(jsx, this.defaultNodeMock);
   }
 
   async waitForComponent(component) {

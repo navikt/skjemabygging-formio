@@ -35,7 +35,6 @@ export default class FormEdit extends Component {
 
   //derivedstatefromprops
   static getDerivedStateFromProps(nextProps, prevState) {
-    return null;
     if (nextProps.form && (prevState.form._id !== nextProps.form._id || prevState.form.modified !== nextProps.form.modified)) {
       const nextState = {
         form: _cloneDeep(nextProps.form),
