@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Form from "./react-formio/Form";
+import Form from "./react-formio/Form.jsx";
 import Formiojs from "formiojs/Formio";
 import {
   BrowserRouter as Router,
@@ -9,8 +9,8 @@ import {
 } from "react-router-dom";
 import { AuthenticatedContent } from "./AuthenticatedContent";
 
-const path = `http://localhost:3001/`;
-const formio = new Formiojs(path); //Context-kandidat?
+const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || 'https://kxzxmneixaglyxf.form.io';
+const formio = new Formiojs(projectURL); //Context-kandidat?
 
 function App() {
   const [forms, setForms] = useState();
@@ -25,7 +25,7 @@ function App() {
   useEffect(() => {
     if (authenticated && !forms) {
       formio
-        .loadForms({ params: { type: "form" } })
+        .loadForms({ params: { type: "form", tags: "nav-skjema" } })
         .then(forms => setForms(forms));
     }
   }, [authenticated, forms]);
@@ -46,7 +46,7 @@ function App() {
               <Redirect to="/forms" />
             ) : (
               <Form
-                src={"http://localhost:3001/user/login"}
+                src={`${projectURL}/admin/login`}
                 onSubmitDone={() => setAuthenticated(true)}
               />
             )}
