@@ -1,12 +1,14 @@
-import { Link, Route, Switch } from "react-router-dom";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import FormEdit from "./react-formio/FormEdit";
 import React from "react";
 
-export const AuthenticatedContent = ({ forms }) => {
+export const Forms = ({ forms, projectURL }) => {
+  let match = useRouteMatch();
+
   return (
     <Switch>
       <Route
-        path={"/forms/:formpath"}
+        path={`${match.path}/:formpath`}
         render={props => {
           const { formpath } = props.match.params;
           if (forms) {
@@ -17,7 +19,7 @@ export const AuthenticatedContent = ({ forms }) => {
                   key={form._id}
                   form={form}
                   options={{
-                    src: "http://localhost:3001/" + formpath
+                    src: `${projectURL}/${formpath}`
                   }}
                   saveForm={() => console.log(form)}
                   saveText="LAGRE"
@@ -28,14 +30,14 @@ export const AuthenticatedContent = ({ forms }) => {
           return <h1>Laster...</h1>;
         }}
       />
-      <Route path="/forms">
+      <Route path={match.path}>
         {forms && (
           <nav>
             <h3>Velg skjema:</h3>
             <ul>
               {forms.map(form => (
                 <li key={form.path}>
-                  <Link to={"/forms/" + form.path}>{form.title}</Link>
+                  <Link to={`${match.path}/${form.path}`}>{form.title}</Link>
                 </li>
               ))}
             </ul>

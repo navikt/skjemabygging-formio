@@ -7,9 +7,10 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import { AuthenticatedContent } from "./AuthenticatedContent";
+import { Forms } from "./Forms";
 
-const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || 'https://kxzxmneixaglyxf.form.io';
+const projectURL =
+  process.env.REACT_APP_FORMIO_PROJECT_URL || "https://kxzxmneixaglyxf.form.io";
 const formio = new Formiojs(projectURL); //Context-kandidat?
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
       <Switch>
         <Route path="/forms">
           {authenticated ? (
-            <AuthenticatedContent formio={formio} forms={forms} />
+            <Forms projectURL={projectURL} forms={forms} />
           ) : (
             <Redirect to="/" />
           )}
