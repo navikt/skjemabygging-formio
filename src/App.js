@@ -6,51 +6,74 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
+  Link
 } from "react-router-dom";
 
 function App() {
-  const path = `http://localhost:3001/forerhund`;
+  const path = `http://localhost:3001/`;
   const formio = new Formiojs(path);
 
-  const [form, setForm] = useState();
+  const [forms, setForms] = useState();
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    if (Formiojs.getUser()) {
+    if (Formiojs.getUser() && !authenticated) {
       setAuthenticated(true);
     }
-    formio.loadForm().then(form => setForm(form));
   }, []);
 
-  const onSave = form =>
-    formio.saveForm(form).then(changedForm => setForm(changedForm));
+  useEffect(() => {
+    if (authenticated && !forms) {
+      formio
+        .loadForms({ params: { type: "form" } })
+        .then(forms => setForms(forms));
+    }
+  }, [authenticated]);
+
+  const onSave = form => formio.saveForm(form).then(form => console.log(form));
 
   return (
     <Router>
       <Switch>
-        <Route exact path="/forerhund">
+        <Route path={"/forms/:formpath"}>
+          {forms && (
+            <FormEdit
+              key={forms[2]._id}
+              form={forms[2]}
+              options={{
+                src: "http://localhost:3001/forerhund"
+              }}
+              saveForm={onSave}
+              saveText="LAGRE"
+            />
+          )}
+        </Route>
+        <Route path="/forms">
           {authenticated ? (
             <>
-              {form && (
-                <FormEdit
-                  form={form}
-                  options={{
-                    src: "http://localhost:3001/forerhund"
-                  }}
-                  saveForm={onSave}
-                  saveText="LAGRE"
-                />
+              {forms && (
+                <nav>
+                  <h3>Velg skjema:</h3>
+                  <ul>
+                    {forms.map(form => (
+                      <li key={form.path}>
+                        {console.log(form)}
+                        <Link to={"/forms/" + form.path}>{form.title}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               )}
             </>
           ) : (
             <Redirect to="/" />
           )}
         </Route>
-        <Route exact path="/">
+        <Route path="/">
           <>
             {authenticated ? (
-              <Redirect to="/forerhund" />
+              <Redirect to="/forms" />
             ) : (
               <Form
                 src={"http://localhost:3001/user/login"}
