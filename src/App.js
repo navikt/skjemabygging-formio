@@ -8,45 +8,30 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
+import FormEditorPage from "./FormEditorPage";
 
 // const formPath = 'nav100750soknadomforerhund';
 const formPath = 'debug';
 
 function App({projectURL}) {
-  const path = `${projectURL}/${formPath}`;
-  const formio = new Formiojs(path);
-
-  const [form, setForm] = useState();
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     if (Formiojs.getUser()) {
       setAuthenticated(true);
     }
-    formio.loadForm().then(form => setForm(form));
   }, []);
-
-  const onSave = form =>
-    formio.saveForm(form).then(changedForm => setForm(changedForm));
 
   return (
     <Router>
       <Switch>
         <Route exact path={`/${formPath}`}>
           {authenticated ? (
-            <>
-              {form && (
-                <FormEdit
-                  form={form}
-                  options={{
-                    src: `${projectURL}/${formPath}`
-                  }}
-                  saveForm={onSave}
-                  saveText="LAGRE"
-                />
-              )}
-            </>
-          ) : (
+            <FormEditorPage
+               src={`${projectURL}/${formPath}`}
+
+                />)
+              : (
             <Redirect to="/" />
           )}
         </Route>
