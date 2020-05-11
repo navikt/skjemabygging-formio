@@ -3,23 +3,23 @@ import FormEdit from "./react-formio/FormEdit";
 import React from "react";
 
 export const Forms = ({ forms, projectURL }) => {
-  let match = useRouteMatch();
+  let { path, url } = useRouteMatch();
 
   return (
     <Switch>
       <Route
-        path={`${match.path}/:formpath`}
-        render={props => {
-          const { formpath } = props.match.params;
+        path={`${path}/:formpath`}
+        render={({match}) => {
+          let { params } = match;
           if (forms) {
-            const form = getFormFromPath(forms, formpath);
+            const form = getFormFromPath(forms, params.formpath);
             return (
               form && (
                 <FormEdit
                   key={form._id}
                   form={form}
                   options={{
-                    src: `${projectURL}/${formpath}`
+                    src: `${projectURL}/${params.formpath}`
                   }}
                   saveForm={() => console.log(form)}
                   saveText="LAGRE"
@@ -30,14 +30,14 @@ export const Forms = ({ forms, projectURL }) => {
           return <h1>Laster...</h1>;
         }}
       />
-      <Route path={match.path}>
+      <Route path={path}>
         {forms && (
           <nav>
             <h3>Velg skjema:</h3>
             <ul>
               {forms.map(form => (
                 <li key={form.path}>
-                  <Link to={`${match.path}/${form.path}`}>{form.title}</Link>
+                  <Link to={`${url}/${form.path}`}>{form.title}</Link>
                 </li>
               ))}
             </ul>
