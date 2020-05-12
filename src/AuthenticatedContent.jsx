@@ -1,8 +1,9 @@
 import { Link, Route, Switch } from "react-router-dom";
 import FormEdit from "./react-formio/FormEdit";
 import React from "react";
+import { MenuLink, MenuItem, NavBar } from "./NavBar";
 
-export const AuthenticatedContent = ({ forms }) => {
+export const AuthenticatedContent = ({ forms, onLogout }) => {
   return (
     <Switch>
       <Route
@@ -12,35 +13,53 @@ export const AuthenticatedContent = ({ forms }) => {
           if (forms) {
             const form = getFormFromPath(forms, formpath);
             return (
-              form && (
-                <FormEdit
-                  key={form._id}
-                  form={form}
-                  options={{
-                    src: "http://localhost:3001/" + formpath
-                  }}
-                  saveForm={() => console.log(form)}
-                  saveText="LAGRE"
-                />
-              )
+              <>
+                <NavBar>
+                  <MenuLink to="/forms">Skjemaer</MenuLink>
+                  <MenuLink to="/" onClick={onLogout}>
+                    Logout
+                  </MenuLink>
+                </NavBar>
+                <>
+                  {form && (
+                    <FormEdit
+                      key={form._id}
+                      form={form}
+                      options={{
+                        src: "http://localhost:3001/" + formpath
+                      }}
+                      saveForm={() => console.log(form)}
+                      saveText="LAGRE"
+                    />
+                  )}
+                </>
+              </>
             );
           }
           return <h1>Laster...</h1>;
         }}
       />
       <Route path="/forms">
-        {forms && (
-          <nav>
-            <h3>Velg skjema:</h3>
-            <ul>
-              {forms.map(form => (
-                <li key={form.path}>
-                  <Link to={"/forms/" + form.path}>{form.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
+        <>
+          <NavBar>
+            <MenuItem>Skjemaer</MenuItem>
+            <MenuLink to="/" onClick={onLogout}>
+              Logout
+            </MenuLink>
+          </NavBar>
+          {forms && (
+            <nav>
+              <h3>Velg skjema:</h3>
+              <ul>
+                {forms.map(form => (
+                  <li key={form.path}>
+                    <Link to={"/forms/" + form.path}>{form.title}</Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+        </>
       </Route>
     </Switch>
   );

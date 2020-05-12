@@ -8,8 +8,10 @@ import {
   Redirect
 } from "react-router-dom";
 import { AuthenticatedContent } from "./AuthenticatedContent";
+import { NavBar } from "./NavBar";
 
-const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || 'https://kxzxmneixaglyxf.form.io';
+const projectURL =
+  process.env.REACT_APP_FORMIO_PROJECT_URL || "https://kxzxmneixaglyxf.form.io";
 const formio = new Formiojs(projectURL); //Context-kandidat?
 
 function App() {
@@ -30,12 +32,17 @@ function App() {
     }
   }, [authenticated, forms]);
 
+  const onLogout = () => {
+    setAuthenticated(false);
+    Formiojs.logout();
+  };
+
   return (
     <Router>
       <Switch>
         <Route path="/forms">
           {authenticated ? (
-            <AuthenticatedContent formio={formio} forms={forms} />
+            <AuthenticatedContent formio={formio} forms={forms} onLogout={onLogout} />
           ) : (
             <Redirect to="/" />
           )}
@@ -45,10 +52,14 @@ function App() {
             {authenticated ? (
               <Redirect to="/forms" />
             ) : (
-              <Form
-                src={`${projectURL}/admin/login`}
-                onSubmitDone={() => setAuthenticated(true)}
-              />
+              <>
+                {/*Login-komponent*/}
+                <NavBar />
+                <Form
+                  src={`${projectURL}/admin/login`}
+                  onSubmitDone={() => setAuthenticated(true)}
+                />
+              </>
             )}
           </>
         </Route>

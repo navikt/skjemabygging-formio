@@ -14,7 +14,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "styled-jss": "^2.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
