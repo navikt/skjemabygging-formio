@@ -18,8 +18,7 @@ export function dispatcherWithBackend(backend) {
       res.json(backend.form());
     },
     '/form': (req, res) => {
-      console.log(req.params);
-      res.json([]);
+      res.json(backend.forms({type: req.params.get('type'), tags: req.params.get('tags')}));
     }
   }));
 }

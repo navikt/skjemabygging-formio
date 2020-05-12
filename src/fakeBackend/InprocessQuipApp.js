@@ -29,6 +29,7 @@ export class InprocessQuipApp {
   }
 
   fetchImpl = (url, options = {}) => {
+    console.log('fetchImpl', url, options);
     try {
       const response = this.responseFor(url, {
         ...{method: 'GET', headers: {}}, // defaults

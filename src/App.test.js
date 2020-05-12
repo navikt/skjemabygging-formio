@@ -1,8 +1,10 @@
 import {FakeBackendTestContext} from "./FakeBackendTestContext";
 import {Formio} from "formiojs";
 import React from 'react';
-import App from "./App";
+import App, {useFormio} from "./App";
 import {MemoryRouter} from "react-router-dom";
+import { renderHook, act } from '@testing-library/react-hooks'
+import form from './react-formio/Form.json';
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -26,7 +28,14 @@ describe('App', () => {
     expect(linkList.props.children).toHaveLength(7);
   });
 
-  it('loads the form in the hook', () => {
-
+  it('loads the form in the hook', async () => {
+    const { result, waitForNextUpdate } = renderHook(() => useFormio('http://myproject.example.org'));
+    expect(result.current.authenticated).toBeFalsy();
+    act(() => {
+      result.current.setAuthenticated(true)
+    });
+    expect(result.current.authenticated).toBeTruthy();
+    await waitForNextUpdate();
+    expect(result.current.forms).toEqual([form]);
   });
 });
