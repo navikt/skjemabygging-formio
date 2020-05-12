@@ -1,4 +1,4 @@
-import form from './form.json';
+import form from './Form.json';
 import FormEdit from "./FormEdit";
 import FormioFormBuilder from 'formiojs/FormBuilder';
 

@@ -4,11 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || 'https://kxzxmneixaglyxf.form.io';
-
 ReactDOM.render(
   <React.StrictMode>
-    <App projectURL={projectURL} />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
