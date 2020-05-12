@@ -79,7 +79,6 @@ export default class FormEdit extends Component {
 
   // handleChange - metadata, formchange - sendes i formbuilder
   formChange = (form) => {
-    console.log('formChange', form);
     // React warns that reading this.state is not safe. Use callback form instead
     this.setState(prevState => ({
       form: {...prevState.form, ...form}
@@ -107,8 +106,6 @@ export default class FormEdit extends Component {
   render() {
     const {form} = this.state;
     const {saveText} = this.props;
-    console.log('form state vs props', form.components, this.props.form.components);
-
     return (
       <div>
         <div className="row">

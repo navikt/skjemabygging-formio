@@ -1,9 +1,5 @@
 import TestRenderer from 'react-test-renderer';
 import waitForExpect from "wait-for-expect";
-// import {InprocessQuipApp} from "./fakeBackend/InprocessQuipApp";
-// import {FakeBackend} from "./fakeBackend/FakeBackend";
-// import {dispatcherWithBackend} from "./fakeBackend/fakeWebApp";
-
 
 export class TestContext {
   testRenderer = {unmount: () => {}}; // hihi :-) null object
@@ -17,6 +13,7 @@ export class TestContext {
 
   tearDown() {
     this.testRenderer.unmount();
+    document.getElementsByTagName('html')[0].innerHTML = '';
     jest.runAllTimers();
     jest.useRealTimers();
     expect(this.consoleErrorSpy).not.toHaveBeenCalled();

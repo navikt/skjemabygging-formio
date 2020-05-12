@@ -6,7 +6,7 @@ import FormBuilder from "./react-formio/FormBuilder";
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
-describe('FormEditor', () => {
+describe('FormEditorPage', () => {
   let oldFormioFetch;
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
@@ -16,7 +16,7 @@ describe('FormEditor', () => {
     Formio.fetch = oldFormioFetch;
   });
 
-  const renderOptions =             {
+  const renderOptions =  {
     createNodeMock: (element) => {
       if (element.props['data-testid'] === 'builderMountParent') {
         const mountNode = document.createElement('div');

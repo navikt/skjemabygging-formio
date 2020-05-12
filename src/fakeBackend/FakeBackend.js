@@ -1,4 +1,4 @@
-import form from '../react-formio/form.json';
+import form from '../react-formio/Form.json';
 
 export class FakeBackend {
   constructor() {
