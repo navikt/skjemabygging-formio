@@ -1,17 +1,19 @@
-import { Link, Route, Switch } from "react-router-dom";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import FormEdit from "./react-formio/FormEdit";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
 
-export const AuthenticatedContent = ({ forms, onLogout }) => {
+export const Forms = ({ forms, projectURL, onLogout }) => {
+  let { path, url } = useRouteMatch();
+
   return (
     <Switch>
       <Route
-        path={"/forms/:formpath"}
-        render={props => {
-          const { formpath } = props.match.params;
+        path={`${path}/:formpath`}
+        render={({ match }) => {
+          let { params } = match;
           if (forms) {
-            const form = getFormFromPath(forms, formpath);
+            const form = getFormFromPath(forms, params.formpath);
             return (
               <>
                 <NavBar>
@@ -26,7 +28,7 @@ export const AuthenticatedContent = ({ forms, onLogout }) => {
                       key={form._id}
                       form={form}
                       options={{
-                        src: "http://localhost:3001/" + formpath
+                        src: `${projectURL}/${params.formpath}`
                       }}
                       saveForm={() => console.log(form)}
                       saveText="LAGRE"
@@ -39,7 +41,7 @@ export const AuthenticatedContent = ({ forms, onLogout }) => {
           return <h1>Laster...</h1>;
         }}
       />
-      <Route path="/forms">
+      <Route path={path}>
         <>
           <NavBar>
             <MenuItem>Skjemaer</MenuItem>
@@ -53,7 +55,7 @@ export const AuthenticatedContent = ({ forms, onLogout }) => {
               <ul>
                 {forms.map(form => (
                   <li key={form.path}>
-                    <Link to={"/forms/" + form.path}>{form.title}</Link>
+                    <Link to={`${url}/${form.path}`}>{form.title}</Link>
                   </li>
                 ))}
               </ul>

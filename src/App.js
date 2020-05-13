@@ -7,7 +7,7 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import { AuthenticatedContent } from "./AuthenticatedContent";
+import { Forms } from "./Forms";
 import { NavBar } from "./NavBar";
 
 const projectURL =
@@ -42,7 +42,7 @@ function App() {
       <Switch>
         <Route path="/forms">
           {authenticated ? (
-            <AuthenticatedContent formio={formio} forms={forms} onLogout={onLogout} />
+            <Forms projectURL={projectURL} forms={forms} onLogout={onLogout} />
           ) : (
             <Redirect to="/" />
           )}
