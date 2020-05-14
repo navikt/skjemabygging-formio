@@ -99,7 +99,7 @@ export default class Form extends Component {
     }
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const {options = {}, src, form, submission} = this.props;
 
     if (!options.events) {

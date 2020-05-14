@@ -17,6 +17,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-test-renderer": "^16.13.1",
+    "styled-jss": "^2.2.3",
     "typescript": "^3.8.3",
     "wait-for-expect": "^3.0.2"
   },
