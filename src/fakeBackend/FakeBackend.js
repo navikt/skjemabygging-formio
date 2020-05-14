@@ -1,4 +1,5 @@
-import form from '../react-formio/Form.json';
+import form from '../react-formio/json/Form.json';
+import loginform from '../react-formio/json/LoginForm';
 
 export class FakeBackend {
   constructor() {
@@ -6,6 +7,10 @@ export class FakeBackend {
   }
   setNowFunction(nowFunc) {
     this.nowFunction = nowFunc;
+  }
+
+  adminLoginForm() {
+    return loginform;
   }
 
   form() {

@@ -5,8 +5,8 @@ export class TestContext {
   testRenderer = {unmount: () => {}}; // hihi :-) null object
 
   setup() {
-    this.consoleErrorSpy = jest.spyOn(global.console, 'error');
-    this.consoleErrorSpy.mockReset();
+    // this.consoleErrorSpy = jest.spyOn(global.console, 'error');
+    // this.consoleErrorSpy.mockReset();
     Document.prototype.exitFullscreen = jest.fn();
     jest.useFakeTimers();
   }
@@ -16,7 +16,7 @@ export class TestContext {
     document.getElementsByTagName('html')[0].innerHTML = '';
     jest.runAllTimers();
     jest.useRealTimers();
-    expect(this.consoleErrorSpy).not.toHaveBeenCalled();
+    // expect(this.consoleErrorSpy).not.toHaveBeenCalled();
   }
 
   act(func)  {

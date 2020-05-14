@@ -129,6 +129,6 @@ export default class Form extends Component {
   };
 
   render = () => {
-    return <div ref={element => this.element = element} />;
+    return <div data-testid="formMountElement" ref={element => this.element = element} />;
   };
 }

@@ -19,6 +19,9 @@ export function dispatcherWithBackend(backend) {
     },
     '/form': (req, res) => {
       res.json(backend.forms({type: req.params.get('type'), tags: req.params.get('tags')}));
+    },
+    '/admin/login': (req, res) => {
+      res.json(backend.adminLoginForm());
     }
   }));
 }
