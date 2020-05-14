@@ -18,7 +18,6 @@ export class FakeBackend {
   }
 
   forms({type, tags}) {
-    console.log('got here', type, tags);
     if (type === 'form' && tags === 'nav-skjema') {
       return [form];
     }
