@@ -6,8 +6,8 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import { Forms } from "./Forms";
-import { NavBar } from "./NavBar";
+import {Forms} from "./Forms";
+import {NavBar} from "./NavBar";
 
 export const useFormio = (projectURL) => {
   const [forms, setForms] = useState();
@@ -23,46 +23,46 @@ export const useFormio = (projectURL) => {
   useEffect(() => {
     if (authenticated && !forms) {
       formio
-        .loadForms({ params: { type: "form", tags: "nav-skjema" } })
+        .loadForms({params: {type: "form", tags: "nav-skjema"}})
         .then(forms => setForms(forms));
     }
   }, [authenticated, forms, formio]);
-  return {forms, authenticated, setAuthenticated};
-};
 
-const onLogout = () => {
-  setAuthenticated(false);
-  Formiojs.logout();
+  const logOut = () => {
+    setAuthenticated(false);
+    Formiojs.logout();
+  }
+  return {forms, authenticated, setAuthenticated, logOut};
 };
 
 function App({projectURL}) {
-  const {forms, authenticated, setAuthenticated} = useFormio(projectURL);
+  const {forms, authenticated, setAuthenticated, saveForm, logOut} = useFormio(projectURL);
   return (
-      <Switch>
-        <Route path="/forms">
+    <Switch>
+      <Route path="/forms">
+        {authenticated ? (
+          <Forms projectURL={projectURL} forms={forms} onLogout={logOut} onSaveForm={saveForm}/>
+        ) : (
+          <Redirect to="/"/>
+        )}
+      </Route>
+      <Route path="/">
+        <>
           {authenticated ? (
-            <Forms projectURL={projectURL} forms={forms} onLogout={onLogout} />
+            <Redirect to="/forms"/>
           ) : (
-            <Redirect to="/" />
+            <>
+              {/*Login-komponent*/}
+              <NavBar/>
+              <Form
+                src={`${projectURL}/admin/login`}
+                onSubmitDone={() => setAuthenticated(true)}
+              />
+            </>
           )}
-        </Route>
-        <Route path="/">
-          <>
-            {authenticated ? (
-              <Redirect to="/forms" />
-            ) : (
-              <>
-                {/*Login-komponent*/}
-                <NavBar />
-                <Form
-                  src={`${projectURL}/admin/login`}
-                  onSubmitDone={() => setAuthenticated(true)}
-                />
-              </>
-            )}
-          </>
-        </Route>
-      </Switch>
+        </>
+      </Route>
+    </Switch>
   );
 }
 
