@@ -1,10 +1,9 @@
 import { Link, Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
-import FormEdit from "./react-formio/FormEdit";
 import Form from "./react-formio/Form.jsx";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import styled from "styled-jss";
-import FormBuilder from "./react-formio/FormBuilder";
+import NewFormBuilder from "./NewFormBuilder";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -14,7 +13,7 @@ const LinkWrapper = styled("div")({
   padding: "1rem 0"
 });
 
-export const Forms = ({ forms, projectURL, onLogout }) => {
+export const Forms = ({ forms, onLogout, onChange, onSave }) => {
   let { path, url } = useRouteMatch();
 
   return (
@@ -39,11 +38,15 @@ export const Forms = ({ forms, projectURL, onLogout }) => {
                       Test skjema
                     </Link>
                   </LinkWrapper>
+                  <LinkWrapper>
+                    <button onClick={() => onSave(form)}>Lagre skjema</button>
+                  </LinkWrapper>
                   <>
                     {form && (
-                      <FormBuilder
+                      <NewFormBuilder
                         key={form._id}
                         form={form}
+                        onChange={onChange}
                       />
                     )}
                   </>
@@ -73,6 +76,9 @@ export const Forms = ({ forms, projectURL, onLogout }) => {
                     <Link to={`${path}/${params.formpath}/edit`}>
                       Rediger skjema
                     </Link>
+                  </LinkWrapper>
+                  <LinkWrapper>
+                    <button onClick={() => onSave(form)}>Lagre skjema</button>
                   </LinkWrapper>
                   <Form form={form} />
                 </Pagewrapper>
