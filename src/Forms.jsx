@@ -3,7 +3,7 @@ import Form from "./react-formio/Form.jsx";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import styled from "styled-jss";
-import NewFormBuilder from "./NewFormBuilder";
+import FormBuilder from "./react-formio/FormBuilder";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -43,7 +43,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
                   </LinkWrapper>
                   <>
                     {form && (
-                      <NewFormBuilder
+                      <FormBuilder
                         key={form._id}
                         form={form}
                         onChange={onChange}

@@ -18,7 +18,6 @@ export const useFormio = projectURL => {
 
   useEffect(() => {
     if (authenticated && forms.length === 0) {
-      console.log("Kjøres denne på ny?");
       formio.loadForms({ params: { type: "form", tags: "nav-skjema" } }).then(forms => setForms(forms));
     }
   }, [authenticated, forms, formio]);
@@ -32,21 +31,22 @@ export const useFormio = projectURL => {
     forms && setForms([...forms.filter(form => form.path !== callbackForm.path), callbackForm]);
   };
 
-  const onSave = form => {
-    formio.saveForm(form);
-    formio.loadForms({ params: { type: "form", tags: "nav-skjema" } }).then(forms => setForms(forms));
+  const onSave = callbackForm => {
+    formio.saveForm(callbackForm).then(form => {
+      onChangeForm(form);
+    });
   };
 
   return { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave };
 };
 
 function App({ projectURL }) {
-  const { forms, authenticated, setAuthenticated, saveForm, logOut, onChangeForm, onSave } = useFormio(projectURL);
+  const { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave } = useFormio(projectURL);
   return (
     <Switch>
       <Route path="/forms">
         {authenticated ? (
-          <Forms forms={forms} onLogout={logOut} onSaveForm={saveForm} onChange={onChangeForm} onSave={onSave} />
+          <Forms forms={forms} onLogout={logOut} onChange={onChangeForm} onSave={onSave} />
         ) : (
           <Redirect to="/" />
         )}
