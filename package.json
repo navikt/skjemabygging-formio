@@ -6,6 +6,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "@testing-library/react-hooks": "^3.2.1",
+    "dispatch": "^1.0.2",
     "eventemitter2": "^6.4.0",
     "formiojs": "^4.9.20-rc.1",
     "lodash": "^4.17.15",
@@ -15,7 +17,9 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-test-renderer": "^16.13.1",
-    "styled-jss": "^2.2.3"
+    "styled-jss": "^2.2.3",
+    "typescript": "^3.8.3",
+    "wait-for-expect": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

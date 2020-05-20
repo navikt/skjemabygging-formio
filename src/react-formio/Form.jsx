@@ -99,7 +99,7 @@ export default class Form extends Component {
     }
   };
 
-  componentWillReceiveProps = (nextProps) => {
+  UNSAFE_componentWillReceiveProps = (nextProps) => {
     const {options = {}, src, form, submission} = this.props;
 
     if (!options.events) {
@@ -129,6 +129,6 @@ export default class Form extends Component {
   };
 
   render = () => {
-    return <div ref={element => this.element = element} />;
+    return <div data-testid="formMountElement" ref={element => this.element = element} />;
   };
 }

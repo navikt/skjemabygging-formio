@@ -36,9 +36,11 @@ export default class FormEdit extends Component {
   //derivedstatefromprops
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.form && (prevState.form._id !== nextProps.form._id || prevState.form.modified !== nextProps.form.modified)) {
-      return {
+      const nextState = {
         form: _cloneDeep(nextProps.form),
       };
+      console.log('next state form', nextState.form, 'prevState form', prevState.form);
+      return nextState;
     }
 
     return null;
@@ -66,19 +68,21 @@ export default class FormEdit extends Component {
         form.path = _camelCase(value).toLowerCase();
       }
 
-      return {
+      let newState = {
         ...prev,
         form,
       };
+      console.log('handleChange, new FormState', newState.form);
+      return newState;
     });
   }
 
   // handleChange - metadata, formchange - sendes i formbuilder
   formChange = (form) => {
     // React warns that reading this.state is not safe. Use callback form instead
-    this.setState({
-      form: {...this.state.form, ...form}
-    });
+    this.setState(prevState => ({
+      form: {...prevState.form, ...form}
+    }));
   };
 
   // hvordan fungerer dette?
@@ -93,11 +97,15 @@ export default class FormEdit extends Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.form.modified !== this.props.form.modified) {
+      this.setState(prevState => ({prevState, form: this.props.form}));
+    }
+  }
+
   render() {
     const {form} = this.state;
     const {saveText} = this.props;
-    // console.log('form state vs props', form.components, this.props.form.components);
-
     return (
       <div>
         <div className="row">

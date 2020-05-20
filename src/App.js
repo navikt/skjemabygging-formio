@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Form from "./react-formio/Form.jsx";
 import Formiojs from "formiojs/Formio";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { Forms } from "./Forms";
 import { NavBar } from "./NavBar";
 
-const projectURL =
-  process.env.REACT_APP_FORMIO_PROJECT_URL || "https://kxzxmneixaglyxf.form.io";
-const formio = new Formiojs(projectURL); //Context-kandidat?
-
-function App() {
-  const [forms, setForms] = useState();
+export const useFormio = projectURL => {
+  const [forms, setForms] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
+  const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
 
   useEffect(() => {
     if (Formiojs.getUser() && !authenticated) {
@@ -25,46 +17,54 @@ function App() {
   }, [authenticated]);
 
   useEffect(() => {
-    if (authenticated && !forms) {
-      formio
-        .loadForms({ params: { type: "form", tags: "nav-skjema" } })
-        .then(forms => setForms(forms));
+    if (authenticated && forms.length === 0) {
+      formio.loadForms({ params: { type: "form", tags: "nav-skjema" } }).then(forms => setForms(forms));
     }
-  }, [authenticated, forms]);
+  }, [authenticated, forms, formio]);
 
-  const onLogout = () => {
+  const logOut = () => {
     setAuthenticated(false);
     Formiojs.logout();
   };
 
+  const onChangeForm = callbackForm => {
+    forms && setForms([...forms.filter(form => form.path !== callbackForm.path), callbackForm]);
+  };
+
+  const onSave = callbackForm => {
+    formio.saveForm(callbackForm).then(form => {
+      onChangeForm(form);
+    });
+  };
+
+  return { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave };
+};
+
+function App({ projectURL }) {
+  const { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave } = useFormio(projectURL);
   return (
-    <Router>
-      <Switch>
-        <Route path="/forms">
+    <Switch>
+      <Route path="/forms">
+        {authenticated ? (
+          <Forms forms={forms} onLogout={logOut} onChange={onChangeForm} onSave={onSave} />
+        ) : (
+          <Redirect to="/" />
+        )}
+      </Route>
+      <Route path="/">
+        <>
           {authenticated ? (
-            <Forms projectURL={projectURL} forms={forms} onLogout={onLogout} />
+            <Redirect to="/forms" />
           ) : (
-            <Redirect to="/" />
+            <>
+              {/*Login-komponent*/}
+              <NavBar />
+              <Form src={`${projectURL}/admin/login`} onSubmitDone={() => setAuthenticated(true)} />
+            </>
           )}
-        </Route>
-        <Route path="/">
-          <>
-            {authenticated ? (
-              <Redirect to="/forms" />
-            ) : (
-              <>
-                {/*Login-komponent*/}
-                <NavBar />
-                <Form
-                  src={`${projectURL}/admin/login`}
-                  onSubmitDone={() => setAuthenticated(true)}
-                />
-              </>
-            )}
-          </>
-        </Route>
-      </Switch>
-    </Router>
+        </>
+      </Route>
+    </Switch>
   );
 }
 
