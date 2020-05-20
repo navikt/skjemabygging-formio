@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import Form from "./react-formio/Form.jsx";
 import Formiojs from "formiojs/Formio";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { Forms } from "./Forms";
-import { NavBar } from "./NavBar";
+import { Forms } from "./components/Forms";
+import { NavBar } from "./components/NavBar";
 
 export const useFormio = projectURL => {
   const [forms, setForms] = useState([]);

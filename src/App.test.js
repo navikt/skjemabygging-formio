@@ -7,7 +7,7 @@ import {renderHook, act} from "@testing-library/react-hooks";
 import form from "./react-formio/json/Form.json";
 import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
-import FormEditorPage from "./FormEditorPage";
+import FormEditorPage from "./components/FormEditorPage";
 import FormBuilder from "./react-formio/FormBuilder";
 
 const context = new FakeBackendTestContext();

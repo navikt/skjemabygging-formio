@@ -1,7 +1,7 @@
 import React from "react";
 import FormEditorPage from "./FormEditorPage";
-import {FakeBackendTestContext} from "./FakeBackendTestContext";
-import FormBuilder from "./react-formio/FormBuilder";
+import {FakeBackendTestContext} from "../FakeBackendTestContext";
+import FormBuilder from "../react-formio/FormBuilder";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();

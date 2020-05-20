@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Formiojs from "formiojs/Formio";
-import FormBuilder from "./react-formio/FormBuilder";
+import FormBuilder from "../react-formio/FormBuilder";
 
 class FormEditorPage extends Component {
   constructor(props) {
