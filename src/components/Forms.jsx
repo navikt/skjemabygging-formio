@@ -2,7 +2,7 @@ import { Link, Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import Form from "../react-formio/Form.jsx";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
-import styled from "styled-jss";
+import { styled } from '@material-ui/styles';
 import FormBuilder from "../react-formio/FormBuilder";
 
 const Pagewrapper = styled("div")({

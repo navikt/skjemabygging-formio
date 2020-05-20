@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-jss";
+import { styled } from '@material-ui/styles';
 import { Link } from "react-router-dom";
 
 const NavBarWrapper = styled("div")({
