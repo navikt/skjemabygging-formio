@@ -3,9 +3,7 @@ import { styled } from '@material-ui/styles';
 import { Link } from "react-router-dom";
 
 const NavBarWrapper = styled("div")({
-  background: {
-    color: "DimGray"
-  },
+  backgroundColor: "DimGray",
   padding: "0.5rem"
 });
 
