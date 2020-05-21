@@ -16,11 +16,8 @@ describe('FormEditorPage', () => {
 
   const renderOptions = {
     createNodeMock: (element) => {
-      if (element.props['data-testid'] === 'builderMountParent') {
-        const mountNode = document.createElement('div');
-        const result = document.createElement('div');
-        result.appendChild(mountNode);
-        return result;
+      if (element.props['data-testid'] === 'builderMountElement') {
+        return document.createElement('div');
       }
     }
   };

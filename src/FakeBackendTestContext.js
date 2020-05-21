@@ -1,4 +1,4 @@
-import {TestContext} from "./testTools";
+import {TestContext} from "./testTools/testTools";
 import {FakeBackend} from "./fakeBackend/FakeBackend";
 import {InprocessQuipApp} from "./fakeBackend/InprocessQuipApp";
 import {dispatcherWithBackend} from "./fakeBackend/fakeWebApp";

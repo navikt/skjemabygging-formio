@@ -23,31 +23,28 @@ export default class NavFormBuilder extends Component {
   };
 
   initializeBuilder = (props) => {
-    const options = Object.assign({}, props.options);
     const form = Object.assign({}, props.form);
-    const Builder = props.Builder;
-
     if (this.builder !== undefined) {
       this.builder.instance.destroy(true);
     }
 
-    this.builder = new Builder(this.element.firstChild, form, options);
+    this.builder = new FormioFormBuilder(this.element, form, {});
     this.builderReady = this.builder.ready;
 
     this.builderReady.then(() => {
-      this.onChange();
+      this.handleChange();
       this.builder.instance.on('addComponent', this.handleChange);
       this.builder.instance.on('saveComponent', this.handleChange);
       this.builder.instance.on('updateComponent', this.handleChange);
       this.builder.instance.on('removeComponent', this.handleChange);
       this.builder.instance.on('deleteComponent', this.handleChange);
-      this.builder.instance.on('pdfUploaded', this.onChange);
+      this.builder.instance.on('pdfUploaded', this.handleChange);
     });
   };
 
   render = () => {
-    return <div data-testid="builderMountParent" ref={element => this.element = element}>
-      <div></div>
+    return <div data-testid="builderMountParent">
+      <div data-testid="builderMountElement" ref={element => this.element = element}></div>
     </div>;
   };
 

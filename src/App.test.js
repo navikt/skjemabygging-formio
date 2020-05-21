@@ -4,7 +4,7 @@ import React from "react";
 import App, {useFormio} from "./App";
 import {Link, MemoryRouter} from "react-router-dom";
 import {renderHook, act} from "@testing-library/react-hooks";
-import form from "./react-formio/json/Form.json";
+import form from "./testTools/json/Form.json";
 import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
 import FormEditorPage from "./components/FormEditorPage";
@@ -16,15 +16,10 @@ context.setupBeforeAfter();
 
 const testRendererOptions = {
   createNodeMock: element => {
-    if (element.props["data-testid"] === "formMountElement") {
+    if (["formMountElement", 'builderMountElement'].includes(element.props["data-testid"])) {
       return document.createElement("div");
     }
-    if (element.props['data-testid'] === 'builderMountParent') {
-      const mountNode = document.createElement('div');
-      const result = document.createElement('div');
-      result.appendChild(mountNode);
-      return result;
-    }
+    return null;
   }
 }
 

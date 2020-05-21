@@ -1,5 +1,5 @@
-import form from '../react-formio/json/Form.json';
-import loginform from '../react-formio/json/LoginForm';
+import form from '../testTools/json/Form.json';
+import loginform from '../testTools/json/LoginForm';
 
 export class FakeBackend {
   constructor() {

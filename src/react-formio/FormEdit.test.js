@@ -1,9 +1,9 @@
-import form from './json/Form.json';
+import form from '../testTools/json/Form.json';
 import FormEdit from "./FormEdit";
 import FormioFormBuilder from 'formiojs/FormBuilder';
 
 import React from "react";
-import {TestContext} from "../testTools";
+import {TestContext} from "../testTools/testTools";
 
 describe('FormEdit', () => {
   const context = new TestContext();
