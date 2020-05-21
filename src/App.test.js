@@ -1,4 +1,4 @@
-import {FakeBackendTestContext} from "./FakeBackendTestContext";
+import {FakeBackendTestContext} from "./testTools/FakeBackendTestContext";
 import {Formio} from "formiojs";
 import React from "react";
 import App, {useFormio} from "./App";
@@ -7,8 +7,6 @@ import {renderHook, act} from "@testing-library/react-hooks";
 import form from "./testTools/json/Form.json";
 import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
-import FormEditorPage from "./components/FormEditorPage";
-import FormBuilder from "./react-formio/FormBuilder";
 import NavFormBuilder from "./components/NavFormBuilder";
 
 const context = new FakeBackendTestContext();
@@ -25,18 +23,21 @@ const testRendererOptions = {
 
 describe("App", () => {
   let oldFormioFetch;
+  let formStore;
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
+    formStore = {forms: []};
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
+    console.log('formStore', formStore.forms);
   });
 
   it('lets you edit and save a form', async () => {
     let formElement;
     context.render(<MemoryRouter initialEntries={["/"]}>
-        <App projectURL="http://myproject.example.org"></App>
+        <App store={formStore} projectURL="http://myproject.example.org"></App>
       </MemoryRouter>,
       testRendererOptions);
     const loginForm = await context.waitForComponent(Form);
@@ -47,26 +48,24 @@ describe("App", () => {
     const memoryRouter = context.testRenderer.root;
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms');
     const linkList = await context.waitForComponent('ul');
+    expect(formStore.forms).toHaveLength(1);
     const links = linkList.findAllByType(Link);
-    memoryRouter.instance.history.push(links[0].props.to);
+    context.act(() => memoryRouter.instance.history.push(links[0].props.to));
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/debugskjema/edit');
     const formBuilder = memoryRouter.findByType(NavFormBuilder);
-    formBuilder.props
+    console.log('right before matching');
+    // jest.runAllTimers();
+    // await formBuilder.instance.builder.ready;
+    await waitForExpect(() => expect(formStore.forms[0]).toMatchObject({flesk: true}));
+    console.log('got after');
   });
 
   it('loads all the forms using REST', async () => {
-    let formElement;
+    const formStore = {forms: []};
     context.render(<MemoryRouter initialEntries={["/"]}>
-        <App projectURL="http://myproject.example.org"></App>
+        <App projectURL="http://myproject.example.org" store={formStore}></App>
       </MemoryRouter>,
-      {
-        createNodeMock: element => {
-          if (element.props["data-testid"] === "formMountElement") {
-            formElement = document.createElement("div");
-            return formElement;
-          }
-        }
-      });
+      testRendererOptions);
     const loginForm = await context.waitForComponent(Form);
     // burde være lastet her
     context.act(() => {
@@ -80,10 +79,13 @@ describe("App", () => {
   });
 
   it("baseURL renders loginform when unauthenticated", async () => {
+    const store = {forms: []};
     let formElement;
     context.render(
       <MemoryRouter initialEntries={["/"]}>
-        <App projectURL="http://myproject.example.org"/>
+        <App
+          store={store}
+          projectURL="http://myproject.example.org"/>
       </MemoryRouter>,
       {
         createNodeMock: element => {
@@ -101,7 +103,8 @@ describe("App", () => {
   });
 
   it("loads the form in the hook", async () => {
-    const {result, waitForNextUpdate} = renderHook(() => useFormio("http://myproject.example.org"));
+    const store = {forms: []};
+    const {result, waitForNextUpdate} = renderHook(() => useFormio("http://myproject.example.org", store));
     expect(result.current.authenticated).toBeFalsy();
     act(() => {
       result.current.setAuthenticated(true);
@@ -109,5 +112,6 @@ describe("App", () => {
     expect(result.current.authenticated).toBeTruthy();
     await waitForNextUpdate();
     expect(result.current.forms).toEqual([form]);
+    expect(result.current.forms).toEqual(store.forms);
   });
 });

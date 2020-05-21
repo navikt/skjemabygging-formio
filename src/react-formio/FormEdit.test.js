@@ -3,7 +3,7 @@ import FormEdit from "./FormEdit";
 import FormioFormBuilder from 'formiojs/FormBuilder';
 
 import React from "react";
-import {TestContext} from "../testTools/testTools";
+import {TestContext} from "../testTools/TestContext";
 
 describe('FormEdit', () => {
   const context = new TestContext();

@@ -23,15 +23,16 @@ export default class NavFormBuilder extends Component {
   };
 
   initializeBuilder = (props) => {
-    const form = Object.assign({}, props.form);
+    const form = {...{flesk: true}, ...props.form};
+    console.log('flesk', form.flesk);
     if (this.builder !== undefined) {
       this.builder.instance.destroy(true);
     }
 
     this.builder = new FormioFormBuilder(this.element, form, {});
     this.builderReady = this.builder.ready;
-
     this.builderReady.then(() => {
+      console.log('got there');
       this.handleChange();
       this.builder.instance.on('addComponent', this.handleChange);
       this.builder.instance.on('saveComponent', this.handleChange);
@@ -49,6 +50,7 @@ export default class NavFormBuilder extends Component {
   };
 
   handleChange = () => {
-      this.props.onChange(this.builder.instance.form);
+    console.log('got handleChange flesk', this.builder.instance.form.flesk);
+    this.props.onChange(this.builder.instance.form);
   };
 }

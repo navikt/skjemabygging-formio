@@ -3,7 +3,6 @@ import Form from "../react-formio/Form.jsx";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import { styled } from '@material-ui/styles';
-import FormBuilder from "../react-formio/FormBuilder";
 import NavFormBuilder from "./NavFormBuilder";
 
 const Pagewrapper = styled("div")({

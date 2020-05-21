@@ -8,11 +8,12 @@ import {BrowserRouter} from "react-router-dom";
 const projectURL =
   process.env.REACT_APP_FORMIO_PROJECT_URL || "https://kxzxmneixaglyxf.form.io";
 
+const store = {forms: []};
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App projectURL={projectURL}/>
+      <App store={store} projectURL={projectURL}/>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
