@@ -9,6 +9,7 @@ import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
 import FormEditorPage from "./components/FormEditorPage";
 import FormBuilder from "./react-formio/FormBuilder";
+import NavFormBuilder from "./components/NavFormBuilder";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -54,7 +55,7 @@ describe("App", () => {
     const links = linkList.findAllByType(Link);
     memoryRouter.instance.history.push(links[0].props.to);
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/debugskjema/edit');
-    const formBuilder = memoryRouter.findByType(FormBuilder);
+    const formBuilder = memoryRouter.findByType(NavFormBuilder);
     formBuilder.props
   });
 

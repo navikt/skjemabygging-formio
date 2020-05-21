@@ -172,6 +172,7 @@
     {
       "label": "Text Area",
       "labelPosition": "top",
+      "fixedSize": true,
       "placeholder": "",
       "description": "",
       "tooltip": "",
@@ -267,6 +268,7 @@
       "theme": "primary",
       "input": true,
       "placeholder": "",
+      "calculateServer": false,
       "prefix": "",
       "customClass": "",
       "suffix": "",

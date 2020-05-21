@@ -4,6 +4,7 @@ import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import { styled } from '@material-ui/styles';
 import FormBuilder from "../react-formio/FormBuilder";
+import NavFormBuilder from "./NavFormBuilder";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -43,7 +44,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
                   </LinkWrapper>
                   <>
                     {form && (
-                      <FormBuilder
+                      <NavFormBuilder
                         key={form._id}
                         form={form}
                         onChange={onChange}
