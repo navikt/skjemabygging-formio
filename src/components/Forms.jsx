@@ -2,8 +2,9 @@ import { Link, Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import Form from "../react-formio/Form.jsx";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
-import { styled } from '@material-ui/styles';
+import { styled } from "@material-ui/styles";
 import NavFormBuilder from "./NavFormBuilder";
+import { FormMetadataEditor } from "./FormMetadataEditor";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -34,20 +35,24 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
                 </NavBar>
                 <Pagewrapper>
                   <LinkWrapper>
-                    <Link to={`${path}/${params.formpath}/view`}>
-                      Test skjema
-                    </Link>
+                    <Link to={`${path}/${params.formpath}/view`}>Test skjema</Link>
                   </LinkWrapper>
                   <LinkWrapper>
                     <button onClick={() => onSave(form)}>Lagre skjema</button>
                   </LinkWrapper>
                   <>
                     {form && (
-                      <NavFormBuilder
-                        key={form._id}
-                        form={form}
-                        onChange={onChange}
-                      />
+                      <>
+                        <FormMetadataEditor
+                          title={form.title}
+                          path={form.path}
+                          display={form.display}
+                          name={form.name}
+                          type={form.type}
+                          saveForm={() => {}}
+                        />
+                        <NavFormBuilder key={form._id} form={form} onChange={onChange} />
+                      </>
                     )}
                   </>
                 </Pagewrapper>
@@ -73,9 +78,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
                 </NavBar>
                 <Pagewrapper>
                   <LinkWrapper>
-                    <Link to={`${path}/${params.formpath}/edit`}>
-                      Rediger skjema
-                    </Link>
+                    <Link to={`${path}/${params.formpath}/edit`}>Rediger skjema</Link>
                   </LinkWrapper>
                   <LinkWrapper>
                     <button onClick={() => onSave(form)}>Lagre skjema</button>
@@ -89,9 +92,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
         }}
       />
       <Route path={`${path}/:formpath`}>
-        {({ match }) => (
-          <Redirect to={`${path}/${match.params.formpath}/edit`} />
-        )}
+        {({ match }) => <Redirect to={`${path}/${match.params.formpath}/edit`} />}
       </Route>
       <Route path={path}>
         <>
