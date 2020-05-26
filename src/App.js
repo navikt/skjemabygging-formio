@@ -34,7 +34,7 @@ export const useFormio = (projectURL, store) => {
   };
 
   const onChangeForm = form => {
-    console.log('onChangeForm flesk', form.flesk);
+    console.log('App.onChangeForm');
     setForms([...forms.filter(each => each.path !== form.path), form]);
   };
 

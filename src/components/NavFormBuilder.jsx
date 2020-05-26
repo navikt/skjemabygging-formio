@@ -4,7 +4,7 @@ import AllComponents from 'formiojs/components';
 import Components from 'formiojs/components/Components';
 import FormioFormBuilder from 'formiojs/FormBuilder';
 import isEqual from 'lodash.isequal';
-import {cloneDeep} from "lodash";
+import cloneDeep from "lodash.clonedeep";
 
 Components.setComponents(AllComponents);
 
