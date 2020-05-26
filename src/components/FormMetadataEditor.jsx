@@ -3,7 +3,7 @@ import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
 import "nav-frontend-skjema-style";
 
 export const FormMetadataEditor = ({ form, onChange }) => {
-  const {title, path, display, name, type} = form;
+  const { title, path, display, name, type } = form;
   return (
     <SkjemaGruppe>
       <Input
@@ -12,22 +12,15 @@ export const FormMetadataEditor = ({ form, onChange }) => {
         id="title"
         placeholder="Enter the form title"
         value={title || ""}
-        onChange={(event) => onChange({...form, title: event.target.value})}
+        onChange={event => onChange({ ...form, title: event.target.value })}
       />
-      <Input
-        label="Name"
-        type="text"
-        id="name"
-        placeholder="Enter the form machine name"
-        value={name || ""}
-        onChange={(event) => onChange({...form, name: event.target.value})}
-      />
+      <Input label="Name" type="text" id="name" placeholder="Enter the form machine name" value={name || ""} readOnly />
       <Select
         label="Display as"
         name="form-display"
         id="form-display"
         value={display || ""}
-        onChange={(event) => onChange({...form, display: event.target.value})}
+        onChange={event => onChange({ ...form, display: event.target.value })}
       >
         <option label="Form" value="form">
           Form
@@ -44,7 +37,7 @@ export const FormMetadataEditor = ({ form, onChange }) => {
         name="form-type"
         id="form-type"
         value={type}
-        onChange={(event) => onChange({...form, type: event.target.value})}
+        onChange={event => onChange({ ...form, type: event.target.value })}
       >
         <option label="Form" value="form">
           Form
@@ -59,7 +52,7 @@ export const FormMetadataEditor = ({ form, onChange }) => {
         id="path"
         style={{ textTransform: "lowercase", width: "120px" }}
         value={path || ""}
-        readOnly={true}
+        readOnly
       />
     </SkjemaGruppe>
   );
