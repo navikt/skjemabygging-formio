@@ -31,7 +31,6 @@ describe("App", () => {
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
-    console.log('formStore', formStore.forms);
   });
 
   it('lets you edit and save a form', async () => {
@@ -53,12 +52,9 @@ describe("App", () => {
     context.act(() => memoryRouter.instance.history.push(links[0].props.to));
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/debugskjema/edit');
     const formBuilder = memoryRouter.findByType(NavFormBuilder);
-    console.log('right before matching');
-    // We want to see that the form is updated and rendered. How???
-    // jest.runAllTimers();
-    // await formBuilder.instance.builder.ready;
+    // jest.useRealTimers();
     // await waitForExpect(() => expect(formStore.forms[0]).toMatchObject({flesk: true}));
-    // console.log('got after');
+    // jest.useFakeTimers();
   });
 
   it('loads all the forms using REST', async () => {
