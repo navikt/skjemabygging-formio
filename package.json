@@ -3,15 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^5.6.4",
     "@material-ui/styles": "^4.9.14",
+    "@navikt/fnrvalidator": "^1.1.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/react-hooks": "^3.2.1",
-    "@testing-library/user-event": "^7.2.1",
+    "classnames": "^2.2.6",
+    "craco-less": "^1.16.0",
     "dispatch": "^1.0.2",
     "eventemitter2": "^6.4.0",
     "formiojs": "^4.10.0-beta.20",
     "lodash": "^4.17.15",
+    "lodash.throttle": "^4.1.1",
+    "nav-frontend-core": "^4.0.12",
+    "nav-frontend-js-utils": "^1.0.8",
+    "nav-frontend-lenker": "^1.0.35",
+    "nav-frontend-lenker-style": "^0.2.26",
+    "nav-frontend-paneler-style": "^0.3.19",
+    "nav-frontend-skjema": "^3.0.2",
+    "nav-frontend-skjema-style": "^2.0.7",
+    "nav-frontend-typografi": "^2.0.19",
+    "nav-frontend-typografi-style": "^1.0.20",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",
     "prop-types": "^15.7.2",
@@ -24,10 +37,10 @@
     "wait-for-expect": "^3.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -43,5 +56,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/user-event": "^7.2.1"
   }
 }
