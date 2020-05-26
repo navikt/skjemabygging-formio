@@ -2,7 +2,8 @@ import React from "react";
 import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
 import "nav-frontend-skjema-style";
 
-export const FormMetadataEditor = ({ title, name, display, type, path, saveForm }) => {
+export const FormMetadataEditor = ({ form, onChange }) => {
+  const {title, path, display, name, type} = form;
   return (
     <SkjemaGruppe>
       <Input
@@ -11,7 +12,7 @@ export const FormMetadataEditor = ({ title, name, display, type, path, saveForm 
         id="title"
         placeholder="Enter the form title"
         value={title || ""}
-        readOnly={true}
+        onChange={(event) => onChange({...form, title: event.target.value})}
       />
       <Input
         label="Name"
@@ -19,14 +20,14 @@ export const FormMetadataEditor = ({ title, name, display, type, path, saveForm 
         id="name"
         placeholder="Enter the form machine name"
         value={name || ""}
-        readOnly={true}
+        onChange={(event) => onChange({...form, name: event.target.value})}
       />
       <Select
         label="Display as"
         name="form-display"
         id="form-display"
         value={display || ""}
-        readOnly={true}
+        onChange={(event) => onChange({...form, display: event.target.value})}
       >
         <option label="Form" value="form">
           Form
@@ -43,7 +44,7 @@ export const FormMetadataEditor = ({ title, name, display, type, path, saveForm 
         name="form-type"
         id="form-type"
         value={type}
-        readOnly={true}
+        onChange={(event) => onChange({...form, type: event.target.value})}
       >
         <option label="Form" value="form">
           Form
@@ -56,7 +57,6 @@ export const FormMetadataEditor = ({ title, name, display, type, path, saveForm 
         label="Path"
         type="text"
         id="path"
-        placeholder="example"
         style={{ textTransform: "lowercase", width: "120px" }}
         value={path || ""}
         readOnly={true}

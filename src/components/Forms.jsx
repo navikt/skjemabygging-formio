@@ -43,15 +43,8 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
                   <>
                     {form && (
                       <>
-                        <FormMetadataEditor
-                          title={form.title}
-                          path={form.path}
-                          display={form.display}
-                          name={form.name}
-                          type={form.type}
-                          saveForm={() => {}}
-                        />
-                        <NavFormBuilder key={form._id} form={form} onChange={onChange} />
+                        <FormMetadataEditor form={form} onChange={onChange} />
+                        <NavFormBuilder form={form} onChange={onChange} />
                       </>
                     )}
                   </>
