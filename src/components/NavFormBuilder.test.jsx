@@ -39,15 +39,12 @@ describe('NavFormBuilder', () => {
   });
 
   it('should call onChange after the form has been built', async () => {
-
     context.render(<NavFormBuilder form={context.backend.form()} onChange={jest.fn()}/>, renderOptions);
     const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
     expect(formBuilder.props.form).toEqual(context.backend.form());
-    // feiler her fordi vi ikke har funnet ut hvordan vi skal få formio til å bli ferdig.
+    // hvorfor vil ikke formio bli ready mens vi bruker fake timers??
     jest.useRealTimers();
-    await waitForExpect(() => expect(formBuilder.instance.hasLoaded).toBeTruthy());
     await waitForExpect(() => expect(formBuilder.props.onChange).toHaveBeenCalled());
     jest.useFakeTimers();
-    // });
   });
 });

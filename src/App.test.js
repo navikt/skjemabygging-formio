@@ -52,9 +52,14 @@ describe("App", () => {
     context.act(() => memoryRouter.instance.history.push(links[0].props.to));
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/debugskjema/edit');
     const formBuilder = memoryRouter.findByType(NavFormBuilder);
-    // jest.useRealTimers();
-    // await waitForExpect(() => expect(formStore.forms[0]).toMatchObject({flesk: true}));
-    // jest.useFakeTimers();
+    jest.useRealTimers();
+    await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
+    expect(formBuilder.instance.builder.form).toEqual(formStore.forms[0]);
+    expect(formBuilder.instance.builderState).toEqual('ready');
+    jest.useFakeTimers();
+    context.act(() => jest.runAllTimers());
+    context.testRenderer.unmount();
+    await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual('destroyed'));
   });
 
   it('loads all the forms using REST', async () => {

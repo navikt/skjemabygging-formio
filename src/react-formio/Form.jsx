@@ -4,6 +4,7 @@ import EventEmitter from 'eventemitter2';
 import AllComponents from 'formiojs/components';
 import Components from 'formiojs/components/Components';
 import FormioForm from 'formiojs/Form';
+
 Components.setComponents(AllComponents);
 
 export default class Form extends Component {
