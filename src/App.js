@@ -2,7 +2,7 @@ import React, {useState, useEffect, useMemo, useCallback} from "react";
 import PropTypes from 'prop-types';
 import Form from "./react-formio/Form.jsx";
 import Formiojs from "formiojs/Formio";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect, useHistory  } from "react-router-dom";
 import { Forms } from "./components/Forms";
 import { NavBar } from "./components/NavBar";
 import {FjompeParent} from "./components/FjompeComp";
@@ -47,15 +47,16 @@ export const useFormio = (projectURL, store) => {
   return { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave };
 };
 
-function App({ projectURL, store }) {
+function App({ projectURL, store}) {
   const { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave } = useFormio(projectURL, store);
+  const history = useHistory();
   return (
     <>
       <FjompeParent />
     <Switch>
       <Route path="/forms">
         {authenticated ? (
-          <Forms forms={forms} onLogout={logOut} onChange={onChangeForm} onSave={onSave} />
+          <Forms forms={forms} onLogout={logOut} onChange={onChangeForm} onSave={onSave} onNew={() => history.push('/forms/new')} />
         ) : (
           <Redirect to="/" />
         )}

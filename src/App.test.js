@@ -8,6 +8,9 @@ import form from "./testTools/json/Form.json";
 import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
 import NavFormBuilder from "./components/NavFormBuilder";
+import {Hovedknapp} from "nav-frontend-knapper";
+import {FormMetadataEditor} from "./components/FormMetadataEditor";
+import NewFormPage from "./components/NewFormPage";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -31,6 +34,33 @@ describe("App", () => {
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
+  });
+
+  it('lets you create a new form', async () => {
+    context.render(<MemoryRouter initialEntries={["/"]}>
+        <App store={formStore} projectURL="http://myproject.example.org"></App>
+      </MemoryRouter>,
+      testRendererOptions);
+    const loginForm = await context.waitForComponent(Form);
+    // burde være lastet her
+    context.act(() => {
+      loginForm.props.onSubmitDone()
+    });
+    const memoryRouter = context.testRenderer.root;
+    expect(memoryRouter.instance.history.location.pathname).toEqual('/forms');
+    const linkList = await context.waitForComponent('ul');
+    const createButton = context.testRenderer.root.findByType(Hovedknapp);
+    expect(createButton.props.children).toEqual('Lag nytt skjema');
+    context.act(() => createButton.props.onClick());
+    // check navigate to /forms/new
+    expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/new');
+    const newFormPage = context.testRenderer.root.findByType(NewFormPage);
+    const title = newFormPage.findByProps({id: 'title'});
+    title.props.onChange({target: {value: 'Kjøtttittel'}});
+    expect(newFormPage.instance.state.form).toMatchObject({title: 'Kjøtttittel'});
+    // click save/create/next form button
+    // check that form is saved to backend
+    // check that we have navigated to edit form for the new form
   });
 
   it('lets you edit and save a form', async () => {

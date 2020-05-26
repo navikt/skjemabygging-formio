@@ -5,6 +5,8 @@ import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import { styled } from "@material-ui/styles";
 import NavFormBuilder from "./NavFormBuilder";
 import { FormMetadataEditor } from "./FormMetadataEditor";
+import {Hovedknapp} from "nav-frontend-knapper";
+import NewFormPage from "./NewFormPage";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -14,11 +16,14 @@ const LinkWrapper = styled("div")({
   padding: "1rem 0"
 });
 
-export const Forms = ({ forms, onLogout, onChange, onSave }) => {
+export const Forms = ({ forms, onLogout, onChange, onSave, onNew }) => {
   let { path, url } = useRouteMatch();
 
   return (
     <Switch>
+      <Route path={`${path}/new`}>
+        <NewFormPage />
+      </Route>
       <Route
         path={`${path}/:formpath/edit`}
         render={({ match }) => {
@@ -106,6 +111,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
                     </li>
                   ))}
                 </ul>
+                <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
               </nav>
             )}
           </Pagewrapper>
