@@ -33,10 +33,8 @@ export default class NavFormBuilder extends Component {
 
   componentDidUpdate = (prevProps) => {
     if (isEqual(prevProps.form, this.props.form)) {
-      console.log('componentDidUpdate called in vain');
       return;
     }
-    console.log('componentDidUpdate updated form', this.props.form);
     this.updateFormBuilder();
   }
 
@@ -54,7 +52,6 @@ export default class NavFormBuilder extends Component {
   };
 
   handleChange = () => {
-    console.log('got handleChange');
     this.props.onChange(this.builder.instance.form);
   };
 }

@@ -9,7 +9,6 @@ import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
 import NavFormBuilder from "./components/NavFormBuilder";
 import {Hovedknapp} from "nav-frontend-knapper";
-import {FormMetadataEditor} from "./components/FormMetadataEditor";
 import NewFormPage from "./components/NewFormPage";
 import {useFormio} from "./useFormio";
 
@@ -75,11 +74,17 @@ describe("App", () => {
     const createButton = newFormPage.findByType(Hovedknapp);
     expect(createButton.props.children).toEqual('Opprett');
     expect(context.backend.hasFormByPath('sykkel')).toBeFalsy();
+    expect(formStore.forms).toHaveLength(1);
     context.act(() => createButton.props.onClick());
-    // check that form is saved to backend
-    expect(context.backend.hasFormByPath('sykkel')).toBeTruthy();
+    jest.useRealTimers();
+    await waitForExpect(() => expect(context.backend.hasFormByPath('sykkel')).toBeTruthy());
+    jest.useFakeTimers();
+    expect(formStore.forms).toHaveLength(2);
     // check that we have navigated to edit form for the new form
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/sykkel/edit');
+    const formBuilder = memoryRouter.findByType(NavFormBuilder);
+    await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual('ready'));
+    expect(formBuilder.instance.builder.form).toMatchObject(context.backend.formByPath('sykkel'));
   });
 
   it('lets you edit and save a form', async () => {

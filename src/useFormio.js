@@ -29,7 +29,6 @@ export const useFormio = (projectURL, store) => {
   };
 
   const onChangeForm = form => {
-    console.log('App.onChangeForm');
     setForms([...forms.filter(each => each.path !== form.path), form]);
   };
 
@@ -43,6 +42,7 @@ export const useFormio = (projectURL, store) => {
     return formio.saveForm(form)
       .then(form => {
         setForms(forms.concat([form]));
+        return form;
       })
       .catch(error => {
         console.log(error);

@@ -3,7 +3,7 @@ import loginform from '../testTools/json/LoginForm';
 
 export class FakeBackend {
   constructor() {
-
+    this.allForms = [form];
   }
   setNowFunction(nowFunc) {
     this.nowFunction = nowFunc;
@@ -19,13 +19,23 @@ export class FakeBackend {
 
   forms({type, tags}) {
     if (type === 'form' && tags === 'nav-skjema') {
-      return [form];
+      return this.allForms;
     }
     return [];
   }
 
+  addForm(form) {
+    // add props and forth here
+    this.allForms.push(form);
+    return form;
+  }
+
   hasFormByPath(path) {
-    return false;
+    return this.allForms.some(each => each.path === path);
+  }
+
+  formByPath(path) {
+    return this.allForms.find(each => each.path === path);
   }
 
   now() {

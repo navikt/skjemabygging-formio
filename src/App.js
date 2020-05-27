@@ -10,6 +10,12 @@ import {useFormio} from "./useFormio";
 function App({projectURL, store}) {
   const {forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave, onCreate} = useFormio(projectURL, store);
   const history = useHistory();
+  const wrappedCreate = (newForm) => {
+    onCreate(newForm)
+      .then(savedForm => {
+        history.push(`/forms/${savedForm.path}/edit`);
+      });
+  }
   return (
     <>
       <FjompeParent/>
@@ -19,7 +25,7 @@ function App({projectURL, store}) {
             <Forms
               forms={forms} onLogout={logOut}
               onChange={onChangeForm} onSave={onSave}
-              onCreate={onCreate}
+              onCreate={wrappedCreate}
               onNew={() => history.push('/forms/new')}/>
           ) : (
             <Redirect to="/"/>
