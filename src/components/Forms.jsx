@@ -5,6 +5,7 @@ import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import { styled } from "@material-ui/styles";
 import NavFormBuilder from "./NavFormBuilder";
 import { FormMetadataEditor } from "./FormMetadataEditor";
+import { useAuth } from "../context/auth-context";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -16,6 +17,7 @@ const LinkWrapper = styled("div")({
 
 export const Forms = ({ forms, onLogout, onChange, onSave }) => {
   let { path, url } = useRouteMatch();
+  const { logout } = useAuth();
 
   return (
     <Switch>
@@ -29,7 +31,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
               <>
                 <NavBar>
                   <MenuLink to="/forms">Skjemaer</MenuLink>
-                  <MenuLink to="/" onClick={onLogout}>
+                  <MenuLink to="/" onClick={logout}>
                     Logout
                   </MenuLink>
                 </NavBar>
@@ -65,7 +67,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
               <>
                 <NavBar>
                   <MenuLink to="/forms">Skjemaer</MenuLink>
-                  <MenuLink to="/" onClick={onLogout}>
+                  <MenuLink to="/" onClick={logout}>
                     Logout
                   </MenuLink>
                 </NavBar>
@@ -91,7 +93,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave }) => {
         <>
           <NavBar>
             <MenuItem>Skjemaer</MenuItem>
-            <MenuLink to="/" onClick={onLogout}>
+            <MenuLink to="/" onClick={logout}>
               Logout
             </MenuLink>
           </NavBar>

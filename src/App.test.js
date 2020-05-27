@@ -5,9 +5,9 @@ import App, {useFormio} from "./App";
 import {Link, MemoryRouter} from "react-router-dom";
 import {renderHook, act} from "@testing-library/react-hooks";
 import form from "./testTools/json/Form.json";
-import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
 import NavFormBuilder from "./components/NavFormBuilder";
+import AuthenticatedApp from "./AuthenticatedApp";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -36,14 +36,9 @@ describe("App", () => {
   it('lets you edit and save a form', async () => {
     let formElement;
     context.render(<MemoryRouter initialEntries={["/"]}>
-        <App store={formStore} projectURL="http://myproject.example.org"></App>
+        <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
       </MemoryRouter>,
       testRendererOptions);
-    const loginForm = await context.waitForComponent(Form);
-    // burde være lastet her
-    context.act(() => {
-      loginForm.props.onSubmitDone()
-    });
     const memoryRouter = context.testRenderer.root;
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms');
     const linkList = await context.waitForComponent('ul');

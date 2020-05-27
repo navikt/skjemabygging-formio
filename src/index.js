@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {BrowserRouter} from "react-router-dom";
+import AppProviders from "./context/AppProviders";
+import App from "./App";
 
 const projectURL =
   process.env.REACT_APP_FORMIO_PROJECT_URL || "https://kxzxmneixaglyxf.form.io";
@@ -12,9 +12,9 @@ const store = {forms: []};
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <AppProviders>
       <App store={store} projectURL={projectURL}/>
-    </BrowserRouter>
+    </AppProviders>
   </React.StrictMode>,
   document.getElementById('root')
 );
