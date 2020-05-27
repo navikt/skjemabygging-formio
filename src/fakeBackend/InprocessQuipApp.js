@@ -24,9 +24,7 @@ export class InprocessQuipApp {
     const next = () => {
       throw new Error(`${request.summary()} is unhandled`);
     };
-    console.log('quip app before', request);
     this.quipApp(request, response, next);
-    console.log('quip app after', response);
     return response.toFetchResponse();
   }
 

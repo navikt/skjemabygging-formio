@@ -8,6 +8,12 @@ import { useFormio } from "./useFormio";
 function AuthenticatedApp({ projectURL, store }) {
   const {forms, onChangeForm, onSave, onCreate} = useFormio(projectURL, store);
   const history = useHistory();
+  const wrappedCreate = (newForm) => {
+    onCreate(newForm)
+      .then(savedForm => {
+        history.push(`/forms/${savedForm.path}/edit`);
+      });
+  };
   return (
     <>
       <FjompeParent />
@@ -16,7 +22,7 @@ function AuthenticatedApp({ projectURL, store }) {
           <Forms
             forms={forms}
             onChange={onChangeForm} onSave={onSave}
-            onCreate={onCreate}
+            onCreate={wrappedCreate}
             onNew={() => history.push('/forms/new')}/>
         </Route>
         <Route path="/">
