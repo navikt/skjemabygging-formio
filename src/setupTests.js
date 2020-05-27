@@ -6,5 +6,5 @@ import '@testing-library/jest-dom/extend-expect';
 
 import waitForExpect from 'wait-for-expect';
 
-waitForExpect.defaults.timeout = 4500;
+waitForExpect.defaults.timeout = 250;
 // waitForExpect.defaults.interval = 10;
