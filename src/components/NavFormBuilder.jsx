@@ -9,18 +9,17 @@ import cloneDeep from "lodash.clonedeep";
 Components.setComponents(AllComponents);
 
 export default class NavFormBuilder extends Component {
-  hasLoaded = false;
+  builderState = 'preparing';
   static propTypes = {
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
   };
 
   componentDidMount = () => {
-    console.log('mounting');
     this.builder = new FormioFormBuilder(this.element, {}, {});
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
-      this.hasLoaded = true;
+      this.builderState = 'ready';
       this.updateFormBuilder();
       this.handleChange();
       this.builder.instance.on('addComponent', this.handleChange);
@@ -46,8 +45,8 @@ export default class NavFormBuilder extends Component {
   }
 
   componentWillUnmount = () => {
-    console.log('unmounting');
     this.builder.instance.destroy(true);
+    this.builderState = 'destroyed';
   };
 
   render = () => {
