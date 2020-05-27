@@ -1,81 +1,45 @@
-import React, {useState, useEffect, useMemo, useCallback} from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import Form from "./react-formio/Form.jsx";
-import Formiojs from "formiojs/Formio";
-import { Switch, Route, Redirect, useHistory  } from "react-router-dom";
-import { Forms } from "./components/Forms";
-import { NavBar } from "./components/NavBar";
+import {Redirect, Route, Switch, useHistory} from "react-router-dom";
+import {Forms} from "./components/Forms";
+import {NavBar} from "./components/NavBar";
 import {FjompeParent} from "./components/FjompeComp";
+import {useFormio} from "./useFormio";
 
-export const useFormio = (projectURL, store) => {
-  const [forms, setFormsInternal] = useState(store.forms);
-  const setForms = useCallback((forms) => {
-    setFormsInternal(forms);
-    store.forms = forms;
-  }, [setFormsInternal, store.forms]);
-  const [authenticated, setAuthenticated] = useState(false);
-  const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
-
-  useEffect(() => {
-    if (Formiojs.getUser() && !authenticated) {
-      setAuthenticated(true);
-    }
-  }, [authenticated]);
-
-  useEffect(() => {
-    if (authenticated && forms.length === 0) {
-      formio.loadForms({ params: { type: "form", tags: "nav-skjema" } }).then(forms => setForms(forms));
-    }
-  }, [authenticated, forms, setForms, formio]);
-
-  const logOut = () => {
-    setAuthenticated(false);
-    Formiojs.logout();
-  };
-
-  const onChangeForm = form => {
-    console.log('App.onChangeForm');
-    setForms([...forms.filter(each => each.path !== form.path), form]);
-  };
-
-  const onSave = callbackForm => {
-    formio.saveForm(callbackForm).then(form => {
-      onChangeForm(form);
-    });
-  };
-
-  return { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave };
-};
-
-function App({ projectURL, store}) {
-  const { forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave } = useFormio(projectURL, store);
+function App({projectURL, store}) {
+  const {forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave, onCreate} = useFormio(projectURL, store);
   const history = useHistory();
   return (
     <>
-      <FjompeParent />
-    <Switch>
-      <Route path="/forms">
-        {authenticated ? (
-          <Forms forms={forms} onLogout={logOut} onChange={onChangeForm} onSave={onSave} onNew={() => history.push('/forms/new')} />
-        ) : (
-          <Redirect to="/" />
-        )}
-      </Route>
-      <Route path="/">
-        <>
+      <FjompeParent/>
+      <Switch>
+        <Route path="/forms">
           {authenticated ? (
-            <Redirect to="/forms" />
+            <Forms
+              forms={forms} onLogout={logOut}
+              onChange={onChangeForm} onSave={onSave}
+              onCreate={onCreate}
+              onNew={() => history.push('/forms/new')}/>
           ) : (
-            <>
-              {/*Login-komponent*/}
-              <NavBar />
-              <Form src={`${projectURL}/admin/login`} onSubmitDone={() => setAuthenticated(true)} />
-            </>
+            <Redirect to="/"/>
           )}
-        </>
-      </Route>
-    </Switch>
-      </>
+        </Route>
+        <Route path="/">
+          <>
+            {authenticated ? (
+              <Redirect to="/forms"/>
+            ) : (
+              <>
+                {/*Login-komponent*/}
+                <NavBar/>
+                <Form src={`${projectURL}/admin/login`} onSubmitDone={() => setAuthenticated(true)}/>
+              </>
+            )}
+          </>
+        </Route>
+      </Switch>
+    </>
   );
 }
 

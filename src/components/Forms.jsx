@@ -16,13 +16,13 @@ const LinkWrapper = styled("div")({
   padding: "1rem 0"
 });
 
-export const Forms = ({ forms, onLogout, onChange, onSave, onNew }) => {
+export const Forms = ({ forms, onLogout, onChange, onSave, onNew, onCreate }) => {
   let { path, url } = useRouteMatch();
 
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage />
+        <NewFormPage onCreate={onCreate} />
       </Route>
       <Route
         path={`${path}/:formpath/edit`}

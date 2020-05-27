@@ -1,7 +1,7 @@
 import {FakeBackendTestContext} from "./testTools/FakeBackendTestContext";
 import {Formio} from "formiojs";
 import React from "react";
-import App, {useFormio} from "./App";
+import App from "./App";
 import {Link, MemoryRouter} from "react-router-dom";
 import {renderHook, act} from "@testing-library/react-hooks";
 import form from "./testTools/json/Form.json";
@@ -11,6 +11,7 @@ import NavFormBuilder from "./components/NavFormBuilder";
 import {Hovedknapp} from "nav-frontend-knapper";
 import {FormMetadataEditor} from "./components/FormMetadataEditor";
 import NewFormPage from "./components/NewFormPage";
+import {useFormio} from "./useFormio";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -49,22 +50,41 @@ describe("App", () => {
     const memoryRouter = context.testRenderer.root;
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms');
     const linkList = await context.waitForComponent('ul');
-    const createButton = context.testRenderer.root.findByType(Hovedknapp);
-    expect(createButton.props.children).toEqual('Lag nytt skjema');
-    context.act(() => createButton.props.onClick());
+    const lagNyttSkjemaKnapp = context.testRenderer.root.findByType(Hovedknapp);
+    expect(lagNyttSkjemaKnapp.props.children).toEqual('Lag nytt skjema');
+    context.act(() => lagNyttSkjemaKnapp.props.onClick());
     // check navigate to /forms/new
     expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/new');
+
     const newFormPage = context.testRenderer.root.findByType(NewFormPage);
-    const title = newFormPage.findByProps({id: 'title'});
-    title.props.onChange({target: {value: 'Kjøtttittel'}});
-    expect(newFormPage.instance.state.form).toMatchObject({title: 'Kjøtttittel'});
+    newFormPage.findByProps({id: 'title'}).props.onChange({target: {value: 'Meat'}});
+    newFormPage.findByProps({id: 'name'}).props.onChange({target: {value: 'meat'}});
+    newFormPage.findByProps({id: 'form-display'}).props.onChange({target: {value: 'Suppe'}});
+    newFormPage.findByProps({id: 'path'}).props.onChange({target: {value: 'sykkel'}});
+    newFormPage.findByProps({id: 'form-type'}).props.onChange({target: {value: 'Trehjulsykkel'}});
+
+    expect(newFormPage.instance.state.form).toMatchObject({
+      type: 'Trehjulsykkel',
+      path: 'sykkel',
+      display: 'Suppe',
+      name: 'meat',
+      title: 'Meat',
+      tags: ['nav-skjema']
+    });
     // click save/create/next form button
+    const createButton = newFormPage.findByType(Hovedknapp);
+    expect(createButton.props.children).toEqual('Opprett');
+    expect(context.backend.hasFormByPath('sykkel')).toBeFalsy();
+    context.act(() => createButton.props.onClick());
     // check that form is saved to backend
+    expect(context.backend.hasFormByPath('sykkel')).toBeTruthy();
     // check that we have navigated to edit form for the new form
+    expect(memoryRouter.instance.history.location.pathname).toEqual('/forms/sykkel/edit');
   });
 
   it('lets you edit and save a form', async () => {
     let formElement;
+
     context.render(<MemoryRouter initialEntries={["/"]}>
         <App store={formStore} projectURL="http://myproject.example.org"></App>
       </MemoryRouter>,

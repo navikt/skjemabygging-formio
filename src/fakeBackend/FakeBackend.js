@@ -24,6 +24,10 @@ export class FakeBackend {
     return [];
   }
 
+  hasFormByPath(path) {
+    return false;
+  }
+
   now() {
     return this.nowFunction()
   }
