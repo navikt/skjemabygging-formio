@@ -8,25 +8,13 @@ export const useFormio = (projectURL, store) => {
     setFormsInternal(forms);
     store.forms = forms;
   }, [setFormsInternal, store.forms]);
-  const [authenticated, setAuthenticated] = useState(false);
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
 
   useEffect(() => {
-    if (Formiojs.getUser() && !authenticated) {
-      setAuthenticated(true);
-    }
-  }, [authenticated]);
-
-  useEffect(() => {
-    if (authenticated && forms.length === 0) {
+    if (forms.length === 0) {
       formio.loadForms({params: {type: "form", tags: "nav-skjema"}}).then(forms => setForms(forms));
     }
-  }, [authenticated, forms, setForms, formio]);
-
-  const logOut = () => {
-    setAuthenticated(false);
-    Formiojs.logout();
-  };
+  }, [forms, setForms, formio]);
 
   const onChangeForm = form => {
     setForms([...forms.filter(each => each.path !== form.path), form]);
@@ -50,5 +38,5 @@ export const useFormio = (projectURL, store) => {
       });
   }
 
-  return {forms, authenticated, setAuthenticated, logOut, onChangeForm, onSave, onCreate};
+  return {forms, onChangeForm, onSave, onCreate};
 };

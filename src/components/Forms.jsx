@@ -5,6 +5,7 @@ import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import { styled } from "@material-ui/styles";
 import NavFormBuilder from "./NavFormBuilder";
 import { FormMetadataEditor } from "./FormMetadataEditor";
+import { useAuth } from "../context/auth-context";
 import {Hovedknapp} from "nav-frontend-knapper";
 import NewFormPage from "./NewFormPage";
 
@@ -16,8 +17,9 @@ const LinkWrapper = styled("div")({
   padding: "1rem 0"
 });
 
-export const Forms = ({ forms, onLogout, onChange, onSave, onNew, onCreate }) => {
+export const Forms = ({ forms, onChange, onSave, onNew, onCreate }) => {
   let { path, url } = useRouteMatch();
+  const { logout } = useAuth();
 
   return (
     <Switch>
@@ -34,7 +36,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave, onNew, onCreate }) =>
               <>
                 <NavBar>
                   <MenuLink to="/forms">Skjemaer</MenuLink>
-                  <MenuLink to="/" onClick={onLogout}>
+                  <MenuLink to="/" onClick={logout}>
                     Logout
                   </MenuLink>
                 </NavBar>
@@ -70,7 +72,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave, onNew, onCreate }) =>
               <>
                 <NavBar>
                   <MenuLink to="/forms">Skjemaer</MenuLink>
-                  <MenuLink to="/" onClick={onLogout}>
+                  <MenuLink to="/" onClick={logout}>
                     Logout
                   </MenuLink>
                 </NavBar>
@@ -96,7 +98,7 @@ export const Forms = ({ forms, onLogout, onChange, onSave, onNew, onCreate }) =>
         <>
           <NavBar>
             <MenuItem>Skjemaer</MenuItem>
-            <MenuLink to="/" onClick={onLogout}>
+            <MenuLink to="/" onClick={logout}>
               Logout
             </MenuLink>
           </NavBar>
