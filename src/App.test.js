@@ -1,10 +1,9 @@
 import { FakeBackendTestContext } from "./testTools/FakeBackendTestContext";
 import { Formio } from "formiojs";
 import React from "react";
-import App from "./App";
+import AuthenticatedApp from "./AuthenticatedApp";
 import { Link, MemoryRouter } from "react-router-dom";
 import { renderHook, act } from "@testing-library/react-hooks";
-import form from "./testTools/json/Form.json";
 import waitForExpect from "wait-for-expect";
 import Form from "./react-formio/Form.jsx";
 import NavFormBuilder from "./components/NavFormBuilder";
@@ -12,6 +11,7 @@ import { Hovedknapp } from "nav-frontend-knapper";
 import NewFormPage from "./components/NewFormPage";
 import { useFormio } from "./useFormio";
 import { AuthContext } from "./context/auth-context";
+import App from "./App";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -41,7 +41,7 @@ describe("App", () => {
     context.render(
       <MemoryRouter initialEntries={["/forms"]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <App store={formStore} projectURL="http://myproject.example.org"></App>
+          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -86,23 +86,19 @@ describe("App", () => {
   });
 
   it("lets you edit and save a form", async () => {
-    let formElement;
 
     context.render(
-      <MemoryRouter initialEntries={["/"]}>
-        <App store={formStore} projectURL="http://myproject.example.org"></App>
+      <MemoryRouter initialEntries={["/forms"]}>
+        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
+          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
+        </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
     );
-    const loginForm = await context.waitForComponent(Form);
-    // burde være lastet her
-    context.act(() => {
-      loginForm.props.onSubmitDone();
-    });
     const memoryRouter = context.testRenderer.root;
-    expect(memoryRouter.instance.history.location.pathname).toEqual("/forms");
-    const linkList = await context.waitForComponent("ul");
-    expect(formStore.forms).toHaveLength(1);
+    setTimeout.mock.calls[0][0]();
+    const linkList = context.testRenderer.root.findByType("ul");
+    await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
     const links = linkList.findAllByType(Link);
     context.act(() => memoryRouter.instance.history.push(links[0].props.to));
     expect(memoryRouter.instance.history.location.pathname).toEqual("/forms/debugskjema/edit");
@@ -117,24 +113,19 @@ describe("App", () => {
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("destroyed"));
   });
 
-  it("loads all the forms using REST", async () => {
+  it("displays all the forms", async () => {
     const formStore = { forms: [] };
     context.render(
-      <MemoryRouter initialEntries={["/"]}>
-        <App projectURL="http://myproject.example.org" store={formStore}></App>
+      <MemoryRouter initialEntries={["/forms"]}>
+        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
+          <AuthenticatedApp projectURL="http://myproject.example.org" store={formStore}></AuthenticatedApp>
+        </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
     );
-    const loginForm = await context.waitForComponent(Form);
-    // burde være lastet her
-    context.act(() => {
-      loginForm.props.onSubmitDone();
-    });
-    const memoryRouter = context.testRenderer.root.findByType(MemoryRouter);
-    expect(memoryRouter.instance.history.location.pathname).toEqual("/forms");
-    const linkList = await context.waitForComponent("ul");
-    const lis = linkList.findAllByType("li");
-    expect(lis).toHaveLength(1);
+    setTimeout.mock.calls[0][0]();
+    const linkList = context.testRenderer.root.findByType("ul");
+    await waitForExpect(() => expect(linkList.findAllByType("li")).toHaveLength(1));
   });
 
   it("baseURL renders loginform when unauthenticated", async () => {
@@ -142,7 +133,9 @@ describe("App", () => {
     let formElement;
     context.render(
       <MemoryRouter initialEntries={["/"]}>
-        <App store={store} projectURL="http://myproject.example.org" />
+        <AuthContext.Provider value={{ userData: null, login: () => {}, logout: () => {} }}>
+          <App store={store} projectURL="http://myproject.example.org" />
+        </AuthContext.Provider>
       </MemoryRouter>,
       {
         createNodeMock: element => {
@@ -159,16 +152,11 @@ describe("App", () => {
     expect(formElement.querySelectorAll("label")[0].textContent.trim()).toEqual("Email");
   });
 
-  it("loads the form in the hook", async () => {
+  it("loads all forms in the hook", async () => {
     const store = { forms: [] };
     const { result, waitForNextUpdate } = renderHook(() => useFormio("http://myproject.example.org", store));
-    expect(result.current.authenticated).toBeFalsy();
-    act(() => {
-      result.current.setAuthenticated(true);
-    });
-    expect(result.current.authenticated).toBeTruthy();
     await waitForNextUpdate();
-    expect(result.current.forms).toEqual([form]);
+    expect(result.current.forms).toEqual(context.backend.allForms);
     expect(result.current.forms).toEqual(store.forms);
   });
 });
