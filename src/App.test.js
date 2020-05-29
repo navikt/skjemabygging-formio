@@ -9,9 +9,10 @@ import Form from "./react-formio/Form.jsx";
 import NavFormBuilder from "./components/NavFormBuilder";
 import { Hovedknapp } from "nav-frontend-knapper";
 import NewFormPage from "./components/NewFormPage";
-import { useFormio } from "./useFormio";
+import { useFormio, useForms } from "./useForms";
 import { AuthContext } from "./context/auth-context";
 import App from "./App";
+import Formiojs from "formiojs/Formio";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -41,7 +42,7 @@ describe("App", () => {
     context.render(
       <MemoryRouter initialEntries={["/forms"]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
+          <AuthenticatedApp store={formStore} formio={new Formiojs("http://myproject.example.org")} />
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -86,11 +87,10 @@ describe("App", () => {
   });
 
   it("lets you edit and save a form", async () => {
-
     context.render(
       <MemoryRouter initialEntries={["/forms"]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
+          <AuthenticatedApp store={formStore} formio={new Formiojs("http://myproject.example.org")} />
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -118,7 +118,7 @@ describe("App", () => {
     context.render(
       <MemoryRouter initialEntries={["/forms"]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp projectURL="http://myproject.example.org" store={formStore}></AuthenticatedApp>
+          <AuthenticatedApp formio={new Formiojs("http://myproject.example.org")} store={formStore} />
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -154,7 +154,9 @@ describe("App", () => {
 
   it("loads all forms in the hook", async () => {
     const store = { forms: [] };
-    const { result, waitForNextUpdate } = renderHook(() => useFormio("http://myproject.example.org", store));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useForms(new Formiojs("http://myproject.example.org"), store)
+    );
     await waitForNextUpdate();
     expect(result.current.forms).toEqual(context.backend.allForms);
     expect(result.current.forms).toEqual(store.forms);

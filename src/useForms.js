@@ -1,14 +1,12 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
-import Formiojs from "formiojs/Formio";
+import {useCallback, useEffect, useState} from "react";
 
 
-export const useFormio = (projectURL, store) => {
+export const useForms = (formio, store) => {
   const [forms, setFormsInternal] = useState(store.forms);
   const setForms = useCallback((forms) => {
     setFormsInternal(forms);
     store.forms = forms;
   }, [setFormsInternal, store.forms]);
-  const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
 
   useEffect(() => {
     if (forms.length === 0) {
@@ -36,7 +34,7 @@ export const useFormio = (projectURL, store) => {
         console.log(error);
         throw error;
       });
-  }
+  };
 
   return {forms, onChangeForm, onSave, onCreate};
 };

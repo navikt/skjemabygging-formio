@@ -1,9 +1,12 @@
 import { FormMetadataEditor } from "./FormMetadataEditor";
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitForDomChange } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import waitForExpect from "wait-for-expect";
 import { FakeBackend } from "../fakeBackend/FakeBackend";
+import { AuthContext } from "../context/auth-context";
+import AuthenticatedApp from "../AuthenticatedApp";
+import { MemoryRouter } from "react-router-dom";
 
 describe("FormMetadataEditor", () => {
   let mockOnChange;
@@ -61,5 +64,20 @@ describe("FormMetadataEditor", () => {
     render(<FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />);
     expect(screen.getByRole("textbox", { name: /Path/i })).toBeVisible();
     expect(screen.getByRole("textbox", { name: /Path/i }).readOnly).toBe(true);
+  });
+
+  it("should display changes when onChange is called", async () => {
+    render(
+      <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
+        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
+          <AuthenticatedApp formio={{}} store={{ forms: [fakeBackend.form()] }} />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+    let titleFelt = await screen.findByRole("textbox", { name: /Title/i });
+    await userEvent.type(titleFelt, "Søknad om førerhund");
+    await waitForDomChange().then(() =>
+      expect(screen.getByRole("textbox", { name: /Title/i })).toHaveValue("Søknad om førerhund")
+    );
   });
 });
