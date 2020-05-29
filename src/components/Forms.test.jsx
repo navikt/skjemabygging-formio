@@ -49,9 +49,10 @@ describe('Forms', () => {
     );
   }
 
-  function formLinks() {
+  function editFormLinks() {
     const linkList = context.testRenderer.root.findByType("ul");
-    return linkList.findAllByType(Link);
+    const lis = linkList.findAllByType('li');
+    return lis.map(li => li.findByProps({'data-testid': 'editLink'}));
   }
 
   function clickHovedknapp(title) {
@@ -88,7 +89,7 @@ describe('Forms', () => {
     renderApp('/forms');
     setTimeout.mock.calls[0][0]();
     await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
-    const links = formLinks();
+    const links = editFormLinks();
     navigateTo(links[0].props.to);
     const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
     jest.useRealTimers();
@@ -99,8 +100,8 @@ describe('Forms', () => {
   it("displays all the forms with an edit link", async () => {
     renderApp('/forms');
     setTimeout.mock.calls[0][0]();
-    await waitForExpect(() => expect(formLinks()).toHaveLength(1));
-    const editorPath = formLinks()[0].props.to;
+    await waitForExpect(() => expect(editFormLinks()).toHaveLength(1));
+    const editorPath = editFormLinks()[0].props.to;
     expect(editorPath).toEqual("/forms/debugskjema/edit");
   });
 });

@@ -5,7 +5,7 @@ import { Forms } from "./components/Forms";
 import { useFormio } from "./useFormio";
 
 function AuthenticatedApp({ projectURL, store }) {
-  const { forms, onChangeForm, onSave, onCreate } = useFormio(projectURL, store);
+  const { forms, onChangeForm, onSave, onCreate, onDelete } = useFormio(projectURL, store);
   const history = useHistory();
   const wrappedCreate = newForm => {
     onCreate(newForm).then(savedForm => {
@@ -21,6 +21,7 @@ function AuthenticatedApp({ projectURL, store }) {
             onChange={onChangeForm}
             onSave={onSave}
             onCreate={wrappedCreate}
+            onDelete={onDelete}
             onNew={() => history.push("/forms/new")}
           />
         </Route>

@@ -16,7 +16,7 @@ function App({ projectURL, store }) {
   useEffect(() => {
     window.addEventListener('unhandledrejection', setError);
     return () => window.removeEventListener("unhandledrejection", setError);
-  });
+  }, []);
   const { userData } = useAuth();
   const content = userData ? (
     <AuthenticatedApp projectURL={projectURL} store={store} />
