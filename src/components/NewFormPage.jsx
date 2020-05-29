@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Hovedknapp} from "nav-frontend-knapper";
-import {CopyOfFormMetadataEditor} from "./CopyOfFormMetadataEditor";
+import {CopyOfFormMetadataEditor} from "./FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
 
