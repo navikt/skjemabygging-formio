@@ -53,13 +53,26 @@ describe("App", () => {
     );
   }
 
+  function formLinks() {
+    const linkList = context.testRenderer.root.findByType("ul");
+    return linkList.findAllByType(Link);
+  }
+
+  function clickHovedknapp(title) {
+    const knapp = context.testRenderer.root.findByType(Hovedknapp);
+    expect(knapp.props.children).toEqual(title);
+    context.act(() => knapp.props.onClick());
+  }
+
+  function navigateTo(path) {
+    const memoryRouter = context.testRenderer.root;
+    context.act(() => memoryRouter.instance.history.push(path));
+  }
+
   it('lets you navigate to new form page from the list of all forms', async () => {
     renderApp('/forms');
-    const lagNyttSkjemaKnapp = context.testRenderer.root.findByType(Hovedknapp);
-    expect(lagNyttSkjemaKnapp.props.children).toEqual("Lag nytt skjema");
-    context.act(() => lagNyttSkjemaKnapp.props.onClick());
+    clickHovedknapp("Lag nytt skjema");
     expect(routeLocation().pathname).toEqual("/forms/new");
-    // crashes if component is not found
     await context.waitForComponent(NewFormPage);
   });
 
@@ -75,12 +88,9 @@ describe("App", () => {
       title: "Meat",
       tags: ["nav-skjema"]
     });
-    // click save/create/next form button
-    const createButton = newFormPage.findByType(Hovedknapp);
-    expect(createButton.props.children).toEqual("Opprett");
     await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
     expect(context.backend.hasFormByPath("meat")).toBeFalsy();
-    context.act(() => createButton.props.onClick());
+    clickHovedknapp("Opprett");
     jest.useRealTimers();
     await waitForExpect(() => expect(context.backend.hasFormByPath("meat")).toBeTruthy());
     jest.useFakeTimers();
@@ -101,34 +111,26 @@ describe("App", () => {
     expect(formBuilder.instance.builderState).toEqual("ready");
     context.testRenderer.unmount();
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("destroyed"));
-
   });
 
-  it("lets navigate from the list to the editor and save a form", async () => {
+  it("lets navigate from the list to the editor", async () => {
     renderApp('/forms');
-    const memoryRouter = context.testRenderer.root;
     setTimeout.mock.calls[0][0]();
-    const linkList = context.testRenderer.root.findByType("ul");
     await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
-    const links = linkList.findAllByType(Link);
-    context.act(() => memoryRouter.instance.history.push(links[0].props.to));
-    expect(memoryRouter.instance.history.location.pathname).toEqual("/forms/debugskjema/edit");
-    const formBuilder = memoryRouter.findByType(NavFormBuilder);
+    const links = formLinks();
+    navigateTo(links[0].props.to);
+    const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
     jest.useRealTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
     jest.useFakeTimers();
-    expect(formBuilder.instance.builder.form).toEqual(formStore.forms[0]);
-    expect(formBuilder.instance.builderState).toEqual("ready");
-    context.act(() => jest.runAllTimers());
-    context.testRenderer.unmount();
-    await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("destroyed"));
   });
 
-  it("displays all the forms", async () => {
+  it("displays all the forms with an edit link", async () => {
     renderApp('/forms');
     setTimeout.mock.calls[0][0]();
-    const linkList = context.testRenderer.root.findByType("ul");
-    await waitForExpect(() => expect(linkList.findAllByType("li")).toHaveLength(1));
+    await waitForExpect(() => expect(formLinks()).toHaveLength(1));
+    const editorPath = formLinks()[0].props.to;
+    expect(editorPath).toEqual("/forms/debugskjema/edit");
   });
 
   it("baseURL renders loginform when unauthenticated", async () => {

@@ -109,7 +109,7 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate }) => {
                 <ul>
                   {forms.map(form => (
                     <li key={form.path}>
-                      <Link to={`${url}/${form.path}`}>{form.title}</Link>
+                      <Link to={`${url}/${form.path}/edit`}>{form.title}</Link>
                     </li>
                   ))}
                 </ul>
