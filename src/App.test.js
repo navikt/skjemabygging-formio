@@ -37,33 +37,40 @@ describe("App", () => {
     Formio.fetch = oldFormioFetch;
   });
 
-  it("lets you create a new form", async () => {
-    context.render(
-      <MemoryRouter initialEntries={["/forms"]}>
+  function routeLocation() {
+    const memoryRouter = context.testRenderer.root;
+    return memoryRouter.instance.history.location;
+  }
+
+  function renderApp(pathname) {
+    return context.render(
+      <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
+          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"/>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
     );
-    const memoryRouter = context.testRenderer.root;
+  }
+
+  it('lets you navigate to new form page from the list of all forms', async () => {
+    renderApp('/forms');
     const lagNyttSkjemaKnapp = context.testRenderer.root.findByType(Hovedknapp);
     expect(lagNyttSkjemaKnapp.props.children).toEqual("Lag nytt skjema");
     context.act(() => lagNyttSkjemaKnapp.props.onClick());
-    // check navigate to /forms/new
-    expect(memoryRouter.instance.history.location.pathname).toEqual("/forms/new");
+    expect(routeLocation().pathname).toEqual("/forms/new");
+    // crashes if component is not found
+    await context.waitForComponent(NewFormPage);
+  });
 
+  it("lets you create a new form", async () => {
+    renderApp('/forms/new');
     const newFormPage = context.testRenderer.root.findByType(NewFormPage);
     newFormPage.findByProps({ id: "title" }).props.onChange({ target: { value: "Meat" } });
-    newFormPage.findByProps({ id: "name" }).props.onChange({ target: { value: "meat" } });
-    newFormPage.findByProps({ id: "form-display" }).props.onChange({ target: { value: "Suppe" } });
-    newFormPage.findByProps({ id: "path" }).props.onChange({ target: { value: "sykkel" } });
-    newFormPage.findByProps({ id: "form-type" }).props.onChange({ target: { value: "Trehjulsykkel" } });
-
     expect(newFormPage.instance.state.form).toMatchObject({
-      type: "Trehjulsykkel",
-      path: "sykkel",
-      display: "Suppe",
+      type: "form",
+      path: "meat",
+      display: "form",
       name: "meat",
       title: "Meat",
       tags: ["nav-skjema"]
@@ -71,30 +78,34 @@ describe("App", () => {
     // click save/create/next form button
     const createButton = newFormPage.findByType(Hovedknapp);
     expect(createButton.props.children).toEqual("Opprett");
-    expect(context.backend.hasFormByPath("sykkel")).toBeFalsy();
     await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
+    expect(context.backend.hasFormByPath("meat")).toBeFalsy();
     context.act(() => createButton.props.onClick());
     jest.useRealTimers();
-    await waitForExpect(() => expect(context.backend.hasFormByPath("sykkel")).toBeTruthy());
+    await waitForExpect(() => expect(context.backend.hasFormByPath("meat")).toBeTruthy());
     jest.useFakeTimers();
     expect(formStore.forms).toHaveLength(2);
-    // check that we have navigated to edit form for the new form
-    expect(memoryRouter.instance.history.location.pathname).toEqual("/forms/sykkel/edit");
-    const formBuilder = memoryRouter.findByType(NavFormBuilder);
+    expect(routeLocation().pathname).toEqual("/forms/meat/edit");
+    const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));
-    expect(formBuilder.instance.builder.form).toMatchObject(context.backend.formByPath("sykkel"));
+    expect(formBuilder.instance.builder.form).toMatchObject(context.backend.formByPath("meat"));
   });
 
-  it("lets you edit and save a form", async () => {
+  it('can edit a form', async () => {
+    renderApp('/forms/debugskjema/edit');
+    setTimeout.mock.calls[0][0]();
+    const formBuilder = await context.waitForComponent(NavFormBuilder);
+    jest.runAllTimers();
+    await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
+    expect(formBuilder.instance.builder.form).toEqual(formStore.forms[0]);
+    expect(formBuilder.instance.builderState).toEqual("ready");
+    context.testRenderer.unmount();
+    await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("destroyed"));
 
-    context.render(
-      <MemoryRouter initialEntries={["/forms"]}>
-        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"></AuthenticatedApp>
-        </AuthContext.Provider>
-      </MemoryRouter>,
-      testRendererOptions
-    );
+  });
+
+  it("lets navigate from the list to the editor and save a form", async () => {
+    renderApp('/forms');
     const memoryRouter = context.testRenderer.root;
     setTimeout.mock.calls[0][0]();
     const linkList = context.testRenderer.root.findByType("ul");
@@ -105,36 +116,27 @@ describe("App", () => {
     const formBuilder = memoryRouter.findByType(NavFormBuilder);
     jest.useRealTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
+    jest.useFakeTimers();
     expect(formBuilder.instance.builder.form).toEqual(formStore.forms[0]);
     expect(formBuilder.instance.builderState).toEqual("ready");
-    jest.useFakeTimers();
     context.act(() => jest.runAllTimers());
     context.testRenderer.unmount();
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("destroyed"));
   });
 
   it("displays all the forms", async () => {
-    const formStore = { forms: [] };
-    context.render(
-      <MemoryRouter initialEntries={["/forms"]}>
-        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp projectURL="http://myproject.example.org" store={formStore}></AuthenticatedApp>
-        </AuthContext.Provider>
-      </MemoryRouter>,
-      testRendererOptions
-    );
+    renderApp('/forms');
     setTimeout.mock.calls[0][0]();
     const linkList = context.testRenderer.root.findByType("ul");
     await waitForExpect(() => expect(linkList.findAllByType("li")).toHaveLength(1));
   });
 
   it("baseURL renders loginform when unauthenticated", async () => {
-    const store = { forms: [] };
     let formElement;
     context.render(
       <MemoryRouter initialEntries={["/"]}>
         <AuthContext.Provider value={{ userData: null, login: () => {}, logout: () => {} }}>
-          <App store={store} projectURL="http://myproject.example.org" />
+          <App store={formStore} projectURL="http://myproject.example.org" />
         </AuthContext.Provider>
       </MemoryRouter>,
       {
@@ -153,10 +155,10 @@ describe("App", () => {
   });
 
   it("loads all forms in the hook", async () => {
-    const store = { forms: [] };
-    const { result, waitForNextUpdate } = renderHook(() => useFormio("http://myproject.example.org", store));
+    const { result, waitForNextUpdate } = renderHook(() => useFormio("http://myproject.example.org", formStore));
+    expect(formStore.forms).toEqual([]);
     await waitForNextUpdate();
     expect(result.current.forms).toEqual(context.backend.allForms);
-    expect(result.current.forms).toEqual(store.forms);
+    expect(context.backend.allForms).toEqual(formStore.forms);
   });
 });

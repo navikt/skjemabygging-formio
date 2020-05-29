@@ -15,7 +15,6 @@ function AuthenticatedApp({ projectURL, store }) {
   };
   return (
     <>
-      <FjompeParent />
       <Switch>
         <Route path="/forms">
           <Forms

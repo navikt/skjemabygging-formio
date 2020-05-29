@@ -32,10 +32,6 @@ export const useFormio = (projectURL, store) => {
         setForms(forms.concat([form]));
         return form;
       })
-      .catch(error => {
-        console.log(error);
-        throw error;
-      });
   }
 
   return {forms, onChangeForm, onSave, onCreate};
