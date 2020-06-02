@@ -14,7 +14,8 @@ const Pagewrapper = styled("div")({
 });
 
 const LinkWrapper = styled("div")({
-  padding: "1rem 0"
+  padding: "1rem 0",
+  float: "right"
 });
 
 export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) => {
@@ -41,12 +42,7 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   </MenuLink>
                 </NavBar>
                 <Pagewrapper>
-                  <LinkWrapper>
-                    <Link to={`${path}/${params.formpath}/view`}>Test skjema</Link>
-                  </LinkWrapper>
-                  <LinkWrapper>
-                    <button onClick={() => onSave(form)}>Lagre skjema</button>
-                  </LinkWrapper>
+
                   <>
                     {form && (
                       <>
@@ -55,6 +51,12 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                       </>
                     )}
                   </>
+                  <LinkWrapper>
+                    <Link to={`${path}/${params.formpath}/view`}>Test skjema</Link>
+                  </LinkWrapper>
+                  <LinkWrapper>
+                    <button onClick={() => onSave(form)}>Lagre skjema</button>
+                  </LinkWrapper>
                 </Pagewrapper>
               </>
             );
@@ -77,13 +79,14 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   </MenuLink>
                 </NavBar>
                 <Pagewrapper>
+
+                  <Form form={form} />
                   <LinkWrapper>
                     <Link to={`${path}/${params.formpath}/edit`}>Rediger skjema</Link>
                   </LinkWrapper>
                   <LinkWrapper>
                     <button onClick={() => onSave(form)}>Lagre skjema</button>
                   </LinkWrapper>
-                  <Form form={form} />
                 </Pagewrapper>
               </>
             );
