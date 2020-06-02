@@ -30,11 +30,15 @@ export const useForms = (formio, store) => {
         setForms(forms.concat([form]));
         return form;
       })
-      .catch(error => {
-        console.log(error);
-        throw error;
+  };
+
+  const onDelete = form => {
+    const formIoForm = new Formiojs(`${projectURL}/form/${form._id}`);
+    formIoForm.deleteForm(form)
+      .then(() => {
+        setForms(forms.filter(each => each !== form));
       });
   };
 
-  return {forms, onChangeForm, onSave, onCreate};
+  return {forms, onChangeForm, onSave, onCreate, onDelete};
 };

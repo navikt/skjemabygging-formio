@@ -6,7 +6,7 @@ import { styled } from "@material-ui/styles";
 import NavFormBuilder from "./NavFormBuilder";
 import { FormMetadataEditor } from "./FormMetadataEditor";
 import { useAuth } from "../context/auth-context";
-import {Hovedknapp} from "nav-frontend-knapper";
+import {Fareknapp, Hovedknapp} from "nav-frontend-knapper";
 import NewFormPage from "./NewFormPage";
 
 const Pagewrapper = styled("div")({
@@ -17,7 +17,7 @@ const LinkWrapper = styled("div")({
   padding: "1rem 0"
 });
 
-export const Forms = ({ forms, onChange, onSave, onNew, onCreate }) => {
+export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) => {
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
 
@@ -109,7 +109,8 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate }) => {
                 <ul>
                   {forms.map(form => (
                     <li key={form.path}>
-                      <Link to={`${url}/${form.path}`}>{form.title}</Link>
+                      <Link data-testid="editLink" to={`${url}/${form.path}/edit`}>{form.title}</Link>
+                      <Fareknapp onClick={() => onDelete(form)}>Slett skjema</Fareknapp>
                     </li>
                   ))}
                 </ul>
