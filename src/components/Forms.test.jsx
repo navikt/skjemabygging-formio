@@ -42,7 +42,7 @@ describe('Forms', () => {
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp store={formStore} projectURL="http://myproject.example.org"/>
+          <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")}/>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
