@@ -79,5 +79,7 @@ describe("FormMetadataEditor", () => {
     await waitForDomChange().then(() =>
       expect(screen.getByRole("textbox", { name: /Title/i })).toHaveValue("Søknad om førerhund")
     );
+    // Receives infinite loop warning from EventEmitter because the NavFormBuilder is updated before the formiojs
+    // builder is ready
   });
 });
