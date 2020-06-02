@@ -42,7 +42,6 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   </MenuLink>
                 </NavBar>
                 <Pagewrapper>
-
                   <>
                     {form && (
                       <>
@@ -79,7 +78,6 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   </MenuLink>
                 </NavBar>
                 <Pagewrapper>
-
                   <Form form={form} />
                   <LinkWrapper>
                     <Link to={`${path}/${params.formpath}/edit`}>Rediger skjema</Link>
