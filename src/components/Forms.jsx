@@ -6,8 +6,9 @@ import { styled } from "@material-ui/styles";
 import NavFormBuilder from "./NavFormBuilder";
 import { FormMetadataEditor } from "./FormMetadataEditor";
 import { useAuth } from "../context/auth-context";
-import {Fareknapp, Hovedknapp} from "nav-frontend-knapper";
+import { Hovedknapp } from "nav-frontend-knapper";
 import NewFormPage from "./NewFormPage";
+import "nav-frontend-lenker-style";
 
 const Pagewrapper = styled("div")({
   padding: "2rem"
@@ -18,8 +19,12 @@ const LinkWrapper = styled("div")({
   float: "right"
 });
 
-const SlettSkjema = styled(Link)({
-  float: "right"
+const SlettSkjemaKnapp = styled("button")({
+  float: "right",
+  outline: "none",
+  border: 0,
+  padding: 0
+
 });
 
 export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) => {
@@ -114,8 +119,8 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                 <ul>
                   {forms.map(form => (
                     <li key={form.path}>
-                      <Link data-testid="editLink" to={`${url}/${form.path}/edit`}>{form.title}</Link>
-                      <SlettSkjema onClick={() => onDelete(form)}> Slett skjema </SlettSkjema>
+                      <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>{form.title}</Link>
+                      <SlettSkjemaKnapp className="lenke" onClick={() => onDelete(form)}> Slett skjema </SlettSkjemaKnapp>
                     </li>
                   ))}
                 </ul>
