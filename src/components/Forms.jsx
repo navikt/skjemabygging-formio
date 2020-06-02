@@ -18,6 +18,10 @@ const LinkWrapper = styled("div")({
   float: "right"
 });
 
+const SlettSkjema = styled(Link)({
+  float: "right"
+});
+
 export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) => {
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
@@ -111,7 +115,7 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   {forms.map(form => (
                     <li key={form.path}>
                       <Link data-testid="editLink" to={`${url}/${form.path}/edit`}>{form.title}</Link>
-                      <Fareknapp onClick={() => onDelete(form)}>Slett skjema</Fareknapp>
+                      <SlettSkjema onClick={() => onDelete(form)}> Slett skjema </SlettSkjema>
                     </li>
                   ))}
                 </ul>
