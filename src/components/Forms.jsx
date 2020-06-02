@@ -44,14 +44,14 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   <LinkWrapper>
                     <Link to={`${path}/${params.formpath}/view`}>Test skjema</Link>
                   </LinkWrapper>
-                  <LinkWrapper>
-                    <button onClick={() => onSave(form)}>Lagre skjema</button>
-                  </LinkWrapper>
                   <>
                     {form && (
                       <>
                         <FormMetadataEditor form={form} onChange={onChange} />
                         <NavFormBuilder form={form} onChange={onChange} />
+                        <LinkWrapper>
+                          <button onClick={() => onSave(form)}>Lagre skjema</button>
+                        </LinkWrapper>
                       </>
                     )}
                   </>
@@ -80,10 +80,10 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   <LinkWrapper>
                     <Link to={`${path}/${params.formpath}/edit`}>Rediger skjema</Link>
                   </LinkWrapper>
+                  <Form form={form} />
                   <LinkWrapper>
                     <button onClick={() => onSave(form)}>Lagre skjema</button>
                   </LinkWrapper>
-                  <Form form={form} />
                 </Pagewrapper>
               </>
             );
