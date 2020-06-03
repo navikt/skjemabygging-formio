@@ -67,6 +67,6 @@ describe("FormMetadataEditor", () => {
       expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund")
     );
     // Receives infinite loop warning from EventEmitter because the NavFormBuilder is updated before the formiojs
-    // builder is ready
+    // builder is ready (we assume this)
   });
 });

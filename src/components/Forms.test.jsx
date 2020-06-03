@@ -8,6 +8,7 @@ import AuthenticatedApp from "../AuthenticatedApp";
 import React from "react";
 import {Formio} from "formiojs";
 import {Hovedknapp} from "nav-frontend-knapper";
+import {FormMetadataEditor} from "./FormMetadataEditor";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -103,5 +104,28 @@ describe('Forms', () => {
     await waitForExpect(() => expect(editFormLinks()).toHaveLength(1));
     const editorPath = editFormLinks()[0].props.to;
     expect(editorPath).toEqual("/forms/debugskjema/edit");
+  });
+
+
+  xit("testtest formbuilder", async () => {
+    context.render(
+      <MemoryRouter initialEntries={[`/forms/${context.backend.form().path}/edit`]}>
+        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
+          <AuthenticatedApp formio={{}} store={{ forms: [context.backend.form()] }} />
+        </AuthContext.Provider>
+      </MemoryRouter>,
+        testRendererOptions
+    );
+    const formMetadataEditor = await context.waitForComponent(FormMetadataEditor);
+    for (let i=0; i < 19; i++) {
+      context.act(() => formMetadataEditor.findByProps({id: "title"}).props.onChange({target: {value: `Meat ${i}`}}));
+    };
+    await waitForExpect(() => expect(formMetadataEditor.props.form.title).toEqual("Meat"));
+    const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
+    expect(formBuilder.instance.builder.form).toMatchObject({title: "Meat"});
+    expect(formBuilder.instance.builder.form).not.toEqual(context.backend.form());
+    // jest.useRealTimers();
+    await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));
+    // jest.useFakeTimers();
   });
 });
