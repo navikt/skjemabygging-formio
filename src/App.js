@@ -22,7 +22,7 @@ function App({ projectURL, store }) {
 
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const content = userData ? (
-    <AuthenticatedApp formio={formio} store={store} projectURL={projectURL} />
+    <AuthenticatedApp formio={formio} store={store} />
   ) : (
     <UnauthenticatedApp projectURL={projectURL} />
   );

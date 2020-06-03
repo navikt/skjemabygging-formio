@@ -4,8 +4,8 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { Forms } from "./components/Forms";
 import { useForms } from "./useForms";
 
-function AuthenticatedApp({ formio, store, projectURL }) {
-  const { forms, onChangeForm, onSave, onCreate, onDelete } = useForms(formio, store, projectURL);
+function AuthenticatedApp({ formio, store }) {
+  const { forms, onChangeForm, onSave, onCreate, onDelete } = useForms(formio, store);
 
   const history = useHistory();
   const wrappedCreate = newForm => {

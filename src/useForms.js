@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import Formiojs from "formiojs/Formio";
 
 
-export const useForms = (formio, store, projectURL) => {
+export const useForms = (formio, store) => {
   const [forms, setFormsInternal] = useState(store.forms);
   const setForms = useCallback((forms) => {
     setFormsInternal(forms);
@@ -34,7 +34,7 @@ export const useForms = (formio, store, projectURL) => {
   };
 
   const onDelete = form => {
-    const formIoForm = new Formiojs(`${projectURL}/form/${form._id}`);
+    const formIoForm = new Formiojs(`${formio.projectUrl}/form/${form._id}`);
     formIoForm.deleteForm(form)
       .then(() => {
         setForms(forms.filter(each => each !== form));
