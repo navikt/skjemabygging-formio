@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { Forms } from "./components/Forms";
-import { useFormio } from "./useFormio";
+import { useForms } from "./useForms";
 
-function AuthenticatedApp({ projectURL, store }) {
-  const { forms, onChangeForm, onSave, onCreate, onDelete } = useFormio(projectURL, store);
+function AuthenticatedApp({ formio, store }) {
+  const { forms, onChangeForm, onSave, onCreate, onDelete } = useForms(formio, store);
+
   const history = useHistory();
   const wrappedCreate = newForm => {
     onCreate(newForm).then(savedForm => {
@@ -35,7 +36,7 @@ function AuthenticatedApp({ projectURL, store }) {
 
 AuthenticatedApp.propTypes = {
   store: PropTypes.object.isRequired,
-  projectURL: PropTypes.string.isRequired
+  formio: PropTypes.object.isRequired
 };
 
 export default AuthenticatedApp;

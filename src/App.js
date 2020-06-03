@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useMemo} from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
 import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
+import Formiojs from "formiojs/Formio";
 
 function AppWrapper({error, children}) {
   const maybeErrorView = error ? <div>{error.reason.message}</div> : null;
@@ -18,8 +19,10 @@ function App({ projectURL, store }) {
     return () => window.removeEventListener("unhandledrejection", setError);
   }, []);
   const { userData } = useAuth();
+
+  const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const content = userData ? (
-    <AuthenticatedApp projectURL={projectURL} store={store} />
+    <AuthenticatedApp formio={formio} store={store} />
   ) : (
     <UnauthenticatedApp projectURL={projectURL} />
   );
