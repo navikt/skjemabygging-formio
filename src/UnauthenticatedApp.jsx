@@ -1,5 +1,5 @@
 import { NavBar } from "./components/NavBar";
-import Form from "./react-formio/Form";
+import NAVForm from "./components/NAVForm";
 import React from "react";
 import {useAuth} from "./context/auth-context";
 
@@ -8,7 +8,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
   return (
     <>
       <NavBar />
-      <Form src={`${projectURL}/admin/login`} onSubmitDone={(user) => login(user)} />
+      <form><NAVForm src={`${projectURL}/admin/login`} onSubmitDone={(user) => login(user)} /></form>
     </>
   );
 };
