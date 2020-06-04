@@ -14,9 +14,12 @@ const Pagewrapper = styled("div")({
   padding: "2rem"
 });
 
-const LinkWrapper = styled("div")({
-  padding: "1rem 0",
-  float: "right"
+const RightAlignedActionRow = styled('div')({
+  display: "flex",
+  justifyContent: "flex-end",
+  '& *': {
+    margin: 5,
+  },
 });
 
 const SlettSkjemaKnapp = styled("button")({
@@ -51,6 +54,9 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   </MenuLink>
                 </NavBar>
                 <Pagewrapper>
+                  <RightAlignedActionRow>
+                    <button onClick={() => onSave(form)}>Lagre skjema</button>
+                  </RightAlignedActionRow>
                   <>
                     {form && (
                       <>
@@ -59,12 +65,10 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                       </>
                     )}
                   </>
-                  <LinkWrapper>
-                    <Link to={`${path}/${params.formpath}/view`}>Test skjema</Link>
-                  </LinkWrapper>
-                  <LinkWrapper>
+                  <RightAlignedActionRow>
                     <button onClick={() => onSave(form)}>Lagre skjema</button>
-                  </LinkWrapper>
+                    <Link to={`${path}/${params.formpath}/view`}>Test skjema</Link>
+                  </RightAlignedActionRow>
                 </Pagewrapper>
               </>
             );
@@ -88,12 +92,10 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                 </NavBar>
                 <Pagewrapper>
                   <Form form={form} />
-                  <LinkWrapper>
+                  <RightAlignedActionRow>
                     <Link to={`${path}/${params.formpath}/edit`}>Rediger skjema</Link>
-                  </LinkWrapper>
-                  <LinkWrapper>
                     <button onClick={() => onSave(form)}>Lagre skjema</button>
-                  </LinkWrapper>
+                  </RightAlignedActionRow>
                 </Pagewrapper>
               </>
             );

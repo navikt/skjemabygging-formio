@@ -3,51 +3,28 @@ import AuthenticatedApp from "./AuthenticatedApp";
 import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
+import styled from "@material-ui/styles/styled";
+import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
+
+const AlertContainer = styled(({...props}) => <div aria-live="polite" {...props} />)({
+  position: 'fixed',
+  zIndex: 100,
+  bottom: '5%',
+  left: '5%'
+});
+
 
 function AppWrapper({error, flashMessage, children}) {
-  const maybeErrorView = error ? <div>{error.reason.message}</div> : null;
-  const maybeFlashMessageView = flashMessage ? <div>{flashMessage}</div> : null;
-  return <>
+  const maybeErrorView = error ? <AlertStripeFeil>{error.reason.message}</AlertStripeFeil> : null;
+  const maybeFlashMessageView = flashMessage ? <AlertStripeSuksess>{flashMessage}</AlertStripeSuksess> : null;
+  return <div>
+    <AlertContainer>
     {maybeErrorView}
     {maybeFlashMessageView}
+    </AlertContainer>
     {children}
-    </>
+    </div>
 }
-
-/*
-class AppClass extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      flashMessage: null
-    }
-    this.formio = new Formiojs(props.projectURL);
-  }
-
-  setError = (error) => {
-    this.setState({error: error});
-  }
-
-  componentDidMount() {
-    window.addEventListener('unhandledrejection', this.setError);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("unhandledrejection", this.setError);
-  }
-
-  render() {
-    const content = userData ? (
-      <AuthenticatedApp formio={this.formio} store={this.props.store} />
-    ) : (
-      <UnauthenticatedApp projectURL={this.props.projectURL} />
-    );
-    return <AppWrapper error={this.state.error}>{content}</AppWrapper>;
-  }
-}
-
- */
 
 function App({ projectURL, store }) {
   const [error, setError] = useState(null);
