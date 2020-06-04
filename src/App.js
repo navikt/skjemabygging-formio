@@ -53,13 +53,13 @@ function App({ projectURL, store }) {
     return () => window.removeEventListener("unhandledrejection", setError);
   }, []);
   const { userData } = useAuth();
-  const flashTheMessage = (message) => {
+  const flashSuccessMessage = (message) => {
     setFlashMessage(message);
     setTimeout(() => setFlashMessage(null), 5000);
   };
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const content = userData ? (
-    <AuthenticatedApp formio={formio} store={store} flashTheMessage={flashTheMessage} />
+    <AuthenticatedApp formio={formio} store={store} flashSuccessMessage={flashSuccessMessage} />
   ) : (
     <UnauthenticatedApp projectURL={projectURL} />
   );

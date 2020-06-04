@@ -4,8 +4,8 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 
-function AuthenticatedApp({ formio, store, flashTheMessage }) {
-  const { forms, onChangeForm, onSave, onCreate, onDelete } = useForms(formio, store, flashTheMessage);
+function AuthenticatedApp({ formio, store, flashSuccessMessage }) {
+  const { forms, onChangeForm, onSave, onCreate, onDelete } = useForms(formio, store, flashSuccessMessage);
 
   const history = useHistory();
   const wrappedCreate = newForm => {
@@ -36,7 +36,8 @@ function AuthenticatedApp({ formio, store, flashTheMessage }) {
 
 AuthenticatedApp.propTypes = {
   store: PropTypes.object.isRequired,
-  formio: PropTypes.object.isRequired
+  formio: PropTypes.object.isRequired,
+  flashSuccessMessage: PropTypes.func.isRequired
 };
 
 export default AuthenticatedApp;

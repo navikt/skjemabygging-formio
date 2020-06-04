@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from "react";
 import cloneDeep from "lodash.clonedeep";
 
-export const useForms = (formio, store, flashTheMessage) => {
+export const useForms = (formio, store, flashSuccessMessage) => {
   const [forms, setFormsInternal] = useState(store.forms);
   const setForms = useCallback((forms) => {
     setFormsInternal(forms);
@@ -20,7 +20,7 @@ export const useForms = (formio, store, flashTheMessage) => {
 
   const onSave = callbackForm => {
     formio.saveForm(callbackForm).then(form => {
-      flashTheMessage('Lagret skjema ' + form.title);
+      flashSuccessMessage('Lagret skjema ' + form.title);
       onChangeForm(form);
     });
   };
@@ -28,7 +28,7 @@ export const useForms = (formio, store, flashTheMessage) => {
   const onCreate = form => {
     return formio.saveForm(form)
       .then(form => {
-        flashTheMessage('Opprettet skjemaet ' + form.title);
+        flashSuccessMessage('Opprettet skjemaet ' + form.title);
         setForms(forms.concat([form]));
         return form;
       })
@@ -39,7 +39,7 @@ export const useForms = (formio, store, flashTheMessage) => {
     update.tags = update.tags.filter(each => each !== "nav-skjema");
     formio.saveForm(update)
       .then(() => {
-        flashTheMessage('Slettet skjemaet ' + form.title);
+        flashSuccessMessage('Slettet skjemaet ' + form.title);
         setForms(forms.filter(each => each !== form));
       });
   };
