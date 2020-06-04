@@ -5,17 +5,36 @@ import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
 import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
+import { Xknapp } from 'nav-frontend-ikonknapper';
 
 const AlertContainer = styled(({...props}) => <div aria-live="polite" {...props} />)({
   position: 'fixed',
   zIndex: 100,
-  bottom: '5%',
-  left: '5%'
+  top: '10%',
+  left: '50%',
+  transform: 'translateX(-50%)'
 });
 
+const ErrorAlertContent = styled('div')({
+  display: "flex",
+  '& .knapp': {
+    color: 'darkslategrey',
+    '& svg': {
+      fill: 'darkslategrey'
+    }
+  }
+});
 
-function AppWrapper({error, flashMessage, children}) {
-  const maybeErrorView = error ? <AlertStripeFeil>{error.reason.message}</AlertStripeFeil> : null;
+const ErrorAlert = ({exception, onClose}) => <AlertStripeFeil>
+  <ErrorAlertContent>
+    <div>{exception.message}</div>
+    <div><Xknapp type="flat" onClick={onClose} /></div>
+  </ErrorAlertContent>
+</AlertStripeFeil>;
+
+
+function AppWrapper({error, flashMessage, clearError, children}) {
+  const maybeErrorView = error ? <ErrorAlert exception={error.reason} onClose={clearError} /> : null;
   const maybeFlashMessageView = flashMessage ? <AlertStripeSuksess>{flashMessage}</AlertStripeSuksess> : null;
   return <div>
     <AlertContainer>
@@ -44,6 +63,6 @@ function App({ projectURL, store }) {
   ) : (
     <UnauthenticatedApp projectURL={projectURL} />
   );
-  return <AppWrapper error={error} flashMessage={flashMessage}>{content}</AppWrapper>;
+  return <AppWrapper error={error} clearError={() => setError(null)} flashMessage={flashMessage}>{content}</AppWrapper>;
 }
 export default App;
