@@ -22,7 +22,7 @@ const testRendererOptions = {
   }
 };
 
-describe('Forms', () => {
+describe('FormsRouter', () => {
   let oldFormioFetch;
   let formStore;
   beforeEach(() => {
