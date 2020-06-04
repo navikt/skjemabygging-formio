@@ -1,5 +1,5 @@
 import { Link, Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
-import NAVForm from "../components/NAVForm.jsx";
+import NavForm from "../components/NavForm.jsx";
 import React from "react";
 import { MenuLink, MenuItem, NavBar } from "./NavBar";
 import { styled } from "@material-ui/styles";
@@ -87,7 +87,7 @@ export const Forms = ({ forms, onChange, onSave, onNew, onCreate, onDelete }) =>
                   </MenuLink>
                 </NavBar>
                 <Pagewrapper>
-                  <NAVForm form={form} />
+                  <NavForm form={form} />
                   <LinkWrapper>
                     <Link to={`${path}/${params.formpath}/edit`}>Rediger skjema</Link>
                   </LinkWrapper>

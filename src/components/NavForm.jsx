@@ -7,7 +7,7 @@ import FormioForm from 'formiojs/Form';
 
 Components.setComponents(AllComponents);
 
-export default class NAVForm extends Component {
+export default class NavForm extends Component {
   static propTypes = {
     src: PropTypes.string,
     url: PropTypes.string,
@@ -50,7 +50,7 @@ export default class NAVForm extends Component {
     const {options = {}, src, url, form} = this.props;
 
     if (!options.events) {
-      options.events = NAVForm.getDefaultEmitter();
+      options.events = NavForm.getDefaultEmitter();
     }
 
     if (src) {
@@ -104,7 +104,7 @@ export default class NAVForm extends Component {
     const {options = {}, src, form, submission} = this.props;
 
     if (!options.events) {
-      options.events = NAVForm.getDefaultEmitter();
+      options.events = NavForm.getDefaultEmitter();
     }
 
     if (src !== nextProps.src) {
