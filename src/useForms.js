@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import Formiojs from "formiojs/Formio";
-
+import cloneDeep from "lodash.clonedeep";
 
 export const useForms = (formio, store) => {
   const [forms, setFormsInternal] = useState(store.forms);
@@ -34,8 +33,9 @@ export const useForms = (formio, store) => {
   };
 
   const onDelete = form => {
-    const formIoForm = new Formiojs(`${formio.projectUrl}/form/${form._id}`);
-    formIoForm.deleteForm(form)
+    const update = cloneDeep(form);
+    update.tags = update.tags.filter(each => each !== "nav-skjema");
+    formio.saveForm(update)
       .then(() => {
         setForms(forms.filter(each => each !== form));
       });
