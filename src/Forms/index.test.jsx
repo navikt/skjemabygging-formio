@@ -1,5 +1,5 @@
 import NewFormPage from "./NewFormPage";
-import NavFormBuilder from "./NavFormBuilder";
+import NavFormBuilder from "../components/NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import {FakeBackendTestContext} from "../testTools/FakeBackendTestContext";
 import {Link, MemoryRouter} from "react-router-dom";
@@ -8,7 +8,7 @@ import AuthenticatedApp from "../AuthenticatedApp";
 import React from "react";
 import {Formio} from "formiojs";
 import {Hovedknapp} from "nav-frontend-knapper";
-import {FormMetadataEditor} from "./FormMetadataEditor";
+import {FormMetadataEditor} from "../components/FormMetadataEditor";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();

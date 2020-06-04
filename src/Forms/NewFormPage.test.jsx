@@ -1,6 +1,6 @@
 import NewFormPage from "./NewFormPage";
 import waitForExpect from "wait-for-expect";
-import NavFormBuilder from "./NavFormBuilder";
+import NavFormBuilder from "../components/NavFormBuilder";
 import {Formio} from "formiojs";
 import {Link, MemoryRouter} from "react-router-dom";
 import {AuthContext} from "../context/auth-context";

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
-import { Forms } from "./components/Forms";
+import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 
 function AuthenticatedApp({ formio, store, flashTheMessage }) {
@@ -17,7 +17,7 @@ function AuthenticatedApp({ formio, store, flashTheMessage }) {
     <>
       <Switch>
         <Route path="/forms">
-          <Forms
+          <FormsRouter
             forms={forms}
             onChange={onChangeForm}
             onSave={onSave}
