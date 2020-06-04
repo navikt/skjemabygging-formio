@@ -7,7 +7,7 @@ import FormioForm from 'formiojs/Form';
 
 Components.setComponents(AllComponents);
 
-export default class Form extends Component {
+export default class NavForm extends Component {
   static propTypes = {
     src: PropTypes.string,
     url: PropTypes.string,
@@ -50,7 +50,7 @@ export default class Form extends Component {
     const {options = {}, src, url, form} = this.props;
 
     if (!options.events) {
-      options.events = Form.getDefaultEmitter();
+      options.events = NavForm.getDefaultEmitter();
     }
 
     if (src) {
@@ -104,7 +104,7 @@ export default class Form extends Component {
     const {options = {}, src, form, submission} = this.props;
 
     if (!options.events) {
-      options.events = Form.getDefaultEmitter();
+      options.events = NavForm.getDefaultEmitter();
     }
 
     if (src !== nextProps.src) {
@@ -130,6 +130,6 @@ export default class Form extends Component {
   };
 
   render = () => {
-    return <div data-testid="formMountElement" ref={element => this.element = element} />;
+    return <form data-testid="formMountElement" ref={element => this.element = element} />;
   };
 }
