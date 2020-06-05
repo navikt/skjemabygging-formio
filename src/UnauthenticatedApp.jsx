@@ -8,7 +8,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
   return (
     <>
       <NavBar />
-      <form><NavForm src={`${projectURL}/admin/login`} onSubmitDone={(user) => login(user)} /></form>
+      <NavForm src={`${projectURL}/admin/login`} onSubmitDone={(user) => login(user)} />
     </>
   );
 };
