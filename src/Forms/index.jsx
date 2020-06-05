@@ -10,7 +10,9 @@ import {FormsListPage} from "./FormsListPage";
 export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}) => {
   let {path, url} = useRouteMatch();
   const {logout} = useAuth();
-
+  if (!forms) {
+    return <h1>Laster...</h1>;
+  }
   return (
     <Switch>
       <Route path={`${path}/new`}>
@@ -20,9 +22,6 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
         path={`${path}/:formpath/edit`}
         render={({match}) => {
           let {params} = match;
-          if (!forms) {
-            return <h1>Laster...</h1>;
-          }
           const form = getFormFromPath(forms, params.formpath);
           const testFormUrl = `${path}/${params.formpath}/view`;
           return EditFormPage({logout, form, testFormUrl, onSave, onChange});
@@ -32,9 +31,6 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
         path={`${path}/:formpath/view`}
         render={({match}) => {
           let {params} = match;
-          if (!forms) {
-            return <h1>Laster...</h1>;
-          }
           const form = getFormFromPath(forms, params.formpath);
           const editFormUrl = `${path}/${params.formpath}/edit`;
           return TestFormPage({logout, form, editFormUrl, onSave});

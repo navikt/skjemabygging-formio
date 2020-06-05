@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Hovedknapp} from "nav-frontend-knapper";
-import {CopyOfFormMetadataEditor} from "../components/FormMetadataEditor";
+import {CreationFormMetadataEditor} from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
 
@@ -31,7 +31,7 @@ class NewFormPage extends Component {
   render() {
     return (
       <div>
-        <CopyOfFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
+        <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
         <Hovedknapp onClick={() => this.props.onCreate(this.state.form)}>
           Opprett
         </Hovedknapp>

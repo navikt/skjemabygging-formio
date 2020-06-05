@@ -6,8 +6,13 @@ import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
 import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
 import { Xknapp } from 'nav-frontend-ikonknapper';
+import navCssVariabler from 'nav-frontend-core/less/_variabler.less';
 
-const AlertContainer = styled(({...props}) => <div aria-live="polite" {...props} />)({
+
+
+const navMorkGra = "#3E3832";
+
+const AlertContainer = styled(({...props}) => <aside aria-live="polite" {...props} />)({
   position: 'fixed',
   zIndex: 100,
   top: '10%',
@@ -17,18 +22,21 @@ const AlertContainer = styled(({...props}) => <div aria-live="polite" {...props}
 
 const ErrorAlertContent = styled('div')({
   display: "flex",
+  '& p': {
+    margin: 0
+  },
   '& .knapp': {
-    color: 'darkslategrey',
+    color: navMorkGra,
     '& svg': {
-      fill: 'darkslategrey'
+      fill: navMorkGra
     }
   }
 });
 
 const ErrorAlert = ({exception, onClose}) => <AlertStripeFeil>
   <ErrorAlertContent>
-    <div>{exception.message}</div>
-    <div><Xknapp type="flat" onClick={onClose} /></div>
+    <p>{exception.message}</p>
+    <Xknapp type="flat" onClick={onClose} />
   </ErrorAlertContent>
 </AlertStripeFeil>;
 
@@ -36,16 +44,17 @@ const ErrorAlert = ({exception, onClose}) => <AlertStripeFeil>
 function AppWrapper({error, flashMessage, clearError, children}) {
   const maybeErrorView = error ? <ErrorAlert exception={error.reason} onClose={clearError} /> : null;
   const maybeFlashMessageView = flashMessage ? <AlertStripeSuksess>{flashMessage}</AlertStripeSuksess> : null;
-  return <div>
+  return <>
     <AlertContainer>
     {maybeErrorView}
     {maybeFlashMessageView}
     </AlertContainer>
-    {children}
-    </div>
+    <section>{children}</section>
+    </>
 }
 
 function App({ projectURL, store }) {
+  console.log('css variables', navCssVariabler);
   const [error, setError] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   useEffect(() => {

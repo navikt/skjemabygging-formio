@@ -50,7 +50,7 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}) => {
   );
 }
 
-export const CopyOfFormMetadataEditor = ({form, onChange}) =>
+export const CreationFormMetadataEditor = ({form, onChange}) =>
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={'create'}/>;
 
 export const FormMetadataEditor = ({form, onChange}) =>
