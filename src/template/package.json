@@ -1,0 +1,42 @@
+{
+  "name": "semantic",
+  "version": "2.4.1",
+  "description": "Semantic UI templates for form.io forms.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test:coverage": "nyc --reporter=text mocha --reporter spec './{,!(node_modules)/**/}*.spec.js'",
+    "test": "mocha --require node/register --reporter spec './{,!(node_modules)/**/}*.spec.js'",
+    "build": "gulp templates && webpack",
+    "lint": "tslint -p .",
+    "prepublish": "npm run build"
+  },
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
+  "keywords": [
+    "Semantic",
+    "UI",
+    "form.io",
+    "forms"
+  ],
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "gulp": "^4.0.2",
+    "gulp-insert": "^0.5.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-template": "^5.0.0",
+    "mocha": "^7.1.0",
+    "nyc": "^15.0.0",
+    "pre-commit": "^1.2.2",
+    "sinon": "^9.0.1",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/formio/semantic.git"
+  },
+  "author": "randall@form.io",
+  "license": "MIT"
+}
