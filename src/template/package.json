@@ -6,7 +6,7 @@
   "scripts": {
     "test:coverage": "nyc --reporter=text mocha --reporter spec './{,!(node_modules)/**/}*.spec.js'",
     "test": "mocha --require node/register --reporter spec './{,!(node_modules)/**/}*.spec.js'",
-    "build": "gulp templates && webpack",
+    "build": "gulp transpile-js && gulp templates && webpack",
     "lint": "tslint -p .",
     "prepublish": "npm run build"
   },
@@ -22,6 +22,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^2.0.0",
     "gulp-template": "^5.0.0",
