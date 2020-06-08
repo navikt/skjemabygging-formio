@@ -38,8 +38,8 @@
     "wait-for-expect": "^3.0.2"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+    "start": "EXTEND_ESLINT=true craco start",
+    "build": "EXTEND_ESLINT=true craco build",
     "test": "craco test",
     "eject": "craco eject"
   },
