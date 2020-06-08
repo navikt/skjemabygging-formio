@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bootstrap_1 = require("./bootstrap");
+var navdesign_1 = require("./navdesign");
 exports.default = {
-    bootstrap: bootstrap_1.default
+    navdesign: navdesign_1.default
 };

@@ -1,12 +1,12 @@
-# Form.io Semantic UI Templates
+# Form.io NAV Design Templates
 
-This repository will change the rendering of forms in formio.js so that it uses html and classes compatible with the [Semantic UI](https://semantic-ui.com/) framework. 
+This repository will change the rendering of forms in formio.js so that it uses html and classes compatible with NAV Designsystem. 
 
 ## Usage
 
 ```javascript
-import semantic from '@formio/semantic';
+import navdesign from '<location-of-this-repository>';
 import { Formio } from 'formiojs';
 
-Formio.use(semantic);
+Formio.use(navdesign);
 ```

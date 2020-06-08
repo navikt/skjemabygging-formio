@@ -2,6 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var templates_1 = require("./templates");
 exports.default = {
-    framework: 'bootstrap',
+    framework: 'navdesign',
     templates: templates_1.default,
 };

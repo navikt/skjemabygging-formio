@@ -1,6 +1,6 @@
 import templates from './templates';
 
 export default {
-  framework: 'bootstrap',
+  framework: 'navdesign',
   templates,
 };

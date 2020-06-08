@@ -1,5 +1,5 @@
-import bootstrap from './bootstrap';
+import navdesign from './navdesign';
 
 export default {
-  bootstrap
+  navdesign
 };

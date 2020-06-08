@@ -1,7 +1,7 @@
 {
-  "name": "semantic",
-  "version": "2.4.1",
-  "description": "Semantic UI templates for form.io forms.",
+  "name": "navdesign",
+  "version": "0.0.1",
+  "description": "NAV design templates for form.io forms.",
   "main": "lib/index.js",
   "scripts": {
     "test:coverage": "nyc --reporter=text mocha --reporter spec './{,!(node_modules)/**/}*.spec.js'",
@@ -15,7 +15,6 @@
     "test"
   ],
   "keywords": [
-    "Semantic",
     "UI",
     "form.io",
     "forms"
