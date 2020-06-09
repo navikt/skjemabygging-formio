@@ -8,7 +8,7 @@
     "test": "mocha --require node/register --reporter spec './{,!(node_modules)/**/}*.spec.js'",
     "build": "gulp transpile-js && gulp templates && webpack && gulp move-to-node_modules",
     "lint": "tslint -p .",
-    "prepublish": "npm run build"
+    "postinstall": "npm run build"
   },
   "pre-commit": [
     "lint",
