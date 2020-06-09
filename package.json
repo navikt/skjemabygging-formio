@@ -49,6 +49,8 @@
     "build": "EXTEND_ESLINT=true craco build",
     "test": "craco test",
     "eject": "craco eject",
+    "prestart": "npm run postinstall",
+    "prebuild": "npm run postinstall",
     "postinstall": "npm --prefix ./template install ./template"
   },
   "eslintConfig": {
