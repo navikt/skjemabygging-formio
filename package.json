@@ -41,7 +41,8 @@
     "start": "EXTEND_ESLINT=true craco start",
     "build": "EXTEND_ESLINT=true craco build",
     "test": "craco test",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "postinstall": "npm --prefix ./template install ./template"
   },
   "eslintConfig": {
     "extends": "react-app"

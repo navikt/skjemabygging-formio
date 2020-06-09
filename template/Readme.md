@@ -5,7 +5,7 @@ This repository will change the rendering of forms in formio.js so that it uses 
 ## Usage
 
 ```javascript
-import navdesign from '<location-of-this-repository>';
+import navdesign from 'template';
 import { Formio } from 'formiojs';
 
 Formio.use(navdesign);

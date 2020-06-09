@@ -5,7 +5,7 @@ import AllComponents from 'formiojs/components';
 import { Components, Form as FormioForm, Formio} from 'formiojs';
 import form from "./test";
 import "nav-frontend-skjema-style"
-import navdesign from '../template';
+import navdesign from 'template';
 
 
 Components.setComponents(AllComponents);

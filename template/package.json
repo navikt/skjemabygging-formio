@@ -6,7 +6,7 @@
   "scripts": {
     "test:coverage": "nyc --reporter=text mocha --reporter spec './{,!(node_modules)/**/}*.spec.js'",
     "test": "mocha --require node/register --reporter spec './{,!(node_modules)/**/}*.spec.js'",
-    "build": "gulp transpile-js && gulp templates && webpack",
+    "build": "gulp transpile-js && gulp templates && webpack && gulp move-to-node_modules",
     "lint": "tslint -p .",
     "prepublish": "npm run build"
   },
@@ -38,5 +38,8 @@
     "url": "git+https://github.com/formio/semantic.git"
   },
   "author": "randall@form.io",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@babel/preset-env": "^7.10.2"
+  }
 }
