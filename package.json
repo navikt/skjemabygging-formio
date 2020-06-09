@@ -51,7 +51,9 @@
     "eject": "craco eject",
     "prestart": "npm run postinstall",
     "prebuild": "npm run postinstall",
-    "postinstall": "npm --prefix ./template install ./template"
+    "install-template": "npm --prefix ./template install ./template",
+    "build-template": "cd template && npm run build",
+    "postinstall": "npm run install-template && npm run build-template"
   },
   "eslintConfig": {
     "extends": "react-app"
