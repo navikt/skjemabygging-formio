@@ -6,7 +6,8 @@ import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
 import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
 import { Xknapp } from 'nav-frontend-ikonknapper';
-import navCssVariabler from 'nav-frontend-core/less/_variabler.less';
+// import navCssVariabler from 'nav-frontend-core/less/_variabler.less';
+import navCssVariabler from 'nav-frontend-core';
 
 
 
