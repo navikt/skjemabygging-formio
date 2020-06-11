@@ -7,7 +7,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
   const { login } = useAuth();
   return (
     <>
-      <NavBar />
+      <NavBar title={"Skjemabygger"} />
       <NavForm src={`${projectURL}/admin/login`} onSubmitDone={(user) => login(user)} />
     </>
   );

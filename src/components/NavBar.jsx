@@ -32,10 +32,10 @@ const MenuItems = styled("div")({
   justifyContent: "space-between"
 });
 
-export const NavBar = ({ children }) => {
+export const NavBar = ({ children, title }) => {
   return (
     <NavBarWrapper>
-      <MenuTitle>Skjemabygger</MenuTitle>
+      <MenuTitle>{title}</MenuTitle>
       <MenuItems>
         {children}
       </MenuItems>

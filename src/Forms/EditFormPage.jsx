@@ -8,7 +8,7 @@ import React from "react";
 export function EditFormPage({logout, onSave, form, testFormUrl, onChange}) {
     return (
         <>
-            <NavBar>
+            <NavBar title={form && form.title}>
                 <MenuLink to="/forms">Skjemaer</MenuLink>
                 <MenuLink to="/" onClick={logout}>
                     Logout
