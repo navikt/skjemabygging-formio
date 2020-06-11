@@ -1,0 +1,19 @@
+@import "~nav-frontend-skjema-style";
+
+//Should be moved into template-module
+
+.formio-error-wrapper {
+  background-color: transparent;
+  border-color: transparent;
+  text-decoration-color: @navMorkGra;
+  color: @navMorkGra;
+}
+
+.skjemaelement__input.is-invalid {
+  .skjemaelement-feilmarkering-mixin();
+  background-image: none;
+}
+
+.form-text.error {
+  .typo-feilmelding();
+}
