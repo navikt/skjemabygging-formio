@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://kxzxmneixaglyxf.form.io";
 
-const store = { forms: [] };
+const store = { forms: null };
 
 ReactDOM.render(
   <React.StrictMode>
