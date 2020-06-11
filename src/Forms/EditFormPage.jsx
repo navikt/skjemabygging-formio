@@ -6,12 +6,13 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import React from "react";
 
 export function EditFormPage({logout, onSave, form, testFormUrl, onChange}) {
-    return (
+  const realTitle = `Rediger skjema: ${form && form.title}`
+  return (
         <>
-            <NavBar title={form && form.title}>
+            <NavBar title={realTitle}>
                 <MenuLink to="/forms">Skjemaer</MenuLink>
                 <MenuLink to="/" onClick={logout}>
-                    Logout
+                    Logg ut
                 </MenuLink>
             </NavBar>
             <Pagewrapper>

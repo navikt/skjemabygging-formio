@@ -3,12 +3,12 @@ import { styled } from '@material-ui/styles';
 import { Link } from "react-router-dom";
 
 const NavBarWrapper = styled("div")({
-  backgroundColor: "DimGray",
+  backgroundColor: "#E9E7E7",
   padding: "0.5rem"
 });
 
 export const MenuLink = styled(Link)({
-  color: "white",
+  color: "#3E3832",
   "&:hover": {
     color: "white",
     "text-decoration": "none"
@@ -23,8 +23,11 @@ export const MenuItem = styled("span")({
   color: "white"
 });
 
-export const MenuTitle = styled("h1")({
-  color: "lightgreen"
+export const MenuTitle = styled("h2")({
+  padding: "1rem",
+  color: "#3E3832",
+  display: "flex",
+  justifyContent: "center",
 });
 
 const MenuItems = styled("div")({
