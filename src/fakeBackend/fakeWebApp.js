@@ -26,7 +26,7 @@ export function dispatcherWithBackend(backend) {
         res.json(newForm);
       }
     },
-    '/admin/login': (req, res) => {
+    '/user/login': (req, res) => {
       res.json(backend.adminLoginForm());
     }
   }));
