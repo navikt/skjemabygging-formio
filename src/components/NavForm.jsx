@@ -6,7 +6,6 @@ import { Components, Form as FormioForm, Formio} from 'formiojs';
 import form from "./test";
 import "nav-frontend-skjema-style"
 import navdesign from 'template';
-import "../overrideFormioErrorStyles.less";
 
 
 Components.setComponents(AllComponents);

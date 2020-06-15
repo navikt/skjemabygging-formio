@@ -54,7 +54,7 @@ function AppWrapper({error, flashMessage, clearError, children}) {
 }
 
 function App({ projectURL, store }) {
-  console.log('css variables', navCssVariabler);
+  console.log('css variables', navCssVariabler.navMorkGra);
   const [error, setError] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   useEffect(() => {
