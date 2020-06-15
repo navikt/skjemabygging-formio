@@ -18,7 +18,7 @@ describe("App", () => {
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
-    formStore = { forms: [] };
+    formStore = { forms: null };
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
@@ -48,7 +48,7 @@ describe("App", () => {
 
   it("loads all forms in the hook", async () => {
     const { result, waitForNextUpdate } = renderHook(() => useForms(new Formiojs("http://myproject.example.org"), formStore));
-    expect(formStore.forms).toEqual([]);
+    expect(formStore.forms).toEqual(null);
     await waitForNextUpdate();
     expect(result.current.forms).toEqual(context.backend.allForms);
     expect(context.backend.allForms).toEqual(formStore.forms);
