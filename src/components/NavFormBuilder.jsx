@@ -39,7 +39,7 @@ export default class NavFormBuilder extends Component {
   }
 
   updateFormBuilder() {
-    this.builder.setForm(cloneDeep(this.props.form));
+    this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
   }
 
   componentWillUnmount = () => {
