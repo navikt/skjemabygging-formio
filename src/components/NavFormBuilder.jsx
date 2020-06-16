@@ -6,6 +6,67 @@ import FormioFormBuilder from 'formiojs/FormBuilder';
 import isEqual from 'lodash.isequal';
 import cloneDeep from "lodash.clonedeep";
 
+const builderEditForm = {
+  // placeholder, just defines defaults. Modifiy this later
+      textfield: [{
+        key: "display",
+        components: []
+      },
+      {
+        key: "data",
+        components: []
+      },
+      {
+        key: "validation",
+        components: []
+      },
+      {
+        key: "api",
+        components: []
+      },
+      {
+        key: "conditional",
+        components: []
+      },
+      {
+        key: "logic",
+        components: []
+      }
+    ]
+};
+
+const fnrSchema = {
+  "label": "Fødselsnummer",
+  "labelPosition": "top",
+  "placeholder": "Fødselsnummer",
+  "inputMask": "99999999999",
+  "validateOn": "change",
+  "validate": {
+    "required": true,
+    "pattern": "",
+    "customMessage": "11 siffer",
+  },
+  "key": "fnr",
+  "tags": [],
+  "type": "textfield",
+  "input": true
+};
+
+const builderPalett = {
+  basic: {
+    title: 'Basisk',
+    components: {
+      fnr: {
+        title: 'Fødselsnummer',
+        key: 'fnr',
+        icon: 'terminal',
+        schema: fnrSchema,
+      }
+    },
+  }
+};
+
+
 Components.setComponents(AllComponents);
 
 export default class NavFormBuilder extends Component {
@@ -16,7 +77,11 @@ export default class NavFormBuilder extends Component {
   };
 
   componentDidMount = () => {
-    this.builder = new FormioFormBuilder(this.element, {}, {});
+    console.log('componentDidMount');
+    this.builder = new FormioFormBuilder(this.element, {}, {
+      builder: builderPalett,
+      editForm: builderEditForm
+    });
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builderState = 'ready';
@@ -39,6 +104,7 @@ export default class NavFormBuilder extends Component {
   }
 
   updateFormBuilder() {
+    console.log('external form state is being set', cloneDeep(this.props.form));
     this.builder.setForm(cloneDeep(this.props.form));
   }
 
@@ -48,10 +114,12 @@ export default class NavFormBuilder extends Component {
   };
 
   render = () => {
+    console.log('render called element is', this.element);
     return <div data-testid="builderMountElement" ref={element => this.element = element}></div>;
   };
 
   handleChange = () => {
+    console.log('internal form state', cloneDeep(this.builder.instance.form));
     this.props.onChange(this.builder.instance.form);
   };
 }
