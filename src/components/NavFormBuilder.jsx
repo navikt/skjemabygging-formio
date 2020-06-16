@@ -77,7 +77,6 @@ export default class NavFormBuilder extends Component {
   };
 
   componentDidMount = () => {
-    console.log('componentDidMount');
     this.builder = new FormioFormBuilder(this.element, {}, {
       builder: builderPalett,
       editForm: builderEditForm
@@ -104,8 +103,7 @@ export default class NavFormBuilder extends Component {
   }
 
   updateFormBuilder() {
-    console.log('external form state is being set', cloneDeep(this.props.form));
-    this.builder.setForm(cloneDeep(this.props.form));
+    this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
   }
 
   componentWillUnmount = () => {
@@ -114,12 +112,10 @@ export default class NavFormBuilder extends Component {
   };
 
   render = () => {
-    console.log('render called element is', this.element);
     return <div data-testid="builderMountElement" ref={element => this.element = element}></div>;
   };
 
   handleChange = () => {
-    console.log('internal form state', cloneDeep(this.builder.instance.form));
     this.props.onChange(this.builder.instance.form);
   };
 }
