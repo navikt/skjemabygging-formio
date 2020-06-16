@@ -4,6 +4,8 @@ import {Hovedknapp} from "nav-frontend-knapper";
 import {CreationFormMetadataEditor} from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
+import {Pagewrapper} from "./components";
+import {MenuLink, NavBar} from "../components/NavBar";
 
 class NewFormPage extends Component {
   state = {
@@ -29,19 +31,29 @@ class NewFormPage extends Component {
   };
 
   render() {
+    const title = "Lag nytt skjema";
     return (
-      <div>
+      <>
+        <NavBar title={title}>
+          <MenuLink to="/forms">Skjemaer</MenuLink>
+          <MenuLink to="/" onClick={this.props.logout}>
+            Logg ut
+          </MenuLink>
+        </NavBar>
+      <Pagewrapper>
         <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
         <Hovedknapp onClick={() => this.props.onCreate(this.state.form)}>
           Opprett
         </Hovedknapp>
-      </div>
+      </Pagewrapper>
+        </>
     );
   }
 }
 
 NewFormPage.propTypes = {
-  onCreate: PropTypes.func.isRequired
+  onCreate: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 export default NewFormPage;
