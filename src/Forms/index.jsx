@@ -16,7 +16,7 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage onCreate={onCreate}/>
+        <NewFormPage onCreate={onCreate} logout={logout}/>
       </Route>
       <Route
         path={`${path}/:formpath/edit`}
