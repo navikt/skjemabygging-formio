@@ -86,6 +86,7 @@ function App() {
             if (!form) {
               return <h1>Laster..</h1>;
             }
+            const resultForm = (form.display === "wizard" ? {...form, display: "form"} : form);
             return (
               <>
                 <Sidetittel>{form.title}</Sidetittel>
@@ -93,7 +94,7 @@ function App() {
                 <Form
                   key="2"
                   url={`${projectURL}${form.path}`}
-                  form={form}
+                  form={resultForm}
                   options={{ readOnly: true }}
                   submission={submission[form.path]}
                 />
