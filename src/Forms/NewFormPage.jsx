@@ -4,6 +4,7 @@ import {Hovedknapp} from "nav-frontend-knapper";
 import {CreationFormMetadataEditor} from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
+import {Pagewrapper} from "./components";
 
 class NewFormPage extends Component {
   state = {
@@ -30,12 +31,12 @@ class NewFormPage extends Component {
 
   render() {
     return (
-      <div>
+      <Pagewrapper>
         <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
         <Hovedknapp onClick={() => this.props.onCreate(this.state.form)}>
           Opprett
         </Hovedknapp>
-      </div>
+      </Pagewrapper>
     );
   }
 }
