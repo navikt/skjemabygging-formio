@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import AllComponents from 'formiojs/components';
 import Components from 'formiojs/components/Components';
 import FormioFormBuilder from 'formiojs/FormBuilder';
 import isEqual from 'lodash.isequal';
 import cloneDeep from "lodash.clonedeep";
+import Custom from '../Custom';
 
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
@@ -35,33 +35,19 @@ const builderEditForm = {
     ]
 };
 
-const fnrSchema = {
-  "label": "Fødselsnummer",
-  "labelPosition": "top",
-  "placeholder": "Fødselsnummer",
-  "inputMask": "999999 99999",
-  "validateOn": "blur",
-  "validate": {
-    "required": true,
-    "pattern": "",
-    "customMessage": "11 siffer",
-  },
-  "key": "fnr",
-  "tags": [],
-  "type": "textfield",
-  "input": true
-};
-
 const builderPalett = {
   advanced: {
     title: 'Tilpassede felter',
     components: {
+      /*
       fnr: {
         title: 'Fødselsnummer',
         key: 'fnr',
         icon: 'terminal',
         schema: fnrSchema,
       },
+
+       */
       email: {
         title: "E-post",
         key: 'email',
@@ -222,7 +208,7 @@ const builderPalett = {
 };
 
 
-Components.setComponents(AllComponents);
+Components.setComponents(Custom);
 
 export default class NavFormBuilder extends Component {
   builderState = 'preparing';
