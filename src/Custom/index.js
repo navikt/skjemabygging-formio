@@ -1,5 +1,5 @@
-import toggleCustomComp from "./Toggle";
+import {Fnr} from './fnr';
 
 export default {
-    toggleCustomComp
-};
+  fnrfield: Fnr,
+}
