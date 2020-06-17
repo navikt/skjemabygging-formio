@@ -244,6 +244,77 @@ const builderPalett = {
           },
         },
       },
+      address: {
+        title: "Adresse",
+        key: 'address',
+        icon: 'home',
+        schema: {
+          label: 'Adresse',
+          type: 'address',
+          key: 'address',
+          input: true,
+        },
+      },
+      datetime: {
+        title: "Dato / tid",
+        key: 'datetime',
+        icon: 'calendar',
+        schema: {
+          label: 'Dato / tid',
+          type: 'datetime',
+          key: 'datetime',
+          input: true,
+        },
+      },
+      day: {
+        title: "Dag / mnd / år",
+        key: 'day',
+        icon: 'calendar',
+        schema: {
+          label: 'Ukedag',
+          type: 'day',
+          key: 'day',
+          input: true,
+          inputMask: "9999",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+      },
+      time: {
+        title: "Tid",
+        key: 'time',
+        icon: 'clock-o',
+        schema: {
+          label: 'Tid',
+          type: 'time',
+          key: 'time',
+          input: true,
+        },
+      },
+      signature: {
+        title: "Underskrift",
+        key: 'signature',
+        icon: 'pencil-square-o',
+        schema: {
+          label: 'Underskrift',
+          type: 'signature',
+          key: 'signature',
+          input: true,
+        },
+      },
+      survey: {
+        title: "Spørreskjema",
+        key: 'survey',
+        icon: 'clipboard',
+        schema: {
+          label: 'Spørreskjema',
+          type: 'survey',
+          key: 'survey',
+          input: true,
+        },
+      },
     }
   },
   basic: {
