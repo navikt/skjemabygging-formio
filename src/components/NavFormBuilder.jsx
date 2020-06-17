@@ -39,8 +39,8 @@ const fnrSchema = {
   "label": "Fødselsnummer",
   "labelPosition": "top",
   "placeholder": "Fødselsnummer",
-  "inputMask": "99999999999",
-  "validateOn": "change",
+  "inputMask": "999999 99999",
+  "validateOn": "blur",
   "validate": {
     "required": true,
     "pattern": "",
@@ -53,15 +53,170 @@ const fnrSchema = {
 };
 
 const builderPalett = {
-  basic: {
-    title: 'Basisk',
+  advanced: {
+    title: 'Tilpassede felter',
     components: {
       fnr: {
         title: 'Fødselsnummer',
         key: 'fnr',
         icon: 'terminal',
         schema: fnrSchema,
-      }
+      },
+      email: {
+        title: "E-post",
+        key: 'email',
+        icon: 'at',
+        schema: {
+          label: 'E-post',
+          type: 'email',
+          key: 'email',
+          input: true
+        },
+      },
+      url: {
+        title: "Lenke",
+        key: 'url',
+        icon: 'link',
+        schema: {
+          label: 'Lenke',
+          type: 'url',
+          key: 'url',
+          input: true
+        },
+      },
+      phoneNumber: {
+        title: "Telefonnummer",
+        key: 'phoneNumber',
+        icon: 'phone-square',
+        schema: {
+          label: 'Telefonnummer',
+          type: 'phoneNumber',
+          key: 'phoneNumber',
+          input: true,
+          inputMask: "999 999 99",
+          validateOn: "blur",
+          validate: {
+            required: true,
+            pattern: "",
+            customMessage: "8 siffer",
+          },
+        },
+      },
+      tags: {
+        title: "Stikkord",
+        key: 'tags',
+        icon: 'tags',
+        schema: {
+          label: 'Stikkord',
+          type: 'tags',
+          key: 'tags',
+          input: true
+        },
+      },
+    }
+  },
+  basic: {
+    title: 'Basisk',
+    components: {
+      textfield: {
+        title: "Tekstfelt",
+        key: 'textfield',
+        icon: 'terminal',
+        schema: {
+          label: 'Tekstfelt',
+          type: 'textfield',
+          key: 'textfield',
+          input: true
+        },
+      },
+      textarea: {
+        title: "Lang tekst",
+        key: 'textarea',
+        icon: 'font',
+        schema: {
+          label: 'Lang tekst',
+          type: 'textarea',
+          key: 'textarea',
+          input: true
+        },
+      },
+      number: {
+        title: "Tall",
+        key: 'number',
+        icon: 'hashtag',
+        schema: {
+          label: 'Tall',
+          type: 'number',
+          key: 'number',
+          input: true
+        },
+      },
+      password: {
+        title: "Passord",
+        key: 'password',
+        icon: 'asterisk',
+        schema: {
+          label: 'Passord',
+          type: 'password',
+          key: 'password',
+          input: true
+        },
+      },
+      checkbox: {
+        title: "Avkryssingsboks",
+        key: 'checkbox',
+        icon: 'check-square',
+        schema: {
+          label: 'Avkryssingsboks',
+          type: 'checkbox',
+          key: 'checkbox',
+          input: true
+        },
+      },
+      selectboxes: {
+        title: "Flervalg",
+        key: 'selectboxes',
+        icon: 'plus-square',
+        schema: {
+          label: 'Flervalg',
+          type: 'selectboxes',
+          key: 'selectboxes',
+          input: true
+        },
+      },
+      select: {
+        title: "Nedtrekksmeny",
+        key: 'select',
+        icon: 'th-list',
+        schema: {
+          label: 'Nedtrekksmeny',
+          type: 'select',
+          key: 'select',
+          input: true
+        },
+      },
+      radio: {
+        title: "Radioknapp",
+        key: 'radio',
+        icon: 'dot-circle-o',
+        schema: {
+          label: 'Radioknapp',
+          type: 'radio',
+          key: 'radio',
+          input: true
+        },
+      },
+      button: {
+        title: "Knapp",
+        key: 'button',
+        icon: 'stop',
+        schema: {
+          label: 'Knapp',
+          type: 'button',
+          key: 'button',
+          input: true
+        },
+      },
     },
   }
 };
