@@ -62,6 +62,84 @@ const builderPalett = {
         icon: 'terminal',
         schema: fnrSchema,
       },
+      firstName: {
+        title: "Fornavn",
+        key: 'fornavn',
+        icon: 'user',
+        schema: {
+          label: 'Fornavn',
+          type: 'textfield',
+          key: 'fornavn',
+          input: true,
+          placeholder: "Fornavn",
+          validate: {
+            required: true,
+          },
+        },
+      },
+      surname: {
+        title: "Etternavn",
+        key: 'etternavn',
+        icon: 'user',
+        schema: {
+          label: 'Etternavn',
+          type: 'textfield',
+          key: 'etternavn',
+          input: true,
+          placeholder: "Etternavn",
+          validate: {
+            required: true,
+          },
+        },
+      },
+      streetAddress: {
+        title: "Gatedresse",
+        key: 'gateadresse',
+        icon: 'home',
+        schema: {
+          label: 'Gateadresse',
+          type: 'textfield',
+          key: 'gateadresse',
+          input: true,
+          placeholder: "Gateveien 1",
+          validate: {
+            required: true,
+          },
+        },
+      },
+      postcode: {
+        title: "Postnummer",
+        key: 'postnr',
+        icon: 'home',
+        schema: {
+          label: 'Postnummer',
+          type: 'textfield',
+          key: 'postnr',
+          input: true,
+          placeholder: "1234",
+          inputMask: "9999",
+          validateOn: "blur",
+          validate: {
+            required: true,
+            customMessage: "4 siffer"
+          },
+        },
+      },
+      city: {
+        title: "Poststed",
+        key: 'poststed',
+        icon: 'home',
+        schema: {
+          label: 'Poststed',
+          type: 'textfield',
+          key: 'poststed',
+          input: true,
+          placeholder: "",
+          validate: {
+            required: true,
+          },
+        },
+      },
       email: {
         title: "E-post",
         key: 'email',
@@ -85,7 +163,7 @@ const builderPalett = {
         },
       },
       phoneNumber: {
-        title: "Telefonnummer",
+        title: "Telefon",
         key: 'phoneNumber',
         icon: 'phone-square',
         schema: {
@@ -95,6 +173,7 @@ const builderPalett = {
           input: true,
           inputMask: "999 999 99",
           validateOn: "blur",
+          prefix: "+47",
           validate: {
             required: true,
             pattern: "",
@@ -111,6 +190,58 @@ const builderPalett = {
           type: 'tags',
           key: 'tags',
           input: true
+        },
+      },
+      month: {
+        title: "Måned",
+        key: 'month',
+        icon: 'calendar',
+        schema: {
+          label: 'Måned',
+          type: 'datetime',
+          key: 'month',
+          input: true,
+          datePicker: {
+            showWeeks: true,
+            startingDay: 0,
+            initDate: "",
+            minMode: "month",
+            maxMode: "year",
+            yearRows: 4,
+            yearColumns: 5,
+            minDate: null,
+            maxDate: null,
+            datepickerMode: "month"
+          },
+        },
+      },
+      currency: {
+        title: "Beløp",
+        key: 'belop',
+        icon: 'dollar',
+        schema: {
+          label: 'Beløp',
+          type: 'currency',
+          key: 'belop',
+          input: true,
+          currency: "nok",
+        },
+      },
+      orgNr: {
+        title: "Org.nr.",
+        key: 'orgNr',
+        icon: 'institution',
+        schema: {
+          label: 'Organisasjonsnummer',
+          type: 'textfield',
+          key: 'orgNr',
+          input: true,
+          inputMask: "999 999 999",
+          validateOn: "blur",
+          validate: {
+            required: true,
+            customMessage: "9 siffer",
+          },
         },
       },
     }
@@ -130,11 +261,11 @@ const builderPalett = {
         },
       },
       textarea: {
-        title: "Lang tekst",
+        title: "Tekstområde",
         key: 'textarea',
         icon: 'font',
         schema: {
-          label: 'Lang tekst',
+          label: 'Tekstområde',
           type: 'textarea',
           key: 'textarea',
           input: true
