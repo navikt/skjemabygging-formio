@@ -6,8 +6,7 @@ import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
 import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
 import { Xknapp } from 'nav-frontend-ikonknapper';
-// import navCssVariabler from 'nav-frontend-core/less/_variabler.less';
-import navCssVariabler from 'nav-frontend-core';
+// import navCssVariabler from 'nav-frontend-core';
 
 
 
@@ -55,7 +54,6 @@ function AppWrapper({error, flashMessage, clearError, children}) {
 }
 
 function App({ projectURL, store }) {
-  console.log('css variables', navCssVariabler.navMorkGra);
   const [error, setError] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   useEffect(() => {
