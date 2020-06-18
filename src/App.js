@@ -6,7 +6,8 @@ import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
 import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
 import { Xknapp } from 'nav-frontend-ikonknapper';
-import navCssVariabler from 'nav-frontend-core/less/_variabler.less';
+// import navCssVariabler from 'nav-frontend-core/less/_variabler.less';
+import navCssVariabler from 'nav-frontend-core';
 
 
 
@@ -35,7 +36,7 @@ const ErrorAlertContent = styled('div')({
 
 const ErrorAlert = ({exception, onClose}) => <AlertStripeFeil>
   <ErrorAlertContent>
-    <p>{exception.message}</p>
+    <p>{exception.message || exception}</p>
     <Xknapp type="flat" onClick={onClose} />
   </ErrorAlertContent>
 </AlertStripeFeil>;

@@ -27,7 +27,7 @@ describe('NewFormPage', () => {
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
-    formStore = { forms: [] };
+    formStore = { forms: null };
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
@@ -42,7 +42,9 @@ describe('NewFormPage', () => {
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp flashSuccessMessage={jest.fn()} store={formStore} formio={new Formio("http://myproject.example.org")}/>
+          <AuthenticatedApp flashSuccessMessage={jest.fn()}
+                            store={formStore}
+                            formio={new Formio("http://myproject.example.org")}/>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -57,7 +59,10 @@ describe('NewFormPage', () => {
 
   it("lets you create a new form", async () => {
     renderApp('/forms/new');
-    const newFormPage = context.testRenderer.root.findByType(NewFormPage);
+    // internal react timer
+    expect(setTimeout.mock.calls).toHaveLength(1);
+    jest.runOnlyPendingTimers();
+    const newFormPage = await context.waitForComponent(NewFormPage);
     newFormPage.findByProps({id: "title"}).props.onChange({target: {value: "Meat"}});
     expect(newFormPage.instance.state.form).toMatchObject({
       type: "form",

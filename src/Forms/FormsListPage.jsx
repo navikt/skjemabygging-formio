@@ -6,7 +6,7 @@ import React from "react";
 
 export function FormsListPage({logout, forms, url, onDelete, onNew}) {
   return <>
-    <NavBar>
+    <NavBar title={"Skjemabygger"}>
       <MenuItem>Skjemaer</MenuItem>
       <MenuLink to="/" onClick={logout}>
         Logout

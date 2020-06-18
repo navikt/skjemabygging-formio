@@ -9,6 +9,7 @@ import React from "react";
 import {Formio} from "formiojs";
 import {Hovedknapp} from "nav-frontend-knapper";
 import {FormMetadataEditor} from "../components/FormMetadataEditor";
+import {FormsListPage} from "./FormsListPage";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -28,7 +29,7 @@ describe('FormsRouter', () => {
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
-    formStore = { forms: [] };
+    formStore = { forms: null };
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
@@ -43,7 +44,10 @@ describe('FormsRouter', () => {
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")}/>
+          <AuthenticatedApp
+            flashSuccessMessage={jest.fn()}
+            store={formStore}
+            formio={new Formio("http://myproject.example.org")}/>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -69,6 +73,9 @@ describe('FormsRouter', () => {
 
   it('lets you navigate to new form page from the list of all forms', async () => {
     renderApp('/forms');
+    expect(setTimeout.mock.calls).toHaveLength(1);
+    jest.runOnlyPendingTimers();
+    const formPage = await context.waitForComponent(FormsListPage);
     clickHovedknapp("Lag nytt skjema");
     expect(routeLocation().pathname).toEqual("/forms/new");
     await context.waitForComponent(NewFormPage);

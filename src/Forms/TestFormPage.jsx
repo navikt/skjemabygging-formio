@@ -7,7 +7,7 @@ import NavForm from "../components/NavForm";
 export function TestFormPage({logout, editFormUrl, form, onSave}) {
     return (
         <>
-            <NavBar>
+            <NavBar title={form && form.title}>
                 <MenuLink to="/forms">Skjemaer</MenuLink>
                 <MenuLink to="/" onClick={logout}>
                     Logout

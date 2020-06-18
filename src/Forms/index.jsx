@@ -16,7 +16,7 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage onCreate={onCreate}/>
+        <NewFormPage onCreate={onCreate} logout={logout}/>
       </Route>
       <Route
         path={`${path}/:formpath/edit`}
@@ -24,23 +24,28 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
           let {params} = match;
           const form = getFormFromPath(forms, params.formpath);
           const testFormUrl = `${path}/${params.formpath}/view`;
-          return EditFormPage({logout, form, testFormUrl, onSave, onChange});
+          return <EditFormPage logout={logout}
+                               form={form}
+                               testFormUrl={testFormUrl}
+                               onSave={onSave}
+                               onChange={onChange}/>;
         }}
       />
       <Route
         path={`${path}/:formpath/view`}
         render={({match}) => {
-          let {params} = match;
-          const form = getFormFromPath(forms, params.formpath);
-          const editFormUrl = `${path}/${params.formpath}/edit`;
-          return TestFormPage({logout, form, editFormUrl, onSave});
+          return <TestFormPage
+            logout={logout}
+            form={getFormFromPath(forms, match.params.formpath)}
+            editFormUrl={`${path}/${match.params.formpath}/edit`}
+            onSave={onSave}/>;
         }}
       />
       <Route path={`${path}/:formpath`}>
         {({match}) => <Redirect to={`${path}/${match.params.formpath}/edit`}/>}
       </Route>
       <Route path={path}>
-        <FormsListPage logout={logout} forms={forms} url={url} onDelete={onDelete} onNew={onNew}/>
+        <FormsListPage logout={logout} forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
       </Route>
     </Switch>
   );

@@ -1,16 +1,17 @@
 import React from "react";
 import { styled } from '@material-ui/styles';
 import { Link } from "react-router-dom";
+import navCssVariables from "nav-frontend-core";
+
+console.log('vars', navCssVariables);
 
 const NavBarWrapper = styled("div")({
-  backgroundColor: "DimGray",
+  backgroundColor: navCssVariables.navLysGra,
   padding: "0.5rem"
 });
 
 export const MenuLink = styled(Link)({
-  color: "white",
   "&:hover": {
-    color: "white",
     "text-decoration": "none"
   },
   "&:focus": {
@@ -23,8 +24,11 @@ export const MenuItem = styled("span")({
   color: "white"
 });
 
-export const MenuTitle = styled("h1")({
-  color: "lightgreen"
+export const MenuTitle = styled("h2")({
+  padding: "1rem",
+  color: navCssVariables.navMorkGra,
+  display: "flex",
+  justifyContent: "center",
 });
 
 const MenuItems = styled("div")({
@@ -32,10 +36,10 @@ const MenuItems = styled("div")({
   justifyContent: "space-between"
 });
 
-export const NavBar = ({ children }) => {
+export const NavBar = ({ children, title }) => {
   return (
     <NavBarWrapper>
-      <MenuTitle>Skjemabygger</MenuTitle>
+      <MenuTitle>{title}</MenuTitle>
       <MenuItems>
         {children}
       </MenuItems>
