@@ -1,12 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Components from 'formiojs/components/Components';
 import FormioFormBuilder from 'formiojs/FormBuilder';
 import isEqual from 'lodash.isequal';
 import cloneDeep from "lodash.clonedeep";
-import Custom from '../CustomFields';
-
-Components.setComponents(Custom);
 
 export default class NavFormBuilder extends Component {
   builderState = 'preparing';
