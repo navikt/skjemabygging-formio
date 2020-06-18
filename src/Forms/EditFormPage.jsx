@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {FormMetadataEditor} from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
 import React from "react";
+import FormBuilderOptions from "./FormBuilderOptions";
 
 export function EditFormPage({logout, onSave, form, testFormUrl, onChange}) {
   const title = `Rediger skjema: ${form && form.title}`
@@ -24,7 +25,7 @@ export function EditFormPage({logout, onSave, form, testFormUrl, onChange}) {
                     {form && (
                         <>
                             <FormMetadataEditor form={form} onChange={onChange}/>
-                            <NavFormBuilder form={form} onChange={onChange}/>
+                            <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions}/>
                         </>
                     )}
                 </>
