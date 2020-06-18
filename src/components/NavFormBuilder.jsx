@@ -257,15 +257,10 @@ const builderPalett = {
         key: 'day',
         icon: 'calendar',
         schema: {
-          label: 'Ukedag',
+          label: 'Dag / mnd / år',
           type: 'day',
           key: 'day',
           input: true,
-          inputMask: "9999",
-          validateOn: "blur",
-          validate: {
-            required: true,
-          },
         },
       },
       time: {
