@@ -36,7 +36,7 @@ const ErrorAlertContent = styled('div')({
 
 const ErrorAlert = ({exception, onClose}) => <AlertStripeFeil>
   <ErrorAlertContent>
-    <p>{exception.message}</p>
+    <p>{exception.message || exception}</p>
     <Xknapp type="flat" onClick={onClose} />
   </ErrorAlertContent>
 </AlertStripeFeil>;
