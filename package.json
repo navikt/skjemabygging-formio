@@ -12,6 +12,8 @@
     "craco-less": "^1.16.0",
     "formiojs": "^4.9.20-rc.1",
     "nav-frontend-core": "^4.0.12",
+    "nav-frontend-paneler-style": "^0.3.21",
+    "nav-frontend-skjema-style": "^2.0.9",
     "nav-frontend-typografi": "^2.0.18",
     "nav-frontend-typografi-style": "^1.0.19",
     "react": "^16.13.1",
@@ -24,7 +26,12 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "craco eject"
+    "eject": "craco eject",
+    "prestart": "npm run postinstall",
+    "prebuild": "npm run postinstall",
+    "install-template": "npm --prefix ./template install ./template",
+    "build-template": "cd template && npm run build",
+    "postinstall": "npm run install-template && npm run build-template"
   },
   "eslintConfig": {
     "extends": "react-app"
