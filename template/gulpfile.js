@@ -38,8 +38,14 @@ gulp.task('move-to-node_modules', () =>
     path.resolve(__dirname, "dist/*.js" ),
     path.resolve(__dirname, "lib/**/*.js" ),
     path.resolve(__dirname, "node_modules/**/*.js"),
-    path.resolve(__dirname, "*.json")
+    path.resolve(__dirname, "*.json"),
+    path.resolve(__dirname, "lib/**/*.less")
   ], {
     base: path.dirname(__dirname)
   }).pipe(gulp.dest(path.resolve(path.dirname(__dirname), "node_modules")))
 );
+
+gulp.task('less', function () {
+  return gulp.src('./src/**/*.less')
+    .pipe(gulp.dest('./lib'));
+});

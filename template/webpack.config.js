@@ -10,4 +10,16 @@ module.exports = {
   },
   mode: 'production',
   performance: { hints: false },
+  module: {
+    rules: [
+      {
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'less-loader'
+        ],
+      },
+    ]
+  }
 };
