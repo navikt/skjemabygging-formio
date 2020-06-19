@@ -14,8 +14,11 @@ import "nav-frontend-typografi-style";
 import "../node_modules/formiojs/dist/formio.full.min.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.less";
+import navdesign from 'template';
+import { Formio } from "formiojs";
 
 Components.setComponents(components);
+Formio.use(navdesign);
 
 function App() {
   const [forms, setForms] = useState([]);
