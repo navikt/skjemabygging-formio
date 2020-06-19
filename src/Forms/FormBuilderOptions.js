@@ -1,4 +1,3 @@
-
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
   textfield: [{
@@ -28,59 +27,42 @@ const builderEditForm = {
   ]
 };
 
-const personaliaSchema = {
-  "label": "Personalia",
-  "hideLabel": false,
-  "validate": {
-    "required": true,
+const firstNameSchema = {
+  label: 'Fornavn',
+  type: 'textfield',
+  key: 'fornavn',
+  input: true,
+  placeholder: "Fornavn",
+  validate: {
+    required: true,
   },
-  "key": "personalia",
+};
+
+const surnameSchema = {
+  label: 'Etternavn',
+  type: 'textfield',
+  key: 'etternavn',
+  input: true,
+  placeholder: "Etternavn",
+  validate: {
+    required: true,
+  },
+};
+
+
+const personaliaSchema = {
+  "label": "Personalia", // not used
+  "hideLabel": true,
   "type": "container",
-  "input": true,
-  "components": [
+  "key": "personalia", // er denne viktig?
+  "input": true, // er denne viktig??
+  "components": [ // denne er kjempeviktig
+    firstNameSchema,
+    surnameSchema,
     {
-      "label": "Fornavn",
-      "placeholder": "Fornavn",
-      "tableView": true,
-      "validate": {
-        "required": true,
-      },
-      "key": "fornavn",
-      "type": "textfield",
-      "input": true,
-    },
-    {
-      "label": "Etternavn",
-      "placeholder": "Etternavn",
-      "tableView": true,
-      "validate": {
-        "required": true,
-      },
-      "key": "etternavn",
-      "type": "textfield",
-      "input": true,
-    },
-    {
-      "label": "Fødselsnummer / D-nummer",
-      "key": "fodselsnummerDNummer",
+      "key": "fodselsnummerDNummer", // er denne viktig?
       "type": "fnrfield",
     }],
-  "placeholder": "",
-  "prefix": "",
-  "suffix": "",
-  "multiple": false,
-  "defaultValue": null,
-  "refreshOn": "",
-  "description": "",
-  "tabindex": "",
-  "autofocus": false,
-  "widget": null,
-  "allowCalculateOverride": false,
-  "showCharCount": false,
-  "showWordCount": false,
-  "allowMultipleMasks": false,
-  "tree": true,
-  "id": "eklvb1n"
 };
 
 const builderPalett = {
@@ -97,31 +79,13 @@ const builderPalett = {
         title: "Fornavn",
         key: 'fornavn',
         icon: 'user',
-        schema: {
-          label: 'Fornavn',
-          type: 'textfield',
-          key: 'fornavn',
-          input: true,
-          placeholder: "Fornavn",
-          validate: {
-            required: true,
-          },
-        },
+        schema: firstNameSchema,
       },
       surname: {
         title: "Etternavn",
         key: 'etternavn',
         icon: 'user',
-        schema: {
-          label: 'Etternavn',
-          type: 'textfield',
-          key: 'etternavn',
-          input: true,
-          placeholder: "Etternavn",
-          validate: {
-            required: true,
-          },
-        },
+        schema: surnameSchema,
       },
       streetAddress: {
         title: "Gatedresse",
@@ -449,7 +413,6 @@ const builderPalett = {
     },
   }
 };
-
 
 
 export default {
