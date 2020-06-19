@@ -345,6 +345,7 @@ const builderPalett = {
   },
   basic: {
     title: 'Basisk',
+    default: false,
     components: {
       textfield: {
         title: "Tekstfelt",
