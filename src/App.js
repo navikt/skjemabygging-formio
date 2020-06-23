@@ -4,41 +4,41 @@ import { Components, Form } from "react-formio";
 import {
   Innholdstittel,
   Normaltekst,
-  Sidetittel
+  Sidetittel,
 } from "nav-frontend-typografi";
-
-import { projectURL } from "./config";
 import components from "./Custom";
-
 import "nav-frontend-typografi-style";
 import "../node_modules/formiojs/dist/formio.full.min.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.less";
-import navdesign from 'template';
+import navdesign from "template";
 import { Formio } from "formiojs";
+import { forms as NAVForms } from "skjemapublisering";
 
 Components.setComponents(components);
 Formio.use(navdesign);
 
-function App() {
+function App({ projectURL, getFormsFromSkjemapublisering }) {
   const [forms, setForms] = useState([]);
   const [submission, setSubmission] = useState({});
 
   useEffect(() => {
-    fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
-      .then(res => res.json())
-      .then(forms => {
-        setForms(forms);
-      })
-      .catch(message => console.log("Kunne ikke hente forms", message));
-  }, []);
+    if (getFormsFromSkjemapublisering) {
+      setForms(NAVForms);
+    } else {
+      fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
+        .then((res) => res.json())
+        .then((forms) => setForms(forms))
+        .catch((message) => console.log("Kunne ikke hente forms", message));
+    }
+  }, [getFormsFromSkjemapublisering, projectURL]);
 
   return (
     <div className="app">
       <nav>
         {forms && (
           <ul>
-            {forms.map(form => (
+            {forms.map((form) => (
               <li key={form._id}>
                 <Link to={`/${form.path}`}>
                   <Normaltekst>{form.title}</Normaltekst>
@@ -53,9 +53,9 @@ function App() {
         <Route
           exact
           path="/:formpath"
-          render={routeProps => {
+          render={(routeProps) => {
             const form = forms.find(
-              form => form.path === routeProps.match.params.formpath
+              (form) => form.path === routeProps.match.params.formpath
             );
             if (!form) {
               return <h1>Laster..</h1>;
@@ -69,7 +69,7 @@ function App() {
                   url={`${projectURL}${form.path}`}
                   form={form}
                   options={{ readOnly: false }}
-                  onSubmit={submission => {
+                  onSubmit={(submission) => {
                     setSubmission({ [form.path]: submission });
                     routeProps.history.push(
                       `/${routeProps.match.params.formpath}/result`
@@ -82,14 +82,15 @@ function App() {
         />
         <Route
           path="/:formpath/result"
-          render={routeProps => {
+          render={(routeProps) => {
             const form = forms.find(
-              form => form.path === routeProps.match.params.formpath
+              (form) => form.path === routeProps.match.params.formpath
             );
             if (!form) {
               return <h1>Laster..</h1>;
             }
-            const resultForm = (form.display === "wizard" ? {...form, display: "form"} : form);
+            const resultForm =
+              form.display === "wizard" ? { ...form, display: "form" } : form;
             return (
               <>
                 <Sidetittel>{form.title}</Sidetittel>
