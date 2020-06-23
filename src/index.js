@@ -7,8 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 const projectURL =
   process.env.REACT_APP_FORMIO_PROJECT_URL ||
   "https://protected-island-44773.herokuapp.com";
-const getFormsFromSkjemapublisering =
-  process.env.REACT_APP_USE_SKJEMAPUBLISERING || false;
+const getFormsFromSkjemapublisering = (process.env.REACT_APP_USE_SKJEMAPUBLISERING === "true") || false;
 
 ReactDOM.render(
   <React.StrictMode>

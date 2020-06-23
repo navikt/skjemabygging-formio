@@ -23,14 +23,14 @@ function App({ projectURL, getFormsFromSkjemapublisering }) {
   const [submission, setSubmission] = useState({});
 
   useEffect(() => {
-    getFormsFromSkjemapublisering
-      ? setForms(NAVForms)
-      : fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
-          .then((res) => res.json())
-          .then((forms) => {
-            setForms(forms);
-          })
-          .catch((message) => console.log("Kunne ikke hente forms", message));
+    if (getFormsFromSkjemapublisering) {
+      setForms(NAVForms);
+    } else {
+      fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
+        .then((res) => res.json())
+        .then((forms) => setForms(forms))
+        .catch((message) => console.log("Kunne ikke hente forms", message));
+    }
   }, [getFormsFromSkjemapublisering, projectURL]);
 
   return (
