@@ -338,7 +338,7 @@ const builderPalett = {
     }
   },
   basic: {
-    title: 'Basisk',
+    title: 'Standard felter',
     default: false,
     components: {
       textfield: {
