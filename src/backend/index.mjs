@@ -8,10 +8,8 @@ export class Backend {
 
 export function dispatcherWithBackend(backend) {
   return dispatch({
-    '/api': {
-      '/hey': {
-        GET: (req, res) => res.json(backend.ho())
-      }
+    '/hey': {
+      GET: (req, res) => res.json(backend.ho())
     }
   });
 }

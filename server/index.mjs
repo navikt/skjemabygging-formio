@@ -1,8 +1,11 @@
-const express = require('express');
+import express from 'express';
 const app = express();
 
-app.get('/api/hey', (req, res) => res.json({message: 'ho'}));
+import {dispatcherWithBackend, Backend} from '../src/backend/index.mjs';
 
+// app.get('/api/hey', (req, res) => res.json({message: 'ho'}));
+
+app.use('/api', dispatcherWithBackend(new Backend()));
 
 const nodeEnv = process.env.NODE_ENV;
 if (nodeEnv === 'production') {
