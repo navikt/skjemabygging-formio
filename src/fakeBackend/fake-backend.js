@@ -18,10 +18,9 @@ const backend = new FakeBackend();
 const dispatcher = dispatcherWithBackend(backend);
 
 const server = connect();
-server.use(injectWebSocket);
 server.use(bodyParser.text({limit: '5mb', type: '*/*'}));
 server.use(quip);
-server.use(rewriteUrl);
+// server.use(rewriteUrl);
 server.use(dispatcher);
 server.use(fallback);
 console.log('about to listen to 4000');

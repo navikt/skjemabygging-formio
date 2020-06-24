@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import FormioFormBuilder from 'formiojs/FormBuilder';
+import * as formiojs from 'formiojs';
 import isEqual from 'lodash.isequal';
 import cloneDeep from "lodash.clonedeep";
 
@@ -13,7 +13,7 @@ export default class NavFormBuilder extends Component {
   };
 
   componentDidMount = () => {
-    this.builder = new FormioFormBuilder(this.element, {}, this.props.formBuilderOptions);
+    this.builder = new formiojs.FormBuilder(this.element, {}, this.props.formBuilderOptions);
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builderState = 'ready';
@@ -42,6 +42,7 @@ export default class NavFormBuilder extends Component {
   componentWillUnmount = () => {
     this.builder.instance.destroy(true);
     this.builderState = 'destroyed';
+    console.log('destroyed builder');
   };
 
   render = () => {
