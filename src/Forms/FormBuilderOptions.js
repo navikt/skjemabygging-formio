@@ -305,6 +305,36 @@ const builderPalett = {
           input: true,
         },
       },
+    citizenship: {
+      title: "Statsborgerskap",
+      key: 'textfield',
+      icon: 'user',
+      schema: {
+        label: 'Statsborgerskap',
+        type: 'textfield',
+        key: 'textfield',
+        input: true,
+        validate: {
+          required: true,
+        },
+      },
+    },
+    bankAccount: {
+      title: "Kontonummer",
+      key: 'textfield',
+      icon: 'bank',
+      schema: {
+        label: 'Kontonummer',
+        type: 'textfield',
+        key: 'textfield',
+        input: true,
+        inputMask: "9999 9999 999",
+        validate: {
+          required: true,
+          customMessage: "11 siffer"
+        },
+      },
+    },
     }
   },
   basic: {
