@@ -33,7 +33,7 @@ export function FormsListPage({logout, forms, url, onDelete, onNew}) {
             ))}
           </ul>
           <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
-          <Knapp onClick={testApi}>Bruk api</Knapp>
+          {/*<Knapp onClick={testApi}>Bruk api</Knapp>*/}
         </nav>
       )}
     </Pagewrapper>
