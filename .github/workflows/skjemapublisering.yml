@@ -1,0 +1,18 @@
+name: Update skjemautfyller on new publish
+on:
+  push:
+    branch:
+      - skjemapublisering
+jobs:
+  build:
+    name: "Triggers a new build of skjemautfylling"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout skjemautfylling-formio
+        uses: actions/checkout@v2
+        with:
+          ref: skjemapublisering
+      - name: install
+        run: npm install
+      - name: build
+        run: npm run build
