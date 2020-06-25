@@ -1,15 +1,15 @@
 import {MenuItem, MenuLink, NavBar} from "../components/NavBar";
 import {Pagewrapper, SlettSkjemaKnapp} from "./components";
 import {Link} from "react-router-dom";
-import {Hovedknapp, Knapp} from "nav-frontend-knapper";
+import {Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
 
 export function FormsListPage({logout, forms, url, onDelete, onNew}) {
-  const testApi = () => {
+  /*const testApi = () => {
     fetch('/api/hey')
       .then(response => response.json())
       .then(json => console.log(json));
-  };
+  };*/
   return <>
     <NavBar title={"Skjemabygger"}>
       <MenuItem>Skjemaer</MenuItem>
