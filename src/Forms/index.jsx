@@ -10,7 +10,7 @@ import Custom from '../CustomFields';
 import Components from 'formiojs/components/Components';
 
 
-export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}) => {
+export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete, onPublish}) => {
   Components.setComponents(Custom);
   let {path, url} = useRouteMatch();
   const {logout} = useAuth();
@@ -32,7 +32,9 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
                                form={form}
                                testFormUrl={testFormUrl}
                                onSave={onSave}
-                               onChange={onChange}/>;
+                               onChange={onChange}
+                               onPublish={onPublish}
+          />;
         }}
       />
       <Route
@@ -55,4 +57,10 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete}
   );
 };
 
-const getFormFromPath = (forms, path) => forms.find(form => form.path === path);
+const getFormFromPath = (forms, path) => {
+  const result = forms.find(form => form.path === path);
+  if (!result) {
+    throw Error(`No form at path "${path}"`);
+  }
+  return result;
+}

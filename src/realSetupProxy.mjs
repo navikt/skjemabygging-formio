@@ -1,5 +1,6 @@
 import proxyMiddleware from "http-proxy-middleware";
-import {dispatcherWithBackend, Backend} from './backend/index.mjs';
+import {Backend} from './backend';
+import {dispatcherWithBackend} from "./backend/webApp.js";
 
 const directBackend = dispatcherWithBackend(new Backend());
 const proxiedBackend = proxyMiddleware.createProxyMiddleware({
@@ -7,10 +8,21 @@ const proxiedBackend = proxyMiddleware.createProxyMiddleware({
   changeOrigin: true,
 });
 
-const backend = directBackend;
+function isOn(value) {
+  if (!value) {
+    return false;
+  }
+  return !(['off', 'false', 'no'].includes(value.toLowerCase));
+}
+
+const backend = isOn(process.env.REACT_APP_BACKEND_PROXY) ? proxiedBackend : directBackend;
 
 export default function(app) {
-    app.use(
+  // are these needed and do they work
+  // app.use(express.json());
+  // app.use(express.urlencoded({extended: true}));
+
+  app.use(
         '/api',
         backend
     );

@@ -2,6 +2,9 @@
   "name": "skjemabygging-formio",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "cracoConfig": "craco.config.cjs",
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@craco/craco": "^5.6.4",
     "@material-ui/styles": "^4.9.14",
@@ -11,6 +14,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/react-hooks": "^3.2.1",
     "classnames": "^2.2.6",
+    "concurrently": "^5.2.0",
     "craco-less": "^1.16.0",
     "dispatch": "^1.0.2",
     "eventemitter2": "^6.4.0",
@@ -49,6 +53,7 @@
   },
   "scripts": {
     "start": "EXTEND_ESLINT=true craco start",
+    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
     "build": "EXTEND_ESLINT=true craco build",
     "test": "craco test",
     "eject": "craco eject",
