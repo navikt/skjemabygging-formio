@@ -1,13 +1,16 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import {dispatcherWithBackend, Backend} from '../src/backend/index.mjs';
+import {Backend} from '../src/backend/index.js';
+import {dispatcherWithBackend} from "../src/backend/webApp.js";
 
 // node backward compatibility
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use('/api', dispatcherWithBackend(new Backend()));
 
 const nodeEnv = process.env.NODE_ENV;

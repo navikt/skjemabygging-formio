@@ -5,7 +5,7 @@ import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 
 function AuthenticatedApp({ formio, store, flashSuccessMessage }) {
-  const { forms, onChangeForm, onSave, onCreate, onDelete } = useForms(formio, store, flashSuccessMessage);
+  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(formio, store, flashSuccessMessage);
 
   const history = useHistory();
   const wrappedCreate = newForm => {
@@ -23,6 +23,7 @@ function AuthenticatedApp({ formio, store, flashSuccessMessage }) {
             onSave={onSave}
             onCreate={wrappedCreate}
             onDelete={onDelete}
+            onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
           />
         </Route>
