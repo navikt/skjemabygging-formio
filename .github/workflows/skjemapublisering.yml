@@ -13,6 +13,10 @@ jobs:
         with:
           ref: skjemapublisering
           fetch-depth: 0
+      - name: Set github identity
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
       - name: Update branch
         run: git merge origin/master
       - name: install
@@ -25,6 +29,4 @@ jobs:
         run: |
           git checkout master
           git merge skjemapublisering
-          git config --local user.name "GitHub Action"
-          git config --local user.email "action@github.com"
           git push
