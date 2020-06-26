@@ -13,6 +13,8 @@ jobs:
         with:
           ref: skjemapublisering
           fetch-depth: 0
+      - name: Update branch
+        run: git merge origin/master
       - name: install
         run: npm install
       - name: build
