@@ -12,6 +12,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: skjemapublisering
+      - name: Keep branch updated
+        run: git merge origin/master
       - name: install
         run: npm install
       - name: build
