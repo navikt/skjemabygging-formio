@@ -1,0 +1,30 @@
+name: Update skjemautfyller on new publish
+on:
+  push:
+    branch:
+      - skjemapublisering
+jobs:
+  build:
+    name: "Triggers a new build of skjemautfylling"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout skjemautfylling-formio
+        uses: actions/checkout@v2
+        with:
+          ref: skjemapublisering
+          fetch-depth: 0
+      - name: Update branch
+        run: git merge origin/master
+      - name: install
+        run: npm install
+      - name: build
+        run: npm run build
+      - name: test
+        run: npm run test
+      - name: Merge skjemapublisering to master
+        run: |
+          git checkout master
+          git merge skjemapublisering
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git push
