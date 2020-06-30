@@ -26,7 +26,7 @@ function App({ projectURL, getFormsFromSkjemapublisering }) {
     if (getFormsFromSkjemapublisering) {
       setForms(NAVForms);
     } else {
-      fetch(`${projectURL}/form?type=form&tags=nav-skjema`)
+      fetch(`${projectURL}/form?type=form&tags=nav-skjema&limit=1000`)
         .then((res) => res.json())
         .then((forms) => setForms(forms))
         .catch((message) => console.log("Kunne ikke hente forms", message));
@@ -38,13 +38,15 @@ function App({ projectURL, getFormsFromSkjemapublisering }) {
       <nav>
         {forms && (
           <ul>
-            {forms.map((form) => (
-              <li key={form._id}>
-                <Link to={`/${form.path}`}>
-                  <Normaltekst>{form.title}</Normaltekst>
-                </Link>
-              </li>
-            ))}
+            {forms
+              .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+              .map((form) => (
+                <li key={form._id}>
+                  <Link to={`/${form.path}`}>
+                    <Normaltekst>{form.title}</Normaltekst>
+                  </Link>
+                </li>
+              ))}
           </ul>
         )}
       </nav>
