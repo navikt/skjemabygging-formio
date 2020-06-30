@@ -1,7 +1,7 @@
 name: Update skjemautfyller on new publish
 on:
   push:
-    branch:
+    branches:
       - skjemapublisering
 jobs:
   build:
