@@ -42,6 +42,7 @@
     "nav-frontend-skjema-style": "^2.0.7",
     "nav-frontend-typografi": "^2.0.19",
     "nav-frontend-typografi-style": "^1.0.20",
+    "node-fetch": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -80,6 +81,7 @@
   },
   "devDependencies": {
     "@testing-library/user-event": "^7.2.1",
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.5"
   }
 }

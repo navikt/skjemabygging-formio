@@ -9,9 +9,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use('/api', dispatcherWithBackend(new Backend()));
+app.use('/api', dispatcherWithBackend(new Backend(projectURL)));
 
 const nodeEnv = process.env.NODE_ENV;
 if (nodeEnv === 'production') {
