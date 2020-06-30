@@ -10,7 +10,7 @@ export const useForms = (formio, store, flashSuccessMessage) => {
 
   useEffect(() => {
     if (forms === null) {
-      formio.loadForms({params: {type: "form", tags: "nav-skjema"}}).then(forms => setForms(forms));
+      formio.loadForms({params: {type: "form", tags: "nav-skjema", limit:1000}}).then(forms => setForms(forms));
     }
   }, [forms, setForms, formio]);
 

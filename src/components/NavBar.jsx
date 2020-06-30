@@ -3,8 +3,6 @@ import { styled } from '@material-ui/styles';
 import { Link } from "react-router-dom";
 import navCssVariables from "nav-frontend-core";
 
-console.log('vars', navCssVariables);
-
 const NavBarWrapper = styled("div")({
   backgroundColor: navCssVariables.navLysGra,
   padding: "0.5rem"
