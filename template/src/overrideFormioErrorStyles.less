@@ -2,6 +2,20 @@
 @import "~nav-frontend-typografi-style";
 @import "~nav-frontend-core";
 
+//Select -- start
+.form-control.selection.dropdown {
+  .selectContainer();
+  .input--xxl();
+  .skjemaelement();
+  .skjemaelement__input();
+
+  &.is-invalid {
+    .skjemaelement-feilmarkering-mixin();
+  }
+}
+//Select -- slutt
+
+//Feilhåndtering -- start
 .formio-error-wrapper {
   background-color: transparent;
   border-color: transparent;
@@ -17,3 +31,8 @@
 .form-text.error {
   .typo-feilmelding();
 }
+
+.formio-component.has-feedback .invalid-feedback {
+  display: block;
+}
+//Feilhåndtering -- slutt
