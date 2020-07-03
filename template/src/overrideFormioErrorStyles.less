@@ -3,6 +3,13 @@
 @import "~nav-frontend-core";
 
 //Select -- start
+.choices.form-group.formio-choices {
+  .input--xxl();
+  &:after {
+    display: none;
+  }
+}
+
 .form-control.selection.dropdown {
   .selectContainer();
   .input--xxl();
@@ -34,5 +41,9 @@
 
 .formio-component.has-feedback .invalid-feedback {
   display: block;
+}
+
+.form-control.is-invalid {
+  background-image: none;
 }
 //Feilhåndtering -- slutt
