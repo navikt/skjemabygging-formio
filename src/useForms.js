@@ -47,13 +47,11 @@ export const useForms = (formio, store, flashSuccessMessage) => {
   };
   const onPublish = (form) => {
     const payload = JSON.stringify({ form: form, token: Formiojs.getToken() });
-    console.log("payload ", payload);
     fetch(`/api/publish/${form.path}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(form),
+      body: payload,
     })
-      .then((response) => response.json())
       .then(console.log)
       .catch(() => console.log("Noe gikk galt"));
   };

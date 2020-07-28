@@ -24,12 +24,12 @@ export function dispatcherWithBackend(backend) {
         })
           .then(handleErrors)
           .then(() => {
-            // backend.createAndPushCommit(req.body);
-            res.send("Authorized!");
+            backend.createAndPushCommit(req.body.form, formPath);
+            res.send("Suksess?!");
           })
           .catch((err) => {
             console.error("Error ", err);
-            res.send("Unauthorized!");
+            res.send("Noe galt skjedde!");
           })
         // gjør et eller annet lookup med jwt_tokenet.
         // lag en ny publiserings commit og push den
