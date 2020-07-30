@@ -1,12 +1,4 @@
 import dispatch from "dispatch";
-import fetch from "node-fetch";
-
-function handleErrors(response) {
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
-  return response;
-}
 
 export function dispatcherWithBackend(backend) {
   return dispatch({
@@ -14,39 +6,21 @@ export function dispatcherWithBackend(backend) {
       GET: (req, res) => res.json(backend.ho()),
     },
     "/publish/:formPath": {
-      PUT: (req, res, next, formPath) => {
-        // Check that token is valid first
-        fetch(`${backend.getProjectURL()}/current`, {
-          headers: {
-            "Content-Type": "application/json",
-            "x-jwt-token": req.body.token,
-          },
-        })
-          .then(handleErrors)
-          .then(() => {
-            backend.createAndPushCommit(req.body.form, formPath);
-            res.send("Suksess?!");
-          })
-          .catch((err) => {
-            console.error("Error ", err);
-            res.send("Noe galt skjedde!");
-          })
-        // gjør et eller annet lookup med jwt_tokenet.
-        // lag en ny publiserings commit og push den
-        // get latest publiserings repo
-        // lag ny commit på toppen av dette
+      PUT: async (req, res, next, formPath) => {
+        if (!req.body.token) {
+          res.status(401).send("Unauthorized");
+        }
 
-        // update eller create subfoler ${formPath} med fil form.json som er identisk med req.body
-        // backend.clonePublishingRepo();
-        // backend.createOrUpdateForm(formPath, req.body);
-        // backend.commitChange();
-        // backend.pushPublishingRepo();
-        // overskriv form-io-utvidelser filen med full git url til ${this-git-commit}
-        // publisering-test repo har en git submodule som er skjemabygging-formio.
-        // set submodule i commiten til å være oss selv
-        // eller ta form-io-utvidelses "staten" og kopier den inn i et directory
-        // push denne
-        //res.send({ message: "Happy clappy", form: req.body });
+        const result = await backend.publishForm(req.body.token, req.body.form, formPath);
+
+        if (result.status === "OK") {
+          res.send("Publisering vellykket!");
+        } else if (result.status === "UNAUTHORIZED") {
+          console.log("Unauthorized");
+          res.status(401).send("Unauthorized");
+        }
+        console.error("Internal server error");
+        res.status(500).send("Noe galt skjedde");
       },
     },
   });

@@ -1,4 +1,10 @@
-import fetch from "node-fetch";
+import {
+  checkPublishingAccess,
+  getListOfPreviouslyPublishedForms,
+  getShaIfFormIsPreviouslyPublished,
+  publishUpdateToForm,
+  publishNewForm,
+} from "./publishingService.js";
 
 export class Backend {
   constructor(projectURL, gitUrl, user, pass) {
@@ -8,57 +14,33 @@ export class Backend {
     this.pass = pass;
   }
 
-  createOrUpdateFormInGH(formurl, body) {
-    fetch(formurl, {
-      method: "put",
-      body: body,
-      headers: {
-        Authorization: "Basic " + Buffer.from(`${this.user}:${this.pass}`).toString("base64"),
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error));
-  }
-
-  publishUpdateToForm(formname, formcontent, sha) {
-    const updateFileContent = {
-      message: `Oppdatert versjon av ${formname}.json`,
-      content: Buffer.from(JSON.stringify(formcontent)).toString("base64"),
-      sha: sha,
-    };
-
-    this.createOrUpdateFormInGH(`${this.gitUrl}/${formname}.json`, JSON.stringify(updateFileContent));
-  }
-
-  publishNewForm(formname, formcontent) {
-    const newFileContent = {
-      message: `Nytt skjema ${formname}.json`,
-      content: Buffer.from(JSON.stringify(formcontent)).toString("base64"),
-    };
-
-    this.createOrUpdateFormInGH(`${this.gitUrl}/${formname}.json`, JSON.stringify(newFileContent));
-  }
-
-  createAndPushCommit(form, formpath, gitUrl = this.gitUrl) {
-    fetch(gitUrl, {
-      method: "get",
-      headers: {
-        Authorization: "Basic " + Buffer.from(`${this.user}:${this.pass}`).toString("base64"),
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((listOfForms) => listOfForms.filter((content) => content.name === `${formpath}.json`))
-      .then((listOfFormsMatchingFormname) =>
-        listOfFormsMatchingFormname.length === 0
-          ? this.publishNewForm(formpath, form)
-          : this.publishUpdateToForm(formpath, form, listOfFormsMatchingFormname[0].sha)
-      )
-      .catch((e) => console.error("Error", e));
+  ho() {
+    return { message: "ho" };
   }
 
   getProjectURL() {
     return this.projectURL;
+  }
+
+  async publishForm(userToken, form, formPath) {
+    const access = await checkPublishingAccess(userToken, this.getProjectURL());
+    if (access.status !== "OK") {
+      return access;
+    }
+
+    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(this.gitUrl, this.user, this.pass);
+
+    if (listOfFormsResponse.status !== "OK") {
+      return { status: "FAILED" };
+    }
+
+    const formFileName = `${formPath}.json`;
+    const listOfForms = listOfFormsResponse.data;
+    const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
+    if (shaOfPreviouslyPublishedForm) {
+      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, this.gitUrl, this.user, this.pass);
+    } else {
+      return publishNewForm(formFileName, form, this.gitUrl, this.user, this.pass);
+    }
   }
 }
