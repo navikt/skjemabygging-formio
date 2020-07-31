@@ -1,4 +1,4 @@
-import { MenuItem, MenuLink, NavBar } from "../components/NavBar";
+import { NavBar } from "../components/NavBar";
 import { Pagewrapper, SlettSkjemaKnapp } from "./components";
 import { Link } from "react-router-dom";
 import { Hovedknapp } from "nav-frontend-knapper";
@@ -12,12 +12,7 @@ export function FormsListPage({ logout, forms, url, onDelete, onNew }) {
   };*/
   return (
     <>
-      <NavBar title={"Skjemabygger"}>
-        <MenuItem>Skjemaer</MenuItem>
-        <MenuLink to="/" onClick={logout}>
-          Logout
-        </MenuLink>
-      </NavBar>
+      <NavBar title={"Skjemabygger"} visSkjemaliste={false} />
       <Pagewrapper>
         {forms && (
           <nav>

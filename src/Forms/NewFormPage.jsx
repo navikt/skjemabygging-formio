@@ -5,7 +5,8 @@ import {CreationFormMetadataEditor} from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
 import {Pagewrapper} from "./components";
-import {MenuLink, NavBar} from "../components/NavBar";
+import {NavBar} from "../components/NavBar";
+import {Link} from "react-router-dom";
 
 class NewFormPage extends Component {
   state = {
@@ -35,10 +36,10 @@ class NewFormPage extends Component {
     return (
       <>
         <NavBar title={title}>
-          <MenuLink to="/forms">Skjemaer</MenuLink>
-          <MenuLink to="/" onClick={this.props.logout}>
+          <Link className="knapp" to="/forms">Skjemaer</Link>
+          <Link className="knapp" to="/" onClick={this.props.logout}>
             Logg ut
-          </MenuLink>
+          </Link>
         </NavBar>
       <Pagewrapper>
         <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
