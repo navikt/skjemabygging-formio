@@ -1,9 +1,7 @@
 import {Backend} from "./index.js";
-// import sinon from "sinon"; - test ut stubbing herfra?
 
 describe('Backend', () => {
-  xit('checks access', async () => {
-
+  it('checks publishing access', async () => {
   });
 
   xit('gets list of all published forms in github', async () => {
