@@ -2,20 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter } from "react-router-dom";
-
-const projectURL =
-  process.env.REACT_APP_FORMIO_PROJECT_URL ||
-  "https://protected-island-44773.herokuapp.com";
-const getFormsFromSkjemapublisering = (process.env.REACT_APP_USE_SKJEMAPUBLISERING === "true") || false;
+import {BrowserRouter} from "react-router-dom";
+import NAVForms from "skjemapublisering"
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App
-        projectURL={projectURL}
-        getFormsFromSkjemapublisering={getFormsFromSkjemapublisering}
-      />
+      <App forms={NAVForms} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
