@@ -18,9 +18,10 @@ export function dispatcherWithBackend(backend) {
         } else if (result.status === "UNAUTHORIZED") {
           console.log("Unauthorized");
           res.status(401).send("Unauthorized");
+        } else {
+          console.error("Internal server error");
+          res.status(500).send("Noe galt skjedde");
         }
-        console.error("Internal server error");
-        res.status(500).send("Noe galt skjedde");
       },
     },
   });

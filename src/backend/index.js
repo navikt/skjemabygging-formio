@@ -4,14 +4,16 @@ import {
   getShaIfFormIsPreviouslyPublished,
   publishUpdateToForm,
   publishNewForm,
+  getGithubToken,
 } from "./publishingService.js";
 
 export class Backend {
-  constructor(projectURL, gitUrl, user, pass) {
+  constructor(projectURL, gitUrl, ghKey, ghAppID, ghInstallationID) {
     this.projectURL = projectURL;
     this.gitUrl = gitUrl;
-    this.user = user;
-    this.pass = pass;
+    this.ghKey = ghKey;
+    this.ghAppID = ghAppID;
+    this.ghInstallationID = ghInstallationID;
   }
 
   ho() {
@@ -28,7 +30,13 @@ export class Backend {
       return access;
     }
 
-    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(this.gitUrl, this.user, this.pass);
+    const githubTokenResponse = await getGithubToken(this.ghAppID, this.ghKey, this.ghInstallationID);
+    if (githubTokenResponse.status !== "OK") {
+      return githubTokenResponse;
+    }
+
+    const githubToken = githubTokenResponse.data.token;
+    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(this.gitUrl, githubToken);
 
     if (listOfFormsResponse.status !== "OK") {
       return { status: "FAILED" };
@@ -38,9 +46,9 @@ export class Backend {
     const listOfForms = listOfFormsResponse.data;
     const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
     if (shaOfPreviouslyPublishedForm) {
-      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, this.gitUrl, this.user, this.pass);
+      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, this.gitUrl, githubToken);
     } else {
-      return publishNewForm(formFileName, form, this.gitUrl, this.user, this.pass);
+      return publishNewForm(formFileName, form, this.gitUrl, githubToken);
     }
   }
 }
