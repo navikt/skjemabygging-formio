@@ -1,4 +1,4 @@
-name: Update skjemautfyller on new publish
+name: Update master on new skjemapublisering
 on:
   push:
     branches:
@@ -20,7 +20,7 @@ jobs:
       - name: Update branch
         run: git merge origin/master
       - name: install
-        run: npm install
+        run: npm ci
       - name: test
         run: npm run test
       - name: build
