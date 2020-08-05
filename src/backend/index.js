@@ -30,13 +30,14 @@ export class Backend {
       return access;
     }
 
-    const githubTokenResponse = await getGithubToken(this.ghAppID, this.ghKey, this.ghInstallationID);
+    const githubTokenResponse = await getGithubToken(this.ghAppID, this.ghKey, this.ghInstallationID, this.gitUrl);
     if (githubTokenResponse.status !== "OK") {
       return githubTokenResponse;
     }
 
     const githubToken = githubTokenResponse.data.token;
-    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(this.gitUrl, githubToken);
+    const skjemapubliseringGHUrl = `${this.gitUrl}repos/navikt/skjemapublisering-test/contents/skjema`;
+    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(skjemapubliseringGHUrl, githubToken);
 
     if (listOfFormsResponse.status !== "OK") {
       return { status: "FAILED" };
@@ -46,9 +47,9 @@ export class Backend {
     const listOfForms = listOfFormsResponse.data;
     const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
     if (shaOfPreviouslyPublishedForm) {
-      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, this.gitUrl, githubToken);
+      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, skjemapubliseringGHUrl, githubToken);
     } else {
-      return publishNewForm(formFileName, form, this.gitUrl, githubToken);
+      return publishNewForm(formFileName, form, skjemapubliseringGHUrl, githubToken);
     }
   }
 }

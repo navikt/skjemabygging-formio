@@ -3,7 +3,6 @@ import fetch from "node-fetch";
 export async function fetchWithErrorHandling(url, options) {
   try {
     const res = await fetch(url, options);
-
     if (res.ok) {
       return {
         status: "OK",

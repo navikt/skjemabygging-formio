@@ -12,7 +12,7 @@ export async function checkPublishingAccess(userToken, projectUrl) {
   });
 }
 
-export async function getGithubToken(ghAppID, ghKey, ghInstallationID) {
+export async function getGithubToken(ghAppID, ghKey, ghInstallationID, gitUrl) {
   const timeInMillis = Date.now();
   const timeInSeconds = Math.floor(timeInMillis / 1000);
   const payload = {
@@ -22,8 +22,7 @@ export async function getGithubToken(ghAppID, ghKey, ghInstallationID) {
   };
 
   const token = await jwt.sign(payload, ghKey, { algorithm: 'RS256' });
-
-  return fetchWithErrorHandling(`https://api.github.com/app/installations/${ghInstallationID}/access_tokens`, {
+  return fetchWithErrorHandling(`${gitUrl}app/installations/${ghInstallationID}/access_tokens`, {
     method: "post",
     headers: {
       Authorization: `Bearer ${token}`,

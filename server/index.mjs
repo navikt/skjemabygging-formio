@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
-const skjemapubliseringGHUrl = "https://api.github.com/repos/navikt/skjemapublisering-test/contents/skjema";
+const githubBaseURL = "https://api.github.com/";
 const GH_KEY = process.env.GITHUB_KEY;
 const GH_PUBLISHING_APP_ID = process.env.GITHUB_PUBLISHING_APP_ID;
 const GH_PUBLISHING_INSTALLATION_ID = process.env.GITHUB_PUBLISHING_INSTALLATION_ID;
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(
   "/api",
   dispatcherWithBackend(
-    new Backend(projectURL, skjemapubliseringGHUrl, GH_KEY, GH_PUBLISHING_APP_ID, GH_PUBLISHING_INSTALLATION_ID)
+    new Backend(projectURL, githubBaseURL, GH_KEY, GH_PUBLISHING_APP_ID, GH_PUBLISHING_INSTALLATION_ID)
   )
 );
 
