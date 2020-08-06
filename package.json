@@ -52,7 +52,8 @@
     "react-scripts": "3.4.1",
     "react-test-renderer": "^16.13.1",
     "typescript": "^3.9.7",
-    "wait-for-expect": "^3.0.2"
+    "wait-for-expect": "^3.0.2",
+    "sinon": "^9.0.2"
   },
   "scripts": {
     "start": "EXTEND_ESLINT=true craco start",
@@ -84,7 +85,6 @@
   "devDependencies": {
     "@testing-library/user-event": "^12.1.0",
     "nodemon": "^2.0.4",
-    "prettier": "^2.0.5",
-    "sinon": "^9.0.2"
+    "prettier": "^2.0.5"
   }
 }
