@@ -1,0 +1,14 @@
+on:
+  deployment_status
+jobs:
+  my-deployment-status_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug print
+        env:
+          FLESK: duppe
+        run: |
+          echo Deployment status for $GITHUB_SHA on $GITHUB_REF
+          echo Print environment
+          printenv
+

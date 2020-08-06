@@ -17,6 +17,8 @@ jobs:
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
+      - name: check if equal
+        run: git diff origin/master // hvis disse er like exit
       - name: Update branch
         run: git merge origin/master
       - name: install
