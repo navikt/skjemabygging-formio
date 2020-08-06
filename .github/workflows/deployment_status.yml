@@ -1,3 +1,4 @@
+name: deployment status on heroku
 on:
   deployment_status
 jobs:
@@ -9,6 +10,6 @@ jobs:
           FLESK: duppe
         run: |
           echo Deployment status for $GITHUB_SHA on $GITHUB_REF
-          echo Print environment
+          cat $GITHUB_EVENT_PATH
           printenv
 
