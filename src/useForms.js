@@ -51,9 +51,7 @@ export const useForms = (formio, store, flashSuccessMessage) => {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: payload,
-    })
-      .then(console.log)
-      .catch(() => console.log("Noe gikk galt"));
+    }).then(console.log);
   };
   return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish };
 };

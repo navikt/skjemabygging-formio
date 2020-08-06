@@ -48,11 +48,11 @@ export function getShaIfFormIsPreviouslyPublished(listOfForms, formFileName) {
   return previouslyPublishedForm ? previouslyPublishedForm.sha : undefined;
 }
 
-export async function publishUpdateToForm(formFileName, formContent, sha, gitUrl, token) {
+export async function publishUpdateToForm(formFileName, formContent, shaOfPreviouslyPublished, gitUrl, token) {
   const updateFileContent = {
     message: `Oppdatert versjon av ${formFileName}`,
     content: stringTobase64(JSON.stringify(formContent)),
-    sha: sha,
+    sha: shaOfPreviouslyPublished,
   };
 
   const result = await createOrUpdateFormInGH(formFileName, updateFileContent, gitUrl, token);
