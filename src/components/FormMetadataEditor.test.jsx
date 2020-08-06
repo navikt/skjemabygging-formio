@@ -1,6 +1,6 @@
 import { FormMetadataEditor } from "./FormMetadataEditor";
 import React from "react";
-import { render, screen, waitForDomChange } from "@testing-library/react";
+import { render, screen, waitForDomChange, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import waitForExpect from "wait-for-expect";
 import { FakeBackend } from "../fakeBackend/FakeBackend";
@@ -19,10 +19,14 @@ describe("FormMetadataEditor", () => {
 
   it("should update form when title is changed", async () => {
     const { rerender } = render(<FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />);
-    await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
 
+    await userEvent.clear(screen.getByRole("textbox", { name: /Tittel/i }));
+    const clearedForm = { ...fakeBackend.form(), title: "" };
+    await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith(clearedForm));
+
+    rerender(<FormMetadataEditor form={clearedForm} onChange={mockOnChange} />);
+    await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
     const updatedForm = { ...fakeBackend.form(), title: "Søknad om førerhund" };
-    await waitForExpect(() => expect(mockOnChange).toHaveBeenCalledWith(updatedForm));
 
     rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
     expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund");
@@ -57,19 +61,13 @@ describe("FormMetadataEditor", () => {
     render(
       <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp
-            flashSuccessMessage={jest.fn()}
-            formio={{}}
-            store={{ forms: [fakeBackend.form()] }} />
+          <AuthenticatedApp flashSuccessMessage={jest.fn()} formio={{}} store={{ forms: [fakeBackend.form()] }} />
         </AuthContext.Provider>
       </MemoryRouter>
     );
     let titleFelt = await screen.findByRole("textbox", { name: /Tittel/i });
+    await userEvent.clear(titleFelt);
     await userEvent.type(titleFelt, "Søknad om førerhund");
-    await waitForDomChange().then(() =>
-      expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund")
-    );
-    // Receives infinite loop warning from EventEmitter because the NavFormBuilder is updated before the formiojs
-    // builder is ready (we assume this)
+    await waitFor(() => expect(titleFelt).toHaveValue("Søknad om førerhund"));
   });
 });
