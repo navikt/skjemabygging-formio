@@ -1,8 +1,9 @@
 import * as fetchUtils from "./fetchUtils";
 import {checkPublishingAccess} from "./publishingService";
+import sinon from "sinon";
 
 describe('CheckPublishingAccess', () => {
-  it('calls URL with correct parameters', async () => {
+  xit('calls URL with correct parameters', async () => {
     const stub = sinon.stub(fetchUtils, 'fetchWithErrorHandling'); //add stub
     stub.returns({status: "OK", data: {}});
 
