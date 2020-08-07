@@ -1,4 +1,4 @@
-import { FakeBackendTestContext } from "./testTools/FakeBackendTestContext";
+import { FakeBackendTestContext } from "./testTools/frontend/FakeBackendTestContext";
 import { Formio } from "formiojs";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";

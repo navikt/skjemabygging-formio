@@ -1,6 +1,6 @@
-import {FakeBackend} from "../fakeBackend/FakeBackend";
-import {InprocessQuipApp} from "../fakeBackend/InprocessQuipApp";
-import {dispatcherWithBackend} from "../fakeBackend/fakeWebApp";
+import {FakeBackend} from "../../fakeBackend/FakeBackend";
+import {InprocessQuipApp} from "../../fakeBackend/InprocessQuipApp";
+import {dispatcherWithBackend} from "../../fakeBackend/fakeWebApp";
 import {TestContext} from "./TestContext";
 
 export class FakeBackendTestContext extends TestContext {

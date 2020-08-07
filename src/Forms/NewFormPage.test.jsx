@@ -7,7 +7,7 @@ import {AuthContext} from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
 import {Hovedknapp} from "nav-frontend-knapper";
 import React from "react";
-import {FakeBackendTestContext} from "../testTools/FakeBackendTestContext";
+import {FakeBackendTestContext} from "../testTools/frontend/FakeBackendTestContext";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();

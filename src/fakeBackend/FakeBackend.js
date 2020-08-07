@@ -1,5 +1,5 @@
-import form from '../testTools/json/Form.json';
-import loginform from '../testTools/json/LoginForm';
+import form from '../testTools/frontend/json/Form.json';
+import loginform from '../testTools/frontend/json/LoginForm';
 
 export class FakeBackend {
   constructor() {
