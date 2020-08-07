@@ -4,12 +4,26 @@ on:
 jobs:
   my-deployment-status_job:
     runs-on: ubuntu-latest
+    env:
+      PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
+      PUSHER_APP_KEY: ${{ secrets
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Disk cache for npm ?
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Debug print
-        env:
-          FLESK: duppe
         run: |
           echo Deployment status for $GITHUB_SHA on $GITHUB_REF
           cat $GITHUB_EVENT_PATH
           printenv
+          echo Node version `node --version`
+      - name: Send pusher event
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-event.js
+
 
