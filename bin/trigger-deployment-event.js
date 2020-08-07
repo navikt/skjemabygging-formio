@@ -12,12 +12,12 @@ function pusherAppValue(name) {
 const pusherApp = {
   appId: pusherAppValue('id'),
   key: pusherAppValue('key'),
-  secret: pusherAppValue('secret')
+  secret: pusherAppValue('secret'),
+  cluster: pusherAppValue('cluster')
 }
 
 const pusher = new Pusher({
   ...pusherApp,
-  cluster: 'mt1',
   useTLS: true
 });
 
@@ -26,11 +26,11 @@ const message = JSON.parse(jsonString);
 
 if (message.deployment_status) {
   console.log('sending the following message', message.deployment_status);
-  pusher.trigger('my-channel', 'my-event', {
+  pusher.trigger('deployment', 'status', {
     'message': message.deployment_status,
   });
 } else {
-  pusher.trigger('my-channel', 'my-event', {
+  pusher.trigger('deployment', 'created', {
     'message': message.deployment,
   });
 }
