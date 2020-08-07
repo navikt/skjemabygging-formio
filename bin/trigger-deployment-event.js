@@ -24,8 +24,14 @@ const pusher = new Pusher({
 const jsonString = fs.readFileSync(0, 'utf-8');
 const message = JSON.parse(jsonString);
 
-console.log('sending the following message', message.deployment_status);
+if (message.deployment_status) {
+  console.log('sending the following message', message.deployment_status);
+  pusher.trigger('my-channel', 'my-event', {
+    'message': message.deployment_status,
+  });
+} else {
+  pusher.trigger('my-channel', 'my-event', {
+    'message': message.deployment,
+  });
+}
 
-pusher.trigger('my-channel', 'my-event', {
-  'message': message.deployment_status,
-});

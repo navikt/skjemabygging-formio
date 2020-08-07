@@ -1,8 +1,8 @@
-name: deployment status on heroku
+name: Deployment status from heroku
 on:
   deployment_status
 jobs:
-  my-deployment-status_job:
+  my-deployment-status-job:
     runs-on: ubuntu-latest
     env:
       PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
@@ -24,6 +24,7 @@ jobs:
           cat $GITHUB_EVENT_PATH
           printenv
           echo Node version `node --version`
+      - run: npm ci
       - name: Send pusher event
         run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-event.js
 

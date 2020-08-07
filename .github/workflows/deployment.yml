@@ -1,15 +1,30 @@
-name: deployment on heroku
+name: Deployment started on heroku
 on:
   deployment
 jobs:
   my-deployment-job:
     runs-on: ubuntu-latest
+    env:
+      PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
+      PUSHER_APP_KEY: ${{ secrets.PUSHER_APP_KEY }}
+      PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Disk cache for npm ?
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Debug print
-        env:
-          FLESK: duppe
         run: |
           echo Deployment for $GITHUB_SHA on $GITHUB_REF
           cat $GITHUB_EVENT_PATH
           printenv
+          echo Node version `node --version`
+      - run: npm ci
+      - name: Send pusher event
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-event.js
 
