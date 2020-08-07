@@ -4,7 +4,7 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import {useAuth} from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
-import {AlertStripeFeil, AlertStripeInfo, AlertStripeSuksess} from 'nav-frontend-alertstriper';
+import {AlertStripeFeil, AlertStripeSuksess} from 'nav-frontend-alertstriper';
 import {Xknapp} from 'nav-frontend-ikonknapper';
 // import navCssVariabler from 'nav-frontend-core';
 
@@ -41,14 +41,17 @@ const ErrorAlert = ({exception, onClose}) => <AlertStripeFeil>
 
 const DeploymentAlert = ({message, onClose}) => {
   console.log('Deployment alert', message);
-  return <AlertStripeInfo>
+  const isFailure = message.message.state !== 'success';
+  const ThisAlertStripe = isFailure ? AlertStripeFeil : AlertStripeSuksess;
+  return <ThisAlertStripe>
     <ErrorAlertContent>
+      <h3>{isFailure ? "Krise og Angst" : "Sol og regn og latter og sang!"}</h3>
       <p>
-        {JSON.stringify(message)}
+
       </p>
       <Xknapp type="flat" onClick={onClose}/>
     </ErrorAlertContent>
-  </AlertStripeInfo>
+  </ThisAlertStripe>
 }
 
 
@@ -67,7 +70,7 @@ function AppWrapper({error, clearError, flashMessage, deploymentMessage, clearDe
   </>
 }
 
-function App({projectURL, store, channel}) {
+function App({projectURL, store, deploymentChannel}) {
   const [error, setError] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   const [deploymentMessage, setDeploymentMessage] = useState(null);
@@ -76,11 +79,11 @@ function App({projectURL, store, channel}) {
     return () => window.removeEventListener("unhandledrejection", setError);
   }, []);
   useEffect(() => {
-    channel.bind('my-event', (data) => {
+    deploymentChannel.bind('status', (data) => {
       setDeploymentMessage(data);
     });
-    return () => channel.unbind('my-event');
-  }, [channel]);
+    return () => deploymentChannel.unbind('status');
+  }, [deploymentChannel]);
   const {userData} = useAuth();
   const flashSuccessMessage = (message) => {
     setFlashMessage(message);

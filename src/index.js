@@ -14,19 +14,20 @@ const store = { forms: null };
 
 Pusher.logToConsole = true;
 
-const pusher_key = process.env.REACT_APP_PUSHER_KEY;
+const pusherAppKey = process.env.REACT_APP_PUSHER_KEY;
+const pusherAppCluster = process.env.REACT_APP_PUSHER_CLUSTER;
 
-var pusher = new Pusher(pusher_key, {
-  cluster: 'mt1'
+var pusher = new Pusher(pusherAppKey, {
+  cluster: pusherAppCluster
 });
 
-var channel = pusher.subscribe('my-channel');
+var deploymentChannel = pusher.subscribe('deployment');
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <AppProviders>
-        <App store={store} projectURL={projectURL} channel={channel} />
+        <App store={store} projectURL={projectURL} deploymentChannel={deploymentChannel} />
       </AppProviders>
     </BrowserRouter>
   </React.StrictMode>,
