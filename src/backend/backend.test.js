@@ -122,8 +122,8 @@ describe("Backend", () => {
 
   //Passer disse inn??
   it("finds SHA from list of forms and tries to publish an update", async () => {
-    const spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
-    const spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");
+    let spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
+    let spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
@@ -133,11 +133,14 @@ describe("Backend", () => {
 
     expect(spyUpdateFunction).toHaveBeenCalledTimes(1);
     expect(spyCreateFunction).toHaveBeenCalledTimes(0);
+
+    spyUpdateFunction.mockReset();
+    spyCreateFunction.mockReset();
   });
 
   it("finds no matching SHA and tries to publish new form", async () => {
-    const spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
-    const spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");
+    let spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
+    let spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
@@ -147,5 +150,8 @@ describe("Backend", () => {
 
     expect(spyUpdateFunction).toHaveBeenCalledTimes(0);
     expect(spyCreateFunction).toHaveBeenCalledTimes(1);
+
+    spyCreateFunction.mockReset();
+    spyUpdateFunction.mockReset();
   });
 });
