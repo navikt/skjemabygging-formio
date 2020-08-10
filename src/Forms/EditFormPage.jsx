@@ -44,7 +44,6 @@ var style = {
 
 const NoScrollWrapper = styled("div")({
   backgroundColor: "white",
-  position: "-webkit-sticky", /* Safari */
   position: "sticky",
   top: "0",
   zIndex: 1
