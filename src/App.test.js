@@ -1,11 +1,11 @@
-import { FakeBackendTestContext } from "./testTools/FakeBackendTestContext";
-import { Formio } from "formiojs";
+import {FakeBackendTestContext} from "./testTools/FakeBackendTestContext";
+import {Formio} from "formiojs";
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
-import { renderHook } from "@testing-library/react-hooks";
+import {MemoryRouter} from "react-router-dom";
+import {renderHook} from "@testing-library/react-hooks";
 import NavForm from "./components/NavForm.jsx";
-import { useForms } from "./useForms";
-import { AuthContext } from "./context/auth-context";
+import {useForms} from "./useForms";
+import {AuthContext} from "./context/auth-context";
 import App from "./App";
 import Formiojs from "formiojs/Formio";
 
@@ -18,7 +18,7 @@ describe("App", () => {
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
-    formStore = { forms: null };
+    formStore = {forms: null};
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
@@ -28,8 +28,19 @@ describe("App", () => {
     let formElement;
     context.render(
       <MemoryRouter initialEntries={["/"]}>
-        <AuthContext.Provider value={{ userData: null, login: () => {}, logout: () => {} }}>
-          <App store={formStore} projectURL="http://myproject.example.org" />
+        <AuthContext.Provider value={{
+          userData: null, login: () => {
+          }, logout: () => {
+          }
+        }}>
+          <App
+            store={formStore}
+            projectURL="http://myproject.example.org"
+            deploymentChannel={{
+              bind: () => console.log('flesk flesk'),
+              unbind: () => console.log('bacon bacon')
+            }}
+          />
         </AuthContext.Provider>
       </MemoryRouter>,
       {
@@ -47,7 +58,7 @@ describe("App", () => {
   });
 
   it("loads all forms in the hook", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useForms(new Formiojs("http://myproject.example.org"), formStore));
+    const {result, waitForNextUpdate} = renderHook(() => useForms(new Formiojs("http://myproject.example.org"), formStore));
     expect(formStore.forms).toEqual(null);
     await waitForNextUpdate();
     expect(result.current.forms).toEqual(context.backend.allForms);
