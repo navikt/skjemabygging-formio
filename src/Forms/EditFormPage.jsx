@@ -55,7 +55,6 @@ export function EditFormPage({form, testFormUrl, logout, onSave, onChange, onPub
     <>
       <NoScrollWrapper>
         <NavBar title={title} visSkjemaliste={true} />
-      </NoScrollWrapper>
       <EditWrapper>
         <LeftCol>
           <div style={style}><SkjemaVisningSelect form={form} onChange={onChange} /></div>
@@ -67,6 +66,7 @@ export function EditFormPage({form, testFormUrl, logout, onSave, onChange, onPub
         </MainCol>
         <RightCol />
       </EditWrapper>
+      </NoScrollWrapper>
       <Pagewrapper>
         <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions}/>
 
