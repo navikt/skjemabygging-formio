@@ -1,5 +1,5 @@
 import {NavBar} from "../components/NavBar";
-import {Pagewrapper, CenterAlignedActionRow} from "./components";
+import {Pagewrapper} from "./components";
 import {Link} from "react-router-dom";
 import {SkjemaVisningSelect} from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
@@ -30,7 +30,6 @@ const LeftCol = styled("div") ({
   display: "flex",
 });
 
-// Ikke i bruk ennå, men jeg lar den stå til senere..
 const RightCol = styled("div") ({
   gridColumn: "3",
   gridRow: "2",
@@ -57,6 +56,7 @@ export function EditFormPage({form, testFormUrl, logout, onSave, onChange, onPub
           <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
           <Knapp onClick={() => onPublish(form)}>Publiser skjema</Knapp>
         </MainCol>
+        <RightCol />
       </EditWrapper>
       <Pagewrapper>
         <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions}/>
