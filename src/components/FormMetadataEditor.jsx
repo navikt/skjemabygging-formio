@@ -50,6 +50,25 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}) => {
   );
 }
 
+export const SkjemaVisningSelect = ({form, onChange}) => {
+  const {display} = form;
+  return (
+    <Select
+      label="Vis som"
+      name="form-display"
+      id="form-display"
+      value={display}
+      onChange={event => onChange({...form, display: event.target.value})}
+    >
+      <option label="Skjema" value="form">
+        Skjema
+      </option>
+      <option label="Veiviser" value="wizard">
+        Veiviser
+      </option>
+    </Select>
+  );
+}
 export const CreationFormMetadataEditor = ({form, onChange}) =>
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={'create'}/>;
 
