@@ -64,12 +64,14 @@ describe("FormMetadataEditor", () => {
         </AuthContext.Provider>
       </MemoryRouter>
     );
-    let titleFelt = await screen.findByRole("textbox", { name: /Tittel/i });
-    await userEvent.type(titleFelt, "Søknad om førerhund");
+    let visningsModus = await screen.getByLabelText(/Vis som/i);
+    expect(visningsModus).toHaveValue("form")
+    await userEvent.selectOptions(visningsModus, "wizard");
     await waitForDomChange().then(() =>
-      expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund")
+      expect(visningsModus).toHaveValue("wizard")
     );
     // Receives infinite loop warning from EventEmitter because the NavFormBuilder is updated before the formiojs
     // builder is ready (we assume this)
   });
 });
+
