@@ -17,11 +17,11 @@ Pusher.logToConsole = true;
 const pusherAppKey = process.env.REACT_APP_PUSHER_KEY;
 const pusherAppCluster = process.env.REACT_APP_PUSHER_CLUSTER;
 
-var pusher = new Pusher(pusherAppKey, {
+const pusher = new Pusher(pusherAppKey, {
   cluster: pusherAppCluster
 });
 
-var deploymentChannel = pusher.subscribe('deployment');
+const deploymentChannel = pusher.subscribe("deployment");
 
 ReactDOM.render(
   <React.StrictMode>

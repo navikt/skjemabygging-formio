@@ -39,8 +39,8 @@ describe("App", () => {
             store={formStore}
             projectURL="http://myproject.example.org"
             deploymentChannel={{
-              bind: () => console.log("flesk flesk"),
-              unbind: () => console.log("bacon bacon"),
+              bind: jest.fn(),
+              unbind: jest.fn(),
             }}
           />
         </AuthContext.Provider>

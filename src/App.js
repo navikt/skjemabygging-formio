@@ -41,7 +41,6 @@ const ErrorAlert = ({ exception, onClose }) => (
 );
 
 const DeploymentAlert = ({ message, onClose }) => {
-  console.log("Deployment alert", message);
   const isFailure = message.message.state !== "success";
   const ThisAlertStripe = isFailure ? AlertStripeFeil : AlertStripeSuksess;
   return (
