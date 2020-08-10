@@ -42,11 +42,20 @@ var style = {
   width: "150px",
 };
 
+const NoScrollWrapper = styled("div")({
+  backgroundColor: "white",
+  position: "sticky",
+  top: "0",
+  zIndex: 1
+});
+
 export function EditFormPage({form, testFormUrl, logout, onSave, onChange, onPublish}) {
   const title = `${form.title}`
   return (
     <>
-      <NavBar title={title} visSkjemaliste={true} />
+      <NoScrollWrapper>
+        <NavBar title={title} visSkjemaliste={true} />
+      </NoScrollWrapper>
       <EditWrapper>
         <LeftCol>
           <div style={style}><SkjemaVisningSelect form={form} onChange={onChange} /></div>
