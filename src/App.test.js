@@ -12,6 +12,11 @@ import Formiojs from "formiojs/Formio";
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
+const createFakeChannel = () => ({
+  bind: jest.fn(),
+  unbind: jest.fn(),
+});
+
 describe("App", () => {
   let oldFormioFetch;
   let formStore;
@@ -38,10 +43,8 @@ describe("App", () => {
           <App
             store={formStore}
             projectURL="http://myproject.example.org"
-            deploymentChannel={{
-              bind: jest.fn(),
-              unbind: jest.fn(),
-            }}
+            buildAbortedChannel={createFakeChannel()}
+            deploymentChannel={createFakeChannel()}
           />
         </AuthContext.Provider>
       </MemoryRouter>,
