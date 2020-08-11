@@ -28,17 +28,30 @@ describe("App", () => {
     let formElement;
     context.render(
       <MemoryRouter initialEntries={["/"]}>
-        <AuthContext.Provider value={{ userData: null, login: () => {}, logout: () => {} }}>
-          <App store={formStore} projectURL="http://myproject.example.org" />
+        <AuthContext.Provider
+          value={{
+            userData: null,
+            login: () => {},
+            logout: () => {},
+          }}
+        >
+          <App
+            store={formStore}
+            projectURL="http://myproject.example.org"
+            deploymentChannel={{
+              bind: jest.fn(),
+              unbind: jest.fn(),
+            }}
+          />
         </AuthContext.Provider>
       </MemoryRouter>,
       {
-        createNodeMock: element => {
+        createNodeMock: (element) => {
           if (element.props["data-testid"] === "formMountElement") {
             formElement = document.createElement("div");
             return formElement;
           }
-        }
+        },
       }
     );
     await context.waitForComponent(NavForm); // Misvisende - must investigate
@@ -47,7 +60,9 @@ describe("App", () => {
   });
 
   it("loads all forms in the hook", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useForms(new Formiojs("http://myproject.example.org"), formStore));
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useForms(new Formiojs("http://myproject.example.org"), formStore)
+    );
     expect(formStore.forms).toEqual(null);
     await waitForNextUpdate();
     expect(result.current.forms).toEqual(context.backend.allForms);

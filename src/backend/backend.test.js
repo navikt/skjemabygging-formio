@@ -120,7 +120,6 @@ describe("Backend", () => {
     expect(result.status).toBe("FAILED");
   });
 
-  //Passer disse inn??
   it("finds SHA from list of forms and tries to publish an update", async () => {
     let spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
     let spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");

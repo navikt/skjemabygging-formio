@@ -65,9 +65,11 @@ describe("FormMetadataEditor", () => {
         </AuthContext.Provider>
       </MemoryRouter>
     );
-    let titleFelt = await screen.findByRole("textbox", { name: /Tittel/i });
-    await userEvent.clear(titleFelt);
-    await userEvent.type(titleFelt, "Søknad om førerhund");
-    await waitFor(() => expect(titleFelt).toHaveValue("Søknad om førerhund"));
+    let visningsModus = await screen.getByLabelText(/Vis som/i);
+    expect(visningsModus).toHaveValue("form")
+    await userEvent.selectOptions(visningsModus, "wizard");
+    await waitFor(() =>
+      expect(visningsModus).toHaveValue("wizard")
+    );
   });
 });

@@ -1,34 +1,75 @@
-import {MenuLink, NavBar} from "../components/NavBar";
-import {Pagewrapper, RightAlignedActionRow} from "./components";
+import {NavBar} from "../components/NavBar";
+import {Pagewrapper} from "./components";
 import {Link} from "react-router-dom";
-import {FormMetadataEditor} from "../components/FormMetadataEditor";
+import {SkjemaVisningSelect} from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
 import React from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
+import {styled} from "@material-ui/styles";
+
+const EditWrapper = styled("div")({
+  display: "grid",
+  gridTemplateColumns: "1fr 4fr 1fr",
+  gridTemplateRows: "30px 50px 10px",
+  columnGap: "20px"
+});
+
+const MainCol = styled("div")({
+  gridColumn: "2",
+  gridRow: "2",
+  alignSelf: "end",
+  justifySelf: "center"
+});
+
+const LeftCol = styled("div") ({
+  gridColumn: "1",
+  gridRow: "2",
+  alignSelf: "end",
+  justifySelf: "center",
+  display: "flex",
+});
+
+const RightCol = styled("div") ({
+  gridColumn: "3",
+  gridRow: "2",
+  alignSelf: "end",
+  justifySelf: "center"
+});
+
+// Midlertidig styling av <SkjemaVisningSelect> :p
+var style = {
+  width: "150px",
+};
+
+const NoScrollWrapper = styled("div")({
+  backgroundColor: "white",
+  position: "sticky",
+  top: "0",
+  zIndex: 1
+});
 
 export function EditFormPage({form, testFormUrl, logout, onSave, onChange, onPublish}) {
-  const title = `Rediger skjema: ${form.title}`
+  const title = `${form.title}`
   return (
     <>
-      <NavBar title={title}>
-        <MenuLink to="/forms">Skjemaer</MenuLink>
-        <MenuLink to="/" onClick={logout}>
-          Logg ut
-        </MenuLink>
-      </NavBar>
-      <Pagewrapper>
-        <RightAlignedActionRow>
-          <button onClick={() => onSave(form)}>Lagre skjema</button>
-          <Link to={testFormUrl}>Test skjema</Link>
-        </RightAlignedActionRow>
-        <FormMetadataEditor form={form} onChange={onChange}/>
-        <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions}/>
-        <RightAlignedActionRow>
+      <NoScrollWrapper>
+        <NavBar title={title} visSkjemaliste={true} />
+      <EditWrapper>
+        <LeftCol>
+          <div style={style}><SkjemaVisningSelect form={form} onChange={onChange} /></div>
+        </LeftCol>
+        <MainCol>
+          <Link className="knapp" to={testFormUrl}>Test skjema</Link>
           <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
-          <Link to={testFormUrl}>Test skjema</Link>
           <Knapp onClick={() => onPublish(form)}>Publiser skjema</Knapp>
-        </RightAlignedActionRow>
+        </MainCol>
+        <RightCol />
+      </EditWrapper>
+      </NoScrollWrapper>
+      <Pagewrapper>
+        <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions}/>
+
       </Pagewrapper>
     </>
   );
