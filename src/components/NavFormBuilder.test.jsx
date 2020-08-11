@@ -1,5 +1,5 @@
 import React from "react";
-import {FakeBackendTestContext} from "../testTools/FakeBackendTestContext";
+import {FakeBackendTestContext} from "../testTools/frontend/FakeBackendTestContext";
 import NavFormBuilder from "./NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import {isEqual, cloneDeep} from "lodash";

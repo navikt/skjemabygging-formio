@@ -1,5 +1,5 @@
-import {fetchWithErrorHandling, stringTobase64} from "./fetchUtils.js";
-import jwt from 'jsonwebtoken';
+import { fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
+import jwt from "jsonwebtoken";
 
 export async function checkPublishingAccess(userToken, projectUrl) {
   //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
@@ -17,11 +17,11 @@ export async function getGithubToken(ghAppID, ghKey, ghInstallationID, gitUrl) {
   const timeInSeconds = Math.floor(timeInMillis / 1000);
   const payload = {
     iat: timeInSeconds,
-    exp: timeInSeconds + (10 * 60),
-    iss: ghAppID
+    exp: timeInSeconds + 10 * 60,
+    iss: ghAppID,
   };
 
-  const token = await jwt.sign(payload, ghKey, { algorithm: 'RS256' });
+  const token = await jwt.sign(payload, ghKey, { algorithm: "RS256" });
   return fetchWithErrorHandling(`${gitUrl}app/installations/${ghInstallationID}/access_tokens`, {
     method: "post",
     headers: {
@@ -38,7 +38,7 @@ export async function getListOfPreviouslyPublishedForms(gitUrl, ghToken) {
     headers: {
       Authorization: "token " + ghToken,
       "Content-Type": "application/json",
-      Accept: "application/vnd.github.machine-man-preview+json"
+      Accept: "application/vnd.github.machine-man-preview+json",
     },
   });
 }
@@ -58,7 +58,7 @@ export async function publishUpdateToForm(formFileName, formContent, shaOfPrevio
   const result = await createOrUpdateFormInGH(formFileName, updateFileContent, gitUrl, token);
   if (result.status !== "OK") {
     console.error("Klarte ikke å publisere oppdatering av form i github, ", result.statusText);
-    return { status: "FAILED" }
+    return { status: "FAILED" };
   }
   return result;
 }
@@ -72,7 +72,7 @@ export async function publishNewForm(formFileName, formContent, gitUrl, ghToken)
   const result = await createOrUpdateFormInGH(formFileName, newFileContent, gitUrl, ghToken);
   if (result.status !== "OK") {
     console.error("Klarte ikke å publisere nytt form i github, status: ", result.status);
-    return { status: "FAILED" }
+    return { status: "FAILED" };
   }
   return result;
 }
@@ -86,8 +86,7 @@ async function createOrUpdateFormInGH(formFileName, body, gitUrl, ghToken) {
     headers: {
       Authorization: "token " + ghToken,
       "Content-Type": "application/json",
-      Accept: "application/vnd.github.machine-man-preview+json"
+      Accept: "application/vnd.github.machine-man-preview+json",
     },
   });
 }
-

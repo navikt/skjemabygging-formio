@@ -1,7 +1,7 @@
 import NewFormPage from "./NewFormPage";
 import NavFormBuilder from "../components/NavFormBuilder";
 import waitForExpect from "wait-for-expect";
-import {FakeBackendTestContext} from "../testTools/FakeBackendTestContext";
+import {FakeBackendTestContext} from "../testTools/frontend/FakeBackendTestContext";
 import {Link, MemoryRouter} from "react-router-dom";
 import {AuthContext} from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";

@@ -24,6 +24,22 @@ export class Backend {
     return this.projectURL;
   }
 
+  getGitURL() {
+    return this.gitUrl;
+  }
+
+  getGHKey() {
+    return this.ghKey;
+  }
+
+  getGHAppID() {
+    return this.ghAppID;
+  }
+
+  getGHInstallationID() {
+    return this.ghInstallationID;
+  }
+
   async publishForm(userToken, form, formPath) {
     const access = await checkPublishingAccess(userToken, this.getProjectURL());
     if (access.status !== "OK") {
@@ -32,7 +48,7 @@ export class Backend {
 
     const githubTokenResponse = await getGithubToken(this.ghAppID, this.ghKey, this.ghInstallationID, this.gitUrl);
     if (githubTokenResponse.status !== "OK") {
-      return githubTokenResponse;
+      return { status: "FAILED" };
     }
 
     const githubToken = githubTokenResponse.data.token;
