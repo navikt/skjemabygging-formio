@@ -1,7 +1,7 @@
 import {styled} from "@material-ui/styles";
 
 export const Pagewrapper = styled("div")({
-    padding: "2rem"
+    padding: "2rem",
 });
 export const CenterAlignedActionRow = styled('div')({
     display: "flex",
