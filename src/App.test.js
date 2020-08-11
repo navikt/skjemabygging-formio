@@ -9,5 +9,5 @@ const flesk = {_id: 'flesk', title: 'flesk'};
 test('renders learn react link', () => {
   const { getByText } = render(<BrowserRouter><App forms={[fisk, flesk]} /></BrowserRouter>);
   const linkElement = getByText(/Velg et skjema/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(linkElement).not.toBeInTheDocument();
 });
