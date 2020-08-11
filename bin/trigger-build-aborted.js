@@ -26,5 +26,5 @@ const message = JSON.parse(jsonString);
 
 console.log('sending the following message', message);
 
-pusher.trigger('build-aborted', 'event', message);
+pusher.trigger('build-aborted', 'event', {commit: message.head_commit});
 
