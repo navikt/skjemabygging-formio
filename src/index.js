@@ -20,9 +20,6 @@ const pusher = new Pusher(pusherAppKey, {
   cluster: pusherAppCluster,
 });
 
-const deploymentChannel = pusher.subscribe("deployment");
-const buildAbortedChannel = pusher.subscribe("build-aborted");
-
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -30,8 +27,7 @@ ReactDOM.render(
         <App
           store={store}
           projectURL={projectURL}
-          deploymentChannel={deploymentChannel}
-          buildAbortedChannel={buildAbortedChannel}
+          pusher={pusher}
         />
       </AppProviders>
     </BrowserRouter>

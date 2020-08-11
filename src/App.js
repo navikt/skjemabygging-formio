@@ -100,7 +100,7 @@ function AppWrapper({
   );
 }
 
-function App({ projectURL, store, deploymentChannel, buildAbortedChannel }) {
+function App({ projectURL, store, pusher }) {
   const [error, setError] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   const [deploymentMessage, setDeploymentMessage] = useState(null);
@@ -110,17 +110,19 @@ function App({ projectURL, store, deploymentChannel, buildAbortedChannel }) {
     return () => window.removeEventListener("unhandledrejection", setError);
   }, []);
   useEffect(() => {
+    const deploymentChannel = pusher.subscribe("deployment");
     deploymentChannel.bind("status", (data) => {
       setDeploymentMessage(data);
     });
     return () => deploymentChannel.unbind("status");
-  }, [deploymentChannel]);
+  }, [pusher]);
   useEffect(() => {
+    const buildAbortedChannel = pusher.subscribe("build-aborted");
     buildAbortedChannel.bind("event", (data) => {
       setBuildAbortedMessage(data);
     });
     return () => buildAbortedChannel.unbind("event");
-  }, [buildAbortedChannel]);
+  }, [pusher]);
   const { userData } = useAuth();
   const flashSuccessMessage = (message) => {
     setFlashMessage(message);

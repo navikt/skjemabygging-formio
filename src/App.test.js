@@ -43,8 +43,7 @@ describe("App", () => {
           <App
             store={formStore}
             projectURL="http://myproject.example.org"
-            buildAbortedChannel={createFakeChannel()}
-            deploymentChannel={createFakeChannel()}
+            pusher={{subscribe: (name) => createFakeChannel()}}
           />
         </AuthContext.Provider>
       </MemoryRouter>,
