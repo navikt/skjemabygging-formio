@@ -6,9 +6,7 @@ import Formiojs from "formiojs/Formio";
 import styled from "@material-ui/styles/styled";
 import { AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
 import { Xknapp } from "nav-frontend-ikonknapper";
-// import navCssVariabler from 'nav-frontend-core';
-
-const navMorkGra = "#3E3832";
+import navCssVariabler from "nav-frontend-core";
 
 const AlertContainer = styled(({ ...props }) => <aside aria-live="polite" {...props} />)({
   position: "fixed",
@@ -24,9 +22,9 @@ const ErrorAlertContent = styled("div")({
     margin: 0,
   },
   "& .knapp": {
-    color: navMorkGra,
+    color: navCssVariabler.navMorkGra,
     "& svg": {
-      fill: navMorkGra,
+      fill: navCssVariabler.navMorkGra,
     },
   },
 });
@@ -54,11 +52,40 @@ const DeploymentAlert = ({ message, onClose }) => {
   );
 };
 
-function AppWrapper({ error, clearError, flashMessage, deploymentMessage, clearDeploymentMessage, children }) {
+const BuildAbortedAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeFeil>
+      <ErrorAlertContent>
+        <div>
+          <h3>Bygge feil</h3>
+          <p>
+            <a href={message.commit.url}>git url</a>
+          </p>
+          <p>Commit melding: {message.commit.message}</p>
+        </div>
+        <Xknapp type="flat" onClick={onClose} />
+      </ErrorAlertContent>
+    </AlertStripeFeil>
+  );
+};
+
+function AppWrapper({
+  error,
+  clearError,
+  flashMessage,
+  deploymentMessage,
+  clearDeploymentMessage,
+  buildAbortedMessage,
+  clearBuildAbortedMessage,
+  children,
+}) {
   const maybeErrorView = error ? <ErrorAlert exception={error.reason} onClose={clearError} /> : null;
   const maybeFlashMessageView = flashMessage ? <AlertStripeSuksess>{flashMessage}</AlertStripeSuksess> : null;
   const maybeDeploymentMessage = deploymentMessage ? (
     <DeploymentAlert message={deploymentMessage} onClose={clearDeploymentMessage} />
+  ) : null;
+  const maybeBuildAbortedMessage = buildAbortedMessage ? (
+    <BuildAbortedAlert message={buildAbortedMessage} onClose={clearBuildAbortedMessage} />
   ) : null;
   return (
     <>
@@ -66,16 +93,18 @@ function AppWrapper({ error, clearError, flashMessage, deploymentMessage, clearD
         {maybeErrorView}
         {maybeFlashMessageView}
         {maybeDeploymentMessage}
+        {maybeBuildAbortedMessage}
       </AlertContainer>
       <section>{children}</section>
     </>
   );
 }
 
-function App({ projectURL, store, deploymentChannel }) {
+function App({ projectURL, store, deploymentChannel, buildAbortedChannel }) {
   const [error, setError] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   const [deploymentMessage, setDeploymentMessage] = useState(null);
+  const [buildAbortedMessage, setBuildAbortedMessage] = useState(null);
   useEffect(() => {
     window.addEventListener("unhandledrejection", setError);
     return () => window.removeEventListener("unhandledrejection", setError);
@@ -86,6 +115,12 @@ function App({ projectURL, store, deploymentChannel }) {
     });
     return () => deploymentChannel.unbind("status");
   }, [deploymentChannel]);
+  useEffect(() => {
+    buildAbortedChannel.bind("event", (data) => {
+      setBuildAbortedMessage(data);
+    });
+    return () => buildAbortedChannel.unbind("event");
+  }, [buildAbortedChannel]);
   const { userData } = useAuth();
   const flashSuccessMessage = (message) => {
     setFlashMessage(message);
@@ -104,6 +139,8 @@ function App({ projectURL, store, deploymentChannel }) {
       flashMessage={flashMessage}
       deploymentMessage={deploymentMessage}
       clearDeploymentMessage={() => setDeploymentMessage(null)}
+      buildAbortedMessage={buildAbortedMessage}
+      clearBuildAbortedMessage={() => setBuildAbortedMessage(null)}
     >
       {content}
     </AppWrapper>
