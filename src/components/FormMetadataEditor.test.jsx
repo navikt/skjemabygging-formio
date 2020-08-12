@@ -61,7 +61,7 @@ describe("FormMetadataEditor", () => {
     render(
       <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp flashSuccessMessage={jest.fn()} formio={{}} store={{ forms: [fakeBackend.form()] }} />
+          <AuthenticatedApp userAlerter={{flashSuccessMessage: jest.fn()}} formio={{}} store={{ forms: [fakeBackend.form()] }} />
         </AuthContext.Provider>
       </MemoryRouter>
     );

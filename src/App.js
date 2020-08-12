@@ -101,13 +101,13 @@ function AppWrapper({
 }
 
 function App({ projectURL, store, pusher }) {
-  const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [flashMessage, setFlashMessage] = useState(null);
   const [deploymentMessage, setDeploymentMessage] = useState(null);
   const [buildAbortedMessage, setBuildAbortedMessage] = useState(null);
   useEffect(() => {
-    window.addEventListener("unhandledrejection", setError);
-    return () => window.removeEventListener("unhandledrejection", setError);
+    window.addEventListener("unhandledrejection", setErrorMessage);
+    return () => window.removeEventListener("unhandledrejection", setErrorMessage);
   }, []);
   useEffect(() => {
     const deploymentChannel = pusher.subscribe("deployment");
@@ -124,20 +124,24 @@ function App({ projectURL, store, pusher }) {
     return () => buildAbortedChannel.unbind("event");
   }, [pusher]);
   const { userData } = useAuth();
-  const flashSuccessMessage = (message) => {
-    setFlashMessage(message);
-    setTimeout(() => setFlashMessage(null), 5000);
+  const userAlerter = {
+    flashSuccessMessage: (message) => {
+      setFlashMessage(message);
+      setTimeout(() => setFlashMessage(null), 5000);
+    },
+    setErrorMessage
   };
+
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const content = userData ? (
-    <AuthenticatedApp formio={formio} store={store} flashSuccessMessage={flashSuccessMessage} />
+    <AuthenticatedApp formio={formio} store={store} userAlerter={userAlerter} />
   ) : (
     <UnauthenticatedApp projectURL={projectURL} />
   );
   return (
     <AppWrapper
-      error={error}
-      clearError={() => setError(null)}
+      error={errorMessage}
+      clearError={() => setErrorMessage(null)}
       flashMessage={flashMessage}
       deploymentMessage={deploymentMessage}
       clearDeploymentMessage={() => setDeploymentMessage(null)}

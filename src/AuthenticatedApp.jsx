@@ -4,12 +4,16 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 
-function AuthenticatedApp({ formio, store, flashSuccessMessage }) {
-  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(formio, store, flashSuccessMessage);
+function AuthenticatedApp({ formio, store, userAlerter }) {
+  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(
+    formio,
+    store,
+    userAlerter
+  );
 
   const history = useHistory();
-  const wrappedCreate = newForm => {
-    onCreate(newForm).then(savedForm => {
+  const wrappedCreate = (newForm) => {
+    onCreate(newForm).then((savedForm) => {
       history.push(`/forms/${savedForm.path}/edit`);
     });
   };
@@ -38,7 +42,7 @@ function AuthenticatedApp({ formio, store, flashSuccessMessage }) {
 AuthenticatedApp.propTypes = {
   store: PropTypes.object.isRequired,
   formio: PropTypes.object.isRequired,
-  flashSuccessMessage: PropTypes.func.isRequired
+  userAlerter: PropTypes.object.isRequired,
 };
 
 export default AuthenticatedApp;
