@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
-import { FormsRouter } from "./Forms";
+import { FormsRouter } from "./Pages";
 import { useForms } from "./useForms";
 
 function AuthenticatedApp({ formio, store, flashSuccessMessage }) {

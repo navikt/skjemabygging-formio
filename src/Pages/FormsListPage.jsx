@@ -1,8 +1,16 @@
 import { MenuItem, MenuLink, NavBar } from "../components/NavBar";
-import { Pagewrapper, SlettSkjemaKnapp } from "./components";
+import { Pagewrapper } from "../components/Pagewrapper";
 import { Link } from "react-router-dom";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
+import {styled} from "@material-ui/styles";
+
+const SlettSkjemaKnapp = styled("button")({
+  float: "right",
+  outline: "none",
+  border: 0,
+  padding: 0
+});
 
 export function FormsListPage({ logout, forms, url, onDelete, onNew }) {
   /*const testApi = () => {

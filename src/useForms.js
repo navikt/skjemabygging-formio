@@ -45,13 +45,14 @@ export const useForms = (formio, store, flashSuccessMessage) => {
       setForms(forms.filter((each) => each !== form));
     });
   };
-  const onPublish = (form) => {
+  const onPublish = async (form) => {
     const payload = JSON.stringify({ form: form, token: Formiojs.getToken() });
-    fetch(`/api/publish/${form.path}`, {
+    return fetch(`/api/publish/${form.path}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: payload,
-    }).then(console.log);
+    });
   };
+
   return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish };
 };
