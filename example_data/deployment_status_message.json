@@ -1,0 +1,38 @@
+{
+  "message": {
+    "deployment_status": {
+      "created_at": "2020-08-07T07:23:08Z",
+      "creator": {
+        "avatar_url": "https://avatars3.githubusercontent.com/u/736868?v=4",
+        "events_url": "https://api.github.com/users/7er/events{/privacy}",
+        "followers_url": "https://api.github.com/users/7er/followers",
+        "following_url": "https://api.github.com/users/7er/following{/other_user}",
+        "gists_url": "https://api.github.com/users/7er/gists{/gist_id}",
+        "gravatar_id": "",
+        "html_url": "https://github.com/7er",
+        "id": 736868,
+        "login": "7er",
+        "node_id": "MDQ6VXNlcjczNjg2OA==",
+        "organizations_url": "https://api.github.com/users/7er/orgs",
+        "received_events_url": "https://api.github.com/users/7er/received_events",
+        "repos_url": "https://api.github.com/users/7er/repos",
+        "site_admin": false,
+        "starred_url": "https://api.github.com/users/7er/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/7er/subscriptions",
+        "type": "User",
+        "url": "https://api.github.com/users/7er"
+      },
+      "deployment_url": "https://api.github.com/repos/navikt/skjemautfylling-formio/deployments/256233583",
+      "description": "Heroku",
+      "environment": "skjemautfylling-formio",
+      "id": 363043510,
+      "node_id": "MDE2OkRlcGxveW1lbnRTdGF0dXMzNjMwNDM1MTA=",
+      "performed_via_github_app": null,
+      "repository_url": "https://api.github.com/repos/navikt/skjemautfylling-formio",
+      "state": "success",
+      "target_url": "https://dashboard.heroku.com/apps/skjemautfylling-formio/activity/builds/5e033a11-bf62-421d-b323-c5a5f617ae36",
+      "updated_at": "2020-08-07T07:23:08Z",
+      "url": "https://api.github.com/repos/navikt/skjemautfylling-formio/deployments/256233583/statuses/363043510"
+    }
+  }
+}
