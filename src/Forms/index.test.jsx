@@ -45,7 +45,7 @@ describe('FormsRouter', () => {
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
           <AuthenticatedApp
-            flashSuccessMessage={jest.fn()}
+            userAlerter={{flashSuccessMessage: jest.fn()}}
             store={formStore}
             formio={new Formio("http://myproject.example.org")}/>
         </AuthContext.Provider>
@@ -118,7 +118,7 @@ describe('FormsRouter', () => {
     context.render(
       <MemoryRouter initialEntries={[`/forms/${context.backend.form().path}/edit`]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp formio={{}} store={{ forms: [context.backend.form()] }} />
+          <AuthenticatedApp formio={{}} store={{ forms: [context.backend.form()] }} userAlerter={{flashSuccessMessage: jest.fn()}} />
         </AuthContext.Provider>
       </MemoryRouter>,
         testRendererOptions

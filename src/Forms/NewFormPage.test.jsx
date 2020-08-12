@@ -42,7 +42,7 @@ describe('NewFormPage', () => {
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp flashSuccessMessage={jest.fn()}
+          <AuthenticatedApp userAlerter={{flashSuccessMessage: jest.fn()}}
                             store={formStore}
                             formio={new Formio("http://myproject.example.org")}/>
         </AuthContext.Provider>

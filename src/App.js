@@ -124,10 +124,6 @@ function App({ projectURL, store, pusher }) {
     return () => buildAbortedChannel.unbind("event");
   }, [pusher]);
   const { userData } = useAuth();
-  const flashSuccessMessage = (message) => {
-    setFlashMessage(message);
-    setTimeout(() => setFlashMessage(null), 5000);
-  };
   const userAlerter = {
     flashSuccessMessage: (message) => {
       setFlashMessage(message);
