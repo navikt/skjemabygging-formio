@@ -1,5 +1,5 @@
 import {NavBar} from "../components/NavBar";
-import {Pagewrapper, CenterAlignedActionRow} from "./components";
+import {Pagewrapper} from "./components";
 import {Link} from "react-router-dom";
 import React from "react";
 import NavForm from "../components/NavForm";
