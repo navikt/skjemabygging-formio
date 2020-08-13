@@ -7,14 +7,14 @@ import { Hamburgerknapp } from 'nav-frontend-ikonknapper';
 import { Undertittel } from 'nav-frontend-typografi';
 
 const NavBarWrapper = styled("div")({
-  backgroundColor: navCssVariables.navMorkGra,
+  backgroundColor: navCssVariables.navLysGra,
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
   gridTemplateRows: "10px 44px 10px",
 });
 
 export const NavBarTitle = styled(Undertittel)({
-  color: "white",
+  color: navCssVariables.navMorkGra,
   gridColumn: "2",
   gridRow: "2",
   placeSelf: "center",

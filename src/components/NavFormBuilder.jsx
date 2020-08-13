@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import * as formiojs from 'formiojs';
 import isEqual from 'lodash.isequal';
 import cloneDeep from "lodash.clonedeep";
+import {styled} from "@material-ui/styles";
+
+const BuilderMountElement = styled("div")({
+  '& .builder-sidebar_scroll': {
+    top: 190
+  },
+  '& .formarea': {
+  paddingBottom: 800
+},
+});
 
 export default class NavFormBuilder extends Component {
   builderState = 'preparing';
@@ -46,7 +56,7 @@ export default class NavFormBuilder extends Component {
   };
 
   render = () => {
-    return <div data-testid="builderMountElement" ref={element => this.element = element}></div>;
+    return <BuilderMountElement data-testid="builderMountElement" ref={element => this.element = element}></BuilderMountElement>;
   };
 
   handleChange = () => {
