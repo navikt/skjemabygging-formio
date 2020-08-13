@@ -11,36 +11,24 @@ import { styled } from "@material-ui/styles";
 const EditWrapper = styled("div")({
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
-  gridTemplateRows: "30px 50px 10px",
-  columnGap: "20px",
+  gridTemplateRows: "auto",
+  columnGap: "1.5rem",
+  padding: "1rem"
 });
 
 const MainCol = styled("div")({
   gridColumn: "2",
-  gridRow: "2",
   alignSelf: "end",
   justifySelf: "center",
 });
 
 const LeftCol = styled("div")({
   gridColumn: "1",
-  gridRow: "2",
   alignSelf: "end",
-  justifySelf: "center",
-  display: "flex",
-});
+  justifySelf: "start",
+  paddingLeft: "1.2rem"
 
-const RightCol = styled("div")({
-  gridColumn: "3",
-  gridRow: "2",
-  alignSelf: "end",
-  justifySelf: "center",
 });
-
-// Midlertidig styling av <SkjemaVisningSelect> :p
-var style = {
-  width: "150px",
-};
 
 const NoScrollWrapper = styled("div")({
   backgroundColor: "white",
@@ -69,9 +57,7 @@ export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPu
         <NavBar title={title} visSkjemaliste={true} />
         <EditWrapper>
           <LeftCol>
-            <div style={style}>
               <SkjemaVisningSelect form={form} onChange={onChange} />
-            </div>
           </LeftCol>
           <MainCol>
             <Link className="knapp" to={testFormUrl}>
@@ -82,7 +68,7 @@ export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPu
               Publiser skjema
             </Knapp>
           </MainCol>
-          <RightCol />
+
         </EditWrapper>
       </NoScrollWrapper>
       <Pagewrapper>

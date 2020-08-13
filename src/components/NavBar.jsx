@@ -10,27 +10,24 @@ const NavBarWrapper = styled("div")({
   backgroundColor: navCssVariables.navLysGra,
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
-  gridTemplateRows: "10px 44px 10px",
+  columnGap: "1.5rem",
+  padding: "1rem 0 1rem 0"
 });
 
 export const NavBarTitle = styled(Undertittel)({
   color: navCssVariables.navMorkGra,
   gridColumn: "2",
-  gridRow: "2",
   placeSelf: "center",
-  marginLeft: "20px"
 });
 
 export const NavBarVenstre = styled("div") ({
   gridColumn: "1",
-  gridRow: "2",
   placeSelf: "center",
   display: "flex"
 });
 
 export const NavBarHoyre = styled("div") ({
   gridColumn: "3",
-  gridRow: "2",
   placeSelf: "center"
 });
 
@@ -38,14 +35,14 @@ export const KnappWrapper = styled("div") ({
   backgroundColor: "white",
   borderRadius: "0.125em",
   placeSelf: "center",
-  marginLeft: "50px"
+  marginLeft: "2.2rem"
 });
 
 export const MenyWrapper = styled("div") ({
   backgroundColor: "white",
   borderRadius: "0.125em",
   placeSelf: "center",
-  marginLeft: "20px"
+  marginLeft: "1rem"
 });
 
 const Cog = () => (

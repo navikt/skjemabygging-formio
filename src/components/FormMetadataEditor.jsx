@@ -59,6 +59,7 @@ export const SkjemaVisningSelect = ({form, onChange}) => {
       id="form-display"
       value={display}
       onChange={event => onChange({...form, display: event.target.value})}
+      bredde="s"
     >
       <option label="Skjema" value="form">
         Skjema
