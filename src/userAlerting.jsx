@@ -38,7 +38,7 @@ const DeploymentAlert = ({ message, onClose }) => {
     <ThisAlertStripe>
       <ErrorAlertContent>
         <h3>{isFailure ? "Krise og Angst" : "Sol og regn og latter og sang!"}</h3>
-        <p></p>
+        <p>Hva skal det stå her da?</p>
         <Xknapp type="flat" onClick={onClose} />
       </ErrorAlertContent>
     </ThisAlertStripe>
@@ -62,62 +62,87 @@ const BuildAbortedAlert = ({ message, onClose }) => {
 };
 
 let key = 0;
+
 function generateKey() {
   return key++;
 }
 
-export function useUserAlerting(pusher) {
-  const [alertComponentList, setAlertComponentList] = useState([]);
-  const addAlertComponent = (alertComponent) => {
+class UserAlerter {
+  constructor(alertComponentList, setAlertComponentList) {
+    this.alertComponentList = alertComponentList;
+    this.setAlertComponentList = setAlertComponentList;
+  }
+
+  flashSuccessMessage(message) {
+    const key = this.addAlertComponent(() => <AlertStripeSuksess>{message}</AlertStripeSuksess>);
+    setTimeout(() => this.removeAlertComponent(key), 5000);
+  }
+
+  setErrorMessage(errorString) {
+    let key;
+    key = this.addAlertComponent(() => (
+      <ErrorAlert exception={errorString} onClose={() => this.removeAlertComponent(key)} />
+    ));
+  }
+
+  popAlert() {
+    const [, ...tail] = this.alertComponentList;
+    this.setAlertComponentList(tail);
+  }
+
+  addAlertComponent(alertComponent) {
     const key = generateKey();
-    setAlertComponentList([[key, alertComponent], ...alertComponentList]);
+    this.setAlertComponentList([[key, alertComponent], ...this.alertComponentList]);
     return key;
   }
-  const removeAlertComponent = (key) => {
-    const newComponentList = alertComponentList.filter(([key, _]) => key !== key);
-    setAlertComponentList(newComponentList);
-  };
-  const userAlerter = {
-    flashSuccessMessage: (message) => {
-      const key = addAlertComponent(() => <AlertStripeSuksess>{message}</AlertStripeSuksess>);
-      setTimeout(() => removeAlertComponent(key), 5000);
-    },
-    setErrorMessage: (errorString) => {
-      let key;
-      key = addAlertComponent(() => <ErrorAlert exception={errorString} onClose={() => removeAlertComponent(key)} />);
-    },
-    popAlert: () => {
-      const [_, ...tail] = alertComponentList;
-      setAlertComponentList(tail);
-    }
-  };
 
+  removeAlertComponent(key) {
+    const newComponentList = this.alertComponentList.filter(([eachKey, _]) => eachKey !== key);
+    this.setAlertComponentList(newComponentList);
+  }
+
+  alertComponent() {
+    let [alertComponent] = this.alertComponentList;
+    return alertComponent ? alertComponent : null;
+  }
+}
+
+function useBasicUserAlerter() {
+  const [alertComponentList, setAlertComponentList] = useState([]);
+  return new UserAlerter(alertComponentList, setAlertComponentList);
+}
+
+export function useUserAlerting(pusher) {
+  const userAlerter = useBasicUserAlerter();
   useEffect(() => {
     const callback = (error) => {
-      console.log("new unhandled rejection erorr handlingasd", error);
-      addAlertComponent(() => <ErrorAlert exception={error.reason} onClose={() => userAlerter.clearAlert()} />);
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <ErrorAlert exception={error.reason} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
     };
     window.addEventListener("unhandledrejection", callback);
     return () => window.removeEventListener("unhandledrejection", callback);
-  }, []);
+  }, [userAlerter]);
   useEffect(() => {
     const deploymentChannel = pusher.subscribe("deployment");
     deploymentChannel.bind("status", (data) => {
-      addAlertComponent(() => <DeploymentAlert message={data} onClose={() => userAlerter.clearAlert()} />);
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <DeploymentAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
     });
     return () => deploymentChannel.unbind("status");
-  }, [pusher]);
+  }, [pusher, userAlerter]);
   useEffect(() => {
     const buildAbortedChannel = pusher.subscribe("build-aborted");
     buildAbortedChannel.bind("event", (data) => {
-      addAlertComponent(() => <BuildAbortedAlert message={data} onClose={() => userAlerter.clearAlert()} />);
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <BuildAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
     });
     return () => buildAbortedChannel.unbind("event");
-  }, [pusher]);
-  let [alertComponent, ..._] = alertComponentList;
-  alertComponent = alertComponent ? alertComponent : null;
-  return {
-    alertComponent,
-    userAlerter,
-  };
+  }, [pusher, userAlerter]);
+  return userAlerter;
 }

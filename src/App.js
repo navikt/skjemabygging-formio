@@ -6,7 +6,7 @@ import Formiojs from "formiojs/Formio";
 import { AlertContainer, useUserAlerting } from "./userAlerting";
 
 function App({ projectURL, store, pusher }) {
-  const { alertComponent, userAlerter } = useUserAlerting(pusher);
+  const userAlerter = useUserAlerting(pusher);
   const { userData } = useAuth();
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const content = userData ? (
@@ -15,7 +15,7 @@ function App({ projectURL, store, pusher }) {
     <UnauthenticatedApp projectURL={projectURL} />
   );
   return <>
-    <AlertContainer>{alertComponent}</AlertContainer>
+    <AlertContainer>{userAlerter.alertComponent()}</AlertContainer>
     <section>{content}</section>
   </>;
 }
