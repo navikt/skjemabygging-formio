@@ -10,6 +10,7 @@ const NavBarWrapper = styled("div")({
   backgroundColor: navCssVariables.navLysGra,
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
+  gridTemplateRows: "3rem",
   columnGap: "1.5rem",
   padding: "1rem 0 1rem 0"
 });
@@ -56,7 +57,7 @@ const Cog = () => (
   </svg>);
 
 
-export const NavBar = ({ title, logout, visSkjemaliste }) => {
+export const NavBar = ({ title, logout, visSkjemaliste, visHamburger, visInnstillinger }) => {
   return (
     <NavBarWrapper>
       <NavBarVenstre>
@@ -64,13 +65,13 @@ export const NavBar = ({ title, logout, visSkjemaliste }) => {
           {visSkjemaliste && <Link className="knapp knapp--standard knapp--mini" to="/forms"> Skjemaliste</Link>}
         </KnappWrapper>
         <MenyWrapper>
-          <Hamburgerknapp />
+          {visHamburger && <Hamburgerknapp />}
         </MenyWrapper>
         <MenyWrapper>
-          <Knapp className={"knapp knapp--standard knapp--kompakt"}>
+          {visInnstillinger && <Knapp className={"knapp knapp--standard knapp--kompakt"}>
             <Cog />
             <span className="sr-only">Knapp</span>
-          </Knapp>
+          </Knapp>}
         </MenyWrapper>
       </NavBarVenstre>
       <NavBarTitle>

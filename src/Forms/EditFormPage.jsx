@@ -6,36 +6,7 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { styled } from "@material-ui/styles";
 import { ActionRowWrapper, MainCol, LeftCol, NoScrollWrapper} from "./ActionRow";
-
-/*const EditWrapper = styled("div")({
-  display: "grid",
-  gridTemplateColumns: "1fr 4fr 1fr",
-  gridTemplateRows: "auto",
-  columnGap: "1.5rem",
-  padding: "1rem"
-});
-
-const MainCol = styled("div")({
-  gridColumn: "2",
-  alignSelf: "end",
-  justifySelf: "center",
-});
-
-const LeftCol = styled("div")({
-  gridColumn: "1",
-  alignSelf: "end",
-  justifySelf: "start",
-  paddingLeft: "1.2rem"
-});
-
-const NoScrollWrapper = styled("div")({
-  backgroundColor: "white",
-  position: "sticky",
-  top: "0",
-  zIndex: 1,
-});*/
 
 export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPublish }) {
   const title = `${form.title}`;
@@ -54,7 +25,7 @@ export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPu
   return (
     <>
       <NoScrollWrapper>
-        <NavBar title={title} visSkjemaliste={true} />
+        <NavBar title={title} visSkjemaliste={true} visHamburger={true} visInnstillinger={true} />
         <ActionRowWrapper>
           <LeftCol>
               <SkjemaVisningSelect form={form} onChange={onChange} />
