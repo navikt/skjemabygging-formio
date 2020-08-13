@@ -20,4 +20,4 @@ const pusher = new Pusher({
 const jsonString = fs.readFileSync(0, "utf-8");
 const message = JSON.parse(jsonString);
 
-pusher.trigger("development", "status", message);
+pusher.trigger("deployment", "status", message);
