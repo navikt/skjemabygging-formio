@@ -9,6 +9,9 @@ const BuilderMountElement = styled("div")({
   '& .builder-sidebar_scroll': {
     top: 190
   },
+  '& .formarea': {
+  paddingBottom: 800
+},
 });
 
 export default class NavFormBuilder extends Component {
