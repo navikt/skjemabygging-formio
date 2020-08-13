@@ -7,8 +7,9 @@ import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { styled } from "@material-ui/styles";
+import { ActionRowWrapper, MainCol, LeftCol, NoScrollWrapper} from "./ActionRow";
 
-const EditWrapper = styled("div")({
+/*const EditWrapper = styled("div")({
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
   gridTemplateRows: "auto",
@@ -27,7 +28,6 @@ const LeftCol = styled("div")({
   alignSelf: "end",
   justifySelf: "start",
   paddingLeft: "1.2rem"
-
 });
 
 const NoScrollWrapper = styled("div")({
@@ -35,7 +35,7 @@ const NoScrollWrapper = styled("div")({
   position: "sticky",
   top: "0",
   zIndex: 1,
-});
+});*/
 
 export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPublish }) {
   const title = `${form.title}`;
@@ -55,7 +55,7 @@ export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPu
     <>
       <NoScrollWrapper>
         <NavBar title={title} visSkjemaliste={true} />
-        <EditWrapper>
+        <ActionRowWrapper>
           <LeftCol>
               <SkjemaVisningSelect form={form} onChange={onChange} />
           </LeftCol>
@@ -69,7 +69,7 @@ export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPu
             </Knapp>
           </MainCol>
 
-        </EditWrapper>
+        </ActionRowWrapper>
       </NoScrollWrapper>
       <Pagewrapper>
         <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions} />

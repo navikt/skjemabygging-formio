@@ -44,7 +44,8 @@ export const FormsRouter = ({forms, onChange, onSave, onNew, onCreate, onDelete,
             logout={logout}
             form={getFormFromPath(forms, match.params.formpath)}
             editFormUrl={`${path}/${match.params.formpath}/edit`}
-            onSave={onSave}/>;
+            onSave={onSave}
+            onChange={onChange}/>;
         }}
       />
       <Route path={`${path}/:formpath`}>

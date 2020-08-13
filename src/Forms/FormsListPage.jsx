@@ -3,6 +3,7 @@ import { Pagewrapper, SlettSkjemaKnapp } from "./components";
 import { Link } from "react-router-dom";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
+import {NoScrollWrapper} from "./ActionRow";
 
 export function FormsListPage({ logout, forms, url, onDelete, onNew }) {
   /*const testApi = () => {
@@ -12,7 +13,9 @@ export function FormsListPage({ logout, forms, url, onDelete, onNew }) {
   };*/
   return (
     <>
-      <NavBar title={"Skjemabygger"} visSkjemaliste={false} />
+      <NoScrollWrapper>
+        <NavBar title={"Skjemabygger"} visSkjemaliste={false} />
+      </NoScrollWrapper>
       <Pagewrapper>
         {forms && (
           <nav>
