@@ -7,10 +7,10 @@ import {styled} from "@material-ui/styles";
 
 const BuilderMountElement = styled("div")({
   '& .builder-sidebar_scroll': {
-    top: 190
+    top: 230
   },
   '& .formarea': {
-  paddingBottom: 800
+  paddingBottom: "50vh"
 },
 });
 
