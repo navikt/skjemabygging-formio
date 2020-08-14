@@ -1,9 +1,10 @@
 import form from '../testTools/frontend/json/Form.json';
+import columnForm from '../../example_data/columnsForm.json';
 import loginform from '../testTools/frontend/json/LoginForm';
 
 export class FakeBackend {
   constructor() {
-    this.allForms = [form];
+    this.allForms = [form, columnForm];
   }
   setNowFunction(nowFunc) {
     this.nowFunction = nowFunc;

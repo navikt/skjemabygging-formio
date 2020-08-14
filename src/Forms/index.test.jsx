@@ -136,26 +136,36 @@ describe('FormsRouter', () => {
   };
 
   it('crashes when editing a second time', async() => {
-    renderApp('/forms/debugskjema/edit');
+    renderApp('/forms/columns/edit');
     setTimeout.mock.calls[0][0]();
-    const navFormBuilder = await context.waitForComponent(NavFormBuilder);
+    let navFormBuilder = await context.waitForComponent(NavFormBuilder);
     jest.runAllTimers();
     // her må vi vente til formbuilderen er ready
     await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual('ready'));
     const formioJsBuilder = navFormBuilder.instance.builder;
     const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
     buildComponent(formioJsBuilder,"textfield", column1);
-    // await wait(150);
+    //jest.useRealTimers();
+    //await wait(150);
     jest.advanceTimersByTime(150);
     saveComponent(formioJsBuilder);
-    // await wait(150);
+    //await wait(150);
     jest.advanceTimersByTime(150);
     const columns = formioJsBuilder.instance.webform.getComponent("columns");
     expect(columns.columns[0]).toHaveLength(1);
-    context.testRenderer.root.instance.history.push('/forms/debugskjema/view');
-    // sjekk at navigasjon er ferdig
-    // naviger tilbake til edit
-    context.testRenderer.root.instance.history.push('/forms/debugskjema/edit');
+    context.testRenderer.root.instance.history.push('/forms/columns/view');
+    //// sjekk at navigasjon er ferdig
+    //// naviger tilbake til edit
+    context.testRenderer.root.instance.history.push('/forms/columns/edit');
+    jest.clearAllTimers(); //må cleare før vi kan kjøre igjen!
+    //jest.useFakeTimers();
+    navFormBuilder = await context.waitForComponent(NavFormBuilder);
+    jest.runAllTimers();
+    //// her må vi vente til formbuilderen er ready
+    await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual('ready'));
+    console.log("KRA KRA");
+    //jest.useFakeTimers();
+    jest.clearAllTimers();
     // prøv å legg til et felt en gang til og se at det griser seg
   });
 
