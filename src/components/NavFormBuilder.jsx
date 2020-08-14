@@ -46,7 +46,7 @@ export default class NavFormBuilder extends Component {
   }
 
   updateFormBuilder() {
-    this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
+    this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange()); //iht. webformbuilder.unit.js skal dette være builder.instance.setForm??
   }
 
   componentWillUnmount = () => {
