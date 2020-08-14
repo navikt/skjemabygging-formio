@@ -9,9 +9,11 @@ context.setupBeforeAfter();
 
 describe('NavFormBuilder', () => {
   let oldFormioFetch;
+  let htmlDivElement;
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
+    htmlDivElement = document.createElement('div');
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
@@ -20,7 +22,7 @@ describe('NavFormBuilder', () => {
   const renderOptions = {
     createNodeMock: (element) => {
       if (element.props['data-testid'] === 'builderMountElement') {
-        return document.createElement('div');
+        return htmlDivElement;
       }
     }
   };
@@ -47,4 +49,9 @@ describe('NavFormBuilder', () => {
     await waitForExpect(() => expect(formBuilder.props.onChange).toHaveBeenCalled());
     jest.useFakeTimers();
   });
+
+  it('add new component', async () => {
+    context.render(<NavFormBuilder form={context.backend.form()} onChange={jest.fn()}/>, renderOptions);
+    //kule ting på g her -> htmlDivElement
+  })
 });

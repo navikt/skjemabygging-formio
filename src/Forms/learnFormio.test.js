@@ -1,93 +1,112 @@
+import React from "react";
 import * as formiojs from "formiojs";
 import waitForExpect from "wait-for-expect";
 import columnsForm from "../../example_data/columnsForm.json";
-
+import { render, screen } from "@testing-library/react";
+import NavFormBuilder from "../components/NavFormBuilder";
+import {FakeBackend} from "../fakeBackend/FakeBackend";
 // import { queryBySelector } from "@testing-library/dom"
-let builderElement;
-let builder;
-let spy;
+
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-beforeEach(() => {
-  builderElement = document.createElement("div");
-  document.body.appendChild(builderElement);
-  builder = new formiojs.FormBuilder(builderElement, {}, {});
-  spy = jest.fn();
-  builder.ready.then(spy);
-});
+describe("Formio.js replica", () => {
+  let builderElement;
+  let builder;
+  let spy;
 
-afterEach(() => {
-  builder.instance.destroy(true);
-  document.body.removeChild(builderElement);
-  spy.mockRestore();
-});
+  beforeEach(() => {
+    builderElement = document.createElement("div");
+    document.body.appendChild(builderElement);
+    builder = new formiojs.FormBuilder(builderElement, {}, {});
+    spy = jest.fn();
+    builder.ready.then(spy);
+  });
 
-const buildComponent = (type, container) => {
-  // Get the builder sidebar component.
-  const webformBuilder = builder.instance;
-  let builderGroup = null;
-  let groupName = "";
-  console.log(webformBuilder.groups);
-  Object.entries(webformBuilder.groups).forEach(([key, group]) => {
-    if (group.components[type]) {
-      groupName = key;
-      return false;
+  afterEach(() => {
+    builder.instance.destroy(true);
+    document.body.removeChild(builderElement);
+    spy.mockRestore();
+  });
+
+  const buildComponent = (type, container) => {
+    // Get the builder sidebar component.
+    const webformBuilder = builder.instance;
+    let builderGroup = null;
+    let groupName = "";
+    Object.entries(webformBuilder.groups).forEach(([key, group]) => {
+      if (group.components[type]) {
+        groupName = key;
+        return false;
+      }
+    });
+
+    if (!groupName) {
+      return;
     }
+    const openedGroup = document.getElementById(`group-${groupName}"`);
+    if (openedGroup) {
+      openedGroup.classList.remove("in");
+    }
+    const group = document.getElementById(`group-${groupName}`);
+    group && group.classList.add("in");
+
+    let component = webformBuilder.element.querySelector(`span[data-type='${type}']`);
+    if (component) {
+      component = component && component.cloneNode(true);
+      const element = container || webformBuilder.element.querySelector(".drag-container.formio-builder-form");
+      element.appendChild(component);
+      builderGroup = document.getElementById(`group-container-${groupName}`);
+      webformBuilder.onDrop(component, element, builderGroup);
+    } else {
+      return;
+    }
+
+    return webformBuilder;
+  };
+
+  const saveComponent = () => {
+    const click = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+
+    const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
+    if (saveBtn) {
+      saveBtn.dispatchEvent(click);
+    }
+  };
+
+  it("renders the builder on the dom node", async () => {
+    await waitForExpect(() => expect(spy).toHaveBeenCalled());
+    const sidebar = builderElement.querySelector("div.builder-sidebar");
+    expect(sidebar).toBeVisible();
+    const basicPanel = sidebar.querySelector("[ref=group-panel-basic]");
+    expect(basicPanel).toBeVisible();
+    expect(basicPanel).not.toBeEmptyDOMElement();
   });
 
-  if (!groupName) {
-    return;
-  }
-  const openedGroup = document.getElementById(`group-${groupName}"`);
-  if (openedGroup) {
-    openedGroup.classList.remove("in");
-  }
-  const group = document.getElementById(`group-${groupName}`);
-  group && group.classList.add("in");
-
-  let component = webformBuilder.element.querySelector(`span[data-type='${type}']`);
-  if (component) {
-    component = component && component.cloneNode(true);
-    const element = container || webformBuilder.element.querySelector(".drag-container.formio-builder-form");
-    element.appendChild(component);
-    builderGroup = document.getElementById(`group-container-${groupName}`);
-    webformBuilder.onDrop(component, element, builderGroup);
-  } else {
-    return;
-  }
-
-  return webformBuilder;
-};
-
-const saveComponent = () => {
-  const click = new MouseEvent('click', {
-    view: window,
-    bubbles: true,
-    cancelable: true
+  it("adds a field to canvas", async () => {
+    await builder.instance.setForm(columnsForm);
+    const column1 = builder.instance.webform.element.querySelector('[ref="columns-container"]');
+    buildComponent("textfield", column1);
+    await wait(150);
+    saveComponent();
+    await wait(150);
+    const columns = builder.instance.webform.getComponent("columns");
+    expect(columns.columns[0]).toHaveLength(1);
   });
-
-  const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
-  if (saveBtn) {
-    saveBtn.dispatchEvent(click);
-  }
-}
-
-it("renders the builder on the dom node", async () => {
-  await waitForExpect(() => expect(spy).toHaveBeenCalled());
-  const sidebar = builderElement.querySelector("div.builder-sidebar");
-  expect(sidebar).toBeVisible();
-  const basicPanel = sidebar.querySelector("[ref=group-panel-basic]");
-  expect(basicPanel).toBeVisible();
-  expect(basicPanel).not.toBeEmptyDOMElement();
 });
 
-it("adds a field to canvas", async () => {
-  await builder.instance.setForm(columnsForm);
-  const column1 = builder.instance.webform.element.querySelector('[ref="columns-container"]');
-  buildComponent("textfield", column1);
-  await wait(150);
-  saveComponent();
-  await wait(150);
-  const columns = builder.instance.webform.getComponent("columns");
-  expect(columns.columns[0]).toHaveLength(1);
+describe("NavFormBuilder - learning to fly", () => {
+
+  let fakeBackend;
+
+  beforeEach(() => {
+    fakeBackend = new FakeBackend();
+  });
+
+  it("nanana", () => {
+    render(<NavFormBuilder form={fakeBackend.form()} onChange={jest.fn()} />);
+  })
 });
