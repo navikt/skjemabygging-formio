@@ -102,8 +102,8 @@ class UserAlerter {
   }
 
   alertComponent() {
-    let [alertComponent] = this.alertComponentList;
-    return alertComponent ? alertComponent : null;
+    const [alertComponent,] = this.alertComponentList;
+    return alertComponent ? alertComponent[1] : null;
   }
 }
 
