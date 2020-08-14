@@ -14,25 +14,29 @@ import {FormsListPage} from "./FormsListPage";
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
-const testRendererOptions = {
-  createNodeMock: element => {
-    if (["formMountElement", "builderMountElement"].includes(element.props["data-testid"])) {
-      return document.createElement("div");
-    }
-    return null;
-  }
-};
-
 describe('FormsRouter', () => {
+  const testRendererOptions = {
+    createNodeMock: element => {
+      if (["formMountElement", "builderMountElement"].includes(element.props["data-testid"])) {
+        return htmlDivElement;
+      }
+      return null;
+    }
+  };
+
   let oldFormioFetch;
   let formStore;
+  let htmlDivElement;
   beforeEach(() => {
     oldFormioFetch = Formio.fetch;
     Formio.fetch = global.fetch;
     formStore = { forms: null };
+    htmlDivElement = document.createElement("div");
+    document.body.appendChild(htmlDivElement);
   });
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
+    document.body.removeChild(htmlDivElement);
   });
 
   function routeLocation() {
@@ -79,6 +83,80 @@ describe('FormsRouter', () => {
     clickHovedknapp("Lag nytt skjema");
     expect(routeLocation().pathname).toEqual("/forms/new");
     await context.waitForComponent(NewFormPage);
+  });
+
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const buildComponent = (builder, type, container) => {
+    // Get the builder sidebar component.
+    const webformBuilder = builder.instance;
+    let builderGroup = null;
+    let groupName = "";
+    Object.entries(webformBuilder.groups).forEach(([key, group]) => {
+      if (group.components[type]) {
+        groupName = key;
+        return false;
+      }
+    });
+
+    if (!groupName) {
+      return;
+    }
+    const openedGroup = document.getElementById(`group-${groupName}"`);
+    if (openedGroup) {
+      openedGroup.classList.remove("in");
+    }
+    const group = document.getElementById(`group-${groupName}`);
+    group && group.classList.add("in");
+
+    let component = webformBuilder.element.querySelector(`span[data-type='${type}']`);
+    if (component) {
+      component = component && component.cloneNode(true);
+      const element = container || webformBuilder.element.querySelector(".drag-container.formio-builder-form");
+      element.appendChild(component);
+      builderGroup = document.getElementById(`group-container-${groupName}`);
+      webformBuilder.onDrop(component, element, builderGroup);
+    } else {
+      return;
+    }
+
+    return webformBuilder;
+  };
+
+  const saveComponent = (builder) => {
+    const click = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+
+    const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
+    if (saveBtn) {
+      saveBtn.dispatchEvent(click);
+    }
+  };
+
+  it('crashes when editing a second time', async() => {
+    renderApp('/forms/debugskjema/edit');
+    setTimeout.mock.calls[0][0]();
+    const navFormBuilder = await context.waitForComponent(NavFormBuilder);
+    jest.runAllTimers();
+    // her må vi vente til formbuilderen er ready
+    await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual('ready'));
+    const formioJsBuilder = navFormBuilder.instance.builder;
+    const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
+    buildComponent(formioJsBuilder,"textfield", column1);
+    // await wait(150);
+    jest.advanceTimersByTime(150);
+    saveComponent(formioJsBuilder);
+    // await wait(150);
+    jest.advanceTimersByTime(150);
+    const columns = formioJsBuilder.instance.webform.getComponent("columns");
+    expect(columns.columns[0]).toHaveLength(1);
+    context.testRenderer.root.instance.history.push('/forms/debugskjema/view');
+    // sjekk at navigasjon er ferdig
+    // naviger tilbake til edit
+    context.testRenderer.root.instance.history.push('/forms/debugskjema/edit');
+    // prøv å legg til et felt en gang til og se at det griser seg
   });
 
   it('can edit a form', async () => {
