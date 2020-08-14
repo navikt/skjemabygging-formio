@@ -11,7 +11,7 @@
     "@navikt/fnrvalidator": "^1.1.3",
     "@std/esm": "^0.26.0",
     "classnames": "^2.2.6",
-    "concurrently": "^5.2.0",
+    "concurrently": "^5.3.0",
     "craco-less": "^1.17.0",
     "dispatch": "^1.0.2",
     "eventemitter2": "^6.4.3",
@@ -23,7 +23,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",
     "lodash.throttle": "^4.1.1",
-    "nav-frontend-alertstriper": "^3.0.22",
+    "nav-frontend-alertstriper": "^3.0.23",
     "nav-frontend-alertstriper-style": "^2.0.17",
     "nav-frontend-chevron": "^1.0.13",
     "nav-frontend-chevron-style": "^0.3.5",
@@ -36,9 +36,9 @@
     "nav-frontend-lenker": "^1.0.41",
     "nav-frontend-lenker-style": "^0.2.29",
     "nav-frontend-paneler-style": "^0.3.21",
-    "nav-frontend-skjema": "^3.0.16",
+    "nav-frontend-skjema": "^3.0.17",
     "nav-frontend-skjema-style": "^2.0.9",
-    "nav-frontend-typografi": "^2.0.25",
+    "nav-frontend-typografi": "^2.0.26",
     "nav-frontend-typografi-style": "^1.0.22",
     "node-fetch": "^2.6.0",
     "prop-types": "^15.7.2",
@@ -79,13 +79,13 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/user-event": "^12.1.0",
-    "@testing-library/jest-dom": "^5.11.2",
+    "@testing-library/jest-dom": "^5.11.3",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.4.1",
+    "@testing-library/user-event": "^12.1.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
-    "jest-environment-jsdom-sixteen": "^1.0.3",
     "react-test-renderer": "^16.13.1"
   }
 }
