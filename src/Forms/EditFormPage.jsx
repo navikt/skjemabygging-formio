@@ -1,14 +1,14 @@
 import { NavBar } from "../components/NavBar";
-import { Pagewrapper } from "./components";
+import { Pagewrapper, NoScrollWrapper } from "./components";
 import { Link } from "react-router-dom";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { ActionRowWrapper, MainCol, LeftCol, NoScrollWrapper} from "./ActionRow";
+import { ActionRowWrapper, MainCol, LeftCol} from "./ActionRow";
 
-export function EditFormPage({ form, testFormUrl, logout, onSave, onChange, onPublish }) {
+export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish }) {
   const title = `${form.title}`;
 
   const [publiserer, setPubliserer] = useState(false);

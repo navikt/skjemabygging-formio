@@ -11,6 +11,7 @@ export const MainCol = styled("div")({
   gridColumn: "2",
   alignSelf: "end",
   justifySelf: "center",
+  paddingTop: "2rem"
 });
 
 export const LeftCol = styled("div")({
@@ -18,13 +19,13 @@ export const LeftCol = styled("div")({
   alignSelf: "end",
   justifySelf: "start",
   paddingLeft: "1.2rem"
-
 });
 
-export const NoScrollWrapper = styled("div")({
-  backgroundColor: "white",
-  position: "sticky",
-  top: "0",
-  zIndex: 1,
+export const RightCol = styled("div")({
+  gridColumn: "3",
+  alignSelf: "end",
+  justifySelf: "start",
+  padding: "2rem 1.2rem 0 0"
 });
+
 

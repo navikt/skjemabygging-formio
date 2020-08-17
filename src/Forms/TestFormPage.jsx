@@ -1,10 +1,10 @@
 import {NavBar} from "../components/NavBar";
-import {Pagewrapper} from "./components";
+import {Pagewrapper, NoScrollWrapper} from "./components";
 import {Link} from "react-router-dom";
 import React from "react";
 import NavForm from "../components/NavForm";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
-import { ActionRowWrapper, MainCol, LeftCol, NoScrollWrapper} from "./ActionRow";
+import { ActionRowWrapper, MainCol } from "./ActionRow";
 import {SkjemaVisningSelect} from "../components/FormMetadataEditor";
 
 export function TestFormPage({onChange, onPublishClick, publiserer, logout, editFormUrl, form, onSave}) {
@@ -14,9 +14,6 @@ export function TestFormPage({onChange, onPublishClick, publiserer, logout, edit
           <NoScrollWrapper>
             <NavBar title={title} visSkjemaliste={true} />
             <ActionRowWrapper>
-              <LeftCol>
-                <SkjemaVisningSelect form={form} onChange={onChange} />
-              </LeftCol>
               <MainCol>
                 <Link className="knapp" to={editFormUrl}>Rediger skjema</Link>
                 <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
