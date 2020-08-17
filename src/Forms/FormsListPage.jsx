@@ -5,7 +5,7 @@ import { Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
 import { ActionRowWrapper, RightCol } from "./ActionRow";
 
-export function FormsListPage({ logout, forms, url, onDelete, onNew }) {
+export function FormsListPage({ forms, url, onDelete, onNew }) {
   /*const testApi = () => {
     fetch('/api/hey')
       .then(response => response.json())
