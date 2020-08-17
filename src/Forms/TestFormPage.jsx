@@ -4,15 +4,15 @@ import {Link} from "react-router-dom";
 import React from "react";
 import NavForm from "../components/NavForm";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
-import { ActionRowWrapper, MainCol } from "./ActionRow";
+import {ActionRow, ActionRowWrapper, MainCol} from "./ActionRow";
 
-export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave}) {
+export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, userAlerter}) {
   const title = `${form.title}`;
   return (
         <>
           <NoScrollWrapper>
             <NavBar title={title} visSkjemaliste={true} />
-            <ActionRowWrapper>
+            <ActionRow userAlerter={userAlerter}>
               <MainCol>
                 <Link className="knapp" to={editFormUrl}>Rediger skjema</Link>
                 <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
@@ -20,7 +20,7 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
                   Publiser skjema
                 </Knapp>
               </MainCol>
-            </ActionRowWrapper>
+            </ActionRow>
           </NoScrollWrapper>
             <Pagewrapper>
                 <NavForm form={form}/>

@@ -6,9 +6,9 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { ActionRowWrapper, MainCol, LeftCol} from "./ActionRow";
+import {ActionRow, ActionRowWrapper, MainCol, LeftCol, RightCol} from "./ActionRow";
 
-export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish }) {
+export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, testUserAlerter }) {
   const title = `${form.title}`;
 
   const [publiserer, setPubliserer] = useState(false);
@@ -26,7 +26,7 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
     <>
       <NoScrollWrapper>
         <NavBar title={title} visSkjemaliste={true} visHamburger={true} visInnstillinger={true} />
-        <ActionRowWrapper>
+        <ActionRow userAlerter={testUserAlerter}>
           <LeftCol>
               <SkjemaVisningSelect form={form} onChange={onChange} />
           </LeftCol>
@@ -40,7 +40,7 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
             </Knapp>
           </MainCol>
 
-        </ActionRowWrapper>
+        </ActionRow>
       </NoScrollWrapper>
       <Pagewrapper>
         <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions} />

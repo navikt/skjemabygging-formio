@@ -15,7 +15,7 @@ function App({ projectURL, store, pusher }) {
     <UnauthenticatedApp projectURL={projectURL} />
   );
   return <>
-    <AlertContainer>{userAlerter.alertComponent()}</AlertContainer>
+   {/* <AlertContainer>{userAlerter.alertComponent()}</AlertContainer>*/}
     <section>{content}</section>
   </>;
 }

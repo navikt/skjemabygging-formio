@@ -3,9 +3,10 @@ import { Pagewrapper, SlettSkjemaKnapp, NoScrollWrapper } from "./components";
 import { Link } from "react-router-dom";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
-import { ActionRowWrapper, RightCol } from "./ActionRow";
+import {ActionRow, ActionRowWrapper, RightCol} from "./ActionRow";
+import {AlertContainer} from "../userAlerting";
 
-export function FormsListPage({ forms, url, onDelete, onNew }) {
+export function FormsListPage({ forms, url, onDelete, onNew, userAlerter }) {
   /*const testApi = () => {
     fetch('/api/hey')
       .then(response => response.json())
@@ -15,9 +16,7 @@ export function FormsListPage({ forms, url, onDelete, onNew }) {
     <>
       <NoScrollWrapper>
         <NavBar title={"Skjemabygger"} visSkjemaliste={false} />
-        <ActionRowWrapper>
-          <RightCol />
-        </ActionRowWrapper>
+        <ActionRow userAlerter={userAlerter} />
       </NoScrollWrapper>
       <Pagewrapper>
         {forms && (

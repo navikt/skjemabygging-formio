@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
+import {AlertContainer} from "./userAlerting";
 
 function AuthenticatedApp({ formio, store, userAlerter }) {
   const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(
@@ -22,6 +23,7 @@ function AuthenticatedApp({ formio, store, userAlerter }) {
       <Switch>
         <Route path="/forms">
           <FormsRouter
+            userAlerter={userAlerter}
             forms={forms}
             onChange={onChangeForm}
             onSave={onSave}
