@@ -5,9 +5,8 @@ import React from "react";
 import NavForm from "../components/NavForm";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
 import { ActionRowWrapper, MainCol } from "./ActionRow";
-import {SkjemaVisningSelect} from "../components/FormMetadataEditor";
 
-export function TestFormPage({onChange, onPublishClick, publiserer, logout, editFormUrl, form, onSave}) {
+export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave}) {
   const title = `${form.title}`;
   return (
         <>
