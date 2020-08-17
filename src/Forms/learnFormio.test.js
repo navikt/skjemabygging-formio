@@ -15,6 +15,7 @@ describe("Formio.js replica", () => {
   let spy;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     builderElement = document.createElement("div");
     document.body.appendChild(builderElement);
     builder = new formiojs.FormBuilder(builderElement, {}, {});
@@ -26,6 +27,8 @@ describe("Formio.js replica", () => {
     builder.instance.destroy(true);
     document.body.removeChild(builderElement);
     spy.mockRestore();
+    jest.runAllTimers();
+    jest.useRealTimers();
   });
 
   const buildComponent = (type, container) => {
@@ -56,7 +59,7 @@ describe("Formio.js replica", () => {
       const element = container || webformBuilder.element.querySelector(".drag-container.formio-builder-form");
       element.appendChild(component);
       builderGroup = document.getElementById(`group-container-${groupName}`);
-      webformBuilder.onDrop(component, element, builderGroup);
+      webformBuilder.onDrop(component, element, builderGroup); //Her settes det opp noen timere som skaper ball.
     } else {
       return;
     }
@@ -78,6 +81,7 @@ describe("Formio.js replica", () => {
   };
 
   it("renders the builder on the dom node", async () => {
+    jest.runAllTimers();
     await waitForExpect(() => expect(spy).toHaveBeenCalled());
     const sidebar = builderElement.querySelector("div.builder-sidebar");
     expect(sidebar).toBeVisible();
@@ -87,26 +91,15 @@ describe("Formio.js replica", () => {
   });
 
   it("adds a field to canvas", async () => {
+    jest.runAllTimers();
     await builder.instance.setForm(columnsForm);
     const column1 = builder.instance.webform.element.querySelector('[ref="columns-container"]');
     buildComponent("textfield", column1);
-    await wait(150);
+    jest.clearAllTimers();
+    jest.advanceTimersByTime(150);
     saveComponent();
-    await wait(150);
+    jest.advanceTimersByTime(150);
     const columns = builder.instance.webform.getComponent("columns");
     expect(columns.columns[0]).toHaveLength(1);
   });
-});
-
-describe("NavFormBuilder - learning to fly", () => {
-
-  let fakeBackend;
-
-  beforeEach(() => {
-    fakeBackend = new FakeBackend();
-  });
-
-  it("nanana", () => {
-    render(<NavFormBuilder form={fakeBackend.form()} onChange={jest.fn()} />);
-  })
 });
