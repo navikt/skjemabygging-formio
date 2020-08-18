@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import React from "react";
 import NavForm from "../components/NavForm";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
-import {ActionRow, ActionRowWrapper, MainCol} from "./ActionRow";
+import {ActionRow, ActionRowWrapper, MainCol} from "../components/ActionRow";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, userAlerter}) {
   const title = `${form.title}`;

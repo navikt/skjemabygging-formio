@@ -1,46 +1,42 @@
-import { NavBar } from "../components/NavBar";
-import { Pagewrapper, SlettSkjemaKnapp, NoScrollWrapper } from "./components";
+import React from "react";
+import { SlettSkjemaKnapp } from "./components";
 import { Link } from "react-router-dom";
 import { Hovedknapp } from "nav-frontend-knapper";
-import React from "react";
-import {ActionRow, ActionRowWrapper, RightCol} from "./ActionRow";
-import {AlertContainer} from "../userAlerting";
+import { AppLayoutWithContext } from "../components/AppLayout";
+import * as PropTypes from "prop-types";
 
-export function FormsListPage({ forms, url, onDelete, onNew, userAlerter }) {
-  /*const testApi = () => {
-    fetch('/api/hey')
-      .then(response => response.json())
-      .then(json => console.log(json));
-  };*/
+const FormsList = ({forms, children}) => {
+  return <ul>
+      {forms
+        .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+        .map((form) => children(form))}
+    </ul>
+};
+
+FormsList.propTypes = {
+  sort: PropTypes.any,
+  callbackfn: PropTypes.func,
+};
+
+export function FormsListPage({ forms, url, onDelete, onNew }) {
   return (
-    <>
-      <NoScrollWrapper>
-        <NavBar title={"Skjemabygger"} visSkjemaliste={false} />
-        <ActionRow userAlerter={userAlerter} />
-      </NoScrollWrapper>
-      <Pagewrapper>
-        {forms && (
-          <nav>
-            <h3>Velg skjema:</h3>
-            <ul>
-              {forms
-                .sort((a, b) => (a.modified < b.modified ? 1 : -1))
-                .map((form) => (
-                  <li key={form.path}>
-                    <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
-                      {form.title}
-                    </Link>
-                    <SlettSkjemaKnapp className="lenke" onClick={() => onDelete(form)}>
-                      Slett skjema
-                    </SlettSkjemaKnapp>
-                  </li>
-                ))}
-            </ul>
-            <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
-            {/*<Knapp onClick={testApi}>Bruk api</Knapp>*/}
-          </nav>
-        )}
-      </Pagewrapper>
-    </>
+    <AppLayoutWithContext navBarProps={{ title: "Skjemabygger", visSkjemaliste: false }}>
+      <nav>
+        <h3>Velg skjema:</h3>
+        <FormsList forms={forms}>
+          {form => (
+            <li key={form.path}>
+              <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
+                {form.title}
+              </Link>
+              <SlettSkjemaKnapp className="lenke" onClick={() => onDelete(form)}>
+                Slett skjema
+              </SlettSkjemaKnapp>
+            </li>
+          )}
+        </FormsList>
+        <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
+      </nav>
+    </AppLayoutWithContext>
   );
 }

@@ -1,6 +1,6 @@
 import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
 import { NavBar } from "./NavBar";
-import {ActionRowWrapper, AlertCol, InnerGrid, LeftCol, MainCol} from "../Forms/ActionRow";
+import {ActionRowWrapper, AlertCol, InnerGrid, LeftCol, MainCol} from "./ActionRow";
 import {UserAlerterContext} from '../userAlerting';
 import React from "react";
 
