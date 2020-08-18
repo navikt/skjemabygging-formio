@@ -1,17 +1,16 @@
 import { styled } from "@material-ui/styles";
-import { useUserAlerting } from "../userAlerting";
 import React from "react";
 import PropTypes from "prop-types";
-import AuthenticatedApp from "../AuthenticatedApp";
 
-const ActionRowWrapper = styled("div")({
+
+export const ActionRowWrapper = styled("div")({
   display: "grid",
   gridTemplateColumns: "5fr 1fr",
   columnGap: "1.5rem",
   padding: "1rem",
 });
 
-const InnerGrid = styled("div")({
+export const InnerGrid = styled("div")({
   gridColumn: "1",
   alignSelf: "end",
   justifySelf: "start",

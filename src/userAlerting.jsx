@@ -4,6 +4,8 @@ import { AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
 import { Xknapp } from "nav-frontend-ikonknapper";
 import navCssVariabler from "nav-frontend-core";
 
+export const UserAlerterContext = React.createContext();
+
 export const AlertContainer = styled(({ ...props }) => <aside aria-live="polite" {...props} />)({
   position: "fixed",
   zIndex: 100,

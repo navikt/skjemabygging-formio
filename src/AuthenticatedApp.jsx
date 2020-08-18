@@ -5,11 +5,10 @@ import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 import {AlertContainer} from "./userAlerting";
 
-function AuthenticatedApp({ formio, store, userAlerter }) {
+function AuthenticatedApp({ formio, store}) {
   const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(
     formio,
-    store,
-    userAlerter
+    store
   );
 
   const history = useHistory();
@@ -23,7 +22,6 @@ function AuthenticatedApp({ formio, store, userAlerter }) {
       <Switch>
         <Route path="/forms">
           <FormsRouter
-            userAlerter={userAlerter}
             forms={forms}
             onChange={onChangeForm}
             onSave={onSave}
@@ -44,7 +42,6 @@ function AuthenticatedApp({ formio, store, userAlerter }) {
 AuthenticatedApp.propTypes = {
   store: PropTypes.object.isRequired,
   formio: PropTypes.object.isRequired,
-  userAlerter: PropTypes.object.isRequired,
 };
 
 export default AuthenticatedApp;

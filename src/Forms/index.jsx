@@ -9,7 +9,7 @@ import { FormsListPage } from "./FormsListPage";
 import Custom from "../CustomFields";
 import Components from "formiojs/components/Components";
 
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, userAlerter }) => {
+export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish}) => {
   Components.setComponents(Custom);
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
@@ -35,7 +35,6 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
               onSave={onSave}
               onChange={onChange}
               onPublish={onPublish}
-              testUserAlerter={userAlerter}
             />
           );
         }}
@@ -50,7 +49,6 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
               editFormUrl={`${path}/${match.params.formpath}/edit`}
               onSave={onSave}
               onChange={onChange}
-              userAlerter={userAlerter}
             />
           );
         }}
@@ -65,7 +63,6 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
           url={url}
           onDelete={onDelete}
           onNew={onNew}
-          userAlerter={userAlerter}
         />
       </Route>
     </Switch>
