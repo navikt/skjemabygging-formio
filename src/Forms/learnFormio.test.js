@@ -81,7 +81,7 @@ describe("Formio.js replica", () => {
   };
 
   it("renders the builder on the dom node", async () => {
-    jest.runAllTimers();
+    jest.runOnlyPendingTimers();
     await waitForExpect(() => expect(spy).toHaveBeenCalled());
     const sidebar = builderElement.querySelector("div.builder-sidebar");
     expect(sidebar).toBeVisible();
@@ -91,11 +91,12 @@ describe("Formio.js replica", () => {
   });
 
   it("adds a field to canvas", async () => {
-    jest.runAllTimers();
+    jest.runOnlyPendingTimers();
     await builder.instance.setForm(columnsForm);
     const column1 = builder.instance.webform.element.querySelector('[ref="columns-container"]');
     buildComponent("textfield", column1);
-    jest.clearAllTimers();
+    jest.runOnlyPendingTimers();
+    jest.clearAllTimers(); // hack to stop crashing due to timer looping
     jest.advanceTimersByTime(150);
     saveComponent();
     jest.advanceTimersByTime(150);

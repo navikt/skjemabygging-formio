@@ -72,13 +72,13 @@ describe('NewFormPage', () => {
       title: "Meat",
       tags: ["nav-skjema"]
     });
-    await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
+    await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
     expect(context.backend.hasFormByPath("meat")).toBeFalsy();
     clickHovedknapp("Opprett");
     jest.useRealTimers();
     await waitForExpect(() => expect(context.backend.hasFormByPath("meat")).toBeTruthy());
     jest.useFakeTimers();
-    expect(formStore.forms).toHaveLength(2);
+    expect(formStore.forms).toHaveLength(3);
     expect(routeLocation().pathname).toEqual("/forms/meat/edit");
     const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));
