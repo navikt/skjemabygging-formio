@@ -1,29 +1,30 @@
 import NewFormPage from "./NewFormPage";
 import NavFormBuilder from "../components/NavFormBuilder";
 import waitForExpect from "wait-for-expect";
-import {FakeBackendTestContext} from "../testTools/frontend/FakeBackendTestContext";
-import {Link, MemoryRouter} from "react-router-dom";
-import {AuthContext} from "../context/auth-context";
+import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
+import { Link, MemoryRouter } from "react-router-dom";
+import { AuthContext } from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
 import React from "react";
-import {Formio} from "formiojs";
-import {Hovedknapp} from "nav-frontend-knapper";
-import {FormMetadataEditor} from "../components/FormMetadataEditor";
-import {FormsListPage} from "./FormsListPage";
+import { Formio } from "formiojs";
+import { Hovedknapp } from "nav-frontend-knapper";
+import { FormMetadataEditor } from "../components/FormMetadataEditor";
+import { FormsListPage } from "./FormsListPage";
+import { UserAlerterContext } from "../userAlerting";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
 const testRendererOptions = {
-  createNodeMock: element => {
+  createNodeMock: (element) => {
     if (["formMountElement", "builderMountElement"].includes(element.props["data-testid"])) {
       return document.createElement("div");
     }
     return null;
-  }
+  },
 };
 
-describe('FormsRouter', () => {
+describe("FormsRouter", () => {
   let oldFormioFetch;
   let formStore;
   beforeEach(() => {
@@ -41,13 +42,21 @@ describe('FormsRouter', () => {
   }
 
   function renderApp(pathname) {
+    const userAlerter = {
+      flashSuccessMessage: jest.fn(),
+      alertComponent: jest.fn() };
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
-        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp
-            userAlerter={{flashSuccessMessage: jest.fn()}}
-            store={formStore}
-            formio={new Formio("http://myproject.example.org")}/>
+        <AuthContext.Provider
+          value={{
+            userData: "fakeUser",
+            login: () => {},
+            logout: () => {},
+          }}
+        >
+          <UserAlerterContext.Provider value={userAlerter}>
+            <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+          </UserAlerterContext.Provider>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -56,8 +65,8 @@ describe('FormsRouter', () => {
 
   function editFormLinks() {
     const linkList = context.testRenderer.root.findByType("ul");
-    const lis = linkList.findAllByType('li');
-    return lis.map(li => li.findByProps({'data-testid': 'editLink'}));
+    const lis = linkList.findAllByType("li");
+    return lis.map((li) => li.findByProps({ "data-testid": "editLink" }));
   }
 
   function clickHovedknapp(title) {
@@ -71,8 +80,8 @@ describe('FormsRouter', () => {
     context.act(() => memoryRouter.instance.history.push(path));
   }
 
-  it('lets you navigate to new form page from the list of all forms', async () => {
-    renderApp('/forms');
+  it("lets you navigate to new form page from the list of all forms", async () => {
+    renderApp("/forms");
     expect(setTimeout.mock.calls).toHaveLength(1);
     jest.runOnlyPendingTimers();
     const formPage = await context.waitForComponent(FormsListPage);
@@ -81,8 +90,8 @@ describe('FormsRouter', () => {
     await context.waitForComponent(NewFormPage);
   });
 
-  it('can edit a form', async () => {
-    renderApp('/forms/debugskjema/edit');
+  it("can edit a form", async () => {
+    renderApp("/forms/debugskjema/edit");
     setTimeout.mock.calls[0][0]();
     const formBuilder = await context.waitForComponent(NavFormBuilder);
     jest.runAllTimers();
@@ -94,7 +103,7 @@ describe('FormsRouter', () => {
   });
 
   it("lets navigate from the list to the editor", async () => {
-    renderApp('/forms');
+    renderApp("/forms");
     setTimeout.mock.calls[0][0]();
     await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
     const links = editFormLinks();
@@ -106,30 +115,41 @@ describe('FormsRouter', () => {
   });
 
   it("displays all the forms with an edit link", async () => {
-    renderApp('/forms');
+    renderApp("/forms");
     setTimeout.mock.calls[0][0]();
     await waitForExpect(() => expect(editFormLinks()).toHaveLength(1));
     const editorPath = editFormLinks()[0].props.to;
     expect(editorPath).toEqual("/forms/debugskjema/edit");
   });
 
-
   xit("testtest formbuilder", async () => {
     context.render(
       <MemoryRouter initialEntries={[`/forms/${context.backend.form().path}/edit`]}>
-        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp formio={{}} store={{ forms: [context.backend.form()] }} userAlerter={{flashSuccessMessage: jest.fn()}} />
+        <AuthContext.Provider
+          value={{
+            userData: "fakeUser",
+            login: () => {},
+            logout: () => {},
+          }}
+        >
+          <AuthenticatedApp
+            formio={{}}
+            store={{ forms: [context.backend.form()] }}
+            userAlerter={{ flashSuccessMessage: jest.fn() }}
+          />
         </AuthContext.Provider>
       </MemoryRouter>,
-        testRendererOptions
+      testRendererOptions
     );
     const formMetadataEditor = await context.waitForComponent(FormMetadataEditor);
-    for (let i=0; i < 19; i++) {
-      context.act(() => formMetadataEditor.findByProps({id: "title"}).props.onChange({target: {value: `Meat ${i}`}}));
-    };
+    for (let i = 0; i < 19; i++) {
+      context.act(() =>
+        formMetadataEditor.findByProps({ id: "title" }).props.onChange({ target: { value: `Meat ${i}` } })
+      );
+    }
     await waitForExpect(() => expect(formMetadataEditor.props.form.title).toEqual("Meat"));
     const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
-    expect(formBuilder.instance.builder.form).toMatchObject({title: "Meat"});
+    expect(formBuilder.instance.builder.form).toMatchObject({ title: "Meat" });
     expect(formBuilder.instance.builder.form).not.toEqual(context.backend.form());
     // jest.useRealTimers();
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));

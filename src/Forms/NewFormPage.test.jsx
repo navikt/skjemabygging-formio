@@ -1,27 +1,28 @@
 import NewFormPage from "./NewFormPage";
 import waitForExpect from "wait-for-expect";
 import NavFormBuilder from "../components/NavFormBuilder";
-import {Formio} from "formiojs";
-import {Link, MemoryRouter} from "react-router-dom";
-import {AuthContext} from "../context/auth-context";
+import { Formio } from "formiojs";
+import { Link, MemoryRouter } from "react-router-dom";
+import { AuthContext } from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
-import {Hovedknapp} from "nav-frontend-knapper";
+import { Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
-import {FakeBackendTestContext} from "../testTools/frontend/FakeBackendTestContext";
+import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
+import { UserAlerterContext } from "../userAlerting";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
 const testRendererOptions = {
-  createNodeMock: element => {
+  createNodeMock: (element) => {
     if (["formMountElement", "builderMountElement"].includes(element.props["data-testid"])) {
       return document.createElement("div");
     }
     return null;
-  }
+  },
 };
 
-describe('NewFormPage', () => {
+describe("NewFormPage", () => {
   let oldFormioFetch;
   let formStore;
   beforeEach(() => {
@@ -39,12 +40,19 @@ describe('NewFormPage', () => {
   }
 
   function renderApp(pathname) {
+    const userAlerter = { flashSuccessMessage: jest.fn(), alertComponent: jest.fn() };
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
-        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp userAlerter={{flashSuccessMessage: jest.fn()}}
-                            store={formStore}
-                            formio={new Formio("http://myproject.example.org")}/>
+        <AuthContext.Provider
+          value={{
+            userData: "fakeUser",
+            login: () => {},
+            logout: () => {},
+          }}
+        >
+          <UserAlerterContext.Provider value={userAlerter}>
+            <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+          </UserAlerterContext.Provider>
         </AuthContext.Provider>
       </MemoryRouter>,
       testRendererOptions
@@ -58,19 +66,19 @@ describe('NewFormPage', () => {
   }
 
   it("lets you create a new form", async () => {
-    renderApp('/forms/new');
+    renderApp("/forms/new");
     // internal react timer
     expect(setTimeout.mock.calls).toHaveLength(1);
     jest.runOnlyPendingTimers();
     const newFormPage = await context.waitForComponent(NewFormPage);
-    newFormPage.findByProps({id: "title"}).props.onChange({target: {value: "Meat"}});
+    newFormPage.findByProps({ id: "title" }).props.onChange({ target: { value: "Meat" } });
     expect(newFormPage.instance.state.form).toMatchObject({
       type: "form",
       path: "meat",
       display: "form",
       name: "meat",
       title: "Meat",
-      tags: ["nav-skjema"]
+      tags: ["nav-skjema"],
     });
     await waitForExpect(() => expect(formStore.forms).toHaveLength(1));
     expect(context.backend.hasFormByPath("meat")).toBeFalsy();

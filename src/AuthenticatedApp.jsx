@@ -1,14 +1,16 @@
-import React from "react";
+import React, {useContext} from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
-import {AlertContainer} from "./userAlerting";
+import {UserAlerterContext} from "./userAlerting";
 
 function AuthenticatedApp({ formio, store}) {
+  const userAlerter = useContext(UserAlerterContext);
   const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(
     formio,
-    store
+    store,
+    userAlerter
   );
 
   const history = useHistory();

@@ -4,9 +4,6 @@ import {Hovedknapp} from "nav-frontend-knapper";
 import {CreationFormMetadataEditor} from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
-import {Pagewrapper} from "./components";
-import {NavBar} from "../components/NavBar";
-import {Link} from "react-router-dom";
 import {AppLayoutWithContext} from "../components/AppLayout";
 
 class NewFormPage extends Component {
@@ -33,7 +30,6 @@ class NewFormPage extends Component {
   };
 
   render() {
-    const title = "Lag nytt skjema";
     return (
       <AppLayoutWithContext navBarProps={{title: "Opprett nytt skjema", visSkjemaliste: true}}>
         <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
