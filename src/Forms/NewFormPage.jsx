@@ -4,7 +4,7 @@ import {Hovedknapp} from "nav-frontend-knapper";
 import {CreationFormMetadataEditor} from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from 'lodash/camelCase';
-import {AppLayoutWithContext} from "../components/AppLayout";
+import {NavBarProps} from "../components/AppLayout";
 
 class NewFormPage extends Component {
   state = {
@@ -31,12 +31,13 @@ class NewFormPage extends Component {
 
   render() {
     return (
-      <AppLayoutWithContext navBarProps={{title: "Opprett nytt skjema", visSkjemaliste: true}}>
+      <>
+        <NavBarProps title="Opprett nytt skjema" visSkjemaliste={true} />
         <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm}/>
         <Hovedknapp onClick={() => this.props.onCreate(this.state.form)}>
           Opprett
         </Hovedknapp>
-      </AppLayoutWithContext>
+      </>
     );
   }
 }

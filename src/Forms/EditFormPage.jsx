@@ -4,7 +4,7 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import {AppLayoutWithContext} from "../components/AppLayout";
+import {LeftColContent, MainColContent, NavBarProps} from "../components/AppLayout";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish }) {
   const title = `${form.title}`;
@@ -20,27 +20,21 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
     }
   };
   return (
-    <AppLayoutWithContext
-      leftCol={<SkjemaVisningSelect form={form} onChange={onChange} />}
-      mainCol={
-        <>
-          <Link className="knapp" to={testFormUrl}>
-            Test skjema
-          </Link>
-          <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
-          <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-            Publiser skjema
-          </Knapp>
-        </>
-      }
-      navBarProps={{
-        title: title,
-        visSkjemaliste: true,
-        visHamburger: true,
-        visInnstillinger: true,
-      }}
-    >
+    <>
+      <LeftColContent>
+        <SkjemaVisningSelect form={form} onChange={onChange} />
+      </LeftColContent>
+      <MainColContent>
+        <Link className="knapp" to={testFormUrl}>
+          Test skjema
+        </Link>
+        <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
+        <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+          Publiser skjema
+        </Knapp>
+      </MainColContent>
+      <NavBarProps title={title} visSkjemaliste={true} visHamburger={true} visInnstillinger={true} />
       <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions} />
-    </AppLayoutWithContext>
+    </>
   );
 }

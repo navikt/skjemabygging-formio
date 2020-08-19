@@ -85,3 +85,5 @@ export const NavBar = ({ title, logout, visSkjemaliste, visHamburger, visInnstil
     </NavBarWrapper>
   );
 };
+
+NavBar.defaultProps = {title: ''};

@@ -4,6 +4,7 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
+import {VrengtLayout} from "./components/AppLayout";
 
 function App({ projectURL, store, pusher }) {
   const userAlerter = useUserAlerting(pusher);
@@ -15,7 +16,9 @@ function App({ projectURL, store, pusher }) {
     : () => <UnauthenticatedApp projectURL={projectURL} />;
   return (
     <UserAlerterContext.Provider value={userAlerter}>
-      <section>{contentFunc()}</section>
+      <VrengtLayout>
+        <section>{contentFunc()}</section>
+      </VrengtLayout>
     </UserAlerterContext.Provider>
   );
 }
