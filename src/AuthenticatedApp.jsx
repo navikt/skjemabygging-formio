@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
+import {UserAlerterContext} from "./userAlerting";
 
-function AuthenticatedApp({ formio, store, userAlerter }) {
+function AuthenticatedApp({ formio, store}) {
+  const userAlerter = useContext(UserAlerterContext);
   const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(
     formio,
     store,
@@ -42,7 +44,6 @@ function AuthenticatedApp({ formio, store, userAlerter }) {
 AuthenticatedApp.propTypes = {
   store: PropTypes.object.isRequired,
   formio: PropTypes.object.isRequired,
-  userAlerter: PropTypes.object.isRequired,
 };
 
 export default AuthenticatedApp;

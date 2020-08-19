@@ -3,21 +3,21 @@ import AuthenticatedApp from "./AuthenticatedApp";
 import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
-import { AlertContainer, useUserAlerting } from "./userAlerting";
+import { UserAlerterContext, useUserAlerting } from "./userAlerting";
 
 function App({ projectURL, store, pusher }) {
   const userAlerter = useUserAlerting(pusher);
+  console.log("userAlerter", userAlerter);
   const { userData } = useAuth();
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
-  const content = userData ? (
-    <AuthenticatedApp formio={formio} store={store} userAlerter={userAlerter} />
-  ) : (
-    <UnauthenticatedApp projectURL={projectURL} />
+  const contentFunc = userData
+    ? () => <AuthenticatedApp formio={formio} store={store} />
+    : () => <UnauthenticatedApp projectURL={projectURL} />;
+  return (
+    <UserAlerterContext.Provider value={userAlerter}>
+      <section>{contentFunc()}</section>
+    </UserAlerterContext.Provider>
   );
-  return <>
-    <AlertContainer>{userAlerter.alertComponent()}</AlertContainer>
-    <section>{content}</section>
-  </>;
 }
 
 export default App;

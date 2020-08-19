@@ -7,6 +7,7 @@ import { FakeBackend } from "../fakeBackend/FakeBackend";
 import { AuthContext } from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { MemoryRouter } from "react-router-dom";
+import { UserAlerterContext } from "../userAlerting";
 
 describe("FormMetadataEditor", () => {
   let mockOnChange;
@@ -58,18 +59,28 @@ describe("FormMetadataEditor", () => {
   });
 
   it("should display changes when onChange is called", async () => {
+    const userAlerter = {
+      flashSuccessMessage: jest.fn(),
+      alertComponent: jest.fn(),
+    }
     render(
       <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
-        <AuthContext.Provider value={{ userData: "fakeUser", login: () => {}, logout: () => {} }}>
-          <AuthenticatedApp userAlerter={{flashSuccessMessage: jest.fn()}} formio={{}} store={{ forms: [fakeBackend.form()] }} />
+        <AuthContext.Provider
+          value={{
+            userData: "fakeUser",
+            login: () => {},
+            logout: () => {},
+          }}
+        >
+          <UserAlerterContext.Provider value={userAlerter}>
+            <AuthenticatedApp formio={{}} store={{ forms: [fakeBackend.form()] }} />
+          </UserAlerterContext.Provider>
         </AuthContext.Provider>
       </MemoryRouter>
     );
     let visningsModus = await screen.getByLabelText(/Vis som/i);
-    expect(visningsModus).toHaveValue("form")
+    expect(visningsModus).toHaveValue("form");
     await userEvent.selectOptions(visningsModus, "wizard");
-    await waitFor(() =>
-      expect(visningsModus).toHaveValue("wizard")
-    );
+    await waitFor(() => expect(visningsModus).toHaveValue("wizard"));
   });
 });
