@@ -108,6 +108,7 @@ describe("NavFormBuilder", () => {
       context.render(<NavFormBuilder form={columnsForm} onChange={jest.fn()} />, renderOptions);
       //kule ting på g her -> htmlDivElement
       const navFormBuilder = context.testRenderer.root;
+
       // hvorfor vil ikke formio bli ready mens vi bruker fake timers??
       jest.useRealTimers();
       await waitForExpect(() => expect(navFormBuilder.props.onChange).toHaveBeenCalled());
