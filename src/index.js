@@ -7,7 +7,7 @@ import {forms} from "skjemapublisering"
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/skjema">
       <App forms={forms} />
     </BrowserRouter>
   </React.StrictMode>,

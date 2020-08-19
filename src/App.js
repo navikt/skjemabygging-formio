@@ -27,7 +27,7 @@ function App({forms}) {
             .sort((a, b) => (a.modified < b.modified ? 1 : -1))
             .map((form) => (
               <li key={form._id}>
-                <Link to={`/${form.path}`}>
+                <Link to={form.path}>
                   <Normaltekst>{form.title}</Normaltekst>
                 </Link>
               </li>
