@@ -1,0 +1,47 @@
+name: Deploy-to-nais
+on:
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/skjemautfylling:${{ github.sha }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Define build environment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo ::set-env name=CI::true
+          echo ::set-env name=GITHUB_TOKEN::$(echo ${GITHUB_TOKEN})
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Docker build and push
+        run: |
+          docker build --tag ${IMAGE} .
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${IMAGE}
+      - name: Generate nais variables
+        run: |
+          cat > .nais/vars.yaml <<EOF
+          ingresses:
+            - https://skjema.dev.nav.no
+          image: $IMAGE
+          EOF
+      - uses: nais/deploy/actions/deploy@master
+        env:
+          CLUSTER: dev-gcp
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          RESOURCE: .nais/config.yaml
+          VARS: .nais/vars.yaml
