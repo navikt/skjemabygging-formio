@@ -51,6 +51,9 @@ export default class NavFormBuilder extends Component {
 
   componentWillUnmount = () => {
     this.builder.instance.destroy(true);
+    console.log(this.element);
+    this.element.remove();
+    this.element.outerHTML = '';
     this.builderState = 'destroyed';
     console.log('destroyed builder');
   };

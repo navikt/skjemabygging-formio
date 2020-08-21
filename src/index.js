@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
-import AppProviders from "./context/AppProviders";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import Pusher from "pusher-js";
@@ -23,13 +22,11 @@ const pusher = new Pusher(pusherAppKey, {
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AppProviders>
         <App
           store={store}
           projectURL={projectURL}
           pusher={pusher}
         />
-      </AppProviders>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")

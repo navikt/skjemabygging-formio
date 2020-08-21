@@ -10,7 +10,7 @@ import Custom from "../CustomFields";
 import Components from "formiojs/components/Components";
 
 export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish}) => {
-  Components.setComponents(Custom);
+  //Components.setComponents(Custom);
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
   if (!forms) {
@@ -18,44 +18,6 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
   }
   return (
     <Switch>
-      <Route path={`${path}/new`}>
-        <NewFormPage onCreate={onCreate} logout={logout} />
-      </Route>
-      <Route
-        path={`${path}/:formpath/edit`}
-        render={({ match }) => {
-          let { params } = match;
-          const form = getFormFromPath(forms, params.formpath);
-          const testFormUrl = `${path}/${params.formpath}/view`;
-          return (
-            <EditFormPage
-              logout={logout}
-              form={form}
-              testFormUrl={testFormUrl}
-              onSave={onSave}
-              onChange={onChange}
-              onPublish={onPublish}
-            />
-          );
-        }}
-      />
-      <Route
-        path={`${path}/:formpath/view`}
-        render={({ match }) => {
-          return (
-            <TestFormPage
-              logout={logout}
-              form={getFormFromPath(forms, match.params.formpath)}
-              editFormUrl={`${path}/${match.params.formpath}/edit`}
-              onSave={onSave}
-              onChange={onChange}
-            />
-          );
-        }}
-      />
-      <Route path={`${path}/:formpath`}>
-        {({ match }) => <Redirect to={`${path}/${match.params.formpath}/edit`} />}
-      </Route>
       <Route path={path}>
         <FormsListPage
           logout={logout}
