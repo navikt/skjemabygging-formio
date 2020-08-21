@@ -13,7 +13,7 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
           <LeftCol>{leftCol}</LeftCol>
           <MainCol>{mainCol}</MainCol>
         </InnerGrid>
-        <AlertCol>{userAlerter.alertComponent()}</AlertCol>
+        {/*<AlertCol>{userAlerter.alertComponent()}</AlertCol>*/}
       </ActionRowWrapper>
     </NoScrollWrapper>
     <Pagewrapper>

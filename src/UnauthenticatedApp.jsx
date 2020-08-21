@@ -1,7 +1,7 @@
 import { NavBar } from "./components/NavBar";
 import NavForm from "./components/NavForm";
 import React from "react";
-import {useAuth} from "./context/auth-context";
+import {useAuth} from "./context/AuthProvider";
 import {Pagewrapper} from "./Forms/components";
 
 const UnauthenticatedApp = ({ projectURL }) => {

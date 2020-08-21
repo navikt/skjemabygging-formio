@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import EventEmitter from 'eventemitter2';
-import AllComponents from 'formiojs/components';
-import { Components, Form as FormioForm, Formio} from 'formiojs';
-import form from "./test";
+//import AllComponents from 'formiojs/components';
+//import { Components, Formio} from 'formiojs';
 import "nav-frontend-skjema-style"
 import navdesign from 'template';
+import {Form as FormioForm} from 'formiojs';
 
 
-Components.setComponents(AllComponents);
-Formio.use(navdesign);
+//Components.setComponents(AllComponents);
+//Formio.use(navdesign);
 
 export default class NavForm extends Component {
   static propTypes = {

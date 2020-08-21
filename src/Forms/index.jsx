@@ -1,14 +1,14 @@
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import "nav-frontend-lenker-style";
 import React from "react";
-import { useAuth } from "../context/auth-context";
-import NewFormPage from "./NewFormPage";
-import { EditFormPage } from "./EditFormPage";
-import { TestFormPage } from "./TestFormPage";
+import { useAuth } from "../context/AuthProvider";
+//import NewFormPage from "./NewFormPage";
+//import { EditFormPage } from "./EditFormPage";
+//import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
-import Custom from "../CustomFields";
-import Components from "formiojs/components/Components";
-
+//import Custom from "../CustomFields";
+//import Components from "formiojs/components/Components";
+//
 export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish}) => {
   //Components.setComponents(Custom);
   let { path, url } = useRouteMatch();

@@ -5,6 +5,7 @@ import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import Pusher from "pusher-js";
+import { AuthProvider } from "./context/AuthProvider";
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 
@@ -22,11 +23,13 @@ const pusher = new Pusher(pusherAppKey, {
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
+      <AuthProvider>
         <App
           store={store}
           projectURL={projectURL}
           pusher={pusher}
         />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
