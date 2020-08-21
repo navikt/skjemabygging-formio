@@ -2,7 +2,7 @@ name: Deploy-to-nais
 on:
   push:
     branches:
-      - nais-price
+      - master
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skjemautfylling:${{ github.sha }}
@@ -46,7 +46,7 @@ jobs:
           RESOURCE: .nais/config.yaml
           VARS: .nais/vars.yaml
       - name: Send pusher event
-          run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-event.js
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-event.js
       - name: Send message if job fails
-          if: ${{ failure() }}
-          run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
+        if: ${{ failure() }}
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
