@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
-import NavFormBuilder from "../components/NavFormBuilder";
+import { NavFormBuilder } from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
