@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as formiojs from 'formiojs';
 import cloneDeep from "lodash.clonedeep";
 import {styled} from "@material-ui/styles";
@@ -13,18 +13,20 @@ const BuilderMountElement = styled("div")({
 });
 
 export const NavFormBuilder = ({form, onChange, formBuilderOptions}) => {
-  let builder;
-  let thisElement;
-  let builderReady;
+  const thisElement = useRef();
   let builderState = 'preparing';
 
   useEffect(() => {
-    builder = new formiojs.FormBuilder(thisElement, {}, formBuilderOptions);
-    builderReady = builder.ready;
+    const builder = new formiojs.FormBuilder(thisElement.current, {}, formBuilderOptions);
+    const builderReady = builder.ready;
+
+    function handleChange() {
+      onChange(builder.instance.form);
+    }
+
     builderReady.then(() => {
       builderState = 'ready';
-      builder.setForm(cloneDeep(form)).then(() => handleChange());
-      handleChange();
+      builder.setForm(cloneDeep(form));
       builder.instance.on('addComponent', handleChange);
       builder.instance.on('saveComponent', handleChange);
       builder.instance.on('updateComponent', handleChange);
@@ -36,22 +38,11 @@ export const NavFormBuilder = ({form, onChange, formBuilderOptions}) => {
     return () => {
       builder.instance.destroy(true);
       builderState = 'destroyed';
-      builder.instance = null;
-      builder = null;
       console.log("builder destroyed")
     }
-  }, []);
+  }, [form]);
 
-  useEffect(() => {
-    if (builder) {
-      builder.setForm(cloneDeep(form)).then(() => onChange(builder.instance.form));
-    }
-  }, [form, builder, onChange]);
+  return <BuilderMountElement data-testid="builderMountElement" ref={thisElement}></BuilderMountElement>;
 
 
-  return <BuilderMountElement data-testid="builderMountElement" ref={element => thisElement = element}></BuilderMountElement>;
-
-  function handleChange() {
-    onChange(builder.instance.form);
-  }
 };
