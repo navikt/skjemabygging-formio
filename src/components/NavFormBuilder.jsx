@@ -16,7 +16,7 @@ const BuilderMountElement = styled("div")({
 
 export default class NavFormBuilder extends Component {
   builderState = 'preparing';
-  element;
+  element = React.createRef();
   static propTypes = {
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
@@ -30,7 +30,7 @@ export default class NavFormBuilder extends Component {
   };
 
   createBuilder = () => {
-    this.builder = new formiojs.FormBuilder(this.element, {}, this.props.formBuilderOptions);
+    this.builder = new formiojs.FormBuilder(this.element.current, {}, this.props.formBuilderOptions);
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builderState = 'ready';
@@ -72,6 +72,6 @@ export default class NavFormBuilder extends Component {
   };
 
   render = () => {
-    return <BuilderMountElement data-testid="builderMountElement" ref={element => this.element = element}></BuilderMountElement>;
+    return <BuilderMountElement data-testid="builderMountElement" ref={this.element}></BuilderMountElement>;
   };
 }
