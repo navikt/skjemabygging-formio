@@ -14,8 +14,13 @@ describe("FormMetadataEditor", () => {
   let fakeBackend;
 
   beforeEach(() => {
+    jest.useFakeTimers();
     mockOnChange = jest.fn();
     fakeBackend = new FakeBackend();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it("should update form when title is changed", async () => {
@@ -62,7 +67,7 @@ describe("FormMetadataEditor", () => {
     const userAlerter = {
       flashSuccessMessage: jest.fn(),
       alertComponent: jest.fn(),
-    }
+    };
     render(
       <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
         <AuthContext.Provider
@@ -81,6 +86,7 @@ describe("FormMetadataEditor", () => {
     let visningsModus = await screen.getByLabelText(/Vis som/i);
     expect(visningsModus).toHaveValue("form");
     await userEvent.selectOptions(visningsModus, "wizard");
+    jest.runAllTimers();
     await waitFor(() => expect(visningsModus).toHaveValue("wizard"));
   });
 });

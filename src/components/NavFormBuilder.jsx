@@ -16,19 +16,25 @@ const BuilderMountElement = styled("div")({
 
 export default class NavFormBuilder extends Component {
   builderState = 'preparing';
+  element;
   static propTypes = {
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     formBuilderOptions: PropTypes.object,
   };
 
-  componentDidMount = () => {
+  handleChange = () => {
+    if (this.builder) {
+      this.props.onChange(cloneDeep(this.builder.instance.form));
+    }
+  };
+
+  createBuilder = () => {
     this.builder = new formiojs.FormBuilder(this.element, {}, this.props.formBuilderOptions);
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builderState = 'ready';
-      this.updateFormBuilder();
-      this.handleChange();
+      this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
       this.builder.instance.on('addComponent', this.handleChange);
       this.builder.instance.on('saveComponent', this.handleChange);
       this.builder.instance.on('updateComponent', this.handleChange);
@@ -38,28 +44,34 @@ export default class NavFormBuilder extends Component {
     });
   };
 
-  componentDidUpdate = (prevProps) => {
-    if (isEqual(prevProps.form, this.props.form)) {
-      return;
-    }
-    this.updateFormBuilder();
-  }
-
-  updateFormBuilder() {
-    this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange()); //iht. webformbuilder.unit.js skal dette være builder.instance.setForm??
-  }
-
-  componentWillUnmount = () => {
+  destroyBuilder = () => {
     this.builder.instance.destroy(true);
+    this.builder = null;
     this.builderState = 'destroyed';
     console.log('destroyed builder');
   };
 
-  render = () => {
-    return <BuilderMountElement data-testid="builderMountElement" ref={element => this.element = element}></BuilderMountElement>;
+  updateFormBuilder() {
+    this.destroyBuilder();
+    this.createBuilder();
+  }
+
+  componentDidMount = () => {
+    this.createBuilder();
   };
 
-  handleChange = () => {
-    this.props.onChange(this.builder.instance.form);
+  componentDidUpdate = () => {
+    if (isEqual(this.builder.instance.form, this.props.form)) {
+      return;
+    }
+    this.updateFormBuilder();
+  };
+
+  componentWillUnmount = () => {
+    this.destroyBuilder();
+  };
+
+  render = () => {
+    return <BuilderMountElement data-testid="builderMountElement" ref={element => this.element = element}></BuilderMountElement>;
   };
 }
