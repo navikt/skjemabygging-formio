@@ -34,7 +34,6 @@ export default class NavFormBuilder extends Component {
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builderState = 'ready';
-      //this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
       this.handleChange();
       this.builder.instance.on('addComponent', this.handleChange);
       this.builder.instance.on('saveComponent', this.handleChange);

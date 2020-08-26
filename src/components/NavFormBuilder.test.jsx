@@ -104,19 +104,14 @@ describe("NavFormBuilder", () => {
 
     it("add new component", async () => {
       context.render(<NavFormBuilder form={columnsForm} onChange={jest.fn()} />, renderOptions);
-      //kule ting på g her -> htmlDivElement
       const navFormBuilder = await context.waitForComponent(NavFormBuilder);
-      // hvorfor vil ikke formio bli ready mens vi bruker fake timers??
-      // jest.useRealTimers();
       jest.runAllTimers();
       await waitForExpect(() => expect(navFormBuilder.props.onChange).toHaveBeenCalled());
       const formioJsBuilder = navFormBuilder.instance.builder;
       const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
       buildComponent(formioJsBuilder,"textfield", column1);
-      // await wait(150);
       jest.advanceTimersByTime(150);
       saveComponent(formioJsBuilder);
-      // await wait(150);
       jest.advanceTimersByTime(150);
       const columns = formioJsBuilder.instance.webform.getComponent("columns");
       expect(columns.columns[0]).toHaveLength(1);
