@@ -30,11 +30,12 @@ export default class NavFormBuilder extends Component {
   };
 
   createBuilder = () => {
-    this.builder = new formiojs.FormBuilder(this.element.current, {}, this.props.formBuilderOptions);
+    this.builder = new formiojs.FormBuilder(this.element.current, cloneDeep(this.props.form), this.props.formBuilderOptions);
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builderState = 'ready';
-      this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
+      //this.builder.setForm(cloneDeep(this.props.form)).then(() => this.handleChange());
+      this.handleChange();
       this.builder.instance.on('addComponent', this.handleChange);
       this.builder.instance.on('saveComponent', this.handleChange);
       this.builder.instance.on('updateComponent', this.handleChange);
@@ -45,6 +46,7 @@ export default class NavFormBuilder extends Component {
   };
 
   destroyBuilder = () => {
+    this.builder.destroy();
     this.builder.instance.destroy(true);
     this.builder = null;
     this.builderState = 'destroyed';

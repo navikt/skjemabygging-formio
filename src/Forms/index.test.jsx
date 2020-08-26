@@ -205,9 +205,17 @@ describe('FormsRouter', () => {
 
   it("displays all the forms with an edit link", async () => {
     renderApp("/forms");
+    console.log("lolol");
+
     setTimeout.mock.calls[0][0]();
+    console.log("lolol2");
+
     await waitForExpect(() => expect(editFormLinks()).toHaveLength(2));
+    console.log("lolol3");
+
     const editorPath = editFormLinks()[1].props.to;
+    console.log("lolol4");
+
     expect(editorPath).toEqual("/forms/debugskjema/edit");
   });
 
