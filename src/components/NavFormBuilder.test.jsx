@@ -44,13 +44,11 @@ describe("NavFormBuilder", () => {
   });
 
   it("should call onChange after the form has been built", async () => {
-    context.render(<NavFormBuilder form={context.backend.form()} onChange={jest.fn()} />, renderOptions);
-    const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
+    context.render(<NavFormBuilder form={context.backend.form()} onChange={jest.fn()} formBuilderOptions={{}} />, renderOptions);
+    const formBuilder = await context.waitForComponent(NavFormBuilder);
     expect(formBuilder.props.form).toEqual(context.backend.form());
-    // hvorfor vil ikke formio bli ready mens vi bruker fake timers??
-    jest.useRealTimers();
+    jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.props.onChange).toHaveBeenCalled());
-    jest.useFakeTimers();
   });
 
   describe("Formio.js focused tests", () => {
@@ -106,20 +104,18 @@ describe("NavFormBuilder", () => {
 
     it("add new component", async () => {
       context.render(<NavFormBuilder form={columnsForm} onChange={jest.fn()} />, renderOptions);
-      //kule ting på g her -> htmlDivElement
-      const navFormBuilder = context.testRenderer.root;
-      // hvorfor vil ikke formio bli ready mens vi bruker fake timers??
-      jest.useRealTimers();
+      const navFormBuilder = await context.waitForComponent(NavFormBuilder);
+      jest.runAllTimers();
       await waitForExpect(() => expect(navFormBuilder.props.onChange).toHaveBeenCalled());
       const formioJsBuilder = navFormBuilder.instance.builder;
       const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
       buildComponent(formioJsBuilder,"textfield", column1);
-      await wait(150);
+      jest.advanceTimersByTime(150);
       saveComponent(formioJsBuilder);
-      await wait(150);
+      jest.advanceTimersByTime(150);
       const columns = formioJsBuilder.instance.webform.getComponent("columns");
       expect(columns.columns[0]).toHaveLength(1);
-      jest.useFakeTimers();
+      jest.clearAllTimers();
     });
   });
 });

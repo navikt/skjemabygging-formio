@@ -155,11 +155,8 @@ describe('FormsRouter', () => {
     const formioJsBuilder = navFormBuilder.instance.builder;
     const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
     buildComponent(formioJsBuilder,"textfield", column1);
-    //jest.useRealTimers();
-    //await wait(150);
     jest.advanceTimersByTime(150);
     saveComponent(formioJsBuilder);
-    //await wait(150);
     jest.advanceTimersByTime(150);
     const columns = formioJsBuilder.instance.webform.getComponent("columns");
     expect(columns.columns[0]).toHaveLength(1);
@@ -168,13 +165,10 @@ describe('FormsRouter', () => {
     //// naviger tilbake til edit
     context.testRenderer.root.instance.history.push('/forms/columns/edit');
     jest.clearAllTimers(); //må cleare før vi kan kjøre igjen!
-    //jest.useFakeTimers();
     navFormBuilder = await context.waitForComponent(NavFormBuilder);
     jest.runAllTimers();
     //// her må vi vente til formbuilderen er ready
     await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual('ready'));
-    console.log("KRA KRA");
-    //jest.useFakeTimers();
     jest.clearAllTimers();
     // prøv å legg til et felt en gang til og se at det griser seg
   });
@@ -197,10 +191,10 @@ describe('FormsRouter', () => {
     await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
     const links = editFormLinks();
     navigateTo(links[1].props.to);
-    const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
-    jest.useRealTimers();
+    const formBuilder = await context.waitForComponent(NavFormBuilder);
+    jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
-    jest.useFakeTimers();
+    expect(formBuilder.instance.builderState).toEqual("ready");
   });
 
   it("displays all the forms with an edit link", async () => {
@@ -240,8 +234,6 @@ describe('FormsRouter', () => {
     const formBuilder = context.testRenderer.root.findByType(NavFormBuilder);
     expect(formBuilder.instance.builder.form).toMatchObject({ title: "Meat" });
     expect(formBuilder.instance.builder.form).not.toEqual(context.backend.form());
-    // jest.useRealTimers();
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));
-    // jest.useFakeTimers();
   });
 });
