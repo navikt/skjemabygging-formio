@@ -26,7 +26,7 @@
     "react-formio": "^4.3.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "skjemapublisering": "navikt/skjemapublisering-test.git#67e45c48072923ad15444a5c974ac5ee7ee979de"
+    "skjemapublisering": "navikt/skjemapublisering-test.git#2e749b95ecf5730b9e8209623c705f7fb06c6802"
   },
   "devDependencies": {
     "prettier": "^2.0.5"
