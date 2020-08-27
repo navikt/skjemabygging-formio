@@ -2,7 +2,7 @@ name: Deploy-to-nais
 on:
   push:
     branches:
-      - master
+      - nais-price
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skjemautfylling:${{ github.sha }}
