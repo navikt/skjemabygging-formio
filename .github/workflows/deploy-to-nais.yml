@@ -48,8 +48,9 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           RESOURCE: .nais/config.yaml
           VARS: .nais/vars.yaml
-      - name: Send pusher event
-        run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-event.js
-      - name: Send message if job fails
+      - name: Notify job success
+        if: ${{ success() }}
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-success.js
+      - name: Notify job failure
         if: ${{ failure() }}
         run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
