@@ -13,58 +13,45 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.less";
 import navdesign from "template";
 import {Formio} from "formiojs";
+import {FormPage} from "./FormPage";
 
 Components.setComponents(components);
 Formio.use(navdesign);
+
+const FormsList = ({forms, children}) => {
+  return <ul>
+    {forms
+      .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+      .map(children)}
+  </ul>;
+};
+
+const AllForms = ({forms}) => <FormsList forms={forms}>
+  {form =>
+    <li key={form._id}>
+      <Link to={form.path}>
+        <Normaltekst>{form.title}</Normaltekst>
+      </Link>
+    </li>}
+</FormsList>;
+
 
 function App({forms}) {
   const [submission, setSubmission] = useState({});
   return (
     <div className="app">
       <nav>
-        <ul>
-          {forms
-            .sort((a, b) => (a.modified < b.modified ? 1 : -1))
-            .map((form) => (
-              <li key={form._id}>
-                <Link to={form.path}>
-                  <Normaltekst>{form.title}</Normaltekst>
-                </Link>
-              </li>
-            ))}
-        </ul>
+        <AllForms forms={forms}/>
       </nav>
       <Switch>
-        <Route exact path="/" render={() => <h1>Velg et skjema</h1>}/>
+        <Route exact path="/">
+          <h1>Velg et skjema</h1>
+        </Route>
         <Route
           exact
-          path="/:formpath"
-          render={(routeProps) => {
-            const form = forms.find(
-              (form) => form.path === routeProps.match.params.formpath
-            );
-            if (!form) {
-              return <h1>Laster..</h1>;
-            }
-            return (
-              <>
-                <Sidetittel>{form.title}</Sidetittel>
-                <Innholdstittel>Fyll ut</Innholdstittel>
-                <Form
-                  key="1"
-                  form={form}
-                  options={{readOnly: false}}
-                  onSubmit={(submission) => {
-                    setSubmission({[form.path]: submission});
-                    routeProps.history.push(
-                      `/${routeProps.match.params.formpath}/result`
-                    );
-                  }}
-                />
-              </>
-            );
-          }}
-        />
+          path="/:formpath">
+          <FormPage forms={forms} setSubmission={setSubmission} />
+        </Route>
         <Route
           path="/:formpath/result"
           render={(routeProps) => {
