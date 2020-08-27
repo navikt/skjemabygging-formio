@@ -3,8 +3,6 @@
 import Pusher from 'pusher';
 import fs from 'fs';
 
-console.log('got here');
-
 function pusherAppValue(name) {
   return process.env[`PUSHER_APP_${name.toUpperCase()}`]
 }
@@ -23,6 +21,8 @@ const pusher = new Pusher({
 
 const jsonString = fs.readFileSync(0, 'utf-8');
 const message = JSON.parse(jsonString);
+
+console.log(message);
 
 if (message.deployment_status) {
   console.log('sending the following message', message.deployment_status);
