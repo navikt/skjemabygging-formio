@@ -40,7 +40,7 @@ function App({forms, className}) {
   const [submission, setSubmission] = useState({});
   return (
     <div className={className}>
-
+      <MainContent>
       <Switch>
         <Route exact path="/">
           <h1>Velg et skjema</h1>
@@ -80,16 +80,21 @@ function App({forms, className}) {
           }}
         />
       </Switch>
+      </MainContent>
     </div>
   );
 }
 
-
+const MainContent = styled("div") ({
+  maxWidth: 600
+})
 
 export default styled(App)({
   display: "flex",
-  flexDirection: "column",
-  maxWidth: 600,
+  //flexDirection: "column",
+  //alignItems: "end",
+  justifyContent: "center",
+  //maxWidth: 600,
   padding: "2rem"
   }
 
