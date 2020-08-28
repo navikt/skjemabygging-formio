@@ -2,11 +2,11 @@ FROM node:14-alpine
 ENV NODE_ENV production
 
 WORKDIR usr/src/app
-COPY server.mjs .
+COPY server server/
 COPY build build/
 
 RUN npm install express
 
-CMD ["node", "./server.mjs"]
+CMD ["node", "./server/server.mjs"]
 
 EXPOSE 8080
