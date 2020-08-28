@@ -1,5 +1,5 @@
 import {useParams, useHistory} from "react-router-dom";
-import {Innholdstittel, Sidetittel} from "nav-frontend-typografi";
+import {Sidetittel} from "nav-frontend-typografi";
 import {Form} from "react-formio";
 import React from "react";
 
