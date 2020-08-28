@@ -20,6 +20,3 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - name: Send message if job fails
-        if: ${{ failure() }}
-        run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
