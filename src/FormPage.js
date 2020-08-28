@@ -15,7 +15,6 @@ export const FormPage = ({forms, setSubmission}) => {
   return (
     <>
       <Sidetittel>{form.title}</Sidetittel>
-      <Innholdstittel>Fyll ut</Innholdstittel>
       <Form
         key="1"
         form={form}

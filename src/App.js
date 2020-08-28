@@ -40,12 +40,13 @@ function App({forms}) {
   const [submission, setSubmission] = useState({});
   return (
     <div className="app">
-      <nav>
-        <AllForms forms={forms}/>
-      </nav>
+
       <Switch>
         <Route exact path="/">
           <h1>Velg et skjema</h1>
+          <nav>
+            <AllForms forms={forms}/>
+          </nav>
         </Route>
         <Route
           exact
