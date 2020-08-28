@@ -6,20 +6,15 @@ import navCssVariabler from "nav-frontend-core";
 
 export const UserAlerterContext = React.createContext();
 
-export const AlertContainer = styled(({ ...props }) => <aside aria-live="polite" {...props} />)({
-  position: "fixed",
-  zIndex: 100,
-  top: "10%",
-  left: "50%",
-  transform: "translateX(-50%)",
-});
 const ErrorAlertContent = styled("div")({
   display: "flex",
+  alignItems: "flex-start",
   "& p": {
     margin: 0,
   },
   "& .knapp": {
     color: navCssVariabler.navMorkGra,
+    backgroundColor: 'transparent',
     "& svg": {
       fill: navCssVariabler.navMorkGra,
     },
@@ -29,7 +24,7 @@ const ErrorAlert = ({ exception, onClose }) => (
   <AlertStripeFeil>
     <ErrorAlertContent>
       <p>{exception.message || exception}</p>
-      <Xknapp type="flat" onClick={onClose} />
+      <Xknapp onClick={onClose} />
     </ErrorAlertContent>
   </AlertStripeFeil>
 );
@@ -79,7 +74,7 @@ const BuildAbortedAlert = ({ message, onClose }) => {
     <AlertStripeFeil>
       <ErrorAlertContent>
         <div>
-          <h3>Bygge feil</h3>
+          <h3>Byggefeil</h3>
           <p>
             <a href={message.skjemautfyllerCommit.url}>git url</a>
           </p>
