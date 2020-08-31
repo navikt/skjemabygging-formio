@@ -8,6 +8,7 @@ env:
   PUSHER_APP_SECRET: ${{ secrets.PUSHER_APP_SECRET }}
   PUSHER_APP_CLUSTER: ${{ secrets.PUSHER_APP_CLUSTER }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CI: 'true'
 
 jobs:
   build-test:
@@ -15,14 +16,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Define build environment
-        run: echo ::set-env name=CI::true
       - run: npm ci
       - run: npm test
       - run: npm run build
@@ -43,15 +42,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/cache@v1
+      - name: Npm cache
+        uses: actions/cache@v2
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Define build environment
-        run: echo ::set-env name=CI::true
-      - run: npm ci
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+      - name: Install deps
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - name: Download build artifact
         uses: actions/download-artifact@v2
         with:
