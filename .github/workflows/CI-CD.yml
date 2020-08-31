@@ -21,18 +21,31 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      - name: Define build environment
+        run: echo ::set-env name=CI::true
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build_output
+          path: .
       - name: Notify job failure
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && failure()
+        if: github.ref == 'refs/heads/master' && failure()
         run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
 
   deploy:
     runs-on: ubuntu-latest
     needs: build-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build_output
+      - name: Display structure of downloaded files
+        run: ls -R
+    working-directory: path/to/artifact
       - name: Docker build and push
         run: |
           docker build --tag ${IMAGE} .
