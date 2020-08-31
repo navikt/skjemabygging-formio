@@ -18,12 +18,21 @@ jobs:
           echo ::set-env name=IMAGE_NAME::$(echo ${GITHUB_REPOSITORY##*/})
           echo ::set-env name=IMAGE_VERSION::$(echo ${GITHUB_WORKFLOW})-$(echo ${GITHUB_SHA})
           echo ::set-env name=GITHUB_TOKEN::$(echo ${GITHUB_TOKEN})
-      - uses: actions/cache@v1
+      - name: Cache node_module download
+        uses: actions/cache@v2
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - run: npm ci
+      - name: Cache local node modules
+        id: cache-local-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+      - name: Install deps if needed
+        if: steps.cache-local-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - run: npm test
       - run: npm run build
