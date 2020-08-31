@@ -5,9 +5,9 @@ WORKDIR usr/src/app
 COPY server server/
 COPY build build/
 
-RUN npm install express
-RUN npm install mustache-express
+WORKDIR server
+RUN npm ci
 
-CMD ["node", "./server/server.mjs"]
+CMD ["node", "./server.mjs"]
 
 EXPOSE 8080
