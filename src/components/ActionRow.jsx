@@ -1,6 +1,5 @@
 import { styled } from "@material-ui/styles";
 import React from "react";
-import PropTypes from "prop-types";
 
 
 export const ActionRowWrapper = styled("div")({
@@ -33,21 +32,9 @@ export const LeftCol = styled("div")({
   paddingLeft: "1.2rem",
 });
 
-export const AlertCol = styled("div")({
+export const AlertCol = styled(({children}) => <aside aria-live="polite">{children}</aside>)({
   gridColumn: "2",
   alignSelf: "end",
   justifySelf: "start",
   padding: "2rem 1.2rem 0 0",
 });
-
-export const ActionRow = ({ userAlerter, children }) => (
-  <ActionRowWrapper>
-    <InnerGrid>{children}</InnerGrid>
-    <AlertCol>{userAlerter.alertComponent()}</AlertCol>
-  </ActionRowWrapper>
-);
-
-ActionRow.propTypes = {
-  userAlerter: PropTypes.object.isRequired,
-  children: PropTypes.array,
-};
