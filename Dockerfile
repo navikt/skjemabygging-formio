@@ -6,6 +6,7 @@ COPY server server/
 COPY build build/
 
 RUN npm install express
+RUN npm install mustache-express
 
 CMD ["node", "./server/server.mjs"]
 
