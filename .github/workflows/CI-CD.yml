@@ -30,7 +30,7 @@ jobs:
         with:
           name: build_output
           path: |
-            build
+            ./build
           if-no-files-found: error
       - name: Notify job failure
         if: github.ref == 'refs/heads/master' && failure()
@@ -56,6 +56,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build_output
+          path: ./build/
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: .
