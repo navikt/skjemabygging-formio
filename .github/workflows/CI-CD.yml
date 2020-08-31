@@ -45,7 +45,7 @@ jobs:
           name: build_output
       - name: Display structure of downloaded files
         run: ls -R
-    working-directory: path/to/artifact
+        working-directory: .
       - name: Docker build and push
         run: |
           docker build --tag ${IMAGE} .
