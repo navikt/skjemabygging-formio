@@ -1,14 +1,12 @@
 name: Deploy-to-nais
-on:
-  push:
-    branches:
-      - nais-price
+on: push
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skjemautfylling:${{ github.sha }}
 
 jobs:
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     env:
       PUSHER_APP_ID: ${{ secrets.PUSHER_APP_ID }}
