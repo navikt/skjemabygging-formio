@@ -7,6 +7,7 @@
   "cracoConfig": "craco.config.cjs",
   "dependencies": {
     "@craco/craco": "^5.6.4",
+    "@material-ui/styles": "^4.10.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -30,7 +31,7 @@
     "react-formio": "^4.3.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "skjemapublisering": "navikt/skjemapublisering-test.git#2e749b95ecf5730b9e8209623c705f7fb06c6802"
+    "skjemapublisering": "navikt/skjemapublisering-test.git#5449d6b700967a31cb96ebe192c37ee4f28eee9e"
   },
   "devDependencies": {
     "prettier": "^2.0.5"

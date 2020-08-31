@@ -10,10 +10,10 @@ import components from "./Custom";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.less";
 import navdesign from "template";
 import {Formio} from "formiojs";
 import {FormPage} from "./FormPage";
+import { styled } from "@material-ui/styles";
 
 Components.setComponents(components);
 Formio.use(navdesign);
@@ -36,11 +36,11 @@ const AllForms = ({forms}) => <FormsList forms={forms}>
 </FormsList>;
 
 
-function App({forms}) {
+function App({forms, className}) {
   const [submission, setSubmission] = useState({});
   return (
-    <div className="app">
-
+    <div className={className}>
+      <MainContent>
       <Switch>
         <Route exact path="/">
           <h1>Velg et skjema</h1>
@@ -80,8 +80,22 @@ function App({forms}) {
           }}
         />
       </Switch>
+      </MainContent>
     </div>
   );
 }
 
-export default App;
+const MainContent = styled("div") ({
+  maxWidth: 600
+})
+
+export default styled(App)({
+  display: "flex",
+  //flexDirection: "column",
+  //alignItems: "end",
+  justifyContent: "center",
+  //maxWidth: 600,
+  padding: "2rem"
+  }
+
+  );

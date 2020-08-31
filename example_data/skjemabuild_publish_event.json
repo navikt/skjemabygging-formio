@@ -5,18 +5,18 @@
   "commits": [
     {
       "author": {
-        "email": "syver.enstad@gmail.com",
-        "name": "Syver Enstad",
-        "username": "7er"
+        "email": "action@github.com",
+        "name": "GitHub Action",
+        "username": "action"
       },
       "committer": {
-        "email": "syver.enstad@gmail.com",
-        "name": "Syver Enstad",
-        "username": "7er"
+        "email": "action@github.com",
+        "name": "GitHub Action",
+        "username": "action"
       },
       "distinct": true,
       "id": "28d9650254f4b58f39887b905392480bd20d44de",
-      "message": "Expose secrets as env vars",
+      "message": "Bump skjemapublisering dependency to navikt/skjemapublisering-test.git#2e749b95ecf5730b9e8209623c705f7fb06c6802",
       "timestamp": "2020-08-11T14:21:13+02:00",
       "tree_id": "b869c08b825a2ce03a494c3c608e27a955aec403",
       "url": "https://github.com/navikt/skjemapublisering-test/commit/28d9650254f4b58f39887b905392480bd20d44de"
@@ -40,18 +40,18 @@
   "forced": false,
   "head_commit": {
     "author": {
-      "email": "syver.enstad@gmail.com",
-      "name": "Syver Enstad",
-      "username": "7er"
+      "email": "action@github.com",
+      "name": "GitHub Action",
+      "username": "action"
     },
     "committer": {
-      "email": "syver.enstad@gmail.com",
-      "name": "Syver Enstad",
-      "username": "7er"
+      "email": "action@github.com",
+      "name": "GitHub Action",
+      "username": "action"
     },
     "distinct": true,
     "id": "28d9650254f4b58f39887b905392480bd20d44de",
-    "message": "Expose secrets as env vars",
+    "message": "Bump skjemapublisering dependency to navikt/skjemapublisering-test.git#2e749b95ecf5730b9e8209623c705f7fb06c6802",
     "timestamp": "2020-08-11T14:21:13+02:00",
     "tree_id": "b869c08b825a2ce03a494c3c608e27a955aec403",
     "url": "https://github.com/navikt/skjemapublisering-test/commit/28d9650254f4b58f39887b905392480bd20d44de"
