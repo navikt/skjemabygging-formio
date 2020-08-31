@@ -6,20 +6,15 @@ import navCssVariabler from "nav-frontend-core";
 
 export const UserAlerterContext = React.createContext();
 
-export const AlertContainer = styled(({ ...props }) => <aside aria-live="polite" {...props} />)({
-  position: "fixed",
-  zIndex: 100,
-  top: "10%",
-  left: "50%",
-  transform: "translateX(-50%)",
-});
 const ErrorAlertContent = styled("div")({
   display: "flex",
+  alignItems: "flex-start",
   "& p": {
     margin: 0,
   },
   "& .knapp": {
     color: navCssVariabler.navMorkGra,
+    backgroundColor: 'transparent',
     "& svg": {
       fill: navCssVariabler.navMorkGra,
     },
@@ -29,33 +24,61 @@ const ErrorAlert = ({ exception, onClose }) => (
   <AlertStripeFeil>
     <ErrorAlertContent>
       <p>{exception.message || exception}</p>
-      <Xknapp type="flat" onClick={onClose} />
+      <Xknapp onClick={onClose} />
     </ErrorAlertContent>
   </AlertStripeFeil>
 );
-const DeploymentAlert = ({ message, onClose }) => {
-  const isFailure = message.message.state !== "success";
-  const ThisAlertStripe = isFailure ? AlertStripeFeil : AlertStripeSuksess;
+const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
   return (
-    <ThisAlertStripe>
+    <AlertStripeSuksess>
       <ErrorAlertContent>
-        <h3>{isFailure ? "Krise og Angst" : "Sol og regn og latter og sang!"}</h3>
-        <p>Hva skal det stå her da?</p>
+        <div>
+          <h3>Ny versjon av skjemautfylling</h3>
+          <div>
+            <p>Versjonen ble publisert av "{message.skjemautfyllerCommit.author.name}"</p>
+            <p>Endringsmeldingen var "{message.skjemautfyllerCommit.message}"</p>
+          </div>
+        </div>
         <Xknapp type="flat" onClick={onClose} />
       </ErrorAlertContent>
-    </ThisAlertStripe>
+    </AlertStripeSuksess>
   );
 };
+
+const PublishSuccessAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeSuksess>
+      <ErrorAlertContent>
+        <h3>Publisering fullført</h3>
+        <div>{message.skjemapublisering.commitUrl} er nå publisert</div>
+        <Xknapp type="flat" onClick={onClose} />
+      </ErrorAlertContent>
+    </AlertStripeSuksess>
+  );
+};
+
+const PublishAbortedAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeFeil>
+      <ErrorAlertContent>
+        <h3>Publisering feilet</h3>
+        <div>{message.skjemapublisering.commitUrl} ble ikke publisert</div>
+        <Xknapp type="flat" onClick={onClose} />
+      </ErrorAlertContent>
+    </AlertStripeFeil>
+  );
+};
+
 const BuildAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
       <ErrorAlertContent>
         <div>
-          <h3>Bygge feil</h3>
+          <h3>Byggefeil</h3>
           <p>
-            <a href={message.commit.url}>git url</a>
+            <a href={message.skjemautfyllerCommit.url}>git url</a>
           </p>
-          <p>Commit melding: {message.commit.message}</p>
+          <p>Commit melding: {message.skjemautfyllerCommit.message}</p>
         </div>
         <Xknapp type="flat" onClick={onClose} />
       </ErrorAlertContent>
@@ -104,7 +127,7 @@ class UserAlerter {
   }
 
   alertComponent() {
-    const [alertComponent,] = this.alertComponentList;
+    const [alertComponent] = this.alertComponentList;
     return alertComponent ? alertComponent[1] : null;
   }
 }
@@ -127,24 +150,42 @@ export function useUserAlerting(pusher) {
     return () => window.removeEventListener("unhandledrejection", callback);
   }, [userAlerter]);
   useEffect(() => {
-    const deploymentChannel = pusher.subscribe("deployment");
-    deploymentChannel.bind("status", (data) => {
+    const deploymentChannel = pusher.subscribe("skjemautfyller-deployed");
+    deploymentChannel.bind("publication", (data) => {
       let key;
       key = userAlerter.addAlertComponent(() => (
-        <DeploymentAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+        <PublishSuccessAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
       ));
     });
-    return () => deploymentChannel.unbind("status");
+    deploymentChannel.bind("other", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <SkjemautfyllingDeployedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
+    return () => {
+      deploymentChannel.unbind("other");
+      deploymentChannel.unbind("publication");
+    };
   }, [pusher, userAlerter]);
   useEffect(() => {
     const buildAbortedChannel = pusher.subscribe("build-aborted");
-    buildAbortedChannel.bind("event", (data) => {
+    buildAbortedChannel.bind("publication", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <PublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
+    buildAbortedChannel.bind("other", (data) => {
       let key;
       key = userAlerter.addAlertComponent(() => (
         <BuildAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
       ));
     });
-    return () => buildAbortedChannel.unbind("event");
+    return () => {
+      buildAbortedChannel.unbind("publication");
+      buildAbortedChannel.unbind("other");
+    };
   }, [pusher, userAlerter]);
   return userAlerter;
 }
