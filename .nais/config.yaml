@@ -23,3 +23,10 @@ spec:
   replicas:
     min: 1
     max: 2
+  accessPolicy:
+    outbound:
+      external:
+        - host: dekoratoren.dev.nav.no
+  env:
+    - name: DECORATOR_URL
+      value: https://dekoratoren.dev.nav.no/
