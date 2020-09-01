@@ -32,7 +32,6 @@ const firstNameSchema = {
   type: 'textfield',
   key: 'fornavn',
   input: true,
-  placeholder: "Fornavn",
   validate: {
     required: true,
   },
@@ -43,7 +42,6 @@ const surnameSchema = {
   type: 'textfield',
   key: 'etternavn',
   input: true,
-  placeholder: "Etternavn",
   validate: {
     required: true,
   },
@@ -57,12 +55,13 @@ const personaliaSchema = {
   "key": "personalia", // er denne viktig?
   "input": true, // er denne viktig??
   "components": [ // denne er kjempeviktig
-    firstNameSchema,
-    surnameSchema,
     {
       "key": "fodselsnummerDNummer", // er denne viktig?
       "type": "fnrfield",
-    }],
+    },
+    firstNameSchema,
+    surnameSchema,
+    ],
 };
 
 const builderPalett = {
@@ -96,7 +95,6 @@ const builderPalett = {
           type: 'textfield',
           key: 'gateadresse',
           input: true,
-          placeholder: "Gateveien 1",
           validate: {
             required: true,
           },
@@ -111,7 +109,6 @@ const builderPalett = {
           type: 'textfield',
           key: 'postnr',
           input: true,
-          placeholder: "1234",
           inputMask: "9999",
           validateOn: "blur",
           validate: {
@@ -129,7 +126,6 @@ const builderPalett = {
           type: 'textfield',
           key: 'poststed',
           input: true,
-          placeholder: "",
           validate: {
             required: true,
           },
@@ -166,7 +162,7 @@ const builderPalett = {
           type: 'phoneNumber',
           key: 'phoneNumber',
           input: true,
-          inputMask: "999 999 99",
+          inputMask: "99 99 99 99",
           validateOn: "blur",
           prefix: "+47",
           validate: {
