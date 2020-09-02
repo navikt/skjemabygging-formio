@@ -4,20 +4,11 @@ import {UserAlerterContext} from '../userAlerting';
 import React from "react";
 import {styled} from "@material-ui/styles";
 
-const ActionRowWrapper = styled("div")({
+const ActionRow = styled("div")({
   display: "grid",
-  gridTemplateColumns: "5fr 1fr",
+  gridTemplateColumns: "1fr 4fr 1fr",
   columnGap: "1.5rem",
-  padding: "1rem",
-});
-
-const InnerGrid = styled("div")({
-  gridColumn: "1",
-  alignSelf: "end",
-  justifySelf: "start",
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  columnGap: "1.5rem",
+  padding: "2.2rem",
 });
 
 const MainCol = styled("div")({
@@ -31,16 +22,15 @@ const LeftCol = styled("div")({
   gridColumn: "1",
   alignSelf: "end",
   justifySelf: "start",
-  paddingLeft: "1.2rem",
+ // paddingLeft: "1.2rem",
 });
 
 const BasicAlertCol = ({children, ...props}) => (<aside aria-live="polite" {...props}>{children}</aside>);
 
 const AlertCol = styled(BasicAlertCol)({
-  gridColumn: "2",
+  gridColumn: "3",
   alignSelf: "end",
-  justifySelf: "start",
-  padding: "2rem 1.2rem 0 0",
+  justifySelf: "end",
 });
 
 export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps }) => {
@@ -49,15 +39,13 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
     <>
       <NoScrollWrapper>
         <NavBar {...navBarProps} />
-        <ActionRowWrapper>
-          <InnerGrid>
+        <ActionRow>
             <LeftCol>{leftCol}</LeftCol>
             <MainCol>{mainCol}</MainCol>
-          </InnerGrid>
           <AlertCol>
             {alertComponent && alertComponent()}
           </AlertCol>
-        </ActionRowWrapper>
+        </ActionRow>
       </NoScrollWrapper>
       <Pagewrapper>
         {children}

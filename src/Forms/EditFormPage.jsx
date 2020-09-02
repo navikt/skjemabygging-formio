@@ -25,11 +25,11 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
       mainCol={
         <>
           <Link className="knapp" to={testFormUrl}>
-            Test skjema
+            Test
           </Link>
-          <Hovedknapp onClick={() => onSave(form)}>Lagre skjema</Hovedknapp>
+          <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
           <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-            Publiser skjema
+            Publiser
           </Knapp>
         </>
       }
