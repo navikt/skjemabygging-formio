@@ -44,7 +44,7 @@ jobs:
           if-no-files-found: error
       - name: Notify job failure
         if: github.ref == 'refs/heads/master' && failure()
-        run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-workflow-message.js build-aborted
 
   deploy:
     runs-on: ubuntu-latest
@@ -97,7 +97,7 @@ jobs:
           VARS: .nais/vars.yaml
       - name: Notify job success
         if: ${{ success() }}
-        run: cat $GITHUB_EVENT_PATH | bin/trigger-deployment-success.js
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-workflow-message.js skjemautfyller-deployed
       - name: Notify job failure
         if: ${{ failure() }}
-        run: cat $GITHUB_EVENT_PATH | bin/trigger-build-aborted.js
+        run: cat $GITHUB_EVENT_PATH | bin/trigger-workflow-message.js build-aborted
