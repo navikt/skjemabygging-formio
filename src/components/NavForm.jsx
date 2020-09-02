@@ -18,6 +18,7 @@ export default class NavForm extends Component {
     form: PropTypes.object,
     submission: PropTypes.object,
     options: PropTypes.shape({
+      language: PropTypes.string,
       readOnly: PropTypes.bool,
       noAlerts: PropTypes.bool,
       i18n: PropTypes.object,

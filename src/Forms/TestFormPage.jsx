@@ -16,7 +16,7 @@ export function TestFormPage({onPublishClick, publiserer, editFormUrl, form, onS
         Publiser
         </Knapp>
       </>}>
-      <NavForm form={form}/>
+      <NavForm form={form} options={{language: 'nb-NO'}}/>
     </AppLayoutWithContext>
   );
 }
