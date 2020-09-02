@@ -3,8 +3,6 @@
 import Pusher from 'pusher';
 import fs from 'fs';
 
-console.log('got here');
-
 function pusherAppValue(name) {
   return process.env[`PUSHER_APP_${name.toUpperCase()}`]
 }
@@ -23,7 +21,6 @@ const pusher = new Pusher({
 
 const jsonString = fs.readFileSync(0, 'utf-8');
 const message = JSON.parse(jsonString);
-
 
 const thisCommit = message.head_commit;
 const commitMessage = thisCommit.message;
@@ -44,6 +41,8 @@ if (publishMessageResult) {
   event = 'publication';
 }
 
+const channel = 'build-aborted';
+
 
 const pusherMessage = {
   'skjemautfyllerCommit': thisCommit,
@@ -53,4 +52,4 @@ const pusherMessage = {
   },
 };
 console.log('sending the following message', pusherMessage);
-pusher.trigger('build-aborted', event, pusherMessage);
+pusher.trigger(channel, event, pusherMessage);

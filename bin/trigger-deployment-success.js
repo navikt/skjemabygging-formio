@@ -40,11 +40,15 @@ let event = 'other';
 if (publishMessageResult) {
   event = 'publication';
 }
+const channel = 'skjemautfyller-deployed';
 
-pusher.trigger('skjemautfyller-deployed', event, {
+
+const pusherMessage = {
   'skjemautfyllerCommit': thisCommit,
   'skjemapublisering': {
     'commitUrl': skjemapubliseringsCommitUrl,
     'commitHash': skjemapubliseringsCommitResult.groups.gitHash
   },
-});
+};
+console.log('sending the following message', pusherMessage);
+pusher.trigger(channel, event, pusherMessage);
