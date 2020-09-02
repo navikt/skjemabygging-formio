@@ -18,7 +18,7 @@ export const FormPage = ({forms, setSubmission}) => {
       <Form
         key="1"
         form={form}
-        options={{readOnly: false}}
+        options={{readOnly: false, language: 'nb-NO'}}
         onSubmit={(submission) => {
           setSubmission({[form.path]: submission});
           history.push(
