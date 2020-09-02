@@ -31,7 +31,12 @@ function buildTriggerMessage(message, packageJson) {
 }
 
 function pusherAppValue(name) {
-  return process.env[`PUSHER_APP_${name.toUpperCase()}`]
+  const key = `PUSHER_APP_${name.toUpperCase()}`;
+  const appValue = process.env[key];
+  if (!appValue) {
+    throw new Error(`Must specify env var ${key}`);
+  }
+  return appValue
 }
 
 function sendMessage(pusher, channel, event, pusherMessage) {
