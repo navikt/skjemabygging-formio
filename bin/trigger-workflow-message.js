@@ -62,8 +62,8 @@ const usageMessage = "Usage: trigger-workflow-message.js <channel>";
 if (!channel) {
   throw new Error(usageMessage);
 }
-const jsonString = fs.readFileSync(0, 'utf-8');
-const message = JSON.parse(jsonString);
+const stdinContent = fs.readFileSync(0, 'utf-8');
+const githubEventMessage = JSON.parse(stdinContent);
 
 const packageJsonString = fs.readFileSync('package.json', 'utf-8');
 const packageJson = JSON.parse(packageJsonString);
@@ -74,4 +74,4 @@ const pusherApp = {
   secret: pusherAppValue('secret'),
   cluster: pusherAppValue('cluster')
 }
-run(channel, message, packageJson, pusherApp);
+run(channel, githubEventMessage, packageJson, pusherApp);
