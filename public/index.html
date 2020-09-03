@@ -12,15 +12,21 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="stylesheet" href="%PUBLIC_URL%/index.css" />
+      <% if (process.env.NODE_ENV !== 'development') { %>
     {{{STYLES}}}
+      <% } %>
     <title>Skjema - www.nav.no</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div class="pagewrapper">
-      {{{HEADER}}}
+        <% if (process.env.NODE_ENV !== 'development') { %>
+        {{{HEADER}}}
+        <% } %>
       <div id="root"></div>
     </div>
+    <% if (process.env.NODE_ENV !== 'development') { %>
     {{{FOOTER}}} {{{SCRIPTS}}}
+    <% } %>
   </body>
 </html>
