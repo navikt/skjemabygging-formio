@@ -29,6 +29,7 @@
     "skjemapublisering": "navikt/skjemapublisering-test.git#5449d6b700967a31cb96ebe192c37ee4f28eee9e"
   },
   "devDependencies": {
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.5"
   },
   "scripts": {
@@ -41,7 +42,9 @@
     "prebuild": "npm run postinstall",
     "install-template": "npm --prefix ./template install ./template",
     "build-template": "cd template && npm run build",
-    "postinstall": "npm run install-template && npm run build-template"
+    "postinstall": "npm run install-template && npm run build-template",
+    "install-server": "npm install && npm --prefix ./server install ./server",
+    "dev-server": "DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" nodemon server/server.mjs"
   },
   "eslintConfig": {
     "extends": "react-app"
