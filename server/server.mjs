@@ -5,23 +5,23 @@ import mustacheExpress from "mustache-express";
 import getDecorator from "./dekorator.mjs";
 
 const app = express();
+const skjemaApp = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.set("views", `${__dirname}/../build`);
-app.set("view engine", "mustache");
-app.engine("html", mustacheExpress());
-
 // Parse application/json
-app.use(express.json());
+skjemaApp.use(express.json());
+skjemaApp.set("views", `${__dirname}/../build`);
+skjemaApp.set("view engine", "mustache");
+skjemaApp.engine("html", mustacheExpress());
 
-app.use("/skjema/", express.static(path.join(__dirname, "../build"), { index: false }));
+skjemaApp.use("/", express.static(path.join(__dirname, "../build"), { index: false }));
 
-app.get("/skjema/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
+skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
 // Match everything except internal og static
-app.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
+skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
   return getDecorator()
     .then((fragments) => {
       res.render("index.html", fragments);
@@ -32,6 +32,8 @@ app.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
       res.status(500).send(error);
     });
 });
+
+app.use('/skjema', skjemaApp);
 
 const port = parseInt(process.env.PORT || "8080");
 console.log("serving on ", port);

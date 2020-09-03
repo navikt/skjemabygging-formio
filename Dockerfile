@@ -1,13 +1,13 @@
 FROM node:14-alpine
 ENV NODE_ENV production
 
-WORKDIR usr/src/app
-COPY server server/
-COPY build build/
-
-WORKDIR server
+WORKDIR usr/src/app/server
+COPY server ./
 RUN npm ci
 
-CMD ["node", "./server.mjs"]
+WORKDIR ../
+COPY build build/
+
+CMD ["node", "./server/server.mjs"]
 
 EXPOSE 8080
