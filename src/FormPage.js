@@ -21,9 +21,20 @@ export const FormPage = ({forms, setSubmission}) => {
         options={{readOnly: false, language: 'nb-NO'}}
         onSubmit={(submission) => {
           setSubmission({[form.path]: submission});
+          fetch('/skjema/pdf', {method: 'POST', body: JSON.stringify(submission)})
+            .then(response => {
+              console.log('response', response);
+              response.text()
+                .then(text => {
+                  console.log('text', text)
+                });
+            });
+          /*
           history.push(
             `/${params.formpath}/result`
           );
+
+           */
         }}
       />
     </>
