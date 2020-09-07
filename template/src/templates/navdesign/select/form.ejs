@@ -4,6 +4,7 @@
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
+  id="{{ctx.component.key}}"
 >{{ctx.selectOptions}}</select>
 <input type="text"
        class="formio-select-autocomplete-input"
