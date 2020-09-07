@@ -1,5 +1,7 @@
 {
   "name": "skjemautfylling-formio",
+  "homepage": "/skjema",
+  "proxy": "http://localhost:8080",
   "version": "0.1.1",
   "private": true,
   "type": "module",
@@ -14,6 +16,7 @@
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
     "formiojs": "^4.9.20-rc.1",
+    "http-proxy-middleware": "^1.0.5",
     "nav-frontend-core": "^4.0.12",
     "nav-frontend-paneler-style": "^0.3.21",
     "nav-frontend-skjema-style": "^2.0.9",
@@ -25,7 +28,7 @@
     "react-formio": "^4.3.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "skjemapublisering": "navikt/skjemapublisering-test.git#2ddef14a6cc78cbf3157f93765956cac61b19fbb"
+    "skjemapublisering": "navikt/skjemapublisering-test.git#017f996d02a930622073ad9ef4bc34c8e098d0d0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
