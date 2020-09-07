@@ -1,11 +1,11 @@
 import {useParams} from "react-router-dom";
 import {Sidetittel} from "nav-frontend-typografi";
 import {Form} from "react-formio";
-import React from "react";
+import React, {useRef} from "react";
 
-const formRef = React.createRef();
 
 export const FormPage = ({forms, setSubmission}) => {
+  const formRef = useRef(null);
   const params = useParams();
   // const history = useHistory();
   const form = forms.find(
