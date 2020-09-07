@@ -7,11 +7,12 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}) => {
   return (
     <SkjemaGruppe>
       <Input
-        label="Tittel"
+        label="Skjemanummer"
         type="text"
         id="title"
-        placeholder="Skriv inn tittelen"
+        placeholder="Skriv inn skjemanummer"
         value={title}
+        readOnly={usageContext === 'edit'}
         onChange={event => onChange({...form, title: event.target.value})}
       />
       <Input
