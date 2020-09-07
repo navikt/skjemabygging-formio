@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename);
 
 // Parse application/json
 skjemaApp.use(express.json());
+skjemaApp.use(express.urlencoded({extended: true}));
 skjemaApp.set("views", `${__dirname}/../build`);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
@@ -28,6 +29,19 @@ skjemaApp.post("/pdf", (req, res) => {
   generateSubmissionPDF(submission, res);
   // sprut det ut til res, res.send(pdfData);
 });
+
+skjemaApp.post("/pdf-form", (req, res) => {
+  // hent submission ut av req
+  const body = req.body.json;
+  console.log('body', body);
+  const submission = JSON.parse(body);
+  console.log('submission', submission);
+  // generer pdf data
+  res.contentType('application/pdf'); // lol, context type ...
+  generateSubmissionPDF(submission, res);
+  // sprut det ut til res, res.send(pdfData);
+});
+
 
 skjemaApp.use("/", express.static(path.join(__dirname, "../build"), { index: false }));
 
