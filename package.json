@@ -1,6 +1,7 @@
 {
   "name": "skjemautfylling-formio",
   "homepage": "/skjema",
+  "proxy": "http://localhost:8080",
   "version": "0.1.1",
   "private": true,
   "type": "module",
@@ -15,6 +16,7 @@
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
     "formiojs": "^4.9.20-rc.1",
+    "http-proxy-middleware": "^1.0.5",
     "nav-frontend-core": "^4.0.12",
     "nav-frontend-paneler-style": "^0.3.21",
     "nav-frontend-skjema-style": "^2.0.9",
