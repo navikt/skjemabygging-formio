@@ -3,8 +3,9 @@ import {Sidetittel} from "nav-frontend-typografi";
 import {Form} from "react-formio";
 import React from "react";
 
+const formRef = React.createRef();
+
 export const FormPage = ({forms, setSubmission}) => {
-  const formRef = React.createRef();
   const params = useParams();
   // const history = useHistory();
   const form = forms.find(
@@ -22,36 +23,15 @@ export const FormPage = ({forms, setSubmission}) => {
         options={{readOnly: false, language: 'nb-NO'}}
         onSubmit={(submission) => {
           setSubmission({[form.path]: submission});
-          fetch('/skjema/pdf', {
-            method: 'POST',
-            headers: {'content-type': 'application/json'},
-            body: JSON.stringify(submission)
-          })
-            .then(response => {
-              console.log('response', response);
-              response.text()
-                .then(text => {
-                  console.log('text', text)
-                });
-            });
-          /*
-          history.push(
-            `/${params.formpath}/result`
-          );
-
-           */
+          const inputs = formRef.current.elements;
+          inputs.json.value = JSON.stringify(submission);
+          formRef.current.submit();
         }}
-          />
-          <form ref={formRef} style={{display: "none"}} action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
-            <div className="form-example">
-              <label htmlFor="json">Enter your json: </label>
-              <textarea name="json" id="json" required>
+      />
+      <form ref={formRef} action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
+              <textarea hidden="hidden" name="json" id="json" required>
               </textarea>
-            </div>
-            <div className="form-example">
-              <input type="submit" />
-            </div>
-          </form>
-          </>
-          );
-        };
+      </form>
+    </>
+  );
+};
