@@ -18,28 +18,20 @@ skjemaApp.set("views", `${__dirname}/../build`);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
+// application/json post body
 skjemaApp.post("/pdf", (req, res) => {
-  // hent submission ut av req
   const body = req.body;
-  console.log('body', body);
-  const submission = body;
-  console.log('submission', submission);
-  // generer pdf data
-  res.contentType('application/pdf'); // lol, context type ...
-  generateSubmissionPDF(submission, res);
-  // sprut det ut til res, res.send(pdfData);
+  console.log('submission', body);
+  res.contentType('application/pdf');
+  generateSubmissionPDF(body, res);
 });
 
+// form encoded post body
 skjemaApp.post("/pdf-form", (req, res) => {
-  // hent submission ut av req
-  const body = req.body.json;
-  console.log('body', body);
-  const submission = JSON.parse(body);
+  const submission = JSON.parse(req.body.json);
   console.log('submission', submission);
-  // generer pdf data
-  res.contentType('application/pdf'); // lol, context type ...
+  res.contentType('application/pdf');
   generateSubmissionPDF(submission, res);
-  // sprut det ut til res, res.send(pdfData);
 });
 
 
