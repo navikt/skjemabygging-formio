@@ -1,7 +1,7 @@
 import {useParams, useHistory} from "react-router-dom";
 import {Sidetittel} from "nav-frontend-typografi";
 import {Form} from "react-formio";
-import React, {useRef} from "react";
+import React from "react";
 
 
 export const FormPage = ({forms, setSubmission}) => {

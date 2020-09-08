@@ -1,6 +1,6 @@
 import {Innholdstittel, Sidetittel} from "nav-frontend-typografi";
 import {Form} from "react-formio";
-import React, {useRef} from "react";
+import React from "react";
 
 export function ResultPage({form, submission}) {
   const resultForm =
@@ -9,8 +9,7 @@ export function ResultPage({form, submission}) {
     <>
       <Sidetittel>{form.title}</Sidetittel>
       <Innholdstittel>Din søknad</Innholdstittel>
-      <form action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_self">
-
+      <form action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
         <Form
           key="2"
           form={resultForm}
@@ -19,7 +18,7 @@ export function ResultPage({form, submission}) {
         />
         <button onClick={window.print}>Skriv ut</button>
         <input type="submit" value="Lag pdf"/>
-        <textarea name="json" id="json" readOnly={true} required value={JSON.stringify(submission)}/>
+        <textarea hidden={true} name="json" id="json" readOnly={true} required value={JSON.stringify(submission)}/>
       </form>
 
     </>

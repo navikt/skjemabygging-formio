@@ -1,4 +1,4 @@
-import {Link, Route} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Normaltekst} from "nav-frontend-typografi";
 import React from "react";
 
