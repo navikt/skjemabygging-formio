@@ -45,8 +45,8 @@
     "install-template": "npm --prefix ./template install ./template",
     "build-template": "cd template && npm run build",
     "postinstall": "npm run install-template && npm run build-template",
-    "install-server": "npm install && npm --prefix ./server install ./server",
-    "dev-server": "DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" nodemon server/server.mjs"
+    "install-all": "npm install && npm --prefix ./server install ./server",
+    "dev-server": "cd server && DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" npm start"
   },
   "eslintConfig": {
     "extends": "react-app"
