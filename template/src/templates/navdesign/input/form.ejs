@@ -16,6 +16,7 @@
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
   id="{{ctx.component.key}}"
+  required="{{ctx.component.validate.required}}"
 >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
 {% if (ctx.component.editor || ctx.component.wysiwyg) { %}
