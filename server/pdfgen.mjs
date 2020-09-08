@@ -1,33 +1,25 @@
 import PdfPrinter from 'pdfmake';
 
-/*
-var fonts = {
-    SourceSans: {
-        normal: 'fonts/SourceSans-Regular.ttf',
-        bold: 'fonts/SourceSans-Medium.ttf',
-        italics: 'fonts/SourceSans-Italic.ttf',
-        bolditalics: 'fonts/SourceSans-MediumItalic.ttf'
-    }
-};
-
- */
-
-var fonts = {
+const fonts = {
   Roboto: {
     normal: 'fonts/Roboto-Regular.ttf',
     bold: 'fonts/Roboto-Medium.ttf',
     italics: 'fonts/Roboto-Italic.ttf',
     bolditalics: 'fonts/Roboto-MediumItalic.ttf'
+  },
+  SourceSans: {
+    normal: 'fonts/SourceSans-Regular.ttf',
+    bold: 'fonts/SourceSans-Medium.ttf',
+    italics: 'fonts/SourceSans-Italic.ttf',
+    bolditalics: 'fonts/SourceSans-MediumItalic.ttf'
   }
 };
 
+const printer = new PdfPrinter(fonts);
+
 
 export function generateSubmissionPDF(submission, writeStream) {
-  // can we create the printer just once, or do we need to create it for each document
-  var printer = new PdfPrinter(fonts);
-
-
-  var dataTable = {
+  const dataTable = {
     // headers are automatically repeated if the table spans over multiple pages
     // you can declare how many rows should be treated as headers
     headerRows: 1,
@@ -38,7 +30,7 @@ export function generateSubmissionPDF(submission, writeStream) {
     ]
   };
 
-  var docDefinition = {
+  const docDefinition = {
     content: [
       'Skjemainnsendingskvittering',
       'Her står det så mye tekst at den bryter over mer enn en' +
@@ -69,7 +61,7 @@ export function generateSubmissionPDF(submission, writeStream) {
     }
   });
 
-  var pdfDoc = printer.createPdfKitDocument(docDefinition);
+  const pdfDoc = printer.createPdfKitDocument(docDefinition);
   pdfDoc.pipe(writeStream);
   pdfDoc.end();
 }
