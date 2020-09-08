@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import mustacheExpress from "mustache-express";
 import getDecorator from "./dekorator.mjs";
+import {generateSubmissionPDF} from "./pdfgen.mjs";
 
 const app = express();
 const skjemaApp = express();
@@ -12,9 +13,27 @@ const __dirname = path.dirname(__filename);
 
 // Parse application/json
 skjemaApp.use(express.json());
+skjemaApp.use(express.urlencoded({extended: true}));
 skjemaApp.set("views", `${__dirname}/../build`);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
+
+// application/json post body
+skjemaApp.post("/pdf", (req, res) => {
+  const body = req.body;
+  console.log('submission', body);
+  res.contentType('application/pdf');
+  generateSubmissionPDF(body, res);
+});
+
+// form encoded post body
+skjemaApp.post("/pdf-form", (req, res) => {
+  const submission = JSON.parse(req.body.json);
+  console.log('submission', submission);
+  res.contentType('application/pdf');
+  generateSubmissionPDF(submission, res);
+});
+
 
 skjemaApp.use("/", express.static(path.join(__dirname, "../build"), { index: false }));
 

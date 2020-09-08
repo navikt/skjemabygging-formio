@@ -3,6 +3,7 @@ import {Sidetittel} from "nav-frontend-typografi";
 import {Form} from "react-formio";
 import React from "react";
 
+
 export const FormPage = ({forms, setSubmission}) => {
   const params = useParams();
   const history = useHistory();
@@ -22,8 +23,7 @@ export const FormPage = ({forms, setSubmission}) => {
         onSubmit={(submission) => {
           setSubmission({[form.path]: submission});
           history.push(
-            `/${params.formpath}/result`
-          );
+            `/${params.formpath}/result`);
         }}
       />
     </>

@@ -8,6 +8,7 @@ RUN npm ci
 WORKDIR ../
 COPY build build/
 
-CMD ["node", "./server/server.mjs"]
+WORKDIR server
+CMD ["node", "./server.mjs"]
 
 EXPOSE 8080
