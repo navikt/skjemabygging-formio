@@ -1,39 +1,19 @@
 import React, {useState} from "react";
-import {Switch, Route, Link} from "react-router-dom";
-import {Components, Form} from "react-formio";
-import {
-  Innholdstittel,
-  Normaltekst,
-  Sidetittel,
-} from "nav-frontend-typografi";
+import {Route, Switch} from "react-router-dom";
+import {Components} from "react-formio";
 import components from "./Custom";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import navdesign from "template";
 import {Formio} from "formiojs";
-import {FormPage} from "./FormPage";
-import { styled } from "@material-ui/styles";
+import {FormPage} from "./components/FormPage";
+import {styled} from "@material-ui/styles";
+import {ResultPage} from "./components/ResultPage";
+import {AllForms} from "./components/AllForms";
 
 Components.setComponents(components);
 Formio.use(navdesign);
-
-const FormsList = ({forms, children}) => {
-  return <ul>
-    {forms
-      .sort((a, b) => (a.modified < b.modified ? 1 : -1))
-      .map(children)}
-  </ul>;
-};
-
-const AllForms = ({forms}) => <FormsList forms={forms}>
-  {form =>
-    <li key={form._id}>
-      <Link to={form.path}>
-        <Normaltekst>{form.title}</Normaltekst>
-      </Link>
-    </li>}
-</FormsList>;
 
 
 function App({forms, className}) {
@@ -43,10 +23,7 @@ function App({forms, className}) {
       <MainContent>
       <Switch>
         <Route exact path="/">
-          <h1>Velg et skjema</h1>
-          <nav>
-            <AllForms forms={forms}/>
-          </nav>
+          <AllForms forms={forms} />
         </Route>
         <Route
           exact
@@ -56,27 +33,12 @@ function App({forms, className}) {
         <Route
           path="/:formpath/result"
           render={(routeProps) => {
-            const form = forms.find(
-              (form) => form.path === routeProps.match.params.formpath
-            );
+            const formPath = routeProps.match.params.formpath;
+            const form = forms.find(form => form.path === formPath);
             if (!form) {
-              return <h1>Laster..</h1>;
+              return <h1>Skjemaet {formPath} finnes ikke</h1>;
             }
-            const resultForm =
-              form.display === "wizard" ? {...form, display: "form"} : form;
-            return (
-              <>
-                <Sidetittel>{form.title}</Sidetittel>
-                <Innholdstittel>Din søknad</Innholdstittel>
-                <Form
-                  key="2"
-                  form={resultForm}
-                  options={{readOnly: true}}
-                  submission={submission[form.path]}
-                />
-                <button onClick={window.print}>Skriv ut</button>
-              </>
-            );
+            return <ResultPage form={form} submission={submission[form.path]} />;
           }}
         />
       </Switch>
