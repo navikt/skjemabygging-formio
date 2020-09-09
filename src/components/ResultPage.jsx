@@ -18,7 +18,8 @@ export function ResultPage({form, submission}) {
         />
         <button onClick={window.print}>Skriv ut</button>
         <input type="submit" value="Lag pdf"/>
-        <textarea hidden={true} name="json" id="json" readOnly={true} required value={JSON.stringify(submission)}/>
+        <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)}/>
+        <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
       </form>
 
     </>
