@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { ReactComponent } from "react-formio";
+import ReactComponent from "../ReactComponent";
 import settingsForm from "./Toggle.settingsForm";
 
 /**
@@ -47,7 +47,7 @@ export default class Toggle extends ReactComponent {
         return {
             title: "Toggle",
             icon: "square",
-            group: "Data",
+            group: "advanced",
             documentation: "",
             weight: -10,
             schema: Toggle.schema()
