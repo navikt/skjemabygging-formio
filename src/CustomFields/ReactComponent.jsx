@@ -1,17 +1,6 @@
-import Field from 'formiojs/components/_classes/field/Field';
+import Field from "formiojs/components/_classes/field/Field";
 
 export default class ReactComponent extends Field {
-  /**
-   * This is the first phase of component building where the component is instantiated.
-   *
-   * @param component - The component definition created from the settings form.
-   * @param options - Any options passed into the renderer.
-   * @param data - The submission data where this component's data exists.
-   */
-  constructor(component, options, data) {
-    super(component, options, data);
-  }
-
   /**
    * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
    * components using the this.on() function.
@@ -53,7 +42,7 @@ export default class ReactComponent extends Field {
     // The loadRefs function will find all dom elements that have the "ref" setting that match the object property.
     // It can load a single element or multiple elements with the same ref.
     this.loadRefs(element, {
-      [`react-${this.id}`]: 'single',
+      [`react-${this.id}`]: "single",
     });
 
     if (this.refs[`react-${this.id}`]) {
@@ -101,7 +90,7 @@ export default class ReactComponent extends Field {
   setValue(value) {
     if (this.reactInstance) {
       this.reactInstance.setState({
-        value: value
+        value: value,
       });
       this.shouldSetValue = false;
     } else {
@@ -118,12 +107,12 @@ export default class ReactComponent extends Field {
   updateValue = (value, flags) => {
     flags = flags || {};
     const newValue = value === undefined || value === null ? this.getValue() : value;
-    const changed = (newValue !== undefined) ? this.hasChanged(newValue, this.dataValue) : false;
+    const changed = newValue !== undefined ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
 
     this.updateOnChange(flags, changed);
     return changed;
-  }
+  };
 
   /**
    * Get the current value of the component. Should return the value set in the react component.

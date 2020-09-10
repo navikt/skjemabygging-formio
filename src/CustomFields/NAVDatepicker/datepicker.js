@@ -1,31 +1,30 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { Datovelger } from 'nav-datovelger';
+import { Datovelger } from "nav-datovelger";
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display"
+import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
+import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import ReactComponent from "../ReactComponent";
 
-const AvansertDatovelger = ({component, onChange, value}) => {
-  const [dato, setDato] = useState(value || '');
+const AvansertDatovelger = ({ component, onChange, value, checkValidity }) => {
+  const [dato, setDato] = useState(value || "");
   //Ref. toggle - må man virkelig ha både internal og external state her??
   //Gjorde et kjapt forsøk på å bytte til value og onChange alene - det fungerte ikke.
 
-  console.log(component);
   return (
     <Datovelger
       id={component.id}
       valgtDato={dato}
       onChange={(d) => {
-        setDato(d)
-        onChange(d)
+        setDato(d);
+        onChange(d);
       }}
-      kalender={{ visUkenumre: component.visUkenumre }}
+      //datoErGyldig={checkValidity(dato, false, dato)}
       visÅrVelger={component.visArvelger}
-      locale={'nb'} //hva gjør vi med denne?
+      locale={"nb"} //hva gjør vi med denne?
     />
   );
-}
-
+};
 
 export default class Datepicker extends ReactComponent {
   /**
@@ -35,68 +34,80 @@ export default class Datepicker extends ReactComponent {
    */
   static get builderInfo() {
     return {
-      title: "DatoSissel",
-      group: 'advanced',
-      icon: 'square',
-      schema: Datepicker.schema()
+      title: "Datovelger",
+      group: "advanced",
+      icon: "calendar",
+      schema: Datepicker.schema(),
     };
   }
 
   static schema(...extend) {
-    return ReactComponent.schema({
-      type: "navDatepicker",
-      label: "Dato",
-      "validateOn": "blur",
-      "validate": {
-        "required": true,
+    return ReactComponent.schema(
+      {
+        type: "navDatepicker",
+        label: "Dato",
+        validateOn: "blur",
+        validate: {
+          required: true,
+        },
+        input: true,
       },
-      "input": true
-    }, ...extend);
+      ...extend
+    );
   }
 
   /*
    * Defines the settingsForm when editing a component in the builder.
    */
   static editForm() {
-    console.log(displayEditForm);
     return {
       type: "hidden",
       key: "type",
-      components: [{
-        type: 'tabs',
-        key: 'tabs',
-        components: [{
-          label: 'Visning',
-          key: 'display',
-          weight: 0,
+      components: [
+        {
+          type: "tabs",
+          key: "tabs",
           components: [
             {
-              type: 'checkbox',
-              label: 'Vis ukenumre i kalender',
-              key: 'visUkenumre',
-              defaultValue: true,
-              input: true
+              label: "Visning",
+              key: "display",
+              weight: 0,
+              components: [
+                {
+                  type: "checkbox",
+                  label: "Vis ukenumre i kalender",
+                  key: "visUkenumre",
+                  defaultValue: true,
+                  input: true,
+                },
+                {
+                  type: "checkbox",
+                  label: "Vis årvelger i kalender",
+                  key: "visArvelger",
+                  defaultValue: true,
+                  input: true,
+                },
+                ...displayEditForm,
+              ],
             },
             {
-              type: 'checkbox',
-              label: 'Vis årvelger i kalender',
-              key: 'visArvelger',
-              defaultValue: true,
-              input: true
+              label: "Validering",
+              key: "validation",
+              weight: 20,
+              components: validationEditForm,
             },
-            ...displayEditForm
-          ]
+            {
+              label: "Conditional",
+              key: "conditional",
+              weight: 40,
+              components: conditionalEditForm,
+            },
+          ],
         },
-          {
-            label: 'Validering',
-            key: 'validation',
-            weight: 20,
-            components: validationEditForm
-          }]
-      }]
-    }
+      ],
+    };
   }
-        /*
+  /*
     return baseEditForm(
       [
         {
@@ -165,6 +176,7 @@ export default class Datepicker extends ReactComponent {
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
+        checkValidity={this.checkValidity}
       />,
       element
     );
