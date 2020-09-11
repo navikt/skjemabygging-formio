@@ -5,7 +5,7 @@ import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from "lodash/camelCase";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import defaultTitleComponent from "../CustomFields/defaultTitleComponent.js";
+import defaultComponents from "../CustomFields/defaultForm.js";
 
 class NewFormPage extends Component {
   state = {
@@ -16,9 +16,7 @@ class NewFormPage extends Component {
       name: "",
       title: "",
       path: "",
-      components: [
-        defaultTitleComponent
-      ],
+      components: defaultComponents,
     },
   };
 
