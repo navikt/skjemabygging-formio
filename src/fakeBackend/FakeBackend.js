@@ -1,6 +1,6 @@
-import form from '../testTools/frontend/json/Form.json';
-import columnForm from '../../example_data/columnsForm.json';
-import loginform from '../testTools/frontend/json/LoginForm';
+import form from "../testTools/frontend/json/Form.json";
+import columnForm from "../../example_data/columnsForm.json";
+import loginform from "../testTools/frontend/json/LoginForm";
 
 export class FakeBackend {
   constructor() {
@@ -18,8 +18,8 @@ export class FakeBackend {
     return form;
   }
 
-  forms({type, tags}) {
-    if (type === 'form' && tags === 'nav-skjema') {
+  forms({ type }) {
+    if (type === "form") {
       return this.allForms;
     }
     return [];
@@ -32,14 +32,14 @@ export class FakeBackend {
   }
 
   hasFormByPath(path) {
-    return this.allForms.some(each => each.path === path);
+    return this.allForms.some((each) => each.path === path);
   }
 
   formByPath(path) {
-    return this.allForms.find(each => each.path === path);
+    return this.allForms.find((each) => each.path === path);
   }
 
   now() {
-    return this.nowFunction()
+    return this.nowFunction();
   }
 }

@@ -5,18 +5,16 @@ import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from "lodash/camelCase";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import defaultComponents from "../CustomFields/defaultForm.js";
 
 class NewFormPage extends Component {
   state = {
     form: {
-      tags: ["nav-skjema"],
+      tags: ["nav-skjema", ""],
       type: "form",
-      display: "form",
+      display: "wizard",
       name: "",
       title: "",
       path: "",
-      components: defaultComponents,
     },
   };
 
