@@ -3,6 +3,7 @@ import React from "react";
 import NavForm from "../components/NavForm";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
 import {AppLayoutWithContext} from "../components/AppLayout";
+import i18nData from "../i18nData";
 
 export function TestFormPage({onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
@@ -16,7 +17,11 @@ export function TestFormPage({onPublishClick, publiserer, editFormUrl, form, onS
         Publiser
         </Knapp>
       </>}>
-      <NavForm form={form} options={{language: 'nb-NO'}}/>
+      <NavForm form={form} options={{
+        language: 'nb-NO',
+        i18n: i18nData
+      }}/>
     </AppLayoutWithContext>
   );
 }
+

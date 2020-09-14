@@ -106,7 +106,7 @@ const builderPalett = {
         key: "postnr",
         icon: "home",
         schema: {
-          label: "Postnummer",
+          label: "Postnummer, 4 siffer",
           type: "textfield",
           key: "postnr",
           input: true,
@@ -114,7 +114,6 @@ const builderPalett = {
           validateOn: "blur",
           validate: {
             required: true,
-            customMessage: "4 siffer",
           },
         },
       },
@@ -159,7 +158,7 @@ const builderPalett = {
         key: "phoneNumber",
         icon: "phone-square",
         schema: {
-          label: "Telefonnummer",
+          label: "Telefonnummer, 8 siffer",
           type: "phoneNumber",
           key: "phoneNumber",
           input: true,
@@ -169,7 +168,6 @@ const builderPalett = {
           validate: {
             required: true,
             pattern: "",
-            customMessage: "8 siffer",
           },
         },
       },
@@ -224,7 +222,7 @@ const builderPalett = {
         key: "orgNr",
         icon: "institution",
         schema: {
-          label: "Organisasjonsnummer",
+          label: "Organisasjonsnummer, 9 siffer",
           type: "textfield",
           key: "orgNr",
           input: true,
@@ -232,7 +230,6 @@ const builderPalett = {
           validateOn: "blur",
           validate: {
             required: true,
-            customMessage: "9 siffer",
           },
         },
       },
@@ -321,14 +318,13 @@ const builderPalett = {
         key: "textfield",
         icon: "bank",
         schema: {
-          label: "Kontonummer",
+          label: "Kontonummer, 11 siffer",
           type: "textfield",
           key: "textfield",
           input: true,
           inputMask: "9999 9999 999",
           validate: {
             required: true,
-            customMessage: "11 siffer",
           },
         },
       },

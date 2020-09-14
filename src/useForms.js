@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
 
@@ -14,7 +14,7 @@ export const useForms = (formio, store, userAlerter) => {
 
   useEffect(() => {
     if (forms === null) {
-      formio.loadForms({ params: { type: "form", tags: "nav-skjema", limit: 1000 } }).then((forms) => setForms(forms));
+      formio.loadForms({ params: { type: "form", tags: "nav-skjema", limit: 1000 } }).then(setForms);
     }
   }, [forms, setForms, formio]);
 
@@ -53,7 +53,7 @@ export const useForms = (formio, store, userAlerter) => {
       body: payload,
     });
     if (response.ok) {
-      userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.")
+      userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
     } else {
       userAlerter.setErrorMessage("Publisering feilet " + response.status);
       console.error("Publisering feilet " + response.status);

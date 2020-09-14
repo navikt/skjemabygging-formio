@@ -1,19 +1,28 @@
 import React from "react";
-import {SkjemaGruppe, Input, Select} from "nav-frontend-skjema";
+import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
 import "nav-frontend-skjema-style";
 
-const BasicFormMetadataEditor = ({form, onChange, usageContext}) => {
-  const {title, path, display, name} = form;
+const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
+  const { title, path, display, name, tags } = form;
+  console.log(tags);
   return (
     <SkjemaGruppe>
       <Input
         label="Skjemanummer"
         type="text"
-        id="title"
+        id="skjemanummer"
         placeholder="Skriv inn skjemanummer"
+        value={tags[1]}
+        readOnly={usageContext === "edit"}
+        onChange={(event) => onChange({ ...form, tags: [tags[0], event.target.value] })}
+      />
+      <Input
+        label="Tittel"
+        type="text"
+        id="title"
+        placeholder="Skriv inn tittel"
         value={title}
-        readOnly={usageContext === 'edit'}
-        onChange={event => onChange({...form, title: event.target.value})}
+        onChange={(event) => onChange({ ...form, title: event.target.value })}
       />
       <Input
         label="Navn"
@@ -21,15 +30,15 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}) => {
         id="name"
         placeholder="Skriv inn teknisk navn"
         value={name}
-        readOnly={usageContext === 'edit'}
-        onChange={event => onChange({...form, name: event.target.value})}
+        readOnly={usageContext === "edit"}
+        onChange={(event) => onChange({ ...form, name: event.target.value })}
       />
       <Select
         label="Vis som"
         name="form-display"
         id="form-display"
         value={display}
-        onChange={event => onChange({...form, display: event.target.value})}
+        onChange={(event) => onChange({ ...form, display: event.target.value })}
       >
         <option label="Skjema" value="form">
           Skjema
@@ -42,24 +51,24 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}) => {
         label="Path"
         type="text"
         id="path"
-        style={{textTransform: "lowercase", width: "120px"}}
+        style={{ textTransform: "lowercase", width: "120px" }}
         value={path}
-        readOnly={usageContext === 'edit'}
-        onChange={event => onChange({...form, path: event.target.value})}
+        readOnly={usageContext === "edit"}
+        onChange={(event) => onChange({ ...form, path: event.target.value })}
       />
     </SkjemaGruppe>
   );
-}
+};
 
-export const SkjemaVisningSelect = ({form, onChange}) => {
-  const {display} = form;
+export const SkjemaVisningSelect = ({ form, onChange }) => {
+  const { display } = form;
   return (
     <Select
       label="Vis som"
       name="form-display"
       id="form-display"
       value={display}
-      onChange={event => onChange({...form, display: event.target.value})}
+      onChange={(event) => onChange({ ...form, display: event.target.value })}
       bredde="s"
     >
       <option label="Skjema" value="form">
@@ -70,10 +79,11 @@ export const SkjemaVisningSelect = ({form, onChange}) => {
       </option>
     </Select>
   );
-}
-export const CreationFormMetadataEditor = ({form, onChange}) =>
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={'create'}/>;
+};
+export const CreationFormMetadataEditor = ({ form, onChange }) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={"create"} />
+);
 
-export const FormMetadataEditor = ({form, onChange}) =>
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={'edit'}/>;
-
+export const FormMetadataEditor = ({ form, onChange }) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={"edit"} />
+);
