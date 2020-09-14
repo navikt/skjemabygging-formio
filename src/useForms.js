@@ -14,9 +14,7 @@ export const useForms = (formio, store, userAlerter) => {
 
   useEffect(() => {
     if (forms === null) {
-      formio.loadForms({ params: { type: "form", limit: 1000 } }).then((forms) => {
-        setForms(forms.filter((form) => form.tags && form.tags.includes("nav-skjema")));
-      });
+      formio.loadForms({ params: { type: "form", tags: "nav-skjema", limit: 1000 } }).then(setForms);
     }
   }, [forms, setForms, formio]);
 

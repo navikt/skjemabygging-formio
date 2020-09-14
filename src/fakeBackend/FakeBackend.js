@@ -18,8 +18,8 @@ export class FakeBackend {
     return form;
   }
 
-  forms({ type }) {
-    if (type === "form") {
+  forms({ type, tags }) {
+    if (type === "form" && tags === "nav-skjema") {
       return this.allForms;
     }
     return [];

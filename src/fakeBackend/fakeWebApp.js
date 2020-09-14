@@ -20,7 +20,7 @@ export function dispatcherWithBackend(backend) {
       },
       "/form": {
         GET: (req, res) => {
-          res.json(backend.forms({ type: req.params.get("type") }));
+          res.json(backend.forms({ type: req.params.get("type"), tags: req.params.get("tags") }));
         },
         POST: (req, res) => {
           const newForm = backend.addForm(JSON.parse(req.body));
