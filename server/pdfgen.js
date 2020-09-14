@@ -73,6 +73,16 @@ export class Pdfgen {
     return {text: 'Skjemainnsendingskvittering', style: 'header'};
   }
 
+  handleComponent(component, dataTableBody) {
+    if (component.input) {
+      const value = this.submission.data[component.key];
+      dataTableBody.push([component.label, value]);
+    } else if (component.components) {
+      component.components.forEach(subComponent => this.handleComponent(subComponent, dataTableBody));
+    }
+  }
+
+
   generateDataTable() {
     const dataTable = {
       // headers are automatically repeated if the table spans over multiple pages
@@ -85,14 +95,7 @@ export class Pdfgen {
       ]
     };
     this.form.components.forEach((component) => {
-      const value = this.submission.data[component.key];
-      if (typeof value === 'object') {
-        Object.entries(value).forEach(([subKey, subValue]) => {
-          dataTable.body.push([camelToWords(component.key) + camelToWords(subKey), subValue]);
-        });
-      } else {
-        dataTable.body.push([component.label, value]);
-      }
+      this.handleComponent(component, dataTable.body);
     });
     return dataTable;
   }
