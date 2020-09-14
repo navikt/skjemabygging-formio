@@ -4,12 +4,10 @@ import { Datovelger } from "nav-datovelger";
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
-import ReactComponent from "../ReactComponent";
+import FormioReactComponent from "../FormioReactComponent";
 
-const AvansertDatovelger = ({ component, onChange, value, isValid }) => {
+const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
   const [dato, setDato] = useState(value || "");
-  //Ref. toggle - må man virkelig ha både internal og external state her??
-  //Gjorde et kjapt forsøk på å bytte til value og onChange alene - det fungerte ikke.
 
   return (
     <Datovelger
@@ -21,12 +19,12 @@ const AvansertDatovelger = ({ component, onChange, value, isValid }) => {
       }}
       datoErGyldig={isValid}
       visÅrVelger={component.visArvelger}
-      locale={"nb"} //hva gjør vi med denne?
+      locale={locale}
     />
   );
 };
 
-export default class Datepicker extends ReactComponent {
+export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
   reactElement = undefined;
 
@@ -40,12 +38,12 @@ export default class Datepicker extends ReactComponent {
       title: "Datovelger",
       group: "advanced",
       icon: "calendar",
-      schema: Datepicker.schema(),
+      schema: NavDatepicker.schema(),
     };
   }
 
   static schema(...extend) {
-    return ReactComponent.schema(
+    return FormioReactComponent.schema(
       {
         type: "navDatepicker",
         label: "Dato",
@@ -113,18 +111,20 @@ export default class Datepicker extends ReactComponent {
 
   renderReact(element) {
     return ReactDOM.render(
-      <AvansertDatovelger
+      <DatovelgerWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
         isValid={this.isValid}
+        locale={this.root.i18next.language}
       />,
       element
     );
   }
 
   attachReact(element) {
+    console.log(this);
     this.reactElement = element;
     return this.renderReact(element);
   }

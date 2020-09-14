@@ -40,10 +40,10 @@ export const erGyldigFodselsnummer = (fodselsnummer) =>
   fodselsnummer.length !== 11 ? false : erGyldigeKontrollsifre(fodselsnummer);
 
 
-export class Fnr extends TextFieldComponent {
+export default class Fodselsnummer extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
-      type: 'fnrfield',
+      type: 'fodselsnummer',
       "label": "Fødselsnummer / D-nummer",
       "inputMask": "999999 99999",
       "validateOn": "blur",
@@ -61,7 +61,7 @@ export class Fnr extends TextFieldComponent {
   }
 
   get defaultSchema() {
-    return Fnr.schema();
+    return Fodselsnummer.schema();
   }
 
   static get builderInfo() {
@@ -71,7 +71,7 @@ export class Fnr extends TextFieldComponent {
       icon: 'fa fa-terminal',
       // weight: 70,
       // documentation: 'http://help.form.io/userguide/#table',
-      schema: Fnr.schema()
+      schema: Fodselsnummer.schema()
     }
   }
 

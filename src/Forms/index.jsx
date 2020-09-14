@@ -6,7 +6,7 @@ import NewFormPage from "./NewFormPage";
 import { EditFormPage } from "./EditFormPage";
 import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
-import Custom from "../CustomFields";
+import Custom from "../custom";
 import Components from "formiojs/components/Components";
 
 export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish}) => {

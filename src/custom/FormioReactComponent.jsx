@@ -1,6 +1,6 @@
 import Field from "formiojs/components/_classes/field/Field";
 
-export default class ReactComponent extends Field {
+export default class FormioReactComponent extends Field {
   constructor(component, options, data) {
     super(component, options, data);
   }
