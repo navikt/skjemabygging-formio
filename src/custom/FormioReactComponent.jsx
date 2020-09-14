@@ -1,9 +1,6 @@
 import Field from "formiojs/components/_classes/field/Field";
 
 export default class FormioReactComponent extends Field {
-  constructor(component, options, data) {
-    super(component, options, data);
-  }
   /**
    * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
    * components using the this.on() function.
