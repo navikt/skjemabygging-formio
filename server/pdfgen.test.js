@@ -23,6 +23,69 @@ const createSubmission = () => ({
   "state": "submitted"
 });
 
+const createForm = () => ({
+  "_id": "5f20154e0018c900032fa00f",
+  "type": "form",
+  "tags": ["nav-skjema"],
+  "owner": "5ee0eacc7665226ea32fd389",
+  "components": [
+    {
+      "label": "Tekstfelt",
+      "key": "tekstfelt",
+      "type": "textfield",
+      "input": true,
+      "id": "e3nxyxr",
+    },
+    {
+      "label": "2345t",
+      "key": "T",
+      "type": "textfield",
+      "input": true,
+      "id": "edawfax"
+    },
+    {
+      "label": "Beløp",
+      "key": "belop",
+      "type": "currency",
+      "input": true,
+      "id": "edo3ppo",
+    },
+    {
+      "label": "Beløp",
+      "key": "belop1",
+      "type": "currency",
+      "input": true,
+      "id": "edsy44",
+    },
+    {
+      "label": "Beløp",
+      "key": "belop2",
+      "type": "currency",
+      "input": true,
+      "id": "eg92i4j",
+    },
+    {
+      "label": "Sum",
+      "key": "sum",
+      "type": "currency",
+      "input": true,
+      "id": "e5guh0h",
+    },
+    {
+      "type": "button",
+      "label": "Send inn",
+      "key": "submit",
+      "action": "submit",
+      "input": true,
+      "id": "ekuuti"
+    }],
+  "display": "form",
+  "name": "test56789",
+  "title": "test56789",
+  "path": "test56789",
+  "machineName": "test56789"
+});
+
 describe('generating doc definition', () => {
   it('generates the docDef for an empty submission', () => {
     const submission = {data: {}, metadata: {}};
@@ -67,13 +130,23 @@ describe('generating doc definition', () => {
     });
   });
 
-  it('generates table from submission', () => {
+  it('generates table from form and submission', () => {
     const submission = createSubmission();
-    const form = {components: []};
+    const form = createForm();
     const generator = new Pdfgen(submission, form);
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2]
     expect(tableDef.table).toBeDefined();
-    expect(tableDef.table.body).toHaveLength(Object.keys(submission.data).length + 1); // header row
+    const tableData = tableDef.table.body.slice(1);
+    expect(tableData).toHaveLength(Object.keys(submission.data).length); // header row
+    expect(tableData).toEqual([
+      ['Tekstfelt', "dfghjk"],
+      ['2345t', 'tcfghj'],
+      ['Beløp', 3456],
+      ['Beløp', 456],
+      ['Beløp', 45],
+      ['Sum', 3957],
+      ['Send inn', true],
+    ])
   })
 });

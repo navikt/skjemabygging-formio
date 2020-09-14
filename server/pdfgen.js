@@ -1,5 +1,13 @@
 import PdfPrinter from 'pdfmake';
 
+const camelToWords = (camelString) => {
+  const wordList = camelString.match(/[A-Z][a-z]+/g);
+  if (!wordList) {
+    return camelString;
+  }
+  return wordList.join(' ');
+};
+
 const fonts = {
   Roboto: {
     normal: 'fonts/Roboto-Regular.ttf',
@@ -16,7 +24,6 @@ const fonts = {
 };
 
 const printer = new PdfPrinter(fonts);
-
 
 export class Pdfgen {
   constructor(submission, form) {
@@ -48,6 +55,25 @@ export class Pdfgen {
   }
 
   generateDocDefinition() {
+    return {
+      content: [
+        this.header(),
+        'Her står det så mye tekst at den bryter over mer enn en' +
+        ' linje, bare for å at vi skal se hvordan overskrift og brødtekst ser ut',
+        {
+          layout: 'lightHorizontalLines', // optional
+          table: this.generateDataTable()
+        }
+      ],
+      styles: this.docStyles()
+    };
+  }
+
+  header() {
+    return {text: 'Skjemainnsendingskvittering', style: 'header'};
+  }
+
+  generateDataTable() {
     const dataTable = {
       // headers are automatically repeated if the table spans over multiple pages
       // you can declare how many rows should be treated as headers
@@ -58,38 +84,17 @@ export class Pdfgen {
         ['Label', 'Value'],
       ]
     };
-
-    const docDefinition = {
-      content: [
-        {text: 'Skjemainnsendingskvittering', style: 'header'},
-        'Her står det så mye tekst at den bryter over mer enn en' +
-        ' linje, bare for å at vi skal se hvordan overskrift og brødtekst ser ut',
-        {
-          layout: 'lightHorizontalLines', // optional
-          table: dataTable
-        }
-      ],
-      styles: this.docStyles()
-    };
-
-    const camelToWords = (camelString) => {
-      const wordList = camelString.match(/[A-Z][a-z]+/g);
-      if (!wordList) {
-        return camelString;
-      }
-      return wordList.join(' ');
-    };
-
-    Object.entries(this.submission.data).forEach(([key, value]) => {
+    this.form.components.forEach((component) => {
+      const value = this.submission.data[component.key];
       if (typeof value === 'object') {
         Object.entries(value).forEach(([subKey, subValue]) => {
-          dataTable.body.push([camelToWords(key) + camelToWords(subKey), subValue]);
+          dataTable.body.push([camelToWords(component.key) + camelToWords(subKey), subValue]);
         });
       } else {
-        dataTable.body.push([camelToWords(key), value]);
+        dataTable.body.push([component.label, value]);
       }
     });
-    return docDefinition;
+    return dataTable;
   }
 }
 

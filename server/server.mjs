@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import mustacheExpress from "mustache-express";
 import getDecorator from "./dekorator.mjs";
-import {generateSubmissionPDF} from "./pdfgen.js";
+import {Pdfgen} from "./pdfgen.js";
 
 const app = express();
 const skjemaApp = express();
