@@ -6,7 +6,7 @@ import displayEditForm from "formiojs/components/_classes/component/editForm/Com
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import ReactComponent from "../ReactComponent";
 
-const AvansertDatovelger = ({ component, onChange, value, checkValidity }) => {
+const AvansertDatovelger = ({ component, onChange, value, isValid }) => {
   const [dato, setDato] = useState(value || "");
   //Ref. toggle - må man virkelig ha både internal og external state her??
   //Gjorde et kjapt forsøk på å bytte til value og onChange alene - det fungerte ikke.
@@ -19,7 +19,7 @@ const AvansertDatovelger = ({ component, onChange, value, checkValidity }) => {
         setDato(d);
         onChange(d);
       }}
-      //datoErGyldig={checkValidity(dato, false, dato)}
+      datoErGyldig={isValid}
       visÅrVelger={component.visArvelger}
       locale={"nb"} //hva gjør vi med denne?
     />
@@ -27,6 +27,9 @@ const AvansertDatovelger = ({ component, onChange, value, checkValidity }) => {
 };
 
 export default class Datepicker extends ReactComponent {
+  isValid = this.errors.length === 0;
+  reactElement = undefined;
+
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
    *
@@ -107,84 +110,45 @@ export default class Datepicker extends ReactComponent {
       ],
     };
   }
-  /*
-    return baseEditForm(
-      [
-        {
-          key: "display",
-          components: [
-            {
-              weight: 1,
-              type: 'checkbox',
-              label: 'Vis ukenumre i kalender',
-              key: 'visUkenumre',
-              defaultValue: true,
-              input: true
-            },
-            {
-              weight: 2,
-              type: 'checkbox',
-              label: 'Vis årvelger i kalender',
-              key: 'visArvelger',
-              defaultValue: true,
-              input: true
-            }
-          ]
-        },
-        {
-          key: "data",
-          ignore: true,
-          components: [
-             skal vi ha dette?
-            {
-              key: "customDefaultValue",
-              type: "textfield",
-              input: true,
-              weight: 1,
-              label: "Predefinert dato (eks. 2020-04-10)"
-            },
 
-            {
-              key: "defaultValue",
-              ignore: true
-            }
-          ]
-        },
-        {
-          key: "validation",
-          ignore: true
-        },
-        {
-          key: "api",
-          ignore: true
-        },
-        {
-          key: "logic",
-          ignore: true
-        },
-        {
-          key: "layout",
-          ignore: true
-        }
-      ],
-
-         */
-
-  attachReact(element) {
+  renderReact(element) {
     return ReactDOM.render(
       <AvansertDatovelger
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
+        isValid={this.isValid}
       />,
       element
     );
   }
 
+  attachReact(element) {
+    this.reactElement = element;
+    return this.renderReact(element);
+  }
+
   detachReact(element) {
     if (element) {
       ReactDOM.unmountComponentAtNode(element);
+    }
+  }
+
+  checkValidity(data, dirty, rowData) {
+    const isValid = super.checkValidity(data, dirty, rowData);
+    this.componentIsValid(isValid);
+
+    if (!isValid) {
+      return false;
+    }
+    return this.validate(data, dirty, rowData);
+  }
+
+  componentIsValid = (isValid) => {
+    if (isValid !== this.isValid) {
+      this.isValid = !this.isValid;
+      this.renderReact(this.reactElement);
     }
   }
 }
