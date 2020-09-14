@@ -75,10 +75,10 @@ describe("NewFormPage", () => {
     expect(newFormPage.instance.state.form).toMatchObject({
       type: "form",
       path: "meat",
-      display: "form",
+      display: "wizard",
       name: "meat",
       title: "Meat",
-      tags: ["nav-skjema"],
+      tags: ["nav-skjema", ""],
     });
     await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
     expect(context.backend.hasFormByPath("meat")).toBeFalsy();

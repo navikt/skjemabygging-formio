@@ -23,11 +23,19 @@ describe("FormMetadataEditor", () => {
     jest.useRealTimers();
   });
 
-  it("title should be immutable", async () => {
+  it("should update form when title is changed", async () => {
     const { rerender } = render(<FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />);
 
-    await userEvent.clear(screen.getByRole("textbox", { name: /Skjemanummer/i }));
-    await waitFor(() => expect(mockOnChange).not.toHaveBeenCalled());
+    await userEvent.clear(screen.getByRole("textbox", { name: /Tittel/i }));
+    const clearedForm = { ...fakeBackend.form(), title: "" };
+    await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith(clearedForm));
+
+    rerender(<FormMetadataEditor form={clearedForm} onChange={mockOnChange} />);
+    await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
+    const updatedForm = { ...fakeBackend.form(), title: "Søknad om førerhund" };
+
+    rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+    expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund");
   });
 
   it("should display form name", async () => {
