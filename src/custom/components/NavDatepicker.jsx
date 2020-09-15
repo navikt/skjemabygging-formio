@@ -124,7 +124,6 @@ export default class NavDatepicker extends FormioReactComponent {
   }
 
   attachReact(element) {
-    console.log(this);
     this.reactElement = element;
     return this.renderReact(element);
   }
