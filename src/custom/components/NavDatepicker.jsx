@@ -61,6 +61,8 @@ export default class NavDatepicker extends FormioReactComponent {
    * Defines the settingsForm when editing a component in the builder.
    */
   static editForm() {
+    const excludeFromDisplay = ["placeholder", "hidden", "disabled"];
+
     return {
       type: "hidden",
       key: "type",
@@ -74,6 +76,8 @@ export default class NavDatepicker extends FormioReactComponent {
               key: "display",
               weight: 0,
               components: [
+                /*
+                Klarer ikke å vise ukenumre i kalenderen uansett?
                 {
                   type: "checkbox",
                   label: "Vis ukenumre i kalender",
@@ -81,6 +85,7 @@ export default class NavDatepicker extends FormioReactComponent {
                   defaultValue: true,
                   input: true,
                 },
+                 */
                 {
                   type: "checkbox",
                   label: "Vis årvelger i kalender",
@@ -88,7 +93,7 @@ export default class NavDatepicker extends FormioReactComponent {
                   defaultValue: true,
                   input: true,
                 },
-                ...displayEditForm,
+                ...displayEditForm.filter((field) => !excludeFromDisplay.includes(field.key)),
               ],
             },
             {
@@ -149,5 +154,5 @@ export default class NavDatepicker extends FormioReactComponent {
       this.isValid = !this.isValid;
       this.renderReact(this.reactElement);
     }
-  }
+  };
 }
