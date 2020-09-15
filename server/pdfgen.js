@@ -1,12 +1,5 @@
 import PdfPrinter from 'pdfmake';
 
-const camelToWords = (camelString) => {
-  const wordList = camelString.match(/[A-Z][a-z]+/g);
-  if (!wordList) {
-    return camelString;
-  }
-  return wordList.join(' ');
-};
 
 const fonts = {
   Roboto: {
@@ -50,7 +43,8 @@ export class Pdfgen {
   }
 
   generatePDFToStream(writeStream) {
-    const pdfDoc = printer.createPdfKitDocument(this.generateDocDefinition());
+    const docDefinition = this.generateDocDefinition();
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
     pdfDoc.pipe(writeStream);
     pdfDoc.end();
   }
@@ -62,7 +56,7 @@ export class Pdfgen {
         'Her står det så mye tekst at den bryter over mer enn en' +
         ' linje, bare for å at vi skal se hvordan overskrift og brødtekst ser ut',
         {
-          layout: 'lightHorizontalLines', // optional
+          // layout: 'lightHorizontalLines', // optional
           table: this.generateDataTable()
         }
       ],
@@ -77,6 +71,9 @@ export class Pdfgen {
   handleComponent(component, dataTableBody) {
     if (component.input) {
       const value = this.submission.data[component.key];
+      if (value === undefined) {
+        return;
+      }
       switch (component.type) {
         case 'container': {
           component.components.forEach(subComponent => {
@@ -86,7 +83,14 @@ export class Pdfgen {
         }
         case 'radio':{
           const valueObject = component.values.find(valueObject => valueObject.value === value);
+          if (!valueObject) {
+            throw new Error(JSON.stringify(component));
+          }
           dataTableBody.push([component.label, valueObject.label]);
+          break;
+        }
+        case 'signature': {
+          dataTableBody.push([component.label, 'rendering signature not supported']);
           break;
         }
         default:
@@ -102,10 +106,9 @@ export class Pdfgen {
     const dataTable = {
       // headers are automatically repeated if the table spans over multiple pages
       // you can declare how many rows should be treated as headers
-      headerRows: 1,
+      headerRows: 0,
       widths: ['*', '*'],
       body: [
-        ['Label', 'Value'],
       ]
     };
     this.form.components.forEach((component) => {

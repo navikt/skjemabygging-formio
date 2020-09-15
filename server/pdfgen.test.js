@@ -2007,15 +2007,10 @@ describe('generating doc definition', () => {
         "Her står det så mye tekst at den bryter over mer enn en linje, bare for å at vi " +
         "skal se hvordan overskrift og brødtekst ser ut",
         {
-          "layout": "lightHorizontalLines",
           "table": {
             "body": [
-              [
-                "Label",
-                "Value"
-              ]
             ],
-            "headerRows": 1,
+            "headerRows": 0,
             "widths": [
               "*",
               "*"
@@ -2033,7 +2028,7 @@ describe('generating doc definition', () => {
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2]
     expect(tableDef.table).toBeDefined();
-    const tableData = tableDef.table.body.slice(1);
+    const tableData = tableDef.table.body.slice(0);
     expect(tableData).toHaveLength(Object.keys(submission.data).length); // header row
     expect(tableData).toEqual([
       ['Tekstfelt', "dfghjk"],
@@ -2053,7 +2048,7 @@ describe('generating doc definition', () => {
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2]
     expect(tableDef.table).toBeDefined();
-    const tableData = tableDef.table.body.slice(1);
+    const tableData = tableDef.table.body;
     expect(tableData).toEqual([
       ['Personalia: Fornavn', "Syver"],
       ['Personalia: Etternavn', 'Enstad'],

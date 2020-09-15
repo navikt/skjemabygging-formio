@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 
 // Parse application/json
 skjemaApp.use(express.json());
-skjemaApp.use(express.urlencoded({extended: true}));
+skjemaApp.use(express.urlencoded({extended: true, limit: '50mb'}));
 skjemaApp.set("views", `${__dirname}/../build`);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
