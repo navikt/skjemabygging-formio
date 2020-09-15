@@ -2055,15 +2055,14 @@ describe('generating doc definition', () => {
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(1);
     expect(tableData).toEqual([
-      ['Fornavn', "Syver"],
-      ['Etternavn', 'Enstad'],
-      ['Fødselsnummer', 12345678911],
-      ['Har du hatt andre inntekter', 'Nei'],
+      ['Personalia: Fornavn', "Syver"],
+      ['Personalia: Etternavn', 'Enstad'],
+      ['Personalia: Fødselsnummer / D-nummer', "123456 78911"],
+      ['Har du hatt andre inntekter?', 'Nei'],
       ['Inntekt', 0],
       ['Sum', 10],
       ['Tall', 10],
-      ['Sum', 3702]
-
+      ['Summeringskonteiner: Sum', 3702]
     ])
   });
 

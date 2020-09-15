@@ -35,11 +35,11 @@ export class Pdfgen {
     return {
       header: {
         fontSize: 22,
-          bold: true
+        bold: true
       },
       anotherStyle: {
         italics: true,
-          alignment: 'right'
+        alignment: 'right'
       }
     }
   }
@@ -48,6 +48,7 @@ export class Pdfgen {
     const instance = new this(submission, form);
     instance.generatePDFToStream(stream);
   }
+
   generatePDFToStream(writeStream) {
     const pdfDoc = printer.createPdfKitDocument(this.generateDocDefinition());
     pdfDoc.pipe(writeStream);
@@ -76,7 +77,21 @@ export class Pdfgen {
   handleComponent(component, dataTableBody) {
     if (component.input) {
       const value = this.submission.data[component.key];
-      dataTableBody.push([component.label, value]);
+      switch (component.type) {
+        case 'container': {
+          component.components.forEach(subComponent => {
+            dataTableBody.push([component.label + ': ' + subComponent.label, value[subComponent.key]]);
+          });
+          break;
+        }
+        case 'radio':{
+          const valueObject = component.values.find(valueObject => valueObject.value === value);
+          dataTableBody.push([component.label, valueObject.label]);
+          break;
+        }
+        default:
+          dataTableBody.push([component.label, value]);
+      }
     } else if (component.components) {
       component.components.forEach(subComponent => this.handleComponent(subComponent, dataTableBody));
     }
@@ -89,7 +104,6 @@ export class Pdfgen {
       // you can declare how many rows should be treated as headers
       headerRows: 1,
       widths: ['*', '*'],
-
       body: [
         ['Label', 'Value'],
       ]
