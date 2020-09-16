@@ -38,7 +38,6 @@ gulp.task('move-to-node_modules', () =>
     path.resolve(__dirname, "dist/*.js" ),
     path.resolve(__dirname, "lib/**/*.js" ),
     path.resolve(__dirname, "node_modules/**/*.js"),
-    path.resolve(__dirname, "node_modules/**/*.less"),
     path.resolve(__dirname, "*.json"),
     path.resolve(__dirname, "lib/**/*.less")
   ], {

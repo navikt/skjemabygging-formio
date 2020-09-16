@@ -4,6 +4,8 @@
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
+  id="{{ctx.component.key}}"
+  required="{{ctx.component.validate.required}}"
 >{{ctx.selectOptions}}</select>
 <input type="text"
        class="formio-select-autocomplete-input"

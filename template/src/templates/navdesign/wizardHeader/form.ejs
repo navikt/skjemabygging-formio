@@ -2,8 +2,9 @@
   <ul class="pagination">
     {% ctx.panels.forEach(function(panel, index) { %}
     <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
-      <span class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(panel.title)}}</span>
+      <button class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(index+1)}}</button>
     </li>
     {% }) %}
   </ul>
 </nav>
+<h2 class="typo-innholdstittel">{{ctx.panels[ctx.currentPage].title}}</h2>
