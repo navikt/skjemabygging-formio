@@ -1,0 +1,57 @@
+@import "~nav-frontend-skjema-style";
+@import "~nav-frontend-typografi-style";
+@import "~nav-frontend-core";
+
+//Select -- start
+.choices.form-group.formio-choices {
+  .input--xxl();
+  &:after {
+    display: none;
+  }
+}
+
+.form-control.selection.dropdown {
+  .selectContainer();
+  .input--xxl();
+  .skjemaelement();
+  .skjemaelement__input();
+
+  &.is-invalid {
+    .skjemaelement-feilmarkering-mixin();
+  }
+}
+//Select -- slutt
+
+//Alle skjemafelter --start
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+//Alle skjemafelter --slutt
+
+//Feilhåndtering -- start
+.formio-error-wrapper {
+  background-color: transparent;
+  border-color: transparent;
+  text-decoration-color: @navMorkGra;
+  color: @navMorkGra;
+}
+
+.skjemaelement__input.is-invalid {
+  .skjemaelement-feilmarkering-mixin();
+  background-image: none;
+}
+
+.form-text.error {
+  .typo-feilmelding();
+}
+
+.formio-component.has-feedback .invalid-feedback {
+  display: block;
+}
+
+.form-control.is-invalid {
+  background-image: none;
+}
+//Feilhåndtering -- slutt

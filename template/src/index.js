@@ -1,5 +1,5 @@
 import templates from './templates';
-import "./overrideFormioErrorStyles.less";
+import "./overrideFormioStyles.less";
 
 export default {
   framework: 'navdesign',
