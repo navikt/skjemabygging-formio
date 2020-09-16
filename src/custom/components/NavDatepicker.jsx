@@ -6,6 +6,8 @@ import displayEditForm from "formiojs/components/_classes/component/editForm/Com
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import FormioReactComponent from "../FormioReactComponent";
 
+require('moment/locale/nb.js'); // For datovelger
+
 const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
   const [dato, setDato] = useState(value || "");
 

@@ -440,4 +440,5 @@ const builderPalett = {
 export default {
   builder: builderPalett,
   editForm: builderEditForm,
+  language: "nb-NO",
 };
