@@ -1,4 +1,4 @@
-import {computeK1, computeK2} from "./fnr";
+import {computeK1, computeK2} from "./Fodselsnummer";
 
 it('should generate a valid D-nummer', () => {
   const rawData = "410170000"
