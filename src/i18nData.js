@@ -8,8 +8,8 @@ export default {
     mask: "Dette er ikke et gyldig {{field}}.",
     max: "{{field}} kan ikke være større enn {{max}}.",
     min: "{{field}} kan ikke være mindre enn {{min}}.",
-    maxLength: "{{field}} må være kortere enn {{length}} tegn.",
-    minLength: "{{field}} må være lengre enn {{length}} tegn.",
+    maxLength: "{{field}} kan ikke være mer enn {{length}} tegn.",
+    minLength: "{{field}} kan ikke være mindre enn {{length}} tegn.",
     pattern: "{{field}} stemmer ikke med {{pattern}}",
     required: "Du må fylle ut dette feltet",
 
