@@ -96,6 +96,7 @@ const builderPalett = {
           type: "textfield",
           key: "gateadresse",
           input: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -106,14 +107,16 @@ const builderPalett = {
         key: "postnr",
         icon: "home",
         schema: {
-          label: "Postnummer, 4 siffer",
+          label: "Postnummer",
           type: "textfield",
           key: "postnr",
           input: true,
-          inputMask: "9999",
+          spellcheck: false,
           validateOn: "blur",
           validate: {
             required: true,
+            maxLength: 4,
+            minLength: 4,
           },
         },
       },
@@ -126,6 +129,7 @@ const builderPalett = {
           type: "textfield",
           key: "poststed",
           input: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -158,13 +162,14 @@ const builderPalett = {
         key: "phoneNumber",
         icon: "phone-square",
         schema: {
-          label: "Telefonnummer, 8 siffer",
+          label: "Telefonnummer",
           type: "phoneNumber",
           key: "phoneNumber",
           input: true,
-          inputMask: "99 99 99 99",
-          validateOn: "blur",
+          inputMask: "",
           prefix: "+47",
+          spellcheck: false,
+          validateOn: "blur",
           validate: {
             required: true,
             pattern: "",
@@ -215,6 +220,7 @@ const builderPalett = {
           key: "belop",
           input: true,
           currency: "nok",
+          spellcheck: false,
         },
       },
       orgNr: {
@@ -222,14 +228,16 @@ const builderPalett = {
         key: "orgNr",
         icon: "institution",
         schema: {
-          label: "Organisasjonsnummer, 9 siffer",
+          label: "Organisasjonsnummer",
           type: "textfield",
           key: "orgNr",
           input: true,
-          inputMask: "999 999 999",
+          spellcheck: false,
           validateOn: "blur",
           validate: {
             required: true,
+            maxLength: 9,
+            minLength: 9,
           },
         },
       },
@@ -253,6 +261,7 @@ const builderPalett = {
           type: "datetime",
           key: "datetime",
           input: true,
+          spellcheck: false,
         },
       },
       day: {
@@ -275,6 +284,7 @@ const builderPalett = {
           type: "time",
           key: "time",
           input: true,
+          spellcheck: false,
         },
       },
       signature: {
@@ -308,6 +318,7 @@ const builderPalett = {
           type: "textfield",
           key: "textfield",
           input: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -318,13 +329,16 @@ const builderPalett = {
         key: "textfield",
         icon: "bank",
         schema: {
-          label: "Kontonummer, 11 siffer",
+          label: "Kontonummer",
           type: "textfield",
           key: "textfield",
           input: true,
-          inputMask: "9999 9999 999",
+          spellcheck: false,
+          validateOn: "blur",
           validate: {
             required: true,
+            maxLength: 11,
+            minLength: 11,
           },
         },
       },

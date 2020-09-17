@@ -45,11 +45,13 @@ export default class Fodselsnummer extends TextFieldComponent {
     return TextFieldComponent.schema({
       type: 'fodselsnummer',
       "label": "Fødselsnummer / D-nummer",
-      "inputMask": "999999 99999",
-      "validateOn": "blur",
+      spellcheck: false,
+      validateOn: "blur",
       "validate": {
         "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer';",
         "required": true,
+        maxLength: 11,
+        minLength: 11,
       },
       "input": true
     }, ...extend);
