@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Route, Switch} from "react-router-dom";
 import {Components} from "react-formio";
-import components from "./Custom";
+import components from "./custom";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
