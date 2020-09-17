@@ -49,16 +49,25 @@ export class Pdfgen {
     pdfDoc.end();
   }
 
+  generateSubmissionTables() {
+    const table = this.createTable();
+    this.form.components.forEach((component) => {
+
+
+      });
+    return [{
+      // layout: 'lightHorizontalLines', // optional
+      table: this.generateDataTable()
+    }];
+  }
+
   generateDocDefinition() {
     return {
       content: [
         this.header(),
         'Her står det så mye tekst at den bryter over mer enn en' +
         ' linje, bare for å at vi skal se hvordan overskrift og brødtekst ser ut',
-        {
-          // layout: 'lightHorizontalLines', // optional
-          table: this.generateDataTable()
-        }
+        ...this.generateSubmissionTables()
       ],
       styles: this.docStyles()
     };
@@ -66,6 +75,24 @@ export class Pdfgen {
 
   header() {
     return {text: 'Skjemainnsendingskvittering', style: 'header'};
+  }
+
+  formatValue(component, value) {
+    switch (component.type) {
+      case 'radio':
+        const valueObject = component.values.find(valueObject => valueObject.value === value);
+        if (!valueObject) {
+          console.error(value, component.values);
+          throw new Error(JSON.stringify(component.values));
+        }
+        return valueObject.label;
+      case 'signature': {
+        return 'rendering signature not supported';
+      }
+      default:
+        return value;
+
+    }
   }
 
   handleComponent(component, dataTableBody) {
@@ -77,44 +104,38 @@ export class Pdfgen {
       switch (component.type) {
         case 'container': {
           component.components.forEach(subComponent => {
-            dataTableBody.push([component.label + ': ' + subComponent.label, value[subComponent.key]]);
+            dataTableBody.push([
+              component.label + ': ' + subComponent.label,
+              this.formatValue(subComponent, value[subComponent.key])]);
           });
           break;
         }
-        case 'radio':{
-          const valueObject = component.values.find(valueObject => valueObject.value === value);
-          if (!valueObject) {
-            throw new Error(JSON.stringify(component));
-          }
-          dataTableBody.push([component.label, valueObject.label]);
-          break;
-        }
-        case 'signature': {
-          dataTableBody.push([component.label, 'rendering signature not supported']);
-          break;
-        }
         default:
-          dataTableBody.push([component.label, value]);
+          dataTableBody.push([
+            component.label,
+            this.formatValue(component, value)]);
       }
     } else if (component.components) {
       component.components.forEach(subComponent => this.handleComponent(subComponent, dataTableBody));
     }
   }
 
-
   generateDataTable() {
-    const dataTable = {
-      // headers are automatically repeated if the table spans over multiple pages
-      // you can declare how many rows should be treated as headers
-      headerRows: 0,
-      widths: ['*', '*'],
-      body: [
-      ]
-    };
+    const dataTable = this.createTable();
     this.form.components.forEach((component) => {
       this.handleComponent(component, dataTable.body);
     });
     return dataTable;
+  }
+
+  createTable() {
+    return {
+      // headers are automatically repeated if the table spans over multiple pages
+      // you can declare how many rows should be treated as headers
+      headerRows: 0,
+      widths: ['*', '*'],
+      body: []
+    };
   }
 }
 

@@ -1785,12 +1785,6 @@ const createComplexFormDefinition = () => ({
   "name": "testChristianOgMona",
   "title": "Test Christian og Mona",
   "path": "testchristianogmona",
-  "access": [{
-    "roles": ["5ee0eaaf7665226ea32fd37b", "5ee0eaaf7665226ea32fd37c", "5ee0eab07665226ea32fd37d"],
-    "type": "read_all"
-  }],
-  "created": "2020-08-03T13:35:34.612Z",
-  "modified": "2020-08-13T09:10:39.554Z",
   "machineName": "testChristianOgMona",
   "components": [
     {
@@ -1885,15 +1879,15 @@ const createComplexFormDefinition = () => ({
         "id": "eym4bhm",
         "components": [
           {
-          "label": "Sum",
-          "key": "sum",
-          "type": "currency",
-          "input": true,
-          "id": "e6lbwub",
-        }]
+            "label": "Sum",
+            "key": "sum",
+            "type": "currency",
+            "input": true,
+            "id": "e6lbwub",
+          }]
       }],
     },
-    ],
+  ],
 });
 
 const createSubmission = () => ({
@@ -2008,8 +2002,7 @@ describe('generating doc definition', () => {
         "skal se hvordan overskrift og brødtekst ser ut",
         {
           "table": {
-            "body": [
-            ],
+            "body": [],
             "headerRows": 0,
             "widths": [
               "*",
@@ -2041,12 +2034,12 @@ describe('generating doc definition', () => {
     ])
   });
 
-  it('generates table for a complex form', () => {
+  it('generates a table for each panel in a complex form', () => {
     const submission = createComplexSubmission();
     const form = createComplexFormDefinition();
     const generator = new Pdfgen(submission, form);
     const doc_definition = generator.generateDocDefinition();
-    const tableDef = doc_definition.content[2]
+    const tableDef = doc_definition.content[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body;
     expect(tableData).toEqual([
@@ -2060,5 +2053,34 @@ describe('generating doc definition', () => {
       ['Summeringskonteiner: Sum', 3702]
     ])
   });
-
+  it('handles a radio field inside a container', () => {
+    const submission = {data: {'composite': {'nestedRadioField': 'ja'}}};
+    const formDefinition = {
+      name: 'Skuppel',
+      components: [
+        {
+          type: 'container',
+          key: 'composite',
+          label: 'Parent',
+          input: true,
+          components: [
+            {
+              label: 'Child',
+              type: 'radio',
+              key: 'nestedRadioField',
+              input: true,
+              values: [{value: 'ja', label: 'Seff'}, {value: 'nei', label: 'Særlig...'}]
+            }
+          ]
+        }
+      ]
+    };
+    const generator = new Pdfgen(submission, formDefinition);
+    const doc_definition = generator.generateDocDefinition();
+    const tableDef = doc_definition.content[2];
+    const tableData = tableDef.table.body;
+    expect(tableData).toEqual([
+      ['Parent: Child', 'Seff']
+    ])
+  });
 });
