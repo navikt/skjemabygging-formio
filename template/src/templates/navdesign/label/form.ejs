@@ -1,4 +1,4 @@
-<label class="skjemaelement__label {{ctx.label.className}}" for="{{ctx.component.key}}">
+<label class="skjemaelement__label {{ctx.label.className}}" for="{{ctx.component.key}}" id="{{ctx.component.key}}-label">
   {{ ctx.t(ctx.component.label) }}
   {% if (ctx.component.tooltip) { %}
     <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
