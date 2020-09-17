@@ -13,7 +13,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
 
   return (
     <Datovelger
-      id={component.id}
+      id={component.key}
       valgtDato={dato}
       onChange={(d) => {
         setDato(d);
