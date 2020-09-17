@@ -33,9 +33,9 @@ const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
     <AlertStripeSuksess>
       <ErrorAlertContent>
         <div>
-          <h3>Ny versjon av skjemautfylling</h3>
+          <h3>Manuell deploy av skjemautfylling</h3>
           <div>
-            <p>Versjonen ble publisert av "{message.skjemautfyllerCommit.author.name}"</p>
+            <p>Versjonen ble endret av "{message.skjemautfyllerCommit.author.name}"</p>
             <p>Endringsmeldingen var "{message.skjemautfyllerCommit.message}"</p>
           </div>
         </div>
