@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Parse application/json
-skjemaApp.use(express.json());
+skjemaApp.use(express.json({limit: '50mb'}));
 skjemaApp.use(express.urlencoded({extended: true, limit: '50mb'}));
 skjemaApp.set("views", `${__dirname}/../build`);
 skjemaApp.set("view engine", "mustache");
@@ -24,8 +24,20 @@ skjemaApp.post("/pdf-form", (req, res) => {
   const form = JSON.parse(req.body.form);
   console.log('submission', submission);
   res.contentType('application/pdf');
+  const generator = new Pdfgen(submission, form);
+  const docDefinition = generator.generateDocDefinition();
+  generator.writeDocDefinitionToStream(docDefinition, res);
+});
+
+// form encoded post body
+skjemaApp.post("/pdf-json", (req, res) => {
+  const submission = req.body.submission;
+  const form = req.body.form;
+  console.log('submission', submission);
+  res.contentType('application/pdf');
   Pdfgen.writePDFToStream(submission, form, res);
 });
+
 
 
 skjemaApp.use("/", express.static(path.join(__dirname, "../build"), { index: false }));

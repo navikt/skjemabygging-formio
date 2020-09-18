@@ -1934,7 +1934,8 @@ const createForm = () => ({
     {
       "label": "2345t",
       "key": "T",
-      "type": "textfield",
+      "type": "radio",
+      "values": [{label: 'tcfghj', value: 'tcfghj'}, {label: 'Nei',  value: 'nei'}],
       "input": true,
       "id": "edawfax"
     },
@@ -1991,6 +1992,10 @@ describe('generating doc definition', () => {
         "header": {
           "bold": true,
           "fontSize": 22
+        },
+        subHeader: {
+          bold: true,
+          fontSize: 18
         }
       },
       content: [
@@ -2034,11 +2039,33 @@ describe('generating doc definition', () => {
     ])
   });
 
+  it('handles missing values in the submission when the field is not required', () => {
+    const submission = createSubmission();
+    submission.data.T = '';
+    const form = createForm();
+    const generator = new Pdfgen(submission, form);
+    const doc_definition = generator.generateDocDefinition();
+    const tableDef = doc_definition.content[2];
+    expect(tableDef.table).toBeDefined();
+    const tableData = tableDef.table.body.slice(0);
+    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // header row
+    expect(tableData).toEqual([
+      ["Tekstfelt", "dfghjk"],
+      ['Beløp', 3456],
+      ['Beløp', 456],
+      ['Beløp', 45],
+      ['Sum', 3957],
+      ['Send inn', true],
+    ])
+  });
+
+
   it('generates a table for each panel in a complex form', () => {
     const submission = createComplexSubmission();
     const form = createComplexFormDefinition();
     const generator = new Pdfgen(submission, form);
     const doc_definition = generator.generateDocDefinition();
+    expect(doc_definition).toEqual({});
     const tableDef = doc_definition.content[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body;
@@ -2053,6 +2080,7 @@ describe('generating doc definition', () => {
       ['Summeringskonteiner: Sum', 3702]
     ])
   });
+
   it('handles a radio field inside a container', () => {
     const submission = {data: {'composite': {'nestedRadioField': 'ja'}}};
     const formDefinition = {

@@ -16,6 +16,10 @@ const fonts = {
   }
 };
 
+class InvalidValue extends Error {
+  name = 'InvalidValue';
+}
+
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
@@ -30,6 +34,10 @@ export class Pdfgen {
         fontSize: 22,
         bold: true
       },
+      subHeader: {
+        fontSize: 18,
+        bold: true
+      },
       anotherStyle: {
         italics: true,
         alignment: 'right'
@@ -42,39 +50,80 @@ export class Pdfgen {
     instance.generatePDFToStream(stream);
   }
 
-  generatePDFToStream(writeStream) {
-    const docDefinition = this.generateDocDefinition();
+  writeDocDefinitionToStream(docDefinition, writeStream) {
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
     pdfDoc.pipe(writeStream);
     pdfDoc.end();
   }
 
-  generateSubmissionTables() {
-    const table = this.createTable();
+  generatePDFToStream(writeStream) {
+    const docDefinition = this.generateDocDefinition();
+    console.log('doc definition', docDefinition);
+    docDefinition.content.forEach(paragraph => {
+      if (paragraph.table) {
+        console.log(paragraph.table);
+      }
+    });
+    this.writeDocDefinitionToStream(docDefinition, writeStream);
+  }
+
+  generateDataTable() {
+    const dataTable = this.createTable();
     this.form.components.forEach((component) => {
+      this.handleComponent(component, dataTable.body);
+    });
+    return dataTable;
+  }
 
+  generateHeaderAndTable(panel) {
+    const dataTable = this.createTable();
+    panel.components.forEach((component) => {
+      this.handleComponent(component, dataTable.body);
+    });
+    if (dataTable.body.length === 0) {
+      return [{text: panel.title, style: 'subHeader'},
+        'Panelet er ikke utfyllt'
+      ];
+    }
+    return [
+      {text: panel.title, style: 'subHeader'},
+      {table: dataTable}
+    ];
+  }
 
-      });
-    return [{
-      // layout: 'lightHorizontalLines', // optional
-      table: this.generateDataTable()
-    }];
+  generateContentFromSubmission() {
+    const panels = this.form.components.filter(component => component.type === 'panel');
+    const rest = this.form.components.filter(component => component.type !== 'panel');
+    // her kommer special case av generateHeaderAndTable for this.form
+    const dataTable = this.createTable();
+    rest.forEach((component) => {
+      this.handleComponent(component, dataTable.body);
+    });
+    let result = [
+      this.header(),
+      'Her skal det stå informasjon til innsender'
+    ];
+    if (dataTable.body.length) {
+      result.push({table: dataTable});
+    }
+
+    const headerAndTables = panels.map(panel => this.generateHeaderAndTable(panel)); // her er general case for hvert panel
+    result = result.concat(headerAndTables.flat());
+    result.push({
+      text: 'Informasjon om versjonen av utfyller (implisitt skjemaversjon) som publiserte denne pdfen'
+    });
+    return result;
   }
 
   generateDocDefinition() {
     return {
-      content: [
-        this.header(),
-        'Her står det så mye tekst at den bryter over mer enn en' +
-        ' linje, bare for å at vi skal se hvordan overskrift og brødtekst ser ut',
-        ...this.generateSubmissionTables()
-      ],
+      content: this.generateContentFromSubmission(),
       styles: this.docStyles()
     };
   }
 
   header() {
-    return {text: 'Skjemainnsendingskvittering', style: 'header'};
+    return {text: this.form.title, style: 'header'};
   }
 
   formatValue(component, value) {
@@ -82,8 +131,7 @@ export class Pdfgen {
       case 'radio':
         const valueObject = component.values.find(valueObject => valueObject.value === value);
         if (!valueObject) {
-          console.error(value, component.values);
-          throw new Error(JSON.stringify(component.values));
+          throw new InvalidValue(`'${value}' is not in ${JSON.stringify(component.values)}`);
         }
         return valueObject.label;
       case 'signature': {
@@ -98,34 +146,31 @@ export class Pdfgen {
   handleComponent(component, dataTableBody) {
     if (component.input) {
       const value = this.submission.data[component.key];
-      if (value === undefined) {
+      if (value === undefined || (component.type === 'radio' && value === '')) {
         return;
       }
       switch (component.type) {
         case 'container': {
           component.components.forEach(subComponent => {
+            const subValue = value[subComponent.key];
+            if (subValue === undefined) {
+              return;
+            }
             dataTableBody.push([
-              component.label + ': ' + subComponent.label,
-              this.formatValue(subComponent, value[subComponent.key])]);
+              subComponent.label,
+              this.formatValue(subComponent, subValue)]);
           });
           break;
         }
         default:
+          const formattedValue = this.formatValue(component, value);
           dataTableBody.push([
             component.label,
-            this.formatValue(component, value)]);
+            formattedValue]);
       }
     } else if (component.components) {
       component.components.forEach(subComponent => this.handleComponent(subComponent, dataTableBody));
     }
-  }
-
-  generateDataTable() {
-    const dataTable = this.createTable();
-    this.form.components.forEach((component) => {
-      this.handleComponent(component, dataTable.body);
-    });
-    return dataTable;
   }
 
   createTable() {
