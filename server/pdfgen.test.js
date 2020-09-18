@@ -1980,7 +1980,7 @@ const createForm = () => ({
 describe('generating doc definition', () => {
   it('generates the docDef for an empty submission', () => {
     const submission = {data: {}, metadata: {}};
-    const form = {components: []};
+    const form = {title: 'Smølfeskjema', components: []};
     const generator = new Pdfgen(submission, form);
     const doc_definition = generator.generateDocDefinition();
     expect(doc_definition).toEqual({
@@ -2001,20 +2001,10 @@ describe('generating doc definition', () => {
       content: [
         {
           "style": "header",
-          "text": "Skjemainnsendingskvittering"
+          "text": "Smølfeskjema"
         },
-        "Her står det så mye tekst at den bryter over mer enn en linje, bare for å at vi " +
-        "skal se hvordan overskrift og brødtekst ser ut",
-        {
-          "table": {
-            "body": [],
-            "headerRows": 0,
-            "widths": [
-              "*",
-              "*"
-            ]
-          }
-        }
+        "Her skal det stå informasjon til innsender",
+        {"text": "Informasjon om versjonen av utfyller (implisitt skjemaversjon) som publiserte denne pdfen"}
       ]
     });
   });
@@ -2065,19 +2055,19 @@ describe('generating doc definition', () => {
     const form = createComplexFormDefinition();
     const generator = new Pdfgen(submission, form);
     const doc_definition = generator.generateDocDefinition();
-    expect(doc_definition).toEqual({});
-    const tableDef = doc_definition.content[2];
-    expect(tableDef.table).toBeDefined();
-    const tableData = tableDef.table.body;
-    expect(tableData).toEqual([
-      ['Personalia: Fornavn', "Syver"],
-      ['Personalia: Etternavn', 'Enstad'],
-      ['Personalia: Fødselsnummer / D-nummer', "123456 78911"],
+    const tableDefs = doc_definition.content.filter(paragraph => paragraph.table);
+    expect(tableDefs).toHaveLength(2);
+    expect(tableDefs[0].table.body).toEqual([
+      ['Fornavn', "Syver"],
+      ['Etternavn', 'Enstad'],
+      ['Fødselsnummer / D-nummer', "123456 78911"],
       ['Har du hatt andre inntekter?', 'Nei'],
       ['Inntekt', 0],
       ['Sum', 10],
-      ['Tall', 10],
-      ['Summeringskonteiner: Sum', 3702]
+      ['Tall', 10]
+        ]);
+    expect(tableDefs[1].table.body).toEqual([
+      ['Sum', 3702]
     ])
   });
 
@@ -2108,7 +2098,7 @@ describe('generating doc definition', () => {
     const tableDef = doc_definition.content[2];
     const tableData = tableDef.table.body;
     expect(tableData).toEqual([
-      ['Parent: Child', 'Seff']
+      ['Child', 'Seff']
     ])
   });
 });
