@@ -23,7 +23,8 @@ class InvalidValue extends Error {
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
-  constructor(submission, form) {
+  constructor(submission, form, gitVersion) {
+    this.gitVersion = gitVersion;
     this.submission = submission;
     this.form = form;
   }
