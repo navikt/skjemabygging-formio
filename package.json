@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "REACT_APP_GIT_VERSION=`git describe --always --dirty` craco build",
     "test": "craco test",
     "eject": "craco eject",
     "pretest": "npm run postinstall",

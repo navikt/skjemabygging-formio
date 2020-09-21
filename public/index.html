@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="nb-NO">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+        name="description"
+        content="Web site created using create-react-app"
     />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-      <% if (process.env.NODE_ENV !== 'development') { %>
-    {{{STYLES}}}
-      <% } %>
-    <title>Skjema - www.nav.no</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div class="pagewrapper">
-        <% if (process.env.NODE_ENV !== 'development') { %>
-        {{{HEADER}}}
-        <% } %>
-      <div id="root"></div>
-    </div>
+    <meta
+        name="git-version"
+        content="%REACT_APP_GIT_VERSION%"
+    />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"/>
     <% if (process.env.NODE_ENV !== 'development') { %>
-    {{{FOOTER}}} {{{SCRIPTS}}}
+    {{{STYLES}}}
     <% } %>
-  </body>
+    <title>Skjema - www.nav.no</title>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div class="pagewrapper">
+    <% if (process.env.NODE_ENV !== 'development') { %>
+    {{{HEADER}}}
+    <% } %>
+    <div id="root"></div>
+</div>
+<% if (process.env.NODE_ENV !== 'development') { %>
+{{{FOOTER}}} {{{SCRIPTS}}}
+<% } %>
+</body>
 </html>
