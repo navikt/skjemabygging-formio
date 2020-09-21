@@ -25,12 +25,13 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
       <NavForm
         form={form}
         onNextPage={() => {
+          const nextPage = document.querySelector("main");
           const nextPageTitle = document.querySelector(".typo-innholdstittel");
           nextPageTitle.scrollIntoView({
             behavior: "smooth",
             block: "center",
           });
-          nextPageTitle.focus();
+          nextPage.focus({ preventScroll: true });
         }}
         options={{
           language: "nb-NO",
