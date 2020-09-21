@@ -48,10 +48,8 @@ export default class Fodselsnummer extends TextFieldComponent {
       spellcheck: false,
       validateOn: "blur",
       "validate": {
-        "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer';",
+        "custom": "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
         "required": true,
-        maxLength: 11,
-        minLength: 11,
       },
       "input": true
     }, ...extend);
