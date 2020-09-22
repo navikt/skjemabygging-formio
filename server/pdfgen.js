@@ -23,7 +23,8 @@ class InvalidValue extends Error {
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
-  constructor(submission, form) {
+  constructor(submission, form, gitVersion) {
+    this.gitVersion = gitVersion;
     this.submission = submission;
     this.form = form;
   }
@@ -31,16 +32,24 @@ export class Pdfgen {
   docStyles() {
     return {
       header: {
-        fontSize: 22,
-        bold: true
+        fontSize: 18,
+        bold: true,
+        margin: [0,0,0,10]
       },
       subHeader: {
-        fontSize: 18,
-        bold: true
+        fontSize: 14,
+        bold: true,
+        margin: [0,10,0,5]
       },
       anotherStyle: {
         italics: true,
         alignment: 'right'
+      },
+      panelTable: {
+        margin: [0,5,0,5]
+      },
+      ingress: {
+        margin: [0,5,0,5]
       }
     }
   }
@@ -87,7 +96,7 @@ export class Pdfgen {
     }
     return [
       {text: panel.title, style: 'subHeader'},
-      {table: dataTable}
+      {table: dataTable, style: 'panelTable'}
     ];
   }
 
@@ -101,16 +110,16 @@ export class Pdfgen {
     });
     let result = [
       this.header(),
-      'Her skal det stå informasjon til innsender'
+      {text: 'Her skal det stå informasjon til innsender', style: 'ingress'}
     ];
     if (dataTable.body.length) {
-      result.push({table: dataTable});
+      result.push({table: dataTable, style: 'panelTable'});
     }
 
     const headerAndTables = panels.map(panel => this.generateHeaderAndTable(panel)); // her er general case for hvert panel
     result = result.concat(headerAndTables.flat());
     result.push({
-      text: 'Informasjon om versjonen av utfyller (implisitt skjemaversjon) som publiserte denne pdfen'
+      text: `Skjemaversjon: ${this.gitVersion}`
     });
     return result;
   }

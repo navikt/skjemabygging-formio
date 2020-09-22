@@ -185,7 +185,7 @@ const createForm = () => ({
       "label": "2345t",
       "key": "T",
       "type": "radio",
-      "values": [{label: 'tcfghj', value: 'tcfghj'}, {label: 'Nei',  value: 'nei'}],
+      "values": [{label: 'tcfghj', value: 'tcfghj'}, {label: 'Nei', value: 'nei'}],
       "input": true,
       "id": "edawfax"
     },
@@ -231,30 +231,39 @@ describe('generating doc definition', () => {
   it('generates the docDef for an empty submission', () => {
     const submission = {data: {}, metadata: {}};
     const form = {title: 'Smølfeskjema', components: []};
-    const generator = new Pdfgen(submission, form);
+    const version = 'cafebabe-dirty'
+    const generator = new Pdfgen(submission, form, version);
     const doc_definition = generator.generateDocDefinition();
     expect(doc_definition).toEqual({
       styles: {
-        "anotherStyle": {
-          "alignment": "right",
-          "italics": true
+        anotherStyle: {
+          alignment: "right",
+          italics: true
         },
-        "header": {
-          "bold": true,
-          "fontSize": 22
+        header: {
+          bold: true,
+          fontSize: 18,
+          margin: [0, 0, 0, 10]
+        },
+        ingress: {
+          margin: [0, 5, 0, 5]
+        },
+        panelTable: {
+          margin: [0, 5, 0, 5]
         },
         subHeader: {
           bold: true,
-          fontSize: 18
+          fontSize: 14,
+          margin: [0, 10, 0, 5]
         }
       },
       content: [
         {
-          "style": "header",
-          "text": "Smølfeskjema"
+          style: "header",
+          text: "Smølfeskjema"
         },
-        "Her skal det stå informasjon til innsender",
-        {"text": "Informasjon om versjonen av utfyller (implisitt skjemaversjon) som publiserte denne pdfen"}
+        {text: "Her skal det stå informasjon til innsender", style: "ingress"},
+        {text: `Skjemaversjon: ${version}`}
       ]
     });
   });
@@ -315,7 +324,7 @@ describe('generating doc definition', () => {
       ['Inntekt', 0],
       ['Sum', 10],
       ['Tall', 10]
-        ]);
+    ]);
     expect(tableDefs[1].table.body).toEqual([
       ['Sum', 3702]
     ])

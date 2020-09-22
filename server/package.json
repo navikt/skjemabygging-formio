@@ -12,12 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pdfmake": "^0.1.68",
     "express": "^4.17.1",
     "jsdom": "^16.4.0",
     "mustache-express": "^1.3.0",
     "node-cache": "^5.1.2",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "pdfmake": "^0.1.68"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.10.4",
