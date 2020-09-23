@@ -1,6 +1,7 @@
 @import "~nav-frontend-skjema-style";
 @import "~nav-frontend-typografi-style";
 @import "~nav-frontend-core";
+@import "~nav-frontend-knapper-style";
 
 //Select -- start
 .choices.form-group.formio-choices {
@@ -22,13 +23,11 @@
 }
 //Select -- slutt
 
-//Alle skjemafelter --start
-
+//Alle skjemafelter -- start
 .form-group {
   margin-bottom: 2rem;
 }
-
-//Alle skjemafelter --slutt
+//Alle skjemafelter -- slutt
 
 //Panelside --.start
 .wizard-page {
@@ -73,3 +72,25 @@
   background-image: none;
 }
 //Feilhåndtering -- slutt
+
+//NAV-knappestyling -- start
+.btn-wizard-nav-next,
+.btn-wizard-nav-previous,
+.btn-wizard-nav-cancel,
+.btn-wizard-nav-submit {
+  .knappbase-mixin(@font-family);
+  .knappramme-mixin(@navBla, @navDypBla, @white);
+  .knappdisabled-mixin();
+  .knappspinner-mixin();
+  .knappmedikon-mixin();
+}
+
+.btn-wizard-nav-next,
+.btn-wizard-nav-submit {
+  .knappfylt-mixin(@navBla, @white, @navDypBla, lighten(@navBla, 5%)); //knapp--hoved
+}
+
+.btn-wizard-nav-cancel {
+  .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
+}
+//NAV-knappestyling -- slutt
