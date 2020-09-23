@@ -146,7 +146,7 @@ export class Pdfgen {
       }
       case 'navDatepicker': {
         const date = new Date(value);
-        return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`; // TODO: make it
+        return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
       }
       default:
         return value;
