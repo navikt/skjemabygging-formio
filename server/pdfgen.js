@@ -145,7 +145,8 @@ export class Pdfgen {
         return 'rendering signature not supported';
       }
       case 'navDatepicker': {
-        return value; // TODO: make it
+        const date = new Date(value);
+        return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`; // TODO: make it
       }
       default:
         return value;
