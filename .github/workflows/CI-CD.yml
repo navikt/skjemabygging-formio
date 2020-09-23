@@ -29,12 +29,21 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-      - name: Install deps
+      - name: Cache server node modules
+        id: cache-server-node-modules
+        uses: actions/cache@v2
+        with:
+          path: server/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('server/package-lock.json') }}
+      - name: Install frontend deps
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test frontend
         run: npm test
       - run: npm run build
+      - name: Install server deps
+        if: steps.cache-server-node-modules.outputs.cache-hit != 'true'
+        run: cd server && npm ci
       - name: Test server
         run: cd server && npm test
       - name: Upload build artifact
