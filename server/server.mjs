@@ -1,5 +1,4 @@
 import express from "express";
-import path from "path";
 import mustacheExpress from "mustache-express";
 import getDecorator from "./dekorator.mjs";
 import {Pdfgen} from "./pdfgen.js";
@@ -18,8 +17,13 @@ skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
-const indexHtml = fs.readFileSync(buildDirectoryIndexHtml);
-const gitVersion = gitVersionFromIndexHtml(indexHtml);
+let gitVersion;
+if (process.env.NODE_ENV === 'development') {
+  gitVersion = 'dø-detta-er-development-vet-ikke-hva-versionen-er';
+} else {
+  const indexHtml = fs.readFileSync(buildDirectoryIndexHtml);
+  gitVersion = gitVersionFromIndexHtml(indexHtml);
+}
 
 
 // form encoded post body
@@ -43,8 +47,7 @@ skjemaApp.post("/pdf-json", (req, res) => {
 });
 
 
-
-skjemaApp.use("/", express.static(buildDirectory, { index: false }));
+skjemaApp.use("/", express.static(buildDirectory, {index: false}));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 

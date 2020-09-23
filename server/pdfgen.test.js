@@ -146,20 +146,10 @@ const createSubmission = () => ({
     "tekstfelt": "dfghjk",
     "T": "tcfghj",
     "submit": true,
-    "sum": 3957,
     "belop": 3456,
-    "belop1": 456,
-    "belop2": 45
   },
   "metadata": {
-    "timezone": "Europe/Oslo",
-    "offset": 120,
-    "origin": "https://skjema.dev.nav.no",
-    "referrer": "",
-    "browserName": "Netscape",
-    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36",
     "pathName": "/skjema/test56789",
-    "onLine": true
   }
 });
 
@@ -197,27 +187,6 @@ const createForm = () => ({
       "id": "edo3ppo",
     },
     {
-      "label": "Beløp",
-      "key": "belop1",
-      "type": "currency",
-      "input": true,
-      "id": "edsy44",
-    },
-    {
-      "label": "Beløp",
-      "key": "belop2",
-      "type": "currency",
-      "input": true,
-      "id": "eg92i4j",
-    },
-    {
-      "label": "Sum",
-      "key": "sum",
-      "type": "currency",
-      "input": true,
-      "id": "e5guh0h",
-    },
-    {
       "type": "button",
       "label": "Send inn",
       "key": "submit",
@@ -234,38 +203,14 @@ describe('generating doc definition', () => {
     const version = 'cafebabe-dirty'
     const generator = new Pdfgen(submission, form, version);
     const doc_definition = generator.generateDocDefinition();
-    expect(doc_definition).toEqual({
-      styles: {
-        anotherStyle: {
-          alignment: "right",
-          italics: true
-        },
-        header: {
-          bold: true,
-          fontSize: 18,
-          margin: [0, 0, 0, 10]
-        },
-        ingress: {
-          margin: [0, 5, 0, 5]
-        },
-        panelTable: {
-          margin: [0, 5, 0, 5]
-        },
-        subHeader: {
-          bold: true,
-          fontSize: 14,
-          margin: [0, 10, 0, 5]
-        }
-      },
-      content: [
+    expect(doc_definition.content).toEqual([
         {
           style: "header",
           text: "Smølfeskjema"
         },
         {text: "Her skal det stå informasjon til innsender", style: "ingress"},
         {text: `Skjemaversjon: ${version}`}
-      ]
-    });
+      ]);
   });
 
   it('generates table from form and submission', () => {
@@ -281,9 +226,6 @@ describe('generating doc definition', () => {
       ['Tekstfelt', "dfghjk"],
       ['2345t', 'tcfghj'],
       ['Beløp', 3456],
-      ['Beløp', 456],
-      ['Beløp', 45],
-      ['Sum', 3957],
       ['Send inn', true],
     ])
   });
@@ -301,9 +243,6 @@ describe('generating doc definition', () => {
     expect(tableData).toEqual([
       ["Tekstfelt", "dfghjk"],
       ['Beløp', 3456],
-      ['Beløp', 456],
-      ['Beløp', 45],
-      ['Sum', 3957],
       ['Send inn', true],
     ])
   });

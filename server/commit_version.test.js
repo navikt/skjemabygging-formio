@@ -39,6 +39,11 @@ async function getGitVersion() {
 }
 
 it('finds index.html from the build folder and uses that', async () => {
+  if (!process.env.CI) {
+    // this test will very often fail when developing as it depends on the run build
+    // being up to date
+    return;
+  }
   const currentGitVersion = await getGitVersion();
   const buildDirectoryIndexHtml = path.join(__dirname, '../build/index.html');
   const html = fs.readFileSync(buildDirectoryIndexHtml);

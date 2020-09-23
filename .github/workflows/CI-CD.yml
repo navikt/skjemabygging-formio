@@ -32,9 +32,11 @@ jobs:
       - name: Install deps
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
-      - name: Test
+      - name: Test frontend
         run: npm test
       - run: npm run build
+      - name: Test server
+        run: cd server && npm test
       - name: Upload build artifact
         uses: actions/upload-artifact@v2
         with:

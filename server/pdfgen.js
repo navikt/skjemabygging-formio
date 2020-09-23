@@ -34,22 +34,22 @@ export class Pdfgen {
       header: {
         fontSize: 18,
         bold: true,
-        margin: [0,0,0,10]
+        margin: [0, 0, 0, 10]
       },
       subHeader: {
         fontSize: 14,
         bold: true,
-        margin: [0,10,0,5]
+        margin: [0, 10, 0, 5]
       },
       anotherStyle: {
         italics: true,
         alignment: 'right'
       },
       panelTable: {
-        margin: [0,5,0,5]
+        margin: [0, 5, 0, 5]
       },
       ingress: {
-        margin: [0,5,0,5]
+        margin: [0, 5, 0, 5]
       }
     }
   }
@@ -84,40 +84,38 @@ export class Pdfgen {
     return dataTable;
   }
 
-  generateHeaderAndTable(panel) {
+  generateHeaderAndTable(panel, content) {
     const dataTable = this.createTable();
     panel.components.forEach((component) => {
       this.handleComponent(component, dataTable.body);
     });
     if (dataTable.body.length === 0) {
-      return [{text: panel.title, style: 'subHeader'},
-        'Panelet er ikke utfyllt'
-      ];
+      return;
+    } else {
+      content.push({text: panel.title, style: 'subHeader'});
+      content.push({table: dataTable, style: 'panelTable'});
     }
-    return [
-      {text: panel.title, style: 'subHeader'},
-      {table: dataTable, style: 'panelTable'}
-    ];
+  }
+
+  generateTableForComponentsOutsidePanels(rest, content) {
+    const dataTable = this.createTable();
+    rest.forEach((component) => {
+      this.handleComponent(component, dataTable.body);
+    });
+    if (dataTable.body.length) {
+      content.push({table: dataTable, style: 'panelTable'});
+    }
   }
 
   generateContentFromSubmission() {
     const panels = this.form.components.filter(component => component.type === 'panel');
     const rest = this.form.components.filter(component => component.type !== 'panel');
-    // her kommer special case av generateHeaderAndTable for this.form
-    const dataTable = this.createTable();
-    rest.forEach((component) => {
-      this.handleComponent(component, dataTable.body);
-    });
     let result = [
       this.header(),
       {text: 'Her skal det stå informasjon til innsender', style: 'ingress'}
     ];
-    if (dataTable.body.length) {
-      result.push({table: dataTable, style: 'panelTable'});
-    }
-
-    const headerAndTables = panels.map(panel => this.generateHeaderAndTable(panel)); // her er general case for hvert panel
-    result = result.concat(headerAndTables.flat());
+    this.generateTableForComponentsOutsidePanels(rest, result);
+    panels.forEach(panel => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
     result.push({
       text: `Skjemaversjon: ${this.gitVersion}`
     });
@@ -146,6 +144,9 @@ export class Pdfgen {
       case 'signature': {
         return 'rendering signature not supported';
       }
+      case 'navDatepicker': {
+        return value; // TODO: make it
+      }
       default:
         return value;
 
@@ -155,12 +156,16 @@ export class Pdfgen {
   handleComponent(component, dataTableBody) {
     if (component.input) {
       const value = this.submission.data[component.key];
+      // TODO: as shown here if the component is not submitted this is something that only the component knows. Delegate to component
       if (value === undefined || (component.type === 'radio' && value === '')) {
+        // TODO: burde vi generere pdf for feltet hvis det er required????
         return;
       }
       switch (component.type) {
         case 'container': {
           component.components.forEach(subComponent => {
+            // TODO: must check if component is input
+            // TODO: we don't handle further recursion
             const subValue = value[subComponent.key];
             if (subValue === undefined) {
               return;
@@ -172,10 +177,9 @@ export class Pdfgen {
           break;
         }
         default:
-          const formattedValue = this.formatValue(component, value);
           dataTableBody.push([
             component.label,
-            formattedValue]);
+            this.formatValue(component, value)]);
       }
     } else if (component.components) {
       component.components.forEach(subComponent => this.handleComponent(subComponent, dataTableBody));
