@@ -2,6 +2,8 @@
 
 Copyright 2020 NAV (Arbeids- og velferdsdirektoratet) - The Norwegian Labour and Welfare Administration
 
+The contents of the template folder is based on https://github.com/formio/semantic, see  [ORIGINAL_LICENSE](./template/ORIGINAL_LICENSE)
+
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the "Software"),
 to deal in the Software without restriction, including without limitation
