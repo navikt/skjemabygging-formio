@@ -51,11 +51,11 @@ var dd = {
         "body": [
           [
             "Fornavn",
-            "Syver"
+            "Revys"
           ],
           [
             "Etternavn",
-            "Enstad"
+            "Datsne"
           ],
           [
             "Fødselsnummer / D-nummer",
