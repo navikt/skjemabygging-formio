@@ -30,12 +30,6 @@
     "style-loader": "^1.2.1",
     "webpack-cli": "^3.3.11"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/formio/semantic.git"
-  },
-  "author": "randall@form.io",
-  "license": "MIT",
   "dependencies": {
     "@babel/preset-env": "^7.10.2",
     "gulp": "^4.0.2",
