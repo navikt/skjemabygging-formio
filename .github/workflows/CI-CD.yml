@@ -77,9 +77,6 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-      - name: Install deps
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci
       - name: Download build artifact
         uses: actions/download-artifact@v2
         with:
@@ -106,6 +103,9 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           RESOURCE: .nais/config.yaml
           VARS: .nais/vars.yaml
+      - name: Install deps for notification script
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - name: Notify job success
         if: ${{ success() }}
         run: cat $GITHUB_EVENT_PATH | bin/trigger-workflow-message.js skjemautfyller-deployed
