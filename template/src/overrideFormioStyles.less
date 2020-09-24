@@ -73,10 +73,24 @@
 //Feilhåndtering -- slutt
 
 //NAV-knappestyling -- start
+.list-inline {
+  display: flex;
+  flex-wrap: wrap;
+  @media (max-width: 450px) { // Må sjekke cutoff-grense i utfyller
+    flex-direction: column-reverse;
+  }
+}
+.list-inline-item {
+  margin: 0.5rem;
+}
+
 .btn-wizard-nav-next,
 .btn-wizard-nav-previous,
 .btn-wizard-nav-cancel,
 .btn-wizard-nav-submit {
+  @media (max-width: 450px) { // Må sjekke cutoff-grense i utfyller
+    width: 100%;
+  }
   .knappbase-mixin(@font-family);
   .knappramme-mixin(@navBla, @navDypBla, @white);
   .knappdisabled-mixin();
@@ -93,3 +107,4 @@
   .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
 }
 //NAV-knappestyling -- slutt
+
