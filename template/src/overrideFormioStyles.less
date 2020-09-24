@@ -101,32 +101,11 @@
 
 .btn-wizard-nav-next,
 .btn-wizard-nav-submit {
-  order: 0;
   .knappfylt-mixin(@navBla, @white, @navDypBla, lighten(@navBla, 5%)); //knapp--hoved
 }
 
 .btn-wizard-nav-cancel {
-  order: 1;
   .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
 }
 //NAV-knappestyling -- slutt
 
-/*
-//felles
-display: flex;
-flex-wrap: wrap;
-justify-content: space-evenly;
-
-//cancel
-order: 2;
-margin-bottom: 1rem;
-
-//previous
-margin-bottom: 1rem;
-order: 0;
-//next
-margin-bottom: 1rem;
-order: 1;
-//all buttons
-width: 125px;
-*/
