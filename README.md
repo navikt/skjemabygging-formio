@@ -1,6 +1,14 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+skjemautfylling-formio
+======================
 
-test
+Applikasjonen lar brukeren fylle ut og generere pdf'er for skjemaer
+som er publisert til https://github.com/navikt/skjemapublisering-test.git
+
+
+# Komme i gang
+Dette prosjektet bruker 
+[Create React App](https://github.com/facebook/create-react-app), 
+så under følger dokumentasjonen derfra
 
 ## Available Scripts
 
@@ -68,3 +76,11 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+# Henvendelser
+
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
+
+## For NAV-ansatte
+
+Interne henvendelser kan sendes via Slack i kanalen #skjemadigitalisering.
