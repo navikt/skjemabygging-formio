@@ -74,10 +74,19 @@
 //Feilhåndtering -- slutt
 
 //NAV-knappestyling -- start
+.list-inline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  flex-direction: column-reverse;
+}
+
 .btn-wizard-nav-next,
 .btn-wizard-nav-previous,
 .btn-wizard-nav-cancel,
 .btn-wizard-nav-submit {
+  width: 125px;
+  margin-bottom: 1rem;
   .knappbase-mixin(@font-family);
   .knappramme-mixin(@navBla, @navDypBla, @white);
   .knappdisabled-mixin();
@@ -87,10 +96,33 @@
 
 .btn-wizard-nav-next,
 .btn-wizard-nav-submit {
+  order: 0;
   .knappfylt-mixin(@navBla, @white, @navDypBla, lighten(@navBla, 5%)); //knapp--hoved
 }
 
 .btn-wizard-nav-cancel {
+  order: 1;
   .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
 }
 //NAV-knappestyling -- slutt
+
+
+/*
+//felles
+display: flex;
+flex-wrap: wrap;
+justify-content: space-evenly;
+
+//cancel
+order: 2;
+margin-bottom: 1rem;
+
+//previous
+margin-bottom: 1rem;
+order: 0;
+//next
+margin-bottom: 1rem;
+order: 1;
+//all buttons
+width: 125px;
+*/
