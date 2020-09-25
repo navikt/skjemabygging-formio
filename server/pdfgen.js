@@ -1,4 +1,6 @@
 import PdfPrinter from 'pdfmake';
+import Luxon from 'luxon';
+const {DateTime} = Luxon;
 
 
 const fonts = {
@@ -116,6 +118,9 @@ export class Pdfgen {
     ];
     this.generateTableForComponentsOutsidePanels(rest, result);
     panels.forEach(panel => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
+    const dt = DateTime.local();
+    const datoTid = dt.setLocale('nb-NO').toLocaleString(DateTime.DATETIME_FULL);
+    result.push({text: `Skjemaet ble opprettet ${datoTid}`}); // 24 timer HH:MM dd.mm.YYYY
     result.push({
       text: `Skjemaversjon: ${this.gitVersion}`
     });
