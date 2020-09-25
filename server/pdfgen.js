@@ -1,6 +1,6 @@
 import PdfPrinter from 'pdfmake';
-import {DateTime} from 'luxon';
-
+import luxon from 'luxon';
+const {DateTime} = luxon;
 
 const fonts = {
   Roboto: {

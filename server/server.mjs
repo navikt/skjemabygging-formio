@@ -6,7 +6,8 @@ import {buildDirectory} from "./context.js";
 import fs from "fs";
 import {gitVersionFromIndexHtml} from "./commit_version.js";
 import {buildDirectoryIndexHtml} from "./context.js";
-import {DateTime} from "luxon";
+import luxon from "luxon";
+
 
 const app = express();
 const skjemaApp = express();
