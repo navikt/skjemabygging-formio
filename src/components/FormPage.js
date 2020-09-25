@@ -31,16 +31,19 @@ export const FormPage = ({forms, setSubmission}) => {
           history.push(
             `/${params.formpath}/result`);
         }}
-        onNextPage={() => {
-          const nextPage = document.querySelector("main");
-          const nextPageTitle = document.querySelector(".typo-innholdstittel");
-          nextPageTitle.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-          nextPage.focus({ preventScroll: true });
-        }}
+        onNextPage={focusAndScrollToNextAndPreviousPage}
+        onPrevPage={focusAndScrollToNextAndPreviousPage}
       />
     </>
   );
 };
+
+function focusAndScrollToNextAndPreviousPage() {
+  const nextOrPreviousPage = document.querySelector("main");
+  const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
+  nextOrPreviousTitle.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+  nextOrPreviousPage.focus({ preventScroll: true });
+}
