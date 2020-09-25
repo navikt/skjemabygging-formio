@@ -16,7 +16,7 @@ export function ResultPage({ form, submission }) {
       <ResultPanel border>
         <Innholdstittel>1. Se over svarene dine</Innholdstittel>
         <Normaltekst>Her kan du blablabla...</Normaltekst>
-        <form action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
+        <form id={form.path} action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
           <Form
             key="2"
             form={resultForm}
@@ -33,7 +33,7 @@ export function ResultPage({ form, submission }) {
       <ResultPanel border>
         <Innholdstittel>2. Last ned som PDF</Innholdstittel>
         <Normaltekst>Lorem ipsum sit amet..</Normaltekst>
-        <input className="knapp" type="submit" value="Last ned PDF" onClick={() => setKanGaVidere(true)} />
+        <input form={form.path} className="knapp" type="submit" value="Last ned PDF" onClick={() => setKanGaVidere(true)} />
       </ResultPanel>
       <ResultPanel border>
         <Innholdstittel>3. Last opp i PDF-opplastingstjeneste</Innholdstittel>
