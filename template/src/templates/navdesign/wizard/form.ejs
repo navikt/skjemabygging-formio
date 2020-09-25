@@ -1,9 +1,12 @@
 <div class="{{ctx.className}}">
   <div style="position: relative;">
     {{ ctx.wizardHeader }}
-    <div class="wizard-page" ref="{{ctx.wizardKey}}">
-      {{ctx.components}}
-    </div>
+    <main tabindex="-1">
+      <h2 class="typo-innholdstittel">{{ctx.panels[ctx.currentPage].title}}</h2>
+      <div class="wizard-page" ref="{{ctx.wizardKey}}">
+        {{ctx.components}}
+      </div>
+    </main>
     {{ ctx.wizardNav }}
   </div>
 </div>

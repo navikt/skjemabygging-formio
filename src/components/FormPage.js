@@ -31,6 +31,15 @@ export const FormPage = ({forms, setSubmission}) => {
           history.push(
             `/${params.formpath}/result`);
         }}
+        onNextPage={() => {
+          const nextPage = document.querySelector("main");
+          const nextPageTitle = document.querySelector(".typo-innholdstittel");
+          nextPageTitle.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          nextPage.focus({ preventScroll: true });
+        }}
       />
     </>
   );
