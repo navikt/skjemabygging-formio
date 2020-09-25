@@ -1,5 +1,5 @@
 import PdfPrinter from 'pdfmake';
-import luxon from 'luxon';
+import * as luxon from 'luxon';
 const {DateTime} = luxon;
 
 const fonts = {
