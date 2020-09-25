@@ -33,7 +33,7 @@
     "react-formio": "^4.3.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.3",
-    "skjemapublisering": "navikt/skjemapublisering-test.git#07b142c1d6475904f15bcf7675b038bc7109998f"
+    "skjemapublisering": "navikt/skjemapublisering-test.git#3753460e445765ced9d26eab7767674ed7d867d8"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
