@@ -4,15 +4,20 @@
   "description": "",
   "main": "server.mjs",
   "type": "module",
+  "config": {
+    "icuDataDir": "./node_modules/full-icu"
+  },
   "scripts": {
-    "start": "nodemon server.mjs",
-    "test": "jest"
+    "start": "nodemon --icu-data-dir=$npm_package_config_icuDataDir",
+    "start-prod": "node --icu-data-dir=$npm_package_config_icuDataDir server.mjs",
+    "test": "NODE_ICU_DATA_DIR=$npm_package_config_icuDataDir jest"
   },
   "jest": {},
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "full-icu": "^1.3.1",
     "jsdom": "^16.4.0",
     "luxon": "^1.25.0",
     "mustache-express": "^1.3.0",
