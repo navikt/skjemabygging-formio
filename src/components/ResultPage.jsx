@@ -8,7 +8,7 @@ import Hovedknapp from "nav-frontend-knapper";
 import i18nData from "../i18nData";
 
 export function ResultPage({ form, submission }) {
-  const [kanGaVidere, setKanGaVidere] = useState(false);
+  const [isNextDisabled, setIsNextDisabled] = useState(true);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   return (
     <ResultContent>
@@ -33,12 +33,12 @@ export function ResultPage({ form, submission }) {
       <ResultPanel border>
         <Innholdstittel>2. Last ned som PDF</Innholdstittel>
         <Normaltekst>Lorem ipsum sit amet..</Normaltekst>
-        <input form={form.path} className="knapp" type="submit" value="Last ned PDF" onClick={() => setKanGaVidere(true)} />
+        <input form={form.path} className="knapp" type="submit" value="Last ned PDF" onClick={() => setIsNextDisabled(false)} />
       </ResultPanel>
       <ResultPanel border>
         <Innholdstittel>3. Last opp i PDF-opplastingstjeneste</Innholdstittel>
         <Normaltekst>Lorem ipsum sit amet..</Normaltekst>
-        <Hovedknapp disabled={!kanGaVidere}>Gå videre</Hovedknapp>
+        <Hovedknapp disabled={isNextDisabled}>Gå videre</Hovedknapp>
       </ResultPanel>
     </ResultContent>
   );
