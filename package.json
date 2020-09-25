@@ -42,7 +42,7 @@
     "nav-frontend-skjema-style": "^2.0.10",
     "nav-frontend-typografi": "^2.0.26",
     "nav-frontend-typografi-style": "^1.0.22",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "prop-types": "^15.7.2",
     "pusher": "^3.0.1",
     "pusher-js": "^7.0.0",
