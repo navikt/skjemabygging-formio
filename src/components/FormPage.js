@@ -27,7 +27,19 @@ export const FormPage = ({ forms, submission, setSubmission }) => {
           setSubmission({ [form.path]: submission });
           history.push(`/${params.formpath}/result`);
         }}
+        onNextPage={focusAndScrollToNextAndPreviousPage}
+        onPrevPage={focusAndScrollToNextAndPreviousPage}
       />
     </>
   );
 };
+
+function focusAndScrollToNextAndPreviousPage() {
+  const nextOrPreviousPage = document.querySelector("main");
+  const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
+  nextOrPreviousTitle.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+  nextOrPreviousPage.focus({ preventScroll: true });
+}
