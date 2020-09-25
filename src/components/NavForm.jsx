@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import EventEmitter from 'eventemitter2';
-import AllComponents from 'formiojs/components';
-import { Components, Form as FormioForm, Formio} from 'formiojs';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import EventEmitter from "eventemitter2";
+import AllComponents from "formiojs/components";
+import { Components, Form as FormioForm, Formio } from "formiojs";
 import form from "./test";
-import "nav-frontend-skjema-style"
-import navdesign from 'template';
-
+import "nav-frontend-skjema-style";
+import navdesign from "template";
 
 Components.setComponents(AllComponents);
 Formio.use(navdesign);
@@ -41,18 +40,18 @@ export default class NavForm extends Component {
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     onInitialized: PropTypes.func,
-    formioform: PropTypes.any
+    formioform: PropTypes.any,
   };
 
   static getDefaultEmitter() {
     return new EventEmitter({
       wildcard: false,
-      maxListeners: 0
+      maxListeners: 0,
     });
   }
 
   componentDidMount = () => {
-    const {options = {}, src, url, form} = this.props;
+    const { options = {}, src, url, form } = this.props;
 
     if (!options.events) {
       options.events = NavForm.getDefaultEmitter();
@@ -60,14 +59,14 @@ export default class NavForm extends Component {
 
     if (src) {
       this.instance = new (this.props.formioform || FormioForm)(this.element, src, options);
-      this.createPromise = this.instance.ready.then(formio => {
+      this.createPromise = this.instance.ready.then((formio) => {
         this.formio = formio;
         this.formio.src = src;
       });
     }
     if (form) {
       this.instance = new (this.props.formioform || FormioForm)(this.element, form, options);
-      this.createPromise = this.instance.ready.then(formio => {
+      this.createPromise = this.instance.ready.then((formio) => {
         this.formio = formio;
         this.formio.form = form;
         if (url) {
@@ -90,9 +89,9 @@ export default class NavForm extends Component {
   initializeFormio = () => {
     if (this.createPromise) {
       this.instance.onAny((event, ...args) => {
-        if (event.startsWith('formio.')) {
+        if (event.startsWith("formio.")) {
           const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
-          if (this.props.hasOwnProperty(funcName) && typeof (this.props[funcName]) === 'function') {
+          if (this.props.hasOwnProperty(funcName) && typeof this.props[funcName] === "function") {
             this.props[funcName](...args);
           }
         }
@@ -106,7 +105,7 @@ export default class NavForm extends Component {
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const {options = {}, src, form, submission} = this.props;
+    const { options = {}, src, form, submission } = this.props;
 
     if (!options.events) {
       options.events = NavForm.getDefaultEmitter();
@@ -114,7 +113,7 @@ export default class NavForm extends Component {
 
     if (src !== nextProps.src) {
       this.instance = new (this.props.formioform || FormioForm)(this.element, nextProps.src, options);
-      this.createPromise = this.instance.ready.then(formio => {
+      this.createPromise = this.instance.ready.then((formio) => {
         this.formio = formio;
         this.formio.src = nextProps.src;
       });
@@ -122,7 +121,7 @@ export default class NavForm extends Component {
     }
     if (form !== nextProps.form) {
       this.instance = new (this.props.formioform || FormioForm)(this.element, nextProps.form, options);
-      this.createPromise = this.instance.ready.then(formio => {
+      this.createPromise = this.instance.ready.then((formio) => {
         this.formio = formio;
         this.formio.form = nextProps.form;
       });
@@ -135,6 +134,16 @@ export default class NavForm extends Component {
   };
 
   render = () => {
-    return <form data-testid="formMountElement" ref={element => this.element = element} />;
+    return <form data-testid="formMountElement" ref={(element) => (this.element = element)} />;
   };
+}
+
+export function focusAndScrollToNextAndPreviousPage() {
+  const nextOrPreviousPage = document.querySelector("main");
+  const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
+  nextOrPreviousTitle.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+  nextOrPreviousPage.focus({ preventScroll: true });
 }
