@@ -76,7 +76,8 @@
 .list-inline {
   display: flex;
   flex-wrap: wrap;
-  @media (max-width: 450px) { // Må sjekke cutoff-grense i utfyller
+  @media (max-width: 450px) {
+    // Må sjekke cutoff-grense i utfyller
     flex-direction: column-reverse;
   }
 }
@@ -88,7 +89,8 @@
 .btn-wizard-nav-previous,
 .btn-wizard-nav-cancel,
 .btn-wizard-nav-submit {
-  @media (max-width: 450px) { // Må sjekke cutoff-grense i utfyller
+  @media (max-width: 450px) {
+    // Må sjekke cutoff-grense i utfyller
     width: 100%;
   }
   .knappbase-mixin(@font-family);
@@ -108,3 +110,6 @@
 }
 //NAV-knappestyling -- slutt
 
+main:focus {
+  outline: none;
+}
