@@ -1,4 +1,14 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+skjemabygging-formio
+====================
+
+Skjemabygging lar deg bygge form.io skjemaer. Den bruker form.io
+ til å tilby en WYSIWYG skjemaeditor. Når man publiserer pushes det en ny
+  commit til https://github.com/navikt/skjemapublisering-test repoet. 
+
+# Komme i gang
+Dette prosjektet bruker 
+[Create React App](https://github.com/facebook/create-react-app), 
+så under følger dokumentasjonen derfra
 
 ## Available Scripts
 
@@ -66,3 +76,12 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+# Henvendelser
+
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
+
+## For NAV-ansatte
+
+Interne henvendelser kan sendes via Slack i kanalen #skjemadigitalisering.
