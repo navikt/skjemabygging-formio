@@ -1,8 +1,7 @@
 import { useParams, useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
-import { Form } from "react-formio";
+import NavForm from "./NavForm";
 import React from "react";
-import i18nData from "../i18nData";
 
 export const FormPage = ({ forms, submission, setSubmission }) => {
   const params = useParams();
@@ -14,32 +13,17 @@ export const FormPage = ({ forms, submission, setSubmission }) => {
   return (
     <>
       <Sidetittel>{form.title}</Sidetittel>
-      <Form
-        key="1"
-        form={form}
-        submission={submission[form.path]}
-        options={{
-          readOnly: false,
-          language: "nb-NO",
-          i18n: i18nData,
-        }}
-        onSubmit={(submission) => {
-          setSubmission({ [form.path]: submission });
-          history.push(`/${params.formpath}/result`);
-        }}
-        onNextPage={focusAndScrollToNextAndPreviousPage}
-        onPrevPage={focusAndScrollToNextAndPreviousPage}
-      />
+      <form>
+        <NavForm
+          key="1"
+          form={form}
+          submission={submission[form.path]}
+          onSubmit={(submission) => {
+            setSubmission({ [form.path]: submission });
+            history.push(`/${params.formpath}/result`);
+          }}
+        />
+      </form>
     </>
   );
 };
-
-function focusAndScrollToNextAndPreviousPage() {
-  const nextOrPreviousPage = document.querySelector("main");
-  const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
-  nextOrPreviousTitle.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-  nextOrPreviousPage.focus({ preventScroll: true });
-}
