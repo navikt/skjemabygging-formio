@@ -21,9 +21,9 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         </>
       }
     >
-      <NavForm
-        form={form}
-      />
+      <form>
+        <NavForm form={form} />
+      </form>
     </AppLayoutWithContext>
   );
 }

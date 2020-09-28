@@ -10,10 +10,9 @@ const UnauthenticatedApp = ({ projectURL }) => {
     <>
       <NavBar title={"Skjemabygger"} />
       <Pagewrapper>
-        <NavForm
-          src={`${projectURL}/user/login`}
-          onSubmitDone={(user) => login(user)}
-        />
+        <form>
+          <NavForm src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
+        </form>
       </Pagewrapper>
     </>
   );
