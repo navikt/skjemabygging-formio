@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { Route, Switch } from "react-router-dom";
-import { Components } from "react-formio";
+import { Components } from "formiojs";
 import components from "./custom";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import navdesign from "template";
-import { Formio } from "formiojs";
 import { FormPage } from "./components/FormPage";
 import { styled } from "@material-ui/styles";
 import { ResultPage } from "./components/ResultPage";
 import { AllForms } from "./components/AllForms";
 
 Components.setComponents(components);
-Formio.use(navdesign);
 
 function App({ forms, className }) {
   const [submission, setSubmission] = useState({});

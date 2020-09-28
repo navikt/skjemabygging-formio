@@ -1,5 +1,5 @@
 import { Innholdstittel, Normaltekst, Sidetittel } from "nav-frontend-typografi";
-import { Form } from "react-formio";
+import NavForm from "./NavForm";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Panel from "nav-frontend-paneler";
@@ -20,7 +20,7 @@ export function ResultPage({ form, submission }) {
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
         <form id={form.path} action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
-          <Form
+          <NavForm
             key="2"
             form={resultForm}
             options={{ readOnly: true, language: "nb-NO", i18n: i18nData }}

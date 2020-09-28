@@ -15,6 +15,7 @@
     "bootstrap": "^4.4.1",
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
+    "eventemitter2": "^6.4.3",
     "formiojs": "^4.9.20-rc.1",
     "http-proxy-middleware": "^1.0.5",
     "lodash.throttle": "^4.1.1",
@@ -32,14 +33,14 @@
     "react": "^16.13.1",
     "react-day-picker": "^7.4.8",
     "react-dom": "^16.13.1",
-    "react-formio": "^4.3.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.3",
     "skjemapublisering": "navikt/skjemapublisering-test.git#3753460e445765ced9d26eab7767674ed7d867d8"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "prop-types": "^15.7.2"
   },
   "scripts": {
     "start": "craco start",
