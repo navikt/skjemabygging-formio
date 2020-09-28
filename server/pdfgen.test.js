@@ -1,5 +1,6 @@
 import { Pdfgen } from "./pdfgen";
-import { DateTime } from "luxon";
+import luxon from "luxon";
+const { DateTime } = luxon;
 
 const createComplexSubmission = () => ({
   data: {

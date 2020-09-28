@@ -12,7 +12,10 @@
     "start-prod": "node --icu-data-dir=$npm_package_config_icuDataDir server.mjs",
     "test": "NODE_ICU_DATA=$npm_package_config_icuDataDir jest"
   },
-  "jest": {},
+  "jest": {
+    "testEnvironment": "jest-environment-node",
+    "transform": {}
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -26,7 +29,6 @@
     "pdfmake": "^0.1.68"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
     "jest": "^26.4.2"
   }
 }
