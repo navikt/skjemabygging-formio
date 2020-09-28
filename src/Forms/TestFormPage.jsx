@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
 import React from "react";
-import NavForm, { focusAndScrollToNextAndPreviousPage } from "../components/NavForm";
+import NavForm from "../components/NavForm";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import i18nData from "../i18nData";
-
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
@@ -25,12 +23,6 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
     >
       <NavForm
         form={form}
-        onNextPage={focusAndScrollToNextAndPreviousPage}
-        onPrevPage={focusAndScrollToNextAndPreviousPage}
-        options={{
-          language: "nb-NO",
-          i18n: i18nData,
-        }}
       />
     </AppLayoutWithContext>
   );

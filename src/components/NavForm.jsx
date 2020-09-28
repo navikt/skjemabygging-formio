@@ -6,6 +6,7 @@ import { Components, Form as FormioForm, Formio } from "formiojs";
 import form from "./test";
 import "nav-frontend-skjema-style";
 import navdesign from "template";
+import i18nData from "../i18nData";
 
 Components.setComponents(AllComponents);
 Formio.use(navdesign);
@@ -43,6 +44,15 @@ export default class NavForm extends Component {
     formioform: PropTypes.any,
   };
 
+  static defaultProps = {
+    options: {
+      language: "nb-NO",
+      i18n: i18nData,
+    },
+    onNextPage: focusAndScrollToNextAndPreviousPage,
+    onPrevPage: focusAndScrollToNextAndPreviousPage,
+  };
+
   static getDefaultEmitter() {
     return new EventEmitter({
       wildcard: false,
@@ -51,7 +61,7 @@ export default class NavForm extends Component {
   }
 
   componentDidMount = () => {
-    const { options = {}, src, url, form } = this.props;
+    const { options, src, url, form } = this.props;
 
     if (!options.events) {
       options.events = NavForm.getDefaultEmitter();
@@ -138,7 +148,7 @@ export default class NavForm extends Component {
   };
 }
 
-export function focusAndScrollToNextAndPreviousPage() {
+function focusAndScrollToNextAndPreviousPage() {
   const nextOrPreviousPage = document.querySelector("main");
   const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
   nextOrPreviousTitle.scrollIntoView({
