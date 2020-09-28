@@ -13,15 +13,17 @@ export const FormPage = ({ forms, submission, setSubmission }) => {
   return (
     <>
       <Sidetittel>{form.title}</Sidetittel>
-      <NavForm
-        key="1"
-        form={form}
-        submission={submission[form.path]}
-        onSubmit={(submission) => {
-          setSubmission({ [form.path]: submission });
-          history.push(`/${params.formpath}/result`);
-        }}
-      />
+      <form>
+        <NavForm
+          key="1"
+          form={form}
+          submission={submission[form.path]}
+          onSubmit={(submission) => {
+            setSubmission({ [form.path]: submission });
+            history.push(`/${params.formpath}/result`);
+          }}
+        />
+      </form>
     </>
   );
 };
