@@ -15,9 +15,9 @@ export function ResultPage({ form, submission }) {
       <Sidetittel>Oppsummering av søknaden din</Sidetittel>
       <ResultPanel border>
         <Innholdstittel>1. Se over svarene dine</Innholdstittel>
-        <Normaltekst>Vennligst sjekk at alle svarene dine er riktige.
-          Hvis du finner noe som må korrigeres trykker du på "Rediger"-knappen nedenfor.
-          Hvis alle svarene er riktige går du videre til steg 2.
+        <Normaltekst>
+          Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
+          "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
         <form id={form.path} action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
           <Form
@@ -35,23 +35,32 @@ export function ResultPage({ form, submission }) {
       </ResultPanel>
       <ResultPanel border>
         <Innholdstittel>2. Last ned som PDF</Innholdstittel>
-        <Normaltekst>Søknaden (pdf) åpnes i en nye fane i nettleseren. Du må lagre pdf-filen på maskinen din og
-          deretter komme tilbake hit for å gå videre til steg 3.</Normaltekst>
-        <input form={form.path} className="knapp" type="submit" value="Last ned PDF" onClick={() => setIsNextDisabled(false)} />
+        <Normaltekst>
+          Søknaden (pdf) åpnes i en nye fane i nettleseren. Du må lagre pdf-filen på maskinen din og deretter komme
+          tilbake hit for å gå videre til steg 3.
+        </Normaltekst>
+        <input
+          form={form.path}
+          className="knapp"
+          type="submit"
+          value="Last ned PDF"
+          onClick={() => setIsNextDisabled(false)}
+        />
       </ResultPanel>
       <ResultPanel border>
         <Innholdstittel>3. Gå videre til innsending av søknaden</Innholdstittel>
-        <Normaltekst>Når du trykker på knappen nedenfor blir du sendt videre til en opplastingstjeneste for å laste opp søknaden
+        <Normaltekst>
+          Når du trykker på knappen nedenfor blir du sendt videre til en opplastingstjeneste for å laste opp søknaden
           din (krever innlogging). Etter at du har logget inn:
         </Normaltekst>
-        <Normaltekst>
-          <ol>
-            <li>Trykk på "Fyll ut og last opp"</li>
-            <li>Trykk på "Finn filen". (OBS! IKKE trykk på "Åpne skjema"-knappen)</li>
-            <li>Finn og velg søknadsfilen som du lastet ned og lagret på maskinen din</li>
-            <li>Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen</li>
-          </ol>
-        </Normaltekst>
+        <ol>
+          <li className="typo-normal">Trykk på "Fyll ut og last opp"</li>
+          <li className="typo-normal">Trykk på "Finn filen". (OBS! IKKE trykk på "Åpne skjema"-knappen)</li>
+          <li className="typo-normal">Finn og velg søknadsfilen som du lastet ned og lagret på maskinen din</li>
+          <li className="typo-normal">
+            Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen
+          </li>
+        </ol>
 
         <Hovedknapp disabled={isNextDisabled}>Gå videre</Hovedknapp>
       </ResultPanel>
