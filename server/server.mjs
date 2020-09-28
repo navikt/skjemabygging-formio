@@ -7,6 +7,7 @@ import fs from "fs";
 import {gitVersionFromIndexHtml} from "./commit_version.js";
 import {buildDirectoryIndexHtml} from "./context.js";
 import luxon from "luxon";
+const {DateTime} = luxon;
 
 
 const app = express();
@@ -34,7 +35,7 @@ skjemaApp.post("/pdf-form", (req, res) => {
   const form = JSON.parse(req.body.form);
   console.log('submission', submission);
   res.contentType('application/pdf');
-  const now = DateTime.local();
+  const now = DateTime.local().setZone('Europa/Oslo');
   const generator = new Pdfgen(submission, form, gitVersion, now);
   const docDefinition = generator.generateDocDefinition();
   generator.writeDocDefinitionToStream(docDefinition, res);

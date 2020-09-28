@@ -1,5 +1,5 @@
 import { Pdfgen } from "./pdfgen";
-import {DateTime} from "luxon";
+import { DateTime } from "luxon";
 
 const createComplexSubmission = () => ({
   data: {
@@ -197,12 +197,15 @@ const createForm = () => ({
 });
 
 describe("generating doc definition", () => {
+  function now() {
+    return DateTime.fromObject({ year: 1992, day: 19, month: 10, zone: "Europe/Oslo" });
+  }
+
   it("generates the docDef for an empty submission", () => {
     const submission = { data: {}, metadata: {} };
     const form = { title: "Smølfeskjema", components: [] };
-    const now = DateTime.fromObject({year: 1992, day: 19, month: 10});
-    const version = 'deadbeef-dirty';
-    const generator = new Pdfgen(submission, form, version, now);
+    const version = "deadbeef-dirty";
+    const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     expect(doc_definition.content).toEqual([
       {
@@ -218,9 +221,8 @@ describe("generating doc definition", () => {
   it("generates table from form and submission", () => {
     const submission = createSubmission();
     const form = createForm();
-    const now = DateTime.fromObject({year: 1992, day: 19, month: 10});
     const version = 'deadbeef';
-    const generator = new Pdfgen(submission, form, version, now);
+    const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2];
     expect(tableDef.table).toBeDefined();
@@ -238,9 +240,8 @@ describe("generating doc definition", () => {
     const submission = createSubmission();
     submission.data.T = "";
     const form = createForm();
-    const now = DateTime.fromObject({year: 1992, day: 19, month: 10});
-    const version = 'deadbeef';
-    const generator = new Pdfgen(submission, form, version, now);
+    const version = "deadbeef";
+    const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2];
     expect(tableDef.table).toBeDefined();
@@ -256,9 +257,8 @@ describe("generating doc definition", () => {
   it("generates a table for each panel in a complex form", () => {
     const submission = createComplexSubmission();
     const form = createComplexFormDefinition();
-    const now = DateTime.fromObject({year: 1992, day: 19, month: 10});
     const version = 'deadbeef';
-    const generator = new Pdfgen(submission, form, version, now);
+    const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDefs = doc_definition.content.filter((paragraph) => paragraph.table);
     expect(tableDefs).toHaveLength(2);
@@ -299,9 +299,8 @@ describe("generating doc definition", () => {
         },
       ],
     };
-    const now = DateTime.fromObject({year: 1992, day: 19, month: 10});
     const version = 'deadbeef';
-    const generator = new Pdfgen(submission, formDefinition, version, now);
+    const generator = new Pdfgen(submission, formDefinition, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2];
     const tableData = tableDef.table.body;
