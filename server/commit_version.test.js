@@ -38,7 +38,6 @@ it("finds index.html from the build folder and uses that", async () => {
     return;
   }
   const currentGitVersion = await getGitVersion();
-  const filename = fileURLToPath(import.meta.url);
   const html = fs.readFileSync(buildDirectoryIndexHtml);
   const version = gitVersionFromIndexHtml(html);
   expect(currentGitVersion).toEqual(version);
