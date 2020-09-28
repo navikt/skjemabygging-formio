@@ -10,7 +10,7 @@
   "scripts": {
     "start": "nodemon --icu-data-dir=$npm_package_config_icuDataDir",
     "start-prod": "node --icu-data-dir=$npm_package_config_icuDataDir server.mjs",
-    "test": "NODE_ICU_DATA=$npm_package_config_icuDataDir jest"
+    "test": "NODE_ICU_DATA=$npm_package_config_icuDataDir node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "jest": {
     "testEnvironment": "jest-environment-node",
