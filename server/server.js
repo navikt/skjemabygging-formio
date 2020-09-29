@@ -1,6 +1,6 @@
 import express from "express";
 import mustacheExpress from "mustache-express";
-import getDecorator from "./dekorator.mjs";
+import getDecorator from "./dekorator.js";
 import { Pdfgen } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import fs from "fs";

@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.mjs",
+  "main": "server.js",
   "type": "module",
   "config": {
     "icuDataDir": "./node_modules/full-icu"
