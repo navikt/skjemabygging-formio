@@ -1,38 +1,41 @@
 import express from "express";
 import mustacheExpress from "mustache-express";
-import getDecorator from "./dekorator.mjs";
-import {Pdfgen} from "./pdfgen.js";
-import {buildDirectory} from "./context.js";
+import getDecorator from "./dekorator.js";
+import { Pdfgen } from "./pdfgen.js";
+import { buildDirectory } from "./context.js";
 import fs from "fs";
-import {gitVersionFromIndexHtml} from "./commit_version.js";
-import {buildDirectoryIndexHtml} from "./context.js";
+import { gitVersionFromIndexHtml } from "./commit_version.js";
+import { buildDirectoryIndexHtml } from "./context.js";
+import luxon from "luxon";
+
+const { DateTime } = luxon;
 
 const app = express();
 const skjemaApp = express();
 
 // Parse application/json
-skjemaApp.use(express.json({limit: '50mb'}));
-skjemaApp.use(express.urlencoded({extended: true, limit: '50mb'}));
+skjemaApp.use(express.json({ limit: "50mb" }));
+skjemaApp.use(express.urlencoded({ extended: true, limit: "50mb" }));
 skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
 let gitVersion;
-if (process.env.NODE_ENV === 'development') {
-  gitVersion = 'dø-detta-er-development-vet-ikke-hva-versionen-er';
+if (process.env.NODE_ENV === "development") {
+  gitVersion = "dø-detta-er-development-vet-ikke-hva-versionen-er";
 } else {
   const indexHtml = fs.readFileSync(buildDirectoryIndexHtml);
   gitVersion = gitVersionFromIndexHtml(indexHtml);
 }
 
-
 // form encoded post body
 skjemaApp.post("/pdf-form", (req, res) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  console.log('submission', submission);
-  res.contentType('application/pdf');
-  const generator = new Pdfgen(submission, form, gitVersion);
+  console.log("submission", submission);
+  res.contentType("application/pdf");
+  const now = DateTime.local().setZone("Europa/Oslo");
+  const generator = new Pdfgen(submission, form, gitVersion, now);
   const docDefinition = generator.generateDocDefinition();
   generator.writeDocDefinitionToStream(docDefinition, res);
 });
@@ -41,13 +44,12 @@ skjemaApp.post("/pdf-form", (req, res) => {
 skjemaApp.post("/pdf-json", (req, res) => {
   const submission = req.body.submission;
   const form = req.body.form;
-  console.log('submission', submission);
-  res.contentType('application/pdf');
+  console.log("submission", submission);
+  res.contentType("application/pdf");
   Pdfgen.writePDFToStream(submission, form, res);
 });
 
-
-skjemaApp.use("/", express.static(buildDirectory, {index: false}));
+skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
@@ -64,7 +66,7 @@ skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
     });
 });
 
-app.use('/skjema', skjemaApp);
+app.use("/skjema", skjemaApp);
 
 const port = parseInt(process.env.PORT || "8080");
 console.log("serving on ", port);

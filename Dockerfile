@@ -9,6 +9,6 @@ WORKDIR ../
 COPY build build/
 
 WORKDIR server
-CMD ["node", "./server.mjs"]
+CMD ["npm", "run", "start-prod"]
 
 EXPOSE 8080

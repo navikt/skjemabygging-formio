@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 
 import child_process from "child_process";
+import {fileURLToPath} from "url";
+import {buildDirectoryIndexHtml} from "./context";
 
 const htmlDocWithVersion = (version) => `
 <!doctype html>
@@ -36,7 +38,6 @@ it("finds index.html from the build folder and uses that", async () => {
     return;
   }
   const currentGitVersion = await getGitVersion();
-  const buildDirectoryIndexHtml = path.join(__dirname, "../build/index.html");
   const html = fs.readFileSync(buildDirectoryIndexHtml);
   const version = gitVersionFromIndexHtml(html);
   expect(currentGitVersion).toEqual(version);
