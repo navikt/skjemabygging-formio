@@ -8,9 +8,9 @@
     "icuDataDir": "./node_modules/full-icu"
   },
   "scripts": {
-    "start": "nodemon --icu-data-dir=$npm_package_config_icuDataDir",
-    "start-prod": "node --icu-data-dir=$npm_package_config_icuDataDir server.mjs",
-    "test": "NODE_ICU_DATA=$npm_package_config_icuDataDir node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "start": "nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start-prod": "node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "test": "node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "jest": {
     "testEnvironment": "jest-environment-node",
