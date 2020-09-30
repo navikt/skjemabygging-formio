@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "cracoConfig": "craco.config.cjs",
+  "files": [
+    "src/components/NavForm.jsx"
+  ],
   "proxy": "http://localhost:8080",
   "dependencies": {
     "@craco/craco": "^5.6.4",
