@@ -5,7 +5,7 @@
   "type": "module",
   "cracoConfig": "craco.config.cjs",
   "files": [
-    "src/components/NavForm.jsx"
+    "dist/components/NavForm.js"
   ],
   "proxy": "http://localhost:8080",
   "dependencies": {
@@ -66,7 +66,9 @@
     "prestart": "npm run postinstall",
     "prebuild": "npm run postinstall",
     "install-template": "npm --prefix ./template install ./template",
-    "build-template": "cd template && npm run build"
+    "build-template": "cd template && npm run build",
+    "dist-build": "babel --config-file ./navForm.babelrc.json ./src/components/NavForm.jsx --out-dir dist/components",
+    "prepare": "npm run dist-build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -84,6 +86,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
     "@testing-library/jest-dom": "^5.11.3",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.4.1",
