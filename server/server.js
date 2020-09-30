@@ -34,10 +34,7 @@ skjemaApp.post("/pdf-form", (req, res) => {
   const form = JSON.parse(req.body.form);
   console.log("submission", submission);
   res.contentType("application/pdf");
-  const now = DateTime.local().setZone("Europa/Oslo");
-  const generator = new Pdfgen(submission, form, gitVersion, now);
-  const docDefinition = generator.generateDocDefinition();
-  generator.writeDocDefinitionToStream(docDefinition, res);
+  Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
 
 // json encoded post body
@@ -46,7 +43,7 @@ skjemaApp.post("/pdf-json", (req, res) => {
   const form = req.body.form;
   console.log("submission", submission);
   res.contentType("application/pdf");
-  Pdfgen.writePDFToStream(submission, form, res);
+  Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));

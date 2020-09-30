@@ -24,6 +24,13 @@ class InvalidValue extends Error {
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
+  static generatePdf(submission, form, gitVersion, stream) {
+    const now = DateTime.local().setZone("Europe/Oslo");
+    const generator = new this(submission, form, gitVersion, now);
+    const docDefinition = generator.generateDocDefinition();
+    generator.writeDocDefinitionToStream(docDefinition, stream);
+  }
+
   constructor(submission, form, gitVersion, nowAsLuxonDateTime) {
     this.gitVersion = gitVersion;
     this.submission = submission;
@@ -54,11 +61,6 @@ export class Pdfgen {
         margin: [0, 5, 0, 5]
       }
     }
-  }
-
-  static writePDFToStream(submission, form, stream) {
-    const instance = new this(submission, form);
-    instance.generatePDFToStream(stream);
   }
 
   writeDocDefinitionToStream(docDefinition, writeStream) {
@@ -118,6 +120,7 @@ export class Pdfgen {
     ];
     this.generateTableForComponentsOutsidePanels(rest, result);
     panels.forEach(panel => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
+    console.log(this.now);
     const datoTid = this.now.setLocale('nb-NO').toLocaleString(DateTime.DATETIME_FULL);
     result.push({text: `Skjemaet ble opprettet ${datoTid}`});
     result.push({
