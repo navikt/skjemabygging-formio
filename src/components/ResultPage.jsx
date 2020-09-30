@@ -10,6 +10,24 @@ import i18nData from "../i18nData";
 export function ResultPage({ form, submission }) {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
+
+  const goToDokumentinnsendingWithNAV760710AndVedlegg = (submission) => {
+    //Hardkodet midlertidig inngang til dokumentinnsending
+    let url =
+      "https://tjenester.nav.no/dokumentinnsending/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false";
+    if (submission && submission.data) {
+      const vedleggMedSvar = { Q7: submission.data.vedleggQ7, O9: submission.data.vedleggO9 };
+      const kommaseparertVedleggsliste = Object.keys(vedleggMedSvar)
+        .filter((vedleggsID) => vedleggMedSvar[vedleggsID] === "leggerVedNaa")
+        .join(",");
+
+      if (kommaseparertVedleggsliste) {
+        url = url.concat("&vedleggsIder=", kommaseparertVedleggsliste);
+      }
+    }
+    window.location.href = url;
+  };
+
   return (
     <ResultContent>
       <Sidetittel>Oppsummering av søknaden din</Sidetittel>
@@ -61,8 +79,9 @@ export function ResultPage({ form, submission }) {
             Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen
           </li>
         </ol>
-
-        <Hovedknapp disabled={isNextDisabled}>Gå videre</Hovedknapp>
+        <Hovedknapp disabled={isNextDisabled} onClick={() => goToDokumentinnsendingWithNAV760710AndVedlegg(submission)}>
+          Gå videre
+        </Hovedknapp>
       </ResultPanel>
     </ResultContent>
   );
