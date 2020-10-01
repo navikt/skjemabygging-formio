@@ -6,9 +6,6 @@ import { buildDirectory } from "./context.js";
 import fs from "fs";
 import { gitVersionFromIndexHtml } from "./commit_version.js";
 import { buildDirectoryIndexHtml } from "./context.js";
-import luxon from "luxon";
-
-const { DateTime } = luxon;
 
 const app = express();
 const skjemaApp = express();
@@ -45,6 +42,12 @@ skjemaApp.post("/pdf-json", (req, res) => {
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
+
+skjemaApp.get("/config", (req, res) =>
+  res.json({
+    NAIS_CLUSTER_NAME: process.env.NAIS_CLUSTER_NAME,
+  })
+);
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 

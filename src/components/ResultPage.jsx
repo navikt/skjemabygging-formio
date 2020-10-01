@@ -1,20 +1,21 @@
 import { Innholdstittel, Normaltekst, Sidetittel } from "nav-frontend-typografi";
 import NavForm from "./NavForm";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Panel from "nav-frontend-paneler";
 import styled from "@material-ui/styles/styled";
 import Hovedknapp from "nav-frontend-knapper";
 import i18nData from "../i18nData";
+import { AppConfigContext } from "../configContext";
 
 export function ResultPage({ form, submission }) {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
+  const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
 
-  const goToDokumentinnsendingWithNAV760710AndVedlegg = (submission) => {
+  const goToDokumentinnsendingWithNAV760710AndVedlegg = () => {
     //Hardkodet midlertidig inngang til dokumentinnsending
-    let url =
-      "https://tjenester.nav.no/dokumentinnsending/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false";
+    let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false`;
     if (submission && submission.data) {
       const vedleggMedSvar = { Q7: submission.data.vedleggQ7, O9: submission.data.vedleggO9 };
       const kommaseparertVedleggsliste = Object.keys(vedleggMedSvar)
@@ -79,7 +80,7 @@ export function ResultPage({ form, submission }) {
             Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen
           </li>
         </ol>
-        <Hovedknapp disabled={isNextDisabled} onClick={() => goToDokumentinnsendingWithNAV760710AndVedlegg(submission)}>
+        <Hovedknapp disabled={isNextDisabled} onClick={() => goToDokumentinnsendingWithNAV760710AndVedlegg()}>
           Gå videre
         </Hovedknapp>
       </ResultPanel>
