@@ -2,14 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import {BrowserRouter} from "react-router-dom";
-import {forms} from "skjemapublisering"
+import { BrowserRouter } from "react-router-dom";
+import { forms } from "skjemapublisering";
+import { AppConfigProvider } from "./configContext";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename="/skjema">
-      <App forms={forms} />
-    </BrowserRouter>
+    <AppConfigProvider>
+      <BrowserRouter basename="/skjema">
+        <App forms={forms} />
+      </BrowserRouter>
+    </AppConfigProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
