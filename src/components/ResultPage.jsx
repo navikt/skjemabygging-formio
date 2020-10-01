@@ -80,7 +80,7 @@ export function ResultPage({ form, submission }) {
             Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen
           </li>
         </ol>
-        <Hovedknapp disabled={isNextDisabled} onClick={() => goToDokumentinnsendingWithNAV760710AndVedlegg(submission)}>
+        <Hovedknapp disabled={isNextDisabled} onClick={() => goToDokumentinnsendingWithNAV760710AndVedlegg()}>
           Gå videre
         </Hovedknapp>
       </ResultPanel>
