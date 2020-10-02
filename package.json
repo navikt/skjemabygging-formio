@@ -19,7 +19,8 @@
     "prebuild": "npm run postinstall",
     "install-template": "npm --prefix ./template install ./template",
     "build-template": "cd template && npm run build",
-    "dist-build": "rollup -c"
+    "dist-build": "rollup -c",
+    "prepare": "npm run dist-build"
   },
   "eslintConfig": {
     "extends": "react-app"
