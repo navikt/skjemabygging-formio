@@ -1,5 +1,5 @@
 <div class="stegindikator__wrapper">
-  <nav aria-label="navigation" id="{{ ctx.wizardKey }}-header" class="stegindikator">
+  <nav id="{{ ctx.wizardKey }}-header" class="stegindikator">
     <ol class="stegindikator__liste">
       {% ctx.panels.forEach(function(panel, index) { %}
       <li class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}" aria-current="{{ctx.currentPage === index ? 'step' : undefined}}">
