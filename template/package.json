@@ -41,6 +41,7 @@
     "nav-frontend-knapper-style": "^1.0.1",
     "nav-frontend-skjema-style": "^2.0.9",
     "nav-frontend-typografi-style": "^1.0.22",
+    "nav-frontend-stegindikator-style": "^1.0.31",
     "webpack": "^4.42.0"
   }
 }

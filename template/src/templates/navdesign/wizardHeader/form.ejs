@@ -1,9 +1,20 @@
-<nav aria-label="navigation" id="{{ ctx.wizardKey }}-header">
-  <ul class="pagination">
-    {% ctx.panels.forEach(function(panel, index) { %}
-    <li class="page-item{{ctx.currentPage === index ? ' active' : ''}}" style="">
-      <button class="page-link" ref="{{ctx.wizardKey}}-link">{{ctx.t(index+1)}}</button>
-    </li>
-    {% }) %}
-  </ul>
-</nav>
+<div class="stegindikator__wrapper">
+  <nav id="{{ ctx.wizardKey }}-header" class="stegindikator">
+    <ol class="stegindikator__liste">
+      {% ctx.panels.forEach(function(panel, index) { %}
+      <li class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}" aria-current="{{ctx.currentPage === index ? 'step' : undefined}}">
+        <{{(ctx.currentPage === index) ? "div" : "button"}}
+          class="stegindikator__steg-inner {{ctx.currentPage === index ? 'stegindikator__steg-inner--aktiv' : 'stegindikator__steg-inner--interaktiv'}} {{ctx.currentPage > index ? 'stegindikator__steg-inner--ferdig' : ''}}"
+          ref="{{ctx.wizardKey}}-link"
+          title="{{ctx.panels[index].title}}"
+        >
+          <div class="stegindikator__steg-num">{{ctx.t(index+1)}}</div>
+          {% if (window.innerWidth > 600) { %}
+            <div class="stegindikator__steg-label">{{ctx.panels[index].title}}</div>
+          {% } %}
+        </{{(ctx.currentPage === index) ? "div" : "button"}}>
+      </li>
+      {% }) %}
+    </ol>
+  </nav>
+</div>
