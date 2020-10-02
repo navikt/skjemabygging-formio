@@ -19,8 +19,7 @@
     "prebuild": "npm run postinstall",
     "install-template": "npm --prefix ./template install ./template",
     "build-template": "cd template && npm run build",
-    "dist-build": "rollup -c",
-    "prepare": "npm run dist-build"
+    "dist-build": "rollup -c"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,12 +37,14 @@
     ]
   },
   "devDependencies": {
-    "rollup": "^1.29.0",
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "@testing-library/jest-dom": "^5.11.3",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.4.1",
@@ -51,7 +52,8 @@
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "rollup": "^1.29.0"
   },
   "dependencies": {
     "@craco/craco": "^5.6.4",
