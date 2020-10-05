@@ -32,16 +32,17 @@
   "dependencies": {
     "@babel/preset-env": "^7.10.2",
     "gulp": "^4.0.2",
-    "gulp-cli": "^2.3.0",
     "gulp-babel": "^8.0.0",
+    "gulp-cli": "^2.3.0",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^2.0.0",
     "gulp-template": "^5.0.0",
     "nav-frontend-core": "^5.0.1",
     "nav-frontend-knapper-style": "^1.0.1",
+    "nav-frontend-lenker-style": "^0.2.29",
     "nav-frontend-skjema-style": "^2.0.9",
-    "nav-frontend-typografi-style": "^1.0.22",
     "nav-frontend-stegindikator-style": "^1.0.31",
+    "nav-frontend-typografi-style": "^1.0.22",
     "webpack": "^4.42.0"
   }
 }

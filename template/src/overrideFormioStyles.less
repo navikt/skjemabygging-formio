@@ -2,6 +2,7 @@
 @import "~nav-frontend-typografi-style";
 @import "~nav-frontend-core";
 @import "~nav-frontend-knapper-style";
+@import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
 //Select -- start
@@ -48,6 +49,20 @@
 //Wizard sidevelger --slutt
 
 //Feilhåndtering -- start
+.alert.alert-danger {
+  border: 4px solid #BA3A26;
+  border-radius: 0px;
+  background-color: #FFF;
+  padding: 1rem;
+  display: block;
+  .typo-undertittel-mixin();
+  color: @navMorkGra;
+  ul > li {
+    .lenke-mixin();
+    .typo-normal-mixin();
+  }
+}
+
 .formio-error-wrapper {
   background-color: transparent;
   border-color: transparent;
