@@ -21,7 +21,10 @@ export default [
       "nav-frontend-skjema-style",
       "template",
     ],
-    output: [{ file: pkg.module, format: "es" }],
+    output: [
+      { file: pkg.module, format: "es" },
+      { file: pkg.main, format: "cjs" },
+    ],
     plugins: babel({
       exclude: "node_modules/**",
       babelHelpers: "bundled", // documentation seems to indicate we should rather be using 'runtime' as the value here

@@ -8,12 +8,11 @@ import {
 } from "./publishingService.js";
 
 export class Backend {
-  constructor(projectURL, gitUrl, ghKey, ghAppID, ghInstallationID) {
+  constructor(projectURL, gitUrl, gh, gitVersion) {
     this.projectURL = projectURL;
     this.gitUrl = gitUrl;
-    this.ghKey = ghKey;
-    this.ghAppID = ghAppID;
-    this.ghInstallationID = ghInstallationID;
+    this.gh = gh;
+    this.gitVersion = gitVersion;
   }
 
   ho() {
@@ -28,25 +27,13 @@ export class Backend {
     return this.gitUrl;
   }
 
-  getGHKey() {
-    return this.ghKey;
-  }
-
-  getGHAppID() {
-    return this.ghAppID;
-  }
-
-  getGHInstallationID() {
-    return this.ghInstallationID;
-  }
-
   async publishForm(userToken, form, formPath) {
-    const access = await checkPublishingAccess(userToken, this.getProjectURL());
+    const access = await checkPublishingAccess(userToken, this.projectURL);
     if (access.status !== "OK") {
       return access;
     }
 
-    const githubTokenResponse = await getGithubToken(this.ghAppID, this.ghKey, this.ghInstallationID, this.gitUrl);
+    const githubTokenResponse = await getGithubToken(this.gh, this.gitUrl);
     if (githubTokenResponse.status !== "OK") {
       return { status: "FAILED" };
     }

@@ -1,7 +1,7 @@
 import * as publishingService from "./publishingService";
 import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
-import { jsonToPromise, createBackendForTest } from "../testTools/backend/testUtils";
+import {jsonToPromise, createBackendForTest, ghForTest} from "../testTools/backend/testUtils";
 jest.mock("node-fetch");
 
 describe("checkPublishingAccess", () => {
@@ -38,14 +38,15 @@ describe("getGithubToken", () => {
   });
 
   it("Creates a jwtToken from key", async () => {
-    await publishingService.getGithubToken(backend.getGHAppID(), backend.getGHKey(), backend.getGHInstallationID(), backend.getGitURL());
+    const gh = ghForTest();
+    await publishingService.getGithubToken(gh, "http://flums.flapp");
     expect(spyJwt).toHaveBeenCalledWith(
       {
         iat: expect.any(Number),
         exp: expect.any(Number),
-        iss: backend.getGHAppID(),
+        iss: gh.appID,
       },
-      backend.getGHKey(),
+      gh.key,
       { algorithm: "RS256" }
     );
 
@@ -53,10 +54,11 @@ describe("getGithubToken", () => {
   });
 
   it("Calls ghAPI with correct parameters", async () => {
-    await publishingService.getGithubToken(backend.getGHAppID(), backend.getGHKey(), backend.getGHInstallationID(), backend.getGitURL());
+    const gh = ghForTest();
+    await publishingService.getGithubToken(gh, "http://flums.flapp.no/");
 
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(`${backend.getGitURL()}app/installations/${backend.getGHInstallationID()}/access_tokens`, {
+    expect(fetch).toHaveBeenCalledWith(`http://flums.flapp.no/app/installations/${gh.installationID}/access_tokens`, {
       method: "post",
       headers: {
         Authorization: `Bearer ${fakeJwtToken}`,
