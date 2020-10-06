@@ -1,4 +1,4 @@
-import { Innholdstittel, Normaltekst, Sidetittel } from "nav-frontend-typografi";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import NavForm from "./NavForm";
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
@@ -33,7 +33,7 @@ export function ResultPage({ form, submission }) {
     <ResultContent>
       <Sidetittel>Oppsummering av søknaden din</Sidetittel>
       <ResultPanel border>
-        <Innholdstittel>1. Se over svarene dine</Innholdstittel>
+        <Systemtittel>1. Se over svarene dine</Systemtittel>
         <Normaltekst>
           Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
@@ -53,7 +53,7 @@ export function ResultPage({ form, submission }) {
         </Link>
       </ResultPanel>
       <ResultPanel border>
-        <Innholdstittel>2. Last ned som PDF</Innholdstittel>
+        <Systemtittel>2. Last ned som PDF</Systemtittel>
         <Normaltekst>
           Søknaden (pdf) åpnes i en nye fane i nettleseren. Du må lagre pdf-filen på maskinen din og deretter komme
           tilbake hit for å gå videre til steg 3.
@@ -67,7 +67,7 @@ export function ResultPage({ form, submission }) {
         />
       </ResultPanel>
       <ResultPanel border>
-        <Innholdstittel>3. Gå videre til innsending av søknaden</Innholdstittel>
+        <Systemtittel>3. Gå videre til innsending av søknaden</Systemtittel>
         <Normaltekst>
           Når du trykker på knappen nedenfor blir du sendt videre til en opplastingstjeneste for å laste opp søknaden
           din (krever innlogging). Etter at du har logget inn:
@@ -88,7 +88,7 @@ export function ResultPage({ form, submission }) {
   );
 }
 
-const ResultContent = styled("div")({
+const ResultContent = styled("main")({
   width: "100%",
   display: "flex",
   flexDirection: "column",

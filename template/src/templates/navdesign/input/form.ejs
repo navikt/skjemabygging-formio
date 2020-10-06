@@ -17,6 +17,7 @@
   {% } %}
   id="{{ctx.component.key}}"
   required="{{ctx.component.validate.required}}"
+  aria-describedby="{{ctx.component.key}}-error"
 >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
 {% if (ctx.component.editor || ctx.component.wysiwyg) { %}
