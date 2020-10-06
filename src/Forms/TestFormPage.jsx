@@ -1,11 +1,16 @@
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import NavForm from "../components/NavForm";
+import { ToggleGruppe } from "nav-frontend-toggle";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
+import i18nData from "../i18nData";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
+  const [readOnly, setReadOnly] = useState(false);
+  const readOnlyForm = form.display === "wizard" ? { ...form, display: "form" } : form;
+
   return (
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true }}
@@ -21,8 +26,20 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         </>
       }
     >
+      <ToggleGruppe
+        defaultToggles={[
+          { children: "Interaktiv", pressed: !readOnly },
+          { children: "Oppsummering", pressed: readOnly },
+        ]}
+        minstEn={true}
+        onChange={() => setReadOnly(!readOnly)}
+      />
       <form>
-        <NavForm form={form} />
+        {readOnly ? (
+          <NavForm key="2" form={readOnlyForm} options={{ readOnly: readOnly, language: "nb-NO", i18n: i18nData }} />
+        ) : (
+          <NavForm key="1" form={form} />
+        )}
       </form>
     </AppLayoutWithContext>
   );
