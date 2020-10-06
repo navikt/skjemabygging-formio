@@ -9,6 +9,7 @@ import i18nData from "../i18nData";
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
   const [readOnly, setReadOnly] = useState(false);
+  const [submission, setSubmission] = useState();
   const readOnlyForm = form.display === "wizard" ? { ...form, display: "form" } : form;
 
   return (
@@ -36,9 +37,18 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
       />
       <form>
         {readOnly ? (
-          <NavForm key="2" form={readOnlyForm} options={{ readOnly: readOnly, language: "nb-NO", i18n: i18nData }} />
+          <NavForm
+            key="2"
+            form={readOnlyForm}
+            options={{ readOnly: readOnly, language: "nb-NO", i18n: i18nData }}
+            submission={{ data: submission }}
+          />
         ) : (
-          <NavForm key="1" form={form} />
+          <NavForm
+            key="1"
+            form={form}
+            onChange={(value) => setSubmission(value.data)}
+          />
         )}
       </form>
     </AppLayoutWithContext>

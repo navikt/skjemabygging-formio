@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import ReactDOM from "react-dom";
 import { Datovelger } from "nav-datovelger";
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
@@ -6,10 +6,14 @@ import displayEditForm from "formiojs/components/_classes/component/editForm/Com
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import FormioReactComponent from "../FormioReactComponent";
 
-require('moment/locale/nb.js'); // For datovelger
+require("moment/locale/nb.js"); // For datovelger
 
-const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
-  const [dato, setDato] = useState(value || "");
+const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly }) => {
+  const [dato, setDato] = useState();
+
+  useEffect(() => {
+    setDato(value);
+  }, [value])
 
   return (
     <Datovelger
@@ -22,6 +26,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
       datoErGyldig={isValid}
       visÅrVelger={component.visArvelger}
       locale={locale}
+      disabled={readOnly}
     />
   );
 };
@@ -78,16 +83,6 @@ export default class NavDatepicker extends FormioReactComponent {
               key: "display",
               weight: 0,
               components: [
-                /*
-                Klarer ikke å vise ukenumre i kalenderen uansett?
-                {
-                  type: "checkbox",
-                  label: "Vis ukenumre i kalender",
-                  key: "visUkenumre",
-                  defaultValue: true,
-                  input: true,
-                },
-                 */
                 {
                   type: "checkbox",
                   label: "Vis årvelger i kalender",
@@ -120,11 +115,12 @@ export default class NavDatepicker extends FormioReactComponent {
     return ReactDOM.render(
       <DatovelgerWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
-        value={this.dataValue} // The starting value of the component.
+        value={this.dataValue || this.dataForSetting} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
         isValid={this.isValid}
         locale={this.root.i18next.language}
+        readOnly={this.options.readOnly}
       />,
       element
     );
@@ -139,6 +135,13 @@ export default class NavDatepicker extends FormioReactComponent {
     if (element) {
       ReactDOM.unmountComponentAtNode(element);
     }
+  }
+
+  setValue(value) {
+    if (value) {
+      this.renderReact(this.reactElement)
+    }
+    super.setValue(value);
   }
 
   checkValidity(data, dirty, rowData) {
