@@ -2,7 +2,8 @@ import express from "express";
 import {Backend} from "../src/backend/index.js";
 import {dispatcherWithBackend} from "../src/backend/webApp.js";
 import {buildDirectory, buildDirectoryIndexHtml} from "./context.js";
-import {gitVersionFromBuild} from "./commit_version";
+import {gitVersionFromBuild} from "./commit_version.js";
+
 
 
 const app = express();

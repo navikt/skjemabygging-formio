@@ -1,6 +1,6 @@
 import jsdom from "jsdom";
 import fs from "fs";
-import { buildDirectoryIndexHtml } from "./context";
+import { buildDirectoryIndexHtml } from "./context.js";
 
 const { JSDOM } = jsdom;
 
