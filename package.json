@@ -41,6 +41,8 @@
     "nav-frontend-skjema": "^3.0.18",
     "nav-frontend-skjema-style": "^2.0.10",
     "nav-frontend-stegindikator-style": "^1.0.31",
+    "nav-frontend-toggle": "0.0.43",
+    "nav-frontend-toggle-style": "0.0.35",
     "nav-frontend-typografi": "^2.0.26",
     "nav-frontend-typografi-style": "^1.0.22",
     "node-fetch": "^2.6.1",
