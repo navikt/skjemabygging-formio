@@ -88,7 +88,7 @@ export function ResultPage({ form, submission }) {
   );
 }
 
-const ResultContent = styled("div")({
+const ResultContent = styled("main")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
