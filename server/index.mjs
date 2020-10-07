@@ -9,7 +9,7 @@ import {gitVersionFromBuild} from "./commit_version.js";
 const app = express();
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 const githubBaseURL = "https://api.github.com/";
-const gh = {
+const githubAppConfig = {
   key: process.env.GITHUB_KEY,
   appID: process.env.GITHUB_PUBLISHING_APP_ID,
   installationID: process.env.GITHUB_PUBLISHING_INSTALLATION_ID
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(
   "/api",
   dispatcherWithBackend(
-    new Backend(projectURL, githubBaseURL, gh, gitVersion())
+    new Backend(projectURL, githubBaseURL, githubAppConfig, gitVersion())
   )
 );
 

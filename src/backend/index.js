@@ -8,10 +8,10 @@ import {
 } from "./publishingService.js";
 
 export class Backend {
-  constructor(projectURL, gitUrl, gh, gitVersion) {
+  constructor(projectURL, gitUrl, githubAppConfig, gitVersion) {
     this.projectURL = projectURL;
     this.gitUrl = gitUrl;
-    this.gh = gh;
+    this.githubAppConfig = githubAppConfig;
     this.gitVersion = gitVersion;
   }
 
@@ -33,7 +33,7 @@ export class Backend {
       return access;
     }
 
-    const githubTokenResponse = await getGithubToken(this.gh, this.gitUrl);
+    const githubTokenResponse = await getGithubToken(this.githubAppConfig, this.gitUrl);
     if (githubTokenResponse.status !== "OK") {
       return { status: "FAILED" };
     }

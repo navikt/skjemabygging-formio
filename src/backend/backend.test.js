@@ -33,7 +33,7 @@ describe("Backend", () => {
     });
     expect(fetch).toHaveBeenNthCalledWith(
       2,
-      `${backend.getGitURL()}app/installations/${backend.gh.installationID}/access_tokens`,
+      `${backend.getGitURL()}app/installations/${backend.githubAppConfig.installationID}/access_tokens`,
       expect.objectContaining({
         method: "post",
         headers: {
