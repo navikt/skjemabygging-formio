@@ -1,22 +1,11 @@
-import {
-  checkPublishingAccess,
-  getListOfPreviouslyPublishedForms,
-  getShaIfFormIsPreviouslyPublished,
-  publishUpdateToForm,
-  publishNewForm,
-  getGithubToken,
-} from "./publishingService.js";
+import { checkPublishingAccess, getGithubToken, getShaIfFormIsPreviouslyPublished } from "./publishingService.js";
+import { PublishingService } from "./publishingService";
 
 export class Backend {
-  constructor(projectURL, gitUrl, githubAppConfig, gitVersion) {
+  constructor(projectURL, githubAppConfig, gitVersion) {
     this.projectURL = projectURL;
-    this.gitUrl = gitUrl;
     this.githubAppConfig = githubAppConfig;
     this.gitVersion = gitVersion;
-  }
-
-  ho() {
-    return { message: "ho" };
   }
 
   getProjectURL() {
@@ -24,7 +13,7 @@ export class Backend {
   }
 
   getGitURL() {
-    return this.gitUrl;
+    return this.githubAppConfig.baseURL;
   }
 
   async publishForm(userToken, form, formPath) {
@@ -33,14 +22,18 @@ export class Backend {
       return access;
     }
 
-    const githubTokenResponse = await getGithubToken(this.githubAppConfig, this.gitUrl);
+    const githubTokenResponse = await getGithubToken(this.githubAppConfig);
     if (githubTokenResponse.status !== "OK") {
       return { status: "FAILED" };
     }
 
     const githubToken = githubTokenResponse.data.token;
-    const skjemapubliseringGHUrl = `${this.gitUrl}repos/navikt/skjemapublisering-test/contents/skjema`;
-    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(skjemapubliseringGHUrl, githubToken);
+    const service = new PublishingService(
+      githubToken,
+      `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`,
+      this.githubAppConfig.gitRef
+    );
+    const listOfFormsResponse = await service.getListOfPreviouslyPublishedForms();
 
     if (listOfFormsResponse.status !== "OK") {
       return { status: "FAILED" };
@@ -49,10 +42,11 @@ export class Backend {
     const formFileName = `${formPath}.json`;
     const listOfForms = listOfFormsResponse.data;
     const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
+    // console.log("forms", listOfForms);
     if (shaOfPreviouslyPublishedForm) {
-      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, skjemapubliseringGHUrl, githubToken);
+      return service.publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm);
     } else {
-      return publishNewForm(formFileName, form, skjemapubliseringGHUrl, githubToken);
+      return service.publishNewForm(formFileName, form);
     }
   }
 }

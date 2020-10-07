@@ -6,6 +6,8 @@ export function ghForTest() {
   return {
     appID: "123456",
     installationID: "123456",
+    baseURL: "https://api.example.com/",
+    gitRef: "krakra",
     key:
       "-----BEGIN RSA PRIVATE KEY-----\n" +
       "MIICXQIBAAKBgQDYbDcf4T5fTgq7WmYSYh9DRi2ivCKoRx52GygbO/PLJNBJn9Oi\n" +
@@ -27,9 +29,8 @@ export function ghForTest() {
 
 export const createBackendForTest = () => {
   const gh = ghForTest();
-  const gitURL = "https://api.example.com/";
   const projectURL = "https://projectApi.example.com";
-  return new Backend(projectURL, gitURL, gh);
+  return new Backend(projectURL, gh);
 };
 
 export const jsonToPromise = (json) => Promise.resolve(new Response(JSON.stringify(json)));

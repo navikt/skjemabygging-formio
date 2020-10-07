@@ -55,10 +55,9 @@ describe("getGithubToken", () => {
 
   it("Calls ghAPI with correct parameters", async () => {
     const gh = ghForTest();
-    await publishingService.getGithubToken(gh, "http://flums.flapp.no/");
-
+    await publishingService.getGithubToken(gh);
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(`http://flums.flapp.no/app/installations/${gh.installationID}/access_tokens`, {
+    expect(fetch).toHaveBeenCalledWith(`https://api.example.com/app/installations/${gh.installationID}/access_tokens`, {
       method: "post",
       headers: {
         Authorization: `Bearer ${fakeJwtToken}`,

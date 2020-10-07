@@ -5,6 +5,8 @@ import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
 import TokenResponse from "../testTools/backend/json/TokenResponse.json";
 import fetch from "node-fetch";
 import * as publishingService from "./publishingService";
+import {PublishingService} from "./publishingService";
+
 jest.mock("node-fetch");
 
 describe("Backend", () => {
@@ -25,14 +27,17 @@ describe("Backend", () => {
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(4);
-    expect(fetch).toHaveBeenNthCalledWith(1, `${backend.getProjectURL()}/current`, {
-      headers: {
-        "Content-Type": "application/json",
-        "x-jwt-token": token,
+    const calls = fetch.mock.calls;
+    expect(calls[0]).toEqual([
+      `${backend.getProjectURL()}/current`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-jwt-token": token,
+        },
       },
-    });
-    expect(fetch).toHaveBeenNthCalledWith(
-      2,
+    ]);
+    expect(calls[1]).toEqual([
       `${backend.getGitURL()}app/installations/${backend.githubAppConfig.installationID}/access_tokens`,
       expect.objectContaining({
         method: "post",
@@ -41,11 +46,10 @@ describe("Backend", () => {
           "Content-Type": "application/json",
           Accept: "application/vnd.github.machine-man-preview+json",
         },
-      })
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      3,
-      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema`,
+      }),
+    ]);
+    expect(calls[2]).toEqual([
+      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema?ref=krakra`,
       {
         method: "get",
         headers: {
@@ -53,11 +57,11 @@ describe("Backend", () => {
           "Content-Type": "application/json",
           Accept: "application/vnd.github.machine-man-preview+json",
         },
-      }
-    );
-    expect(fetch).toHaveBeenNthCalledWith(
-      4,
-      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema/${formPath}.json`,
+      },
+    ]);
+    expect(calls[3]).toEqual([
+      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema/${formPath}.json?ref=krakra`,
+
       expect.objectContaining({
         method: "put",
         body: expect.any(String),
@@ -66,14 +70,13 @@ describe("Backend", () => {
           "Content-Type": "application/json",
           Accept: "application/vnd.github.machine-man-preview+json",
         },
-      })
-    );
+      }),
+    ]);
     expect(result.status).toBe("OK");
   });
 
   it("does not try to fetch more if authorization check to server fails", async () => {
-    fetch
-      .mockRejectedValue(new Error("Connection refused"));
+    fetch.mockRejectedValue(new Error("Connection refused"));
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -81,8 +84,7 @@ describe("Backend", () => {
   });
 
   it("does not try to fetch more if authorization check to server returns unauthorized", async () => {
-    fetch
-      .mockResolvedValueOnce({status: 401, message: "Unauthorized"});
+    fetch.mockResolvedValueOnce({ status: 401, message: "Unauthorized" });
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -90,9 +92,7 @@ describe("Backend", () => {
   });
 
   it("does not try to fetch more if authorization check to github fails", async () => {
-    fetch
-      .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-      .mockRejectedValue(new Error("Connection refused"));
+    fetch.mockReturnValueOnce(jsonToPromise(TestUserResponse)).mockRejectedValue(new Error("Connection refused"));
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(2);
@@ -102,7 +102,7 @@ describe("Backend", () => {
   it("does not try to fetch more if authorization check to github returns unauthorized", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-      .mockResolvedValueOnce({status: 401, message: "Unauthorized"});
+      .mockResolvedValueOnce({ status: 401, message: "Unauthorized" });
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(2);
@@ -121,8 +121,8 @@ describe("Backend", () => {
   });
 
   it("finds SHA from list of forms and tries to publish an update", async () => {
-    let spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
-    let spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");
+    let spyUpdateFunction = jest.spyOn(PublishingService.prototype, "publishUpdateToForm");
+    let spyCreateFunction = jest.spyOn(PublishingService.prototype, "publishNewForm");
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
@@ -138,8 +138,8 @@ describe("Backend", () => {
   });
 
   it("finds no matching SHA and tries to publish new form", async () => {
-    let spyUpdateFunction = jest.spyOn(publishingService, "publishUpdateToForm");
-    let spyCreateFunction = jest.spyOn(publishingService, "publishNewForm");
+    let spyUpdateFunction = jest.spyOn(PublishingService.prototype, "publishUpdateToForm");
+    let spyCreateFunction = jest.spyOn(PublishingService.prototype, "publishNewForm");
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))

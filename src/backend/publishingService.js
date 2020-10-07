@@ -12,7 +12,7 @@ export async function checkPublishingAccess(userToken, projectUrl) {
   });
 }
 
-export async function getGithubToken(gh, gitUrl) {
+export async function getGithubToken(gh) {
   const timeInMillis = Date.now();
   const timeInSeconds = Math.floor(timeInMillis / 1000);
   const payload = {
@@ -22,21 +22,10 @@ export async function getGithubToken(gh, gitUrl) {
   };
 
   const token = await jwt.sign(payload, gh.key, { algorithm: "RS256" });
-  return fetchWithErrorHandling(`${gitUrl}app/installations/${gh.installationID}/access_tokens`, {
+  return fetchWithErrorHandling(`${gh.baseURL}app/installations/${gh.installationID}/access_tokens`, {
     method: "post",
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      Accept: "application/vnd.github.machine-man-preview+json",
-    },
-  });
-}
-
-export async function getListOfPreviouslyPublishedForms(gitUrl, ghToken) {
-  return fetchWithErrorHandling(gitUrl, {
-    method: "get",
-    headers: {
-      Authorization: "token " + ghToken,
       "Content-Type": "application/json",
       Accept: "application/vnd.github.machine-man-preview+json",
     },
@@ -48,45 +37,74 @@ export function getShaIfFormIsPreviouslyPublished(listOfForms, formFileName) {
   return previouslyPublishedForm ? previouslyPublishedForm.sha : undefined;
 }
 
-export async function publishUpdateToForm(formFileName, formContent, shaOfPreviouslyPublished, gitUrl, token) {
-  const updateFileContent = {
-    message: `Oppdatert versjon av ${formFileName}`,
-    content: stringTobase64(JSON.stringify(formContent)),
-    sha: shaOfPreviouslyPublished,
-  };
-
-  const result = await createOrUpdateFormInGH(formFileName, updateFileContent, gitUrl, token);
-  if (result.status !== "OK") {
-    console.error("Klarte ikke å publisere oppdatering av form i github, ", result.statusText);
-    return { status: "FAILED" };
+export class PublishingService {
+  constructor(ghToken, repoUrl, ref) {
+    this.ghToken = ghToken;
+    this.repoUrl = repoUrl;
+    this.gitRef = ref;
   }
-  return result;
-}
 
-export async function publishNewForm(formFileName, formContent, gitUrl, ghToken) {
-  const newFileContent = {
-    message: `Nytt skjema ${formFileName}`,
-    content: stringTobase64(JSON.stringify(formContent)),
-  };
-
-  const result = await createOrUpdateFormInGH(formFileName, newFileContent, gitUrl, ghToken);
-  if (result.status !== "OK") {
-    console.error("Klarte ikke å publisere nytt form i github, status: ", result.status);
-    return { status: "FAILED" };
+  skjemaFolderBase() {
+    return `${this.repoUrl}/contents/skjema`;
   }
-  return result;
-}
 
-async function createOrUpdateFormInGH(formFileName, body, gitUrl, ghToken) {
-  const formUrl = `${gitUrl}/${formFileName}`;
+  skjemaFolderUrl() {
+    return `${this.skjemaFolderBase()}?ref=${this.gitRef}`;
+  }
 
-  return await fetchWithErrorHandling(formUrl, {
-    method: "put",
-    body: JSON.stringify(body),
-    headers: {
-      Authorization: "token " + ghToken,
-      "Content-Type": "application/json",
-      Accept: "application/vnd.github.machine-man-preview+json",
-    },
-  });
+  formUrl(formFileName) {
+    return `${this.skjemaFolderBase()}/${formFileName}?ref=${this.gitRef}`;
+  }
+
+  async getListOfPreviouslyPublishedForms() {
+    return fetchWithErrorHandling(this.skjemaFolderUrl(), {
+      method: "get",
+      headers: {
+        Authorization: "token " + this.ghToken,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.machine-man-preview+json",
+      },
+    });
+  }
+
+  async publishUpdateToForm(formFileName, formContent, shaOfPreviouslyPublished) {
+    const updateFileContent = {
+      message: `Oppdatert versjon av ${formFileName}`,
+      content: stringTobase64(JSON.stringify(formContent)),
+      sha: shaOfPreviouslyPublished,
+    };
+
+    const result = await this.createOrUpdateFormInGH(formFileName, updateFileContent);
+    if (result.status !== "OK") {
+      console.error("Klarte ikke å publisere oppdatering av form i github, ", result.statusText);
+      return { status: "FAILED" };
+    }
+    return result;
+  }
+
+  async publishNewForm(formFileName, formContent) {
+    const newFileContent = {
+      message: `Nytt skjema ${formFileName}`,
+      content: stringTobase64(JSON.stringify(formContent)),
+    };
+
+    const result = await this.createOrUpdateFormInGH(formFileName, newFileContent);
+    if (result.status !== "OK") {
+      console.error("Klarte ikke å publisere nytt form i github, status: ", result.status);
+      return { status: "FAILED" };
+    }
+    return result;
+  }
+
+  async createOrUpdateFormInGH(formFileName, body) {
+    return await fetchWithErrorHandling(this.formUrl(formFileName), {
+      method: "put",
+      body: JSON.stringify(body),
+      headers: {
+        Authorization: "token " + this.ghToken,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.machine-man-preview+json",
+      },
+    });
+  }
 }
