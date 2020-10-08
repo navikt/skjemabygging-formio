@@ -115,7 +115,7 @@ export default class NavDatepicker extends FormioReactComponent {
     return ReactDOM.render(
       <DatovelgerWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
-        value={this.dataValue || this.dataForSetting} // The starting value of the component.
+        value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
         isValid={this.isValid}
@@ -139,12 +139,12 @@ export default class NavDatepicker extends FormioReactComponent {
   }
 
   setValue(value) {
+    this.dataForSetting = value;
     if (this.reactElement) {
       this.renderReact(this.reactElement);
       this.shouldSetValue = false;
     } else {
       this.shouldSetValue = true;
-      this.dataForSetting = value;
     }
   }
 
