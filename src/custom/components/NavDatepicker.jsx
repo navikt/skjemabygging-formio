@@ -17,7 +17,9 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
 
   return (
     <Datovelger
-      id={component.key}
+      input={{ name: `data[${component.key}]`, id: component.key }}
+      id={component.id}
+      name={`data[${component.key}]`}
       valgtDato={dato}
       onChange={(d) => {
         setDato(d);
@@ -124,6 +126,11 @@ export default class NavDatepicker extends FormioReactComponent {
       />,
       element
     );
+  }
+
+  focus() {
+    console.log("Hey!");
+    super.focus();
   }
 
   attachReact(element) {
