@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Datovelger } from "nav-datovelger";
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
@@ -13,7 +13,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
 
   useEffect(() => {
     setDato(value);
-  }, [value])
+  }, [value]);
 
   return (
     <Datovelger
@@ -128,7 +128,8 @@ export default class NavDatepicker extends FormioReactComponent {
 
   attachReact(element) {
     this.reactElement = element;
-    return this.renderReact(element);
+    this.renderReact(element);
+    return this.reactElement;
   }
 
   detachReact(element) {
@@ -138,10 +139,13 @@ export default class NavDatepicker extends FormioReactComponent {
   }
 
   setValue(value) {
-    if (value) {
-      this.renderReact(this.reactElement)
+    if (this.reactElement) {
+      this.renderReact(this.reactElement);
+      this.shouldSetValue = false;
+    } else {
+      this.shouldSetValue = true;
+      this.dataForSetting = value;
     }
-    super.setValue(value);
   }
 
   checkValidity(data, dirty, rowData) {
