@@ -1,5 +1,4 @@
-import { checkPublishingAccess, getGithubToken, getShaIfFormIsPreviouslyPublished } from "./publishingService.js";
-import { PublishingService } from "./publishingService";
+import { PublishingService, checkPublishingAccess, getGithubToken, getShaIfFormIsPreviouslyPublished } from "./publishingService.js";
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -42,7 +41,7 @@ export class Backend {
     const formFileName = `${formPath}.json`;
     const listOfForms = listOfFormsResponse.data;
     const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
-    // console.log("forms", listOfForms);
+    console.log("forms", listOfForms);
     if (shaOfPreviouslyPublishedForm) {
       return service.publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm);
     } else {

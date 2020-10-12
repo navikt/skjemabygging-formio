@@ -15,6 +15,7 @@ class NewFormPage extends Component {
       name: "",
       title: "",
       path: "",
+      properties: {skjemaNummer: 'flesk'}
     },
   };
 

@@ -10,6 +10,7 @@ const app = express();
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 
 const githubAppConfig = {
+  gitRef: "koselig-med-peis",
   baseURL: "https://api.github.com/",
   key: process.env.GITHUB_KEY,
   appID: process.env.GITHUB_PUBLISHING_APP_ID,

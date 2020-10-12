@@ -69,14 +69,15 @@ export class PublishingService {
 
   async publishUpdateToForm(formFileName, formContent, shaOfPreviouslyPublished) {
     const updateFileContent = {
-      message: `Oppdatert versjon av ${formFileName}`,
+      message: `Oppdatert versjon av ${formFileName} fra koselig med peis`,
       content: stringTobase64(JSON.stringify(formContent)),
+      branch: this.gitRef,
       sha: shaOfPreviouslyPublished,
     };
 
     const result = await this.createOrUpdateFormInGH(formFileName, updateFileContent);
     if (result.status !== "OK") {
-      console.error("Klarte ikke å publisere oppdatering av form i github, ", result.statusText);
+      console.error("Klarte ikke å publisere oppdatering av form i github, ", result);
       return { status: "FAILED" };
     }
     return result;
