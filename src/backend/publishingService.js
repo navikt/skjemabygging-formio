@@ -87,6 +87,7 @@ export class PublishingService {
     const newFileContent = {
       message: `Nytt skjema ${formFileName}`,
       content: stringTobase64(JSON.stringify(formContent)),
+      branch: this.gitRef,
     };
 
     const result = await this.createOrUpdateFormInGH(formFileName, newFileContent);
