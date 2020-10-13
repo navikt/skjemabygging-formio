@@ -8,7 +8,7 @@ import FormioReactComponent from "../FormioReactComponent";
 
 require("moment/locale/nb.js"); // For datovelger
 
-const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly }) => {
+const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
   const [dato, setDato] = useState();
 
   useEffect(() => {
@@ -17,7 +17,8 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
 
   return (
     <Datovelger
-      id={component.key}
+      input={{ id: component.key, inputRef: inputRef }}
+      id={component.id}
       valgtDato={dato}
       onChange={(d) => {
         setDato(d);
@@ -34,6 +35,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
   reactElement = undefined;
+  input = null;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -53,7 +55,7 @@ export default class NavDatepicker extends FormioReactComponent {
     return FormioReactComponent.schema(
       {
         type: "navDatepicker",
-        label: "Dato",
+        label: "Dato (dd.mm.åååå)",
         validateOn: "blur",
         validate: {
           required: true,
@@ -121,9 +123,16 @@ export default class NavDatepicker extends FormioReactComponent {
         isValid={this.isValid}
         locale={this.root.i18next.language}
         readOnly={this.options.readOnly}
+        inputRef={(r) => (this.input = r)}
       />,
       element
     );
+  }
+
+  focus() {
+    if (this.input) {
+      this.input.focus();
+    }
   }
 
   attachReact(element) {
@@ -136,6 +145,10 @@ export default class NavDatepicker extends FormioReactComponent {
     if (element) {
       ReactDOM.unmountComponentAtNode(element);
     }
+  }
+
+  getValue() {
+    return this.dataValue;
   }
 
   setValue(value) {
