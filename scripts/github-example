@@ -1,0 +1,5 @@
+cat example_data/data.txt |\
+ base64 |\
+  jq -R '{"content": ., "message": "Den nye commiten fra curl", "branch": "koselig-med-peis"}' |\
+   curl -H 'Content-Type: application/json' -H 'Authorization: token  v1.32ca5035e31256e992a293b90eb96716e463df09' \
+    -X PUT -d @- https://api.github.com/repos/navikt/skjemapublisering-test/contents/skjema/flesk-flesk.json
