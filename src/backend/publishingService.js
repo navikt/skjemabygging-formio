@@ -1,4 +1,4 @@
-import { fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
+import { base64ToString, fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
 import jwt from "jsonwebtoken";
 
 export async function checkPublishingAccess(userToken, projectUrl) {
@@ -52,8 +52,28 @@ export class PublishingService {
     return `${this.skjemaFolderBase()}?ref=${this.gitRef}`;
   }
 
+  packageJsonUrl() {
+    return `${this.repoUrl}/contents/package.json?ref=${this.gitRef}`;
+  }
+
   formUrl(formFileName) {
     return `${this.skjemaFolderBase()}/${formFileName}?ref=${this.gitRef}`;
+  }
+
+  gitRefUrl() {
+    return `${this.repoUrl}/git/refs/heads/${this.gitRef}`;
+  }
+
+  tempGitRefUrl() {
+    return `${this.repoUrl}/git/refs/heads/${this.tempGitRef()}`;
+  }
+
+  refsUrl() {
+    return `${this.repoUrl}/git/refs`;
+  }
+
+  tempGitRef() {
+    return `${this.gitRef}-temp`;
   }
 
   async getListOfPreviouslyPublishedForms() {
@@ -87,7 +107,7 @@ export class PublishingService {
     const newFileContent = {
       message: `Nytt skjema ${formFileName}`,
       content: stringTobase64(JSON.stringify(formContent)),
-      branch: this.gitRef,
+      branch: this.tempGitRef(),
     };
 
     const result = await this.createOrUpdateFormInGH(formFileName, newFileContent);
@@ -98,9 +118,10 @@ export class PublishingService {
     return result;
   }
 
+  // TODO: refactor to use createOrUpdateContentInGH.
   async createOrUpdateFormInGH(formFileName, body) {
     return await fetchWithErrorHandling(this.formUrl(formFileName), {
-      method: "put",
+      method: "PUT",
       body: JSON.stringify(body),
       headers: {
         Authorization: "token " + this.ghToken,
@@ -108,5 +129,103 @@ export class PublishingService {
         Accept: "application/vnd.github.machine-man-preview+json",
       },
     });
+  }
+
+  async createOrUpdateContentInGH(filePath, body) {
+    return await fetchWithErrorHandling(this.contentsUrl(filePath), {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: {
+        Authorization: "token " + this.ghToken,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.machine-man-preview+json",
+      },
+    });
+  }
+
+  async makeTempGitRef() {
+    const response = await fetchWithErrorHandling(this.gitRefUrl());
+    console.log(response);
+    const message = {
+      sha: response.data.object.sha,
+      ref: `refs/heads/${this.tempGitRef()}`,
+    };
+    return await fetchWithErrorHandling(this.refsUrl(), {
+      method: "POST",
+      body: JSON.stringify(message),
+      headers: {
+        Authorization: "token " + this.ghToken,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.machine-man-preview+json",
+      },
+    });
+  }
+
+  async packageJsonObject() {
+    const response = await fetchWithErrorHandling(this.packageJsonUrl());
+    const content = base64ToString(response.data.content);
+    const sha = response.data.sha;
+    return [JSON.parse(content), sha];
+  }
+
+  async updatePackageJson(currentSkjemabyggingSha) {
+    const [packageJson, sha] = await this.packageJsonObject();
+    console.log(packageJson);
+    packageJson.dependencies["skjemabygging-formio"] = `github:navikt/skjemabygging-formio#${currentSkjemabyggingSha}`;
+    const updateResponse = await this.updatePackageJsonContent(packageJson, sha);
+  }
+
+  async updatePackageJsonContent(packageJson, shaOfPreviouslyPublished) {
+    const updateFileContent = {
+      message: `Oppdaterer package json`,
+      content: stringTobase64(JSON.stringify(packageJson, null, 2)),
+      branch: this.tempGitRef(),
+      sha: shaOfPreviouslyPublished,
+    };
+
+    const result = await this.createOrUpdateContentInGH("package.json", updateFileContent);
+    if (result.status !== "OK") {
+      console.error("Klarte ikke å publisere oppdatering av form i github, ", result);
+      return { status: "FAILED" };
+    }
+    return result;
+  }
+
+  contentsUrl(filePath) {
+    return `${this.repoUrl}/contents/${filePath}`;
+  }
+
+  async updateRefFromTempRef() {
+    const tempRefResponse = await fetchWithErrorHandling(this.tempGitRefUrl());
+    console.log(tempRefResponse);
+    const tempRefSha = tempRefResponse.data.object.sha;
+    return await fetchWithErrorHandling(this.gitRefUrl(), {
+      method: "PATCH",
+      headers: {
+        Authorization: "token " + this.ghToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sha: tempRefSha,
+        force: false,
+      }),
+    });
+  }
+
+  async updateFromAndDeleteTempRef() {
+    const response = await this.updateRefFromTempRef();
+    console.log(response);
+    const deleteResponse = await this.deleteTempRef();
+    console.log(deleteResponse);
+  }
+
+  async deleteTempRef() {
+    return await fetchWithErrorHandling(
+      this.tempGitRefUrl(),
+      {
+        method: 'DELETE',
+        headers: {Authorization: "token " + this.ghToken}
+      }
+    )
   }
 }
