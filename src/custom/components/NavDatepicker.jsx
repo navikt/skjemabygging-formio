@@ -147,6 +147,10 @@ export default class NavDatepicker extends FormioReactComponent {
     }
   }
 
+  getValue() {
+    return this.dataValue;
+  }
+
   setValue(value) {
     this.dataForSetting = value;
     if (this.reactElement) {
