@@ -109,7 +109,7 @@ export class PublishingService {
     const updateFileContent = {
       message: `Oppdatert versjon av ${formFileName} fra koselig med peis`,
       content: stringTobase64(JSON.stringify(formContent)),
-      branch: this.gitRef,
+      branch: this.tempGitRef(),
       sha: shaOfPreviouslyPublished,
     };
 

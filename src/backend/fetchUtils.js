@@ -19,13 +19,14 @@ export async function fetchWithErrorHandling(url, options) {
         status: "UNAUTHORIZED",
       };
     } else {
-      console.error(`Fetch to ${url} failed with status: `, res.status);
+      console.error(`Fetch ${options.method || 'GET'} ${url} failed with status: `, res.status);
+      console.error(`${options.method} body`, options.body);
       return {
         status: "FAILED"
       }
     }
   } catch (error) {
-    console.error(`Fetch to ${url} failed. `, error);
+    console.error(`Fetch ${options.method || 'GET'} ${url} failed`, error);
     return {
       status: "FAILED",
     };

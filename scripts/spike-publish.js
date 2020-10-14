@@ -21,11 +21,11 @@ const asyncFunction = async () => {
   const service = new PublishingService(githubToken, repoUrl, githubAppConfig.gitRef);
   const response = await service.makeTempGitRef();
   console.log(response);
-  const form = {flesk: "bacon"};
-  const formFileName = 'fleskKraKraBacon.json';
-  const resp2 = await service.publishForm(formFileName, form);
+  const form = {flesk: "bacon", components: [{type: 'flump'}]};
+  const formName = 'fleskKraKraBacon';
+  const resp2 = await service.publishForm(formName, form);
   console.log(resp2);
-  const skjemabyggerSha = 'deadcafe';
+  const skjemabyggerSha = 'deedcafebeefbabe';
   const resp3 = await service.updatePackageJson(skjemabyggerSha);
   console.log(resp3);
   service.updateFromAndDeleteTempRef();
