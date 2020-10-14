@@ -76,6 +76,24 @@ export class PublishingService {
     return `${this.gitRef}-temp`;
   }
 
+  async publishForm(formPath, form) {
+    const listOfFormsResponse = await this.getListOfPreviouslyPublishedForms();
+
+    if (listOfFormsResponse.status !== "OK") {
+      return {status: "FAILED"};
+    }
+
+    const formFileName = `${formPath}.json`;
+    const listOfForms = listOfFormsResponse.data;
+    const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
+    console.log("forms", listOfForms);
+    if (shaOfPreviouslyPublishedForm) {
+      return this.publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm);
+    } else {
+      return this.publishNewForm(formFileName, form);
+    }
+  }
+
   async getListOfPreviouslyPublishedForms() {
     return fetchWithErrorHandling(this.skjemaFolderUrl(), {
       method: "get",
@@ -120,7 +138,7 @@ export class PublishingService {
 
   // TODO: refactor to use createOrUpdateContentInGH.
   async createOrUpdateFormInGH(formFileName, body) {
-    return await fetchWithErrorHandling(this.formUrl(formFileName), {
+    return await fetchWithErrorHandling(this.contentsUrl(`skjema/${formFileName}`), {
       method: "PUT",
       body: JSON.stringify(body),
       headers: {
@@ -173,6 +191,7 @@ export class PublishingService {
     console.log(packageJson);
     packageJson.dependencies["skjemabygging-formio"] = `github:navikt/skjemabygging-formio#${currentSkjemabyggingSha}`;
     const updateResponse = await this.updatePackageJsonContent(packageJson, sha);
+    return updateResponse;
   }
 
   async updatePackageJsonContent(packageJson, shaOfPreviouslyPublished) {

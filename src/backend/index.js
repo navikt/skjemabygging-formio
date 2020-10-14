@@ -32,20 +32,7 @@ export class Backend {
       `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`,
       this.githubAppConfig.gitRef
     );
-    const listOfFormsResponse = await service.getListOfPreviouslyPublishedForms();
-
-    if (listOfFormsResponse.status !== "OK") {
-      return { status: "FAILED" };
-    }
-
-    const formFileName = `${formPath}.json`;
-    const listOfForms = listOfFormsResponse.data;
-    const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
-    console.log("forms", listOfForms);
-    if (shaOfPreviouslyPublishedForm) {
-      return service.publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm);
-    } else {
-      return service.publishNewForm(formFileName, form);
-    }
+    return await service.publishForm(formPath, form);
   }
+
 }

@@ -22,11 +22,12 @@ const asyncFunction = async () => {
   const response = await service.makeTempGitRef();
   console.log(response);
   const form = {flesk: "bacon"};
-  const formFileName = 'fleskKraBacon.json';
-  // const resp2 = service.publishNewForm(formFileName, form);
-  // console.log(resp2);
-  const skjemabyggerSha = 'cafebabe';
-  const resp3 = service.updatePackageJson(skjemabyggerSha);
+  const formFileName = 'fleskKraKraBacon.json';
+  const resp2 = await service.publishForm(formFileName, form);
+  console.log(resp2);
+  const skjemabyggerSha = 'deadcafe';
+  const resp3 = await service.updatePackageJson(skjemabyggerSha);
+  console.log(resp3);
   service.updateFromAndDeleteTempRef();
 
 }
