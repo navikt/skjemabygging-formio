@@ -77,8 +77,11 @@ export class PublishingService {
   }
 
   async publishForm(formPath, form) {
+    const response = await this.makeTempGitRef();
+    if (response.status !== 'OK') {
+      return response;
+    }
     const listOfFormsResponse = await this.getListOfPreviouslyPublishedForms();
-
     if (listOfFormsResponse.status !== "OK") {
       return {status: "FAILED"};
     }
@@ -162,8 +165,11 @@ export class PublishingService {
   }
 
   async makeTempGitRef() {
-    const response = await fetchWithErrorHandling(this.gitRefUrl());
-    console.log(response);
+    const response = await fetchWithErrorHandling(this.gitRefUrl(),
+      {headers: {Accept: "application/vnd.github.v3+json"}});
+    if (response.status !== "OK") {
+      return response;
+    }
     const message = {
       sha: response.data.object.sha,
       ref: `refs/heads/${this.tempGitRef()}`,

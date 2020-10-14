@@ -1,4 +1,9 @@
-import { PublishingService, checkPublishingAccess, getGithubToken, getShaIfFormIsPreviouslyPublished } from "./publishingService.js";
+import {
+  PublishingService,
+  checkPublishingAccess,
+  getGithubToken,
+  getShaIfFormIsPreviouslyPublished
+} from "./publishingService.js";
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -23,7 +28,7 @@ export class Backend {
 
     const githubTokenResponse = await getGithubToken(this.githubAppConfig);
     if (githubTokenResponse.status !== "OK") {
-      return { status: "FAILED" };
+      return {status: "FAILED"};
     }
 
     const githubToken = githubTokenResponse.data.token;

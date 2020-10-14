@@ -1,10 +1,11 @@
-import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
+import {createBackendForTest, jsonToPromise} from "../testTools/backend/testUtils.js";
 import ListResponse from "../testTools/backend/json/GHListResponse.json";
 import PublishResponse from "../testTools/backend/json/GHPublishResponse.json";
 import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
 import TokenResponse from "../testTools/backend/json/TokenResponse.json";
+import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
+
 import fetch from "node-fetch";
-import * as publishingService from "./publishingService";
 import {PublishingService} from "./publishingService";
 
 jest.mock("node-fetch");
@@ -13,6 +14,7 @@ describe("Backend", () => {
   const backend = createBackendForTest();
   const token = "userToken";
   const formPath = "skjema";
+  const CreateRefResponse = {};
 
   beforeEach(() => {
     fetch.mockReset();
@@ -22,11 +24,13 @@ describe("Backend", () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
+      .mockReturnValueOnce(jsonToPromise(GetRefResponse))
+      .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
       .mockReturnValueOnce(jsonToPromise(ListResponse))
       .mockReturnValueOnce(jsonToPromise(PublishResponse));
 
     const result = await backend.publishForm(token, {}, formPath);
-    expect(fetch).toHaveBeenCalledTimes(4);
+    expect(fetch).toHaveBeenCalledTimes(6);
     const calls = fetch.mock.calls;
     expect(calls[0]).toEqual([
       `${backend.getProjectURL()}/current`,
@@ -48,7 +52,23 @@ describe("Backend", () => {
         },
       }),
     ]);
-    expect(calls[2]).toEqual([
+    expect(calls[2]).toEqual(
+      ["https://api.example.com/repos/navikt/skjemapublisering-test/git/refs/heads/krakra",
+        {headers: {Accept: "application/vnd.github.v3+json"}}],
+    )
+    expect(calls[3]).toEqual(
+      ["https://api.example.com/repos/navikt/skjemapublisering-test/git/refs",
+        {
+          body: expect.any(String),
+          method: 'POST',
+          headers: {
+            Authorization: "token " + TokenResponse.token,
+            "Content-Type": "application/json",
+            Accept: "application/vnd.github.machine-man-preview+json",
+          }
+        }],
+    )
+    expect(calls[4]).toEqual([
       `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema?ref=krakra`,
       {
         method: "get",
@@ -59,11 +79,11 @@ describe("Backend", () => {
         },
       },
     ]);
-    expect(calls[3]).toEqual([
-      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema/${formPath}.json?ref=krakra`,
+    expect(calls[5]).toEqual([
+      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema/${formPath}.json`,
 
       expect.objectContaining({
-        method: "put",
+        method: "PUT",
         body: expect.any(String),
         headers: {
           Authorization: "token " + TokenResponse.token,
@@ -84,7 +104,7 @@ describe("Backend", () => {
   });
 
   it("does not try to fetch more if authorization check to server returns unauthorized", async () => {
-    fetch.mockResolvedValueOnce({ status: 401, message: "Unauthorized" });
+    fetch.mockResolvedValueOnce({status: 401, message: "Unauthorized"});
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -102,7 +122,7 @@ describe("Backend", () => {
   it("does not try to fetch more if authorization check to github returns unauthorized", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-      .mockResolvedValueOnce({ status: 401, message: "Unauthorized" });
+      .mockResolvedValueOnce({status: 401, message: "Unauthorized"});
 
     const result = await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(2);
@@ -126,6 +146,8 @@ describe("Backend", () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
+      .mockReturnValueOnce(jsonToPromise(GetRefResponse))
+      .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
       .mockReturnValueOnce(jsonToPromise(ListResponse));
 
     await backend.publishForm(token, {}, formPath);
@@ -143,7 +165,11 @@ describe("Backend", () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
-      .mockReturnValueOnce(jsonToPromise(ListResponse));
+      .mockReturnValueOnce(jsonToPromise(GetRefResponse))
+      .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
+      .mockReturnValueOnce(jsonToPromise(ListResponse))
+      .mockReturnValueOnce(jsonToPromise(PublishResponse));
+
 
     await backend.publishForm("token", {}, "skjemaSomIkkeFinnesFraFor");
 
