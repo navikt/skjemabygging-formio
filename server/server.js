@@ -34,7 +34,7 @@ skjemaApp.post("/pdf-form", (req, res) => {
   Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
 
-// json encoded post body
+// json encoded post body - used for debugging
 skjemaApp.post("/pdf-json", (req, res) => {
   const submission = req.body.submission;
   const form = req.body.form;

@@ -222,18 +222,17 @@ describe("generating doc definition", () => {
   it("generates table from form and submission", () => {
     const submission = createSubmission();
     const form = createForm();
-    const version = 'deadbeef';
+    const version = "deadbeef";
     const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
-    expect(tableData).toHaveLength(Object.keys(submission.data).length); // header row
+    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // header row and submit button is removed
     expect(tableData).toEqual([
       ["Tekstfelt", "dfghjk"],
       ["2345t", "tcfghj"],
       ["Beløp", 3456],
-      ["Send inn", true],
     ]);
   });
 
@@ -247,18 +246,17 @@ describe("generating doc definition", () => {
     const tableDef = doc_definition.content[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
-    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // header row
+    expect(tableData).toHaveLength(Object.keys(submission.data).length - 2); // header row and submit button
     expect(tableData).toEqual([
       ["Tekstfelt", "dfghjk"],
       ["Beløp", 3456],
-      ["Send inn", true],
     ]);
   });
 
   it("generates a table for each panel in a complex form", () => {
     const submission = createComplexSubmission();
     const form = createComplexFormDefinition();
-    const version = 'deadbeef';
+    const version = "deadbeef";
     const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDefs = doc_definition.content.filter((paragraph) => paragraph.table);
@@ -300,11 +298,23 @@ describe("generating doc definition", () => {
         },
       ],
     };
-    const version = 'deadbeef';
+    const version = "deadbeef";
     const generator = new Pdfgen(submission, formDefinition, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDef = doc_definition.content[2];
     const tableData = tableDef.table.body;
     expect(tableData).toEqual([["Child", "Seff"]]);
+  });
+
+  it("removes submit button from pfd content", () => {
+    const submission = createSubmission();
+    const form = createForm();
+    const version = "deadbeef";
+    const generator = new Pdfgen(submission, form, version, now());
+    const doc_definition = generator.generateDocDefinition();
+    const tableDef = doc_definition.content[2];
+    expect(tableDef.table).toBeDefined();
+    const tableData = tableDef.table.body.slice(0);
+    expect(tableData).not.toEqual(expect.arrayContaining([expect.arrayContaining(["Send inn", true])]));
   });
 });
