@@ -19,8 +19,6 @@ const asyncFunction = async () => {
   console.log('token ', githubToken);
   const repoUrl = `${githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`;
   const service = new PublishingService(githubToken, repoUrl, githubAppConfig.gitRef);
-  const response = await service.makeTempGitRef();
-  console.log(response);
   const form = {flesk: "bacon", components: [{type: 'flump'}]};
   const formName = 'fleskKraKraBacon';
   const resp2 = await service.publishForm(formName, form);
