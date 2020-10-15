@@ -10,54 +10,6 @@
     "dist"
   ],
   "proxy": "http://localhost:8080",
-  "scripts": {
-    "start": "EXTEND_ESLINT=true craco start",
-    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
-    "build": "REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` EXTEND_ESLINT=true craco build",
-    "test": "craco test --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
-    "eject": "craco eject",
-    "prestart": "npm run install-and-build-template",
-    "prebuild": "npm run install-and-build-template",
-    "install-and-build-template": "npm run install-template && npm run build-template",
-    "install-template": "npm --prefix ./template install ./template",
-    "build-template": "cd template && npm run build",
-    "dist-build": "rollup -c",
-    "prepare": "npm run dist-build"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/preset-react": "^7.10.4",
-    "@rollup/plugin-babel": "^5.2.1",
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-node-resolve": "^7.0.0",
-    "@testing-library/jest-dom": "^5.11.3",
-    "@testing-library/react": "^10.4.7",
-    "@testing-library/react-hooks": "^3.4.1",
-    "@testing-library/user-event": "^12.1.1",
-    "jest-environment-jsdom-sixteen": "^1.0.3",
-    "nodemon": "^2.0.4",
-    "prettier": "^2.0.5",
-    "react-test-renderer": "^16.13.1",
-    "rollup": "^1.29.0"
-  },
   "dependencies": {
     "@craco/craco": "^5.6.4",
     "@material-ui/styles": "^4.10.0",
@@ -108,5 +60,54 @@
     "react-scripts": "^3.4.3",
     "typescript": "^3.9.7",
     "wait-for-expect": "^3.0.2"
-  }
+  },
+  "scripts": {
+    "start": "EXTEND_ESLINT=true craco start",
+    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
+    "build": "REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` EXTEND_ESLINT=true craco build",
+    "test": "craco test --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
+    "eject": "craco eject",
+    "prestart": "npm run install-and-build-template",
+    "prebuild": "npm run install-and-build-template",
+    "install-and-build-template": "npm run install-template && npm run build-template",
+    "install-template": "npm --prefix ./template install ./template",
+    "build-template": "cd template && npm run build",
+    "dist-build": "rollup -c",
+    "prepare": "npm run dist-build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@testing-library/jest-dom": "^5.11.3",
+    "@testing-library/react": "^10.4.7",
+    "@testing-library/react-hooks": "^3.4.1",
+    "@testing-library/user-event": "^12.1.1",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "react-test-renderer": "^16.13.1",
+    "rollup": "^1.29.0"
+  },
+
 }
