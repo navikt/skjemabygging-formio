@@ -148,7 +148,8 @@ describe("Backend", () => {
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
       .mockReturnValueOnce(jsonToPromise(GetRefResponse))
       .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
-      .mockReturnValueOnce(jsonToPromise(ListResponse));
+      .mockReturnValueOnce(jsonToPromise(ListResponse))
+      .mockReturnValueOnce(jsonToPromise(PublishResponse));
 
     await backend.publishForm(token, {}, formPath);
 
