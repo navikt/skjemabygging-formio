@@ -4,6 +4,10 @@ import PublishResponse from "../testTools/backend/json/GHPublishResponse.json";
 import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
 import TokenResponse from "../testTools/backend/json/TokenResponse.json";
 import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
+import PackageJsonResponse from "../testTools/backend/json/GHPackageJsonResponse.json";
+import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json"
+import GetTempRefResponse from "../testTools/backend/json/GHGetTempRefResponse.json";
+import PatchRefResponse from "../testTools/backend/json/GHPatchRefResponse.json";
 
 import fetch from "node-fetch";
 import {PublishingService} from "./publishingService";
@@ -17,7 +21,7 @@ describe("Backend", () => {
   const CreateRefResponse = {};
 
   beforeEach(() => {
-    fetch.mockReset();
+    fetch.mockRestore();
   });
 
   it("publishes forms and returns ok", async () => {
@@ -27,10 +31,15 @@ describe("Backend", () => {
       .mockReturnValueOnce(jsonToPromise(GetRefResponse))
       .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
       .mockReturnValueOnce(jsonToPromise(ListResponse))
-      .mockReturnValueOnce(jsonToPromise(PublishResponse));
+      .mockReturnValueOnce(jsonToPromise(PublishResponse))
+      .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
+      .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
+      .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
+      .mockReturnValueOnce(jsonToPromise(PatchRefResponse))
+      .mockReturnValueOnce(Promise.resolve(new Response(null, {status: 204})));
 
     const result = await backend.publishForm(token, {}, formPath);
-    expect(fetch).toHaveBeenCalledTimes(6);
+    expect(fetch).toHaveBeenCalledTimes(11);
     const calls = fetch.mock.calls;
     expect(calls[0]).toEqual([
       `${backend.getProjectURL()}/current`,
@@ -140,44 +149,39 @@ describe("Backend", () => {
     expect(result.status).toBe("FAILED");
   });
 
-  it("finds SHA from list of forms and tries to publish an update", async () => {
-    let spyUpdateFunction = jest.spyOn(PublishingService.prototype, "publishUpdateToForm");
-    let spyCreateFunction = jest.spyOn(PublishingService.prototype, "publishNewForm");
-    fetch
-      .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-      .mockReturnValueOnce(jsonToPromise(TokenResponse))
-      .mockReturnValueOnce(jsonToPromise(GetRefResponse))
-      .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
-      .mockReturnValueOnce(jsonToPromise(ListResponse))
-      .mockReturnValueOnce(jsonToPromise(PublishResponse));
+  describe('publish update or create', () => {
+    let spyUpdateFunction;
+    let spyCreateFunction;
+    beforeEach(() => {
+      spyUpdateFunction = jest.spyOn(PublishingService.prototype, "publishUpdateToForm");
+      spyCreateFunction = jest.spyOn(PublishingService.prototype, "publishNewForm");
+      fetch
+        .mockReturnValueOnce(jsonToPromise(TestUserResponse))
+        .mockReturnValueOnce(jsonToPromise(TokenResponse))
+        .mockReturnValueOnce(jsonToPromise(GetRefResponse))
+        .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
+        .mockReturnValueOnce(jsonToPromise(ListResponse))
+        .mockReturnValueOnce(jsonToPromise(PublishResponse))
+        .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
+        .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
+        .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
+        .mockReturnValueOnce(jsonToPromise(PatchRefResponse))
+        .mockReturnValueOnce(Promise.resolve(new Response(null, {status: 204})));
+    });
+    afterEach(() => {
+      spyCreateFunction.mockRestore();
+      spyUpdateFunction.mockRestore();
+    });
+    it("finds SHA from list of forms and tries to publish an update", async () => {
+      await backend.publishForm(token, {}, formPath);
+      expect(spyUpdateFunction).toHaveBeenCalledTimes(1);
+      expect(spyCreateFunction).toHaveBeenCalledTimes(0);
+    });
 
-    await backend.publishForm(token, {}, formPath);
-
-    expect(spyUpdateFunction).toHaveBeenCalledTimes(1);
-    expect(spyCreateFunction).toHaveBeenCalledTimes(0);
-
-    spyUpdateFunction.mockReset();
-    spyCreateFunction.mockReset();
-  });
-
-  it("finds no matching SHA and tries to publish new form", async () => {
-    let spyUpdateFunction = jest.spyOn(PublishingService.prototype, "publishUpdateToForm");
-    let spyCreateFunction = jest.spyOn(PublishingService.prototype, "publishNewForm");
-    fetch
-      .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-      .mockReturnValueOnce(jsonToPromise(TokenResponse))
-      .mockReturnValueOnce(jsonToPromise(GetRefResponse))
-      .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
-      .mockReturnValueOnce(jsonToPromise(ListResponse))
-      .mockReturnValueOnce(jsonToPromise(PublishResponse));
-
-
-    await backend.publishForm("token", {}, "skjemaSomIkkeFinnesFraFor");
-
-    expect(spyUpdateFunction).toHaveBeenCalledTimes(0);
-    expect(spyCreateFunction).toHaveBeenCalledTimes(1);
-
-    spyCreateFunction.mockReset();
-    spyUpdateFunction.mockReset();
+    it("finds no matching SHA and tries to publish new form", async () => {
+      await backend.publishForm("token", {}, "skjemaSomIkkeFinnesFraFor");
+      expect(spyUpdateFunction).toHaveBeenCalledTimes(0);
+      expect(spyCreateFunction).toHaveBeenCalledTimes(1);
+    });
   });
 });

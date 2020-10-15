@@ -2,7 +2,6 @@ import {
   PublishingService,
   checkPublishingAccess,
   getGithubToken,
-  getShaIfFormIsPreviouslyPublished
 } from "./publishingService.js";
 
 export class Backend {
@@ -37,7 +36,14 @@ export class Backend {
       `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`,
       this.githubAppConfig.gitRef
     );
-    return await service.publishForm(formPath, form);
+    const resp2 = await service.publishForm(formPath, form);
+    console.log(resp2);
+    if (resp2.status !== "OK") {
+      return resp2;
+    }
+    const resp3 = await service.updatePackageJson(this.gitVersion);
+    console.log(resp3);
+    return await service.updateFromAndDeleteTempRef();
   }
 
 }

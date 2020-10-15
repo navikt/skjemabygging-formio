@@ -241,7 +241,7 @@ export class PublishingService {
     const response = await this.updateRefFromTempRef();
     console.log(response);
     const deleteResponse = await this.deleteTempRef();
-    console.log(deleteResponse);
+    return deleteResponse;
   }
 
   async deleteTempRef() {
