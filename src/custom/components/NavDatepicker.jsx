@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Datovelger } from "nav-datovelger";
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
@@ -6,14 +6,19 @@ import displayEditForm from "formiojs/components/_classes/component/editForm/Com
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import FormioReactComponent from "../FormioReactComponent";
 
-require('moment/locale/nb.js'); // For datovelger
+require("moment/locale/nb.js"); // For datovelger
 
-const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
-  const [dato, setDato] = useState(value || "");
+const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
+  const [dato, setDato] = useState();
+
+  useEffect(() => {
+    setDato(value);
+  }, [value]);
 
   return (
     <Datovelger
-      id={component.key}
+      input={{ id: component.key, inputRef: inputRef }}
+      id={component.id}
       valgtDato={dato}
       onChange={(d) => {
         setDato(d);
@@ -22,6 +27,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
       datoErGyldig={isValid}
       visÅrVelger={component.visArvelger}
       locale={locale}
+      disabled={readOnly}
     />
   );
 };
@@ -29,6 +35,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale }) => {
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
   reactElement = undefined;
+  input = null;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -48,7 +55,7 @@ export default class NavDatepicker extends FormioReactComponent {
     return FormioReactComponent.schema(
       {
         type: "navDatepicker",
-        label: "Dato",
+        label: "Dato (dd.mm.åååå)",
         validateOn: "blur",
         validate: {
           required: true,
@@ -78,16 +85,6 @@ export default class NavDatepicker extends FormioReactComponent {
               key: "display",
               weight: 0,
               components: [
-                /*
-                Klarer ikke å vise ukenumre i kalenderen uansett?
-                {
-                  type: "checkbox",
-                  label: "Vis ukenumre i kalender",
-                  key: "visUkenumre",
-                  defaultValue: true,
-                  input: true,
-                },
-                 */
                 {
                   type: "checkbox",
                   label: "Vis årvelger i kalender",
@@ -120,24 +117,47 @@ export default class NavDatepicker extends FormioReactComponent {
     return ReactDOM.render(
       <DatovelgerWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
-        value={this.dataValue} // The starting value of the component.
+        value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
         isValid={this.isValid}
         locale={this.root.i18next.language}
+        readOnly={this.options.readOnly}
+        inputRef={(r) => (this.input = r)}
       />,
       element
     );
   }
 
+  focus() {
+    if (this.input) {
+      this.input.focus();
+    }
+  }
+
   attachReact(element) {
     this.reactElement = element;
-    return this.renderReact(element);
+    this.renderReact(element);
+    return this.reactElement;
   }
 
   detachReact(element) {
     if (element) {
       ReactDOM.unmountComponentAtNode(element);
+    }
+  }
+
+  getValue() {
+    return this.dataValue;
+  }
+
+  setValue(value) {
+    this.dataForSetting = value;
+    if (this.reactElement) {
+      this.renderReact(this.reactElement);
+      this.shouldSetValue = false;
+    } else {
+      this.shouldSetValue = true;
     }
   }
 
