@@ -65,7 +65,7 @@
     "eject": "craco eject",
     "prestart": "npm run postinstall",
     "prebuild": "npm run postinstall",
-    "install-template": "npm --prefix ./template install ./template",
+    "install-template": "cd template && npm install",
     "build-template": "cd template && npm run build",
     "postinstall": "npm run install-template && npm run build-template"
   },
