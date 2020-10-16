@@ -71,9 +71,9 @@
     "eject": "craco eject",
     "prestart": "npm run install-and-build-template",
     "prebuild": "npm run install-and-build-template",
-    "install-and-build-template": "npm run install-template && npm run build-template",
-    "install-template": "npm --prefix ./template install ./template",
+    "install-template": "cd template && npm install",
     "build-template": "cd template && npm run build",
+    "install-and-build-template": "npm run install-template && npm run build-template",
     "dist-build": "rollup -c",
     "prepare": "npm run dist-build"
   },
