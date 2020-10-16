@@ -1,23 +1,10 @@
-import {
-  checkPublishingAccess,
-  getListOfPreviouslyPublishedForms,
-  getShaIfFormIsPreviouslyPublished,
-  publishUpdateToForm,
-  publishNewForm,
-  getGithubToken,
-} from "./publishingService.js";
+import { PublishingService, checkPublishingAccess, getGithubToken } from "./publishingService.js";
 
 export class Backend {
-  constructor(projectURL, gitUrl, ghKey, ghAppID, ghInstallationID) {
+  constructor(projectURL, githubAppConfig, gitVersion) {
     this.projectURL = projectURL;
-    this.gitUrl = gitUrl;
-    this.ghKey = ghKey;
-    this.ghAppID = ghAppID;
-    this.ghInstallationID = ghInstallationID;
-  }
-
-  ho() {
-    return { message: "ho" };
+    this.githubAppConfig = githubAppConfig;
+    this.gitVersion = gitVersion;
   }
 
   getProjectURL() {
@@ -25,47 +12,24 @@ export class Backend {
   }
 
   getGitURL() {
-    return this.gitUrl;
-  }
-
-  getGHKey() {
-    return this.ghKey;
-  }
-
-  getGHAppID() {
-    return this.ghAppID;
-  }
-
-  getGHInstallationID() {
-    return this.ghInstallationID;
+    return this.githubAppConfig.baseURL;
   }
 
   async publishForm(userToken, form, formPath) {
-    const access = await checkPublishingAccess(userToken, this.getProjectURL());
-    if (access.status !== "OK") {
-      return access;
-    }
-
-    const githubTokenResponse = await getGithubToken(this.ghAppID, this.ghKey, this.ghInstallationID, this.gitUrl);
-    if (githubTokenResponse.status !== "OK") {
-      return { status: "FAILED" };
-    }
-
+    await checkPublishingAccess(userToken, this.projectURL);
+    const githubTokenResponse = await getGithubToken(this.githubAppConfig);
     const githubToken = githubTokenResponse.data.token;
-    const skjemapubliseringGHUrl = `${this.gitUrl}repos/navikt/skjemapublisering-test/contents/skjema`;
-    const listOfFormsResponse = await getListOfPreviouslyPublishedForms(skjemapubliseringGHUrl, githubToken);
-
-    if (listOfFormsResponse.status !== "OK") {
-      return { status: "FAILED" };
-    }
-
-    const formFileName = `${formPath}.json`;
-    const listOfForms = listOfFormsResponse.data;
-    const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
-    if (shaOfPreviouslyPublishedForm) {
-      return publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm, skjemapubliseringGHUrl, githubToken);
-    } else {
-      return publishNewForm(formFileName, form, skjemapubliseringGHUrl, githubToken);
+    const service = new PublishingService(
+      githubToken,
+      `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`,
+      this.githubAppConfig.gitRef
+    );
+    await service.createTempCopyOfGitRef();
+    try {
+      await service.publishForm(formPath, form);
+      await service.updatePackageJson(this.gitVersion);
+    } finally {
+      await service.updateFromAndDeleteTempRef();
     }
   }
 }

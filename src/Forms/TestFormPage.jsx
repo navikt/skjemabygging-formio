@@ -44,11 +44,7 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
             submission={{ data: submission }}
           />
         ) : (
-          <NavForm
-            key="1"
-            form={form}
-            onChange={(value) => setSubmission(value.data)}
-          />
+          <NavForm key="1" form={form} onChange={(value) => setSubmission(value.data)} />
         )}
       </form>
     </AppLayoutWithContext>

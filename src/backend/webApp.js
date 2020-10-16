@@ -1,4 +1,5 @@
 import dispatch from "dispatch";
+import { HttpError } from "./fetchUtils";
 
 export function dispatcherWithBackend(backend) {
   return dispatch({
@@ -10,17 +11,17 @@ export function dispatcherWithBackend(backend) {
         if (!req.body.token) {
           res.status(401).send("Unauthorized");
         }
-
-        const result = await backend.publishForm(req.body.token, req.body.form, formPath);
-
-        if (result.status === "OK") {
+        try {
+          await backend.publishForm(req.body.token, req.body.form, formPath);
           res.send("Publisering vellykket!");
-        } else if (result.status === "UNAUTHORIZED") {
-          console.log("Unauthorized");
-          res.status(401).send("Unauthorized");
-        } else {
-          console.error("Internal server error");
-          res.status(500).send("Noe galt skjedde");
+        } catch (error) {
+          if (error instanceof HttpError && error.response.status === 401) {
+            console.log("Unauthorized", error.message);
+            res.status(401).send("Unauthorized");
+          } else {
+            console.error("Internal server error", error.message);
+            res.status(500).send("Noe galt skjedde");
+          }
         }
       },
     },

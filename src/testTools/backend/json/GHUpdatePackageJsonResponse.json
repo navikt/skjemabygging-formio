@@ -1,0 +1,12 @@
+{
+  "content": {
+    "name": "package.json",
+    "path": "package.json",
+    "sha": "5ef53bda56e5851788d3502d4ec2a2ccf280ff41"
+  },
+  "commit": {
+    "sha": "f730fd3684e7edfc7bd1f917bfd66d5cf62c0f4e",
+    "node_id": "MDY6Q29tbWl0Mjc0MTQ2Njg1OmY3MzBmZDM2ODRlN2VkZmM3YmQxZjkxN2JmZDY2ZDVjZjYyYzBmNGU=",
+    "url": "https://api.github.com/repos/navikt/skjemapublisering-test/git/commits/f730fd3684e7edfc7bd1f917bfd66d5cf62c0f4e"
+  }
+}

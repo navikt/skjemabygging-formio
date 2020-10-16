@@ -1,0 +1,10 @@
+{
+  "ref": "refs/heads/koselig-med-peis",
+  "node_id": "MDM6UmVmMjc0MTQ2Njg1OnJlZnMvaGVhZHMva29zZWxpZy1tZWQtcGVpcw==",
+  "url": "https://api.github.com/repos/navikt/skjemapublisering-test/git/refs/heads/koselig-med-peis",
+  "object": {
+    "sha": "f730fd3684e7edfc7bd1f917bfd66d5cf62c0f4e",
+    "type": "commit",
+    "url": "https://api.github.com/repos/navikt/skjemapublisering-test/git/commits/f730fd3684e7edfc7bd1f917bfd66d5cf62c0f4e"
+  }
+}
