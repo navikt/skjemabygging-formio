@@ -24,7 +24,7 @@ export class Backend {
       `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`,
       this.githubAppConfig.gitRef
     );
-    await service.makeTempGitRef();
+    await service.createTempCopyOfGitRef();
     try {
       await service.publishForm(formPath, form);
       await service.updatePackageJson(this.gitVersion);
