@@ -1,5 +1,13 @@
 import { base64ToString, fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
 import jwt from "jsonwebtoken";
+import { HttpError } from "./fetchUtils";
+
+export class ServerError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
 
 export async function checkPublishingAccess(userToken, projectUrl) {
   //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
@@ -22,14 +30,21 @@ export async function getGithubToken(gh) {
   };
 
   const token = await jwt.sign(payload, gh.key, { algorithm: "RS256" });
-  return fetchWithErrorHandling(`${gh.baseURL}app/installations/${gh.installationID}/access_tokens`, {
-    method: "post",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      Accept: "application/vnd.github.machine-man-preview+json",
-    },
-  });
+  try {
+    return await fetchWithErrorHandling(`${gh.baseURL}app/installations/${gh.installationID}/access_tokens`, {
+      method: "post",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.machine-man-preview+json",
+      },
+    });
+  } catch (error) {
+    if (error instanceof HttpError && error.response.status === 401) {
+      throw new ServerError("When trying to obtain access_token: Machine user token is Unauthorized");
+    }
+    throw error;
+  }
 }
 
 export function getShaIfFormIsPreviouslyPublished(listOfForms, formFileName) {
@@ -77,23 +92,15 @@ export class PublishingService {
   }
 
   async publishForm(formPath, form) {
-    const response = await this.makeTempGitRef();
-    if (response.status !== 'OK') {
-      return response;
-    }
     const listOfFormsResponse = await this.getListOfPreviouslyPublishedForms();
-    if (listOfFormsResponse.status !== "OK") {
-      return {status: "FAILED"};
-    }
-
     const formFileName = `${formPath}.json`;
     const listOfForms = listOfFormsResponse.data;
     const shaOfPreviouslyPublishedForm = getShaIfFormIsPreviouslyPublished(listOfForms, formFileName);
     console.log("forms", listOfForms);
     if (shaOfPreviouslyPublishedForm) {
-      return this.publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm);
+      await this.publishUpdateToForm(formFileName, form, shaOfPreviouslyPublishedForm);
     } else {
-      return this.publishNewForm(formFileName, form);
+      await this.publishNewForm(formFileName, form);
     }
   }
 
@@ -115,13 +122,7 @@ export class PublishingService {
       branch: this.tempGitRef(),
       sha: shaOfPreviouslyPublished,
     };
-
-    const result = await this.createOrUpdateFormInGH(formFileName, updateFileContent);
-    if (result.status !== "OK") {
-      console.error("Klarte ikke å publisere oppdatering av form i github, ", result);
-      return { status: "FAILED" };
-    }
-    return result;
+    await this.createOrUpdateFormInGH(formFileName, updateFileContent);
   }
 
   async publishNewForm(formFileName, formContent) {
@@ -130,13 +131,7 @@ export class PublishingService {
       content: stringTobase64(JSON.stringify(formContent)),
       branch: this.tempGitRef(),
     };
-
-    const result = await this.createOrUpdateFormInGH(formFileName, newFileContent);
-    if (result.status !== "OK") {
-      console.error("Klarte ikke å publisere nytt form i github, status: ", result.status);
-      return { status: "FAILED" };
-    }
-    return result;
+    await this.createOrUpdateFormInGH(formFileName, newFileContent);
   }
 
   // TODO: refactor to use createOrUpdateContentInGH.
@@ -165,8 +160,9 @@ export class PublishingService {
   }
 
   async makeTempGitRef() {
-    const response = await fetchWithErrorHandling(this.gitRefUrl(),
-      {headers: {Accept: "application/vnd.github.v3+json"}});
+    const response = await fetchWithErrorHandling(this.gitRefUrl(), {
+      headers: { Accept: "application/vnd.github.v3+json" },
+    });
     if (response.status !== "OK") {
       return response;
     }
@@ -196,8 +192,7 @@ export class PublishingService {
     const [packageJson, sha] = await this.packageJsonObject();
     console.log(packageJson);
     packageJson.dependencies["skjemabygging-formio"] = `github:navikt/skjemabygging-formio#${currentSkjemabyggingSha}`;
-    const updateResponse = await this.updatePackageJsonContent(packageJson, sha);
-    return updateResponse;
+    await this.updatePackageJsonContent(packageJson, sha);
   }
 
   async updatePackageJsonContent(packageJson, shaOfPreviouslyPublished) {
@@ -245,12 +240,9 @@ export class PublishingService {
   }
 
   async deleteTempRef() {
-    return await fetchWithErrorHandling(
-      this.tempGitRefUrl(),
-      {
-        method: 'DELETE',
-        headers: {Authorization: "token " + this.ghToken}
-      }
-    )
+    return await fetchWithErrorHandling(this.tempGitRefUrl(), {
+      method: "DELETE",
+      headers: { Authorization: "token " + this.ghToken },
+    });
   }
 }

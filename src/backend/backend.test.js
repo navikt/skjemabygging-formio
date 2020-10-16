@@ -1,16 +1,17 @@
-import {createBackendForTest, jsonToPromise} from "../testTools/backend/testUtils.js";
+import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
 import ListResponse from "../testTools/backend/json/GHListResponse.json";
 import PublishResponse from "../testTools/backend/json/GHPublishResponse.json";
 import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
 import TokenResponse from "../testTools/backend/json/TokenResponse.json";
 import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
 import PackageJsonResponse from "../testTools/backend/json/GHPackageJsonResponse.json";
-import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json"
+import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json";
 import GetTempRefResponse from "../testTools/backend/json/GHGetTempRefResponse.json";
 import PatchRefResponse from "../testTools/backend/json/GHPatchRefResponse.json";
 
 import fetch from "node-fetch";
-import {PublishingService} from "./publishingService";
+import { PublishingService, ServerError } from "./publishingService";
+import { HttpError } from "./fetchUtils";
 
 jest.mock("node-fetch");
 
@@ -36,9 +37,9 @@ describe("Backend", () => {
       .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
       .mockReturnValueOnce(jsonToPromise(PatchRefResponse))
-      .mockReturnValueOnce(Promise.resolve(new Response(null, {status: 204})));
+      .mockReturnValueOnce(Promise.resolve(new Response(null, { status: 204 })));
 
-    const result = await backend.publishForm(token, {}, formPath);
+    await backend.publishForm(token, {}, formPath);
     expect(fetch).toHaveBeenCalledTimes(11);
     const calls = fetch.mock.calls;
     expect(calls[0]).toEqual([
@@ -61,22 +62,22 @@ describe("Backend", () => {
         },
       }),
     ]);
-    expect(calls[2]).toEqual(
-      ["https://api.example.com/repos/navikt/skjemapublisering-test/git/refs/heads/krakra",
-        {headers: {Accept: "application/vnd.github.v3+json"}}],
-    )
-    expect(calls[3]).toEqual(
-      ["https://api.example.com/repos/navikt/skjemapublisering-test/git/refs",
-        {
-          body: expect.any(String),
-          method: 'POST',
-          headers: {
-            Authorization: "token " + TokenResponse.token,
-            "Content-Type": "application/json",
-            Accept: "application/vnd.github.machine-man-preview+json",
-          }
-        }],
-    )
+    expect(calls[2]).toEqual([
+      "https://api.example.com/repos/navikt/skjemapublisering-test/git/refs/heads/krakra",
+      { headers: { Accept: "application/vnd.github.v3+json" } },
+    ]);
+    expect(calls[3]).toEqual([
+      "https://api.example.com/repos/navikt/skjemapublisering-test/git/refs",
+      {
+        body: expect.any(String),
+        method: "POST",
+        headers: {
+          Authorization: "token " + TokenResponse.token,
+          "Content-Type": "application/json",
+          Accept: "application/vnd.github.machine-man-preview+json",
+        },
+      },
+    ]);
     expect(calls[4]).toEqual([
       `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema?ref=krakra`,
       {
@@ -101,55 +102,49 @@ describe("Backend", () => {
         },
       }),
     ]);
-    expect(result.status).toBe("OK");
   });
 
   it("does not try to fetch more if authorization check to server fails", async () => {
-    fetch.mockRejectedValue(new Error("Connection refused"));
-
-    const result = await backend.publishForm(token, {}, formPath);
+    const MyError = class extends Error {};
+    fetch.mockRejectedValue(new MyError("Connection refused"));
+    await expect(backend.publishForm(token, {}, formPath)).rejects.toThrowError(MyError);
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(result.status).toBe("FAILED");
   });
 
   it("does not try to fetch more if authorization check to server returns unauthorized", async () => {
-    fetch.mockResolvedValueOnce({status: 401, message: "Unauthorized"});
-
-    const result = await backend.publishForm(token, {}, formPath);
+    fetch.mockResolvedValueOnce({ status: 401, statusText: "Unauthorized" });
+    await expect(backend.publishForm(token, {}, formPath)).rejects.toThrowError(HttpError);
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(result.status).toBe("UNAUTHORIZED");
   });
 
   it("does not try to fetch more if authorization check to github fails", async () => {
-    fetch.mockReturnValueOnce(jsonToPromise(TestUserResponse)).mockRejectedValue(new Error("Connection refused"));
-
-    const result = await backend.publishForm(token, {}, formPath);
+    const MyError = class extends Error {};
+    fetch.mockReturnValueOnce(jsonToPromise(TestUserResponse)).mockRejectedValue(new MyError("Connection refused"));
+    await expect(backend.publishForm(token, {}, formPath)).rejects.toThrowError(MyError);
     expect(fetch).toHaveBeenCalledTimes(2);
-    expect(result.status).toBe("FAILED");
   });
 
   it("does not try to fetch more if authorization check to github returns unauthorized", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-      .mockResolvedValueOnce({status: 401, message: "Unauthorized"});
-
-    const result = await backend.publishForm(token, {}, formPath);
+      .mockResolvedValueOnce({ status: 401, statusText: "Unauthorized", message: "Unauthorized" });
+    // should handle 401 error and adapt to internal server error
+    await expect(backend.publishForm(token, {}, formPath)).rejects.toThrow(ServerError);
     expect(fetch).toHaveBeenCalledTimes(2);
-    expect(result.status).toBe("FAILED");
   });
 
   it("does not try to publish if getting repository content failed", async () => {
+    const MyError = class extends Error {};
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
       .mockReturnValueOnce(jsonToPromise(TokenResponse))
-      .mockRejectedValue(new Error("Connection refused"));
+      .mockRejectedValue(new MyError("Connection refused"));
 
-    const result = await backend.publishForm(token, {}, formPath);
+    await expect(backend.publishForm(token, {}, formPath)).rejects.toThrow(MyError);
     expect(fetch).toHaveBeenCalledTimes(3);
-    expect(result.status).toBe("FAILED");
   });
 
-  describe('publish update or create', () => {
+  describe("publish update or create", () => {
     let spyUpdateFunction;
     let spyCreateFunction;
     beforeEach(() => {
@@ -166,7 +161,7 @@ describe("Backend", () => {
         .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
         .mockReturnValueOnce(jsonToPromise(PatchRefResponse))
-        .mockReturnValueOnce(Promise.resolve(new Response(null, {status: 204})));
+        .mockReturnValueOnce(Promise.resolve(new Response(null, { status: 204 })));
     });
     afterEach(() => {
       spyCreateFunction.mockRestore();
