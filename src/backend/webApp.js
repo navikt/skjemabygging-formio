@@ -1,5 +1,5 @@
 import dispatch from "dispatch";
-import { HttpError } from "./fetchUtils";
+import { HttpError } from "./fetchUtils.js";
 
 export function dispatcherWithBackend(backend) {
   return dispatch({

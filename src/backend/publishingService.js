@@ -1,6 +1,5 @@
-import { base64ToString, fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
+import { base64ToString, fetchWithErrorHandling, stringTobase64, HttpError } from "./fetchUtils.js";
 import jwt from "jsonwebtoken";
-import { HttpError } from "./fetchUtils";
 import { v4 as uuidv4 } from "uuid";
 
 export class ServerError extends Error {
