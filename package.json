@@ -66,7 +66,7 @@
   "scripts": {
     "start": "EXTEND_ESLINT=true craco start",
     "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
-    "build": "REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` EXTEND_ESLINT=true craco build",
+    "build": "REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
     "test": "craco test --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject",
     "prestart": "npm run install-and-build-template",
