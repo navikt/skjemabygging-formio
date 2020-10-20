@@ -90,19 +90,36 @@ jobs:
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-      - name: Generate nais variables
+      - name: Generate dev nais variables
         run: |
-          cat > .nais/vars.yaml <<EOF
+          cat > .nais/dev-vars.yaml <<EOF
           ingresses:
             - https://fyllut.dev.nav.no
           image: $IMAGE
+          dekorator-host: dekoratoren.dev.nav.no
           EOF
-      - uses: nais/deploy/actions/deploy@master
+      - name: Deploy to dev
+        uses: nais/deploy/actions/deploy@master
         env:
           CLUSTER: dev-gcp
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           RESOURCE: .nais/config.yaml
-          VARS: .nais/vars.yaml
+          VARS: .nais/dev-vars.yaml
+      - name: Generate prod nais variables
+        run: |
+          cat > .nais/prod-vars.yaml <<EOF
+          ingresses:
+            - https://nav.no/fyllut
+          image: $IMAGE
+          dekorator-host: dekoratoren.nav.no
+          EOF
+      - name: Deploy to prod
+        uses: nais/deploy/actions/deploy@master
+        env:
+          CLUSTER: prod-gcp
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          RESOURCE: .nais/config.yaml
+          VARS: .nais/prod-vars.yaml
       - name: Install deps for notification script
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci

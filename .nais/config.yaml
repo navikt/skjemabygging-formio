@@ -26,7 +26,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: dekoratoren.dev.nav.no
+        - host: {{dekorator-host}}
   env:
     - name: DECORATOR_URL
-      value: https://dekoratoren.dev.nav.no/
+      value: https://{{dekorator-host}}/
