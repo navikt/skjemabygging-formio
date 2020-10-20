@@ -3,7 +3,7 @@ skjemabygging-formio
 
 Skjemabygging lar deg bygge form.io skjemaer. Den bruker form.io
  til å tilby en WYSIWYG skjemaeditor. Når man publiserer pushes det en ny
-  commit til https://github.com/navikt/skjemapublisering-test repoet. 
+  commit til https://github.com/navikt/skjemapublisering repoet. 
 
 # Komme i gang
 Dette prosjektet bruker 
