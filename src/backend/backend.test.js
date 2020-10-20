@@ -63,11 +63,11 @@ describe("Backend", () => {
       }),
     ]);
     expect(calls[2]).toEqual([
-      "https://api.example.com/repos/navikt/skjemapublisering-test/git/refs/heads/krakra",
+      "https://api.example.com/repos/navikt/skjemapublisering/git/refs/heads/krakra",
       { headers: { Accept: "application/vnd.github.v3+json" } },
     ]);
     expect(calls[3]).toEqual([
-      "https://api.example.com/repos/navikt/skjemapublisering-test/git/refs",
+      "https://api.example.com/repos/navikt/skjemapublisering/git/refs",
       {
         body: expect.any(String),
         method: "POST",
@@ -79,7 +79,7 @@ describe("Backend", () => {
       },
     ]);
     expect(calls[4]).toEqual([
-      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema?ref=krakra`,
+      `${backend.getGitURL()}repos/navikt/skjemapublisering/contents/skjema?ref=krakra`,
       {
         method: "get",
         headers: {
@@ -90,7 +90,7 @@ describe("Backend", () => {
       },
     ]);
     expect(calls[5]).toEqual([
-      `${backend.getGitURL()}repos/navikt/skjemapublisering-test/contents/skjema/${formPath}.json`,
+      `${backend.getGitURL()}repos/navikt/skjemapublisering/contents/skjema/${formPath}.json`,
 
       expect.objectContaining({
         method: "PUT",

@@ -21,7 +21,7 @@ export class Backend {
     const githubToken = githubTokenResponse.data.token;
     const service = new PublishingService(
       githubToken,
-      `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`,
+      `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering`,
       this.githubAppConfig.gitRef
     );
     await service.createTempCopyOfGitRef();

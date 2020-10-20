@@ -17,7 +17,7 @@ const asyncFunction = async () => {
 
   const githubToken = githubTokenResponse.data.token;
   console.log('token ', githubToken);
-  const repoUrl = `${githubAppConfig.baseURL}repos/navikt/skjemapublisering-test`;
+  const repoUrl = `${githubAppConfig.baseURL}repos/navikt/skjemapublisering`;
   const service = new PublishingService(githubToken, repoUrl, githubAppConfig.gitRef);
   const form = {flesk: "duppe", components: [{type: 'flepp'}]};
   const formName = 'fleskKraKraBacon';

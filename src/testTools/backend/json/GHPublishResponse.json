@@ -4,15 +4,15 @@
     "path": "skjema/test56789.json",
     "sha": "e73d801854ca919cc86ad51cc6f4c3104be2232a",
     "size": 3984,
-    "url": "https://api.github.com/repos/navikt/skjemapublisering-test/contents/skjema/test56789.json?ref=master",
-    "html_url": "https://github.com/navikt/skjemapublisering-test/blob/master/skjema/test56789.json",
-    "git_url": "https://api.github.com/repos/navikt/skjemapublisering-test/git/blobs/e73d801854ca919cc86ad51cc6f4c3104be2232a",
-    "download_url": "https://raw.githubusercontent.com/navikt/skjemapublisering-test/master/skjema/test56789.json",
+    "url": "https://api.github.com/repos/navikt/skjemapublisering/contents/skjema/test56789.json?ref=master",
+    "html_url": "https://github.com/navikt/skjemapublisering/blob/master/skjema/test56789.json",
+    "git_url": "https://api.github.com/repos/navikt/skjemapublisering/git/blobs/e73d801854ca919cc86ad51cc6f4c3104be2232a",
+    "download_url": "https://raw.githubusercontent.com/navikt/skjemapublisering/master/skjema/test56789.json",
     "type": "file",
     "_links": {
-      "self": "https://api.github.com/repos/navikt/skjemapublisering-test/contents/skjema/test56789.json?ref=master",
-      "git": "https://api.github.com/repos/navikt/skjemapublisering-test/git/blobs/e73d801854ca919cc86ad51cc6f4c3104be2232a",
-      "html": "https://github.com/navikt/skjemapublisering-test/blob/master/skjema/test56789.json"
+      "self": "https://api.github.com/repos/navikt/skjemapublisering/contents/skjema/test56789.json?ref=master",
+      "git": "https://api.github.com/repos/navikt/skjemapublisering/git/blobs/e73d801854ca919cc86ad51cc6f4c3104be2232a",
+      "html": "https://github.com/navikt/skjemapublisering/blob/master/skjema/test56789.json"
     }
   },
   "commit": {
