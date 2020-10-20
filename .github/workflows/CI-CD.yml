@@ -97,6 +97,7 @@ jobs:
             - https://fyllut.dev.nav.no
           image: $IMAGE
           dekorator-host: dekoratoren.dev.nav.no
+          dekorator-url: https://dekoratoren.dev.nav.no
           EOF
       - name: Deploy to dev
         uses: nais/deploy/actions/deploy@master
@@ -111,7 +112,8 @@ jobs:
           ingresses:
             - https://nav.no/fyllut
           image: $IMAGE
-          dekorator-host: dekoratoren.nav.no
+          dekorator-host: nav.no
+          dekorator-url: https://nav.no/dekoratoren
           EOF
       - name: Deploy to prod
         uses: nais/deploy/actions/deploy@master
