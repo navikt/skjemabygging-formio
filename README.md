@@ -2,7 +2,7 @@ skjemautfylling-formio
 ======================
 
 Applikasjonen lar brukeren fylle ut og generere pdf'er for skjemaer
-som er publisert til https://github.com/navikt/skjemapublisering-test.git
+som er publisert til https://github.com/navikt/skjemapublisering.git
 
 
 # Komme i gang

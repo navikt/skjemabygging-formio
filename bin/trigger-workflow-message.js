@@ -6,7 +6,7 @@ import fs from 'fs';
 function computeEvent(message) {
   const thisCommit = message.head_commit;
   const commitMessage = thisCommit.message;
-  const publishCommitRe = /^Bump skjemapublisering dependency to navikt\/skjemapublisering-test.git#(?<gitHash>[0-9a-f]+)$/;
+  const publishCommitRe = /^Bump skjemapublisering dependency to navikt\/skjemapublisering.git#(?<gitHash>[0-9a-f]+)$/;
   const publishMessageResult = commitMessage.match(publishCommitRe);
   let event = 'other';
   if (publishMessageResult) {
@@ -18,7 +18,7 @@ function computeEvent(message) {
 function buildTriggerMessage(message, packageJson) {
   const thisCommit = message.head_commit;
   const skjemapubliseringsCommitUrl = packageJson.dependencies.skjemapublisering;
-  const skjemapubliseringsUrlRe = /navikt\/skjemapublisering-test.git#(?<gitHash>[0-9a-f]+)$/
+  const skjemapubliseringsUrlRe = /navikt\/skjemapublisering.git#(?<gitHash>[0-9a-f]+)$/
   const skjemapubliseringsCommitResult = skjemapubliseringsCommitUrl.match(skjemapubliseringsUrlRe);
   const pusherMessage = {
     'skjemautfyllerCommit': thisCommit,
