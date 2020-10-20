@@ -66,7 +66,7 @@ skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
     });
 });
 
-app.use("/skjema", skjemaApp);
+app.use("/fyllut", skjemaApp);
 
 const port = parseInt(process.env.PORT || "8080");
 console.log("serving on ", port);

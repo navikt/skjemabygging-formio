@@ -94,7 +94,7 @@ jobs:
         run: |
           cat > .nais/vars.yaml <<EOF
           ingresses:
-            - https://skjema.dev.nav.no
+            - https://fyllut.dev.nav.no
           image: $IMAGE
           EOF
       - uses: nais/deploy/actions/deploy@master

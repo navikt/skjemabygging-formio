@@ -15,10 +15,10 @@ spec:
      - {{url}}
   {{/each}}
   liveness:
-    path: /skjema/internal/isAlive
+    path: /fyllut/internal/isAlive
     initialDelay: 10
   readiness:
-    path: /skjema/internal/isReady
+    path: /fyllut/internal/isReady
     initialDelay: 10
   replicas:
     min: 1
