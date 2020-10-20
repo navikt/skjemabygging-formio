@@ -9,7 +9,7 @@ import { AppConfigProvider } from "./configContext";
 ReactDOM.render(
   <React.StrictMode>
     <AppConfigProvider>
-      <BrowserRouter basename="/skjema">
+      <BrowserRouter basename="/fyllut">
         <App forms={forms} />
       </BrowserRouter>
     </AppConfigProvider>
