@@ -17,7 +17,7 @@
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
     "eventemitter2": "^6.4.3",
-    "formiojs": "^4.9.20-rc.1",
+    "formiojs": "^4.12.0",
     "http-proxy-middleware": "^1.0.5",
     "lodash.throttle": "^4.1.1",
     "nav-datovelger": "^6.2.1",
@@ -35,11 +35,11 @@
     "nav-frontend-typografi": "^2.0.29",
     "nav-frontend-typografi-style": "^1.0.19",
     "pusher": "^3.0.1",
-    "react": "^16.13.1",
+    "react": "^17.0.0",
     "react-day-picker": "^7.4.8",
-    "react-dom": "^16.13.1",
+    "react-dom": "^17.0.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.4",
     "skjemapublisering": "navikt/skjemapublisering.git#69cd15c439601fb495bce15c65b7e03717cd47d3"
   },
   "devDependencies": {
