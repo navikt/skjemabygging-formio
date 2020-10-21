@@ -1,5 +1,6 @@
 import express from "express";
 import mustacheExpress from "mustache-express";
+import client from "prom-client";
 import getDecorator from "./dekorator.js";
 import { Pdfgen } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
@@ -24,6 +25,10 @@ if (process.env.NODE_ENV === "development") {
   const indexHtml = fs.readFileSync(buildDirectoryIndexHtml);
   gitVersion = gitVersionFromIndexHtml(indexHtml);
 }
+
+const Registry = client.Registry;
+const register = new Registry();
+client.collectDefaultMetrics({ register });
 
 // form encoded post body
 skjemaApp.post("/pdf-form", (req, res) => {
@@ -52,6 +57,15 @@ skjemaApp.get("/config", (req, res) =>
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
+
+skjemaApp.get("/internal/metrics", async (req, res) => {
+  try {
+    res.set("Content-Type", register.contentType);
+    res.end(await register.metrics());
+  } catch (ex) {
+    res.status(500).end(ex);
+  }
+});
 
 // Match everything except internal og static
 skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {

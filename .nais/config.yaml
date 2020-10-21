@@ -32,7 +32,7 @@ spec:
       memory: 256Mi
   prometheus:
     enabled: true  # default: false. Pod will now be scraped for metrics by Prometheus.
-    path: /fyllut/metrics # Path where prometheus metrics are served.
+    path: /fyllut/internal/metrics # Path where prometheus metrics are served.
   accessPolicy:
     outbound:
       external:
