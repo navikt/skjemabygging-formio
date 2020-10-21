@@ -29,6 +29,7 @@
     "pdfmake": "^0.1.68"
   },
   "devDependencies": {
-    "jest": "^26.4.2"
+    "jest": "^26.4.2",
+    "nodemon": "^2.0.6"
   }
 }
