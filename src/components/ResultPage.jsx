@@ -38,7 +38,7 @@ export function ResultPage({ form, submission }) {
           Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
-        <form id={form.path} action="/skjema/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
+        <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
           <NavForm
             key="2"
             form={resultForm}
