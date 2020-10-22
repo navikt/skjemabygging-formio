@@ -44,6 +44,7 @@
     "skjemapublisering": "navikt/skjemapublisering.git#3cbda609523e9bafc91ada894f2fa9a986a8cec4"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "husky": "^3.1.0",
     "lint-staged": "^10.4.0",
     "nodemon": "^2.0.4",
@@ -52,17 +53,17 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` craco build",
+    "build": "cross-env-shell REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` craco build",
     "test": "craco test",
     "eject": "craco eject",
     "pretest": "npm run postinstall",
     "prestart": "npm run postinstall",
     "prebuild": "npm run postinstall",
-    "install-template": "npm --prefix ./template install ./template",
+    "install-template": "cd template && npm install",
     "build-template": "cd template && npm run build",
     "postinstall": "npm run install-template && npm run build-template",
-    "install-all": "npm install && npm --prefix ./server install ./server",
-    "dev-server": "cd server && DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" npm start"
+    "install-all": "npm install && cd server && npm install",
+    "dev-server": "cross-env-shell cd server && npm start"
   },
   "eslintConfig": {
     "extends": "react-app"
