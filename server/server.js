@@ -52,6 +52,7 @@ skjemaApp.post("/pdf-json", (req, res) => {
 skjemaApp.get("/config", (req, res) =>
   res.json({
     NAIS_CLUSTER_NAME: process.env.NAIS_CLUSTER_NAME,
+    REACT_APP_SENTRY_DSN: process.env.REACT_APP_SENTRY_DSN,
   })
 );
 
