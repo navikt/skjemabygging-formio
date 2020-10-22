@@ -148,7 +148,7 @@
       "timezone": "Europe/Oslo",
       "offset": 120,
       "origin": "http://localhost:3000",
-      "referrer": "http://localhost:3000/skjema/nynav760710registreringsskjemafortilskuddtilutdanning",
+      "referrer": "http://localhost:3000/fyllut/nynav760710registreringsskjemafortilskuddtilutdanning",
       "browserName": "Netscape",
       "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
       "pathName": "/skjema/testchristianogmona",
