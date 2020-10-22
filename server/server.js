@@ -7,6 +7,7 @@ import { buildDirectory } from "./context.js";
 import fs from "fs";
 import { gitVersionFromIndexHtml } from "./commit_version.js";
 import { buildDirectoryIndexHtml } from "./context.js";
+import {logger} from "./logger.js";
 
 const app = express();
 const skjemaApp = express();
@@ -34,7 +35,7 @@ client.collectDefaultMetrics({ register });
 skjemaApp.post("/pdf-form", (req, res) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  console.debug("request submission", submission);
+  logger.debug({label: "request submission", message: submission});
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
@@ -43,7 +44,7 @@ skjemaApp.post("/pdf-form", (req, res) => {
 skjemaApp.post("/pdf-json", (req, res) => {
   const submission = req.body.submission;
   const form = req.body.form;
-  console.log("submission", submission);
+  logger.debug({label: "submission", message: submission});
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
@@ -56,7 +57,11 @@ skjemaApp.get("/config", (req, res) =>
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
-skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
+skjemaApp.get("/internal/isAlive|isReady", (req, res) => {
+  throw new Error("Oi Oi");
+  res.sendStatus(200);
+
+});
 
 skjemaApp.get("/internal/metrics", async (req, res) => {
   try {
@@ -75,15 +80,30 @@ skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
     })
     .catch((e) => {
       const error = `Failed to get decorator: ${e}`;
-      console.error(error);
+      logger.error(error);
       res.status(500).send(error);
     });
 });
 
+function logErrors (err, req, res, next) {
+  logger.error({message: err.message, stack: err.stack});
+  next(err);
+}
+
+function errorHandler (err, req, res, next) {
+  res.status(500);
+  res.send({ error: "something failed" });
+}
+
+skjemaApp.use(logErrors);
+skjemaApp.use(errorHandler);
+
 app.use("/fyllut", skjemaApp);
 
 const port = parseInt(process.env.PORT || "8080");
-console.log("serving on ", port);
+
+logger.info(`serving on ${port}`);
 app.listen(port);
 
-process.on("SIGTERM", () => setTimeout(() => console.log("Har sovet i 30 sekunder"), 30000));
+//Play nice with nais, force node to delay quiting to ensure no traffic is incoming
+process.on("SIGTERM", () => setTimeout(() => logger.debug("Har sovet i 30 sekunder"), 30000));
