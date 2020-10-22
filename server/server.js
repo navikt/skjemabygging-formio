@@ -57,11 +57,7 @@ skjemaApp.get("/config", (req, res) =>
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
-skjemaApp.get("/internal/isAlive|isReady", (req, res) => {
-  throw new Error("Oi Oi");
-  res.sendStatus(200);
-
-});
+skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
 skjemaApp.get("/internal/metrics", async (req, res) => {
   try {
