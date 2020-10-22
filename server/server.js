@@ -34,7 +34,7 @@ client.collectDefaultMetrics({ register });
 skjemaApp.post("/pdf-form", (req, res) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  console.log("submission", submission);
+  console.debug("request submission", submission);
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
