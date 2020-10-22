@@ -94,7 +94,7 @@ jobs:
         run: |
           cat > .nais/dev-vars.yaml <<EOF
           ingresses:
-            - https://fyllut.dev.nav.no
+            - https://fyllut.dev.nav.no/fyllut
           image: $IMAGE
           dekorator-host: dekoratoren.dev.nav.no
           dekorator-url: https://dekoratoren.dev.nav.no
@@ -110,7 +110,7 @@ jobs:
         run: |
           cat > .nais/prod-vars.yaml <<EOF
           ingresses:
-            - https://nav.no/fyllut
+            - https://www.nav.no/fyllut
           image: $IMAGE
           dekorator-host: www.nav.no
           dekorator-url: https://www.nav.no/dekoratoren
