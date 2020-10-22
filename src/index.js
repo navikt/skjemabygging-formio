@@ -8,7 +8,7 @@ import { forms } from "skjemapublisering";
 import { AppConfigProvider } from "./configContext";
 
 try {
-  fetch("/skjema/config")
+  fetch("/fyllut/config")
     .then((config) => config.json())
     .then((json) => {
       if (json.REACT_APP_SENTRY_DSN) {
