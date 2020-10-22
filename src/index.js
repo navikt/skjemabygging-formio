@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import * as Sentry from "@sentry/browser";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import { forms } from "skjemapublisering";
 import { AppConfigProvider } from "./configContext";
+
+if (process.env.REACT_APP_SENTRY_DSN) {
+  Sentry.init({ dsn: process.env.REACT_APP_SENTRY_DSN });
+}
 
 ReactDOM.render(
   <React.StrictMode>

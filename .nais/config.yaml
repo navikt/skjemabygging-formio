@@ -40,3 +40,5 @@ spec:
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
+  envFrom:
+    - secret: sentry-dsn
