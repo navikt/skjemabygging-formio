@@ -69,12 +69,13 @@ export class Pdfgen {
     pdfDoc.end();
   }
 
+  //Laget for å debugge, ikke tar i bruk i produksjon
   generatePDFToStream(writeStream) {
     const docDefinition = this.generateDocDefinition();
-    console.log("doc definition", docDefinition);
+    console.debug("doc definition", docDefinition);
     docDefinition.content.forEach((paragraph) => {
       if (paragraph.table) {
-        console.log(paragraph.table);
+        console.debug(paragraph.table);
       }
     });
     this.writeDocDefinitionToStream(docDefinition, writeStream);
@@ -117,7 +118,6 @@ export class Pdfgen {
     let result = [this.header(), { text: "Her skal det stå informasjon til innsender", style: "ingress" }];
     this.generateTableForComponentsOutsidePanels(rest, result);
     panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
-    console.log(this.now);
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
     result.push({ text: `Skjemaet ble opprettet ${datoTid}` });
     result.push({
