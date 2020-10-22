@@ -37,7 +37,6 @@ spec:
     outbound:
       external:
         - host: {{dekorator-host}}
-        - host: sentry.gc.nav.no
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
