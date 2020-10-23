@@ -1,13 +1,12 @@
-skjemautfylling-formio
-======================
+# skjemautfylling-formio
 
 Applikasjonen lar brukeren fylle ut og generere pdf'er for skjemaer
 som er publisert til https://github.com/navikt/skjemapublisering.git
 
-
 # Komme i gang
-Dette prosjektet bruker 
-[Create React App](https://github.com/facebook/create-react-app), 
+
+Dette prosjektet bruker
+[Create React App](https://github.com/facebook/create-react-app),
 så under følger dokumentasjonen derfra
 
 ## Available Scripts
