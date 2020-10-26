@@ -1,7 +1,7 @@
 import jsdom from "jsdom";
 import NodeCache from "node-cache";
 import fetch from "node-fetch";
-import { logger } from "./logger";
+import { logger } from "./logger.js";
 
 const { JSDOM } = jsdom;
 
