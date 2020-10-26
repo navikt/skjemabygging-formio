@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FormPage } from "./components/FormPage";
 import { styled } from "@material-ui/styles";
 import { ResultPage } from "./components/ResultPage";
+import { PrepareSubmitPage } from "./components/PrepareSubmitPage";
 import { AllForms } from "./components/AllForms";
 
 Components.setComponents(components);
@@ -24,7 +25,7 @@ function App({ forms, className }) {
           <FormPage forms={forms} setSubmission={setSubmission} submission={submission} />
         </Route>
         <Route
-          path="/:formpath/result"
+          path="/:formpath/oppsummering"
           render={(routeProps) => {
             const formPath = routeProps.match.params.formpath;
             const form = forms.find((form) => form.path === formPath);
@@ -32,6 +33,17 @@ function App({ forms, className }) {
               return <h1>Skjemaet {formPath} finnes ikke</h1>;
             }
             return <ResultPage form={form} submission={submission[form.path]} />;
+          }}
+        />
+        <Route
+          path="/:formpath/forbered-innsending"
+          render={(routeProps) => {
+            const formPath = routeProps.match.params.formpath;
+            const form = forms.find((form) => form.path === formPath);
+            if (!form) {
+              return <h1>Skjemaet {formPath} finnes ikke</h1>;
+            }
+            return <PrepareSubmitPage form={form} submission={submission[form.path]} />;
           }}
         />
       </Switch>
