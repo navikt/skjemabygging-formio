@@ -7,22 +7,21 @@ import { BrowserRouter } from "react-router-dom";
 import { forms } from "skjemapublisering";
 import { AppConfigProvider } from "./configContext";
 
-try {
-  fetch("/fyllut/config")
-    .then((config) => config.json())
-    .then((json) => {
-      if (json.REACT_APP_SENTRY_DSN) {
-        Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
-      }
-      renderReact(json.NAIS_CLUSTER_NAME);
-    });
-} catch {
-  if (process.env.NODE_ENV === "development") {
-    renderReact();
-  } else {
-    console.error("Could not fetch config from server");
-  }
-}
+fetch("/fyllut/config")
+  .then((config) => config.json())
+  .then((json) => {
+    if (json.REACT_APP_SENTRY_DSN) {
+      Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
+    }
+    renderReact(json.NAIS_CLUSTER_NAME);
+  })
+  .catch((error) => {
+    if (process.env.NODE_ENV === "development") {
+      renderReact();
+    } else {
+      console.error(`Could not fetch config from server: ${error}`);
+    }
+  });
 
 function renderReact(naisClusterName) {
   ReactDOM.render(
