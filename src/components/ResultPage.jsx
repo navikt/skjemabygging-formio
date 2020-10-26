@@ -26,7 +26,7 @@ export function ResultPage({ form, submission }) {
         url = url.concat("&vedleggsIder=", kommaseparertVedleggsliste);
       }
     }
-    window.location.href = url;
+    window.open(url, "_blank", "noopener");
   };
 
   return (

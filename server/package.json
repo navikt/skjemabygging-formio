@@ -27,7 +27,8 @@
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.0",
     "pdfmake": "^0.1.68",
-    "prom-client": "^12.0.0"
+    "prom-client": "^12.0.0",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "jest": "^26.4.2",
