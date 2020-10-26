@@ -8,9 +8,9 @@
     "icuDataDir": "./node_modules/full-icu"
   },
   "scripts": {
-    "start": "nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
-    "start-prod": "node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
-    "test": "node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "start": "cross-env-shell DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "jest": {
     "testEnvironment": "jest-environment-node",
@@ -31,6 +31,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "jest": "^26.4.2",
     "nodemon": "^2.0.6"
   }
