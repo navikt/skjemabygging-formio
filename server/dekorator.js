@@ -1,6 +1,8 @@
 import jsdom from "jsdom";
 import NodeCache from "node-cache";
 import fetch from "node-fetch";
+import { logger } from "./logger";
+
 const { JSDOM } = jsdom;
 
 const SECONDS_PER_MINUTE = 60;
@@ -31,7 +33,7 @@ const getDecorator = async () =>
             SCRIPTS: document.getElementById("scripts")[prop],
           };
           cache.set("main-cache", data);
-          console.log(`Creating cache`);
+          logger.info(`Creating cache`);
           resolve(data);
         } else {
           reject(new Error(`Klarte ikke å hente dekoratør, ${res.status}`));
