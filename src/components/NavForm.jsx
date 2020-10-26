@@ -34,14 +34,14 @@ import i18nData from "../i18nData";
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
 Wizard.prototype.nextPage = function () {
-  return originalNextPage.call(this).catch(() => {
-    console.log("our code here");
+  return originalNextPage.call(this).catch((error) => {
     const errorList = document.querySelector("div[id^='error-list-']");
     errorList.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
     errorList.focus({ preventScroll: true });
+    return Promise.reject(error);
   });
 };
 
