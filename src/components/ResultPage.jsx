@@ -8,6 +8,99 @@ import Hovedknapp from "nav-frontend-knapper";
 import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 
+function formatValue(component, value) {
+  switch (component.type) {
+    case "radio":
+      const valueObject = component.values.find((valueObject) => valueObject.value === value);
+      if (!valueObject) {
+        console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
+        return "";
+      }
+      return valueObject.label;
+    case "signature": {
+      console.log("rendering signature not supported");
+      return "";
+    }
+    case "navDatepicker": {
+      if (!value) {
+        return "";
+      }
+      const date = new Date(value);
+      return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
+    }
+    default:
+      return value;
+  }
+}
+
+const filterNonFormContent = (components, submission = []) =>
+  components
+    .filter((component) => component.type !== "content")
+    .filter((component) => component.type !== "htmlelement")
+    .filter(
+      (component) =>
+        component.type !== "container" ||
+        filterNonFormContent(component.components, submission[component.key]).length > 0
+    )
+    .filter((component) =>
+      component.conditional.when ? submission[component.conditional.when] === component.conditional.eq : true
+    )
+    .filter((component) => submission[component.key] !== "")
+    .filter((component) => submission[component.key] !== undefined);
+
+const FormSummaryField = ({ component, value }) => (
+  <>
+    <dt>{component.label}</dt>
+    <dd>{formatValue(component, value)}</dd>
+  </>
+);
+
+const FormSummaryFieldset = ({ component, submission }) => (
+  <>
+    <dt>{component.legend}</dt>
+    <dd>
+      <dl>
+        {filterNonFormContent(component.components, submission).map((subComponent) => (
+          <FormSummaryField key={subComponent.key} component={subComponent} value={submission[subComponent.key]} />
+        ))}
+      </dl>
+    </dd>
+  </>
+);
+
+const FormSummary = ({ form, submission }) => {
+  return form.components.map((panel) => {
+    if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
+      return null;
+    }
+    return (
+      <section key={panel.title}>
+        <h3>{panel.title}</h3>
+        <dl>
+          {filterNonFormContent(panel.components, submission).map((component) => {
+            if (component.type === "container") {
+              return filterNonFormContent(component.components, submission[component.key]).map((subComponent) => (
+                <FormSummaryField
+                  key={subComponent.key}
+                  component={subComponent}
+                  value={submission[component.key][subComponent.key]}
+                />
+              ));
+            } else if (component.type === "fieldset") {
+              return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
+            }
+            if (component.type === "radio") {
+              return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
+            } else {
+              return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
+            }
+          })}
+        </dl>
+      </section>
+    );
+  });
+};
+
 export function ResultPage({ form, submission }) {
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
@@ -38,7 +131,8 @@ export function ResultPage({ form, submission }) {
           Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
-        <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank">
+        <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
+        <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
           <NavForm
             key="2"
             form={resultForm}
