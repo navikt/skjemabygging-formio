@@ -78,7 +78,7 @@ const FormSummary = ({ form, submission }) => {
       return null;
     }
     return (
-      <section key={panel.title} className="margin-bottom-large">
+      <section key={panel.title} className="margin-bottom-default wizard-page">
         <Systemtittel className="margin-bottom-default">{panel.title}</Systemtittel>
         <dl>
           {filterNonFormContent(panel.components, submission).map((component) => {
@@ -116,7 +116,7 @@ export function ResultPage({ form, submission }) {
         Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
         "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
       </Normaltekst>
-      <div className="wizard-page">
+      <div>
         <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
         <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
           <NavForm
