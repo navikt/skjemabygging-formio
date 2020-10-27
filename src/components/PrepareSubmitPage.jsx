@@ -88,9 +88,9 @@ export function PrepareSubmitPage({ form, submission }) {
             </AlertStripe>
           )}
         </div>
-        <Link
+        <a
           className="knapp knapp--hoved"
-          to={getDokumentinnsendingWithNAV760710AndVedleggURL()}
+          href={getDokumentinnsendingWithNAV760710AndVedleggURL()}
           onClick={(event) => {
             if (!allowedToProgress) {
               event.preventDefault();
@@ -101,7 +101,7 @@ export function PrepareSubmitPage({ form, submission }) {
           rel="noopener"
         >
           Gå videre
-        </Link>
+        </a>
       </section>
     </ResultContent>
   );
