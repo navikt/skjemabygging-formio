@@ -97,7 +97,7 @@ export function PrepareSubmitPage({ form, submission }) {
             }
           }}
           target="_blank"
-          rel="noopener"
+          rel="noopener noreferrer"
         >
           Gå videre
         </a>
