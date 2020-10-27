@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
 import styled from "@material-ui/styles/styled";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";

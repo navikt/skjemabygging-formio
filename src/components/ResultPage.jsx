@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Panel from "nav-frontend-paneler";
 import styled from "@material-ui/styles/styled";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import i18nData from "../i18nData";
