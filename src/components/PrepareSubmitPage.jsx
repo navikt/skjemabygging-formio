@@ -1,18 +1,19 @@
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import NavForm from "./NavForm";
 import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import styled from "@material-ui/styles/styled";
-import Hovedknapp from "nav-frontend-knapper";
+import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
+import NavForm from "./NavForm";
 
 export function PrepareSubmitPage({ form, submission }) {
-  const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [allowedToProgress, setAllowedToProgress] = useState(false);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
 
-  const goToDokumentinnsendingWithNAV760710AndVedlegg = () => {
+  const getDokumentinnsendingWithNAV760710AndVedleggURL = () => {
     //Hardkodet midlertidig inngang til dokumentinnsending
     let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false`;
     if (submission && submission.data) {
@@ -25,7 +26,7 @@ export function PrepareSubmitPage({ form, submission }) {
         url = url.concat("&vedleggsIder=", kommaseparertVedleggsliste);
       }
     }
-    window.open(url, "_blank", "noopener");
+    return url;
   };
 
   return (
@@ -63,8 +64,10 @@ export function PrepareSubmitPage({ form, submission }) {
         <BekreftCheckboksPanel
           className="margin-bottom-default"
           label="Jeg har lest instruksjonene"
-          checked={!isNextDisabled}
-          onChange={() => setIsNextDisabled(!isNextDisabled)}
+          checked={allowedToProgress}
+          onChange={() => {
+            setAllowedToProgress(!allowedToProgress);
+          }}
         >
           <div className="margin-bottom-default">
             <strong>Etter at du har logget inn:</strong>
@@ -78,13 +81,27 @@ export function PrepareSubmitPage({ form, submission }) {
             </li>
           </ol>
         </BekreftCheckboksPanel>
-        <Hovedknapp
-          className="knapp--hoved"
-          disabled={isNextDisabled}
-          onClick={() => goToDokumentinnsendingWithNAV760710AndVedlegg()}
+        <div aria-live="polite">
+          {!allowedToProgress && (
+            <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
+              Du må bekrefte at du har lest instruksjonene over før du kan gå videre.
+            </AlertStripe>
+          )}
+        </div>
+        <Link
+          className="knapp knapp--hoved"
+          to={getDokumentinnsendingWithNAV760710AndVedleggURL()}
+          onClick={(event) => {
+            if (!allowedToProgress) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }}
+          target="_blank"
+          rel="noopener"
         >
           Gå videre
-        </Hovedknapp>
+        </Link>
       </section>
     </ResultContent>
   );
