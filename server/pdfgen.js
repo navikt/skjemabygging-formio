@@ -115,7 +115,7 @@ export class Pdfgen {
   generateContentFromSubmission() {
     const panels = this.form.components.filter((component) => component.type === "panel");
     const rest = this.form.components.filter((component) => component.type !== "panel");
-    let result = [this.header(), { text: "Her skal det stå informasjon til innsender", style: "ingress" }];
+    let result = [this.header(), { text: " ", style: "ingress" }];
     this.generateTableForComponentsOutsidePanels(rest, result);
     panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
