@@ -213,7 +213,7 @@ describe("generating doc definition", () => {
         style: "header",
         text: "Smølfeskjema",
       },
-      { text: "Her skal det stå informasjon til innsender", style: "ingress" },
+      { text: " ", style: "ingress" },
       { text: "Skjemaet ble opprettet 19. oktober 1992, 00:00 CET" },
       { text: `Skjemaversjon: ${version}` },
     ]);
