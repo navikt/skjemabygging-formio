@@ -17,6 +17,7 @@
     "bootstrap": "^4.4.1",
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
+    "cross-env": "^7.0.2",
     "eventemitter2": "^6.4.3",
     "formiojs": "^4.12.0",
     "http-proxy-middleware": "^1.0.5",
@@ -44,7 +45,6 @@
     "skjemapublisering": "navikt/skjemapublisering.git#3cbda609523e9bafc91ada894f2fa9a986a8cec4"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
     "husky": "^3.1.0",
     "lint-staged": "^10.4.0",
     "nodemon": "^2.0.4",
