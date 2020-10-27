@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - auto-deploy-alerts
     paths:
       - '.nais/alerts-prod-gcp.yaml'
       - '.github/workflows/alert-deploy.yaml'
