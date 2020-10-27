@@ -17,7 +17,7 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
   const mustConfirmUserHasReadInstructionsWarningBeforeConfirmation = screen.getByText(
     "Du må bekrefte at du har lest instruksjonene over før du kan gå videre."
   );
-  expect(mustConfirmUserHasReadInstructionsWarningBeforeConfirmation).not.toBeUndefined();
+  expect(mustConfirmUserHasReadInstructionsWarningBeforeConfirmation).toBeDefined();
   harLestVilkaarInput.click();
   const mustConfirmUserHasReadInstructionsWarningAfterConfirmation = screen.queryAllByText(
     "Du må bekrefte at du har lest instruksjonene over før du kan gå videre."
@@ -29,5 +29,5 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
   const mustConfirmUserHasReadInstructionsWarningAfterConfirmationIsRemoved = screen.getByText(
     "Du må bekrefte at du har lest instruksjonene over før du kan gå videre."
   );
-  expect(mustConfirmUserHasReadInstructionsWarningAfterConfirmationIsRemoved).not.toBeUndefined();
+  expect(mustConfirmUserHasReadInstructionsWarningAfterConfirmationIsRemoved).toBeDefined();
 });

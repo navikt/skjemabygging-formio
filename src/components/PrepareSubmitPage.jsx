@@ -62,7 +62,7 @@ export function PrepareSubmitPage({ form, submission }) {
         </Normaltekst>
         <BekreftCheckboksPanel
           className="margin-bottom-default"
-          label="Jeg har lest instruksjonene"
+          label="Jeg har lastet ned PDF-en og lest instruksjonene."
           checked={allowedToProgress}
           onChange={() => {
             setAllowedToProgress(!allowedToProgress);

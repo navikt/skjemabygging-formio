@@ -7,7 +7,7 @@ import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FormPage } from "./components/FormPage";
 import { styled } from "@material-ui/styles";
-import { ResultPage } from "./components/ResultPage";
+import { SummaryPage } from "./components/SummaryPage";
 import { PrepareSubmitPage } from "./components/PrepareSubmitPage";
 import { AllForms } from "./components/AllForms";
 
@@ -32,7 +32,7 @@ function App({ forms, className }) {
             if (!form) {
               return <h1>Skjemaet {formPath} finnes ikke</h1>;
             }
-            return <ResultPage form={form} submission={submission[form.path]} />;
+            return <SummaryPage form={form} submission={submission[form.path]} />;
           }}
         />
         <Route

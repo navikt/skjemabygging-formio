@@ -104,11 +104,11 @@ const FormSummary = ({ form, submission }) => {
   });
 };
 
-export function ResultPage({ form, submission }) {
+export function SummaryPage({ form, submission }) {
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
 
   return (
-    <ResultContent>
+    <SummaryContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <Innholdstittel className="margin-bottom-default">Oppsummering av søknaden din</Innholdstittel>
       <Normaltekst className="margin-bottom-default">
@@ -140,11 +140,11 @@ export function ResultPage({ form, submission }) {
           </Link>
         </div>
       </nav>
-    </ResultContent>
+    </SummaryContent>
   );
 }
 
-const ResultContent = styled("main")({
+const SummaryContent = styled("main")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
