@@ -2,8 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "@material-ui/styles/styled";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import i18nData from "../i18nData";
-import NavForm from "./NavForm";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -115,19 +113,7 @@ export function SummaryPage({ form, submission }) {
         Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
         "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
       </Normaltekst>
-      <div>
-        <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
-        <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
-          <NavForm
-            key="2"
-            form={resultForm}
-            options={{ readOnly: true, language: "nb-NO", i18n: i18nData }}
-            submission={submission}
-          />
-          <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
-          <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
-        </form>
-      </div>
+      <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
       <nav className="list-inline">
         <div className="list-inline-item">
           <Link className="btn btn-secondary btn-wizard-nav-previous" to={`/${form.path}`}>
