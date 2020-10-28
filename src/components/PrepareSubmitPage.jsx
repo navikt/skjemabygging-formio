@@ -16,11 +16,15 @@ export function PrepareSubmitPage({ form, submission }) {
     //Hardkodet midlertidig inngang til dokumentinnsending
     let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false`;
     if (submission && submission.data) {
-      const vedleggMedSvar = { Q7: submission.data.vedleggQ7, O9: submission.data.vedleggO9 };
-      const kommaseparertVedleggsliste = Object.keys(vedleggMedSvar)
-        .filter((vedleggsID) => vedleggMedSvar[vedleggsID] === "leggerVedNaa")
-        .join(",");
-
+      // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
+      const vedleggsIder = [];
+      const prefix = 'vedlegg';
+      Object.keys(submission.data).forEach(([key, value]) => {
+        if (key.startsWith(prefix) && value === 'leggerVedNaa') {
+          vedleggsIder.push(key.substr(prefix.length));
+        }
+      });
+      const kommaseparertVedleggsliste = vedleggsIder.join(',');
       if (kommaseparertVedleggsliste) {
         url = url.concat("&vedleggsIder=", kommaseparertVedleggsliste);
       }
