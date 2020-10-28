@@ -3,7 +3,14 @@ import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
 import "nav-frontend-skjema-style";
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
-  const { title, path, display, name, tags } = form;
+  const {
+    title,
+    path,
+    display,
+    name,
+    tags,
+    properties: { skjemanummer },
+  } = form;
   console.log(tags);
   return (
     <SkjemaGruppe>
@@ -12,9 +19,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         type="text"
         id="skjemanummer"
         placeholder="Skriv inn skjemanummer"
-        value={tags[1]}
+        value={skjemanummer}
         readOnly={usageContext === "edit"}
-        onChange={(event) => onChange({ ...form, tags: [tags[0], event.target.value] })}
+        onChange={(event) => onChange({ ...form, properties: { skjemanummer: event.target.value } })}
       />
       <Input
         label="Tittel"
