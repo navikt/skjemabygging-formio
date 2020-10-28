@@ -14,19 +14,23 @@ export function PrepareSubmitPage({ form, submission }) {
 
   const getDokumentinnsendingWithNAV760710AndVedleggURL = () => {
     //Hardkodet midlertidig inngang til dokumentinnsending
-    let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false`;
+    let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
+      form.properties.skjemanummer
+    )}&erEttersendelse=false`;
+
     if (submission && submission.data) {
       // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
       const vedleggsIder = [];
-      const prefix = 'vedlegg';
-      Object.keys(submission.data).forEach(([key, value]) => {
-        if (key.startsWith(prefix) && value === 'leggerVedNaa') {
+      const prefix = "vedlegg";
+
+      Object.entries(submission.data).forEach(([key, value]) => {
+        if (key.startsWith(prefix) && value === "leggerVedNaa") {
           vedleggsIder.push(key.substr(prefix.length));
         }
       });
-      const kommaseparertVedleggsliste = vedleggsIder.join(',');
-      if (kommaseparertVedleggsliste) {
-        url = url.concat("&vedleggsIder=", kommaseparertVedleggsliste);
+
+      if (vedleggsIder.length > 0) {
+        url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
       }
     }
     return url;
