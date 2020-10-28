@@ -23,7 +23,7 @@ export const FormPage = ({ forms, submission, setSubmission }) => {
         submission={submission[form.path]}
         onSubmit={(submission) => {
           setSubmission({ [form.path]: submission });
-          history.push(`/${params.formpath}/result`);
+          history.push(`/${params.formpath}/oppsummering`);
         }}
       />
     </main>
