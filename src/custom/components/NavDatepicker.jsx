@@ -110,7 +110,7 @@ export default class NavDatepicker extends FormioReactComponent {
             },
             {
               label: "API",
-              key: "validation",
+              key: "api",
               weight: 60,
               components: apiEditForm,
             },
