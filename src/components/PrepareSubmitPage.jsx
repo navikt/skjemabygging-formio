@@ -8,25 +8,25 @@ import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
 import PropTypes from "prop-types";
 
-export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submission) => {
+export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
     form.properties.skjemanummer
   )}&erEttersendelse=false`;
+  if (!submissionData) {
+    return url;
+  }
+  // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
+  const vedleggsIder = [];
+  const prefix = "vedlegg";
 
-  if (submission && submission.data) {
-    // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
-    const vedleggsIder = [];
-    const prefix = "vedlegg";
-
-    Object.entries(submission.data).forEach(([key, value]) => {
-      if (key.startsWith(prefix) && value === "leggerVedNaa") {
-        vedleggsIder.push(key.substr(prefix.length));
-      }
-    });
-
-    if (vedleggsIder.length > 0) {
-      url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
+  Object.entries(submissionData).forEach(([key, value]) => {
+    if (key.startsWith(prefix) && value === "leggerVedNaa") {
+      vedleggsIder.push(key.substr(prefix.length));
     }
+  });
+
+  if (vedleggsIder.length > 0) {
+    url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
   }
   return url;
 };
@@ -97,7 +97,7 @@ export function PrepareSubmitPage({ form, submission }) {
         </div>
         <a
           className="knapp knapp--hoved"
-          href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission)}
+          href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission.data)}
           onClick={(event) => {
             if (!allowedToProgress) {
               event.preventDefault();
