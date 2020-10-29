@@ -7,34 +7,33 @@ import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
 
+const getDokumentinnsendingWithNAV760710AndVedleggURL = (dokumentinnsendingBaseURL, form, submission) => {
+  let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
+    form.properties.skjemanummer
+  )}&erEttersendelse=false`;
+
+  if (submission && submission.data) {
+    // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
+    const vedleggsIder = [];
+    const prefix = "vedlegg";
+
+    Object.entries(submission.data).forEach(([key, value]) => {
+      if (key.startsWith(prefix) && value === "leggerVedNaa") {
+        vedleggsIder.push(key.substr(prefix.length));
+      }
+    });
+
+    if (vedleggsIder.length > 0) {
+      url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
+    }
+  }
+  return url;
+};
+
 export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
-
-  const getDokumentinnsendingWithNAV760710AndVedleggURL = () => {
-    //Hardkodet midlertidig inngang til dokumentinnsending
-    let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
-      form.properties.skjemanummer
-    )}&erEttersendelse=false`;
-
-    if (submission && submission.data) {
-      // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
-      const vedleggsIder = [];
-      const prefix = "vedlegg";
-
-      Object.entries(submission.data).forEach(([key, value]) => {
-        if (key.startsWith(prefix) && value === "leggerVedNaa") {
-          vedleggsIder.push(key.substr(prefix.length));
-        }
-      });
-
-      if (vedleggsIder.length > 0) {
-        url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
-      }
-    }
-    return url;
-  };
 
   return (
     <ResultContent>
@@ -97,7 +96,7 @@ export function PrepareSubmitPage({ form, submission }) {
         </div>
         <a
           className="knapp knapp--hoved"
-          href={getDokumentinnsendingWithNAV760710AndVedleggURL()}
+          href={getDokumentinnsendingWithNAV760710AndVedleggURL(dokumentinnsendingBaseURL, form, submission)}
           onClick={(event) => {
             if (!allowedToProgress) {
               event.preventDefault();
