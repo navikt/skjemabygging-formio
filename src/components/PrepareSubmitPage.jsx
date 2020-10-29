@@ -6,27 +6,35 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
+import PropTypes from "prop-types";
+
+export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
+  let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
+    form.properties.skjemanummer
+  )}&erEttersendelse=false`;
+  if (!submissionData) {
+    return url;
+  }
+  // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
+  const vedleggsIder = [];
+  const prefix = "vedlegg";
+
+  Object.entries(submissionData).forEach(([key, value]) => {
+    if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
+      vedleggsIder.push(key.substr(prefix.length));
+    }
+  });
+
+  if (vedleggsIder.length > 0) {
+    url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
+  }
+  return url;
+};
 
 export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
-
-  const getDokumentinnsendingWithNAV760710AndVedleggURL = () => {
-    //Hardkodet midlertidig inngang til dokumentinnsending
-    let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false`;
-    if (submission && submission.data) {
-      const vedleggMedSvar = { Q7: submission.data.vedleggQ7, O9: submission.data.vedleggO9 };
-      const kommaseparertVedleggsliste = Object.keys(vedleggMedSvar)
-        .filter((vedleggsID) => vedleggMedSvar[vedleggsID] === "leggerVedNaa")
-        .join(",");
-
-      if (kommaseparertVedleggsliste) {
-        url = url.concat("&vedleggsIder=", kommaseparertVedleggsliste);
-      }
-    }
-    return url;
-  };
 
   return (
     <ResultContent>
@@ -89,7 +97,7 @@ export function PrepareSubmitPage({ form, submission }) {
         </div>
         <a
           className="knapp knapp--hoved"
-          href={getDokumentinnsendingWithNAV760710AndVedleggURL()}
+          href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission.data)}
           onClick={(event) => {
             if (!allowedToProgress) {
               event.preventDefault();
@@ -105,6 +113,11 @@ export function PrepareSubmitPage({ form, submission }) {
     </ResultContent>
   );
 }
+
+PrepareSubmitPage.propTypes = {
+  form: PropTypes.object.isRequired,
+  submission: PropTypes.object.isRequired,
+};
 
 const ResultContent = styled("main")({
   width: "100%",
