@@ -469,9 +469,6 @@ const builderPalett = {
           type: "button",
           key: "button",
           input: true,
-          validate: {
-            required: true,
-          },
         },
       },
     },
