@@ -7,7 +7,7 @@ import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
 
-const getDokumentinnsendingWithNAV760710AndVedleggURL = (dokumentinnsendingBaseURL, form, submission) => {
+export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submission) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
     form.properties.skjemanummer
   )}&erEttersendelse=false`;
@@ -96,7 +96,7 @@ export function PrepareSubmitPage({ form, submission }) {
         </div>
         <a
           className="knapp knapp--hoved"
-          href={getDokumentinnsendingWithNAV760710AndVedleggURL(dokumentinnsendingBaseURL, form, submission)}
+          href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission)}
           onClick={(event) => {
             if (!allowedToProgress) {
               event.preventDefault();
