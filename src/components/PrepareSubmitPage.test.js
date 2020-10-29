@@ -8,7 +8,10 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
   render(
     <AppConfigProvider>
       <BrowserRouter>
-        <PrepareSubmitPage form={{ title: "Test form" }} submission={{}} />
+        <PrepareSubmitPage
+          form={{ title: "Test form", properties: { skjemanummer: "NAV 76-07.10" } }}
+          submission={{}}
+        />
       </BrowserRouter>
     </AppConfigProvider>
   );
@@ -31,3 +34,5 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
   );
   expect(mustConfirmUserHasReadInstructionsWarningAfterConfirmationIsRemoved).toBeDefined();
 });
+
+it("Calculate url", () => {});
