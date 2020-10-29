@@ -35,13 +35,33 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
   expect(mustConfirmUserHasReadInstructionsWarningAfterConfirmationIsRemoved).toBeDefined();
 });
 
-it("Calculate url", () => {
-  const url = computeDokumentinnsendingURL(
-    "https://example.org",
-    { properties: { skjemanummer: "NAV 76-07.10" } },
-    { data: { vedleggOP: "leggerVedNaa", vedleggQ1: "leggerVedNaa", vedleggF4: "leggerVedNaa" } }
-  );
-  expect(url).toEqual(
-    "https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false&vedleggsIder=OP,Q1,F4"
-  );
+describe("computeDokumentinnsendingURL", () => {
+  it("calculate url with vedlegg", () => {
+    const url = computeDokumentinnsendingURL(
+      "https://example.org",
+      { properties: { skjemanummer: "NAV 76-07.10" } },
+      { data: { vedleggOP: "leggerVedNaa", vedleggQ1: "leggerVedNaa", vedleggF4: "leggerVedNaa" } }
+    );
+    expect(url).toEqual(
+      "https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false&vedleggsIder=OP,Q1,F4"
+    );
+  });
+
+  it("calculate url without vedlegg", () => {
+    const url = computeDokumentinnsendingURL(
+      "https://example.org",
+      { properties: { skjemanummer: "NAV 76-07.10" } },
+      { data: {} }
+    );
+    expect(url).toEqual("https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false");
+  });
+
+  it("match submission data with wrong prefix vedleg name", () => {
+    const url = computeDokumentinnsendingURL(
+      "https://example.org",
+      { properties: { skjemanummer: "NAV 76-07.10" } },
+      { data: { vedlegOP: "leggerVedNaa" } }
+    );
+    expect(url).toEqual("https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false");
+  });
 });

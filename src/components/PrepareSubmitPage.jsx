@@ -6,6 +6,7 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
+import PropTypes from "prop-types";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submission) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -112,6 +113,11 @@ export function PrepareSubmitPage({ form, submission }) {
     </ResultContent>
   );
 }
+
+PrepareSubmitPage.propTypes = {
+  form: PropTypes.object.isRequired,
+  submission: PropTypes.object.isRequired,
+};
 
 const ResultContent = styled("main")({
   width: "100%",
