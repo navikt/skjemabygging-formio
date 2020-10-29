@@ -144,6 +144,9 @@ const builderPalett = {
           type: "email",
           key: "email",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       url: {
@@ -357,6 +360,9 @@ const builderPalett = {
           type: "textfield",
           key: "textfield",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       textarea: {
@@ -368,6 +374,9 @@ const builderPalett = {
           type: "textarea",
           key: "textarea",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       number: {
@@ -379,6 +388,9 @@ const builderPalett = {
           type: "number",
           key: "number",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       password: {
@@ -401,6 +413,9 @@ const builderPalett = {
           type: "checkbox",
           key: "checkbox",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       selectboxes: {
@@ -412,6 +427,9 @@ const builderPalett = {
           type: "selectboxes",
           key: "selectboxes",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       select: {
@@ -423,6 +441,9 @@ const builderPalett = {
           type: "select",
           key: "select",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       radio: {
@@ -434,6 +455,9 @@ const builderPalett = {
           type: "radio",
           key: "radio",
           input: true,
+          validate: {
+            required: true,
+          },
         },
       },
       button: {
