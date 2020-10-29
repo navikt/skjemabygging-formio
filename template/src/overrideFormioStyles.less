@@ -5,6 +5,10 @@
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
+:root {
+  --field-optional-label: "(valgfritt)";
+}
+
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
@@ -73,6 +77,14 @@
 .skjemaelement__input.is-invalid {
   .skjemaelement-feilmarkering-mixin();
   background-image: none;
+}
+
+.skjemaelement__label.field-required::after {
+  content: "";
+}
+
+.skjemaelement__label:not(.field-required)::after {
+  content: var(--field-optional-label);
 }
 
 .form-text.error {
