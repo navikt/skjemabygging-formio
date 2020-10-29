@@ -20,7 +20,7 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
   const prefix = "vedlegg";
 
   Object.entries(submissionData).forEach(([key, value]) => {
-    if (key.startsWith(prefix) && value === "leggerVedNaa") {
+    if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
       vedleggsIder.push(key.substr(prefix.length));
     }
   });
