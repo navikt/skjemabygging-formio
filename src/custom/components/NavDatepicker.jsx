@@ -4,6 +4,7 @@ import { Datovelger } from "nav-datovelger";
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
+import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 import FormioReactComponent from "../FormioReactComponent";
 
 require("moment/locale/nb.js"); // For datovelger
@@ -106,6 +107,12 @@ export default class NavDatepicker extends FormioReactComponent {
               key: "conditional",
               weight: 40,
               components: conditionalEditForm,
+            },
+            {
+              label: "API",
+              key: "validation",
+              weight: 60,
+              components: apiEditForm,
             },
           ],
         },
