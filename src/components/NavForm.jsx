@@ -193,18 +193,12 @@ class NavForm extends Component {
   };
 }
 
-const fieldOptionalLabel = "(valgfritt fra wen7i & 7er)";
-
 export default styled(NavForm)({
-  "& .formio-form": {
-    // backgroundColor: 'red',
+  "& .skjemaelement__label.field-required::after": {
+    content: '""',
   },
-  "& .skjemaelement__label.field-required": {
-    backgroundColor: "blue",
-  },
-  "& .skjemaelement__label:not(.field-required)": {
-    // content: fieldOptionalLabel,
-    backgroundColor: "green",
+  "& .skjemaelement__label:not(.field-required)::after": {
+    content: '"(valgfritt)"',
   },
 });
 
