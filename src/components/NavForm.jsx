@@ -30,6 +30,7 @@ import { Components, Form as FormioForm, Formio } from "formiojs";
 import "nav-frontend-skjema-style";
 import navdesign from "template";
 import i18nData from "../i18nData";
+import { styled } from "@material-ui/styles";
 
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
@@ -48,8 +49,9 @@ Wizard.prototype.nextPage = function () {
 Components.setComponents(AllComponents);
 Formio.use(navdesign);
 
-export default class NavForm extends Component {
+class NavForm extends Component {
   static propTypes = {
+    className: PropTypes.string,
     src: PropTypes.string,
     url: PropTypes.string,
     form: PropTypes.object,
@@ -181,9 +183,30 @@ export default class NavForm extends Component {
   };
 
   render = () => {
-    return <div data-testid="formMountElement" ref={(element) => (this.element = element)} />;
+    return (
+      <div
+        className={this.props.className}
+        data-testid="formMountElement"
+        ref={(element) => (this.element = element)}
+      />
+    );
   };
 }
+
+const fieldOptionalLabel = "(valgfritt fra wen7i & 7er)";
+
+export default styled(NavForm)({
+  "& .formio-form": {
+    // backgroundColor: 'red',
+  },
+  "& .skjemaelement__label.field-required": {
+    backgroundColor: "blue",
+  },
+  "& .skjemaelement__label:not(.field-required)": {
+    // content: fieldOptionalLabel,
+    backgroundColor: "green",
+  },
+});
 
 function focusAndScrollToNextAndPreviousPage() {
   const nextOrPreviousPage = document.querySelector("main");
