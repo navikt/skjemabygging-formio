@@ -65,10 +65,98 @@ const personaliaSchema = {
   ],
 };
 
+const gateadresseSchema = {
+  label: "Gateadresse",
+  type: "textfield",
+  key: "gateadresse",
+  input: true,
+  validateOn: "blur",
+  validate: {
+    required: true,
+  },
+};
+
+const postnrSchema = {
+  label: "Postnummer",
+  type: "textfield",
+  key: "postnr",
+  input: true,
+  spellcheck: false,
+  validateOn: "blur",
+  validate: {
+    required: true,
+    maxLength: 4,
+    minLength: 4,
+  },
+};
+
+const poststedSchema = {
+  label: "Poststed",
+  type: "textfield",
+  key: "poststed",
+  input: true,
+  validateOn: "blur",
+  validate: {
+    required: true,
+  },
+};
+
+const landSchema = {};
+
+const epostSchema = {
+  label: "E-post",
+  type: "email",
+  key: "email",
+  input: true,
+  validate: {
+    required: true,
+  },
+};
+
+const telefonSchema = {
+  label: "Telefonnummer",
+  type: "phoneNumber",
+  key: "phoneNumber",
+  input: true,
+  inputMask: false,
+  spellcheck: false,
+  validateOn: "blur",
+  validate: {
+    required: true,
+    pattern: "",
+  },
+};
+
+const statsborgerskapSchema = {
+  label: "Statsborgerskap",
+  type: "textfield",
+  key: "textfield",
+  input: true,
+  validateOn: "blur",
+  validate: {
+    required: true,
+  },
+};
+
+const kontaktinfoSchema = {
+  label: "Kontaktinfo",
+  hideLabel: true,
+  type: "container",
+  key: "kontaktinfo",
+  input: true,
+  components: [gateadresseSchema, postnrSchema, poststedSchema, epostSchema, telefonSchema],
+};
+
 const builderPalett = {
-  advanced: {
-    title: "Tilpassede felter",
+  person: {
+    title: "Person",
     components: {
+      adresse: {
+        title: "Kontaktinfo",
+        key: "kontaktinfo",
+        icon: "home",
+        schema: kontaktinfoSchema,
+      },
       personalia: {
         title: "Personalia",
         key: "personalia",
@@ -91,128 +179,43 @@ const builderPalett = {
         title: "Gatedresse",
         key: "gateadresse",
         icon: "home",
-        schema: {
-          label: "Gateadresse",
-          type: "textfield",
-          key: "gateadresse",
-          input: true,
-          validateOn: "blur",
-          validate: {
-            required: true,
-          },
-        },
+        schema: gateadresseSchema,
       },
       postcode: {
         title: "Postnummer",
         key: "postnr",
         icon: "home",
-        schema: {
-          label: "Postnummer",
-          type: "textfield",
-          key: "postnr",
-          input: true,
-          spellcheck: false,
-          validateOn: "blur",
-          validate: {
-            required: true,
-            maxLength: 4,
-            minLength: 4,
-          },
-        },
+        schema: postnrSchema,
       },
       city: {
         title: "Poststed",
         key: "poststed",
         icon: "home",
-        schema: {
-          label: "Poststed",
-          type: "textfield",
-          key: "poststed",
-          input: true,
-          validateOn: "blur",
-          validate: {
-            required: true,
-          },
-        },
+        schema: poststedSchema,
       },
       email: {
         title: "E-post",
         key: "email",
         icon: "at",
-        schema: {
-          label: "E-post",
-          type: "email",
-          key: "email",
-          input: true,
-          validate: {
-            required: true,
-          },
-        },
-      },
-      url: {
-        title: "Lenke",
-        key: "url",
-        icon: "link",
-        schema: {
-          label: "Lenke",
-          type: "url",
-          key: "url",
-          input: true,
-        },
+        schema: epostSchema,
       },
       phoneNumber: {
         title: "Telefon",
         key: "phoneNumber",
         icon: "phone-square",
-        schema: {
-          label: "Telefonnummer",
-          type: "phoneNumber",
-          key: "phoneNumber",
-          input: true,
-          inputMask: "",
-          prefix: "+47",
-          spellcheck: false,
-          validateOn: "blur",
-          validate: {
-            required: true,
-            pattern: "",
-          },
-        },
+        schema: telefonSchema,
       },
-      tags: {
-        title: "Stikkord",
-        key: "tags",
-        icon: "tags",
-        schema: {
-          label: "Stikkord",
-          type: "tags",
-          key: "tags",
-          input: true,
-        },
+      citizenship: {
+        title: "Statsborgerskap",
+        key: "textfield",
+        icon: "user",
+        schema: statsborgerskapSchema,
       },
-      month: {
-        title: "Måned",
-        key: "month",
-        icon: "calendar",
-        schema: {
-          label: "Måned",
-          type: "datetime",
-          key: "month",
-          input: true,
-          datePicker: {
-            showWeeks: true,
-            startingDay: 0,
-            initDate: "",
-            minMode: "month",
-            maxMode: "year",
-            yearRows: 4,
-            yearColumns: 5,
-            minDate: null,
-            maxDate: null,
-            datepickerMode: "month",
-          },
-        },
-      },
+    },
+  },
+  pengerOgKonto: {
+    title: "Penger og konto",
+    components: {
       currency: {
         title: "Beløp",
         key: "belop",
@@ -226,6 +229,29 @@ const builderPalett = {
           spellcheck: false,
         },
       },
+      bankAccount: {
+        title: "Kontonummer",
+        key: "textfield",
+        icon: "bank",
+        schema: {
+          label: "Kontonummer",
+          type: "textfield",
+          key: "textfield",
+          input: true,
+          spellcheck: false,
+          validateOn: "blur",
+          validate: {
+            required: true,
+            maxLength: 11,
+            minLength: 11,
+          },
+        },
+      },
+    },
+  },
+  organisasjon: {
+    title: "Bedrift / organisasjon",
+    components: {
       orgNr: {
         title: "Org.nr.",
         key: "orgNr",
@@ -244,15 +270,36 @@ const builderPalett = {
           },
         },
       },
-      address: {
-        title: "Adresse",
-        key: "address",
-        icon: "home",
+      Arbeidsgiver: {
+        title: "Arbeidsgiver",
+        key: "arbeidsgiver",
+        icon: "institution",
         schema: {
-          label: "Adresse",
-          type: "address",
-          key: "address",
+          label: "Arbeidsgiver",
+          type: "textfield",
+          key: "arbeidsgiver",
           input: true,
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+      },
+    },
+  },
+  datoOgTid: {
+    title: "Dato og tid",
+    components: {
+      time: {
+        title: "Tid",
+        key: "time",
+        icon: "clock-o",
+        schema: {
+          label: "Tid",
+          type: "time",
+          key: "time",
+          input: true,
+          spellcheck: false,
         },
       },
       datetime: {
@@ -278,70 +325,26 @@ const builderPalett = {
           input: true,
         },
       },
-      time: {
-        title: "Tid",
-        key: "time",
-        icon: "clock-o",
+      month: {
+        title: "Måned",
+        key: "month",
+        icon: "calendar",
         schema: {
-          label: "Tid",
-          type: "time",
-          key: "time",
+          label: "Måned",
+          type: "datetime",
+          key: "month",
           input: true,
-          spellcheck: false,
-        },
-      },
-      signature: {
-        title: "Underskrift",
-        key: "signature",
-        icon: "pencil-square-o",
-        schema: {
-          label: "Underskrift",
-          type: "signature",
-          key: "signature",
-          input: true,
-        },
-      },
-      survey: {
-        title: "Spørreskjema",
-        key: "survey",
-        icon: "clipboard",
-        schema: {
-          label: "Spørreskjema",
-          type: "survey",
-          key: "survey",
-          input: true,
-        },
-      },
-      citizenship: {
-        title: "Statsborgerskap",
-        key: "textfield",
-        icon: "user",
-        schema: {
-          label: "Statsborgerskap",
-          type: "textfield",
-          key: "textfield",
-          input: true,
-          validateOn: "blur",
-          validate: {
-            required: true,
-          },
-        },
-      },
-      bankAccount: {
-        title: "Kontonummer",
-        key: "textfield",
-        icon: "bank",
-        schema: {
-          label: "Kontonummer",
-          type: "textfield",
-          key: "textfield",
-          input: true,
-          spellcheck: false,
-          validateOn: "blur",
-          validate: {
-            required: true,
-            maxLength: 11,
-            minLength: 11,
+          datePicker: {
+            showWeeks: true,
+            startingDay: 0,
+            initDate: "",
+            minMode: "month",
+            maxMode: "year",
+            yearRows: 4,
+            yearColumns: 5,
+            minDate: null,
+            maxDate: null,
+            datepickerMode: "month",
           },
         },
       },
@@ -468,6 +471,50 @@ const builderPalett = {
           label: "Knapp",
           type: "button",
           key: "button",
+          input: true,
+        },
+      },
+      url: {
+        title: "Lenke",
+        key: "url",
+        icon: "link",
+        schema: {
+          label: "Lenke",
+          type: "url",
+          key: "url",
+          input: true,
+        },
+      },
+      tags: {
+        title: "Stikkord",
+        key: "tags",
+        icon: "tags",
+        schema: {
+          label: "Stikkord",
+          type: "tags",
+          key: "tags",
+          input: true,
+        },
+      },
+      signature: {
+        title: "Underskrift",
+        key: "signature",
+        icon: "pencil-square-o",
+        schema: {
+          label: "Underskrift",
+          type: "signature",
+          key: "signature",
+          input: true,
+        },
+      },
+      survey: {
+        title: "Spørreskjema",
+        key: "survey",
+        icon: "clipboard",
+        schema: {
+          label: "Spørreskjema",
+          type: "survey",
+          key: "survey",
           input: true,
         },
       },
