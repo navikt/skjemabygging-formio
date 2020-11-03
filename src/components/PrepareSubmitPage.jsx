@@ -1,8 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "@material-ui/styles/styled";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+
+import { scrollToAndSetFocus } from "../util/focus-management";
 import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
@@ -36,8 +38,10 @@ export function PrepareSubmitPage({ form, submission }) {
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
 
+  useEffect(() => scrollToAndSetFocus("main"), []);
+
   return (
-    <ResultContent>
+    <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <section className="margin-bottom-large">
         <Systemtittel className="margin-bottom-default">1. For å gå videre må du laste ned PDF</Systemtittel>
