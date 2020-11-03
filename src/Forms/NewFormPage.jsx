@@ -16,6 +16,22 @@ class NewFormPage extends Component {
       title: "",
       path: "",
       properties: { skjemanummer: "" },
+      components: {
+        textfield: {
+          title: "Tekstfelt",
+          key: "textfield",
+          icon: "terminal",
+          schema: {
+            label: "Tekstfelt",
+            type: "textfield",
+            key: "textfield",
+            input: true,
+            validate: {
+              required: true,
+            },
+          },
+        },
+      },
     },
   };
 

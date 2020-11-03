@@ -123,7 +123,7 @@ const telefonSchema = {
   validateOn: "blur",
   validate: {
     required: true,
-    pattern: "",
+    pattern: "99 99 99 99",
   },
 };
 
@@ -151,7 +151,7 @@ const builderPalett = {
   person: {
     title: "Person",
     components: {
-      adresse: {
+      kontaktinfo: {
         title: "Kontaktinfo",
         key: "kontaktinfo",
         icon: "home",
