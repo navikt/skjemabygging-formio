@@ -5,6 +5,7 @@ import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
 import camelCase from "lodash/camelCase";
 import { AppLayoutWithContext } from "../components/AppLayout";
+import { defaultFormFields } from "./DefaultForm";
 
 class NewFormPage extends Component {
   state = {
@@ -16,22 +17,7 @@ class NewFormPage extends Component {
       title: "",
       path: "",
       properties: { skjemanummer: "" },
-      components: {
-        textfield: {
-          title: "Tekstfelt",
-          key: "textfield",
-          icon: "terminal",
-          schema: {
-            label: "Tekstfelt",
-            type: "textfield",
-            key: "textfield",
-            input: true,
-            validate: {
-              required: true,
-            },
-          },
-        },
-      },
+      components: [defaultFormFields],
     },
   };
 

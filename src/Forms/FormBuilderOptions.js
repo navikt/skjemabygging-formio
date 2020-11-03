@@ -48,7 +48,7 @@ const surnameSchema = {
   },
 };
 
-const personaliaSchema = {
+export const personaliaSchema = {
   label: "Personalia", // not used
   hideLabel: true,
   type: "container",
@@ -127,7 +127,7 @@ const telefonSchema = {
   },
 };
 
-const statsborgerskapSchema = {
+export const statsborgerskapSchema = {
   label: "Statsborgerskap",
   type: "textfield",
   key: "textfield",
@@ -138,7 +138,7 @@ const statsborgerskapSchema = {
   },
 };
 
-const kontaktinfoSchema = {
+export const kontaktinfoSchema = {
   label: "Kontaktinfo",
   hideLabel: true,
   type: "container",
