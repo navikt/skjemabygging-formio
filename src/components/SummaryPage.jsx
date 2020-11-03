@@ -69,14 +69,16 @@ const FormSummaryFieldset = ({ component, submission }) => (
   </>
 );
 
-const FormSummary = ({ form, submission }) => {
+const FormSummary = ({ tag, form, submission }) => {
   return form.components.map((panel) => {
     if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
       return null;
     }
     return (
       <section key={panel.title} className="margin-bottom-default wizard-page">
-        <Systemtittel className="margin-bottom-default">{panel.title}</Systemtittel>
+        <Systemtittel tag={tag} className="margin-bottom-default">
+          {panel.title}
+        </Systemtittel>
         <dl>
           {filterNonFormContent(panel.components, submission).map((component) => {
             if (component.type === "container") {
@@ -108,12 +110,14 @@ export function SummaryPage({ form, submission }) {
   return (
     <SummaryContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      <Innholdstittel className="margin-bottom-default">Oppsummering av søknaden din</Innholdstittel>
+      <Innholdstittel tag="h2" className="margin-bottom-default">
+        Oppsummering av søknaden din
+      </Innholdstittel>
       <Normaltekst className="margin-bottom-default">
         Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
         "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
       </Normaltekst>
-      <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
+      <FormSummary tag="h3" submission={!!submission ? submission.data : {}} form={resultForm} />
       <nav className="list-inline">
         <div className="list-inline-item">
           <Link className="btn btn-secondary btn-wizard-nav-previous" to={`/${form.path}`}>
