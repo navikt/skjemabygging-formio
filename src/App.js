@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import { Components } from "formiojs";
 import components from "./custom";
 import "nav-frontend-typografi-style";
@@ -15,6 +15,8 @@ Components.setComponents(components);
 
 function App({ forms, className }) {
   const [submission, setSubmission] = useState({});
+  const history = useHistory();
+
   return (
     <div className={className}>
       <Switch>
@@ -32,6 +34,11 @@ function App({ forms, className }) {
             if (!form) {
               return <h1>Skjemaet {formPath} finnes ikke</h1>;
             }
+
+            if (!submission[form.path]) {
+              history.push(`/${form.path}`);
+              return;
+            }
             return <SummaryPage form={form} submission={submission[form.path]} />;
           }}
         />
@@ -42,6 +49,11 @@ function App({ forms, className }) {
             const form = forms.find((form) => form.path === formPath);
             if (!form) {
               return <h1>Skjemaet {formPath} finnes ikke</h1>;
+            }
+
+            if (!submission[form.path]) {
+              history.push(`/${form.path}`);
+              return;
             }
             return <PrepareSubmitPage form={form} submission={submission[form.path]} />;
           }}

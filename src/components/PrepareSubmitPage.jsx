@@ -7,6 +7,7 @@ import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
 import NavForm from "./NavForm";
 import PropTypes from "prop-types";
+import RefreshAlert from "./hooks/RefreshAlert";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -110,6 +111,7 @@ export function PrepareSubmitPage({ form, submission }) {
           Gå videre
         </a>
       </section>
+      <RefreshAlert />
     </ResultContent>
   );
 }
