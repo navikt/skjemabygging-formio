@@ -37,11 +37,12 @@ const originalNextPage = Wizard.prototype.nextPage;
 Wizard.prototype.nextPage = function () {
   return originalNextPage.call(this).catch((error) => {
     const errorList = document.querySelector("div[id^='error-list-']");
+    const firstError = document.querySelector("div[id^='error-list-'] li:first-of-type");
     errorList.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
-    errorList.focus({ preventScroll: true });
+    firstError.focus({ preventScroll: true });
     return Promise.reject(error);
   });
 };
