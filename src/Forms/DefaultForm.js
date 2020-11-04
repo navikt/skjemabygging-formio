@@ -1,7 +1,3 @@
-import { kontaktinfoSchema } from "./FormBuilderOptions";
-import { personaliaSchema } from "./FormBuilderOptions";
-import { statsborgerskapSchema } from "./FormBuilderOptions";
-
 export const defaultFormFields = () => [
   {
     type: "panel",

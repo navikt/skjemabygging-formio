@@ -101,8 +101,6 @@ const poststedSchema = {
   },
 };
 
-const landSchema = {};
-
 const epostSchema = {
   label: "E-post",
   type: "email",
