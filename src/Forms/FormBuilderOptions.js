@@ -106,7 +106,7 @@ const landSchema = {};
 const epostSchema = {
   label: "E-post",
   type: "email",
-  key: "email",
+  key: "epost",
   input: true,
   validate: {
     required: true,
@@ -116,21 +116,20 @@ const epostSchema = {
 const telefonSchema = {
   label: "Telefonnummer",
   type: "phoneNumber",
-  key: "phoneNumber",
+  key: "telefonnumer",
   input: true,
   inputMask: false,
   spellcheck: false,
   validateOn: "blur",
   validate: {
     required: true,
-    pattern: "99 99 99 99",
   },
 };
 
 export const statsborgerskapSchema = {
   label: "Statsborgerskap",
   type: "textfield",
-  key: "textfield",
+  key: "statsborgerskap",
   input: true,
   validateOn: "blur",
   validate: {
@@ -165,13 +164,13 @@ const builderPalett = {
       },
       firstName: {
         title: "Fornavn",
-        key: "fornavn",
+        //key: "fornavn",
         icon: "user",
         schema: firstNameSchema,
       },
       surname: {
         title: "Etternavn",
-        key: "etternavn",
+        //key: "etternavn",
         icon: "user",
         schema: surnameSchema,
       },
@@ -195,19 +194,19 @@ const builderPalett = {
       },
       email: {
         title: "E-post",
-        key: "email",
+        key: "epost",
         icon: "at",
         schema: epostSchema,
       },
       phoneNumber: {
         title: "Telefon",
-        key: "phoneNumber",
+        key: "telefonnummer",
         icon: "phone-square",
         schema: telefonSchema,
       },
       citizenship: {
         title: "Statsborgerskap",
-        key: "textfield",
+        key: "statsborgerskap",
         icon: "user",
         schema: statsborgerskapSchema,
       },
@@ -231,12 +230,12 @@ const builderPalett = {
       },
       bankAccount: {
         title: "Kontonummer",
-        key: "textfield",
+        key: "kontonummer",
         icon: "bank",
         schema: {
           label: "Kontonummer",
           type: "textfield",
-          key: "textfield",
+          key: "kontoNummer",
           input: true,
           spellcheck: false,
           validateOn: "blur",
@@ -292,47 +291,47 @@ const builderPalett = {
     components: {
       time: {
         title: "Tid",
-        key: "time",
+        key: "tid",
         icon: "clock-o",
         schema: {
           label: "Tid",
           type: "time",
-          key: "time",
+          key: "tid",
           input: true,
           spellcheck: false,
         },
       },
       datetime: {
         title: "Dato / tid",
-        key: "datetime",
+        key: "datoTid",
         icon: "calendar",
         schema: {
           label: "Dato / tid",
           type: "datetime",
-          key: "datetime",
+          key: "datoTid",
           input: true,
           spellcheck: false,
         },
       },
       day: {
         title: "Dag / mnd / år",
-        key: "day",
+        key: "dagMndAr",
         icon: "calendar",
         schema: {
           label: "Dag / mnd / år",
           type: "day",
-          key: "day",
+          key: "dagMndAr",
           input: true,
         },
       },
       month: {
         title: "Måned",
-        key: "month",
+        key: "maaned",
         icon: "calendar",
         schema: {
           label: "Måned",
           type: "datetime",
-          key: "month",
+          key: "maaned",
           input: true,
           datePicker: {
             showWeeks: true,
