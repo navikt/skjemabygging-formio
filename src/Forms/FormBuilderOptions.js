@@ -295,6 +295,7 @@ const builderPalett = {
         title: "Tid",
         key: "tid",
         icon: "clock-o",
+        weight: 20,
         schema: {
           label: "Tid",
           type: "time",
@@ -307,6 +308,7 @@ const builderPalett = {
         title: "Dato / tid",
         key: "datoTid",
         icon: "calendar",
+        weight: 30,
         schema: {
           label: "Dato / tid",
           type: "datetime",
@@ -319,6 +321,7 @@ const builderPalett = {
         title: "Dag / mnd / år",
         key: "dagMndAr",
         icon: "calendar",
+        weight: 40,
         schema: {
           label: "Dag / mnd / år",
           type: "day",
@@ -330,6 +333,7 @@ const builderPalett = {
         title: "Måned",
         key: "maaned",
         icon: "calendar",
+        weight: 50,
         schema: {
           label: "Måned",
           type: "datetime",
