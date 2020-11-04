@@ -147,6 +147,8 @@ export const kontaktinfoSchema = {
 };
 
 const builderPalett = {
+  advanced: null,
+  premium: null,
   person: {
     title: "Person",
     components: {
