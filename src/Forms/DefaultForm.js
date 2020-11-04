@@ -6,11 +6,24 @@ export const defaultFormFields = () => [
   {
     type: "panel",
     input: false,
+    title: "Introduksjon",
+    theme: "default",
+    components: [
+      {
+        label: "Introduksjonstekst",
+        type: "content",
+        key: "introduksjonstekst",
+        input: false,
+        html: "Her skal det stå litt informasjon om søknaden",
+      },
+    ],
+  },
+  {
+    type: "panel",
+    input: false,
     title: "Personinformasjon",
     theme: "default",
     components: [
-      statsborgerskapSchema,
-
       {
         Label: "Fødselsnummer / D-nummer",
         type: "fnrfield",
