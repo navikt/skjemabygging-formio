@@ -152,12 +152,6 @@ const builderPalett = {
   person: {
     title: "Person",
     components: {
-      kontaktinfo: {
-        title: "Kontaktinfo",
-        key: "kontaktinfo",
-        icon: "home",
-        schema: kontaktinfoSchema,
-      },
       personalia: {
         title: "Personalia",
         key: "personalia",
@@ -166,15 +160,21 @@ const builderPalett = {
       },
       firstName: {
         title: "Fornavn",
-        //key: "fornavn",
+        key: "fornavn",
         icon: "user",
         schema: firstNameSchema,
       },
       surname: {
         title: "Etternavn",
-        //key: "etternavn",
+        key: "etternavn",
         icon: "user",
         schema: surnameSchema,
+      },
+      kontaktinfo: {
+        title: "Kontaktinfo",
+        key: "kontaktinfo",
+        icon: "home",
+        schema: kontaktinfoSchema,
       },
       streetAddress: {
         title: "Gatedresse",
