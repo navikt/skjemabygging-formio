@@ -16,7 +16,9 @@
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
   id="{{ctx.component.key}}"
-  required="{{ctx.component.validate.required}}"
+  {% if (ctx.component.validate.required) { %}
+    required="{{ctx.component.validate.required}}"
+  {% } %}
   aria-describedby="{{ctx.component.key}}-error"
 >{{ctx.input.content}}</{{ctx.input.type}}>
 {% } %}
