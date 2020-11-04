@@ -84,8 +84,8 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => scrollToAndSetFocus("main"),
-    onPrevPage: () => scrollToAndSetFocus("main"),
+    onNextPage: () => scrollToAndSetFocus("main", "start"),
+    onPrevPage: () => scrollToAndSetFocus("main", "start"),
   };
 
   static getDefaultEmitter() {

@@ -1,9 +1,9 @@
-export function scrollToAndSetFocus(selector) {
+export function scrollToAndSetFocus(selector, alignTarget = "center") {
   const targetTag = document.querySelector(selector);
   if (targetTag) {
     targetTag.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: alignTarget,
     });
     targetTag.focus({ preventScroll: true });
   }
