@@ -31,18 +31,13 @@ import "nav-frontend-skjema-style";
 import navdesign from "template";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
+import { scrollToAndSetFocus } from "../util/focus-management";
 
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
 Wizard.prototype.nextPage = function () {
   return originalNextPage.call(this).catch((error) => {
-    const errorList = document.querySelector("div[id^='error-list-']");
-    const firstError = document.querySelector("div[id^='error-list-'] li:first-of-type");
-    errorList.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-    firstError.focus({ preventScroll: true });
+    scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
     return Promise.reject(error);
   });
 };
@@ -89,8 +84,8 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: focusAndScrollToNextAndPreviousPage,
-    onPrevPage: focusAndScrollToNextAndPreviousPage,
+    onNextPage: () => scrollToAndSetFocus("main"),
+    onPrevPage: () => scrollToAndSetFocus("main"),
   };
 
   static getDefaultEmitter() {
@@ -202,13 +197,3 @@ export default styled(NavForm)({
     content: '"(valgfritt)"',
   },
 });
-
-function focusAndScrollToNextAndPreviousPage() {
-  const nextOrPreviousPage = document.querySelector("main");
-  const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
-  nextOrPreviousTitle.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-  nextOrPreviousPage.focus({ preventScroll: true });
-}
