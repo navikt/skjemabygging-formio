@@ -76,7 +76,9 @@ const FormSummary = ({ form, submission }) => {
     }
     return (
       <section key={panel.title} className="margin-bottom-default wizard-page">
-        <Systemtittel className="margin-bottom-default">{panel.title}</Systemtittel>
+        <Systemtittel tag="h3" className="margin-bottom-default">
+          {panel.title}
+        </Systemtittel>
         <dl>
           {filterNonFormContent(panel.components, submission).map((component) => {
             if (component.type === "container") {
@@ -108,7 +110,9 @@ export function SummaryPage({ form, submission }) {
   return (
     <SummaryContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      <Innholdstittel className="margin-bottom-default">Oppsummering av søknaden din</Innholdstittel>
+      <Innholdstittel tag="h2" className="margin-bottom-default">
+        Oppsummering av søknaden din
+      </Innholdstittel>
       <Normaltekst className="margin-bottom-default">
         Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
         "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
