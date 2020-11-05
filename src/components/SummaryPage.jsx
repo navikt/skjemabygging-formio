@@ -69,14 +69,14 @@ const FormSummaryFieldset = ({ component, submission }) => (
   </>
 );
 
-const FormSummary = ({ tag, form, submission }) => {
+const FormSummary = ({ form, submission }) => {
   return form.components.map((panel) => {
     if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
       return null;
     }
     return (
       <section key={panel.title} className="margin-bottom-default wizard-page">
-        <Systemtittel tag={tag} className="margin-bottom-default">
+        <Systemtittel tag="h3" className="margin-bottom-default">
           {panel.title}
         </Systemtittel>
         <dl>
@@ -117,7 +117,7 @@ export function SummaryPage({ form, submission }) {
         Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
         "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
       </Normaltekst>
-      <FormSummary tag="h3" submission={!!submission ? submission.data : {}} form={resultForm} />
+      <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
       <nav className="list-inline">
         <div className="list-inline-item">
           <Link className="btn btn-secondary btn-wizard-nav-previous" to={`/${form.path}`}>
