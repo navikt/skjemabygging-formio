@@ -125,7 +125,7 @@ const utenlandskPostkodeSchema = {
   validateOn: "blur",
   clearOnHide: true,
   validate: {
-    required: true,
+    required: false,
     maxLength: 4,
     minLength: 4,
   },
