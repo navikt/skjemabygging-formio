@@ -154,60 +154,70 @@ const builderPalett = {
         title: "Personalia",
         key: "personalia",
         icon: "user",
+        weight: 0,
         schema: personaliaSchema,
       },
       firstName: {
         title: "Fornavn",
         key: "fornavn",
         icon: "user",
+        weight: 20,
         schema: firstNameSchema,
       },
       surname: {
         title: "Etternavn",
         key: "etternavn",
         icon: "user",
+        weight: 30,
         schema: surnameSchema,
       },
       kontaktinfo: {
         title: "Kontaktinfo",
         key: "kontaktinfo",
         icon: "home",
+        weight: 40,
         schema: kontaktinfoSchema,
       },
       streetAddress: {
         title: "Gatedresse",
         key: "gateadresse",
         icon: "home",
+        weight: 50,
         schema: gateadresseSchema,
       },
       postcode: {
         title: "Postnummer",
         key: "postnr",
         icon: "home",
+        weight: 60,
         schema: postnrSchema,
       },
       city: {
         title: "Poststed",
         key: "poststed",
         icon: "home",
+        weight: 70,
         schema: poststedSchema,
       },
       email: {
         title: "E-post",
         key: "epost",
         icon: "at",
+        weight: 80,
         schema: epostSchema,
       },
       phoneNumber: {
         title: "Telefon",
         key: "telefonnummer",
         icon: "phone-square",
+        weight: 90,
         schema: telefonSchema,
       },
       citizenship: {
         title: "Statsborgerskap",
         key: "statsborgerskap",
         icon: "user",
+        weight: 100,
         schema: statsborgerskapSchema,
       },
     },
@@ -464,6 +474,45 @@ const builderPalett = {
           validate: {
             required: true,
           },
+          values: [
+            {
+              value: "ja",
+              label: "Ja",
+            },
+            {
+              value: "nei",
+              label: "Nei",
+            },
+          ],
+        },
+      },
+      vedlegg: {
+        title: "Vedlegg",
+        key: "vedlegg",
+        icon: "file",
+        schema: {
+          label: "< Navn på vedlegg > + husk å legge inn vedleggskode i API property name (eks: vedleggD9)",
+          type: "radio",
+          key: "vedlegg",
+          input: true,
+          validate: {
+            required: true,
+          },
+          values: [
+            {
+              value: "jegLeggerDetVedDenneSøknaden",
+              label: "Jeg legger det ved denne søknaden (anbefalt)",
+            },
+            {
+              value: "jegEttersenderDokumentasjonenSenere",
+              label:
+                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+            },
+            {
+              value: "jegHarLevertDenneDokumentasjonenTidligere",
+              label: "Jeg har levert denne dokumentasjonen tidligere",
+            },
+          ],
         },
       },
       button: {

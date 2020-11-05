@@ -75,9 +75,9 @@ export default class Fodselsnummer extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: "Fødselsnummer",
-      group: "advanced",
-      icon: "fa fa-terminal",
-      // weight: 70,
+      group: "person",
+      icon: "user",
+      weight: 10,
       // documentation: 'http://help.form.io/userguide/#table',
       schema: Fodselsnummer.schema(),
     };
@@ -93,14 +93,6 @@ export default class Fodselsnummer extends TextFieldComponent {
               // You can ignore existing fields.
               key: "placeholder",
               ignore: true,
-            },
-            {
-              // Or add your own. The syntax is form.io component definitions.
-              type: "textfield",
-              input: true,
-              label: "My Custom Setting",
-              weight: 12,
-              key: "myCustomSetting", // This will be available as component.myCustomSetting
             },
           ],
         },
