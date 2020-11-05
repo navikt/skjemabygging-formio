@@ -46,7 +46,8 @@ export default class NavDatepicker extends FormioReactComponent {
   static get builderInfo() {
     return {
       title: "Datovelger",
-      group: "advanced",
+      group: "datoOgTid",
+      weight: 10,
       icon: "calendar",
       schema: NavDatepicker.schema(),
     };
