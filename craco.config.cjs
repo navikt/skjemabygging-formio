@@ -1,13 +1,5 @@
-const CracoLessPlugin = require("craco-less");
-
-const path = require("path");
-const resolvePackage = (relativePath) => path.resolve(__dirname, relativePath);
+const CracoLessPlugin = require("craco-less")
 
 module.exports = {
   plugins: [{ plugin: CracoLessPlugin }],
-  webpack: {
-    alias: {
-      react: resolvePackage("./node_modules/react"),
-    },
-  },
 };
