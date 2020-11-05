@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "@material-ui/styles/styled";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import RefreshModal from "./RefreshModal";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -127,7 +126,6 @@ export function SummaryPage({ form, submission }) {
           </Link>
         </div>
       </nav>
-      <RefreshModal />
     </SummaryContent>
   );
 }
