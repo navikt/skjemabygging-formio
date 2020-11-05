@@ -48,7 +48,7 @@ const surnameSchema = {
   },
 };
 
-export const personaliaSchema = {
+const personaliaSchema = {
   label: "Personalia", // not used
   hideLabel: true,
   type: "container",
@@ -62,6 +62,26 @@ export const personaliaSchema = {
     },
     firstNameSchema,
     surnameSchema,
+  ],
+};
+
+const borDuUtenforNorgeSchema = {
+  label: "Bor du utenfor Norge?",
+  type: "radio",
+  key: "borDuUtenforNorge",
+  input: true,
+  validate: {
+    required: true,
+  },
+  values: [
+    {
+      value: "ja",
+      label: "Ja",
+    },
+    {
+      value: "nei",
+      label: "Nei",
+    },
   ],
 };
 
@@ -83,10 +103,36 @@ const postnrSchema = {
   input: true,
   spellcheck: false,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
     maxLength: 4,
     minLength: 4,
+  },
+  conditional: {
+    show: false,
+    when: "borDuUtenforNorge",
+    eq: "ja",
+  },
+};
+
+const utenlandskPostkodeSchema = {
+  label: "Utenlandsk postkode",
+  type: "textfield",
+  key: "utenlandskPostkode",
+  input: true,
+  spellcheck: false,
+  validateOn: "blur",
+  clearOnHide: true,
+  validate: {
+    required: true,
+    maxLength: 4,
+    minLength: 4,
+  },
+  conditional: {
+    show: true,
+    when: "borDuUtenforNorge",
+    eq: "ja",
   },
 };
 
@@ -101,11 +147,29 @@ const poststedSchema = {
   },
 };
 
+const landSchema = {
+  label: "Land",
+  type: "textfield",
+  key: "land",
+  input: true,
+  validateOn: "blur",
+  clearOnHide: true,
+  validate: {
+    required: true,
+  },
+  conditional: {
+    show: true,
+    when: "borDuUtenforNorge",
+    eq: "ja",
+  },
+};
+
 const epostSchema = {
   label: "E-post",
   type: "email",
   key: "epost",
   input: true,
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -124,7 +188,7 @@ const telefonSchema = {
   },
 };
 
-export const statsborgerskapSchema = {
+const statsborgerskapSchema = {
   label: "Statsborgerskap",
   type: "textfield",
   key: "statsborgerskap",
@@ -135,13 +199,22 @@ export const statsborgerskapSchema = {
   },
 };
 
-export const kontaktinfoSchema = {
+const kontaktInfoSchema = {
   label: "Kontaktinfo",
   hideLabel: true,
   type: "container",
   key: "kontaktinfo",
   input: true,
-  components: [gateadresseSchema, postnrSchema, poststedSchema, epostSchema, telefonSchema],
+  components: [
+    borDuUtenforNorgeSchema,
+    gateadresseSchema,
+    postnrSchema,
+    utenlandskPostkodeSchema,
+    poststedSchema,
+    landSchema,
+    epostSchema,
+    telefonSchema,
+  ],
 };
 
 const builderPalett = {
@@ -176,7 +249,7 @@ const builderPalett = {
         key: "kontaktinfo",
         icon: "home",
         weight: 40,
-        schema: kontaktinfoSchema,
+        schema: kontaktInfoSchema,
       },
       streetAddress: {
         title: "Gatedresse",
@@ -198,6 +271,13 @@ const builderPalett = {
         icon: "home",
         weight: 70,
         schema: poststedSchema,
+      },
+      land: {
+        title: "Land",
+        key: "land",
+        icon: "home",
+        weight: 70,
+        schema: landSchema,
       },
       email: {
         title: "E-post",
