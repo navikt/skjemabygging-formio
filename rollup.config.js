@@ -20,6 +20,13 @@ export default [
       "formiojs/components",
       "nav-frontend-skjema-style",
       "template",
+      "nav-datovelger",
+      "formiojs/components/_classes/component/Component.form",
+      "formiojs/components/_classes/component/editForm/Component.edit.validation",
+      "formiojs/components/_classes/component/editForm/Component.edit.display",
+      "formiojs/components/_classes/component/editForm/Component.edit.conditional",
+      "formiojs/components/_classes/component/editForm/Component.edit.api",
+      "formiojs/components/_classes/field/Field",
     ],
     output: [
       { file: pkg.module, format: "es" },

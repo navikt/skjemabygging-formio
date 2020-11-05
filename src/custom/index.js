@@ -1,5 +1,5 @@
-import Fodselsnummer from "./components/Fodselsnummer";
-import NavDatepicker from "./components/NavDatepicker";
+import Fodselsnummer from "./components/Fodselsnummer.jsx";
+import NavDatepicker from "./components/NavDatepicker.jsx";
 
 export default {
   fnrfield: Fodselsnummer,
