@@ -33,6 +33,7 @@ const firstNameSchema = {
   type: "textfield",
   key: "fornavn",
   input: true,
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -43,6 +44,7 @@ const surnameSchema = {
   type: "textfield",
   key: "etternavn",
   input: true,
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -65,32 +67,13 @@ const personaliaSchema = {
   ],
 };
 
-const borDuUtenforNorgeSchema = {
-  label: "Bor du utenfor Norge?",
-  type: "radio",
-  key: "borDuUtenforNorge",
-  input: true,
-  validate: {
-    required: true,
-  },
-  values: [
-    {
-      value: "ja",
-      label: "Ja",
-    },
-    {
-      value: "nei",
-      label: "Nei",
-    },
-  ],
-};
-
 const gateadresseSchema = {
   label: "Gateadresse",
   type: "textfield",
   key: "gateadresse",
   input: true,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -109,11 +92,6 @@ const postnrSchema = {
     maxLength: 4,
     minLength: 4,
   },
-  conditional: {
-    show: false,
-    when: "borDuUtenforNorge",
-    eq: "ja",
-  },
 };
 
 const utenlandskPostkodeSchema = {
@@ -129,11 +107,6 @@ const utenlandskPostkodeSchema = {
     maxLength: 4,
     minLength: 4,
   },
-  conditional: {
-    show: true,
-    when: "borDuUtenforNorge",
-    eq: "ja",
-  },
 };
 
 const poststedSchema = {
@@ -141,6 +114,7 @@ const poststedSchema = {
   type: "textfield",
   key: "poststed",
   input: true,
+  clearOnHide: true,
   validateOn: "blur",
   validate: {
     required: true,
@@ -159,7 +133,7 @@ const landSchema = {
   },
   conditional: {
     show: true,
-    when: "borDuUtenforNorge",
+    when: "utenlandskAdresse",
     eq: "ja",
   },
 };
@@ -170,6 +144,7 @@ const epostSchema = {
   key: "epost",
   input: true,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -183,6 +158,7 @@ const telefonSchema = {
   inputMask: false,
   spellcheck: false,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -194,6 +170,7 @@ const statsborgerskapSchema = {
   key: "statsborgerskap",
   input: true,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -206,12 +183,51 @@ const kontaktInfoSchema = {
   key: "kontaktinfo",
   input: true,
   components: [
-    borDuUtenforNorgeSchema,
+    {
+      label: "Bor du utenfor Norge?",
+      type: "radio",
+      key: "utenlandskAdresse",
+      input: true,
+      validate: {
+        required: true,
+      },
+      values: [
+        {
+          value: "ja",
+          label: "Ja",
+        },
+        {
+          value: "nei",
+          label: "Nei",
+        },
+      ],
+    },
     gateadresseSchema,
-    postnrSchema,
-    utenlandskPostkodeSchema,
+    {
+      ...postnrSchema,
+      conditional: {
+        show: false,
+        when: "utenlandskAdresse",
+        eq: "ja",
+      },
+    },
+    {
+      ...utenlandskPostkodeSchema,
+      conditional: {
+        show: true,
+        when: "utenlandskAdresse",
+        eq: "ja",
+      },
+    },
     poststedSchema,
-    landSchema,
+    {
+      ...landSchema,
+      conditional: {
+        show: true,
+        when: "utenlandskAdresse",
+        eq: "ja",
+      },
+    },
     epostSchema,
     telefonSchema,
   ],
@@ -316,6 +332,7 @@ const builderPalett = {
           input: true,
           currency: "nok",
           spellcheck: false,
+          clearOnHide: true,
         },
       },
       bankAccount: {
@@ -329,6 +346,7 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           validateOn: "blur",
+          clearOnHide: true,
           validate: {
             required: true,
             maxLength: 11,
@@ -352,6 +370,7 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           validateOn: "blur",
+          clearOnHide: true,
           validate: {
             required: true,
             maxLength: 9,
@@ -369,6 +388,7 @@ const builderPalett = {
           key: "arbeidsgiver",
           input: true,
           validateOn: "blur",
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -390,6 +410,7 @@ const builderPalett = {
           key: "tid",
           input: true,
           spellcheck: false,
+          clearOnHide: true,
         },
       },
       datetime: {
@@ -403,6 +424,7 @@ const builderPalett = {
           key: "datoTid",
           input: true,
           spellcheck: false,
+          clearOnHide: true,
         },
       },
       day: {
@@ -415,6 +437,7 @@ const builderPalett = {
           type: "day",
           key: "dagMndAr",
           input: true,
+          clearOnHide: true,
         },
       },
       month: {
@@ -427,6 +450,7 @@ const builderPalett = {
           type: "datetime",
           key: "maaned",
           input: true,
+          clearOnHide: true,
           datePicker: {
             showWeeks: true,
             startingDay: 0,
@@ -454,8 +478,9 @@ const builderPalett = {
         schema: {
           label: "Tekstfelt",
           type: "textfield",
-          key: "textfield",
+          key: "tekstfelt",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -470,6 +495,7 @@ const builderPalett = {
           type: "textarea",
           key: "textarea",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -484,6 +510,7 @@ const builderPalett = {
           type: "number",
           key: "number",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -498,6 +525,7 @@ const builderPalett = {
           type: "password",
           key: "password",
           input: true,
+          clearOnHide: true,
         },
       },
       checkbox: {
@@ -509,6 +537,7 @@ const builderPalett = {
           type: "checkbox",
           key: "checkbox",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -523,6 +552,7 @@ const builderPalett = {
           type: "selectboxes",
           key: "selectboxes",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -537,6 +567,7 @@ const builderPalett = {
           type: "select",
           key: "select",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -551,6 +582,7 @@ const builderPalett = {
           type: "radio",
           key: "radio",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -575,6 +607,7 @@ const builderPalett = {
           type: "radio",
           key: "vedlegg",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -615,6 +648,7 @@ const builderPalett = {
           type: "url",
           key: "url",
           input: true,
+          clearOnHide: true,
         },
       },
       tags: {
@@ -626,6 +660,7 @@ const builderPalett = {
           type: "tags",
           key: "tags",
           input: true,
+          clearOnHide: true,
         },
       },
       signature: {
@@ -637,6 +672,7 @@ const builderPalett = {
           type: "signature",
           key: "signature",
           input: true,
+          clearOnHide: true,
         },
       },
       survey: {
@@ -648,6 +684,7 @@ const builderPalett = {
           type: "survey",
           key: "survey",
           input: true,
+          clearOnHide: true,
         },
       },
     },
