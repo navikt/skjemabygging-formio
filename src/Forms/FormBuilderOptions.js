@@ -102,11 +102,6 @@ const utenlandskPostkodeSchema = {
   spellcheck: false,
   validateOn: "blur",
   clearOnHide: true,
-  validate: {
-    required: false,
-    maxLength: 4,
-    minLength: 4,
-  },
 };
 
 const poststedSchema = {
@@ -130,11 +125,6 @@ const landSchema = {
   clearOnHide: true,
   validate: {
     required: true,
-  },
-  conditional: {
-    show: true,
-    when: "utenlandskAdresse",
-    eq: "ja",
   },
 };
 
