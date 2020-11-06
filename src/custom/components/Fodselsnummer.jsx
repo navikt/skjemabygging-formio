@@ -1,8 +1,7 @@
 import components from "formiojs/components/builder";
-import baseEditForm from "formiojs/components/_classes/component/Component.form";
-// const baseEditForm = components.component.editForm;
 
 const TextFieldComponent = components.textfield;
+const baseEditForm = components.component.editForm;
 
 const k1 = [3, 7, 6, 1, 8, 9, 4, 5, 2];
 const k2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
