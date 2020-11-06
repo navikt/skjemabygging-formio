@@ -33,6 +33,7 @@ const firstNameSchema = {
   type: "textfield",
   key: "fornavn",
   input: true,
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -43,12 +44,13 @@ const surnameSchema = {
   type: "textfield",
   key: "etternavn",
   input: true,
+  clearOnHide: true,
   validate: {
     required: true,
   },
 };
 
-export const personaliaSchema = {
+const personaliaSchema = {
   label: "Personalia", // not used
   hideLabel: true,
   type: "container",
@@ -71,6 +73,7 @@ const gateadresseSchema = {
   key: "gateadresse",
   input: true,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -83,6 +86,7 @@ const postnrSchema = {
   input: true,
   spellcheck: false,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
     maxLength: 4,
@@ -90,12 +94,35 @@ const postnrSchema = {
   },
 };
 
+const utenlandskPostkodeSchema = {
+  label: "Utenlandsk postkode",
+  type: "textfield",
+  key: "utenlandskPostkode",
+  input: true,
+  spellcheck: false,
+  validateOn: "blur",
+  clearOnHide: true,
+};
+
 const poststedSchema = {
   label: "Poststed",
   type: "textfield",
   key: "poststed",
   input: true,
+  clearOnHide: true,
   validateOn: "blur",
+  validate: {
+    required: true,
+  },
+};
+
+const landSchema = {
+  label: "Land",
+  type: "textfield",
+  key: "land",
+  input: true,
+  validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -106,6 +133,8 @@ const epostSchema = {
   type: "email",
   key: "epost",
   input: true,
+  validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
@@ -119,29 +148,79 @@ const telefonSchema = {
   inputMask: false,
   spellcheck: false,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
 };
 
-export const statsborgerskapSchema = {
+const statsborgerskapSchema = {
   label: "Statsborgerskap",
   type: "textfield",
   key: "statsborgerskap",
   input: true,
   validateOn: "blur",
+  clearOnHide: true,
   validate: {
     required: true,
   },
 };
 
-export const kontaktinfoSchema = {
+const kontaktInfoSchema = {
   label: "Kontaktinfo",
   hideLabel: true,
   type: "container",
   key: "kontaktinfo",
   input: true,
-  components: [gateadresseSchema, postnrSchema, poststedSchema, epostSchema, telefonSchema],
+  components: [
+    {
+      label: "Bor du utenfor Norge?",
+      type: "radio",
+      key: "utenlandskAdresse",
+      input: true,
+      validate: {
+        required: true,
+      },
+      values: [
+        {
+          value: "ja",
+          label: "Ja",
+        },
+        {
+          value: "nei",
+          label: "Nei",
+        },
+      ],
+    },
+    gateadresseSchema,
+    {
+      ...postnrSchema,
+      conditional: {
+        show: false,
+        when: "utenlandskAdresse",
+        eq: "ja",
+      },
+    },
+    {
+      ...utenlandskPostkodeSchema,
+      conditional: {
+        show: true,
+        when: "utenlandskAdresse",
+        eq: "ja",
+      },
+    },
+    poststedSchema,
+    {
+      ...landSchema,
+      conditional: {
+        show: true,
+        when: "utenlandskAdresse",
+        eq: "ja",
+      },
+    },
+    epostSchema,
+    telefonSchema,
+  ],
 };
 
 const builderPalett = {
@@ -154,60 +233,77 @@ const builderPalett = {
         title: "Personalia",
         key: "personalia",
         icon: "user",
+        weight: 0,
         schema: personaliaSchema,
       },
       firstName: {
         title: "Fornavn",
         key: "fornavn",
         icon: "user",
+        weight: 20,
         schema: firstNameSchema,
       },
       surname: {
         title: "Etternavn",
         key: "etternavn",
         icon: "user",
+        weight: 30,
         schema: surnameSchema,
       },
       kontaktinfo: {
         title: "Kontaktinfo",
         key: "kontaktinfo",
         icon: "home",
-        schema: kontaktinfoSchema,
+        weight: 40,
+        schema: kontaktInfoSchema,
       },
       streetAddress: {
         title: "Gatedresse",
         key: "gateadresse",
         icon: "home",
+        weight: 50,
         schema: gateadresseSchema,
       },
       postcode: {
         title: "Postnummer",
         key: "postnr",
         icon: "home",
+        weight: 60,
         schema: postnrSchema,
       },
       city: {
         title: "Poststed",
         key: "poststed",
         icon: "home",
+        weight: 70,
         schema: poststedSchema,
+      },
+      land: {
+        title: "Land",
+        key: "land",
+        icon: "home",
+        weight: 70,
+        schema: landSchema,
       },
       email: {
         title: "E-post",
         key: "epost",
         icon: "at",
+        weight: 80,
         schema: epostSchema,
       },
       phoneNumber: {
         title: "Telefon",
         key: "telefonnummer",
         icon: "phone-square",
+        weight: 90,
         schema: telefonSchema,
       },
       citizenship: {
         title: "Statsborgerskap",
         key: "statsborgerskap",
         icon: "user",
+        weight: 100,
         schema: statsborgerskapSchema,
       },
     },
@@ -226,6 +322,7 @@ const builderPalett = {
           input: true,
           currency: "nok",
           spellcheck: false,
+          clearOnHide: true,
         },
       },
       bankAccount: {
@@ -239,6 +336,7 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           validateOn: "blur",
+          clearOnHide: true,
           validate: {
             required: true,
             maxLength: 11,
@@ -262,6 +360,7 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           validateOn: "blur",
+          clearOnHide: true,
           validate: {
             required: true,
             maxLength: 9,
@@ -279,6 +378,7 @@ const builderPalett = {
           key: "arbeidsgiver",
           input: true,
           validateOn: "blur",
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -300,6 +400,7 @@ const builderPalett = {
           key: "tid",
           input: true,
           spellcheck: false,
+          clearOnHide: true,
         },
       },
       datetime: {
@@ -313,6 +414,7 @@ const builderPalett = {
           key: "datoTid",
           input: true,
           spellcheck: false,
+          clearOnHide: true,
         },
       },
       day: {
@@ -325,6 +427,7 @@ const builderPalett = {
           type: "day",
           key: "dagMndAr",
           input: true,
+          clearOnHide: true,
         },
       },
       month: {
@@ -337,6 +440,7 @@ const builderPalett = {
           type: "datetime",
           key: "maaned",
           input: true,
+          clearOnHide: true,
           datePicker: {
             showWeeks: true,
             startingDay: 0,
@@ -364,8 +468,9 @@ const builderPalett = {
         schema: {
           label: "Tekstfelt",
           type: "textfield",
-          key: "textfield",
+          key: "tekstfelt",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -380,6 +485,7 @@ const builderPalett = {
           type: "textarea",
           key: "textarea",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -394,6 +500,7 @@ const builderPalett = {
           type: "number",
           key: "number",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -408,6 +515,7 @@ const builderPalett = {
           type: "password",
           key: "password",
           input: true,
+          clearOnHide: true,
         },
       },
       checkbox: {
@@ -419,6 +527,7 @@ const builderPalett = {
           type: "checkbox",
           key: "checkbox",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -433,6 +542,7 @@ const builderPalett = {
           type: "selectboxes",
           key: "selectboxes",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -447,6 +557,7 @@ const builderPalett = {
           type: "select",
           key: "select",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
@@ -461,9 +572,50 @@ const builderPalett = {
           type: "radio",
           key: "radio",
           input: true,
+          clearOnHide: true,
           validate: {
             required: true,
           },
+          values: [
+            {
+              value: "ja",
+              label: "Ja",
+            },
+            {
+              value: "nei",
+              label: "Nei",
+            },
+          ],
+        },
+      },
+      vedlegg: {
+        title: "Vedlegg",
+        key: "vedlegg",
+        icon: "file",
+        schema: {
+          label: "< Navn på vedlegg > + husk å legge inn vedleggskode i API property name (eks: vedleggD9)",
+          type: "radio",
+          key: "vedlegg",
+          input: true,
+          clearOnHide: true,
+          validate: {
+            required: true,
+          },
+          values: [
+            {
+              value: "jegLeggerDetVedDenneSøknaden",
+              label: "Jeg legger det ved denne søknaden (anbefalt)",
+            },
+            {
+              value: "jegEttersenderDokumentasjonenSenere",
+              label:
+                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+            },
+            {
+              value: "jegHarLevertDenneDokumentasjonenTidligere",
+              label: "Jeg har levert denne dokumentasjonen tidligere",
+            },
+          ],
         },
       },
       button: {
@@ -486,6 +638,7 @@ const builderPalett = {
           type: "url",
           key: "url",
           input: true,
+          clearOnHide: true,
         },
       },
       tags: {
@@ -497,6 +650,7 @@ const builderPalett = {
           type: "tags",
           key: "tags",
           input: true,
+          clearOnHide: true,
         },
       },
       signature: {
@@ -508,6 +662,7 @@ const builderPalett = {
           type: "signature",
           key: "signature",
           input: true,
+          clearOnHide: true,
         },
       },
       survey: {
@@ -519,6 +674,7 @@ const builderPalett = {
           type: "survey",
           key: "survey",
           input: true,
+          clearOnHide: true,
         },
       },
     },
