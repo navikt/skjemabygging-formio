@@ -4,6 +4,14 @@ import { BrowserRouter } from "react-router-dom";
 import { AppConfigProvider } from "../configContext";
 import { computeDokumentinnsendingURL, PrepareSubmitPage } from "./PrepareSubmitPage";
 
+beforeEach(() => {
+  Element.prototype.scrollIntoView = jest.fn();
+});
+
+afterEach(() => {
+  Element.prototype.scrollIntoView = undefined;
+});
+
 test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krysset av på at de har lest instruksjonene", () => {
   render(
     <AppConfigProvider>
