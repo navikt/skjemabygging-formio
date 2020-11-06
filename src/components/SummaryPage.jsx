@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "@material-ui/styles/styled";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { scrollToAndSetFocus } from "../util/focus-management";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -107,8 +108,10 @@ const FormSummary = ({ form, submission }) => {
 export function SummaryPage({ form, submission }) {
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
 
+  useEffect(() => scrollToAndSetFocus("main"), []);
+
   return (
-    <SummaryContent>
+    <SummaryContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <Innholdstittel tag="h2" className="margin-bottom-default">
         Oppsummering av søknaden din
