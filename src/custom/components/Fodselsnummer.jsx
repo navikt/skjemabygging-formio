@@ -1,5 +1,6 @@
-import components from "formiojs/components";
+import components from "formiojs/components/builder";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
+// const baseEditForm = components.component.editForm;
 
 const TextFieldComponent = components.textfield;
 
@@ -75,7 +76,7 @@ export default class Fodselsnummer extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: "Fødselsnummer",
-      group: "advanced",
+      group: "person",
       icon: "fa fa-terminal",
       // weight: 70,
       // documentation: 'http://help.form.io/userguide/#table',
