@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { Components } from "formiojs";
 import components from "./custom";
 import "nav-frontend-typografi-style";
@@ -10,12 +10,27 @@ import { styled } from "@material-ui/styles";
 import { SummaryPage } from "./components/SummaryPage";
 import { PrepareSubmitPage } from "./components/PrepareSubmitPage";
 import { AllForms } from "./components/AllForms";
+import PropTypes from "prop-types";
 
 Components.setComponents(components);
 
+const FormPageWrapper = ({ routeProps, forms, submissionObject, children }) => {
+  const formPath = routeProps.match.params.formpath;
+  const targetForm = forms.find((form) => form.path === formPath);
+
+  if (!targetForm) {
+    return <h1>Skjemaet {formPath} finnes ikke</h1>;
+  }
+
+  if (!submissionObject[targetForm.path]) {
+    return <Redirect to={`/${targetForm.path}`} />;
+  }
+
+  return children(targetForm, submissionObject[targetForm.path]);
+};
+
 function App({ forms, className }) {
-  const [submission, setSubmission] = useState({});
-  const history = useHistory();
+  const [submissionObject, setSubmissionObject] = useState({});
 
   return (
     <div className={className}>
@@ -24,44 +39,39 @@ function App({ forms, className }) {
           <AllForms forms={forms} />
         </Route>
         <Route exact path="/:formpath">
-          <FormPage forms={forms} setSubmission={setSubmission} submission={submission} />
+          <FormPage forms={forms} setSubmission={setSubmissionObject} submission={submissionObject} />
         </Route>
         <Route
           path="/:formpath/oppsummering"
           render={(routeProps) => {
-            const formPath = routeProps.match.params.formpath;
-            const form = forms.find((form) => form.path === formPath);
-            if (!form) {
-              return <h1>Skjemaet {formPath} finnes ikke</h1>;
-            }
-
-            if (!submission[form.path]) {
-              history.push(`/${form.path}`);
-              return;
-            }
-            return <SummaryPage form={form} submission={submission[form.path]} />;
+            return (
+              <FormPageWrapper routeProps={routeProps} forms={forms} submissionObject={submissionObject}>
+                {(form, submission) => <SummaryPage form={form} submission={submission} />}
+              </FormPageWrapper>
+            );
           }}
         />
         <Route
           path="/:formpath/forbered-innsending"
           render={(routeProps) => {
-            const formPath = routeProps.match.params.formpath;
-            const form = forms.find((form) => form.path === formPath);
-            if (!form) {
-              return <h1>Skjemaet {formPath} finnes ikke</h1>;
-            }
-
-            if (!submission[form.path]) {
-              history.push(`/${form.path}`);
-              return;
-            }
-            return <PrepareSubmitPage form={form} submission={submission[form.path]} />;
+            return (
+              <FormPageWrapper routeProps={routeProps} forms={forms} submissionObject={submissionObject}>
+                {(form, submission) => <PrepareSubmitPage form={form} submission={submission} />}
+              </FormPageWrapper>
+            );
           }}
         />
       </Switch>
     </div>
   );
 }
+
+FormPageWrapper.propTypes = {
+  routeProps: PropTypes.object.isRequired,
+  forms: PropTypes.array.isRequired,
+  submissionObject: PropTypes.object.isRequired,
+  children: PropTypes.func.isRequired,
+};
 
 export default styled(App)({
   margin: "0 auto",
