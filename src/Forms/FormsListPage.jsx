@@ -5,12 +5,8 @@ import { Hovedknapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import * as PropTypes from "prop-types";
 
-const FormsList = ({forms, children}) => {
-  return <ul>
-      {forms
-        .sort((a, b) => (a.modified < b.modified ? 1 : -1))
-        .map((form) => children(form))}
-    </ul>
+const FormsList = ({ forms, children }) => {
+  return <ul>{forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))}</ul>;
 };
 
 FormsList.propTypes = {
@@ -24,7 +20,7 @@ export function FormsListPage({ forms, url, onDelete, onNew }) {
       <nav>
         <h3>Velg skjema:</h3>
         <FormsList forms={forms}>
-          {form => (
+          {(form) => (
             <li key={form.path}>
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}

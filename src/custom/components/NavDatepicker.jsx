@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Datovelger } from "nav-datovelger";
+
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
-import FormioReactComponent from "../FormioReactComponent";
+
+import FormioReactComponent from "../FormioReactComponent.jsx";
 
 require("moment/locale/nb.js"); // For datovelger
 
