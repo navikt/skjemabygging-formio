@@ -8,6 +8,7 @@ module.exports = {
   webpack: {
     alias: {
       react: resolvePackage("./node_modules/react"),
+      "react-dom": resolvePackage("./node_modules/react-dom"),
     },
   },
 };
