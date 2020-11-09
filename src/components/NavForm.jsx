@@ -25,8 +25,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
-import AllComponents from "formiojs/components";
-import { Components, Form as FormioForm, Formio } from "formiojs";
+import { Form as FormioForm, Formio } from "formiojs";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
@@ -40,8 +39,6 @@ Wizard.prototype.nextPage = function () {
     return Promise.reject(error);
   });
 };
-
-Components.setComponents(AllComponents);
 
 class NavForm extends Component {
   static propTypes = {

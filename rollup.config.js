@@ -26,7 +26,6 @@ export default [
       "nav-frontend-skjema-style",
       "template",
       "nav-datovelger",
-      "formiojs/components",
       "@material-ui/styles",
     ],
     output: [
