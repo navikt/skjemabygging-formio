@@ -35,18 +35,16 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         minstEn={true}
         onChange={() => setReadOnly(!readOnly)}
       />
-      <form>
-        {readOnly ? (
-          <NavForm
-            key="2"
-            form={readOnlyForm}
-            options={{ readOnly: readOnly, language: "nb-NO", i18n: i18nData }}
-            submission={{ data: submission }}
-          />
-        ) : (
-          <NavForm key="1" form={form} onChange={(value) => setSubmission(value.data)} />
-        )}
-      </form>
+      {readOnly ? (
+        <NavForm
+          key="2"
+          form={readOnlyForm}
+          options={{ readOnly: readOnly, language: "nb-NO", i18n: i18nData }}
+          submission={{ data: submission }}
+        />
+      ) : (
+        <NavForm key="1" form={form} onChange={(value) => setSubmission(value.data)} />
+      )}
     </AppLayoutWithContext>
   );
 }
