@@ -28,7 +28,6 @@ import EventEmitter from "eventemitter2";
 import AllComponents from "formiojs/components";
 import { Components, Form as FormioForm, Formio } from "formiojs";
 import "nav-frontend-skjema-style";
-import navdesign from "template";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
@@ -43,7 +42,6 @@ Wizard.prototype.nextPage = function () {
 };
 
 Components.setComponents(AllComponents);
-Formio.use(navdesign);
 
 class NavForm extends Component {
   static propTypes = {
