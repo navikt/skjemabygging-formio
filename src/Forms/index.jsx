@@ -6,11 +6,11 @@ import NewFormPage from "./NewFormPage";
 import { EditFormPage } from "./EditFormPage";
 import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
-import Custom from "../custom";
+import CustomComponents from "../customComponents";
 import Components from "formiojs/components/Components";
 
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish}) => {
-  Components.setComponents(Custom);
+export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish }) => {
+  Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
   if (!forms) {
@@ -57,13 +57,7 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
         {({ match }) => <Redirect to={`${path}/${match.params.formpath}/edit`} />}
       </Route>
       <Route path={path}>
-        <FormsListPage
-          logout={logout}
-          forms={forms}
-          url={url}
-          onDelete={onDelete}
-          onNew={onNew}
-        />
+        <FormsListPage logout={logout} forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
       </Route>
     </Switch>
   );
