@@ -7,7 +7,8 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
-import NavForm from "./NavForm";
+//import NavForm from "./NavForm";
+import { NavForm } from "skjemabygging-formio";
 import PropTypes from "prop-types";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
