@@ -1,41 +1,48 @@
 /*
-* The MIT License (MIT)
-*
-* Copyright (c) 2015 Form.io
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
-* */
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Form.io
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * */
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
-import AllComponents from "formiojs/components";
-import { Components, Form as FormioForm, Formio } from "formiojs";
+import { Form as FormioForm, Formio } from "formiojs";
 import "nav-frontend-skjema-style";
-import navdesign from "template";
 import i18nData from "../i18nData";
+import { styled } from "@material-ui/styles";
+import { scrollToAndSetFocus } from "../util/focus-management";
 
-Components.setComponents(AllComponents);
-Formio.use(navdesign);
+const Wizard = Formio.Displays.displays.wizard;
+const originalNextPage = Wizard.prototype.nextPage;
+Wizard.prototype.nextPage = function () {
+  return originalNextPage.call(this).catch((error) => {
+    scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
+    return Promise.reject(error);
+  });
+};
 
-export default class NavForm extends Component {
+class NavForm extends Component {
   static propTypes = {
+    className: PropTypes.string,
     src: PropTypes.string,
     url: PropTypes.string,
     form: PropTypes.object,
@@ -72,8 +79,8 @@ export default class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: focusAndScrollToNextAndPreviousPage,
-    onPrevPage: focusAndScrollToNextAndPreviousPage,
+    onNextPage: () => scrollToAndSetFocus("main", "start"),
+    onPrevPage: () => scrollToAndSetFocus("main", "start"),
   };
 
   static getDefaultEmitter() {
@@ -167,16 +174,21 @@ export default class NavForm extends Component {
   };
 
   render = () => {
-    return <div data-testid="formMountElement" ref={(element) => (this.element = element)} />;
+    return (
+      <div
+        className={this.props.className}
+        data-testid="formMountElement"
+        ref={(element) => (this.element = element)}
+      />
+    );
   };
 }
 
-function focusAndScrollToNextAndPreviousPage() {
-  const nextOrPreviousPage = document.querySelector("main");
-  const nextOrPreviousTitle = document.querySelector(".typo-innholdstittel");
-  nextOrPreviousTitle.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-  nextOrPreviousPage.focus({ preventScroll: true });
-}
+export default styled(NavForm)({
+  "& .skjemaelement__label.field-required::after": {
+    content: '""',
+  },
+  "& .skjemaelement__label:not(.field-required)::after": {
+    content: '"(valgfritt)"',
+  },
+});

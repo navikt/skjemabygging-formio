@@ -26,6 +26,7 @@ export default [
       "nav-frontend-skjema-style",
       "template",
       "nav-datovelger",
+      "@material-ui/styles",
     ],
     output: [
       { file: pkg.module, format: "es" },
