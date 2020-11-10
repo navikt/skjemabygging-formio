@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
-import NavForm from "./NavForm";
+import { NavForm } from "skjemabygging-formio";
 
 export const FillInFormPage = ({ form, submission, setSubmission }) => {
   const history = useHistory();

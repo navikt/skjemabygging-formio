@@ -3,11 +3,8 @@ import styled from "@material-ui/styles/styled";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-
 import { scrollToAndSetFocus } from "../util/focus-management";
-import i18nData from "../i18nData";
 import { AppConfigContext } from "../configContext";
-import NavForm from "./NavForm";
 import PropTypes from "prop-types";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
@@ -35,7 +32,6 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
 
 export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
-  const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
 
   useEffect(() => scrollToAndSetFocus("main"), []);
@@ -53,12 +49,6 @@ export function PrepareSubmitPage({ form, submission }) {
           Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending av søknaden.
         </Normaltekst>
         <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
-          <NavForm
-            key="2"
-            form={resultForm}
-            options={{ readOnly: true, language: "nb-NO", i18n: i18nData }}
-            submission={submission}
-          />
           <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
           <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
         </form>
