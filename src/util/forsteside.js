@@ -81,12 +81,13 @@ export function genererFoerstesideData(form, submission) {
   return {
     foerstesidetype: "SKJEMA",
     navSkjemaId: skjemanummer,
-    spraakkode: "no",
+    spraakkode: "NB",
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
-    tema: "Oppfølging", // TODO: fetch from somewhere
+    tema: "OPP", // TODO: fetch from somewhere
     vedleggsliste: genererVedleggsListe(submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, submission),
     ...genererPersonalia(fodselsnummerDNummer, adresse),
+    netsPostboks: "1400",
   };
 }

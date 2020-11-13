@@ -169,10 +169,10 @@ describe("genererFoerstesideData", () => {
     expect(actual).toEqual({
       foerstesidetype: "SKJEMA",
       navSkjemaId: "NAV 76-07.10",
-      spraakkode: "no",
+      spraakkode: "NB",
       overskriftstittel: "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
       arkivtittel: "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
-      tema: "Oppfølging",
+      tema: "OPP",
       vedleggsliste: ["Dokumentasjon av utgifter i forbindelse med utdanning", "Bekreftelse fra studiested/skole"],
       dokumentlisteFoersteside: [
         "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
@@ -183,6 +183,7 @@ describe("genererFoerstesideData", () => {
         brukerId: "12345678911",
         brukerType: "PERSON",
       },
+      netsPostboks: "1400",
     });
   });
 });
