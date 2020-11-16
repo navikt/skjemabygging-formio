@@ -1,13 +1,14 @@
 import express from "express";
 import mustacheExpress from "mustache-express";
 import client from "prom-client";
+import fetch from "node-fetch";
 import getDecorator from "./dekorator.js";
 import { Pdfgen } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import fs from "fs";
 import { gitVersionFromIndexHtml } from "./commit_version.js";
 import { buildDirectoryIndexHtml } from "./context.js";
-import {logger} from "./logger.js";
+import { logger } from "./logger.js";
 
 const app = express();
 const skjemaApp = express();
@@ -35,16 +36,33 @@ client.collectDefaultMetrics({ register });
 skjemaApp.post("/pdf-form", (req, res) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  logger.debug({label: "request submission", message: submission});
+  logger.debug({ label: "request submission", message: submission });
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
+});
+
+skjemaApp.post("/foersteside", async (req, res) => {
+  const foerstesideData = JSON.stringify(req.body);
+  const response = await fetch("https://www.nav.no/soknader/api/forsteside", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: foerstesideData,
+  });
+  if (response.ok) {
+    const body = await response.text();
+    res.contentType("application/json");
+    res.send(body);
+  } else {
+    logger.error("Failed to retrieve foersteside from soknadsveiviser " + response.status);
+    return response;
+  }
 });
 
 // json encoded post body - used for debugging
 skjemaApp.post("/pdf-json", (req, res) => {
   const submission = req.body.submission;
   const form = req.body.form;
-  logger.debug({label: "submission", message: submission});
+  logger.debug({ label: "submission", message: submission });
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
 });
@@ -82,12 +100,12 @@ skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
     });
 });
 
-function logErrors (err, req, res, next) {
-  logger.error({message: err.message, stack: err.stack});
+function logErrors(err, req, res, next) {
+  logger.error({ message: err.message, stack: err.stack });
   next(err);
 }
 
-function errorHandler (err, req, res, next) {
+function errorHandler(err, req, res, next) {
   res.status(500);
   res.send({ error: "something failed" });
 }

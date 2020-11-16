@@ -6,6 +6,8 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
 import PropTypes from "prop-types";
+import { genererFoerstesideData } from "../util/forsteside";
+import { lastNedFilBase64 } from "../util/pdf";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -36,6 +38,27 @@ export function PrepareSubmitPage({ form, submission }) {
 
   useEffect(() => scrollToAndSetFocus("main"), []);
 
+  function lastNedFoersteside() {
+    fetch("/fyllut/foersteside", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(genererFoerstesideData(form, submission.data)),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response;
+        } else {
+          throw new Error("Failed to retrieve foersteside from soknadsveiviser " + JSON.stringify(response.body));
+        }
+      })
+      .then((response) => response.json())
+      .then((json) => json.foersteside)
+      .then((base64EncodedPdf) => {
+        lastNedFilBase64(base64EncodedPdf, "Førstesideark", "pdf");
+      })
+      .catch((e) => console.log("Failed to download foersteside", e));
+  }
+
   return (
     <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
@@ -48,6 +71,11 @@ export function PrepareSubmitPage({ form, submission }) {
         <Normaltekst className="margin-bottom-default">
           Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending av søknaden.
         </Normaltekst>
+        <div>
+          <button className="knapp knapp--hoved" onClick={lastNedFoersteside}>
+            Last ned førsteside
+          </button>
+        </div>
         <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
           <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
           <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
