@@ -79,6 +79,7 @@ export function genererFoerstesideData(form, submission) {
   } = submission;
   const adresse = genererAdresse(submission);
   return {
+    ...genererPersonalia(fodselsnummerDNummer, adresse),
     foerstesidetype: "SKJEMA",
     navSkjemaId: skjemanummer,
     spraakkode: "NB",
@@ -87,7 +88,6 @@ export function genererFoerstesideData(form, submission) {
     tema: "OPP", // TODO: fetch from somewhere
     vedleggsliste: genererVedleggsListe(submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, submission),
-    ...genererPersonalia(fodselsnummerDNummer, adresse),
     netsPostboks: "1400",
   };
 }
