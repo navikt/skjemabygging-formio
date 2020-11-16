@@ -17,11 +17,16 @@ const githubAppConfig = {
 
 function gitVersion() {
   if (process.env.NODE_ENV === "development") {
-    return "dø-detta-er-development-vet-ikke-hva-versionen-er";
+    if (!process.env.GIT_VERSION) {
+      throw new Error("dø-detta-er-development-vet-ikke-hva-versionen-er");
+    }
+    return process.env.GIT_VERSION;
   } else {
     return gitVersionFromBuild();
   }
 }
+
+console.log("gitVersion", gitVersion());
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
