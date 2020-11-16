@@ -9,7 +9,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     display,
     name,
     tags,
-    properties: { skjemanummer },
+    properties: { skjemanummer, tema },
   } = form;
   console.log(tags);
   return (
@@ -21,7 +21,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         placeholder="Skriv inn skjemanummer"
         value={skjemanummer}
         readOnly={usageContext === "edit"}
-        onChange={(event) => onChange({ ...form, properties: { skjemanummer: event.target.value } })}
+        onChange={(event) =>
+          onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
+        }
       />
       <Input
         label="Tittel"
@@ -39,6 +41,15 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         value={name}
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, name: event.target.value })}
+      />
+      <Input
+        label="Tema"
+        type="text"
+        id="tema"
+        placeholder="Skriv inn tema"
+        value={tema}
+        readOnly={usageContext === "edit"}
+        onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
       />
       <Select
         label="Vis som"

@@ -16,7 +16,7 @@ class NewFormPage extends Component {
       name: "",
       title: "",
       path: "",
-      properties: { skjemanummer: "" },
+      properties: { skjemanummer: "", tema: "" },
       components: defaultFormFields(),
     },
   };
