@@ -71,11 +71,13 @@ export function PrepareSubmitPage({ form, submission }) {
         <Normaltekst className="margin-bottom-default">
           Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending av søknaden.
         </Normaltekst>
-        <div>
-          <button className="knapp knapp--hoved" onClick={lastNedFoersteside}>
-            Last ned førsteside
-          </button>
-        </div>
+        {process.env.NODE_ENV === "development" && (
+          <div className="margin-bottom-default">
+            <button className="knapp knapp--hoved" onClick={lastNedFoersteside}>
+              Last ned førsteside
+            </button>
+          </div>
+        )}
         <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
           <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
           <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
