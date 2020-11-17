@@ -7,11 +7,46 @@ import displayEditForm from "formiojs/components/_classes/component/editForm/Com
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 
-import FormioReactComponent from "../FormioReactComponent.jsx";
+// import FormioReactComponent from "../FormioReactComponent.jsx";
+import { ReactComponent as FormioReactComponent } from "react-formio";
 
 require("moment/locale/nb.js"); // For datovelger
 
-const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
+class DatovelgerWrapper extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.value,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.value !== prevProps.value) {
+      this.setState({ value: this.props.value });
+    }
+  }
+
+  render() {
+    const { component, onChange, isValid, locale, readOnly, inputRef } = this.props;
+    return (
+      <Datovelger
+        input={{ id: component.key, inputRef: inputRef }}
+        id={component.id}
+        valgtDato={this.state.value}
+        onChange={(d) => {
+          this.setState({ value: d });
+          onChange(d);
+        }}
+        datoErGyldig={isValid}
+        visÅrVelger={component.visArvelger}
+        locale={locale}
+        disabled={readOnly}
+      />
+    );
+  }
+}
+
+const DatovelgerWrapperFunction = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
   const [dato, setDato] = useState();
 
   useEffect(() => {
@@ -37,7 +72,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
 
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
-  reactElement = undefined;
+  // reactElement = undefined;
   input = null;
 
   /**
@@ -139,16 +174,19 @@ export default class NavDatepicker extends FormioReactComponent {
     );
   }
 
+  /*
   focus() {
     if (this.input) {
       this.input.focus();
     }
   }
 
+   */
+
   attachReact(element) {
     this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
+    return this.renderReact(element);
+    // return this.reactElement;
   }
 
   detachReact(element) {
@@ -156,7 +194,7 @@ export default class NavDatepicker extends FormioReactComponent {
       ReactDOM.unmountComponentAtNode(element);
     }
   }
-
+  /*
   getValue() {
     return this.dataValue;
   }
@@ -170,7 +208,7 @@ export default class NavDatepicker extends FormioReactComponent {
       this.shouldSetValue = true;
     }
   }
-
+*/
   checkValidity(data, dirty, rowData) {
     const isValid = super.checkValidity(data, dirty, rowData);
     this.componentIsValid(isValid);
