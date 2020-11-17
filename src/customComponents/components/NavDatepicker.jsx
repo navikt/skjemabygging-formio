@@ -174,15 +174,6 @@ export default class NavDatepicker extends FormioReactComponent {
     );
   }
 
-  /*
-  focus() {
-    if (this.input) {
-      this.input.focus();
-    }
-  }
-
-   */
-
   attachReact(element) {
     this.reactElement = element;
     return this.renderReact(element);
@@ -194,21 +185,7 @@ export default class NavDatepicker extends FormioReactComponent {
       ReactDOM.unmountComponentAtNode(element);
     }
   }
-  /*
-  getValue() {
-    return this.dataValue;
-  }
 
-  setValue(value) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-  }
-*/
   checkValidity(data, dirty, rowData) {
     const isValid = super.checkValidity(data, dirty, rowData);
     this.componentIsValid(isValid);
