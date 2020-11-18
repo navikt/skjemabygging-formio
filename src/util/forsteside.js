@@ -24,31 +24,43 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
   return `${skjemaTittel} ${skjemanummer}`;
 }
 
-function getVedleggTittel(vedleggsKode) {
-  const vedleggsTitler = {
-    Q7: "Dokumentasjon av utgifter i forbindelse med utdanning",
-    O9: "Bekreftelse fra studiested/skole",
-  };
-  return vedleggsTitler[vedleggsKode];
-}
-
 export function genererVedleggSomSkalSendes(submission) {
   const prefix = "vedlegg";
   const vedleggSomSkalSendes = [];
   Object.entries(submission).forEach(([key, value]) => {
     if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
-      vedleggSomSkalSendes.push(key.substr(prefix.length));
+      vedleggSomSkalSendes.push(key);
     }
   });
   return vedleggSomSkalSendes;
 }
 
-export function genererVedleggsListe(submission) {
-  return genererVedleggSomSkalSendes(submission).map((vedleggsKode) => getVedleggTittel(vedleggsKode));
+export function flattenComponents(components) {
+  return components.reduce(
+    (flattenedComponents, currentComponent) => [
+      ...flattenedComponents,
+      currentComponent,
+      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
+    ],
+    []
+  );
 }
 
-export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, submission) {
-  return [genererSkjemaTittel(skjemaTittel, skjemanummer), ...genererVedleggsListe(submission)];
+export function genererVedleggsListe(form, submission) {
+  const formComponents = flattenComponents(form.components);
+  return genererVedleggSomSkalSendes(submission)
+    .map((vedleggsKode) => formComponents.find((component) => component.key === vedleggsKode))
+    .map((component) => component.properties.vedleggstittel);
+}
+
+export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submission) {
+  const formComponents = flattenComponents(form.components);
+  return [
+    genererSkjemaTittel(skjemaTittel, skjemanummer),
+    ...genererVedleggSomSkalSendes(submission)
+      .map((vedleggsKode) => formComponents.find((component) => component.key === vedleggsKode))
+      .map((component) => component.label),
+  ];
 }
 
 export function genererAdresse(submission) {
@@ -86,8 +98,8 @@ export function genererFoerstesideData(form, submission) {
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
     tema,
-    vedleggsliste: genererVedleggsListe(submission),
-    dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, submission),
+    vedleggsliste: genererVedleggsListe(form, submission),
+    dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
     netsPostboks: "1400",
   };
 }
