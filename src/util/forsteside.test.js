@@ -41,7 +41,7 @@ describe("genererPersonalia", () => {
 describe("genererSkjemaTittel", () => {
   it("generates correct skjemaTittel", () => {
     const actual = genererSkjemaTittel("Registreringsskjema for tilskudd til utdanning", "NAV 76-07.10");
-    expect(actual).toEqual("Registreringsskjema for tilskudd til utdanning NAV 76-07.10");
+    expect(actual).toEqual("NAV 76-07.10 Registreringsskjema for tilskudd til utdanning");
   });
 });
 
@@ -211,7 +211,7 @@ describe("genererDokumentListeFoersteside", () => {
       }
     );
     expect(actual).toEqual([
-      "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
+      "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
       "Faktura fra utdanningsinstitusjon",
       "Skriftlig bekreftelse på studieplass",
     ]);
@@ -290,12 +290,12 @@ describe("genererFoerstesideData", () => {
       foerstesidetype: "SKJEMA",
       navSkjemaId: "NAV 76-07.10",
       spraakkode: "NB",
-      overskriftstittel: "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
-      arkivtittel: "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
+      overskriftstittel: "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
+      arkivtittel: "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
       tema: "OPP",
       vedleggsliste: ["Dokumentasjon av utgifter i forbindelse med utdanning", "Bekreftelse fra studiested/skole"],
       dokumentlisteFoersteside: [
-        "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
+        "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
         "Faktura fra utdanningsinstitusjon",
         "Skriftlig bekreftelse på studieplass",
       ],

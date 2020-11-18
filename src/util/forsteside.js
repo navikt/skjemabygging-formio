@@ -21,7 +21,7 @@ export function genererPersonalia(fodselsNummer, adresse) {
 }
 
 export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
-  return `${skjemaTittel} ${skjemanummer}`;
+  return `${skjemanummer} ${skjemaTittel}`;
 }
 
 export function genererVedleggSomSkalSendes(submission) {
