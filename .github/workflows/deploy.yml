@@ -1,23 +1,12 @@
 name: Build and Test
-on:
-  pull_request:
-  push:
-    branches:
-      - master
+on: push
 jobs:
-  deploy:
+  build-and-test:
     runs-on: ubuntu-latest
+    env:
+      CI: "true"
     steps:
       - uses: actions/checkout@v1
-      - name: Define build environment
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo ::set-env name=CI::true
-          echo ::set-env name=IMAGE_REGISTRY::docker.pkg.github.com/$(echo ${GITHUB_REPOSITORY})
-          echo ::set-env name=IMAGE_NAME::$(echo ${GITHUB_REPOSITORY##*/})
-          echo ::set-env name=IMAGE_VERSION::$(echo ${GITHUB_WORKFLOW})-$(echo ${GITHUB_SHA})
-          echo ::set-env name=GITHUB_TOKEN::$(echo ${GITHUB_TOKEN})
       - name: Cache node_module download
         uses: actions/cache@v2
         with:
