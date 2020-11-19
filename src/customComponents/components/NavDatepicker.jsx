@@ -12,7 +12,7 @@ import { ReactComponent as FormioReactComponent } from "react-formio";
 
 require("moment/locale/nb.js"); // For datovelger
 
-class DatovelgerWrapper extends React.Component {
+class DatovelgerWrapperClass extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -71,8 +71,8 @@ const DatovelgerWrapperFunction = ({ component, onChange, value, isValid, locale
 };
 
 export default class NavDatepicker extends FormioReactComponent {
-  isValid = this.errors.length === 0;
-  // reactElement = undefined;
+  // isValid = this.errors.length === 0;
+  reactElement = undefined;
   input = null;
 
   /**
@@ -160,18 +160,24 @@ export default class NavDatepicker extends FormioReactComponent {
 
   renderReact(element) {
     return ReactDOM.render(
-      <DatovelgerWrapper
+      <DatovelgerWrapperClass
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
-        isValid={this.isValid}
+        isValid={() => this.errors.length === 0}
         locale={this.root.i18next.language}
         readOnly={this.options.readOnly}
         inputRef={(r) => (this.input = r)}
       />,
       element
     );
+  }
+
+  focus() {
+    if (this.input) {
+      this.input.focus();
+    }
   }
 
   attachReact(element) {
@@ -186,20 +192,19 @@ export default class NavDatepicker extends FormioReactComponent {
     }
   }
 
+  /*
   checkValidity(data, dirty, rowData) {
     const isValid = super.checkValidity(data, dirty, rowData);
     this.componentIsValid(isValid);
-
-    if (!isValid) {
-      return false;
-    }
-    return this.validate(data, dirty, rowData);
+    return isValid;
   }
 
   componentIsValid = (isValid) => {
     if (isValid !== this.isValid) {
-      this.isValid = !this.isValid;
+      // this.isValid = isValid;
       this.renderReact(this.reactElement);
     }
   };
+
+ */
 }
