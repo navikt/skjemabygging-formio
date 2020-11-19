@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - erstatt-set-env-for-deploy-action
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
