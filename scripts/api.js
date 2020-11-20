@@ -23,15 +23,12 @@ async function loginUser(email, password) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(loginBody),
   });
-  // console.log('response', loginResponse);
-  // console.log('response json', await loginResponse.json());
   const token = loginResponse.headers.get("x-jwt-token");
   return token;
 }
 
 async function getForm() {
   const token = await loginUser(args[0], args[1]);
-  // console.log(token, loginResponse.headers);
   const response = await fetch("https://protected-island-44773.herokuapp.com/form/5ee75e38f83dde000350dcad", {
     method: "GET",
     headers: { "x-jwt-token": token },
