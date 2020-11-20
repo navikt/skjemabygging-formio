@@ -71,7 +71,7 @@ export function genererAdresse(submission) {
 
 export function genererFoerstesideData(form, submission) {
   const {
-    properties: { skjemanummer },
+    properties: { skjemanummer, tema },
     title,
   } = form;
   const {
@@ -85,7 +85,7 @@ export function genererFoerstesideData(form, submission) {
     spraakkode: "NB",
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
-    tema: form.properties.tema,
+    tema,
     vedleggsliste: genererVedleggsListe(submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, submission),
     netsPostboks: "1400",
