@@ -43,10 +43,10 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         onChange={(event) => onChange({ ...form, name: event.target.value })}
       />
       <Input
-        label="Tema"
+        label="Temakode"
         type="text"
         id="tema"
-        placeholder="Skriv inn tema"
+        placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}

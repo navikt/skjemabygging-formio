@@ -18,7 +18,7 @@ const githubAppConfig = {
 function gitVersion() {
   if (process.env.NODE_ENV === "development") {
     if (!process.env.GIT_VERSION) {
-      throw new Error("dø-detta-er-development-vet-ikke-hva-versionen-er");
+      return "dø-detta-er-development-vet-ikke-hva-versionen-er";
     }
     return process.env.GIT_VERSION;
   } else {
