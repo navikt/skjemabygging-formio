@@ -85,7 +85,7 @@ export function genererFoerstesideData(form, submission) {
     spraakkode: "NB",
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
-    tema: "OPP", // TODO: fetch from somewhere
+    tema: form.properties.tema,
     vedleggsliste: genererVedleggsListe(submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, submission),
     netsPostboks: "1400",
