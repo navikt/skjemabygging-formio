@@ -153,7 +153,7 @@ describe("genererFoerstesideData", () => {
   it("correctly generates foersteside data", () => {
     const actual = genererFoerstesideData(
       {
-        properties: { skjemanummer: "NAV 76-07.10" },
+        properties: { skjemanummer: "NAV 76-07.10", tema: "OPP" },
         title: "Registreringsskjema for tilskudd til utdanning",
       },
       {
