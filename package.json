@@ -64,9 +64,9 @@
     "wait-for-expect": "^3.0.2"
   },
   "scripts": {
-    "start": "EXTEND_ESLINT=true craco start",
+    "start": "cross-env-shell EXTEND_ESLINT=true craco start",
     "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
-    "build": "REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
+    "build": "cross-env-shell REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
     "test": "craco test --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject",
     "prestart": "npm run install-and-build-template",
@@ -105,13 +105,15 @@
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.4.1",
     "@testing-library/user-event": "^12.1.1",
+    "cross-env": "^7.0.2",
+    "husky": "^3.1.0",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "lint-staged": "^10.4.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.13.1",
     "rollup": "^1.29.0",
-    "husky": "^3.1.0",
-    "lint-staged": "^10.4.0"
+    "webpack-cli": "^4.0.0"
   },
   "husky": {
     "hooks": {
