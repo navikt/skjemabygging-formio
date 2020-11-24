@@ -5,7 +5,7 @@ import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
 import { Formio } from "formiojs";
-import navdesign from "template";
+import navdesign from "./template";
 
 Formio.use(navdesign);
 

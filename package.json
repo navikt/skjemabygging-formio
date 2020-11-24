@@ -51,6 +51,7 @@
     "nav-frontend-toggle-style": "0.0.35",
     "nav-frontend-typografi": "^2.0.26",
     "nav-frontend-typografi-style": "^1.0.22",
+
     "node-fetch": "^2.6.1",
     "prop-types": "^15.7.2",
     "pusher": "^3.0.1",
@@ -69,11 +70,6 @@
     "build": "REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
     "test": "craco test --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject",
-    "prestart": "npm run install-and-build-template",
-    "prebuild": "npm run install-and-build-template",
-    "install-template": "cd template && npm install",
-    "build-template": "cd template && npm run build",
-    "install-and-build-template": "npm run install-template && npm run build-template",
     "dist-build": "rollup -c",
     "prepare": "npm run dist-build"
   },
