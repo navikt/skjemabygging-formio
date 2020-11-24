@@ -1,4 +1,4 @@
-const formComponentsMock = [
+const formComponentsExample = [
   {
     title: "Introduksjon",
     key: "introduksjon",

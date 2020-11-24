@@ -24,15 +24,15 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
   return `${skjemanummer} ${skjemaTittel}`;
 }
 
-export function genererVedleggSomSkalSendes(submission) {
+export function genererVedleggKeysSomSkalSendes(submissionData) {
   const prefix = "vedlegg";
-  const vedleggSomSkalSendes = [];
-  Object.entries(submission).forEach(([key, value]) => {
+  const vedleggKeysSomSkalSendes = [];
+  Object.entries(submissionData).forEach(([key, value]) => {
     if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
-      vedleggSomSkalSendes.push(key);
+      vedleggKeysSomSkalSendes.push(key);
     }
   });
-  return vedleggSomSkalSendes;
+  return vedleggKeysSomSkalSendes;
 }
 
 export function flattenComponents(components) {
@@ -46,20 +46,21 @@ export function flattenComponents(components) {
   );
 }
 
-export function genererVedleggsListe(form, submission) {
-  const formComponents = flattenComponents(form.components);
-  return genererVedleggSomSkalSendes(submission)
-    .map((vedleggsKode) => formComponents.find((component) => component.key === vedleggsKode))
-    .map((component) => component.properties.vedleggstittel);
+function getVedleggsFelterSomSkalSendes(submissionData, form) {
+  const flattenedFormComponents = flattenComponents(form.components);
+  return genererVedleggKeysSomSkalSendes(submissionData).map((vedleggsKey) =>
+    flattenedFormComponents.find((component) => component.key === vedleggsKey)
+  );
 }
 
-export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submission) {
-  const formComponents = flattenComponents(form.components);
+export function genererVedleggsListe(form, submissionData) {
+  return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties.vedleggstittel);
+}
+
+export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submissionData) {
   return [
     genererSkjemaTittel(skjemaTittel, skjemanummer),
-    ...genererVedleggSomSkalSendes(submission)
-      .map((vedleggsKode) => formComponents.find((component) => component.key === vedleggsKode))
-      .map((component) => component.label),
+    ...getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.label),
   ];
 }
 

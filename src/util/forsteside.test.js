@@ -6,7 +6,7 @@ import {
   genererPersonalia,
   genererSkjemaTittel,
   genererVedleggsListe,
-  genererVedleggSomSkalSendes,
+  genererVedleggKeysSomSkalSendes,
 } from "./forsteside";
 
 describe("genererPersonalia", () => {
@@ -47,7 +47,7 @@ describe("genererSkjemaTittel", () => {
 
 describe("genererVedleggSomSkalSendes", () => {
   it("adds vedlegg marked as leggerVedNaa", () => {
-    const actual = genererVedleggSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes({
       vedleggQ7: "leggerVedNaa",
       vedleggO9: "leggerVedNaa",
     });
@@ -55,7 +55,7 @@ describe("genererVedleggSomSkalSendes", () => {
   });
 
   it("does not add vedlegg marked as ettersender", () => {
-    const actual = genererVedleggSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes({
       vedleggQ7: "leggerVedNaa",
       vedleggO9: "ettersender",
     });
@@ -63,7 +63,7 @@ describe("genererVedleggSomSkalSendes", () => {
   });
 
   it("does not add vedlegg marked as levertTidligere", () => {
-    const actual = genererVedleggSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes({
       vedleggQ7: "levertTidligere",
       vedleggO9: "leggerVedNaa",
     });
@@ -96,41 +96,7 @@ describe("flattenComponents", () => {
         ],
       },
     ]);
-    expect(actual).toEqual([
-      {
-        title: "Personopplysninger",
-        key: "panel",
-        properties: {},
-        type: "panel",
-        label: "Panel",
-        components: [
-          {
-            key: "fodselsnummerDNummer",
-            type: "fnrfield",
-            label: "Fødselsnummer / D-nummer",
-            properties: {},
-          },
-          {
-            label: "Fornavn",
-            type: "textfield",
-            key: "fornavn",
-            properties: {},
-          },
-        ],
-      },
-      {
-        key: "fodselsnummerDNummer",
-        type: "fnrfield",
-        label: "Fødselsnummer / D-nummer",
-        properties: {},
-      },
-      {
-        label: "Fornavn",
-        type: "textfield",
-        key: "fornavn",
-        properties: {},
-      },
-    ]);
+    expect(actual.map((component) => component.key)).toEqual(["panel", "fodselsnummerDNummer", "fornavn"]);
   });
 });
 
