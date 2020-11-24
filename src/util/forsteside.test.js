@@ -1,11 +1,12 @@
 import {
+  flattenComponents,
   genererAdresse,
   genererDokumentlisteFoersteside,
   genererFoerstesideData,
   genererPersonalia,
   genererSkjemaTittel,
   genererVedleggsListe,
-  genererVedleggSomSkalSendes,
+  genererVedleggKeysSomSkalSendes,
 } from "./forsteside";
 
 describe("genererPersonalia", () => {
@@ -40,39 +41,118 @@ describe("genererPersonalia", () => {
 describe("genererSkjemaTittel", () => {
   it("generates correct skjemaTittel", () => {
     const actual = genererSkjemaTittel("Registreringsskjema for tilskudd til utdanning", "NAV 76-07.10");
-    expect(actual).toEqual("Registreringsskjema for tilskudd til utdanning NAV 76-07.10");
+    expect(actual).toEqual("NAV 76-07.10 Registreringsskjema for tilskudd til utdanning");
   });
 });
 
 describe("genererVedleggSomSkalSendes", () => {
   it("adds vedlegg marked as leggerVedNaa", () => {
-    const actual = genererVedleggSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes({
       vedleggQ7: "leggerVedNaa",
       vedleggO9: "leggerVedNaa",
     });
-    expect(actual).toEqual(["Q7", "O9"]);
+    expect(actual).toEqual(["vedleggQ7", "vedleggO9"]);
   });
 
   it("does not add vedlegg marked as ettersender", () => {
-    const actual = genererVedleggSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes({
       vedleggQ7: "leggerVedNaa",
       vedleggO9: "ettersender",
     });
-    expect(actual).toEqual(["Q7"]);
+    expect(actual).toEqual(["vedleggQ7"]);
   });
 
   it("does not add vedlegg marked as levertTidligere", () => {
-    const actual = genererVedleggSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes({
       vedleggQ7: "levertTidligere",
       vedleggO9: "leggerVedNaa",
     });
-    expect(actual).toEqual(["O9"]);
+    expect(actual).toEqual(["vedleggO9"]);
   });
 });
 
+describe("flattenComponents", () => {
+  it("returns a flat array of all nested components", () => {
+    const actual = flattenComponents([
+      {
+        title: "Personopplysninger",
+        key: "panel",
+        properties: {},
+        type: "panel",
+        label: "Panel",
+        components: [
+          {
+            key: "fodselsnummerDNummer",
+            type: "fnrfield",
+            label: "Fødselsnummer / D-nummer",
+            properties: {},
+          },
+          {
+            label: "Fornavn",
+            type: "textfield",
+            key: "fornavn",
+            properties: {},
+          },
+        ],
+      },
+    ]);
+    expect(actual.map((component) => component.key)).toEqual(["panel", "fodselsnummerDNummer", "fornavn"]);
+  });
+});
+
+const formMedVedlegg = {
+  components: [
+    {
+      title: "Vedlegg",
+      key: "page5",
+      properties: {},
+      type: "panel",
+      label: "Page 5",
+      components: [
+        {
+          label: "Skriftlig bekreftelse på studieplass",
+          values: [
+            { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
+            {
+              label:
+                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+              value: "ettersender",
+              shortcut: "",
+            },
+            { label: "Jeg har levert denne dokumentasjonen tidligere", value: "levertTidligere", shortcut: "" },
+          ],
+          key: "vedleggO9",
+          properties: {
+            vedleggstittel: "Bekreftelse fra studiested/skole",
+          },
+          type: "radio",
+        },
+        {
+          label: "Faktura fra utdanningsinstitusjon",
+          values: [
+            { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
+            {
+              label:
+                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+              value: "ettersender",
+              shortcut: "",
+            },
+            { label: "Jeg har levert denne dokumentasjonen tidligere", value: "sendtTidligere", shortcut: "" },
+          ],
+          key: "vedleggQ7",
+          properties: {
+            vedleggstittel: "Dokumentasjon av utgifter i forbindelse med utdanning",
+          },
+          type: "radio",
+        },
+      ],
+    },
+  ],
+};
+
 describe("genererVedleggsListe", () => {
   it("generates correct vedleggsListe", () => {
-    const actual = genererVedleggsListe({ vedleggQ7: "leggerVedNaa", vedleggO9: "leggerVedNaa" });
+    const actual = genererVedleggsListe(formMedVedlegg, { vedleggQ7: "leggerVedNaa", vedleggO9: "leggerVedNaa" });
     expect(actual).toEqual([
       "Dokumentasjon av utgifter i forbindelse med utdanning",
       "Bekreftelse fra studiested/skole",
@@ -80,21 +160,26 @@ describe("genererVedleggsListe", () => {
   });
 
   it("handles correctly when no vedlegg will be submitted", () => {
-    const actual = genererVedleggsListe({ vedleggQ7: "ettersender" });
+    const actual = genererVedleggsListe(formMedVedlegg, { vedleggQ7: "ettersender" });
     expect(actual).toEqual([]);
   });
 });
 
 describe("genererDokumentListeFoersteside", () => {
   it("generates correct dokumentListeFoersteside", () => {
-    const actual = genererDokumentlisteFoersteside("Registreringsskjema for tilskudd til utdanning", "NAV 76-07.10", {
-      vedleggQ7: "leggerVedNaa",
-      vedleggO9: "leggerVedNaa",
-    });
+    const actual = genererDokumentlisteFoersteside(
+      "Registreringsskjema for tilskudd til utdanning",
+      "NAV 76-07.10",
+      formMedVedlegg,
+      {
+        vedleggQ7: "leggerVedNaa",
+        vedleggO9: "leggerVedNaa",
+      }
+    );
     expect(actual).toEqual([
-      "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
-      "Dokumentasjon av utgifter i forbindelse med utdanning",
-      "Bekreftelse fra studiested/skole",
+      "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
+      "Faktura fra utdanningsinstitusjon",
+      "Skriftlig bekreftelse på studieplass",
     ]);
   });
 });
@@ -155,6 +240,7 @@ describe("genererFoerstesideData", () => {
       {
         properties: { skjemanummer: "NAV 76-07.10", tema: "OPP" },
         title: "Registreringsskjema for tilskudd til utdanning",
+        ...formMedVedlegg,
       },
       {
         gateadresse: "Testveien 1",
@@ -170,14 +256,14 @@ describe("genererFoerstesideData", () => {
       foerstesidetype: "SKJEMA",
       navSkjemaId: "NAV 76-07.10",
       spraakkode: "NB",
-      overskriftstittel: "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
-      arkivtittel: "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
+      overskriftstittel: "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
+      arkivtittel: "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
       tema: "OPP",
       vedleggsliste: ["Dokumentasjon av utgifter i forbindelse med utdanning", "Bekreftelse fra studiested/skole"],
       dokumentlisteFoersteside: [
-        "Registreringsskjema for tilskudd til utdanning NAV 76-07.10",
-        "Dokumentasjon av utgifter i forbindelse med utdanning",
-        "Bekreftelse fra studiested/skole",
+        "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
+        "Faktura fra utdanningsinstitusjon",
+        "Skriftlig bekreftelse på studieplass",
       ],
       bruker: {
         brukerId: "12345678911",

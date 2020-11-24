@@ -21,34 +21,47 @@ export function genererPersonalia(fodselsNummer, adresse) {
 }
 
 export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
-  return `${skjemaTittel} ${skjemanummer}`;
+  return `${skjemanummer} ${skjemaTittel}`;
 }
 
-function getVedleggTittel(vedleggsKode) {
-  const vedleggsTitler = {
-    Q7: "Dokumentasjon av utgifter i forbindelse med utdanning",
-    O9: "Bekreftelse fra studiested/skole",
-  };
-  return vedleggsTitler[vedleggsKode];
-}
-
-export function genererVedleggSomSkalSendes(submission) {
+export function genererVedleggKeysSomSkalSendes(submissionData) {
   const prefix = "vedlegg";
-  const vedleggSomSkalSendes = [];
-  Object.entries(submission).forEach(([key, value]) => {
+  const vedleggKeysSomSkalSendes = [];
+  Object.entries(submissionData).forEach(([key, value]) => {
     if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
-      vedleggSomSkalSendes.push(key.substr(prefix.length));
+      vedleggKeysSomSkalSendes.push(key);
     }
   });
-  return vedleggSomSkalSendes;
+  return vedleggKeysSomSkalSendes;
 }
 
-export function genererVedleggsListe(submission) {
-  return genererVedleggSomSkalSendes(submission).map((vedleggsKode) => getVedleggTittel(vedleggsKode));
+export function flattenComponents(components) {
+  return components.reduce(
+    (flattenedComponents, currentComponent) => [
+      ...flattenedComponents,
+      currentComponent,
+      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
+    ],
+    []
+  );
 }
 
-export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, submission) {
-  return [genererSkjemaTittel(skjemaTittel, skjemanummer), ...genererVedleggsListe(submission)];
+function getVedleggsFelterSomSkalSendes(submissionData, form) {
+  const flattenedFormComponents = flattenComponents(form.components);
+  return genererVedleggKeysSomSkalSendes(submissionData).map((vedleggsKey) =>
+    flattenedFormComponents.find((component) => component.key === vedleggsKey)
+  );
+}
+
+export function genererVedleggsListe(form, submissionData) {
+  return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties.vedleggstittel);
+}
+
+export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submissionData) {
+  return [
+    genererSkjemaTittel(skjemaTittel, skjemanummer),
+    ...getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.label),
+  ];
 }
 
 export function genererAdresse(submission) {
@@ -86,8 +99,8 @@ export function genererFoerstesideData(form, submission) {
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
     tema,
-    vedleggsliste: genererVedleggsListe(submission),
-    dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, submission),
+    vedleggsliste: genererVedleggsListe(form, submission),
+    dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
     netsPostboks: "1400",
   };
 }
