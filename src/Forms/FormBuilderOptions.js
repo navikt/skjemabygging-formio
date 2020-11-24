@@ -1,4 +1,4 @@
-import { alleVerdensLand } from "./AlleVerdensLand";
+import { alleVerdensLand } from "./data/AlleVerdensLand";
 
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
@@ -173,18 +173,6 @@ const statsborgerskapSchema = {
     values: alleVerdensLand.map((land) => ({ value: land.code, label: land.name })),
   },
 };
-
-/*const statsborgerskapSchema = {
-  label: "Statsborgerskap",
-  type: "textfield",
-  key: "statsborgerskap",
-  input: true,
-  validateOn: "blur",
-  clearOnHide: true,
-  validate: {
-    required: true,
-  },
-};*/
 
 const kontaktInfoSchema = {
   label: "Kontaktinfo",
