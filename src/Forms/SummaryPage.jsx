@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
-import styled from "@material-ui/styles/styled";
+import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 

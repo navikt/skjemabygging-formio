@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import styled from "@material-ui/styles/styled";
+import { styled } from "@material-ui/styles";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
