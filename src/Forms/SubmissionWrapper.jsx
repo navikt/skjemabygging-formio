@@ -5,6 +5,5 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   if (!submission) {
     return <Redirect to={url} />;
   }
-
   return children;
 };
