@@ -1,26 +1,17 @@
 import React, { useState } from "react";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
-import NavForm from "../components/NavForm.jsx";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
+import { FillInFormPage } from "./FillInFormPage.jsx";
 
 export const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
-  const history = useHistory();
   const [submission, setSubmission] = useState();
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <NavForm
-          key="1"
-          form={form}
-          onChange={(value) => setSubmission(value.data)}
-          onSubmit={(submission) => {
-            setSubmission(submission);
-            history.push(`${url}/oppsummering`);
-          }}
-        />
+        <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
       </Route>
 
       <Route path={`${path}/oppsummering`}>
