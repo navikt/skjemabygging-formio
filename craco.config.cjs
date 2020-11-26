@@ -1,18 +1,28 @@
 const CracoLessPlugin = require("craco-less");
+const { addBeforeLoader, loaderByName } = require("@craco/craco");
 
 module.exports = {
+  webpack: {
+    configure: function (webpackConfig) {
+      const fragLoader = {
+        test: /\.ejs$/,
+        loader: "ejs-loader",
+        options: {
+          variable: "ctx",
+          evaluate: /\{%([\s\S]+?)%\}/g,
+          interpolate: /\{\{([\s\S]+?)\}\}/g,
+          escape: /\{\{\{([\s\S]+?)\}\}\}/g,
+        },
+      };
+
+      addBeforeLoader(webpackConfig, loaderByName("file-loader"), fragLoader);
+
+      return webpackConfig;
+    },
+  },
   plugins: [
     {
       plugin: CracoLessPlugin,
-/*
-// attempt to get hold of variables in js (nav design system variables)
-      options: {
-        cssLoaderOptions: {
-          importLoaders: 2,
-          onlyLocals: true
-        }
-      }
-*/
     },
-    ],
+  ],
 };
