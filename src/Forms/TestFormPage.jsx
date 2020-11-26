@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
-import NavForm from "../components/NavForm";
-import { ToggleGruppe } from "nav-frontend-toggle";
+import React from "react";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import i18nData from "../i18nData";
+import { FyllUtRouter } from "./FyllUtRouter";
+import { AppConfigProvider } from "../configContext";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
-  const [readOnly, setReadOnly] = useState(false);
-  const [submission, setSubmission] = useState();
-  const readOnlyForm = form.display === "wizard" ? { ...form, display: "form" } : form;
+  const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 
   return (
     <AppLayoutWithContext
@@ -27,24 +24,9 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         </>
       }
     >
-      <ToggleGruppe
-        defaultToggles={[
-          { children: "Interaktiv", pressed: !readOnly },
-          { children: "Oppsummering", pressed: readOnly },
-        ]}
-        minstEn={true}
-        onChange={() => setReadOnly(!readOnly)}
-      />
-      {readOnly ? (
-        <NavForm
-          key="2"
-          form={readOnlyForm}
-          options={{ readOnly: readOnly, language: "nb-NO", i18n: i18nData }}
-          submission={{ data: submission }}
-        />
-      ) : (
-        <NavForm key="1" form={form} onChange={(value) => setSubmission(value.data)} />
-      )}
+      <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL}>
+        <FyllUtRouter form={form} />
+      </AppConfigProvider>
     </AppLayoutWithContext>
   );
 }
