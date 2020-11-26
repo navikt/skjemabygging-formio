@@ -4,10 +4,6 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
-import { Formio } from "formiojs";
-import navdesign from "./template";
-
-Formio.use(navdesign);
 
 function App({ projectURL, store, pusher }) {
   const userAlerter = useUserAlerting(pusher);

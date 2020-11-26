@@ -30,6 +30,9 @@ import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
+import navdesign from "./../template";
+
+Formio.use(navdesign);
 
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
