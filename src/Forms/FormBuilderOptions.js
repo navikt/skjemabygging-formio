@@ -1,3 +1,5 @@
+import { alleVerdensLand } from "./data/AlleVerdensLand";
+
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
   textfield: [
@@ -118,13 +120,16 @@ const poststedSchema = {
 
 const landSchema = {
   label: "Land",
-  type: "textfield",
+  type: "select",
   key: "land",
   input: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
     required: true,
+  },
+  data: {
+    values: alleVerdensLand.map((land) => ({ value: land.code, label: land.name })),
   },
 };
 
@@ -156,13 +161,16 @@ const telefonSchema = {
 
 const statsborgerskapSchema = {
   label: "Statsborgerskap",
-  type: "textfield",
+  type: "select",
   key: "statsborgerskap",
   input: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
     required: true,
+  },
+  data: {
+    values: alleVerdensLand.map((land) => ({ value: land.code, label: land.name })),
   },
 };
 

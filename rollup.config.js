@@ -12,8 +12,10 @@ export default [
   {
     input: "lib/index.js",
     external: [
+      "file-saver",
       "react",
       "react-dom",
+      "react-router-dom",
       "prop-types",
       "eventemitter2",
       "formiojs",
@@ -23,9 +25,12 @@ export default [
       "formiojs/components/_classes/component/editForm/Component.edit.conditional",
       "formiojs/components/_classes/component/editForm/Component.edit.api",
       "formiojs/components/_classes/field/Field",
-      "nav-frontend-skjema-style",
       "template",
       "nav-datovelger",
+      "nav-frontend-skjema-style",
+      "nav-frontend-typografi",
+      "nav-frontend-skjema",
+      "nav-frontend-alertstriper",
       "@material-ui/styles",
     ],
     output: [
