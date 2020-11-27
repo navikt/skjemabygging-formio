@@ -6,8 +6,7 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
 import PropTypes from "prop-types";
-import { genererFoerstesideData } from "../util/forsteside";
-import { lastNedFilBase64 } from "../util/pdf";
+import { Link, useLocation } from "react-router-dom";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -37,27 +36,9 @@ export function PrepareSubmitPage({ form, submission }) {
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
 
   useEffect(() => scrollToAndSetFocus("main"), []);
-
-  function lastNedFoersteside() {
-    fetch("/fyllut/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(genererFoerstesideData(form, submission.data)),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response;
-        } else {
-          throw new Error("Failed to retrieve foersteside from soknadsveiviser " + JSON.stringify(response.body));
-        }
-      })
-      .then((response) => response.json())
-      .then((json) => json.foersteside)
-      .then((base64EncodedPdf) => {
-        lastNedFilBase64(base64EncodedPdf, "Førstesideark", "pdf");
-      })
-      .catch((e) => console.log("Failed to download foersteside", e));
-  }
+  const {
+    state: { previousPage },
+  } = useLocation();
 
   return (
     <ResultContent tabIndex={-1}>
@@ -71,13 +52,6 @@ export function PrepareSubmitPage({ form, submission }) {
         <Normaltekst className="margin-bottom-default">
           Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending av søknaden.
         </Normaltekst>
-        {process.env.NODE_ENV === "development" && (
-          <div className="margin-bottom-default">
-            <button className="knapp knapp--hoved" onClick={lastNedFoersteside}>
-              Last ned førsteside
-            </button>
-          </div>
-        )}
         <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
           <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
           <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
@@ -119,20 +93,29 @@ export function PrepareSubmitPage({ form, submission }) {
             </AlertStripe>
           )}
         </div>
-        <a
-          className="knapp knapp--hoved"
-          href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission.data)}
-          onClick={(event) => {
-            if (!allowedToProgress) {
-              event.preventDefault();
-              event.stopPropagation();
-            }
-          }}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Gå videre
-        </a>
+        <nav className="list-inline">
+          <div className="list-inline-item">
+            <Link className="knapp knapp--fullbredde" to={previousPage}>
+              Gå tilbake
+            </Link>
+          </div>
+          <div className="list-inline-item">
+            <a
+              className="knapp knapp--hoved"
+              href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission.data)}
+              onClick={(event) => {
+                if (!allowedToProgress) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Gå videre
+            </a>
+          </div>
+        </nav>
       </section>
     </ResultContent>
   );

@@ -46,7 +46,7 @@ export function flattenComponents(components) {
   );
 }
 
-function getVedleggsFelterSomSkalSendes(submissionData, form) {
+export function getVedleggsFelterSomSkalSendes(submissionData, form) {
   const flattenedFormComponents = flattenComponents(form.components);
   return genererVedleggKeysSomSkalSendes(submissionData).map((vedleggsKey) =>
     flattenedFormComponents.find((component) => component.key === vedleggsKey)
