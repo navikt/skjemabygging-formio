@@ -8,9 +8,6 @@ import { lastNedFilBase64 } from "../util/pdf";
 import { Link, useLocation } from "react-router-dom";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
-  if (vedleggSomSkalSendes.length === 0) {
-    return null;
-  }
   return (
     <section className="margin-bottom-default">
       <Systemtittel className="margin-bottom-default">{index}. Du må legge ved disse vedleggene</Systemtittel>
