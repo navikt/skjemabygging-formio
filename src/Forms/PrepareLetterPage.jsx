@@ -48,13 +48,11 @@ const LastNedSoknadSection = ({ form, index, submission }) => (
       Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentasjonen. Den
       inneholder også adressen du skal sende dokumentene til.
     </Normaltekst>
-    {process.env.NODE_ENV === "development" && (
-      <div className="margin-bottom-default">
-        <button className="knapp knapp--fullbredde" onClick={() => lastNedFoersteside(form, submission)}>
-          Last ned førsteside
-        </button>
-      </div>
-    )}
+    <div className="margin-bottom-default">
+      <button className="knapp knapp--fullbredde" onClick={() => lastNedFoersteside(form, submission)}>
+        Last ned førsteside
+      </button>
+    </div>
     <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
       <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
       <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
