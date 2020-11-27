@@ -85,7 +85,7 @@ const HvaSkjerVidereSection = ({ index }) => (
   </section>
 );
 
-export function PrepareLetterPage({ form, submission = { data: [] } }) {
+export function PrepareLetterPage({ form, submission }) {
   useEffect(() => scrollToAndSetFocus("main"), []);
   const {
     state: { previousPage },

@@ -31,7 +31,7 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
   return url;
 };
 
-export function PrepareSubmitPage({ form, submission = { data: {} } }) {
+export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
 

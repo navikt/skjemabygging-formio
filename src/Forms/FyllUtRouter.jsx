@@ -21,7 +21,9 @@ export const FyllUtRouter = ({ form }) => {
         </SubmissionWrapper>
       </Route>
       <Route path={`${path}/send-i-posten`}>
-        <PrepareLetterPage form={form} submission={submission} />
+        <SubmissionWrapper submission={submission} url={url}>
+          <PrepareLetterPage form={form} submission={submission} />
+        </SubmissionWrapper>
       </Route>
       <Route path={`${path}/forbered-innsending`}>
         <SubmissionWrapper submission={submission} url={url}>
