@@ -5,7 +5,9 @@
   "private": true,
   "cracoConfig": "craco.config.cjs",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "proxy": "http://localhost:8080",
   "dependencies": {
