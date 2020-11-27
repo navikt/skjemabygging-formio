@@ -8,9 +8,12 @@ import { lastNedFilBase64 } from "../util/pdf";
 import { Link, useLocation } from "react-router-dom";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
+  const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
   return (
     <section className="margin-bottom-default">
-      <Systemtittel className="margin-bottom-default">{index}. Du må legge ved disse vedleggene</Systemtittel>
+      <Systemtittel className="margin-bottom-default">
+        {index}. Du må legge ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
+      </Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
           <li>{vedlegg.label}</li>
