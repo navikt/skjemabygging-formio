@@ -11,10 +11,8 @@ import { SummaryPage } from "./components/SummaryPage";
 import { PrepareSubmitPage } from "./components/PrepareSubmitPage";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
-import navdesign from "template";
 
-Components.setComponents(components);
-Formio.use(navdesign);
+// Components.setComponents(components);
 
 function App({ forms, className }) {
   const [submissionObject, setSubmissionObject] = useState({});

@@ -3,6 +3,12 @@ import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import { NavForm } from "skjemabygging-formio";
 
+import { Components, Formio } from "formiojs";
+import All from "skjemabygging-formio";
+console.log(All);
+
+// Components.setComponents(components);
+
 export const FillInFormPage = ({ form, submission, setSubmission }) => {
   const history = useHistory();
 
