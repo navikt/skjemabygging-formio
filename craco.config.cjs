@@ -4,7 +4,7 @@ const { addBeforeLoader, loaderByName } = require("@craco/craco");
 module.exports = {
   webpack: {
     configure: function (webpackConfig) {
-      const fragLoader = {
+      const ejsLoader = {
         test: /\.ejs$/,
         loader: "ejs-loader",
         options: {
@@ -14,9 +14,7 @@ module.exports = {
           escape: /\{\{\{([\s\S]+?)\}\}\}/g,
         },
       };
-
-      addBeforeLoader(webpackConfig, loaderByName("file-loader"), fragLoader);
-
+      addBeforeLoader(webpackConfig, loaderByName("file-loader"), ejsLoader);
       return webpackConfig;
     },
   },
