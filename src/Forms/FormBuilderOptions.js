@@ -182,9 +182,9 @@ const kontaktInfoSchema = {
   input: true,
   components: [
     {
-      label: "Bor du utenfor Norge?",
+      label: "Bor du i Norge?",
       type: "radio",
-      key: "utenlandskAdresse",
+      key: "borDuINorge",
       input: true,
       validate: {
         required: true,
@@ -205,16 +205,16 @@ const kontaktInfoSchema = {
       ...postnrSchema,
       conditional: {
         show: false,
-        when: "utenlandskAdresse",
-        eq: "ja",
+        when: "borDuINorge",
+        eq: "nei",
       },
     },
     {
       ...utenlandskPostkodeSchema,
       conditional: {
         show: true,
-        when: "utenlandskAdresse",
-        eq: "ja",
+        when: "borDuINorge",
+        eq: "nei",
       },
     },
     poststedSchema,
@@ -222,8 +222,8 @@ const kontaktInfoSchema = {
       ...landSchema,
       conditional: {
         show: true,
-        when: "utenlandskAdresse",
-        eq: "ja",
+        when: "borDuINorge",
+        eq: "nei",
       },
     },
     epostSchema,
