@@ -1,7 +1,6 @@
 import React from "react";
 import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
 import "nav-frontend-skjema-style";
-import { styled } from "@material-ui/styles";
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
   const {
@@ -43,13 +42,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
       />
-      <KodeverkRef>
-        Her finner du oversikt over temakoder:{" "}
-        <a href="https://kodeverk-web.nais.adeo.no/kodeverksoversikt/kodeverk/Vedleggskoder">
-          https://kodeverk-web.nais.adeo.no/kodeverksoversikt/kodeverk/Vedleggskoder
-        </a>{" "}
-        (må åpnes i Chrome SKSS)
-      </KodeverkRef>
       <Select
         label="Vis som"
         name="form-display"
@@ -113,7 +105,3 @@ export const CreationFormMetadataEditor = ({ form, onChange }) => (
 export const FormMetadataEditor = ({ form, onChange }) => (
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={"edit"} />
 );
-
-const KodeverkRef = styled("div")({
-  marginBottom: "1rem",
-});
