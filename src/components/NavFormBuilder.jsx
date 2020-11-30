@@ -111,9 +111,7 @@ class NavFormBuilder extends Component {
   };
 }
 export { NavFormBuilder as NakedNavFormBuilder };
-export default NavFormBuilder;
-/*
-styled(NavFormBuilder)({
+export default styled(NavFormBuilder)({
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
@@ -121,4 +119,3 @@ styled(NavFormBuilder)({
     content: '"(valgfritt)"',
   },
 });
-*/
