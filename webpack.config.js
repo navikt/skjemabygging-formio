@@ -4,6 +4,7 @@ const config = {
   externals: [nodeExternals()],
   entry: ["./lib/index.js"],
   output: {
+    libraryTarget: "commonjs2",
     path: __dirname + "/dist",
     filename: "index.js",
   },
