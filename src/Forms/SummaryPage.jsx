@@ -128,9 +128,22 @@ export function SummaryPage({ form, submission, formUrl }) {
             Rediger svar
           </Link>
         </div>
+        {process.env.NODE_ENV === "development" && (
+          <div className="list-inline-item">
+            <Link
+              className="btn btn-secondary btn-wizard-nav-previous"
+              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+            >
+              Send i posten
+            </Link>
+          </div>
+        )}
         <div className="list-inline-item">
-          <Link className="btn btn-primary btn-wizard-nav-next" to={`${formUrl}/forbered-innsending`}>
-            Gå videre
+          <Link
+            className="btn btn-primary btn-wizard-nav-next wizard-button"
+            to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
+          >
+            {process.env.NODE_ENV === "development" ? "Send inn digitalt" : "Gå videre"}
           </Link>
         </div>
       </nav>

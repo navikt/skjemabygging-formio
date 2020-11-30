@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { AppConfigProvider } from "../configContext";
 import { computeDokumentinnsendingURL, PrepareSubmitPage } from "./PrepareSubmitPage";
 
@@ -13,14 +13,15 @@ afterEach(() => {
 });
 
 test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krysset av på at de har lest instruksjonene", () => {
+  // we had to provide previousPage in state since all navigations to this page sets that value
   render(
     <AppConfigProvider>
-      <BrowserRouter>
+      <MemoryRouter initialEntries={[{ state: { previousPage: "/blask-blask" } }]}>
         <PrepareSubmitPage
           form={{ title: "Test form", properties: { skjemanummer: "NAV 76-07.10" } }}
           submission={{}}
         />
-      </BrowserRouter>
+      </MemoryRouter>
     </AppConfigProvider>
   );
   const harLestVilkaarInput = screen.getByLabelText("Jeg har lastet ned PDF-en og lest instruksjonene.");
