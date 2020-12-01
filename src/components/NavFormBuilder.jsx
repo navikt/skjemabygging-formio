@@ -110,7 +110,7 @@ class NavFormBuilder extends Component {
     );
   };
 }
-export { NavFormBuilder as NakedNavFormBuilder };
+export { NavFormBuilder as UnstyledNavFormBuilder };
 export default styled(NavFormBuilder)({
   "& .skjemaelement__label.field-required::after": {
     content: '""',

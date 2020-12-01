@@ -1,6 +1,6 @@
 import React from "react";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
-import NavFormBuilder, { NakedNavFormBuilder } from "./NavFormBuilder";
+import NavFormBuilder, { UnstyledNavFormBuilder } from "./NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import { isEqual, cloneDeep } from "lodash";
 import columnsForm from "../../example_data/columnsForm.json";
@@ -108,7 +108,7 @@ describe("NavFormBuilder", () => {
 
     it("add new component", async () => {
       context.render(<NavFormBuilder form={columnsForm} onChange={jest.fn()} />, renderOptions);
-      const navFormBuilder = await context.waitForComponent(NakedNavFormBuilder);
+      const navFormBuilder = await context.waitForComponent(UnstyledNavFormBuilder);
       jest.runAllTimers();
       await waitForExpect(() => expect(navFormBuilder.props.onChange).toHaveBeenCalled());
       const formioJsBuilder = navFormBuilder.instance.builder;
