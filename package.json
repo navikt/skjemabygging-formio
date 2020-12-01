@@ -46,7 +46,7 @@
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.4",
-    "skjemapublisering": "navikt/skjemapublisering.git#91937e88ddcaa49d2b4945a6b1cbdcee31601784"
+    "skjemapublisering": "navikt/skjemapublisering.git#452e64c53e4b4f3e4cd180864b63c229a0ea664f"
   },
   "devDependencies": {
     "husky": "^3.1.0",
@@ -60,12 +60,6 @@
     "build": "cross-env-shell REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "pretest": "npm run postinstall",
-    "prestart": "npm run postinstall",
-    "prebuild": "npm run postinstall",
-    "install-template": "cd template && npm install",
-    "build-template": "cd template && npm run build",
-    "postinstall": "npm run install-template && npm run build-template",
     "install-all": "npm install && cd server && npm install",
     "dev-server": "cross-env-shell cd server && npm start"
   },

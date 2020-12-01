@@ -1,9 +1,9 @@
-@import "~nav-frontend-skjema-style";
-@import "~nav-frontend-typografi-style";
-@import "~nav-frontend-core";
-@import "~nav-frontend-knapper-style";
-@import "~nav-frontend-lenker-style";
-@import "~nav-frontend-stegindikator-style";
+@import "nav-frontend-skjema-style";
+@import "nav-frontend-typografi-style";
+@import "nav-frontend-core";
+@import "nav-frontend-knapper-style";
+@import "nav-frontend-lenker-style";
+@import "nav-frontend-stegindikator-style";
 
 //Select -- start
 .choices.form-group.formio-choices {
@@ -24,6 +24,58 @@
   }
 }
 //Select -- slutt
+
+//Skjemagruppe -- start
+.skjemagruppe,
+.skjemagruppe fieldset,
+.skjemagruppe__fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  .skjemaelement {
+    margin-bottom: 1rem;
+  }
+
+  .skjemagruppe {
+    &.inputPanelGruppe,
+    &.radiogruppe,
+    &.checkboxgruppe {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.skjemagruppe__description {
+  .typo-normal-mixin();
+
+  margin-bottom: 1rem;
+}
+
+.skjemagruppe legend,
+.skjemagruppe__legend {
+  .typo-ingress-mixin();
+
+  margin-bottom: 1rem;
+}
+
+.skjemagruppe {
+  &.inputPanelGruppe,
+  &.radiogruppe,
+  &.checkboxgruppe {
+    .skjemaelement {
+      margin-bottom: 1rem;
+    }
+
+    legend,
+    .skjemagruppe__legend {
+      .typo-element-mixin();
+
+      margin-bottom: 1rem;
+    }
+  }
+}
+//Skjemagruppe -- slutt
 
 //Alle skjemafelter -- start
 .form-group {
