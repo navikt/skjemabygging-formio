@@ -1,5 +1,5 @@
 import NewFormPage from "./NewFormPage";
-import NavFormBuilder from "../components/NavFormBuilder";
+import NavFormBuilder, { NakedNavFormBuilder } from "../components/NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
 import { Link, MemoryRouter } from "react-router-dom";
@@ -15,14 +15,14 @@ import { UserAlerterContext } from "../userAlerting";
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
 
-describe('FormsRouter', () => {
+describe("FormsRouter", () => {
   const testRendererOptions = {
-    createNodeMock: element => {
+    createNodeMock: (element) => {
       if (["formMountElement", "builderMountElement"].includes(element.props["data-testid"])) {
         return htmlDivElement;
       }
       return null;
-    }
+    },
   };
 
   let oldFormioFetch;
@@ -38,7 +38,7 @@ describe('FormsRouter', () => {
   afterEach(() => {
     Formio.fetch = oldFormioFetch;
     document.body.removeChild(htmlDivElement);
-    htmlDivElement.outerHTML = '';
+    htmlDivElement.outerHTML = "";
   });
 
   function routeLocation() {
@@ -49,7 +49,8 @@ describe('FormsRouter', () => {
   function renderApp(pathname) {
     const userAlerter = {
       flashSuccessMessage: jest.fn(),
-      alertComponent: jest.fn() };
+      alertComponent: jest.fn(),
+    };
     return context.render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider
@@ -133,10 +134,10 @@ describe('FormsRouter', () => {
   };
 
   const saveComponent = (builder) => {
-    const click = new MouseEvent('click', {
+    const click = new MouseEvent("click", {
       view: window,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
 
     const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
@@ -145,30 +146,30 @@ describe('FormsRouter', () => {
     }
   };
 
-  xit('crashes when editing a second time', async() => {
-    renderApp('/forms/columns/edit');
+  xit("crashes when editing a second time", async () => {
+    renderApp("/forms/columns/edit");
     setTimeout.mock.calls[0][0]();
     let navFormBuilder = await context.waitForComponent(NavFormBuilder);
     jest.runAllTimers();
     // her må vi vente til formbuilderen er ready
-    await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual('ready'));
+    await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual("ready"));
     const formioJsBuilder = navFormBuilder.instance.builder;
     const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
-    buildComponent(formioJsBuilder,"textfield", column1);
+    buildComponent(formioJsBuilder, "textfield", column1);
     jest.advanceTimersByTime(150);
     saveComponent(formioJsBuilder);
     jest.advanceTimersByTime(150);
     const columns = formioJsBuilder.instance.webform.getComponent("columns");
     expect(columns.columns[0]).toHaveLength(1);
-    context.testRenderer.root.instance.history.push('/forms/columns/view');
+    context.testRenderer.root.instance.history.push("/forms/columns/view");
     //// sjekk at navigasjon er ferdig
     //// naviger tilbake til edit
-    context.testRenderer.root.instance.history.push('/forms/columns/edit');
+    context.testRenderer.root.instance.history.push("/forms/columns/edit");
     jest.clearAllTimers(); //må cleare før vi kan kjøre igjen!
     navFormBuilder = await context.waitForComponent(NavFormBuilder);
     jest.runAllTimers();
     //// her må vi vente til formbuilderen er ready
-    await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual('ready'));
+    await waitForExpect(() => expect(navFormBuilder.instance.builderState).toEqual("ready"));
     jest.clearAllTimers();
     // prøv å legg til et felt en gang til og se at det griser seg
   });
@@ -176,7 +177,7 @@ describe('FormsRouter', () => {
   it("can edit a form", async () => {
     renderApp("/forms/debugskjema/edit");
     setTimeout.mock.calls[0][0]();
-    const formBuilder = await context.waitForComponent(NavFormBuilder);
+    const formBuilder = await context.waitForComponent(NakedNavFormBuilder);
     jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
     expect(formBuilder.instance.builder.form).toEqual(formStore.forms[1]);
@@ -191,7 +192,7 @@ describe('FormsRouter', () => {
     await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
     const links = editFormLinks();
     navigateTo(links[1].props.to);
-    const formBuilder = await context.waitForComponent(NavFormBuilder);
+    const formBuilder = await context.waitForComponent(NakedNavFormBuilder);
     jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
     expect(formBuilder.instance.builderState).toEqual("ready");

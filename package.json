@@ -1,14 +1,15 @@
 {
   "name": "skjemabygging-formio",
   "version": "0.1.0",
-  "private": true,
+  "repository": "https://github.com/navikt/skjemabygging-formio.git",
   "type": "module",
+  "private": true,
   "cracoConfig": "craco.config.cjs",
-  "module": "dist/index.js",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],
+  "license": "SEE LICENSE IN LICENSE.md",
   "proxy": "http://localhost:8080",
   "dependencies": {
     "@craco/craco": "^5.6.4",
@@ -19,6 +20,7 @@
     "concurrently": "^5.3.0",
     "craco-less": "^1.17.0",
     "dispatch": "^1.0.2",
+    "ejs-loader": "^0.5.0",
     "eventemitter2": "^6.4.3",
     "express": "^4.17.1",
     "file-saver": "^2.0.5",
@@ -62,7 +64,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "typescript": "^3.9.7",
-    "wait-for-expect": "^3.0.2"
+    "wait-for-expect": "^3.0.2",
+    "webpack-node-externals": "^2.5.2"
   },
   "scripts": {
     "start": "cross-env-shell EXTEND_ESLINT=true craco start",
@@ -70,16 +73,14 @@
     "build": "cross-env-shell REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
     "test": "craco test --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject",
-    "prestart": "npm run install-and-build-template",
-    "prebuild": "npm run install-and-build-template",
-    "install-template": "cd template && npm install",
-    "build-template": "cd template && npm run build",
-    "install-and-build-template": "npm run install-template && npm run build-template",
-    "dist-build": "rollup -c",
+    "dist-build": "webpack --config webpack.config.cjs",
     "prepare": "npm run dist-build"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "engines": {
+    "node": ">= 14"
   },
   "browserslist": {
     "production": [

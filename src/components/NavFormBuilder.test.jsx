@@ -1,9 +1,10 @@
 import React from "react";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
-import NavFormBuilder from "./NavFormBuilder";
+import NavFormBuilder, { NakedNavFormBuilder } from "./NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import { isEqual, cloneDeep } from "lodash";
 import columnsForm from "../../example_data/columnsForm.json";
+import { Formio } from "formiojs";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -44,7 +45,10 @@ describe("NavFormBuilder", () => {
   });
 
   it("should call onChange after the form has been built", async () => {
-    context.render(<NavFormBuilder form={context.backend.form()} onChange={jest.fn()} formBuilderOptions={{}} />, renderOptions);
+    context.render(
+      <NavFormBuilder form={context.backend.form()} onChange={jest.fn()} formBuilderOptions={{}} />,
+      renderOptions
+    );
     const formBuilder = await context.waitForComponent(NavFormBuilder);
     expect(formBuilder.props.form).toEqual(context.backend.form());
     jest.runAllTimers();
@@ -90,10 +94,10 @@ describe("NavFormBuilder", () => {
     };
 
     const saveComponent = (builder) => {
-      const click = new MouseEvent('click', {
+      const click = new MouseEvent("click", {
         view: window,
         bubbles: true,
-        cancelable: true
+        cancelable: true,
       });
 
       const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
@@ -104,12 +108,12 @@ describe("NavFormBuilder", () => {
 
     it("add new component", async () => {
       context.render(<NavFormBuilder form={columnsForm} onChange={jest.fn()} />, renderOptions);
-      const navFormBuilder = await context.waitForComponent(NavFormBuilder);
+      const navFormBuilder = await context.waitForComponent(NakedNavFormBuilder);
       jest.runAllTimers();
       await waitForExpect(() => expect(navFormBuilder.props.onChange).toHaveBeenCalled());
       const formioJsBuilder = navFormBuilder.instance.builder;
       const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
-      buildComponent(formioJsBuilder,"textfield", column1);
+      buildComponent(formioJsBuilder, "textfield", column1);
       jest.advanceTimersByTime(150);
       saveComponent(formioJsBuilder);
       jest.advanceTimersByTime(150);

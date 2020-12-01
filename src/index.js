@@ -6,7 +6,9 @@ import AppProviders from "./context/AppProviders";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import Pusher from "pusher-js";
-
+import { Formio } from "formiojs";
+import navdesign from "./template";
+Formio.use(navdesign);
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 
@@ -17,8 +19,7 @@ Pusher.logToConsole = true;
 const pusherAppKey = process.env.REACT_APP_PUSHER_KEY;
 const pusherAppCluster = process.env.REACT_APP_PUSHER_CLUSTER;
 
-const pusher = new Pusher(
-  pusherAppKey, {
+const pusher = new Pusher(pusherAppKey, {
   cluster: pusherAppCluster,
 });
 
@@ -26,11 +27,7 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <AppProviders>
-        <App
-          store={store}
-          projectURL={projectURL}
-          pusher={pusher}
-        />
+        <App store={store} projectURL={projectURL} pusher={pusher} />
       </AppProviders>
     </BrowserRouter>
   </React.StrictMode>,
