@@ -1,6 +1,6 @@
 import NewFormPage from "./NewFormPage";
 import waitForExpect from "wait-for-expect";
-import NavFormBuilder, { NakedNavFormBuilder } from "../components/NavFormBuilder";
+import NavFormBuilder, { UnstyledNavFormBuilder } from "../components/NavFormBuilder";
 import { Formio } from "formiojs";
 import { Link, MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
@@ -86,7 +86,7 @@ describe("NewFormPage", () => {
     await waitForExpect(() => expect(context.backend.hasFormByPath("meat")).toBeTruthy());
     expect(formStore.forms).toHaveLength(3);
     expect(routeLocation().pathname).toEqual("/forms/meat/edit");
-    const formBuilder = context.testRenderer.root.findByType(NakedNavFormBuilder);
+    const formBuilder = context.testRenderer.root.findByType(UnstyledNavFormBuilder);
     jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));
     expect(formBuilder.instance.builder.form).toMatchObject(context.backend.formByPath("meat"));

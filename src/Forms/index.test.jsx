@@ -1,5 +1,5 @@
 import NewFormPage from "./NewFormPage";
-import NavFormBuilder, { NakedNavFormBuilder } from "../components/NavFormBuilder";
+import NavFormBuilder, { UnstyledNavFormBuilder } from "../components/NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
 import { Link, MemoryRouter } from "react-router-dom";
@@ -177,7 +177,7 @@ describe("FormsRouter", () => {
   it("can edit a form", async () => {
     renderApp("/forms/debugskjema/edit");
     setTimeout.mock.calls[0][0]();
-    const formBuilder = await context.waitForComponent(NakedNavFormBuilder);
+    const formBuilder = await context.waitForComponent(UnstyledNavFormBuilder);
     jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
     expect(formBuilder.instance.builder.form).toEqual(formStore.forms[1]);
@@ -192,7 +192,7 @@ describe("FormsRouter", () => {
     await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
     const links = editFormLinks();
     navigateTo(links[1].props.to);
-    const formBuilder = await context.waitForComponent(NakedNavFormBuilder);
+    const formBuilder = await context.waitForComponent(UnstyledNavFormBuilder);
     jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
     expect(formBuilder.instance.builderState).toEqual("ready");
