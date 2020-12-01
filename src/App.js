@@ -4,6 +4,7 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
+import "./overrideFormioStyles.less";
 
 function App({ projectURL, store, pusher }) {
   const userAlerter = useUserAlerting(pusher);
