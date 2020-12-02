@@ -124,7 +124,7 @@ export function SummaryPage({ form, submission, formUrl }) {
       <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
       <nav className="list-inline">
         <div className="list-inline-item">
-          <Link className="btn btn-secondary btn-wizard-nav-previous" to={url}>
+          <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
             Rediger svar
           </Link>
         </div>
