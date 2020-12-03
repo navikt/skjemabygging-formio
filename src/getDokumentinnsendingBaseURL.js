@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function getDokumentinnsendingBaseURL(naisClusterName) {
   const dokumentinnsendingProdURL = "https://tjenester.nav.no/dokumentinnsending";
   const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
