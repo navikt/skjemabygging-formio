@@ -54,7 +54,7 @@ const config = {
     ],
   },
   resolve: {
-    extensions: [".js"],
+    extensions: [".js", ".jsx"],
   },
 };
 module.exports = config;
