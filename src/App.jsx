@@ -13,9 +13,7 @@ import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
 import "./overrideFormioStyles.less";
 
-const components = CustomComponents;
-
-Components.setComponents(components);
+Components.setComponents(CustomComponents);
 Formio.use(Template);
 
 function App({ forms, className }) {
