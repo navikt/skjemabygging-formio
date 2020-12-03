@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Components, Formio } from "formiojs";
-import { CustomComponents as components } from "skjemabygging-formio";
+import { CustomComponents, Template } from "skjemabygging-formio";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,10 +11,10 @@ import { SummaryPage } from "./components/SummaryPage";
 import { PrepareSubmitPage } from "./components/PrepareSubmitPage";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
-import navdesign from "template";
+import "./overrideFormioStyles.less";
 
-Components.setComponents(components);
-Formio.use(navdesign);
+Components.setComponents(CustomComponents);
+Formio.use(Template);
 
 function App({ forms, className }) {
   const [submissionObject, setSubmissionObject] = useState({});
