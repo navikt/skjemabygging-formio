@@ -13,7 +13,6 @@ import navdesign from "template";
 
 Components.setComponents(components);
 Formio.use(navdesign);
-
 function App({ forms, className }) {
   return (
     <div className={className}>
