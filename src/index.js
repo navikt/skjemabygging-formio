@@ -5,7 +5,8 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import { forms } from "skjemapublisering";
-import { AppConfigProvider } from "./configContext";
+import { AppConfigProvider } from "skjemabygging-formio";
+import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 
 fetch("/fyllut/config")
   .then((config) => config.json())
@@ -26,7 +27,7 @@ fetch("/fyllut/config")
 function renderReact(naisClusterName) {
   ReactDOM.render(
     <React.StrictMode>
-      <AppConfigProvider naisClusterName={naisClusterName}>
+      <AppConfigProvider dokumentinnsendingBaseURL={getDokumentinnsendingBaseURL(naisClusterName)}>
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />
         </BrowserRouter>
