@@ -1,3 +1,4 @@
+name: Publish skjemabygger
 on:
   workflow_dispatch:
     inputs:
