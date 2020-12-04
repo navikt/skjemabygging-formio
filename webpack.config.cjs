@@ -3,6 +3,7 @@ var nodeExternals = require("webpack-node-externals");
 const config = {
   externals: [nodeExternals()],
   entry: ["./lib/index.js"],
+  mode: "development",
   output: {
     libraryTarget: "commonjs2",
     path: __dirname + "/dist",
