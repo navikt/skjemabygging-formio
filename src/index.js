@@ -25,9 +25,13 @@ fetch("/fyllut/config")
   });
 
 function renderReact(naisClusterName) {
+  console.log(process.env.NODE_ENV);
   ReactDOM.render(
     <React.StrictMode>
-      <AppConfigProvider dokumentinnsendingBaseURL={getDokumentinnsendingBaseURL(naisClusterName)}>
+      <AppConfigProvider
+        dokumentinnsendingBaseURL={getDokumentinnsendingBaseURL(naisClusterName)}
+        featureToggles={{ sendPaaPapir: process.env.NODE_ENV === "development" }}
+      >
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />
         </BrowserRouter>
