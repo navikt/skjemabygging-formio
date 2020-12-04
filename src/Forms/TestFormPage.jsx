@@ -24,7 +24,10 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         </>
       }
     >
-      <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL}>
+      <AppConfigProvider
+        dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
+        featureToggles={{ sendPaaPapir: process.env.NODE_ENV === "development" }}
+      >
         <FyllUtRouter form={form} />
       </AppConfigProvider>
     </AppLayoutWithContext>
