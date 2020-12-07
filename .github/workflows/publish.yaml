@@ -24,6 +24,8 @@ jobs:
     env:
       NEW_SKJEMABYGGING_URL: github:navikt/skjemabygging-formio.git#${{ github.sha }}
     steps:
+      - name: Show event information
+        run: cat $GITHUB_EVENT_PATH | jq .
       - name: Checkout skjemapublisering
         uses: actions/checkout@v2
         with:
