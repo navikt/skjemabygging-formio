@@ -2,6 +2,10 @@ name: Publish skjemabygger
 on:
   workflow_dispatch:
     inputs:
+      skjemapubliseringBranch:
+        description: "Bransjen på skjemapublisering som oppdateres"
+        required: true
+        default: "publish-testing"
       logLevel:
         description: 'Log level'
         required: true
@@ -24,8 +28,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: navikt/skjemapublisering
-          ref: publish-testing
+          ref: ${{ github.event.inputs.skjemapubliseringsBranch }}
           fetch-depth: 0
-      - name: Echo NEW_SKJEMAPUBLISERING_URL
-        run: echo $NEW_SKJEMAPUBLISERING_URL
-
+      - name: Echo NEW_SKJEMABYGGING_URL
+        run: echo $NEW_SKJEMABYGGING_URL
+      - name: Oppdater skjemabygging-formio dependency til ${{ env.NEW_SKJEMABYGGING_URL }}
+        run: echo "`jq --arg dependencyUrl ${{ env.NEW_SKJEMABYGGING_URL }} '.dependencies.skjemabygging-formio=$dependencyUrl' package.json`" > package.json
+      - name: Vis redigert package json
+        run: cat package.json
