@@ -35,7 +35,7 @@ jobs:
       - name: Vis original package.json
         run: cat package.json
       - name: Oppdater skjemabygging-formio dependency til ${{ env.NEW_SKJEMABYGGING_URL }}
-        run: jq --arg dependencyUrl $NEW_SKJEMABYGGING_URL '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > tmp.json
+        run: jq --arg dependencyUrl ${{ env.NEW_SKJEMABYGGING_URL }} '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > tmp.json
       - name: Swap
         run: |
           rm package.json
