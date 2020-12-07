@@ -60,6 +60,8 @@ jobs:
         run: npm install
       - name: Commit files
         run: |
+          git config --local author $author
+          git config --local email $email
           git add package*.json
           git commit -m "Bump skjemabygging-formio dependency to $NEW_SKJEMABYGGING_URL"
       - name: Push endringen til skjemapublisering
