@@ -32,6 +32,8 @@ jobs:
           fetch-depth: 0
       - name: Echo NEW_SKJEMABYGGING_URL
         run: echo $NEW_SKJEMABYGGING_URL
+      - name: Vis original package.json
+        run: cat package.json
       - name: Oppdater skjemabygging-formio dependency til ${{ env.NEW_SKJEMABYGGING_URL }}
         run: jq --arg dependencyUrl ${{ env.NEW_SKJEMABYGGING_URL }} '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > package.json
       - name: Vis redigert package json
