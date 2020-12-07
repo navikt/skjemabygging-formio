@@ -26,6 +26,8 @@ jobs:
     outputs:
       author: ${{ steps.findAuthor.outputs.author }}
     steps:
+      - name: Show events url
+        run: echo $eventsUrl
       - name: Curl events
         run: curl $eventsUrl | jq '.[] | select(.payload.commits?)'
 #      - id: findAuthor
@@ -39,7 +41,7 @@ jobs:
       - name: Show event information
         run: cat $GITHUB_EVENT_PATH | jq .
       - name: Show it from context
-        run: echo ${ github.event }
+        run: echo ${{ github.event }}
       - name: Checkout skjemapublisering
         uses: actions/checkout@v2
         with:
