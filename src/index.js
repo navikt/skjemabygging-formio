@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { forms } from "skjemapublisering";
 import { AppConfigProvider } from "skjemabygging-formio";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
+import featureToggles from "./featureToggles.json";
 
 class HttpError extends Error {}
 
@@ -35,7 +36,7 @@ fetch("/fyllut/config", { headers: { accept: "application/json" } })
 function renderReact(dokumentInnsendingBaseURL) {
   ReactDOM.render(
     <React.StrictMode>
-      <AppConfigProvider dokumentinnsendingBaseURL={dokumentInnsendingBaseURL} featureToggles={{ sendPaaPapir: true }}>
+      <AppConfigProvider dokumentinnsendingBaseURL={dokumentInnsendingBaseURL} featureToggles={featureToggles}>
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />
         </BrowserRouter>
