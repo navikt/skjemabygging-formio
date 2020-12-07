@@ -30,15 +30,22 @@ jobs:
           repository: navikt/skjemapublisering
           ref: ${{ github.event.inputs.skjemapubliseringsBranch }}
           fetch-depth: 0
-      - name: Echo NEW_SKJEMABYGGING_URL
-        run: echo $NEW_SKJEMABYGGING_URL
       - name: Vis original package.json
         run: cat package.json
       - name: Oppdater skjemabygging-formio dependency til ${{ env.NEW_SKJEMABYGGING_URL }}
-        run: jq --arg dependencyUrl ${{ env.NEW_SKJEMABYGGING_URL }} '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > tmp.json
+        run: jq --arg dependencyUrl $NEW_SKJEMABYGGING_URL '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > tmp.json
       - name: Swap
         run: |
           rm package.json
           mv tmp.json package.json
       - name: Vis redigert package json
         run: cat package.json
+      - name: Check package.json and generate package-lock.json
+        run: npm install
+      - name: Commit files
+        run: |
+          git add package*.json
+          git commit -m "Bump skjemabygging-formio dependency to $NEW_SKJEMABYGGING_URL"
+      - name: Push endringen til skjemapublisering
+        run: echo Ikke implementert ennå
+
