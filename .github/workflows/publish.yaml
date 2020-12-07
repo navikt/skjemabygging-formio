@@ -38,7 +38,7 @@ jobs:
         run: jq --arg dependencyUrl $NEW_SKJEMABYGGING_URL '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > tmp.json
       - name: Swap
         run: |
-          - rm package.json
-          - mv tmp.json package.json
+          rm package.json
+          mv tmp.json package.json
       - name: Vis redigert package json
         run: cat package.json
