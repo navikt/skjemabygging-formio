@@ -28,8 +28,8 @@ jobs:
     steps:
       - name: Curl events
         run: curl $eventsUrl | jq '.[] | select(.payload.commits?)'
-      - id: findAuthor
-        run: echo "::set-output name=author::$( curl $eventsUrl | jq '[.[] | select(.payload.commits?) | {author: .payload.commits[].author }] | .[0]')"
+#      - id: findAuthor
+#        run: echo "::set-output name=author::$( curl $eventsUrl | jq '[.[] | select(.payload.commits?) | {author: .payload.commits[].author }] | .[0]')"
 
   publishBygger:
     runs-on: ubuntu-latest
