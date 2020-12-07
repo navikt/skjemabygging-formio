@@ -61,7 +61,8 @@
     "test": "craco test",
     "eject": "craco eject",
     "install-all": "npm install && cd server && npm install",
-    "dev-server": "cross-env-shell cd server && npm start"
+    "dev-server": "cross-env-shell cd server && npm start",
+    "check-env": "node -e 'console.log(process.env)' | grep npm"
   },
   "eslintConfig": {
     "extends": "react-app"
