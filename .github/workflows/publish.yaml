@@ -31,7 +31,7 @@ jobs:
       - name: Curl events
         run: curl $eventsUrl | jq '.[] | select(.payload.commits?)'
       - id: tryOutputs
-        run: echo "::set-output name=flesk::$(curl $eventsUrl | jq '.[] | select(.payload.commits?)')
+        run: echo "::set-output name=flesk::$(curl $eventsUrl | jq '.[] | select(.payload.commits?)')"
       - name: See outputs
         run: echo ${{ steps.tryOutputs.outputs.flesk }}
 #      - id: findAuthor
