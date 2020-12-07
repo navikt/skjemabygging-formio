@@ -21,7 +21,7 @@ jobs:
           echo "Tags: ${{ github.event.inputs.tags }}"
   findAuthor:
     env:
-      eventsUrl: ${ github.event.sender.events_url }
+      eventsUrl: ${{ github.event.sender.events_url }}
     runs-on: ubuntu-latest
     outputs:
       author: ${{ steps.findAuthor.outputs.author }}
