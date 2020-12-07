@@ -15,3 +15,17 @@ jobs:
       - run: |
           echo "Log level: ${{ github.event.inputs.logLevel }}"
           echo "Tags: ${{ github.event.inputs.tags }}"
+  publishBygger:
+    runs-on: ubuntu-latest
+    env:
+      NEW_SKJEMABYGGING_URL: navikt/skjemabygging-formio.git#${{ github.sha }}
+    steps:
+      - name: Checkout skjemapublisering
+        uses: actions/checkout@v2
+        with:
+          repository: navikt/skjemapublisering
+          ref: publish-testing
+          fetch-depth: 0
+      - name: Echo NEW_SKJEMAPUBLISERING_URL
+        run: echo $NEW_SKJEMAPUBLISERING_URL
+
