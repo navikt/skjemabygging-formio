@@ -22,7 +22,7 @@ jobs:
   publishBygger:
     runs-on: ubuntu-latest
     env:
-      NEW_SKJEMABYGGING_URL: navikt/skjemabygging-formio.git#${{ github.sha }}
+      NEW_SKJEMABYGGING_URL: github:navikt/skjemabygging-formio.git#${{ github.sha }}
     steps:
       - name: Checkout skjemapublisering
         uses: actions/checkout@v2
@@ -33,6 +33,6 @@ jobs:
       - name: Echo NEW_SKJEMABYGGING_URL
         run: echo $NEW_SKJEMABYGGING_URL
       - name: Oppdater skjemabygging-formio dependency til ${{ env.NEW_SKJEMABYGGING_URL }}
-        run: echo "`jq --arg dependencyUrl ${{ env.NEW_SKJEMABYGGING_URL }} '.dependencies.skjemabygging-formio=$dependencyUrl' package.json`" > package.json
+        run: jq --arg dependencyUrl ${{ env.NEW_SKJEMABYGGING_URL }} '.dependencies["skjemabygging-formio"]=$dependencyUrl' package.json > package.json
       - name: Vis redigert package json
         run: cat package.json
