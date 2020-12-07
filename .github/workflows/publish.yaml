@@ -21,7 +21,7 @@ jobs:
           echo "Tags: ${{ github.event.inputs.tags }}"
   findAuthor:
     env:
-      eventsUrl: ${{ github.event.sender.events_url }}
+      eventsUrl: https://api.github.com/users/${{ github.event.sender.login }}/events
     runs-on: ubuntu-latest
     outputs:
       author: ${{ steps.findAuthor.outputs.author }}
@@ -30,6 +30,10 @@ jobs:
         run: echo $eventsUrl
       - name: Curl events
         run: curl $eventsUrl | jq '.[] | select(.payload.commits?)'
+      - id: tryOutputs
+        run: echo "::set-output name=flesk::$(curl $eventsUrl | jq '.[] | select(.payload.commits?)')
+      - id: See outputs
+        run: echo ${{ steps.tryOutputs.outputs.flesk }}
 #      - id: findAuthor
 #        run: echo "::set-output name=author::$( curl $eventsUrl | jq '[.[] | select(.payload.commits?) | {author: .payload.commits[].author }] | .[0]')"
 
@@ -62,8 +66,8 @@ jobs:
         run: npm install
       - name: Commit files
         run: |
-          git config --local author $author
-          git config --local email $email
+          git config --local user.name $author
+          git config --local user.email $email
           git add package*.json
           git commit -m "Bump skjemabygging-formio dependency to $NEW_SKJEMABYGGING_URL"
       - name: Push endringen til skjemapublisering
