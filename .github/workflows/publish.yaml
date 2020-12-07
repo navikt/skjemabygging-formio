@@ -19,6 +19,18 @@ jobs:
       - run: |
           echo "Log level: ${{ github.event.inputs.logLevel }}"
           echo "Tags: ${{ github.event.inputs.tags }}"
+  findAuthor:
+    env:
+      eventsUrl: ${ github.event.sender.events_url }
+    runs-on: ubuntu-latest
+    outputs:
+      author: ${{ steps.findAuthor.outputs.author }}
+    steps:
+      - name: Curl events
+        run: curl $eventsUrl | jq '.[] | select(.payload.commits?)'
+      - id: findAuthor
+        run: echo "::set-output name=author::$( curl $eventsUrl | jq '[.[] | select(.payload.commits?) | {author: .payload.commits[].author }] | .[0]')"
+
   publishBygger:
     runs-on: ubuntu-latest
     env:
@@ -26,6 +38,8 @@ jobs:
     steps:
       - name: Show event information
         run: cat $GITHUB_EVENT_PATH | jq .
+      - name: Show it from context
+        run: echo ${ github.event }
       - name: Checkout skjemapublisering
         uses: actions/checkout@v2
         with:
