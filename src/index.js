@@ -11,11 +11,11 @@ import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 class HttpError extends Error {}
 
 fetch("/fyllut/config", { headers: { accept: "application/json" } })
-  .then((config) => {
-    if (!config.ok) {
-      throw new HttpError(config.statusText);
+  .then((response) => {
+    if (!response.ok) {
+      throw new HttpError(response.statusText);
     }
-    return config.json();
+    return response.json();
   })
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
@@ -25,6 +25,7 @@ fetch("/fyllut/config", { headers: { accept: "application/json" } })
   })
   .catch((error) => {
     if (process.env.NODE_ENV === "development") {
+      console.log("config not loaded, using dummy config in development");
       renderReact("https://example.org/dokumentinnsendingbaseurl");
     } else {
       console.error(`Could not fetch config from server: ${error}`);
