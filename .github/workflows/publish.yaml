@@ -32,7 +32,7 @@ jobs:
         run: curl $eventsUrl | jq '.[] | select(.payload.commits?)'
       - id: tryOutputs
         run: echo "::set-output name=flesk::$(curl $eventsUrl | jq '.[] | select(.payload.commits?)')
-      - id: See outputs
+      - name: See outputs
         run: echo ${{ steps.tryOutputs.outputs.flesk }}
 #      - id: findAuthor
 #        run: echo "::set-output name=author::$( curl $eventsUrl | jq '[.[] | select(.payload.commits?) | {author: .payload.commits[].author }] | .[0]')"
