@@ -30,15 +30,35 @@ import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
+import { loggStegFullfort, loggSkjemaValideringFeilet } from "../util/amplitude";
 
-const Wizard = Formio.Displays.displays.wizard;
-const originalNextPage = Wizard.prototype.nextPage;
-Wizard.prototype.nextPage = function () {
-  return originalNextPage.call(this).catch((error) => {
-    scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
-    return Promise.reject(error);
-  });
-};
+function setupFormio(form) {
+  const Wizard = Formio.Displays.displays.wizard;
+  const originalNextPage = Wizard.prototype.nextPage;
+  const originalSubmit = Wizard.prototype.submit;
+
+  Wizard.prototype.nextPage = function () {
+    return originalNextPage
+      .call(this)
+      .then(() => loggStegFullfort(form))
+      .catch((error) => {
+        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
+        loggSkjemaValideringFeilet(form);
+        return Promise.reject(error);
+      });
+  };
+
+  Wizard.prototype.submit = function () {
+    return originalSubmit
+      .call(this)
+      .then(() => loggStegFullfort(form))
+      .catch((error) => {
+        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
+        loggSkjemaValideringFeilet(form);
+        return Promise.reject(error);
+      });
+  };
+}
 
 class NavForm extends Component {
   static propTypes = {
@@ -79,8 +99,12 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => scrollToAndSetFocus("main", "start"),
-    onPrevPage: () => scrollToAndSetFocus("main", "start"),
+    onNextPage: () => {
+      scrollToAndSetFocus("main", "start");
+    },
+    onPrevPage: () => {
+      scrollToAndSetFocus("main", "start");
+    },
   };
 
   static getDefaultEmitter() {
@@ -142,6 +166,7 @@ class NavForm extends Component {
         }
       });
     }
+    setupFormio(this.props.form);
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {

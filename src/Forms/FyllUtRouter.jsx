@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
@@ -6,9 +6,19 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 
+import { initAmplitude, logAmplitudeEvent } from "../util/amplitude";
+
 export const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
+
+  useEffect(() => {
+    initAmplitude();
+    logAmplitudeEvent("skjema åpnet", {
+      skjemanavn: form.title,
+      skjemaId: form.properties.skjemanummer,
+    });
+  }, [form.properties.skjemanummer, form.title]);
 
   return (
     <Switch>

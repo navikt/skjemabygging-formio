@@ -4,6 +4,8 @@ import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
+import { loggStegFullfort } from "../util/amplitude";
+import { Formio } from "formiojs";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -112,6 +114,7 @@ export function SummaryPage({ form, submission, formUrl }) {
   const { featureToggles } = useContext(AppConfigContext);
 
   useEffect(() => scrollToAndSetFocus("main"), []);
+  useEffect(() => loggStegFullfort(form, Formio.forms[Object.keys(Formio.forms)[0]].components.length));
 
   return (
     <SummaryContent tabIndex={-1}>
