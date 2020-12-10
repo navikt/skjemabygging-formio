@@ -43,7 +43,7 @@ skjemaApp.post("/pdf-form", (req, res) => {
 
 skjemaApp.post("/foersteside", async (req, res) => {
   const foerstesideData = JSON.stringify(req.body);
-  const response = await fetch("https://www.nav.no/soknader/api/forsteside", {
+  const response = await fetch(process.env.FOERSTESIDE_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: foerstesideData,

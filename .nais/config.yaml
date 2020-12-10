@@ -37,8 +37,11 @@ spec:
     outbound:
       external:
         - host: {{dekorator-host}}
+        - host: {{foersteside-host}}
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
+    - name: FOERSTESIDE_URL
+      value: {{foersteside-url}}
   envFrom:
     - secret: sentry-dsn

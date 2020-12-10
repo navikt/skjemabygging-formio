@@ -5,10 +5,11 @@
   "main": "server.js",
   "type": "module",
   "config": {
-    "icuDataDir": "./node_modules/full-icu"
+    "icuDataDir": "./node_modules/full-icu",
+    "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside"
   },
   "scripts": {
-    "start": "cross-env-shell DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start": "cross-env-shell FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
