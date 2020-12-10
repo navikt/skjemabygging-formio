@@ -1,5 +1,5 @@
 name: Continous integration | deployment
-on: push
+on: [push, pull_request]
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skjemautfylling:${{ github.sha }}
