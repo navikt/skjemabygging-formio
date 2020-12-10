@@ -47,17 +47,6 @@ function setupFormio(form) {
         return Promise.reject(error);
       });
   };
-
-  Wizard.prototype.submit = function () {
-    return originalSubmit
-      .call(this)
-      .then(() => loggStegFullfort(form))
-      .catch((error) => {
-        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
-        loggSkjemaValideringFeilet(form);
-        return Promise.reject(error);
-      });
-  };
 }
 
 class NavForm extends Component {

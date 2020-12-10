@@ -114,7 +114,7 @@ export function SummaryPage({ form, submission, formUrl }) {
   const { featureToggles } = useContext(AppConfigContext);
 
   useEffect(() => scrollToAndSetFocus("main"), []);
-  useEffect(() => loggStegFullfort(form, Formio.forms[Object.keys(Formio.forms)[0]].components.length));
+  useEffect(() => loggStegFullfort(form, form.components.length - 1), [form]);
 
   return (
     <SummaryContent tabIndex={-1}>
@@ -137,6 +137,7 @@ export function SummaryPage({ form, submission, formUrl }) {
           <div className="list-inline-item">
             <Link
               className="btn btn-secondary btn-wizard-nav-previous"
+              onClick={() => loggStegFullfort(form, form.components.length)}
               to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
             >
               Send i posten
@@ -146,6 +147,7 @@ export function SummaryPage({ form, submission, formUrl }) {
         <div className="list-inline-item">
           <Link
             className="btn btn-primary btn-wizard-nav-next wizard-button"
+            onClick={() => loggStegFullfort(form, form.components.length)}
             to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
           >
             {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
