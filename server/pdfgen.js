@@ -129,7 +129,7 @@ export class Pdfgen {
   generateDocDefinition() {
     return {
       pageSize: "A4",
-      pageMargins: [40, 100, 40, 100],
+      pageMargins: [40, 80, 40, 80],
       content: this.generateContentFromSubmission(),
       styles: this.docStyles(),
     };
