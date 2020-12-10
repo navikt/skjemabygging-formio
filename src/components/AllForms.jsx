@@ -7,7 +7,7 @@ const FormsList = ({ forms, children }) => {
 };
 export const AllForms = ({ forms }) => (
   <main>
-    <h1>Velg et skjema</h1>
+    <h1>Velg et skjema, din nappetass dette er et devbuild</h1>
     <nav>
       <FormsList forms={forms}>
         {(form) => (
