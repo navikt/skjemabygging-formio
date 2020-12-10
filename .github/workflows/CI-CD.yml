@@ -85,6 +85,8 @@ jobs:
           ingresses:
             - https://fyllut.dev.nav.no/fyllut
           image: $IMAGE
+          foersteside-host: www.nav.no
+          foersteside-url: https://www.nav.no/soknader/api/forsteside
           dekorator-host: dekoratoren.dev.nav.no
           dekorator-url: https://dekoratoren.dev.nav.no
           EOF
@@ -135,6 +137,8 @@ jobs:
           ingresses:
             - https://www.nav.no/fyllut
           image: $IMAGE
+          foersteside-host: www.nav.no
+          foersteside-url: https://www.nav.no/soknader/api/forsteside
           dekorator-host: www.nav.no
           dekorator-url: https://www.nav.no/dekoratoren
           EOF
