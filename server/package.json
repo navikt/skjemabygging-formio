@@ -6,12 +6,14 @@
   "type": "module",
   "config": {
     "icuDataDir": "./node_modules/full-icu",
+    "decoratorUrl": "https://www.nav.no/dekoratoren/",
     "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside"
   },
   "scripts": {
-    "start": "cross-env-shell FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=\"https://www.nav.no/dekoratoren/\" nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start": "cross-env-shell NODE_ENV=development FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=$npm_package_config_decoratorUrl nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
-    "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "check-env": "node -e 'console.log(process.env)' | grep npm"
   },
   "jest": {
     "testEnvironment": "jest-environment-node",

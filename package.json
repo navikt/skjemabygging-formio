@@ -46,7 +46,7 @@
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.4",
-    "skjemapublisering": "navikt/skjemapublisering.git#cde9703c9a7c67c70e2e45bbbad8e4db1e51d952"
+    "skjemapublisering": "navikt/skjemapublisering.git#54f5c7c2744aaafc97e464c6e99219475194f5b5"
   },
   "devDependencies": {
     "husky": "^3.1.0",
@@ -61,7 +61,8 @@
     "test": "craco test",
     "eject": "craco eject",
     "install-all": "npm install && cd server && npm install",
-    "dev-server": "cross-env-shell cd server && npm start"
+    "dev-server": "cross-env-shell cd server && npm start",
+    "check-env": "node -e 'console.log(process.env)' | grep npm"
   },
   "eslintConfig": {
     "extends": "react-app"
