@@ -7,31 +7,36 @@ import { BrowserRouter } from "react-router-dom";
 import { forms } from "skjemapublisering";
 import { AppConfigProvider } from "skjemabygging-formio";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
+import featureToggles from "./featureToggles.json";
 
-fetch("/fyllut/config")
-  .then((config) => config.json())
+class HttpError extends Error {}
+
+fetch("/fyllut/config", { headers: { accept: "application/json" } })
+  .then((response) => {
+    if (!response.ok) {
+      throw new HttpError(response.statusText);
+    }
+    return response.json();
+  })
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
     }
-    renderReact(json.NAIS_CLUSTER_NAME);
+    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
   })
   .catch((error) => {
     if (process.env.NODE_ENV === "development") {
-      renderReact();
+      console.log("config not loaded, using dummy config in development");
+      renderReact("https://example.org/dokumentinnsendingbaseurl");
     } else {
       console.error(`Could not fetch config from server: ${error}`);
     }
   });
 
-function renderReact(naisClusterName) {
-  console.log(process.env.NODE_ENV);
+function renderReact(dokumentInnsendingBaseURL) {
   ReactDOM.render(
     <React.StrictMode>
-      <AppConfigProvider
-        dokumentinnsendingBaseURL={getDokumentinnsendingBaseURL(naisClusterName)}
-        featureToggles={{ sendPaaPapir: true }}
-      >
+      <AppConfigProvider dokumentinnsendingBaseURL={dokumentInnsendingBaseURL} featureToggles={featureToggles}>
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />
         </BrowserRouter>
