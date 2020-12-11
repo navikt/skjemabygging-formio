@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
-import { loggSkjemaSporsmalBesvart } from "../util/amplitude";
+import { loggSkjemaSporsmalBesvart, loggSkjemaStartet } from "../util/amplitude";
 
 const hasFieldValueChanged = (previousValue, newValue) => previousValue !== newValue;
 const getFieldValueIfChanged = (event, lastFormState) => {
@@ -13,7 +13,15 @@ const getFieldValueIfChanged = (event, lastFormState) => {
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const [lastFormState] = useState({});
+  const [hasStartedFillingOutForm, setHasStartedFillingOutForm] = useState(false);
+  const [lastEvent, setLastEvent] = useState(null);
   const history = useHistory();
+  useEffect(() => {
+    if (lastEvent && lastEvent._data[lastEvent.component.key] && !hasStartedFillingOutForm) {
+      loggSkjemaStartet(form);
+      setHasStartedFillingOutForm(true);
+    }
+  }, [form, hasStartedFillingOutForm, lastEvent]);
   return (
     <main tabIndex={-1}>
       <Sidetittel>{form.title}</Sidetittel>
