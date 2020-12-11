@@ -118,7 +118,7 @@ export function PrepareSubmitPage({ form, submission }) {
                   //} else if (!hasDownloadedPDF) {
                   // Gi beskjed til bruker
                 } else {
-                  loggSkjemaFullfort(form);
+                  loggSkjemaFullfort(form, "dokumentinnsending");
                 }
               }}
               target="_blank"

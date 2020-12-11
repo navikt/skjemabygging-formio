@@ -50,7 +50,7 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
-      loggSkjemaFullfort(form);
+      loggSkjemaFullfort(form, "papirinnsending");
     }
   }, [form, hasDownloadedFoersteside, hasDownloadedPDF]);
   return (

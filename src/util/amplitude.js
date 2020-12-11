@@ -67,9 +67,9 @@ export function loggStegFullfort(form, steg) {
   }
 }
 
-export function loggSkjemaFullfort(form) {
+export function loggSkjemaFullfort(form, innsendingsType) {
   if (form) {
-    logAmplitudeEvent("skjema fullført", createEventData(form));
+    logAmplitudeEvent("skjema fullført", createEventData(form, { innsendingsType: innsendingsType }));
     console.log("Fullført skjema");
   } else {
     console.log("Form is missing");
