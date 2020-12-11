@@ -30,7 +30,7 @@ function renderReact(naisClusterName) {
     <React.StrictMode>
       <AppConfigProvider
         dokumentinnsendingBaseURL={getDokumentinnsendingBaseURL(naisClusterName)}
-        featureToggles={{ sendPaaPapir: process.env.NODE_ENV === "development" }}
+        featureToggles={{ sendPaaPapir: true }}
       >
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />

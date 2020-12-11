@@ -68,7 +68,7 @@ jobs:
       - name: Docker build and push
         run: |
           docker build --tag ${IMAGE} .
-          docker login docker.pkg.github.com -u ${{ github.repository }} -p ${{ secrets.GITHUB_TOKEN }}}
+          docker login docker.pkg.github.com -u ${{ github.repository }} -p ${{ secrets.GITHUB_TOKEN }}
           docker push ${IMAGE}
       - name: Generate dev nais variables
         run: |
