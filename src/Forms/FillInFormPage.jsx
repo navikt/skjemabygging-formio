@@ -5,15 +5,10 @@ import NavForm from "../components/NavForm.jsx";
 import { loggSkjemaSporsmalBesvart, loggSkjemaStartet } from "../util/amplitude";
 
 const hasFieldValueChanged = (previousValue, newValue) => previousValue !== newValue;
-const getFieldValueIfChanged = (event, lastFormState) => {
-  if (hasFieldValueChanged(lastFormState[event.component.key], event._data[event.component.key])) {
-    return event._data[event.component.key];
-  }
-};
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
-  const [lastFormState] = useState({});
   const [hasStartedFillingOutForm, setHasStartedFillingOutForm] = useState(false);
+  const [lastFormState, setLastFormState] = useState({});
   const [lastEvent, setLastEvent] = useState(null);
   const history = useHistory();
   useEffect(() => {
@@ -22,6 +17,21 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       setHasStartedFillingOutForm(true);
     }
   }, [form, hasStartedFillingOutForm, lastEvent]);
+  useEffect(() => {
+    if (lastEvent) {
+      const componentKey = lastEvent.component.key;
+      if (hasFieldValueChanged(lastFormState[componentKey], lastEvent._data[componentKey])) {
+        setLastFormState({ ...lastEvent._data });
+        loggSkjemaSporsmalBesvart(
+          form,
+          lastEvent.component.label,
+          lastEvent.component.key,
+          lastEvent._data[componentKey],
+          lastEvent.component.validate.required
+        );
+      }
+    }
+  }, [form, lastEvent, lastFormState]);
   return (
     <main tabIndex={-1}>
       <Sidetittel>{form.title}</Sidetittel>
@@ -29,16 +39,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         key="1"
         form={form}
         submission={submission}
-        onBlur={(event) => {
-          const previousState = lastFormState;
-          loggSkjemaSporsmalBesvart(
-            form,
-            event.component.label,
-            event.component.key,
-            getFieldValueIfChanged(event, previousState),
-            event.component.validate.required
-          );
-        }}
+        onBlur={(event) => setLastEvent(event)}
         onSubmit={(submission) => {
           setSubmission(submission);
           history.push(`${formUrl}/oppsummering`);
