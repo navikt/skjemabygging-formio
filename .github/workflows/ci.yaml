@@ -25,3 +25,5 @@ jobs:
         run: npm ci
       - run: npm run build
       - run: npm test
+      - name: Test library build
+        run: npm run prepare
