@@ -6,19 +6,17 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 
-import { initAmplitude, logAmplitudeEvent } from "../util/amplitude";
+import { initAmplitude, logAmplitudeEvent, loggSkjemaApnet } from "../util/amplitude";
+import { useAmplitude } from "../context/AmplitudeProvider";
 
 export const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
+  const { loggSkjemaApnet } = useAmplitude();
 
   useEffect(() => {
-    initAmplitude();
-    logAmplitudeEvent("skjema åpnet", {
-      skjemanavn: form.title,
-      skjemaId: form.properties.skjemanummer,
-    });
-  }, [form.properties.skjemanummer, form.title]);
+    loggSkjemaApnet();
+  }, [loggSkjemaApnet]);
 
   return (
     <Switch>

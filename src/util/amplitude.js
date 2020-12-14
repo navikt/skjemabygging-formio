@@ -34,6 +34,13 @@ export function logAmplitudeEvent(eventName, eventData) {
   });
 }
 
+export function loggSkjemaApnet(form) {
+  if (form) {
+    logAmplitudeEvent("skjema åpnet", createEventData(form));
+    console.log("Skjema åpnet");
+  }
+}
+
 export function loggSkjemaStartet(form) {
   if (form) {
     logAmplitudeEvent("skjema startet", createEventData(form));

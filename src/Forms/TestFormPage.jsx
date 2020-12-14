@@ -4,6 +4,7 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FyllUtRouter } from "./FyllUtRouter";
 import { AppConfigProvider } from "../configContext";
+import AmplitudeProvider from "../context/AmplitudeProvider";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
@@ -25,7 +26,9 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
       }
     >
       <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL} featureToggles={{ sendPaaPapir: true }}>
-        <FyllUtRouter form={form} />
+        <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+          <FyllUtRouter form={form} />
+        </AmplitudeProvider>
       </AppConfigProvider>
     </AppLayoutWithContext>
   );
