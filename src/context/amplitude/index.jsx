@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Formio } from "formiojs";
+import React, { createContext, useContext, useEffect } from "react";
 import {
   loggSkjemaInnsendingFeilet,
   loggSkjemaValideringFeilet,

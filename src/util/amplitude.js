@@ -1,5 +1,3 @@
-import { Formio } from "formiojs";
-
 const amplitude = require("amplitude-js");
 
 export const initAmplitude = () => {
