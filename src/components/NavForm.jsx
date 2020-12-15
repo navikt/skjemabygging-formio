@@ -30,10 +30,9 @@ import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import { loggSkjemaValideringFeilet } from "../util/amplitude";
 import { useAmplitude } from "../context/AmplitudeProvider";
 
-function setupFormio(form, loggSkjemaStegFullfort) {
+function setupFormio(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   const Wizard = Formio.Displays.displays.wizard;
   const originalNextPage = Wizard.prototype.nextPage;
 
@@ -43,7 +42,7 @@ function setupFormio(form, loggSkjemaStegFullfort) {
       .then(() => loggSkjemaStegFullfort())
       .catch((error) => {
         scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
-        loggSkjemaValideringFeilet(form);
+        loggSkjemaValideringFeilet();
         return Promise.reject(error);
       });
   };
@@ -82,6 +81,7 @@ class NavForm extends Component {
     onInitialized: PropTypes.func,
     formioform: PropTypes.any,
     loggSkjemaStegFullfort: PropTypes.func,
+    loggSkjemaValideringFeilet: PropTypes.func,
   };
 
   static defaultProps = {
@@ -156,7 +156,7 @@ class NavForm extends Component {
         }
       });
     }
-    setupFormio(this.props.form, this.props.loggSkjemaStegFullfort);
+    setupFormio(this.props.form, this.props.loggSkjemaStegFullfort, this.props.loggSkjemaValideringFeilet);
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {
@@ -201,8 +201,14 @@ class NavForm extends Component {
 
 const withAmplitudeHooks = (Component) => {
   return (props) => {
-    const { loggSkjemaStegFullfort } = useAmplitude();
-    return <Component loggSkjemaStegFullfort={loggSkjemaStegFullfort} {...props} />;
+    const { loggSkjemaStegFullfort, loggSkjemaValideringFeilet } = useAmplitude();
+    return (
+      <Component
+        loggSkjemaStegFullfort={loggSkjemaStegFullfort}
+        loggSkjemaValideringFeilet={loggSkjemaValideringFeilet}
+        {...props}
+      />
+    );
   };
 };
 
