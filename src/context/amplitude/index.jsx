@@ -13,6 +13,7 @@ import useSkjemaSporsmalEvent from "./skjemaEventHook";
 const defaultValues = {
   loggSkjemaApnet: () => {},
   loggSkjemaSporsmalBesvart: () => {},
+  loggSkjemaSporsmalForSpesialTyper: () => {},
   loggSkjemaStegFullfort: () => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
@@ -29,12 +30,13 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
   }, [shouldUseAmplitude]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);
   const loggApnetSkjema = useHarApnetSkjema(form);
-  const loggSkjemaSporsmalEvent = useSkjemaSporsmalEvent(form);
+  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalBesvartForSpesialFelter } = useSkjemaSporsmalEvent(form);
 
   const amplitude = shouldUseAmplitude
     ? {
         loggSkjemaApnet: () => loggApnetSkjema(),
-        loggSkjemaSporsmalBesvart: (event) => loggSkjemaSporsmalEvent(event),
+        loggSkjemaSporsmalBesvart: (event) => loggSkjemaSporsmalBesvart(event),
+        loggSkjemaSporsmalForSpesialTyper: (event) => loggSkjemaSporsmalBesvartForSpesialFelter(event),
         loggSkjemaStegFullfort: (steg) => loggSkjemaStegFullfort(steg),
         loggSkjemaValideringFeilet: () => loggSkjemaValideringFeilet(form),
         loggSkjemaInnsendingFeilet: () => loggSkjemaInnsendingFeilet(form),

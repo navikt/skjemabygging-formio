@@ -6,7 +6,7 @@ import { useAmplitude } from "../context/amplitude";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
-  const { loggSkjemaSporsmalBesvart } = useAmplitude();
+  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
 
   return (
     <main tabIndex={-1}>
@@ -16,6 +16,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         form={form}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
+        onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
         onSubmit={(submission) => {
           setSubmission(submission);
           history.push(`${formUrl}/oppsummering`);
