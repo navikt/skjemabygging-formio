@@ -16,7 +16,7 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
       </Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
-          <li>{vedlegg.label}</li>
+          <li key={vedlegg.label}>{vedlegg.label}</li>
         ))}
       </ul>
     </section>
@@ -92,14 +92,18 @@ export function PrepareLetterPage({ form, submission }) {
     state: { previousPage },
   } = useLocation();
 
-  const sections = [<Innholdstittel className="margin-bottom-large">Last ned søknadspapirene</Innholdstittel>];
+  const sections = [
+    <Innholdstittel key="innholds-overskrift" className="margin-bottom-large">
+      Last ned søknadspapirene
+    </Innholdstittel>,
+  ];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
   if (vedleggSomSkalSendes.length > 0) {
-    sections.push(<LeggTilVedleggSection vedleggSomSkalSendes={vedleggSomSkalSendes} />);
+    sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
   }
-  sections.push(<LastNedSoknadSection form={form} submission={submission} />);
-  sections.push(<SendSoknadIPostenSection vedleggSomSkalSendes={vedleggSomSkalSendes} />);
-  sections.push(<HvaSkjerVidereSection />);
+  sections.push(<LastNedSoknadSection key="last-ned-soknad" form={form} submission={submission} />);
+  sections.push(<SendSoknadIPostenSection key="send-soknad-i-posten" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
+  sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" />);
   return (
     <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
