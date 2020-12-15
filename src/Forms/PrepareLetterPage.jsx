@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import PropTypes from "prop-types";
+import { useAmplitude } from "../context/AmplitudeProvider";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
-import { Link, useLocation } from "react-router-dom";
-import { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } from "../util/amplitude";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -48,11 +48,12 @@ function lastNedFoersteside(form, submission) {
 const LastNedSoknadSection = ({ form, index, submission }) => {
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
+  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
-      loggSkjemaFullfort(form, "papirinnsending");
+      loggSkjemaFullfort("papirinnsending");
     }
-  }, [form, hasDownloadedFoersteside, hasDownloadedPDF]);
+  }, [form, hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
     <section className="margin-bottom-default">
       <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
@@ -66,7 +67,7 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
           onClick={() => {
             lastNedFoersteside(form, submission)
               .then(() => setHasDownloadedFoersteside(true))
-              .catch(() => loggSkjemaInnsendingFeilet(form));
+              .catch(() => loggSkjemaInnsendingFeilet());
           }}
         >
           Last ned førsteside

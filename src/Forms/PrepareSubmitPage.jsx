@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import { styled } from "@material-ui/styles";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
-import PropTypes from "prop-types";
-import { Link, useLocation } from "react-router-dom";
-import { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } from "../util/amplitude";
+import { useAmplitude } from "../context/AmplitudeProvider";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -36,6 +36,7 @@ export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
   const [, setHasDownloadedPDF] = useState(false);
+  const { loggSkjemaFullfort } = useAmplitude();
 
   useEffect(() => scrollToAndSetFocus("main"), []);
   const {
@@ -118,7 +119,7 @@ export function PrepareSubmitPage({ form, submission }) {
                   //} else if (!hasDownloadedPDF) {
                   // Gi beskjed til bruker
                 } else {
-                  loggSkjemaFullfort(form, "dokumentinnsending");
+                  loggSkjemaFullfort("dokumentinnsending");
                 }
               }}
               target="_blank"
