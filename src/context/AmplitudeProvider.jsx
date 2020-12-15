@@ -30,6 +30,7 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
     }
   }, [shouldUseAmplitude]);
   const initialCompletedSteps = form.components.reduce((acc, curr, index) => ({ ...acc, [index + 1]: false }), {});
+  const [harApnetSkjema, setHarApnetSkjema] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(initialCompletedSteps);
   const [lastCompletedStep, setLastCompletedStep] = useState(-1);
   useEffect(() => {
@@ -47,10 +48,15 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
 
   const amplitude = shouldUseAmplitude
     ? {
-        loggSkjemaApnet: () => loggSkjemaApnet(form),
         loggSkjemaStartet: () => loggSkjemaStartet(form),
         loggSkjemaSporsmalBesvart: (sporsmal, id, svar, pakrevd) =>
           loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd),
+        loggSkjemaApnet: () => {
+          if (!harApnetSkjema) {
+            loggSkjemaApnet(form);
+            setHarApnetSkjema(true);
+          }
+        },
         loggSkjemaStegFullfort: (steg = Formio.forms[Object.keys(Formio.forms)[0]].page) => setLastCompletedStep(steg),
         loggSkjemaInnsendingFeilet: () => loggSkjemaInnsendingFeilet(form),
         loggSkjemaValideringFeilet: () => loggSkjemaValideringFeilet(form),

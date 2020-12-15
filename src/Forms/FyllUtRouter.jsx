@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
+import { useAmplitude } from "../context/AmplitudeProvider";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
-
-import { initAmplitude, logAmplitudeEvent, loggSkjemaApnet } from "../util/amplitude";
-import { useAmplitude } from "../context/AmplitudeProvider";
 
 export const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
