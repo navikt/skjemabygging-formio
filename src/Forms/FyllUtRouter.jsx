@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
-import { useAmplitude } from "../context/AmplitudeProvider";
+import { useAmplitude } from "../context/amplitude";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";

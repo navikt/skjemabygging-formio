@@ -30,7 +30,7 @@ import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import { useAmplitude } from "../context/AmplitudeProvider";
+import { useAmplitude } from "../context/amplitude";
 
 function setupFormio(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   const Wizard = Formio.Displays.displays.wizard;

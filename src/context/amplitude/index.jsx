@@ -5,10 +5,10 @@ import {
   loggSkjemaValideringFeilet,
   initAmplitude,
   loggSkjemaFullfort,
-} from "../util/amplitude";
-import useHarApnetSkjema from "./amplitude/harApnetSkjemaHook";
-import useSkjemaStegFullfort from "./amplitude/skjemaStegFullfortHook";
-import useSkjemaSporsmalEvent from "./amplitude/skjemaEventHook";
+} from "../../util/amplitude";
+import useHarApnetSkjema from "./harApnetSkjemaHook";
+import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
+import useSkjemaSporsmalEvent from "./skjemaEventHook";
 
 const defaultValues = {
   loggSkjemaApnet: () => {},

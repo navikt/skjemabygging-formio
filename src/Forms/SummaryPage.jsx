@@ -4,7 +4,7 @@ import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
-import { useAmplitude } from "../context/AmplitudeProvider";
+import { useAmplitude } from "../context/amplitude";
 
 function formatValue(component, value) {
   switch (component.type) {

@@ -4,7 +4,7 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FyllUtRouter } from "./FyllUtRouter";
 import { AppConfigProvider } from "../configContext";
-import AmplitudeProvider from "../context/AmplitudeProvider";
+import AmplitudeProvider from "../context/amplitude";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
