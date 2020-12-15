@@ -18,5 +18,5 @@ export default function useSkjemaStegFullfort(form) {
       });
     }
   }, [completedSteps, form, lastCompletedStep]);
-  return (steg = Formio.forms[Object.keys(Formio.forms)[0]].page) => setLastCompletedStep(steg);
+  return (steg = Object.values(Formio.forms).find((form) => form.page > 0).page) => setLastCompletedStep(steg);
 }
