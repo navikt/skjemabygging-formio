@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Formio } from "formiojs";
 import {
   loggSkjemaApnet,
   loggSkjemaStartet,
@@ -7,12 +8,14 @@ import {
   loggSkjemaValideringFeilet,
   initAmplitude,
   loggSkjemaFullfort,
+  loggSkjemaStegFullfort,
 } from "../util/amplitude";
 
 const defaultValues = {
   loggSkjemaApnet: () => {},
   loggSkjemaStartet: () => {},
   loggSkjemaSporsmalBesvart: () => {},
+  loggSkjemaStegFullfort: () => {},
   loggSkjemaInnsendingFeilet: () => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaFullfort: () => {},
@@ -26,12 +29,29 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
       initAmplitude();
     }
   }, [shouldUseAmplitude]);
+  const initialCompletedSteps = form.components.reduce((acc, curr, index) => ({ ...acc, [index + 1]: false }), {});
+  const [completedSteps, setCompletedSteps] = useState(initialCompletedSteps);
+  const [lastCompletedStep, setLastCompletedStep] = useState(-1);
+  useEffect(() => {
+    if (lastCompletedStep === -1) {
+      return;
+    }
+    if (!completedSteps[lastCompletedStep]) {
+      loggSkjemaStegFullfort(form, lastCompletedStep);
+      setCompletedSteps({
+        ...completedSteps,
+        [lastCompletedStep]: true,
+      });
+    }
+  }, [completedSteps, form, lastCompletedStep]);
+
   const amplitude = shouldUseAmplitude
     ? {
         loggSkjemaApnet: () => loggSkjemaApnet(form),
         loggSkjemaStartet: () => loggSkjemaStartet(form),
         loggSkjemaSporsmalBesvart: (sporsmal, id, svar, pakrevd) =>
           loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd),
+        loggSkjemaStegFullfort: (steg = Formio.forms[Object.keys(Formio.forms)[0]].page) => setLastCompletedStep(steg),
         loggSkjemaInnsendingFeilet: () => loggSkjemaInnsendingFeilet(form),
         loggSkjemaValideringFeilet: () => loggSkjemaValideringFeilet(form),
         loggSkjemaFullfort: (innsendingsType) => loggSkjemaFullfort(form, innsendingsType),

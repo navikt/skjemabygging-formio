@@ -30,17 +30,17 @@ import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import { loggStegFullfort, loggSkjemaValideringFeilet } from "../util/amplitude";
+import { loggSkjemaValideringFeilet } from "../util/amplitude";
+import { useAmplitude } from "../context/AmplitudeProvider";
 
-function setupFormio(form) {
+function setupFormio(form, loggSkjemaStegFullfort) {
   const Wizard = Formio.Displays.displays.wizard;
   const originalNextPage = Wizard.prototype.nextPage;
-  const originalSubmit = Wizard.prototype.submit;
 
   Wizard.prototype.nextPage = function () {
     return originalNextPage
       .call(this)
-      .then(() => loggStegFullfort(form))
+      .then(() => loggSkjemaStegFullfort())
       .catch((error) => {
         scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
         loggSkjemaValideringFeilet(form);
@@ -81,6 +81,7 @@ class NavForm extends Component {
     onBlur: PropTypes.func,
     onInitialized: PropTypes.func,
     formioform: PropTypes.any,
+    loggSkjemaStegFullfort: PropTypes.func,
   };
 
   static defaultProps = {
@@ -155,7 +156,7 @@ class NavForm extends Component {
         }
       });
     }
-    setupFormio(this.props.form);
+    setupFormio(this.props.form, this.props.loggSkjemaStegFullfort);
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {
@@ -198,7 +199,14 @@ class NavForm extends Component {
   };
 }
 
-export default styled(NavForm)({
+const withAmplitudeHooks = (Component) => {
+  return (props) => {
+    const { loggSkjemaStegFullfort } = useAmplitude();
+    return <Component loggSkjemaStegFullfort={loggSkjemaStegFullfort} {...props} />;
+  };
+};
+
+export default styled(withAmplitudeHooks(NavForm))({
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },

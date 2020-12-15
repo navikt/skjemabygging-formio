@@ -62,15 +62,10 @@ export function loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
   }
 }
 
-export function loggStegFullfort(form, steg) {
+export function loggSkjemaStegFullfort(form, steg) {
   if (form) {
-    logAmplitudeEvent(
-      "skjemasteg fullført",
-      createEventData(form, {
-        steg: steg !== undefined ? steg : Formio.forms[Object.keys(Formio.forms)[0]].page,
-      })
-    );
-    console.log("Fullført steg " + (steg !== undefined ? steg : Formio.forms[Object.keys(Formio.forms)[0]].page));
+    logAmplitudeEvent("skjemasteg fullført", createEventData(form, { steg }));
+    console.log("Fullført steg " + steg);
   }
 }
 
