@@ -17,17 +17,17 @@ export const FyllUtRouter = ({ form }) => {
       </Route>
       <Route path={`${path}/oppsummering`}>
         <SubmissionWrapper submission={submission} url={url}>
-          <SummaryPage form={form} submission={submission} formUrl={url} />
+          {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
         </SubmissionWrapper>
       </Route>
       <Route path={`${path}/send-i-posten`}>
         <SubmissionWrapper submission={submission} url={url}>
-          <PrepareLetterPage form={form} submission={submission} />
+          {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} />}
         </SubmissionWrapper>
       </Route>
       <Route path={`${path}/forbered-innsending`}>
         <SubmissionWrapper submission={submission} url={url}>
-          <PrepareSubmitPage form={form} submission={submission} />
+          {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} />}
         </SubmissionWrapper>
       </Route>
     </Switch>
