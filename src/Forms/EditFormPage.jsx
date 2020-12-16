@@ -4,9 +4,9 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import {AppLayoutWithContext} from "../components/AppLayout";
+import { AppLayoutWithContext } from "../components/AppLayout";
 
-export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish }) {
+export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, logout }) {
   const title = `${form.title}`;
 
   const [publiserer, setPubliserer] = useState(false);
@@ -38,6 +38,7 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
         visSkjemaliste: true,
         visHamburger: true,
         visInnstillinger: true,
+        logout: logout,
       }}
     >
       <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions} />

@@ -5,13 +5,13 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import { FyllUtRouter } from "./FyllUtRouter";
 import { AppConfigProvider } from "../configContext";
 
-export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
+export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, logout }) {
   const title = `${form.title}`;
   const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 
   return (
     <AppLayoutWithContext
-      navBarProps={{ title: title, visSkjemaliste: true }}
+      navBarProps={{ title: title, visSkjemaliste: true, logout: logout }}
       mainCol={
         <>
           <Link className="knapp" to={editFormUrl}>
