@@ -14,9 +14,9 @@ FormsList.propTypes = {
   callbackfn: PropTypes.func,
 };
 
-export function FormsListPage({ forms, url, onDelete, onNew }) {
+export function FormsListPage({ forms, url, onDelete, onNew, logout }) {
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Skjemabygger", visSkjemaliste: false }}>
+    <AppLayoutWithContext navBarProps={{ title: "Skjemabygger", visSkjemaliste: false, logout: logout }}>
       <nav>
         <h3>Velg skjema:</h3>
         <FormsList forms={forms}>

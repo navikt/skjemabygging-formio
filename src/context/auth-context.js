@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Formiojs from "formiojs/Formio";
 
 const AuthContext = React.createContext();
@@ -9,6 +9,7 @@ function AuthProvider(props) {
     setUserData(user);
   };
   const logout = () => {
+    console.log("im here");
     Formiojs.logout();
     setUserData(null);
   };
