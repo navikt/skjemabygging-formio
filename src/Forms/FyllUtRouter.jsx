@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
@@ -12,22 +12,23 @@ export const FyllUtRouter = ({ form }) => {
 
   return (
     <Switch>
+      <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
       <Route exact path={path}>
         <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
       </Route>
       <Route path={`${path}/oppsummering`}>
         <SubmissionWrapper submission={submission} url={url}>
-          <SummaryPage form={form} submission={submission} formUrl={url} />
+          {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
         </SubmissionWrapper>
       </Route>
       <Route path={`${path}/send-i-posten`}>
         <SubmissionWrapper submission={submission} url={url}>
-          <PrepareLetterPage form={form} submission={submission} />
+          {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} />}
         </SubmissionWrapper>
       </Route>
       <Route path={`${path}/forbered-innsending`}>
         <SubmissionWrapper submission={submission} url={url}>
-          <PrepareSubmitPage form={form} submission={submission} />
+          {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} />}
         </SubmissionWrapper>
       </Route>
     </Switch>

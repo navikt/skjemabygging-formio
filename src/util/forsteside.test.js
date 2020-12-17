@@ -187,10 +187,11 @@ describe("genererDokumentListeFoersteside", () => {
 describe("genererAdresse", () => {
   it("generates correct Norwegian address", () => {
     const actual = genererAdresse({
-      gateadresse: "Testveien 1",
-      postnummer: "1234",
+      gateadresseSoker: "Testveien 1",
+      postnummerSoker: "1234",
       poststedSoker: "Oslo",
-      personalia: { fornavn: "Test", etternavn: "Testesen" },
+      fornavnSoker: "Test",
+      etternavnSoker: "Testesen",
     });
     expect(actual).toEqual({
       navn: `Test Testesen`,
@@ -203,11 +204,12 @@ describe("genererAdresse", () => {
 
   it("generates correct foreign address", () => {
     const actual = genererAdresse({
-      gateadresse: "Testveien 1",
-      land: "USA",
+      gateadresseSoker: "Testveien 1",
+      landSoker: "USA",
       utenlandskPostkodeSoker: "1234",
       poststedSoker: "NY",
-      personalia: { fornavn: "Test", etternavn: "Testesen" },
+      fornavnSoker: "Test",
+      etternavnSoker: "Testesen",
     });
     expect(actual).toEqual({
       navn: `Test Testesen`,
@@ -220,10 +222,11 @@ describe("genererAdresse", () => {
 
   it("generates correct foreign address without utenlandskPostkodeSoker", () => {
     const actual = genererAdresse({
-      gateadresse: "Testveien 1",
-      land: "USA",
+      gateadresseSoker: "Testveien 1",
+      landSoker: "USA",
       poststedSoker: "NY",
-      personalia: { fornavn: "Test", etternavn: "Testesen" },
+      fornavnSoker: "Test",
+      etternavnSoker: "Testesen",
     });
     expect(actual).toEqual({
       navn: `Test Testesen`,
@@ -243,11 +246,13 @@ describe("genererFoerstesideData", () => {
         ...formMedVedlegg,
       },
       {
-        gateadresse: "Testveien 1",
-        land: "USA",
+        gateadresseSoker: "Testveien 1",
+        landSoker: "USA",
         utenlandskPostkodeSoker: "1234",
         poststedSoker: "NY",
-        personalia: { fornavn: "Test", etternavn: "Testesen", fodselsnummerDNummer: "12345678911" },
+        fornavnSoker: "Test",
+        etternavnSoker: "Testesen",
+        fodselsnummerDNummerSoker: "12345678911",
         vedleggQ7: "leggerVedNaa",
         vedleggO9: "leggerVedNaa",
       }

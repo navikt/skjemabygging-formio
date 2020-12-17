@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
+import { AppConfigContext } from "../configContext";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -108,6 +109,7 @@ const FormSummary = ({ form, submission }) => {
 export function SummaryPage({ form, submission, formUrl }) {
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   let { url } = useRouteMatch();
+  const { featureToggles } = useContext(AppConfigContext);
 
   useEffect(() => scrollToAndSetFocus("main"), []);
 
@@ -128,7 +130,7 @@ export function SummaryPage({ form, submission, formUrl }) {
             Rediger svar
           </Link>
         </div>
-        {process.env.NODE_ENV === "development" && (
+        {featureToggles.sendPaaPapir && (
           <div className="list-inline-item">
             <Link
               className="btn btn-secondary btn-wizard-nav-previous"
@@ -143,7 +145,7 @@ export function SummaryPage({ form, submission, formUrl }) {
             className="btn btn-primary btn-wizard-nav-next wizard-button"
             to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
           >
-            {process.env.NODE_ENV === "development" ? "Send inn digitalt" : "Gå videre"}
+            {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
           </Link>
         </div>
       </nav>

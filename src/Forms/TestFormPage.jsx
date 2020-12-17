@@ -24,7 +24,7 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         </>
       }
     >
-      <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL}>
+      <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL} featureToggles={{ sendPaaPapir: true }}>
         <FyllUtRouter form={form} />
       </AppConfigProvider>
     </AppLayoutWithContext>

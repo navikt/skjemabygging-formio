@@ -66,19 +66,20 @@ export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form
 
 export function genererAdresse(submission) {
   const {
-    gateadresse,
-    land,
-    postnummer,
+    gateadresseSoker,
+    landSoker,
+    postnummerSoker,
     poststedSoker,
-    personalia: { fornavn, etternavn },
+    fornavnSoker,
+    etternavnSoker,
     utenlandskPostkodeSoker,
   } = submission;
   return {
-    navn: `${fornavn} ${etternavn}`,
-    adresse: gateadresse,
-    postnummer: postnummer || utenlandskPostkodeSoker,
+    navn: `${fornavnSoker} ${etternavnSoker}`,
+    adresse: gateadresseSoker,
+    postnummer: postnummerSoker || utenlandskPostkodeSoker,
     sted: poststedSoker,
-    land: land || "Norge",
+    land: landSoker || "Norge",
   };
 }
 
@@ -87,12 +88,10 @@ export function genererFoerstesideData(form, submission) {
     properties: { skjemanummer, tema },
     title,
   } = form;
-  const {
-    personalia: { fodselsnummerDNummer },
-  } = submission;
+  const { fodselsnummerDNummerSoker } = submission;
   const adresse = genererAdresse(submission);
   return {
-    ...genererPersonalia(fodselsnummerDNummer, adresse),
+    ...genererPersonalia(fodselsnummerDNummerSoker, adresse),
     foerstesidetype: "SKJEMA",
     navSkjemaId: skjemanummer,
     spraakkode: "NB",
