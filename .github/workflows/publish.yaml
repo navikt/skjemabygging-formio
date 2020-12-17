@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          echo "skjemapubliseringsBranch: ${{ github.event.inputs.skjemapubliseringsBranch }}"
           echo "Log level: ${{ github.event.inputs.logLevel }}"
           echo "Tags: ${{ github.event.inputs.tags }}"
   findAuthor:
@@ -74,5 +75,5 @@ jobs:
           git add package*.json
           git commit -m "Bump skjemabygging-formio dependency to $NEW_SKJEMABYGGING_URL"
       - name: Push endringen til skjemapublisering
-        run: echo Ikke implementert ennå
+        run: git push
 
