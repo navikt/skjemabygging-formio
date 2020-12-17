@@ -65,6 +65,9 @@ jobs:
       - name: Check package.json and generate package-lock.json
         run: npm install
       - name: Commit files
+        env:
+          author: Syver Enstad
+          email: syver.enstad@gmail.com
         run: |
           git config --local user.name $author
           git config --local user.email $email
