@@ -17,5 +17,6 @@ export default function useSkjemaStegFullfort(form) {
       });
     }
   }, [completedSteps, form, lastCompletedStep]);
-  return (steg = Object.values(Formio.forms).find((form) => form.page > 0).page) => setLastCompletedStep(steg);
+  // Defaulting steg to the page of the current form, looked up by the one with page !== 0.
+  return (steg = Object.values(Formio.forms).find((someForm) => someForm.page > 0).page) => setLastCompletedStep(steg);
 }
