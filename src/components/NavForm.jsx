@@ -39,7 +39,10 @@ function overrideFormioWizardNextPage(form, loggSkjemaStegFullfort, loggSkjemaVa
   Wizard.prototype.nextPage = function () {
     return originalNextPage
       .call(this)
-      .then(() => loggSkjemaStegFullfort())
+      .then((returnValue) => {
+        loggSkjemaStegFullfort();
+        return returnValue;
+      })
       .catch((error) => {
         scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
         loggSkjemaValideringFeilet();
