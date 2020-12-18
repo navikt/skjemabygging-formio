@@ -53,7 +53,7 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
       loggSkjemaFullfort("papirinnsending");
     }
-  }, [form, hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
+  }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
     <section className="margin-bottom-default">
       <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
