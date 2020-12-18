@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { styled } from "@material-ui/styles";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
-import { FyllUtRouter } from "skjemabygging-formio";
+import { FyllUtRouter, AmplitudeProvider } from "skjemabygging-formio";
 import "./overrideFormioStyles.less";
 
 Components.setComponents(CustomComponents);
@@ -27,7 +27,11 @@ function App({ forms, className }) {
           render={(routeProps) => {
             return (
               <FormPageWrapper routeProps={routeProps} forms={forms}>
-                {(form) => <FyllUtRouter form={form} />}
+                {(form) => (
+                  <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+                    <FyllUtRouter form={form} />
+                  </AmplitudeProvider>
+                )}
               </FormPageWrapper>
             );
           }}
