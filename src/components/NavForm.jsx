@@ -35,7 +35,7 @@ import { useAmplitude } from "../context/amplitude";
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
 
-function setupFormio(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
+function overrideFormioWizardNextPage(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   Wizard.prototype.nextPage = function () {
     return originalNextPage
       .call(this)
@@ -156,7 +156,11 @@ class NavForm extends Component {
         }
       });
     }
-    setupFormio(this.props.form, this.props.loggSkjemaStegFullfort, this.props.loggSkjemaValideringFeilet);
+    overrideFormioWizardNextPage(
+      this.props.form,
+      this.props.loggSkjemaStegFullfort,
+      this.props.loggSkjemaValideringFeilet
+    );
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {
