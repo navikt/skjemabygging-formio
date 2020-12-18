@@ -32,10 +32,10 @@ import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 
-function setupFormio(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
-  const Wizard = Formio.Displays.displays.wizard;
-  const originalNextPage = Wizard.prototype.nextPage;
+const Wizard = Formio.Displays.displays.wizard;
+const originalNextPage = Wizard.prototype.nextPage;
 
+function setupFormio(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   Wizard.prototype.nextPage = function () {
     return originalNextPage
       .call(this)
