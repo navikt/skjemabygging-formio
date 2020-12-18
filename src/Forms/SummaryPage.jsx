@@ -4,6 +4,8 @@ import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
+import { useAmplitude } from "../context/amplitude";
+import { getPanels } from "../util/form";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -110,8 +112,10 @@ export function SummaryPage({ form, submission, formUrl }) {
   const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   let { url } = useRouteMatch();
   const { featureToggles } = useContext(AppConfigContext);
+  const { loggSkjemaStegFullfort } = useAmplitude();
 
   useEffect(() => scrollToAndSetFocus("main"), []);
+  useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
   return (
     <SummaryContent tabIndex={-1}>
@@ -134,6 +138,7 @@ export function SummaryPage({ form, submission, formUrl }) {
           <div className="list-inline-item">
             <Link
               className="btn btn-secondary btn-wizard-nav-previous"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
             >
               Send i posten
@@ -143,6 +148,7 @@ export function SummaryPage({ form, submission, formUrl }) {
         <div className="list-inline-item">
           <Link
             className="btn btn-primary btn-wizard-nav-next wizard-button"
+            onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
             to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
           >
             {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}

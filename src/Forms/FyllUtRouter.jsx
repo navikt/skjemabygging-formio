@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
+import { useAmplitude } from "../context/amplitude";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
@@ -9,6 +10,11 @@ import { SummaryPage } from "./SummaryPage.jsx";
 export const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
+  const { loggSkjemaApnet } = useAmplitude();
+
+  useEffect(() => {
+    loggSkjemaApnet();
+  }, [loggSkjemaApnet]);
 
   return (
     <Switch>

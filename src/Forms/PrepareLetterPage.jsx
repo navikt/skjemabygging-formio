@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import PropTypes from "prop-types";
+import { useAmplitude } from "../context/amplitude";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
-import { Link, useLocation } from "react-router-dom";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -24,7 +25,7 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
 };
 
 function lastNedFoersteside(form, submission) {
-  fetch("/fyllut/foersteside", {
+  return fetch("/fyllut/foersteside", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(genererFoerstesideData(form, submission.data)),
@@ -44,27 +45,50 @@ function lastNedFoersteside(form, submission) {
     .catch((e) => console.log("Failed to download foersteside", e));
 }
 
-const LastNedSoknadSection = ({ form, index, submission }) => (
-  <section className="margin-bottom-default">
-    <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
-    <Normaltekst className="margin-bottom-default">
-      Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentasjonen. Den
-      inneholder også adressen du skal sende dokumentene til.
-    </Normaltekst>
-    <div className="margin-bottom-default">
-      <button className="knapp knapp--fullbredde" onClick={() => lastNedFoersteside(form, submission)}>
-        Last ned førsteside
-      </button>
-    </div>
-    <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
-      <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
-      <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
-    </form>
-    <div>
-      <input form={form.path} className="knapp knapp--fullbredde" type="submit" value="Last ned Søknad" />
-    </div>
-  </section>
-);
+const LastNedSoknadSection = ({ form, index, submission }) => {
+  const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
+  const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
+  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  useEffect(() => {
+    if (hasDownloadedFoersteside && hasDownloadedPDF) {
+      loggSkjemaFullfort("papirinnsending");
+    }
+  }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
+  return (
+    <section className="margin-bottom-default">
+      <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
+      <Normaltekst className="margin-bottom-default">
+        Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentasjonen. Den
+        inneholder også adressen du skal sende dokumentene til.
+      </Normaltekst>
+      <div className="margin-bottom-default">
+        <button
+          className="knapp knapp--fullbredde"
+          onClick={() => {
+            lastNedFoersteside(form, submission)
+              .then(() => setHasDownloadedFoersteside(true))
+              .catch(() => loggSkjemaInnsendingFeilet());
+          }}
+        >
+          Last ned førsteside
+        </button>
+      </div>
+      <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
+        <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
+        <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
+      </form>
+      <div>
+        <input
+          form={form.path}
+          className="knapp knapp--fullbredde"
+          onClick={() => setHasDownloadedPDF(true)}
+          type="submit"
+          value="Last ned Søknad"
+        />
+      </div>
+    </section>
+  );
+};
 
 const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
   <section className="margin-bottom-default">

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import { styled } from "@material-ui/styles";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
-import PropTypes from "prop-types";
-import { Link, useLocation } from "react-router-dom";
+import { useAmplitude } from "../context/amplitude";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -34,6 +35,8 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
 export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
+  const [, setHasDownloadedPDF] = useState(false);
+  const { loggSkjemaFullfort } = useAmplitude();
 
   useEffect(() => scrollToAndSetFocus("main"), []);
   const {
@@ -57,7 +60,13 @@ export function PrepareSubmitPage({ form, submission }) {
           <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
         </form>
         <div>
-          <input form={form.path} className="knapp" type="submit" value="Last ned PDF" />
+          <input
+            form={form.path}
+            className="knapp"
+            onClick={() => setHasDownloadedPDF(true)}
+            type="submit"
+            value="Last ned PDF"
+          />
         </div>
       </section>
       <section className="margin-bottom-large">
@@ -107,6 +116,10 @@ export function PrepareSubmitPage({ form, submission }) {
                 if (!allowedToProgress) {
                   event.preventDefault();
                   event.stopPropagation();
+                  //} else if (!hasDownloadedPDF) {
+                  // Gi beskjed til bruker
+                } else {
+                  loggSkjemaFullfort("dokumentinnsending");
                 }
               }}
               target="_blank"
