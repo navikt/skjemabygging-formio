@@ -508,6 +508,7 @@ const builderPalett = {
           type: "number",
           key: "number",
           input: true,
+          spellcheck: false,
           clearOnHide: true,
           validate: {
             required: true,
@@ -523,6 +524,7 @@ const builderPalett = {
           type: "password",
           key: "password",
           input: true,
+          spellcheck: false,
           clearOnHide: true,
         },
       },
