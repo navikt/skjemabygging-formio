@@ -331,6 +331,9 @@ const builderPalett = {
           currency: "nok",
           spellcheck: false,
           clearOnHide: true,
+          validate: {
+            required: true,
+          },
         },
       },
       bankAccount: {
