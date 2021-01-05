@@ -130,13 +130,23 @@ export default class NavDatepicker extends FormioReactComponent {
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
-        isValid={this.isValid}
+        isValid={!this.invalid}
         locale={this.root.i18next.language}
         readOnly={this.options.readOnly}
         inputRef={(r) => (this.input = r)}
       />,
       element
     );
+  }
+
+  // implement this validate.
+  /// the data value has the actual data entered into the component
+  validate(data, dirty, rowData) {
+    console.log("validate data", data);
+    const value = data[this.component.key];
+    console.log("validate value", value);
+    const date = new Date(value);
+    return !isNaN(date.getTime());
   }
 
   focus() {
@@ -156,6 +166,7 @@ export default class NavDatepicker extends FormioReactComponent {
     }
   }
 
+  /*
   checkValidity(data, dirty, rowData) {
     const isValid = super.checkValidity(data, dirty, rowData);
     this.componentIsValid(isValid);
@@ -165,6 +176,8 @@ export default class NavDatepicker extends FormioReactComponent {
     }
     return this.validate(data, dirty, rowData);
   }
+
+   */
 
   componentIsValid = (isValid) => {
     if (isValid !== this.isValid) {
