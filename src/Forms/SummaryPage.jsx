@@ -49,7 +49,9 @@ const filterNonFormContent = (components, submission = []) =>
     .filter(
       (component) => component.type !== "fieldset" || filterNonFormContent(component.components, submission).length > 0
     )
-    .filter((component) => (component.conditional.when ? shouldShowConditionalField(component, submission) : true))
+    .filter((component) =>
+      component.conditional && component.conditional.when ? shouldShowConditionalField(component, submission) : true
+    )
     .filter((component) => submission[component.key] !== "")
     .filter((component) => component.type !== "navDatepicker" || submission[component.key] !== undefined);
 

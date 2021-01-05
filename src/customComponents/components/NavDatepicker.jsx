@@ -7,8 +7,7 @@ import displayEditForm from "formiojs/components/_classes/component/editForm/Com
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 
-// import FormioReactComponent from "../FormioReactComponent.jsx";
-import { ReactComponent as FormioReactComponent } from "react-formio";
+import FormioReactComponent from "../FormioReactComponent.jsx";
 
 require("moment/locale/nb.js"); // For datovelger
 
@@ -160,7 +159,7 @@ export default class NavDatepicker extends FormioReactComponent {
 
   renderReact(element) {
     return ReactDOM.render(
-      <DatovelgerWrapperClass
+      <DatovelgerWrapperFunction
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
