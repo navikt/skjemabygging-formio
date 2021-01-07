@@ -37,17 +37,18 @@ const RadioPanelGruppeWrapper = class extends Component {
 
   render() {
     const component = this.props.component;
-    const radios = component.values.map(({ label, value }, index) => ({
+    const radios = component.values.map(({ label, value }) => ({
       label,
       value,
       id: `${component.key}${value}`,
+      required: component.validate.required || undefined,
     }));
     return (
       <RadioPanelGruppe
         aria-describedby={`${component.key}-error`}
         radios={radios}
         checked={this.state.value}
-        legend={component.label}
+        legend={component.validate.required ? component.label : `${component.label} (valgfritt)`}
         description={component.description}
         name={`data[${component.key}][${component.id}]`}
         onChange={(event) => this.setValue(event.target.value)}
