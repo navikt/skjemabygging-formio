@@ -401,8 +401,8 @@ const builderPalett = {
     title: "Dato og tid",
     components: {
       time: {
-        title: "Tid",
-        key: "tid",
+        title: "Klokke",
+        key: "klokke",
         icon: "clock-o",
         weight: 20,
         schema: {
@@ -412,6 +412,9 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           clearOnHide: true,
+          validate: {
+            required: true,
+          },
         },
       },
       datetime: {
@@ -426,6 +429,9 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           clearOnHide: true,
+          validate: {
+            required: true,
+          },
         },
       },
       day: {
@@ -439,30 +445,8 @@ const builderPalett = {
           key: "dagMndAr",
           input: true,
           clearOnHide: true,
-        },
-      },
-      month: {
-        title: "Måned",
-        key: "maaned",
-        icon: "calendar",
-        weight: 50,
-        schema: {
-          label: "Måned",
-          type: "datetime",
-          key: "maaned",
-          input: true,
-          clearOnHide: true,
-          datePicker: {
-            showWeeks: true,
-            startingDay: 0,
-            initDate: "",
-            minMode: "month",
-            maxMode: "year",
-            yearRows: 4,
-            yearColumns: 5,
-            minDate: null,
-            maxDate: null,
-            datepickerMode: "month",
+          validate: {
+            required: true,
           },
         },
       },
@@ -631,23 +615,12 @@ const builderPalett = {
           ],
         },
       },
-      button: {
-        title: "Knapp",
-        key: "button",
-        icon: "stop",
-        schema: {
-          label: "Knapp",
-          type: "button",
-          key: "button",
-          input: true,
-        },
-      },
       url: {
-        title: "Lenke",
+        title: "Nettsted",
         key: "url",
         icon: "link",
         schema: {
-          label: "Lenke",
+          label: "Nettsted",
           type: "url",
           key: "url",
           input: true,
@@ -676,6 +649,7 @@ const builderPalett = {
           key: "signature",
           input: true,
           clearOnHide: true,
+          footer: " ", // Trenger en blank space for å unngå at det kommer inn default 'sign above' tekst i dette feltet.
         },
       },
       survey: {
