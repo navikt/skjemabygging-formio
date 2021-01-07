@@ -649,7 +649,7 @@ const builderPalett = {
           key: "signature",
           input: true,
           clearOnHide: true,
-          footer: " ",
+          footer: " ", // Trenger en blank space for å unngå at det kommer inn default 'sign above' tekst i dette feltet.
         },
       },
       survey: {
