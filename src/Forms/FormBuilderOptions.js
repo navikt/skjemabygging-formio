@@ -585,6 +585,32 @@ const builderPalett = {
           ],
         },
       },
+      radiopanel: {
+        title: "Radiopanel",
+        key: "radiopanel",
+        icon: "dot-circle-o",
+        schema: {
+          label: "Radiopanel",
+          type: "radiopanel",
+          key: "radio",
+          input: true,
+          hideLabel: true,
+          clearOnHide: true,
+          validate: {
+            required: true,
+          },
+          values: [
+            {
+              value: "ja",
+              label: "Ja",
+            },
+            {
+              value: "nei",
+              label: "Nei",
+            },
+          ],
+        },
+      },
       vedlegg: {
         title: "Vedlegg",
         key: "vedlegg",
