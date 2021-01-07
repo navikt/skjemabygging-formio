@@ -13,7 +13,7 @@ export const initAmplitude = () => {
 function createEventData(form, customProperties = {}) {
   return {
     skjemanavn: form.title,
-    skjemaId: form.properties.skjemanummer,
+    skjemaId: form.properties ? form.properties.skjemanummer : "",
     ...customProperties,
   };
 }
