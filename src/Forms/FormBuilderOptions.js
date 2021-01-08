@@ -592,7 +592,7 @@ const builderPalett = {
         schema: {
           label: "Radiopanel",
           type: "radiopanel",
-          key: "radio",
+          key: "radiopanel",
           input: true,
           hideLabel: true,
           clearOnHide: true,
