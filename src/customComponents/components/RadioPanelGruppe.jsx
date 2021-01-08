@@ -68,7 +68,7 @@ function joinDefaultAndCustomEditForm(defaultEditForm, customEditForm) {
 }
 
 export default class RadioPanelGruppeComponent extends FormioReactComponent {
-  input = null;
+  input = React.createRef();
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -157,9 +157,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
   }
 
   focus() {
-    if (this.input) {
-      this.input.focus();
-    }
+    this.input.current.focus();
   }
 
   /**
@@ -175,7 +173,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
-        radioRef={(ref) => (this.input = ref)}
+        radioRef={this.input}
       />,
       element
     );
