@@ -37,11 +37,12 @@ const RadioPanelGruppeWrapper = class extends Component {
 
   render() {
     const component = this.props.component;
-    const radios = component.values.map(({ label, value }) => ({
+    const radios = component.values.map(({ label, value }, index) => ({
       label,
       value,
       id: `${component.key}${value}`,
       required: component.validate.required || undefined,
+      radioRef: index === 0 ? this.props.radioRef : undefined,
     }));
     return (
       <RadioPanelGruppe
@@ -67,6 +68,8 @@ function joinDefaultAndCustomEditForm(defaultEditForm, customEditForm) {
 }
 
 export default class RadioPanelGruppeComponent extends FormioReactComponent {
+  input = null;
+
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
    *
@@ -154,7 +157,9 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
   }
 
   focus() {
-    document.getElementsByName(`data[${this.component.key}][${this.component.id}]`)[0].focus();
+    if (this.input) {
+      this.input.focus();
+    }
   }
 
   /**
@@ -170,6 +175,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
+        radioRef={(ref) => (this.input = ref)}
       />,
       element
     );
