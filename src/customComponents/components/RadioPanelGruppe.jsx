@@ -167,7 +167,6 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    * #returns ReactInstance
    */
   attachReact(element) {
-    console.log("attachReact", element);
     return ReactDOM.render(
       <RadioPanelGruppeWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
@@ -185,7 +184,6 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    * @param element
    */
   detachReact(element) {
-    console.log("detachReact", element);
     if (element) {
       ReactDOM.unmountComponentAtNode(element);
     }
