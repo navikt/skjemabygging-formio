@@ -530,6 +530,21 @@ const builderPalett = {
           },
         },
       },
+      checkboxDesignSystem: {
+        title: "Design-Avkryssingsboks",
+        key: "checkbox",
+        icon: "check-square",
+        schema: {
+          label: "Avkryssingsboks",
+          type: "checkbox",
+          key: "checkbox",
+          input: true,
+          clearOnHide: true,
+          validate: {
+            required: true,
+          },
+        },
+      },
       selectboxes: {
         title: "Flervalg",
         key: "selectboxes",
