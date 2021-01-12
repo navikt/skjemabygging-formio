@@ -8,6 +8,7 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
+import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -16,15 +17,8 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
   if (!submissionData) {
     return url;
   }
-  // basert på at api key for vedlegget er vedlegg<vedleggsId> og at verdien er leggerVedNaa.
-  const vedleggsIder = [];
-  const prefix = "vedlegg";
 
-  Object.entries(submissionData).forEach(([key, value]) => {
-    if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
-      vedleggsIder.push(key.substr(prefix.length));
-    }
-  });
+  const vedleggsIder = genererVedleggKeysSomSkalSendes(form, submissionData);
 
   if (vedleggsIder.length > 0) {
     url = url.concat("&vedleggsIder=", vedleggsIder.join(","));
