@@ -8,8 +8,6 @@ import AmplitudeProvider from "../context/amplitude";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
   const title = `${form.title}`;
-  const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
-
   return (
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true }}
@@ -25,11 +23,9 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
         </>
       }
     >
-      <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL} featureToggles={{ sendPaaPapir: true }}>
-        <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-          <FyllUtRouter form={form} />
-        </AmplitudeProvider>
-      </AppConfigProvider>
+      <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+        <FyllUtRouter form={form} />
+      </AmplitudeProvider>
     </AppLayoutWithContext>
   );
 }
