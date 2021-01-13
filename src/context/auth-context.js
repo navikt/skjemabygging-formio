@@ -9,6 +9,7 @@ function AuthProvider(props) {
     setUserData(user);
   };
   const logout = () => {
+    Formiojs.setToken("");
     Formiojs.logout();
     setUserData(null);
   };
