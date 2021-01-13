@@ -630,13 +630,17 @@ const builderPalett = {
         key: "vedlegg",
         icon: "file",
         schema: {
-          label: "< Navn på vedlegg > + husk å legge inn vedleggskode i API property name (eks: vedleggD9)",
+          label: "< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen",
           type: "radio",
           key: "vedlegg",
           input: true,
           clearOnHide: true,
           validate: {
             required: true,
+          },
+          properties: {
+            vedleggstittel: " ",
+            vedleggskode: " ",
           },
           values: [
             {
