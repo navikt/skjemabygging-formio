@@ -400,6 +400,20 @@ const builderPalett = {
   datoOgTid: {
     title: "Dato og tid",
     components: {
+      datoVelger: {
+        title: "Datovelger",
+        group: "datoOgTid",
+        icon: "calendar",
+        input: true,
+        schema: {
+          type: "navDatepicker",
+          label: "Dato (dd.mm.åååå)",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+      },
       time: {
         title: "Klokke",
         key: "klokke",
