@@ -24,15 +24,14 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
   return `${skjemanummer} ${skjemaTittel}`;
 }
 
-export function genererVedleggKeysSomSkalSendes(submissionData) {
-  const prefix = "vedlegg";
-  const vedleggKeysSomSkalSendes = [];
-  Object.entries(submissionData).forEach(([key, value]) => {
-    if (key.startsWith(prefix) && value === "leggerVedNaa" && key.length > prefix.length) {
-      vedleggKeysSomSkalSendes.push(key);
-    }
-  });
-  return vedleggKeysSomSkalSendes;
+/**
+ * Basert på at custom property vedleggskode er satt og at verdien er leggerVedNaa.
+ */
+export function genererVedleggKeysSomSkalSendes(form, submissionData) {
+  return flattenComponents(form.components)
+    .filter((component) => component.properties && !!component.properties.vedleggskode)
+    .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa")
+    .map((vedlegg) => vedlegg.properties.vedleggskode);
 }
 
 export function flattenComponents(components) {
@@ -48,8 +47,10 @@ export function flattenComponents(components) {
 
 export function getVedleggsFelterSomSkalSendes(submissionData, form) {
   const flattenedFormComponents = flattenComponents(form.components);
-  return genererVedleggKeysSomSkalSendes(submissionData).map((vedleggsKey) =>
-    flattenedFormComponents.find((component) => component.key === vedleggsKey)
+  return genererVedleggKeysSomSkalSendes(form, submissionData).map((vedleggsKey) =>
+    flattenedFormComponents.find(
+      (component) => component.properties && component.properties.vedleggskode === vedleggsKey
+    )
   );
 }
 
