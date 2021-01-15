@@ -16,5 +16,5 @@ export const NoScrollWrapper = styled("div")({
   backgroundColor: "white",
   position: "sticky",
   top: "0",
-  zIndex: 1,
+  zIndex: 1000,
 });
