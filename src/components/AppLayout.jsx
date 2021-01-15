@@ -1,8 +1,8 @@
-import {NoScrollWrapper, Pagewrapper} from "../Forms/components";
-import {NavBar} from "./NavBar";
-import {UserAlerterContext} from '../userAlerting';
+import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
+import { NavBar } from "./NavBar";
+import { UserAlerterContext } from "../userAlerting";
 import React from "react";
-import {styled} from "@material-ui/styles";
+import { styled } from "@material-ui/styles";
 
 const ActionRow = styled("div")({
   display: "grid",
@@ -22,10 +22,14 @@ const LeftCol = styled("div")({
   gridColumn: "1",
   alignSelf: "end",
   justifySelf: "start",
- // paddingLeft: "1.2rem",
+  // paddingLeft: "1.2rem",
 });
 
-const BasicAlertCol = ({children, ...props}) => (<aside aria-live="polite" {...props}>{children}</aside>);
+const BasicAlertCol = ({ children, ...props }) => (
+  <aside aria-live="polite" {...props}>
+    {children}
+  </aside>
+);
 
 const AlertCol = styled(BasicAlertCol)({
   gridColumn: "3",
@@ -40,23 +44,20 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
       <NoScrollWrapper>
         <NavBar {...navBarProps} />
         <ActionRow>
-            <LeftCol>{leftCol}</LeftCol>
-            <MainCol>{mainCol}</MainCol>
-          <AlertCol>
-            {alertComponent && alertComponent()}
-          </AlertCol>
+          <LeftCol>{leftCol}</LeftCol>
+          <MainCol>{mainCol}</MainCol>
+          <AlertCol>{alertComponent && alertComponent()}</AlertCol>
         </ActionRow>
       </NoScrollWrapper>
-      <Pagewrapper>
-        {children}
-      </Pagewrapper>
+      <Pagewrapper>{children}</Pagewrapper>
     </>
   );
 };
 
 export const AppLayoutWithContext = (props) => {
-  return <UserAlerterContext.Consumer>{userAlerter => <AppLayout userAlerter={userAlerter} {...props} />}</UserAlerterContext.Consumer>;
+  return (
+    <UserAlerterContext.Consumer>
+      {(userAlerter) => <AppLayout userAlerter={userAlerter} {...props} />}
+    </UserAlerterContext.Consumer>
+  );
 };
-
-
-
