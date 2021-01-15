@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { FyllUtRouter } from "./FyllUtRouter";
+import FyllUtRouter from "./FyllUtRouter";
 import AmplitudeProvider from "../context/amplitude";
 
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {

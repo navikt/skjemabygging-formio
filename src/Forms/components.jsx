@@ -2,7 +2,6 @@ import { styled } from "@material-ui/styles";
 
 export const Pagewrapper = styled("div")({
   margin: "0 auto",
-  maxWidth: "800px",
   padding: "2rem",
 });
 

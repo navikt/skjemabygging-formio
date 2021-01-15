@@ -5,6 +5,21 @@
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
+.formbuilder {
+  position: relative;
+}
+
+@media screen and (min-width: 40rem) {
+  .formbuilder {
+    display: grid;
+    grid-template-columns: 14rem minmax(20rem, 50rem);
+    grid-gap: 2rem;
+    margin: 0 auto;
+    max-width: 66rem;
+    min-width: 36rem;
+  }
+}
+
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
