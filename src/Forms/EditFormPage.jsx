@@ -4,7 +4,7 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useState } from "react";
 import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import {AppLayoutWithContext} from "../components/AppLayout";
+import { AppLayoutWithContext } from "../components/AppLayout";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish }) {
   const title = `${form.title}`;
@@ -23,15 +23,21 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
     <AppLayoutWithContext
       leftCol={<SkjemaVisningSelect form={form} onChange={onChange} />}
       mainCol={
-        <>
-          <Link className="knapp" to={testFormUrl}>
-            Test
-          </Link>
-          <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-          <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-            Publiser
-          </Knapp>
-        </>
+        <ul className="list-inline">
+          <li className="list-inline-item">
+            <Link className="knapp" to={testFormUrl}>
+              Test
+            </Link>
+          </li>
+          <li className="list-inline-item">
+            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+          </li>
+          <li className="list-inline-item">
+            <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+              Publiser
+            </Knapp>
+          </li>
+        </ul>
       }
       navBarProps={{
         title: title,

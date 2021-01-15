@@ -11,15 +11,21 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true }}
       mainCol={
-        <>
-          <Link className="knapp" to={editFormUrl}>
-            Rediger
-          </Link>
-          <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-          <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-            Publiser
-          </Knapp>
-        </>
+        <ul className="list-inline">
+          <li className="list-inline-item">
+            <Link className="knapp" to={editFormUrl}>
+              Rediger
+            </Link>
+          </li>
+          <li className="list-inline-item">
+            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+          </li>
+          <li className="list-inline-item">
+            <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+              Publiser
+            </Knapp>
+          </li>
+        </ul>
       }
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
