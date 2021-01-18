@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import ReactDOM from "react-dom";
 import { Checkbox } from "nav-frontend-skjema";
-import dataEditForm from "formiojs/components/_classes/component/editForm/Component.edit.data";
-import radioDataEditForm from "formiojs/components/radio/editForm/Radio.edit.data";
-import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import radioDisplayEditForm from "formiojs/components/radio/editForm/Radio.edit.display";
-import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import radioValidationEditForm from "formiojs/components/radio/editForm/Radio.edit.validation";
+import checkboxDataEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.data";
+import dataEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.data";
+import checkboxDisplayEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.display";
+import displayEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.display";
+import checkboxValidationEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.validation";
+import validationEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 import layoutEditForm from "formiojs/components/_classes/component/editForm/Component.edit.layout";
@@ -14,6 +14,7 @@ import logicEditForm from "formiojs/components/_classes/component/editForm/Compo
 
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
+import { joinDefaultAndCustomEditForm } from "../util/joinNewEditForm";
 
 /**
  * The wrapper for our custom React component
@@ -37,37 +38,20 @@ const CheckboxWrapper = class extends Component {
 
   render() {
     const component = this.props.component;
-    const radios = component.values.map(({ label, value }, index) => ({
-      label,
-      value,
-      id: `${component.key}${value}`,
-      required: component.validate.required || undefined,
-      radioRef: index === 0 ? this.props.radioRef : undefined,
-    }));
     return (
       <Checkbox
+        className={"checkbox-class"}
         aria-describedby={`${component.key}-error`}
-        checked={this.state.value}
-        legend={component.validate.required ? component.label : `${component.label} (valgfritt)`}
-        description={component.description}
-        name={`data[${component.key}][${component.id}]`}
+        checkboxRef={this.props.checkboxRef}
+        label={component.label}
         onChange={(event) => this.setValue(event.target.value)}
       />
     );
   }
 };
 
-function joinDefaultAndCustomEditForm(defaultEditForm, customEditForm) {
-  return [
-    ...customEditForm,
-    ...defaultEditForm.filter(
-      (component) => !customEditForm.find((customComponent) => customComponent.key === component.key)
-    ),
-  ].filter((component) => !component.ignore);
-}
-
 export default class CheckboxComponent extends FormioReactComponent {
-  input = React.createRef();
+  input = () => createRef();
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -75,7 +59,7 @@ export default class CheckboxComponent extends FormioReactComponent {
    * @returns {{title: string, icon: string, group: string, documentation: string, weight: number, schema: *}}
    */
   static get builderInfo() {
-    const { title, key, icon } = FormBuilderOptions.builder.basic.components.radiopanel;
+    const { title, key, icon } = FormBuilderOptions.builder.basic.components.checkboxDesignSystem;
     return {
       title,
       icon,
@@ -113,21 +97,19 @@ export default class CheckboxComponent extends FormioReactComponent {
             {
               label: "Display",
               key: "display",
-              components: joinDefaultAndCustomEditForm(displayEditForm, radioDisplayEditForm).filter(
-                (component) => component.key !== "hideLabel"
-              ),
+              components: joinDefaultAndCustomEditForm(displayEditFormComponent, checkboxDisplayEditForm),
             },
             {
               label: "Data",
               key: "data",
-              components: joinDefaultAndCustomEditForm(dataEditForm, radioDataEditForm).filter(
+              components: joinDefaultAndCustomEditForm(dataEditFormComponent, checkboxDataEditForm).filter(
                 (component) => component.key !== "defaultValue"
               ),
             },
             {
               label: "Validation",
               key: "validation",
-              components: joinDefaultAndCustomEditForm(validationEditForm, radioValidationEditForm),
+              components: joinDefaultAndCustomEditForm(validationEditFormComponent, checkboxValidationEditForm),
             },
             {
               label: "API",
@@ -171,7 +153,7 @@ export default class CheckboxComponent extends FormioReactComponent {
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
-        radioRef={this.input}
+        checkboxRef={this.input}
       />,
       element
     );

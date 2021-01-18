@@ -14,6 +14,7 @@ import logicEditForm from "formiojs/components/_classes/component/editForm/Compo
 
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
+import { joinDefaultAndCustomEditForm } from "../util/joinNewEditForm";
 
 /**
  * The wrapper for our custom React component
@@ -57,15 +58,6 @@ const RadioPanelGruppeWrapper = class extends Component {
     );
   }
 };
-
-function joinDefaultAndCustomEditForm(defaultEditForm, customEditForm) {
-  return [
-    ...customEditForm,
-    ...defaultEditForm.filter(
-      (component) => !customEditForm.find((customComponent) => customComponent.key === component.key)
-    ),
-  ].filter((component) => !component.ignore);
-}
 
 export default class RadioPanelGruppeComponent extends FormioReactComponent {
   input = React.createRef();
