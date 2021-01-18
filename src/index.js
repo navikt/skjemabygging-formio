@@ -2,15 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
-import AppProviders from "./context/AppProviders";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import Pusher from "pusher-js";
 import { Formio } from "formiojs";
 import navdesign from "./template";
+import featureToggles from "./featureToggles.json";
+import { AppConfigProvider } from "./configContext";
+import { AuthProvider } from "./context/auth-context";
+
 Formio.use(navdesign);
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
+const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 
 const store = { forms: null };
 
@@ -26,9 +30,11 @@ const pusher = new Pusher(pusherAppKey, {
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AppProviders>
-        <App store={store} projectURL={projectURL} pusher={pusher} />
-      </AppProviders>
+      <AppConfigProvider dokumentinnsendingBaseURL={dokumentinnsendingDevURL} featureToggles={featureToggles}>
+        <AuthProvider>
+          <App store={store} projectURL={projectURL} pusher={pusher} />
+        </AuthProvider>
+      </AppConfigProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
