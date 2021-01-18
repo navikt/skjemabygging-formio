@@ -47,27 +47,27 @@ describe("genererSkjemaTittel", () => {
 
 describe("genererVedleggSomSkalSendes", () => {
   it("adds vedlegg marked as leggerVedNaa", () => {
-    const actual = genererVedleggKeysSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
       vedleggQ7: "leggerVedNaa",
       vedleggO9: "leggerVedNaa",
     });
-    expect(actual).toEqual(["vedleggQ7", "vedleggO9"]);
+    expect(actual).toEqual(["O9", "Q7"]);
   });
 
   it("does not add vedlegg marked as ettersender", () => {
-    const actual = genererVedleggKeysSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
       vedleggQ7: "leggerVedNaa",
       vedleggO9: "ettersender",
     });
-    expect(actual).toEqual(["vedleggQ7"]);
+    expect(actual).toEqual(["Q7"]);
   });
 
   it("does not add vedlegg marked as levertTidligere", () => {
-    const actual = genererVedleggKeysSomSkalSendes({
+    const actual = genererVedleggKeysSomSkalSendes(formMedVedlegg, {
       vedleggQ7: "levertTidligere",
       vedleggO9: "leggerVedNaa",
     });
-    expect(actual).toEqual(["vedleggO9"]);
+    expect(actual).toEqual(["O9"]);
   });
 });
 
@@ -124,6 +124,7 @@ const formMedVedlegg = {
           key: "vedleggO9",
           properties: {
             vedleggstittel: "Bekreftelse fra studiested/skole",
+            vedleggskode: "O9",
           },
           type: "radio",
         },
@@ -142,6 +143,7 @@ const formMedVedlegg = {
           key: "vedleggQ7",
           properties: {
             vedleggstittel: "Dokumentasjon av utgifter i forbindelse med utdanning",
+            vedleggskode: "Q7",
           },
           type: "radio",
         },
@@ -154,8 +156,8 @@ describe("genererVedleggsListe", () => {
   it("generates correct vedleggsListe", () => {
     const actual = genererVedleggsListe(formMedVedlegg, { vedleggQ7: "leggerVedNaa", vedleggO9: "leggerVedNaa" });
     expect(actual).toEqual([
-      "Dokumentasjon av utgifter i forbindelse med utdanning",
       "Bekreftelse fra studiested/skole",
+      "Dokumentasjon av utgifter i forbindelse med utdanning",
     ]);
   });
 
@@ -178,8 +180,8 @@ describe("genererDokumentListeFoersteside", () => {
     );
     expect(actual).toEqual([
       "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
-      "Faktura fra utdanningsinstitusjon",
       "Skriftlig bekreftelse på studieplass",
+      "Faktura fra utdanningsinstitusjon",
     ]);
   });
 });
@@ -264,11 +266,11 @@ describe("genererFoerstesideData", () => {
       overskriftstittel: "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
       arkivtittel: "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
       tema: "OPP",
-      vedleggsliste: ["Dokumentasjon av utgifter i forbindelse med utdanning", "Bekreftelse fra studiested/skole"],
+      vedleggsliste: ["Bekreftelse fra studiested/skole", "Dokumentasjon av utgifter i forbindelse med utdanning"],
       dokumentlisteFoersteside: [
         "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
-        "Faktura fra utdanningsinstitusjon",
         "Skriftlig bekreftelse på studieplass",
+        "Faktura fra utdanningsinstitusjon",
       ],
       bruker: {
         brukerId: "12345678911",
