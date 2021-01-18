@@ -222,4 +222,7 @@ export default styled(withAmplitudeHooks(NavForm))({
   "& .skjemaelement__label:not(.field-required)::after": {
     content: '"(valgfritt)"',
   },
+  "& .checkboks[required] + .skjemaelement__label::after": {
+    content: '""',
+  },
 });

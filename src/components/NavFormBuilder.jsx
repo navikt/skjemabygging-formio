@@ -119,10 +119,7 @@ export default styled(NavFormBuilder)({
   "& .skjemaelement__label:not(.field-required)::after": {
     content: '"(valgfritt)"',
   },
-  "& .formio-component-avkryssingsboksNy.required .checkbox-class .skjemaelement__label::after": {
-    backgroundColor: "red",
-  },
-  "& .formio-component-avkryssingsboksNy:not(.required) .checkbox-class .skjemaelement__label::after": {
-    content: '"(valgfritt)"',
+  "& .checkboks[required] + .skjemaelement__label::after": {
+    content: '""',
   },
 });

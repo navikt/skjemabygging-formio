@@ -45,6 +45,7 @@ const CheckboxWrapper = class extends Component {
         checkboxRef={this.props.checkboxRef}
         label={component.label}
         onChange={(event) => this.setValue(event.target.value)}
+        required={component.validate.required}
       />
     );
   }
