@@ -32,6 +32,7 @@ const Registry = client.Registry;
 const register = new Registry();
 client.collectDefaultMetrics({ register });
 
+// TODO: rename pdf-form til pdf-form-dok-innsending
 // form encoded post body
 skjemaApp.post("/pdf-form", (req, res) => {
   const submission = JSON.parse(req.body.submission);
@@ -39,6 +40,15 @@ skjemaApp.post("/pdf-form", (req, res) => {
   logger.debug({ label: "request submission", message: submission });
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
+});
+
+// form encoded post body
+skjemaApp.post("/pdf-form-papir", (req, res) => {
+  const submission = JSON.parse(req.body.submission);
+  const form = JSON.parse(req.body.form);
+  logger.debug({ label: "request submission", message: submission });
+  res.contentType("application/pdf");
+  Pdfgen.generatePdfForPapirinnsending(submission, form, gitVersion, res);
 });
 
 skjemaApp.post("/foersteside", async (req, res) => {
@@ -65,6 +75,14 @@ skjemaApp.post("/pdf-json", (req, res) => {
   logger.debug({ label: "submission", message: submission });
   res.contentType("application/pdf");
   Pdfgen.generatePdf(submission, form, gitVersion, res);
+});
+
+skjemaApp.post("/pdf-json-papir", (req, res) => {
+  const submission = req.body.submission;
+  const form = req.body.form;
+  logger.debug({ label: "submission", message: submission });
+  res.contentType("application/pdf");
+  Pdfgen.generatePdfForPapirinnsending(submission, form, gitVersion, res);
 });
 
 skjemaApp.get("/config", (req, res) =>
