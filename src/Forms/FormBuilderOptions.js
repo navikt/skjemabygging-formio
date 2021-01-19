@@ -545,13 +545,13 @@ const builderPalett = {
         },
       },
       checkboxDesignSystem: {
-        title: "Design-Avkryssingsboks",
-        key: "AvkryssingsboksNy",
+        title: "Nav-Avkryssingsboks",
+        key: "NavAvkryssingsboks",
         icon: "check-square",
         schema: {
-          label: "AvkryssingsboksNy",
+          label: "NavAvkryssingsboks",
           type: "navCheckbox",
-          key: "avkryssingsboksNy",
+          key: "navAvkryssingsboks",
           input: true,
           hideLabel: true,
           clearOnHide: true,
