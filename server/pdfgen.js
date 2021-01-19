@@ -31,13 +31,6 @@ export class Pdfgen {
     generator.writeDocDefinitionToStream(docDefinition, stream);
   }
 
-  static generatePdfForPapirinnsending(submission, form, gitVersion, stream) {
-    const now = DateTime.local().setZone("Europe/Oslo");
-    const generator = new this(submission, form, gitVersion, now);
-    const docDefinition = generator.generateDocDefinitionForPapirinnsending();
-    generator.writeDocDefinitionToStream(docDefinition, stream);
-  }
-
   constructor(submission, form, gitVersion, nowAsLuxonDateTime) {
     this.gitVersion = gitVersion;
     this.submission = submission;
@@ -120,11 +113,11 @@ export class Pdfgen {
   }
 
   generateContentFromSubmission() {
-    const panels = this.form.components.filter((component) => component.type === "panel");
-    const rest = this.form.components.filter((component) => component.type !== "panel");
-    let result = [this.header(), { text: " ", style: "ingress" }];
-    this.generateTableForComponentsOutsidePanels(rest, result);
-    panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
+    let result = this.generateFirstPart();
+    return this.generateLastPart(result);
+  }
+
+  generateLastPart(result) {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
     result.push({ text: `Skjemaet ble opprettet ${datoTid}` });
     result.push({
@@ -133,55 +126,26 @@ export class Pdfgen {
     return result;
   }
 
-  generateContentForPapirinnsendingFromSubmission() {
-    const panels = this.form.components.filter((component) => component.type === "panel");
-    const rest = this.form.components.filter((component) => component.type !== "panel");
+  generateFirstPart() {
     let result = [this.header(), { text: " ", style: "ingress" }];
+    const rest = this.form.components.filter((component) => component.type !== "panel");
     this.generateTableForComponentsOutsidePanels(rest, result);
+    const panels = this.form.components.filter((component) => component.type === "panel");
     panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
-    // her skal underskrift inn
-    const underskriftsFelter = [
-      " ",
-      " ",
-      "Sted og dato",
-      " ",
-      " ",
-      "_____________________________________",
-      " ",
-      " ",
-      "Underskrift",
-      " ",
-      " ",
-      "_____________________________________",
-      " ",
-      " ",
-    ];
-
-    result = result.concat(underskriftsFelter);
-    const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
-    result.push({ text: `Skjemaet ble opprettet ${datoTid}` });
-    result.push({
-      text: `Skjemaversjon: ${this.gitVersion}`,
-    });
     return result;
+  }
+
+  doGenerateDocDefinition(content) {
+    return {
+      pageSize: "A4",
+      pageMargins: [40, 80, 40, 80],
+      content: content,
+      styles: this.docStyles(),
+    };
   }
 
   generateDocDefinition() {
-    return {
-      pageSize: "A4",
-      pageMargins: [40, 80, 40, 80],
-      content: this.generateContentFromSubmission(),
-      styles: this.docStyles(),
-    };
-  }
-
-  generateDocDefinitionForPapirinnsending() {
-    return {
-      pageSize: "A4",
-      pageMargins: [40, 80, 40, 80],
-      content: this.generateContentForPapirinnsendingFromSubmission(),
-      styles: this.docStyles(),
-    };
+    return this.doGenerateDocDefinition(this.generateContentFromSubmission());
   }
 
   header() {
@@ -247,5 +211,31 @@ export class Pdfgen {
       widths: ["*", "*"],
       body: [],
     };
+  }
+}
+
+export class PdfgenPapir extends Pdfgen {
+  generateContentFromSubmission() {
+    let result = this.generateFirstPart();
+    // her skal underskrift inn
+    const underskriftsFelter = [
+      " ",
+      " ",
+      "Sted og dato",
+      " ",
+      " ",
+      "_____________________________________",
+      " ",
+      " ",
+      "Underskrift",
+      " ",
+      " ",
+      "_____________________________________",
+      " ",
+      " ",
+    ];
+
+    result = result.concat(underskriftsFelter);
+    return this.generateLastPart(result);
   }
 }

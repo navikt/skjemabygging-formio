@@ -3,7 +3,7 @@ import mustacheExpress from "mustache-express";
 import client from "prom-client";
 import fetch from "node-fetch";
 import getDecorator from "./dekorator.js";
-import { Pdfgen } from "./pdfgen.js";
+import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import fs from "fs";
 import { gitVersionFromIndexHtml } from "./commit_version.js";
@@ -48,7 +48,7 @@ skjemaApp.post("/pdf-form-papir", (req, res) => {
   const form = JSON.parse(req.body.form);
   logger.debug({ label: "request submission", message: submission });
   res.contentType("application/pdf");
-  Pdfgen.generatePdfForPapirinnsending(submission, form, gitVersion, res);
+  PdfgenPapir.generatePdfForPapirinnsending(submission, form, gitVersion, res);
 });
 
 skjemaApp.post("/foersteside", async (req, res) => {
@@ -82,7 +82,7 @@ skjemaApp.post("/pdf-json-papir", (req, res) => {
   const form = req.body.form;
   logger.debug({ label: "submission", message: submission });
   res.contentType("application/pdf");
-  Pdfgen.generatePdfForPapirinnsending(submission, form, gitVersion, res);
+  PdfgenPapir.generatePdf(submission, form, gitVersion, res);
 });
 
 skjemaApp.get("/config", (req, res) =>
