@@ -48,31 +48,27 @@ describe("computeDokumentinnsendingURL", () => {
   it("calculate url with vedlegg", () => {
     const url = computeDokumentinnsendingURL(
       "https://example.org",
-      { properties: { skjemanummer: "NAV 76-07.10" } },
-      { vedleggOP: "leggerVedNaa", vedleggQ1: "leggerVedNaa", vedleggF4: "leggerVedNaa" }
+      {
+        components: [
+          { key: "vedleggO9", properties: { vedleggskode: "O9" } },
+          { key: "vedleggQ1", properties: { vedleggskode: "Q1" } },
+          { key: "vedleggF4", properties: { vedleggskode: "F4" } },
+        ],
+        properties: { skjemanummer: "NAV 76-07.10" },
+      },
+      { vedleggO9: "leggerVedNaa", vedleggQ1: "leggerVedNaa", vedleggF4: "leggerVedNaa" }
     );
     expect(url).toEqual(
-      "https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false&vedleggsIder=OP,Q1,F4"
+      "https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false&vedleggsIder=O9,Q1,F4"
     );
   });
 
   it("calculate url without vedlegg", () => {
     const url = computeDokumentinnsendingURL(
       "https://example.org",
-      { properties: { skjemanummer: "NAV 76-07.10" } },
+      { components: [], properties: { skjemanummer: "NAV 76-07.10" } },
       {}
     );
     expect(url).toEqual("https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false");
-  });
-
-  it("includes only the correct prefix vedlegg, drops prefix vedleg", () => {
-    const url = computeDokumentinnsendingURL(
-      "https://example.org",
-      { properties: { skjemanummer: "NAV 76-07.10" } },
-      { vedlegOP: "leggerVedNaa", vedleggR5: "leggerVedNaa", vedlegg: "leggerVedNaa" }
-    );
-    expect(url).toEqual(
-      "https://example.org/opprettSoknadResource?skjemanummer=NAV%2076-07.10&erEttersendelse=false&vedleggsIder=R5"
-    );
   });
 });

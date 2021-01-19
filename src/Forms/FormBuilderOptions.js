@@ -400,6 +400,20 @@ const builderPalett = {
   datoOgTid: {
     title: "Dato og tid",
     components: {
+      datoVelger: {
+        title: "Datovelger",
+        group: "datoOgTid",
+        icon: "calendar",
+        input: true,
+        schema: {
+          type: "navDatepicker",
+          label: "Dato (dd.mm.åååå)",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+      },
       time: {
         title: "Klokke",
         key: "klokke",
@@ -632,13 +646,17 @@ const builderPalett = {
         key: "vedlegg",
         icon: "file",
         schema: {
-          label: "< Navn på vedlegg > + husk å legge inn vedleggskode i API property name (eks: vedleggD9)",
+          label: "< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen",
           type: "radio",
           key: "vedlegg",
           input: true,
           clearOnHide: true,
           validate: {
             required: true,
+          },
+          properties: {
+            vedleggstittel: " ",
+            vedleggskode: " ",
           },
           values: [
             {
