@@ -34,7 +34,16 @@ const BuilderMountElement = styled("div")({
     top: 230,
   },
   "& .formarea": {
-    paddingBottom: "50vh",
+    paddingBottom: "2rem",
+    overflowY: "auto",
+    height: "100%",
+  },
+  "& .formcomponents": {
+    overflowY: "auto",
+    height: "100%",
+  },
+  "& .formcomponents .builder-sidebar_scroll": {
+    position: "initial",
   },
 });
 

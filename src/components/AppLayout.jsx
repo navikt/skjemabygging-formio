@@ -7,15 +7,27 @@ import { styled } from "@material-ui/styles";
 const ActionRow = styled("div")({
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
-  columnGap: "1.5rem",
-  padding: "2.2rem",
+  gridGap: "1.5rem",
+  margin: "0 auto 1rem",
+  maxWidth: "66rem",
 });
 
 const MainCol = styled("div")({
   gridColumn: "2",
   alignSelf: "end",
   justifySelf: "center",
-  paddingTop: "2rem",
+  "& .list-inline": {
+    marginBottom: 0,
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(10rem, 1fr))",
+    maxWidth: "33rem",
+  },
+  "& .list-inline-item": {
+    marginBottom: 0,
+  },
+  "& .knapp": {
+    width: "10rem",
+  },
 });
 
 const LeftCol = styled("div")({
@@ -32,9 +44,9 @@ const BasicAlertCol = ({ children, ...props }) => (
 );
 
 const AlertCol = styled(BasicAlertCol)({
-  gridColumn: "3",
+  gridColumn: "2 / 3",
   alignSelf: "end",
-  justifySelf: "end",
+  justifySelf: "center",
 });
 
 export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps }) => {

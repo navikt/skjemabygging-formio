@@ -6,14 +6,19 @@ import { Knapp } from "nav-frontend-knapper";
 import { Hamburgerknapp } from "nav-frontend-ikonknapper";
 import { Undertittel } from "nav-frontend-typografi";
 
-const NavBarWrapper = styled("div")({
+const NavBarContainer = styled("div")({
   backgroundColor: navCssVariables.navLysGra,
+  padding: "1rem 0 1rem 0",
+  marginBottom: "1rem",
+});
+
+const NavBarWrapper = styled("div")({
   display: "grid",
   gridTemplateColumns: "1fr 4fr 1fr",
   gridTemplateRows: "3rem",
   columnGap: "1.5rem",
-  padding: "1rem 0 1rem 0",
-  marginBottom: "2rem",
+  margin: "0 auto",
+  maxWidth: "66rem",
 });
 
 export const NavBarTitle = styled(Undertittel)({
@@ -31,13 +36,13 @@ export const NavBarVenstre = styled("div")({
 export const NavBarHoyre = styled("div")({
   gridColumn: "3",
   placeSelf: "center",
+  justifySelf: "end",
 });
 
 export const KnappWrapper = styled("div")({
   backgroundColor: "white",
   borderRadius: "0.125em",
   placeSelf: "center",
-  marginLeft: "2.2rem",
 });
 
 export const MenyWrapper = styled("div")({
@@ -55,33 +60,35 @@ const Cog = () => (
 
 export const NavBar = ({ title, logout, visSkjemaliste, visHamburger, visInnstillinger }) => {
   return (
-    <NavBarWrapper>
-      <NavBarVenstre>
-        <KnappWrapper>
-          {visSkjemaliste && (
-            <Link className="knapp knapp--standard knapp--mini" to="/forms">
-              Skjemaliste
+    <NavBarContainer>
+      <NavBarWrapper>
+        <NavBarVenstre>
+          <KnappWrapper>
+            {visSkjemaliste && (
+              <Link className="knapp knapp--standard knapp--mini" to="/forms">
+                Skjemaliste
+              </Link>
+            )}
+          </KnappWrapper>
+          <MenyWrapper>{visHamburger && <Hamburgerknapp />}</MenyWrapper>
+          <MenyWrapper>
+            {visInnstillinger && (
+              <Knapp className={"knapp knapp--standard knapp--kompakt"}>
+                <Cog />
+                <span className="sr-only">Knapp</span>
+              </Knapp>
+            )}
+          </MenyWrapper>
+        </NavBarVenstre>
+        <NavBarTitle>{title}</NavBarTitle>
+        <NavBarHoyre>
+          <KnappWrapper>
+            <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
+              Logg ut
             </Link>
-          )}
-        </KnappWrapper>
-        <MenyWrapper>{visHamburger && <Hamburgerknapp />}</MenyWrapper>
-        <MenyWrapper>
-          {visInnstillinger && (
-            <Knapp className={"knapp knapp--standard knapp--kompakt"}>
-              <Cog />
-              <span className="sr-only">Knapp</span>
-            </Knapp>
-          )}
-        </MenyWrapper>
-      </NavBarVenstre>
-      <NavBarTitle>{title}</NavBarTitle>
-      <NavBarHoyre>
-        <KnappWrapper>
-          <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
-            Logg ut
-          </Link>
-        </KnappWrapper>
-      </NavBarHoyre>
-    </NavBarWrapper>
+          </KnappWrapper>
+        </NavBarHoyre>
+      </NavBarWrapper>
+    </NavBarContainer>
   );
 };
