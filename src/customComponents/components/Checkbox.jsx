@@ -1,4 +1,4 @@
-import React, { Component, createRef } from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Checkbox } from "nav-frontend-skjema";
 import checkboxDataEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.data";
@@ -40,9 +40,8 @@ const CheckboxWrapper = class extends Component {
     const component = this.props.component;
     return (
       <Checkbox
-        className={"checkbox-class"}
-        aria-describedby={`${component.key}-error`}
         checkboxRef={this.props.checkboxRef}
+        aria-describedby={`${component.key}-error`}
         label={component.label}
         onChange={(event) => this.setValue(event.target.value)}
         required={component.validate.required}
@@ -52,7 +51,7 @@ const CheckboxWrapper = class extends Component {
 };
 
 export default class CheckboxComponent extends FormioReactComponent {
-  input = () => createRef();
+  input = null;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -139,7 +138,7 @@ export default class CheckboxComponent extends FormioReactComponent {
   }
 
   focus() {
-    this.input.current.focus();
+    if (this.input) this.input.focus();
   }
 
   /**
@@ -154,7 +153,7 @@ export default class CheckboxComponent extends FormioReactComponent {
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
-        checkboxRef={this.input}
+        checkboxRef={(r) => (this.input = r)}
       />,
       element
     );
