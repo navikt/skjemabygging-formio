@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { RadioPanelGruppe } from "nav-frontend-skjema";
-import dataEditForm from "formiojs/components/_classes/component/editForm/Component.edit.data";
-import radioDataEditForm from "formiojs/components/radio/editForm/Radio.edit.data";
-import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import radioDisplayEditForm from "formiojs/components/radio/editForm/Radio.edit.display";
-import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import radioValidationEditForm from "formiojs/components/radio/editForm/Radio.edit.validation";
+import { Checkbox } from "nav-frontend-skjema";
+import checkboxDataEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.data";
+import dataEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.data";
+import checkboxDisplayEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.display";
+import displayEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.display";
+import checkboxValidationEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.validation";
+import validationEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 import layoutEditForm from "formiojs/components/_classes/component/editForm/Component.edit.layout";
@@ -24,7 +24,7 @@ import { joinDefaultAndCustomEditForm } from "../util/customComponentUtils";
  * 2. When the value changes, call props.onChange(null, newValue);
  *
  */
-const RadioPanelGruppeWrapper = class extends Component {
+const CheckboxWrapper = class extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,29 +38,20 @@ const RadioPanelGruppeWrapper = class extends Component {
 
   render() {
     const component = this.props.component;
-    const radios = component.values.map(({ label, value }, index) => ({
-      label,
-      value,
-      id: `${component.key}${value}`,
-      required: component.validate.required || undefined,
-      radioRef: index === 0 ? this.props.radioRef : undefined,
-    }));
     return (
-      <RadioPanelGruppe
+      <Checkbox
+        checkboxRef={this.props.checkboxRef}
         aria-describedby={`${component.key}-error`}
-        radios={radios}
-        checked={this.state.value}
-        legend={component.validate.required ? component.label : `${component.label} (valgfritt)`}
-        description={component.description}
-        name={`data[${component.key}][${component.id}]`}
+        label={component.label}
         onChange={(event) => this.setValue(event.target.value)}
+        required={component.validate.required}
       />
     );
   }
 };
 
-export default class RadioPanelGruppeComponent extends FormioReactComponent {
-  input = React.createRef();
+export default class CheckboxComponent extends FormioReactComponent {
+  input = null;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -68,16 +59,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    * @returns {{title: string, icon: string, group: string, documentation: string, weight: number, schema: *}}
    */
   static get builderInfo() {
-    const { title, key, icon } = FormBuilderOptions.builder.basic.components.radiopanel;
-    return {
-      title,
-      icon,
-      group: "basic",
-      key,
-      documentation: "",
-      schema: RadioPanelGruppeComponent.schema(),
-      weight: 0,
-    };
+    return FormBuilderOptions.builder.basic.components.navCheckbox;
   }
 
   /**
@@ -88,7 +70,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    * @returns {*}
    */
   static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.radiopanel.schema);
+    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.navCheckbox.schema);
   }
 
   /**
@@ -106,21 +88,19 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
             {
               label: "Display",
               key: "display",
-              components: joinDefaultAndCustomEditForm(displayEditForm, radioDisplayEditForm).filter(
-                (component) => component.key !== "hideLabel"
-              ),
+              components: joinDefaultAndCustomEditForm(displayEditFormComponent, checkboxDisplayEditForm),
             },
             {
               label: "Data",
               key: "data",
-              components: joinDefaultAndCustomEditForm(dataEditForm, radioDataEditForm).filter(
+              components: joinDefaultAndCustomEditForm(dataEditFormComponent, checkboxDataEditForm).filter(
                 (component) => component.key !== "defaultValue"
               ),
             },
             {
               label: "Validation",
               key: "validation",
-              components: joinDefaultAndCustomEditForm(validationEditForm, radioValidationEditForm),
+              components: joinDefaultAndCustomEditForm(validationEditFormComponent, checkboxValidationEditForm),
             },
             {
               label: "API",
@@ -149,7 +129,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
   }
 
   focus() {
-    this.input.current.focus();
+    if (this.input) this.input.focus();
   }
 
   /**
@@ -160,11 +140,11 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    */
   attachReact(element) {
     return ReactDOM.render(
-      <RadioPanelGruppeWrapper
+      <CheckboxWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
-        radioRef={this.input}
+        checkboxRef={(r) => (this.input = r)}
       />,
       element
     );

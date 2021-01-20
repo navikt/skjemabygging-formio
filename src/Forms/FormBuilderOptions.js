@@ -544,6 +544,25 @@ const builderPalett = {
           },
         },
       },
+      navCheckbox: {
+        title: "Nav-Avkryssingsboks",
+        key: "NavAvkryssingsboks",
+        icon: "check-square",
+        group: "basic",
+        documentation: "",
+        weight: 0,
+        schema: {
+          label: "NavAvkryssingsboks",
+          type: "navCheckbox",
+          key: "navAvkryssingsboks",
+          input: true,
+          hideLabel: true,
+          clearOnHide: true,
+          validate: {
+            required: true,
+          },
+        },
+      },
       selectboxes: {
         title: "Flervalg",
         key: "selectboxes",
