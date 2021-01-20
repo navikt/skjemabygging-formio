@@ -14,7 +14,7 @@ import logicEditForm from "formiojs/components/_classes/component/editForm/Compo
 
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
-import { joinDefaultAndCustomEditForm } from "../util/joinNewEditForm";
+import { joinDefaultAndCustomEditForm } from "../util/customComponentUtils";
 
 /**
  * The wrapper for our custom React component

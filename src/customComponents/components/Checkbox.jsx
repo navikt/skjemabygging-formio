@@ -14,7 +14,7 @@ import logicEditForm from "formiojs/components/_classes/component/editForm/Compo
 
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
-import { joinDefaultAndCustomEditForm } from "../util/joinNewEditForm";
+import { joinDefaultAndCustomEditForm } from "../util/customComponentUtils";
 
 /**
  * The wrapper for our custom React component
@@ -59,16 +59,7 @@ export default class CheckboxComponent extends FormioReactComponent {
    * @returns {{title: string, icon: string, group: string, documentation: string, weight: number, schema: *}}
    */
   static get builderInfo() {
-    const { title, key, icon } = FormBuilderOptions.builder.basic.components.checkboxDesignSystem;
-    return {
-      title,
-      icon,
-      group: "basic",
-      key,
-      documentation: "",
-      schema: CheckboxComponent.schema(),
-      weight: 0,
-    };
+    return FormBuilderOptions.builder.basic.components.navCheckbox;
   }
 
   /**
@@ -79,7 +70,7 @@ export default class CheckboxComponent extends FormioReactComponent {
    * @returns {*}
    */
   static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.checkboxDesignSystem.schema);
+    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.navCheckbox.schema);
   }
 
   /**

@@ -544,10 +544,13 @@ const builderPalett = {
           },
         },
       },
-      checkboxDesignSystem: {
+      navCheckbox: {
         title: "Nav-Avkryssingsboks",
         key: "NavAvkryssingsboks",
         icon: "check-square",
+        group: "basic",
+        documentation: "",
+        weight: 0,
         schema: {
           label: "NavAvkryssingsboks",
           type: "navCheckbox",
