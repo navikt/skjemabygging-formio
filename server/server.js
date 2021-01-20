@@ -82,7 +82,7 @@ skjemaApp.post("/pdf-json-papir", (req, res) => {
   const form = req.body.form;
   logger.debug({ label: "submission", message: submission });
   res.contentType("application/pdf");
-  PdfgenPapir.generatePdf(submission, form, gitVersion, res);
+  PdfgenPapir.generatePdfForPapirinnsending(submission, form, gitVersion, res);
 });
 
 skjemaApp.get("/config", (req, res) =>

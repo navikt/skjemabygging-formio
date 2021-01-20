@@ -215,7 +215,14 @@ export class Pdfgen {
 }
 
 export class PdfgenPapir extends Pdfgen {
-  generateContentFromSubmission() {
+  static generatePdfForPapirinnsending(submission, form, gitVersion, stream) {
+    const now = DateTime.local().setZone("Europe/Oslo");
+    const generator = new this(submission, form, gitVersion, now);
+    const docDefinition = generator.generateDocDefinition();
+    generator.writeDocDefinitionToStream(docDefinition, stream);
+  }
+
+  generateContentFromSubmission(submission, form, gitVersion, stream) {
     let result = this.generateFirstPart();
     // her skal underskrift inn
     const underskriftsFelter = [
