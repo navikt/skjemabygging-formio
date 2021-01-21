@@ -16,7 +16,7 @@ const ActionRow = styled("div")({
       gridGap: "1.5rem",
       margin: "0 auto 1rem",
       maxWidth: "66rem",
-      padding: "0",
+      padding: "0 0 2rem",
       width: "calc(100% - 4rem)",
     },
   },
