@@ -14,27 +14,35 @@ const NavBarContainer = styled("div")({
 
 const NavBarWrapper = styled("div")({
   display: "grid",
-  gridTemplateColumns: "1fr 4fr 1fr",
+  gridTemplateColumns: "auto 6.875rem",
   gridTemplateRows: "3rem",
-  columnGap: "1.5rem",
-  margin: "0 auto",
-  maxWidth: "66rem",
+  gridColumnGap: "1.5rem",
+  gridRowGap: "1rem",
+  margin: "0 2rem",
+  "@media screen and (min-width: 39em)": {
+    gridTemplateColumns: "16.375rem auto 6.875rem",
+    maxWidth: "66rem",
+  },
+  "@media screen and (min-width: 68em)": {
+    margin: "0 auto",
+  },
 });
 
 export const NavBarTitle = styled(Undertittel)({
   color: navCssVariables.navMorkGra,
-  gridColumn: "2",
   placeSelf: "center",
 });
 
 export const NavBarVenstre = styled("div")({
-  gridColumn: "1",
+  gridColumn: "1 / 4",
   placeSelf: "center",
   display: "flex",
+  "@media screen and (min-width: 39em)": {
+    gridColumn: "1 / 2",
+  },
 });
 
 export const NavBarHoyre = styled("div")({
-  gridColumn: "3",
   placeSelf: "center",
   justifySelf: "end",
 });
