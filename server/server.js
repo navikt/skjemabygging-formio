@@ -32,24 +32,34 @@ const Registry = client.Registry;
 const register = new Registry();
 client.collectDefaultMetrics({ register });
 
-// TODO: rename pdf-form til pdf-form-dok-innsending
-// form encoded post body
-skjemaApp.post("/pdf-form", (req, res) => {
+const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  logger.debug({ label: "request submission", message: submission });
-  res.contentType("application/pdf");
-  Pdfgen.generatePdf(submission, form, gitVersion, res);
-});
+  return [form, submission];
+};
 
-// form encoded post body
-skjemaApp.post("/pdf-form-papir", (req, res) => {
-  const submission = JSON.parse(req.body.submission);
-  const form = JSON.parse(req.body.form);
-  logger.debug({ label: "request submission", message: submission });
-  res.contentType("application/pdf");
-  PdfgenPapir.generatePdf(submission, form, gitVersion, res);
-});
+const jsonRequestHandler = (req) => {
+  const submission = req.body.submission;
+  const form = req.body.form;
+  return [form, submission];
+};
+
+const pdfGenHandler = (pdfGenClass, requestHandler) => {
+  return (req, res) => {
+    const [form, submission] = requestHandler(req);
+    logger.debug({ label: "request submission", message: submission });
+    res.contentType("application/pdf");
+    pdfGenClass.generatePdf(submission, form, gitVersion, res);
+  };
+};
+
+// TODO: rename pdf-form til pdf-form-dok-innsending
+skjemaApp.post("/pdf-form", pdfGenHandler(Pdfgen, formRequestHandler));
+skjemaApp.post("/pdf-form-papir", pdfGenHandler(PdfgenPapir, formRequestHandler));
+
+// json encoded post body - used for debugging
+skjemaApp.post("/pdf-json", pdfGenHandler(Pdfgen, jsonRequestHandler));
+skjemaApp.post("/pdf-json-papir", pdfGenHandler(PdfgenPapir, jsonRequestHandler));
 
 skjemaApp.post("/foersteside", async (req, res) => {
   const foerstesideData = JSON.stringify(req.body);
@@ -66,23 +76,6 @@ skjemaApp.post("/foersteside", async (req, res) => {
     logger.error("Failed to retrieve foersteside from soknadsveiviser " + response.status);
     return response;
   }
-});
-
-// json encoded post body - used for debugging
-skjemaApp.post("/pdf-json", (req, res) => {
-  const submission = req.body.submission;
-  const form = req.body.form;
-  logger.debug({ label: "submission", message: submission });
-  res.contentType("application/pdf");
-  Pdfgen.generatePdf(submission, form, gitVersion, res);
-});
-
-skjemaApp.post("/pdf-json-papir", (req, res) => {
-  const submission = req.body.submission;
-  const form = req.body.form;
-  logger.debug({ label: "submission", message: submission });
-  res.contentType("application/pdf");
-  PdfgenPapir.generatePdf(submission, form, gitVersion, res);
 });
 
 skjemaApp.get("/config", (req, res) =>
