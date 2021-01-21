@@ -33,7 +33,6 @@ export const NavBarTitle = styled(Undertittel)({
 
 export const NavBarVenstre = styled("div")({
   gridColumn: "1 / 4",
-  placeSelf: "center",
   display: "flex",
   "@media screen and (min-width: 39em)": {
     gridColumn: "1 / 2",
@@ -55,15 +54,15 @@ export const NavBar = ({ title, logout, visSkjemaliste }) => {
   return (
     <NavBarContainer>
       <NavBarWrapper>
-        <NavBarVenstre>
-          <KnappWrapper>
-            {visSkjemaliste && (
+        {visSkjemaliste && (
+          <NavBarVenstre>
+            <KnappWrapper>
               <Link className="knapp knapp--standard knapp--mini" to="/forms">
                 Skjemaliste
               </Link>
-            )}
-          </KnappWrapper>
-        </NavBarVenstre>
+            </KnappWrapper>
+          </NavBarVenstre>
+        )}
         <NavBarTitle>{title}</NavBarTitle>
         <NavBarHoyre>
           <KnappWrapper>
