@@ -95,9 +95,10 @@ const BasicAlertCol = ({ children, ...props }) => (
 );
 
 const AlertCol = styled(BasicAlertCol)({
-  gridColumn: "2 / 3",
+  gridColumn: "1 / 3",
   alignSelf: "end",
   justifySelf: "center",
+  paddingBottom: "2rem",
 });
 
 export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps }) => {
@@ -109,7 +110,7 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
         <ActionRow>
           <LeftCol>{leftCol}</LeftCol>
           <MainCol>{mainCol}</MainCol>
-          <AlertCol>{alertComponent && alertComponent()}</AlertCol>
+          {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
         </ActionRow>
       </NoScrollWrapper>
       <Pagewrapper>{children}</Pagewrapper>
