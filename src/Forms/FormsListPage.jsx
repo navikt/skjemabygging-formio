@@ -17,8 +17,13 @@ const FormsList = ({ forms, children, className }) => {
 };
 
 FormsList.propTypes = {
-  sort: PropTypes.any,
-  callbackfn: PropTypes.func,
+  className: PropTypes.string,
+  forms: PropTypes.arrayOf(
+    PropTypes.shape({
+      path: PropTypes.string,
+      title: PropTypes.string,
+    })
+  ),
 };
 
 const useFormsListPageStyles = makeStyles({
