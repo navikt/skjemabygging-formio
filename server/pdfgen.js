@@ -113,11 +113,11 @@ export class Pdfgen {
   }
 
   generateContentFromSubmission() {
-    const panels = this.form.components.filter((component) => component.type === "panel");
-    const rest = this.form.components.filter((component) => component.type !== "panel");
-    let result = [this.header(), { text: " ", style: "ingress" }];
-    this.generateTableForComponentsOutsidePanels(rest, result);
-    panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
+    let result = this.generateFirstPart();
+    return this.generateLastPart(result);
+  }
+
+  generateLastPart(result) {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
     result.push({ text: `Skjemaet ble opprettet ${datoTid}` });
     result.push({
@@ -126,13 +126,26 @@ export class Pdfgen {
     return result;
   }
 
-  generateDocDefinition() {
+  generateFirstPart() {
+    let result = [this.header(), { text: " ", style: "ingress" }];
+    const rest = this.form.components.filter((component) => component.type !== "panel");
+    this.generateTableForComponentsOutsidePanels(rest, result);
+    const panels = this.form.components.filter((component) => component.type === "panel");
+    panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
+    return result;
+  }
+
+  doGenerateDocDefinition(content) {
     return {
       pageSize: "A4",
       pageMargins: [40, 80, 40, 80],
-      content: this.generateContentFromSubmission(),
+      content: content,
       styles: this.docStyles(),
     };
+  }
+
+  generateDocDefinition() {
+    return this.doGenerateDocDefinition(this.generateContentFromSubmission());
   }
 
   header() {
@@ -198,5 +211,30 @@ export class Pdfgen {
       widths: ["*", "*"],
       body: [],
     };
+  }
+}
+
+export class PdfgenPapir extends Pdfgen {
+  generateContentFromSubmission(submission, form, gitVersion, stream) {
+    let result = this.generateFirstPart();
+    // her skal underskrift inn
+    const underskriftsFelter = [
+      " ",
+      " ",
+      " ",
+      " ",
+      "_____________________________________",
+      "Sted og dato",
+      " ",
+      " ",
+      " ",
+      "_____________________________________",
+      "Underskrift",
+      " ",
+      " ",
+    ];
+
+    result = result.concat(underskriftsFelter);
+    return this.generateLastPart(result);
   }
 }

@@ -1,5 +1,6 @@
-import { Pdfgen } from "./pdfgen";
+import { Pdfgen, PdfgenPapir } from "./pdfgen";
 import luxon from "luxon";
+
 const { DateTime } = luxon;
 
 const createComplexSubmission = () => ({
@@ -316,5 +317,15 @@ describe("generating doc definition", () => {
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
     expect(tableData).not.toEqual(expect.arrayContaining([expect.arrayContaining(["Send inn", true])]));
+  });
+
+  it("generates with signature field", () => {
+    const submission = { data: {}, metadata: {} };
+    const form = { title: "Smølfeskjema", components: [] };
+    const version = "deadbeef-dirty";
+    const generator = new PdfgenPapir(submission, form, version, now());
+    const doc_definition = generator.generateDocDefinition();
+
+    expect(doc_definition.content).toContain("Underskrift");
   });
 });
