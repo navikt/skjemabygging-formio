@@ -85,7 +85,6 @@ const LeftCol = styled("div")({
   gridColumn: "1",
   alignSelf: "end",
   justifySelf: "start",
-  // paddingLeft: "1.2rem",
 });
 
 const BasicAlertCol = ({ children, ...props }) => (
