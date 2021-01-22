@@ -183,7 +183,7 @@ const kontaktInfoSchema = {
   components: [
     {
       label: "Bor du i Norge?",
-      type: "radio",
+      type: "radiopanel",
       key: "borDuINorge",
       input: true,
       validate: {
@@ -593,31 +593,6 @@ const builderPalett = {
           },
         },
       },
-      radio: {
-        title: "Radioknapp",
-        key: "radio",
-        icon: "dot-circle-o",
-        schema: {
-          label: "Radioknapp",
-          type: "radio",
-          key: "radio",
-          input: true,
-          clearOnHide: true,
-          validate: {
-            required: true,
-          },
-          values: [
-            {
-              value: "ja",
-              label: "Ja",
-            },
-            {
-              value: "nei",
-              label: "Nei",
-            },
-          ],
-        },
-      },
       radiopanel: {
         title: "Radiopanel",
         key: "radiopanel",
@@ -650,7 +625,7 @@ const builderPalett = {
         icon: "file",
         schema: {
           label: "< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen",
-          type: "radio",
+          type: "radiopanel",
           key: "vedlegg",
           input: true,
           clearOnHide: true,
