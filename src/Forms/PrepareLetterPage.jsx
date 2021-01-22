@@ -75,7 +75,7 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
           Last ned førsteside
         </button>
       </div>
-      <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
+      <form id={form.path} action="/fyllut/pdf-form-papir" method="post" acceptCharset="utf-8" target="_blank" hidden>
         <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
         <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
       </form>

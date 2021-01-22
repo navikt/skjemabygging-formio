@@ -49,7 +49,7 @@ export const defaultFormFields = () => [
       },
       {
         label: "Bor du i Norge?",
-        type: "radio",
+        type: "radiopanel",
         key: "borDuINorgeSoker",
         input: true,
         validateOn: "blur",
