@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { useAmplitude } from "../context/amplitude";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
+import { AppConfigContext } from "../configContext";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -24,8 +25,8 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   );
 };
 
-function lastNedFoersteside(form, submission) {
-  return fetch("/fyllut/foersteside", {
+function lastNedFoersteside(form, submission, fyllutBaseURL) {
+  return fetch(`${fyllutBaseURL}foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(genererFoerstesideData(form, submission.data)),
@@ -49,6 +50,7 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { fyllutBaseURL } = useContext(AppConfigContext);
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
       loggSkjemaFullfort("papirinnsending");
@@ -65,7 +67,7 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            lastNedFoersteside(form, submission)
+            lastNedFoersteside(form, submission, fyllutBaseURL)
               .then(() => setHasDownloadedFoersteside(true))
               .catch(() => loggSkjemaInnsendingFeilet());
           }}
