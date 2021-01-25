@@ -46,10 +46,10 @@ const useFormsListPageStyles = makeStyles({
   },
 });
 
-export function FormsListPage({ forms, url, onDelete, onNew, logout }) {
+export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Skjemabygger", visSkjemaliste: false, logout: logout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Skjemabygger", visSkjemaliste: false, logout: onLogout }}>
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
         <FormsList className={classes.list} forms={forms}>
