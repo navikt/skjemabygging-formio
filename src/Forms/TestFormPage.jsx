@@ -5,11 +5,11 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import FyllUtRouter from "./FyllUtRouter";
 import AmplitudeProvider from "../context/amplitude";
 
-export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave }) {
+export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, onLogout }) {
   const title = `${form.title}`;
   return (
     <AppLayoutWithContext
-      navBarProps={{ title: title, visSkjemaliste: true }}
+      navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
       mainCol={
         <ul className="list-inline">
           <li className="list-inline-item">
