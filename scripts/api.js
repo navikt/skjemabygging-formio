@@ -29,7 +29,7 @@ async function loginUser(email, password) {
 
 async function getForm() {
   const token = await loginUser(args[0], args[1]);
-  const response = await fetch("https://protected-island-44773.herokuapp.com/form/5ee75e38f83dde000350dcad", {
+  const response = await fetch("https://protected-island-44773.herokuapp.com/form/" + args[3], {
     method: "GET",
     headers: { "x-jwt-token": token },
   });
@@ -46,7 +46,7 @@ async function putForm() {
   const inputData = await read(process.stdin);
   const inputForm = JSON.parse(inputData);
 
-  const response = await fetch("https://protected-island-44773.herokuapp.com/form/5ee75e38f83dde000350dcad", {
+  const response = await fetch("https://protected-island-44773.herokuapp.com/form/" + args[3], {
     method: "PUT",
     headers: { "x-jwt-token": token, "content-type": "application/json" },
     body: JSON.stringify(inputForm),
@@ -59,4 +59,10 @@ async function putForm() {
   process.stdout.write("\n");
 }
 
-getForm();
+if (args[2] === "PUT") {
+  putForm();
+} else if (args[2] === "GET") {
+  getForm();
+} else {
+  process.stderr.write("Usage: api.js <username> <password> <method> <id>\n");
+}

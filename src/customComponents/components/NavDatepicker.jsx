@@ -8,6 +8,7 @@ import conditionalEditForm from "formiojs/components/_classes/component/editForm
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 
 import FormioReactComponent from "../FormioReactComponent.jsx";
+import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 
 require("moment/locale/nb.js"); // For datovelger
 
@@ -46,28 +47,20 @@ export default class NavDatepicker extends FormioReactComponent {
    * @returns {{title: string, icon: string, group: string, documentation: string, weight: number, schema: *}}
    */
   static get builderInfo() {
+    const { title, key, icon } = FormBuilderOptions.builder.datoOgTid.components.datoVelger;
     return {
-      title: "Datovelger",
+      title,
+      icon,
       group: "datoOgTid",
-      weight: 10,
-      icon: "calendar",
+      key,
+      documentation: "",
+      weight: 0,
       schema: NavDatepicker.schema(),
     };
   }
 
-  static schema(...extend) {
-    return FormioReactComponent.schema(
-      {
-        type: "navDatepicker",
-        label: "Dato (dd.mm.åååå)",
-        validateOn: "blur",
-        validate: {
-          required: true,
-        },
-        input: true,
-      },
-      ...extend
-    );
+  static schema() {
+    return FormioReactComponent.schema(FormBuilderOptions.builder.datoOgTid.components.datoVelger.schema);
   }
 
   /*

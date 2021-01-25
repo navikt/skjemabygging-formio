@@ -2,9 +2,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
+import { useAmplitude } from "../context/amplitude";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
+  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
 
   return (
     <main tabIndex={-1}>
@@ -13,6 +15,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         key="1"
         form={form}
         submission={submission}
+        onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
+        onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
         onSubmit={(submission) => {
           setSubmission(submission);
           history.push(`${formUrl}/oppsummering`);

@@ -5,12 +5,21 @@
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
+.formio-dialog {
+  z-index: 100000;
+}
+
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
   &:after {
     display: none;
   }
+}
+
+.choices__list--dropdown.is-active {
+  position: relative;
+  width: fit-content;
 }
 
 .form-control.selection.dropdown {
@@ -24,6 +33,12 @@
   }
 }
 //Select -- slutt
+
+//RadioPanel -- start
+.radioPanel{
+  .input--xxl();
+}
+//RadioPanel -- slutt
 
 //Skjemagruppe -- start
 .skjemagruppe,
@@ -97,6 +112,10 @@
   display: flex;
   justify-content: center;
   padding: 3rem 0 1rem 0;
+}
+
+.stegindikator__wrapper {
+  margin: 3rem;
 }
 //Wizard sidevelger --slutt
 
@@ -176,10 +195,6 @@
   .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
 }
 //NAV-knappestyling -- slutt
-
-.stegindikator__wrapper {
-  padding: 1rem;
-}
 
 main:focus {
   outline: none;

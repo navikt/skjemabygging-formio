@@ -30,11 +30,31 @@ import cloneDeep from "lodash.clonedeep";
 import { styled } from "@material-ui/styles";
 
 const BuilderMountElement = styled("div")({
-  "& .builder-sidebar_scroll": {
-    top: 230,
+  "& .formbuilder": {
+    position: "relative",
+    "@media screen and (min-width: 40rem)": {
+      height: "calc(100vh - 13.5rem)",
+      display: "grid",
+      gridTemplateColumns: "14rem minmax(20rem, 50rem)",
+      gridGap: "2rem",
+      alignItems: "start",
+      margin: "0 auto",
+      maxWidth: "66rem",
+      minWidth: "36rem",
+      overflow: "hidden",
+    },
   },
   "& .formarea": {
-    paddingBottom: "50vh",
+    paddingBottom: "2rem",
+    overflowY: "auto",
+    height: "100%",
+  },
+  "& .formcomponents": {
+    overflowY: "auto",
+    height: "100%",
+    "& .builder-sidebar_scroll": {
+      position: "initial",
+    },
   },
 });
 
@@ -110,6 +130,7 @@ class NavFormBuilder extends Component {
     );
   };
 }
+
 export { NavFormBuilder as UnstyledNavFormBuilder };
 export default styled(NavFormBuilder)({
   "& .skjemaelement__label.field-required::after": {
@@ -117,5 +138,8 @@ export default styled(NavFormBuilder)({
   },
   "& .skjemaelement__label:not(.field-required)::after": {
     content: '"(valgfritt)"',
+  },
+  "& .checkboks[required] + .skjemaelement__label::after": {
+    content: '""',
   },
 });

@@ -183,7 +183,7 @@ const kontaktInfoSchema = {
   components: [
     {
       label: "Bor du i Norge?",
-      type: "radio",
+      type: "radiopanel",
       key: "borDuINorge",
       input: true,
       validate: {
@@ -331,6 +331,9 @@ const builderPalett = {
           currency: "nok",
           spellcheck: false,
           clearOnHide: true,
+          validate: {
+            required: true,
+          },
         },
       },
       bankAccount: {
@@ -397,9 +400,23 @@ const builderPalett = {
   datoOgTid: {
     title: "Dato og tid",
     components: {
+      datoVelger: {
+        title: "Datovelger",
+        group: "datoOgTid",
+        icon: "calendar",
+        input: true,
+        schema: {
+          type: "navDatepicker",
+          label: "Dato (dd.mm.åååå)",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+      },
       time: {
-        title: "Tid",
-        key: "tid",
+        title: "Klokke",
+        key: "klokke",
         icon: "clock-o",
         weight: 20,
         schema: {
@@ -409,6 +426,9 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           clearOnHide: true,
+          validate: {
+            required: true,
+          },
         },
       },
       datetime: {
@@ -423,6 +443,9 @@ const builderPalett = {
           input: true,
           spellcheck: false,
           clearOnHide: true,
+          validate: {
+            required: true,
+          },
         },
       },
       day: {
@@ -436,30 +459,8 @@ const builderPalett = {
           key: "dagMndAr",
           input: true,
           clearOnHide: true,
-        },
-      },
-      month: {
-        title: "Måned",
-        key: "maaned",
-        icon: "calendar",
-        weight: 50,
-        schema: {
-          label: "Måned",
-          type: "datetime",
-          key: "maaned",
-          input: true,
-          clearOnHide: true,
-          datePicker: {
-            showWeeks: true,
-            startingDay: 0,
-            initDate: "",
-            minMode: "month",
-            maxMode: "year",
-            yearRows: 4,
-            yearColumns: 5,
-            minDate: null,
-            maxDate: null,
-            datepickerMode: "month",
+          validate: {
+            required: true,
           },
         },
       },
@@ -508,6 +509,7 @@ const builderPalett = {
           type: "number",
           key: "number",
           input: true,
+          spellcheck: false,
           clearOnHide: true,
           validate: {
             required: true,
@@ -523,6 +525,7 @@ const builderPalett = {
           type: "password",
           key: "password",
           input: true,
+          spellcheck: false,
           clearOnHide: true,
         },
       },
@@ -535,6 +538,25 @@ const builderPalett = {
           type: "checkbox",
           key: "checkbox",
           input: true,
+          clearOnHide: true,
+          validate: {
+            required: true,
+          },
+        },
+      },
+      navCheckbox: {
+        title: "Nav-Avkryssingsboks",
+        key: "NavAvkryssingsboks",
+        icon: "check-square",
+        group: "basic",
+        documentation: "",
+        weight: 0,
+        schema: {
+          label: "NavAvkryssingsboks",
+          type: "navCheckbox",
+          key: "navAvkryssingsboks",
+          input: true,
+          hideLabel: true,
           clearOnHide: true,
           validate: {
             required: true,
@@ -571,15 +593,16 @@ const builderPalett = {
           },
         },
       },
-      radio: {
-        title: "Radioknapp",
-        key: "radio",
+      radiopanel: {
+        title: "Radiopanel",
+        key: "radiopanel",
         icon: "dot-circle-o",
         schema: {
-          label: "Radioknapp",
-          type: "radio",
-          key: "radio",
+          label: "Radiopanel",
+          type: "radiopanel",
+          key: "radiopanel",
           input: true,
+          hideLabel: true,
           clearOnHide: true,
           validate: {
             required: true,
@@ -601,13 +624,17 @@ const builderPalett = {
         key: "vedlegg",
         icon: "file",
         schema: {
-          label: "< Navn på vedlegg > + husk å legge inn vedleggskode i API property name (eks: vedleggD9)",
-          type: "radio",
+          label: "< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen",
+          type: "radiopanel",
           key: "vedlegg",
           input: true,
           clearOnHide: true,
           validate: {
             required: true,
+          },
+          properties: {
+            vedleggstittel: " ",
+            vedleggskode: " ",
           },
           values: [
             {
@@ -626,23 +653,12 @@ const builderPalett = {
           ],
         },
       },
-      button: {
-        title: "Knapp",
-        key: "button",
-        icon: "stop",
-        schema: {
-          label: "Knapp",
-          type: "button",
-          key: "button",
-          input: true,
-        },
-      },
       url: {
-        title: "Lenke",
+        title: "Nettsted",
         key: "url",
         icon: "link",
         schema: {
-          label: "Lenke",
+          label: "Nettsted",
           type: "url",
           key: "url",
           input: true,
@@ -671,6 +687,7 @@ const builderPalett = {
           key: "signature",
           input: true,
           clearOnHide: true,
+          footer: " ", // Trenger en blank space for å unngå at det kommer inn default 'sign above' tekst i dette feltet.
         },
       },
       survey: {

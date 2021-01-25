@@ -23,15 +23,21 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, l
     <AppLayoutWithContext
       leftCol={<SkjemaVisningSelect form={form} onChange={onChange} />}
       mainCol={
-        <>
-          <Link className="knapp" to={testFormUrl}>
-            Test
-          </Link>
-          <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-          <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-            Publiser
-          </Knapp>
-        </>
+        <ul className="list-inline">
+          <li className="list-inline-item">
+            <Link className="knapp" to={testFormUrl}>
+              Test
+            </Link>
+          </li>
+          <li className="list-inline-item">
+            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+          </li>
+          <li className="list-inline-item">
+            <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+              Publiser
+            </Knapp>
+          </li>
+        </ul>
       }
       navBarProps={{
         title: title,

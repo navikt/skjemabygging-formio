@@ -30,15 +30,26 @@ import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
+import { useAmplitude } from "../context/amplitude";
 
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
-Wizard.prototype.nextPage = function () {
-  return originalNextPage.call(this).catch((error) => {
-    scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
-    return Promise.reject(error);
-  });
-};
+
+function overrideFormioWizardNextPage(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
+  Wizard.prototype.nextPage = function () {
+    return originalNextPage
+      .call(this)
+      .then((returnValue) => {
+        loggSkjemaStegFullfort();
+        return returnValue;
+      })
+      .catch((error) => {
+        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
+        loggSkjemaValideringFeilet();
+        return Promise.reject(error);
+      });
+  };
+}
 
 class NavForm extends Component {
   static propTypes = {
@@ -72,6 +83,8 @@ class NavForm extends Component {
     onBlur: PropTypes.func,
     onInitialized: PropTypes.func,
     formioform: PropTypes.any,
+    loggSkjemaStegFullfort: PropTypes.func,
+    loggSkjemaValideringFeilet: PropTypes.func,
   };
 
   static defaultProps = {
@@ -142,6 +155,11 @@ class NavForm extends Component {
         }
       });
     }
+    overrideFormioWizardNextPage(
+      this.props.form,
+      this.props.loggSkjemaStegFullfort,
+      this.props.loggSkjemaValideringFeilet
+    );
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {
@@ -184,11 +202,27 @@ class NavForm extends Component {
   };
 }
 
-export default styled(NavForm)({
+const withAmplitudeHooks = (Component) => {
+  return (props) => {
+    const { loggSkjemaStegFullfort, loggSkjemaValideringFeilet } = useAmplitude();
+    return (
+      <Component
+        loggSkjemaStegFullfort={loggSkjemaStegFullfort}
+        loggSkjemaValideringFeilet={loggSkjemaValideringFeilet}
+        {...props}
+      />
+    );
+  };
+};
+
+export default styled(withAmplitudeHooks(NavForm))({
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
   "& .skjemaelement__label:not(.field-required)::after": {
     content: '"(valgfritt)"',
+  },
+  "& .checkboks[required] + .skjemaelement__label::after": {
+    content: '""',
   },
 });

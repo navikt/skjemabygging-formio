@@ -2,8 +2,7 @@ import { styled } from "@material-ui/styles";
 
 export const Pagewrapper = styled("div")({
   margin: "0 auto",
-  maxWidth: "800px",
-  padding: "2rem",
+  padding: "0 2rem",
 });
 
 export const SlettSkjemaKnapp = styled("button")({
@@ -17,5 +16,5 @@ export const NoScrollWrapper = styled("div")({
   backgroundColor: "white",
   position: "sticky",
   top: "0",
-  zIndex: 1,
+  zIndex: 100000,
 });

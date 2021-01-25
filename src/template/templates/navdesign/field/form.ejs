@@ -1,16 +1,17 @@
-{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom') { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox") { %}
   {{ ctx.labelMarkup }}
 {% } %}
 
-{% if (ctx.label.hidden && ctx.label.className && ctx.component.validate.required) { %}
+{% if (ctx.label.hidden && ctx.label.className && ctx.component.validate.required && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox") { %}
   <label class="{{ctx.label.className}}"></label>
+{% } %}
+
+{% if (ctx.component.description && ctx.component.type !== "radiopanel") { %}
+<div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 
 {{ctx.element}}
 
-{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom') { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox") { %}
   {{ ctx.labelMarkup }}
-{% } %}
-{% if (ctx.component.description) { %}
-  <div class="form-text text-muted">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
