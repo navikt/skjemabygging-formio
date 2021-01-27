@@ -1,5 +1,3 @@
-import { alleVerdensLand } from "./data/AlleVerdensLand";
-
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
   textfield: [
