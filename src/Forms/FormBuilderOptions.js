@@ -465,6 +465,8 @@ const builderPalett = {
     title: "Standard felter",
     default: false,
     components: {
+      checkbox: null,
+      radio: null,
       textfield: {
         title: "Tekstfelt",
         key: "textfield",
