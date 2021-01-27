@@ -120,16 +120,13 @@ const poststedSchema = {
 
 const landSchema = {
   label: "Land",
-  type: "select",
+  type: "textfield",
   key: "land",
   input: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
     required: true,
-  },
-  data: {
-    values: alleVerdensLand.map((land) => ({ value: land.code, label: land.name })),
   },
 };
 
@@ -140,6 +137,7 @@ const epostSchema = {
   input: true,
   validateOn: "blur",
   clearOnHide: true,
+  spellcheck: false,
   validate: {
     required: true,
   },
@@ -161,16 +159,13 @@ const telefonSchema = {
 
 const statsborgerskapSchema = {
   label: "Statsborgerskap",
-  type: "select",
+  type: "textfield",
   key: "statsborgerskap",
   input: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
     required: true,
-  },
-  data: {
-    values: alleVerdensLand.map((land) => ({ value: land.code, label: land.name })),
   },
 };
 
@@ -529,32 +524,17 @@ const builderPalett = {
           clearOnHide: true,
         },
       },
-      checkbox: {
-        title: "Avkryssingsboks",
-        key: "checkbox",
-        icon: "check-square",
-        schema: {
-          label: "Avkryssingsboks",
-          type: "checkbox",
-          key: "checkbox",
-          input: true,
-          clearOnHide: true,
-          validate: {
-            required: true,
-          },
-        },
-      },
       navCheckbox: {
-        title: "Nav-Avkryssingsboks",
-        key: "NavAvkryssingsboks",
+        title: "Avkryssingsboks",
+        key: "Avkryssingsboks",
         icon: "check-square",
         group: "basic",
         documentation: "",
         weight: 0,
         schema: {
-          label: "NavAvkryssingsboks",
+          label: "Avkryssingsboks",
           type: "navCheckbox",
-          key: "navAvkryssingsboks",
+          key: "Avkryssingsboks",
           input: true,
           hideLabel: true,
           clearOnHide: true,
