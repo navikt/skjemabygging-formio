@@ -9,7 +9,7 @@ import { getPanels } from "../util/form";
 
 function formatValue(component, value) {
   switch (component.type) {
-    case "radio":
+    case "radiopanel":
       const valueObject = component.values.find((valueObject) => valueObject.value === value);
       if (!valueObject) {
         console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
@@ -26,6 +26,10 @@ function formatValue(component, value) {
       }
       const date = new Date(value);
       return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
+    }
+    case "navCheckbox": {
+      if (value === "on") return "Ja";
+      else return "Nei";
     }
     default:
       return value;
@@ -98,11 +102,7 @@ const FormSummary = ({ form, submission }) => {
             } else if (component.type === "fieldset") {
               return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
             }
-            if (component.type === "radio") {
-              return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
-            } else {
-              return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
-            }
+            return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
           })}
         </dl>
       </section>
