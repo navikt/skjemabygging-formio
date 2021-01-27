@@ -51,7 +51,7 @@ export function PrepareSubmitPage({ form, submission }) {
         </Normaltekst>
         <form
           id={form.path}
-          action={`${fyllutBaseURL}pdf-form`}
+          action={`${fyllutBaseURL}/pdf-form`}
           method="post"
           acceptCharset="utf-8"
           target="_blank"

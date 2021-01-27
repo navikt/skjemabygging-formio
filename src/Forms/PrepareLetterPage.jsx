@@ -26,9 +26,11 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
 };
 
 function lastNedFoersteside(form, submission, fyllutBaseURL) {
-  return fetch(`${fyllutBaseURL}foersteside`, {
+  //return fetch(`${fyllutBaseURL}/foersteside`, {
+  return fetch("/fyllut/foersteside", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    mode: "cors",
+    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
     body: JSON.stringify(genererFoerstesideData(form, submission.data)),
   })
     .then((response) => {
@@ -46,11 +48,11 @@ function lastNedFoersteside(form, submission, fyllutBaseURL) {
     .catch((e) => console.log("Failed to download foersteside", e));
 }
 
-const LastNedSoknadSection = ({ form, index, submission }) => {
+const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
-  const { fyllutBaseURL } = useContext(AppConfigContext);
+
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
       loggSkjemaFullfort("papirinnsending");
@@ -75,7 +77,14 @@ const LastNedSoknadSection = ({ form, index, submission }) => {
           Last ned førsteside
         </button>
       </div>
-      <form id={form.path} action="/fyllut/pdf-form-papir" method="post" acceptCharset="utf-8" target="_blank" hidden>
+      <form
+        id={form.path}
+        action={`${fyllutBaseURL}/pdf-form-papir`}
+        method="post"
+        acceptCharset="utf-8"
+        target="_blank"
+        hidden
+      >
         <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
         <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
       </form>
@@ -114,6 +123,8 @@ const HvaSkjerVidereSection = ({ index }) => (
 
 export function PrepareLetterPage({ form, submission }) {
   useEffect(() => scrollToAndSetFocus("main"), []);
+  let { fyllutBaseURL } = useContext(AppConfigContext);
+
   const {
     state: { previousPage },
   } = useLocation();
@@ -127,7 +138,9 @@ export function PrepareLetterPage({ form, submission }) {
   if (vedleggSomSkalSendes.length > 0) {
     sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
   }
-  sections.push(<LastNedSoknadSection key="last-ned-soknad" form={form} submission={submission} />);
+  sections.push(
+    <LastNedSoknadSection key="last-ned-soknad" form={form} submission={submission} fyllutBaseURL={fyllutBaseURL} />
+  );
   sections.push(<SendSoknadIPostenSection key="send-soknad-i-posten" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
   sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" />);
   return (
