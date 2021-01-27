@@ -154,7 +154,7 @@ export class Pdfgen {
 
   formatValue(component, value) {
     switch (component.type) {
-      case "radio":
+      case "radiopanel":
         const valueObject = component.values.find((valueObject) => valueObject.value === value);
         if (!valueObject) {
           throw new InvalidValue(`'${value}' is not in ${JSON.stringify(component.values)}`);
@@ -166,6 +166,10 @@ export class Pdfgen {
       case "navDatepicker": {
         const date = new Date(value);
         return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
+      }
+      case "navCheckbox": {
+        if (value === "on") return "Ja";
+        else return "Nei";
       }
       default:
         return value;
