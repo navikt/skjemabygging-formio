@@ -1,5 +1,6 @@
 import PdfPrinter from "pdfmake";
 import luxon from "luxon";
+
 const { DateTime } = luxon;
 
 const fonts = {
@@ -154,12 +155,13 @@ export class Pdfgen {
 
   formatValue(component, value) {
     switch (component.type) {
-      case "radiopanel":
+      case "radiopanel": {
         const valueObject = component.values.find((valueObject) => valueObject.value === value);
         if (!valueObject) {
           throw new InvalidValue(`'${value}' is not in ${JSON.stringify(component.values)}`);
         }
         return valueObject.label;
+      }
       case "signature": {
         return "rendering signature not supported";
       }
