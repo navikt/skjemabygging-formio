@@ -155,7 +155,8 @@ export class Pdfgen {
 
   formatValue(component, value) {
     switch (component.type) {
-      case "radiopanel": {
+      case "radiopanel":
+      case "radio": {
         const valueObject = component.values.find((valueObject) => valueObject.value === value);
         if (!valueObject) {
           throw new InvalidValue(`'${value}' is not in ${JSON.stringify(component.values)}`);
