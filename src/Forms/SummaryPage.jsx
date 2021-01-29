@@ -10,6 +10,7 @@ import { getPanels } from "../util/form";
 function formatValue(component, value) {
   switch (component.type) {
     case "radiopanel":
+    case "radio":
       const valueObject = component.values.find((valueObject) => valueObject.value === value);
       if (!valueObject) {
         console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
