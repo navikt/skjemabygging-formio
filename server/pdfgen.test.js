@@ -87,7 +87,7 @@ const createComplexFormDefinition = () => ({
             { label: "Nei", value: "nei", shortcut: "" },
           ],
           key: "harDuHattAndreInntekter",
-          type: "radio",
+          type: "radiopanel",
           input: true,
           id: "ekmagkp",
         },
@@ -287,7 +287,7 @@ describe("generating doc definition", () => {
           components: [
             {
               label: "Child",
-              type: "radio",
+              type: "radiopanel",
               key: "nestedRadioField",
               input: true,
               values: [
