@@ -26,11 +26,9 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
 };
 
 function lastNedFoersteside(form, submission, fyllutBaseURL) {
-  //return fetch(`${fyllutBaseURL}/foersteside`, {
-  return fetch("/fyllut/foersteside", {
+  return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
-    mode: "cors",
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(genererFoerstesideData(form, submission.data)),
   })
     .then((response) => {
