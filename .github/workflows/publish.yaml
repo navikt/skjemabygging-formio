@@ -2,10 +2,6 @@ name: Publish skjemabygger
 on:
   workflow_dispatch:
     inputs:
-#      skjemapubliseringBranch:
-#        description: "Bransjen på skjemapublisering som oppdateres"
-#        required: true
-#        default: "publish-testing"
       logLevel:
         description: 'Log level'
         required: true
