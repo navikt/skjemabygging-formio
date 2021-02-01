@@ -11,7 +11,7 @@ export default {
     maxLength: "{{field}} kan ikke være mer enn {{length}} tegn.",
     minLength: "{{field}} kan ikke være mindre enn {{length}} tegn.",
     pattern: "{{field}} stemmer ikke med {{pattern}}",
-    required: "Du må fylle ut dette feltet",
+    required: "Du må fylle ut: {{field}}",
 
     //Grensesnitt / navigering
     previous: "Forrige",
