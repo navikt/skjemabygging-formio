@@ -36,11 +36,7 @@ fetch("/fyllut/config", { headers: { accept: "application/json" } })
 function renderReact(dokumentInnsendingBaseURL) {
   ReactDOM.render(
     <React.StrictMode>
-      <AppConfigProvider
-        dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
-        featureToggles={featureToggles}
-        fyllutBaseURL={""}
-      >
+      <AppConfigProvider dokumentinnsendingBaseURL={dokumentInnsendingBaseURL} featureToggles={featureToggles}>
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />
         </BrowserRouter>
