@@ -39,7 +39,7 @@ function renderReact(dokumentInnsendingBaseURL) {
       <AppConfigProvider
         dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
         featureToggles={featureToggles}
-        fyllutBaseURL={""}
+        fyllutBaseURL={"/fyllut"}
       >
         <BrowserRouter basename="/fyllut">
           <App forms={forms} />
