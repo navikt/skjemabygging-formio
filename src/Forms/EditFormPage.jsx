@@ -6,7 +6,7 @@ import FormBuilderOptions from "./FormBuilderOptions";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 
-export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish }) {
+export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const title = `${form.title}`;
 
   const [publiserer, setPubliserer] = useState(false);
@@ -44,6 +44,7 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish })
         visSkjemaliste: true,
         visHamburger: true,
         visInnstillinger: true,
+        logout: onLogout,
       }}
     >
       <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions} />

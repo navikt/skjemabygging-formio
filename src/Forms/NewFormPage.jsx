@@ -34,7 +34,9 @@ class NewFormPage extends Component {
 
   render() {
     return (
-      <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true }}>
+      <AppLayoutWithContext
+        navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true, logout: this.props.onLogout }}
+      >
         <CreationFormMetadataEditor form={this.state.form} onChange={this.setForm} />
         <Hovedknapp onClick={() => this.props.onCreate(this.state.form)}>Opprett</Hovedknapp>
       </AppLayoutWithContext>
@@ -44,7 +46,7 @@ class NewFormPage extends Component {
 
 NewFormPage.propTypes = {
   onCreate: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 export default NewFormPage;

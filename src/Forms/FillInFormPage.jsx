@@ -7,7 +7,6 @@ import { useAmplitude } from "../context/amplitude";
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
-
   return (
     <main tabIndex={-1}>
       <Sidetittel>{form.title}</Sidetittel>

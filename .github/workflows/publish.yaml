@@ -2,10 +2,6 @@ name: Publish skjemabygger
 on:
   workflow_dispatch:
     inputs:
-      skjemapubliseringBranch:
-        description: "Bransjen på skjemapublisering som oppdateres"
-        required: true
-        default: "publish-testing"
       logLevel:
         description: 'Log level'
         required: true
@@ -17,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "skjemapubliseringsBranch: ${{ github.event.inputs.skjemapubliseringsBranch }}"
           echo "Log level: ${{ github.event.inputs.logLevel }}"
           echo "Tags: ${{ github.event.inputs.tags }}"
   findAuthor:
@@ -52,7 +47,7 @@ jobs:
         with:
           repository: navikt/skjemapublisering
           token: ${{ secrets.SKJEMAPUBLISERING_REPO_TOKEN }}
-          ref: ${{ github.event.inputs.skjemapubliseringsBranch }}
+          ref: master
           fetch-depth: 0
       - name: Vis original package.json
         run: cat package.json
