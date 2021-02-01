@@ -121,7 +121,7 @@ const HvaSkjerVidereSection = ({ index }) => (
 
 export function PrepareLetterPage({ form, submission }) {
   useEffect(() => scrollToAndSetFocus("main"), []);
-  let { fyllutBaseURL } = useContext(AppConfigContext);
+  const { fyllutBaseURL } = useContext(AppConfigContext);
 
   const {
     state: { previousPage },
