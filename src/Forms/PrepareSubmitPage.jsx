@@ -28,7 +28,7 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
 
 export function PrepareSubmitPage({ form, submission }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
-  const { dokumentinnsendingBaseURL } = useContext(AppConfigContext);
+  const { dokumentinnsendingBaseURL, fyllutBaseURL } = useContext(AppConfigContext);
   const [, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort } = useAmplitude();
 
@@ -49,7 +49,14 @@ export function PrepareSubmitPage({ form, submission }) {
         <Normaltekst className="margin-bottom-default">
           Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending av søknaden.
         </Normaltekst>
-        <form id={form.path} action="/fyllut/pdf-form" method="post" acceptCharset="utf-8" target="_blank" hidden>
+        <form
+          id={form.path}
+          action={`${fyllutBaseURL}/pdf-form`}
+          method="post"
+          acceptCharset="utf-8"
+          target="_blank"
+          hidden
+        >
           <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
           <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
         </form>
