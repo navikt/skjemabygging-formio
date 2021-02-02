@@ -7,7 +7,10 @@ export default function useSkjemaSporsmalEvent(form) {
   const loggSkjemaStartet = useSkjemaStartet(form);
   const loggSkjemaSporsmalBesvart = useSkjemaSporsmalBesvart(form);
   const loggSkjemaSporsmalBesvartForSpesialFelter = (event) => {
-    if (event.changed && ["radio", "checkbox", "navDatepicker", "day"].includes(event.changed.component.type)) {
+    if (
+      event.changed &&
+      ["radio", "checkbox", "navDatepicker", "day", "radiopanel", "navCheckbox"].includes(event.changed.component.type)
+    ) {
       setLastSporsmalEvent({
         component: event.changed.component,
         _data: event.data,
