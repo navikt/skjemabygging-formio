@@ -41,7 +41,7 @@ const RadioPanelGruppeWrapper = class extends Component {
     const radios = component.values.map(({ label, value }, index) => ({
       label,
       value,
-      id: `${component.key}${value}`,
+      id: `${component.id}-${component.key}-${value}`,
       required: component.validate.required || undefined,
       radioRef: index === 0 ? this.props.radioRef : undefined,
     }));
