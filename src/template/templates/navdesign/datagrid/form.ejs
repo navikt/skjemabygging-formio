@@ -16,7 +16,7 @@
       {% if (ctx.hasExtraColumn) { %}
         {% if (!ctx.builder && ctx.hasRemoveButtons && (index > 0 || ctx.component.initEmpty || ctx.rows.length > 1)) { %}
           <div>
-            <button type="button" class="knapp knapp--standard knapp--fjern" ref="{{ctx.datagridKey}}-removeRow">Fjern</button>
+            <button type="button" class="knapp knapp--standard knapp--fjern" ref="{{ctx.datagridKey}}-removeRow">{{ctx.t(ctx.component.removeAnother || 'Fjern')}}</button>
           </div>
         {% } %}
         {% if (ctx.canAddColumn) { %}
