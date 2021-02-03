@@ -27,9 +27,11 @@
       {% } %}
     </fieldset>
   {% }) %}
+  {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
   <div>
     <button class="knapp knapp--standard knapp--legg-til" ref="{{ctx.datagridKey}}-addRow">
       {{ctx.t(ctx.component.addAnother || 'Legg til')}}
     </button>
   </div>
+  {% } %}
 </div>
