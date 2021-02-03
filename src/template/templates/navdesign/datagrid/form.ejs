@@ -6,9 +6,6 @@
         <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
       {% } %}
       {% ctx.columns.forEach(function(col) { %}
-        {% if (!(col.type === "radiopanel" || col.type === "navCheckbox")) { %}
-          <label for="{{col.key}}" class="skjemaelement__label{{col.validate && col.validate.required ? ' field-required' : ''}}">{{ctx.t(col.label || col.title)}}</label>
-        {% } %}
         <div ref="{{ctx.datagridKey}}">
           {{row[col.key]}}
         </div>
@@ -28,10 +25,10 @@
     </fieldset>
   {% }) %}
   {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
-  <div>
-    <button class="knapp knapp--standard knapp--legg-til" ref="{{ctx.datagridKey}}-addRow">
-      {{ctx.t(ctx.component.addAnother || 'Legg til')}}
-    </button>
-  </div>
+    <div>
+      <button class="knapp knapp--standard knapp--legg-til" ref="{{ctx.datagridKey}}-addRow">
+        {{ctx.t(ctx.component.addAnother || 'Legg til')}}
+      </button>
+    </div>
   {% } %}
 </div>
