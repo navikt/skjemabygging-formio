@@ -1,77 +1,34 @@
-<table class="table datagrid-table table-bordered
-    {{ ctx.component.striped ? 'table-striped' : ''}}
-    {{ ctx.component.hover ? 'table-hover' : ''}}
-    {{ ctx.component.condensed ? 'table-sm' : ''}}
-    " {% if (ctx.component.layoutFixed) { %}style="table-layout: fixed;"{% } %}>
-  {% if (ctx.hasHeader) { %}
-  <thead>
-    <tr>
-      {% if (ctx.component.reorder) { %}<th></th>{% } %}
-      {% ctx.columns.forEach(function(col) { %}
-        <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
-          {{ col.hideLabel ? '' : ctx.t(col.label || col.title) }}
-          {% if (col.tooltip) { %} <i ref="tooltip" data-title="{{col.tooltip}}" class="{{ctx.iconClass('question-sign')}} text-muted"></i>{% } %}
-        </th>
-      {% }) %}
-      {% if (ctx.hasExtraColumn) { %}
-      <th>
-        {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
-        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow">
-          <i class="{{ctx.iconClass('plus')}}"></i>{{ctx.t(ctx.component.addAnother || 'Add Another')}}
-        </button>
-        {% } %}
-      </th>
-      {% } %}
-    </tr>
-  </thead>
-  {% } %}
-  <tbody ref="{{ctx.datagridKey}}-tbody">
-    {% ctx.rows.forEach(function(row, index) { %}
-    {% if (ctx.hasGroups && ctx.groups[index]) { %}
-    <tr ref="{{ctx.datagridKey}}-group-header" class="datagrid-group-header{{ctx.hasToggle ? ' clickable' : ''}}">
-      <td
-        ref="{{ctx.datagridKey}}-group-label"
-        colspan="{{ctx.numColumns}}"
-        class="datagrid-group-label">{{ctx.groups[index].label}}</td>
-    </tr>
-    {% } %}
-    <tr ref="{{ctx.datagridKey}}-row">
-      {% if (ctx.component.reorder) { %}
-        <td>
-          <button type="button" class="formio-drag-button btn btn-default fa fa-bars"></button>
-        </td>
+<div ref="{{ctx.datagridKey}}-tbody">
+  {% ctx.rows.forEach(function(row, index) { %}
+    <fieldset class="data-grid__row skjemagruppe" ref="{{ctx.datagridKey}}-row">
+      <legend class="skjemagruppe__legend">{{ctx.t(ctx.component.label)}}</legend>
+      {% if (ctx.component.description) { %}
+        <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
       {% } %}
       {% ctx.columns.forEach(function(col) { %}
-        <td ref="{{ctx.datagridKey}}">
+        <div ref="{{ctx.datagridKey}}">
           {{row[col.key]}}
-        </td>
+        </div>
       {% }) %}
       {% if (ctx.hasExtraColumn) { %}
-        {% if (!ctx.builder && ctx.hasRemoveButtons) { %}
-        <td>
-          <button type="button" class="btn btn-secondary formio-button-remove-row" ref="{{ctx.datagridKey}}-removeRow">
-            <i class="{{ctx.iconClass('remove-circle')}}"></i>
-          </button>
-        </td>
+        {% if (!ctx.builder && ctx.hasRemoveButtons && (index > 0 || ctx.component.initEmpty || ctx.rows.length > 1)) { %}
+          <div>
+            <button type="button" class="knapp knapp--standard knapp--fjern" ref="{{ctx.datagridKey}}-removeRow">{{ctx.t(ctx.component.removeAnother || 'Fjern')}}</button>
+          </div>
         {% } %}
         {% if (ctx.canAddColumn) { %}
-        <td ref="{{ctx.key}}-container">
-          {{ctx.placeholder}}
-        </td>
+          <div ref="{{ctx.key}}-container">
+            {{ctx.placeholder}}
+          </div>
         {% } %}
       {% } %}
-    </tr>
-    {% }) %}
-  </tbody>
+    </fieldset>
+  {% }) %}
   {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
-  <tfoot>
-    <tr>
-      <td colspan="{{ctx.numColumns + 1}}">
-        <button class="btn btn-primary formio-button-add-row" ref="{{ctx.datagridKey}}-addRow">
-          <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t(ctx.component.addAnother || 'Add Another')}}
-        </button>
-      </td>
-    </tr>
-  </tfoot>
+    <div>
+      <button class="knapp knapp--standard knapp--legg-til" ref="{{ctx.datagridKey}}-addRow">
+        {{ctx.t(ctx.component.addAnother || 'Legg til')}}
+      </button>
+    </div>
   {% } %}
-</table>
+</div>
