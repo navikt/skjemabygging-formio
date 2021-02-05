@@ -618,16 +618,16 @@ const builderPalett = {
           },
           values: [
             {
-              value: "jegLeggerDetVedDenneSøknaden",
+              value: "leggerVedNaa",
               label: "Jeg legger det ved denne søknaden (anbefalt)",
             },
             {
-              value: "jegEttersenderDokumentasjonenSenere",
+              value: "ettersender",
               label:
                 "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
             },
             {
-              value: "jegHarLevertDenneDokumentasjonenTidligere",
+              value: "levertTidligere",
               label: "Jeg har levert denne dokumentasjonen tidligere",
             },
           ],
