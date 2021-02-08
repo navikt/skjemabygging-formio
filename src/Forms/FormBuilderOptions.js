@@ -511,6 +511,25 @@ const builderPalett = {
           },
         },
       },
+      prosent: {
+        title: "Prosent",
+        key: "prosent",
+        icon: "percent",
+        schema: {
+          label: "Prosent",
+          type: "number",
+          key: "prosent",
+          input: true,
+          spellcheck: false,
+          clearOnHide: true,
+          suffix: "%",
+          validate: {
+            required: true,
+            min: 0,
+            max: 100,
+          },
+        },
+      },
       password: {
         title: "Passord",
         key: "password",
