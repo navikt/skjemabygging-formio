@@ -51,7 +51,6 @@ export default class NavDatepicker extends FormioReactComponent {
     return {
       title,
       icon,
-      group: "datoOgTid",
       key,
       documentation: "",
       weight: 0,
