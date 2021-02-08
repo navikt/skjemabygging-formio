@@ -393,6 +393,7 @@ const builderPalett = {
   datoOgTid: {
     title: "Dato og tid",
     components: {
+      datetime: null,
       datoVelger: {
         title: "Datovelger",
         group: "datoOgTid",
@@ -424,36 +425,35 @@ const builderPalett = {
           },
         },
       },
-      datetime: {
-        title: "Dato / tid",
-        key: "datoTid",
+      day: {
+        title: "Mnd / år",
+        key: "manedAr",
         icon: "calendar",
-        weight: 30,
+        weight: 40,
         schema: {
-          label: "Dato / tid",
-          type: "datetime",
-          key: "datoTid",
+          label: "Mnd / år",
+          type: "day",
+          key: "manedAr",
           input: true,
-          spellcheck: false,
           clearOnHide: true,
           validate: {
             required: true,
           },
-        },
-      },
-      day: {
-        title: "Dag / mnd / år",
-        key: "dagMndAr",
-        icon: "calendar",
-        weight: 40,
-        schema: {
-          label: "Dag / mnd / år",
-          type: "day",
-          key: "dagMndAr",
-          input: true,
-          clearOnHide: true,
-          validate: {
-            required: true,
+          fields: {
+            day: {
+              required: false,
+              hide: true,
+            },
+            month: {
+              type: "select",
+              placeholder: "Måned",
+              required: true,
+            },
+            year: {
+              type: "number",
+              placeholder: "År",
+              required: true,
+            },
           },
         },
       },
@@ -508,6 +508,25 @@ const builderPalett = {
           clearOnHide: true,
           validate: {
             required: true,
+          },
+        },
+      },
+      prosent: {
+        title: "Prosent",
+        key: "prosent",
+        icon: "percent",
+        schema: {
+          label: "Prosent",
+          type: "number",
+          key: "prosent",
+          input: true,
+          spellcheck: false,
+          clearOnHide: true,
+          suffix: "%",
+          validate: {
+            required: true,
+            min: 0,
+            max: 100,
           },
         },
       },
