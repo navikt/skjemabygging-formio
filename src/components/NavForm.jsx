@@ -225,6 +225,16 @@ export default styled(withAmplitudeHooks(NavForm))({
   "& .checkboks[required] + .skjemaelement__label::after": {
     content: '""',
   },
+  "& .skjemaelement__rad": {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(8rem, 1fr))",
+    gap: "1rem",
+  },
+  "& .input-group": {
+    "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
+      flex: "initial",
+    },
+  },
   "& .data-grid__row": {
     border: "2px solid white",
     borderRadius: "7px",

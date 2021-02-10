@@ -56,6 +56,16 @@ const BuilderMountElement = styled("div")({
       position: "initial",
     },
   },
+  "& .skjemaelement__rad": {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(8rem, 1fr))",
+    gap: "1rem",
+  },
+  "& .input-group": {
+    "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
+      flex: "initial",
+    },
+  },
 });
 
 class NavFormBuilder extends Component {
