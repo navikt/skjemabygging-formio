@@ -28,6 +28,7 @@ import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { styled } from "@material-ui/styles";
+import navFormStyle from "./navFormStyle";
 
 const BuilderMountElement = styled("div")({
   "& .formbuilder": {
@@ -54,16 +55,6 @@ const BuilderMountElement = styled("div")({
     height: "100%",
     "& .builder-sidebar_scroll": {
       position: "initial",
-    },
-  },
-  "& .skjemaelement__rad": {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(8rem, 1fr))",
-    gap: "1rem",
-  },
-  "& .input-group": {
-    "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
-      flex: "initial",
     },
   },
 });
@@ -142,14 +133,4 @@ class NavFormBuilder extends Component {
 }
 
 export { NavFormBuilder as UnstyledNavFormBuilder };
-export default styled(NavFormBuilder)({
-  "& .skjemaelement__label.field-required::after": {
-    content: '""',
-  },
-  "& .skjemaelement__label:not(.field-required)::after": {
-    content: '"(valgfritt)"',
-  },
-  "& .checkboks[required] + .skjemaelement__label::after": {
-    content: '""',
-  },
-});
+export default styled(NavFormBuilder)(navFormStyle);
