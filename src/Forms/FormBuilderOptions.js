@@ -493,7 +493,7 @@ const builderPalett = {
           key: "tekstfelt",
           input: true,
           clearOnHide: true,
-          fieldSize: "input--m",
+          fieldSize: "input--xxl",
           validate: {
             required: true,
           },
