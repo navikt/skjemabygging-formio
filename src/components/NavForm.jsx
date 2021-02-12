@@ -31,6 +31,7 @@ import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
+import navFormStyle from "./navFormStyle";
 
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
@@ -215,30 +216,4 @@ const withAmplitudeHooks = (Component) => {
   };
 };
 
-export default styled(withAmplitudeHooks(NavForm))({
-  "& .skjemaelement__label.field-required::after": {
-    content: '""',
-  },
-  "& .skjemaelement__label:not(.field-required)::after": {
-    content: '" (valgfritt)"',
-  },
-  "& .checkboks[required] + .skjemaelement__label::after": {
-    content: '""',
-  },
-  "& .data-grid__row": {
-    border: "2px solid white",
-    borderRadius: "7px",
-    marginBottom: "1rem",
-    padding: "1.5rem 2rem 0",
-
-    "& .knapp--fjern": {
-      marginBottom: "1.5rem",
-    },
-  },
-  "& .formio-error-wrapper, & .formio-warning-wrapper": {
-    padding: "0",
-  },
-  "& .data-grid__row > .skjemagruppe__legend": {
-    float: "left",
-  },
-});
+export default styled(withAmplitudeHooks(NavForm))(navFormStyle);

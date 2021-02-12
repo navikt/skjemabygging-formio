@@ -46,6 +46,7 @@ export default class Fodselsnummer extends TextFieldComponent {
       {
         type: "fnrfield",
         label: "Fødselsnummer / D-nummer",
+        fieldSize: "input--s",
         spellcheck: false,
         validateOn: "blur",
         validate: {

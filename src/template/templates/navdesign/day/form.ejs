@@ -1,35 +1,35 @@
-<div class="row">
+<div class="skjemaelement__rad">
   {% if (ctx.dayFirst && ctx.showDay) { %}
-  <div class="col col-xs-3">
+  <div>
     {% if (!ctx.component.hideInputLabels) { %}
     <label for="{{ctx.component.key}}-day" class="skjemaelement__label{% if(ctx.component.fields.day.required) { %} field-required{% } %}">{{ctx.t('Dag')}}</label>
     {% } %}
-    <div>{{ctx.day}}</div>
+    <div class="{% if (ctx.component.fields.day.fieldSize) { %} {{ctx.component.fields.day.fieldSize}}{% } %}">{{ctx.day}}</div>
   </div>
   {% } %}
   {% if (ctx.showMonth) { %}
-  <div class="col col-xs-4">
+  <div>
     {% if (!ctx.component.hideInputLabels) { %}
     <label for="{{ctx.component.key}}-month" class="skjemaelement__label{% if(ctx.component.fields.month.required) { %} field-required{% } %}">{{ctx.t('Måned')}}</label>
     {% } %}
-    <div>{{ctx.month}}</div>
+    <div class="{% if (ctx.component.fields.month.fieldSize) { %} {{ctx.component.fields.month.fieldSize}}{% } %}">{{ctx.month}}</div>
   </div>
   {% } %}
   {% if (!ctx.dayFirst && ctx.showDay) { %}
-  <div class="col col-xs-3">
+  <div>
     {% if (!ctx.component.hideInputLabels) { %}
     <label for="{{ctx.component.key}}-day" class="skjemaelement__label{% if(ctx.component.fields.day.required) { %} field-required{% } %}">{{ctx.t('Dag')}}</label>
     {% } %}
-    <div>{{ctx.day}}</div>
+    <div class="{% if (ctx.component.fields.day.fieldSize) { %} {{ctx.component.fields.day.fieldSize}}{% } %}">{{ctx.day}}</div>
   </div>
   {% } %}
   {% if (ctx.showYear) { %}
-  <div class="col col-xs-5">
+  <div>
     {% if (!ctx.component.hideInputLabels) { %}
     <label for="{{ctx.component.key}}-year" class="skjemaelement__label{% if(ctx.component.fields.year.required) { %} field-required{% } %}">{{ctx.t('År')}}</label>
     {% } %}
-    <div>{{ctx.year}}</div>
+    <div class="{% if (ctx.component.fields.year.fieldSize) { %} {{ctx.component.fields.year.fieldSize}}{% } %}">{{ctx.year}}</div>
   </div>
   {% } %}
 </div>
-<input name="ctx.data[day]" type="hidden" class="form-control" lang="en" value="" ref="input">
+<input name="ctx.data[day]" type="hidden" class="form-control{% if (ctx.component.fieldSize) { %} {{ctx.component.fieldSize}}{% } %}" value="" ref="input">
