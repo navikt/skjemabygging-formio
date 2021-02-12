@@ -1,20 +1,10 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Checkbox } from "nav-frontend-skjema";
-import checkboxDataEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.data";
-import dataEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.data";
-import checkboxDisplayEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.display";
-import displayEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import checkboxValidationEditForm from "formiojs/components/checkbox/editForm/Checkbox.edit.validation";
-import validationEditFormComponent from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
-import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
-import layoutEditForm from "formiojs/components/_classes/component/editForm/Component.edit.layout";
-import logicEditForm from "formiojs/components/_classes/component/editForm/Component.edit.logic";
+import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
 
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
-import { joinDefaultAndCustomEditForm } from "../util/customComponentUtils";
 
 /**
  * The wrapper for our custom React component
@@ -70,63 +60,18 @@ export default class CheckboxComponent extends FormioReactComponent {
    * @param sources
    * @returns {*}
    */
-  static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.navCheckbox.schema);
+  static schema(...extend) {
+    return FormioReactComponent.schema({
+      ...FormBuilderOptions.builder.basic.components.navCheckbox.schema,
+      ...extend,
+    });
   }
 
   /**
    * Defines the settingsForm when editing a component in the builder.
    */
-  static editForm() {
-    return {
-      type: "hidden",
-      key: "type",
-      components: [
-        {
-          type: "tabs",
-          key: "tabs",
-          components: [
-            {
-              label: "Display",
-              key: "display",
-              components: joinDefaultAndCustomEditForm(displayEditFormComponent, checkboxDisplayEditForm),
-            },
-            {
-              label: "Data",
-              key: "data",
-              components: joinDefaultAndCustomEditForm(dataEditFormComponent, checkboxDataEditForm).filter(
-                (component) => component.key !== "defaultValue"
-              ),
-            },
-            {
-              label: "Validation",
-              key: "validation",
-              components: joinDefaultAndCustomEditForm(validationEditFormComponent, checkboxValidationEditForm),
-            },
-            {
-              label: "API",
-              key: "api",
-              components: apiEditForm,
-            },
-            {
-              label: "Conditional",
-              key: "conditional",
-              components: conditionalEditForm,
-            },
-            {
-              label: "Logic",
-              key: "logic",
-              components: logicEditForm,
-            },
-            {
-              label: "Layout",
-              key: "layout",
-              components: layoutEditForm,
-            },
-          ],
-        },
-      ],
-    };
+  static editForm(...extend) {
+    return CheckboxEditForm([...extend]);
   }
 
   focus() {

@@ -1,20 +1,10 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { RadioPanelGruppe } from "nav-frontend-skjema";
-import dataEditForm from "formiojs/components/_classes/component/editForm/Component.edit.data";
-import radioDataEditForm from "formiojs/components/radio/editForm/Radio.edit.data";
-import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import radioDisplayEditForm from "formiojs/components/radio/editForm/Radio.edit.display";
-import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import radioValidationEditForm from "formiojs/components/radio/editForm/Radio.edit.validation";
-import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
-import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
-import layoutEditForm from "formiojs/components/_classes/component/editForm/Component.edit.layout";
-import logicEditForm from "formiojs/components/_classes/component/editForm/Component.edit.logic";
 
+import radioEditForm from "formiojs/components/radio/Radio.form";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
-import { joinDefaultAndCustomEditForm } from "../util/customComponentUtils";
 
 /**
  * The wrapper for our custom React component
@@ -65,19 +55,10 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
    *
-   * @returns {{title: string, icon: string, group: string, documentation: string, weight: number, schema: *}}
+   * @returns {{title: string, icon: string, documentation: string, weight: number, schema: *}}
    */
   static get builderInfo() {
-    const { title, key, icon } = FormBuilderOptions.builder.basic.components.radiopanel;
-    return {
-      title,
-      icon,
-      group: "basic",
-      key,
-      documentation: "",
-      schema: RadioPanelGruppeComponent.schema(),
-      weight: 0,
-    };
+    return FormBuilderOptions.builder.basic.components.radiopanel;
   }
 
   /**
@@ -87,65 +68,18 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    * @param sources
    * @returns {*}
    */
-  static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.basic.components.radiopanel.schema);
+  static schema(...extend) {
+    return FormioReactComponent.schema({
+      ...FormBuilderOptions.builder.basic.components.radiopanel.schema,
+      ...extend,
+    });
   }
 
   /**
    * Defines the settingsForm when editing a component in the builder.
    */
-  static editForm() {
-    return {
-      type: "hidden",
-      key: "type",
-      components: [
-        {
-          type: "tabs",
-          key: "tabs",
-          components: [
-            {
-              label: "Display",
-              key: "display",
-              components: joinDefaultAndCustomEditForm(displayEditForm, radioDisplayEditForm).filter(
-                (component) => component.key !== "hideLabel"
-              ),
-            },
-            {
-              label: "Data",
-              key: "data",
-              components: joinDefaultAndCustomEditForm(dataEditForm, radioDataEditForm).filter(
-                (component) => component.key !== "defaultValue"
-              ),
-            },
-            {
-              label: "Validation",
-              key: "validation",
-              components: joinDefaultAndCustomEditForm(validationEditForm, radioValidationEditForm),
-            },
-            {
-              label: "API",
-              key: "api",
-              components: apiEditForm,
-            },
-            {
-              label: "Conditional",
-              key: "conditional",
-              components: conditionalEditForm,
-            },
-            {
-              label: "Logic",
-              key: "logic",
-              components: logicEditForm,
-            },
-            {
-              label: "Layout",
-              key: "layout",
-              components: layoutEditForm,
-            },
-          ],
-        },
-      ],
-    };
+  static editForm(...extend) {
+    return radioEditForm(...extend);
   }
 
   focus() {

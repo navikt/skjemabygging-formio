@@ -28,6 +28,20 @@ const builderEditForm = {
   ],
 };
 
+export const fodselsNummerDNummerSchema = {
+  label: "Fødselsnummer / D-nummer",
+  type: "fnrfield",
+  key: `fodselsnummerDNummer`,
+  fieldSize: "input--s",
+  input: true,
+  spellcheck: false,
+  validateOn: "blur",
+  validate: {
+    custom: "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
+    required: true,
+  },
+};
+
 const firstNameSchema = {
   label: "Fornavn",
   type: "textfield",
@@ -246,6 +260,13 @@ const builderPalett = {
         icon: "user",
         weight: 0,
         schema: personaliaSchema,
+      },
+      fnrfield: {
+        title: "Fødselsnummer",
+        group: "person",
+        icon: "user",
+        weight: 10,
+        schema: fodselsNummerDNummerSchema,
       },
       firstName: {
         title: "Fornavn",

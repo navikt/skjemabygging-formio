@@ -1,7 +1,6 @@
-import components from "formiojs/components/builder";
-
-const TextFieldComponent = components.textfield;
-const baseEditForm = components.component.editForm;
+import TextFieldComponent from "formiojs/components/textfield/TextField";
+import baseEditForm from "formiojs/components/_classes/component/Component.form";
+import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 
 const k1 = [3, 7, 6, 1, 8, 9, 4, 5, 2];
 const k2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
@@ -42,22 +41,10 @@ export const erGyldigFodselsnummer = (fodselsnummer) =>
 
 export default class Fodselsnummer extends TextFieldComponent {
   static schema(...extend) {
-    return TextFieldComponent.schema(
-      {
-        type: "fnrfield",
-        label: "Fødselsnummer / D-nummer",
-        fieldSize: "input--s",
-        spellcheck: false,
-        validateOn: "blur",
-        validate: {
-          custom:
-            "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
-          required: true,
-        },
-        input: true,
-      },
-      ...extend
-    );
+    return TextFieldComponent.schema({
+      ...FormBuilderOptions.builder.person.components.fnrfield.schema,
+      ...extend,
+    });
   }
 
   validateFnr(fnrTekstWithMiddleSpace) {
@@ -74,13 +61,7 @@ export default class Fodselsnummer extends TextFieldComponent {
   }
 
   static get builderInfo() {
-    return {
-      title: "Fødselsnummer",
-      group: "person",
-      icon: "user",
-      weight: 10,
-      schema: Fodselsnummer.schema(),
-    };
+    return FormBuilderOptions.builder.person.components.fnrfield;
   }
 
   static editForm(...extend) {
@@ -105,18 +86,6 @@ export default class Fodselsnummer extends TextFieldComponent {
           key: "validation",
           ignore: true,
           components: false,
-        },
-        {
-          key: "api",
-          components: [],
-        },
-        {
-          key: "conditional",
-          components: [],
-        },
-        {
-          key: "logic",
-          components: [],
         },
       ],
       ...extend
