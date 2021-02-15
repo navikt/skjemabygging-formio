@@ -1,3 +1,19 @@
+import {
+  fodselsNummerDNummerSchema,
+  firstNameSchema,
+  surnameSchema,
+  borDuINorgeSchema,
+  gateadresseSchema,
+  postnrSchema,
+  poststedSchema,
+  landSchema,
+  epostSchema,
+  telefonSchema,
+  utenlandskPostkodeSchema,
+} from "./FormBuilderOptions";
+
+const sokerPostfix = "Soker";
+
 export const defaultFormFields = () => [
   {
     type: "panel",
@@ -20,144 +36,38 @@ export const defaultFormFields = () => [
     title: "Personinformasjon",
     theme: "default",
     components: [
+      fodselsNummerDNummerSchema(sokerPostfix),
+      firstNameSchema(sokerPostfix),
+      surnameSchema(sokerPostfix),
+      borDuINorgeSchema(sokerPostfix),
+      gateadresseSchema(sokerPostfix),
       {
-        Label: "Fødselsnummer / D-nummer",
-        type: "fnrfield",
-        key: "fodselsnummerDNummerSoker",
-        input: true,
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Fornavn",
-        type: "textfield",
-        key: "fornavnSoker",
-        input: true,
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Etternavn",
-        type: "textfield",
-        key: "etternavnSoker",
-        input: true,
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Bor du i Norge?",
-        type: "radiopanel",
-        key: "borDuINorgeSoker",
-        input: true,
-        validateOn: "blur",
-        values: [
-          {
-            value: "ja",
-            label: "Ja",
-          },
-          {
-            value: "nei",
-            label: "Nei",
-          },
-        ],
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Gateadresse",
-        type: "textfield",
-        key: "gateadresseSoker",
-        input: true,
-        validateOn: "blur",
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Postnummer",
-        type: "textfield",
-        key: "postnrSoker",
-        input: true,
-        spellcheck: false,
-        validateOn: "blur",
-        validate: {
-          required: true,
-          maxLength: 4,
-          minLength: 4,
-        },
+        ...postnrSchema(sokerPostfix),
         conditional: {
           show: false,
-          when: "borDuINorgeSoker",
+          when: borDuINorgeSchema(sokerPostfix).key,
           eq: "nei",
         },
       },
       {
-        label: "Utenlandsk postkode",
-        type: "textfield",
-        key: "utenlandskPostkodeSoker",
-        input: true,
-        validateOn: "blur",
-        clearOnHide: true,
-        validate: {
-          required: false,
-        },
+        ...utenlandskPostkodeSchema(sokerPostfix),
         conditional: {
           show: true,
-          when: "borDuINorgeSoker",
+          when: borDuINorgeSchema(sokerPostfix).key,
           eq: "nei",
         },
       },
+      poststedSchema(sokerPostfix),
       {
-        label: "Poststed",
-        type: "textfield",
-        key: "poststedSoker",
-        input: true,
-        validateOn: "blur",
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Land",
-        type: "textfield",
-        key: "landSoker",
-        input: true,
-        validateOn: "blur",
-        clearOnHide: true,
-        validate: {
-          required: true,
-        },
+        ...landSchema(sokerPostfix),
         conditional: {
           show: true,
-          when: "borDuINorgeSoker",
+          when: borDuINorgeSchema(sokerPostfix).key,
           eq: "nei",
         },
       },
-      {
-        label: "E-post",
-        type: "email",
-        key: "emailSoker",
-        input: true,
-        validate: {
-          required: true,
-        },
-      },
-      {
-        label: "Telefonnummer",
-        type: "phoneNumber",
-        key: "phoneNumberSoker",
-        input: true,
-        inputMask: false,
-        spellcheck: false,
-        validateOn: "blur",
-        validate: {
-          required: true,
-        },
-      },
+      epostSchema(sokerPostfix),
+      telefonSchema(sokerPostfix),
     ],
   },
 ];

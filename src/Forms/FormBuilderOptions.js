@@ -28,31 +28,45 @@ const builderEditForm = {
   ],
 };
 
-const firstNameSchema = {
+export const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
+  label: "Fødselsnummer / D-nummer",
+  type: "fnrfield",
+  key: `fodselsnummerDNummer${keyPostfix}`,
+  fieldSize: "input--s",
+  input: true,
+  spellcheck: false,
+  validateOn: "blur",
+  validate: {
+    custom: "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
+    required: true,
+  },
+});
+
+export const firstNameSchema = (keyPostfix = "") => ({
   label: "Fornavn",
   type: "textfield",
-  key: "fornavn",
+  key: `fornavn${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   clearOnHide: true,
   validate: {
     required: true,
   },
-};
+});
 
-const surnameSchema = {
+export const surnameSchema = (keyPostfix = "") => ({
   label: "Etternavn",
   type: "textfield",
-  key: "etternavn",
+  key: `etternavn${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   clearOnHide: true,
   validate: {
     required: true,
   },
-};
+});
 
-const personaliaSchema = {
+export const personaliaSchema = (keyPostfix = "") => ({
   label: "Personalia", // not used
   hideLabel: true,
   type: "container",
@@ -60,19 +74,16 @@ const personaliaSchema = {
   input: true, // er denne viktig??
   components: [
     // denne er kjempeviktig
-    {
-      key: "fodselsnummerDNummer", // er denne viktig?
-      type: "fnrfield",
-    },
-    firstNameSchema,
-    surnameSchema,
+    fodselsNummerDNummerSchema(keyPostfix),
+    firstNameSchema(keyPostfix),
+    surnameSchema(keyPostfix),
   ],
-};
+});
 
-const gateadresseSchema = {
+export const gateadresseSchema = (keyPostfix = "") => ({
   label: "Gateadresse",
   type: "textfield",
-  key: "gateadresse",
+  key: `gateadresse${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   validateOn: "blur",
@@ -80,12 +91,12 @@ const gateadresseSchema = {
   validate: {
     required: true,
   },
-};
+});
 
-const postnrSchema = {
+export const postnrSchema = (keyPostfix = "") => ({
   label: "Postnummer",
   type: "textfield",
-  key: "postnr",
+  key: `postnr${keyPostfix}`,
   fieldSize: "input--xs",
   input: true,
   spellcheck: false,
@@ -96,23 +107,26 @@ const postnrSchema = {
     maxLength: 4,
     minLength: 4,
   },
-};
+});
 
-const utenlandskPostkodeSchema = {
+export const utenlandskPostkodeSchema = (keyPostfix = "") => ({
   label: "Utenlandsk postkode",
   type: "textfield",
-  key: "utenlandskPostkode",
+  key: `utenlandskPostkode${keyPostfix}`,
   fieldSize: "input--m",
   input: true,
   spellcheck: false,
   validateOn: "blur",
   clearOnHide: true,
-};
+  validate: {
+    required: false,
+  },
+});
 
-const poststedSchema = {
+export const poststedSchema = (keyPostfix = "") => ({
   label: "Poststed",
   type: "textfield",
-  key: "poststed",
+  key: `poststed${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   clearOnHide: true,
@@ -120,12 +134,12 @@ const poststedSchema = {
   validate: {
     required: true,
   },
-};
+});
 
-const landSchema = {
+export const landSchema = (keyPostfix = "") => ({
   label: "Land",
   type: "textfield",
-  key: "land",
+  key: `land${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   validateOn: "blur",
@@ -133,12 +147,12 @@ const landSchema = {
   validate: {
     required: true,
   },
-};
+});
 
-const epostSchema = {
+export const epostSchema = (keyPostfix = "") => ({
   label: "E-post",
   type: "email",
-  key: "epost",
+  key: `epost${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   validateOn: "blur",
@@ -147,12 +161,12 @@ const epostSchema = {
   validate: {
     required: true,
   },
-};
+});
 
-const telefonSchema = {
+export const telefonSchema = (keyPostfix = "") => ({
   label: "Telefonnummer",
   type: "phoneNumber",
-  key: "telefonnumer",
+  key: `telefonnummer${keyPostfix}`,
   fieldSize: "input--s",
   input: true,
   inputMask: false,
@@ -162,12 +176,12 @@ const telefonSchema = {
   validate: {
     required: true,
   },
-};
+});
 
-const statsborgerskapSchema = {
+export const statsborgerskapSchema = (keyPostfix = "") => ({
   label: "Statsborgerskap",
   type: "textfield",
-  key: "statsborgerskap",
+  key: `statsborgerskap${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
   validateOn: "blur",
@@ -175,64 +189,66 @@ const statsborgerskapSchema = {
   validate: {
     required: true,
   },
-};
+});
 
-const kontaktInfoSchema = {
+export const borDuINorgeSchema = (keyPostfix = "") => ({
+  label: "Bor du i Norge?",
+  type: "radiopanel",
+  key: `borDuINorge${keyPostfix}`,
+  input: true,
+  validate: {
+    required: true,
+  },
+  values: [
+    {
+      value: "ja",
+      label: "Ja",
+    },
+    {
+      value: "nei",
+      label: "Nei",
+    },
+  ],
+});
+
+export const kontaktInfoSchema = (keyPostfix = "") => ({
   label: "Kontaktinfo",
   hideLabel: true,
   type: "container",
-  key: "kontaktinfo",
+  key: `kontaktinfo${keyPostfix}`,
   input: true,
   components: [
+    borDuINorgeSchema(keyPostfix),
+    gateadresseSchema(keyPostfix),
     {
-      label: "Bor du i Norge?",
-      type: "radiopanel",
-      key: "borDuINorge",
-      input: true,
-      validate: {
-        required: true,
-      },
-      values: [
-        {
-          value: "ja",
-          label: "Ja",
-        },
-        {
-          value: "nei",
-          label: "Nei",
-        },
-      ],
-    },
-    gateadresseSchema,
-    {
-      ...postnrSchema,
+      ...postnrSchema(keyPostfix),
       conditional: {
         show: false,
-        when: "borDuINorge",
+        when: borDuINorgeSchema(keyPostfix).key,
         eq: "nei",
       },
     },
     {
-      ...utenlandskPostkodeSchema,
+      ...utenlandskPostkodeSchema(keyPostfix),
       conditional: {
         show: true,
-        when: "borDuINorge",
+        when: borDuINorgeSchema(keyPostfix).key,
         eq: "nei",
       },
     },
-    poststedSchema,
+    poststedSchema(keyPostfix),
     {
-      ...landSchema,
+      ...landSchema(keyPostfix),
       conditional: {
         show: true,
-        when: "borDuINorge",
+        when: borDuINorgeSchema(keyPostfix).key,
         eq: "nei",
       },
     },
-    epostSchema,
-    telefonSchema,
+    epostSchema(keyPostfix),
+    telefonSchema(keyPostfix),
   ],
-};
+});
 
 const builderPalett = {
   advanced: null,
@@ -245,77 +261,84 @@ const builderPalett = {
         key: "personalia",
         icon: "user",
         weight: 0,
-        schema: personaliaSchema,
+        schema: personaliaSchema(),
+      },
+      fnrfield: {
+        title: "Fødselsnummer",
+        group: "person",
+        icon: "user",
+        weight: 10,
+        schema: fodselsNummerDNummerSchema(),
       },
       firstName: {
         title: "Fornavn",
         key: "fornavn",
         icon: "user",
         weight: 20,
-        schema: firstNameSchema,
+        schema: firstNameSchema(),
       },
       surname: {
         title: "Etternavn",
         key: "etternavn",
         icon: "user",
         weight: 30,
-        schema: surnameSchema,
+        schema: surnameSchema(),
       },
       kontaktinfo: {
         title: "Kontaktinfo",
         key: "kontaktinfo",
         icon: "home",
         weight: 40,
-        schema: kontaktInfoSchema,
+        schema: kontaktInfoSchema(),
       },
       streetAddress: {
         title: "Gatedresse",
         key: "gateadresse",
         icon: "home",
         weight: 50,
-        schema: gateadresseSchema,
+        schema: gateadresseSchema(),
       },
       postcode: {
         title: "Postnummer",
         key: "postnr",
         icon: "home",
         weight: 60,
-        schema: postnrSchema,
+        schema: postnrSchema(),
       },
       city: {
         title: "Poststed",
         key: "poststed",
         icon: "home",
         weight: 70,
-        schema: poststedSchema,
+        schema: poststedSchema(),
       },
       land: {
         title: "Land",
         key: "land",
         icon: "home",
         weight: 70,
-        schema: landSchema,
+        schema: landSchema(),
       },
       email: {
         title: "E-post",
         key: "epost",
         icon: "at",
         weight: 80,
-        schema: epostSchema,
+        schema: epostSchema(),
       },
       phoneNumber: {
         title: "Telefon",
         key: "telefonnummer",
         icon: "phone-square",
         weight: 90,
-        schema: telefonSchema,
+        schema: telefonSchema(),
       },
       citizenship: {
         title: "Statsborgerskap",
         key: "statsborgerskap",
         icon: "user",
         weight: 100,
-        schema: statsborgerskapSchema,
+        schema: statsborgerskapSchema(),
       },
     },
   },
@@ -620,6 +643,8 @@ const builderPalett = {
         title: "Radiopanel",
         key: "radiopanel",
         icon: "dot-circle-o",
+        documentation: "",
+        weight: 0,
         schema: {
           label: "Radiopanel",
           type: "radiopanel",

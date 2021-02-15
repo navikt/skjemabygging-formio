@@ -2,7 +2,7 @@ import DataGrid from "formiojs/components/datagrid/DataGrid";
 import DataGridEditForm from "formiojs/components/datagrid/DataGrid.form";
 import DataGridDisplayEditForm from "formiojs/components/datagrid/editForm/DataGrid.edit.display";
 
-DataGrid.editForm = () => {
+DataGrid.editForm = (...extend) => {
   return DataGridEditForm([
     {
       label: "Display",
@@ -20,6 +20,7 @@ DataGrid.editForm = () => {
         },
       ],
     },
+    ...extend,
   ]);
 };
 

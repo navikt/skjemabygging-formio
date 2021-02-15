@@ -100,7 +100,7 @@ const FormSummary = ({ form, submission }) => {
                   value={(submission[component.key] || {})[subComponent.key]}
                 />
               ));
-            } else if (component.type === "fieldset") {
+            } else if (component.type === "fieldset" || component.type === "datagrid") {
               return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
             }
             return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
