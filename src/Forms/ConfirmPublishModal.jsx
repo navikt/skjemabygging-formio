@@ -9,7 +9,7 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
   const onPublishClick = async (form) => {
     setPubliserer(true);
     try {
-      //await onPublish(form);
+      await onPublish(form);
     } finally {
       setPubliserer(false);
     }
