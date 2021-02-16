@@ -46,7 +46,7 @@
     "react-dom": "^17.0.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.4",
-    "skjemapublisering": "navikt/skjemapublisering.git#ecea595208941f3eefa8f6d4c173c6fac2f9122b"
+    "skjemapublisering": "navikt/skjemapublisering.git#48fee1f942f01863b0916fb07451a6d0cffee52a"
   },
   "devDependencies": {
     "husky": "^3.1.0",
