@@ -1,10 +1,20 @@
 import Modal from "nav-frontend-modal";
 import { Knapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
-import { styled } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
+
+const useModalStyles = makeStyles({
+  modal: {
+    width: "50rem",
+    minHeight: "13rem",
+    height: "auto",
+    maxWidth: "90%",
+  },
+});
 
 const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
   const [publiserer, setPubliserer] = useState(false);
+  const styles = useModalStyles();
 
   const onPublishClick = async (form) => {
     setPubliserer(true);
@@ -12,10 +22,12 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
       await onPublish(form);
     } finally {
       setPubliserer(false);
+      handleModal();
     }
   };
   return (
     <Modal
+      className={styles.modal}
       isOpen={openModal}
       onRequestClose={handleModal}
       closeButton={true}
@@ -38,14 +50,4 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
   );
 };
 
-export default styled(ConfirmPublishModal)({
-  "& .modal__overlay": {
-    zindex: "100000",
-  },
-  "& .modal": {
-    width: "50rem",
-    height: "13rem",
-    maxHeight: "30%",
-    maxWidth: "60%",
-  },
-});
+export default ConfirmPublishModal;
