@@ -20,7 +20,7 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
       onRequestClose={handleModal}
       closeButton={true}
       contentLabel="Min modalrute"
-      shouldCloseOnOverlayClick={true}
+      shouldCloseOnOverlayClick={false}
       ariaHideApp={false}
     >
       <div style={{ padding: "2rem 2.5rem" }}>Er du sikker på at dette skjemaet skal publiseres?</div>
@@ -40,14 +40,12 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
 
 export default styled(ConfirmPublishModal)({
   "& .modal__overlay": {
-    zindex: '"100000"',
-  },
-
-  "&": {
-    backgroundColor: '"green"',
+    zindex: "100000",
   },
   "& .modal": {
-    maxHeight: '"20%"',
-    maxWidth: '"50%"',
+    width: "50rem",
+    height: "13rem",
+    maxHeight: "30%",
+    maxWidth: "60%",
   },
 });
