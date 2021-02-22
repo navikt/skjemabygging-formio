@@ -21,11 +21,13 @@ jobs:
         "key": "${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
         "restore-keys": "${{ runner.os }}-node-"
     - uses: "actions/setup-node@v1"
+      with:
+        node-version: '14'
     - name: "install dependencies"
       run: "npm ci"
     - name: "run tests"
       run: "npm test"
-    - name: "build frontend"
+    - name: "compile"
       run: "npm run build"
     - name: "Build and publish Docker image"
       run: "docker build --pull --tag ${IMAGE} . && echo $GITHUB_TOKEN | docker login\
