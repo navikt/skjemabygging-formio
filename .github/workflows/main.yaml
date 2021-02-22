@@ -9,6 +9,8 @@ env:
     \ github.sha }}"
 jobs:
   build:
+    env:
+      CI: true
     name: "build"
     runs-on: "ubuntu-latest"
     steps:
@@ -21,8 +23,10 @@ jobs:
     - uses: "actions/setup-node@v1"
     - name: "install dependencies"
       run: "npm ci"
-    - name: "compile and run tests"
-      run: "npm test && npm run build"
+    - name: "run tests"
+      run: "npm test"
+    - name: "build frontend"
+      run: "npm run build"
     - name: "Build and publish Docker image"
       run: "docker build --pull --tag ${IMAGE} . && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
