@@ -1,0 +1,56 @@
+name: "Build and deploy skjemabygging-formio"
+on:
+  push:
+    branches:
+    - "master"
+env:
+  "IMAGE": "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{\
+    \ github.sha }}"
+jobs:
+  build:
+    name: "build"
+    runs-on: "ubuntu-latest"
+    steps:
+    - uses: "actions/checkout@v2"
+    - uses: "actions/cache@v2"
+      with:
+        "path": "~/.npm"
+        "key": "${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
+        "restore-keys": "${{ runner.os }}-node-"
+    - uses: "actions/setup-node@v1"
+    - name: "install dependencies"
+      run: "npm ci"
+    - name: "compile and run tests"
+      run: "npm test && npm run build"
+    - name: "Build and publish Docker image"
+      run: "docker build --pull --tag ${IMAGE} . && echo $GITHUB_TOKEN | docker login\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
+        \ && docker push ${IMAGE}"
+      env:
+        "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+  deployToDev:
+    name: "Deploy to dev"
+    needs: "build"
+    runs-on: "ubuntu-latest"
+    steps:
+    - uses: "actions/checkout@v2"
+    - name: "Deploy to dev-gcp"
+      uses: "nais/deploy/actions/deploy@v1"
+      env:
+        "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+        "CLUSTER": "dev-gcp"
+        "RESOURCE": ".nais/nais.yaml"
+        "VARS": ".nais/dev.yaml"
+#  deployToProd:
+#    name: "Deploy to prod"
+#    needs: "deployToDev"
+#    runs-on: "ubuntu-latest"
+#    steps:
+#    - uses: "actions/checkout@v2"
+#    - name: "Deploy to prod-gcp"
+#      uses: "nais/deploy/actions/deploy@v1"
+#      env:
+#        "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+#        "CLUSTER": "prod-gcp"
+#        "RESOURCE": ".nais/nais.yaml"
+#        "VARS": ".nais/prod.yaml"
