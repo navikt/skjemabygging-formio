@@ -10,7 +10,7 @@ import { useModal } from "../util/useModal";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const title = `${form.title}`;
-  const [openModal, setOpenModal, toggleModal] = useModal(false);
+  const [openModal, setOpenModal] = useModal(false);
 
   return (
     <>
@@ -42,7 +42,12 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
         <NavFormBuilder form={form} onChange={onChange} formBuilderOptions={FormBuilderOptions} />
       </AppLayoutWithContext>
 
-      <ConfirmPublishModal openModal={openModal} handleModal={() => toggleModal()} form={form} onPublish={onPublish} />
+      <ConfirmPublishModal
+        openModal={openModal}
+        closeModal={() => setOpenModal(false)}
+        form={form}
+        onPublish={onPublish}
+      />
     </>
   );
 }

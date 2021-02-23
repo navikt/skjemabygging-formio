@@ -10,9 +10,12 @@ const useModalStyles = makeStyles({
     height: "auto",
     maxWidth: "90%",
   },
+  modal_text: {
+    padding: "2rem 2.5rem",
+  },
 });
 
-const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
+const ConfirmPublishModal = ({ openModal, closeModal, form, onPublish }) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
 
@@ -22,20 +25,20 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
       await onPublish(form);
     } finally {
       setPubliserer(false);
-      handleModal();
+      closeModal();
     }
   };
   return (
     <Modal
       className={styles.modal}
       isOpen={openModal}
-      onRequestClose={handleModal}
+      onRequestClose={closeModal}
       closeButton={true}
-      contentLabel="Min modalrute"
+      contentLabel="Publiseringsadvarsel"
       shouldCloseOnOverlayClick={false}
       ariaHideApp={false}
     >
-      <div style={{ padding: "2rem 2.5rem" }}>Er du sikker på at dette skjemaet skal publiseres?</div>
+      <div className={styles.modal_text}>Er du sikker på at dette skjemaet skal publiseres?</div>
       <ul className="list-inline">
         <li className="list-inline-item">
           <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
@@ -43,7 +46,7 @@ const ConfirmPublishModal = ({ openModal, handleModal, form, onPublish }) => {
           </Knapp>
         </li>
         <li className="list-inline-item">
-          <Knapp onClick={handleModal}>Nei, ikke publiser skjemaet</Knapp>
+          <Knapp onClick={closeModal}>Nei, ikke publiser skjemaet</Knapp>
         </li>
       </ul>
     </Modal>

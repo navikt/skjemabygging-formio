@@ -69,6 +69,7 @@ class NavForm extends Component {
     }),
     onPrevPage: PropTypes.func,
     onNextPage: PropTypes.func,
+    onLastPage: PropTypes.func,
     onCancel: PropTypes.func,
     onChange: PropTypes.func,
     onCustomEvent: PropTypes.func,
@@ -93,8 +94,12 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => scrollToAndSetFocus("main", "start"),
+    onNextPage: () => {
+      scrollToAndSetFocus("main", "start");
+    },
     onPrevPage: () => scrollToAndSetFocus("main", "start"),
+
+    onLastPage: () => console.log("imhere"),
   };
 
   static getDefaultEmitter() {
@@ -156,6 +161,7 @@ class NavForm extends Component {
         }
       });
     }
+
     overrideFormioWizardNextPage(
       this.props.form,
       this.props.loggSkjemaStegFullfort,
