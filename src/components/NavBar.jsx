@@ -5,7 +5,7 @@ import navCssVariables from "nav-frontend-core";
 import { Undertittel } from "nav-frontend-typografi";
 
 const NavBarContainer = styled("div")({
-  backgroundColor: navCssVariables.navLysGra,
+  backgroundColor: navCssVariables.navDypBlaLighten40,
   padding: "1rem 0 1rem 0",
   marginBottom: "1rem",
 });
@@ -18,7 +18,7 @@ const NavBarWrapper = styled("div")({
   gridRowGap: "1rem",
   margin: "0 2rem",
   "@media screen and (min-width: 39em)": {
-    gridTemplateColumns: "16.375rem auto 6.875rem",
+    gridTemplateColumns: "6.875rem auto 6.875rem",
     maxWidth: "66rem",
   },
   "@media screen and (min-width: 68em)": {
@@ -27,7 +27,7 @@ const NavBarWrapper = styled("div")({
 });
 
 export const NavBarTitle = styled(Undertittel)({
-  color: navCssVariables.navMorkGra,
+  color: "#fff",
   placeSelf: "center",
 });
 
