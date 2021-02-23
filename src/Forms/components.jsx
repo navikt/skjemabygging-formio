@@ -1,4 +1,5 @@
 import { styled } from "@material-ui/styles";
+import navCssVariables from "nav-frontend-core";
 
 export const Pagewrapper = styled("div")({
   margin: "0 auto",
@@ -13,7 +14,7 @@ export const SlettSkjemaKnapp = styled("button")({
 });
 
 export const NoScrollWrapper = styled("div")({
-  backgroundColor: "white",
+  backgroundColor: navCssVariables.navGraBakgrunn,
   position: "sticky",
   top: "0",
   zIndex: 900,

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Hovedknapp } from "nav-frontend-knapper";
 import { Sidetittel } from "nav-frontend-typografi";
 import * as PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
@@ -41,7 +40,7 @@ const useFormsListPageStyles = makeStyles({
     gridTemplateColumns: "auto 6rem",
     width: "auto",
     "&:nth-child(odd)": {
-      backgroundColor: "#eee",
+      backgroundColor: "#ddd",
     },
   },
 });
@@ -49,7 +48,15 @@ const useFormsListPageStyles = makeStyles({
 export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Skjemabygger", visSkjemaliste: false, logout: onLogout }}>
+    <AppLayoutWithContext
+      navBarProps={{
+        title: "Skjemaoversikt",
+        visSkjemaliste: false,
+        visLagNyttSkjema: true,
+        logout: onLogout,
+        onNew: onNew,
+      }}
+    >
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
         <FormsList className={classes.list} forms={forms}>
@@ -64,7 +71,6 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
             </li>
           )}
         </FormsList>
-        <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
       </nav>
     </AppLayoutWithContext>
   );

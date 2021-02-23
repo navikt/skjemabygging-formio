@@ -12,10 +12,11 @@ const ActionRow = styled("div")({
   "@media screen and (min-width: 23.75em)": {
     "&": {
       display: "grid",
-      gridTemplateColumns: "1fr 4fr",
-      gridGap: "1.5rem",
+      gridTemplateColumns: "14rem minmax(20rem, 50rem)",
+      gridGap: "2rem",
       margin: "0 auto 1rem",
       maxWidth: "66rem",
+      minHeight: "6.5rem",
       padding: "0 0 2rem",
       width: "calc(100% - 4rem)",
     },
