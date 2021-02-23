@@ -40,7 +40,7 @@ const useFormsListPageStyles = makeStyles({
     gridTemplateColumns: "auto 6rem",
     width: "auto",
     "&:nth-child(odd)": {
-      backgroundColor: "#eee",
+      backgroundColor: "#ddd",
     },
   },
 });
@@ -49,7 +49,13 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   return (
     <AppLayoutWithContext
-      navBarProps={{ title: "Skjemaoversikt", visSkjemaliste: false, visLagNyttSkjema: true, logout: onLogout, onNew }}
+      navBarProps={{
+        title: "Skjemaoversikt",
+        visSkjemaliste: false,
+        visLagNyttSkjema: true,
+        logout: onLogout,
+        onNew: onNew,
+      }}
     >
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
