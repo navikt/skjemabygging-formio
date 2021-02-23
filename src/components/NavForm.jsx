@@ -69,7 +69,6 @@ class NavForm extends Component {
     }),
     onPrevPage: PropTypes.func,
     onNextPage: PropTypes.func,
-    onLastPage: PropTypes.func,
     onCancel: PropTypes.func,
     onChange: PropTypes.func,
     onCustomEvent: PropTypes.func,
@@ -157,7 +156,6 @@ class NavForm extends Component {
         }
       });
     }
-
     overrideFormioWizardNextPage(
       this.props.form,
       this.props.loggSkjemaStegFullfort,
