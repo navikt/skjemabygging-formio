@@ -3,6 +3,7 @@ import { styled } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import navCssVariables from "nav-frontend-core";
 import { Undertittel } from "nav-frontend-typografi";
+import { Hovedknapp } from "nav-frontend-knapper";
 
 const NavBarContainer = styled("div")({
   backgroundColor: navCssVariables.navDypBlaLighten40,
@@ -50,19 +51,21 @@ export const KnappWrapper = styled("div")({
   placeSelf: "center",
 });
 
-export const NavBar = ({ title, logout, visSkjemaliste }) => {
+export const NavBar = ({ title, logout, visSkjemaliste, visLagNyttSkjema, onNew }) => {
   return (
     <NavBarContainer>
       <NavBarWrapper>
-        {visSkjemaliste && (
-          <NavBarVenstre>
-            <KnappWrapper>
+        <NavBarVenstre>
+          <KnappWrapper>
+            {visSkjemaliste && (
               <Link className="knapp knapp--standard knapp--mini" to="/forms">
                 Skjemaliste
               </Link>
-            </KnappWrapper>
-          </NavBarVenstre>
-        )}
+            )}
+            {visLagNyttSkjema && <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>}
+          </KnappWrapper>
+        </NavBarVenstre>
+
         <NavBarTitle>{title}</NavBarTitle>
         <NavBarHoyre>
           <KnappWrapper>
