@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@material-ui/styles";
-import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import PropTypes from "prop-types";
 import { useAmplitude } from "../context/amplitude";
