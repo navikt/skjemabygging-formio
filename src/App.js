@@ -6,18 +6,11 @@ import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
 import "./overrideFormioStyles.less";
 import makeStyles from "@material-ui/styles/makeStyles";
-import navGlobalStyles from "./components/navGlobalStyles";
+import { globalStyles, appStyles } from "./components/navGlobalStyles";
 
 const useStyles = makeStyles((theme) => ({
-  "@global": navGlobalStyles,
-  app: {
-    "& .wizard-page": {
-      borderRadius: "0.25rem",
-      background: "#fff",
-      padding: "1rem",
-      margin: "1rem 0 1rem 0",
-    },
-  },
+  "@global": globalStyles,
+  app: appStyles,
 }));
 
 function App({ projectURL, store, pusher }) {
