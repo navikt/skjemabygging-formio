@@ -40,7 +40,7 @@ spec:
     - name: GITHUB_KEY
       value: {{githubKey}}
     - name: GITHUB_PUBLISHING_APP_ID
-      value: {{githubPushingAppID}}
+      value: {{githubPublishingAppID}}
     - name: GITHUB_PUBLISHING_INSTALLATION_ID
       value: {{githubPublishingInstallationID}}
   azure:

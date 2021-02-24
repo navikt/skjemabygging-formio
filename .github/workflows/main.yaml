@@ -51,9 +51,10 @@ jobs:
           cat > .nais/dev-vars.yaml <<EOF
           ingresses:
             - https://skjemabygging-formio.dev.intern.nav.no
+          image: $IMAGE
           githubGitRef: "master"
           githubKey: ${{secrets.SKJEMABYGGING_GITHUB_KEY}}
-          githubPushingAppID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}
+          githubPublishingAppID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}
           githubPublishingInstallationID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_INSTALLATION_ID}}
           EOF
       - name: "Deploy to dev-gcp"
