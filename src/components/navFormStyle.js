@@ -1,4 +1,16 @@
-export default {
+const wizardSidevelgerStyles = {
+  "& .pagination": {
+    display: "flex",
+    justifyContent: "center",
+    padding: "3rem 0 1rem 0",
+  },
+
+  "& .stegindikator__wrapper": {
+    margin: "3rem",
+  },
+};
+
+const styles = {
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
@@ -34,4 +46,37 @@ export default {
   "& .data-grid__row > .skjemagruppe__legend": {
     float: "left",
   },
+  "& .wizard-page": {
+    borderRadius: "0.25rem",
+    background: "#fff",
+    padding: "1rem",
+    margin: "1rem 0 1rem 0",
+  },
+
+  "& .skjemagruppe, & .skjemagruppe fieldset, & .skjemagruppe__fieldset": {
+    margin: "0",
+    padding: "0",
+    border: "0",
+
+    "& .skjemaelement": {
+      marginBottom: "1rem",
+    },
+
+    "& .skjemagruppe": {
+      "& .inputPanelGruppe, & .radiogruppe, & .checkboxgruppe": {
+        marginBottom: "1rem",
+      },
+    },
+  },
+
+  //Alle skjemafelter -- start
+  "& .form-group": {
+    marginBottom: "2rem",
+  },
+  //Alle skjemafelter -- slutt
+};
+
+export default {
+  ...styles,
+  ...wizardSidevelgerStyles,
 };
