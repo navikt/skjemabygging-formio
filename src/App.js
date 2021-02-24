@@ -5,8 +5,16 @@ import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
 import "./overrideFormioStyles.less";
+import navCssVariables from "nav-frontend-core";
+import makeStyles from "@material-ui/styles/makeStyles";
+import navGlobalStyles from "./components/navGlobalStyles";
+
+const useStyles = makeStyles((theme) => ({
+  "@global": navGlobalStyles,
+}));
 
 function App({ projectURL, store, pusher }) {
+  useStyles();
   const userAlerter = useUserAlerting(pusher);
   console.log("userAlerter", userAlerter);
   const { userData } = useAuth();

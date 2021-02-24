@@ -10,7 +10,7 @@ const wizardSidevelgerStyles = {
   },
 };
 
-const styles = {
+const skjemaelementStyles = {
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
@@ -25,6 +25,9 @@ const styles = {
     gridTemplateColumns: "repeat(auto-fill, minmax(8rem, 1fr))",
     gap: "1rem",
   },
+};
+
+const styles = {
   "& .input-group": {
     "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
       flex: "initial",
@@ -79,4 +82,5 @@ const styles = {
 export default {
   ...styles,
   ...wizardSidevelgerStyles,
+  ...skjemaelementStyles,
 };
