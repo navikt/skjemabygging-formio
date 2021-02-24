@@ -40,7 +40,7 @@ export function PrepareSubmitPage({ form, submission }) {
   return (
     <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      <section className="margin-bottom-large">
+      <section className="wizard-page">
         <Systemtittel className="margin-bottom-default">1. For å gå videre må du laste ned PDF</Systemtittel>
         <Normaltekst className="margin-bottom-default">
           Når du klikker på “Last ned pdf” åpnes søknaden din i en ny fane i nettleseren. Du må lagre pdf-filen på
@@ -70,7 +70,7 @@ export function PrepareSubmitPage({ form, submission }) {
           />
         </div>
       </section>
-      <section className="margin-bottom-large">
+      <section className="wizard-page">
         <Systemtittel className="margin-bottom-default">2. Gå videre til innsending av søknaden</Systemtittel>
         <Normaltekst className="margin-bottom-default">
           Når du klikker på “Gå videre” nedenfor åpnes det en ny side med en opplastingstjeneste (krever innlogging) for

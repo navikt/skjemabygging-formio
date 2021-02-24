@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@material-ui/styles";
-import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import PropTypes from "prop-types";
 import { useAmplitude } from "../context/amplitude";
@@ -57,7 +57,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
-    <section className="margin-bottom-default">
+    <section className="wizard-page">
       <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
       <Normaltekst className="margin-bottom-default">
         Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentasjonen. Den
@@ -100,7 +100,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
 };
 
 const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
-  <section className="margin-bottom-default">
+  <section className="wizard-page">
     <Systemtittel className="margin-bottom-default">{index}. Send søknaden i posten</Systemtittel>
     <Normaltekst className="margin-bottom-default">
       Følg instruksjonene på førstesiden for å sende søknaden i posten.
@@ -111,7 +111,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
 );
 
 const HvaSkjerVidereSection = ({ index }) => (
-  <section className="margin-bottom-default">
+  <section className="wizard-page">
     <Systemtittel className="margin-bottom-default">{index}. Hva skjer videre?</Systemtittel>
     <Normaltekst className="margin-bottom-default">
       Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.
@@ -127,11 +127,7 @@ export function PrepareLetterPage({ form, submission }) {
     state: { previousPage },
   } = useLocation();
 
-  const sections = [
-    <Innholdstittel key="innholds-overskrift" className="margin-bottom-large">
-      Last ned søknadspapirene
-    </Innholdstittel>,
-  ];
+  const sections = [];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
   if (vedleggSomSkalSendes.length > 0) {
     sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
@@ -144,7 +140,7 @@ export function PrepareLetterPage({ form, submission }) {
   return (
     <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      {sections.map((section, index) => React.cloneElement(section, { index }))}
+      {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
       <div>
         <Link className="knapp knapp--fullbredde" to={previousPage}>
           Gå tilbake

@@ -1,4 +1,16 @@
-export default {
+const wizardSidevelgerStyles = {
+  "& .pagination": {
+    display: "flex",
+    justifyContent: "center",
+    padding: "3rem 0 1rem 0",
+  },
+
+  "& .stegindikator__wrapper": {
+    margin: "3rem",
+  },
+};
+
+const skjemaelementStyles = {
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
@@ -13,6 +25,9 @@ export default {
     gridTemplateColumns: "repeat(auto-fill, minmax(8rem, 1fr))",
     gap: "1rem",
   },
+};
+
+const styles = {
   "& .input-group": {
     "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
       flex: "initial",
@@ -34,4 +49,16 @@ export default {
   "& .data-grid__row > .skjemagruppe__legend": {
     float: "left",
   },
+
+  //Alle skjemafelter -- start
+  "& .form-group": {
+    marginBottom: "2rem",
+  },
+  //Alle skjemafelter -- slutt
+};
+
+export default {
+  ...styles,
+  ...wizardSidevelgerStyles,
+  ...skjemaelementStyles,
 };

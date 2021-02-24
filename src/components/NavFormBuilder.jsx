@@ -57,6 +57,9 @@ const BuilderMountElement = styled("div")({
       position: "initial",
     },
   },
+  "& .formio-dialog": {
+    zIndex: 900,
+  },
 });
 
 class NavFormBuilder extends Component {
