@@ -12,6 +12,6 @@ export const appStyles = {
     borderRadius: "0.25rem",
     background: "#fff",
     padding: "1rem",
-    margin: "1rem 0 1rem 0",
+    marginBottom: "1rem",
   },
 };
