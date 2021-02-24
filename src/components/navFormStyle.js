@@ -49,12 +49,6 @@ const styles = {
   "& .data-grid__row > .skjemagruppe__legend": {
     float: "left",
   },
-  "& .wizard-page": {
-    borderRadius: "0.25rem",
-    background: "#fff",
-    padding: "1rem",
-    margin: "1rem 0 1rem 0",
-  },
 
   //Alle skjemafelter -- start
   "& .form-group": {

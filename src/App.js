@@ -10,10 +10,18 @@ import navGlobalStyles from "./components/navGlobalStyles";
 
 const useStyles = makeStyles((theme) => ({
   "@global": navGlobalStyles,
+  app: {
+    "& .wizard-page": {
+      borderRadius: "0.25rem",
+      background: "#fff",
+      padding: "1rem",
+      margin: "1rem 0 1rem 0",
+    },
+  },
 }));
 
 function App({ projectURL, store, pusher }) {
-  useStyles();
+  const styles = useStyles();
   const userAlerter = useUserAlerting(pusher);
   console.log("userAlerter", userAlerter);
   const { userData } = useAuth();
@@ -23,7 +31,7 @@ function App({ projectURL, store, pusher }) {
     : () => <UnauthenticatedApp projectURL={projectURL} />;
   return (
     <UserAlerterContext.Provider value={userAlerter}>
-      <section>{contentFunc()}</section>
+      <section className={styles.app}>{contentFunc()}</section>
     </UserAlerterContext.Provider>
   );
 }
