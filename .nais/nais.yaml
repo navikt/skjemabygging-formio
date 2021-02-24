@@ -30,10 +30,19 @@ spec:
   requests:
     cpu: "200m"
     memory: "256Mi"
-  ingresses: 
+  ingresses:
     {{#each ingresses as |url|}}
       - {{url}}
     {{/each}}
+  env:
+    - name: GITHUB_GIT_REF
+      value: {{githubGitRef}}
+    - name: GITHUB_KEY
+      value: {{githubKey}}
+    - name: GITHUB_PUBLISHING_APP_ID
+      value: {{githubPushingAppID}}
+    - name: GITHUB_PUBLISHING_INSTALLATION_ID
+      value: {{githubPublishingInstallationID}}
   azure:
     application:
       enabled: true

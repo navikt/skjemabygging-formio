@@ -29,6 +29,11 @@ jobs:
       run: "npm test"
     - name: "compile"
       run: "npm run build"
+      env:
+        REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
+        REACT_APP_PUSHER_CLUSTER: "mt1"
+        REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
+
     - name: "Build and publish Docker image"
       run: "docker build --pull --tag ${IMAGE} . && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
@@ -41,13 +46,24 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
     - uses: "actions/checkout@v2"
+    - name: Generate dev nais variables
+      run: |
+        cat > .nais/dev-vars.yaml <<EOF
+        image: $IMAGE
+        ingresses:
+          - https://skjemabygging-formio.dev.intern.nav.no
+        githubGitRef: "master"
+        githubKey: {{secrets.SKJEMABYGGING_GITHUB_KEY}}
+        githubPushingAppID: {{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}
+        githubPublishingInstallationID: {{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_INSTALLATION_ID}}
+        EOF
     - name: "Deploy to dev-gcp"
       uses: "nais/deploy/actions/deploy@v1"
       env:
         "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "dev-gcp"
         "RESOURCE": ".nais/nais.yaml"
-        "VARS": ".nais/dev.yaml"
+        "VARS": ".nais/dev-vars.yaml"
 #  deployToProd:
 #    name: "Deploy to prod"
 #    needs: "deployToDev"
