@@ -56,22 +56,6 @@ const styles = {
     margin: "1rem 0 1rem 0",
   },
 
-  "& .skjemagruppe, & .skjemagruppe fieldset, & .skjemagruppe__fieldset": {
-    margin: "0",
-    padding: "0",
-    border: "0",
-
-    "& .skjemaelement": {
-      marginBottom: "1rem",
-    },
-
-    "& .skjemagruppe": {
-      "& .inputPanelGruppe, & .radiogruppe, & .checkboxgruppe": {
-        marginBottom: "1rem",
-      },
-    },
-  },
-
   //Alle skjemafelter -- start
   "& .form-group": {
     marginBottom: "2rem",
