@@ -53,9 +53,9 @@ jobs:
         ingresses:
           - https://skjemabygging-formio.dev.intern.nav.no
         githubGitRef: "master"
-        githubKey: {{secrets.SKJEMABYGGING_GITHUB_KEY}}
-        githubPushingAppID: {{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}
-        githubPublishingInstallationID: {{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_INSTALLATION_ID}}
+        githubKey: ${{secrets.SKJEMABYGGING_GITHUB_KEY}}
+        githubPushingAppID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}
+        githubPublishingInstallationID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_INSTALLATION_ID}}
         EOF
     - name: "Deploy to dev-gcp"
       uses: "nais/deploy/actions/deploy@v1"
