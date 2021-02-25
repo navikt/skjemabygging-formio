@@ -36,13 +36,13 @@ spec:
     {{/each}}
   env:
     - name: GITHUB_GIT_REF
-      value: {{githubGitRef}}
+      value: "{{githubGitRef}}"
     - name: GITHUB_KEY
-      value: {{githubKey}}
+      value: "{{githubKey}}"
     - name: GITHUB_PUBLISHING_APP_ID
-      value: {{githubPublishingAppID}}
+      value: "{{githubPublishingAppID}}"
     - name: GITHUB_PUBLISHING_INSTALLATION_ID
-      value: {{githubPublishingInstallationID}}
+      value: "{{githubPublishingInstallationID}}"
   azure:
     application:
       enabled: true
