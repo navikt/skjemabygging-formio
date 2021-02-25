@@ -8,13 +8,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { styled } from "@material-ui/styles";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
-import { FyllUtRouter, AmplitudeProvider } from "skjemabygging-formio";
+import { FyllUtRouter, AmplitudeProvider, globalStyles, appStyles } from "skjemabygging-formio";
 import "./overrideFormioStyles.less";
+import makeStyles from "@material-ui/styles/makeStyles";
+
+const useStyles = makeStyles((theme) => ({
+  "@global": globalStyles,
+}));
 
 Components.setComponents(CustomComponents);
 Formio.use(Template);
 
 function App({ forms, className }) {
+  useStyles();
   return (
     <div className={className}>
       <Switch>
@@ -45,4 +51,5 @@ export default styled(App)({
   margin: "0 auto",
   padding: "2rem",
   maxWidth: "800px",
+  ...appStyles,
 });
