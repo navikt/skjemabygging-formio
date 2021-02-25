@@ -5,4 +5,5 @@ WORKDIR usr/src/app
 COPY . ./
 
 WORKDIR ../
+RUN npm ci
 CMD ["node", "server/index.mjs"]
