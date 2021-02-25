@@ -35,10 +35,24 @@ import navFormStyle from "./navFormStyle";
 
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
+const originalSubmit = Wizard.prototype.submit;
 
-function overrideFormioWizardNextPage(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
+function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   Wizard.prototype.nextPage = function () {
     return originalNextPage
+      .call(this)
+      .then((returnValue) => {
+        loggSkjemaStegFullfort();
+        return returnValue;
+      })
+      .catch((error) => {
+        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
+        loggSkjemaValideringFeilet();
+        return Promise.reject(error);
+      });
+  };
+  Wizard.prototype.submit = function () {
+    return originalSubmit
       .call(this)
       .then((returnValue) => {
         loggSkjemaStegFullfort();
@@ -156,7 +170,7 @@ class NavForm extends Component {
         }
       });
     }
-    overrideFormioWizardNextPage(
+    overrideFormioWizardNextPageAndSubmit(
       this.props.form,
       this.props.loggSkjemaStegFullfort,
       this.props.loggSkjemaValideringFeilet
