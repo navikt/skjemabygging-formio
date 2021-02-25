@@ -12,7 +12,7 @@ import { AppConfigContext } from "../configContext";
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
   return (
-    <section className="margin-bottom-default">
+    <section className="wizard-page">
       <Systemtittel className="margin-bottom-default">
         {index}. Du må legge ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
       </Systemtittel>
