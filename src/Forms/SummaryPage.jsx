@@ -117,7 +117,7 @@ export function SummaryPage({ form, submission, formUrl }) {
   const { featureToggles } = useContext(AppConfigContext);
   const { loggSkjemaStegFullfort } = useAmplitude();
 
-  useEffect(() => scrollToAndSetFocus("main"), []);
+  useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
   return (
