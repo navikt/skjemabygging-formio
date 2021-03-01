@@ -37,11 +37,10 @@ spec:
   env:
     - name: GITHUB_GIT_REF
       value: "{{githubGitRef}}"
-    - name: GITHUB_PUBLISHING_APP_ID
-      value: "{{githubPublishingAppID}}"
+    - name: GITHUB_KEY
+      value: "{{githubKey}}"
   envFrom:
-    - secret: GITHUB_PUBLISHING_INSTALLATION_ID
-    - secret: GITHUB_KEY
+    - secret: skjemabygging-formio
   azure:
     application:
       enabled: true

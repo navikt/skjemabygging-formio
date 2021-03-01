@@ -53,7 +53,7 @@ jobs:
             - https://skjemabygging-formio.dev.intern.nav.no
           image: $IMAGE
           githubGitRef: "master"
-          githubPublishingAppID: '${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}'
+          githubKey: '${{secrets.SKJEMABYGGING_GITHUB_KEY}}'
           EOF
       - name: "Deploy to dev-gcp"
         uses: "nais/deploy/actions/deploy@v1"
