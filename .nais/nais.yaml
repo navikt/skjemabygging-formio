@@ -37,8 +37,6 @@ spec:
   env:
     - name: GITHUB_GIT_REF
       value: "{{githubGitRef}}"
-    - name: GITHUB_KEY
-      value: "{{githubKey}}"
     - name: GITHUB_PUBLISHING_APP_ID
       value: "{{githubPublishingAppID}}"
   envFrom:
