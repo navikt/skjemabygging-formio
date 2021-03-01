@@ -66,6 +66,19 @@ function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, log
   };
 }
 
+function scrollToMainAndFocusOnForm() {
+  const targetTagParent = document.querySelector("main");
+  const targetTag = document.querySelector("form");
+
+  targetTagParent.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+
+  targetTag.tabIndex = -1;
+  targetTag.focus({ preventScroll: true });
+}
+
 class NavForm extends Component {
   static propTypes = {
     className: PropTypes.string,
@@ -107,8 +120,14 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => scrollToAndSetFocus("main", "start"),
-    onPrevPage: () => scrollToAndSetFocus("main", "start"),
+    onNextPage: () => {
+      scrollToMainAndFocusOnForm();
+      //scrollToAndSetFocus("form", "start")
+    },
+    onPrevPage: () => {
+      scrollToMainAndFocusOnForm();
+      //scrollToAndSetFocus("main", "start")
+    },
   };
 
   static getDefaultEmitter() {
