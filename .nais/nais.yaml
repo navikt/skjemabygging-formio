@@ -48,3 +48,4 @@ spec:
     outbound:
       external:
         - host: protected-island-44773.herokuapp.com
+        - host: api.github.com
