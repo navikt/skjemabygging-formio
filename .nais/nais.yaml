@@ -41,8 +41,8 @@ spec:
       value: "{{githubKey}}"
     - name: GITHUB_PUBLISHING_APP_ID
       value: "{{githubPublishingAppID}}"
-    - name: GITHUB_PUBLISHING_INSTALLATION_ID
-      value: "{{githubPublishingInstallationID}}"
+  envFrom:
+    - secret: GITHUB_PUBLISHING_INSTALLATION_ID
   azure:
     application:
       enabled: true

@@ -55,7 +55,6 @@ jobs:
           githubGitRef: "master"
           githubKey: '${{secrets.SKJEMABYGGING_GITHUB_KEY}}'
           githubPublishingAppID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_APP_ID}}
-          githubPublishingInstallationID: ${{secrets.SKJEMABYGGING_GITHUB_PUBLISHING_INSTALLATION_ID}}
           EOF
       - name: "Deploy to dev-gcp"
         uses: "nais/deploy/actions/deploy@v1"
