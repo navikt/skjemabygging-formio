@@ -42,8 +42,6 @@ spec:
         secretKeyRef:
           name: another-file-based
           key: secret
-  envFrom:
-    - secret: skjemabygging-formio
   azure:
     application:
       enabled: true
