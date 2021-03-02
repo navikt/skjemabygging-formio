@@ -3,14 +3,23 @@ import { Backend } from "../src/backend/index.js";
 import { dispatcherWithBackend } from "../src/backend/webApp.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import { gitVersionFromBuild } from "./commit_version.js";
+import fs from "fs";
 
 const app = express();
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 
+function githubKey() {
+  try {
+    return fs.readFileSync("/var/run/secrets/another-file-based", "base64");
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 const githubAppConfig = {
   gitRef: process.env.GITHUB_GIT_REF || "master",
   baseURL: "https://api.github.com/",
-  key: process.env.GITHUB_KEY,
+  key: process.env.GITHUB_KEY || githubKey(),
   appID: process.env.GITHUB_PUBLISHING_APP_ID,
   installationID: process.env.GITHUB_PUBLISHING_INSTALLATION_ID,
 };

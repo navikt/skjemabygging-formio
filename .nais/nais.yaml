@@ -37,11 +37,11 @@ spec:
   env:
     - name: GITHUB_GIT_REF
       value: "{{githubGitRef}}"
-    - name: GITHUB_KEY
-      valueFrom:
-        secretKeyRef:
-          name: another-file-based
-          key: secret
+  filesFrom:
+    - secret: another-file-based
+      mountPath: /var/run/secrets/another-file-based
+  envFrom:
+    - secret: skjemabygging-formio
   azure:
     application:
       enabled: true
