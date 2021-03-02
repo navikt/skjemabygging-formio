@@ -10,7 +10,7 @@ const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protecte
 
 function githubKey() {
   try {
-    return fs.readFileSync("/var/run/secrets/another-file-based", "base64");
+    return fs.readFileSync("/var/run/secrets/another-file-based/secret", "utf8");
   } catch (err) {
     console.error(err);
   }
