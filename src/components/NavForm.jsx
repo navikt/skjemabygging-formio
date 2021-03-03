@@ -29,7 +29,7 @@ import { Form as FormioForm, Formio } from "formiojs";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
-import { scrollToAndSetFocus, scrollToMainAndFocusOnForm } from "../util/focus-management";
+import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
 
@@ -107,8 +107,16 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => scrollToMainAndFocusOnForm("main", "form", "start"),
-    onPrevPage: () => scrollToMainAndFocusOnForm("main", "form", "start"),
+    onNextPage: () =>
+      scrollToAndSetFocus(
+        ".wizard-page input, .wizard-page textarea, .wizard-page input, .wizard-page select",
+        "center"
+      ),
+    onPrevPage: () =>
+      scrollToAndSetFocus(
+        ".wizard-page input, .wizard-page textarea, .wizard-page input, .wizard-page select",
+        "center"
+      ),
   };
 
   static getDefaultEmitter() {
