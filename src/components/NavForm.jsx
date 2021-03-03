@@ -107,8 +107,16 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => scrollToAndSetFocus("main", "start"),
-    onPrevPage: () => scrollToAndSetFocus("main", "start"),
+    onNextPage: () =>
+      scrollToAndSetFocus(
+        ".wizard-page input, .wizard-page textarea, .wizard-page input, .wizard-page select",
+        "center"
+      ),
+    onPrevPage: () =>
+      scrollToAndSetFocus(
+        ".wizard-page input, .wizard-page textarea, .wizard-page input, .wizard-page select",
+        "center"
+      ),
   };
 
   static getDefaultEmitter() {
