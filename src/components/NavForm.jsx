@@ -29,7 +29,7 @@ import { Form as FormioForm, Formio } from "formiojs";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
-import { scrollToAndSetFocus } from "../util/focus-management";
+import { scrollToAndSetFocus, scrollToMainAndFocusOnForm } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
 
@@ -64,19 +64,6 @@ function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, log
         return Promise.reject(error);
       });
   };
-}
-
-function scrollToMainAndFocusOnForm() {
-  const targetTagParent = document.querySelector("main");
-  const targetTag = document.querySelector("form");
-
-  targetTagParent.scrollIntoView({
-    behavior: "smooth",
-    block: "start",
-  });
-
-  targetTag.tabIndex = -1;
-  targetTag.focus({ preventScroll: true });
 }
 
 class NavForm extends Component {
@@ -120,14 +107,8 @@ class NavForm extends Component {
       language: "nb-NO",
       i18n: i18nData,
     },
-    onNextPage: () => {
-      scrollToMainAndFocusOnForm();
-      //scrollToAndSetFocus("form", "start")
-    },
-    onPrevPage: () => {
-      scrollToMainAndFocusOnForm();
-      //scrollToAndSetFocus("main", "start")
-    },
+    onNextPage: () => scrollToMainAndFocusOnForm("main", "form", "start"),
+    onPrevPage: () => scrollToMainAndFocusOnForm("main", "form", "start"),
   };
 
   static getDefaultEmitter() {
