@@ -39,7 +39,6 @@ spec:
       value: "{{githubGitRef}}"
   envFrom:
     - secret: skjemabygging-formio
-    - secret: flesk
   azure:
     application:
       enabled: true
