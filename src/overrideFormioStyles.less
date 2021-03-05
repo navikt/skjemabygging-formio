@@ -133,17 +133,17 @@
   display: flex;
   flex-wrap: wrap;
   @media (max-width: 540px) {
-    flex-direction: column-reverse;
+    //flex-direction: column-reverse;
   }
 }
 .list-inline-item {
-  margin: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .knapp--fullbredde,
 .btn-wizard-nav-next,
 .btn-wizard-nav-previous,
-.btn-wizard-nav-cancel,
 .btn-wizard-nav-submit {
   @media (max-width: 540px) {
     width: 100%;
@@ -161,7 +161,8 @@
 }
 
 .btn-wizard-nav-cancel {
-  .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
+  .lenke-mixin();
+  border: none;
 }
 //NAV-knappestyling -- slutt
 
