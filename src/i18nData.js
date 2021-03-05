@@ -1,7 +1,7 @@
 export default {
   "nb-NO": {
     //Generelle feilmeldinger
-    alertMessage: "{{label}}: {{message}}",
+    alertMessage: "{{message}}",
     error: "Vennligst fiks følgende feil:",
     invalid_email: "{{field}} må være en gyldig epost-adresse.",
     invalid_regex: "{{field}} passer ikke til uttrykket {{regex}}.",
