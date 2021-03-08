@@ -8,7 +8,11 @@ import Resources from "./resources";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(formio, store, userAlerter);
+  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage } = useForms(
+    formio,
+    store,
+    userAlerter
+  );
 
   const history = useHistory();
   const wrappedCreate = (newForm) => {
@@ -28,6 +32,7 @@ function AuthenticatedApp({ formio, store }) {
             onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
+            loadLanguage={loadLanguage}
           />
         </Route>
         <Route path="/resources">

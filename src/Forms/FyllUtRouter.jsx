@@ -13,7 +13,7 @@ const FyllUtContainer = styled("div")({
   maxWidth: "800px",
 });
 
-const FyllUtRouter = ({ form }) => {
+const FyllUtRouter = ({ form, translation }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -27,7 +27,13 @@ const FyllUtRouter = ({ form }) => {
       <Switch>
         <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
         <Route exact path={path}>
-          <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
+          <FillInFormPage
+            form={form}
+            submission={submission}
+            setSubmission={setSubmission}
+            formUrl={url}
+            translation={translation}
+          />
         </Route>
         <Route path={`${path}/oppsummering`}>
           <SubmissionWrapper submission={submission} url={url}>

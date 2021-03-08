@@ -59,5 +59,27 @@ export const useForms = (formio, store, userAlerter) => {
       console.error("Publisering feilet " + response.status);
     }
   };
-  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish };
+
+  const loadLanguage = async (languageCode) => {
+    return Formiojs.fetch(`${formio.projectUrl}/language/submission?data.language=${languageCode}`, {
+      headers: {
+        "x-jwt-token": Formiojs.getToken(),
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log("Response: ", response);
+        return response;
+      })
+      .then((response) =>
+        response.reduce(
+          (acc, curr) => ({
+            ...acc,
+            ...curr.data.i18n,
+          }),
+          {}
+        )
+      );
+  };
+  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage };
 };

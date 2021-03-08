@@ -33,7 +33,7 @@ const LoadingComponent = () => {
   );
 };
 
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish }) => {
+export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadLanguage }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
@@ -69,6 +69,7 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
           return (
             <TestFormPage
               onLogout={logout}
+              loadLanguage={loadLanguage}
               form={getFormFromPath(forms, match.params.formpath)}
               editFormUrl={`${path}/${match.params.formpath}/edit`}
               onSave={onSave}
