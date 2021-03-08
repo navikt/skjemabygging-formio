@@ -42,5 +42,8 @@ export default {
     october: "Oktober",
     november: "November",
     december: "Desember",
+    valgfritt: "optional",
+    Ja: "yes",
+    Nei: "no",
   },
 };

@@ -27,9 +27,9 @@ const RadioPanelGruppeWrapper = class extends Component {
   };
 
   render() {
-    const component = this.props.component;
+    const { component, translate } = this.props;
     const radios = component.values.map(({ label, value }, index) => ({
-      label,
+      label: translate(label),
       value,
       id: `${component.id}-${component.key}-${value}`,
       required: component.validate.required || undefined,
@@ -40,8 +40,12 @@ const RadioPanelGruppeWrapper = class extends Component {
         aria-describedby={`${component.key}-error`}
         radios={radios}
         checked={this.state.value}
-        legend={component.validate.required ? component.label : `${component.label} (valgfritt)`}
-        description={component.description}
+        legend={
+          component.validate.required
+            ? translate(component.label)
+            : `${translate(component.label)} (${translate("valgfritt")})`
+        }
+        description={translate(component.description)}
         name={`data[${component.key}][${component.id}]`}
         onChange={(event) => this.setValue(event.target.value)}
       />
@@ -99,6 +103,7 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         radioRef={this.input}
+        translate={(text) => this.t(text)}
       />,
       element
     );
