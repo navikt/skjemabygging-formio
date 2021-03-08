@@ -18,13 +18,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl, trans
         form={form}
         options={{
           language: "nb-NO",
-          i18n: {
-            resources: {
-              "nb-NO": {
-                translation,
-              },
-            },
-          },
+          i18n: translation,
         }}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}

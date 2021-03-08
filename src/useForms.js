@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
+import FormioDefaultTranslations from "formiojs/i18n";
+import GlobalTranslations from "./i18nData";
 
 export const useForms = (formio, store, userAlerter) => {
   const [forms, setFormsInternal] = useState(store.forms);
@@ -75,9 +77,44 @@ export const useForms = (formio, store, userAlerter) => {
         response.reduce(
           (acc, curr) => ({
             ...acc,
-            ...curr.data.i18n,
+            ...{
+              resources: {
+                ...acc.resources,
+                [curr.data.language]: {
+                  ...((acc.resources && acc.resources[curr.data.language]) || {}),
+                  translation: {
+                    ...((acc.resources &&
+                      acc.resources[curr.data.language] &&
+                      acc.resources[curr.data.language].translation) ||
+                      {}),
+                    ...curr.data.i18n,
+                  },
+                },
+              },
+            },
           }),
-          {}
+          {
+            ...FormioDefaultTranslations,
+            resources: {
+              ...FormioDefaultTranslations.resources,
+              ...Object.keys(GlobalTranslations).reduce(
+                (languages, language) => ({
+                  ...languages,
+                  [language]: {
+                    ...((FormioDefaultTranslations.resources && FormioDefaultTranslations.resources[language]) || {}),
+                    translation: {
+                      ...((FormioDefaultTranslations.resources &&
+                        FormioDefaultTranslations.resources[language] &&
+                        FormioDefaultTranslations.resources[language].translation) ||
+                        {}),
+                      ...GlobalTranslations[language],
+                    },
+                  },
+                }),
+                {}
+              ),
+            },
+          }
         )
       );
   };
