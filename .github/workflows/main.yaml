@@ -1,9 +1,9 @@
 name: "Build and deploy skjemabygging-formio"
 on: push
 env:
-  "IMAGE": "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{\
+  IMAGE: "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{\
     \ github.sha }}"
-    CI: true
+  CI: true
 jobs:
   build:
     name: "build and test"
