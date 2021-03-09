@@ -8,6 +8,7 @@ import { Hovedknapp } from "nav-frontend-knapper";
 const NavBarContainer = styled("div")({
   backgroundColor: navCssVariables.navDypBlaLighten40,
   padding: "1rem 0 1rem 0",
+  marginBottom: "1rem",
 });
 
 const NavBarWrapper = styled("div")({
@@ -29,7 +30,6 @@ const NavBarWrapper = styled("div")({
 export const NavBarTitle = styled(Undertittel)({
   color: "#fff",
   placeSelf: "center",
-  marginLeft: "2rem",
 });
 
 export const NavBarVenstre = styled("div")({
