@@ -1,16 +1,12 @@
 name: "Build and deploy skjemabygging-formio"
-on:
-  push:
-    branches:
-      - "master"
+on: push
 env:
   "IMAGE": "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{\
     \ github.sha }}"
+    CI: true
 jobs:
   build:
-    env:
-      CI: true
-    name: "build"
+    name: "build and test"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
@@ -52,6 +48,7 @@ jobs:
     name: "Deploy to dev"
     needs: "build"
     runs-on: "ubuntu-latest"
+    if: github.ref == 'refs/heads/master' # bare kjør deploy for master branch
     steps:
       - uses: "actions/checkout@v2"
       - name: Generate dev nais variables
@@ -73,6 +70,7 @@ jobs:
 #    name: "Deploy to prod"
 #    needs: "deployToDev"
 #    runs-on: "ubuntu-latest"
+#    if: github.ref == 'refs/heads/master' # bare kjør deploy for master branch
 #    steps:
 #    - uses: "actions/checkout@v2"
 #    - name: Generate prod nais variables
