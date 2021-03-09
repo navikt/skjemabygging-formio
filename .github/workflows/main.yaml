@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - "master"
-      - "nais-deploy"
 env:
   "IMAGE": "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{\
     \ github.sha }}"
