@@ -4,11 +4,12 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 import { UserAlerterContext } from "./userAlerting";
-import Resources from "./resources";
+import NewResource from "./resources/NewResource";
+import { ResourceListPage } from "./resources/ResourceListPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage } = useForms(
+  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages } = useForms(
     formio,
     store,
     userAlerter
@@ -36,7 +37,10 @@ function AuthenticatedApp({ formio, store }) {
           />
         </Route>
         <Route path="/resources">
-          <Resources projectURL={formio.projectUrl} />
+          <ResourceListPage projectURL={formio.projectUrl} loadLanguages={loadLanguages} />
+        </Route>
+        <Route path="/resource/new">
+          <NewResource projectURL={formio.projectUrl} />
         </Route>
         <Route path="/">
           <Redirect to="/forms" />

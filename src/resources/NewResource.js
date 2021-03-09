@@ -9,7 +9,7 @@ const StyledNavForm = styled(NavForm)({
   maxWidth: "26.25rem",
 });
 
-const Resources = ({ projectURL }) => (
+const NewResource = ({ projectURL }) => (
   <div>
     <NavBar title={"Skjemabygger"} />
     <Pagewrapper>
@@ -18,4 +18,4 @@ const Resources = ({ projectURL }) => (
   </div>
 );
 
-export default Resources;
+export default NewResource;

@@ -62,8 +62,53 @@ export const useForms = (formio, store, userAlerter) => {
     }
   };
 
-  const loadLanguage = async (languageCode) => {
-    return Formiojs.fetch(`${formio.projectUrl}/language/submission?data.language=${languageCode}`, {
+  const createI18nObject = (submissionResponse) => {
+    return submissionResponse.reduce(
+      (acc, curr) => ({
+        ...acc,
+        ...{
+          resources: {
+            ...acc.resources,
+            [curr.data.language]: {
+              ...((acc.resources && acc.resources[curr.data.language]) || {}),
+              translation: {
+                ...((acc.resources &&
+                  acc.resources[curr.data.language] &&
+                  acc.resources[curr.data.language].translation) ||
+                  {}),
+                ...curr.data.i18n,
+              },
+            },
+          },
+        },
+      }),
+      {
+        ...FormioDefaultTranslations,
+        resources: {
+          ...FormioDefaultTranslations.resources,
+          ...Object.keys(GlobalTranslations).reduce(
+            (languages, language) => ({
+              ...languages,
+              [language]: {
+                ...((FormioDefaultTranslations.resources && FormioDefaultTranslations.resources[language]) || {}),
+                translation: {
+                  ...((FormioDefaultTranslations.resources &&
+                    FormioDefaultTranslations.resources[language] &&
+                    FormioDefaultTranslations.resources[language].translation) ||
+                    {}),
+                  ...GlobalTranslations[language],
+                },
+              },
+            }),
+            {}
+          ),
+        },
+      }
+    );
+  };
+
+  const fetchTranslations = (url) => {
+    return Formiojs.fetch(url, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
       },
@@ -72,51 +117,17 @@ export const useForms = (formio, store, userAlerter) => {
       .then((response) => {
         console.log("Response: ", response);
         return response;
-      })
-      .then((response) =>
-        response.reduce(
-          (acc, curr) => ({
-            ...acc,
-            ...{
-              resources: {
-                ...acc.resources,
-                [curr.data.language]: {
-                  ...((acc.resources && acc.resources[curr.data.language]) || {}),
-                  translation: {
-                    ...((acc.resources &&
-                      acc.resources[curr.data.language] &&
-                      acc.resources[curr.data.language].translation) ||
-                      {}),
-                    ...curr.data.i18n,
-                  },
-                },
-              },
-            },
-          }),
-          {
-            ...FormioDefaultTranslations,
-            resources: {
-              ...FormioDefaultTranslations.resources,
-              ...Object.keys(GlobalTranslations).reduce(
-                (languages, language) => ({
-                  ...languages,
-                  [language]: {
-                    ...((FormioDefaultTranslations.resources && FormioDefaultTranslations.resources[language]) || {}),
-                    translation: {
-                      ...((FormioDefaultTranslations.resources &&
-                        FormioDefaultTranslations.resources[language] &&
-                        FormioDefaultTranslations.resources[language].translation) ||
-                        {}),
-                      ...GlobalTranslations[language],
-                    },
-                  },
-                }),
-                {}
-              ),
-            },
-          }
-        )
-      );
+      });
   };
-  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage };
+
+  const loadLanguage = async (languageCode) => {
+    return fetchTranslations(
+      `${formio.projectUrl}/language/submission?data.language=${languageCode}`
+    ).then((response) => createI18nObject(response));
+  };
+
+  const loadLanguages = async () => {
+    return fetchTranslations(`${formio.projectUrl}/language/submission`);
+  };
+  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages };
 };
