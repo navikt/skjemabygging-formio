@@ -149,6 +149,23 @@ class NavForm extends Component {
         if (url) {
           this.formio.url = url;
         }
+        window.setLanguage = (lang) => {
+          if (!options || !options.i18next) {
+            return null;
+          }
+          options.i18next.changeLanguage(lang);
+          if (options.events && options.events._events && options.events._events.refreshData) {
+            options.events._events.refreshData();
+          }
+          console.log("Set language", options.i18next.language);
+        };
+
+        console.log("On-function exists", this.formio.on);
+
+        this.formio.on("toggleLang", () => {
+          console.log("toggleLang");
+          window.setLanguage(options.i18next.language === "nb-NO" ? "en" : "nb-NO");
+        });
 
         return this.formio;
       });

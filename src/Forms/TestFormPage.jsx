@@ -9,7 +9,7 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
   const title = `${form.title}`;
   const [translation, setTranslation] = useState();
   useEffect(() => {
-    loadLanguage("nb-NO").then((language) => setTranslation(language));
+    loadLanguage().then((language) => setTranslation(language));
   }, [loadLanguage, setTranslation]);
   console.log("Translation: ", translation);
   return (

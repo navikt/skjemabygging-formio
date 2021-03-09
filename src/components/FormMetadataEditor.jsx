@@ -105,12 +105,8 @@ export const SkjemaVisningSelect = ({ form, onChange }) => {
       onChange={(event) => onChange({ ...form, display: event.target.value })}
       bredde="s"
     >
-      <option label="Skjema" value="form">
-        Skjema
-      </option>
-      <option label="Veiviser" value="wizard">
-        Veiviser
-      </option>
+      <option value="form">Skjema</option>
+      <option value="wizard">Veiviser</option>
     </Select>
   );
 };

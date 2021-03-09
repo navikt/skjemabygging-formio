@@ -128,9 +128,7 @@ export const useForms = (formio, store, userAlerter) => {
   }; */
 
   const loadLanguage = async (languageCode) => {
-    return fetchTranslations(
-      `${formio.projectUrl}/language/submission?data.language=${languageCode}`
-    ).then((response) => createI18nObject(response));
+    return fetchTranslations(`${formio.projectUrl}/language/submission`).then((response) => createI18nObject(response));
   };
 
   const loadLanguages = async () => {
