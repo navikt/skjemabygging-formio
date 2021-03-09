@@ -23,10 +23,19 @@ jobs:
       - uses: "actions/setup-node@v1"
         with:
           node-version: '14'
-      - name: "install dependencies"
-        run: "npm ci"
+      - name: Cache local node modules
+        id: cache-local-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+      - name: Install deps if needed
+        if: steps.cache-local-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - name: "run tests"
         run: "npm test"
+      - name: Test library build
+        run: npm run prepare
       - name: "compile"
         run: "npm run build"
         env:
