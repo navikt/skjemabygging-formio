@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 
 import { AppLayoutWithContext } from "../components/AppLayout";
+import { Link } from "react-router-dom";
 
 const useFormsListPageStyles = makeStyles({
   root: {
@@ -23,13 +24,13 @@ const useFormsListPageStyles = makeStyles({
   },
 });
 
-const ResourceList = ({ className, translations }) => {
+const ResourceList = ({ translations }) => {
   const classes = useFormsListPageStyles();
   return (
     <nav className={classes.root}>
       <ul className={classes.list}>
         {translations.map((translation) => (
-          <li className={classes.listItem}>
+          <li className={classes.listItem} key={translation.id}>
             <a href={`/resource/${translation.id}`}>{translation.id}</a>
           </li>
         ))}
@@ -78,9 +79,17 @@ export function ResourceListPage({ onLogout, loadLanguages, projectURL }) {
         logout: onLogout,
       }}
     >
-      <nav className={classes.root}>
-        {translations && <ResourceList className={classes.list} projectURL={projectURL} translations={translations} />}
-      </nav>
+      <main className={classes.root}>
+        <Link className="knapp knapp--hoved margin-bottom-large" to="/resource/new">
+          Lag ny oversettelse
+        </Link>
+
+        <nav>
+          {translations && (
+            <ResourceList className={classes.list} projectURL={projectURL} translations={translations} />
+          )}
+        </nav>
+      </main>
     </AppLayoutWithContext>
   );
 }

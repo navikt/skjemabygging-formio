@@ -1,8 +1,8 @@
 import React from "react";
-import { NavBar } from "../components/NavBar";
 import { Pagewrapper } from "../Forms/components";
 import { styled } from "@material-ui/styles";
 import NavForm from "../components/NavForm";
+import { AppLayoutWithContext } from "../components/AppLayout";
 
 const StyledNavForm = styled(NavForm)({
   margin: "0 auto",
@@ -10,12 +10,17 @@ const StyledNavForm = styled(NavForm)({
 });
 
 const NewResource = ({ projectURL }) => (
-  <div>
-    <NavBar title={"Skjemabygger"} />
+  <AppLayoutWithContext
+    navBarProps={{
+      title: "Oversettelser",
+      visOversettelseliste: true,
+      visLagNyttSkjema: false,
+    }}
+  >
     <Pagewrapper>
       <StyledNavForm src={`${projectURL}/language`} onSubmitDone={() => alert("Saved!")} />
     </Pagewrapper>
-  </div>
+  </AppLayoutWithContext>
 );
 
 export default NewResource;

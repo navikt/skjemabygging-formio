@@ -51,7 +51,7 @@ export const KnappWrapper = styled("div")({
   placeSelf: "center",
 });
 
-export const NavBar = ({ title, logout, visSkjemaliste, visLagNyttSkjema, onNew }) => {
+export const NavBar = ({ title, logout, visSkjemaliste, visLagNyttSkjema, onNew, visOversettelseliste }) => {
   return (
     <NavBarContainer>
       <NavBarWrapper>
@@ -63,6 +63,11 @@ export const NavBar = ({ title, logout, visSkjemaliste, visLagNyttSkjema, onNew 
               </Link>
             )}
             {visLagNyttSkjema && <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>}
+            {visOversettelseliste && (
+              <Link className="knapp knapp--standard knapp--mini" to="/resources">
+                Oversettelser
+              </Link>
+            )}
           </KnappWrapper>
         </NavBarVenstre>
 

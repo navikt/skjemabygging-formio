@@ -13,8 +13,9 @@ const EditResourcePage = ({ projectURL, resourceId }) => {
     <AppLayoutWithContext
       navBarProps={{
         title: "Rediger oversettelse",
-        visSkjemaliste: true,
+        visSkjemaliste: false,
         visLagNyttSkjema: false,
+        visOversettelseliste: true,
       }}
     >
       <StyledNavForm src={`${projectURL}/language/submission/${resourceId}`} onSubmitDone={() => alert("Saved!")} />
