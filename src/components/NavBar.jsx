@@ -30,6 +30,7 @@ const NavBarWrapper = styled("div")({
 export const NavBarTitle = styled(Undertittel)({
   color: "#fff",
   placeSelf: "center",
+  marginLeft: "2rem",
 });
 
 export const NavBarVenstre = styled("div")({
