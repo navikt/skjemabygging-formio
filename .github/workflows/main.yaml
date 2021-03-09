@@ -1,8 +1,7 @@
 name: "Build and deploy skjemabygging-formio"
 on: push
 env:
-  IMAGE: "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{\
-    \ github.sha }}"
+  IMAGE: "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{ github.sha }}"
   CI: true
 jobs:
   build:
@@ -66,25 +65,25 @@ jobs:
           CLUSTER: "dev-gcp"
           RESOURCE: .nais/nais.yaml
           VARS: .nais/dev-vars.yaml
-#  deployToProd:
-#    name: "Deploy to prod"
-#    needs: "deployToDev"
-#    runs-on: "ubuntu-latest"
-#    if: github.ref == 'refs/heads/master' # bare kjør deploy for master branch
-#    steps:
-#    - uses: "actions/checkout@v2"
-#    - name: Generate prod nais variables
-#        run: |
-#          cat > .nais/prod-vars.yaml <<EOF
-#          ingresses:
-#            - "https://skjemabygging-formio.intern.nav.no"
-#          image: $IMAGE
-#          githubGitRef: "master"
-#          EOF
-#    - name: "Deploy to prod-gcp"
-#      uses: "nais/deploy/actions/deploy@v1"
-#      env:
-#        "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-#        "CLUSTER": "prod-gcp"
-#        "RESOURCE": ".nais/nais.yaml"
-#        "VARS": ".nais/prod-vars.yaml"
+  deployToProd:
+    name: "Deploy to prod"
+    needs: "deployToDev"
+    runs-on: "ubuntu-latest"
+    if: github.ref == 'refs/heads/master' # bare kjør deploy for master branch
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: Generate prod nais variables
+        run: |
+          cat > .nais/prod-vars.yaml <<EOF
+          ingresses:
+            - https://skjemabygging-formio.intern.nav.no
+          image: $IMAGE
+          githubGitRef: "master"
+          EOF
+      - name: "Deploy to prod-gcp"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "prod-gcp"
+          RESOURCE: ".nais/nais.yaml"
+          VARS: ".nais/prod-vars.yaml"
