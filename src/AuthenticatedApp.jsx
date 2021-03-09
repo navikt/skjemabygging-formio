@@ -6,6 +6,7 @@ import { useForms } from "./useForms";
 import { UserAlerterContext } from "./userAlerting";
 import NewResource from "./resources/NewResource";
 import { ResourceListPage } from "./resources/ResourceListPage";
+import EditResourcePage from "./resources/EditResourcePage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -42,6 +43,10 @@ function AuthenticatedApp({ formio, store }) {
         <Route path="/resource/new">
           <NewResource projectURL={formio.projectUrl} />
         </Route>
+        <Route
+          path="/resource/:resourceId"
+          render={({ match }) => <EditResourcePage {...match.params} projectURL={formio.projectUrl} />}
+        />
         <Route path="/">
           <Redirect to="/forms" />
         </Route>

@@ -120,6 +120,13 @@ export const useForms = (formio, store, userAlerter) => {
       });
   };
 
+  /* const loadLanguageById = async (languageId) => {
+    return fetchTranslations(`${formio.projectUrl}/language/submission/${languageId}`).then((response) => {
+      console.log("Load language by id: ", response);
+      return response;
+    });
+  }; */
+
   const loadLanguage = async (languageCode) => {
     return fetchTranslations(
       `${formio.projectUrl}/language/submission?data.language=${languageCode}`
@@ -127,7 +134,12 @@ export const useForms = (formio, store, userAlerter) => {
   };
 
   const loadLanguages = async () => {
-    return fetchTranslations(`${formio.projectUrl}/language/submission`);
+    return fetchTranslations(`${formio.projectUrl}/language/submission`).then((response) =>
+      response.map((language) => ({
+        ...language.data,
+        id: language._id,
+      }))
+    );
   };
   return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages };
 };
