@@ -88,6 +88,12 @@ const LeftCol = styled("div")({
   justifySelf: "start",
 });
 
+const RightCol = styled("div")({
+  gridColumn: "3",
+  alignSelf: "end",
+  justifySelf: "end",
+});
+
 const BasicAlertCol = ({ children, ...props }) => (
   <aside aria-live="polite" {...props}>
     {children}
@@ -101,7 +107,7 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
-export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps }) => {
+export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol }) => {
   const alertComponent = userAlerter.alertComponent();
   return (
     <>
@@ -111,6 +117,7 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
           <LeftCol>{leftCol}</LeftCol>
           <MainCol>{mainCol}</MainCol>
           {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
+          <RightCol>{rightCol}</RightCol>
         </ActionRow>
       </NoScrollWrapper>
       <Pagewrapper>{children}</Pagewrapper>

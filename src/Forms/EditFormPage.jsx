@@ -7,6 +7,7 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
+import { Select } from "nav-frontend-skjema";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const title = `${form.title}`;
@@ -30,6 +31,19 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
               <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
             </li>
           </ul>
+        }
+        rightCol={
+          <Select
+            label="Velg oversettelser"
+            name="form-language-select"
+            id="form-language-select"
+            value={form.language}
+            onChange={(event) => onChange({ ...form, display: event.target.value })}
+            bredde="s"
+          >
+            <option label="en">English</option>
+            <option label="no">Norsk</option>
+          </Select>
         }
         navBarProps={{
           title: title,
