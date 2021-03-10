@@ -36,7 +36,7 @@ jobs:
   publishBygger:
     runs-on: ubuntu-latest
     env:
-      NEW_SKJEMABYGGING_URL: github:navikt/skjemabygging-formio.git#${{ github.sha }}
+      NEW_SKJEMABYGGING_URL: github:navikt/skjemabygging-formio#${{ github.sha }}
     steps:
       - name: Show event information
         run: cat $GITHUB_EVENT_PATH | jq .
