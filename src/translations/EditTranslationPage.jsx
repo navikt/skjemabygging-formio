@@ -29,7 +29,7 @@ const EditTranslationPage = ({ projectURL, resourceId, deleteLanguage }) => {
         </SletteKnapp>
       }
     >
-      <StyledNavForm src={`${projectURL}/language/submission/${resourceId}`} onSubmitDone={() => alert("Saved!")} />
+      <StyledNavForm src={`${projectURL}/language/submission/${resourceId}`} />
     </AppLayoutWithContext>
   );
 };

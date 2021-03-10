@@ -18,7 +18,7 @@ const NewTranslation = ({ projectURL }) => (
     }}
   >
     <Pagewrapper>
-      <StyledNavForm src={`${projectURL}/language`} onSubmitDone={() => alert("Saved!")} />
+      <StyledNavForm src={`${projectURL}/language`} />
     </Pagewrapper>
   </AppLayoutWithContext>
 );
