@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
+import { Innholdstittel } from "nav-frontend-typografi";
 
 const useFormsListPageStyles = makeStyles({
   root: {
@@ -25,18 +26,35 @@ const useFormsListPageStyles = makeStyles({
 
 const ResourceList = ({ translations }) => {
   const classes = useFormsListPageStyles();
+  const globalTranslations = translations.filter((translation) => translation.scope === "global");
+  const localTranslations = translations.filter((translation) => translation.scope === "local");
   return (
-    <nav className={classes.root}>
-      <ul className={classes.list}>
-        {translations.map((translation) => (
-          <li className={classes.listItem} key={translation.id}>
-            <a href={`/translation/${translation.id}`}>
-              {translation.title || translation.id} ({translation.language})
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className={classes.root}>
+      <nav className="margin-bottom-large">
+        <Innholdstittel className="margin-bottom-default">Fellesoversettelser</Innholdstittel>
+        <ul className={classes.list}>
+          {globalTranslations.map((translation) => (
+            <li className={classes.listItem} key={translation.id}>
+              <a href={`/translation/${translation.id}`}>
+                {translation.title || translation.id} ({translation.language})
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <nav className="margin-bottom-large">
+        <Innholdstittel className="margin-bottom-default">Skjemaoversettelser</Innholdstittel>
+        <ul className={classes.list}>
+          {localTranslations.map((translation) => (
+            <li className={classes.listItem} key={translation.id}>
+              <a href={`/translation/${translation.id}`}>
+                {translation.title || translation.id} ({translation.language})
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 };
 
@@ -90,11 +108,7 @@ export function TranslationsListPage({ onLogout, loadLanguages, projectURL }) {
       }
     >
       <main className={classes.root}>
-        <nav>
-          {translations && (
-            <ResourceList className={classes.list} projectURL={projectURL} translations={translations} />
-          )}
-        </nav>
+        {translations && <ResourceList className={classes.list} projectURL={projectURL} translations={translations} />}
       </main>
     </AppLayoutWithContext>
   );
