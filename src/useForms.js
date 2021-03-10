@@ -139,5 +139,18 @@ export const useForms = (formio, store, userAlerter) => {
       }))
     );
   };
-  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages };
+
+  const deleteLanguage = async (id) => {
+    return Formiojs.fetch(`${formio.projectUrl}/language/submission/${id}`, {
+      headers: {
+        "x-jwt-token": Formiojs.getToken(),
+      },
+      method: "DELETE",
+    }).then((response) => {
+      console.log("Deleted", id);
+      return response;
+    });
+  };
+
+  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages, deleteLanguage };
 };

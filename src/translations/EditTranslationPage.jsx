@@ -1,14 +1,17 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import NavForm from "../components/NavForm";
 import { styled } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
+import { SletteKnapp } from "../Forms/components";
 
 const StyledNavForm = styled(NavForm)({
   margin: "0 auto",
   maxWidth: "26.25rem",
 });
 
-const EditTranslationPage = ({ projectURL, resourceId }) => {
+const EditTranslationPage = ({ projectURL, resourceId, deleteLanguage }) => {
+  const history = useHistory();
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -17,6 +20,14 @@ const EditTranslationPage = ({ projectURL, resourceId }) => {
         visLagNyttSkjema: false,
         visOversettelseliste: true,
       }}
+      rightCol={
+        <SletteKnapp
+          className="lenke"
+          onClick={() => deleteLanguage(resourceId).then(() => history.push("/translations"))}
+        >
+          Slett oversettelser
+        </SletteKnapp>
+      }
     >
       <StyledNavForm src={`${projectURL}/language/submission/${resourceId}`} onSubmitDone={() => alert("Saved!")} />
     </AppLayoutWithContext>

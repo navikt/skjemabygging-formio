@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
-import { SletteKnapp } from "../Forms/components";
 
 const useFormsListPageStyles = makeStyles({
   root: {
@@ -34,7 +33,6 @@ const ResourceList = ({ translations }) => {
             <a href={`/translation/${translation.id}`}>
               {translation.title || translation.id} ({translation.language})
             </a>
-            <SletteKnapp className="lenke">Slett oversettelser</SletteKnapp>
           </li>
         ))}
       </ul>

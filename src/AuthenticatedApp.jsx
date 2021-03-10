@@ -10,11 +10,17 @@ import EditTranslationPage from "./translations/EditTranslationPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages } = useForms(
-    formio,
-    store,
-    userAlerter
-  );
+  const {
+    forms,
+    onChangeForm,
+    onSave,
+    onCreate,
+    onDelete,
+    onPublish,
+    loadLanguage,
+    loadLanguages,
+    deleteLanguage,
+  } = useForms(formio, store, userAlerter);
 
   const history = useHistory();
   const wrappedCreate = (newForm) => {
@@ -45,7 +51,9 @@ function AuthenticatedApp({ formio, store }) {
         </Route>
         <Route
           path="/translation/:resourceId"
-          render={({ match }) => <EditTranslationPage {...match.params} projectURL={formio.projectUrl} />}
+          render={({ match }) => (
+            <EditTranslationPage {...match.params} projectURL={formio.projectUrl} deleteLanguage={deleteLanguage} />
+          )}
         />
         <Route path="/">
           <Redirect to="/forms" />
