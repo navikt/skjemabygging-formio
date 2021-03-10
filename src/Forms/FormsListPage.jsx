@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SletteKnapp } from "./components";
+import { Hovedknapp } from "nav-frontend-knapper";
 
 const FormsList = ({ forms, children, className }) => {
   return (
@@ -52,10 +53,17 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
-        visLagNyttSkjema: true,
+        visOversettelseliste: true,
         logout: onLogout,
         onNew: onNew,
       }}
+      mainCol={
+        <nav className="list-inline">
+          <div className="list-inline-item">
+            <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
+          </div>
+        </nav>
+      }
     >
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>

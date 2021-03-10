@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
 import { SletteKnapp } from "../Forms/components";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 
 const useFormsListPageStyles = makeStyles({
   root: {
