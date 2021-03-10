@@ -31,7 +31,9 @@ const ResourceList = ({ translations }) => {
       <ul className={classes.list}>
         {translations.map((translation) => (
           <li className={classes.listItem} key={translation.id}>
-            <a href={`/resource/${translation.id}`}>{translation.title || translation.id}</a>
+            <a href={`/resource/${translation.id}`}>
+              {translation.title || translation.id} ({translation.language})
+            </a>
           </li>
         ))}
       </ul>
