@@ -31,7 +31,7 @@ const ResourceList = ({ translations }) => {
       <ul className={classes.list}>
         {translations.map((translation) => (
           <li className={classes.listItem} key={translation.id}>
-            <a href={`/resource/${translation.id}`}>
+            <a href={`/translation/${translation.id}`}>
               {translation.title || translation.id} ({translation.language})
             </a>
           </li>
@@ -61,7 +61,7 @@ const useResourceListStyles = makeStyles({
   },
 });
 
-export function ResourceListPage({ onLogout, loadLanguages, projectURL }) {
+export function TranslationsListPage({ onLogout, loadLanguages, projectURL }) {
   const classes = useResourceListStyles();
   const [translations, setTranslations] = useState();
   useEffect(() => {
@@ -82,7 +82,7 @@ export function ResourceListPage({ onLogout, loadLanguages, projectURL }) {
       }}
     >
       <main className={classes.root}>
-        <Link className="knapp knapp--hoved margin-bottom-large" to="/resource/new">
+        <Link className="knapp knapp--hoved margin-bottom-large" to="/translation/new">
           Lag ny oversettelse
         </Link>
 

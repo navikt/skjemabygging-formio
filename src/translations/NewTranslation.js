@@ -9,7 +9,7 @@ const StyledNavForm = styled(NavForm)({
   maxWidth: "26.25rem",
 });
 
-const NewResource = ({ projectURL }) => (
+const NewTranslation = ({ projectURL }) => (
   <AppLayoutWithContext
     navBarProps={{
       title: "Oversettelser",
@@ -23,4 +23,4 @@ const NewResource = ({ projectURL }) => (
   </AppLayoutWithContext>
 );
 
-export default NewResource;
+export default NewTranslation;

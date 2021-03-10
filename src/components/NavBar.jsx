@@ -64,7 +64,7 @@ export const NavBar = ({ title, logout, visSkjemaliste, visLagNyttSkjema, onNew,
             )}
             {visLagNyttSkjema && <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>}
             {visOversettelseliste && (
-              <Link className="knapp knapp--standard knapp--mini" to="/resources">
+              <Link className="knapp knapp--standard knapp--mini" to="/translations">
                 Oversettelser
               </Link>
             )}

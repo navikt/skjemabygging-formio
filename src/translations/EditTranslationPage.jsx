@@ -8,7 +8,7 @@ const StyledNavForm = styled(NavForm)({
   maxWidth: "26.25rem",
 });
 
-const EditResourcePage = ({ projectURL, resourceId }) => {
+const EditTranslationPage = ({ projectURL, resourceId }) => {
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -23,4 +23,4 @@ const EditResourcePage = ({ projectURL, resourceId }) => {
   );
 };
 
-export default EditResourcePage;
+export default EditTranslationPage;

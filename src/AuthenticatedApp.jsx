@@ -4,9 +4,9 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./useForms";
 import { UserAlerterContext } from "./userAlerting";
-import NewResource from "./resources/NewResource";
-import { ResourceListPage } from "./resources/ResourceListPage";
-import EditResourcePage from "./resources/EditResourcePage";
+import NewTranslation from "./translations/NewTranslation";
+import { TranslationsListPage } from "./translations/TranslationsListPage";
+import EditTranslationPage from "./translations/EditTranslationPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -37,15 +37,15 @@ function AuthenticatedApp({ formio, store }) {
             loadLanguage={loadLanguage}
           />
         </Route>
-        <Route path="/resources">
-          <ResourceListPage projectURL={formio.projectUrl} loadLanguages={loadLanguages} />
+        <Route path="/translations">
+          <TranslationsListPage projectURL={formio.projectUrl} loadLanguages={loadLanguages} />
         </Route>
-        <Route path="/resource/new">
-          <NewResource projectURL={formio.projectUrl} />
+        <Route path="/translation/new">
+          <NewTranslation projectURL={formio.projectUrl} />
         </Route>
         <Route
-          path="/resource/:resourceId"
-          render={({ match }) => <EditResourcePage {...match.params} projectURL={formio.projectUrl} />}
+          path="/translation/:resourceId"
+          render={({ match }) => <EditTranslationPage {...match.params} projectURL={formio.projectUrl} />}
         />
         <Route path="/">
           <Redirect to="/forms" />
