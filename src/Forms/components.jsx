@@ -6,7 +6,7 @@ export const Pagewrapper = styled("div")({
   padding: "0 2rem",
 });
 
-export const SlettSkjemaKnapp = styled("button")({
+export const SletteKnapp = styled("button")({
   float: "right",
   outline: "none",
   border: 0,

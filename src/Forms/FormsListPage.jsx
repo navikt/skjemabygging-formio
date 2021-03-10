@@ -5,7 +5,7 @@ import * as PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
 
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { SlettSkjemaKnapp } from "./components";
+import { SletteKnapp } from "./components";
 
 const FormsList = ({ forms, children, className }) => {
   return (
@@ -65,9 +65,9 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
-              <SlettSkjemaKnapp className="lenke" onClick={() => onDelete(form)}>
+              <SletteKnapp className="lenke" onClick={() => onDelete(form)}>
                 Slett skjema
-              </SlettSkjemaKnapp>
+              </SletteKnapp>
             </li>
           )}
         </FormsList>

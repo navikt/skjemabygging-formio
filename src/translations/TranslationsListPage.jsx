@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/styles";
 
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
+import { SletteKnapp } from "../Forms/components";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 
 const useFormsListPageStyles = makeStyles({
   root: {
@@ -34,6 +36,7 @@ const ResourceList = ({ translations }) => {
             <a href={`/translation/${translation.id}`}>
               {translation.title || translation.id} ({translation.language})
             </a>
+            <SletteKnapp className="lenke">Slett oversettelser</SletteKnapp>
           </li>
         ))}
       </ul>
@@ -80,12 +83,17 @@ export function TranslationsListPage({ onLogout, loadLanguages, projectURL }) {
         visLagNyttSkjema: false,
         logout: onLogout,
       }}
+      mainCol={
+        <nav className="list-inline">
+          <div className="list-inline-item">
+            <Link className="knapp knapp--hoved margin-bottom-large" to="/translation/new">
+              Lag ny oversettelse
+            </Link>
+          </div>
+        </nav>
+      }
     >
       <main className={classes.root}>
-        <Link className="knapp knapp--hoved margin-bottom-large" to="/translation/new">
-          Lag ny oversettelse
-        </Link>
-
         <nav>
           {translations && (
             <ResourceList className={classes.list} projectURL={projectURL} translations={translations} />

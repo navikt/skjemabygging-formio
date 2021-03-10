@@ -113,12 +113,14 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
     <>
       <NoScrollWrapper>
         <NavBar {...navBarProps} />
-        <ActionRow>
-          <LeftCol>{leftCol}</LeftCol>
-          <MainCol>{mainCol}</MainCol>
-          {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
-          <RightCol>{rightCol}</RightCol>
-        </ActionRow>
+        {(leftCol || mainCol || rightCol || alertComponent) && (
+          <ActionRow>
+            <LeftCol>{leftCol}</LeftCol>
+            <MainCol>{mainCol}</MainCol>
+            {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
+            <RightCol>{rightCol}</RightCol>
+          </ActionRow>
+        )}
       </NoScrollWrapper>
       <Pagewrapper>{children}</Pagewrapper>
     </>
