@@ -15,14 +15,18 @@ const useLanguageSelectorStyling = makeStyles({
     position: "relative",
     outline: "none",
   },
-  languageToggleButton: {
-    width: "100%",
-    display: "flex",
-    border: "1px solid #826ba1",
-    borderRadius: "0.25rem",
-    alignItems: "center",
-    flexWrap: "nowrap",
-    padding: "0.5rem 2rem 0.5rem 1rem",
+  languageSelect: {
+    "& .select-button": {
+      width: "100%",
+      display: "flex",
+      border: "1px solid #826ba1",
+      borderRadius: "0.25rem",
+      alignItems: "center",
+      flexWrap: "nowrap",
+      padding: "0.5rem 2rem 0.5rem 1rem",
+    },
+    "& .select-list": {},
+    "& .select-list__option": {},
   },
 });
 
@@ -44,7 +48,7 @@ const LanguageSelector = ({ translations }) => {
     <div className={classes.languageToggle}>
       <div className={classes.languageToggleWrapper}>
         <Select
-          className={classes.languageToggleButton}
+          className={classes.languageSelect}
           label="Språk/Language"
           onChange={(languageCode) => window.setLanguage(languageCode)}
           options={translations.map((languageCode) => ({
