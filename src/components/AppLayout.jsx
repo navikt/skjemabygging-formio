@@ -3,6 +3,7 @@ import { NavBar } from "./NavBar";
 import { UserAlerterContext } from "../userAlerting";
 import React from "react";
 import { styled } from "@material-ui/styles";
+import LanguageSelector from "./LanguageSelector";
 
 const ActionRow = styled("div")({
   display: "flex",
@@ -107,7 +108,7 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
-export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol }) => {
+export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol, translations }) => {
   const alertComponent = userAlerter.alertComponent();
   return (
     <>
@@ -122,6 +123,7 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
           </ActionRow>
         )}
       </NoScrollWrapper>
+      <LanguageSelector translations={translations} />
       <Pagewrapper>{children}</Pagewrapper>
     </>
   );

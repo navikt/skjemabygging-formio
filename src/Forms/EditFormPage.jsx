@@ -7,7 +7,6 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
-import LanguageSelector from "../components/LanguageSelector";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const title = `${form.title}`;
@@ -31,9 +30,6 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
               <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
             </li>
           </ul>
-        }
-        rightCol={
-          <LanguageSelector changeLanguage={form.i18next && form.i18next.changeLanguage} language={form.language} />
         }
         navBarProps={{
           title: title,

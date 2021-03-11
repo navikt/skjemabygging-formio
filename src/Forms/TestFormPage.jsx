@@ -8,12 +8,17 @@ import AmplitudeProvider from "../context/amplitude";
 export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, onLogout, loadLanguage }) {
   const title = `${form.title}`;
   const [translation, setTranslation] = useState();
+  const [availableTranslations, setAvailableTranslations] = useState();
   useEffect(() => {
-    loadLanguage().then((language) => setTranslation(language));
+    loadLanguage().then((translations) => {
+      setTranslation(translations);
+      setAvailableTranslations(Object.keys(translations.resources));
+    });
   }, [loadLanguage, setTranslation]);
   console.log("Translation: ", translation);
   return (
     <AppLayoutWithContext
+      translations={availableTranslations}
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
       mainCol={
         <ul className="list-inline">
