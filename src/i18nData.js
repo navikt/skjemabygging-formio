@@ -42,5 +42,11 @@ export default {
     october: "Oktober",
     november: "November",
     december: "Desember",
+    valgfritt: "optional",
+    Ja: "yes",
+    Nei: "no",
+    Avkryssingsboks: "checkbox",
+    "Dato (dd.mm.åååå)": "Date (dd.mm.yyyy)",
+    "Fødselsnummer / D-nummer": "Social security number",
   },
 };
