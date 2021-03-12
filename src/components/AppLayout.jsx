@@ -37,6 +37,7 @@ const MainCol = styled("div")({
   "& .knapp": {
     display: "block",
     textAlign: "center",
+    maxWidth: "13rem",
     width: "100%",
   },
   "@media screen and (min-width: 23.875em)": {
