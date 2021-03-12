@@ -23,6 +23,11 @@ const useLanguageSelectorStyling = makeStyles({
       alignItems: "center",
       flexWrap: "nowrap",
       padding: "0.5rem 2rem 0.5rem 1rem",
+      "&:focus": {
+        outline: "none",
+        boxShadow: "0 0 0 3px #254b6d",
+        borderColor: "transparent",
+      },
     },
     "& .select-list": {
       margin: "0",
@@ -43,11 +48,16 @@ const useLanguageSelectorStyling = makeStyles({
     },
     "& .select-list__option": {
       borderBottom: "1px solid rgb(198, 194, 191)",
-      padding: "0.5rem 1rem",
     },
-    "& .select-list__option:hover": {
+    "& .select-list__option__link": {
+      display: "block",
+      padding: "0.5rem 1rem",
+      "&:hover, &:focus": {
       backgroundColor: navCssVariabler.navBla,
       color: "white",
+        width: "100%",
+        height: "100%",
+      },
     },
   },
 });
