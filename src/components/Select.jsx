@@ -6,6 +6,7 @@ const Select = ({ label, className, onChange, options }) => {
     <nav className={className}>
       <button className="select-button" onClick={() => setShowItems(!showItems)}>
         {label}
+        {showItems ? <Collapse className="select__chevron" /> : <Expand className="select__chevron" />}
       </button>
       {showItems && (
         <ul className="select-list">

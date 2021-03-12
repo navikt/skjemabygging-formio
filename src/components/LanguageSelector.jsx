@@ -17,16 +17,19 @@ const useLanguageSelectorStyling = makeStyles({
   languageSelect: {
     "& .select-button": {
       width: "100%",
-      display: "flex",
+      display: "grid",
       border: "1px solid #826ba1",
       borderRadius: "0.25rem",
       alignItems: "center",
-      flexWrap: "nowrap",
+      gridTemplateColumns: "auto 1rem",
       padding: "0.5rem 2rem 0.5rem 1rem",
       "&:focus": {
         outline: "none",
         boxShadow: "0 0 0 3px #254b6d",
         borderColor: "transparent",
+      },
+      "& .select__chevron": {
+        float: "right",
       },
     },
     "& .select-list": {
@@ -53,8 +56,8 @@ const useLanguageSelectorStyling = makeStyles({
       display: "block",
       padding: "0.5rem 1rem",
       "&:hover, &:focus": {
-      backgroundColor: navCssVariabler.navBla,
-      color: "white",
+        backgroundColor: navCssVariabler.navBla,
+        color: "white",
         width: "100%",
         height: "100%",
       },
