@@ -46,7 +46,7 @@ const useFormsListPageStyles = makeStyles({
   },
 });
 
-export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
+function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   return (
     <AppLayoutWithContext
@@ -83,3 +83,5 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
     </AppLayoutWithContext>
   );
 }
+
+export { FormsListPage, FormsList };

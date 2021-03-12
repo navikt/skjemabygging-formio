@@ -3,8 +3,9 @@ import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
 import { Innholdstittel } from "nav-frontend-typografi";
+import { FormsList } from "../Forms/FormsListPage";
 
-const useFormsListPageStyles = makeStyles({
+const useTranslationsListStyles = makeStyles({
   root: {
     maxWidth: "50rem",
     margin: "0 auto 2rem",
@@ -24,8 +25,8 @@ const useFormsListPageStyles = makeStyles({
   },
 });
 
-const ResourceList = ({ translations }) => {
-  const classes = useFormsListPageStyles();
+const TranslationsList = ({ translations }) => {
+  const classes = useTranslationsListStyles();
   const globalTranslations = translations.filter((translation) => translation.scope === "global");
   const localTranslations = translations.filter((translation) => translation.scope === "local");
   return (
@@ -58,28 +59,8 @@ const ResourceList = ({ translations }) => {
   );
 };
 
-const useResourceListStyles = makeStyles({
-  root: {
-    maxWidth: "50rem",
-    margin: "0 auto 2rem",
-  },
-  list: {
-    listStyle: "none",
-    padding: "0",
-  },
-  listItem: {
-    padding: "0.3rem 0.5rem",
-    display: "grid",
-    gridTemplateColumns: "auto 6rem",
-    width: "auto",
-    "&:nth-child(odd)": {
-      backgroundColor: "#ddd",
-    },
-  },
-});
-
-export function TranslationsListPage({ onLogout, loadLanguages, projectURL }) {
-  const classes = useResourceListStyles();
+export function TranslationsListPage({ onLogout, loadLanguages, projectURL, forms }) {
+  const classes = useTranslationsListStyles();
   const [translations, setTranslations] = useState();
   useEffect(() => {
     loadLanguages()
@@ -88,7 +69,7 @@ export function TranslationsListPage({ onLogout, loadLanguages, projectURL }) {
         return response;
       })
       .then((response) => setTranslations(response));
-  }, [loadLanguages, setTranslations]);
+  }, [loadLanguages, setTranslations, forms]);
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -108,7 +89,19 @@ export function TranslationsListPage({ onLogout, loadLanguages, projectURL }) {
       }
     >
       <main className={classes.root}>
-        {translations && <ResourceList className={classes.list} projectURL={projectURL} translations={translations} />}
+        {translations && (
+          <TranslationsList className={classes.list} projectURL={projectURL} translations={translations} />
+        )}
+        <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
+        {forms && (
+          <FormsList className={classes.list} forms={forms}>
+            {(form) => (
+              <li className={classes.listItem} key={form.path}>
+                {form.title}
+              </li>
+            )}
+          </FormsList>
+        )}
       </main>
     </AppLayoutWithContext>
   );
