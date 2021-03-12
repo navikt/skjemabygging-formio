@@ -5,7 +5,6 @@ import Select from "./Select";
 
 const useLanguageSelectorStyling = makeStyles({
   languageToggle: {
-    backgroundColor: navCssVariabler.navLysGra,
     display: "flex",
     justifyContent: "center",
     padding: "0.5rem",
@@ -25,8 +24,31 @@ const useLanguageSelectorStyling = makeStyles({
       flexWrap: "nowrap",
       padding: "0.5rem 2rem 0.5rem 1rem",
     },
-    "& .select-list": {},
-    "& .select-list__option": {},
+    "& .select-list": {
+      margin: "0",
+      padding: "0",
+      width: "100%",
+      backgroundColor: "white",
+      boxSizing: "border-box",
+      borderRight: "1px solid rgb(198, 194, 191)",
+      borderBottom: "1px solid rgb(198, 194, 191)",
+      borderLeft: "1px solid rgb(198, 194, 191)",
+      borderImage: "initial",
+      borderTop: "none",
+      boxShadow: "rgba(0, 0, 0, 0.08) 0px 0.05rem 0.25rem 0.125rem",
+      borderRadius: "0px 0px 4px 4px",
+      outline: "none",
+      cursor: "pointer",
+      listStyleType: "none",
+    },
+    "& .select-list__option": {
+      borderBottom: "1px solid rgb(198, 194, 191)",
+      padding: "0.5rem 1rem",
+    },
+    "& .select-list__option:hover": {
+      backgroundColor: navCssVariabler.navBla,
+      color: "white",
+    },
   },
 });
 
