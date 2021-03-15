@@ -127,8 +127,14 @@ export const useForms = (formio, store, userAlerter) => {
     });
   }; */
 
-  const loadLanguage = async (languageCode) => {
-    return fetchTranslations(`${formio.projectUrl}/language/submission`).then((response) => createI18nObject(response));
+  const loadLanguage = async (formPath) => {
+    console.log("Form path", formPath);
+    return fetchTranslations(
+      `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi`
+    ).then((response) => {
+      console.log("Fetched", response);
+      return createI18nObject(response);
+    });
   };
 
   const loadLanguages = async () => {

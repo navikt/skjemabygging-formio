@@ -10,11 +10,11 @@ export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, on
   const [translation, setTranslation] = useState();
   const [availableTranslations, setAvailableTranslations] = useState();
   useEffect(() => {
-    loadLanguage().then((translations) => {
+    loadLanguage(form.path).then((translations) => {
       setTranslation(translations);
       setAvailableTranslations(Object.keys(translations.resources));
     });
-  }, [loadLanguage, setTranslation]);
+  }, [form.path, loadLanguage, setTranslation]);
   console.log("Translation: ", translation);
   return (
     <AppLayoutWithContext

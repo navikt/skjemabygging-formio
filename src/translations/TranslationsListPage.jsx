@@ -37,7 +37,7 @@ const TranslationsList = ({ translations }) => {
           {globalTranslations.map((translation) => (
             <li className={classes.listItem} key={translation.id}>
               <a href={`/translation/${translation.id}`}>
-                {translation.title || translation.id} ({translation.language})
+                {translation.title || translation.scope || translation.id} ({translation.language})
               </a>
             </li>
           ))}
