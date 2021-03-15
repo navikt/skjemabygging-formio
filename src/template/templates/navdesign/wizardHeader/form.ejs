@@ -10,7 +10,7 @@
         >
           <div class="stegindikator__steg-num">{{ctx.t(index+1)}}</div>
           {% if (window.innerWidth > 600) { %}
-            <div class="stegindikator__steg-label">{{ctx.panels[index].title}}</div>
+            <div class="stegindikator__steg-label">{{ctx.t(ctx.panels[index].title)}}</div>
           {% } %}
         </{{(ctx.currentPage === index) ? "div" : "button"}}>
       </li>
