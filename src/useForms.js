@@ -129,12 +129,29 @@ export const useForms = (formio, store, userAlerter) => {
 
   const loadLanguage = async (formPath) => {
     console.log("Form path", formPath);
-    return fetchTranslations(
-      `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi`
-    ).then((response) => {
-      console.log("Fetched", response);
-      return createI18nObject(response);
-    });
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi`)
+      .then((response) => {
+        console.log("Fetched", response);
+        return response;
+      })
+      .then((translations) => {
+        const languagesWithLocalTranslation = translations
+          .filter((translation) => translation.data.scope === "local")
+          .reduce((localTranslations, translation) => {
+            if (localTranslations.indexOf(translation.data.language) === -1) {
+              return [...localTranslations, translation.data.language];
+            } else {
+              return localTranslations;
+            }
+          }, []);
+        return translations.filter(
+          (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1
+        );
+      })
+      .then((translations) => {
+        console.log("Fetched and filtered", translations);
+        return createI18nObject(translations);
+      });
   };
 
   const loadLanguages = async () => {
