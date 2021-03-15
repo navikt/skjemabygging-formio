@@ -6,7 +6,7 @@
   "type": "module",
   "config": {
     "icuDataDir": "./node_modules/full-icu",
-    "decoratorUrl": "https://www.nav.no/dekoratoren/",
+    "decoratorUrl": "https://www.nav.no/dekoratoren?simple=true",
     "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside"
   },
   "scripts": {
