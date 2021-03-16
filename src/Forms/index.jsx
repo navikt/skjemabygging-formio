@@ -1,7 +1,6 @@
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import "nav-frontend-lenker-style";
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
 import { useAuth } from "../context/auth-context";
 import NewFormPage from "./NewFormPage";
 import { EditFormPage } from "./EditFormPage";
@@ -9,29 +8,7 @@ import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
 import CustomComponents from "../customComponents";
 import Components from "formiojs/components/Components";
-
-const useLoadingStyles = makeStyles({
-  root: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    width: "100vw",
-    "& h1": {
-      fontSize: "3rem",
-      fontWeight: "bolder",
-    },
-  },
-});
-
-const LoadingComponent = () => {
-  const classes = useLoadingStyles();
-  return (
-    <div className={classes.root}>
-      <h1>Laster...</h1>
-    </div>
-  );
-};
+import LoadingComponent from "../components/LoadingComponent";
 
 export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadLanguage }) => {
   Components.setComponents(CustomComponents);
