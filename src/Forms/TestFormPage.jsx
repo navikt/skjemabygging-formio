@@ -5,17 +5,24 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import FyllUtRouter from "./FyllUtRouter";
 import AmplitudeProvider from "../context/amplitude";
 
-export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, onLogout, loadLanguage }) {
+export function TestFormPage({
+  onPublishClick,
+  publiserer,
+  editFormUrl,
+  form,
+  onSave,
+  onLogout,
+  loadTranslationsForForm,
+}) {
   const title = `${form.title}`;
   const [translation, setTranslation] = useState();
   const [availableTranslations, setAvailableTranslations] = useState();
   useEffect(() => {
-    loadLanguage(form.path).then((translations) => {
+    loadTranslationsForForm(form.path).then((translations) => {
       setTranslation(translations);
       setAvailableTranslations(Object.keys(translations.resources));
     });
-  }, [form.path, loadLanguage, setTranslation]);
-  console.log("Translation: ", translation);
+  }, [form.path, loadTranslationsForForm, setTranslation]);
   return (
     <AppLayoutWithContext
       translations={availableTranslations}

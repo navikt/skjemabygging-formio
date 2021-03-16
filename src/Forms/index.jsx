@@ -10,7 +10,16 @@ import CustomComponents from "../customComponents";
 import Components from "formiojs/components/Components";
 import LoadingComponent from "../components/LoadingComponent";
 
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadLanguage }) => {
+export const FormsRouter = ({
+  forms,
+  onChange,
+  onSave,
+  onNew,
+  onCreate,
+  onDelete,
+  onPublish,
+  loadTranslationsForForm,
+}) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
@@ -46,7 +55,7 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
           return (
             <TestFormPage
               onLogout={logout}
-              loadLanguage={loadLanguage}
+              loadTranslationsForForm={loadTranslationsForForm}
               form={getFormFromPath(forms, match.params.formpath)}
               editFormUrl={`${path}/${match.params.formpath}/edit`}
               onSave={onSave}

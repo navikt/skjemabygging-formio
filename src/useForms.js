@@ -127,7 +127,7 @@ export const useForms = (formio, store, userAlerter) => {
     });
   }; */
 
-  const loadLanguage = async (formPath) => {
+  const loadTranslationsForForm = async (formPath) => {
     console.log("Form path", formPath);
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi`)
       .then((response) => {
@@ -175,5 +175,15 @@ export const useForms = (formio, store, userAlerter) => {
     });
   };
 
-  return { forms, onChangeForm, onSave, onCreate, onDelete, onPublish, loadLanguage, loadLanguages, deleteLanguage };
+  return {
+    forms,
+    onChangeForm,
+    onSave,
+    onCreate,
+    onDelete,
+    onPublish,
+    loadTranslationsForForm,
+    loadLanguages,
+    deleteLanguage,
+  };
 };

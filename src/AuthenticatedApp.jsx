@@ -9,6 +9,7 @@ import { TranslationsListPage } from "./translations/TranslationsListPage";
 // import EditTranslationPage from "./translations/EditTranslationPage";
 import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
+import EditTranslationPage from "./translations/EditTranslationPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -19,7 +20,7 @@ function AuthenticatedApp({ formio, store }) {
     onCreate,
     onDelete,
     onPublish,
-    loadLanguage,
+    loadTranslationsForForm,
     loadLanguages,
     deleteLanguage,
   } = useForms(formio, store, userAlerter);
@@ -45,7 +46,7 @@ function AuthenticatedApp({ formio, store }) {
             onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
-            loadLanguage={loadLanguage}
+            loadTranslationsForForm={loadTranslationsForForm}
           />
         </Route>
         <Route path="/translations">
@@ -64,30 +65,18 @@ function AuthenticatedApp({ formio, store }) {
                 form={targetForm}
                 projectURL={formio.projectUrl}
                 deleteLanguage={deleteLanguage}
+                loadTranslationsForForm={loadTranslationsForForm}
               />
             );
           }}
         />
+
         <Route
-          path="/translation/:formPath/:languageCode"
-          render={({ match }) => {
-            const targetForm = forms.find((form) => form.path === match.params.formPath);
-            return (
-              <TranslationsByFormPage
-                {...match.params}
-                form={targetForm}
-                projectURL={formio.projectUrl}
-                deleteLanguage={deleteLanguage}
-              />
-            );
-          }}
-        />
-        {/* <Route
-          path="/translation/:resourceId"
+          path="/globalTranslations/:resourceId"
           render={({ match }) => (
             <EditTranslationPage {...match.params} projectURL={formio.projectUrl} deleteLanguage={deleteLanguage} />
           )}
-        /> */}
+        />
         <Route path="/">
           <Redirect to="/forms" />
         </Route>
