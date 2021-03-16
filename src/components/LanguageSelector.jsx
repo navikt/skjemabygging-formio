@@ -72,7 +72,7 @@ const languages = {
   pl: "Polsk",
 };
 
-const LanguageSelector = ({ translations }) => {
+const LanguageSelector = ({ createHref, createOnClick = () => () => {}, translations }) => {
   const classes = useLanguageSelectorStyling();
 
   console.log("LanguageSelector", translations);
@@ -86,8 +86,8 @@ const LanguageSelector = ({ translations }) => {
           className={classes.languageSelect}
           label="Språk/Language"
           options={translations.map((languageCode) => ({
-            href: `?lang=${languageCode}`,
-            onClick: () => window.setLanguage(languageCode),
+            href: createHref(languageCode),
+            onClick: createOnClick(languageCode),
             optionLabel: languages[languageCode] || languageCode,
           }))}
         />

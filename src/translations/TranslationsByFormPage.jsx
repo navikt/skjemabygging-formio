@@ -5,6 +5,7 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
 import { Input } from "nav-frontend-skjema";
 import { Sidetittel } from "nav-frontend-typografi";
+import LanguageSelector from "../components/LanguageSelector";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -37,7 +38,7 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId }) => {
   const history = useHistory();
   const {
     title,
-    //path,
+    path,
     properties: { skjemanummer },
   } = form;
   const flattenedComponents = getAllTextsForForm(form);
@@ -49,6 +50,12 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId }) => {
         visLagNyttSkjema: false,
         visOversettelseliste: true,
       }}
+      leftCol={
+        <LanguageSelector
+          createHref={(languageCode) => `/translation/${path}/${languageCode}`}
+          translations={["en", "pl", "nn-NO"]}
+        />
+      }
       rightCol={
         <SletteKnapp
           className="lenke"

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Collapse, Expand } from "@navikt/ds-icons";
+import { Link } from "react-router-dom";
 
 const closeOnEscape = (event, close, buttonRef) => {
   if (event.key === "Escape") {
@@ -8,7 +9,7 @@ const closeOnEscape = (event, close, buttonRef) => {
   }
 };
 
-const Select = ({ label, className, onChange, options }) => {
+const Select = ({ label, className, options }) => {
   const buttonRef = useRef(null);
   const [showItems, setShowItems] = useState(false);
   return (
@@ -21,16 +22,9 @@ const Select = ({ label, className, onChange, options }) => {
         <ul className="select-list">
           {options.map(({ href, onClick, optionLabel }) => (
             <li className="select-list__option">
-              <a
-                className="select-list__option__link"
-                href={href}
-                onClick={(event) => {
-                  event.preventDefault();
-                  onClick();
-                }}
-              >
+              <Link className="select-list__option__link" to={href} onClick={onClick}>
                 {optionLabel}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

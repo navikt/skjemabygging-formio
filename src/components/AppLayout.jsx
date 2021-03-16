@@ -124,7 +124,14 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
           </ActionRow>
         )}
       </NoScrollWrapper>
-      <LanguageSelector translations={translations} />
+      <LanguageSelector
+        createHref={(languageCode) => `?lang=${languageCode}`}
+        createOnClick={(languageCode) => (event) => {
+          event.preventDefault();
+          window.setLanguage(languageCode);
+        }}
+        translations={translations}
+      />
       <Pagewrapper>{children}</Pagewrapper>
     </>
   );

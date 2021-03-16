@@ -68,6 +68,20 @@ function AuthenticatedApp({ formio, store }) {
             );
           }}
         />
+        <Route
+          path="/translation/:formPath/:languageCode"
+          render={({ match }) => {
+            const targetForm = forms.find((form) => form.path === match.params.formPath);
+            return (
+              <TranslationsByFormPage
+                {...match.params}
+                form={targetForm}
+                projectURL={formio.projectUrl}
+                deleteLanguage={deleteLanguage}
+              />
+            );
+          }}
+        />
         {/* <Route
           path="/translation/:resourceId"
           render={({ match }) => (
