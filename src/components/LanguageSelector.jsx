@@ -85,10 +85,10 @@ const LanguageSelector = ({ translations }) => {
         <Select
           className={classes.languageSelect}
           label="Språk/Language"
-          onChange={(languageCode) => window.setLanguage(languageCode)}
           options={translations.map((languageCode) => ({
+            href: `?lang=${languageCode}`,
+            onClick: () => window.setLanguage(languageCode),
             optionLabel: languages[languageCode] || languageCode,
-            value: languageCode,
           }))}
         />
       </div>

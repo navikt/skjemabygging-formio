@@ -19,14 +19,14 @@ const Select = ({ label, className, onChange, options }) => {
       </button>
       {showItems && (
         <ul className="select-list">
-          {options.map(({ optionLabel, value }) => (
+          {options.map(({ href, onClick, optionLabel }) => (
             <li className="select-list__option">
               <a
                 className="select-list__option__link"
-                href={`?lang=${value}`}
+                href={href}
                 onClick={(event) => {
                   event.preventDefault();
-                  onChange(value);
+                  onClick();
                 }}
               >
                 {optionLabel}
