@@ -36,7 +36,7 @@ const TranslationsList = ({ translations }) => {
         <ul className={classes.list}>
           {globalTranslations.map((translation) => (
             <li className={classes.listItem} key={translation.id}>
-              <a href={`/translation/${translation.id}`}>
+              <a href={`/globalTranslations/${translation.id}`}>
                 {translation.title || translation.scope || translation.id} ({translation.language})
               </a>
             </li>
@@ -48,7 +48,7 @@ const TranslationsList = ({ translations }) => {
         <ul className={classes.list}>
           {localTranslations.map((translation) => (
             <li className={classes.listItem} key={translation.id}>
-              <a href={`/translation/${translation.id}`}>
+              <a href={`/globalTranslations/${translation.id}`}>
                 {translation.title || translation.id} ({translation.language})
               </a>
             </li>

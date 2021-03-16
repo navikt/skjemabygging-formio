@@ -56,7 +56,7 @@ function AuthenticatedApp({ formio, store }) {
           <NewTranslation projectURL={formio.projectUrl} />
         </Route>
         <Route
-          path="/translation/:formPath"
+          path="/translation/:formPath/:languageCode?"
           render={({ match }) => {
             const targetForm = forms.find((form) => form.path === match.params.formPath);
             return (
