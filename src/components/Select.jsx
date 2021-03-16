@@ -22,7 +22,7 @@ const Select = ({ label, className, options }) => {
         <ul className="select-list">
           {options.map(({ href, onClick, optionLabel }) => (
             <li className="select-list__option">
-              <Link className="select-list__option__link" to={href} onClick={onClick}>
+              <Link className="select-list__option__link" to={href} onClick={() => setShowItems(!showItems)}>
                 {optionLabel}
               </Link>
             </li>
