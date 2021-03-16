@@ -97,7 +97,7 @@ export function TranslationsListPage({ onLogout, loadLanguages, projectURL, form
           <FormsList className={classes.list} forms={forms}>
             {(form) => (
               <li className={classes.listItem} key={form.path}>
-                {form.title}
+                <a href={`/translation/${form.path}`}>{form.title}</a>
               </li>
             )}
           </FormsList>

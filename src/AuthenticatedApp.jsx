@@ -6,7 +6,9 @@ import { useForms } from "./useForms";
 import { UserAlerterContext } from "./userAlerting";
 import NewTranslation from "./translations/NewTranslation";
 import { TranslationsListPage } from "./translations/TranslationsListPage";
-import EditTranslationPage from "./translations/EditTranslationPage";
+// import EditTranslationPage from "./translations/EditTranslationPage";
+import TranslationsByFormPage from "./translations/TranslationsByFormPage";
+import LoadingComponent from "./components/LoadingComponent";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -28,6 +30,9 @@ function AuthenticatedApp({ formio, store }) {
       history.push(`/forms/${savedForm.path}/edit`);
     });
   };
+  if (!forms) {
+    return <LoadingComponent />;
+  }
   return (
     <>
       <Switch>
@@ -50,11 +55,25 @@ function AuthenticatedApp({ formio, store }) {
           <NewTranslation projectURL={formio.projectUrl} />
         </Route>
         <Route
+          path="/translation/:formPath"
+          render={({ match }) => {
+            const targetForm = forms.find((form) => form.path === match.params.formPath);
+            return (
+              <TranslationsByFormPage
+                {...match.params}
+                form={targetForm}
+                projectURL={formio.projectUrl}
+                deleteLanguage={deleteLanguage}
+              />
+            );
+          }}
+        />
+        {/* <Route
           path="/translation/:resourceId"
           render={({ match }) => (
             <EditTranslationPage {...match.params} projectURL={formio.projectUrl} deleteLanguage={deleteLanguage} />
           )}
-        />
+        /> */}
         <Route path="/">
           <Redirect to="/forms" />
         </Route>
