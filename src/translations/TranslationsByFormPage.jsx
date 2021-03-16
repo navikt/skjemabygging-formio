@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { SletteKnapp } from "../Forms/components";
 import { AppLayoutWithContext } from "../components/AppLayout";
@@ -22,19 +22,21 @@ const getAllTextsForForm = (form) =>
         ...Object.keys(component)
           .filter((key) => component[key] !== undefined)
           .reduce((textsForComponent, key) => {
-            console.log("Key", component[key]);
             if (key === "values") {
-              return [...textsForComponent, ...component[key].map((value) => ({ text: value, type: "text" }))];
+              return [
+                ...textsForComponent,
+                ...component[key].map((value) => ({ text: value, type: "text", value: "" })),
+              ];
             } else if (key === "html" || key === "content") {
-              return [...textsForComponent, { text: component[key], type: "textarea" }];
+              return [...textsForComponent, { text: component[key], type: "textarea", value: "" }];
             } else {
-              return [...textsForComponent, { text: component[key], type: "text" }];
+              return [...textsForComponent, { text: component[key], type: "text", value: "" }];
             }
           }, []),
       ];
     }, []);
 
-const TranslationsByFormPage = ({ deleteLanguage, form, resourceId }) => {
+const TranslationsByFormPage = ({ deleteLanguage, form, resourceId, loadTranslationsForForm, languageCode }) => {
   const history = useHistory();
   const {
     title,
@@ -42,6 +44,17 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId }) => {
     properties: { skjemanummer },
   } = form;
   const flattenedComponents = getAllTextsForForm(form);
+  const [translations, setTranslations] = useState();
+  const [availableTranslations, setAvailableTranslations] = useState();
+  useEffect(() => {
+    loadTranslationsForForm(form.path).then((translations) => {
+      setAvailableTranslations(Object.keys(translations.resources));
+
+      if (!languageCode) return;
+      setTranslations(translations.resources[languageCode].translation);
+    });
+  }, [form.path, loadTranslationsForForm, setTranslations, languageCode]);
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -53,7 +66,7 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId }) => {
       leftCol={
         <LanguageSelector
           createHref={(languageCode) => `/translation/${path}/${languageCode}`}
-          translations={["en", "pl", "nn-NO"]}
+          translations={availableTranslations}
         />
       }
       rightCol={
@@ -69,9 +82,14 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId }) => {
         {skjemanummer} {title}
       </Sidetittel>
       <form>
-        {flattenedComponents.map(({ text, type }) => (
-          <Input className="margin-bottom-default" label={text} type={type} />
-        ))}
+        {flattenedComponents.map(({ text, type }) => {
+          if (translations && translations.text) {
+            console.log("test", translations.text);
+            return <Input className="margin-bottom-default" label={text} type={type} value={translations.text} />;
+          } else {
+            return <Input className="margin-bottom-default" label={text} type={type} />;
+          }
+        })}
       </form>
     </AppLayoutWithContext>
   );
