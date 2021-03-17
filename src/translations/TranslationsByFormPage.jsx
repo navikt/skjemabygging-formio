@@ -86,22 +86,34 @@ const TranslationsByFormPage = ({
       </Sidetittel>
       <form>
         {flattenedComponents.map(({ text, type }) => {
-          if (translations && translations[text]) {
-            if (type === "textarea")
-              return (
-                <Textarea
-                  label={text}
-                  className="margin-bottom-default"
-                  value={translations[text]}
-                  onChange={() => {}}
-                />
-              );
-            return <Input className="margin-bottom-default" label={text} type={type} value={translations[text]} />;
-          }
           if (type === "textarea")
-            return <Textarea label={text} className="margin-bottom-default" value={""} onChange={() => {}} />;
-
-          return <Input className="margin-bottom-default" label={text} type={type} />;
+            return (
+              <Textarea
+                label={text}
+                className="margin-bottom-default"
+                value={(translations && translations[text]) || ""}
+                onChange={(event) =>
+                  setTranslations({
+                    ...translations,
+                    [text]: event.target.value,
+                  })
+                }
+              />
+            );
+          return (
+            <Input
+              className="margin-bottom-default"
+              label={text}
+              type={type}
+              value={(translations && translations[text]) || ""}
+              onChange={(event) =>
+                setTranslations({
+                  ...translations,
+                  [text]: event.target.value,
+                })
+              }
+            />
+          );
         })}
       </form>
     </AppLayoutWithContext>
