@@ -63,13 +63,7 @@ const saveTranslation = (projectUrl, formPath, translationId, languageCode, tran
   });
 };
 
-const TranslationsByFormPage = ({
-  deleteLanguage,
-  form,
-  loadTranslationsForEditPage,
-  languageCode = "nb-NO",
-  projectURL,
-}) => {
+const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditPage, languageCode, projectURL }) => {
   const history = useHistory();
   const {
     title,
