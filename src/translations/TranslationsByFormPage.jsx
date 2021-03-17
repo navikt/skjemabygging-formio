@@ -36,12 +36,12 @@ const getAllTextsForForm = (form) =>
     }, []);
 
 const saveTranslation = (projectUrl, formPath, translationId, languageCode, translations) => {
-  Formiojs.fetch(`${projectUrl}/language/submission/${translationId}`, {
+  Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
     headers: {
       "x-jwt-token": Formiojs.getToken(),
       "content-type": "application/json",
     },
-    method: "PUT",
+    method: translationId ? "PUT" : "POST",
     body: JSON.stringify({
       data: {
         form: formPath,
@@ -78,13 +78,11 @@ const TranslationsByFormPage = ({
   } = form;
   const flattenedComponents = getAllTextsForForm(form);
   const [translations, setTranslations] = useState();
-  const [availableTranslations, setAvailableTranslations] = useState();
   const [translationId, setTranslationId] = useState();
 
   useEffect(() => {
     loadTranslationsForEditPage(form.path).then((translations) => {
       console.log("TranslationsByFormPage", translations);
-      setAvailableTranslations(Object.keys(translations));
       setTranslations(translations[languageCode] ? translations[languageCode].translations : {});
       setTranslationId(translations[languageCode] ? translations[languageCode].id : undefined);
     });
@@ -102,7 +100,7 @@ const TranslationsByFormPage = ({
         <>
           <LanguageSelector
             createHref={(languageCode) => `/translation/${path}/${languageCode}`}
-            translations={availableTranslations}
+            translations={["nn-NO", "en", "pl"]}
           />
           <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
             Slett språk
