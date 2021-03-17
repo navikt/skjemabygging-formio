@@ -109,6 +109,13 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
+const languages = {
+  en: "English",
+  "nb-NO": "Norsk (bokmål)",
+  "nn-NO": "Norsk (nynorsk)",
+  pl: "Polsk",
+};
+
 export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol, translations }) => {
   const alertComponent = userAlerter.alertComponent();
   return (
@@ -125,12 +132,17 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
         )}
       </NoScrollWrapper>
       <LanguageSelector
-        createHref={(languageCode) => `?lang=${languageCode}`}
-        createOnClick={(languageCode) => (event) => {
-          event.preventDefault();
-          window.setLanguage(languageCode);
-        }}
-        translations={translations}
+        translations={
+          translations &&
+          translations.map((translation) => ({
+            optionLabel: languages[translation],
+            href: `?lang=${translation}`,
+            onClick: (event) => {
+              event.preventDefault();
+              window.setLanguage(translation);
+            },
+          }))
+        }
       />
       <Pagewrapper>{children}</Pagewrapper>
     </>

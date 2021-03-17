@@ -10,19 +10,20 @@ export function TestFormPage({
   publiserer,
   editFormUrl,
   form,
+  lang = "nb-NO",
   onSave,
   onLogout,
   loadTranslationsForFormAndMapToI18nObject,
 }) {
   const title = `${form.title}`;
-  const [translation, setTranslation] = useState();
+  const [translations, setTranslations] = useState();
   const [availableTranslations, setAvailableTranslations] = useState();
   useEffect(() => {
     loadTranslationsForFormAndMapToI18nObject(form.path).then((translations) => {
-      setTranslation(translations);
+      setTranslations(translations);
       setAvailableTranslations(Object.keys(translations.resources));
     });
-  }, [form.path, loadTranslationsForFormAndMapToI18nObject, setTranslation]);
+  }, [form.path, lang, loadTranslationsForFormAndMapToI18nObject, setTranslations]);
   return (
     <AppLayoutWithContext
       translations={availableTranslations}
@@ -46,7 +47,7 @@ export function TestFormPage({
       }
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-        <FyllUtRouter form={form} translation={translation} />
+        <FyllUtRouter form={form} translation={translations} />
       </AmplitudeProvider>
     </AppLayoutWithContext>
   );

@@ -88,6 +88,21 @@ const TranslationsByFormPage = ({
     });
   }, [form.path, loadTranslationsForEditPage, languageCode]);
 
+  const languages = [
+    {
+      href: `/translation/${path}/nn-NO`,
+      optionLabel: "Nynorsk - Norsk",
+    },
+    {
+      href: `/translation/${path}/en`,
+      optionLabel: "English",
+    },
+    {
+      href: `/translation/${path}/pl`,
+      optionLabel: "Polskie",
+    },
+  ];
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -98,10 +113,7 @@ const TranslationsByFormPage = ({
       }}
       leftCol={
         <>
-          <LanguageSelector
-            createHref={(languageCode) => `/translation/${path}/${languageCode}`}
-            translations={["nn-NO", "en", "pl"]}
-          />
+          <LanguageSelector translations={languages} />
           <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
             Slett språk
           </Knapp>

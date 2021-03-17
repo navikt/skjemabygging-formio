@@ -65,32 +65,16 @@ const useLanguageSelectorStyling = makeStyles({
   },
 });
 
-const languages = {
-  en: "English",
-  "nb-NO": "Norsk (bokmål)",
-  "nn-NO": "Norsk (nynorsk)",
-  pl: "Polsk",
-};
-
-const LanguageSelector = ({ createHref, createOnClick = () => () => {}, translations }) => {
+const LanguageSelector = ({ translations = [] }) => {
   const classes = useLanguageSelectorStyling();
-
   console.log("LanguageSelector", translations);
-  if (!translations) {
+  if (translations.length === 0) {
     return null;
   }
   return (
     <div className={classes.languageToggle}>
       <div className={classes.languageToggleWrapper}>
-        <Select
-          className={classes.languageSelect}
-          label="Språk/Language"
-          options={translations.map((languageCode) => ({
-            href: createHref(languageCode),
-            onClick: createOnClick(languageCode),
-            optionLabel: languages[languageCode] || languageCode,
-          }))}
-        />
+        <Select className={classes.languageSelect} label="Språk/Language" options={translations} />
       </div>
     </div>
   );
