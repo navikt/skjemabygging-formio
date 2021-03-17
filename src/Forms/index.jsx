@@ -54,6 +54,7 @@ export const FormsRouter = ({
         render={({ match }) => {
           return (
             <TestFormPage
+              {...match.params}
               onLogout={logout}
               loadTranslationsForFormAndMapToI18nObject={loadTranslationsForFormAndMapToI18nObject}
               form={getFormFromPath(forms, match.params.formpath)}

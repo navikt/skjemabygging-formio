@@ -77,29 +77,31 @@ const TranslationsByFormPage = ({
     properties: { skjemanummer },
   } = form;
   const flattenedComponents = getAllTextsForForm(form);
-  const [translations, setTranslations] = useState();
+  const [translations, setTranslations] = useState([]);
   const [translationId, setTranslationId] = useState();
+  const [availableTranslations, setAvailableTranslations] = useState([]);
 
   useEffect(() => {
     loadTranslationsForEditPage(form.path).then((translations) => {
       console.log("TranslationsByFormPage", translations);
       setTranslations(translations[languageCode] ? translations[languageCode].translations : {});
       setTranslationId(translations[languageCode] ? translations[languageCode].id : undefined);
+      setAvailableTranslations(Object.keys(translations));
     });
   }, [form.path, loadTranslationsForEditPage, languageCode]);
 
   const languages = [
     {
       href: `/translation/${path}/nn-NO`,
-      optionLabel: "Nynorsk - Norsk",
+      optionLabel: `${availableTranslations.indexOf("nn-NO") === -1 ? `Legg til ` : ""}Nynorsk - Norsk`,
     },
     {
       href: `/translation/${path}/en`,
-      optionLabel: "English",
+      optionLabel: `${availableTranslations.indexOf("en") === -1 ? `Legg til ` : ""}Engelsk`,
     },
     {
       href: `/translation/${path}/pl`,
-      optionLabel: "Polskie",
+      optionLabel: `${availableTranslations.indexOf("pl") === -1 ? `Legg til ` : ""}Polsk`,
     },
   ];
 
@@ -150,11 +152,11 @@ const TranslationsByFormPage = ({
                 label={text}
                 className="margin-bottom-default"
                 description={
-                  translations && translations[text] && translations[text].scope === "global"
+                  translations[text] && translations[text].scope === "global"
                     ? "Denne teksten er global oversatt"
                     : undefined
                 }
-                value={(translations && translations[text] && translations[text].value) || ""}
+                value={(translations[text] && translations[text].value) || ""}
                 onChange={(event) =>
                   setTranslations({
                     ...translations,
