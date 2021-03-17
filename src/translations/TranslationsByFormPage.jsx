@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { SletteKnapp } from "../Forms/components";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
-import { Input } from "nav-frontend-skjema";
+import { Input, Textarea } from "nav-frontend-skjema";
 import { Sidetittel } from "nav-frontend-typografi";
 import LanguageSelector from "../components/LanguageSelector";
 
@@ -23,20 +23,23 @@ const getAllTextsForForm = (form) =>
           .filter((key) => component[key] !== undefined)
           .reduce((textsForComponent, key) => {
             if (key === "values") {
-              return [
-                ...textsForComponent,
-                ...component[key].map((value) => ({ text: value, type: "text", value: "" })),
-              ];
+              return [...textsForComponent, ...component[key].map((value) => ({ text: value, type: "text" }))];
             } else if (key === "html" || key === "content") {
-              return [...textsForComponent, { text: component[key], type: "textarea", value: "" }];
+              return [...textsForComponent, { text: component[key], type: "textarea" }];
             } else {
-              return [...textsForComponent, { text: component[key], type: "text", value: "" }];
+              return [...textsForComponent, { text: component[key], type: "text" }];
             }
           }, []),
       ];
     }, []);
 
-const TranslationsByFormPage = ({ deleteLanguage, form, resourceId, loadTranslationsForForm, languageCode }) => {
+const TranslationsByFormPage = ({
+  deleteLanguage,
+  form,
+  resourceId,
+  loadTranslationsForForm,
+  languageCode = "nb-NO",
+}) => {
   const history = useHistory();
   const {
     title,
@@ -46,14 +49,13 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId, loadTranslat
   const flattenedComponents = getAllTextsForForm(form);
   const [translations, setTranslations] = useState();
   const [availableTranslations, setAvailableTranslations] = useState();
+
   useEffect(() => {
     loadTranslationsForForm(form.path).then((translations) => {
       setAvailableTranslations(Object.keys(translations.resources));
-
-      if (!languageCode) return;
       setTranslations(translations.resources[languageCode].translation);
     });
-  }, [form.path, loadTranslationsForForm, setTranslations, languageCode]);
+  }, [form.path, loadTranslationsForForm, languageCode]);
 
   return (
     <AppLayoutWithContext
@@ -83,12 +85,22 @@ const TranslationsByFormPage = ({ deleteLanguage, form, resourceId, loadTranslat
       </Sidetittel>
       <form>
         {flattenedComponents.map(({ text, type }) => {
-          if (translations && translations.text) {
-            console.log("test", translations.text);
-            return <Input className="margin-bottom-default" label={text} type={type} value={translations.text} />;
-          } else {
-            return <Input className="margin-bottom-default" label={text} type={type} />;
+          if (translations && translations[text]) {
+            if (type === "textarea")
+              return (
+                <Textarea
+                  label={text}
+                  className="margin-bottom-default"
+                  value={translations[text]}
+                  onChange={() => {}}
+                />
+              );
+            return <Input className="margin-bottom-default" label={text} type={type} value={translations[text]} />;
           }
+          if (type === "textarea")
+            return <Textarea label={text} className="margin-bottom-default" value={""} onChange={() => {}} />;
+
+          return <Input className="margin-bottom-default" label={text} type={type} />;
         })}
       </form>
     </AppLayoutWithContext>
