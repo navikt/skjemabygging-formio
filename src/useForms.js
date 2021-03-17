@@ -135,15 +135,13 @@ export const useForms = (formio, store, userAlerter) => {
         return response;
       })
       .then((translations) => {
-        const languagesWithLocalTranslation = translations
-          .filter((translation) => translation.data.scope === "local")
-          .reduce((localTranslations, translation) => {
-            if (localTranslations.indexOf(translation.data.language) === -1) {
-              return [...localTranslations, translation.data.language];
-            } else {
-              return localTranslations;
-            }
-          }, []);
+        const languagesWithLocalTranslation = translations.reduce((localTranslations, translation) => {
+          if (localTranslations.indexOf(translation.data.language) === -1) {
+            return [...localTranslations, translation.data.language];
+          } else {
+            return localTranslations;
+          }
+        }, []);
         return translations.filter(
           (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1
         );
