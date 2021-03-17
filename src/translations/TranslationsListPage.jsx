@@ -45,17 +45,18 @@ export function TranslationsListPage({ onLogout, forms }) {
             </li>
           </ul>
         </nav>
-
-        <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
-        {forms && (
-          <FormsList className={classes.list} forms={forms}>
-            {(form) => (
-              <li className={classes.listItem} key={form.path}>
-                <a href={`/translation/${form.path}`}>{form.title}</a>
-              </li>
-            )}
-          </FormsList>
-        )}
+        <nav className="margin-bottom-large">
+          <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
+          {forms && (
+            <FormsList className={classes.list} forms={forms}>
+              {(form) => (
+                <li className={classes.listItem} key={form.path}>
+                  <a href={`/translation/${form.path}`}>{form.title}</a>
+                </li>
+              )}
+            </FormsList>
+          )}
+        </nav>
       </main>
     </AppLayoutWithContext>
   );
