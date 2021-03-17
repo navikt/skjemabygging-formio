@@ -9,12 +9,13 @@ import LanguageSelector from "../components/LanguageSelector";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
-    .map(({ content, title, label, html, type, values }) => ({
+    .map(({ content, title, label, html, type, values, legend }) => ({
       title,
-      label: ["panel", "htmlelement", "content"].indexOf(type) === -1 ? label : undefined,
+      label: ["panel", "htmlelement", "content", "fieldset"].indexOf(type) === -1 ? label : undefined,
       html,
       values: values ? values.map((value) => value.label) : undefined,
       content,
+      legend,
     }))
     .reduce((allTextsForForm, component) => {
       return [
