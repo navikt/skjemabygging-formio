@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Formiojs from "formiojs/Formio";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
@@ -34,12 +35,40 @@ const getAllTextsForForm = (form) =>
       ];
     }, []);
 
+const saveTranslation = (projectUrl, formPath, translationId, languageCode, translations) => {
+  Formiojs.fetch(`${projectUrl}/language/submission/${translationId}`, {
+    headers: {
+      "x-jwt-token": Formiojs.getToken(),
+      "content-type": "application/json",
+    },
+    method: "PUT",
+    body: JSON.stringify({
+      data: {
+        form: formPath,
+        name: `global.${formPath}`,
+        language: languageCode,
+        scope: "local",
+        i18n: Object.keys(translations).reduce((translationsToSave, translatedText) => {
+          if (translations[translatedText].scope === "local" && translations[translatedText].value) {
+            return {
+              ...translationsToSave,
+              [translatedText]: translations[translatedText].value,
+            };
+          } else {
+            return translationsToSave;
+          }
+        }, {}),
+      },
+    }),
+  });
+};
+
 const TranslationsByFormPage = ({
   deleteLanguage,
   form,
-  resourceId,
   loadTranslationsForEditPage,
   languageCode = "nb-NO",
+  projectURL,
 }) => {
   const history = useHistory();
   const {
@@ -50,12 +79,14 @@ const TranslationsByFormPage = ({
   const flattenedComponents = getAllTextsForForm(form);
   const [translations, setTranslations] = useState();
   const [availableTranslations, setAvailableTranslations] = useState();
+  const [translationId, setTranslationId] = useState();
 
   useEffect(() => {
     loadTranslationsForEditPage(form.path).then((translations) => {
       console.log("TranslationsByFormPage", translations);
       setAvailableTranslations(Object.keys(translations));
-      setTranslations(translations[languageCode]);
+      setTranslations(translations[languageCode] ? translations[languageCode].translations : {});
+      setTranslationId(translations[languageCode] ? translations[languageCode].id : undefined);
     });
   }, [form.path, loadTranslationsForEditPage, languageCode]);
 
@@ -73,7 +104,7 @@ const TranslationsByFormPage = ({
             createHref={(languageCode) => `/translation/${path}/${languageCode}`}
             translations={availableTranslations}
           />
-          <Knapp onClick={() => deleteLanguage(resourceId).then(() => history.push("/translations"))}>
+          <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
             Slett språk
           </Knapp>
         </>
@@ -86,7 +117,9 @@ const TranslationsByFormPage = ({
             </Link>
           </li>
           <li className="list-inline-item">
-            <Hovedknapp onClick={() => {}}>Lagre</Hovedknapp>
+            <Hovedknapp onClick={() => saveTranslation(projectURL, path, translationId, languageCode, translations)}>
+              Lagre
+            </Hovedknapp>
           </li>
           <li className="list-inline-item">
             <Link className="knapp" to={`/forms/${path}/edit`}>
@@ -115,7 +148,7 @@ const TranslationsByFormPage = ({
                 onChange={(event) =>
                   setTranslations({
                     ...translations,
-                    [text]: { ...translations[text], value: event.target.value },
+                    [text]: { value: event.target.value, scope: "local" },
                   })
                 }
                 readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
@@ -135,7 +168,7 @@ const TranslationsByFormPage = ({
               onChange={(event) =>
                 setTranslations({
                   ...translations,
-                  [text]: { ...translations[text], value: event.target.value },
+                  [text]: { value: event.target.value, scope: "local" },
                 })
               }
               readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}

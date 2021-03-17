@@ -158,22 +158,35 @@ export const useForms = (formio, store, userAlerter) => {
     return loadTranslationsForForm(formPath)
       .then((translations) =>
         translations
-          .map((translation) => translation.data)
+          .map((translation) => ({
+            ...translation.data,
+            id: translation._id,
+          }))
           .reduce(
             (translationsByLanguage, translationResource) => ({
               ...translationsByLanguage,
               [translationResource.language]: {
                 ...(translationsByLanguage[translationResource.language] || {}),
-                ...Object.keys(translationResource.i18n).reduce(
-                  (translationsObjects, translatedText) => ({
-                    ...translationsObjects,
-                    [translatedText]: {
-                      value: translationResource.i18n[translatedText],
-                      scope: translationResource.scope,
-                    },
-                  }),
-                  {}
-                ),
+                translations: {
+                  ...((translationsByLanguage[translationResource.language] &&
+                    translationsByLanguage[translationResource.language].translations) ||
+                    {}),
+                  ...Object.keys(translationResource.i18n).reduce(
+                    (translationsObjects, translatedText) => ({
+                      ...translationsObjects,
+                      [translatedText]: {
+                        value: translationResource.i18n[translatedText],
+                        scope: translationResource.scope,
+                      },
+                    }),
+                    {}
+                  ),
+                },
+                id:
+                  (translationsByLanguage[translationResource.language] &&
+                    translationsByLanguage[translationResource.language].id) ||
+                  (translationResource.scope === "local" && translationResource.id) ||
+                  undefined,
               },
             }),
             {}
