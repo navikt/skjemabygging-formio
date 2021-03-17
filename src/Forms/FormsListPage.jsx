@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Element, Sidetittel } from "nav-frontend-typografi";
 import * as PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
-
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SlettSkjemaKnapp } from "./components";
 
@@ -55,7 +54,7 @@ const useFormsListPageStyles = makeStyles({
     padding: "0.3rem 0.5rem",
     display: "grid",
     gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
-    backgroundColor: "#ddd",
+    backgroundColor: "#c1c1c1",
   },
   listTitleItem: {
     justifySelf: "center",
@@ -84,7 +83,9 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
         >
           {(form) => (
             <li className={classes.listItem} key={form.path}>
-              {form.properties && form.properties.skjemanummer ? form.properties.skjemanummer : "Mangle skjemanummer"}
+              <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
+                {form.properties && form.properties.skjemanummer}
+              </Link>
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
