@@ -18,7 +18,7 @@ export const FormsRouter = ({
   onCreate,
   onDelete,
   onPublish,
-  loadTranslationsForForm,
+  loadTranslationsForFormAndMapToI18nObject,
 }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
@@ -55,7 +55,7 @@ export const FormsRouter = ({
           return (
             <TestFormPage
               onLogout={logout}
-              loadTranslationsForForm={loadTranslationsForForm}
+              loadTranslationsForFormAndMapToI18nObject={loadTranslationsForFormAndMapToI18nObject}
               form={getFormFromPath(forms, match.params.formpath)}
               editFormUrl={`${path}/${match.params.formpath}/edit`}
               onSave={onSave}

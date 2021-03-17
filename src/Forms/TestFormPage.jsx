@@ -12,17 +12,17 @@ export function TestFormPage({
   form,
   onSave,
   onLogout,
-  loadTranslationsForForm,
+  loadTranslationsForFormAndMapToI18nObject,
 }) {
   const title = `${form.title}`;
   const [translation, setTranslation] = useState();
   const [availableTranslations, setAvailableTranslations] = useState();
   useEffect(() => {
-    loadTranslationsForForm(form.path).then((translations) => {
+    loadTranslationsForFormAndMapToI18nObject(form.path).then((translations) => {
       setTranslation(translations);
       setAvailableTranslations(Object.keys(translations.resources));
     });
-  }, [form.path, loadTranslationsForForm, setTranslation]);
+  }, [form.path, loadTranslationsForFormAndMapToI18nObject, setTranslation]);
   return (
     <AppLayoutWithContext
       translations={availableTranslations}

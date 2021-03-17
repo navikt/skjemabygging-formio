@@ -38,7 +38,7 @@ const TranslationsByFormPage = ({
   deleteLanguage,
   form,
   resourceId,
-  loadTranslationsForForm,
+  loadTranslationsForEditPage,
   languageCode = "nb-NO",
 }) => {
   const history = useHistory();
@@ -52,11 +52,12 @@ const TranslationsByFormPage = ({
   const [availableTranslations, setAvailableTranslations] = useState();
 
   useEffect(() => {
-    loadTranslationsForForm(form.path).then((translations) => {
-      setAvailableTranslations(Object.keys(translations.resources));
-      setTranslations(translations.resources[languageCode].translation);
+    loadTranslationsForEditPage(form.path).then((translations) => {
+      console.log("TranslationsByFormPage", translations);
+      setAvailableTranslations(Object.keys(translations));
+      setTranslations(translations[languageCode]);
     });
-  }, [form.path, loadTranslationsForForm, languageCode]);
+  }, [form.path, loadTranslationsForEditPage, languageCode]);
 
   return (
     <AppLayoutWithContext
@@ -91,27 +92,39 @@ const TranslationsByFormPage = ({
               <Textarea
                 label={text}
                 className="margin-bottom-default"
-                value={(translations && translations[text]) || ""}
+                description={
+                  translations && translations[text] && translations[text].scope === "global"
+                    ? "Denne teksten er global oversatt"
+                    : undefined
+                }
+                value={(translations && translations[text] && translations[text].value) || ""}
                 onChange={(event) =>
                   setTranslations({
                     ...translations,
-                    [text]: event.target.value,
+                    [text]: { ...translations[text], value: event.target.value },
                   })
                 }
+                readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
               />
             );
           return (
             <Input
               className="margin-bottom-default"
+              description={
+                translations && translations[text] && translations[text].scope === "global"
+                  ? "Denne teksten er global oversatt"
+                  : undefined
+              }
               label={text}
               type={type}
-              value={(translations && translations[text]) || ""}
+              value={(translations && translations[text] && translations[text].value) || ""}
               onChange={(event) =>
                 setTranslations({
                   ...translations,
-                  [text]: event.target.value,
+                  [text]: { ...translations[text], value: event.target.value },
                 })
               }
+              readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
             />
           );
         })}

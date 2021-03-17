@@ -150,8 +150,46 @@ export const useForms = (formio, store, userAlerter) => {
       })
       .then((translations) => {
         console.log("Fetched and filtered", translations);
-        return createI18nObject(translations);
+        return translations;
       });
+  };
+
+  const loadTranslationsForEditPage = async (formPath) => {
+    return loadTranslationsForForm(formPath)
+      .then((translations) =>
+        translations
+          .map((translation) => translation.data)
+          .reduce(
+            (translationsByLanguage, translationResource) => ({
+              ...translationsByLanguage,
+              [translationResource.language]: {
+                ...(translationsByLanguage[translationResource.language] || {}),
+                ...Object.keys(translationResource.i18n).reduce(
+                  (translationsObjects, translatedText) => ({
+                    ...translationsObjects,
+                    [translatedText]: {
+                      value: translationResource.i18n[translatedText],
+                      scope: translationResource.scope,
+                    },
+                  }),
+                  {}
+                ),
+              },
+            }),
+            {}
+          )
+      )
+      .then((translations) => {
+        console.log("loadTranslationsForEditPage", translations);
+        return translations;
+      });
+  };
+
+  const loadTranslationsForFormAndMapToI18nObject = async (formPath) => {
+    return loadTranslationsForForm(formPath).then((translations) => {
+      console.log("Fetched, filtered and mapped", createI18nObject(translations));
+      return createI18nObject(translations);
+    });
   };
 
   const loadLanguages = async () => {
@@ -183,6 +221,8 @@ export const useForms = (formio, store, userAlerter) => {
     onDelete,
     onPublish,
     loadTranslationsForForm,
+    loadTranslationsForEditPage,
+    loadTranslationsForFormAndMapToI18nObject,
     loadLanguages,
     deleteLanguage,
   };

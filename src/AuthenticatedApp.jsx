@@ -20,7 +20,8 @@ function AuthenticatedApp({ formio, store }) {
     onCreate,
     onDelete,
     onPublish,
-    loadTranslationsForForm,
+    loadTranslationsForEditPage,
+    loadTranslationsForFormAndMapToI18nObject,
     loadLanguages,
     deleteLanguage,
   } = useForms(formio, store, userAlerter);
@@ -46,7 +47,7 @@ function AuthenticatedApp({ formio, store }) {
             onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
-            loadTranslationsForForm={loadTranslationsForForm}
+            loadTranslationsForFormAndMapToI18nObject={loadTranslationsForFormAndMapToI18nObject}
           />
         </Route>
         <Route path="/translations">
@@ -65,7 +66,7 @@ function AuthenticatedApp({ formio, store }) {
                 form={targetForm}
                 projectURL={formio.projectUrl}
                 deleteLanguage={deleteLanguage}
-                loadTranslationsForForm={loadTranslationsForForm}
+                loadTranslationsForEditPage={loadTranslationsForEditPage}
               />
             );
           }}
