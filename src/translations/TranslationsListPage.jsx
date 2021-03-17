@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
@@ -25,51 +25,8 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-const TranslationsList = ({ translations }) => {
+export function TranslationsListPage({ onLogout, forms }) {
   const classes = useTranslationsListStyles();
-  const globalTranslations = translations.filter((translation) => translation.scope === "global");
-  const localTranslations = translations.filter((translation) => translation.scope === "local");
-  return (
-    <div className={classes.root}>
-      <nav className="margin-bottom-large">
-        <Innholdstittel className="margin-bottom-default">Fellesoversettelser</Innholdstittel>
-        <ul className={classes.list}>
-          {globalTranslations.map((translation) => (
-            <li className={classes.listItem} key={translation.id}>
-              <a href={`/globalTranslations/${translation.id}`}>
-                {translation.title || translation.scope || translation.id} ({translation.language})
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <nav className="margin-bottom-large">
-        <Innholdstittel className="margin-bottom-default">Skjemaoversettelser</Innholdstittel>
-        <ul className={classes.list}>
-          {localTranslations.map((translation) => (
-            <li className={classes.listItem} key={translation.id}>
-              <a href={`/globalTranslations/${translation.id}`}>
-                {translation.title || translation.id} ({translation.language})
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-  );
-};
-
-export function TranslationsListPage({ onLogout, loadLanguages, projectURL, forms }) {
-  const classes = useTranslationsListStyles();
-  const [translations, setTranslations] = useState();
-  useEffect(() => {
-    loadLanguages()
-      .then((response) => {
-        console.log(response);
-        return response;
-      })
-      .then((response) => setTranslations(response));
-  }, [loadLanguages, setTranslations, forms]);
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -78,20 +35,17 @@ export function TranslationsListPage({ onLogout, loadLanguages, projectURL, form
         visLagNyttSkjema: false,
         logout: onLogout,
       }}
-      mainCol={
-        <nav className="list-inline">
-          <div className="list-inline-item">
-            <Link className="knapp knapp--hoved margin-bottom-large" to="/translation/new">
-              Lag ny oversettelse
-            </Link>
-          </div>
-        </nav>
-      }
     >
       <main className={classes.root}>
-        {translations && (
-          <TranslationsList className={classes.list} projectURL={projectURL} translations={translations} />
-        )}
+        <nav className="margin-bottom-large">
+          <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
+          <ul className={classes.list}>
+            <li className={classes.listItem}>
+              <Link to={"/globalTranslations"}>Felles oversettelser for alle skjemaer</Link>
+            </li>
+          </ul>
+        </nav>
+
         <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
         {forms && (
           <FormsList className={classes.list} forms={forms}>

@@ -6,10 +6,10 @@ import { useForms } from "./useForms";
 import { UserAlerterContext } from "./userAlerting";
 import NewTranslation from "./translations/NewTranslation";
 import { TranslationsListPage } from "./translations/TranslationsListPage";
-// import EditTranslationPage from "./translations/EditTranslationPage";
 import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
 import EditTranslationPage from "./translations/EditTranslationPage";
+import { GlobalTranslationsListPage } from "./translations/GlobalTranslationsListPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -51,7 +51,7 @@ function AuthenticatedApp({ formio, store }) {
           />
         </Route>
         <Route path="/translations">
-          <TranslationsListPage projectURL={formio.projectUrl} loadLanguages={loadLanguages} forms={forms} />
+          <TranslationsListPage forms={forms} />
         </Route>
         <Route path="/translation/new">
           <NewTranslation projectURL={formio.projectUrl} />
@@ -73,11 +73,18 @@ function AuthenticatedApp({ formio, store }) {
         />
 
         <Route
+          exact
+          path="/globalTranslations"
+          render={({ match }) => <GlobalTranslationsListPage {...match.params} loadLanguages={loadLanguages} />}
+        />
+
+        <Route
           path="/globalTranslations/:resourceId"
           render={({ match }) => (
             <EditTranslationPage {...match.params} projectURL={formio.projectUrl} deleteLanguage={deleteLanguage} />
           )}
         />
+
         <Route path="/">
           <Redirect to="/forms" />
         </Route>
