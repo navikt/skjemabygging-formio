@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { SletteKnapp } from "../Forms/components";
+import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
 import { Input, Textarea } from "nav-frontend-skjema";
 import { Sidetittel } from "nav-frontend-typografi";
 import LanguageSelector from "../components/LanguageSelector";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -68,18 +68,32 @@ const TranslationsByFormPage = ({
         visOversettelseliste: true,
       }}
       leftCol={
-        <LanguageSelector
-          createHref={(languageCode) => `/translation/${path}/${languageCode}`}
-          translations={availableTranslations}
-        />
+        <>
+          <LanguageSelector
+            createHref={(languageCode) => `/translation/${path}/${languageCode}`}
+            translations={availableTranslations}
+          />
+          <Knapp onClick={() => deleteLanguage(resourceId).then(() => history.push("/translations"))}>
+            Slett språk
+          </Knapp>
+        </>
       }
-      rightCol={
-        <SletteKnapp
-          className="lenke"
-          onClick={() => deleteLanguage(resourceId).then(() => history.push("/translations"))}
-        >
-          Slett oversettelser
-        </SletteKnapp>
+      mainCol={
+        <ul className="list-inline">
+          <li className="list-inline-item">
+            <Link className="knapp" to={`/forms/${path}/view`}>
+              Vis skjema
+            </Link>
+          </li>
+          <li className="list-inline-item">
+            <Hovedknapp onClick={() => {}}>Lagre</Hovedknapp>
+          </li>
+          <li className="list-inline-item">
+            <Link className="knapp" to={`/forms/${path}/edit`}>
+              Rediger skjema
+            </Link>
+          </li>
+        </ul>
       }
     >
       <Sidetittel className="margin-bottom-large">
