@@ -10,9 +10,9 @@ const FormsList = ({ forms, children, className, listTitleClassName, listTitleIt
   return (
     <ul className={className}>
       <li className={listTitleClassName}>
-        <Element>{"Skjemanummer"}</Element>
-        <Element>{"Skjematittel"}</Element>
-        <Element className={listTitleItemClassName}>{"Action"}</Element>
+        <Element>Skjemanummer</Element>
+        <Element>Skjematittel</Element>
+        <Element className={listTitleItemClassName}>Action</Element>
       </li>
       {forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))}
     </ul>
