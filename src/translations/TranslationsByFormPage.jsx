@@ -109,7 +109,11 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
       }}
       leftCol={
         <>
-          <LanguageSelector translations={languages} />
+          <LanguageSelector
+            translations={languages.sort((lang1, lang2) =>
+              lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
+            )}
+          />
           <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
             Slett språk
           </Knapp>
