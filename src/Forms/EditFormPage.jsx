@@ -27,10 +27,13 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
               <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
             </li>
             <li className="list-inline-item">
-              <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
+              <Link className="knapp" to={`/translation/${form.path}`}>
+                Oversettelse
+              </Link>
             </li>
           </ul>
         }
+        rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
         navBarProps={{
           title: title,
           visSkjemaliste: true,

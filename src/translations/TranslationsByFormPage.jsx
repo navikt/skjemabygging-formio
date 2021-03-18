@@ -118,8 +118,8 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
       mainCol={
         <ul className="list-inline">
           <li className="list-inline-item">
-            <Link className="knapp" to={`/forms/${path}/view`}>
-              Vis skjema
+            <Link className="knapp" to={`/forms/${path}/edit`}>
+              Rediger skjema
             </Link>
           </li>
           <li className="list-inline-item">
@@ -128,8 +128,8 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
             </Hovedknapp>
           </li>
           <li className="list-inline-item">
-            <Link className="knapp" to={`/forms/${path}/edit`}>
-              Rediger skjema
+            <Link className="knapp" to={`/forms/${path}/view?lang=${languageCode}`}>
+              Vis skjema
             </Link>
           </li>
         </ul>

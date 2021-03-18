@@ -39,11 +39,16 @@ export function TestFormPage({
             <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
           </li>
           <li className="list-inline-item">
-            <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-              Publiser
-            </Knapp>
+            <Link className="knapp" to={`/translation/${form.path}`}>
+              Oversettelse
+            </Link>
           </li>
         </ul>
+      }
+      rightCol={
+        <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+          Publiser
+        </Knapp>
       }
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>

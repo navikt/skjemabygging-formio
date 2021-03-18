@@ -8,6 +8,7 @@ const useLanguageSelectorStyling = makeStyles({
     display: "flex",
     justifyContent: "center",
     padding: "0.5rem",
+    marginBottom: "2rem",
   },
   languageToggleWrapper: {
     minWidth: "230px",
