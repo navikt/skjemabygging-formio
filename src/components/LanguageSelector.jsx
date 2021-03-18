@@ -16,6 +16,7 @@ const useLanguageSelectorStyling = makeStyles({
     outline: "none",
   },
   languageSelect: {
+    position: "relative",
     "& .select-button": {
       width: "100%",
       display: "grid",
@@ -49,6 +50,9 @@ const useLanguageSelectorStyling = makeStyles({
       outline: "none",
       cursor: "pointer",
       listStyleType: "none",
+      position: "absolute",
+      top: "2.8125rem",
+      left: 0,
     },
     "& .select-list__option": {
       borderBottom: "1px solid rgb(198, 194, 191)",
