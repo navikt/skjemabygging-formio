@@ -1,11 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Collapse, Expand } from "@navikt/ds-icons";
 import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/styles";
 
-const closeOnEscape = (event, close, buttonRef) => {
+const useSelectStyle = makeStyles({
+  overlay: {
+    position: "fixed",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    zIndex: 1000,
+  },
+  nav: {
+    position: "relative",
+    zIndex: 1001,
+  },
+});
+
+const closeListAndResetFocus = (event, closeFunction, buttonRef) => {
+  closeFunction();
+  buttonRef.current.focus();
+};
+
+const closeOnEscape = (event, closeFunction, buttonRef) => {
   if (event.key === "Escape") {
-    close();
-    buttonRef.current.focus();
+    closeOnEscape(event, closeFunction, buttonRef);
   }
 };
 
@@ -27,41 +47,53 @@ const Select = ({ label, className, options }) => {
   const firstListItemLinkRef = useRef(null);
   const lastListItemLinkRef = useRef(null);
   const [showItems, setShowItems] = useState(false);
+  const classes = useSelectStyle();
   useEffect(() => {
     if (showItems && firstListItemLinkRef.current) {
       firstListItemLinkRef.current.focus();
     }
   }, [firstListItemLinkRef, showItems]);
   return (
-    <nav className={className} onKeyUp={(event) => closeOnEscape(event, () => setShowItems(false), buttonRef)}>
-      <button className="select-button" onClick={() => setShowItems(!showItems)} ref={buttonRef}>
-        {label}
-        {showItems ? <Collapse className="select__chevron" /> : <Expand className="select__chevron" />}
-      </button>
+    <>
       {showItems && (
-        <ul className="select-list">
-          {options.map(({ href, optionLabel }, index) => (
-            <li
-              className="select-list__option"
-              onKeyDown={(event) =>
-                handleTabKeyPressed(event, firstListItemLinkRef, lastListItemLinkRef, index, options.length)
-              }
-            >
-              <Link
-                className="select-list__option__link"
-                to={href}
-                onClick={() => setShowItems(!showItems)}
-                ref={
-                  index === 0 ? firstListItemLinkRef : index === options.length - 1 ? lastListItemLinkRef : undefined
+        <div
+          className={classes.overlay}
+          onClick={(event) => closeListAndResetFocus(event, () => setShowItems(false), buttonRef)}
+        />
+      )}
+      <nav
+        className={`${className} ${classes.nav}`}
+        onKeyUp={(event) => closeOnEscape(event, () => setShowItems(false), buttonRef)}
+      >
+        <button className="select-button" onClick={() => setShowItems(!showItems)} ref={buttonRef}>
+          {label}
+          {showItems ? <Collapse className="select__chevron" /> : <Expand className="select__chevron" />}
+        </button>
+        {showItems && (
+          <ul className="select-list">
+            {options.map(({ href, optionLabel }, index) => (
+              <li
+                className="select-list__option"
+                onKeyDown={(event) =>
+                  handleTabKeyPressed(event, firstListItemLinkRef, lastListItemLinkRef, index, options.length)
                 }
               >
-                {optionLabel}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </nav>
+                <Link
+                  className="select-list__option__link"
+                  to={href}
+                  onClick={() => setShowItems(!showItems)}
+                  ref={
+                    index === 0 ? firstListItemLinkRef : index === options.length - 1 ? lastListItemLinkRef : undefined
+                  }
+                >
+                  {optionLabel}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </nav>
+    </>
   );
 };
 
