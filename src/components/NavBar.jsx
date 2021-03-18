@@ -13,12 +13,12 @@ const NavBarContainer = styled("div")({
 const NavBarWrapper = styled("div")({
   display: "grid",
   gridTemplateColumns: "auto 6.875rem",
-  gridTemplateRows: "3rem",
+  gridTemplateRows: "auto",
   gridColumnGap: "1.5rem",
   gridRowGap: "1rem",
   margin: "0 2rem",
   "@media screen and (min-width: 39em)": {
-    gridTemplateColumns: "6.875rem auto 6.875rem",
+    gridTemplateColumns: "auto auto auto",
     maxWidth: "66rem",
   },
   "@media screen and (min-width: 68em)": {

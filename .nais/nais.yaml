@@ -1,0 +1,49 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "skjemabygging-formio"
+  namespace: "skjemadigitalisering"
+  labels:
+    "team": "skjemadigitalisering"
+spec:
+  image: {{image}}
+  liveness:
+    path: "/isalive"
+    port: 8080
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: "/isready"
+    port: 8080
+    initialDelay: 20
+    timeout: 60
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  prometheus:
+    enabled: true
+    path: "/metrics"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  ingresses:
+    {{#each ingresses as |url|}}
+      - {{url}}
+    {{/each}}
+  env:
+    - name: GITHUB_GIT_REF
+      value: "{{githubGitRef}}"
+  envFrom:
+    - secret: skjemabygging-formio
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    outbound:
+      external:
+        - host: protected-island-44773.herokuapp.com
+        - host: api.github.com
