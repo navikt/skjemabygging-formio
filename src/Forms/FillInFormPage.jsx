@@ -1,20 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
+import { useLanguages } from "../hooks";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl, translation }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
-  const params = new URLSearchParams(history.location.search);
-  const language = params.get("lang");
-  const initialLanguage = useRef(language || "nb-NO");
-  useEffect(() => {
-    if (window.setLanguage !== undefined && language) {
-      window.setLanguage(language);
-    }
-  }, [language]);
+  const { initialLanguage } = useLanguages();
   if (!translation) {
     return null;
   }
