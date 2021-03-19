@@ -127,7 +127,7 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
             </Hovedknapp>
           </li>
           <li className="list-inline-item">
-            <Link className="knapp" to={`/forms/${path}/view?lang=${languageCode}`}>
+            <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
               Vis skjema
             </Link>
           </li>

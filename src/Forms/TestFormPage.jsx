@@ -4,6 +4,7 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import FyllUtRouter from "./FyllUtRouter";
 import AmplitudeProvider from "../context/amplitude";
+import { useLanguages } from "../hooks";
 
 export function TestFormPage({
   onPublishClick,
@@ -24,6 +25,12 @@ export function TestFormPage({
       setAvailableTranslations(Object.keys(translations.resources));
     });
   }, [form.path, lang, loadTranslationsForFormAndMapToI18nObject, setTranslations]);
+  const { currentLanguage } = useLanguages();
+  useEffect(() => {
+    if (window.setLanguage !== undefined) {
+      window.setLanguage(currentLanguage);
+    }
+  }, [currentLanguage]);
   return (
     <AppLayoutWithContext
       translations={availableTranslations}
@@ -39,7 +46,7 @@ export function TestFormPage({
             <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
           </li>
           <li className="list-inline-item">
-            <Link className="knapp" to={`/translation/${form.path}`}>
+            <Link className="knapp" to={`/translation/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
               Oversettelse
             </Link>
           </li>
