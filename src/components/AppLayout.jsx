@@ -137,10 +137,6 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
           translations.map((translation) => ({
             optionLabel: languages[translation],
             href: `?lang=${translation}`,
-            onClick: (event) => {
-              event.preventDefault();
-              window.setLanguage(translation);
-            },
           }))
         }
       />
