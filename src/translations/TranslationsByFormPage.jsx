@@ -7,6 +7,7 @@ import { Input, Textarea } from "nav-frontend-skjema";
 import { Sidetittel } from "nav-frontend-typografi";
 import LanguageSelector from "../components/LanguageSelector";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { languagesInNorwegian, supportedLanguages } from "../hooks/useLanguages";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -84,20 +85,14 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
     });
   }, [form.path, loadTranslationsForEditPage, languageCode]);
 
-  const languages = [
-    {
-      href: `/translation/${path}/nn-NO`,
-      optionLabel: `${availableTranslations.indexOf("nn-NO") === -1 ? `Legg til ` : ""}Nynorsk - Norsk`,
-    },
-    {
-      href: `/translation/${path}/en`,
-      optionLabel: `${availableTranslations.indexOf("en") === -1 ? `Legg til ` : ""}Engelsk`,
-    },
-    {
-      href: `/translation/${path}/pl`,
-      optionLabel: `${availableTranslations.indexOf("pl") === -1 ? `Legg til ` : ""}Polsk`,
-    },
-  ];
+  const languages = supportedLanguages
+    .filter((languageCode) => languageCode !== "nb-NO")
+    .map((languageCode) => ({
+      href: `/translation/${path}/${languageCode}`,
+      optionLabel: `${availableTranslations.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
+        languagesInNorwegian[languageCode]
+      }`,
+    }));
 
   return (
     <AppLayoutWithContext

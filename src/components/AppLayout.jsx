@@ -4,6 +4,7 @@ import { UserAlerterContext } from "../userAlerting";
 import React from "react";
 import { styled } from "@material-ui/styles";
 import LanguageSelector from "./LanguageSelector";
+import { languagesInOriginalLanguage } from "../hooks/useLanguages";
 
 const ActionRow = styled("div")({
   display: "flex",
@@ -109,13 +110,6 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
-const languages = {
-  en: "English",
-  "nb-NO": "Norsk (bokmål)",
-  "nn-NO": "Norsk (nynorsk)",
-  pl: "Polsk",
-};
-
 export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol, translations }) => {
   const alertComponent = userAlerter.alertComponent();
   return (
@@ -135,7 +129,7 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
         translations={
           translations &&
           translations.map((translation) => ({
-            optionLabel: languages[translation],
+            optionLabel: languagesInOriginalLanguage[translation],
             href: `?lang=${translation}`,
           }))
         }
