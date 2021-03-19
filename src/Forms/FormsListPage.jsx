@@ -62,6 +62,16 @@ const useFormsListPageStyles = makeStyles({
   },
 });
 
+function simplifiedForms(forms) {
+  return forms.map((form) => ({
+    modified: form.modified,
+    title: form.title,
+    path: form.path,
+    skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer : "") : "",
+    tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
+  }));
+}
+
 export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   return (
@@ -76,11 +86,11 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
     >
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
-        <FormsList forms={forms}>
+        <FormsList forms={simplifiedForms(forms)}>
           {(form) => (
             <li className={classes.listItem} key={form.path}>
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
-                {form.properties && form.properties.skjemanummer}
+                {form.skjemanummer}
               </Link>
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
