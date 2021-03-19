@@ -1,38 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Element, Sidetittel } from "nav-frontend-typografi";
-import * as PropTypes from "prop-types";
+import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SlettSkjemaKnapp } from "./components";
+import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
 
 const FormsList = ({ forms, children }) => {
   const classes = useFormsListPageStyles();
+  const [sortedForms, setSortedForms] = useState();
+  const [toggle, setToggle] = useState("ascending");
+
+  function sortFormByFormNumber(forms) {
+    if (toggle === "ascending") setToggle("decending");
+    else setToggle("ascending");
+    setSortedForms(sortFunction(forms, "skjemanummer"));
+  }
+
+  const sortFunction = (forms, sortingKey) => forms.sort((a, b) => (a[sortingKey] < b[sortingKey] ? 1 : -1));
+
   return (
     <ul className={classes.list}>
       <li className={classes.listTitle}>
-        <Element>Skjemanummer</Element>
-        <Element>Skjematittel</Element>
-        <Element className={classes.listTitleItem}>Action</Element>
+        <div className={classes.listTitleItem} onClick={() => sortFormByFormNumber(forms)}>
+          <Undertittel>Skjemanr.</Undertittel>
+          {toggle === "ascending" ? <ExpandFilled /> : <CollapseFilled />}
+        </div>
+        <div className={classes.listTitleItem}>
+          <Undertittel>Skjematittel</Undertittel>
+          {toggle === "ascending" ? <ExpandFilled /> : <CollapseFilled />}
+        </div>
+        <Undertittel className={classes.listTitleLastItem}>Action</Undertittel>
       </li>
-      {forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))}
+      {toggle === "ascending"
+        ? forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))
+        : sortedForms.map((form) => children(form))}
+      {/*forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))*/}
     </ul>
   );
 };
 
-FormsList.propTypes = {
+/*FormsList.propTypes = {
   className: PropTypes.string,
   forms: PropTypes.arrayOf(
     PropTypes.shape({
       path: PropTypes.string,
       title: PropTypes.string,
-      properties: PropTypes.shape({
-        skjemanummer: PropTypes.string,
-      }),
+      tema: PropTypes.string,
+      skjemanummer: PropTypes.string,
     })
   ),
 };
-
+*/
 const useFormsListPageStyles = makeStyles({
   root: {
     maxWidth: "50rem",
@@ -58,6 +77,10 @@ const useFormsListPageStyles = makeStyles({
     backgroundColor: "#c1c1c1",
   },
   listTitleItem: {
+    display: "flex",
+    alignItems: "center",
+  },
+  listTitleLastItem: {
     justifySelf: "center",
   },
 });
