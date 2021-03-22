@@ -14,8 +14,7 @@ on:
         # Input has to be provided for the workflow to run
         required: true
 env:
-  #IMAGE: "docker.pkg.github.com/${{ github.repository }}/self-hosted-runner:${{ github.sha }}"
-  IMAGE: docker.pkg.github.com/nais/docker-github-runner/github-runner
+  IMAGE: docker.pkg.github.com/nais/docker-github-runner/github-runner:18
 jobs:
   deployToDev:
     name: "Deploy to dev"
