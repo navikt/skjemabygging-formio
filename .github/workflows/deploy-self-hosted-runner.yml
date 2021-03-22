@@ -19,7 +19,6 @@ env:
 jobs:
   deployToDev:
     name: "Deploy to dev"
-    needs: "build"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Deploy to dev-gcp"
