@@ -26,4 +26,4 @@ spec:
     - name: GITHUB_REPO
       value: "navikt/skjemabygging-formio"
     - name: GITHUB_PAT
-      value: {{ GITHUB_PAT }}
+      value: {{ githubPat }}
