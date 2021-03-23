@@ -21,9 +21,16 @@ spec:
     outbound:
       external:
         - host: skjemabygging-formio.dev.intern.nav.no
-        - host: api.github.com
-        - host: pipelines.actions.githubusercontent.com
         - host: github.com
+        - host: api.github.com
+        - host: "*.actions.githubusercontent.com"
+        - host: github-releases.githubusercontent.com
+        - host: github-registry-files.githubusercontent.com
+        - host: codeload.github.com
+        - host: pkg-cache.githubusercontent.com
+        - host: pkg-containers.githubusercontent.com
+        - host: pkg-containers-az.githubusercontent.com
+        - host: "*.pkg.github.com"
         - host: "*.s3.amazonaws.com"
   env:
     - name: ENVOY_ADMIN_API
