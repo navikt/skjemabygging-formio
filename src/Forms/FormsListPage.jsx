@@ -44,18 +44,16 @@ const FormsList = ({ forms, children }) => {
 
     if (toggleFormNumber === "ascending") {
       setToggleFormNumber("decending");
-      setSortedForms(
-        sortForm(filteredOutResult, "skjemanummer", "ascending").concat(
-          sortForm(filteredInResult, "skjemanummer", "decending")
-        )
-      );
+      setSortedForms([
+        ...sortForm(filteredOutResult, "skjemanummer", "ascending"),
+        ...sortForm(filteredInResult, "skjemanummer", "decending"),
+      ]);
     } else {
       setToggleFormNumber("ascending");
-      setSortedForms(
-        sortForm(filteredInResult, "skjemanummer", "ascending").concat(
-          sortForm(filteredOutResult, "skjemanummer", "decending")
-        )
-      );
+      setSortedForms([
+        ...sortForm(filteredInResult, "skjemanummer", "ascending"),
+        ...sortForm(filteredOutResult, "skjemanummer", "decending"),
+      ]);
     }
   }
 
