@@ -9,33 +9,68 @@ import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
 const FormsList = ({ forms, children }) => {
   const classes = useFormsListPageStyles();
   const [sortedForms, setSortedForms] = useState();
-  const [toggle, setToggle] = useState("ascending");
+  const [toggleFormNumber, setToggleFormNumber] = useState("");
+  const [toggleFormTitle, setToggleFormTitle] = useState("");
 
   function sortFormByFormNumber(forms) {
-    if (toggle === "ascending") setToggle("decending");
-    else setToggle("ascending");
-    setSortedForms(sortFunction(forms, "skjemanummer"));
+    const filteredInResult = [];
+    const filteredOutResult = [];
+    for (const form of forms) {
+      (form["skjemanummer"].match(/(NAV)\s\d\d-\d\d.\d\d/) ? filteredInResult : filteredOutResult).push(form);
+    }
+
+    if (toggleFormNumber === "ascending") {
+      setToggleFormNumber("decending");
+      setSortedForms(
+        sortForm(filteredOutResult, "skjemanummer", "ascending").concat(
+          sortForm(filteredInResult, "skjemanummer", "decending")
+        )
+      );
+    } else {
+      setToggleFormNumber("ascending");
+      setSortedForms(
+        sortForm(filteredInResult, "skjemanummer", "ascending").concat(
+          sortForm(filteredOutResult, "skjemanummer", "decending")
+        )
+      );
+    }
   }
 
-  const sortFunction = (forms, sortingKey) => forms.sort((a, b) => (a[sortingKey] < b[sortingKey] ? 1 : -1));
+  function sortFormByFormTitle(forms) {
+    if (toggleFormTitle === "ascending") {
+      setToggleFormTitle("decending");
+      setSortedForms(sortForm(forms, "title", "decending"));
+    } else {
+      setToggleFormTitle("ascending");
+      setSortedForms(sortForm(forms, "title", "ascending"));
+    }
+  }
+
+  const sortForm = (forms, sortingKey, sortingOrder) =>
+    forms.sort((a, b) => {
+      if (sortingOrder === "decending") {
+        return a[sortingKey] < b[sortingKey] ? 1 : -1;
+      } else {
+        return a[sortingKey] < b[sortingKey] ? -1 : 1;
+      }
+    });
 
   return (
     <ul className={classes.list}>
       <li className={classes.listTitle}>
         <div className={classes.listTitleItem} onClick={() => sortFormByFormNumber(forms)}>
           <Undertittel>Skjemanr.</Undertittel>
-          {toggle === "ascending" ? <ExpandFilled /> : <CollapseFilled />}
+          {toggleFormNumber === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
-        <div className={classes.listTitleItem}>
+        <div className={classes.listTitleItem} onClick={() => sortFormByFormTitle(forms)}>
           <Undertittel>Skjematittel</Undertittel>
-          {toggle === "ascending" ? <ExpandFilled /> : <CollapseFilled />}
+          {toggleFormTitle === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
         <Undertittel className={classes.listTitleLastItem}>Action</Undertittel>
       </li>
-      {toggle === "ascending"
+      {toggleFormNumber === "" && toggleFormTitle === ""
         ? forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))
         : sortedForms.map((form) => children(form))}
-      {/*forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))*/}
     </ul>
   );
 };
