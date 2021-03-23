@@ -45,15 +45,15 @@ const FormsList = ({ forms, children }) => {
     if (toggleFormNumber === "ascending") {
       setToggleFormNumber("decending");
       setSortedForms(
-        sortForm(filteredOutResult, "skjemanummer", "decending").concat(
-          sortForm(filteredInResult, "skjemanummer", "ascending")
+        sortForm(filteredOutResult, "skjemanummer", "ascending").concat(
+          sortForm(filteredInResult, "skjemanummer", "decending")
         )
       );
     } else {
       setToggleFormNumber("ascending");
       setSortedForms(
-        sortForm(filteredInResult, "skjemanummer", "decending").concat(
-          sortForm(filteredOutResult, "skjemanummer", "ascending")
+        sortForm(filteredInResult, "skjemanummer", "ascending").concat(
+          sortForm(filteredOutResult, "skjemanummer", "decending")
         )
       );
     }
@@ -62,19 +62,19 @@ const FormsList = ({ forms, children }) => {
   function sortFormByFormTitle(forms) {
     if (toggleFormTitle === "ascending") {
       setToggleFormTitle("decending");
-      setSortedForms(sortForm(forms, "title", "ascending"));
+      setSortedForms(sortForm(forms, "title", "decending"));
     } else {
       setToggleFormTitle("ascending");
-      setSortedForms(sortForm(forms, "title", "decending"));
+      setSortedForms(sortForm(forms, "title", "ascending"));
     }
   }
 
   const sortForm = (forms, sortingKey, sortingOrder) =>
     forms.sort((a, b) => {
       if (sortingOrder === "ascending") {
-        return a[sortingKey] < b[sortingKey] ? 1 : -1;
-      } else {
         return a[sortingKey] < b[sortingKey] ? -1 : 1;
+      } else {
+        return a[sortingKey] < b[sortingKey] ? 1 : -1;
       }
     });
 
