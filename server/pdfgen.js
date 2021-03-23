@@ -171,8 +171,7 @@ export class Pdfgen {
         return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
       }
       case "navCheckbox": {
-        if (value === "on") return "Ja";
-        else return "Nei";
+        return value || "Nei";
       }
       default:
         return value;
