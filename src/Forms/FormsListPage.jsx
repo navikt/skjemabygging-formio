@@ -6,8 +6,28 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import { SlettSkjemaKnapp } from "./components";
 import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
 
+const useFormsListStyles = makeStyles({
+  list: {
+    listStyle: "none",
+    padding: "0",
+  },
+  listTitle: {
+    padding: "0.3rem 0.5rem",
+    display: "grid",
+    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
+    backgroundColor: "#c1c1c1",
+  },
+  listTitleItems: {
+    display: "flex",
+    alignItems: "center",
+  },
+  listTitleLastItem: {
+    justifySelf: "center",
+  },
+});
+
 const FormsList = ({ forms, children }) => {
-  const classes = useFormsListPageStyles();
+  const classes = useFormsListStyles();
   const [sortedForms, setSortedForms] = useState();
   const [toggleFormNumber, setToggleFormNumber] = useState("");
   const [toggleFormTitle, setToggleFormTitle] = useState("");
@@ -58,11 +78,11 @@ const FormsList = ({ forms, children }) => {
   return (
     <ul className={classes.list}>
       <li className={classes.listTitle}>
-        <div className={classes.listTitleItem} onClick={() => sortFormByFormNumber(forms)}>
+        <div className={classes.listTitleItems} onClick={() => sortFormByFormNumber(forms)}>
           <Undertittel>Skjemanr.</Undertittel>
           {toggleFormNumber === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
-        <div className={classes.listTitleItem} onClick={() => sortFormByFormTitle(forms)}>
+        <div className={classes.listTitleItems} onClick={() => sortFormByFormTitle(forms)}>
           <Undertittel>Skjematittel</Undertittel>
           {toggleFormTitle === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
@@ -80,10 +100,6 @@ const useFormsListPageStyles = makeStyles({
     maxWidth: "50rem",
     margin: "0 auto 2rem",
   },
-  list: {
-    listStyle: "none",
-    padding: "0",
-  },
   listItem: {
     padding: "0.3rem 0.5rem",
     display: "grid",
@@ -92,19 +108,6 @@ const useFormsListPageStyles = makeStyles({
     "&:nth-child(odd)": {
       backgroundColor: "#ddd",
     },
-  },
-  listTitle: {
-    padding: "0.3rem 0.5rem",
-    display: "grid",
-    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
-    backgroundColor: "#c1c1c1",
-  },
-  listTitleItem: {
-    display: "flex",
-    alignItems: "center",
-  },
-  listTitleLastItem: {
-    justifySelf: "center",
   },
 });
 
