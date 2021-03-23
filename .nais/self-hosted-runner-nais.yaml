@@ -22,6 +22,8 @@ spec:
       external:
         - host: skjemabygging-formio.dev.intern.nav.no
         - host: api.github.com
+        - host: pipelines.actions.githubusercontent.com
+        - host: github.com
   env:
     - name: GITHUB_REPO
       value: "navikt/skjemabygging-formio"
