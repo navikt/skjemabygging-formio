@@ -11,7 +11,7 @@ const useFormsListStyles = makeStyles({
     listStyle: "none",
     padding: "0",
   },
-  listTitle: {
+  listTitles: {
     padding: "0.3rem 0.5rem",
     display: "grid",
     gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
@@ -23,6 +23,9 @@ const useFormsListStyles = makeStyles({
   },
   listTitleLastItem: {
     justifySelf: "center",
+  },
+  listTitle: {
+    marginRight: "0.5rem",
   },
 });
 
@@ -42,15 +45,15 @@ const FormsList = ({ forms, children }) => {
     if (toggleFormNumber === "ascending") {
       setToggleFormNumber("decending");
       setSortedForms(
-        sortForm(filteredOutResult, "skjemanummer", "ascending").concat(
-          sortForm(filteredInResult, "skjemanummer", "decending")
+        sortForm(filteredOutResult, "skjemanummer", "decending").concat(
+          sortForm(filteredInResult, "skjemanummer", "ascending")
         )
       );
     } else {
       setToggleFormNumber("ascending");
       setSortedForms(
-        sortForm(filteredInResult, "skjemanummer", "ascending").concat(
-          sortForm(filteredOutResult, "skjemanummer", "decending")
+        sortForm(filteredInResult, "skjemanummer", "decending").concat(
+          sortForm(filteredOutResult, "skjemanummer", "ascending")
         )
       );
     }
@@ -59,16 +62,16 @@ const FormsList = ({ forms, children }) => {
   function sortFormByFormTitle(forms) {
     if (toggleFormTitle === "ascending") {
       setToggleFormTitle("decending");
-      setSortedForms(sortForm(forms, "title", "decending"));
+      setSortedForms(sortForm(forms, "title", "ascending"));
     } else {
       setToggleFormTitle("ascending");
-      setSortedForms(sortForm(forms, "title", "ascending"));
+      setSortedForms(sortForm(forms, "title", "decending"));
     }
   }
 
   const sortForm = (forms, sortingKey, sortingOrder) =>
     forms.sort((a, b) => {
-      if (sortingOrder === "decending") {
+      if (sortingOrder === "ascending") {
         return a[sortingKey] < b[sortingKey] ? 1 : -1;
       } else {
         return a[sortingKey] < b[sortingKey] ? -1 : 1;
@@ -77,13 +80,13 @@ const FormsList = ({ forms, children }) => {
 
   return (
     <ul className={classes.list}>
-      <li className={classes.listTitle}>
+      <li className={classes.listTitles}>
         <div className={classes.listTitleItems} onClick={() => sortFormByFormNumber(forms)}>
-          <Undertittel>Skjemanr.</Undertittel>
+          <Undertittel className={classes.listTitle}>Skjemanr.</Undertittel>
           {toggleFormNumber === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
         <div className={classes.listTitleItems} onClick={() => sortFormByFormTitle(forms)}>
-          <Undertittel>Skjematittel</Undertittel>
+          <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
           {toggleFormTitle === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
         <Undertittel className={classes.listTitleLastItem}>Action</Undertittel>
