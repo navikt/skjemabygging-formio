@@ -25,6 +25,10 @@ spec:
         - host: pipelines.actions.githubusercontent.com
         - host: github.com
   env:
+    - name: ENVOY_ADMIN_API
+      value: http://127.0.0.1:15000
+    - name: ISTIO_QUIT_API
+      value: http://127.0.0.1:15020
     - name: GITHUB_REPO
       value: "navikt/skjemabygging-formio"
     - name: GITHUB_PAT

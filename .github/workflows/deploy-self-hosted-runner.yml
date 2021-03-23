@@ -14,7 +14,7 @@ on:
         # Input has to be provided for the workflow to run
         required: true
 env:
-  IMAGE: docker.pkg.github.com/nais/docker-github-runner/github-runner:18
+  IMAGE: docker.pkg.github.com/nais/docker-github-runner/github-runner:19
 jobs:
   deployToDev:
     name: "Deploy to dev"
