@@ -90,7 +90,7 @@ function simplifiedForms(forms) {
     modified: form.modified,
     title: form.title,
     path: form.path,
-    skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer : "") : "",
+    skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
   }));
 }
