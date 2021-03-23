@@ -14,6 +14,9 @@ export const globalStyles = {
   "#decorator-footer": {
     flexShrink: 0,
   },
+  html: {
+    height: "100%",
+  },
 };
 
 export const appStyles = {
