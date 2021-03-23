@@ -88,7 +88,7 @@ const useFormsListPageStyles = makeStyles({
 function simplifiedForms(forms) {
   return forms.map((form) => ({
     modified: form.modified,
-    title: form.title,
+    title: form.title.trim(),
     path: form.path,
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
