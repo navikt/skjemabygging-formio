@@ -75,18 +75,6 @@ const FormsList = ({ forms, children }) => {
   );
 };
 
-/*FormsList.propTypes = {
-  className: PropTypes.string,
-  forms: PropTypes.arrayOf(
-    PropTypes.shape({
-      path: PropTypes.string,
-      title: PropTypes.string,
-      tema: PropTypes.string,
-      skjemanummer: PropTypes.string,
-    })
-  ),
-};
-*/
 const useFormsListPageStyles = makeStyles({
   root: {
     maxWidth: "50rem",
