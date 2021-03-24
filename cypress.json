@@ -1,3 +1,3 @@
 {
-  "pluginsFile": false
+  "pluginsFile": "cypress/plugins/index.cjs"
 }
