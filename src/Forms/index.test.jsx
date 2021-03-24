@@ -72,7 +72,7 @@ describe("FormsRouter", () => {
   function editFormLinks() {
     const linkList = context.testRenderer.root.findByType("ul");
     const lis = linkList.findAllByType("li");
-    return lis.map((li) => li.findByProps({ "data-testid": "editLink" }));
+    return lis.map((li) => li.findAllByProps({ "data-testid": "editLink" }));
   }
 
   function clickHovedknapp(title) {
@@ -190,8 +190,8 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     setTimeout.mock.calls[0][0]();
     await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
-    const links = editFormLinks();
-    navigateTo(links[1].props.to);
+    const links = editFormLinks()[2];
+    navigateTo(links[0].props.to);
     const formBuilder = await context.waitForComponent(UnstyledNavFormBuilder);
     jest.runAllTimers();
     await waitForExpect(() => expect(formBuilder.instance.builder.form).toEqual(context.backend.form()));
@@ -201,8 +201,9 @@ describe("FormsRouter", () => {
   it("displays all the forms with an edit link", async () => {
     renderApp("/forms");
     setTimeout.mock.calls[0][0]();
-    await waitForExpect(() => expect(editFormLinks()).toHaveLength(2));
-    const editorPath = editFormLinks()[1].props.to;
+    await waitForExpect(() => expect(editFormLinks()).toHaveLength(3));
+    const editorPath = editFormLinks()[2][0].props.to;
+    console.log(editorPath);
     expect(editorPath).toEqual("/forms/debugskjema/edit");
   });
 

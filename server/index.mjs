@@ -30,6 +30,8 @@ console.log("gitVersion", gitVersion());
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.get("/isAlive", (req, res) => res.send("Alive"));
+app.get("/isReady", (req, res) => res.send("Ready"));
 app.use("/api", dispatcherWithBackend(new Backend(projectURL, githubAppConfig, gitVersion())));
 
 const nodeEnv = process.env.NODE_ENV;

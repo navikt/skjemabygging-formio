@@ -1,0 +1,31 @@
+name: Deploy self hosted runner
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      name:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Person to greet'
+        # Default value if no value is explicitly provided
+        default: 'World'
+        # Input has to be provided for the workflow to run
+        required: true
+env:
+  #IMAGE: "docker.pkg.github.com/${{ github.repository }}/self-hosted-runner:${{ github.sha }}"
+  IMAGE: docker.pkg.github.com/nais/docker-github-runner/github-runner
+jobs:
+  deployToDev:
+    name: "Deploy to dev"
+    needs: "build"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Deploy to dev-gcp"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: "dev-gcp"
+          RESOURCE: .nais/self-hosted-runner-nais.yaml
+          VAR: image=${{ env.IMAGE }}

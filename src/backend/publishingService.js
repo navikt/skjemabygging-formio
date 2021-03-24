@@ -186,7 +186,7 @@ export class PublishingService {
   async updatePackageJsonContent(packageJson, shaOfPreviouslyPublished) {
     const commitPayload = {
       message: `Oppdaterer package json`,
-      content: stringTobase64(JSON.stringify(packageJson, null, 2)),
+      content: stringTobase64(JSON.stringify(packageJson, null, 2) + "\n"),
       branch: this.tempGitRef(),
       sha: shaOfPreviouslyPublished,
     };

@@ -1,3 +1,5 @@
+import navCssVariabler from "nav-frontend-core";
+
 const wizardSidevelgerStyles = {
   "& .pagination": {
     display: "flex",
@@ -34,7 +36,7 @@ const styles = {
     },
   },
   "& .data-grid__row": {
-    border: "2px solid white",
+    border: `1px solid ${navCssVariabler.navGra60}`,
     borderRadius: "7px",
     marginBottom: "1rem",
     padding: "1.5rem 2rem 0",
