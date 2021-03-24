@@ -18,6 +18,7 @@
     "cross-env": "^7.0.2",
     "formiojs": "^4.12.4",
     "nav-frontend-core": "^5.0.7",
+    "nav-frontend-js-utils": "^1.0.17",
     "nav-frontend-typografi": "^2.0.29",
     "nav-frontend-typografi-style": "^1.0.19",
     "pusher": "^3.0.1",
