@@ -1,5 +1,5 @@
 describe("Smoke Test", function() {
-  it("verifies content from sanity is present", function() {
+  it("visits the front page", function() {
     cy.visit("/");
     cy.contains("Email");
     cy.contains("Password");
