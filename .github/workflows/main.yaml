@@ -52,6 +52,10 @@ jobs:
       # and run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v2
+        env:
+            CYPRESS_REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
+            CYPRESS_REACT_APP_PUSHER_CLUSTER: "mt1"
+            CYPRESS_REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
         with:
           # build: npm run build
           start: npm start
