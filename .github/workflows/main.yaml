@@ -36,16 +36,28 @@ jobs:
           REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
           REACT_APP_PUSHER_CLUSTER: "mt1"
           REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
-
       - name: "Build and publish Docker image"
         run: "docker build --pull --tag ${IMAGE} . && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
         \ && docker push ${IMAGE}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+  cypressRun:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          # build: npm run build
+          start: npm start
   deployToDev:
     name: "Deploy to dev"
-    needs: "build"
+    needs: [build, cypressRun]
     runs-on: "ubuntu-latest"
     if: github.ref == 'refs/heads/master' # bare kjør deploy for master branch
     steps:
