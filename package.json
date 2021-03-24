@@ -131,7 +131,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,cjs,mjs}": [
+    "!(cypress)/**/*.{js,jsx,cjs,mjs}": [
       "eslint --fix",
       "prettier --write"
     ],
