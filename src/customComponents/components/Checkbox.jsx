@@ -33,7 +33,7 @@ const CheckboxWrapper = class extends Component {
         checkboxRef={this.props.checkboxRef}
         aria-describedby={`${component.key}-error`}
         label={component.label}
-        onChange={(event) => this.setValue(!!this.state.value ? undefined : "Ja")}
+        onChange={(event) => this.setValue(!!this.state.value ? null : "Ja")}
         required={component.validate.required}
         checked={this.state.value === "Ja"}
       />
