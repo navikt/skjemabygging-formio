@@ -11,6 +11,7 @@ import { languagesInNorwegian, supportedLanguages } from "../hooks/useLanguages"
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
+    .filter((component) => !component.hideLabel)
     .map(({ content, title, label, html, type, values, legend }) => ({
       title,
       label: ["panel", "htmlelement", "content", "fieldset"].indexOf(type) === -1 ? label : undefined,
