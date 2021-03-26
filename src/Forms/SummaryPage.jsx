@@ -51,7 +51,9 @@ const filterNonFormContent = (components, submission = []) =>
         filterNonFormContent(component.components, submission[component.key]).length > 0
     )
     .filter(
-      (component) => component.type !== "fieldset" || filterNonFormContent(component.components, submission).length > 0
+      (component) =>
+        (component.type !== "fieldset" && component.type !== "navSkjemagruppe") ||
+        filterNonFormContent(component.components, submission).length > 0
     )
     .filter((component) =>
       component.conditional && component.conditional.when ? shouldShowConditionalField(component, submission) : true
@@ -99,7 +101,11 @@ const FormSummary = ({ form, submission }) => {
                   value={(submission[component.key] || {})[subComponent.key]}
                 />
               ));
-            } else if (component.type === "fieldset" || component.type === "datagrid") {
+            } else if (
+              component.type === "fieldset" ||
+              component.type === "navSkjemagruppe" ||
+              component.type === "datagrid"
+            ) {
               return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
             }
             return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;

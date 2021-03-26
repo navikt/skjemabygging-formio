@@ -5,6 +5,7 @@ import CheckboxComponent from "./components/Checkbox";
 import DataGrid from "./components/DataGrid";
 import TextField from "./components/TextField";
 import Number from "./components/Number";
+import NavSkjemagruppe from "./components/NavSkjemagruppe";
 
 export default {
   fnrfield: Fodselsnummer,
@@ -14,4 +15,5 @@ export default {
   datagrid: DataGrid,
   textfield: TextField,
   number: Number,
+  navSkjemagruppe: NavSkjemagruppe,
 };
