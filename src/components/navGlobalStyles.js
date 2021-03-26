@@ -17,6 +17,10 @@ export const globalStyles = {
   html: {
     height: "100%",
   },
+  /* Set as global styles to apply inside of formio-dialog (modal), as it is not placed inside of NavFormBuilder */
+  ".formio-fieldset": {
+    padding: "0",
+  },
 };
 
 export const appStyles = {
