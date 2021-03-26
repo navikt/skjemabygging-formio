@@ -10,6 +10,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   return (
     <main tabIndex={-1}>
       <Sidetittel>{form.title}</Sidetittel>
+      {form.properties && form.properties.skjemanummer && <p>{form.properties.skjemanummer}</p>}
       <NavForm
         key="1"
         form={form}
