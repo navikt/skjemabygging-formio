@@ -12,13 +12,14 @@ import { languagesInNorwegian, supportedLanguages } from "../hooks/useLanguages"
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
-    .map(({ content, title, label, html, type, values, legend }) => ({
+    .map(({ content, title, label, html, type, values, legend, description }) => ({
       title,
       label: ["panel", "htmlelement", "content", "fieldset"].indexOf(type) === -1 ? label : undefined,
       html,
       values: values ? values.map((value) => value.label) : undefined,
       content,
       legend,
+      description: description !== "" ? description : undefined,
     }))
     .reduce((allTextsForForm, component) => {
       return [
@@ -30,6 +31,8 @@ const getAllTextsForForm = (form) =>
               return [...textsForComponent, ...component[key].map((value) => ({ text: value, type: "text" }))];
             } else if (key === "html" || key === "content") {
               return [...textsForComponent, { text: component[key], type: "textarea" }];
+            } else if (key === "description") {
+              return [...textsForComponent, { text: component[key], type: "text" }];
             } else {
               return [...textsForComponent, { text: component[key], type: "text" }];
             }
