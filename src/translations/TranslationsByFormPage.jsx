@@ -139,6 +139,18 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
         {skjemanummer} {title}
       </Sidetittel>
       <form>
+        <Input
+          className="margin-bottom-default"
+          label={form.title}
+          type={"text"}
+          value={(translations[form.title] && translations[form.title].value) || ""}
+          onChange={(event) =>
+            setTranslations({
+              ...translations,
+              [form.title]: { value: event.target.value, scope: "local" },
+            })
+          }
+        />
         {flattenedComponents.map(({ text, type }) => {
           if (type === "textarea")
             return (
