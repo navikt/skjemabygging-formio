@@ -133,9 +133,6 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  @media (max-width: 540px) {
-    //flex-direction: column-reverse;
-  }
 }
 .list-inline-item {
   margin: 0.5rem;
@@ -159,7 +156,6 @@
 .btn-wizard-nav-next,
 .btn-wizard-nav-submit {
   .knappfylt-mixin(@navBla, @white, @navDypBla, lighten(@navBla, 5%)); //knapp--hoved
-  min-width: 14rem;
 }
 
 .btn-wizard-nav-cancel {
