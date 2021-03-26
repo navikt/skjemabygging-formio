@@ -31,8 +31,6 @@ const getAllTextsForForm = (form) =>
               return [...textsForComponent, ...component[key].map((value) => ({ text: value, type: "text" }))];
             } else if (key === "html" || key === "content") {
               return [...textsForComponent, { text: component[key], type: "textarea" }];
-            } else if (key === "description") {
-              return [...textsForComponent, { text: component[key], type: "text" }];
             } else {
               return [...textsForComponent, { text: component[key], type: "text" }];
             }
