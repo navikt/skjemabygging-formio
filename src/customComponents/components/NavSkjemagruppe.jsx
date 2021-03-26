@@ -1,6 +1,13 @@
 import Fieldset from "formiojs/components/fieldset/Fieldset";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 
-Fieldset.schema = () => FormBuilderOptions.builder.layout.components.navSkjemagruppe.schema;
+class Skjemagruppe extends Fieldset {
+  static schema(...extend) {
+    return Fieldset.schema({
+      ...FormBuilderOptions.builder.layout.components.navSkjemagruppe.schema,
+      ...extend,
+    });
+  }
+}
 
-export default Fieldset;
+export default Skjemagruppe;
