@@ -81,6 +81,11 @@ const FormSummaryFieldset = ({ component, submission }) => (
   </>
 );
 
+const DataGridSummary = ({ component, submission }) =>
+  submission[component.key].map((dataGridRowSubmission) => (
+    <FormSummaryFieldset component={component} key={component.key} submission={dataGridRowSubmission} />
+  ));
+
 const FormSummary = ({ form, submission }) => {
   return form.components.map((panel) => {
     if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
@@ -101,14 +106,13 @@ const FormSummary = ({ form, submission }) => {
                   value={(submission[component.key] || {})[subComponent.key]}
                 />
               ));
-            } else if (
-              component.type === "fieldset" ||
-              component.type === "navSkjemagruppe" ||
-              component.type === "datagrid"
-            ) {
+            } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
               return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
+            } else if (component.type === "datagrid" || component.type === "navDataGrid") {
+              return <DataGridSummary component={component} submission={submission} />;
+            } else {
+              return <FormSummaryField component={component} value={submission[component.key]} />;
             }
-            return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
           })}
         </dl>
       </section>
