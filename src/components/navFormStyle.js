@@ -54,6 +54,7 @@ const styles = {
 
   //Alle skjemafelter -- start
   "& .form-group": {
+    clear: "both",
     marginBottom: "2rem",
   },
   //Alle skjemafelter -- slutt
