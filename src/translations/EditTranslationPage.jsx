@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import NavForm from "../components/NavForm";
 import { styled } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { SletteKnapp } from "../Forms/components";
+import { SlettKnapp } from "../Forms/components";
 
 const StyledNavForm = styled(NavForm)({
   margin: "0 auto",
@@ -21,12 +21,12 @@ const EditTranslationPage = ({ projectURL, resourceId, deleteLanguage }) => {
         visOversettelseliste: true,
       }}
       rightCol={
-        <SletteKnapp
+        <SlettKnapp
           className="lenke"
           onClick={() => deleteLanguage(resourceId).then(() => history.push("/translations"))}
         >
           Slett oversettelser
-        </SletteKnapp>
+        </SlettKnapp>
       }
     >
       <StyledNavForm src={`${projectURL}/language/submission/${resourceId}`} />

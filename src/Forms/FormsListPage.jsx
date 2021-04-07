@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { SlettSkjemaKnapp } from "./components";
+import { SlettKnapp } from "./components";
 import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
 import { Hovedknapp } from "nav-frontend-knapper";
 
@@ -153,9 +153,9 @@ function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
-              <SlettSkjemaKnapp className="lenke" onClick={() => onDelete(form)}>
+              <SlettKnapp className="lenke" onClick={() => onDelete(form)}>
                 Slett skjema
-              </SlettSkjemaKnapp>
+              </SlettKnapp>
             </li>
           )}
         </FormsList>
