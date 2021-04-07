@@ -756,13 +756,16 @@ const builderPalett = {
   layout: {
     title: "Layout",
     components: {
+      fieldset: {
+        ignore: true,
+      },
       navSkjemagruppe: {
         documentation: "",
         group: "layout",
         icon: "th-large",
         key: "navSkjemagruppe",
         title: "Skjemagruppe",
-        weight: 0,
+        weight: 20,
         schema: {
           label: "Skjemagruppe",
           key: "navSkjemagruppe",
