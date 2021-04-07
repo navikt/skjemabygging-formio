@@ -18,8 +18,17 @@ const FyllUtRouter = ({ form, translation }) => {
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
 
+  function beforeUnload(e) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+
   useEffect(() => {
     loggSkjemaApnet();
+    window.addEventListener("beforeunload", beforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", beforeUnload);
+    };
   }, [loggSkjemaApnet]);
 
   return (

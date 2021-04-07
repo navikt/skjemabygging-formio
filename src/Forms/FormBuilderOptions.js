@@ -149,10 +149,10 @@ export const landSchema = (keyPostfix = "") => ({
   },
 });
 
-export const epostSchema = (keyPostfix = "") => ({
+export const epostSchema = () => ({
   label: "E-post",
   type: "email",
-  key: `epost${keyPostfix}`,
+  key: `epost`,
   fieldSize: "input--xxl",
   input: true,
   validateOn: "blur",
@@ -245,7 +245,6 @@ export const kontaktInfoSchema = (keyPostfix = "") => ({
         eq: "nei",
       },
     },
-    epostSchema(keyPostfix),
     telefonSchema(keyPostfix),
   ],
 });

@@ -35,7 +35,7 @@ const CheckboxWrapper = class extends Component {
         label={translate(component.label)}
         onChange={(event) => this.setValue(this.state.value === "on" ? "off" : "on")}
         required={component.validate.required}
-        checked={this.state.value === "on"}
+        checked={this.state.value === "ja"}
       />
     );
   }

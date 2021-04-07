@@ -29,8 +29,7 @@ function formatValue(component, value) {
       return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
     }
     case "navCheckbox": {
-      if (value === "on") return "Ja";
-      else return "Nei";
+      return value === "ja" ? "Ja" : "Nei";
     }
     default:
       return value;
