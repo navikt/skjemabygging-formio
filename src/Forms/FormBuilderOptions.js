@@ -753,6 +753,31 @@ const builderPalett = {
       },
     },
   },
+  layout: {
+    title: "Layout",
+    components: {
+      fieldset: {
+        ignore: true,
+      },
+      navSkjemagruppe: {
+        documentation: "",
+        group: "layout",
+        icon: "th-large",
+        key: "navSkjemagruppe",
+        title: "Skjemagruppe",
+        weight: 20,
+        schema: {
+          label: "Skjemagruppe",
+          key: "navSkjemagruppe",
+          type: "navSkjemagruppe",
+          legend: "Skjemagruppe",
+          components: [],
+          input: false,
+          persistent: false,
+        },
+      },
+    },
+  },
 };
 
 export default {
