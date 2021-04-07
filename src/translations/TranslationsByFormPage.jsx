@@ -28,11 +28,18 @@ const getAllTextsForForm = (form) =>
           .filter((key) => component[key] !== undefined)
           .reduce((textsForComponent, key) => {
             if (key === "values") {
-              return [...textsForComponent, ...component[key].map((value) => ({ text: value, type: "text" }))];
-            } else if (key === "html" || key === "content") {
-              return [...textsForComponent, { text: component[key], type: "textarea" }];
+              return [
+                ...textsForComponent,
+                ...component[key].map((value) => ({
+                  text: value,
+                  type: value.length < 80 ? "text" : "textarea",
+                })),
+              ];
             } else {
-              return [...textsForComponent, { text: component[key], type: "text" }];
+              return [
+                ...textsForComponent,
+                { text: component[key], type: component[key].length < 80 ? "text" : "textarea" },
+              ];
             }
           }, []),
       ];
