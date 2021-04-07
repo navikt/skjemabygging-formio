@@ -164,4 +164,4 @@ function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   );
 }
 
-export { FormsListPage, FormsList };
+export { FormsListPage, FormsList, simplifiedForms };

@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Link } from "react-router-dom";
 import { Innholdstittel } from "nav-frontend-typografi";
-import { FormsList } from "../Forms/FormsListPage";
+import { FormsList, simplifiedForms } from "../Forms/FormsListPage";
 
 const useTranslationsListStyles = makeStyles({
   root: {
@@ -17,7 +17,14 @@ const useTranslationsListStyles = makeStyles({
   listItem: {
     padding: "0.3rem 0.5rem",
     display: "grid",
-    gridTemplateColumns: "auto 6rem",
+    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
+    width: "auto",
+    "&:nth-child(odd)": {
+      backgroundColor: "#ddd",
+    },
+  },
+  globalListItem: {
+    padding: "0.3rem 0.5rem",
     width: "auto",
     "&:nth-child(odd)": {
       backgroundColor: "#ddd",
@@ -40,7 +47,7 @@ export function TranslationsListPage({ onLogout, forms }) {
         <nav className="margin-bottom-large">
           <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
           <ul className={classes.list}>
-            <li className={classes.listItem}>
+            <li className={classes.globalListItem}>
               <Link to={"/globalTranslations"}>Felles oversettelser for alle skjemaer</Link>
             </li>
           </ul>
@@ -48,10 +55,15 @@ export function TranslationsListPage({ onLogout, forms }) {
         <nav className="margin-bottom-large">
           <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
           {forms && (
-            <FormsList className={classes.list} forms={forms}>
+            <FormsList className={classes.list} forms={simplifiedForms(forms)}>
               {(form) => (
                 <li className={classes.listItem} key={form.path}>
-                  <a href={`/translation/${form.path}`}>{form.title}</a>
+                  <Link className="lenke" data-testid="editLink" to={`/translation/${form.path}`}>
+                    {form.skjemanummer}
+                  </Link>
+                  <Link className="lenke" data-testid="editLink" to={`/translation/${form.path}`}>
+                    {form.title}
+                  </Link>
                 </li>
               )}
             </FormsList>
