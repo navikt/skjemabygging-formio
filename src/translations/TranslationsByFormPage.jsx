@@ -8,6 +8,20 @@ import { Sidetittel } from "nav-frontend-typografi";
 import LanguageSelector from "../components/LanguageSelector";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { languagesInNorwegian, supportedLanguages } from "../hooks/useLanguages";
+import { makeStyles } from "@material-ui/styles";
+
+const useTranslationsListStyles = makeStyles({
+  root: {
+    width: "80ch",
+    margin: "0 auto",
+    "& .textarea--medMeta__teller": {
+      display: "none",
+    },
+    "& textarea": {
+      width: "inherit",
+    },
+  },
+});
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -74,6 +88,7 @@ const saveTranslation = (projectUrl, formPath, translationId, languageCode, tran
 };
 
 const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditPage, languageCode, projectURL }) => {
+  const classes = useTranslationsListStyles();
   const history = useHistory();
   const {
     title,
@@ -143,10 +158,9 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
         </ul>
       }
     >
-      <Sidetittel className="margin-bottom-large">
-        {skjemanummer} {title}
-      </Sidetittel>
-      <form>
+      <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
+      <p className="margin-bottom-large">{skjemanummer}</p>
+      <form className={classes.root}>
         <Input
           className="margin-bottom-default"
           label={form.title}
