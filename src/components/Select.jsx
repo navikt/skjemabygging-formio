@@ -74,6 +74,7 @@ const Select = ({ label, className, options }) => {
             {options.map(({ href, optionLabel }, index) => (
               <li
                 className="select-list__option"
+                key={optionLabel}
                 onKeyDown={(event) =>
                   handleTabKeyPressed(event, firstListItemLinkRef, lastListItemLinkRef, index, options.length)
                 }

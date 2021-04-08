@@ -198,6 +198,7 @@ const TranslationsByFormPage = ({
           className="margin-bottom-default"
           label={form.title}
           type={"text"}
+          key={form.title}
           value={(translations[form.title] && translations[form.title].value) || ""}
           onChange={(event) =>
             setTranslations({
@@ -212,6 +213,7 @@ const TranslationsByFormPage = ({
               <Textarea
                 label={text}
                 className="margin-bottom-default"
+                key={text}
                 description={
                   translations[text] && translations[text].scope === "global"
                     ? "Denne teksten er global oversatt"
@@ -230,6 +232,7 @@ const TranslationsByFormPage = ({
           return (
             <Input
               className="margin-bottom-default"
+              key={text}
               description={
                 translations && translations[text] && translations[text].scope === "global"
                   ? "Denne teksten er global oversatt"
