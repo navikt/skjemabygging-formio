@@ -66,7 +66,11 @@ const getAllTextsForForm = (form) =>
             }
           }, []),
       ];
-    }, []);
+    }, [])
+    .filter(
+      (component, index, currentComponents) =>
+        index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
+    );
 
 const saveTranslation = (projectUrl, formPath, translationId, languageCode, translations) => {
   Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
