@@ -72,7 +72,7 @@ const getAllTextsForForm = (form) =>
         index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
     );
 
-const saveTranslation = (projectUrl, formPath, translationId, languageCode, translations) => {
+const saveTranslation = (projectUrl, formPath, translationId, languageCode, translations, userAlerter, formTitle) => {
   Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
     headers: {
       "x-jwt-token": Formiojs.getToken(),
@@ -97,10 +97,26 @@ const saveTranslation = (projectUrl, formPath, translationId, languageCode, tran
         }, {}),
       },
     }),
+  }).then((response) => {
+    if (response.ok) {
+      userAlerter.flashSuccessMessage("Lagret oversettelser " + formTitle);
+    } else {
+      response.json().then((r) => {
+        const errorMessage = "Lagret oversettelser feilet: ";
+        userAlerter.setErrorMessage(errorMessage.concat(r && r.details[0] && r.details[0].message));
+      });
+    }
   });
 };
 
-const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditPage, languageCode, projectURL }) => {
+const TranslationsByFormPage = ({
+  deleteLanguage,
+  form,
+  loadTranslationsForEditPage,
+  languageCode,
+  projectURL,
+  userAlerter,
+}) => {
   const classes = useTranslationsListStyles();
   const history = useHistory();
   const {
@@ -159,7 +175,11 @@ const TranslationsByFormPage = ({ deleteLanguage, form, loadTranslationsForEditP
             </Link>
           </li>
           <li className="list-inline-item">
-            <Hovedknapp onClick={() => saveTranslation(projectURL, path, translationId, languageCode, translations)}>
+            <Hovedknapp
+              onClick={() =>
+                saveTranslation(projectURL, path, translationId, languageCode, translations, userAlerter, title)
+              }
+            >
               Lagre
             </Hovedknapp>
           </li>

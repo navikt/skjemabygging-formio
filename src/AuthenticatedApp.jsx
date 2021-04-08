@@ -67,6 +67,7 @@ function AuthenticatedApp({ formio, store }) {
                 projectURL={formio.projectUrl}
                 deleteLanguage={deleteLanguage}
                 loadTranslationsForEditPage={loadTranslationsForEditPage}
+                userAlerter={userAlerter}
               />
             );
           }}
