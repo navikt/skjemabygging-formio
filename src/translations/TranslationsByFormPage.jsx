@@ -99,7 +99,7 @@ const saveTranslation = (projectUrl, formPath, translationId, languageCode, tran
     }),
   }).then((response) => {
     if (response.ok) {
-      userAlerter.flashSuccessMessage("Lagret oversettelser " + formTitle);
+      userAlerter.flashSuccessMessage("Lagret oversettelser for skjema: " + formTitle);
     } else {
       response.json().then((r) => {
         const errorMessage = "Lagret oversettelser feilet: ";
