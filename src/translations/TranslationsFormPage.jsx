@@ -18,12 +18,22 @@ const useTranslationsListStyles = makeStyles({
   list: {
     display: "flex",
     justifyContent: "flex-start",
+
+    "& .skjemaelement": {
+      width: "100%",
+    },
+  },
+  listItem: {
+    marginTop: "5px",
+    marginLeft: "-20px",
+    zIndex: "1",
   },
 });
 
 const FormItem = ({ translations, setTranslations, text, type }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [globalTranslation, setGlobalTranslation] = useState(false);
+  const classes = useTranslationsListStyles();
 
   useEffect(() => {
     if (translations && translations[text] && translations[text].scope === "global") {
@@ -33,20 +43,7 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
   }, [translations, setTranslations, text]);
 
   return (
-    <>
-      {showGlobalTranslation ? (
-        globalTranslation ? (
-          <Locked
-            onClick={() => {
-              setGlobalTranslation(!globalTranslation);
-            }}
-          />
-        ) : (
-          <Unlocked />
-        )
-      ) : (
-        ""
-      )}
+    <div className={classes.list}>
       {type === "textarea" ? (
         <Textarea
           label={text}
@@ -81,17 +78,31 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
           readOnly={globalTranslation}
         />
       )}
-    </>
+      {showGlobalTranslation ? (
+        globalTranslation ? (
+          <Locked
+            className={classes.listItem}
+            onClick={() => {
+              setGlobalTranslation(!globalTranslation);
+            }}
+          />
+        ) : (
+          <Unlocked className={classes.listItem} />
+        )
+      ) : (
+        ""
+      )}
+    </div>
   );
 };
 const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, setTranslations }) => {
   const classes = useTranslationsListStyles();
 
   return (
-    <>
+    <div className={classes.root}>
       <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
       <p className="margin-bottom-large">{skjemanummer}</p>
-      <form className={classes.root}>
+      <form>
         <Input
           className="margin-bottom-default"
           label={title}
@@ -109,7 +120,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
           return <FormItem translations={translations} setTranslations={setTranslations} text={text} type={type} />;
         })}
       </form>
-    </>
+    </div>
   );
 };
 export default TranslationsFormPage;
