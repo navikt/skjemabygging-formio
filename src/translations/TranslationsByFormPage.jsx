@@ -20,15 +20,6 @@ const getAllTextsForForm = (form) =>
       legend,
       description: description !== "" ? description : undefined,
     }))
-    .filter(
-      (component, index, currentComponents) =>
-        index ===
-        currentComponents.findIndex(
-          (currentComponent) =>
-            currentComponent.label === component.label &&
-            JSON.stringify(currentComponent.values) === JSON.stringify(component.values)
-        )
-    )
     .reduce((allTextsForForm, component) => {
       return [
         ...allTextsForForm,
