@@ -109,6 +109,83 @@ const saveTranslation = (projectUrl, formPath, translationId, languageCode, tran
   });
 };
 
+const FormPage = ({ skjemanummer, translations, title, flattenedComponents, setTranslations }) => {
+  const classes = useTranslationsListStyles();
+
+  return (
+    <>
+      <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
+      <p className="margin-bottom-large">{skjemanummer}</p>
+      <form className={classes.root}>
+        <Input
+          className="margin-bottom-default"
+          label={title}
+          type={"text"}
+          key={title}
+          value={(translations[title] && translations[title].value) || ""}
+          onChange={(event) =>
+            setTranslations({
+              ...translations,
+              [title]: { value: event.target.value, scope: "local" },
+            })
+          }
+        />
+        {flattenedComponents.map(({ text, type }) => {
+          if (translations && translations[text] && translations[text].scope === "global") {
+            //setGlobalTranslation(true);
+            //setShowGlobalTranslation(true);
+          }
+
+          return (
+            <>
+              {type === "textarea" ? (
+                <Textarea
+                  label={text}
+                  className="margin-bottom-default"
+                  key={text}
+                  description={
+                    translations[text] && translations[text].scope === "global"
+                      ? "Denne teksten er global oversatt"
+                      : undefined
+                  }
+                  value={(translations[text] && translations[text].value) || ""}
+                  onChange={(event) =>
+                    setTranslations({
+                      ...translations,
+                      [text]: { value: event.target.value, scope: "local" },
+                    })
+                  }
+                  readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
+                />
+              ) : (
+                <Input
+                  className="margin-bottom-default"
+                  key={text}
+                  description={
+                    translations && translations[text] && translations[text].scope === "global"
+                      ? "Denne teksten er global oversatt"
+                      : undefined
+                  }
+                  label={text}
+                  type={type}
+                  value={(translations && translations[text] && translations[text].value) || ""}
+                  onChange={(event) =>
+                    setTranslations({
+                      ...translations,
+                      [text]: { value: event.target.value, scope: "local" },
+                    })
+                  }
+                  readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
+                />
+              )}
+            </>
+          );
+        })}
+      </form>
+    </>
+  );
+};
+
 const TranslationsByFormPage = ({
   deleteLanguage,
   form,
@@ -117,7 +194,6 @@ const TranslationsByFormPage = ({
   projectURL,
   userAlerter,
 }) => {
-  const classes = useTranslationsListStyles();
   const history = useHistory();
   const {
     title,
@@ -191,67 +267,13 @@ const TranslationsByFormPage = ({
         </ul>
       }
     >
-      <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
-      <p className="margin-bottom-large">{skjemanummer}</p>
-      <form className={classes.root}>
-        <Input
-          className="margin-bottom-default"
-          label={form.title}
-          type={"text"}
-          key={form.title}
-          value={(translations[form.title] && translations[form.title].value) || ""}
-          onChange={(event) =>
-            setTranslations({
-              ...translations,
-              [form.title]: { value: event.target.value, scope: "local" },
-            })
-          }
-        />
-        {flattenedComponents.map(({ text, type }) => {
-          if (type === "textarea")
-            return (
-              <Textarea
-                label={text}
-                className="margin-bottom-default"
-                key={text}
-                description={
-                  translations[text] && translations[text].scope === "global"
-                    ? "Denne teksten er global oversatt"
-                    : undefined
-                }
-                value={(translations[text] && translations[text].value) || ""}
-                onChange={(event) =>
-                  setTranslations({
-                    ...translations,
-                    [text]: { value: event.target.value, scope: "local" },
-                  })
-                }
-                readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
-              />
-            );
-          return (
-            <Input
-              className="margin-bottom-default"
-              key={text}
-              description={
-                translations && translations[text] && translations[text].scope === "global"
-                  ? "Denne teksten er global oversatt"
-                  : undefined
-              }
-              label={text}
-              type={type}
-              value={(translations && translations[text] && translations[text].value) || ""}
-              onChange={(event) =>
-                setTranslations({
-                  ...translations,
-                  [text]: { value: event.target.value, scope: "local" },
-                })
-              }
-              readOnly={(translations && translations[text] && translations[text].scope === "global") || undefined}
-            />
-          );
-        })}
-      </form>
+      <FormPage
+        skjemanummer={skjemanummer}
+        translations={translations}
+        title={title}
+        flattenedComponents={flattenedComponents}
+        setTranslations={setTranslations}
+      />
     </AppLayoutWithContext>
   );
 };
