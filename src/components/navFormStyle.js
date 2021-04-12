@@ -12,7 +12,13 @@ const wizardSidevelgerStyles = {
   },
 };
 
-const skjemaelementStyles = {
+const allFieldsStyles = {
+  "& .form-group": {
+    marginBottom: "2rem",
+  },
+};
+
+const requiredFieldStyles = {
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
@@ -22,6 +28,10 @@ const skjemaelementStyles = {
   "& .checkboks[required] + .skjemaelement__label::after": {
     content: '""',
   },
+};
+
+/* CSS grid for arranging fields side by side. Used by Day component */
+const fieldsSideBySideStyles = {
   "& .skjemaelement__rad": {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(8rem, 1fr))",
@@ -29,12 +39,7 @@ const skjemaelementStyles = {
   },
 };
 
-const styles = {
-  "& .input-group": {
-    "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
-      flex: "initial",
-    },
-  },
+const dataGridStyles = {
   "& .data-grid__row": {
     border: `1px solid ${navCssVariabler.navGra60}`,
     borderRadius: "7px",
@@ -45,22 +50,31 @@ const styles = {
       marginBottom: "1.5rem",
     },
   },
-  "& .formio-error-wrapper, & .formio-warning-wrapper": {
-    padding: "0",
-  },
   "& .data-grid__row > .skjemagruppe__legend": {
     float: "left",
   },
+};
 
-  //Alle skjemafelter -- start
-  "& .form-group": {
-    marginBottom: "2rem",
+const errorValidationStyles = {
+  "& .formio-error-wrapper, & .formio-warning-wrapper": {
+    padding: "0",
   },
-  //Alle skjemafelter -- slutt
+};
+
+const styles = {
+  "& .input-group": {
+    "&>.custom-file, &>.custom-select, &>.form-control, &>.form-control-plaintext": {
+      flex: "initial",
+    },
+  },
 };
 
 export default {
   ...styles,
   ...wizardSidevelgerStyles,
-  ...skjemaelementStyles,
+  ...requiredFieldStyles,
+  ...fieldsSideBySideStyles,
+  ...allFieldsStyles,
+  ...dataGridStyles,
+  ...errorValidationStyles,
 };
