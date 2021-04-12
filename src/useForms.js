@@ -169,16 +169,34 @@ export const useForms = (formio, store, userAlerter) => {
                   ...((translationsByLanguage[translationResource.language] &&
                     translationsByLanguage[translationResource.language].translations) ||
                     {}),
-                  ...Object.keys(translationResource.i18n).reduce(
-                    (translationsObjects, translatedText) => ({
-                      ...translationsObjects,
-                      [translatedText]: {
-                        value: translationResource.i18n[translatedText],
-                        scope: translationResource.scope,
-                      },
-                    }),
-                    {}
-                  ),
+                  ...Object.keys(translationResource.i18n).reduce((translationsObjects, translatedText) => {
+                    if (
+                      translationsByLanguage[translationResource.language] &&
+                      translationsByLanguage[translationResource.language].translations
+                    ) {
+                      if (
+                        Object.keys(translationsByLanguage[translationResource.language].translations).indexOf(
+                          translatedText
+                        ) === -1
+                      ) {
+                        return {
+                          ...translationsObjects,
+                          [translatedText]: {
+                            value: translationResource.i18n[translatedText],
+                            scope: translationResource.scope,
+                          },
+                        };
+                      }
+                    } else {
+                      return {
+                        ...translationsObjects,
+                        [translatedText]: {
+                          value: translationResource.i18n[translatedText],
+                          scope: translationResource.scope,
+                        },
+                      };
+                    }
+                  }, {}),
                 },
                 id:
                   (translationsByLanguage[translationResource.language] &&
