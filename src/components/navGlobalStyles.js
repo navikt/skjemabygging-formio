@@ -33,6 +33,9 @@ export const globalStyles = {
   ".margin-left-default": {
     marginLeft: "1rem",
   },
+  "main:focus": {
+    outline: "none",
+  },
 };
 
 export const appStyles = {
