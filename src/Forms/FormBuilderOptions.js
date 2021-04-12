@@ -651,6 +651,7 @@ const builderPalett = {
           input: true,
           hideLabel: true,
           clearOnHide: true,
+          defaultValue: "ja",
           validate: {
             required: true,
           },
