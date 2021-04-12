@@ -14,19 +14,25 @@ const useTranslationsListStyles = makeStyles({
     "& textarea": {
       width: "inherit",
     },
+    "& textarea:read-only": {
+      borderColor: "#78706a",
+      backgroundColor: "#e9e7e7",
+      cursor: "not-allowed",
+    },
   },
   list: {
     display: "flex",
-    justifyContent: "flex-start",
+    alignItems: "center",
 
     "& .skjemaelement": {
       width: "100%",
     },
   },
   listItem: {
-    marginTop: "5px",
+    marginTop: "2rem",
     marginLeft: "-20px",
     zIndex: "1",
+    cursor: "pointer",
   },
 });
 
@@ -49,9 +55,7 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
           label={text}
           className="margin-bottom-default"
           key={text}
-          description={
-            translations[text] && translations[text].scope === "global" ? "Denne teksten er global oversatt" : undefined
-          }
+          description={globalTranslation ? "Denne teksten er global oversatt" : undefined}
           value={(translations[text] && translations[text].value) || ""}
           onChange={(event) =>
             setTranslations({
