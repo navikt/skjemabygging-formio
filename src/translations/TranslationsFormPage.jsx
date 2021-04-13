@@ -121,7 +121,15 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
           }
         />
         {flattenedComponents.map(({ text, type }) => {
-          return <FormItem translations={translations} setTranslations={setTranslations} text={text} type={type} />;
+          return (
+            <FormItem
+              translations={translations}
+              setTranslations={setTranslations}
+              text={text}
+              type={type}
+              key={text}
+            />
+          );
         })}
       </form>
     </div>
