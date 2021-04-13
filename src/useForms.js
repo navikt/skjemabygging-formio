@@ -170,6 +170,8 @@ export const useForms = (formio, store, userAlerter) => {
                     translationsByLanguage[translationResource.language].translations) ||
                     {}),
                   ...Object.keys(translationResource.i18n).reduce((translationsObjects, translatedText) => {
+                    let value = translationResource.i18n[translatedText];
+                    let scope = translationResource.scope;
                     if (
                       translationsByLanguage[translationResource.language] &&
                       translationsByLanguage[translationResource.language].translations
@@ -177,25 +179,19 @@ export const useForms = (formio, store, userAlerter) => {
                       if (
                         Object.keys(translationsByLanguage[translationResource.language].translations).indexOf(
                           translatedText
-                        ) === -1
+                        ) !== -1
                       ) {
-                        return {
-                          ...translationsObjects,
-                          [translatedText]: {
-                            value: translationResource.i18n[translatedText],
-                            scope: translationResource.scope,
-                          },
-                        };
+                        value = translationsByLanguage[translationResource.language].translations[translatedText].value;
+                        scope = translationsByLanguage[translationResource.language].translations[translatedText].scope;
                       }
-                    } else {
-                      return {
-                        ...translationsObjects,
-                        [translatedText]: {
-                          value: translationResource.i18n[translatedText],
-                          scope: translationResource.scope,
-                        },
-                      };
                     }
+                    return {
+                      ...translationsObjects,
+                      [translatedText]: {
+                        value: value,
+                        scope: scope,
+                      },
+                    };
                   }, {}),
                 },
                 id:
