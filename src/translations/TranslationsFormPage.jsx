@@ -38,13 +38,15 @@ const useTranslationsListStyles = makeStyles({
 
 const FormItem = ({ translations, setTranslations, text, type }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
-  const [globalTranslation, setGlobalTranslation] = useState(false);
+  const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
+  const [globalTranslation, setGlobalTranslation] = useState("");
   const classes = useTranslationsListStyles();
 
   useEffect(() => {
     if (translations && translations[text] && translations[text].scope === "global") {
-      setGlobalTranslation(true);
+      setHasGlobalTranslation(true);
       setShowGlobalTranslation(true);
+      setGlobalTranslation(translations[text].value);
     }
   }, [translations, setTranslations, text]);
 
@@ -55,43 +57,54 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
           label={text}
           className="margin-bottom-default"
           key={text}
-          description={globalTranslation ? "Denne teksten er global oversatt" : undefined}
-          value={(translations[text] && translations[text].value) || ""}
-          onChange={(event) =>
+          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
+          value={(translations && translations[text] && translations[text].value) || ""}
+          onChange={(event) => {
             setTranslations({
               ...translations,
               [text]: { value: event.target.value, scope: "local" },
-            })
-          }
-          readOnly={globalTranslation}
+            });
+            setGlobalTranslation(event.target.value);
+          }}
+          readOnly={hasGlobalTranslation}
         />
       ) : (
         <Input
           className="margin-bottom-default"
           key={text}
-          description={globalTranslation ? "Denne teksten er global oversatt" : undefined}
+          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           label={text}
           type={type}
-          value={(translations && translations[text] && translations[text].value) || ""}
-          onChange={(event) =>
+          value={
+            showGlobalTranslation ? globalTranslation : translations && translations[text] && translations[text].value
+          }
+          onChange={(event) => {
             setTranslations({
               ...translations,
               [text]: { value: event.target.value, scope: "local" },
-            })
-          }
-          readOnly={globalTranslation}
+            });
+            setGlobalTranslation(event.target.value);
+          }}
+          readOnly={hasGlobalTranslation}
         />
       )}
       {showGlobalTranslation ? (
-        globalTranslation ? (
+        hasGlobalTranslation ? (
           <Locked
             className={classes.listItem}
             onClick={() => {
-              setGlobalTranslation(!globalTranslation);
+              setHasGlobalTranslation(!hasGlobalTranslation);
+              setGlobalTranslation("");
             }}
           />
         ) : (
-          <Unlocked className={classes.listItem} />
+          <Unlocked
+            className={classes.listItem}
+            onClick={() => {
+              setGlobalTranslation(translations && translations[text] && translations[text].value);
+              setHasGlobalTranslation(!hasGlobalTranslation);
+            }}
+          />
         )
       ) : (
         ""
