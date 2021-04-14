@@ -6,6 +6,7 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
+import navCssVariabler from "nav-frontend-core";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -68,22 +69,35 @@ const FormSummaryField = ({ component, value }) => (
   </>
 );
 
-const FormSummaryFieldset = ({ component, submission }) => (
-  <>
-    <dt>{component.legend}</dt>
+const FormSummaryFieldset = ({ component, submission, isDataGridRow }) => (
+  <div className={isDataGridRow ? "data-grid__row skjemagruppe" : undefined}>
+    <dt className={isDataGridRow ? "skjemagruppe__legend" : undefined}>{component.legend}</dt>
     <dd>
-      <dl className="margin-left-default">
+      <dl className={!isDataGridRow ? "margin-left-default" : undefined}>
         {filterNonFormContent(component.components, submission).map((subComponent) => (
           <FormSummaryField key={subComponent.key} component={subComponent} value={submission[subComponent.key]} />
         ))}
       </dl>
     </dd>
-  </>
+  </div>
 );
 
 const DataGridSummary = ({ component, submission }) =>
   submission[component.key].map((dataGridRowSubmission) => (
-    <FormSummaryFieldset component={component} key={component.key} submission={dataGridRowSubmission} />
+    <div className="data-grid__row skjemagruppe">
+      <dt className="skjemagruppe__legend">{component.label}</dt>
+      <dd>
+        <dl>
+          {filterNonFormContent(component.components, dataGridRowSubmission).map((subComponent) => (
+            <FormSummaryField
+              key={subComponent.key}
+              component={subComponent}
+              value={dataGridRowSubmission[subComponent.key]}
+            />
+          ))}
+        </dl>
+      </dd>
+    </div>
   ));
 
 const FormSummary = ({ form, submission }) => {
@@ -175,4 +189,15 @@ const SummaryContent = styled("main")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
+
+  "& .data-grid__row": {
+    border: `1px solid ${navCssVariabler.navGra60}`,
+    borderRadius: "7px",
+    marginBottom: "1rem",
+    padding: "1.5rem 2rem 0",
+
+    "& .knapp--fjern": {
+      marginBottom: "1.5rem",
+    },
+  },
 });
