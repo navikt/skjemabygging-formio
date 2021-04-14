@@ -21,6 +21,21 @@ export const globalStyles = {
   ".formio-fieldset": {
     padding: "0",
   },
+  ".margin-bottom-default": {
+    marginBottom: "1rem",
+  },
+  ".margin-bottom-small": {
+    marginBottom: "0.5rem",
+  },
+  ".margin-bottom-large": {
+    marginBottom: "8rem",
+  },
+  ".margin-left-default": {
+    marginLeft: "1rem",
+  },
+  "main:focus": {
+    outline: "none",
+  },
 };
 
 export const appStyles = {
@@ -29,5 +44,8 @@ export const appStyles = {
     background: "#fff",
     padding: "1rem",
     marginBottom: "1rem",
+    "& > .formio-component:last-of-type": {
+      marginBottom: "4rem",
+    },
   },
 };
