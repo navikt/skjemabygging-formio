@@ -195,9 +195,5 @@ const SummaryContent = styled("main")({
     borderRadius: "7px",
     marginBottom: "1rem",
     padding: "1.5rem 2rem 0",
-
-    "& .knapp--fjern": {
-      marginBottom: "1.5rem",
-    },
   },
 });
