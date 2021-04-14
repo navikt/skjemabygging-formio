@@ -40,12 +40,16 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [globalTranslation, setGlobalTranslation] = useState("");
+  const [tempGlobalTranslation, setTempGlobalTranslation] = useState("");
   const classes = useTranslationsListStyles();
 
   useEffect(() => {
-    if (translations && translations[text] && translations[text].scope === "global") {
-      setHasGlobalTranslation(true);
-      setShowGlobalTranslation(true);
+    if (translations && translations[text]) {
+      if (translations[text].scope === "global") {
+        setHasGlobalTranslation(true);
+        setShowGlobalTranslation(true);
+        setTempGlobalTranslation(translations[text].value);
+      }
       setGlobalTranslation(translations[text].value);
     }
   }, [translations, setTranslations, text]);
@@ -58,7 +62,7 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
           className="margin-bottom-default"
           key={text}
           description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
-          value={(translations && translations[text] && translations[text].value) || ""}
+          value={globalTranslation}
           onChange={(event) => {
             setTranslations({
               ...translations,
@@ -75,9 +79,7 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
           description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           label={text}
           type={type}
-          value={
-            showGlobalTranslation ? globalTranslation : translations && translations[text] && translations[text].value
-          }
+          value={globalTranslation}
           onChange={(event) => {
             setTranslations({
               ...translations,
@@ -101,8 +103,8 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
           <Unlocked
             className={classes.listItem}
             onClick={() => {
-              setGlobalTranslation(translations && translations[text] && translations[text].value);
               setHasGlobalTranslation(!hasGlobalTranslation);
+              setGlobalTranslation(tempGlobalTranslation);
             }}
           />
         )
