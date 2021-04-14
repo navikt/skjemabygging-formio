@@ -14,6 +14,7 @@ const wizardSidevelgerStyles = {
 
 const allFieldsStyles = {
   "& .form-group": {
+    clear: "both",
     marginBottom: "2rem",
   },
 };

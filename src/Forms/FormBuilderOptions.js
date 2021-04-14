@@ -778,6 +778,31 @@ const builderPalett = {
       },
     },
   },
+  data: {
+    title: "Data",
+    components: {
+      datagrid: {
+        ignore: true,
+      },
+      navDataGrid: {
+        title: "Data Grid",
+        icon: "th",
+        group: "data",
+        documentation: "/userguide/#datagrid",
+        key: "navDataGrid",
+        weight: 30,
+        schema: {
+          label: "Data Grid",
+          key: "navDataGrid",
+          type: "navDataGrid",
+          clearOnHide: true,
+          input: true,
+          tree: true,
+          components: [],
+        },
+      },
+    },
+  },
 };
 
 export default {
