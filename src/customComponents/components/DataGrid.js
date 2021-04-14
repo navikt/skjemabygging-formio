@@ -18,6 +18,13 @@ class NavDataGrid extends DataGrid {
           ...DataGridDisplayEditForm,
           {
             type: "textfield",
+            label: "Row title",
+            key: "rowTitle",
+            weight: 2,
+            input: true,
+          },
+          {
+            type: "textfield",
             label: "Remove Text",
             key: "removeAnother",
             tooltip: "Set the text of the Remove button.",

@@ -1,7 +1,10 @@
-<div ref="{{ctx.datagridKey}}-tbody">
+<fieldset ref="{{ctx.datagridKey}}-tbody">
+  <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
   {% ctx.rows.forEach(function(row, index) { %}
     <fieldset class="data-grid__row skjemagruppe" ref="{{ctx.datagridKey}}-row">
-      <legend class="skjemagruppe__legend">{{ctx.t(ctx.component.label)}}</legend>
+      {% if (ctx.component.rowTitle) { %}
+        <legend class="skjemagruppe__legend">{{ctx.t(ctx.component.rowTitle)}}</legend>
+      {% } %}
       {% if (ctx.component.description) { %}
         <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
       {% } %}
@@ -31,4 +34,4 @@
       </button>
     </div>
   {% } %}
-</div>
+</fieldset>
