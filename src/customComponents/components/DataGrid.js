@@ -7,6 +7,7 @@ import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 
 const originalAddRow = DataGrid.prototype.addRow;
+const originalRemoveRow = DataGrid.prototype.removeRow;
 
 class NavDataGrid extends DataGrid {
   static get builderInfo() {
@@ -64,6 +65,11 @@ class NavDataGrid extends DataGrid {
     originalAddRow.call(this);
     const lastRowSelector = `[ref='${this.datagridKey}-row']:last-of-type`;
     scrollToAndSetFocus(`${lastRowSelector} input, ${lastRowSelector} select`);
+  }
+
+  removeRow(index) {
+    originalRemoveRow.call(this, index);
+    scrollToAndSetFocus(`[ref='${this.datagridKey}-addRow']:last-of-type`);
   }
 }
 
