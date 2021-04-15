@@ -70,10 +70,10 @@ const FormSummaryField = ({ component, value }) => (
 );
 
 const FormSummaryFieldset = ({ component, submission, isDataGridRow }) => (
-  <div className={isDataGridRow ? "data-grid__row skjemagruppe" : undefined}>
-    <dt className={isDataGridRow ? "skjemagruppe__legend" : undefined}>{component.legend}</dt>
+  <div>
+    <dt>{component.legend}</dt>
     <dd>
-      <dl className={!isDataGridRow ? "margin-left-default" : undefined}>
+      <dl className="margin-left-default">
         {filterNonFormContent(component.components, submission).map((subComponent) => (
           <FormSummaryField key={subComponent.key} component={subComponent} value={submission[subComponent.key]} />
         ))}
