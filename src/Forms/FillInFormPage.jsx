@@ -8,7 +8,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   return (
-    <main tabIndex={-1}>
+    <div>
       <Sidetittel>{form.title}</Sidetittel>
       {form.properties && form.properties.skjemanummer && <p>{form.properties.skjemanummer}</p>}
       <NavForm
@@ -22,6 +22,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
           history.push(`${formUrl}/oppsummering`);
         }}
       />
-    </main>
+    </div>
   );
 };

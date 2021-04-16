@@ -143,14 +143,16 @@ export function PrepareLetterPage({ form, submission }) {
   sections.push(<SendSoknadIPostenSection key="send-soknad-i-posten" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
   sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" />);
   return (
-    <ResultContent tabIndex={-1}>
+    <ResultContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
-      <div>
-        <Link className="knapp knapp--fullbredde" to={previousPage}>
-          Gå tilbake
-        </Link>
-      </div>
+      <main id="maincontent" tabIndex={-1}>
+        {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
+        <div>
+          <Link className="knapp knapp--fullbredde" to={previousPage}>
+            Gå tilbake
+          </Link>
+        </div>
+      </main>
     </ResultContent>
   );
 }
@@ -160,7 +162,7 @@ PrepareLetterPage.propTypes = {
   submission: PropTypes.object.isRequired,
 };
 
-const ResultContent = styled("main")({
+const ResultContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
