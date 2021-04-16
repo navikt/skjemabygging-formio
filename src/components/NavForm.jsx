@@ -36,6 +36,8 @@ import navFormStyle from "./navFormStyle";
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
 const originalSubmit = Wizard.prototype.submit;
+const orginalAttach = Wizard.prototype.attach;
+const orginalAttachHeader = Wizard.prototype.attachHeader;
 
 function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   Wizard.prototype.nextPage = function () {
@@ -63,6 +65,62 @@ function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, log
         loggSkjemaValideringFeilet();
         return Promise.reject(error);
       });
+  };
+  Wizard.prototype.attach = function (element) {
+    this.element = element;
+    this.loadRefs(element, {
+      [this.wizardKey]: "single",
+      [`${this.wizardKey}-cancel`]: "single",
+      [`${this.wizardKey}-previous`]: "single",
+      [`${this.wizardKey}-next`]: "multiple",
+      [`${this.wizardKey}-submit`]: "single",
+      [`${this.wizardKey}-link`]: "multiple",
+      [`${this.wizardKey}-stepindicator-next`]: "single",
+      [`${this.wizardKey}-stepindicator-previous`]: "single",
+      [`${this.wizardKey}-tooltip`]: "multiple",
+    });
+    if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
+      this.enabledIndex = this.pages?.length - 1;
+    }
+
+    const promises = this.attachComponents(this.refs[this.wizardKey], [
+      ...this.prefixComps,
+      ...this.currentPage.components,
+      ...this.suffixComps,
+    ]);
+    this.attachNav();
+    this.attachHeader();
+    return promises.then(() => {
+      this.emit("render", { component: this.currentPage, page: this.page });
+      if (this.component.scrollToTop) {
+        this.scrollPageToTop();
+      }
+    });
+  };
+  Wizard.prototype.attachHeader = function () {
+    orginalAttachHeader.call(this);
+    const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
+    const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
+    console.log("Previous button", previousButton);
+    console.log("Next button", nextButton);
+    this.addEventListener(previousButton, "click", (event) => {
+      alert("Next");
+      const newIndex = this.currentPage - 1;
+      this.emit("wizardNavigationClicked", newIndex);
+      event.preventDefault();
+      return this.setPage(newIndex).then(() => {
+        this.emitWizardPageSelected(newIndex);
+      });
+    });
+    this.addEventListener(nextButton, "click", (event) => {
+      alert("Next");
+      const newIndex = this.currentPage + 1;
+      this.emit("wizardNavigationClicked", newIndex);
+      event.preventDefault();
+      return this.setPage(newIndex).then(() => {
+        this.emitWizardPageSelected(newIndex);
+      });
+    });
   };
 }
 

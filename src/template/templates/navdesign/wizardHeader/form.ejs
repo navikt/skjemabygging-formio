@@ -3,7 +3,7 @@
     <ol class="stegindikator__liste">
       {% if (ctx.currentPage > 2) { %}
         <li class="stegindikator__steg stegindikator__steg--labelled">
-          <button class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" title="Bla tilbake">
+          <button ref="{{ctx.wizardKey}}-stepindicator-previous" class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" title="Bla tilbake">
             <div class="stegindikator__steg-num">
               <<
             </div>
@@ -34,7 +34,7 @@
       {% }) %}
       {% if (ctx.currentPage < ctx.panels.length - 3) { %}
       <li class="stegindikator__steg stegindikator__steg--labelled">
-        <button class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" title="Bla tilbake">
+        <button ref="{{ctx.wizardKey}}-stepindicator-next" class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" title="Bla tilbake">
           <div class="stegindikator__steg-num">
             >>
           </div>
