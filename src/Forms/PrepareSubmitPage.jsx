@@ -41,9 +41,11 @@ export function PrepareSubmitPage({ form, submission }) {
     <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <section className="wizard-page">
-        <Systemtittel className="margin-bottom-default">1. For å gå videre må du laste ned PDF</Systemtittel>
+        <Systemtittel id="last-ned-soknad-overskrift" className="margin-bottom-default">
+          1. Last ned søknaden (PDF). Du blir bedt om å laste den opp på neste side.
+        </Systemtittel>
         <Normaltekst className="margin-bottom-default">
-          Når du klikker på “Last ned pdf” åpnes søknaden din i en ny fane i nettleseren. Du må lagre pdf-filen på
+          Når du klikker på “Last ned søknad” åpnes søknaden din i en ny fane i nettleseren. Du må lagre pdf-filen på
           maskinen din på en plass hvor du kan finne den igjen.
         </Normaltekst>
         <Normaltekst className="margin-bottom-default">
@@ -66,12 +68,14 @@ export function PrepareSubmitPage({ form, submission }) {
             className="knapp"
             onClick={() => setHasDownloadedPDF(true)}
             type="submit"
-            value="Last ned PDF"
+            value="Last ned søknad"
           />
         </div>
       </section>
       <section className="wizard-page">
-        <Systemtittel className="margin-bottom-default">2. Gå videre til innsending av søknaden</Systemtittel>
+        <Systemtittel id="instruksjoner-for-innsending-overskrift" className="margin-bottom-default">
+          2. Instruksjoner for innsending av søknaden
+        </Systemtittel>
         <Normaltekst className="margin-bottom-default">
           Når du klikker på “Gå videre” nedenfor åpnes det en ny side med en opplastingstjeneste (krever innlogging) for
           å laste opp pdf-filen som du lagret på maskinen din i forrige steg.

@@ -14,7 +14,7 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   return (
     <section className="wizard-page">
       <Systemtittel className="margin-bottom-default">
-        {index}. Du må legge ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
+        {index}. Legg ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
       </Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
@@ -58,7 +58,9 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
     <section className="wizard-page">
-      <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
+      <Systemtittel className="margin-bottom-default">
+        {index}. Last ned og skriv ut søknadspapirene til saken din
+      </Systemtittel>
       <Normaltekst className="margin-bottom-default">
         Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentasjonen. Den
         inneholder også adressen du skal sende dokumentene til.
@@ -103,7 +105,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
   <section className="wizard-page">
     <Systemtittel className="margin-bottom-default">{index}. Send søknaden i posten</Systemtittel>
     <Normaltekst className="margin-bottom-default">
-      Følg instruksjonene på førstesiden for å sende søknaden i posten.
+      Følg instruksjonene på førstesidearket for å sende søknaden i posten.
       {vedleggSomSkalSendes.length > 0 &&
         ` Husk å legge ved ${vedleggSomSkalSendes.length > 1 ? "vedleggene" : "vedlegget"} som nevnt i punkt 1 over.`}
     </Normaltekst>
