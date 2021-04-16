@@ -4,6 +4,10 @@ import DataGridDisplayEditForm from "formiojs/components/datagrid/editForm/DataG
 import DataGridDataEditForm from "formiojs/components/datagrid/editForm/DataGrid.edit.data";
 import FormioReactComponent from "../FormioReactComponent";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import { scrollToAndSetFocus } from "../../util/focus-management";
+
+const originalAddRow = DataGrid.prototype.addRow;
+const originalRemoveRow = DataGrid.prototype.removeRow;
 
 class NavDataGrid extends DataGrid {
   static get builderInfo() {
@@ -55,6 +59,17 @@ class NavDataGrid extends DataGrid {
       ...FormBuilderOptions.builder.data.components.navDataGrid,
       ...extend,
     });
+  }
+
+  addRow() {
+    originalAddRow.call(this);
+    const lastRowSelector = `[ref='${this.datagridKey}-row']:last-of-type`;
+    scrollToAndSetFocus(`${lastRowSelector} input, ${lastRowSelector} select, ${lastRowSelector} textarea`);
+  }
+
+  removeRow(index) {
+    originalRemoveRow.call(this, index);
+    scrollToAndSetFocus(`[ref='${this.datagridKey}-addRow']:last-of-type`);
   }
 }
 
