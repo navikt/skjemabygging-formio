@@ -110,7 +110,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
     <Normaltekst className="margin-bottom-default">
       Følg instruksjonene på førstesidearket for å sende søknaden i posten.
       {vedleggSomSkalSendes.length > 0 &&
-        ` Husk å legge ved ${vedleggSomSkalSendes.length > 1 ? "vedleggene" : "vedlegget"} som nevnt i punkt 1 over.`}
+        ` Husk å legge ved ${vedleggSomSkalSendes.length > 1 ? "vedleggene" : "vedlegget"} som nevnt i punkt 2 over.`}
     </Normaltekst>
   </section>
 );
@@ -134,12 +134,12 @@ export function PrepareLetterPage({ form, submission }) {
 
   const sections = [];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
-  if (vedleggSomSkalSendes.length > 0) {
-    sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
-  }
   sections.push(
     <LastNedSoknadSection key="last-ned-soknad" form={form} submission={submission} fyllutBaseURL={fyllutBaseURL} />
   );
+  if (vedleggSomSkalSendes.length > 0) {
+    sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
+  }
   sections.push(<SendSoknadIPostenSection key="send-soknad-i-posten" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
   sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" />);
   return (
