@@ -40,7 +40,10 @@ export function PrepareSubmitPage({ form, submission }) {
   return (
     <ResultContent tabIndex={-1}>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      <section className="wizard-page">
+      <section
+        className="wizard-page"
+        aria-label="1. Last ned søknaden (PDF). Du blir bedt om å laste den opp på neste side."
+      >
         <Systemtittel id="last-ned-soknad-overskrift" className="margin-bottom-default">
           1. Last ned søknaden (PDF). Du blir bedt om å laste den opp på neste side.
         </Systemtittel>
@@ -72,7 +75,7 @@ export function PrepareSubmitPage({ form, submission }) {
           />
         </div>
       </section>
-      <section className="wizard-page">
+      <section className="wizard-page" aria-label="2. Instruksjoner for innsending av søknaden.">
         <Systemtittel id="instruksjoner-for-innsending-overskrift" className="margin-bottom-default">
           2. Instruksjoner for innsending av søknaden
         </Systemtittel>

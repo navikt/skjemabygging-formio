@@ -12,7 +12,10 @@ import { AppConfigContext } from "../configContext";
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
   return (
-    <section className="wizard-page">
+    <section
+      className="wizard-page"
+      aria-label={`${index}. Legg ved ${skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}.`}
+    >
       <Systemtittel className="margin-bottom-default">
         {index}. Legg ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
       </Systemtittel>
@@ -57,7 +60,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
-    <section className="wizard-page">
+    <section className="wizard-page" aria-label={`${index}. Last ned og skriv ut søknadspapirene til saken din.`}>
       <Systemtittel className="margin-bottom-default">
         {index}. Last ned og skriv ut søknadspapirene til saken din
       </Systemtittel>
@@ -102,7 +105,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
 };
 
 const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
-  <section className="wizard-page">
+  <section className="wizard-page" aria-label={`${index}. Send søknaden i posten.`}>
     <Systemtittel className="margin-bottom-default">{index}. Send søknaden i posten</Systemtittel>
     <Normaltekst className="margin-bottom-default">
       Følg instruksjonene på førstesidearket for å sende søknaden i posten.
@@ -113,7 +116,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
 );
 
 const HvaSkjerVidereSection = ({ index }) => (
-  <section className="wizard-page">
+  <section className="wizard-page" aria-label={`${index}. Hva skjer videre?`}>
     <Systemtittel className="margin-bottom-default">{index}. Hva skjer videre?</Systemtittel>
     <Normaltekst className="margin-bottom-default">
       Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.
