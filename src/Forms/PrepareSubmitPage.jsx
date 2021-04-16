@@ -32,7 +32,7 @@ export function PrepareSubmitPage({ form, submission }) {
   const [, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort } = useAmplitude();
 
-  useEffect(() => scrollToAndSetFocus("main"), []);
+  useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const {
     state: { previousPage },
   } = useLocation();
