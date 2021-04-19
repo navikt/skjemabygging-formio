@@ -114,6 +114,7 @@ const useFormsListPageStyles = makeStyles({
 
 function simplifiedForms(forms) {
   return forms.map((form) => ({
+    _id: form._id,
     modified: form.modified,
     title: form.title.trim(),
     path: form.path,
