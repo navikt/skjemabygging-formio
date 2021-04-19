@@ -117,6 +117,7 @@ function simplifiedForms(forms) {
     modified: form.modified,
     title: form.title.trim(),
     path: form.path,
+    tags: form.tags,
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
   }));
