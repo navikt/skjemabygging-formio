@@ -53,7 +53,9 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-tooltip`]: "multiple",
   });
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
-    this.enabledIndex = this.pages?.length - 1;
+    if (this.pages) {
+      this.enabledIndex = this.pages.length - 1;
+    }
   }
 
   const promises = this.attachComponents(this.refs[this.wizardKey], [
