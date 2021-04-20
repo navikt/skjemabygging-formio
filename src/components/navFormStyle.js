@@ -10,6 +10,12 @@ const wizardSidevelgerStyles = {
   "& .stegindikator__wrapper": {
     margin: "3rem",
   },
+
+  "& .stegindikator__steg-inner--aktiv .stegindikator__steg-num": {
+    minWidth: "2rem",
+    width: "auto",
+    padding: "0 0.5rem",
+  },
 };
 
 const allFieldsStyles = {

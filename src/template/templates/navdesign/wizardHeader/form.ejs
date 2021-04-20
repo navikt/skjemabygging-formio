@@ -24,7 +24,7 @@
             ref="{{ctx.wizardKey}}-link"
             title="{{ctx.panels[index].title}}"
             >
-            <div class="stegindikator__steg-num">{{ctx.t(index+1)}}</div>
+            <div class="stegindikator__steg-num">{{ctx.t(index+1)}}{{ctx.panels.length > 5 && ctx.currentPage === index && window.innerWidth > 600 ? ` av ${ctx.panels.length}` : ''}}</div>
             {% if (window.innerWidth > 600) { %}
             <div class="stegindikator__steg-label">{{ctx.panels[index].title}}</div>
             {% } %}
