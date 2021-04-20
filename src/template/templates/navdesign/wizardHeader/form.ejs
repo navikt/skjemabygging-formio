@@ -1,8 +1,8 @@
 <div class="stegindikator__wrapper">
   <nav id="{{ ctx.wizardKey }}-header" class="stegindikator">
     <ol class="stegindikator__liste">
-      {% if (ctx.currentPage > 2) { %}
-        <li class="stegindikator__steg stegindikator__steg--labelled">
+      {% if (ctx.panels.length > 5 && ctx.currentPage >= 2) { %}
+        <li class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}">
           <button ref="{{ctx.wizardKey}}-stepindicator-previous" class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" title="Bla tilbake">
             <div class="stegindikator__steg-num">
               <<
@@ -11,11 +11,11 @@
         </li>
       {% } %}
       {% ctx.panels.forEach(function(panel, index) { %}
-        {% if (index < Math.max(ctx.currentPage + 3, Math.min(ctx.panels.length, 5))) { %}
+        {% if (ctx.panels.length <= 5 || index < Math.max(ctx.currentPage + 2, Math.min(ctx.panels.length - 1, 4))) { %}
           <li
             class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}"
             aria-current="{{ctx.currentPage === index ? 'step' : undefined}}"
-            {% if (!(index > Math.min(ctx.currentPage - 3, ctx.panels.length - 6) && index < Math.max(ctx.currentPage + 3, Math.min(ctx.panels.length, 5)))) { %}
+            {% if (ctx.panels.length > 5 && !(index > Math.min(ctx.currentPage - 2, ctx.panels.length - 5) && index < Math.max(ctx.currentPage + 2, Math.min(ctx.panels.length, 5)))) { %}
               hidden
             {% } %}
           >
@@ -32,8 +32,8 @@
           </li>
         {% } %}
       {% }) %}
-      {% if (ctx.currentPage < ctx.panels.length - 3) { %}
-      <li class="stegindikator__steg stegindikator__steg--labelled">
+      {% if (ctx.panels.length > 5 && ctx.currentPage < ctx.panels.length - 2) { %}
+      <li class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}">
         <button ref="{{ctx.wizardKey}}-stepindicator-next" class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" title="Bla tilbake">
           <div class="stegindikator__steg-num">
             >>
