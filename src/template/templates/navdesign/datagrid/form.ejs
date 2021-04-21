@@ -1,3 +1,4 @@
+{% if (!ctx.component.isNavDataGrid) { %}
 <table class="table datagrid-table table-bordered
     {{ ctx.component.striped ? 'table-striped' : ''}}
     {{ ctx.component.hover ? 'table-hover' : ''}}
@@ -75,3 +76,45 @@
   </tfoot>
   {% } %}
 </table>
+{% } %}
+{% if (ctx.component.isNavDataGrid) { %}
+<fieldset ref="{{ctx.datagridKey}}-tbody">
+  {% if (!ctx.component.hideLabel) { %}
+  <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
+  {% } %}
+  {% ctx.rows.forEach(function(row, index) { %}
+  <fieldset class="data-grid__row skjemagruppe" ref="{{ctx.datagridKey}}-row">
+    {% if (ctx.component.rowTitle) { %}
+    <legend class="skjemagruppe__legend">{{ctx.t(ctx.component.rowTitle)}}</legend>
+    {% } %}
+    {% if (ctx.component.description) { %}
+    <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
+    {% } %}
+    {% ctx.columns.forEach(function(col) { %}
+    <div ref="{{ctx.datagridKey}}">
+      {{row[col.key]}}
+    </div>
+    {% }) %}
+    {% if (ctx.hasExtraColumn) { %}
+    {% if (!ctx.builder && ctx.hasRemoveButtons && (index > 0 || ctx.component.initEmpty || ctx.rows.length > 1)) { %}
+    <div>
+      <button type="button" class="knapp knapp--standard knapp--fjern" ref="{{ctx.datagridKey}}-removeRow">{{ctx.t(ctx.component.removeAnother || 'Fjern')}}</button>
+    </div>
+    {% } %}
+    {% if (ctx.canAddColumn) { %}
+    <div ref="{{ctx.key}}-container">
+      {{ctx.placeholder}}
+    </div>
+    {% } %}
+    {% } %}
+  </fieldset>
+  {% }) %}
+  {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
+  <div>
+    <button class="knapp knapp--standard knapp--legg-til" ref="{{ctx.datagridKey}}-addRow">
+      {{ctx.t(ctx.component.addAnother || 'Legg til')}}
+    </button>
+  </div>
+  {% } %}
+</fieldset>
+{% } %}
