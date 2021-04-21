@@ -92,10 +92,10 @@ Wizard.prototype.attachHeader = function () {
     });
   }
 
-  const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
-  const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
-  const addPageSwitchFunction = (buttonRef, newPage, nextOrPrevious) => {
-    this.addEventListener(buttonRef, "click", (event) => {
+  const previousRefId = `${this.wizardKey}-stepindicator-previous`;
+  const nextRefId = `${this.wizardKey}-stepindicator-next`;
+  const addPageSwitchFunction = (newPage, nextOrPreviousRefId) => {
+    this.addEventListener(this.refs[nextOrPreviousRefId], "click", (event) => {
       this.emit("wizardNavigationClicked", newPage);
       event.preventDefault();
       return this.setPage(newPage)
@@ -103,12 +103,20 @@ Wizard.prototype.attachHeader = function () {
           this.emitWizardPageSelected(newPage);
         })
         .then(() => {
-          document.querySelector(`[ref='${this.wizardKey}-stepindicator-${nextOrPrevious}']`).focus();
+          const nextOrPreviousButton = document.querySelector(`[ref='${nextOrPreviousRefId}']`);
+
+          if (nextOrPreviousButton) {
+            nextOrPreviousButton.focus();
+          } else if (nextOrPreviousRefId === previousRefId) {
+            document.querySelector(".stegindikator__steg:first-of-type .stegindikator__steg-inner").focus();
+          } else if (nextOrPreviousRefId === nextRefId) {
+            document.querySelector(".stegindikator__steg:last-of-type .stegindikator__steg-inner").focus();
+          }
         });
     });
   };
-  addPageSwitchFunction(previousButton, this.getPreviousPage(), "previous");
-  addPageSwitchFunction(nextButton, this.getNextPage(), "next");
+  addPageSwitchFunction(this.getPreviousPage(), previousRefId);
+  addPageSwitchFunction(this.getNextPage(), nextRefId);
 };
 
 function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
