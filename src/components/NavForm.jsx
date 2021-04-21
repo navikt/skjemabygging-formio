@@ -36,7 +36,6 @@ import navFormStyle from "./navFormStyle";
 const Wizard = Formio.Displays.displays.wizard;
 const originalNextPage = Wizard.prototype.nextPage;
 const originalSubmit = Wizard.prototype.submit;
-const orginalAttachHeader = Wizard.prototype.attachHeader;
 
 Wizard.prototype.attach = function (element) {
   this.element = element;
