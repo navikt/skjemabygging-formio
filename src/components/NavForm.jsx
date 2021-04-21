@@ -43,7 +43,7 @@ Wizard.prototype.attach = function (element) {
     [this.wizardKey]: "single",
     [`${this.wizardKey}-cancel`]: "single",
     [`${this.wizardKey}-previous`]: "single",
-    [`${this.wizardKey}-next`]: "multiple",
+    [`${this.wizardKey}-next`]: "single",
     [`${this.wizardKey}-submit`]: "single",
     [`${this.wizardKey}-link`]: "multiple",
     [`${this.wizardKey}-stepindicator-next`]: "single",
