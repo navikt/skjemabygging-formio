@@ -21,9 +21,12 @@
             {% } %}
           >
             <{{(ctx.currentPage === index) ? "div" : "button"}}
-            class="stegindikator__steg-inner {{ctx.currentPage === index ? 'stegindikator__steg-inner--aktiv' : 'stegindikator__steg-inner--interaktiv'}} {{ctx.currentPage > index ? 'stegindikator__steg-inner--ferdig' : ''}}"
-            ref="{{ctx.wizardKey}}-link"
-            title="{{ctx.panels[index].title}}"
+              class="stegindikator__steg-inner {{ctx.currentPage === index ? 'stegindikator__steg-inner--aktiv' : 'stegindikator__steg-inner--interaktiv'}} {{ctx.currentPage > index ? 'stegindikator__steg-inner--ferdig' : ''}}"
+              ref="{{ctx.wizardKey}}-link"
+              title="{{ctx.panels[index].title}}"
+              {% if (ctx.currentPage === index) { %}
+              tabindex="-1"
+              {% } %}
             >
             <div class="stegindikator__steg-num">{{ctx.t(index+1)}}{{ctx.panels.length > 5 && ctx.currentPage === index && window.innerWidth > 600 ? ` av ${ctx.panels.length}` : ''}}</div>
             {% if (window.innerWidth > 600) { %}

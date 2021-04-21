@@ -72,20 +72,43 @@ Wizard.prototype.attach = function (element) {
   });
 };
 Wizard.prototype.attachHeader = function () {
-  orginalAttachHeader.call(this);
+  const isAllowPrevious = this.isAllowPrevious();
+
+  if (this.isBreadcrumbClickable() || isAllowPrevious) {
+    this.refs[`${this.wizardKey}-link`].forEach((link, index) => {
+      if (!isAllowPrevious || index <= this.enabledIndex) {
+        this.addEventListener(link, "click", (event) => {
+          this.emit("wizardNavigationClicked", this.pages[index]);
+          event.preventDefault();
+          return this.setPage(index)
+            .then(() => {
+              this.emitWizardPageSelected(index);
+            })
+            .then(() => {
+              document.querySelector(".stegindikator__steg-inner--aktiv").focus();
+            });
+        });
+      }
+    });
+  }
+
   const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
   const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
-  const addPageSwitchFunction = (buttonRef, newPage) => {
+  const addPageSwitchFunction = (buttonRef, newPage, nextOrPrevious) => {
     this.addEventListener(buttonRef, "click", (event) => {
       this.emit("wizardNavigationClicked", newPage);
       event.preventDefault();
-      return this.setPage(newPage).then(() => {
-        this.emitWizardPageSelected(newPage);
-      });
+      return this.setPage(newPage)
+        .then(() => {
+          this.emitWizardPageSelected(newPage);
+        })
+        .then(() => {
+          document.querySelector(`[ref='${this.wizardKey}-stepindicator-${nextOrPrevious}']`).focus();
+        });
     });
   };
-  addPageSwitchFunction(previousButton, this.getPreviousPage());
-  addPageSwitchFunction(nextButton, this.getNextPage());
+  addPageSwitchFunction(previousButton, this.getPreviousPage(), "previous");
+  addPageSwitchFunction(nextButton, this.getNextPage(), "next");
 };
 
 function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
