@@ -261,7 +261,6 @@ describe("generating doc definition", () => {
     const generator = new Pdfgen(submission, form, version, now());
     const doc_definition = generator.generateDocDefinition();
     const tableDefs = doc_definition.content.filter((paragraph) => paragraph.table);
-    console.log(tableDefs);
     expect(tableDefs).toHaveLength(2);
     expect(tableDefs[0].table.body).toEqual([
       ["Fornavn", "Syver"],
