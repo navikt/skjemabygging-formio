@@ -51,6 +51,12 @@ export class Pdfgen {
         bold: true,
         margin: [0, 10, 0, 5],
       },
+      groupHeader: {
+        bold: true,
+      },
+      subComponent: {
+        margin: [10, 0, 0, 0],
+      },
       anotherStyle: {
         italics: true,
         alignment: "right",
@@ -85,7 +91,7 @@ export class Pdfgen {
   generateDataTable() {
     const dataTable = this.createTable();
     this.form.components.forEach((component) => {
-      this.handleComponent(component, dataTable.body);
+      this.handleComponent(component, dataTable.body, this.submission.data);
     });
     return dataTable;
   }
@@ -93,7 +99,7 @@ export class Pdfgen {
   generateHeaderAndTable(panel, content) {
     const dataTable = this.createTable();
     panel.components.forEach((component) => {
-      this.handleComponent(component, dataTable.body);
+      this.handleComponent(component, dataTable.body, this.submission.data);
     });
     if (dataTable.body.length === 0) {
       return;
@@ -106,7 +112,7 @@ export class Pdfgen {
   generateTableForComponentsOutsidePanels(rest, content) {
     const dataTable = this.createTable();
     rest.forEach((component) => {
-      this.handleComponent(component, dataTable.body);
+      this.handleComponent(component, dataTable.body, this.submission.data);
     });
     if (dataTable.body.length) {
       content.push({ table: dataTable, style: "panelTable" });
@@ -178,9 +184,9 @@ export class Pdfgen {
     }
   }
 
-  handleComponent(component, dataTableBody) {
+  handleComponent(component, dataTableBody, submissionData, style = {}) {
     if (component.input) {
-      const value = this.submission.data[component.key];
+      const value = submissionData[component.key];
       // TODO: as shown here if the component is not submitted this is something that only the component knows. Delegate to component
       if (value === undefined || (component.type === "radio" && value === "")) {
         // TODO: burde vi generere pdf for feltet hvis det er required????
@@ -201,11 +207,35 @@ export class Pdfgen {
         }
         case "button":
           return;
+        case "datagrid": {
+          dataTableBody.push([{ text: `${component.label}`, style: "groupHeader", colSpan: 2 }, " "]);
+          value.forEach((dataGridRow) => {
+            if (component.rowTitle) {
+              dataTableBody.push([
+                {
+                  text: `${component.rowTitle}`,
+                  style: ["groupHeader", "subComponent"],
+                  colSpan: 2,
+                },
+                " ",
+              ]);
+            }
+            component.components.forEach((subComponent) =>
+              this.handleComponent(subComponent, dataTableBody, dataGridRow, { style: "subComponent" })
+            );
+          });
+          return;
+        }
         default:
-          dataTableBody.push([component.label, this.formatValue(component, value)]);
+          dataTableBody.push([{ text: component.label, ...style }, this.formatValue(component, value)]);
       }
+    } else if (component.type === "navSkjemagruppe") {
+      dataTableBody.push([{ text: component.label, style: "groupHeader", colSpan: 2 }, ""]);
+      component.components.forEach((subComponent) =>
+        this.handleComponent(subComponent, dataTableBody, submissionData, { style: "subComponent" })
+      );
     } else if (component.components) {
-      component.components.forEach((subComponent) => this.handleComponent(subComponent, dataTableBody));
+      component.components.forEach((subComponent) => this.handleComponent(subComponent, dataTableBody, submissionData));
     }
   }
 
