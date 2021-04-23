@@ -223,6 +223,9 @@ export class Pdfgen {
             component.components.forEach((subComponent) =>
               this.handleComponent(subComponent, dataTableBody, dataGridRow, { style: "subComponent" })
             );
+            if (!component.rowTitle) {
+              dataTableBody.push([{ text: " ", colSpan: 2 }]);
+            }
           });
           return;
         }
