@@ -83,8 +83,8 @@ const FormSummaryFieldset = ({ component, submission, isDataGridRow }) => (
 );
 
 const DataGridSummary = ({ component, submission }) =>
-  submission[component.key].map((dataGridRowSubmission) => (
-    <div className="data-grid__row skjemagruppe">
+  submission[component.key].map((dataGridRowSubmission, rowIndex) => (
+    <div className="data-grid__row skjemagruppe" key={`${component.key}-${rowIndex}`}>
       <dt className="skjemagruppe__legend">{component.label}</dt>
       <dd>
         <dl>
@@ -122,10 +122,10 @@ const FormSummary = ({ form, submission }) => {
               ));
             } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
               return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
-            } else if (component.type === "datagrid" || component.type === "navDataGrid") {
-              return <DataGridSummary component={component} submission={submission} />;
+            } else if (component.type === "datagrid") {
+              return <DataGridSummary key={`${component.key}`} component={component} submission={submission} />;
             } else {
-              return <FormSummaryField component={component} value={submission[component.key]} />;
+              return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
             }
           })}
         </dl>
