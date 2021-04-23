@@ -184,10 +184,14 @@ export class Pdfgen {
     }
   }
 
-  shouldShowConditionalField = (component, submission) =>
-    component.conditional && submission[component.conditional.when] === component.conditional.eq
+  shouldShowConditionalField = (component, submission) => {
+    if (!component.conditional || !component.conditional.when || !component.conditional.eq) {
+      return true;
+    }
+    return submission[component.conditional.when] === component.conditional.eq
       ? component.conditional.show
       : !component.conditional.show;
+  };
 
   handleComponent(component, dataTableBody, submissionData, style = {}) {
     if (!this.shouldShowConditionalField(component, submissionData)) {
