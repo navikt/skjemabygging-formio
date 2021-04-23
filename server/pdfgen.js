@@ -184,7 +184,15 @@ export class Pdfgen {
     }
   }
 
+  shouldShowConditionalField = (component, submission) =>
+    component.conditional && submission[component.conditional.when] === component.conditional.eq
+      ? component.conditional.show
+      : !component.conditional.show;
+
   handleComponent(component, dataTableBody, submissionData, style = {}) {
+    if (!this.shouldShowConditionalField(component, submissionData)) {
+      return;
+    }
     if (component.input) {
       const value = submissionData[component.key];
       // TODO: as shown here if the component is not submitted this is something that only the component knows. Delegate to component
