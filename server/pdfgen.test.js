@@ -198,6 +198,59 @@ const createForm = () => ({
   ],
 });
 
+const createFormWithConditional = () => ({
+  name: "conditionalForm",
+  title: "conditionalForm",
+  path: "conditionalForm",
+  machineName: "conditionalForm",
+  components: [
+    {
+      label: "Radio Input",
+      key: "radioInput",
+      type: "radioPanel",
+      values: [
+        { label: "Ja", value: "ja" },
+        { label: "Nei", value: "nei" },
+      ],
+      input: true,
+      id: "edawfax",
+    },
+    {
+      label: "renderWhenRadioIsJa",
+      key: "renderWhenRadioIsJa",
+      type: "datagrid",
+      input: true,
+      components: [],
+      conditional: {
+        when: "radioInput",
+        eq: "ja",
+        show: true,
+      },
+    },
+    {
+      label: "notRenderWhenRadioIsJa",
+      key: "notRenderWhenRadioIsJa",
+      type: "datagrid",
+      input: true,
+      components: [],
+      conditional: {
+        when: "radioInput",
+        eq: "ja",
+        show: false,
+      },
+    },
+  ],
+});
+
+const createConditionalSubmission = (radioValue) => ({
+  state: "submitted",
+  data: {
+    radioInput: radioValue,
+    renderWhenRadioIsJa: [],
+    notRenderWhenRadioIsJa: [],
+  },
+});
+
 describe("generating doc definition", () => {
   function now() {
     return DateTime.fromObject({ year: 1992, day: 19, month: 10, zone: "Europe/Oslo" });
@@ -327,5 +380,37 @@ describe("generating doc definition", () => {
     const doc_definition = generator.generateDocDefinition();
 
     expect(doc_definition.content).toContain("Underskrift");
+  });
+
+  describe("Conditional rendering", () => {
+    const setup = (radioValue) => {
+      const form = createFormWithConditional();
+      const submission = createConditionalSubmission(radioValue);
+      const version = "deadbeef";
+      const generator = new Pdfgen(submission, form, version, now());
+      const doc_definition = generator.generateDocDefinition();
+      return doc_definition.content[2].table.body;
+    };
+
+    it("renders the correct dataGrid when radio value is Ja", () => {
+      const tableData = setup("ja");
+
+      expect(tableData).toContainEqual([{ text: "renderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
+      expect(tableData).not.toContainEqual([{ text: "notRenderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
+    });
+
+    it("renders the correct dataGrid when radio value is Nei", () => {
+      const tableData = setup("nei");
+
+      expect(tableData).not.toContainEqual([{ text: "renderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
+      expect(tableData).toContainEqual([{ text: "notRenderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
+    });
+
+    it("renders the correct dataGrid when radio value is undefined", () => {
+      const tableData = setup(undefined);
+
+      expect(tableData).not.toContainEqual([{ text: "renderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
+      expect(tableData).toContainEqual([{ text: "notRenderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
+    });
   });
 });
