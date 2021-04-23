@@ -69,36 +69,46 @@ const FormSummaryField = ({ component, value }) => (
   </>
 );
 
-const FormSummaryFieldset = ({ component, submission, isDataGridRow }) => (
+const FormSummaryFieldset = ({ component, submission }) => (
   <div>
     <dt>{component.legend}</dt>
     <dd>
       <dl className="margin-left-default">
-        {filterNonFormContent(component.components, submission).map((subComponent) => (
-          <FormSummaryField key={subComponent.key} component={subComponent} value={submission[subComponent.key]} />
-        ))}
+        <ComponentSummary components={component.components} submission={submission} />
       </dl>
     </dd>
   </div>
 );
 
-const DataGridSummary = ({ component, submission }) =>
-  submission[component.key].map((dataGridRowSubmission, rowIndex) => (
-    <div className="data-grid__row skjemagruppe" key={`${component.key}-${rowIndex}`}>
-      <dt className="skjemagruppe__legend">{component.label}</dt>
-      <dd>
-        <dl>
-          {filterNonFormContent(component.components, dataGridRowSubmission).map((subComponent) => (
-            <FormSummaryField
-              key={subComponent.key}
-              component={subComponent}
-              value={dataGridRowSubmission[subComponent.key]}
-            />
-          ))}
-        </dl>
-      </dd>
-    </div>
-  ));
+const DataGridSummary = ({ component, submission }) => (
+  <>
+    <dt>{component.label}</dt>
+    <dd>
+      {submission[component.key].map((dataGridRowSubmission, rowIndex) => (
+        <div className="data-grid__row skjemagruppe" key={`${component.key}-${rowIndex}`}>
+          <p className="skjemagruppe__legend">{component.rowTitle}</p>
+          <dl>
+            <ComponentSummary components={component.components} submission={dataGridRowSubmission} />
+          </dl>
+        </div>
+      ))}
+    </dd>
+  </>
+);
+
+const ComponentSummary = ({ components, submission }) => {
+  return filterNonFormContent(components, submission).map((component) => {
+    if (component.type === "container") {
+      return null;
+    } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
+      return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
+    } else if (component.type === "datagrid") {
+      return <DataGridSummary key={`${component.key}`} component={component} submission={submission} />;
+    } else {
+      return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
+    }
+  });
+};
 
 const FormSummary = ({ form, submission }) => {
   return form.components.map((panel) => {
@@ -111,23 +121,7 @@ const FormSummary = ({ form, submission }) => {
           {panel.title}
         </Systemtittel>
         <dl>
-          {filterNonFormContent(panel.components, submission).map((component) => {
-            if (component.type === "container") {
-              return filterNonFormContent(component.components, submission[component.key]).map((subComponent) => (
-                <FormSummaryField
-                  key={subComponent.key}
-                  component={subComponent}
-                  value={(submission[component.key] || {})[subComponent.key]}
-                />
-              ));
-            } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
-              return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
-            } else if (component.type === "datagrid") {
-              return <DataGridSummary key={`${component.key}`} component={component} submission={submission} />;
-            } else {
-              return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
-            }
-          })}
+          <ComponentSummary components={panel.components} submission={submission} />
         </dl>
       </section>
     );
