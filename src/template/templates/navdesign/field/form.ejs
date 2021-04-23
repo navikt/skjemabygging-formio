@@ -11,7 +11,7 @@
   </label>
 {% } %}
 
-{% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "navDataGrid") { %}
+{% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "datagrid") { %}
 <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 

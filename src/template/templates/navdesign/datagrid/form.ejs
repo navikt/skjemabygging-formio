@@ -99,13 +99,13 @@
     {% if (!ctx.component.hideLabel) { %}
     <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
     {% } %}
+    {% if (ctx.component.description) { %}
+    <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
+    {% } %}
     {% ctx.rows.forEach(function(row, index) { %}
       <fieldset class="data-grid__row skjemagruppe" ref="{{ctx.datagridKey}}-row">
         {% if (ctx.component.rowTitle) { %}
           <legend class="skjemagruppe__legend">{{ctx.t(ctx.component.rowTitle)}}</legend>
-        {% } %}
-        {% if (ctx.component.description) { %}
-          <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
         {% } %}
         {% ctx.columns.forEach(function(col) { %}
           <div ref="{{ctx.datagridKey}}">
