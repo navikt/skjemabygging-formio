@@ -37,11 +37,6 @@ function formatValue(component, value) {
   }
 }
 
-const shouldShowConditionalField = (component, submission) =>
-  component.conditional && submission[component.conditional.when] === component.conditional.eq
-    ? component.conditional.show
-    : !component.conditional.show;
-
 const filterNonFormContent = (components, submission = []) =>
   components
     .filter((component) => component.type !== "content")
@@ -56,10 +51,7 @@ const filterNonFormContent = (components, submission = []) =>
         (component.type !== "fieldset" && component.type !== "navSkjemagruppe") ||
         filterNonFormContent(component.components, submission).length > 0
     )
-    .filter((component) =>
-      component.conditional && component.conditional.when ? shouldShowConditionalField(component, submission) : true
-    )
-    .filter((component) => submission[component.key] !== "")
+    .filter((component) => submission[component.key] !== "" && submission[component.key] !== undefined)
     .filter((component) => component.type !== "navDatepicker" || submission[component.key] !== undefined);
 
 const FormSummaryField = ({ component, value }) => (
