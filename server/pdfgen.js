@@ -245,7 +245,7 @@ export class Pdfgen {
           dataTableBody.push([{ text: component.label, ...style }, this.formatValue(component, value)]);
       }
     } else if (component.type === "navSkjemagruppe") {
-      dataTableBody.push([{ text: component.label, style: "groupHeader", colSpan: 2 }, ""]);
+      dataTableBody.push([{ text: component.legend, style: "groupHeader", colSpan: 2 }, ""]);
       component.components.forEach((subComponent) =>
         this.handleComponent(subComponent, dataTableBody, submissionData, { style: "subComponent" })
       );
