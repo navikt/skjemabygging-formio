@@ -12,9 +12,12 @@ import { AppConfigContext } from "../configContext";
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
   return (
-    <section className="wizard-page">
+    <section
+      className="wizard-page"
+      aria-label={`${index}. Legg ved ${skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}.`}
+    >
       <Systemtittel className="margin-bottom-default">
-        {index}. Du må legge ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
+        {index}. Legg ved {skalSendeFlereVedlegg ? "disse vedleggene" : "dette vedlegget"}
       </Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
@@ -57,8 +60,10 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
-    <section className="wizard-page">
-      <Systemtittel className="margin-bottom-default">{index}. Last ned søknadspapirene til saken din</Systemtittel>
+    <section className="wizard-page" aria-label={`${index}. Last ned og skriv ut søknadspapirene til saken din.`}>
+      <Systemtittel className="margin-bottom-default">
+        {index}. Last ned og skriv ut søknadspapirene til saken din
+      </Systemtittel>
       <Normaltekst className="margin-bottom-default">
         Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentasjonen. Den
         inneholder også adressen du skal sende dokumentene til.
@@ -100,18 +105,18 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL }) => {
 };
 
 const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes }) => (
-  <section className="wizard-page">
+  <section className="wizard-page" aria-label={`${index}. Send søknaden i posten.`}>
     <Systemtittel className="margin-bottom-default">{index}. Send søknaden i posten</Systemtittel>
     <Normaltekst className="margin-bottom-default">
-      Følg instruksjonene på førstesiden for å sende søknaden i posten.
+      Følg instruksjonene på førstesidearket for å sende søknaden i posten.
       {vedleggSomSkalSendes.length > 0 &&
-        ` Husk å legge ved ${vedleggSomSkalSendes.length > 1 ? "vedleggene" : "vedlegget"} som nevnt i punkt 1 over.`}
+        ` Husk å legge ved ${vedleggSomSkalSendes.length > 1 ? "vedleggene" : "vedlegget"} som nevnt i punkt 2 over.`}
     </Normaltekst>
   </section>
 );
 
 const HvaSkjerVidereSection = ({ index }) => (
-  <section className="wizard-page">
+  <section className="wizard-page" aria-label={`${index}. Hva skjer videre?`}>
     <Systemtittel className="margin-bottom-default">{index}. Hva skjer videre?</Systemtittel>
     <Normaltekst className="margin-bottom-default">
       Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.
@@ -120,7 +125,7 @@ const HvaSkjerVidereSection = ({ index }) => (
 );
 
 export function PrepareLetterPage({ form, submission }) {
-  useEffect(() => scrollToAndSetFocus("main"), []);
+  useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useContext(AppConfigContext);
 
   const {
@@ -129,23 +134,25 @@ export function PrepareLetterPage({ form, submission }) {
 
   const sections = [];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
-  if (vedleggSomSkalSendes.length > 0) {
-    sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
-  }
   sections.push(
     <LastNedSoknadSection key="last-ned-soknad" form={form} submission={submission} fyllutBaseURL={fyllutBaseURL} />
   );
+  if (vedleggSomSkalSendes.length > 0) {
+    sections.push(<LeggTilVedleggSection key="vedlegg-som-skal-sendes" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
+  }
   sections.push(<SendSoknadIPostenSection key="send-soknad-i-posten" vedleggSomSkalSendes={vedleggSomSkalSendes} />);
   sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" />);
   return (
-    <ResultContent tabIndex={-1}>
+    <ResultContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
-      <div>
-        <Link className="knapp knapp--fullbredde" to={previousPage}>
-          Gå tilbake
-        </Link>
-      </div>
+      <main id="maincontent" tabIndex={-1}>
+        {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
+        <div>
+          <Link className="knapp knapp--fullbredde" to={previousPage}>
+            Gå tilbake
+          </Link>
+        </div>
+      </main>
     </ResultContent>
   );
 }
@@ -155,7 +162,7 @@ PrepareLetterPage.propTypes = {
   submission: PropTypes.object.isRequired,
 };
 
-const ResultContent = styled("main")({
+const ResultContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",

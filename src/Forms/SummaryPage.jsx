@@ -144,48 +144,50 @@ export function SummaryPage({ form, submission, formUrl }) {
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
   return (
-    <SummaryContent tabIndex={-1}>
+    <SummaryContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
-      <Innholdstittel tag="h2" className="margin-bottom-default">
-        Oppsummering av søknaden din
-      </Innholdstittel>
-      <Normaltekst className="margin-bottom-default">
-        Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
-        "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
-      </Normaltekst>
-      <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
-      <nav className="list-inline">
-        <div className="list-inline-item">
-          <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
-            Rediger svar
-          </Link>
-        </div>
-        {featureToggles.sendPaaPapir && (
+      <main id="maincontent" tabIndex={-1}>
+        <Innholdstittel tag="h2" className="margin-bottom-default">
+          Oppsummering av søknaden din
+        </Innholdstittel>
+        <Normaltekst className="margin-bottom-default">
+          Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
+          "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
+        </Normaltekst>
+        <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
+        <nav className="list-inline">
           <div className="list-inline-item">
-            <Link
-              className="btn btn-secondary btn-wizard-nav-previous"
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
-            >
-              Send i posten
+            <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
+              Rediger svar
             </Link>
           </div>
-        )}
-        <div className="list-inline-item">
-          <Link
-            className="btn btn-primary btn-wizard-nav-next wizard-button"
-            onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-            to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
-          >
-            {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
-          </Link>
-        </div>
-      </nav>
+          {featureToggles.sendPaaPapir && (
+            <div className="list-inline-item">
+              <Link
+                className="btn btn-secondary btn-wizard-nav-previous"
+                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+              >
+                Send i posten
+              </Link>
+            </div>
+          )}
+          <div className="list-inline-item">
+            <Link
+              className="btn btn-primary btn-wizard-nav-next wizard-button"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
+            >
+              {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
+            </Link>
+          </div>
+        </nav>
+      </main>
     </SummaryContent>
   );
 }
 
-const SummaryContent = styled("main")({
+const SummaryContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
