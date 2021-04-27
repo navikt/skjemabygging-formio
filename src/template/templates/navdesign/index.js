@@ -33,7 +33,6 @@ import message from "./message";
 import multipleMasksInput from "./multipleMasksInput";
 import multiValueRow from "./multiValueRow";
 import multiValueTable from "./multiValueTable";
-import navDataGrid from "./navDataGrid";
 import navSkjemagruppe from "./navSkjemagruppe";
 import panel from "./panel";
 import pdf from "./pdf";
@@ -87,7 +86,6 @@ export default {
   components,
   container,
   datagrid,
-  "datagrid-navDataGrid": navDataGrid,
   day,
   dialog,
   editgrid,

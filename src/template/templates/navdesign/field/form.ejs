@@ -1,4 +1,4 @@
-{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navDataGrid" && ctx.component.type !== "navSkjemagruppe") { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe") { %}
   {{ ctx.labelMarkup }}
 {% } %}
 
@@ -11,12 +11,12 @@
   </label>
 {% } %}
 
-{% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "navDataGrid") { %}
+{% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "datagrid") { %}
 <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 
 {{ctx.element}}
 
-{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navDataGrid") { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid") { %}
   {{ ctx.labelMarkup }}
 {% } %}

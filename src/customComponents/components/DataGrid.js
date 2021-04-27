@@ -56,7 +56,7 @@ class NavDataGrid extends DataGrid {
 
   static schema(...extend) {
     return FormioReactComponent.schema({
-      ...FormBuilderOptions.builder.data.components.navDataGrid,
+      ...FormBuilderOptions.builder.data.components.navDataGrid.schema,
       ...extend,
     });
   }
