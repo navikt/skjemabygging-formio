@@ -51,7 +51,12 @@ const filterNonFormContent = (components, submission = []) =>
         (component.type !== "fieldset" && component.type !== "navSkjemagruppe") ||
         filterNonFormContent(component.components, submission).length > 0
     )
-    .filter((component) => submission[component.key] !== "" && submission[component.key] !== undefined)
+    .filter(
+      (component) =>
+        component.type === "fieldset" ||
+        component.type === "navSkjemagruppe" ||
+        (submission[component.key] !== "" && submission[component.key] !== undefined)
+    )
     .filter((component) => component.type !== "navDatepicker" || submission[component.key] !== undefined);
 
 const FormSummaryField = ({ component, value }) => (
