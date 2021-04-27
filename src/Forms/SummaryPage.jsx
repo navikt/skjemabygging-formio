@@ -91,7 +91,7 @@ const DataGridSummary = ({ component, submission }) => (
 const ComponentSummary = ({ components, submission }) => {
   return filterNonFormContent(components, submission).map((component) => {
     if (component.type === "container") {
-      return null;
+      return <ComponentSummary components={component.components} submission={submission[component.key]} />;
     } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
       return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
     } else if (component.type === "datagrid") {
