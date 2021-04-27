@@ -198,71 +198,23 @@ const createForm = () => ({
   ],
 });
 
-const createFormWithConditional = () => ({
-  name: "conditionalForm",
-  title: "conditionalForm",
-  path: "conditionalForm",
-  machineName: "conditionalForm",
-  components: [
-    {
-      label: "Radio Input",
-      key: "radioInput",
-      type: "radioPanel",
-      values: [
-        { label: "Ja", value: "ja" },
-        { label: "Nei", value: "nei" },
-      ],
-      input: true,
-      id: "edawfax",
-    },
-    {
-      label: "renderWhenRadioIsJa",
-      key: "renderWhenRadioIsJa",
-      type: "datagrid",
-      input: true,
-      components: [],
-      conditional: {
-        when: "radioInput",
-        eq: "ja",
-        show: true,
-      },
-    },
-    {
-      label: "notRenderWhenRadioIsJa",
-      key: "notRenderWhenRadioIsJa",
-      type: "datagrid",
-      input: true,
-      components: [],
-      conditional: {
-        when: "radioInput",
-        eq: "ja",
-        show: false,
-      },
-    },
-  ],
-});
-
-const createConditionalSubmission = (radioValue) => ({
-  state: "submitted",
-  data: {
-    radioInput: radioValue,
-    renderWhenRadioIsJa: [],
-    notRenderWhenRadioIsJa: [],
-  },
-});
-
 describe("generating doc definition", () => {
   function now() {
     return DateTime.fromObject({ year: 1992, day: 19, month: 10, zone: "Europe/Oslo" });
+  }
+
+  function setupDocDefinitionContent(submission, form, version = "deadbeef") {
+    const generator = new Pdfgen(submission, form, version, now());
+    const doc_definition = generator.generateDocDefinition();
+    return doc_definition.content;
   }
 
   it("generates the docDef for an empty submission", () => {
     const submission = { data: {}, metadata: {} };
     const form = { title: "Smølfeskjema", components: [] };
     const version = "deadbeef-dirty";
-    const generator = new Pdfgen(submission, form, version, now());
-    const doc_definition = generator.generateDocDefinition();
-    expect(doc_definition.content).toEqual([
+    const docDefinitionContent = setupDocDefinitionContent(submission, form, version);
+    expect(docDefinitionContent).toEqual([
       {
         style: "header",
         text: "Smølfeskjema",
@@ -275,14 +227,10 @@ describe("generating doc definition", () => {
 
   it("generates table from form and submission", () => {
     const submission = createSubmission();
-    const form = createForm();
-    const version = "deadbeef";
-    const generator = new Pdfgen(submission, form, version, now());
-    const doc_definition = generator.generateDocDefinition();
-    const tableDef = doc_definition.content[2];
+    const tableDef = setupDocDefinitionContent(submission, createForm())[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
-    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // header row and submit button is removed
+    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // submit button is removed
     expect(tableData).toEqual([
       [{ text: "Tekstfelt" }, "dfghjk"],
       [{ text: "2345t" }, "tcfghj"],
@@ -290,30 +238,22 @@ describe("generating doc definition", () => {
     ]);
   });
 
-  it("handles missing values in the submission when the field is not required", () => {
+  it("does not render inputs with empty or undefined submission", () => {
     const submission = createSubmission();
-    submission.data.T = "";
-    const form = createForm();
-    const version = "deadbeef";
-    const generator = new Pdfgen(submission, form, version, now());
-    const doc_definition = generator.generateDocDefinition();
-    const tableDef = doc_definition.content[2];
+    submission.data = { ...submission.data, tekstfelt: "", T: undefined };
+    const tableDef = setupDocDefinitionContent(submission, createForm())[2];
+
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
-    expect(tableData).toHaveLength(Object.keys(submission.data).length - 2); // header row and submit button
-    expect(tableData).toEqual([
-      [{ text: "Tekstfelt" }, "dfghjk"],
-      [{ text: "Beløp" }, 3456],
-    ]);
+    expect(tableData).toHaveLength(Object.keys(submission.data).length - 3); // submit button, T, and tekstfelt are removed
+    expect(tableData).toEqual([[{ text: "Beløp" }, 3456]]);
   });
 
   it("generates a table for each panel in a complex form", () => {
-    const submission = createComplexSubmission();
-    const form = createComplexFormDefinition();
-    const version = "deadbeef";
-    const generator = new Pdfgen(submission, form, version, now());
-    const doc_definition = generator.generateDocDefinition();
-    const tableDefs = doc_definition.content.filter((paragraph) => paragraph.table);
+    const tableDefs = setupDocDefinitionContent(createComplexSubmission(), createComplexFormDefinition()).filter(
+      (paragraph) => paragraph.table
+    );
+
     expect(tableDefs).toHaveLength(2);
     expect(tableDefs[0].table.body).toEqual([
       ["Fornavn", "Syver"],
@@ -352,33 +292,27 @@ describe("generating doc definition", () => {
         },
       ],
     };
-    const version = "deadbeef";
-    const generator = new Pdfgen(submission, formDefinition, version, now());
-    const doc_definition = generator.generateDocDefinition();
-    const tableDef = doc_definition.content[2];
+    const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
     const tableData = tableDef.table.body;
     expect(tableData).toEqual([["Child", "Seff"]]);
   });
 
-  it("removes submit button from pfd content", () => {
-    const submission = createSubmission();
-    const form = createForm();
-    const version = "deadbeef";
-    const generator = new Pdfgen(submission, form, version, now());
-    const doc_definition = generator.generateDocDefinition();
-    const tableDef = doc_definition.content[2];
+  it("removes submit button from pdf content", () => {
+    const tableDef = setupDocDefinitionContent(createSubmission(), createForm())[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
     expect(tableData).not.toEqual(expect.arrayContaining([expect.arrayContaining(["Send inn", true])]));
   });
 
-  it("generates with signature field", () => {
-    const submission = { data: {}, metadata: {} };
-    const form = { title: "Smølfeskjema", components: [] };
-    const version = "deadbeef-dirty";
-    const generator = new PdfgenPapir(submission, form, version, now());
-    const doc_definition = generator.generateDocDefinition();
+  describe("PdfgenPapir", () => {
+    it("generates with signature field", () => {
+      const submission = { data: {}, metadata: {} };
+      const form = { title: "Smølfeskjema", components: [] };
+      const version = "deadbeef-dirty";
+      const generator = new PdfgenPapir(submission, form, version, now());
+      const doc_definition = generator.generateDocDefinition();
 
-    expect(doc_definition.content).toContain("Underskrift");
+      expect(doc_definition.content).toContain("Underskrift");
+    });
   });
 });
