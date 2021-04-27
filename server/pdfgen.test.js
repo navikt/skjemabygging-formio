@@ -381,36 +381,4 @@ describe("generating doc definition", () => {
 
     expect(doc_definition.content).toContain("Underskrift");
   });
-
-  describe("Conditional rendering", () => {
-    const setup = (radioValue) => {
-      const form = createFormWithConditional();
-      const submission = createConditionalSubmission(radioValue);
-      const version = "deadbeef";
-      const generator = new Pdfgen(submission, form, version, now());
-      const doc_definition = generator.generateDocDefinition();
-      return doc_definition.content[2].table.body;
-    };
-
-    it("renders the correct dataGrid when radio value is Ja", () => {
-      const tableData = setup("ja");
-
-      expect(tableData).toContainEqual([{ text: "renderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
-      expect(tableData).not.toContainEqual([{ text: "notRenderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
-    });
-
-    it("renders the correct dataGrid when radio value is Nei", () => {
-      const tableData = setup("nei");
-
-      expect(tableData).not.toContainEqual([{ text: "renderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
-      expect(tableData).toContainEqual([{ text: "notRenderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
-    });
-
-    it("renders the correct dataGrid when radio value is undefined", () => {
-      const tableData = setup(undefined);
-
-      expect(tableData).not.toContainEqual([{ text: "renderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
-      expect(tableData).toContainEqual([{ text: "notRenderWhenRadioIsJa", style: "groupHeader", colSpan: 2 }, " "]);
-    });
-  });
 });

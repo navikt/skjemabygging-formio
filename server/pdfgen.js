@@ -184,23 +184,11 @@ export class Pdfgen {
     }
   }
 
-  shouldShowConditionalField = (component, submission) => {
-    if (!component.conditional || !component.conditional.when || !component.conditional.eq) {
-      return true;
-    }
-    return submission[component.conditional.when] === component.conditional.eq
-      ? component.conditional.show
-      : !component.conditional.show;
-  };
-
   handleComponent(component, dataTableBody, submissionData, style = {}) {
-    if (!this.shouldShowConditionalField(component, submissionData)) {
-      return;
-    }
     if (component.input) {
       const value = submissionData[component.key];
       // TODO: as shown here if the component is not submitted this is something that only the component knows. Delegate to component
-      if (value === undefined || (component.type === "radio" && value === "")) {
+      if (value === undefined || value === "") {
         // TODO: burde vi generere pdf for feltet hvis det er required????
         return;
       }
