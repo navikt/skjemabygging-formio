@@ -37,27 +37,22 @@ function formatValue(component, value) {
   }
 }
 
-const filterNonFormContent = (components, submission = []) =>
-  components
-    .filter((component) => component.type !== "content")
-    .filter((component) => component.type !== "htmlelement")
-    .filter(
-      (component) =>
-        component.type !== "container" ||
-        filterNonFormContent(component.components, submission[component.key]).length > 0
-    )
-    .filter(
-      (component) =>
-        (component.type !== "fieldset" && component.type !== "navSkjemagruppe") ||
-        filterNonFormContent(component.components, submission).length > 0
-    )
-    .filter(
-      (component) =>
-        component.type === "fieldset" ||
-        component.type === "navSkjemagruppe" ||
-        (submission[component.key] !== "" && submission[component.key] !== undefined)
-    )
-    .filter((component) => component.type !== "navDatepicker" || submission[component.key] !== undefined);
+function filterNonFormContent(components, submission = []) {
+  return components.filter((component) => {
+    switch (component.type) {
+      case "content":
+      case "htmlelement":
+        return false;
+      case "container":
+        return filterNonFormContent(component.components, submission[component.key]).length > 0;
+      case "fieldset":
+      case "navSkjemagruppe":
+        return filterNonFormContent(component.components, submission).length > 0;
+      default:
+        return submission[component.key] !== "" && submission[component.key] !== undefined;
+    }
+  });
+}
 
 const FormSummaryField = ({ component, value }) => (
   <>
