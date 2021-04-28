@@ -41,11 +41,6 @@ const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
   components,
 });
 
-const submissionData = {
-  email: "email-verdi",
-  tekstfelt: "tekstfelt-verdi",
-};
-
 const createPanelObject = (label, components) => ({
   label,
   key: keyFromLabel(label),
@@ -57,12 +52,18 @@ const createFormObject = (panels = []) => ({
   components: panels,
 });
 
+const submissionData = {
+  email: "email-verdi",
+  tekstfelt: "tekstfelt-verdi",
+};
+
 describe("When handling component", () => {
   describe("form fields", () => {
     it("are added with value from submission", () => {
       const actual = handleComponent(createDummyTextfield(), submissionData, []);
       expect(actual).toContainEqual({
         label: "Tekstfelt",
+        key: "tekstfelt",
         type: "textfield",
         value: "tekstfelt-verdi",
       });
@@ -113,6 +114,7 @@ describe("When handling component", () => {
       expect(actual).toEqual([
         {
           label: "Tekstfelt",
+          key: "tekstfelt",
           type: "textfield",
           value: "tekstfelt-verdi",
         },
@@ -144,11 +146,117 @@ describe("When creating form summary object", () => {
     it("are added as arrays on the top level", () => {
       const actual = createFormSummaryObject(
         // TODO: Do we need to add components for this to be legal?
-        createFormObject([createPanelObject("Panel 1"), createPanelObject("Panel 2"), createPanelObject("Panel 3")]),
+        createFormObject([
+          createPanelObject("Panel 1", [createDummyTextfield()]),
+          createPanelObject("Panel 2", [createDummyEmail()]),
+        ]),
         submissionData
       );
       expect(actual).toBeInstanceOf(Array);
-      expect(actual.length).toEqual(3);
+      expect(actual.length).toEqual(2);
     });
+  });
+
+  it("it is created as it should", () => {
+    const actual = createFormSummaryObject(
+      createFormObject([
+        createPanelObject("Panel that should not be included", [
+          createDummyContentElement("Content that should be ignored"),
+          createDummyHTMLElement("HTMLElement that should be ignored"),
+          createDummyContainerElement("Container that should be ignored"),
+        ]),
+        createPanelObject("Panel with simple fields that should all be included", [
+          createDummyTextfield("Simple Textfield"),
+          createDummyEmail("Simple Email"),
+        ]),
+        createPanelObject("Panel with container", [
+          createDummyContainerElement("Container", [
+            createDummyTextfield("Textfield in container"),
+            createDummyEmail("Email in container"),
+          ]),
+        ]),
+        createPanelObject("Panel with navSkjemagruppe", [
+          createDummyNavSkjemagruppe("NavSkjemagruppe", [
+            createDummyTextfield("Textfield in NavSkjemagruppe"),
+            createDummyEmail("Email in NavSkjemagruppe"),
+          ]),
+        ]),
+      ]),
+      {
+        simpletextfield: "simpletextfield-value",
+        simpleemail: "simpleemail-value",
+        textfieldincontainer: "textfieldincontainer-value",
+        emailincontainer: "emailincontainer-value",
+        textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
+        emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
+      }
+    );
+    expect(actual).toEqual([
+      {
+        label: "Panel with simple fields that should all be included",
+        key: "panelwithsimplefieldsthatshouldallbeincluded",
+        type: "panel",
+        components: [
+          {
+            label: "Simple Textfield",
+            key: "simpletextfield",
+            type: "textfield",
+            value: "simpletextfield-value",
+          },
+          {
+            label: "Simple Email",
+            key: "simpleemail",
+            type: "email",
+            value: "simpleemail-value",
+          },
+        ],
+      },
+      {
+        label: "Panel with container",
+        key: "panelwithcontainer",
+        type: "panel",
+        components: [
+          {
+            label: "Textfield in container",
+            key: "textfieldincontainer",
+            type: "textfield",
+            value: "textfieldincontainer-value",
+          },
+
+          {
+            label: "Email in container",
+            key: "emailincontainer",
+            type: "email",
+            value: "emailincontainer-value",
+          },
+        ],
+      },
+      {
+        label: "Panel with navSkjemagruppe",
+        key: "panelwithnavskjemagruppe",
+        type: "panel",
+        components: [
+          {
+            label: "NavSkjemagruppe",
+            key: "navskjemagruppe",
+            type: "navSkjemagruppe",
+            components: [
+              {
+                label: "Textfield in NavSkjemagruppe",
+                key: "textfieldinnavskjemagruppe",
+                type: "textfield",
+                value: "textfieldinnavskjemagruppe-value",
+              },
+              {
+                label: "Email in NavSkjemagruppe",
+                key: "emailinnavskjemagruppe",
+                type: "email",
+                value: "emailinnavskjemagruppe-value",
+              },
+            ],
+          },
+        ],
+      },
+    ]);
   });
 });

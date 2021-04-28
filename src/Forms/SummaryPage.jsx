@@ -111,16 +111,22 @@ const ComponentSummary = ({ components, submission }) => {
 export function handleComponent(component, submission, formSummaryObject) {
   switch (component.type) {
     case "panel": {
-      const { label, type, components } = component;
+      const { label, key, type, components } = component;
+      const subComponents = filterNonFormContent(components).reduce(
+        (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
+        []
+      );
+      if (subComponents.length === 0) {
+        console.log(JSON.stringify(subComponents, null, 2));
+        return [...formSummaryObject];
+      }
       return [
         ...formSummaryObject,
         {
           label,
+          key,
           type,
-          components: filterNonFormContent(components).reduce(
-            (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
-            []
-          ),
+          components: subComponents,
         },
       ];
     }
@@ -141,7 +147,7 @@ export function handleComponent(component, submission, formSummaryObject) {
     }
     case "fieldset":
     case "navSkjemagruppe": {
-      const { legend, components } = component;
+      const { legend, key, components, type } = component;
       if (!components || components.length === 0) {
         return formSummaryObject;
       }
@@ -156,20 +162,22 @@ export function handleComponent(component, submission, formSummaryObject) {
         ...formSummaryObject,
         {
           label: legend,
-          type: component.type,
+          key,
+          type,
           components: mappedSubComponents,
         },
       ];
     }
     default: {
-      const { label, type } = component;
-      if (!submission[component.key]) {
+      const { key, label, type } = component;
+      if (!submission[key]) {
         return formSummaryObject;
       }
       return [
         ...formSummaryObject,
         {
           label,
+          key,
           type,
           value: submission[component.key],
         },
