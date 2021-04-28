@@ -6,6 +6,25 @@
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
+//Stegindikator -- start
+.stegindikator__steg-inner--aktiv {
+  &:focus {
+    outline: none;
+
+    .stegindikator__steg-num {
+      box-shadow: 0 0 0 3px @fokusFarge;
+    }
+
+    .stegindikator__steg-label {
+      color: white;
+      background: @fokusFarge;
+      text-decoration: none;
+    }
+  }
+}
+//Stegindikator -- slutt
+
+
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
