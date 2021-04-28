@@ -37,7 +37,7 @@ function formatValue(component, value) {
   }
 }
 
-function filterNonFormContent(components, submission = []) {
+function filterNonFormContent(components = [], submission = []) {
   return components.filter((component) => {
     switch (component.type) {
       case "content":
@@ -117,7 +117,7 @@ export function handleComponent(component, submission, formSummaryObject) {
         {
           label,
           type,
-          components: filterNonFormContent(components || []).reduce(
+          components: filterNonFormContent(components).reduce(
             (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
             []
           ),

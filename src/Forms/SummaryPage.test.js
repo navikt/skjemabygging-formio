@@ -1,41 +1,45 @@
 import { createFormSummaryObject, handleComponent } from "./SummaryPage";
 
-const dummyTextfield = {
-  label: "Tekstfelt",
-  key: "tekstfelt",
+const keyFromLabel = (label = "") => label.toLowerCase().replace(" ", "");
+
+const createDummyTextfield = (label = "Tekstfelt") => ({
+  label,
+  key: keyFromLabel(label),
   type: "textfield",
-};
+});
 
-const dummyEmail = {
-  label: "Email",
-  key: "email",
+const createDummyEmail = (label = "Email") => ({
+  label,
+  key: keyFromLabel(label),
   type: "email",
-};
+});
 
-const dummyContentElement = {
-  label: "Content",
-  key: "content",
+const createDummyContentElement = (label = "Content") => ({
+  label,
+  key: keyFromLabel(label),
   type: "content",
-};
+});
 
-const dummyHTMLElement = {
-  label: "HTMLelement",
-  key: "htmlelement",
+const createDummyHTMLElement = (label = "HTMLelement") => ({
+  label,
+  key: keyFromLabel(label),
   type: "htmlelement",
-};
+});
 
-const dummyContainerElement = {
-  label: "Container",
-  type: "container",
+const createDummyContainerElement = (label = "Container", components) => ({
+  label,
+  type: keyFromLabel(label),
   key: "container",
-};
+  components,
+});
 
-const dummyNavSkjemagruppe = {
-  label: "NavSkjemagruppe-label",
-  legend: "NavSkjemagruppe-legend",
+const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
+  label: `${label}-label`,
+  legend: `${label}-legend`,
   type: "navSkjemagruppe",
-  key: "navSkjemagruppe",
-};
+  key: keyFromLabel(label),
+  components,
+});
 
 const submissionData = {
   email: "email-verdi",
@@ -44,7 +48,7 @@ const submissionData = {
 
 const createPanelObject = (label, components) => ({
   label,
-  key: label.toLowerCase().replace(" ", ""),
+  key: keyFromLabel(label),
   type: "panel",
   components,
 });
@@ -56,7 +60,7 @@ const createFormObject = (panels = []) => ({
 describe("When handling component", () => {
   describe("form fields", () => {
     it("are added with value from submission", () => {
-      const actual = handleComponent(dummyTextfield, submissionData, []);
+      const actual = handleComponent(createDummyTextfield(), submissionData, []);
       expect(actual).toContainEqual({
         label: "Tekstfelt",
         type: "textfield",
@@ -65,36 +69,33 @@ describe("When handling component", () => {
     });
 
     it("are not added if they don't have a submission value", () => {
-      const actual = handleComponent(dummyTextfield, {}, []);
+      const actual = handleComponent(createDummyTextfield(), {}, []);
       expect(actual.find((component) => component.type === "textfield")).toBeUndefined();
     });
   });
 
   describe("content", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(dummyContentElement, submissionData, []);
+      const actual = handleComponent(createDummyContentElement(), submissionData, []);
       expect(actual.find((component) => component.type === "content")).toBeUndefined();
     });
   });
   describe("htmlelement", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(dummyHTMLElement, submissionData, []);
+      const actual = handleComponent(createDummyHTMLElement(), submissionData, []);
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
     });
   });
 
   describe("container", () => {
     it("is never included", () => {
-      const actual = handleComponent(dummyContainerElement, submissionData, []);
+      const actual = handleComponent(createDummyContainerElement(), submissionData, []);
       expect(actual.find((component) => component.type === "container")).toBeUndefined();
     });
 
     it("is ignored, and subcomponents that should not be included are also ignored", () => {
       const actual = handleComponent(
-        {
-          ...dummyContainerElement,
-          components: [dummyContentElement, dummyTextfield],
-        },
+        createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
         {},
         []
       );
@@ -105,10 +106,7 @@ describe("When handling component", () => {
 
     it("is ignored, but subcomponents that should be included are added", () => {
       const actual = handleComponent(
-        {
-          ...dummyContainerElement,
-          components: [dummyContentElement, dummyTextfield],
-        },
+        createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
         submissionData,
         []
       );
@@ -124,12 +122,16 @@ describe("When handling component", () => {
 
   describe("[navSkjemagruppe]", () => {
     it("is ignored if they have no subcomponents", () => {
-      const actual = handleComponent(dummyNavSkjemagruppe, {}, []);
+      const actual = handleComponent(createDummyNavSkjemagruppe(), {}, []);
       expect(actual.find((component) => component.type === "navSkjemagruppe")).toBeUndefined();
     });
 
     it("uses legend and not label", () => {
-      const actual = handleComponent({ ...dummyNavSkjemagruppe, components: [dummyTextfield] }, submissionData, []);
+      const actual = handleComponent(
+        createDummyNavSkjemagruppe("NavSkjemagruppe", [createDummyTextfield()]),
+        submissionData,
+        []
+      );
       const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
       expect(actualNavSkjemagruppe).toBeDefined();
       expect(actualNavSkjemagruppe.label).toEqual("NavSkjemagruppe-legend");
@@ -141,6 +143,7 @@ describe("When creating form summary object", () => {
   describe("panels", () => {
     it("are added as arrays on the top level", () => {
       const actual = createFormSummaryObject(
+        // TODO: Do we need to add components for this to be legal?
         createFormObject([createPanelObject("Panel 1"), createPanelObject("Panel 2"), createPanelObject("Panel 3")]),
         submissionData
       );
