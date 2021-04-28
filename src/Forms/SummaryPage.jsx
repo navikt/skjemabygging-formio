@@ -108,6 +108,84 @@ const ComponentSummary = ({ components, submission }) => {
   });
 };
 
+export function handleComponent(component, submission, formSummaryObject) {
+  switch (component.type) {
+    case "panel": {
+      const { label, type, components } = component;
+      return [
+        ...formSummaryObject,
+        {
+          label,
+          type,
+          components: filterNonFormContent(components || []).reduce(
+            (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
+            []
+          ),
+        },
+      ];
+    }
+    case "content":
+    case "htmlelement":
+      return formSummaryObject;
+    case "container": {
+      const { components } = component;
+      if (!components || components.length === 0) {
+        return formSummaryObject;
+      } else {
+        const mappedSubComponents = components.reduce(
+          (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
+          []
+        );
+        return [...formSummaryObject, ...mappedSubComponents];
+      }
+    }
+    case "fieldset":
+    case "navSkjemagruppe": {
+      const { legend, components } = component;
+      if (!components || components.length === 0) {
+        return formSummaryObject;
+      }
+      const mappedSubComponents = components.reduce(
+        (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
+        []
+      );
+      if (mappedSubComponents.length === 0) {
+        return formSummaryObject;
+      }
+      return [
+        ...formSummaryObject,
+        {
+          label: legend,
+          type: component.type,
+          components: mappedSubComponents,
+        },
+      ];
+    }
+    default: {
+      const { label, type } = component;
+      if (!submission[component.key]) {
+        return formSummaryObject;
+      }
+      return [
+        ...formSummaryObject,
+        {
+          label,
+          type,
+          value: submission[component.key],
+        },
+      ];
+    }
+  }
+}
+
+export function createFormSummaryObject(form, submission) {
+  const formSummaryObject = form.components.reduce(
+    (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject),
+    []
+  );
+  return formSummaryObject;
+}
+
 const FormSummary = ({ form, submission }) => {
   return form.components.map((panel) => {
     if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
