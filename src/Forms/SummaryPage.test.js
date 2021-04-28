@@ -1,6 +1,6 @@
 import { createFormSummaryObject, handleComponent } from "./SummaryPage";
 
-const keyFromLabel = (label = "") => label.toLowerCase().replace(" ", "");
+const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
 
 const createDummyTextfield = (label = "Tekstfelt") => ({
   label,
