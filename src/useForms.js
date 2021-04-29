@@ -42,7 +42,7 @@ export const useForms = (formio, store, userAlerter) => {
     update.tags = update.tags.filter((each) => each !== "nav-skjema");
     formio.saveForm(update).then(() => {
       userAlerter.flashSuccessMessage("Slettet skjemaet " + form.title);
-      setForms(forms.filter((each) => each !== form));
+      setForms(forms.filter((each) => each._id !== form._id));
     });
   };
   const onPublish = async (form) => {
