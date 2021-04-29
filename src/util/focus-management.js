@@ -3,8 +3,10 @@ export function scrollToAndSetFocus(selector, alignTarget = "center") {
   if (!targetTag) {
     return;
   }
+
+  const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
   targetTag.scrollIntoView({
-    behavior: "smooth",
+    behavior,
     block: alignTarget,
   });
   targetTag.focus({ preventScroll: true });
