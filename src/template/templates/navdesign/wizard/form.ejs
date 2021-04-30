@@ -1,10 +1,12 @@
 <div class="{{ctx.className}}">
   <div style="position: relative;">
     {{ ctx.wizardHeader }}
-    <h2 class="margin-bottom-default typo-innholdstittel">{{ctx.t(ctx.panels[ctx.currentPage].title)}}</h2>
-    <form class="wizard-page" ref="{{ctx.wizardKey}}">
-      {{ctx.components}}
-      {{ ctx.wizardNav }}
-    </form>
+    <main id="maincontent" tabIndex="-1">
+      <h2 class="margin-bottom-default typo-innholdstittel">{{ctx.panels[ctx.currentPage].title}}</h2>
+      <form class="wizard-page" ref="{{ctx.wizardKey}}">
+        {{ctx.components}}
+        {{ ctx.wizardNav }}
+      </form>
+    </main>
   </div>
 </div>

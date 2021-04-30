@@ -1,0 +1,15 @@
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: azuread-test-skjemadigitalisering
+  namespace: skjemadigitalisering
+  labels:
+    team: skjemadigitalisering
+spec:
+  # required
+  secretName: azuread-test-skjemadigitalisering
+  logoutUrl: "https://localhost:3000/oauth2/logout"
+  replyUrls:
+    - url: "http://localhost:3000/oauth2/callback"
+    - url: "https://portal.form.io/oauth2/callback"
+  tenant: nav.no

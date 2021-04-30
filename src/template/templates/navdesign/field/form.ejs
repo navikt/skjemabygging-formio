@@ -1,8 +1,8 @@
-{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid") { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe") { %}
   {{ ctx.labelMarkup }}
 {% } %}
 
-{% if (ctx.label.hidden && ctx.label.className && ctx.component.validate.required && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox") { %}
+{% if (ctx.label.hidden && ctx.label.hideLabel && ctx.component.label && ctx.label.className && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox") { %}
   <label class="skjemaelement__label{{ctx.component.validate && ctx.component.validate.required ? ' field-required' : ''}}" for="{{ctx.component.key}}" id="{{ctx.component.key}}-label">
     {{ ctx.t(ctx.component.label) }}
     {% if (ctx.component.tooltip) { %}

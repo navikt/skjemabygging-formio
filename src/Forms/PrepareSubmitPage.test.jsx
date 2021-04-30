@@ -5,6 +5,12 @@ import { AppConfigProvider } from "../configContext";
 import { computeDokumentinnsendingURL, PrepareSubmitPage } from "./PrepareSubmitPage";
 
 beforeEach(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: jest.fn().mockImplementation((_query) => ({
+      matches: false,
+    })),
+  });
   Element.prototype.scrollIntoView = jest.fn();
 });
 

@@ -753,6 +753,57 @@ const builderPalett = {
       },
     },
   },
+  layout: {
+    title: "Layout",
+    components: {
+      fieldset: {
+        ignore: true,
+      },
+      navSkjemagruppe: {
+        documentation: "",
+        group: "layout",
+        icon: "th-large",
+        key: "navSkjemagruppe",
+        title: "Skjemagruppe",
+        weight: 20,
+        schema: {
+          label: "Skjemagruppe",
+          key: "navSkjemagruppe",
+          type: "navSkjemagruppe",
+          legend: "Skjemagruppe",
+          components: [],
+          input: false,
+          persistent: false,
+        },
+      },
+    },
+  },
+  data: {
+    title: "Data",
+    components: {
+      datagrid: {
+        ignore: true,
+      },
+      navDataGrid: {
+        title: "Data Grid",
+        icon: "th",
+        group: "data",
+        documentation: "/userguide/#datagrid",
+        key: "datagrid",
+        weight: 30,
+        schema: {
+          label: "Data Grid",
+          key: "datagrid",
+          type: "datagrid",
+          clearOnHide: true,
+          input: true,
+          isNavDataGrid: true,
+          tree: true,
+          components: [],
+        },
+      },
+    },
+  },
 };
 
 export default {
