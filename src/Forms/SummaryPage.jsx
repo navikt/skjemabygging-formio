@@ -108,11 +108,11 @@ const ComponentSummary = ({ components, submission }) => {
   });
 };
 
-export function handleComponent(component, submission, formSummaryObject) {
+export function handleComponent(component, submission = {}, formSummaryObject) {
   switch (component.type) {
     case "panel": {
       const { label, key, type, components } = component;
-      const subComponents = filterNonFormContent(components).reduce(
+      const subComponents = filterNonFormContent(components, submission).reduce(
         (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
         []
       );
@@ -134,12 +134,12 @@ export function handleComponent(component, submission, formSummaryObject) {
     case "htmlelement":
       return formSummaryObject;
     case "container": {
-      const { components } = component;
+      const { components, key } = component;
       if (!components || components.length === 0) {
         return formSummaryObject;
       } else {
         const mappedSubComponents = components.reduce(
-          (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
+          (subComponents, subComponent) => handleComponent(subComponent, submission[key], subComponents),
           []
         );
         return [...formSummaryObject, ...mappedSubComponents];

@@ -28,16 +28,16 @@ const createDummyHTMLElement = (label = "HTMLelement") => ({
 
 const createDummyContainerElement = (label = "Container", components) => ({
   label,
-  type: keyFromLabel(label),
-  key: "container",
+  key: keyFromLabel(label),
+  type: "container",
   components,
 });
 
 const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
   label: `${label}-label`,
   legend: `${label}-legend`,
-  type: "navSkjemagruppe",
   key: keyFromLabel(label),
+  type: "navSkjemagruppe",
   components,
 });
 
@@ -108,7 +108,7 @@ describe("When handling component", () => {
     it("is ignored, but subcomponents that should be included are added", () => {
       const actual = handleComponent(
         createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
-        submissionData,
+        { container: submissionData },
         []
       );
       expect(actual).toEqual([
@@ -122,8 +122,8 @@ describe("When handling component", () => {
     });
   });
 
-  describe("[navSkjemagruppe]", () => {
-    it("is ignored if they have no subcomponents", () => {
+  describe("navSkjemagruppe", () => {
+    it("is ignored if it has no subcomponents", () => {
       const actual = handleComponent(createDummyNavSkjemagruppe(), {}, []);
       expect(actual.find((component) => component.type === "navSkjemagruppe")).toBeUndefined();
     });
@@ -185,8 +185,10 @@ describe("When creating form summary object", () => {
       {
         simpletextfield: "simpletextfield-value",
         simpleemail: "simpleemail-value",
-        textfieldincontainer: "textfieldincontainer-value",
-        emailincontainer: "emailincontainer-value",
+        container: {
+          textfieldincontainer: "textfieldincontainer-value",
+          emailincontainer: "emailincontainer-value",
+        },
         textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
         emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
       }
@@ -237,7 +239,7 @@ describe("When creating form summary object", () => {
         type: "panel",
         components: [
           {
-            label: "NavSkjemagruppe",
+            label: "NavSkjemagruppe-legend",
             key: "navskjemagruppe",
             type: "navSkjemagruppe",
             components: [
