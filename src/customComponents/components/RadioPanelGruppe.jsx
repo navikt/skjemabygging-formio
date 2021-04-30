@@ -14,7 +14,7 @@ import FormioReactComponent from "../FormioReactComponent";
  * 2. When the value changes, call props.onChange(null, newValue);
  *
  */
-const RadioPanelGruppeWrapper = class extends Component {
+class RadioPanelGruppeWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,7 +47,7 @@ const RadioPanelGruppeWrapper = class extends Component {
       />
     );
   }
-};
+}
 
 export default class RadioPanelGruppeComponent extends FormioReactComponent {
   input = React.createRef();

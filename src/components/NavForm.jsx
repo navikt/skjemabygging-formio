@@ -25,7 +25,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
-import { Form as FormioForm, Formio } from "formiojs";
+import { Form as FormioForm, Formio, Utils as FormioUtils } from "formiojs";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
@@ -207,14 +207,14 @@ class NavForm extends Component {
     }
 
     if (src) {
-      this.instance = new (this.props.formioform || FormioForm)(this.element, src, options);
+      this.instance = new FormioForm(this.element, src, options);
       this.createPromise = this.instance.ready.then((formio) => {
         this.formio = formio;
         this.formio.src = src;
       });
     }
     if (form) {
-      this.instance = new (this.props.formioform || FormioForm)(this.element, form, options);
+      this.instance = new FormioForm(this.element, form, options);
       this.createPromise = this.instance.ready.then((formio) => {
         this.formio = formio;
         this.formio.form = form;
@@ -247,7 +247,7 @@ class NavForm extends Component {
       });
       this.createPromise.then(() => {
         if (this.props.submission) {
-          this.formio.submission = this.props.submission;
+          this.formio.submission = FormioUtils.fastCloneDeep(this.props.submission); // TODO: Check this
         }
       });
     }

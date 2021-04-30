@@ -26,6 +26,16 @@ import Field from "formiojs/components/_classes/field/Field";
 
 export default class FormioReactComponent extends Field {
   /**
+   * This is the first phase of component building where the component is instantiated.
+   *
+   * @param component - The component definition created from the settings form.
+   * @param options - Any options passed into the renderer.
+   * @param data - The submission data where this component's data exists.
+   */
+  constructor(component, options, data) {
+    super(component, options, data);
+  }
+  /**
    * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
    * components using the this.on() function.
    */

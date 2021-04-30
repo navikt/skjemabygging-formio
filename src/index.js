@@ -17,8 +17,6 @@ const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protecte
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 const fyllutBaseURL = "https://www.nav.no/fyllut";
 
-const store = { forms: null };
-
 Pusher.logToConsole = true;
 
 const pusherAppKey = process.env.REACT_APP_PUSHER_KEY;
@@ -37,7 +35,7 @@ ReactDOM.render(
         featureToggles={featureToggles}
       >
         <AuthProvider>
-          <App store={store} projectURL={projectURL} pusher={pusher} />
+          <App projectURL={projectURL} pusher={pusher} />
         </AuthProvider>
       </AppConfigProvider>
     </BrowserRouter>

@@ -13,14 +13,14 @@ const useStyles = makeStyles((theme) => ({
   app: appStyles,
 }));
 
-function App({ projectURL, store, pusher }) {
+function App({ projectURL, pusher }) {
   const styles = useStyles();
   const userAlerter = useUserAlerting(pusher);
   console.log("userAlerter", userAlerter);
   const { userData } = useAuth();
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const contentFunc = userData
-    ? () => <AuthenticatedApp formio={formio} store={store} />
+    ? () => <AuthenticatedApp formio={formio} />
     : () => <UnauthenticatedApp projectURL={projectURL} />;
   return (
     <UserAlerterContext.Provider value={userAlerter}>
