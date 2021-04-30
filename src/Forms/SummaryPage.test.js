@@ -54,6 +54,14 @@ const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
   components,
 });
 
+const createDummyDataGrid = (label = "DataGrid", components) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "datagrid",
+  rowTitle: "datagrid-row-title",
+  components,
+});
+
 const createPanelObject = (label, components) => ({
   label,
   key: keyFromLabel(label),
@@ -152,24 +160,39 @@ describe("When handling component", () => {
       expect(actualNavSkjemagruppe.label).toEqual("NavSkjemagruppe-legend");
     });
   });
+
+  describe("DataGrid", () => {
+    it("is ignored if it has no subComponents", () => {
+      const actual = handleComponent(createDummyDataGrid(), {}, []);
+      expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
+    });
+
+    it("renders datagrid as expected", () => {
+      const actual = handleComponent(
+        createDummyDataGrid("DataGrid", [createDummyTextfield()]),
+        { datagrid: [submissionData] },
+        []
+      );
+
+      expect(actual).toEqual([
+        {
+          label: "DataGrid",
+          key: "datagrid",
+          type: "datagrid",
+          value: [
+            {
+              type: "datagrid-row",
+              label: "datagrid-row-title",
+              components: [{ label: "Tekstfelt", value: "tekstfelt-verdi", key: "tekstfelt", type: "textfield" }],
+            },
+          ],
+        },
+      ]);
+    });
+  });
 });
 
 describe("When creating form summary object", () => {
-  describe("panels", () => {
-    it("are added as arrays on the top level", () => {
-      const actual = createFormSummaryObject(
-        // TODO: Do we need to add components for this to be legal?
-        createFormObject([
-          createPanelObject("Panel 1", [createDummyTextfield()]),
-          createPanelObject("Panel 2", [createDummyEmail()]),
-        ]),
-        submissionData
-      );
-      expect(actual).toBeInstanceOf(Array);
-      expect(actual.length).toEqual(2);
-    });
-  });
-
   it("it is created as it should", () => {
     const actual = createFormSummaryObject(
       createFormObject([
@@ -289,5 +312,20 @@ describe("When creating form summary object", () => {
         ],
       },
     ]);
+  });
+
+  describe("panels", () => {
+    it("are added as arrays on the top level", () => {
+      const actual = createFormSummaryObject(
+        // TODO: Do we need to add components for this to be legal?
+        createFormObject([
+          createPanelObject("Panel 1", [createDummyTextfield()]),
+          createPanelObject("Panel 2", [createDummyEmail()]),
+        ]),
+        submissionData
+      );
+      expect(actual).toBeInstanceOf(Array);
+      expect(actual.length).toEqual(2);
+    });
   });
 });

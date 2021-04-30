@@ -145,6 +145,44 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
         return [...formSummaryObject, ...mappedSubComponents];
       }
     }
+    case "datagrid":
+      const { label, key, components, type, rowTitle } = component;
+      if (!submission[key]) {
+        return [...formSummaryObject];
+      }
+
+      const value = submission[key].reduce((handledRow, rowSubmission) => {
+        const dataGridRowComponents = components.reduce(
+          (handledComponents, subComponent) => handleComponent(subComponent, rowSubmission, handledComponents),
+          []
+        );
+
+        if (dataGridRowComponents.length === 0) {
+          return handledRow;
+        }
+        return [
+          ...handledRow,
+          {
+            type: "datagrid-row",
+            label: rowTitle,
+            components: dataGridRowComponents,
+          },
+        ];
+      }, []);
+
+      if (value.length === 0) {
+        return formSummaryObject;
+      }
+
+      return [
+        ...formSummaryObject,
+        {
+          label,
+          key,
+          type,
+          value,
+        },
+      ];
     case "fieldset":
     case "navSkjemagruppe": {
       const { legend, key, components, type } = component;
