@@ -50,6 +50,9 @@ export function TranslationsListPage({ onLogout, forms }) {
             <li className={classes.globalListItem}>
               <Link to={"/globalTranslations"}>Felles oversettelser for alle skjemaer</Link>
             </li>
+            <li className={classes.listItem}>
+              <Link to="/translation/global">Felles oversettelser for alle skjemaer</Link>
+            </li>
           </ul>
         </nav>
         <nav className="margin-bottom-large">

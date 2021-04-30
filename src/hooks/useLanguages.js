@@ -6,7 +6,7 @@ export const languagesInNorwegian = {
   "nb-NO": "Norsk bokmål",
   "nn-NO": "Norsk nynorsk",
   en: "Engelsk",
-  pl: "Norsk bokmål",
+  pl: "Polsk",
 };
 export const languagesInOriginalLanguage = {
   "nb-NO": "Norsk bokmål",
