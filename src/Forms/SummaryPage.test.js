@@ -14,6 +14,19 @@ const createDummyEmail = (label = "Email") => ({
   type: "email",
 });
 
+const createDummyRadioPanel = (
+  label = "RadioPanel",
+  values = [
+    { label: "NO-label", value: "no" },
+    { label: "YES-label", value: "yes" },
+  ]
+) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "radiopanel",
+  values,
+});
+
 const createDummyContentElement = (label = "Content") => ({
   label,
   key: keyFromLabel(label),
@@ -164,6 +177,7 @@ describe("When creating form summary object", () => {
           createDummyContentElement("Content that should be ignored"),
           createDummyHTMLElement("HTMLElement that should be ignored"),
           createDummyContainerElement("Container that should be ignored"),
+          createDummyNavSkjemagruppe("NavSkjemagruppe that should be ignored"),
         ]),
         createPanelObject("Panel with simple fields that should all be included", [
           createDummyTextfield("Simple Textfield"),
@@ -181,6 +195,7 @@ describe("When creating form summary object", () => {
             createDummyEmail("Email in NavSkjemagruppe"),
           ]),
         ]),
+        createPanelObject("Panel with radioPanel", [createDummyRadioPanel("RadioPanel")]),
       ]),
       {
         simpletextfield: "simpletextfield-value",
@@ -191,6 +206,7 @@ describe("When creating form summary object", () => {
         },
         textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
         emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
+        radiopanel: "yes",
       }
     );
     expect(actual).toEqual([
@@ -256,6 +272,19 @@ describe("When creating form summary object", () => {
                 value: "emailinnavskjemagruppe-value",
               },
             ],
+          },
+        ],
+      },
+      {
+        label: "Panel with radioPanel",
+        key: "panelwithradiopanel",
+        type: "panel",
+        components: [
+          {
+            label: "RadioPanel",
+            key: "radiopanel",
+            type: "radiopanel",
+            value: "YES-label",
           },
         ],
       },

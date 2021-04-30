@@ -179,7 +179,7 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
           label,
           key,
           type,
-          value: submission[component.key],
+          value: formatValue(component, submission[component.key]),
         },
       ];
     }
