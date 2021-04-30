@@ -167,6 +167,15 @@ describe("When handling component", () => {
       expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
     });
 
+    it("is ignored if subComponents don't have submissions", () => {
+      const actual = handleComponent(
+        createDummyDataGrid("Datagrid", [createDummyTextfield(), createDummyEmail(), createDummyRadioPanel()]),
+        { datagrid: [] },
+        []
+      );
+      expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
+    });
+
     it("renders datagrid as expected", () => {
       const actual = handleComponent(
         createDummyDataGrid("DataGrid", [createDummyTextfield()]),
@@ -201,6 +210,12 @@ describe("When creating form summary object", () => {
           createDummyHTMLElement("HTMLElement that should be ignored"),
           createDummyContainerElement("Container that should be ignored"),
           createDummyNavSkjemagruppe("NavSkjemagruppe that should be ignored"),
+          createDummyDataGrid("Datagrid that should be ignored because it is empty"),
+          createDummyDataGrid("Datagrid that contains components that should be ignored", [
+            createDummyContentElement("Content that should be ignored"),
+            createDummyNavSkjemagruppe("NavSkjemagruppe that should be ignored"),
+            createDummyDataGrid("Datagrid that should be ignored"),
+          ]),
         ]),
         createPanelObject("Panel with simple fields that should all be included", [
           createDummyTextfield("Simple Textfield"),
