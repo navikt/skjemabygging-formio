@@ -1,4 +1,4 @@
-import { createFormSummaryObject, handleComponent } from "./SummaryPage";
+import { createFormSummaryObject, handleComponent } from "./formSummaryUtil";
 
 const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
 
