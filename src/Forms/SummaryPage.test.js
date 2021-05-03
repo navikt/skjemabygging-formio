@@ -62,9 +62,10 @@ const createDummyDataGrid = (label = "DataGrid", components) => ({
   components,
 });
 
-const createPanelObject = (label, components) => ({
+const createPanelObject = (title, components, label) => ({
+  title,
   label,
-  key: keyFromLabel(label),
+  key: keyFromLabel(title),
   type: "panel",
   components,
 });
@@ -79,6 +80,38 @@ const submissionData = {
 };
 
 describe("When handling component", () => {
+  describe("panel", () => {
+    it("is ignored if it has no subComponents", () => {
+      const actual = handleComponent(createPanelObject(), {}, []);
+      expect(actual.find((component) => component.type === "panel")).toBeUndefined();
+    });
+
+    it("is ignored if subComponents don't have submissions", () => {
+      const actual = handleComponent(
+        createPanelObject("Panel", [createDummyTextfield(), createDummyEmail(), createDummyRadioPanel()]),
+        {},
+        []
+      );
+      expect(actual.find((component) => component.type === "panel")).toBeUndefined();
+    });
+
+    it("uses title instead of label", () => {
+      const actual = handleComponent(
+        createPanelObject("PanelTitle", [createDummyTextfield("TextField")], "PanelLabel (should not be included)"),
+        { textfield: "textValue" },
+        []
+      );
+      expect(actual).toEqual([
+        {
+          label: "PanelTitle",
+          key: "paneltitle",
+          type: "panel",
+          components: [{ label: "TextField", key: "textfield", type: "textfield", value: "textValue" }],
+        },
+      ]);
+    });
+  });
+
   describe("form fields", () => {
     it("are added with value from submission", () => {
       const actual = handleComponent(createDummyTextfield(), submissionData, []);

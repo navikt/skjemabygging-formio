@@ -85,7 +85,7 @@ const DataGridSummary = ({ label, components }) => (
 
 const DataGridRow = ({ key, label, components }) => (
   <div className="data-grid__row skjemagruppe" key={key}>
-    <p className="skjemagruppe__legend">{label}</p>
+    {label && <p className="skjemagruppe__legend">{label}</p>}
     <dl>
       <ComponentSummary components={components} submission={{}} />
     </dl>
@@ -120,19 +120,18 @@ const ComponentSummary = ({ components, submission }) => {
 export function handleComponent(component, submission = {}, formSummaryObject) {
   switch (component.type) {
     case "panel": {
-      const { label, key, type, components } = component;
+      const { title, key, type, components } = component;
       const subComponents = filterNonFormContent(components, submission).reduce(
         (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
         []
       );
       if (subComponents.length === 0) {
-        console.log(JSON.stringify(subComponents, null, 2));
         return [...formSummaryObject];
       }
       return [
         ...formSummaryObject,
         {
-          label,
+          label: title,
           key,
           type,
           components: subComponents,
