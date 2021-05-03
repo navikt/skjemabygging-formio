@@ -83,27 +83,27 @@ const DataGridSummary = ({ label, components }) => (
   </>
 );
 
-const DataGridRow = ({ key, label, components }) => (
-  <div className="data-grid__row skjemagruppe" key={key}>
+const DataGridRow = ({ label, components }) => (
+  <div className="data-grid__row skjemagruppe">
     {label && <p className="skjemagruppe__legend">{label}</p>}
     <dl>
-      <ComponentSummary components={components} submission={{}} />
+      <ComponentSummary components={components} />
     </dl>
   </div>
 );
 
-const PanelSummary = ({ key, label, components }) => (
-  <section key={key} className="margin-bottom-default wizard-page">
+const PanelSummary = ({ label, components }) => (
+  <section className="margin-bottom-default wizard-page">
     <Systemtittel tag="h3" className="margin-bottom-default">
       {label}
     </Systemtittel>
     <dl>
-      <ComponentSummary components={components} submission={{}} />
+      <ComponentSummary components={components} />
     </dl>
   </section>
 );
 
-const ComponentSummary = ({ components, submission }) => {
+const ComponentSummary = ({ components }) => {
   return components.map(({ type, key, label, components, value }) => {
     if (type === "panel") {
       return <PanelSummary key={key} label={label} components={components} />;
