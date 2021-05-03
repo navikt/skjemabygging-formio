@@ -151,7 +151,7 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
         return [...formSummaryObject];
       }
 
-      const value = submission[key].reduce((handledRow, rowSubmission) => {
+      const value = submission[key].reduce((handledRow, rowSubmission, index) => {
         const dataGridRowComponents = components.reduce(
           (handledComponents, subComponent) => handleComponent(subComponent, rowSubmission, handledComponents),
           []
@@ -165,6 +165,7 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
           {
             type: "datagrid-row",
             label: rowTitle,
+            key: `${key}-row-${index}`,
             components: dataGridRowComponents,
           },
         ];

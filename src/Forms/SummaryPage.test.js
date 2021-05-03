@@ -192,6 +192,7 @@ describe("When handling component", () => {
             {
               type: "datagrid-row",
               label: "datagrid-row-title",
+              key: "datagrid-row-0",
               components: [{ label: "Tekstfelt", value: "tekstfelt-verdi", key: "tekstfelt", type: "textfield" }],
             },
           ],
