@@ -188,7 +188,7 @@ describe("When handling component", () => {
           label: "DataGrid",
           key: "datagrid",
           type: "datagrid",
-          value: [
+          components: [
             {
               type: "datagrid-row",
               label: "datagrid-row-title",

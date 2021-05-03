@@ -54,56 +54,65 @@ function filterNonFormContent(components = [], submission = []) {
   });
 }
 
-const FormSummaryField = ({ component, value }) => (
+const FormSummaryField = ({ label, value }) => (
   <>
-    <dt>{component.label}</dt>
-    <dd>{formatValue(component, value)}</dd>
+    <dt>{label}</dt>
+    <dd>{value}</dd>
   </>
 );
 
-const FormSummaryFieldset = ({ component, submission }) => (
+const FormSummaryFieldset = ({ label, components }) => (
   <div>
-    <dt>{component.legend}</dt>
+    <dt>{label}</dt>
     <dd>
       <dl className="margin-left-default">
-        <ComponentSummary components={component.components} submission={submission} />
+        <ComponentSummary components={components} />
       </dl>
     </dd>
   </div>
 );
 
-const DataGridSummary = ({ component, submission }) => (
+const DataGridSummary = ({ label, components }) => (
   <>
-    <dt>{component.label}</dt>
+    <dt>{label}</dt>
     <dd>
-      {submission[component.key].map((dataGridRowSubmission, rowIndex) => (
-        <div className="data-grid__row skjemagruppe" key={`${component.key}-${rowIndex}`}>
-          <p className="skjemagruppe__legend">{component.rowTitle}</p>
-          <dl>
-            <ComponentSummary components={component.components} submission={dataGridRowSubmission} />
-          </dl>
-        </div>
+      {components.map((component) => (
+        <DataGridRow key={component.key} label={component.label} components={component.components} />
       ))}
     </dd>
   </>
 );
 
+const DataGridRow = ({ key, label, components }) => (
+  <div className="data-grid__row skjemagruppe" key={key}>
+    <p className="skjemagruppe__legend">{label}</p>
+    <dl>
+      <ComponentSummary components={components} submission={{}} />
+    </dl>
+  </div>
+);
+
+const PanelSummary = ({ key, label, components }) => (
+  <section key={key} className="margin-bottom-default wizard-page">
+    <Systemtittel tag="h3" className="margin-bottom-default">
+      {label}
+    </Systemtittel>
+    <dl>
+      <ComponentSummary components={components} submission={{}} />
+    </dl>
+  </section>
+);
+
 const ComponentSummary = ({ components, submission }) => {
-  return filterNonFormContent(components, submission).map((component) => {
-    if (component.type === "container") {
-      return (
-        <ComponentSummary
-          key={component.key}
-          components={component.components}
-          submission={submission[component.key]}
-        />
-      );
-    } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
-      return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
-    } else if (component.type === "datagrid") {
-      return <DataGridSummary key={component.key} component={component} submission={submission} />;
+  return components.map(({ type, key, label, components, value }) => {
+    if (type === "panel") {
+      return <PanelSummary key={key} label={label} components={components} />;
+    } else if (type === "fieldset" || type === "navSkjemagruppe") {
+      return <FormSummaryFieldset key={key} label={label} components={components} />;
+    } else if (type === "datagrid") {
+      return <DataGridSummary key={key} label={label} components={components} />;
     } else {
-      return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
+      return <FormSummaryField key={key} label={label} value={value} />;
     }
   });
 };
@@ -151,17 +160,17 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
         return [...formSummaryObject];
       }
 
-      const value = submission[key].reduce((handledRow, rowSubmission, index) => {
+      const dataGridRows = submission[key].reduce((handledRows, rowSubmission, index) => {
         const dataGridRowComponents = components.reduce(
           (handledComponents, subComponent) => handleComponent(subComponent, rowSubmission, handledComponents),
           []
         );
 
         if (dataGridRowComponents.length === 0) {
-          return handledRow;
+          return handledRows;
         }
         return [
-          ...handledRow,
+          ...handledRows,
           {
             type: "datagrid-row",
             label: rowTitle,
@@ -171,7 +180,7 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
         ];
       }, []);
 
-      if (value.length === 0) {
+      if (dataGridRows.length === 0) {
         return formSummaryObject;
       }
 
@@ -181,7 +190,7 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
           label,
           key,
           type,
-          value,
+          components: dataGridRows,
         },
       ];
     case "fieldset":
@@ -234,25 +243,14 @@ export function createFormSummaryObject(form, submission) {
 }
 
 const FormSummary = ({ form, submission }) => {
-  return form.components.map((panel) => {
-    if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
-      return null;
-    }
-    return (
-      <section key={panel.title} className="margin-bottom-default wizard-page">
-        <Systemtittel tag="h3" className="margin-bottom-default">
-          {panel.title}
-        </Systemtittel>
-        <dl>
-          <ComponentSummary components={panel.components} submission={submission} />
-        </dl>
-      </section>
-    );
-  });
+  const formSummaryObject = createFormSummaryObject(form, submission);
+  if (formSummaryObject.length === 0) {
+    return null;
+  }
+  return <ComponentSummary components={formSummaryObject} />;
 };
 
 export function SummaryPage({ form, submission, formUrl }) {
-  const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   let { url } = useRouteMatch();
   const { featureToggles } = useContext(AppConfigContext);
   const { loggSkjemaStegFullfort } = useAmplitude();
@@ -271,7 +269,7 @@ export function SummaryPage({ form, submission, formUrl }) {
           Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
-        <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
+        <FormSummary submission={!!submission ? submission.data : {}} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
