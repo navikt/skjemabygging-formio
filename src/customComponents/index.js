@@ -7,6 +7,7 @@ import TextField from "./components/TextField";
 import Textarea from "./components/TextArea";
 import Number from "./components/Number";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
+import SelectBoxes from "./components/SelectBoxes";
 
 export default {
   fnrfield: Fodselsnummer,
@@ -18,4 +19,5 @@ export default {
   textArea: Textarea,
   number: Number,
   navSkjemagruppe: NavSkjemagruppe,
+  selectboxes: SelectBoxes,
 };
