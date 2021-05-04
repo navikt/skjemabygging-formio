@@ -1,5 +1,6 @@
 import PdfPrinter from "pdfmake";
 import luxon from "luxon";
+import { createFormSummaryObject } from "./formSummaryUtil.js";
 
 const { DateTime } = luxon;
 
@@ -96,6 +97,61 @@ export class Pdfgen {
     return dataTable;
   }
 
+  createTableWithBody(body = []) {
+    return {
+      table: {
+        headerRows: 0,
+        widths: ["*", "*"],
+        body,
+      },
+      style: "panelTable",
+    };
+  }
+
+  createRow(text, value, isGroupHeader, isSubComponent) {
+    let colSpan;
+    let style = [];
+    if (isGroupHeader) {
+      colSpan = 2;
+      style = ["groupHeader"];
+    }
+    if (isSubComponent) {
+      style = [...style, "subComponent"];
+    }
+
+    return [{ text, style, colSpan }, value];
+  }
+
+  componentsToBody(components = [], areSubComponents = false) {
+    return components.flatMap((component) => {
+      switch (component.type) {
+        case "fieldset":
+          return this.componentsToBody(component.components);
+        case "navSkjemagruppe":
+        case "datagrid":
+          return [this.createRow(component.label, "", true), ...this.componentsToBody(component.components, true)];
+        case "datagrid-row":
+          const body = this.componentsToBody(component.components, true);
+          if (component.label) {
+            return [this.createRow(component.label, "", true, true), ...body];
+          }
+          return [...body, [{ text: " ", colSpan: 2 }]];
+        default:
+          return [this.createRow(component.label, component.value, false, areSubComponents)];
+      }
+    });
+  }
+
+  mapFormSummaryObjectToPdf(formSummaryObject, pdfObject) {
+    const tables = formSummaryObject.flatMap((panel) => {
+      return [
+        { text: panel.label, style: "subHeader" },
+        this.createTableWithBody(this.componentsToBody(panel.components)),
+      ];
+    });
+    return [...pdfObject, ...tables];
+  }
+
   generateHeaderAndTable(panel, content) {
     const dataTable = this.createTable();
     panel.components.forEach((component) => {
@@ -134,6 +190,12 @@ export class Pdfgen {
   }
 
   generateFirstPart() {
+    const formSummaryObject = createFormSummaryObject(this.form, this.submission.data);
+    const pdfObject = this.mapFormSummaryObjectToPdf(formSummaryObject, [
+      this.header(),
+      { text: " ", style: "ingress" },
+    ]);
+
     let result = [this.header(), { text: " ", style: "ingress" }];
     const rest = this.form.components.filter((component) => component.type !== "panel");
     this.generateTableForComponentsOutsidePanels(rest, result);
