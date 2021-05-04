@@ -516,6 +516,7 @@ const builderPalett = {
           input: true,
           clearOnHide: true,
           fieldSize: "input--xxl",
+          dataGridLabel: "true",
           validate: {
             required: true,
           },
@@ -531,6 +532,7 @@ const builderPalett = {
           key: "textarea",
           fieldSize: "input--xxl",
           input: true,
+          dataGridLabel: "true",
           clearOnHide: true,
           validate: {
             required: true,
