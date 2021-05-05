@@ -35,6 +35,7 @@ export const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   fieldSize: "input--s",
   input: true,
   spellcheck: false,
+  dataGridLabel: "true",
   validateOn: "blur",
   validate: {
     custom: "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
