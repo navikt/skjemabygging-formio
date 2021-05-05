@@ -50,10 +50,13 @@ export default class Fodselsnummer extends TextFieldComponent {
   validateFnr(fnrTekstWithMiddleSpace) {
     if (fnrTekstWithMiddleSpace === "") {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
+      console.log("validateFnr fra Fodselsnummer: tom value");
       return true;
     }
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
-    return erGyldigFodselsnummer(fnrTekst);
+    const erGyldig = erGyldigFodselsnummer(fnrTekst);
+    console.log("validateFnr fra Fodselsnummer:", erGyldig);
+    return erGyldig;
   }
 
   get defaultSchema() {

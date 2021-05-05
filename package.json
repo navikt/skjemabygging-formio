@@ -116,15 +116,18 @@
     "@testing-library/react-hooks": "^3.4.1",
     "@testing-library/user-event": "^12.1.1",
     "cross-env": "^7.0.2",
+    "cypress": "^6.5.0",
     "husky": "^3.1.0",
+    "i18next": "^20.2.2",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "lint-staged": "^10.4.0",
+    "lodash": "^4.17.21",
     "nodemon": "^2.0.4",
+    "power-assert": "^1.6.1",
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.13.1",
     "rollup": "^1.29.0",
-    "webpack-cli": "^3.3.12",
-    "cypress": "^6.5.0"
+    "webpack-cli": "^3.3.12"
   },
   "husky": {
     "hooks": {
