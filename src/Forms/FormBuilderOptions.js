@@ -35,6 +35,7 @@ export const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   fieldSize: "input--s",
   input: true,
   spellcheck: false,
+  dataGridLabel: "true",
   validateOn: "blur",
   validate: {
     custom: "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
@@ -356,6 +357,7 @@ const builderPalett = {
           input: true,
           currency: "nok",
           spellcheck: false,
+          dataGridLabel: "true",
           clearOnHide: true,
           validate: {
             required: true,
@@ -516,6 +518,7 @@ const builderPalett = {
           input: true,
           clearOnHide: true,
           fieldSize: "input--xxl",
+          dataGridLabel: "true",
           validate: {
             required: true,
           },
@@ -531,6 +534,7 @@ const builderPalett = {
           key: "textarea",
           fieldSize: "input--xxl",
           input: true,
+          dataGridLabel: "true",
           clearOnHide: true,
           validate: {
             required: true,
@@ -547,6 +551,7 @@ const builderPalett = {
           key: "number",
           fieldSize: "input--m",
           input: true,
+          dataGridLabel: "true",
           spellcheck: false,
           clearOnHide: true,
           validate: {
