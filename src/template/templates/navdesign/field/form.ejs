@@ -2,15 +2,6 @@
   {{ ctx.labelMarkup }}
 {% } %}
 
-{% if (ctx.label.hidden && ctx.label.hideLabel && ctx.component.label && ctx.label.className && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox") { %}
-  <label class="skjemaelement__label{{ctx.component.validate && ctx.component.validate.required ? ' field-required' : ''}}" for="{{ctx.component.key}}" id="{{ctx.component.key}}-label">
-    {{ ctx.t(ctx.component.label) }}
-    {% if (ctx.component.tooltip) { %}
-      <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted"></i>
-    {% } %}
-  </label>
-{% } %}
-
 {% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "datagrid") { %}
 <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
