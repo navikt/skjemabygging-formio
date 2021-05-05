@@ -144,7 +144,7 @@ function handleFieldSet(component, submission, formSummaryObject) {
 
 function handleField(component, submission, formSummaryObject) {
   const { key, label, type } = component;
-  if (!submission[key]) {
+  if (submission[key] === undefined || submission[key] === "") {
     return formSummaryObject;
   }
   return [
@@ -162,6 +162,7 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
   switch (component.type) {
     case "panel":
       return handlePanel(component, submission, formSummaryObject);
+    case "button":
     case "content":
     case "htmlelement":
       return formSummaryObject;
