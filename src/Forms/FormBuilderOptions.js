@@ -356,6 +356,7 @@ const builderPalett = {
           input: true,
           currency: "nok",
           spellcheck: false,
+          dataGridLabel: "true",
           clearOnHide: true,
           validate: {
             required: true,
@@ -549,6 +550,7 @@ const builderPalett = {
           key: "number",
           fieldSize: "input--m",
           input: true,
+          dataGridLabel: "true",
           spellcheck: false,
           clearOnHide: true,
           validate: {
