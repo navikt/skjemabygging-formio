@@ -89,14 +89,6 @@ export class Pdfgen {
     this.writeDocDefinitionToStream(docDefinition, writeStream);
   }
 
-  generateDataTable() {
-    const dataTable = this.createTable();
-    this.form.components.forEach((component) => {
-      this.handleComponent(component, dataTable.body, this.submission.data);
-    });
-    return dataTable;
-  }
-
   createTableWithBody(body = []) {
     return {
       table: {
@@ -109,17 +101,19 @@ export class Pdfgen {
   }
 
   createRow(text, value, isGroupHeader, isSubComponent) {
-    let colSpan;
-    let style = [];
-    if (isGroupHeader) {
-      colSpan = 2;
-      style = ["groupHeader"];
-    }
-    if (isSubComponent) {
-      style = [...style, "subComponent"];
+    if (!isGroupHeader && !isSubComponent) {
+      return [text, value];
     }
 
-    return [{ text, style, colSpan }, value];
+    const textObject = { text, style: [] };
+    if (isGroupHeader) {
+      textObject.colSpan = 2;
+      textObject.style.push("groupHeader");
+    }
+    if (isSubComponent) {
+      textObject.style.push("subComponent");
+    }
+    return [textObject, value];
   }
 
   componentsToBody(components = [], areSubComponents = false) {
@@ -152,29 +146,6 @@ export class Pdfgen {
     return [...pdfObject, ...tables];
   }
 
-  generateHeaderAndTable(panel, content) {
-    const dataTable = this.createTable();
-    panel.components.forEach((component) => {
-      this.handleComponent(component, dataTable.body, this.submission.data);
-    });
-    if (dataTable.body.length === 0) {
-      return;
-    } else {
-      content.push({ text: panel.title, style: "subHeader" });
-      content.push({ table: dataTable, style: "panelTable" });
-    }
-  }
-
-  generateTableForComponentsOutsidePanels(rest, content) {
-    const dataTable = this.createTable();
-    rest.forEach((component) => {
-      this.handleComponent(component, dataTable.body, this.submission.data);
-    });
-    if (dataTable.body.length) {
-      content.push({ table: dataTable, style: "panelTable" });
-    }
-  }
-
   generateContentFromSubmission() {
     let result = this.generateFirstPart();
     return this.generateLastPart(result);
@@ -182,26 +153,18 @@ export class Pdfgen {
 
   generateLastPart(result) {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
-    result.push({ text: `Skjemaet ble opprettet ${datoTid}` });
-    result.push({
-      text: `Skjemaversjon: ${this.gitVersion}`,
-    });
-    return result;
+    return [...result, { text: `Skjemaet ble opprettet ${datoTid}` }, { text: `Skjemaversjon: ${this.gitVersion}` }];
   }
 
   generateFirstPart() {
     const formSummaryObject = createFormSummaryObject(this.form, this.submission.data);
-    const pdfObject = this.mapFormSummaryObjectToPdf(formSummaryObject, [
-      this.header(),
-      { text: " ", style: "ingress" },
-    ]);
 
-    let result = [this.header(), { text: " ", style: "ingress" }];
-    const rest = this.form.components.filter((component) => component.type !== "panel");
-    this.generateTableForComponentsOutsidePanels(rest, result);
-    const panels = this.form.components.filter((component) => component.type === "panel");
-    panels.forEach((panel) => this.generateHeaderAndTable(panel, result)); // her er general case for hvert panel
-    return result;
+    const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
+    const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));
+    const pdfObjectBase = [this.header(), { text: " ", style: "ingress" }];
+    const startOfPdfObject =
+      homelessComponents.length > 0 ? [...pdfObjectBase, homelessComponentsTable] : pdfObjectBase;
+    return this.mapFormSummaryObjectToPdf(formSummaryObject, startOfPdfObject);
   }
 
   doGenerateDocDefinition(content) {
@@ -219,99 +182,6 @@ export class Pdfgen {
 
   header() {
     return { text: this.form.title, style: "header" };
-  }
-
-  formatValue(component, value) {
-    switch (component.type) {
-      case "radiopanel":
-      case "radio": {
-        const valueObject = component.values.find((valueObject) => valueObject.value === value);
-        if (!valueObject) {
-          throw new InvalidValue(`'${value}' is not in ${JSON.stringify(component.values)}`);
-        }
-        return valueObject.label;
-      }
-      case "signature": {
-        return "rendering signature not supported";
-      }
-      case "navDatepicker": {
-        const date = new Date(value);
-        return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
-      }
-      case "navCheckbox": {
-        return value === "ja" ? "Ja" : "Nei";
-      }
-      default:
-        return value;
-    }
-  }
-
-  handleComponent(component, dataTableBody, submissionData, style = {}) {
-    if (component.input) {
-      const value = submissionData[component.key];
-      // TODO: as shown here if the component is not submitted this is something that only the component knows. Delegate to component
-      if (value === undefined || value === "") {
-        // TODO: burde vi generere pdf for feltet hvis det er required????
-        return;
-      }
-      switch (component.type) {
-        case "container": {
-          component.components.forEach((subComponent) => {
-            // TODO: must check if component is input
-            // TODO: we don't handle further recursion
-            const subValue = value[subComponent.key];
-            if (subValue === undefined) {
-              return;
-            }
-            dataTableBody.push([subComponent.label, this.formatValue(subComponent, subValue)]);
-          });
-          break;
-        }
-        case "button":
-          return;
-        case "datagrid": {
-          dataTableBody.push([{ text: `${component.label}`, style: "groupHeader", colSpan: 2 }, " "]);
-          value.forEach((dataGridRow) => {
-            if (component.rowTitle) {
-              dataTableBody.push([
-                {
-                  text: `${component.rowTitle}`,
-                  style: ["groupHeader", "subComponent"],
-                  colSpan: 2,
-                },
-                " ",
-              ]);
-            }
-            component.components.forEach((subComponent) =>
-              this.handleComponent(subComponent, dataTableBody, dataGridRow, { style: "subComponent" })
-            );
-            if (!component.rowTitle) {
-              dataTableBody.push([{ text: " ", colSpan: 2 }]);
-            }
-          });
-          return;
-        }
-        default:
-          dataTableBody.push([{ text: component.label, ...style }, this.formatValue(component, value)]);
-      }
-    } else if (component.type === "navSkjemagruppe") {
-      dataTableBody.push([{ text: component.legend, style: "groupHeader", colSpan: 2 }, ""]);
-      component.components.forEach((subComponent) =>
-        this.handleComponent(subComponent, dataTableBody, submissionData, { style: "subComponent" })
-      );
-    } else if (component.components) {
-      component.components.forEach((subComponent) => this.handleComponent(subComponent, dataTableBody, submissionData));
-    }
-  }
-
-  createTable() {
-    return {
-      // headers are automatically repeated if the table spans over multiple pages
-      // you can declare how many rows should be treated as headers
-      headerRows: 0,
-      widths: ["*", "*"],
-      body: [],
-    };
   }
 }
 

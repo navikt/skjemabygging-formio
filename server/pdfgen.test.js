@@ -230,12 +230,12 @@ describe("generating doc definition", () => {
     const tableDef = setupDocDefinitionContent(submission, createForm())[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
-    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // submit button is removed
     expect(tableData).toEqual([
-      [{ text: "Tekstfelt" }, "dfghjk"],
-      [{ text: "2345t" }, "tcfghj"],
-      [{ text: "Beløp" }, 3456],
+      ["Tekstfelt", "dfghjk"],
+      ["2345t", "tcfghj"],
+      ["Beløp", 3456],
     ]);
+    expect(tableData).toHaveLength(Object.keys(submission.data).length - 1); // submit button is removed
   });
 
   it("does not render inputs with empty or undefined submission", () => {
@@ -245,8 +245,8 @@ describe("generating doc definition", () => {
 
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
+    expect(tableData).toEqual([["Beløp", 3456]]);
     expect(tableData).toHaveLength(Object.keys(submission.data).length - 3); // submit button, T, and tekstfelt are removed
-    expect(tableData).toEqual([[{ text: "Beløp" }, 3456]]);
   });
 
   it("generates a table for each panel in a complex form", () => {
@@ -259,10 +259,10 @@ describe("generating doc definition", () => {
       ["Fornavn", "Syver"],
       ["Etternavn", "Enstad"],
       ["Fødselsnummer / D-nummer", "123456 78911"],
-      [{ text: "Har du hatt andre inntekter?" }, "Nei"],
-      [{ text: "Inntekt" }, 0],
-      [{ text: "Sum" }, 10],
-      [{ text: "Tall" }, 10],
+      ["Har du hatt andre inntekter?", "Nei"],
+      ["Inntekt", 0],
+      ["Sum", 10],
+      ["Tall", 10],
     ]);
     expect(tableDefs[1].table.body).toEqual([["Sum", 3702]]);
   });
