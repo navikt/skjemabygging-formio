@@ -19,10 +19,6 @@ const fonts = {
   },
 };
 
-class InvalidValue extends Error {
-  name = "InvalidValue";
-}
-
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
@@ -186,7 +182,7 @@ export class Pdfgen {
 }
 
 export class PdfgenPapir extends Pdfgen {
-  generateContentFromSubmission(submission, form, gitVersion, stream) {
+  generateContentFromSubmission() {
     let result = this.generateFirstPart();
     // her skal underskrift inn
     const underskriftsFelter = [
