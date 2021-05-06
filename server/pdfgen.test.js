@@ -304,6 +304,128 @@ describe("generating doc definition", () => {
     expect(tableData).not.toEqual(expect.arrayContaining([expect.arrayContaining(["Send inn", true])]));
   });
 
+  describe("NavSkjemaGruppe", () => {
+    const createFormDefinitionWithNavSkjemaGruppe = () => ({
+      name: "Form with navSkjemaGruppe",
+      components: [
+        {
+          type: "navSkjemagruppe",
+          key: "navSkjemagruppe",
+          label: "navSkjemaGruppe-Label (should not be displayed)",
+          legend: "navSkjemaGruppe-Legend",
+          input: true,
+          components: [
+            {
+              label: "Textfield inside NavSkjemaGruppe",
+              key: "fieldInsideNavSkjemaGruppe",
+              type: "textfield",
+              input: true,
+            },
+          ],
+        },
+        {
+          label: "Textfield outside NavSkjemaGruppe",
+          key: "fieldOutsideNavSkjemaGruppe",
+          type: "textfield",
+          input: true,
+        },
+      ],
+    });
+
+    it("displays legend and content of navSkjemagruppe", () => {
+      const formDefinition = createFormDefinitionWithNavSkjemaGruppe();
+      const submission = {
+        data: {
+          fieldInsideNavSkjemaGruppe: "Value for field inside skjemaGruppe",
+          fieldOutsideNavSkjemaGruppe: "Value for field outside of skjemaGruppe",
+        },
+      };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      expect(tableDef.table.body).toEqual([
+        [{ text: "navSkjemaGruppe-Legend", colSpan: 2, style: ["groupHeader"] }, ""],
+        [{ text: "Textfield inside NavSkjemaGruppe", style: ["subComponent"] }, "Value for field inside skjemaGruppe"],
+        ["Textfield outside NavSkjemaGruppe", "Value for field outside of skjemaGruppe"],
+      ]);
+    });
+
+    it("does not display label for navSkjemaGruppe with empty submission", () => {
+      const formDefinition = createFormDefinitionWithNavSkjemaGruppe();
+      const submission = { data: { fieldOutsideNavSkjemaGruppe: "Value for field outside of skjemaGruppe" } };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      expect(tableDef.table.body).toEqual([
+        ["Textfield outside NavSkjemaGruppe", "Value for field outside of skjemaGruppe"],
+      ]);
+    });
+  });
+
+  describe("DataGrid", () => {
+    const createSubmissionForDatagridRows = () => ({
+      data: { datagrid: [{ fieldInsideDataGrid: "SomeValue" }, { fieldInsideDataGrid: "AnotherValue" }] },
+    });
+
+    const datagridComponent = {
+      type: "datagrid",
+      key: "datagrid",
+      label: "DataGrid",
+      input: true,
+      components: [
+        {
+          label: "Tekstfelt",
+          key: "fieldInsideDataGrid",
+          type: "textfield",
+          input: true,
+        },
+      ],
+    };
+    const createFormDefinitionWithDatagrid = () => ({
+      name: "Datagrid",
+      components: [
+        datagridComponent,
+        { label: "TextFieldOutsideOfDataGrid", key: "fieldOutsideDataGrid", type: "textfield", input: true },
+      ],
+    });
+
+    const createFormDefinitionWithDatagridHavingRowTitle = () => ({
+      name: "Datagrid with rowTitle",
+      components: [{ ...datagridComponent, rowTitle: "DatagridRowTitle" }],
+    });
+
+    it("is not displayed when submission is empty", () => {
+      const formDefinition = createFormDefinitionWithDatagrid();
+      const submission = { data: { datagrid: [], fieldOutsideDataGrid: "ValueForFieldOutsideDataGrid" }, metadata: {} };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      expect(tableDef.table.body).toEqual([["TextFieldOutsideOfDataGrid", "ValueForFieldOutsideDataGrid"]]);
+    });
+
+    it("displays all datagrid rows with row title", () => {
+      const formDefinition = createFormDefinitionWithDatagridHavingRowTitle();
+      const submission = createSubmissionForDatagridRows();
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([
+        [{ text: "DataGrid", style: ["groupHeader"], colSpan: 2 }, ""],
+        [{ text: "DatagridRowTitle", colSpan: 2, style: ["groupHeader", "subComponent"] }, ""],
+        [{ text: "Tekstfelt", style: ["subComponent"] }, "SomeValue"],
+        [{ text: "DatagridRowTitle", colSpan: 2, style: ["groupHeader", "subComponent"] }, ""],
+        [{ text: "Tekstfelt", style: ["subComponent"] }, "AnotherValue"],
+      ]);
+    });
+
+    it("displays all datagrid rows with empty row below it, when datagrid has no row title", () => {
+      const formDefinition = createFormDefinitionWithDatagrid();
+      const submission = createSubmissionForDatagridRows();
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([
+        [{ text: "DataGrid", style: ["groupHeader"], colSpan: 2 }, ""],
+        [{ text: "Tekstfelt", style: ["subComponent"] }, "SomeValue"],
+        [{ text: " ", colSpan: 2 }],
+        [{ text: "Tekstfelt", style: ["subComponent"] }, "AnotherValue"],
+        [{ text: " ", colSpan: 2 }],
+      ]);
+    });
+  });
+
   describe("PdfgenPapir", () => {
     it("generates with signature field", () => {
       const submission = { data: {}, metadata: {} };
