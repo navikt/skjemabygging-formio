@@ -64,7 +64,7 @@ const RadioPanelGruppeWrapper = class extends Component {
   }
 };
 
-export default class RadioPanelGruppeComponent extends FormioReactComponent {
+class RadioPanelGruppeComponent extends FormioReactComponent {
   input = React.createRef();
 
   /**
@@ -137,3 +137,6 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
     }
   }
 }
+
+export { RadioPanelGruppeWrapper };
+export default RadioPanelGruppeComponent;
