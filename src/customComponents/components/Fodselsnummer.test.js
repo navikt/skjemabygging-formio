@@ -1,6 +1,5 @@
 import Fodselsnummer, { computeK1, computeK2 } from "./Fodselsnummer";
 import Harness from "../../../test/harness";
-import comp2 from "./fixtures/comp2";
 import { fodselsNummerDNummerSchema } from "../../Forms/FormBuilderOptions";
 import _ from "lodash";
 
