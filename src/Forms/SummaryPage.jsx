@@ -106,7 +106,11 @@ export function SummaryPage({ form, submission, formUrl }) {
           </div>
           <div className="list-inline-item">
             <Link
-              className="btn btn-secondary btn-wizard-nav-previous"
+              className={`btn ${
+                form.properties.hasPapirInnsendingOnly
+                  ? "btn-primary btn-wizard-nav-next"
+                  : "btn-secondary btn-wizard-nav-previous"
+              }`}
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
             >
