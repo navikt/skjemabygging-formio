@@ -5,6 +5,25 @@
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
+//Stegindikator -- start
+.stegindikator__steg-inner--aktiv {
+  &:focus {
+    outline: none;
+
+    .stegindikator__steg-num {
+      box-shadow: 0 0 0 3px @fokusFarge;
+    }
+
+    .stegindikator__steg-label {
+      color: white;
+      background: @fokusFarge;
+      text-decoration: none;
+    }
+  }
+}
+//Stegindikator -- slutt
+
+
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
@@ -31,7 +50,7 @@
 //Select -- slutt
 
 //RadioPanel -- start
-.radioPanel{
+.radioPanel {
   .input--xxl();
 }
 //RadioPanel -- slutt
@@ -59,7 +78,6 @@
 
 .skjemagruppe__description {
   .typo-normal-mixin();
-
   margin-bottom: 1rem;
 }
 
@@ -132,9 +150,7 @@
 .list-inline {
   display: flex;
   flex-wrap: wrap;
-  @media (max-width: 540px) {
-    flex-direction: column-reverse;
-  }
+  justify-content: center;
 }
 .list-inline-item {
   margin: 0.5rem;
@@ -143,11 +159,11 @@
 .knapp--fullbredde,
 .btn-wizard-nav-next,
 .btn-wizard-nav-previous,
-.btn-wizard-nav-cancel,
 .btn-wizard-nav-submit {
   @media (max-width: 540px) {
     width: 100%;
   }
+  min-width: 14rem;
   .knappbase-mixin(@font-family);
   .knappramme-mixin(@navBla, @navDypBla, @white);
   .knappdisabled-mixin();
@@ -161,22 +177,10 @@
 }
 
 .btn-wizard-nav-cancel {
-  .knappfylt-mixin(@redError, @white, darken(@redError, 5%), lighten(@redError, 5%)); //knapp--fare
+  .lenke-mixin();
+  border: none;
 }
 //NAV-knappestyling -- slutt
 
-main:focus {
-  outline: none;
-}
 
-.margin-bottom-default {
-  margin-bottom: 1rem;
-}
 
-.margin-bottom-large {
-  margin-bottom: 4rem;
-}
-
-.margin-left-default {
-  margin-left: 1rem;
-}

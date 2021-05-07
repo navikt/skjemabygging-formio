@@ -33,6 +33,7 @@ import message from "./message";
 import multipleMasksInput from "./multipleMasksInput";
 import multiValueRow from "./multiValueRow";
 import multiValueTable from "./multiValueTable";
+import navSkjemagruppe from "./navSkjemagruppe";
 import panel from "./panel";
 import pdf from "./pdf";
 import pdfBuilder from "./pdfBuilder";
@@ -102,6 +103,7 @@ export default {
   multipleMasksInput,
   multiValueRow,
   multiValueTable,
+  "fieldset-navSkjemagruppe": navSkjemagruppe,
   panel,
   pdf,
   pdfBuilder,
