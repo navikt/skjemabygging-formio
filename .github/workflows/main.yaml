@@ -76,14 +76,14 @@ jobs:
         run: |
           cat > .nais/prod-vars.yaml <<EOF
           ingresses:
-            - https://skjemabygging-formio.intern.nav.no
+            - https://skjemabygging-formio.labs.nais.io
           image: $IMAGE
           githubGitRef: "master"
           EOF
-      - name: "Deploy to prod-gcp"
+      - name: "Deploy to labs-gcp"
         uses: "nais/deploy/actions/deploy@v1"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "prod-gcp"
+          CLUSTER: "labs-gcp"
           RESOURCE: ".nais/nais.yaml"
           VARS: ".nais/prod-vars.yaml"

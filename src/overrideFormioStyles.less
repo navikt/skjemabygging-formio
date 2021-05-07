@@ -5,6 +5,25 @@
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
 
+//Stegindikator -- start
+.stegindikator__steg-inner--aktiv {
+  &:focus {
+    outline: none;
+
+    .stegindikator__steg-num {
+      box-shadow: 0 0 0 3px @fokusFarge;
+    }
+
+    .stegindikator__steg-label {
+      color: white;
+      background: @fokusFarge;
+      text-decoration: none;
+    }
+  }
+}
+//Stegindikator -- slutt
+
+
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
@@ -59,7 +78,6 @@
 
 .skjemagruppe__description {
   .typo-normal-mixin();
-
   margin-bottom: 1rem;
 }
 
@@ -164,22 +182,5 @@
 }
 //NAV-knappestyling -- slutt
 
-main:focus {
-  outline: none;
-}
 
-.margin-bottom-small {
-  margin-bottom: 0.5rem;
-}
 
-.margin-bottom-default {
-  margin-bottom: 1rem;
-}
-
-.margin-bottom-large {
-  margin-bottom: 4rem;
-}
-
-.margin-left-default {
-  margin-left: 1rem;
-}
