@@ -12,7 +12,7 @@ export default {
   navDatepicker: NavDatepicker,
   radiopanel: RadioPanelGruppeComponent,
   navCheckbox: CheckboxComponent,
-  navDataGrid: DataGrid,
+  datagrid: DataGrid,
   textfield: TextField,
   number: Number,
   navSkjemagruppe: NavSkjemagruppe,

@@ -35,6 +35,7 @@ export const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   fieldSize: "input--s",
   input: true,
   spellcheck: false,
+  dataGridLabel: true,
   validateOn: "blur",
   validate: {
     custom: "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
@@ -48,6 +49,7 @@ export const firstNameSchema = (keyPostfix = "") => ({
   key: `fornavn${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   clearOnHide: true,
   validate: {
     required: true,
@@ -60,6 +62,7 @@ export const surnameSchema = (keyPostfix = "") => ({
   key: `etternavn${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   clearOnHide: true,
   validate: {
     required: true,
@@ -86,6 +89,7 @@ export const gateadresseSchema = (keyPostfix = "") => ({
   key: `gateadresse${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -99,6 +103,7 @@ export const postnrSchema = (keyPostfix = "") => ({
   key: `postnr${keyPostfix}`,
   fieldSize: "input--xs",
   input: true,
+  dataGridLabel: true,
   spellcheck: false,
   validateOn: "blur",
   clearOnHide: true,
@@ -115,6 +120,7 @@ export const utenlandskPostkodeSchema = (keyPostfix = "") => ({
   key: `utenlandskPostkode${keyPostfix}`,
   fieldSize: "input--m",
   input: true,
+  dataGridLabel: true,
   spellcheck: false,
   validateOn: "blur",
   clearOnHide: true,
@@ -129,6 +135,7 @@ export const poststedSchema = (keyPostfix = "") => ({
   key: `poststed${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   clearOnHide: true,
   validateOn: "blur",
   validate: {
@@ -142,6 +149,7 @@ export const landSchema = (keyPostfix = "") => ({
   key: `land${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -155,6 +163,7 @@ export const epostSchema = () => ({
   key: `epost`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   validateOn: "blur",
   clearOnHide: true,
   spellcheck: false,
@@ -169,6 +178,7 @@ export const telefonSchema = (keyPostfix = "") => ({
   key: `telefonnummer${keyPostfix}`,
   fieldSize: "input--s",
   input: true,
+  dataGridLabel: true,
   inputMask: false,
   spellcheck: false,
   validateOn: "blur",
@@ -184,6 +194,7 @@ export const statsborgerskapSchema = (keyPostfix = "") => ({
   key: `statsborgerskap${keyPostfix}`,
   fieldSize: "input--xxl",
   input: true,
+  dataGridLabel: true,
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -356,6 +367,7 @@ const builderPalett = {
           input: true,
           currency: "nok",
           spellcheck: false,
+          dataGridLabel: true,
           clearOnHide: true,
           validate: {
             required: true,
@@ -372,6 +384,7 @@ const builderPalett = {
           key: "kontoNummer",
           fieldSize: "input--s",
           input: true,
+          dataGridLabel: true,
           spellcheck: false,
           validateOn: "blur",
           clearOnHide: true,
@@ -397,6 +410,7 @@ const builderPalett = {
           key: "orgNr",
           fieldSize: "input--s",
           input: true,
+          dataGridLabel: true,
           spellcheck: false,
           validateOn: "blur",
           clearOnHide: true,
@@ -417,6 +431,7 @@ const builderPalett = {
           key: "arbeidsgiver",
           fieldSize: "input--xxl",
           input: true,
+          dataGridLabel: true,
           validateOn: "blur",
           clearOnHide: true,
           validate: {
@@ -438,6 +453,7 @@ const builderPalett = {
         schema: {
           type: "navDatepicker",
           label: "Dato (dd.mm.åååå)",
+          dataGridLabel: true,
           validateOn: "blur",
           validate: {
             required: true,
@@ -455,6 +471,7 @@ const builderPalett = {
           key: "tid",
           fieldSize: "input--s",
           input: true,
+          dataGridLabel: true,
           spellcheck: false,
           clearOnHide: true,
           validate: {
@@ -472,6 +489,7 @@ const builderPalett = {
           type: "day",
           key: "manedAr",
           input: true,
+          dataGridLabel: true,
           clearOnHide: true,
           validate: {
             required: true,
@@ -516,6 +534,7 @@ const builderPalett = {
           input: true,
           clearOnHide: true,
           fieldSize: "input--xxl",
+          dataGridLabel: true,
           validate: {
             required: true,
           },
@@ -531,6 +550,7 @@ const builderPalett = {
           key: "textarea",
           fieldSize: "input--xxl",
           input: true,
+          dataGridLabel: true,
           clearOnHide: true,
           validate: {
             required: true,
@@ -547,6 +567,7 @@ const builderPalett = {
           key: "number",
           fieldSize: "input--m",
           input: true,
+          dataGridLabel: true,
           spellcheck: false,
           clearOnHide: true,
           validate: {
@@ -789,14 +810,15 @@ const builderPalett = {
         icon: "th",
         group: "data",
         documentation: "/userguide/#datagrid",
-        key: "navDataGrid",
+        key: "datagrid",
         weight: 30,
         schema: {
           label: "Data Grid",
-          key: "navDataGrid",
-          type: "navDataGrid",
+          key: "datagrid",
+          type: "datagrid",
           clearOnHide: true,
           input: true,
+          isNavDataGrid: true,
           tree: true,
           components: [],
         },
