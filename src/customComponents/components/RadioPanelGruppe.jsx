@@ -5,6 +5,8 @@ import { RadioPanelGruppe } from "nav-frontend-skjema";
 import radioEditForm from "formiojs/components/radio/Radio.form";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
+import { descriptionPositionField } from "./fields/descriptionPositionField";
+import { guid } from "../../util/guid";
 
 /**
  * The wrapper for our custom React component
@@ -28,6 +30,12 @@ const RadioPanelGruppeWrapper = class extends Component {
 
   render() {
     const component = this.props.component;
+    const { descriptionPosition } = component;
+    let renderDescriptionAboveLabel = component.description && descriptionPosition === "above";
+    let descriptionId;
+    if (renderDescriptionAboveLabel) {
+      descriptionId = guid();
+    }
     const radios = component.values.map(({ label, value }, index) => ({
       label,
       value,
@@ -36,20 +44,27 @@ const RadioPanelGruppeWrapper = class extends Component {
       radioRef: index === 0 ? this.props.radioRef : undefined,
     }));
     return (
-      <RadioPanelGruppe
-        aria-describedby={`${component.key}-error`}
-        radios={radios}
-        checked={this.state.value}
-        legend={component.validate.required ? component.label : `${component.label} (valgfritt)`}
-        description={component.description}
-        name={`data[${component.key}][${component.id}]`}
-        onChange={(event) => this.setValue(event.target.value)}
-      />
+      <>
+        {renderDescriptionAboveLabel && (
+          <p className="skjemagruppe__description" id={descriptionId}>
+            {component.description}
+          </p>
+        )}
+        <RadioPanelGruppe
+          aria-describedby={descriptionId || `${component.key}-error`}
+          radios={radios}
+          checked={this.state.value}
+          legend={component.validate.required ? component.label : `${component.label} (valgfritt)`}
+          description={renderDescriptionAboveLabel ? undefined : component.description}
+          name={`data[${component.key}][${component.id}]`}
+          onChange={(event) => this.setValue(event.target.value)}
+        />
+      </>
     );
   }
 };
 
-export default class RadioPanelGruppeComponent extends FormioReactComponent {
+class RadioPanelGruppeComponent extends FormioReactComponent {
   input = React.createRef();
 
   /**
@@ -79,7 +94,14 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
    * Defines the settingsForm when editing a component in the builder.
    */
   static editForm(...extend) {
-    return radioEditForm(...extend);
+    return radioEditForm([
+      ...extend,
+      {
+        label: "Display",
+        key: "display",
+        components: [descriptionPositionField],
+      },
+    ]);
   }
 
   focus() {
@@ -115,3 +137,6 @@ export default class RadioPanelGruppeComponent extends FormioReactComponent {
     }
   }
 }
+
+export { RadioPanelGruppeWrapper };
+export default RadioPanelGruppeComponent;

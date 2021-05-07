@@ -5,6 +5,7 @@ import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
 
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
+import { descriptionPositionField } from "./fields/descriptionPositionField";
 
 /**
  * The wrapper for our custom React component
@@ -71,7 +72,14 @@ export default class CheckboxComponent extends FormioReactComponent {
    * Defines the settingsForm when editing a component in the builder.
    */
   static editForm(...extend) {
-    return CheckboxEditForm([...extend]);
+    return CheckboxEditForm([
+      ...extend,
+      {
+        label: "Display",
+        key: "display",
+        components: [descriptionPositionField],
+      },
+    ]);
   }
 
   focus() {
