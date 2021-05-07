@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import { AppConfigContext } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
@@ -82,7 +81,6 @@ const FormSummary = ({ form, submission }) => {
 
 export function SummaryPage({ form, submission, formUrl }) {
   let { url } = useRouteMatch();
-  const { featureToggles } = useContext(AppConfigContext);
   const { loggSkjemaStegFullfort } = useAmplitude();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
@@ -106,26 +104,30 @@ export function SummaryPage({ form, submission, formUrl }) {
               Rediger svar
             </Link>
           </div>
-          {featureToggles.sendPaaPapir && (
+          <div className="list-inline-item">
+            <Link
+              className={`btn ${
+                form.properties.hasPapirInnsendingOnly
+                  ? "btn-primary btn-wizard-nav-next"
+                  : "btn-secondary btn-wizard-nav-previous"
+              }`}
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+            >
+              {form.properties.hasPapirInnsendingOnly ? "Gå videre" : "Send i posten"}
+            </Link>
+          </div>
+          {!form.properties.hasPapirInnsendingOnly && (
             <div className="list-inline-item">
               <Link
-                className="btn btn-secondary btn-wizard-nav-previous"
+                className="btn btn-primary btn-wizard-nav-next wizard-button"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+                to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
               >
-                Send i posten
+                Send inn digitalt
               </Link>
             </div>
           )}
-          <div className="list-inline-item">
-            <Link
-              className="btn btn-primary btn-wizard-nav-next wizard-button"
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
-            >
-              {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
-            </Link>
-          </div>
         </nav>
       </main>
     </SummaryContent>
