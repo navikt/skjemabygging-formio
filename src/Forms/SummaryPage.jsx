@@ -106,24 +106,22 @@ export function SummaryPage({ form, submission, formUrl }) {
               Rediger svar
             </Link>
           </div>
-          {featureToggles.sendPaaPapir && (
-            <div className="list-inline-item">
-              <Link
-                className="btn btn-secondary btn-wizard-nav-previous"
-                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
-              >
-                Send i posten
-              </Link>
-            </div>
-          )}
+          <div className="list-inline-item">
+            <Link
+              className="btn btn-secondary btn-wizard-nav-previous"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+            >
+              Send i posten
+            </Link>
+          </div>
           <div className="list-inline-item">
             <Link
               className="btn btn-primary btn-wizard-nav-next wizard-button"
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
             >
-              {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
+              Send inn digitalt
             </Link>
           </div>
         </nav>
