@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayoutWithContext } from "../../components/AppLayout";
 import { Link } from "react-router-dom";
 
 const useTranslationsListStyles = makeStyles({

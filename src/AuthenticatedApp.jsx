@@ -9,8 +9,8 @@ import { TranslationsListPage } from "./translations/TranslationsListPage";
 import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
 //import EditTranslationPage from "./translations/EditTranslationPage";
-import { GlobalTranslationsListPage } from "./translations/GlobalTranslationsListPage";
-import GlobalTranslationsPage from "./translations/GlobalTranslationsPage";
+import { GlobalTranslationsListPage } from "./translations/global/GlobalTranslationsListPage";
+import GlobalTranslationsPage from "./translations/global/GlobalTranslationsPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
