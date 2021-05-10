@@ -110,7 +110,16 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
-export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol, translations }) => {
+export const AppLayout = ({
+  children,
+  userAlerter,
+  leftCol,
+  mainCol,
+  navBarProps,
+  rightCol,
+  translations,
+  currentLanguage,
+}) => {
   const alertComponent = userAlerter.alertComponent();
   return (
     <>
@@ -126,9 +135,11 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
         )}
       </NoScrollWrapper>
       <LanguageSelector
+        currentLanguage={currentLanguage}
         translations={
           translations &&
           translations.map((translation) => ({
+            languageCode: translation,
             optionLabel: languagesInOriginalLanguage[translation],
             href: `?lang=${translation}`,
           }))

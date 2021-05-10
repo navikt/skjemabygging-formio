@@ -70,16 +70,19 @@ const useLanguageSelectorStyling = makeStyles({
   },
 });
 
-const LanguageSelector = ({ translations = [] }) => {
+const LanguageSelector = ({ currentLanguage, translations = [] }) => {
   const classes = useLanguageSelectorStyling();
   console.log("LanguageSelector", translations);
   if (translations.length === 0) {
     return null;
   }
+  const currentTranslationObject =
+    currentLanguage && translations.find((translation) => translation.languageCode === currentLanguage);
+  const label = currentTranslationObject ? currentTranslationObject.optionLabel : "Språk/Language";
   return (
     <div className={classes.languageToggle}>
       <div className={classes.languageToggleWrapper}>
-        <Select className={classes.languageSelect} label="Språk/Language" options={translations} />
+        <Select className={classes.languageSelect} label={label} options={translations} />
       </div>
     </div>
   );

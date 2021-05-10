@@ -116,6 +116,7 @@ const TranslationsByFormPage = ({
   const languages = supportedLanguages
     .filter((languageCode) => languageCode !== "nb-NO")
     .map((languageCode) => ({
+      languageCode,
       href: `/translation/${path}/${languageCode}`,
       optionLabel: `${availableTranslations.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
         languagesInNorwegian[languageCode]
@@ -133,6 +134,7 @@ const TranslationsByFormPage = ({
       leftCol={
         <>
           <LanguageSelector
+            currentLanguage={languageCode}
             translations={languages.sort((lang1, lang2) =>
               lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
             )}

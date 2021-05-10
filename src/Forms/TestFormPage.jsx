@@ -33,6 +33,7 @@ export function TestFormPage({
   }, [currentLanguage]);
   return (
     <AppLayoutWithContext
+      currentLanguage={currentLanguage}
       translations={availableTranslations}
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
       mainCol={
