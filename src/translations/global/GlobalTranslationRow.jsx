@@ -11,7 +11,13 @@ const useTranslationRowStyles = makeStyles({
   },
 });
 
-const GlobalTranslationRow = ({ originalText, translatedText, languageCode, updateTranslation }) => {
+const GlobalTranslationRow = ({
+  originalText,
+  translatedText,
+  languageCode,
+  updateTranslation,
+  updateOriginalText,
+}) => {
   const classes = useTranslationRowStyles();
   return (
     <div className={classes.root}>
@@ -22,7 +28,7 @@ const GlobalTranslationRow = ({ originalText, translatedText, languageCode, upda
         value={originalText}
         onChange={(event) => {
           if (event.target.value && event.target.value !== "") {
-            updateTranslation(event.target.value, translatedText, languageCode);
+            updateOriginalText(event.target.value, originalText);
           }
         }}
       />
@@ -33,7 +39,7 @@ const GlobalTranslationRow = ({ originalText, translatedText, languageCode, upda
         value={translatedText}
         onChange={(event) => {
           if (event.target.value && event.target.value !== "") {
-            updateTranslation(originalText, event.target.value, languageCode);
+            updateTranslation(originalText, event.target.value);
           }
         }}
       />

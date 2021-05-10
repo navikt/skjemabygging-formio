@@ -4,6 +4,7 @@ import LanguageSelector from "../../components/LanguageSelector";
 import { languagesInNorwegian, supportedLanguages } from "../../hooks/useLanguages";
 import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
+import { Knapp } from "nav-frontend-knapper";
 
 const GlobalTranslationsPage = ({
   deleteLanguage,
@@ -18,12 +19,37 @@ const GlobalTranslationsPage = ({
     (state, action) => {
       switch (action.type) {
         case "loadNewLanguage":
-          return action.payload.translations;
+          return Object.keys(action.payload.translations).map((originalText) => ({
+            originalText,
+            translatedText: action.payload.translations[originalText].value,
+          }));
+        case "updateOriginalText":
+          return state.map((translationObject) => {
+            if (translationObject.originalText === action.payload.oldOriginalText) {
+              return {
+                ...translationObject,
+                originalText: action.payload.newOriginalText,
+              };
+            } else {
+              return translationObject;
+            }
+          });
         case "updateTranslation":
-          return {
+          return state.map((translationObject) => {
+            if (translationObject.originalText === action.payload.originalText) {
+              return action.payload;
+            } else {
+              return translationObject;
+            }
+          });
+        case "addNewTranslation":
+          return [
             ...state,
-            [action.payload.originalText]: action.payload.translatedText,
-          };
+            {
+              originalText: "",
+              translatedText: "",
+            },
+          ];
         default:
           return state;
       }
@@ -98,24 +124,41 @@ const GlobalTranslationsPage = ({
       }
     >
       <form>
-        {Object.keys(currentTranslation).map((originalText) => (
+        {currentTranslation.map(({ originalText, translatedText }) => (
           <GlobalTranslationRow
             originalText={originalText}
-            translatedText={currentTranslation[originalText].value}
+            translatedText={translatedText}
             languageCode={languageCode}
-            updateTranslation={(originalText, translatedText, languageCode) =>
+            updateOriginalText={(newOriginalText, oldOriginalText) =>
+              dispatch({
+                type: "updateOriginalText",
+                payload: {
+                  newOriginalText,
+                  oldOriginalText,
+                },
+              })
+            }
+            updateTranslation={(originalText, translatedText) =>
               dispatch({
                 type: "updateTranslation",
                 payload: {
                   originalText,
                   translatedText,
-                  languageCode,
                 },
               })
             }
           />
         ))}
       </form>
+      <Knapp
+        onClick={() =>
+          dispatch({
+            type: "addNewTranslation",
+          })
+        }
+      >
+        Legg til ny tekst
+      </Knapp>
     </AppLayoutWithContext>
   );
 };
