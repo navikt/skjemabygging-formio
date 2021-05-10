@@ -9,7 +9,6 @@ import { TranslationsListPage } from "./translations/TranslationsListPage";
 import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
 //import EditTranslationPage from "./translations/EditTranslationPage";
-import { GlobalTranslationsListPage } from "./translations/global/GlobalTranslationsListPage";
 import GlobalTranslationsPage from "./translations/global/GlobalTranslationsPage";
 
 function AuthenticatedApp({ formio, store }) {
@@ -84,11 +83,6 @@ function AuthenticatedApp({ formio, store }) {
               />
             );
           }}
-        />
-        <Route
-          exact
-          path="/globalTranslations"
-          render={({ match }) => <GlobalTranslationsListPage {...match.params} loadLanguages={loadLanguages} />}
         />
 
         <Route path="/">
