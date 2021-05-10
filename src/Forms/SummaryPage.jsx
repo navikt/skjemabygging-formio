@@ -1,135 +1,86 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import { AppConfigContext } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
+import { createFormSummaryObject } from "../util/formSummaryUtil";
 
-function formatValue(component, value) {
-  switch (component.type) {
-    case "radiopanel":
-    case "radio":
-      const valueObject = component.values.find((valueObject) => valueObject.value === value);
-      if (!valueObject) {
-        console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
-        return "";
-      }
-      return valueObject.label;
-    case "signature": {
-      console.log("rendering signature not supported");
-      return "";
-    }
-    case "navDatepicker": {
-      if (!value) {
-        return "";
-      }
-      const date = new Date(value);
-      return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
-    }
-    case "navCheckbox": {
-      return value === "ja" ? "Ja" : "Nei";
-    }
-    default:
-      return value;
-  }
-}
-
-function filterNonFormContent(components, submission = []) {
-  return components.filter((component) => {
-    switch (component.type) {
-      case "content":
-      case "htmlelement":
-        return false;
-      case "container":
-        return filterNonFormContent(component.components, submission[component.key]).length > 0;
-      case "fieldset":
-      case "navSkjemagruppe":
-        return filterNonFormContent(component.components, submission).length > 0;
-      default:
-        return submission[component.key] !== "" && submission[component.key] !== undefined;
-    }
-  });
-}
-
-const FormSummaryField = ({ component, value }) => (
+const FormSummaryField = ({ label, value }) => (
   <>
-    <dt>{component.label}</dt>
-    <dd>{formatValue(component, value)}</dd>
+    <dt>{label}</dt>
+    <dd>{value}</dd>
   </>
 );
 
-const FormSummaryFieldset = ({ component, submission }) => (
+const FormSummaryFieldset = ({ label, components }) => (
   <div>
-    <dt>{component.legend}</dt>
+    <dt>{label}</dt>
     <dd>
       <dl className="margin-left-default">
-        <ComponentSummary components={component.components} submission={submission} />
+        <ComponentSummary components={components} />
       </dl>
     </dd>
   </div>
 );
 
-const DataGridSummary = ({ component, submission }) => (
+const DataGridSummary = ({ label, components }) => (
   <>
-    <dt>{component.label}</dt>
+    <dt>{label}</dt>
     <dd>
-      {submission[component.key].map((dataGridRowSubmission, rowIndex) => (
-        <div className="data-grid__row skjemagruppe" key={`${component.key}-${rowIndex}`}>
-          <p className="skjemagruppe__legend">{component.rowTitle}</p>
-          <dl>
-            <ComponentSummary components={component.components} submission={dataGridRowSubmission} />
-          </dl>
-        </div>
+      {components.map((component) => (
+        <DataGridRow key={component.key} label={component.label} components={component.components} />
       ))}
     </dd>
   </>
 );
 
-const ComponentSummary = ({ components, submission }) => {
-  return filterNonFormContent(components, submission).map((component) => {
-    if (component.type === "container") {
-      return (
-        <ComponentSummary
-          key={component.key}
-          components={component.components}
-          submission={submission[component.key]}
-        />
-      );
-    } else if (component.type === "fieldset" || component.type === "navSkjemagruppe") {
-      return <FormSummaryFieldset key={component.key} component={component} submission={submission} />;
-    } else if (component.type === "datagrid") {
-      return <DataGridSummary key={component.key} component={component} submission={submission} />;
+const DataGridRow = ({ label, components }) => (
+  <div className="data-grid__row skjemagruppe">
+    {label && <p className="skjemagruppe__legend">{label}</p>}
+    <dl>
+      <ComponentSummary components={components} />
+    </dl>
+  </div>
+);
+
+const PanelSummary = ({ label, components }) => (
+  <section className="margin-bottom-default wizard-page">
+    <Systemtittel tag="h3" className="margin-bottom-default">
+      {label}
+    </Systemtittel>
+    <dl>
+      <ComponentSummary components={components} />
+    </dl>
+  </section>
+);
+
+const ComponentSummary = ({ components }) => {
+  return components.map(({ type, key, label, components, value }) => {
+    if (type === "panel") {
+      return <PanelSummary key={key} label={label} components={components} />;
+    } else if (type === "fieldset" || type === "navSkjemagruppe") {
+      return <FormSummaryFieldset key={key} label={label} components={components} />;
+    } else if (type === "datagrid") {
+      return <DataGridSummary key={key} label={label} components={components} />;
     } else {
-      return <FormSummaryField key={component.key} component={component} value={submission[component.key]} />;
+      return <FormSummaryField key={key} label={label} value={value} />;
     }
   });
 };
 
 const FormSummary = ({ form, submission }) => {
-  return form.components.map((panel) => {
-    if (!panel.components || filterNonFormContent(panel.components, submission).length === 0) {
-      return null;
-    }
-    return (
-      <section key={panel.title} className="margin-bottom-default wizard-page">
-        <Systemtittel tag="h3" className="margin-bottom-default">
-          {panel.title}
-        </Systemtittel>
-        <dl>
-          <ComponentSummary components={panel.components} submission={submission} />
-        </dl>
-      </section>
-    );
-  });
+  const formSummaryObject = createFormSummaryObject(form, submission);
+  if (formSummaryObject.length === 0) {
+    return null;
+  }
+  return <ComponentSummary components={formSummaryObject} />;
 };
 
 export function SummaryPage({ form, submission, formUrl }) {
-  const resultForm = form.display === "wizard" ? { ...form, display: "form" } : form;
   let { url } = useRouteMatch();
-  const { featureToggles } = useContext(AppConfigContext);
   const { loggSkjemaStegFullfort } = useAmplitude();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
@@ -146,33 +97,37 @@ export function SummaryPage({ form, submission, formUrl }) {
           Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
-        <FormSummary submission={!!submission ? submission.data : {}} form={resultForm} />
+        <FormSummary submission={!!submission ? submission.data : {}} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
               Rediger svar
             </Link>
           </div>
-          {featureToggles.sendPaaPapir && (
+          <div className="list-inline-item">
+            <Link
+              className={`btn ${
+                form.properties.hasPapirInnsendingOnly
+                  ? "btn-primary btn-wizard-nav-next"
+                  : "btn-secondary btn-wizard-nav-previous"
+              }`}
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+            >
+              {form.properties.hasPapirInnsendingOnly ? "Gå videre" : "Send i posten"}
+            </Link>
+          </div>
+          {!form.properties.hasPapirInnsendingOnly && (
             <div className="list-inline-item">
               <Link
-                className="btn btn-secondary btn-wizard-nav-previous"
+                className="btn btn-primary btn-wizard-nav-next wizard-button"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+                to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
               >
-                Send i posten
+                Send inn digitalt
               </Link>
             </div>
           )}
-          <div className="list-inline-item">
-            <Link
-              className="btn btn-primary btn-wizard-nav-next wizard-button"
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
-            >
-              {featureToggles.sendPaaPapir ? "Send inn digitalt" : "Gå videre"}
-            </Link>
-          </div>
         </nav>
       </main>
     </SummaryContent>
