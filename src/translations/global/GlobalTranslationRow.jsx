@@ -38,9 +38,7 @@ const GlobalTranslationRow = ({
         type="text"
         value={translatedText}
         onChange={(event) => {
-          if (event.target.value && event.target.value !== "") {
-            updateTranslation(originalText, event.target.value);
-          }
+          updateTranslation(originalText, event.target.value);
         }}
       />
     </div>
