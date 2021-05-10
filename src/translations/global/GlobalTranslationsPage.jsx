@@ -5,6 +5,7 @@ import { languagesInNorwegian, supportedLanguages } from "../../hooks/useLanguag
 import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Knapp } from "nav-frontend-knapper";
+import { guid } from "../../util/guid";
 
 const GlobalTranslationsPage = ({
   deleteLanguage,
@@ -20,12 +21,13 @@ const GlobalTranslationsPage = ({
       switch (action.type) {
         case "loadNewLanguage":
           return Object.keys(action.payload.translations).map((originalText) => ({
+            id: guid(),
             originalText,
             translatedText: action.payload.translations[originalText].value,
           }));
         case "updateOriginalText":
           return state.map((translationObject) => {
-            if (translationObject.originalText === action.payload.oldOriginalText) {
+            if (translationObject.id === action.payload.id) {
               return {
                 ...translationObject,
                 originalText: action.payload.newOriginalText,
@@ -36,7 +38,7 @@ const GlobalTranslationsPage = ({
           });
         case "updateTranslation":
           return state.map((translationObject) => {
-            if (translationObject.originalText === action.payload.originalText) {
+            if (translationObject.id === action.payload.id) {
               return action.payload;
             } else {
               return translationObject;
@@ -46,6 +48,7 @@ const GlobalTranslationsPage = ({
           return [
             ...state,
             {
+              id: guid(),
               originalText: "",
               translatedText: "",
             },
@@ -118,21 +121,23 @@ const GlobalTranslationsPage = ({
               >
                 Lagre
               </Hovedknapp>
-            */}
+           */}
           </li>
         </ul>
       }
     >
       <form>
-        {currentTranslation.map(({ originalText, translatedText }) => (
+        {currentTranslation.map(({ id, originalText, translatedText }) => (
           <GlobalTranslationRow
             originalText={originalText}
             translatedText={translatedText}
             languageCode={languageCode}
+            key={id}
             updateOriginalText={(newOriginalText, oldOriginalText) =>
               dispatch({
                 type: "updateOriginalText",
                 payload: {
+                  id,
                   newOriginalText,
                   oldOriginalText,
                 },
@@ -142,6 +147,7 @@ const GlobalTranslationsPage = ({
               dispatch({
                 type: "updateTranslation",
                 payload: {
+                  id,
                   originalText,
                   translatedText,
                 },

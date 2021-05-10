@@ -27,9 +27,7 @@ const GlobalTranslationRow = ({
         type="text"
         value={originalText}
         onChange={(event) => {
-          if (event.target.value && event.target.value !== "") {
-            updateOriginalText(event.target.value, originalText);
-          }
+          updateOriginalText(event.target.value, originalText);
         }}
       />
       <Input

@@ -23,7 +23,6 @@ function AuthenticatedApp({ formio, store }) {
     loadGlobalTranslations,
     loadTranslationsForEditPage,
     loadTranslationsForFormAndMapToI18nObject,
-    loadLanguages,
     deleteLanguage,
   } = useForms(formio, store, userAlerter);
 
