@@ -21,6 +21,7 @@ const GlobalTranslationsPage = ({
           return action.payload.translations;
         case "updateTranslation":
           return {
+            ...state,
             [action.payload.originalText]: action.payload.translatedText,
           };
         default:
