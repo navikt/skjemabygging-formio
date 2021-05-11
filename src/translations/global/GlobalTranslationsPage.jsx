@@ -4,7 +4,7 @@ import LanguageSelector from "../../components/LanguageSelector";
 import { languagesInNorwegian, supportedLanguages } from "../../hooks/useLanguages";
 import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
-import { Knapp } from "nav-frontend-knapper";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { guid } from "../../util/guid";
 
 const GlobalTranslationsPage = ({
@@ -90,11 +90,23 @@ const GlobalTranslationsPage = ({
         languagesInNorwegian[languageCode]
       }`,
     }));
+  const globalTranslationsToSave = currentTranslation.reduce(
+    (allCurrentTranslationAsObject, translation) => ({
+      ...allCurrentTranslationAsObject,
+      [translation.originalText]: {
+        scope: "global",
+        value: translation.translatedText,
+      },
+    }),
+    {}
+  );
+
+  const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
     <AppLayoutWithContext
       navBarProps={{
         title: "Globale oversettelser",
-        visSkjemaliste: true,
+        visOversettelseliste: true,
         visLagNyttSkjema: false,
       }}
       leftCol={
@@ -113,15 +125,13 @@ const GlobalTranslationsPage = ({
       mainCol={
         <ul className="list-inline">
           <li className="list-inline-item">
-            {/*
-              <Hovedknapp
-                onClick={() =>
-                  saveTranslation(projectURL, "global", currentTranslation.id, languageCode, allGlobalTranslations)
-                }
-              >
-                Lagre
-              </Hovedknapp>
-           */}
+            <Hovedknapp
+              onClick={() => {
+                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave);
+              }}
+            >
+              Lagre
+            </Hovedknapp>
           </li>
         </ul>
       }

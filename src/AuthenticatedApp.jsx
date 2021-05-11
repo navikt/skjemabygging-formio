@@ -24,6 +24,8 @@ function AuthenticatedApp({ formio, store }) {
     loadTranslationsForEditPage,
     loadTranslationsForFormAndMapToI18nObject,
     deleteLanguage,
+    saveLocalTranslation,
+    saveGlobalTranslation,
   } = useForms(formio, store, userAlerter);
 
   const history = useHistory();
@@ -64,6 +66,7 @@ function AuthenticatedApp({ formio, store }) {
               loadGlobalTranslations={loadGlobalTranslations}
               projectURL={formio.projectUrl}
               deleteLanguage={deleteLanguage}
+              saveTranslation={saveGlobalTranslation}
             />
           )}
         />
@@ -77,6 +80,7 @@ function AuthenticatedApp({ formio, store }) {
                 form={targetForm}
                 projectURL={formio.projectUrl}
                 deleteLanguage={deleteLanguage}
+                saveTranslation={saveLocalTranslation}
                 loadTranslationsForEditPage={loadTranslationsForEditPage}
                 userAlerter={userAlerter}
               />
