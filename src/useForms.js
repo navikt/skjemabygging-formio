@@ -127,6 +127,42 @@ export const useForms = (formio, store, userAlerter) => {
     });
   }; */
 
+  const loadGlobalTranslations = async () => {
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global`)
+      .then((response) => {
+        console.log("Fetched: ", response);
+        return response;
+      })
+      .then((response) =>
+        response.reduce((globalTranslations, translation) => {
+          const { data, _id: id } = translation;
+          const { i18n, scope, name } = data;
+          return {
+            ...globalTranslations,
+            [data.language]: {
+              id,
+              name,
+              scope,
+              translations: Object.keys(i18n).reduce(
+                (translationsObjects, translatedText) => ({
+                  ...translationsObjects,
+                  [translatedText]: {
+                    value: i18n[translatedText],
+                    scope,
+                  },
+                }),
+                {}
+              ),
+            },
+          };
+        }, [])
+      )
+      .then((globalTranslations) => {
+        console.log("Fetched global translations", globalTranslations);
+        return globalTranslations;
+      });
+  };
+
   const loadTranslationsForForm = async (formPath) => {
     console.log("Form path", formPath);
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi`)
@@ -238,6 +274,63 @@ export const useForms = (formio, store, userAlerter) => {
     });
   };
 
+  const saveTranslation = (projectUrl, translationId, language, i18n, name, scope, form, formTitle) => {
+    Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
+      headers: {
+        "x-jwt-token": Formiojs.getToken(),
+        "content-type": "application/json",
+      },
+      method: translationId ? "PUT" : "POST",
+      body: JSON.stringify({
+        data: {
+          form,
+          name,
+          language,
+          scope,
+          i18n,
+        },
+      }),
+    }).then((response) => {
+      if (response.ok) {
+        userAlerter.flashSuccessMessage(
+          !formTitle ? "Lagret globale oversettelser" : "Lagret oversettelser for skjema: " + formTitle
+        );
+      } else {
+        response.json().then((r) => {
+          const errorMessage = "Lagret oversettelser feilet: ";
+          userAlerter.setErrorMessage(errorMessage.concat(r && r.details[0] && r.details[0].message));
+        });
+      }
+    });
+  };
+
+  const saveLocalTranslation = (projectUrl, translationId, languageCode, translations, formPath, formTitle) => {
+    const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+      if (translations[translatedText].scope === "local" && translations[translatedText].value) {
+        return {
+          ...translationsToSave,
+          [translatedText]: translations[translatedText].value,
+        };
+      } else {
+        return translationsToSave;
+      }
+    }, {});
+    saveTranslation(projectUrl, translationId, languageCode, i18n, `global.${formPath}`, "local", formPath, formTitle);
+  };
+  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations) => {
+    const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+      if (translations[translatedText].value) {
+        return {
+          ...translationsToSave,
+          [translatedText]: translations[translatedText].value,
+        };
+      } else {
+        return translationsToSave;
+      }
+    }, {});
+    saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global");
+  };
+
   return {
     forms,
     onChangeForm,
@@ -245,10 +338,13 @@ export const useForms = (formio, store, userAlerter) => {
     onCreate,
     onDelete,
     onPublish,
+    loadGlobalTranslations,
     loadTranslationsForForm,
     loadTranslationsForEditPage,
     loadTranslationsForFormAndMapToI18nObject,
     loadLanguages,
     deleteLanguage,
+    saveLocalTranslation,
+    saveGlobalTranslation,
   };
 };

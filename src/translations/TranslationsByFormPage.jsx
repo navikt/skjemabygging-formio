@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Formiojs from "formiojs/Formio";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
@@ -48,45 +47,9 @@ const getAllTextsForForm = (form) =>
         index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
     );
 
-const saveTranslation = (projectUrl, formPath, translationId, languageCode, translations, userAlerter, formTitle) => {
-  Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
-    headers: {
-      "x-jwt-token": Formiojs.getToken(),
-      "content-type": "application/json",
-    },
-    method: translationId ? "PUT" : "POST",
-    body: JSON.stringify({
-      data: {
-        form: formPath,
-        name: `global.${formPath}`,
-        language: languageCode,
-        scope: "local",
-        i18n: Object.keys(translations).reduce((translationsToSave, translatedText) => {
-          if (translations[translatedText].scope === "local" && translations[translatedText].value) {
-            return {
-              ...translationsToSave,
-              [translatedText]: translations[translatedText].value,
-            };
-          } else {
-            return translationsToSave;
-          }
-        }, {}),
-      },
-    }),
-  }).then((response) => {
-    if (response.ok) {
-      userAlerter.flashSuccessMessage("Lagret oversettelser for skjema: " + formTitle);
-    } else {
-      response.json().then((r) => {
-        const errorMessage = "Lagret oversettelser feilet: ";
-        userAlerter.setErrorMessage(errorMessage.concat(r && r.details[0] && r.details[0].message));
-      });
-    }
-  });
-};
-
 const TranslationsByFormPage = ({
   deleteLanguage,
+  saveTranslation,
   form,
   loadTranslationsForEditPage,
   languageCode,
@@ -110,8 +73,17 @@ const TranslationsByFormPage = ({
       setTranslations(translations[languageCode] ? translations[languageCode].translations : {});
       setTranslationId(translations[languageCode] ? translations[languageCode].id : undefined);
       setAvailableTranslations(Object.keys(translations));
+
+      if (!languageCode) {
+        const firstAvailableLanguageCode = Object.keys(translations)[0];
+        if (firstAvailableLanguageCode) {
+          history.push(`/translation/${path}/${firstAvailableLanguageCode}`);
+        } else {
+          history.push(`/translation/${path}/nn-NO`);
+        }
+      }
     });
-  }, [form.path, loadTranslationsForEditPage, languageCode]);
+  }, [form.path, loadTranslationsForEditPage, languageCode, history, path]);
 
   const languages = supportedLanguages
     .filter((languageCode) => languageCode !== "nb-NO")
@@ -153,9 +125,7 @@ const TranslationsByFormPage = ({
           </li>
           <li className="list-inline-item">
             <Hovedknapp
-              onClick={() =>
-                saveTranslation(projectURL, path, translationId, languageCode, translations, userAlerter, title)
-              }
+              onClick={() => saveTranslation(projectURL, translationId, languageCode, translations, path, title)}
             >
               Lagre
             </Hovedknapp>

@@ -47,8 +47,8 @@ export function TranslationsListPage({ onLogout, forms }) {
         <nav className="margin-bottom-large">
           <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
           <ul className={classes.list}>
-            <li className={classes.globalListItem}>
-              <Link to={"/globalTranslations"}>Felles oversettelser for alle skjemaer</Link>
+            <li className={classes.listItem}>
+              <Link to="/translation/global">Felles oversettelser for alle skjemaer</Link>
             </li>
           </ul>
         </nav>

@@ -78,7 +78,7 @@ const LanguageSelector = ({ currentLanguage, translations = [] }) => {
   }
   const currentTranslationObject =
     currentLanguage && translations.find((translation) => translation.languageCode === currentLanguage);
-  const label = currentTranslationObject ? currentTranslationObject.optionLabel : "Språk/Language";
+  const label = currentTranslationObject ? currentTranslationObject.languageName : "Språk/Language";
   return (
     <div className={classes.languageToggle}>
       <div className={classes.languageToggleWrapper}>

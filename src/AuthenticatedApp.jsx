@@ -8,8 +8,8 @@ import NewTranslation from "./translations/NewTranslation";
 import { TranslationsListPage } from "./translations/TranslationsListPage";
 import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
-import EditTranslationPage from "./translations/EditTranslationPage";
-import { GlobalTranslationsListPage } from "./translations/GlobalTranslationsListPage";
+//import EditTranslationPage from "./translations/EditTranslationPage";
+import GlobalTranslationsPage from "./translations/global/GlobalTranslationsPage";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -20,10 +20,12 @@ function AuthenticatedApp({ formio, store }) {
     onCreate,
     onDelete,
     onPublish,
+    loadGlobalTranslations,
     loadTranslationsForEditPage,
     loadTranslationsForFormAndMapToI18nObject,
-    loadLanguages,
     deleteLanguage,
+    saveLocalTranslation,
+    saveGlobalTranslation,
   } = useForms(formio, store, userAlerter);
 
   const history = useHistory();
@@ -57,6 +59,18 @@ function AuthenticatedApp({ formio, store }) {
           <NewTranslation projectURL={formio.projectUrl} />
         </Route>
         <Route
+          path="/translation/global/:languageCode?"
+          render={({ match }) => (
+            <GlobalTranslationsPage
+              {...match.params}
+              loadGlobalTranslations={loadGlobalTranslations}
+              projectURL={formio.projectUrl}
+              deleteLanguage={deleteLanguage}
+              saveTranslation={saveGlobalTranslation}
+            />
+          )}
+        />
+        <Route
           path="/translation/:formPath/:languageCode?"
           render={({ match }) => {
             const targetForm = forms.find((form) => form.path === match.params.formPath);
@@ -66,24 +80,12 @@ function AuthenticatedApp({ formio, store }) {
                 form={targetForm}
                 projectURL={formio.projectUrl}
                 deleteLanguage={deleteLanguage}
+                saveTranslation={saveLocalTranslation}
                 loadTranslationsForEditPage={loadTranslationsForEditPage}
                 userAlerter={userAlerter}
               />
             );
           }}
-        />
-
-        <Route
-          exact
-          path="/globalTranslations"
-          render={({ match }) => <GlobalTranslationsListPage {...match.params} loadLanguages={loadLanguages} />}
-        />
-
-        <Route
-          path="/globalTranslations/:resourceId"
-          render={({ match }) => (
-            <EditTranslationPage {...match.params} projectURL={formio.projectUrl} deleteLanguage={deleteLanguage} />
-          )}
         />
 
         <Route path="/">
