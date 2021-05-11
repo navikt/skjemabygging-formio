@@ -22,6 +22,14 @@ const GlobalTranslationsPage = ({
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => {
       switch (action.type) {
+        case "initializeLanguage":
+          return [
+            {
+              id: guid(),
+              originalText: "",
+              translatedText: "",
+            },
+          ];
         case "loadNewLanguage":
           return Object.keys(action.payload.translations).map((originalText) => ({
             id: guid(),
@@ -83,12 +91,20 @@ const GlobalTranslationsPage = ({
   }, [loadGlobalTranslations, languageCode, history]);
 
   useEffect(() => {
-    dispatch({
-      type: "loadNewLanguage",
-      payload: {
-        translations: allGlobalTranslations[languageCode] ? allGlobalTranslations[languageCode].translations : {},
-      },
-    });
+    const translationsForLoadedLanguage =
+      allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].translations;
+    if (translationsForLoadedLanguage) {
+      dispatch({
+        type: "loadNewLanguage",
+        payload: {
+          translations: translationsForLoadedLanguage,
+        },
+      });
+    } else {
+      dispatch({
+        type: "initializeLanguage",
+      });
+    }
   }, [languageCode, allGlobalTranslations]);
 
   if (Object.keys(allGlobalTranslations).length === 0) {
@@ -103,6 +119,7 @@ const GlobalTranslationsPage = ({
       optionLabel: `${availableTranslations.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
         languagesInNorwegian[languageCode]
       }`,
+      languageName: languagesInNorwegian[languageCode],
     }));
   const globalTranslationsToSave = currentTranslation.reduce(
     (allCurrentTranslationAsObject, translation) => ({
