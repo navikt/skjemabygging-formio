@@ -53,6 +53,8 @@ const GlobalTranslationsPage = ({
               translatedText: "",
             },
           ];
+        case "deleteOneRow":
+          return state.filter((translationObject) => translationObject.id !== action.payload.id);
         default:
           return state;
       }
@@ -160,6 +162,14 @@ const GlobalTranslationsPage = ({
                   id,
                   originalText,
                   translatedText,
+                },
+              })
+            }
+            deleteOneRow={() =>
+              dispatch({
+                type: "deleteOneRow",
+                payload: {
+                  id,
                 },
               })
             }

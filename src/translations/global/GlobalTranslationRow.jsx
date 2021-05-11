@@ -1,22 +1,24 @@
 import React from "react";
 import { Input } from "nav-frontend-skjema";
 import { makeStyles } from "@material-ui/styles";
+import { Delete } from "@navikt/ds-icons";
 
 const useTranslationRowStyles = makeStyles({
   root: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "1fr 1fr auto",
     gap: "2rem",
     marginBottom: "2rem",
+    alignItems: "center",
   },
 });
 
 const GlobalTranslationRow = ({
   originalText,
   translatedText,
-  languageCode,
   updateTranslation,
   updateOriginalText,
+  deleteOneRow,
 }) => {
   const classes = useTranslationRowStyles();
   return (
@@ -39,6 +41,7 @@ const GlobalTranslationRow = ({
           updateTranslation(originalText, event.target.value);
         }}
       />
+      <Delete onClick={deleteOneRow} />
     </div>
   );
 };

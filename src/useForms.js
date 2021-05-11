@@ -317,7 +317,7 @@ export const useForms = (formio, store, userAlerter) => {
     }, {});
     saveTranslation(projectUrl, translationId, languageCode, i18n, `global.${formPath}`, "local", formPath, formTitle);
   };
-  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, formPath, formTitle) => {
+  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations) => {
     const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
       if (translations[translatedText].value) {
         return {
