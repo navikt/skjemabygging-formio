@@ -8,7 +8,6 @@ import NewTranslation from "./translations/NewTranslation";
 import { TranslationsListPage } from "./translations/TranslationsListPage";
 import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
-//import EditTranslationPage from "./translations/EditTranslationPage";
 import GlobalTranslationsPage from "./translations/global/GlobalTranslationsPage";
 
 function AuthenticatedApp({ formio, store }) {
