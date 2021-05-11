@@ -3,6 +3,8 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import RadioPanelGruppe, { RadioPanelGruppeWrapper } from "./RadioPanelGruppe";
 
+const mockedTranslate = (value) => value;
+
 const defaultComponent = {
   id: "comp-id",
   key: "comp-key",
@@ -21,7 +23,7 @@ const defaultComponent = {
 describe("RadioPanelGruppe", () => {
   test("Riktig verdi velges ved trykk på radioknapp", async () => {
     const onChange = jest.fn();
-    render(<RadioPanelGruppeWrapper component={defaultComponent} onChange={onChange} />);
+    render(<RadioPanelGruppeWrapper component={defaultComponent} onChange={onChange} translate={mockedTranslate} />);
 
     const radiobuttons = await screen.getByRole("group", { name: defaultComponent.label });
     await userEvent.click(within(radiobuttons).getByText("Ja"));
@@ -30,7 +32,7 @@ describe("RadioPanelGruppe", () => {
 
   describe("Description", () => {
     const renderRadioPanelGruppe = (formioComponent) => {
-      render(<RadioPanelGruppeWrapper component={formioComponent} onChange={jest.fn()} />);
+      render(<RadioPanelGruppeWrapper component={formioComponent} onChange={jest.fn()} translate={mockedTranslate} />);
     };
 
     const getDescriptionElementWithinFieldset = async () => {

@@ -29,7 +29,7 @@ const RadioPanelGruppeWrapper = class extends Component {
   };
 
   render() {
-    const { component, translate } = this.props.component;
+    const { component, translate } = this.props;
     const { descriptionPosition } = component;
     let renderDescriptionAboveLabel = component.description && descriptionPosition === "above";
     let descriptionId;
