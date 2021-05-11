@@ -73,8 +73,17 @@ const TranslationsByFormPage = ({
       setTranslations(translations[languageCode] ? translations[languageCode].translations : {});
       setTranslationId(translations[languageCode] ? translations[languageCode].id : undefined);
       setAvailableTranslations(Object.keys(translations));
+
+      if (!languageCode) {
+        const firstAvailableLanguageCode = Object.keys(translations)[0];
+        if (firstAvailableLanguageCode) {
+          history.push(`/translation/${path}/${firstAvailableLanguageCode}`);
+        } else {
+          history.push(`/translation/${path}/nn-NO`);
+        }
+      }
     });
-  }, [form.path, loadTranslationsForEditPage, languageCode]);
+  }, [form.path, loadTranslationsForEditPage, languageCode, history, path]);
 
   const languages = supportedLanguages
     .filter((languageCode) => languageCode !== "nb-NO")

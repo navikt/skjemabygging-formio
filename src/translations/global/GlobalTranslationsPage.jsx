@@ -6,14 +6,17 @@ import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { guid } from "../../util/guid";
+import { useHistory } from "react-router-dom";
 
 const GlobalTranslationsPage = ({
   deleteLanguage,
-  languageCode = "nn-NO",
+  languageCode,
   loadGlobalTranslations,
   projectURL,
   saveTranslation,
 }) => {
+  const history = useHistory();
+
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [availableTranslations, setAvailableTranslations] = useState([]);
   const [currentTranslation, dispatch] = useReducer(
@@ -59,16 +62,25 @@ const GlobalTranslationsPage = ({
           return state;
       }
     },
-    {},
+    [],
     (state) => state
   );
 
   useEffect(() => {
     loadGlobalTranslations().then((translations) => {
+      if (!languageCode) {
+        const firstAvailableLanguageCode = Object.keys(translations)[0];
+        if (firstAvailableLanguageCode) {
+          history.push(`/translation/global/${firstAvailableLanguageCode}`);
+        } else {
+          history.push("/translation/global/nn-NO");
+        }
+      }
+
       setAllGlobalTranslations(translations);
       setAvailableTranslations(Object.keys(translations));
     });
-  }, [loadGlobalTranslations]);
+  }, [loadGlobalTranslations, languageCode, history]);
 
   useEffect(() => {
     dispatch({
