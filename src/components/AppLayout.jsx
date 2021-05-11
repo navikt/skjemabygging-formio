@@ -4,7 +4,7 @@ import { UserAlerterContext } from "../userAlerting";
 import React from "react";
 import { styled } from "@material-ui/styles";
 import LanguageSelector from "./LanguageSelector";
-import { languagesInOriginalLanguage } from "../hooks/useLanguages";
+import { languagesInNorwegian, languagesInOriginalLanguage } from "../hooks/useLanguages";
 
 const ActionRow = styled("div")({
   display: "flex",
@@ -141,6 +141,7 @@ export const AppLayout = ({
           translations.map((translation) => ({
             languageCode: translation,
             optionLabel: languagesInOriginalLanguage[translation],
+            languageName: languagesInNorwegian[currentLanguage],
             href: `?lang=${translation}`,
           }))
         }

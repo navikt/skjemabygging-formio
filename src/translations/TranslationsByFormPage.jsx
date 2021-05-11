@@ -93,6 +93,7 @@ const TranslationsByFormPage = ({
       optionLabel: `${availableTranslations.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
         languagesInNorwegian[languageCode]
       }`,
+      languageName: languagesInNorwegian[languageCode],
     }));
 
   return (
