@@ -5,7 +5,28 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import FyllUtRouter from "./FyllUtRouter";
 import AmplitudeProvider from "../context/amplitude";
 import { useLanguages } from "../hooks";
-import I18nProvider from "../context/i18n";
+import I18nProvider, { useTranslations } from "../context/i18n";
+
+const MainCol = ({ editFormUrl, form, onSave }) => {
+  const { currentLanguage } = useTranslations();
+  return (
+    <ul className="list-inline">
+      <li className="list-inline-item">
+        <Link className="knapp" to={editFormUrl}>
+          Rediger
+        </Link>
+      </li>
+      <li className="list-inline-item">
+        <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+      </li>
+      <li className="list-inline-item">
+        <Link className="knapp" to={`/translation/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
+          Oversettelse
+        </Link>
+      </li>
+    </ul>
+  );
+};
 
 export function TestFormPage({
   onPublishClick,
@@ -18,34 +39,11 @@ export function TestFormPage({
   loadTranslationsForFormAndMapToI18nObject,
 }) {
   const title = `${form.title}`;
-  const { currentLanguage } = useLanguages();
-  useEffect(() => {
-    if (window.setLanguage !== undefined) {
-      window.setLanguage(currentLanguage);
-    }
-  }, [currentLanguage]);
   return (
     <I18nProvider loadTranslations={() => loadTranslationsForFormAndMapToI18nObject(form.path)}>
       <AppLayoutWithContext
-        currentLanguage={currentLanguage}
         navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
-        mainCol={
-          <ul className="list-inline">
-            <li className="list-inline-item">
-              <Link className="knapp" to={editFormUrl}>
-                Rediger
-              </Link>
-            </li>
-            <li className="list-inline-item">
-              <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-            </li>
-            <li className="list-inline-item">
-              <Link className="knapp" to={`/translation/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
-                Oversettelse
-              </Link>
-            </li>
-          </ul>
-        }
+        mainCol={<MainCol editFormUrl={editFormUrl} form={form} onSave={onSave} />}
         rightCol={
           <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
             Publiser

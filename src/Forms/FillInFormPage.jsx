@@ -9,8 +9,7 @@ import { useTranslations } from "../context/i18n";
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
-  const { initialLanguage } = useLanguages();
-  const { translations } = useTranslations();
+  const { initialLanguage, translations } = useTranslations();
   if (!translations) {
     return null;
   }

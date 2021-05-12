@@ -7,6 +7,8 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
+import { useTranslations, languagesInNorwegian, languagesInOriginalLanguage } from "../context/i18n";
+import LanguageSelector from "../components/LanguageSelector";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
@@ -17,6 +19,7 @@ const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
+  const { currentLanguage, availableLanguages } = useTranslations();
 
   function beforeUnload(e) {
     e.preventDefault();
@@ -33,6 +36,18 @@ const FyllUtRouter = ({ form }) => {
 
   return (
     <FyllUtContainer>
+      <LanguageSelector
+        currentLanguage={currentLanguage}
+        translations={
+          availableLanguages &&
+          availableLanguages.map((languageCode) => ({
+            languageCode,
+            optionLabel: languagesInOriginalLanguage[languageCode],
+            languageName: languagesInNorwegian[currentLanguage],
+            href: `?lang=${languageCode}`,
+          }))
+        }
+      />
       <Switch>
         <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
         <Route exact path={path}>
