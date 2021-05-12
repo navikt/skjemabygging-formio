@@ -7,7 +7,6 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
-import I18nProvider from "../context/i18n";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
