@@ -129,12 +129,15 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
       </NoScrollWrapper>
       <LanguageSelector
         currentLanguage={currentLanguage}
-        translations={availableLanguages.map((languageCode) => ({
-          languageCode,
-          optionLabel: languagesInOriginalLanguage[languageCode],
-          languageName: languagesInNorwegian[currentLanguage],
-          href: `?lang=${languageCode}`,
-        }))}
+        translations={
+          availableLanguages &&
+          availableLanguages.map((languageCode) => ({
+            languageCode,
+            optionLabel: languagesInOriginalLanguage[languageCode],
+            languageName: languagesInNorwegian[currentLanguage],
+            href: `?lang=${languageCode}`,
+          }))
+        }
       />
       <Pagewrapper>{children}</Pagewrapper>
     </>
