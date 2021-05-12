@@ -44,6 +44,8 @@ export default {
     october: "Oktober",
     november: "November",
     december: "Desember",
+    [TEXTS.yes]: TEXTS.yes,
+    [TEXTS.no]: TEXTS.no,
     [TEXTS.summaryPage.title]: TEXTS.summaryPage.title,
     [TEXTS.summaryPage.description]: TEXTS.summaryPage.description,
     [TEXTS.summaryPage.editAnswers]: TEXTS.summaryPage.editAnswers,

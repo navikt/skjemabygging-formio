@@ -1,4 +1,6 @@
 export default {
+  yes: "Ja",
+  no: "Nei",
   summaryPage: {
     title: "Oppsummering av søknaden din",
     description:

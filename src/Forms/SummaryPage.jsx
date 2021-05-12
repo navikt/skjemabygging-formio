@@ -74,7 +74,8 @@ const ComponentSummary = ({ components }) => {
 };
 
 const FormSummary = ({ form, submission }) => {
-  const formSummaryObject = createFormSummaryObject(form, submission);
+  const { translate } = useTranslations();
+  const formSummaryObject = createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
   }
