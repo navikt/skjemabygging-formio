@@ -7,13 +7,14 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
+import I18nProvider from "../context/i18n";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "800px",
 });
 
-const FyllUtRouter = ({ form, translation }) => {
+const FyllUtRouter = ({ form }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -36,24 +37,12 @@ const FyllUtRouter = ({ form, translation }) => {
       <Switch>
         <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
         <Route exact path={path}>
-          <FillInFormPage
-            form={form}
-            submission={submission}
-            setSubmission={setSubmission}
-            formUrl={url}
-            translation={translation}
-          />
+          <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
         </Route>
         <Route path={`${path}/oppsummering`}>
           <SubmissionWrapper submission={submission} url={url}>
             {(submissionObject) => (
-              <SummaryPage
-                form={form}
-                submission={submissionObject}
-                formUrl={url}
-                languageCode={"nb-NO"}
-                translations={translation}
-              />
+              <SummaryPage form={form} submission={submissionObject} formUrl={url} languageCode={"nb-NO"} />
             )}
           </SubmissionWrapper>
         </Route>

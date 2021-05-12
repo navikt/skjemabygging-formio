@@ -7,7 +7,7 @@ import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
 import { createFormSummaryObject } from "../util/formSummaryUtil";
-import useTranslations from "../hooks/useTranslations";
+import { useTranslations } from "../context/i18n";
 import TEXTS from "../texts";
 
 const FormSummaryField = ({ label, value }) => (
@@ -81,10 +81,10 @@ const FormSummary = ({ form, submission }) => {
   return <ComponentSummary components={formSummaryObject} />;
 };
 
-export function SummaryPage({ form, submission, formUrl, languageCode, translations }) {
+export function SummaryPage({ form, submission, formUrl }) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
-  const translate = useTranslations(languageCode, translations);
+  const { translate } = useTranslations();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);

@@ -5,6 +5,7 @@ import React from "react";
 import { styled } from "@material-ui/styles";
 import LanguageSelector from "./LanguageSelector";
 import { languagesInNorwegian, languagesInOriginalLanguage } from "../hooks/useLanguages";
+import { useTranslations } from "../context/i18n";
 
 const ActionRow = styled("div")({
   display: "flex",
@@ -110,17 +111,9 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
-export const AppLayout = ({
-  children,
-  userAlerter,
-  leftCol,
-  mainCol,
-  navBarProps,
-  rightCol,
-  translations,
-  currentLanguage,
-}) => {
+export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol, currentLanguage }) => {
   const alertComponent = userAlerter.alertComponent();
+  const { availableLanguages } = useTranslations();
   return (
     <>
       <NoScrollWrapper>
@@ -136,15 +129,12 @@ export const AppLayout = ({
       </NoScrollWrapper>
       <LanguageSelector
         currentLanguage={currentLanguage}
-        translations={
-          translations &&
-          translations.map((translation) => ({
-            languageCode: translation,
-            optionLabel: languagesInOriginalLanguage[translation],
-            languageName: languagesInNorwegian[currentLanguage],
-            href: `?lang=${translation}`,
-          }))
-        }
+        translations={availableLanguages.map((languageCode) => ({
+          languageCode,
+          optionLabel: languagesInOriginalLanguage[languageCode],
+          languageName: languagesInNorwegian[currentLanguage],
+          href: `?lang=${languageCode}`,
+        }))}
       />
       <Pagewrapper>{children}</Pagewrapper>
     </>
