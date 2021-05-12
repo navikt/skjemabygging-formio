@@ -160,7 +160,7 @@ function handleField(component, submission, formSummaryObject, translate) {
   ];
 }
 
-export function handleComponent(component, submission = {}, formSummaryObject, translate) {
+export function handleComponent(component, submission = {}, formSummaryObject, translate = (text) => text) {
   switch (component.type) {
     case "panel":
       return handlePanel(component, submission, formSummaryObject, translate);
