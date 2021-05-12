@@ -1,3 +1,5 @@
+import TEXTS from "./texts";
+
 export default {
   "nb-NO": {
     //Generelle feilmeldinger
@@ -42,5 +44,11 @@ export default {
     october: "Oktober",
     november: "November",
     december: "Desember",
+    [TEXTS.summaryPage.title]: TEXTS.summaryPage.title,
+    [TEXTS.summaryPage.description]: TEXTS.summaryPage.description,
+    [TEXTS.summaryPage.editAnswers]: TEXTS.summaryPage.editAnswers,
+    [TEXTS.summaryPage.continue]: TEXTS.summaryPage.continue,
+    [TEXTS.summaryPage.continueToPostalSubmission]: TEXTS.summaryPage.continueToPostalSubmission,
+    [TEXTS.summaryPage.continueToDigitalSubmission]: TEXTS.summaryPage.continueToDigitalSubmission,
   },
 };
