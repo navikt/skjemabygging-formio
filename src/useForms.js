@@ -133,6 +133,9 @@ export const useForms = (formio, store, userAlerter) => {
         console.log("Fetched: ", response);
         return response;
       })
+      .then((response) => {
+        return response.filter((translate) => Object.keys(translate.data.i18n).length !== 0);
+      })
       .then((response) =>
         response.reduce((globalTranslations, translation) => {
           const { data, _id: id } = translation;
