@@ -8,7 +8,7 @@ const useTranslationRowStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "1fr 1fr auto",
     gap: "2rem",
-    marginBottom: "2rem",
+    marginBottom: "1rem",
     alignItems: "center",
   },
 });
@@ -25,7 +25,6 @@ const GlobalTranslationRow = ({
     <div className={classes.root}>
       <Input
         className="margin-bottom-default"
-        label="Originaltekst"
         type="text"
         value={originalText}
         onChange={(event) => {
@@ -34,7 +33,6 @@ const GlobalTranslationRow = ({
       />
       <Input
         className="margin-bottom-default"
-        label="Oversatt tekst"
         type="text"
         value={translatedText}
         onChange={(event) => {

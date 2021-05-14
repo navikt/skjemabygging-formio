@@ -54,7 +54,6 @@ const TranslationsByFormPage = ({
   loadTranslationsForEditPage,
   languageCode,
   projectURL,
-  userAlerter,
 }) => {
   const history = useHistory();
   const {

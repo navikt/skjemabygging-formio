@@ -7,6 +7,23 @@ import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { guid } from "../../util/guid";
 import { useHistory } from "react-router-dom";
+import { Innholdstittel, Undertittel } from "nav-frontend-typografi";
+import { makeStyles } from "@material-ui/styles";
+import { Delete } from "@navikt/ds-icons";
+
+const useGlobalTranslationsPageStyles = makeStyles({
+  root: {
+    maxWidth: "80%",
+    margin: "0 auto 2rem",
+  },
+  title: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr auto",
+    gap: "2rem",
+    marginBottom: "1rem",
+    alignItems: "center",
+  },
+});
 
 const GlobalTranslationsPage = ({
   deleteLanguage,
@@ -16,7 +33,7 @@ const GlobalTranslationsPage = ({
   saveTranslation,
 }) => {
   const history = useHistory();
-
+  const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [availableTranslations, setAvailableTranslations] = useState([]);
   const [currentTranslation, dispatch] = useReducer(
@@ -141,79 +158,89 @@ const GlobalTranslationsPage = ({
         visLagNyttSkjema: false,
       }}
       leftCol={
-        <>
-          <LanguageSelector
-            currentLanguage={languageCode}
-            translations={languages.sort((lang1, lang2) =>
-              lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
-            )}
-          />
-          {/*<Knapp onClick={() => deleteLanguage(currentTranslation.id).then(() => history.push("/translations"))}>
-              Slett språk
-            </Knapp>*/}
-        </>
+        <LanguageSelector
+          currentLanguage={languageCode}
+          translations={languages.sort((lang1, lang2) =>
+            lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
+          )}
+        />
       }
       mainCol={
         <ul className="list-inline">
           <li className="list-inline-item">
-            <Hovedknapp
-              onClick={() => {
-                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave);
-              }}
-            >
-              Lagre
-            </Hovedknapp>
+            <Innholdstittel>{languageCode}</Innholdstittel>
+          </li>
+          <li className="list-inline-item">
+            <Delete />
+            {/*<Knapp onClick={() => deleteLanguage(currentTranslation.id).then(() => history.push("/translations"))}>
+              Slett språk
+            </Knapp>*/}
           </li>
         </ul>
       }
+      rightCol={
+        <Hovedknapp
+          onClick={() => {
+            saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave);
+          }}
+        >
+          Lagre
+        </Hovedknapp>
+      }
     >
-      <form>
-        {currentTranslation.map(({ id, originalText, translatedText }) => (
-          <GlobalTranslationRow
-            originalText={originalText}
-            translatedText={translatedText}
-            languageCode={languageCode}
-            key={id}
-            updateOriginalText={(newOriginalText, oldOriginalText) =>
-              dispatch({
-                type: "updateOriginalText",
-                payload: {
-                  id,
-                  newOriginalText,
-                  oldOriginalText,
-                },
-              })
-            }
-            updateTranslation={(originalText, translatedText) =>
-              dispatch({
-                type: "updateTranslation",
-                payload: {
-                  id,
-                  originalText,
-                  translatedText,
-                },
-              })
-            }
-            deleteOneRow={() =>
-              dispatch({
-                type: "deleteOneRow",
-                payload: {
-                  id,
-                },
-              })
-            }
-          />
-        ))}
-      </form>
-      <Knapp
-        onClick={() =>
-          dispatch({
-            type: "addNewTranslation",
-          })
-        }
-      >
-        Legg til ny tekst
-      </Knapp>
+      <div className={classes.root}>
+        <form>
+          <li className={classes.title}>
+            <Undertittel>Original</Undertittel>
+            <Undertittel>Oversettelse</Undertittel>
+          </li>
+          {currentTranslation.map(({ id, originalText, translatedText }) => (
+            <GlobalTranslationRow
+              originalText={originalText}
+              translatedText={translatedText}
+              languageCode={languageCode}
+              key={id}
+              updateOriginalText={(newOriginalText, oldOriginalText) =>
+                dispatch({
+                  type: "updateOriginalText",
+                  payload: {
+                    id,
+                    newOriginalText,
+                    oldOriginalText,
+                  },
+                })
+              }
+              updateTranslation={(originalText, translatedText) =>
+                dispatch({
+                  type: "updateTranslation",
+                  payload: {
+                    id,
+                    originalText,
+                    translatedText,
+                  },
+                })
+              }
+              deleteOneRow={() =>
+                dispatch({
+                  type: "deleteOneRow",
+                  payload: {
+                    id,
+                  },
+                })
+              }
+            />
+          ))}
+        </form>
+        <Knapp
+          onClick={() =>
+            dispatch({
+              type: "addNewTranslation",
+            })
+          }
+        >
+          Legg til ny tekst
+        </Knapp>
+      </div>
     </AppLayoutWithContext>
   );
 };
