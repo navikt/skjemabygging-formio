@@ -1,3 +1,5 @@
+import FormioUtils from "formiojs/utils";
+
 function formatValue(component, value) {
   switch (component.type) {
     case "radiopanel":
@@ -27,26 +29,9 @@ function formatValue(component, value) {
   }
 }
 
-function filterNonFormContent(components = [], submission = []) {
-  return components.filter((component) => {
-    switch (component.type) {
-      case "content":
-      case "htmlelement":
-        return false;
-      case "container":
-        return filterNonFormContent(component.components, submission[component.key]).length > 0;
-      case "fieldset":
-      case "navSkjemagruppe":
-        return filterNonFormContent(component.components, submission).length > 0;
-      default:
-        return submission[component.key] !== "" && submission[component.key] !== undefined;
-    }
-  });
-}
-
 function handlePanel(component, submission, formSummaryObject) {
-  const { title, key, type, components } = component;
-  const subComponents = filterNonFormContent(components, submission).reduce(
+  const { title, key, type, components = [] } = component;
+  const subComponents = components.reduce(
     (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
     []
   );
@@ -70,40 +55,36 @@ function handleContainer(component, submission, formSummaryObject) {
     return formSummaryObject;
   } else {
     const mappedSubComponents = components.reduce(
-      (subComponents, subComponent) => handleComponent(subComponent, submission[key], subComponents),
+      (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
       []
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
 }
 
-function handleDataGridRows(component, dataGridSubmission = []) {
+function handleDataGridRows(component, submission) {
   const { key, rowTitle, components } = component;
-  return dataGridSubmission.reduce((handledRows, rowSubmission, index) => {
-    const dataGridRowComponents = components.reduce(
-      (handledComponents, subComponent) => handleComponent(subComponent, rowSubmission, handledComponents),
-      []
-    );
-
-    if (dataGridRowComponents.length === 0) {
-      return handledRows;
-    }
-    return [
-      ...handledRows,
-      {
-        type: "datagrid-row",
-        label: rowTitle,
-        key: `${key}-row-${index}`,
-        components: dataGridRowComponents,
-      },
-    ];
-  }, []);
+  const dataGridSubmission = FormioUtils.default.getValue(submission, key) || [];
+  return dataGridSubmission.map((rowSubmission, index) => {
+    const dataGridRowComponents = components
+      .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
+      .reduce(
+        (handledComponents, subComponent) => handleComponent(subComponent, { data: rowSubmission }, handledComponents),
+        []
+      );
+    return {
+      type: "datagrid-row",
+      label: rowTitle,
+      key: `${key}-row-${index}`,
+      components: dataGridRowComponents,
+    };
+  });
 }
 
 function handleDataGrid(component, submission, formSummaryObject) {
   const { label, key, type } = component;
 
-  const dataGridRows = handleDataGridRows(component, submission[key]);
+  const dataGridRows = handleDataGridRows(component, submission);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -144,7 +125,8 @@ function handleFieldSet(component, submission, formSummaryObject) {
 
 function handleField(component, submission, formSummaryObject) {
   const { key, label, type } = component;
-  if (submission[key] === undefined || submission[key] === "") {
+  const submissionValue = FormioUtils.default.getValue(submission, key);
+  if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
     return formSummaryObject;
   }
   return [
@@ -153,12 +135,12 @@ function handleField(component, submission, formSummaryObject) {
       label,
       key,
       type,
-      value: formatValue(component, submission[component.key]),
+      value: formatValue(component, submissionValue),
     },
   ];
 }
 
-export function handleComponent(component, submission = {}, formSummaryObject) {
+export function handleComponent(component, submission = { data: {} }, formSummaryObject) {
   switch (component.type) {
     case "panel":
       return handlePanel(component, submission, formSummaryObject);
@@ -179,9 +161,8 @@ export function handleComponent(component, submission = {}, formSummaryObject) {
 }
 
 export function createFormSummaryObject(form, submission) {
-  const formSummaryObject = form.components.reduce(
+  return form.components.reduce(
     (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject),
     []
   );
-  return formSummaryObject;
 }

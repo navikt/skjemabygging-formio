@@ -153,7 +153,7 @@ export class Pdfgen {
   }
 
   generateFirstPart() {
-    const formSummaryObject = createFormSummaryObject(this.form, this.submission.data);
+    const formSummaryObject = createFormSummaryObject(this.form, this.submission);
 
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
     const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));
