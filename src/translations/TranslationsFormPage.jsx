@@ -142,7 +142,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
               setTranslations={setTranslations}
               text={text}
               type={type}
-              key={text}
+              key={`translation-${skjemanummer}-${text}-${translations[text]}`}
             />
           );
         })}
