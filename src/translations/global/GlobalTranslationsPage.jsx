@@ -41,7 +41,6 @@ const GlobalTranslationsPage = ({
   const history = useHistory();
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
-  const [availableTranslations, setAvailableTranslations] = useState([]);
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => {
       switch (action.type) {
@@ -117,7 +116,6 @@ const GlobalTranslationsPage = ({
       }
 
       setAllGlobalTranslations(translations);
-      setAvailableTranslations(Object.keys(translations));
     });
   }, [loadGlobalTranslations, languageCode, history]);
 
@@ -142,16 +140,6 @@ const GlobalTranslationsPage = ({
     return <LoadingComponent />;
   }
 
-  const languages = supportedLanguages
-    .filter((languageCode) => languageCode !== "nb-NO")
-    .map((languageCode) => ({
-      languageCode,
-      href: `/translation/global/${languageCode}`,
-      optionLabel: `${availableTranslations.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
-        languagesInNorwegian[languageCode]
-      }`,
-      languageName: languagesInNorwegian[languageCode],
-    }));
   const globalTranslationsToSave = currentTranslation.reduce(
     (allCurrentTranslationAsObject, translation) => ({
       ...allCurrentTranslationAsObject,
@@ -171,14 +159,7 @@ const GlobalTranslationsPage = ({
         visOversettelseliste: true,
         visLagNyttSkjema: false,
       }}
-      leftCol={
-        <LanguageSelector
-          currentLanguage={languageCode}
-          translations={languages.sort((lang1, lang2) =>
-            lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
-          )}
-        />
-      }
+      leftCol={<LanguageSelector createLink={(languageCode) => `/translation/global/${languageCode}`} />}
       mainCol={
         <ul className="list-inline">
           <li className="list-inline-item">

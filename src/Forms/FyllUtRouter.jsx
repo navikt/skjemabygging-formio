@@ -36,18 +36,7 @@ const FyllUtRouter = ({ form }) => {
 
   return (
     <FyllUtContainer>
-      <LanguageSelector
-        currentLanguage={currentLanguage}
-        translations={
-          availableLanguages &&
-          availableLanguages.map((languageCode) => ({
-            languageCode,
-            optionLabel: languagesInOriginalLanguage[languageCode],
-            languageName: languagesInNorwegian[currentLanguage],
-            href: `?lang=${languageCode}`,
-          }))
-        }
-      />
+      <LanguageSelector createLink={(languageCode) => `?lang=${languageCode}`} />
       <Switch>
         <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
         <Route exact path={path}>

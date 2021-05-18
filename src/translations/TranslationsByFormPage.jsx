@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
 import LanguageSelector from "../components/LanguageSelector";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { languagesInNorwegian, supportedLanguages } from "../hooks/useLanguages";
 import TranslationsFormPage from "./TranslationsFormPage";
+import { useTranslations } from "../context/i18n";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -47,14 +47,7 @@ const getAllTextsForForm = (form) =>
         index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
     );
 
-const TranslationsByFormPage = ({
-  deleteLanguage,
-  saveTranslation,
-  form,
-  loadTranslationsForEditPage,
-  languageCode,
-  projectURL,
-}) => {
+const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languageCode, projectURL }) => {
   const history = useHistory();
   const {
     title,
@@ -62,39 +55,8 @@ const TranslationsByFormPage = ({
     properties: { skjemanummer },
   } = form;
   const flattenedComponents = getAllTextsForForm(form);
-  const [translations, setTranslations] = useState([]);
-  const [translationId, setTranslationId] = useState();
-  const [availableTranslations, setAvailableTranslations] = useState([]);
-
-  useEffect(() => {
-    loadTranslationsForEditPage(form.path).then((translations) => {
-      console.log("TranslationsByFormPage", translations);
-      setTranslations(translations[languageCode] ? translations[languageCode].translations : {});
-      setTranslationId(translations[languageCode] ? translations[languageCode].id : undefined);
-      setAvailableTranslations(Object.keys(translations));
-
-      if (!languageCode) {
-        const firstAvailableLanguageCode = Object.keys(translations)[0];
-        if (firstAvailableLanguageCode) {
-          history.push(`/translation/${path}/${firstAvailableLanguageCode}`);
-        } else {
-          history.push(`/translation/${path}/nn-NO`);
-        }
-      }
-    });
-  }, [form.path, loadTranslationsForEditPage, languageCode, history, path]);
-
-  const languages = supportedLanguages
-    .filter((languageCode) => languageCode !== "nb-NO")
-    .map((languageCode) => ({
-      languageCode,
-      href: `/translation/${path}/${languageCode}`,
-      optionLabel: `${availableTranslations.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
-        languagesInNorwegian[languageCode]
-      }`,
-      languageName: languagesInNorwegian[languageCode],
-    }));
-
+  const { translations, setTranslations } = useTranslations();
+  const translationId = (translations[languageCode] || {}).id;
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -106,10 +68,8 @@ const TranslationsByFormPage = ({
       leftCol={
         <>
           <LanguageSelector
-            currentLanguage={languageCode}
-            translations={languages.sort((lang1, lang2) =>
-              lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
-            )}
+            createLink={(languageCode, path) => `/translation/${path}/${languageCode}`}
+            formPath={path}
           />
           <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
             Slett språk
@@ -140,7 +100,7 @@ const TranslationsByFormPage = ({
     >
       <TranslationsFormPage
         skjemanummer={skjemanummer}
-        translations={translations}
+        translations={(translations[languageCode] && translations[languageCode].translations) || {}}
         title={title}
         flattenedComponents={flattenedComponents}
         setTranslations={setTranslations}

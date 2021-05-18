@@ -11,7 +11,6 @@ import { useModal } from "../util/useModal";
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
-  console.log("Form", form);
   return (
     <>
       <AppLayoutWithContext
