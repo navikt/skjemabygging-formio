@@ -25,6 +25,12 @@ const useGlobalTranslationsPageStyles = makeStyles({
   },
 });
 
+const createNewRow = () => ({
+  id: guid(),
+  originalText: "",
+  translatedText: "",
+});
+
 const GlobalTranslationsPage = ({
   deleteLanguage,
   languageCode,
@@ -39,21 +45,22 @@ const GlobalTranslationsPage = ({
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => {
       switch (action.type) {
-        case "initializeLanguage":
-          return [
-            {
-              id: guid(),
-              originalText: "",
-              translatedText: "",
-            },
-          ];
-        case "loadNewLanguage":
-          return Object.keys(action.payload.translations).map((originalText) => ({
+        case "initializeLanguage": {
+          return [createNewRow()];
+        }
+        case "loadNewLanguage": {
+          const newState = Object.keys(action.payload.translations).map((originalText) => ({
             id: guid(),
             originalText,
             translatedText: action.payload.translations[originalText].value,
           }));
-        case "updateOriginalText":
+          if (newState.length > 0) {
+            return newState;
+          } else {
+            return [createNewRow()];
+          }
+        }
+        case "updateOriginalText": {
           return state.map((translationObject) => {
             if (translationObject.id === action.payload.id) {
               return {
@@ -64,7 +71,8 @@ const GlobalTranslationsPage = ({
               return translationObject;
             }
           });
-        case "updateTranslation":
+        }
+        case "updateTranslation": {
           return state.map((translationObject) => {
             if (translationObject.id === action.payload.id) {
               return action.payload;
@@ -72,19 +80,25 @@ const GlobalTranslationsPage = ({
               return translationObject;
             }
           });
-        case "addNewTranslation":
-          return [
-            ...state,
-            {
-              id: guid(),
-              originalText: "",
-              translatedText: "",
-            },
-          ];
-        case "deleteOneRow":
-          return state.filter((translationObject) => translationObject.id !== action.payload.id);
-        default:
-          return state;
+        }
+        case "addNewTranslation": {
+          return [...state, createNewRow()];
+        }
+        case "deleteOneRow": {
+          const newState = state.filter((translationObject) => translationObject.id !== action.payload.id);
+          if (newState.length > 0) {
+            return newState;
+          } else {
+            return [createNewRow()];
+          }
+        }
+        default: {
+          if (state.length > 0) {
+            return state;
+          } else {
+            return [createNewRow()];
+          }
+        }
       }
     },
     [],
