@@ -82,26 +82,20 @@ function handleContainer(component, submission, formSummaryObject) {
 function handleDataGridRows(component, submission) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = utils.getValue(submission, key) || [];
-  return dataGridSubmission.reduce((handledRows, rowSubmission, index) => {
+  return dataGridSubmission.map((rowSubmission, index) => {
     const dataGridRowComponents = components
       .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
       .reduce(
         (handledComponents, subComponent) => handleComponent(subComponent, { data: rowSubmission }, handledComponents),
         []
       );
-    if (dataGridRowComponents.length === 0) {
-      return handledRows;
-    }
-    return [
-      ...handledRows,
-      {
-        type: "datagrid-row",
-        label: rowTitle,
-        key: `${key}-row-${index}`,
-        components: dataGridRowComponents,
-      },
-    ];
-  }, []);
+    return {
+      type: "datagrid-row",
+      label: rowTitle,
+      key: `${key}-row-${index}`,
+      components: dataGridRowComponents,
+    };
+  });
 }
 
 function handleDataGrid(component, submission, formSummaryObject) {
