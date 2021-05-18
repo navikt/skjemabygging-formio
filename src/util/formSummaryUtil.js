@@ -29,26 +29,9 @@ function formatValue(component, value) {
   }
 }
 
-function filterNonFormContent(components = [], submission = []) {
-  return components.filter((component) => {
-    switch (component.type) {
-      case "content":
-      case "htmlelement":
-        return false;
-      case "container":
-        return filterNonFormContent(component.components, submission[component.key]).length > 0;
-      case "fieldset":
-      case "navSkjemagruppe":
-        return filterNonFormContent(component.components, submission).length > 0;
-      default:
-        return submission[component.key] !== "" && submission[component.key] !== undefined;
-    }
-  });
-}
-
 function handlePanel(component, submission, formSummaryObject) {
-  const { title, key, type, components } = component;
-  const subComponents = filterNonFormContent(components, submission).reduce(
+  const { title, key, type, components = [] } = component;
+  const subComponents = components.reduce(
     (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
     []
   );
@@ -178,9 +161,8 @@ export function handleComponent(component, submission = { data: {} }, formSummar
 }
 
 export function createFormSummaryObject(form, submission) {
-  const formSummaryObject = form.components.reduce(
+  return form.components.reduce(
     (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject),
     []
   );
-  return formSummaryObject;
 }
