@@ -3,14 +3,13 @@ import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
-import { useLanguages } from "../hooks";
 import { useTranslations } from "../context/i18n";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
-  const { initialLanguage, translations } = useTranslations();
-  if (!translations) {
+  const { initialLanguage, translationsForNavForm } = useTranslations();
+  if (!translationsForNavForm) {
     return null;
   }
   return (
@@ -22,7 +21,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         form={form}
         options={{
           language: initialLanguage.current,
-          i18n: translations,
+          i18n: translationsForNavForm,
         }}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}

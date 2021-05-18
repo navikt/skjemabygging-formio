@@ -36,11 +36,11 @@ export function TestFormPage({
   lang = "nb-NO",
   onSave,
   onLogout,
-  loadTranslationsForFormAndMapToI18nObject,
+  loadTranslations,
 }) {
   const title = `${form.title}`;
   return (
-    <I18nProvider loadTranslations={() => loadTranslationsForFormAndMapToI18nObject(form.path)}>
+    <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
       <AppLayoutWithContext
         navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
         mainCol={<MainCol editFormUrl={editFormUrl} form={form} onSave={onSave} />}
