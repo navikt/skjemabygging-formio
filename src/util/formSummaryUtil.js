@@ -1,4 +1,4 @@
-import utils from "formiojs/utils";
+import FormioUtils from "formiojs/utils";
 
 function formatValue(component, value) {
   switch (component.type) {
@@ -64,7 +64,7 @@ function handleContainer(component, submission, formSummaryObject) {
 
 function handleDataGridRows(component, submission) {
   const { key, rowTitle, components } = component;
-  const dataGridSubmission = utils.getValue(submission, key) || [];
+  const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission.map((rowSubmission, index) => {
     const dataGridRowComponents = components
       .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
@@ -125,7 +125,7 @@ function handleFieldSet(component, submission, formSummaryObject) {
 
 function handleField(component, submission, formSummaryObject) {
   const { key, label, type } = component;
-  const submissionValue = utils.getValue(submission, key);
+  const submissionValue = FormioUtils.getValue(submission, key);
   if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
     return formSummaryObject;
   }
