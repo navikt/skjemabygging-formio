@@ -28,32 +28,21 @@ const MainCol = ({ editFormUrl, form, onSave }) => {
   );
 };
 
-export function TestFormPage({
-  onPublishClick,
-  publiserer,
-  editFormUrl,
-  form,
-  lang = "nb-NO",
-  onSave,
-  onLogout,
-  loadTranslations,
-}) {
+export function TestFormPage({ onPublishClick, publiserer, editFormUrl, form, onSave, onLogout, loadTranslations }) {
   const title = `${form.title}`;
   return (
-    <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
-      <AppLayoutWithContext
-        navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
-        mainCol={<MainCol editFormUrl={editFormUrl} form={form} onSave={onSave} />}
-        rightCol={
-          <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
-            Publiser
-          </Knapp>
-        }
-      >
-        <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-          <FyllUtRouter form={form} />
-        </AmplitudeProvider>
-      </AppLayoutWithContext>
-    </I18nProvider>
+    <AppLayoutWithContext
+      navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
+      mainCol={<MainCol editFormUrl={editFormUrl} form={form} onSave={onSave} />}
+      rightCol={
+        <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+          Publiser
+        </Knapp>
+      }
+    >
+      <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+        <FyllUtRouter form={form} loadTranslations={loadTranslations} />
+      </AmplitudeProvider>
+    </AppLayoutWithContext>
   );
 }
