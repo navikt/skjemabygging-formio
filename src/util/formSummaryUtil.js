@@ -1,3 +1,5 @@
+import utils from "formiojs/utils";
+
 function formatValue(component, value) {
   switch (component.type) {
     case "radiopanel":
@@ -70,21 +72,23 @@ function handleContainer(component, submission, formSummaryObject) {
     return formSummaryObject;
   } else {
     const mappedSubComponents = components.reduce(
-      (subComponents, subComponent) => handleComponent(subComponent, submission[key], subComponents),
+      (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents),
       []
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
 }
 
-function handleDataGridRows(component, dataGridSubmission = []) {
+function handleDataGridRows(component, submission) {
   const { key, rowTitle, components } = component;
+  const dataGridSubmission = utils.getValue(submission, key) || [];
   return dataGridSubmission.reduce((handledRows, rowSubmission, index) => {
-    const dataGridRowComponents = components.reduce(
-      (handledComponents, subComponent) => handleComponent(subComponent, rowSubmission, handledComponents),
-      []
-    );
-
+    const dataGridRowComponents = components
+      .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
+      .reduce(
+        (handledComponents, subComponent) => handleComponent(subComponent, { data: rowSubmission }, handledComponents),
+        []
+      );
     if (dataGridRowComponents.length === 0) {
       return handledRows;
     }
@@ -103,7 +107,7 @@ function handleDataGridRows(component, dataGridSubmission = []) {
 function handleDataGrid(component, submission, formSummaryObject) {
   const { label, key, type } = component;
 
-  const dataGridRows = handleDataGridRows(component, submission[key]);
+  const dataGridRows = handleDataGridRows(component, submission);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -144,7 +148,8 @@ function handleFieldSet(component, submission, formSummaryObject) {
 
 function handleField(component, submission, formSummaryObject) {
   const { key, label, type } = component;
-  if (submission[key] === undefined || submission[key] === "") {
+  const submissionValue = utils.getValue(submission, key);
+  if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
     return formSummaryObject;
   }
   return [
@@ -153,12 +158,12 @@ function handleField(component, submission, formSummaryObject) {
       label,
       key,
       type,
-      value: formatValue(component, submission[component.key]),
+      value: formatValue(component, submissionValue),
     },
   ];
 }
 
-export function handleComponent(component, submission = {}, formSummaryObject) {
+export function handleComponent(component, submission = { data: {} }, formSummaryObject) {
   switch (component.type) {
     case "panel":
       return handlePanel(component, submission, formSummaryObject);

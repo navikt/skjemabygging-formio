@@ -74,9 +74,11 @@ const createFormObject = (panels = []) => ({
   components: panels,
 });
 
-const submissionData = {
-  email: "email-verdi",
-  tekstfelt: "tekstfelt-verdi",
+const dummySubmission = {
+  data: {
+    email: "email-verdi",
+    tekstfelt: "tekstfelt-verdi",
+  },
 };
 
 describe("When handling component", () => {
@@ -98,7 +100,7 @@ describe("When handling component", () => {
     it("uses title instead of label", () => {
       const actual = handleComponent(
         createPanelObject("PanelTitle", [createDummyTextfield("TextField")], "PanelLabel (should not be included)"),
-        { textfield: "textValue" },
+        { data: { textfield: "textValue" } },
         []
       );
       expect(actual).toEqual([
@@ -114,7 +116,7 @@ describe("When handling component", () => {
 
   describe("form fields", () => {
     it("are added with value from submission", () => {
-      const actual = handleComponent(createDummyTextfield(), submissionData, []);
+      const actual = handleComponent(createDummyTextfield(), dummySubmission, []);
       expect(actual).toContainEqual({
         label: "Tekstfelt",
         key: "tekstfelt",
@@ -131,20 +133,20 @@ describe("When handling component", () => {
 
   describe("content", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(createDummyContentElement(), submissionData, []);
+      const actual = handleComponent(createDummyContentElement(), dummySubmission, []);
       expect(actual.find((component) => component.type === "content")).toBeUndefined();
     });
   });
   describe("htmlelement", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(createDummyHTMLElement(), submissionData, []);
+      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, []);
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
     });
   });
 
   describe("container", () => {
     it("is never included", () => {
-      const actual = handleComponent(createDummyContainerElement(), submissionData, []);
+      const actual = handleComponent(createDummyContainerElement(), dummySubmission, []);
       expect(actual.find((component) => component.type === "container")).toBeUndefined();
     });
 
@@ -162,7 +164,7 @@ describe("When handling component", () => {
     it("is ignored, but subcomponents that should be included are added", () => {
       const actual = handleComponent(
         createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
-        { container: submissionData },
+        { data: { container: dummySubmission } },
         []
       );
       expect(actual).toEqual([
@@ -185,7 +187,7 @@ describe("When handling component", () => {
     it("uses legend and not label", () => {
       const actual = handleComponent(
         createDummyNavSkjemagruppe("NavSkjemagruppe", [createDummyTextfield()]),
-        submissionData,
+        dummySubmission,
         []
       );
       const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
@@ -203,7 +205,7 @@ describe("When handling component", () => {
     it("is ignored if subComponents don't have submissions", () => {
       const actual = handleComponent(
         createDummyDataGrid("Datagrid", [createDummyTextfield(), createDummyEmail(), createDummyRadioPanel()]),
-        { datagrid: [] },
+        { data: { datagrid: [] } },
         []
       );
       expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
@@ -212,7 +214,7 @@ describe("When handling component", () => {
     it("renders datagrid as expected", () => {
       const actual = handleComponent(
         createDummyDataGrid("DataGrid", [createDummyTextfield()]),
-        { datagrid: [submissionData] },
+        { data: { datagrid: [dummySubmission.data] } },
         []
       );
 
@@ -270,15 +272,17 @@ describe("When creating form summary object", () => {
         createPanelObject("Panel with radioPanel", [createDummyRadioPanel("RadioPanel")]),
       ]),
       {
-        simpletextfield: "simpletextfield-value",
-        simpleemail: "simpleemail-value",
-        container: {
-          textfieldincontainer: "textfieldincontainer-value",
-          emailincontainer: "emailincontainer-value",
+        data: {
+          simpletextfield: "simpletextfield-value",
+          simpleemail: "simpleemail-value",
+          container: {
+            textfieldincontainer: "textfieldincontainer-value",
+            emailincontainer: "emailincontainer-value",
+          },
+          textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
+          emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
+          radiopanel: "yes",
         },
-        textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
-        emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
-        radiopanel: "yes",
       }
     );
     expect(actual).toEqual([
@@ -371,7 +375,7 @@ describe("When creating form summary object", () => {
           createPanelObject("Panel 1", [createDummyTextfield()]),
           createPanelObject("Panel 2", [createDummyEmail()]),
         ]),
-        submissionData
+        dummySubmission
       );
       expect(actual).toBeInstanceOf(Array);
       expect(actual.length).toEqual(2);

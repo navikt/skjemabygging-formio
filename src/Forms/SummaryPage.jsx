@@ -97,7 +97,7 @@ export function SummaryPage({ form, submission, formUrl }) {
           Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
           "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
         </Normaltekst>
-        <FormSummary submission={!!submission ? submission.data : {}} form={form} />
+        <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
