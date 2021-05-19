@@ -10,11 +10,9 @@ const useSelectStyle = makeStyles({
     bottom: 0,
     right: 0,
     left: 0,
-    zIndex: 1000,
   },
   nav: {
     position: "relative",
-    zIndex: 1001,
   },
 });
 
