@@ -118,6 +118,10 @@ function I18nProvider({ children, loadTranslations }) {
       : originalText;
   }
 
+  function updateInitialLanguage() {
+    initialLanguage.current = currentLanguage;
+  }
+
   return (
     <I18nContext.Provider
       value={{
@@ -129,6 +133,7 @@ function I18nProvider({ children, loadTranslations }) {
         translationsForNavForm,
         setTranslations,
         setCurrentLanguage,
+        updateInitialLanguage,
       }}
     >
       {children}
