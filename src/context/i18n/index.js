@@ -102,7 +102,7 @@ function I18nProvider({ children, loadTranslations }) {
   }, [loadTranslations]);
 
   useEffect(() => {
-    const newTranslation = translations[currentLanguage] ? translations[currentLanguage].translation : {};
+    const newTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
     setCurrentTranslation(newTranslation);
   }, [currentLanguage, translations]);
 
@@ -113,7 +113,9 @@ function I18nProvider({ children, loadTranslations }) {
   }, [currentLanguage]);
 
   function translate(originalText) {
-    return currentTranslation[originalText] || originalText;
+    return currentTranslation && currentTranslation[originalText]
+      ? currentTranslation[originalText].value
+      : originalText;
   }
 
   return (
