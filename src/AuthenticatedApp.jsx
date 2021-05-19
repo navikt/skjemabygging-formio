@@ -22,7 +22,6 @@ function AuthenticatedApp({ formio, store }) {
     onPublish,
     loadGlobalTranslations,
     loadTranslationsForEditPage,
-    loadTranslationsForFormAndMapToI18nObject,
     deleteLanguage,
     saveLocalTranslation,
     saveGlobalTranslation,

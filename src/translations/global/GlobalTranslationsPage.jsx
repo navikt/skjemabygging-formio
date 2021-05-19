@@ -1,7 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import LanguageSelector from "../../components/LanguageSelector";
-import { languagesInNorwegian, supportedLanguages } from "../../hooks/useLanguages";
 import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
