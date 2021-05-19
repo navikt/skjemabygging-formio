@@ -1,14 +1,14 @@
-import { Link } from "react-router-dom";
-import React, { useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+import React from "react";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import FyllUtRouter from "./FyllUtRouter";
 import AmplitudeProvider from "../context/amplitude";
-import { useLanguages } from "../hooks";
-import I18nProvider, { useTranslations } from "../context/i18n";
 
 const MainCol = ({ editFormUrl, form, onSave }) => {
-  const { currentLanguage } = useTranslations();
+  const history = useHistory();
+  const params = new URLSearchParams(history.location.search);
+  const currentLanguage = params.get("lang");
   return (
     <ul className="list-inline">
       <li className="list-inline-item">
