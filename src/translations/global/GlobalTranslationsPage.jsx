@@ -16,12 +16,21 @@ const useGlobalTranslationsPageStyles = makeStyles({
     maxWidth: "80%",
     margin: "0 auto 2rem",
   },
-  title: {
+  label: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr auto",
     gap: "2rem",
     marginBottom: "1rem",
     alignItems: "center",
+  },
+  title: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleItem: {
+    marginRight: "1rem",
+    display: "inline-block",
   },
 });
 
@@ -161,8 +170,8 @@ const GlobalTranslationsPage = ({
       }}
       leftCol={<LanguageSelector createLink={(languageCode) => `/translation/global/${languageCode}`} />}
       mainCol={
-        <ul className="list-inline">
-          <li className="list-inline-item">
+        <ul className={classes.title}>
+          <li className={classes.titleItem}>
             <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>
           </li>
           <li className="list-inline-item">
@@ -185,7 +194,7 @@ const GlobalTranslationsPage = ({
     >
       <div className={classes.root}>
         <form>
-          <li className={classes.title}>
+          <li className={classes.label}>
             <Undertittel>Original</Undertittel>
             <Undertittel>Oversettelse</Undertittel>
           </li>
