@@ -62,9 +62,9 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
-    <section className="wizard-page" aria-label={translate(TEXTS.prepareLetterPage.firstTitle(index))}>
+    <section className="wizard-page" aria-label={translate(TEXTS.prepareLetterPage.firstSectionTitle(index))}>
       <Systemtittel className="margin-bottom-default">
-        {translate(TEXTS.prepareLetterPage.firstTitle(index))}
+        {translate(TEXTS.prepareLetterPage.firstSectionTitle(index))}
       </Systemtittel>
       <Normaltekst className="margin-bottom-default">{translate(TEXTS.prepareLetterPage.firstDescription)}</Normaltekst>
       <div className="margin-bottom-default">
@@ -96,7 +96,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
           className="knapp knapp--fullbredde"
           onClick={() => setHasDownloadedPDF(true)}
           type="submit"
-          value={translate(TEXTS.prepareLetterPage.downloadApplication)}
+          value={translate(TEXTS.downloadApplication)}
         />
       </div>
     </section>
@@ -169,7 +169,7 @@ export function PrepareLetterPage({ form, submission }) {
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
           <Link className="knapp knapp--fullbredde" to={previousPage}>
-            {translate(TEXTS.prepareLetterPage.goBack)}
+            {translate(TEXTS.goBack)}
           </Link>
         </div>
       </main>

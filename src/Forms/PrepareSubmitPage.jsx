@@ -9,6 +9,8 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { AppConfigContext } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
+import { useTranslations } from "../context/i18n";
+import TEXTS from "../texts";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -31,6 +33,7 @@ export function PrepareSubmitPage({ form, submission }) {
   const { dokumentinnsendingBaseURL, fyllutBaseURL } = useContext(AppConfigContext);
   const [, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort } = useAmplitude();
+  const { translate } = useTranslations();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const {
@@ -40,22 +43,18 @@ export function PrepareSubmitPage({ form, submission }) {
   return (
     <ResultContent>
       <Sidetittel className="margin-bottom-large" id="form-title">
-        {form.title}
+        {translate(form.title)}
       </Sidetittel>
       <main id="maincontent" tabIndex={-1}>
-        <section
-          className="wizard-page"
-          aria-label="1. Last ned søknaden (PDF). Du blir bedt om å laste den opp på neste side."
-        >
+        <section className="wizard-page" aria-label={translate(TEXTS.prepareSubmitPage.firstSectionTitle)}>
           <Systemtittel id="last-ned-soknad-overskrift" className="margin-bottom-default">
-            1. Last ned søknaden (PDF). Du blir bedt om å laste den opp på neste side.
+            {translate(TEXTS.prepareSubmitPage.firstSectionTitle)}
           </Systemtittel>
           <Normaltekst className="margin-bottom-default">
-            Når du klikker på “Last ned søknad” åpnes søknaden din i en ny fane i nettleseren. Du må lagre pdf-filen på
-            maskinen din på en plass hvor du kan finne den igjen.
+            {translate(TEXTS.prepareSubmitPage.firstSectionDescription)}
           </Normaltekst>
           <Normaltekst className="margin-bottom-default">
-            Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending av søknaden.
+            {translate(TEXTS.prepareSubmitPage.firstSectionInstruction)}
           </Normaltekst>
           <form
             id={form.path}
@@ -74,49 +73,46 @@ export function PrepareSubmitPage({ form, submission }) {
               className="knapp"
               onClick={() => setHasDownloadedPDF(true)}
               type="submit"
-              value="Last ned søknad"
+              value={translate(TEXTS.downloadApplication)}
             />
           </div>
         </section>
-        <section className="wizard-page" aria-label="2. Instruksjoner for innsending av søknaden.">
+        <section className="wizard-page" aria-label={translate(TEXTS.prepareSubmitPage.secondSectionTitle)}>
           <Systemtittel id="instruksjoner-for-innsending-overskrift" className="margin-bottom-default">
-            2. Instruksjoner for innsending av søknaden
+            {translate(TEXTS.prepareSubmitPage.secondSectionTitle)}
           </Systemtittel>
           <Normaltekst className="margin-bottom-default">
-            Når du klikker på “Gå videre” nedenfor åpnes det en ny side med en opplastingstjeneste (krever innlogging)
-            for å laste opp pdf-filen som du lagret på maskinen din i forrige steg.
+            {translate(TEXTS.prepareSubmitPage.secondSectionInstruction)}
           </Normaltekst>
           <BekreftCheckboksPanel
             className="margin-bottom-default"
-            label="Jeg har lastet ned PDF-en og lest instruksjonene."
+            label={translate(TEXTS.prepareSubmitPage.confirmCheckboxLabel)}
             checked={allowedToProgress}
             onChange={() => {
               setAllowedToProgress(!allowedToProgress);
             }}
           >
             <div className="margin-bottom-default">
-              <strong>Etter at du har logget inn:</strong>
+              <strong>{translate(TEXTS.prepareSubmitPage.confirmCheckboxDescription)}</strong>
             </div>
             <ol>
-              <li className="typo-normal">Trykk på "Fyll ut og last opp"</li>
-              <li className="typo-normal">Trykk på "Finn filen". (OBS! IKKE trykk på "Åpne skjema"-knappen)</li>
-              <li className="typo-normal">Finn og velg søknadsfilen som du lastet ned og lagret på maskinen din</li>
-              <li className="typo-normal">
-                Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen
-              </li>
+              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionOne)}</li>
+              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionTwo)}</li>
+              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionThree)}</li>
+              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionFour)}</li>
             </ol>
           </BekreftCheckboksPanel>
           <div aria-live="polite">
             {!allowedToProgress && (
               <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
-                Du må bekrefte at du har lest instruksjonene over før du kan gå videre.
+                {translate(TEXTS.prepareSubmitPage.confirmCheckboxWarning)}
               </AlertStripe>
             )}
           </div>
           <nav className="list-inline">
             <div className="list-inline-item">
               <Link className="knapp knapp--fullbredde" to={previousPage}>
-                Gå tilbake
+                {translate(TEXTS.goBack)}
               </Link>
             </div>
             <div className="list-inline-item">
@@ -136,7 +132,7 @@ export function PrepareSubmitPage({ form, submission }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Gå videre
+                {translate(TEXTS.prepareSubmitPage.moveForward)}
               </a>
             </div>
           </nav>
