@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 import { Innholdstittel, Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
+import { languagesInNorwegian } from "../../context/i18n";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -162,7 +163,7 @@ const GlobalTranslationsPage = ({
       mainCol={
         <ul className="list-inline">
           <li className="list-inline-item">
-            <Innholdstittel>{languageCode}</Innholdstittel>
+            <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>
           </li>
           <li className="list-inline-item">
             <Delete />
