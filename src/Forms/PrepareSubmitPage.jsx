@@ -28,17 +28,20 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
   return url;
 };
 
-export function PrepareSubmitPage({ form, submission }) {
+export function PrepareSubmitPage({ form, submission, formUrl }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL, fyllutBaseURL } = useContext(AppConfigContext);
   const [, setHasDownloadedPDF] = useState(false);
+  const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
   const { translate } = useTranslations();
+  const { state } = useLocation();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  const {
-    state: { previousPage },
-  } = useLocation();
+  useEffect(() => {
+    if (!state) setGoBackURL(`${formUrl}/oppsummering`);
+    else setGoBackURL(state.previousPage);
+  }, [state, formUrl]);
 
   return (
     <ResultContent>
@@ -111,7 +114,7 @@ export function PrepareSubmitPage({ form, submission }) {
           </div>
           <nav className="list-inline">
             <div className="list-inline-item">
-              <Link className="knapp knapp--fullbredde" to={previousPage}>
+              <Link className="knapp knapp--fullbredde" to={goBackUrl}>
                 {translate(TEXTS.goBack)}
               </Link>
             </div>

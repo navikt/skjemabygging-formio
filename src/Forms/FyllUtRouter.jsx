@@ -51,12 +51,12 @@ const FyllUtRouter = ({ form, loadTranslations }) => {
           </Route>
           <Route path={`${path}/send-i-posten`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} />}
+              {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} formUrl={url} />}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/forbered-innsending`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} />}
+              {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} formUrl={url} />}
             </SubmissionWrapper>
           </Route>
         </Switch>

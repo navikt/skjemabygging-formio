@@ -125,14 +125,17 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
   </section>
 );
 
-export function PrepareLetterPage({ form, submission }) {
+export function PrepareLetterPage({ form, submission, formUrl }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useContext(AppConfigContext);
   const { translate } = useTranslations();
+  const { state } = useLocation();
+  const [goBackUrl, setGoBackURL] = useState("");
 
-  const {
-    state: { previousPage },
-  } = useLocation();
+  useEffect(() => {
+    if (!state) setGoBackURL(`${formUrl}/oppsummering`);
+    else setGoBackURL(state.previousPage);
+  }, [state, formUrl]);
 
   const sections = [];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
@@ -168,7 +171,7 @@ export function PrepareLetterPage({ form, submission }) {
       <main id="maincontent" tabIndex={-1}>
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
-          <Link className="knapp knapp--fullbredde" to={previousPage}>
+          <Link className="knapp knapp--fullbredde" to={goBackUrl}>
             {translate(TEXTS.goBack)}
           </Link>
         </div>
