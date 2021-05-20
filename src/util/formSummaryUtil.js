@@ -65,15 +65,14 @@ function handleContainer(component, submission, formSummaryObject) {
   }
 }
 
-function handleDataGridRows(component, submission, parentContainerKey) {
+function handleDataGridRows(component, submission) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission.map((rowSubmission, index) => {
     const dataGridRowComponents = components
       .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
       .reduce(
-        (handledComponents, subComponent) =>
-          handleComponent(subComponent, { data: rowSubmission }, handledComponents, parentContainerKey),
+        (handledComponents, subComponent) => handleComponent(subComponent, { data: rowSubmission }, handledComponents),
         []
       );
     return {
@@ -85,10 +84,10 @@ function handleDataGridRows(component, submission, parentContainerKey) {
   });
 }
 
-function handleDataGrid(component, submission, formSummaryObject, parentContainerKey) {
+function handleDataGrid(component, submission, formSummaryObject) {
   const { label, key, type } = component;
 
-  const dataGridRows = handleDataGridRows(component, submission, parentContainerKey);
+  const dataGridRows = handleDataGridRows(component, submission);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -156,7 +155,7 @@ export function handleComponent(component, submission = { data: {} }, formSummar
     case "container":
       return handleContainer(component, submission, formSummaryObject);
     case "datagrid":
-      return handleDataGrid(component, submission, formSummaryObject, parentContainerKey);
+      return handleDataGrid(component, submission, formSummaryObject);
     case "fieldset":
     case "navSkjemagruppe":
       return handleFieldSet(component, submission, formSummaryObject, parentContainerKey);

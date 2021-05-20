@@ -318,8 +318,9 @@ describe("When creating form summary object", () => {
                   createDummyTextfield("Field"),
                   createDummyContainerElement("Container3", [
                     createDummyTextfield("Field"),
-                    createDummyDataGrid("Datagrid", [
-                      createDummyContainerElement("Container4", [createDummyTextfield("Field")]),
+                    createDummyContainerElement("Container4", [
+                      createDummyTextfield("Field"),
+                      createDummyDataGrid("Datagrid", [createDummyTextfield("Field")]),
                     ]),
                   ]),
                 ]),
@@ -349,13 +350,14 @@ describe("When creating form summary object", () => {
               field: "nested-field-2",
               container3: {
                 field: "nested-field-3",
-                datagrid: [
-                  {
-                    container4: {
-                      field: "nested-field-4",
+                container4: {
+                  field: "nested-field-4",
+                  datagrid: [
+                    {
+                      field: "field inside datagrid does not inherit container key",
                     },
-                  },
-                ],
+                  ],
+                },
               },
             },
           },
@@ -440,6 +442,12 @@ describe("When creating form summary object", () => {
                     value: "nested-field-3",
                   },
                   {
+                    label: "Field",
+                    key: "container4.field",
+                    type: "textfield",
+                    value: "nested-field-4",
+                  },
+                  {
                     label: "Datagrid",
                     key: "datagrid",
                     type: "datagrid",
@@ -451,9 +459,9 @@ describe("When creating form summary object", () => {
                         components: [
                           {
                             label: "Field",
-                            key: "container4.field",
+                            key: "field",
                             type: "textfield",
-                            value: "nested-field-4",
+                            value: "field inside datagrid does not inherit container key",
                           },
                         ],
                       },
