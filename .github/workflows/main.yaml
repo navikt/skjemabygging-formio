@@ -9,11 +9,6 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
-      - uses: "actions/cache@v2"
-        with:
-          "path": "~/.npm"
-          "key": "${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
-          "restore-keys": "${{ runner.os }}-node-"
       - uses: "actions/setup-node@v1"
         with:
           node-version: '14'
@@ -22,7 +17,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package.json', 'package-lock.json') }}
       - name: Install deps if needed
         if: steps.cache-local-node-modules.outputs.cache-hit != 'true'
         run: npm ci
