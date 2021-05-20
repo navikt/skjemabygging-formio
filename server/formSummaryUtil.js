@@ -67,7 +67,7 @@ function handleContainer(component, submission, formSummaryObject) {
 
 function handleDataGridRows(component, submission) {
   const { key, rowTitle, components } = component;
-  const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
+  const dataGridSubmission = FormioUtils.default.getValue(submission, key) || [];
   return dataGridSubmission.map((rowSubmission, index) => {
     const dataGridRowComponents = components
       .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
@@ -129,7 +129,7 @@ function handleFieldSet(component, submission, formSummaryObject, parentContaine
 function handleField(component, submission, formSummaryObject, parentContainerKey) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
-  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  const submissionValue = FormioUtils.default.getValue(submission, componentKey);
   if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
     return formSummaryObject;
   }
