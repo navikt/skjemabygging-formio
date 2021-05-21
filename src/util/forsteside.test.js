@@ -9,6 +9,26 @@ import {
   genererVedleggKeysSomSkalSendes,
 } from "./forsteside";
 
+const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
+  label,
+  values: [
+    { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
+    {
+      label:
+        "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+      value: "ettersender",
+      shortcut: "",
+    },
+    { label: "Jeg har levert denne dokumentasjonen tidligere", value: "levertTidligere", shortcut: "" },
+  ],
+  key,
+  properties: {
+    vedleggstittel,
+    vedleggskode,
+  },
+  type: "radio",
+});
+
 describe("genererPersonalia", () => {
   it("returns bruker if we have fodselsNummer", () => {
     const actual = genererPersonalia("12345678911", {});
@@ -109,44 +129,18 @@ const formMedVedlegg = {
       type: "panel",
       label: "Page 5",
       components: [
-        {
-          label: "Skriftlig bekreftelse på studieplass",
-          values: [
-            { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
-            {
-              label:
-                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
-              value: "ettersender",
-              shortcut: "",
-            },
-            { label: "Jeg har levert denne dokumentasjonen tidligere", value: "levertTidligere", shortcut: "" },
-          ],
-          key: "vedleggO9",
-          properties: {
-            vedleggstittel: "Bekreftelse fra studiested/skole",
-            vedleggskode: "O9",
-          },
-          type: "radio",
-        },
-        {
-          label: "Faktura fra utdanningsinstitusjon",
-          values: [
-            { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
-            {
-              label:
-                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
-              value: "ettersender",
-              shortcut: "",
-            },
-            { label: "Jeg har levert denne dokumentasjonen tidligere", value: "sendtTidligere", shortcut: "" },
-          ],
-          key: "vedleggQ7",
-          properties: {
-            vedleggstittel: "Dokumentasjon av utgifter i forbindelse med utdanning",
-            vedleggskode: "Q7",
-          },
-          type: "radio",
-        },
+        genererVedleggComponent(
+          "vedleggO9",
+          "Skriftlig bekreftelse på studieplass",
+          "O9",
+          "Bekreftelse fra studiested/skole"
+        ),
+        genererVedleggComponent(
+          "vedleggQ7",
+          "Faktura fra utdanningsinstitusjon",
+          "Q7",
+          "Dokumentasjon av utgifter i forbindelse med utdanning"
+        ),
       ],
     },
   ],
