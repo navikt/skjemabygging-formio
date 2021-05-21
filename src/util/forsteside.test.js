@@ -7,7 +7,28 @@ import {
   genererSkjemaTittel,
   genererVedleggsListe,
   genererVedleggKeysSomSkalSendes,
+  getVedleggsFelterSomSkalSendes,
 } from "./forsteside";
+
+const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
+  label,
+  values: [
+    { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
+    {
+      label:
+        "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+      value: "ettersender",
+      shortcut: "",
+    },
+    { label: "Jeg har levert denne dokumentasjonen tidligere", value: "levertTidligere", shortcut: "" },
+  ],
+  key,
+  properties: {
+    vedleggstittel,
+    vedleggskode,
+  },
+  type: "radio",
+});
 
 describe("genererPersonalia", () => {
   it("returns bruker if we have fodselsNummer", () => {
@@ -42,6 +63,46 @@ describe("genererSkjemaTittel", () => {
   it("generates correct skjemaTittel", () => {
     const actual = genererSkjemaTittel("Registreringsskjema for tilskudd til utdanning", "NAV 76-07.10");
     expect(actual).toEqual("NAV 76-07.10 Registreringsskjema for tilskudd til utdanning");
+  });
+});
+
+describe("getVedleggsFelterSomSkalSendes", () => {
+  it("adds all vedlegg which are set as leggerVedNaa", () => {
+    const actual = getVedleggsFelterSomSkalSendes(
+      {
+        vedleggQ7: "leggerVedNaa",
+        vedleggO9: "leggerVedNaa",
+      },
+      formMedVedlegg
+    );
+    expect(actual.map((component) => component.key)).toEqual(["vedleggO9", "vedleggQ7"]);
+  });
+  it("does not add vedlegg which should not be submitted now", () => {
+    const actual = getVedleggsFelterSomSkalSendes(
+      {
+        vedleggQ7: "levertTidligere",
+        vedleggO9: "ettersender",
+      },
+      formMedVedlegg
+    );
+    expect(actual.map((component) => component.key)).toEqual([]);
+  });
+  it("handles several vedlegg with the same vedleggskode", () => {
+    const actual = getVedleggsFelterSomSkalSendes(
+      {
+        vedlegg1: "leggerVedNaa",
+        vedlegg2: "leggerVedNaa",
+        vedlegg3: "leggerVedNaa",
+      },
+      {
+        components: [
+          genererVedleggComponent("vedlegg1", "Label 1", "O9", "Vedleggstittel 1"),
+          genererVedleggComponent("vedlegg2", "Label 2", "O9", "Vedleggstittel 2"),
+          genererVedleggComponent("vedlegg3", "Label 3", "Q7", "Vedleggstittel 3"),
+        ],
+      }
+    );
+    expect(actual.map((component) => component.key)).toEqual(["vedlegg1", "vedlegg2", "vedlegg3"]);
   });
 });
 
@@ -109,44 +170,18 @@ const formMedVedlegg = {
       type: "panel",
       label: "Page 5",
       components: [
-        {
-          label: "Skriftlig bekreftelse på studieplass",
-          values: [
-            { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
-            {
-              label:
-                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
-              value: "ettersender",
-              shortcut: "",
-            },
-            { label: "Jeg har levert denne dokumentasjonen tidligere", value: "levertTidligere", shortcut: "" },
-          ],
-          key: "vedleggO9",
-          properties: {
-            vedleggstittel: "Bekreftelse fra studiested/skole",
-            vedleggskode: "O9",
-          },
-          type: "radio",
-        },
-        {
-          label: "Faktura fra utdanningsinstitusjon",
-          values: [
-            { label: "Jeg legger det ved denne søknaden (anbefalt)", value: "leggerVedNaa", shortcut: "" },
-            {
-              label:
-                "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
-              value: "ettersender",
-              shortcut: "",
-            },
-            { label: "Jeg har levert denne dokumentasjonen tidligere", value: "sendtTidligere", shortcut: "" },
-          ],
-          key: "vedleggQ7",
-          properties: {
-            vedleggstittel: "Dokumentasjon av utgifter i forbindelse med utdanning",
-            vedleggskode: "Q7",
-          },
-          type: "radio",
-        },
+        genererVedleggComponent(
+          "vedleggO9",
+          "Skriftlig bekreftelse på studieplass",
+          "O9",
+          "Bekreftelse fra studiested/skole"
+        ),
+        genererVedleggComponent(
+          "vedleggQ7",
+          "Faktura fra utdanningsinstitusjon",
+          "Q7",
+          "Dokumentasjon av utgifter i forbindelse med utdanning"
+        ),
       ],
     },
   ],
