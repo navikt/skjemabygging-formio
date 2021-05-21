@@ -367,7 +367,6 @@ describe("When creating form summary object", () => {
         },
       }
     );
-    console.log(JSON.stringify(actual[2], undefined, 2));
     expect(actual).toEqual([
       {
         label: "Panel with simple fields that should all be included",
