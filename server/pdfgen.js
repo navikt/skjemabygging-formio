@@ -117,6 +117,7 @@ export class Pdfgen {
       switch (component.type) {
         case "fieldset":
           return this.componentsToBody(component.components);
+        case "panel":
         case "navSkjemagruppe":
         case "datagrid":
           return [this.createRow(component.label, "", true), ...this.componentsToBody(component.components, true)];
