@@ -7,6 +7,7 @@ import {
   genererSkjemaTittel,
   genererVedleggsListe,
   genererVedleggKeysSomSkalSendes,
+  getVedleggsFelterSomSkalSendes,
 } from "./forsteside";
 
 const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
@@ -62,6 +63,46 @@ describe("genererSkjemaTittel", () => {
   it("generates correct skjemaTittel", () => {
     const actual = genererSkjemaTittel("Registreringsskjema for tilskudd til utdanning", "NAV 76-07.10");
     expect(actual).toEqual("NAV 76-07.10 Registreringsskjema for tilskudd til utdanning");
+  });
+});
+
+describe("getVedleggsFelterSomSkalSendes", () => {
+  it("adds all vedlegg which are set as leggerVedNaa", () => {
+    const actual = getVedleggsFelterSomSkalSendes(
+      {
+        vedleggQ7: "leggerVedNaa",
+        vedleggO9: "leggerVedNaa",
+      },
+      formMedVedlegg
+    );
+    expect(actual.map((component) => component.key)).toEqual(["vedleggO9", "vedleggQ7"]);
+  });
+  it("does not add vedlegg which should not be submitted now", () => {
+    const actual = getVedleggsFelterSomSkalSendes(
+      {
+        vedleggQ7: "levertTidligere",
+        vedleggO9: "ettersender",
+      },
+      formMedVedlegg
+    );
+    expect(actual.map((component) => component.key)).toEqual([]);
+  });
+  it("handles several vedlegg with the same vedleggskode", () => {
+    const actual = getVedleggsFelterSomSkalSendes(
+      {
+        vedlegg1: "leggerVedNaa",
+        vedlegg2: "leggerVedNaa",
+        vedlegg3: "leggerVedNaa",
+      },
+      {
+        components: [
+          genererVedleggComponent("vedlegg1", "Label 1", "O9", "Vedleggstittel 1"),
+          genererVedleggComponent("vedlegg2", "Label 2", "O9", "Vedleggstittel 2"),
+          genererVedleggComponent("vedlegg3", "Label 3", "Q7", "Vedleggstittel 3"),
+        ],
+      }
+    );
+    expect(actual.map((component) => component.key)).toEqual(["vedlegg1", "vedlegg2", "vedlegg3"]);
   });
 });
 
