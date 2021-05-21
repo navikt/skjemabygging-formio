@@ -1,4 +1,4 @@
-import FormioUtils from "formiojs/utils";
+import FormioUtils from "formiojs/utils/index.js";
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
