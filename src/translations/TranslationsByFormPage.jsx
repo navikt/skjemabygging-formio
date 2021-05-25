@@ -109,7 +109,8 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
     >
       <TranslationsFormPage
         skjemanummer={skjemanummer}
-        translations={(translations[languageCode] && translations[languageCode].translations) || {}}
+        translations={translations}
+        languageCode={languageCode}
         title={title}
         flattenedComponents={flattenedComponents}
         setTranslations={setTranslations}

@@ -36,7 +36,7 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-const FormItem = ({ translations, setTranslations, text, type }) => {
+const FormItem = ({ currentTranslation, setTranslations, text, type, languageCode, translations }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [globalTranslation, setGlobalTranslation] = useState("");
@@ -44,15 +44,29 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
   const classes = useTranslationsListStyles();
 
   useEffect(() => {
-    if (translations && translations[text]) {
-      if (translations[text].scope === "global") {
+    if (currentTranslation && currentTranslation[text]) {
+      if (currentTranslation[text].scope === "global") {
         setHasGlobalTranslation(true);
         setShowGlobalTranslation(true);
-        setTempGlobalTranslation(translations[text].value);
+        setTempGlobalTranslation(currentTranslation[text].value);
       }
-      setGlobalTranslation(translations[text].value);
+      setGlobalTranslation(currentTranslation[text].value);
     }
-  }, [translations, setTranslations, text]);
+  }, [currentTranslation, setTranslations, text]);
+
+  const updateTranslations = (targetValue) => {
+    setTranslations({
+      ...translations,
+      [languageCode]: {
+        ...translations[languageCode],
+        translations: {
+          ...currentTranslation,
+          [text]: { value: targetValue, scope: "local" },
+        },
+      },
+    });
+    setGlobalTranslation(targetValue);
+  };
 
   return (
     <div className={classes.list}>
@@ -60,32 +74,24 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
         <Textarea
           label={text}
           className="margin-bottom-default"
-          key={text}
+          key={`${text}-${languageCode}`}
           description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           value={globalTranslation}
           onChange={(event) => {
-            setTranslations({
-              ...translations,
-              [text]: { value: event.target.value, scope: "local" },
-            });
-            setGlobalTranslation(event.target.value);
+            updateTranslations(event.target.value);
           }}
           readOnly={hasGlobalTranslation}
         />
       ) : (
         <Input
           className="margin-bottom-default"
-          key={text}
+          key={`${text}-${languageCode}`}
           description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           label={text}
           type={type}
           value={globalTranslation}
           onChange={(event) => {
-            setTranslations({
-              ...translations,
-              [text]: { value: event.target.value, scope: "local" },
-            });
-            setGlobalTranslation(event.target.value);
+            updateTranslations(event.target.value);
           }}
           readOnly={hasGlobalTranslation}
         />
@@ -114,8 +120,21 @@ const FormItem = ({ translations, setTranslations, text, type }) => {
     </div>
   );
 };
-const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, setTranslations }) => {
+const TranslationsFormPage = ({
+  skjemanummer,
+  translations,
+  title,
+  flattenedComponents,
+  setTranslations,
+  languageCode,
+}) => {
   const classes = useTranslationsListStyles();
+  const [currentTranslation, setCurrentTranslation] = useState({});
+
+  useEffect(
+    () => setCurrentTranslation((translations[languageCode] && translations[languageCode].translations) || {}),
+    [translations, languageCode]
+  );
 
   return (
     <div className={classes.root}>
@@ -126,23 +145,31 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
           className="margin-bottom-default"
           label={title}
           type={"text"}
-          key={title}
-          value={(translations[title] && translations[title].value) || ""}
-          onChange={(event) =>
+          key={`title-${title}`}
+          value={(currentTranslation[title] && currentTranslation[title].value) || ""}
+          onChange={(event) => {
             setTranslations({
               ...translations,
-              [title]: { value: event.target.value, scope: "local" },
-            })
-          }
+              [languageCode]: {
+                ...translations[languageCode],
+                translations: {
+                  ...currentTranslation,
+                  [title]: { value: event.target.value, scope: "local" },
+                },
+              },
+            });
+          }}
         />
         {flattenedComponents.map(({ text, type }) => {
           return (
             <FormItem
+              currentTranslation={currentTranslation}
               translations={translations}
               setTranslations={setTranslations}
               text={text}
               type={type}
-              key={`translation-${skjemanummer}-${text}-${translations[text]}`}
+              key={`translation-${skjemanummer}-${text}-${languageCode}`}
+              languageCode={languageCode}
             />
           );
         })}
