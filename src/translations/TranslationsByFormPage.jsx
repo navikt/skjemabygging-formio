@@ -85,7 +85,16 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
           </li>
           <li className="list-inline-item">
             <Hovedknapp
-              onClick={() => saveTranslation(projectURL, translationId, languageCode, translations, path, title)}
+              onClick={() => {
+                saveTranslation(
+                  projectURL,
+                  translationId,
+                  languageCode,
+                  translations[languageCode].translations,
+                  path,
+                  title
+                );
+              }}
             >
               Lagre
             </Hovedknapp>
