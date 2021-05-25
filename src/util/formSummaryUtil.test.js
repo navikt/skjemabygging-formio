@@ -74,9 +74,11 @@ const createFormObject = (panels = []) => ({
   components: panels,
 });
 
-const submissionData = {
-  email: "email-verdi",
-  tekstfelt: "tekstfelt-verdi",
+const dummySubmission = {
+  data: {
+    email: "email-verdi",
+    tekstfelt: "tekstfelt-verdi",
+  },
 };
 
 describe("When handling component", () => {
@@ -98,7 +100,7 @@ describe("When handling component", () => {
     it("uses title instead of label", () => {
       const actual = handleComponent(
         createPanelObject("PanelTitle", [createDummyTextfield("TextField")], "PanelLabel (should not be included)"),
-        { textfield: "textValue" },
+        { data: { textfield: "textValue" } },
         []
       );
       expect(actual).toEqual([
@@ -114,7 +116,7 @@ describe("When handling component", () => {
 
   describe("form fields", () => {
     it("are added with value from submission", () => {
-      const actual = handleComponent(createDummyTextfield(), submissionData, []);
+      const actual = handleComponent(createDummyTextfield(), dummySubmission, []);
       expect(actual).toContainEqual({
         label: "Tekstfelt",
         key: "tekstfelt",
@@ -131,20 +133,20 @@ describe("When handling component", () => {
 
   describe("content", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(createDummyContentElement(), submissionData, []);
+      const actual = handleComponent(createDummyContentElement(), dummySubmission, []);
       expect(actual.find((component) => component.type === "content")).toBeUndefined();
     });
   });
   describe("htmlelement", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(createDummyHTMLElement(), submissionData, []);
+      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, []);
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
     });
   });
 
   describe("container", () => {
     it("is never included", () => {
-      const actual = handleComponent(createDummyContainerElement(), submissionData, []);
+      const actual = handleComponent(createDummyContainerElement(), dummySubmission, []);
       expect(actual.find((component) => component.type === "container")).toBeUndefined();
     });
 
@@ -162,15 +164,61 @@ describe("When handling component", () => {
     it("is ignored, but subcomponents that should be included are added", () => {
       const actual = handleComponent(
         createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
-        { container: submissionData },
+        { data: { container: dummySubmission.data } },
         []
       );
       expect(actual).toEqual([
         {
           label: "Tekstfelt",
-          key: "tekstfelt",
+          key: "container.tekstfelt",
           type: "textfield",
           value: "tekstfelt-verdi",
+        },
+      ]);
+    });
+
+    it("Maps the correct submission value to the correct field", () => {
+      const actual = handleComponent(
+        createPanelObject("Panel", [
+          createDummyTextfield(),
+          createDummyContainerElement("Level 1 Container", [
+            createDummyTextfield(),
+            createDummyContainerElement("Level 2 Container", [createDummyTextfield()]),
+          ]),
+        ]),
+        {
+          data: {
+            tekstfelt: "Utenfor container",
+            level1container: { tekstfelt: "Inni container 1", level2container: { tekstfelt: "Inni container 2" } },
+          },
+        },
+        []
+      );
+      expect(actual).toEqual([
+        {
+          key: "panel",
+          label: "Panel",
+          type: "panel",
+          components: [
+            {
+              key: "tekstfelt",
+              label: "Tekstfelt",
+              type: "textfield",
+              value: "Utenfor container",
+            },
+            {
+              key: "level1container.tekstfelt",
+              label: "Tekstfelt",
+              type: "textfield",
+              value: "Inni container 1",
+            },
+            {
+              key: "level2container.tekstfelt",
+              label: "Tekstfelt",
+              type: "textfield",
+              value: "Inni container 2",
+            },
+          ],
         },
       ]);
     });
@@ -185,7 +233,7 @@ describe("When handling component", () => {
     it("uses legend and not label", () => {
       const actual = handleComponent(
         createDummyNavSkjemagruppe("NavSkjemagruppe", [createDummyTextfield()]),
-        submissionData,
+        dummySubmission,
         []
       );
       const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
@@ -203,7 +251,7 @@ describe("When handling component", () => {
     it("is ignored if subComponents don't have submissions", () => {
       const actual = handleComponent(
         createDummyDataGrid("Datagrid", [createDummyTextfield(), createDummyEmail(), createDummyRadioPanel()]),
-        { datagrid: [] },
+        { data: { datagrid: [] } },
         []
       );
       expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
@@ -212,7 +260,7 @@ describe("When handling component", () => {
     it("renders datagrid as expected", () => {
       const actual = handleComponent(
         createDummyDataGrid("DataGrid", [createDummyTextfield()]),
-        { datagrid: [submissionData] },
+        { data: { datagrid: [dummySubmission.data] } },
         []
       );
 
@@ -261,6 +309,25 @@ describe("When creating form summary object", () => {
             createDummyEmail("Email in container"),
           ]),
         ]),
+        createPanelObject("Panel with containers nested in different layout components", [
+          createDummyContainerElement("Container1", [
+            createDummyNavSkjemagruppe("NavSkjemaGruppe", [
+              createDummyTextfield("Field"),
+              createDummyContainerElement("Container2", [
+                createPanelObject("Panel", [
+                  createDummyTextfield("Field"),
+                  createDummyContainerElement("Container3", [
+                    createDummyTextfield("Field"),
+                    createDummyContainerElement("Container4", [
+                      createDummyTextfield("Field"),
+                      createDummyDataGrid("Datagrid", [createDummyTextfield("Field")]),
+                    ]),
+                  ]),
+                ]),
+              ]),
+            ]),
+          ]),
+        ]),
         createPanelObject("Panel with navSkjemagruppe", [
           createDummyNavSkjemagruppe("NavSkjemagruppe", [
             createDummyTextfield("Textfield in NavSkjemagruppe"),
@@ -270,15 +337,34 @@ describe("When creating form summary object", () => {
         createPanelObject("Panel with radioPanel", [createDummyRadioPanel("RadioPanel")]),
       ]),
       {
-        simpletextfield: "simpletextfield-value",
-        simpleemail: "simpleemail-value",
-        container: {
-          textfieldincontainer: "textfieldincontainer-value",
-          emailincontainer: "emailincontainer-value",
+        data: {
+          simpletextfield: "simpletextfield-value",
+          simpleemail: "simpleemail-value",
+          container: {
+            textfieldincontainer: "textfieldincontainer-value",
+            emailincontainer: "emailincontainer-value",
+          },
+          container1: {
+            field: "nested-field-1",
+            container2: {
+              field: "nested-field-2",
+              container3: {
+                field: "nested-field-3",
+                container4: {
+                  field: "nested-field-4",
+                  datagrid: [
+                    {
+                      field: "field inside datagrid does not inherit container key",
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
+          emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
+          radiopanel: "yes",
         },
-        textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
-        emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
-        radiopanel: "yes",
       }
     );
     expect(actual).toEqual([
@@ -308,16 +394,81 @@ describe("When creating form summary object", () => {
         components: [
           {
             label: "Textfield in container",
-            key: "textfieldincontainer",
+            key: "container.textfieldincontainer",
             type: "textfield",
             value: "textfieldincontainer-value",
           },
 
           {
             label: "Email in container",
-            key: "emailincontainer",
+            key: "container.emailincontainer",
             type: "email",
             value: "emailincontainer-value",
+          },
+        ],
+      },
+      {
+        label: "Panel with containers nested in different layout components",
+        key: "panelwithcontainersnestedindifferentlayoutcomponents",
+        type: "panel",
+        components: [
+          {
+            label: "NavSkjemaGruppe-legend",
+            key: "navskjemagruppe",
+            type: "navSkjemagruppe",
+            components: [
+              {
+                label: "Field",
+                key: "container1.field",
+                type: "textfield",
+                value: "nested-field-1",
+              },
+              {
+                label: "Panel",
+                key: "panel",
+                type: "panel",
+                components: [
+                  {
+                    label: "Field",
+                    key: "container2.field",
+                    type: "textfield",
+                    value: "nested-field-2",
+                  },
+                  {
+                    label: "Field",
+                    key: "container3.field",
+                    type: "textfield",
+                    value: "nested-field-3",
+                  },
+                  {
+                    label: "Field",
+                    key: "container4.field",
+                    type: "textfield",
+                    value: "nested-field-4",
+                  },
+                  {
+                    label: "Datagrid",
+                    key: "datagrid",
+                    type: "datagrid",
+                    components: [
+                      {
+                        label: "datagrid-row-title",
+                        key: "datagrid-row-0",
+                        type: "datagrid-row",
+                        components: [
+                          {
+                            label: "Field",
+                            key: "field",
+                            type: "textfield",
+                            value: "field inside datagrid does not inherit container key",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -366,12 +517,11 @@ describe("When creating form summary object", () => {
   describe("panels", () => {
     it("are added as arrays on the top level", () => {
       const actual = createFormSummaryObject(
-        // TODO: Do we need to add components for this to be legal?
         createFormObject([
           createPanelObject("Panel 1", [createDummyTextfield()]),
           createPanelObject("Panel 2", [createDummyEmail()]),
         ]),
-        submissionData
+        dummySubmission
       );
       expect(actual).toBeInstanceOf(Array);
       expect(actual.length).toEqual(2);
