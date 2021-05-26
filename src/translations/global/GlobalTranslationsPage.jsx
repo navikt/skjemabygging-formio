@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import LanguageSelector from "../../components/LanguageSelector";
+import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
@@ -168,7 +168,7 @@ const GlobalTranslationsPage = ({
         visOversettelseliste: true,
         visLagNyttSkjema: false,
       }}
-      leftCol={<LanguageSelector createLink={(languageCode) => `/translation/global/${languageCode}`} />}
+      leftCol={<FormBuilderLanguageSelector createLink={(languageCode) => `/translation/global/${languageCode}`} />}
       mainCol={
         <ul className={classes.title}>
           <li className={classes.titleItem}>

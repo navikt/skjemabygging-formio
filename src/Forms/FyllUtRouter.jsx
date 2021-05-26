@@ -7,15 +7,14 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
-import I18nProvider from "../context/i18n";
-import LanguageSelector from "../components/LanguageSelector";
+import { LanguagesProvider, LanguageSelector } from "../context/languages";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "800px",
 });
 
-const FyllUtRouter = ({ form, loadTranslations }) => {
+const FyllUtRouter = ({ form, translations }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -34,9 +33,9 @@ const FyllUtRouter = ({ form, loadTranslations }) => {
   }, [loggSkjemaApnet]);
 
   return (
-    <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
+    <LanguagesProvider translations={translations}>
       <FyllUtContainer>
-        <LanguageSelector createLink={(languageCode) => `?lang=${languageCode}`} />
+        <LanguageSelector />
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
@@ -61,7 +60,7 @@ const FyllUtRouter = ({ form, loadTranslations }) => {
           </Route>
         </Switch>
       </FyllUtContainer>
-    </I18nProvider>
+    </LanguagesProvider>
   );
 };
 

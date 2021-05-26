@@ -44,17 +44,23 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
         }}
       />
       <Route
-        path={`${path}/:formpath/view`}
+        path={`${path}/:formPath/view`}
         render={({ match }) => {
+          let {
+            params: { formPath },
+          } = match;
+          const form = getFormFromPath(forms, formPath);
           return (
-            <TestFormPage
-              {...match.params}
-              onLogout={logout}
-              loadTranslations={loadTranslations}
-              form={getFormFromPath(forms, match.params.formpath)}
-              editFormUrl={`${path}/${match.params.formpath}/edit`}
-              onSave={onSave}
-            />
+            <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
+              <TestFormPage
+                {...match.params}
+                onLogout={logout}
+                loadTranslations={loadTranslations}
+                form={getFormFromPath(forms, formPath)}
+                editFormUrl={`${path}/${formPath}/edit`}
+                onSave={onSave}
+              />
+            </I18nProvider>
           );
         }}
       />

@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { flattenComponents } from "../util/forsteside";
-import LanguageSelector from "../components/LanguageSelector";
+import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import { useTranslations } from "../context/i18n";
@@ -67,7 +67,7 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
       }}
       leftCol={
         <>
-          <LanguageSelector
+          <FormBuilderLanguageSelector
             createLink={(languageCode, path) => `/translation/${path}/${languageCode}`}
             formPath={path}
           />

@@ -1,8 +1,7 @@
 import React from "react";
+import Select from "./Select";
 import { makeStyles } from "@material-ui/styles";
 import navCssVariabler from "nav-frontend-core";
-import Select from "./Select";
-import { languagesInOriginalLanguage, useTranslations } from "../context/i18n";
 
 const useLanguageSelectorStyling = makeStyles({
   languageToggle: {
@@ -70,30 +69,8 @@ const useLanguageSelectorStyling = makeStyles({
   },
 });
 
-const LanguageSelector = ({ createLink, formPath }) => {
+const LanguageSelector = ({ label, options }) => {
   const classes = useLanguageSelectorStyling();
-  const { currentLanguage, availableLanguages } = useTranslations();
-  const options = availableLanguages
-    .map((languageCode) => ({
-      languageCode,
-      optionLabel: `${availableLanguages.indexOf(languageCode) === -1 ? `Legg til ` : ""}${
-        languagesInOriginalLanguage[languageCode]
-      }`,
-      languageName: languagesInOriginalLanguage[currentLanguage],
-      href: createLink(languageCode, formPath),
-    }))
-    .sort((lang1, lang2) =>
-      lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
-    );
-
-  if (options.length === 0) {
-    return null;
-  }
-
-  const label = languagesInOriginalLanguage[currentLanguage]
-    ? languagesInOriginalLanguage[currentLanguage]
-    : "Språk/Language";
-
   return (
     <div className={classes.languageToggle}>
       <div className={classes.languageToggleWrapper}>
