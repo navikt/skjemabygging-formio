@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
 import FormioDefaultTranslations from "formiojs/i18n";
-import GlobalTranslations from "./i18nData";
+import GlobalTranslations from "../i18nData";
 
 export const useForms = (formio, store, userAlerter) => {
   const [forms, setFormsInternal] = useState(store.forms);

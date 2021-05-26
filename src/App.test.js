@@ -4,7 +4,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { renderHook } from "@testing-library/react-hooks";
 import NavForm from "./components/NavForm.jsx";
-import { useForms } from "./useForms";
+import { useForms } from "./hooks/useForms";
 import { AuthContext } from "./context/auth-context";
 import App from "./App";
 import Formiojs from "formiojs/Formio";
@@ -43,7 +43,7 @@ describe("App", () => {
           <App
             store={formStore}
             projectURL="http://myproject.example.org"
-            pusher={{subscribe: (name) => createFakeChannel()}}
+            pusher={{ subscribe: (name) => createFakeChannel() }}
           />
         </AuthContext.Provider>
       </MemoryRouter>,

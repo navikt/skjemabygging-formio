@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
-import { useForms } from "./useForms";
+import { useForms } from "./hooks/useForms";
 import { UserAlerterContext } from "./userAlerting";
 import NewTranslation from "./translations/NewTranslation";
 import { TranslationsListPage } from "./translations/TranslationsListPage";
