@@ -7,10 +7,12 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
+import { useTranslations } from "../context/i18n";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
+  const { translationsForNavForm } = useTranslations();
   return (
     <>
       <AppLayoutWithContext
@@ -48,6 +50,7 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
         openModal={openModal}
         closeModal={() => setOpenModal(false)}
         form={form}
+        translations={translationsForNavForm}
         onPublish={onPublish}
       />
     </>

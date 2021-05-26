@@ -47,8 +47,12 @@ export const useForms = (formio, store, userAlerter) => {
       setForms(forms.filter((each) => each._id !== form._id));
     });
   };
-  const onPublish = async (form) => {
-    const payload = JSON.stringify({ form: form, token: Formiojs.getToken() });
+  const onPublish = async (form, translations) => {
+    const payload = JSON.stringify({
+      form: form,
+      translations: translations,
+      token: Formiojs.getToken(),
+    });
     const response = await fetch(`/api/publish/${form.path}`, {
       method: "PUT",
       headers: { "content-type": "application/json" },

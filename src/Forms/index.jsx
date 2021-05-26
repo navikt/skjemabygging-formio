@@ -9,6 +9,7 @@ import { FormsListPage } from "./FormsListPage";
 import CustomComponents from "../customComponents";
 import Components from "formiojs/components/Components";
 import LoadingComponent from "../components/LoadingComponent";
+import I18nProvider from "../context/i18n";
 
 export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadTranslations }) => {
   Components.setComponents(CustomComponents);
@@ -29,14 +30,16 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
           const form = getFormFromPath(forms, params.formpath);
           const testFormUrl = `${path}/${params.formpath}/view`;
           return (
-            <EditFormPage
-              onLogout={logout}
-              form={form}
-              testFormUrl={testFormUrl}
-              onSave={onSave}
-              onChange={onChange}
-              onPublish={onPublish}
-            />
+            <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
+              <EditFormPage
+                onLogout={logout}
+                form={form}
+                testFormUrl={testFormUrl}
+                onSave={onSave}
+                onChange={onChange}
+                onPublish={onPublish}
+              />
+            </I18nProvider>
           );
         }}
       />

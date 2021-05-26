@@ -15,14 +15,14 @@ const useModalStyles = makeStyles({
   },
 });
 
-const ConfirmPublishModal = ({ openModal, closeModal, form, onPublish }) => {
+const ConfirmPublishModal = ({ openModal, closeModal, form, translations, onPublish }) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
 
-  const onPublishClick = async (form) => {
+  const onPublishClick = async (form, translations) => {
     setPubliserer(true);
     try {
-      await onPublish(form);
+      await onPublish(form, translations);
     } finally {
       setPubliserer(false);
       closeModal();
@@ -41,7 +41,7 @@ const ConfirmPublishModal = ({ openModal, closeModal, form, onPublish }) => {
       <div className={styles.modal_text}>Er du sikker på at dette skjemaet skal publiseres?</div>
       <ul className="list-inline">
         <li className="list-inline-item">
-          <Knapp onClick={() => onPublishClick(form)} spinner={publiserer}>
+          <Knapp onClick={() => onPublishClick(form, translations)} spinner={publiserer}>
             Ja, publiser skjemaet
           </Knapp>
         </li>

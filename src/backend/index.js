@@ -15,7 +15,7 @@ export class Backend {
     return this.githubAppConfig.baseURL;
   }
 
-  async publishForm(userToken, form, formPath) {
+  async publishForm(userToken, form, translations, formPath) {
     await checkPublishingAccess(userToken, this.projectURL);
     const githubTokenResponse = await getGithubToken(this.githubAppConfig);
     const githubToken = githubTokenResponse.data.token;
@@ -27,6 +27,7 @@ export class Backend {
     await service.createTempCopyOfGitRef();
     try {
       await service.publishForm(formPath, form);
+      await service.publishTranslationsForForm(formPath, translations);
       await service.updatePackageJson(this.gitVersion);
     } finally {
       await service.updateFromAndDeleteTempRef();
