@@ -4,11 +4,13 @@ import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
 import { useTranslations } from "../context/i18n";
+import { useLanguages } from "../context/languages";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
-  const { initialLanguage, translationsForNavForm } = useTranslations();
+  const { translationsForNavForm } = useTranslations();
+  const { initialLanguage } = useLanguages();
   if (!translationsForNavForm) {
     return null;
   }

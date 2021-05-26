@@ -10,6 +10,8 @@ import { Innholdstittel, Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
 import { languagesInNorwegian } from "../../context/i18n";
+import { LanguagesProvider } from "../../context/languages";
+import i18nData from "../../i18nData";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -162,90 +164,92 @@ const GlobalTranslationsPage = ({
 
   const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
-    <AppLayoutWithContext
-      navBarProps={{
-        title: "Globale oversettelser",
-        visOversettelseliste: true,
-        visLagNyttSkjema: false,
-      }}
-      leftCol={<FormBuilderLanguageSelector createLink={(languageCode) => `/translation/global/${languageCode}`} />}
-      mainCol={
-        <ul className={classes.title}>
-          <li className={classes.titleItem}>
-            <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>
-          </li>
-          <li className="list-inline-item">
-            <Delete />
-            {/*<Knapp onClick={() => deleteLanguage(currentTranslation.id).then(() => history.push("/translations"))}>
+    <LanguagesProvider translations={i18nData}>
+      <AppLayoutWithContext
+        navBarProps={{
+          title: "Globale oversettelser",
+          visOversettelseliste: true,
+          visLagNyttSkjema: false,
+        }}
+        leftCol={<FormBuilderLanguageSelector formPath="global" />}
+        mainCol={
+          <ul className={classes.title}>
+            <li className={classes.titleItem}>
+              <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>
+            </li>
+            <li className="list-inline-item">
+              <Delete />
+              {/*<Knapp onClick={() => deleteLanguage(currentTranslation.id).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>*/}
-          </li>
-        </ul>
-      }
-      rightCol={
-        <Hovedknapp
-          onClick={() => {
-            saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave);
-          }}
-        >
-          Lagre
-        </Hovedknapp>
-      }
-    >
-      <div className={classes.root}>
-        <form>
-          <li className={classes.label}>
-            <Undertittel>Original</Undertittel>
-            <Undertittel>Oversettelse</Undertittel>
-          </li>
-          {currentTranslation.map(({ id, originalText, translatedText }) => (
-            <GlobalTranslationRow
-              originalText={originalText}
-              translatedText={translatedText}
-              languageCode={languageCode}
-              key={id}
-              updateOriginalText={(newOriginalText, oldOriginalText) =>
-                dispatch({
-                  type: "updateOriginalText",
-                  payload: {
-                    id,
-                    newOriginalText,
-                    oldOriginalText,
-                  },
-                })
-              }
-              updateTranslation={(originalText, translatedText) =>
-                dispatch({
-                  type: "updateTranslation",
-                  payload: {
-                    id,
-                    originalText,
-                    translatedText,
-                  },
-                })
-              }
-              deleteOneRow={() =>
-                dispatch({
-                  type: "deleteOneRow",
-                  payload: {
-                    id,
-                  },
-                })
-              }
-            />
-          ))}
-        </form>
-        <Knapp
-          onClick={() =>
-            dispatch({
-              type: "addNewTranslation",
-            })
-          }
-        >
-          Legg til ny tekst
-        </Knapp>
-      </div>
-    </AppLayoutWithContext>
+            </li>
+          </ul>
+        }
+        rightCol={
+          <Hovedknapp
+            onClick={() => {
+              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave);
+            }}
+          >
+            Lagre
+          </Hovedknapp>
+        }
+      >
+        <div className={classes.root}>
+          <form>
+            <li className={classes.label}>
+              <Undertittel>Original</Undertittel>
+              <Undertittel>Oversettelse</Undertittel>
+            </li>
+            {currentTranslation.map(({ id, originalText, translatedText }) => (
+              <GlobalTranslationRow
+                originalText={originalText}
+                translatedText={translatedText}
+                languageCode={languageCode}
+                key={id}
+                updateOriginalText={(newOriginalText, oldOriginalText) =>
+                  dispatch({
+                    type: "updateOriginalText",
+                    payload: {
+                      id,
+                      newOriginalText,
+                      oldOriginalText,
+                    },
+                  })
+                }
+                updateTranslation={(originalText, translatedText) =>
+                  dispatch({
+                    type: "updateTranslation",
+                    payload: {
+                      id,
+                      originalText,
+                      translatedText,
+                    },
+                  })
+                }
+                deleteOneRow={() =>
+                  dispatch({
+                    type: "deleteOneRow",
+                    payload: {
+                      id,
+                    },
+                  })
+                }
+              />
+            ))}
+          </form>
+          <Knapp
+            onClick={() =>
+              dispatch({
+                type: "addNewTranslation",
+              })
+            }
+          >
+            Legg til ny tekst
+          </Knapp>
+        </div>
+      </AppLayoutWithContext>
+    </LanguagesProvider>
   );
 };
 

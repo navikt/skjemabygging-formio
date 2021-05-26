@@ -9,13 +9,19 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const availableLanguages = Object.keys(translations);
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
 
+  function updateInitialLanguage() {
+    initialLanguage.current = currentLanguage;
+  }
+
   function translate(originalText) {
     const currentTranslation = translations[currentLanguage] || {};
     return currentTranslation[originalText] ? currentTranslation[originalText].value : originalText;
   }
 
   return (
-    <LanguagesContext.Provider value={{ availableLanguages, currentLanguage, initialLanguage, translate }}>
+    <LanguagesContext.Provider
+      value={{ availableLanguages, currentLanguage, initialLanguage, translate, updateInitialLanguage }}
+    >
       {children}
     </LanguagesContext.Provider>
   );

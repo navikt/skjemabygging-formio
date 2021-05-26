@@ -6,6 +6,8 @@ import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSele
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import { useTranslations } from "../context/i18n";
+import { LanguagesProvider } from "../context/languages";
+import i18nData from "../i18nData";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -58,64 +60,63 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
   const { translations, setTranslations } = useTranslations();
   const translationId = (translations[languageCode] || {}).id;
   return (
-    <AppLayoutWithContext
-      navBarProps={{
-        title: "Rediger oversettelse",
-        visSkjemaliste: false,
-        visLagNyttSkjema: false,
-        visOversettelseliste: true,
-      }}
-      leftCol={
-        <>
-          <FormBuilderLanguageSelector
-            createLink={(languageCode, path) => `/translation/${path}/${languageCode}`}
-            formPath={path}
-          />
-          <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
-            Slett språk
-          </Knapp>
-        </>
-      }
-      mainCol={
-        <ul className="list-inline">
-          <li className="list-inline-item">
-            <Link className="knapp" to={`/forms/${path}/edit`}>
-              Rediger skjema
-            </Link>
-          </li>
-          <li className="list-inline-item">
-            <Hovedknapp
-              onClick={() => {
-                saveTranslation(
-                  projectURL,
-                  translationId,
-                  languageCode,
-                  translations[languageCode].translations,
-                  path,
-                  title
-                );
-              }}
-            >
-              Lagre
-            </Hovedknapp>
-          </li>
-          <li className="list-inline-item">
-            <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
-              Vis skjema
-            </Link>
-          </li>
-        </ul>
-      }
-    >
-      <TranslationsFormPage
-        skjemanummer={skjemanummer}
-        translations={translations}
-        languageCode={languageCode}
-        title={title}
-        flattenedComponents={flattenedComponents}
-        setTranslations={setTranslations}
-      />
-    </AppLayoutWithContext>
+    <LanguagesProvider translations={i18nData}>
+      <AppLayoutWithContext
+        navBarProps={{
+          title: "Rediger oversettelse",
+          visSkjemaliste: false,
+          visLagNyttSkjema: false,
+          visOversettelseliste: true,
+        }}
+        leftCol={
+          <>
+            <FormBuilderLanguageSelector formPath={path} />
+            <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
+              Slett språk
+            </Knapp>
+          </>
+        }
+        mainCol={
+          <ul className="list-inline">
+            <li className="list-inline-item">
+              <Link className="knapp" to={`/forms/${path}/edit`}>
+                Rediger skjema
+              </Link>
+            </li>
+            <li className="list-inline-item">
+              <Hovedknapp
+                onClick={() => {
+                  saveTranslation(
+                    projectURL,
+                    translationId,
+                    languageCode,
+                    translations[languageCode].translations,
+                    path,
+                    title
+                  );
+                }}
+              >
+                Lagre
+              </Hovedknapp>
+            </li>
+            <li className="list-inline-item">
+              <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
+                Vis skjema
+              </Link>
+            </li>
+          </ul>
+        }
+      >
+        <TranslationsFormPage
+          skjemanummer={skjemanummer}
+          translations={translations}
+          languageCode={languageCode}
+          title={title}
+          flattenedComponents={flattenedComponents}
+          setTranslations={setTranslations}
+        />
+      </AppLayoutWithContext>
+    </LanguagesProvider>
   );
 };
 

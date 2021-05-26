@@ -9,6 +9,7 @@ import navCssVariabler from "nav-frontend-core";
 import { createFormSummaryObject } from "../util/formSummaryUtil";
 import { useTranslations } from "../context/i18n";
 import TEXTS from "../texts";
+import { useLanguages } from "../context/languages";
 
 const FormSummaryField = ({ label, value }) => (
   <>
@@ -85,7 +86,8 @@ const FormSummary = ({ form, submission }) => {
 export function SummaryPage({ form, submission, formUrl }) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
-  const { translate, updateInitialLanguage } = useTranslations();
+  const { translate } = useTranslations();
+  const { updateInitialLanguage } = useLanguages();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
