@@ -5,13 +5,13 @@ import LoadingComponent from "../../components/LoadingComponent";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { guid } from "../../util/guid";
-import { useHistory } from "react-router-dom";
 import { Innholdstittel, Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
 import { languagesInNorwegian } from "../../context/i18n";
 import { LanguagesProvider } from "../../context/languages";
 import i18nData from "../../i18nData";
+import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -49,7 +49,6 @@ const GlobalTranslationsPage = ({
   projectURL,
   saveTranslation,
 }) => {
-  const history = useHistory();
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [currentTranslation, dispatch] = useReducer(
@@ -116,19 +115,10 @@ const GlobalTranslationsPage = ({
   );
 
   useEffect(() => {
-    loadGlobalTranslations().then((translations) => {
-      if (!languageCode) {
-        const firstAvailableLanguageCode = Object.keys(translations)[0];
-        if (firstAvailableLanguageCode) {
-          history.push(`/translation/global/${firstAvailableLanguageCode}`);
-        } else {
-          history.push("/translation/global/nn-NO");
-        }
-      }
+    loadGlobalTranslations().then((translations) => setAllGlobalTranslations(translations));
+  }, [loadGlobalTranslations]);
 
-      setAllGlobalTranslations(translations);
-    });
-  }, [loadGlobalTranslations, languageCode, history]);
+  useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
   useEffect(() => {
     const translationsForLoadedLanguage =

@@ -8,6 +8,7 @@ import TranslationsFormPage from "./TranslationsFormPage";
 import { useTranslations } from "../context/i18n";
 import { LanguagesProvider } from "../context/languages";
 import i18nData from "../i18nData";
+import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 
 const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
@@ -58,6 +59,7 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
   } = form;
   const flattenedComponents = getAllTextsForForm(form);
   const { translations, setTranslations } = useTranslations();
+  useRedirectIfNoLanguageCode(languageCode, translations);
   const translationId = (translations[languageCode] || {}).id;
   return (
     <LanguagesProvider translations={i18nData}>
