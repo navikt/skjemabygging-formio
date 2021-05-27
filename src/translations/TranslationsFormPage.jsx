@@ -51,6 +51,8 @@ const FormItem = ({ currentTranslation, setTranslations, text, type, languageCod
         setTempGlobalTranslation(currentTranslation[text].value);
       }
       setGlobalTranslation(currentTranslation[text].value);
+    } else {
+      setGlobalTranslation("");
     }
   }, [currentTranslation, setTranslations, text]);
 

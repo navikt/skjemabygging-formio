@@ -1,15 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { languagesInOriginalLanguage, useTranslations } from "./index";
 import LanguageSelector from "../../components/LanguageSelector";
 import { useLanguages } from "../languages";
 
 const FormBuilderLanguageSelector = ({ formPath }) => {
   const { currentLanguage, availableLanguages } = useLanguages();
-  const { updateCurrentTranslation, translations } = useTranslations();
-
-  useEffect(() => {
-    updateCurrentTranslation(currentLanguage);
-  }, [currentLanguage, updateCurrentTranslation]);
+  const { translations } = useTranslations();
 
   if (availableLanguages.length === 0) {
     return null;

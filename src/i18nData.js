@@ -53,4 +53,7 @@ export default {
     [TEXTS.summaryPage.continueToPostalSubmission]: TEXTS.summaryPage.continueToPostalSubmission,
     [TEXTS.summaryPage.continueToDigitalSubmission]: TEXTS.summaryPage.continueToDigitalSubmission,
   },
+  "nn-NO": {},
+  en: {},
+  pl: {},
 };
