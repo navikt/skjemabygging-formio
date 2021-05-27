@@ -73,6 +73,7 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
               editFormUrl={`${path}/${match.params.formpath}/edit`}
               onSave={onSave}
               onChange={onChange}
+              onPublish={onPublish}
             />
           );
         }}
