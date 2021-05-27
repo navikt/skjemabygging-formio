@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
-import FormioDefaultTranslations from "formiojs/i18n";
-import GlobalTranslations from "../i18nData";
 
 export const useForms = (formio, store, userAlerter) => {
   const [forms, setFormsInternal] = useState(store.forms);
@@ -66,51 +64,6 @@ export const useForms = (formio, store, userAlerter) => {
     }
   };
 
-  const createI18nObject = (submissionResponse) => {
-    return submissionResponse.reduce(
-      (acc, curr) => ({
-        ...acc,
-        ...{
-          resources: {
-            ...acc.resources,
-            [curr.data.language]: {
-              ...((acc.resources && acc.resources[curr.data.language]) || {}),
-              translation: {
-                ...((acc.resources &&
-                  acc.resources[curr.data.language] &&
-                  acc.resources[curr.data.language].translation) ||
-                  {}),
-                ...curr.data.i18n,
-              },
-            },
-          },
-        },
-      }),
-      {
-        ...FormioDefaultTranslations,
-        resources: {
-          ...FormioDefaultTranslations.resources,
-          ...Object.keys(GlobalTranslations).reduce(
-            (languages, language) => ({
-              ...languages,
-              [language]: {
-                ...((FormioDefaultTranslations.resources && FormioDefaultTranslations.resources[language]) || {}),
-                translation: {
-                  ...((FormioDefaultTranslations.resources &&
-                    FormioDefaultTranslations.resources[language] &&
-                    FormioDefaultTranslations.resources[language].translation) ||
-                    {}),
-                  ...GlobalTranslations[language],
-                },
-              },
-            }),
-            {}
-          ),
-        },
-      }
-    );
-  };
-
   const fetchTranslations = (url) => {
     return Formiojs.fetch(url, {
       headers: {
@@ -124,21 +77,14 @@ export const useForms = (formio, store, userAlerter) => {
       });
   };
 
-  /* const loadLanguageById = async (languageId) => {
-    return fetchTranslations(`${formio.projectUrl}/language/submission/${languageId}`).then((response) => {
-      console.log("Load language by id: ", response);
-      return response;
-    });
-  }; */
-
   const loadGlobalTranslations = async () => {
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global`)
       .then((response) => {
         console.log("Fetched: ", response);
         return response;
       })
-      .then((response) =>
-        response.reduce((globalTranslations, translation) => {
+      .then((response) => {
+        return response.reduce((globalTranslations, translation) => {
           const { data, _id: id } = translation;
           const { i18n, scope, name } = data;
           return {
@@ -159,8 +105,8 @@ export const useForms = (formio, store, userAlerter) => {
               ),
             },
           };
-        }, [])
-      )
+        }, []);
+      })
       .then((globalTranslations) => {
         console.log("Fetched global translations", globalTranslations);
         return globalTranslations;
@@ -250,22 +196,6 @@ export const useForms = (formio, store, userAlerter) => {
       });
   };
 
-  const loadTranslationsForFormAndMapToI18nObject = async (formPath) => {
-    return loadTranslationsForForm(formPath).then((translations) => {
-      console.log("Fetched, filtered and mapped", createI18nObject(translations));
-      return createI18nObject(translations);
-    });
-  };
-
-  const loadLanguages = async () => {
-    return fetchTranslations(`${formio.projectUrl}/language/submission`).then((response) =>
-      response.map((language) => ({
-        ...language.data,
-        id: language._id,
-      }))
-    );
-  };
-
   const deleteLanguage = async (id) => {
     return Formiojs.fetch(`${formio.projectUrl}/language/submission/${id}`, {
       headers: {
@@ -343,10 +273,7 @@ export const useForms = (formio, store, userAlerter) => {
     onDelete,
     onPublish,
     loadGlobalTranslations,
-    loadTranslationsForForm,
     loadTranslationsForEditPage,
-    loadTranslationsForFormAndMapToI18nObject,
-    loadLanguages,
     deleteLanguage,
     saveLocalTranslation,
     saveGlobalTranslation,
