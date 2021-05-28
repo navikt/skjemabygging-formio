@@ -101,7 +101,7 @@ export function SummaryPage({ form, submission, formUrl }) {
           {translate(TEXTS.summaryPage.title)}
         </Innholdstittel>
         <Normaltekst className="margin-bottom-default">{translate(TEXTS.summaryPage.description)}</Normaltekst>
-        <FormSummary submission={!!submission ? submission.data : {}} form={form} />
+        <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>

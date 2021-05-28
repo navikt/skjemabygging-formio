@@ -8,6 +8,9 @@ export const globalStyles = {
     display: "flex",
     flexDirection: "column",
   },
+  a: {
+    color: "#0067c5",
+  },
   ".pagewrapper": {
     flex: "1 0 auto",
   },

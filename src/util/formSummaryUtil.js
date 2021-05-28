@@ -1,5 +1,9 @@
+import FormioUtils from "formiojs/utils";
 import TEXTS from "../texts";
 
+function createComponentKey(parentContainerKey, key) {
+  return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
+}
 function formatValue(component, value, translate) {
   switch (component.type) {
     case "radiopanel":
@@ -29,27 +33,10 @@ function formatValue(component, value, translate) {
   }
 }
 
-function filterNonFormContent(components = [], submission = []) {
-  return components.filter((component) => {
-    switch (component.type) {
-      case "content":
-      case "htmlelement":
-        return false;
-      case "container":
-        return filterNonFormContent(component.components, submission[component.key]).length > 0;
-      case "fieldset":
-      case "navSkjemagruppe":
-        return filterNonFormContent(component.components, submission).length > 0;
-      default:
-        return submission[component.key] !== "" && submission[component.key] !== undefined;
-    }
-  });
-}
-
-function handlePanel(component, submission, formSummaryObject, translate) {
-  const { title, key, type, components } = component;
-  const subComponents = filterNonFormContent(components, submission).reduce(
-    (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents, translate),
+function handlePanel(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { title, key, type, components = [] } = component;
+  const subComponents = components.reduce(
+    (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents, parentContainerKey),
     []
   );
   if (subComponents.length === 0) {
@@ -72,40 +59,36 @@ function handleContainer(component, submission, formSummaryObject, translate) {
     return formSummaryObject;
   } else {
     const mappedSubComponents = components.reduce(
-      (subComponents, subComponent) => handleComponent(subComponent, submission[key], subComponents, translate),
+      (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents, key, translate),
       []
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
 }
 
-function handleDataGridRows(component, dataGridSubmission = [], translate) {
+function handleDataGridRows(component, submission, translate) {
   const { key, rowTitle, components } = component;
-  return dataGridSubmission.reduce((handledRows, rowSubmission, index) => {
-    const dataGridRowComponents = components.reduce(
-      (handledComponents, subComponent) => handleComponent(subComponent, rowSubmission, handledComponents, translate),
-      []
-    );
-
-    if (dataGridRowComponents.length === 0) {
-      return handledRows;
-    }
-    return [
-      ...handledRows,
-      {
-        type: "datagrid-row",
-        label: translate(rowTitle),
-        key: `${key}-row-${index}`,
-        components: dataGridRowComponents,
-      },
-    ];
-  }, []);
+  const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
+  return dataGridSubmission.map((rowSubmission, index) => {
+    const dataGridRowComponents = components
+      .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
+      .reduce(
+        (handledComponents, subComponent) => handleComponent(subComponent, { data: rowSubmission }, handledComponents),
+        []
+      );
+    return {
+      type: "datagrid-row",
+      label: translate(rowTitle),
+      key: `${key}-row-${index}`,
+      components: dataGridRowComponents,
+    };
+  });
 }
 
 function handleDataGrid(component, submission, formSummaryObject, translate) {
   const { label, key, type } = component;
 
-  const dataGridRows = handleDataGridRows(component, submission[key], translate);
+  const dataGridRows = handleDataGridRows(component, submission, translate);
   if (dataGridRows.length === 0) {
     return [...formSummaryObject];
   }
@@ -121,13 +104,14 @@ function handleDataGrid(component, submission, formSummaryObject, translate) {
   ];
 }
 
-function handleFieldSet(component, submission, formSummaryObject, translate) {
+function handleFieldSet(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { legend, key, components, type } = component;
   if (!components || components.length === 0) {
     return formSummaryObject;
   }
   const mappedSubComponents = components.reduce(
-    (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents, translate),
+    (subComponents, subComponent) =>
+      handleComponent(subComponent, submission, subComponents, parentContainerKey, translate),
     []
   );
   if (mappedSubComponents.length === 0) {
@@ -144,26 +128,34 @@ function handleFieldSet(component, submission, formSummaryObject, translate) {
   ];
 }
 
-function handleField(component, submission, formSummaryObject, translate) {
+function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type } = component;
-  if (submission[key] === undefined || submission[key] === "") {
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
     return formSummaryObject;
   }
   return [
     ...formSummaryObject,
     {
       label: translate(label),
-      key,
+      key: componentKey,
       type,
-      value: formatValue(component, submission[component.key], translate),
+      value: formatValue(component, submissionValue, translate),
     },
   ];
 }
 
-export function handleComponent(component, submission = {}, formSummaryObject, translate = (text) => text) {
+export function handleComponent(
+  component,
+  submission = { data: {} },
+  formSummaryObject,
+  parentContainerKey = "",
+  translate
+) {
   switch (component.type) {
     case "panel":
-      return handlePanel(component, submission, formSummaryObject, translate);
+      return handlePanel(component, submission, formSummaryObject, parentContainerKey, translate);
     case "button":
     case "content":
     case "htmlelement":
@@ -174,16 +166,15 @@ export function handleComponent(component, submission = {}, formSummaryObject, t
       return handleDataGrid(component, submission, formSummaryObject, translate);
     case "fieldset":
     case "navSkjemagruppe":
-      return handleFieldSet(component, submission, formSummaryObject, translate);
+      return handleFieldSet(component, submission, formSummaryObject, parentContainerKey, translate);
     default:
-      return handleField(component, submission, formSummaryObject, translate);
+      return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
   }
 }
 
-export function createFormSummaryObject(form, submission, translate = (text) => text) {
-  const formSummaryObject = form.components.reduce(
+export function createFormSummaryObject(form, submission, translate) {
+  return form.components.reduce(
     (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject, translate),
     []
   );
-  return formSummaryObject;
 }

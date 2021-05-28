@@ -46,12 +46,9 @@ export function flattenComponents(components) {
 }
 
 export function getVedleggsFelterSomSkalSendes(submissionData, form) {
-  const flattenedFormComponents = flattenComponents(form.components);
-  return genererVedleggKeysSomSkalSendes(form, submissionData).map((vedleggsKey) =>
-    flattenedFormComponents.find(
-      (component) => component.properties && component.properties.vedleggskode === vedleggsKey
-    )
-  );
+  return flattenComponents(form.components)
+    .filter((component) => component.properties && !!component.properties.vedleggskode)
+    .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa");
 }
 
 export function genererVedleggsListe(form, submissionData) {
