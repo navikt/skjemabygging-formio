@@ -2,10 +2,9 @@ import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import LoadingComponent from "../../components/LoadingComponent";
-import GlobalTranslationRow from "./GlobalTranslationRow";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { guid } from "../../util/guid";
-import { Innholdstittel, Undertittel } from "nav-frontend-typografi";
+import { Innholdstittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
 import { languagesInNorwegian } from "../../context/i18n";
@@ -14,6 +13,7 @@ import i18nData from "../../i18nData";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useHistory } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
+import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -148,6 +148,37 @@ const GlobalTranslationsPage = ({
     return <LoadingComponent />;
   }
 
+  const updateOriginalText = (id, newOriginalText, oldOriginalText) => {
+    dispatch({
+      type: "updateOriginalText",
+      payload: {
+        id,
+        newOriginalText,
+        oldOriginalText,
+      },
+    });
+  };
+
+  const updateTranslation = (id, originalText, translatedText) => {
+    dispatch({
+      type: "updateTranslation",
+      payload: {
+        id,
+        originalText,
+        translatedText,
+      },
+    });
+  };
+
+  const deleteOneRow = (id) => {
+    dispatch({
+      type: "deleteOneRow",
+      payload: {
+        id,
+      },
+    });
+  };
+
   const globalTranslationsToSave = currentTranslation.reduce(
     (allCurrentTranslationAsObject, translation) => ({
       ...allCurrentTranslationAsObject,
@@ -198,49 +229,16 @@ const GlobalTranslationsPage = ({
               { children: "Statiske tekster" },
               { children: "Validering" },
             ]}
+            onChange={(event) => console.log("Event", event)}
           />
-          <form>
-            <li className={classes.label}>
-              <Undertittel>Original</Undertittel>
-              <Undertittel>Oversettelse</Undertittel>
-            </li>
-            {currentTranslation.map(({ id, originalText, translatedText }) => (
-              <GlobalTranslationRow
-                originalText={originalText}
-                translatedText={translatedText}
-                languageCode={languageCode}
-                key={id}
-                updateOriginalText={(newOriginalText, oldOriginalText) =>
-                  dispatch({
-                    type: "updateOriginalText",
-                    payload: {
-                      id,
-                      newOriginalText,
-                      oldOriginalText,
-                    },
-                  })
-                }
-                updateTranslation={(originalText, translatedText) =>
-                  dispatch({
-                    type: "updateTranslation",
-                    payload: {
-                      id,
-                      originalText,
-                      translatedText,
-                    },
-                  })
-                }
-                deleteOneRow={() =>
-                  dispatch({
-                    type: "deleteOneRow",
-                    payload: {
-                      id,
-                    },
-                  })
-                }
-              />
-            ))}
-          </form>
+          <GlobalTranslationsPanel
+            classes={classes}
+            currentTranslation={currentTranslation}
+            languageCode={languageCode}
+            updateOriginalText={updateOriginalText}
+            updateTranslation={updateTranslation}
+            deleteOneRow={deleteOneRow}
+          />
           <Knapp
             onClick={() =>
               dispatch({

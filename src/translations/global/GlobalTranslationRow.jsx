@@ -14,6 +14,7 @@ const useTranslationRowStyles = makeStyles({
 });
 
 const GlobalTranslationRow = ({
+  id,
   originalText,
   translatedText,
   updateTranslation,
@@ -28,7 +29,7 @@ const GlobalTranslationRow = ({
         type="text"
         value={originalText}
         onChange={(event) => {
-          updateOriginalText(event.target.value, originalText);
+          updateOriginalText(id, event.target.value, originalText);
         }}
       />
       <Input
@@ -36,10 +37,10 @@ const GlobalTranslationRow = ({
         type="text"
         value={translatedText}
         onChange={(event) => {
-          updateTranslation(originalText, event.target.value);
+          updateTranslation(id, originalText, event.target.value);
         }}
       />
-      <Delete onClick={deleteOneRow} />
+      <Delete onClick={() => deleteOneRow(id)} />
     </div>
   );
 };
