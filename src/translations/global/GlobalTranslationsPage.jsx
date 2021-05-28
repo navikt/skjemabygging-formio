@@ -13,11 +13,16 @@ import { LanguagesProvider } from "../../context/languages";
 import i18nData from "../../i18nData";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useHistory } from "react-router-dom";
+import { ToggleGruppe } from "nav-frontend-toggle";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
     maxWidth: "80%",
     margin: "0 auto 2rem",
+  },
+  toggleGruppe: {
+    margin: "0 auto 2rem auto",
+    width: "fit-content",
   },
   label: {
     display: "grid",
@@ -185,6 +190,15 @@ const GlobalTranslationsPage = ({
         }
       >
         <div className={classes.root}>
+          <ToggleGruppe
+            className={classes.toggleGruppe}
+            defaultToggles={[
+              { children: "Skjematekster", pressed: true },
+              { children: "Grensesnitt" },
+              { children: "Statiske tekster" },
+              { children: "Validering" },
+            ]}
+          />
           <form>
             <li className={classes.label}>
               <Undertittel>Original</Undertittel>
