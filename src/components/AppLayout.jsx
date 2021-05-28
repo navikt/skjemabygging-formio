@@ -118,8 +118,8 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
           <ActionRow>
             <LeftCol>{leftCol}</LeftCol>
             <MainCol>{mainCol}</MainCol>
-            {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
             <RightCol>{rightCol}</RightCol>
+            {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
           </ActionRow>
         )}
       </NoScrollWrapper>
