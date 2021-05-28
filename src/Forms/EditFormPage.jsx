@@ -34,8 +34,6 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
         navBarProps={{
           title: title,
           visSkjemaliste: true,
-          visHamburger: true,
-          visInnstillinger: true,
           logout: onLogout,
         }}
       >
