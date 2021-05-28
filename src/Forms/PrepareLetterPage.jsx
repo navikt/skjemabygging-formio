@@ -16,10 +16,26 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   return (
     <section
       className="wizard-page"
-      aria-label={translate(TEXTS.prepareLetterPage.attachmentSectionTitle(index, skalSendeFlereVedlegg))}
+      aria-label={`${index}. ${translate(
+        TEXTS.prepareLetterPage.attachmentSectionTitleAttachTo
+          .concat(" ")
+          .concat(
+            skalSendeFlereVedlegg
+              ? TEXTS.prepareLetterPage.attachmentSectionTitleTheseAttachments
+              : TEXTS.prepareLetterPage.attachmentSectionTitleThisAttachment
+          )
+      )}`}
     >
       <Systemtittel className="margin-bottom-default">
-        {translate(TEXTS.prepareLetterPage.attachmentSectionTitle(index, skalSendeFlereVedlegg))}
+        {`${index}. ${translate(
+          TEXTS.prepareLetterPage.attachmentSectionTitleAttachTo
+            .concat(" ")
+            .concat(
+              skalSendeFlereVedlegg
+                ? TEXTS.prepareLetterPage.attachmentSectionTitleTheseAttachments
+                : TEXTS.prepareLetterPage.attachmentSectionTitleThisAttachment
+            )
+        )}`}
       </Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
@@ -62,9 +78,9 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
-    <section className="wizard-page" aria-label={translate(TEXTS.prepareLetterPage.firstSectionTitle(index))}>
+    <section className="wizard-page" aria-label={`${index}. ${translate(TEXTS.prepareLetterPage.firstSectionTitle)}`}>
       <Systemtittel className="margin-bottom-default">
-        {translate(TEXTS.prepareLetterPage.firstSectionTitle(index))}
+        {`${index}. ${translate(TEXTS.prepareLetterPage.firstSectionTitle)}`}
       </Systemtittel>
       <Normaltekst className="margin-bottom-default">{translate(TEXTS.prepareLetterPage.firstDescription)}</Normaltekst>
       <div className="margin-bottom-default">
@@ -104,22 +120,35 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
 };
 
 const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) => (
-  <section className="wizard-page" aria-label={translate(TEXTS.prepareLetterPage.sendInPapirSectionTitle(index))}>
+  <section
+    className="wizard-page"
+    aria-label={`${index}. ${translate(TEXTS.prepareLetterPage.sendInPapirSectionTitle)}`}
+  >
     <Systemtittel className="margin-bottom-default">
-      {translate(TEXTS.prepareLetterPage.sendInPapirSectionTitle(index))}
+      {`${index}. ${translate(TEXTS.prepareLetterPage.sendInPapirSectionTitle)}`}
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
       {translate(TEXTS.prepareLetterPage.SendInPapirSectionInstruction)}
       {vedleggSomSkalSendes.length > 0 &&
-        translate(TEXTS.prepareLetterPage.sendInPapirAttachment(vedleggSomSkalSendes))}
+        translate(
+          TEXTS.prepareLetterPage.sendInPapirSectionAttachTo
+            .concat(" ")
+            .concat(
+              vedleggSomSkalSendes.length > 1
+                ? TEXTS.prepareLetterPage.sendInPapirSectionAttachments
+                : TEXTS.prepareLetterPage.sendInPapirSectionAttachment
+            )
+            .concat(" ")
+            .concat(TEXTS.prepareLetterPage.sendInPapirSection)
+        )}
     </Normaltekst>
   </section>
 );
 
 const HvaSkjerVidereSection = ({ index, translate }) => (
-  <section className="wizard-page" aria-label={translate(TEXTS.prepareLetterPage.lastSectionTitle(index))}>
+  <section className="wizard-page" aria-label={`${index}. translate(TEXTS.prepareLetterPage.lastSectionTitle`}>
     <Systemtittel className="margin-bottom-default">
-      {translate(TEXTS.prepareLetterPage.lastSectionTitle(index))}
+      {`${index}. ${translate(TEXTS.prepareLetterPage.lastSectionTitle)}`}
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">{translate(TEXTS.prepareLetterPage.lastSectionContent)}</Normaltekst>
   </section>
