@@ -12,6 +12,7 @@ import { languagesInNorwegian } from "../../context/i18n";
 import { LanguagesProvider } from "../../context/languages";
 import i18nData from "../../i18nData";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
+import { useHistory } from "react-router-dom";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -51,6 +52,7 @@ const GlobalTranslationsPage = ({
 }) => {
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
+  const history = useHistory();
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => {
       switch (action.type) {
@@ -165,13 +167,10 @@ const GlobalTranslationsPage = ({
         mainCol={
           <ul className={classes.title}>
             <li className={classes.titleItem}>
-              <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>
+              <Innholdstittel>{languageCode ? languagesInNorwegian[languageCode] : ""}</Innholdstittel>
             </li>
             <li className="list-inline-item">
-              <Delete />
-              {/*<Knapp onClick={() => deleteLanguage(currentTranslation.id).then(() => history.push("/translations"))}>
-              Slett språk
-            </Knapp>*/}
+              <Delete onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))} />
             </li>
           </ul>
         }
