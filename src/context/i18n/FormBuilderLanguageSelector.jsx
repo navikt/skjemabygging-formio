@@ -3,7 +3,7 @@ import { languagesInOriginalLanguage, useTranslations } from "./index";
 import LanguageSelector from "../../components/LanguageSelector";
 import { useLanguages } from "../languages";
 
-const FormBuilderLanguageSelector = ({ formPath }) => {
+const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel }) => {
   const { currentLanguage, availableLanguages } = useLanguages();
   const { translations } = useTranslations();
 
@@ -21,9 +21,7 @@ const FormBuilderLanguageSelector = ({ formPath }) => {
       lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
     );
 
-  const label = languagesInOriginalLanguage[currentLanguage]
-    ? languagesInOriginalLanguage[currentLanguage]
-    : "Språk/Language";
+  const label = languageSelectorLabel ? languageSelectorLabel : languagesInOriginalLanguage[currentLanguage];
 
   return <LanguageSelector label={label} options={options} />;
 };

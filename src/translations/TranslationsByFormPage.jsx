@@ -72,7 +72,7 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
         }}
         leftCol={
           <>
-            <FormBuilderLanguageSelector formPath={path} />
+            <FormBuilderLanguageSelector formPath={path} label={""} />
             <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>

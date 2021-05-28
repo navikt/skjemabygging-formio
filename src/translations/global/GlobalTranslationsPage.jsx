@@ -168,7 +168,7 @@ const GlobalTranslationsPage = ({
           visOversettelseliste: true,
           visLagNyttSkjema: false,
         }}
-        leftCol={<FormBuilderLanguageSelector formPath="global" />}
+        leftCol={<FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} />}
         mainCol={
           <ul className={classes.title}>
             <li className={classes.titleItem}>
