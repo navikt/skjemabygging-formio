@@ -2,15 +2,16 @@ import NewFormPage from "./NewFormPage";
 import NavFormBuilder, { UnstyledNavFormBuilder } from "../components/NavFormBuilder";
 import waitForExpect from "wait-for-expect";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
-import { Link, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
 import React from "react";
 import { Formio } from "formiojs";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
-import { FormsListPage } from "./FormsListPage";
 import { UserAlerterContext } from "../userAlerting";
+import { AppConfigProvider } from "../configContext";
+import featureToggles from "../featureToggles.json";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -61,7 +62,9 @@ describe("FormsRouter", () => {
           }}
         >
           <UserAlerterContext.Provider value={userAlerter}>
-            <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+            <AppConfigProvider featureToggles={featureToggles}>
+              <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+            </AppConfigProvider>
           </UserAlerterContext.Provider>
         </AuthContext.Provider>
       </MemoryRouter>,
@@ -90,13 +93,13 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     expect(setTimeout.mock.calls).toHaveLength(1);
     jest.runOnlyPendingTimers();
-    const formPage = await context.waitForComponent(FormsListPage);
+    //const formPage = await context.waitForComponent(FormsListPage);
     clickHovedknapp("Lag nytt skjema");
     expect(routeLocation().pathname).toEqual("/forms/new");
     await context.waitForComponent(NewFormPage);
   });
 
-  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  //const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const buildComponent = (builder, type, container) => {
     // Get the builder sidebar component.
     const webformBuilder = builder.instance;

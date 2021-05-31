@@ -1,14 +1,16 @@
 import NewFormPage from "./NewFormPage";
 import waitForExpect from "wait-for-expect";
-import NavFormBuilder, { UnstyledNavFormBuilder } from "../components/NavFormBuilder";
+import { UnstyledNavFormBuilder } from "../components/NavFormBuilder";
 import { Formio } from "formiojs";
-import { Link, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React from "react";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
 import { UserAlerterContext } from "../userAlerting";
+import featureToggles from "../featureToggles.json";
+import { AppConfigProvider } from "../configContext";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -51,7 +53,9 @@ describe("NewFormPage", () => {
           }}
         >
           <UserAlerterContext.Provider value={userAlerter}>
-            <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+            <AppConfigProvider featureToggles={featureToggles}>
+              <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+            </AppConfigProvider>
           </UserAlerterContext.Provider>
         </AuthContext.Provider>
       </MemoryRouter>,
