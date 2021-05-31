@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 const AppConfigContext = React.createContext({});
 
@@ -10,4 +10,6 @@ function AppConfigProvider({ children, dokumentinnsendingBaseURL, fyllutBaseURL,
   );
 }
 
-export { AppConfigProvider, AppConfigContext };
+const useAppConfig = () => useContext(AppConfigContext);
+
+export { AppConfigProvider, useAppConfig };

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { useAmplitude } from "../context/amplitude";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
-import { AppConfigContext } from "../configContext";
+import { useAppConfig } from "../configContext";
 import TEXTS from "../texts";
 import { useTranslations } from "../context/i18n";
 
@@ -156,7 +156,7 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
 
 export function PrepareLetterPage({ form, submission, formUrl }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  const { fyllutBaseURL } = useContext(AppConfigContext);
+  const { fyllutBaseURL } = useAppConfig();
   const { translate } = useTranslations();
   const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");

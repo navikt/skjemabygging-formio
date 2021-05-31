@@ -8,6 +8,7 @@ import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
 import { LanguagesProvider, LanguageSelector } from "../context/languages";
+import { useAppConfig } from "../configContext";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
@@ -15,6 +16,7 @@ const FyllUtContainer = styled("div")({
 });
 
 const FyllUtRouter = ({ form, translations }) => {
+  const { featureToggles } = useAppConfig();
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -35,7 +37,7 @@ const FyllUtRouter = ({ form, translations }) => {
   return (
     <LanguagesProvider translations={translations}>
       <FyllUtContainer>
-        <LanguageSelector />
+        {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
