@@ -75,7 +75,8 @@ export const defaultFormFields = () => [
     theme: "default",
     components: [
       {
-        label: "Har du noen tilleggsdokumentasjon du ønsker å legge ved?",
+        label: "Annen dokumentasjon",
+        description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
         type: "radiopanel",
         key: "vedlegg",
         input: true,
@@ -90,16 +91,15 @@ export const defaultFormFields = () => [
         values: [
           {
             value: "leggerVedNaa",
-            label: "Ja, jeg legger det ved denne søknaden (anbefalt)",
+            label: "Ja, jeg legger det ved denne søknaden.",
           },
           {
             value: "ettersender",
-            label:
-              "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+            label: "Jeg ettersender dokumentasjonen senere.",
           },
           {
-            value: "neiJegHarIngenEkstraDokumentasjonJegVilLeggeVed",
-            label: "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved",
+            value: "nei",
+            label: "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.",
           },
         ],
       },
