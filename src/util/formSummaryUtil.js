@@ -36,7 +36,8 @@ function formatValue(component, value, translate) {
 function handlePanel(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { title, key, type, components = [] } = component;
   const subComponents = components.reduce(
-    (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents, parentContainerKey),
+    (subComponents, subComponent) =>
+      handleComponent(subComponent, submission, subComponents, parentContainerKey, translate),
     []
   );
   if (subComponents.length === 0) {
@@ -73,7 +74,8 @@ function handleDataGridRows(component, submission, translate) {
     const dataGridRowComponents = components
       .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
       .reduce(
-        (handledComponents, subComponent) => handleComponent(subComponent, { data: rowSubmission }, handledComponents),
+        (handledComponents, subComponent) =>
+          handleComponent(subComponent, { data: rowSubmission }, handledComponents, translate),
         []
       );
     return {
