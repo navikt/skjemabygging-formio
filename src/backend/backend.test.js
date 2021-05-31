@@ -7,6 +7,8 @@ import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
 import PackageJsonResponse from "../testTools/backend/json/GHPackageJsonResponse.json";
 import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json";
 import GetTempRefResponse from "../testTools/backend/json/GHGetTempRefResponse.json";
+import PublishTranslationResponse from "../testTools/backend/json/GHPublishTranslationResponse.json";
+import TranslationListResponse from "../testTools/backend/json/GHTranslationsListResponse.json";
 import PatchRefResponse from "../testTools/backend/json/GHPatchRefResponse.json";
 
 import fetch from "node-fetch";
@@ -33,14 +35,16 @@ describe("Backend", () => {
       .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
       .mockReturnValueOnce(jsonToPromise(ListResponse))
       .mockReturnValueOnce(jsonToPromise(PublishResponse))
+      .mockReturnValueOnce(jsonToPromise(TranslationListResponse))
+      .mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
       .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
       .mockReturnValueOnce(jsonToPromise(PatchRefResponse))
       .mockReturnValueOnce(Promise.resolve(new Response(null, { status: 204 })));
 
-    await backend.publishForm(token, {}, formPath);
-    expect(fetch).toHaveBeenCalledTimes(11);
+    await backend.publishForm(token, {}, {}, formPath);
+    expect(fetch).toHaveBeenCalledTimes(13);
     const calls = fetch.mock.calls;
     expect(calls[0]).toEqual([
       `${backend.getProjectURL()}/current`,
@@ -157,6 +161,8 @@ describe("Backend", () => {
         .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
         .mockReturnValueOnce(jsonToPromise(ListResponse))
         .mockReturnValueOnce(jsonToPromise(PublishResponse))
+        .mockReturnValueOnce(jsonToPromise(TranslationListResponse))
+        .mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
         .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
@@ -168,13 +174,13 @@ describe("Backend", () => {
       spyUpdateFunction.mockRestore();
     });
     it("finds SHA from list of forms and tries to publish an update", async () => {
-      await backend.publishForm(token, {}, formPath);
+      await backend.publishForm(token, {}, {}, formPath);
       expect(spyUpdateFunction).toHaveBeenCalledTimes(1);
       expect(spyCreateFunction).toHaveBeenCalledTimes(0);
     });
 
     it("finds no matching SHA and tries to publish new form", async () => {
-      await backend.publishForm("token", {}, "skjemaSomIkkeFinnesFraFor");
+      await backend.publishForm("token", {}, {}, "skjemaSomIkkeFinnesFraFor");
       expect(spyUpdateFunction).toHaveBeenCalledTimes(0);
       expect(spyCreateFunction).toHaveBeenCalledTimes(1);
     });

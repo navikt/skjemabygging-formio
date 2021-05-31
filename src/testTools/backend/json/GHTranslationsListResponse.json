@@ -1,0 +1,18 @@
+[
+  {
+    "name": "globalTranslations.json",
+    "path": "translation/globalTranslations.json",
+    "sha": "safdhusdfh",
+    "size": 123,
+    "url": "https://example.com/translation",
+    "html_url": "https://example.com/translation",
+    "git_url": "https://example.com/translation",
+    "download_url": "https://example.com/translation",
+    "type": "file",
+    "_links": {
+      "self": "https://example.com/translation",
+      "git": "https://example.com/translation",
+      "html": "https://example.com/translation"
+    }
+  }
+]
