@@ -3,6 +3,7 @@ import { styled } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import navCssVariables from "nav-frontend-core";
 import { Undertittel } from "nav-frontend-typografi";
+import { useAppConfig } from "../configContext";
 
 const NavBarContainer = styled("div")({
   backgroundColor: navCssVariables.navDypBlaLighten40,
@@ -51,6 +52,7 @@ export const KnappWrapper = styled("div")({
 });
 
 export const NavBar = ({ title, logout, visSkjemaliste, visOversettelseliste }) => {
+  const { featureToggles } = useAppConfig();
   return (
     <NavBarContainer>
       <NavBarWrapper>
@@ -61,7 +63,7 @@ export const NavBar = ({ title, logout, visSkjemaliste, visOversettelseliste }) 
                 Skjemaliste
               </Link>
             )}
-            {visOversettelseliste && (
+            {featureToggles.enableTranslations && visOversettelseliste && (
               <Link className="knapp knapp--standard knapp--mini" to="/translations">
                 Oversettelser
               </Link>

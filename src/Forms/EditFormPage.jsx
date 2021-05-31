@@ -8,8 +8,10 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
 import { useTranslations } from "../context/i18n";
+import { useAppConfig } from "../configContext";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
+  const { featureToggles } = useAppConfig();
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
   const { translationsForNavForm } = useTranslations();
@@ -27,11 +29,13 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
             <li className="list-inline-item">
               <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
             </li>
-            <li className="list-inline-item">
-              <Link className="knapp" to={`/translation/${form.path}`}>
-                Oversettelse
-              </Link>
-            </li>
+            {featureToggles.enableTranslations && (
+              <li className="list-inline-item">
+                <Link className="knapp" to={`/translation/${form.path}`}>
+                  Oversettelse
+                </Link>
+              </li>
+            )}
           </ul>
         }
         rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}

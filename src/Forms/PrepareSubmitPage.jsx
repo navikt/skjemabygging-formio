@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { styled } from "@material-ui/styles";
@@ -6,7 +6,7 @@ import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import { AppConfigContext } from "../configContext";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
 import { useTranslations } from "../context/i18n";
@@ -30,7 +30,7 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
 
 export function PrepareSubmitPage({ form, submission, formUrl }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
-  const { dokumentinnsendingBaseURL, fyllutBaseURL } = useContext(AppConfigContext);
+  const { dokumentinnsendingBaseURL, fyllutBaseURL } = useAppConfig();
   const [, setHasDownloadedPDF] = useState(false);
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();

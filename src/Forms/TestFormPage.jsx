@@ -7,8 +7,10 @@ import AmplitudeProvider from "../context/amplitude";
 import { useModal } from "../util/useModal";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useTranslations } from "../context/i18n";
+import { useAppConfig } from "../configContext";
 
 const MainCol = ({ editFormUrl, form, onSave }) => {
+  const { featureToggles } = useAppConfig();
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
   const currentLanguage = params.get("lang");
@@ -22,16 +24,19 @@ const MainCol = ({ editFormUrl, form, onSave }) => {
       <li className="list-inline-item">
         <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
       </li>
-      <li className="list-inline-item">
-        <Link className="knapp" to={`/translation/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
-          Oversettelse
-        </Link>
-      </li>
+      {featureToggles.enableTranslations && (
+        <li className="list-inline-item">
+          <Link className="knapp" to={`/translation/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
+            Oversettelse
+          </Link>
+        </li>
+      )}
     </ul>
   );
 };
 
 export function TestFormPage({ editFormUrl, form, onSave, onLogout, onPublish }) {
+  const { featureToggles } = useAppConfig();
   const { translations } = useTranslations();
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
@@ -43,7 +48,7 @@ export function TestFormPage({ editFormUrl, form, onSave, onLogout, onPublish })
       rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-        <FyllUtRouter form={form} translations={translations} />
+        <FyllUtRouter form={form} translations={featureToggles.enableTranslations ? translations : undefined} />
       </AmplitudeProvider>
 
       <ConfirmPublishModal
