@@ -382,7 +382,8 @@ describe("When creating form summary object", () => {
           emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
           radiopanel: "yes",
         },
-      }
+      },
+      mockedTranslate
     );
     expect(actual).toEqual([
       {
@@ -538,7 +539,8 @@ describe("When creating form summary object", () => {
           createPanelObject("Panel 1", [createDummyTextfield()]),
           createPanelObject("Panel 2", [createDummyEmail()]),
         ]),
-        dummySubmission
+        dummySubmission,
+        mockedTranslate
       );
       expect(actual).toBeInstanceOf(Array);
       expect(actual.length).toEqual(2);

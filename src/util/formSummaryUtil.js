@@ -75,7 +75,7 @@ function handleDataGridRows(component, submission, translate) {
       .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
       .reduce(
         (handledComponents, subComponent) =>
-          handleComponent(subComponent, { data: rowSubmission }, handledComponents, translate),
+          handleComponent(subComponent, { data: rowSubmission }, handledComponents, "", translate),
         []
       );
     return {
@@ -176,7 +176,7 @@ export function handleComponent(
 
 export function createFormSummaryObject(form, submission, translate) {
   return form.components.reduce(
-    (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject, translate),
+    (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject, "", translate),
     []
   );
 }
