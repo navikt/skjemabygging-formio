@@ -3,7 +3,7 @@ import { languagesInOriginalLanguage, useTranslations } from "./index";
 import LanguageSelector from "../../components/LanguageSelector";
 import { useLanguages } from "../languages";
 
-const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel }) => {
+const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) => {
   const { currentLanguage, availableLanguages } = useLanguages();
   const { translations } = useTranslations();
 
@@ -15,7 +15,7 @@ const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel }) => {
     .map((languageCode) => ({
       languageCode,
       optionLabel: `${!translations[languageCode] ? `Legg til ` : ""}${languagesInOriginalLanguage[languageCode]}`,
-      href: `/translations/${formPath}/${languageCode}`,
+      href: `/translations/${formPath}/${languageCode}${tag ? `/${tag}` : ""}`,
     }))
     .sort((lang1, lang2) =>
       lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0

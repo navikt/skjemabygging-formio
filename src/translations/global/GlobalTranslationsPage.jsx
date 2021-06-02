@@ -11,7 +11,7 @@ import { languagesInNorwegian } from "../../context/i18n";
 import { LanguagesProvider } from "../../context/languages";
 import i18nData from "../../i18nData";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 
@@ -55,7 +55,14 @@ const GlobalTranslationsPage = ({
   projectURL,
   saveTranslation,
 }) => {
-  let { path } = useRouteMatch();
+  const { tag } = useParams();
+  const [selectedTag, setSelectedTag] = useState("skjematekster");
+
+  useEffect(() => {
+    if (tag) {
+      setSelectedTag(tag);
+    }
+  }, [tag]);
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const history = useHistory();
@@ -123,8 +130,8 @@ const GlobalTranslationsPage = ({
   );
 
   useEffect(() => {
-    loadGlobalTranslations().then((translations) => setAllGlobalTranslations(translations));
-  }, [loadGlobalTranslations]);
+    loadGlobalTranslations(languageCode, selectedTag).then((translations) => setAllGlobalTranslations(translations));
+  }, [loadGlobalTranslations, languageCode, selectedTag]);
 
   useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
@@ -145,7 +152,7 @@ const GlobalTranslationsPage = ({
     }
   }, [languageCode, allGlobalTranslations]);
 
-  if (Object.keys(allGlobalTranslations).length === 0) {
+  if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
   }
 
@@ -200,7 +207,9 @@ const GlobalTranslationsPage = ({
           visOversettelseliste: true,
           visLagNyttSkjema: false,
         }}
-        leftCol={<FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} />}
+        leftCol={
+          <FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} tag={selectedTag} />
+        }
         mainCol={
           <ul className={classes.title}>
             <li className={classes.titleItem}>
@@ -214,7 +223,7 @@ const GlobalTranslationsPage = ({
         rightCol={
           <Hovedknapp
             onClick={() => {
-              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave);
+              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave, selectedTag);
             }}
           >
             Lagre
@@ -230,42 +239,28 @@ const GlobalTranslationsPage = ({
               { children: "Statiske tekster" },
               { children: "Validering" },
             ]}
-            onChange={(event) =>
-              history.push(
-                `/translations/global/${languageCode}/` + event.target.innerText.toLowerCase().replace(" ", "-")
-              )
-            }
+            onChange={(event) => {
+              const newTag = event.target.innerText.toLowerCase().replace(" ", "-");
+              history.push(`/translations/global/${languageCode}/` + newTag);
+            }}
           />
-          <Switch>
-            <Route path={`${path}/skjematekster`}>
-              <GlobalTranslationsPanel
-                classes={classes}
-                currentTranslation={currentTranslation}
-                languageCode={languageCode}
-                updateOriginalText={updateOriginalText}
-                updateTranslation={updateTranslation}
-                deleteOneRow={deleteOneRow}
-              />
-              <Knapp
-                onClick={() =>
-                  dispatch({
-                    type: "addNewTranslation",
-                  })
-                }
-              >
-                Legg til ny tekst
-              </Knapp>
-            </Route>
-            <Route path={`${path}/grensesnitt`}>
-              <h1>Grensesnitt</h1>
-            </Route>
-            <Route path={`${path}/statiske-tekster`}>
-              <h1>Statiske tekster</h1>
-            </Route>
-            <Route path={`${path}/validering`}>
-              <h1>Validering</h1>
-            </Route>
-          </Switch>
+          <GlobalTranslationsPanel
+            classes={classes}
+            currentTranslation={currentTranslation}
+            languageCode={languageCode}
+            updateOriginalText={updateOriginalText}
+            updateTranslation={updateTranslation}
+            deleteOneRow={deleteOneRow}
+          />
+          <Knapp
+            onClick={() =>
+              dispatch({
+                type: "addNewTranslation",
+              })
+            }
+          >
+            Legg til ny tekst
+          </Knapp>
         </div>
       </AppLayoutWithContext>
     </LanguagesProvider>

@@ -77,8 +77,15 @@ export const useForms = (formio, store, userAlerter) => {
       });
   };
 
-  const loadGlobalTranslations = async () => {
-    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global`)
+  const loadGlobalTranslations = async (language, tag) => {
+    let filter = "";
+    if (language) {
+      filter += `&data.language=${language}`;
+    }
+    if (tag) {
+      filter += `&data.tag=${tag}`;
+    }
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}`)
       .then((response) => {
         console.log("Fetched: ", response);
         return response;
@@ -208,7 +215,7 @@ export const useForms = (formio, store, userAlerter) => {
     });
   };
 
-  const saveTranslation = (projectUrl, translationId, language, i18n, name, scope, form, formTitle) => {
+  const saveTranslation = (projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle) => {
     Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -222,6 +229,7 @@ export const useForms = (formio, store, userAlerter) => {
           language,
           scope,
           i18n,
+          tag,
         },
       }),
     }).then((response) => {
@@ -249,9 +257,19 @@ export const useForms = (formio, store, userAlerter) => {
         return translationsToSave;
       }
     }, {});
-    saveTranslation(projectUrl, translationId, languageCode, i18n, `global.${formPath}`, "local", formPath, formTitle);
+    saveTranslation(
+      projectUrl,
+      translationId,
+      languageCode,
+      i18n,
+      `global.${formPath}`,
+      "local",
+      formPath,
+      undefined,
+      formTitle
+    );
   };
-  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations) => {
+  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, tag) => {
     const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
       if (translations[translatedText].value) {
         return {
@@ -262,7 +280,7 @@ export const useForms = (formio, store, userAlerter) => {
         return translationsToSave;
       }
     }, {});
-    saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global");
+    saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
   };
 
   return {
