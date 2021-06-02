@@ -10,6 +10,10 @@ import { MemoryRouter } from "react-router-dom";
 import { UserAlerterContext } from "../userAlerting";
 import featureToggles from "../featureToggles.json";
 import { AppConfigProvider } from "../configContext";
+import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
+import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
+import { Formio } from "formiojs";
+import Formiojs from "formiojs/Formio";
 
 describe("FormMetadataEditor", () => {
   let mockOnChange;
@@ -88,33 +92,57 @@ describe("FormMetadataEditor", () => {
     expect(screen.getByRole("textbox", { name: /Path/i })).toBeVisible();
     expect(screen.getByRole("textbox", { name: /Path/i }).readOnly).toBe(true);
   });
+  describe("FormMetadataEditor", () => {
+    let spy;
+    let formioSpy;
 
-  it("should display changes when onChange is called", async () => {
-    const userAlerter = {
-      flashSuccessMessage: jest.fn(),
-      alertComponent: jest.fn(),
-    };
-    render(
-      <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
-        <AuthContext.Provider
-          value={{
-            userData: "fakeUser",
-            login: () => {},
-            logout: () => {},
-          }}
-        >
-          <UserAlerterContext.Provider value={userAlerter}>
-            <AppConfigProvider featureToggles={featureToggles}>
-              <AuthenticatedApp formio={{}} store={{ forms: [fakeBackend.form()] }} />
-            </AppConfigProvider>
-          </UserAlerterContext.Provider>
-        </AuthContext.Provider>
-      </MemoryRouter>
-    );
-    let visningsModus = await screen.getByLabelText(/Vis som/i);
-    expect(visningsModus).toHaveValue("form");
-    await userEvent.selectOptions(visningsModus, "wizard");
-    jest.runAllTimers();
-    await waitFor(() => expect(visningsModus).toHaveValue("wizard"));
+    beforeEach(() => {
+      spy = jest.spyOn(global, "fetch");
+      formioSpy = jest.spyOn(Formiojs, "fetch");
+      const fetchAppGlue = new InprocessQuipApp(dispatcherWithBackend(fakeBackend));
+      spy.mockImplementation(fetchAppGlue.fetchImpl);
+      formioSpy.mockImplementation(fetchAppGlue.fetchImpl);
+    });
+
+    afterEach(() => {
+      spy.mockReset();
+      formioSpy.mockReset();
+    });
+
+    it("should display changes when onChange is called", async () => {
+      const userAlerter = {
+        flashSuccessMessage: jest.fn(),
+        alertComponent: jest.fn(),
+      };
+      render(
+        <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
+          <AuthContext.Provider
+            value={{
+              userData: "fakeUser",
+              login: () => {},
+              logout: () => {},
+            }}
+          >
+            <UserAlerterContext.Provider value={userAlerter}>
+              <AppConfigProvider featureToggles={featureToggles}>
+                <AuthenticatedApp
+                  formio={new Formio("http://myproject.example.org")}
+                  store={{ forms: [fakeBackend.form()] }}
+                />
+              </AppConfigProvider>
+            </UserAlerterContext.Provider>
+          </AuthContext.Provider>
+        </MemoryRouter>
+      );
+
+      //let visningsSelect = context.testRenderer.root.findByType(SkjemaVisningSelect);
+      //let visningsOption = visningsSelect.findAllByType("option");
+      //console.log(visningsOption);
+      let visningsModus = await screen.getByLabelText(/Vis som/i);
+      expect(visningsModus).toHaveValue("form");
+      await userEvent.selectOptions(visningsModus, "wizard");
+      jest.runAllTimers();
+      await waitFor(() => expect(visningsModus).toHaveValue("wizard"));
+    });
   });
 });

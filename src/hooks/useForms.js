@@ -65,7 +65,7 @@ export const useForms = (formio, store, userAlerter) => {
   };
 
   const fetchTranslations = (url) => {
-    return Formiojs.fetch(url, {
+    return fetch(url, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
       },
