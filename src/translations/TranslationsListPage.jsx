@@ -48,7 +48,7 @@ export function TranslationsListPage({ onLogout, forms }) {
           <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
           <ul className={classes.list}>
             <li className={classes.globalListItem}>
-              <Link to="/translation/global">Felles oversettelser for alle skjemaer</Link>
+              <Link to="/translations/global">Felles oversettelser for alle skjemaer</Link>
             </li>
           </ul>
         </nav>
@@ -58,10 +58,10 @@ export function TranslationsListPage({ onLogout, forms }) {
             <FormsList className={classes.list} forms={simplifiedForms(forms)}>
               {(form) => (
                 <li className={classes.listItem} key={form.path}>
-                  <Link className="lenke" data-testid="editLink" to={`/translation/${form.path}`}>
+                  <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
                     {form.skjemanummer}
                   </Link>
-                  <Link className="lenke" data-testid="editLink" to={`/translation/${form.path}`}>
+                  <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
                     {form.title}
                   </Link>
                 </li>

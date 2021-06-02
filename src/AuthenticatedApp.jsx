@@ -4,12 +4,8 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import { useForms } from "./hooks/useForms";
 import { UserAlerterContext } from "./userAlerting";
-import NewTranslation from "./translations/NewTranslation";
-import { TranslationsListPage } from "./translations/TranslationsListPage";
-import TranslationsByFormPage from "./translations/TranslationsByFormPage";
 import LoadingComponent from "./components/LoadingComponent";
-import GlobalTranslationsPage from "./translations/global/GlobalTranslationsPage";
-import I18nProvider from "./context/i18n";
+import TranslationsRouter from "./translations/TranslationsRouter";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -52,44 +48,16 @@ function AuthenticatedApp({ formio, store }) {
           />
         </Route>
         <Route path="/translations">
-          <TranslationsListPage forms={forms} />
+          <TranslationsRouter
+            forms={forms}
+            projectURL={formio.projectUrl}
+            loadGlobalTranslations={loadGlobalTranslations}
+            loadTranslationsForEditPage={loadTranslationsForEditPage}
+            saveGlobalTranslation={saveGlobalTranslation}
+            saveLocalTranslation={saveLocalTranslation}
+            deleteLanguage={deleteLanguage}
+          />
         </Route>
-        <Route path="/translation/new">
-          <NewTranslation projectURL={formio.projectUrl} />
-        </Route>
-        <Route
-          path="/translation/global/:languageCode?"
-          render={({ match }) => (
-            <I18nProvider loadTranslations={loadGlobalTranslations}>
-              <GlobalTranslationsPage
-                {...match.params}
-                loadGlobalTranslations={loadGlobalTranslations}
-                projectURL={formio.projectUrl}
-                deleteLanguage={deleteLanguage}
-                saveTranslation={saveGlobalTranslation}
-              />
-            </I18nProvider>
-          )}
-        />
-        <Route
-          path="/translation/:formPath/:languageCode?"
-          render={({ match }) => {
-            const targetForm = forms.find((form) => form.path === match.params.formPath);
-            return (
-              <I18nProvider loadTranslations={() => loadTranslationsForEditPage(targetForm.path)}>
-                <TranslationsByFormPage
-                  {...match.params}
-                  form={targetForm}
-                  projectURL={formio.projectUrl}
-                  deleteLanguage={deleteLanguage}
-                  saveTranslation={saveLocalTranslation}
-                  loadTranslationsForEditPage={loadTranslationsForEditPage}
-                  userAlerter={userAlerter}
-                />
-              </I18nProvider>
-            );
-          }}
-        />
 
         <Route path="/">
           <Redirect to="/forms" />

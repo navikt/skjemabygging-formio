@@ -26,7 +26,7 @@ const MainCol = ({ editFormUrl, form, onSave }) => {
       </li>
       {featureToggles.enableTranslations && (
         <li className="list-inline-item">
-          <Link className="knapp" to={`/translation/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
+          <Link className="knapp" to={`/translations/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
             Oversettelse
           </Link>
         </li>

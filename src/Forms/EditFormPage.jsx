@@ -31,7 +31,7 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
             </li>
             {featureToggles.enableTranslations && (
               <li className="list-inline-item">
-                <Link className="knapp" to={`/translation/${form.path}`}>
+                <Link className="knapp" to={`/translations/${form.path}`}>
                   Oversettelse
                 </Link>
               </li>
