@@ -12,6 +12,7 @@ import { FormMetadataEditor } from "../components/FormMetadataEditor";
 import { UserAlerterContext } from "../userAlerting";
 import { AppConfigProvider } from "../configContext";
 import featureToggles from "../featureToggles.json";
+import { FormsListPage } from "./FormsListPage";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -93,7 +94,7 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     expect(setTimeout.mock.calls).toHaveLength(1);
     jest.runOnlyPendingTimers();
-    //const formPage = await context.waitForComponent(FormsListPage);
+    await context.waitForComponent(FormsListPage);
     clickHovedknapp("Lag nytt skjema");
     expect(routeLocation().pathname).toEqual("/forms/new");
     await context.waitForComponent(NewFormPage);

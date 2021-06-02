@@ -13,6 +13,8 @@ export function parseQueryParams(dispatcher) {
 }
 
 export function dispatcherWithBackend(backend) {
+  const translations = [{ data: { i18n: { ja: "yes" }, language: "en", scope: "global" } }];
+
   return parseQueryParams(
     dispatch({
       "/testForm": (req, res) => {
@@ -29,6 +31,12 @@ export function dispatcherWithBackend(backend) {
       },
       "/user/login": (req, res) => {
         res.json(backend.adminLoginForm());
+      },
+
+      "/language/submission": {
+        GET: (req, res) => {
+          res.json(translations);
+        },
       },
     })
   );
