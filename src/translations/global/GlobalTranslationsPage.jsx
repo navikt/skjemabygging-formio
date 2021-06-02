@@ -11,7 +11,7 @@ import { languagesInNorwegian } from "../../context/i18n";
 import { LanguagesProvider } from "../../context/languages";
 import i18nData from "../../i18nData";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 
@@ -55,6 +55,7 @@ const GlobalTranslationsPage = ({
   projectURL,
   saveTranslation,
 }) => {
+  let { path } = useRouteMatch();
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const history = useHistory();
@@ -229,25 +230,42 @@ const GlobalTranslationsPage = ({
               { children: "Statiske tekster" },
               { children: "Validering" },
             ]}
-            onChange={(event) => console.log("Event", event)}
-          />
-          <GlobalTranslationsPanel
-            classes={classes}
-            currentTranslation={currentTranslation}
-            languageCode={languageCode}
-            updateOriginalText={updateOriginalText}
-            updateTranslation={updateTranslation}
-            deleteOneRow={deleteOneRow}
-          />
-          <Knapp
-            onClick={() =>
-              dispatch({
-                type: "addNewTranslation",
-              })
+            onChange={(event) =>
+              history.push(
+                `/translations/global/${languageCode}/` + event.target.innerText.toLowerCase().replace(" ", "-")
+              )
             }
-          >
-            Legg til ny tekst
-          </Knapp>
+          />
+          <Switch>
+            <Route path={`${path}/skjematekster`}>
+              <GlobalTranslationsPanel
+                classes={classes}
+                currentTranslation={currentTranslation}
+                languageCode={languageCode}
+                updateOriginalText={updateOriginalText}
+                updateTranslation={updateTranslation}
+                deleteOneRow={deleteOneRow}
+              />
+              <Knapp
+                onClick={() =>
+                  dispatch({
+                    type: "addNewTranslation",
+                  })
+                }
+              >
+                Legg til ny tekst
+              </Knapp>
+            </Route>
+            <Route path={`${path}/grensesnitt`}>
+              <h1>Grensesnitt</h1>
+            </Route>
+            <Route path={`${path}/statiske-tekster`}>
+              <h1>Statiske tekster</h1>
+            </Route>
+            <Route path={`${path}/validering`}>
+              <h1>Validering</h1>
+            </Route>
+          </Switch>
         </div>
       </AppLayoutWithContext>
     </LanguagesProvider>
