@@ -10,7 +10,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { translationsForNavForm } = useTranslations();
-  const { initialLanguage } = useLanguages();
+  const { currentLanguage, initialLanguage } = useLanguages();
   if (!translationsForNavForm) {
     return null;
   }
@@ -32,6 +32,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
           setSubmission(submission);
           history.push(`${formUrl}/oppsummering`);
         }}
+        currentLanguage={currentLanguage}
       />
     </div>
   );
