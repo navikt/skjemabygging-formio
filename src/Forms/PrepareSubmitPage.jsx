@@ -9,8 +9,8 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
-import { useTranslations } from "../context/i18n";
 import TEXTS from "../texts";
+import { useLanguages } from "../context/languages";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -34,7 +34,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
   const [, setHasDownloadedPDF] = useState(false);
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
-  const { translate } = useTranslations();
+  const { translate } = useLanguages();
   const { state } = useLocation();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);

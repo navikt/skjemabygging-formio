@@ -45,9 +45,7 @@ const FyllUtRouter = ({ form, translations }) => {
           </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => (
-                <SummaryPage form={form} submission={submissionObject} formUrl={url} languageCode={"nb-NO"} />
-              )}
+              {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/send-i-posten`}>

@@ -9,7 +9,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const availableLanguages = Object.keys(translations);
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
 
-  const currentTranslation = translations[currentLanguage] || {};
+  const currentTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
 
   function updateInitialLanguage() {
     initialLanguage.current = currentLanguage;

@@ -9,7 +9,7 @@ import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/
 import { lastNedFilBase64 } from "../util/pdf";
 import { useAppConfig } from "../configContext";
 import TEXTS from "../texts";
-import { useTranslations } from "../context/i18n";
+import { useLanguages } from "../context/languages";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -157,7 +157,7 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
 export function PrepareLetterPage({ form, submission, formUrl }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
-  const { translate } = useTranslations();
+  const { translate } = useLanguages();
   const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
 
