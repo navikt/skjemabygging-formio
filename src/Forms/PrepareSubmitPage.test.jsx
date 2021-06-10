@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { AppConfigProvider } from "../configContext";
 import { computeDokumentinnsendingURL, PrepareSubmitPage } from "./PrepareSubmitPage";
-import I18nProvider from "../context/i18n";
+import { LanguagesProvider } from "../context/languages";
 
 beforeEach(() => {
   Object.defineProperty(window, "matchMedia", {
@@ -24,18 +24,12 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
   render(
     <AppConfigProvider>
       <MemoryRouter initialEntries={[{ state: { previousPage: "/blask-blask" } }]}>
-        <I18nProvider
-          loadTranslations={jest.fn(() =>
-            Promise.resolve({
-              json: () => Promise.resolve({ translations: {} }),
-            })
-          )}
-        >
+        <LanguagesProvider translations={[]}>
           <PrepareSubmitPage
             form={{ title: "Test form", properties: { skjemanummer: "NAV 76-07.10" } }}
             submission={{}}
           />
-        </I18nProvider>
+        </LanguagesProvider>
       </MemoryRouter>
     </AppConfigProvider>
   );
