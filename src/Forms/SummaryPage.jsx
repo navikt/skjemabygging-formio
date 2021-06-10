@@ -85,11 +85,10 @@ const FormSummary = ({ form, submission }) => {
 export function SummaryPage({ form, submission, formUrl }) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
-  const { updateInitialLanguage, translate } = useLanguages();
+  const { translate } = useLanguages();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
-  useEffect(() => updateInitialLanguage(), [updateInitialLanguage]);
 
   return (
     <SummaryContent>

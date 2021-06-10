@@ -1,7 +1,5 @@
 import { useHistory, useParams } from "react-router-dom";
 
-const defaultLanguage = "nb-NO";
-
 const useLanguageCodeFromURL = () => {
   // Language code in skjemabygger URL
   const { languageCode } = useParams();
@@ -12,7 +10,7 @@ const useLanguageCodeFromURL = () => {
   const langQueryParam = params.get("lang");
 
   // Return either language code found
-  return langQueryParam || languageCode || defaultLanguage;
+  return langQueryParam || languageCode;
 };
 
 export default useLanguageCodeFromURL;

@@ -15,6 +15,8 @@ const useCurrentLanguage = (languageCodeFromUrl, translations) => {
       if (window.setLanguage !== undefined) {
         window.setLanguage(languageCodeFromUrl);
       }
+    } else {
+      setCurrentLanguage(initialLanguage.current);
     }
   }, [languageCodeFromUrl]);
 
