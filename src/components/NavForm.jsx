@@ -181,7 +181,6 @@ class NavForm extends Component {
     formioform: PropTypes.any,
     loggSkjemaStegFullfort: PropTypes.func,
     loggSkjemaValideringFeilet: PropTypes.func,
-    currentLanguage: PropTypes.string,
   };
 
   static defaultProps = {
@@ -201,7 +200,7 @@ class NavForm extends Component {
   }
 
   componentDidMount = () => {
-    const { options, src, url, form, currentLanguage } = this.props;
+    const { options, src, url, form } = this.props;
     console.log("Options: ", options);
 
     if (!options.events) {
@@ -223,11 +222,9 @@ class NavForm extends Component {
         if (url) {
           this.formio.url = url;
         }
-
         window.setLanguage = (lang) => {
           this.formio.language = lang;
         };
-        window.setLanguage(currentLanguage);
         return this.formio;
       });
     }
