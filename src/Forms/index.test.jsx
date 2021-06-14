@@ -100,7 +100,6 @@ describe("FormsRouter", () => {
     await context.waitForComponent(NewFormPage);
   });
 
-  //const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const buildComponent = (builder, type, container) => {
     // Get the builder sidebar component.
     const webformBuilder = builder.instance;
