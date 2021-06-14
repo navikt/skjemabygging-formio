@@ -50,7 +50,6 @@ const TranslationsRouter = ({
                 projectURL={projectURL}
                 deleteTranslation={deleteTranslation}
                 saveTranslation={saveLocalTranslation}
-                loadTranslationsForEditPage={loadTranslationsForEditPage}
               />
             </I18nProvider>
           );
