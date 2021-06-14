@@ -201,7 +201,6 @@ class NavForm extends Component {
 
   componentDidMount = () => {
     const { options, src, url, form } = this.props;
-    console.log("Options: ", options);
 
     if (!options.events) {
       options.events = NavForm.getDefaultEmitter();
