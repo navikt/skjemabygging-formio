@@ -13,30 +13,18 @@ import { useLanguages } from "../context/languages";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
+  const attachmentSectionTitle = translate(
+    TEXTS.prepareLetterPage.attachmentSectionTitleAttachTo
+      .concat(" ")
+      .concat(
+        skalSendeFlereVedlegg
+          ? TEXTS.prepareLetterPage.attachmentSectionTitleTheseAttachments
+          : TEXTS.prepareLetterPage.attachmentSectionTitleThisAttachment
+      )
+  );
   return (
-    <section
-      className="wizard-page"
-      aria-label={`${index}. ${translate(
-        TEXTS.prepareLetterPage.attachmentSectionTitleAttachTo
-          .concat(" ")
-          .concat(
-            skalSendeFlereVedlegg
-              ? TEXTS.prepareLetterPage.attachmentSectionTitleTheseAttachments
-              : TEXTS.prepareLetterPage.attachmentSectionTitleThisAttachment
-          )
-      )}`}
-    >
-      <Systemtittel className="margin-bottom-default">
-        {`${index}. ${translate(
-          TEXTS.prepareLetterPage.attachmentSectionTitleAttachTo
-            .concat(" ")
-            .concat(
-              skalSendeFlereVedlegg
-                ? TEXTS.prepareLetterPage.attachmentSectionTitleTheseAttachments
-                : TEXTS.prepareLetterPage.attachmentSectionTitleThisAttachment
-            )
-        )}`}
-      </Systemtittel>
+    <section className="wizard-page" aria-label={`${index}.${attachmentSectionTitle}`}>
+      <Systemtittel className="margin-bottom-default">{`${index}.${attachmentSectionTitle}`}</Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
           <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
@@ -146,7 +134,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) =>
 );
 
 const HvaSkjerVidereSection = ({ index, translate }) => (
-  <section className="wizard-page" aria-label={`${index}. translate(TEXTS.prepareLetterPage.lastSectionTitle`}>
+  <section className="wizard-page" aria-label={`${index}. ${translate(TEXTS.prepareLetterPage.lastSectionTitle)}`}>
     <Systemtittel className="margin-bottom-default">
       {`${index}. ${translate(TEXTS.prepareLetterPage.lastSectionTitle)}`}
     </Systemtittel>
