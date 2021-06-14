@@ -205,7 +205,7 @@ export const useForms = (formio, store, userAlerter) => {
       });
   };
 
-  const deleteLanguage = async (id) => {
+  const deleteTranslation = async (id) => {
     return Formiojs.fetch(`${formio.projectUrl}/language/submission/${id}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -294,7 +294,7 @@ export const useForms = (formio, store, userAlerter) => {
     onPublish,
     loadGlobalTranslations,
     loadTranslationsForEditPage,
-    deleteLanguage,
+    deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
   };

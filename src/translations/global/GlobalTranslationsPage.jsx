@@ -49,7 +49,7 @@ const createNewRow = () => ({
 });
 
 const GlobalTranslationsPage = ({
-  deleteLanguage,
+  deleteTranslation,
   languageCode,
   loadGlobalTranslations,
   projectURL,
@@ -216,7 +216,7 @@ const GlobalTranslationsPage = ({
               <Innholdstittel>{languageCode ? languagesInNorwegian[languageCode] : ""}</Innholdstittel>
             </li>
             <li className="list-inline-item">
-              <Delete onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))} />
+              <Delete onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))} />
             </li>
           </ul>
         }

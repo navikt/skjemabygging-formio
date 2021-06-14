@@ -18,7 +18,7 @@ function AuthenticatedApp({ formio, store }) {
     onPublish,
     loadGlobalTranslations,
     loadTranslationsForEditPage,
-    deleteLanguage,
+    deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
   } = useForms(formio, store, userAlerter);
@@ -55,7 +55,7 @@ function AuthenticatedApp({ formio, store }) {
             loadTranslationsForEditPage={loadTranslationsForEditPage}
             saveGlobalTranslation={saveGlobalTranslation}
             saveLocalTranslation={saveLocalTranslation}
-            deleteLanguage={deleteLanguage}
+            deleteTranslation={deleteTranslation}
           />
         </Route>
 

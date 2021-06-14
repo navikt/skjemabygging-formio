@@ -50,7 +50,7 @@ const getAllTextsForForm = (form) =>
         index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
     );
 
-const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languageCode, projectURL }) => {
+const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
   const history = useHistory();
   const {
     title,
@@ -73,7 +73,7 @@ const TranslationsByFormPage = ({ deleteLanguage, saveTranslation, form, languag
         leftCol={
           <>
             <FormBuilderLanguageSelector formPath={path} label={""} />
-            <Knapp onClick={() => deleteLanguage(translationId).then(() => history.push("/translations"))}>
+            <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>
           </>

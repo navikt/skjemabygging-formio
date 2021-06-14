@@ -7,7 +7,7 @@ import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 import TranslationsByFormPage from "./TranslationsByFormPage";
 
 const TranslationsRouter = ({
-  deleteLanguage,
+  deleteTranslation,
   forms,
   loadGlobalTranslations,
   loadTranslationsForEditPage,
@@ -32,7 +32,7 @@ const TranslationsRouter = ({
               {...match.params}
               loadGlobalTranslations={loadGlobalTranslations}
               projectURL={projectURL}
-              deleteLanguage={deleteLanguage}
+              deleteTranslation={deleteTranslation}
               saveTranslation={saveGlobalTranslation}
             />
           </I18nProvider>
@@ -48,7 +48,7 @@ const TranslationsRouter = ({
                 {...match.params}
                 form={targetForm}
                 projectURL={projectURL}
-                deleteLanguage={deleteLanguage}
+                deleteTranslation={deleteTranslation}
                 saveTranslation={saveLocalTranslation}
                 loadTranslationsForEditPage={loadTranslationsForEditPage}
               />
