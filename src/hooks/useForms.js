@@ -85,7 +85,7 @@ export const useForms = (formio, store, userAlerter) => {
     if (tag) {
       filter += `&data.tag=${tag}`;
     }
-    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}`)
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
       .then((response) => {
         console.log("Fetched: ", response);
         return response;
@@ -122,7 +122,9 @@ export const useForms = (formio, store, userAlerter) => {
 
   const loadTranslationsForForm = async (formPath) => {
     console.log("Form path", formPath);
-    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi`)
+    return fetchTranslations(
+      `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=null`
+    )
       .then((response) => {
         console.log("Fetched", response);
         return response;
