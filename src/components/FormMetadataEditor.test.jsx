@@ -134,10 +134,6 @@ describe("FormMetadataEditor", () => {
           </AuthContext.Provider>
         </MemoryRouter>
       );
-
-      //let visningsSelect = context.testRenderer.root.findByType(SkjemaVisningSelect);
-      //let visningsOption = visningsSelect.findAllByType("option");
-      //console.log(visningsOption);
       let visningsModus = await screen.getByLabelText(/Vis som/i);
       expect(visningsModus).toHaveValue("form");
       await userEvent.selectOptions(visningsModus, "wizard");

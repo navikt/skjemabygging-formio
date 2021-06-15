@@ -48,7 +48,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         name="form-type"
         id="form-type"
         value={type}
-        // readOnly={true}
         onChange={(event) => onChange({ ...form, type: event.target.value })}
       >
         <option label="Form" value="form">
