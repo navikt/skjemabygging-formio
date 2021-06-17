@@ -37,6 +37,7 @@ export const getAllTextsForForm = (form) =>
           }, []),
       ];
     }, [])
+    //remove duplicated components
     .filter(
       (component, index, currentComponents) =>
         index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)

@@ -184,7 +184,4 @@ describe("testGetAllTextsForForm", () => {
       { text: "RyiX3OuRGRdTT1AIoP6qK2MLGPkXdij36yFs0NiTY1WfptfYkuY0cBZOIk4mLLMJWgEEt0SpaQUojObrM", type: "textarea" },
     ]);
   });
-
-  //hidelabel need to be set to false at radio panel and checkbox (new pull request)
-  //Container has default hidelabel and not required, when it required, hidelabel not working?
 });
