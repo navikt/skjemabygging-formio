@@ -621,7 +621,7 @@ const builderPalett = {
           type: "navCheckbox",
           key: "Avkryssingsboks",
           input: true,
-          hideLabel: true,
+          hideLabel: false,
           clearOnHide: true,
           validate: {
             required: true,
@@ -670,7 +670,7 @@ const builderPalett = {
           type: "radiopanel",
           key: "radiopanel",
           input: true,
-          hideLabel: true,
+          hideLabel: false,
           clearOnHide: true,
           validate: {
             required: true,
