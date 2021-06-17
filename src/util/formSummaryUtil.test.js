@@ -1,79 +1,18 @@
 import { createFormSummaryObject, handleComponent } from "./formSummaryUtil";
+import {
+  createDummyContainerElement,
+  createDummyContentElement,
+  createDummyDataGrid,
+  createDummyEmail,
+  createDummyHTMLElement,
+  createDummyNavSkjemagruppe,
+  createDummyRadioPanel,
+  createDummyTextfield,
+  createFormObject,
+  createPanelObject,
+} from "./MockedComponentObjectForTest";
 
-const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
 const mockedTranslate = (value) => value;
-
-const createDummyTextfield = (label = "Tekstfelt") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "textfield",
-});
-
-const createDummyEmail = (label = "Email") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "email",
-});
-
-const createDummyRadioPanel = (
-  label = "RadioPanel",
-  values = [
-    { label: "NO-label", value: "no" },
-    { label: "YES-label", value: "yes" },
-  ]
-) => ({
-  label,
-  key: keyFromLabel(label),
-  type: "radiopanel",
-  values,
-});
-
-const createDummyContentElement = (label = "Content") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "content",
-});
-
-const createDummyHTMLElement = (label = "HTMLelement") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "htmlelement",
-});
-
-const createDummyContainerElement = (label = "Container", components) => ({
-  label,
-  key: keyFromLabel(label),
-  type: "container",
-  components,
-});
-
-const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
-  label: `${label}-label`,
-  legend: `${label}-legend`,
-  key: keyFromLabel(label),
-  type: "navSkjemagruppe",
-  components,
-});
-
-const createDummyDataGrid = (label = "DataGrid", components) => ({
-  label,
-  key: keyFromLabel(label),
-  type: "datagrid",
-  rowTitle: "datagrid-row-title",
-  components,
-});
-
-const createPanelObject = (title, components, label) => ({
-  title,
-  label,
-  key: keyFromLabel(title),
-  type: "panel",
-  components,
-});
-
-const createFormObject = (panels = []) => ({
-  components: panels,
-});
 
 const dummySubmission = {
   data: {
