@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { flattenComponents } from "../util/forsteside";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
@@ -9,46 +8,7 @@ import { useTranslations } from "../context/i18n";
 import { LanguagesProvider } from "../context/languages";
 import i18nData from "../i18nData";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-
-const getAllTextsForForm = (form) =>
-  flattenComponents(form.components)
-    .filter((component) => !component.hideLabel)
-    .map(({ content, title, label, html, type, values, legend, description }) => ({
-      title,
-      label: ["panel", "htmlelement", "content", "fieldset"].indexOf(type) === -1 ? label : undefined,
-      html,
-      values: values ? values.map((value) => value.label) : undefined,
-      content,
-      legend,
-      description: description !== "" ? description : undefined,
-    }))
-    .reduce((allTextsForForm, component) => {
-      return [
-        ...allTextsForForm,
-        ...Object.keys(component)
-          .filter((key) => component[key] !== undefined)
-          .reduce((textsForComponent, key) => {
-            if (key === "values") {
-              return [
-                ...textsForComponent,
-                ...component[key].map((value) => ({
-                  text: value,
-                  type: value.length < 80 ? "text" : "textarea",
-                })),
-              ];
-            } else {
-              return [
-                ...textsForComponent,
-                { text: component[key], type: component[key].length < 80 ? "text" : "textarea" },
-              ];
-            }
-          }, []),
-      ];
-    }, [])
-    .filter(
-      (component, index, currentComponents) =>
-        index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
-    );
+import { getAllTextsForForm } from "./utils";
 
 const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
   const history = useHistory();
@@ -57,9 +17,9 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
     path,
     properties: { skjemanummer },
   } = form;
-  const flattenedComponents = getAllTextsForForm(form);
   const { translations, setTranslations } = useTranslations();
   useRedirectIfNoLanguageCode(languageCode, translations);
+  const flattenedComponents = getAllTextsForForm(form);
   const translationId = (translations[languageCode] || {}).id;
   return (
     <LanguagesProvider translations={i18nData}>
