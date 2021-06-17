@@ -7,7 +7,7 @@ const getInputType = (value) => {
 export const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
-    .map(({ content, title, label, html, type, values, legend, description }) => ({
+    .map(({ content, title, label, html, type, values, legend, description, suffix }) => ({
       title,
       label:
         ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe"].indexOf(type) === -1 ? label : undefined,
@@ -16,6 +16,7 @@ export const getAllTextsForForm = (form) =>
       content,
       legend,
       description: description !== "" ? description : undefined,
+      suffix,
     }))
     .reduce((allTextsForForm, component) => {
       return [
