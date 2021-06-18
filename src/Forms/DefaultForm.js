@@ -7,7 +7,6 @@ import {
   postnrSchema,
   poststedSchema,
   landSchema,
-  telefonSchema,
   utenlandskPostkodeSchema,
 } from "./FormBuilderOptions";
 
@@ -65,7 +64,6 @@ export const defaultFormFields = () => [
           eq: "nei",
         },
       },
-      telefonSchema(sokerPostfix),
     ],
   },
   {
