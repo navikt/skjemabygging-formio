@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
+import { combineTranslationResources } from "../context/i18n/translationsMapper";
 
 export const useForms = (formio, store, userAlerter) => {
   const [forms, setFormsInternal] = useState(store.forms);
@@ -155,49 +156,7 @@ export const useForms = (formio, store, userAlerter) => {
             ...translation.data,
             id: translation._id,
           }))
-          .reduce(
-            (translationsByLanguage, translationResource) => ({
-              ...translationsByLanguage,
-              [translationResource.language]: {
-                ...(translationsByLanguage[translationResource.language] || {}),
-                translations: {
-                  ...((translationsByLanguage[translationResource.language] &&
-                    translationsByLanguage[translationResource.language].translations) ||
-                    {}),
-                  ...Object.keys(translationResource.i18n).reduce((translationsObjects, translatedText) => {
-                    let value = translationResource.i18n[translatedText];
-                    let scope = translationResource.scope;
-                    if (
-                      translationsByLanguage[translationResource.language] &&
-                      translationsByLanguage[translationResource.language].translations
-                    ) {
-                      if (
-                        Object.keys(translationsByLanguage[translationResource.language].translations).indexOf(
-                          translatedText
-                        ) !== -1
-                      ) {
-                        value = translationsByLanguage[translationResource.language].translations[translatedText].value;
-                        scope = translationsByLanguage[translationResource.language].translations[translatedText].scope;
-                      }
-                    }
-                    return {
-                      ...translationsObjects,
-                      [translatedText]: {
-                        value: value,
-                        scope: scope,
-                      },
-                    };
-                  }, {}),
-                },
-                id:
-                  (translationsByLanguage[translationResource.language] &&
-                    translationsByLanguage[translationResource.language].id) ||
-                  (translationResource.scope === "local" && translationResource.id) ||
-                  undefined,
-              },
-            }),
-            {}
-          )
+          .reduce(combineTranslationResources, {})
       )
       .then((translations) => {
         console.log("loadTranslationsForEditPage", translations);
