@@ -1,4 +1,5 @@
 import address from "./address";
+import alertstripe from "./alertstripe";
 import builder from "./builder";
 import builderComponent from "./builderComponent";
 import builderComponents from "./builderComponents";
@@ -70,6 +71,7 @@ export default {
   iconClass,
   cssClasses,
   address,
+  "html-alertstripe": alertstripe,
   builder,
   builderComponent,
   builderComponents,

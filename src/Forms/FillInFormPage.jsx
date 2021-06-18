@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
+import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
@@ -14,6 +15,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       <NavForm
         key="1"
         form={form}
+        options={{
+          sanitizeConfig: SANITIZE_CONFIG,
+        }}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
