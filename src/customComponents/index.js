@@ -8,8 +8,10 @@ import Textarea from "./components/TextArea";
 import Number from "./components/Number";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import SelectBoxes from "./components/SelectBoxes";
+import AlertStripe from "./components/AlertStripe";
 
 export default {
+  alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
   navDatepicker: NavDatepicker,
   radiopanel: RadioPanelGruppeComponent,

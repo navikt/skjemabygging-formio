@@ -1,3 +1,5 @@
+import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
+
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
   textfield: [
@@ -777,6 +779,22 @@ const builderPalett = {
   layout: {
     title: "Layout",
     components: {
+      alertstripe: {
+        title: "Alertstripe",
+        key: "alertstripe",
+        icon: "clipboard",
+        weight: 2,
+        group: "layout",
+        documentation: "/userguide/#htmlelement",
+        schema: {
+          label: "Alertstripe",
+          type: "alertstripe",
+          key: "alertstripe",
+          alerttype: "info",
+          input: true,
+          clearOnHide: true,
+        },
+      },
       fieldset: {
         ignore: true,
       },
@@ -831,4 +849,5 @@ export default {
   builder: builderPalett,
   editForm: builderEditForm,
   language: "nb-NO",
+  sanitizeConfig: SANITIZE_CONFIG,
 };
