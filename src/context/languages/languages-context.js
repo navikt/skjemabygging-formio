@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
 
@@ -10,6 +10,13 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
 
   const currentTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
+
+  useEffect(() => {
+    if (currentTranslation.optional) {
+      const root = document.documentElement;
+      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional})"`);
+    }
+  }, [currentTranslation]);
 
   function updateInitialLanguage() {
     initialLanguage.current = currentLanguage;

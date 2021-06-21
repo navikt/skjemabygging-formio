@@ -26,11 +26,16 @@ const allFieldsStyles = {
 };
 
 const requiredFieldStyles = {
+  "@global": {
+    root: {
+      "--optionalLabel": '" (valgfritt)"',
+    },
+  },
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
   "& .skjemaelement__label:not(.field-required)::after": {
-    content: '" (valgfritt)"',
+    content: "var(--optionalLabel)",
   },
   "& .checkboks[required] + .skjemaelement__label::after": {
     content: '""',
