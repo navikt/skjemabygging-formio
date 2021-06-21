@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import Pusher from "pusher-js";
 import { Formio } from "formiojs";
 import navdesign from "./template";
-import featureToggles from "./featureToggles.json";
+import featureToggles from "./featureToggles.js";
 import { AppConfigProvider } from "./configContext";
 import { AuthProvider } from "./context/auth-context";
 

@@ -8,7 +8,7 @@ import { useForms } from "./hooks/useForms";
 import { AuthContext } from "./context/auth-context";
 import App from "./App";
 import Formiojs from "formiojs/Formio";
-import featureToggles from "./featureToggles.json";
+import featureToggles from "./featureToggles.js";
 import { AppConfigProvider } from "./configContext";
 
 const context = new FakeBackendTestContext();
