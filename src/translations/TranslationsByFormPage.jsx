@@ -20,7 +20,6 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
   const { translations, setTranslations } = useTranslations();
   useRedirectIfNoLanguageCode(languageCode, translations);
   const flattenedComponents = getAllTextsForForm(form);
-  console.log("form", flattenedComponents);
   const translationId = (translations[languageCode] || {}).id;
   return (
     <LanguagesProvider translations={i18nData}>
