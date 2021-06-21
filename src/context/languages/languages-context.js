@@ -12,9 +12,11 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const currentTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
 
   useEffect(() => {
-    if (currentTranslation.optional) {
-      const root = document.documentElement;
-      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional})"`);
+    const root = document.documentElement;
+    if (currentTranslation && currentTranslation.optional) {
+      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional.value})"`);
+    } else {
+      root.style.setProperty("--optionalLabel", `" (valgfritt)"`);
     }
   }, [currentTranslation]);
 
