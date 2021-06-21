@@ -7,8 +7,6 @@ import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
 import PackageJsonResponse from "../testTools/backend/json/GHPackageJsonResponse.json";
 import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json";
 import GetTempRefResponse from "../testTools/backend/json/GHGetTempRefResponse.json";
-import PublishTranslationResponse from "../testTools/backend/json/GHPublishTranslationResponse.json";
-import TranslationListResponse from "../testTools/backend/json/GHTranslationsListResponse.json";
 import PatchRefResponse from "../testTools/backend/json/GHPatchRefResponse.json";
 
 import fetch from "node-fetch";
@@ -35,8 +33,9 @@ describe("Backend", () => {
       .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
       .mockReturnValueOnce(jsonToPromise(ListResponse))
       .mockReturnValueOnce(jsonToPromise(PublishResponse))
-      .mockReturnValueOnce(jsonToPromise(TranslationListResponse))
-      .mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
+      // TODO: Enable the next two lines once translations feature flag is turned on
+      //.mockReturnValueOnce(jsonToPromise(TranslationListResponse))
+      //.mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
       .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
@@ -44,7 +43,7 @@ describe("Backend", () => {
       .mockReturnValueOnce(Promise.resolve(new Response(null, { status: 204 })));
 
     await backend.publishForm(token, {}, {}, formPath);
-    expect(fetch).toHaveBeenCalledTimes(13);
+    expect(fetch).toHaveBeenCalledTimes(11); // TODO: Switch to 13 once translations feature flag is turned on
     const calls = fetch.mock.calls;
     expect(calls[0]).toEqual([
       `${backend.getProjectURL()}/current`,
@@ -161,8 +160,9 @@ describe("Backend", () => {
         .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
         .mockReturnValueOnce(jsonToPromise(ListResponse))
         .mockReturnValueOnce(jsonToPromise(PublishResponse))
-        .mockReturnValueOnce(jsonToPromise(TranslationListResponse))
-        .mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
+        // TODO: Enable the next two lines once translations feature flag is turned on
+        //.mockReturnValueOnce(jsonToPromise(TranslationListResponse))
+        //.mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
         .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
