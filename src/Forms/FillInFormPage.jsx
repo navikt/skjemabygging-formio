@@ -5,6 +5,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
 import { useTranslations } from "../context/i18n";
 import { useLanguages } from "../context/languages";
+import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
@@ -26,6 +27,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         options={{
           language: initialLanguage.current,
           i18n: translationsForNavForm,
+          sanitizeConfig: SANITIZE_CONFIG,
         }}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
