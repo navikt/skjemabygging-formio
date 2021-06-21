@@ -1,3 +1,3 @@
 export default {
-  enableTranslations: false,
+  enableTranslations: true,
 };

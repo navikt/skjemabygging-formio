@@ -16,9 +16,10 @@ export const getAllTextsForForm = (form) =>
       content,
       legend,
       description: description !== "" ? description : undefined,
-      suffix,
+      suffix: suffix !== "" ? suffix : undefined,
     }))
     .reduce((allTextsForForm, component) => {
+      console.log("component", component);
       return [
         ...allTextsForForm,
         ...Object.keys(component)
