@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
+import { mapTranslationsToFormioI18nObject } from "../i18n/translationsMapper";
 
 const LanguagesContext = createContext({});
 
@@ -21,7 +22,14 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
 
   return (
     <LanguagesContext.Provider
-      value={{ availableLanguages, currentLanguage, initialLanguage, translate, updateInitialLanguage }}
+      value={{
+        availableLanguages,
+        currentLanguage,
+        initialLanguage,
+        translate,
+        updateInitialLanguage,
+        translationsForNavForm: mapTranslationsToFormioI18nObject(translations),
+      }}
     >
       {children}
     </LanguagesContext.Provider>
