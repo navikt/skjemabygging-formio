@@ -52,6 +52,11 @@ export function getShaIfFormIsPreviouslyPublished(listOfForms, formFileName) {
   return previouslyPublishedForm ? previouslyPublishedForm.sha : undefined;
 }
 
+export function getShaIfTranslationsArePreviouslyPublished(listOfTranslations, translationsFileName) {
+  const previouslyPublishedTranslations = listOfTranslations.find((content) => content.name === translationsFileName);
+  return previouslyPublishedTranslations ? previouslyPublishedTranslations.sha : undefined;
+}
+
 export class PublishingService {
   constructor(ghToken, repoUrl, ref) {
     this.ghToken = ghToken;
@@ -64,8 +69,16 @@ export class PublishingService {
     return `${this.repoUrl}/contents/skjema`;
   }
 
+  translationsFolderBase() {
+    return `${this.repoUrl}/contents/translation`;
+  }
+
   skjemaFolderUrl() {
     return `${this.skjemaFolderBase()}?ref=${this.gitRef}`;
+  }
+
+  translationsFolderUrl() {
+    return `${this.translationsFolderBase()}?ref=${this.gitRef}`;
   }
 
   packageJsonUrl() {
@@ -104,8 +117,34 @@ export class PublishingService {
     }
   }
 
+  async publishTranslationsForForm(formPath, translations) {
+    const listOfFormTranslations = await this.getListOfPreviouslyPublishedFormTranslations();
+    const translationsFileName = `${formPath}.json`;
+    const listOfTranslations = listOfFormTranslations.data;
+    const shaOfPreviouslyPublishedTranslations = getShaIfTranslationsArePreviouslyPublished(
+      listOfTranslations,
+      translationsFileName
+    );
+    if (shaOfPreviouslyPublishedTranslations) {
+      await this.publishUpdateToTranslation(translationsFileName, translations, shaOfPreviouslyPublishedTranslations);
+    } else {
+      await this.publishNewTranslation(translationsFileName, translations);
+    }
+  }
+
   async getListOfPreviouslyPublishedForms() {
     return fetchWithErrorHandling(this.skjemaFolderUrl(), {
+      method: "get",
+      headers: {
+        Authorization: "token " + this.ghToken,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.github.machine-man-preview+json",
+      },
+    });
+  }
+
+  async getListOfPreviouslyPublishedFormTranslations() {
+    return fetchWithErrorHandling(this.translationsFolderUrl(), {
       method: "get",
       headers: {
         Authorization: "token " + this.ghToken,
@@ -125,6 +164,16 @@ export class PublishingService {
     await this.createOrUpdateFormInGH(formFileName, updateFileContent);
   }
 
+  async publishUpdateToTranslation(translationFileName, translations, shaOfPreviouslyPublished) {
+    const updateFileContent = {
+      message: `Oppdatert versjon av ${translationFileName} fra koselig med peis`,
+      content: stringTobase64(JSON.stringify(translations)),
+      branch: this.tempGitRef(),
+      sha: shaOfPreviouslyPublished,
+    };
+    await this.createOrUpdateTranslationInGH(translationFileName, updateFileContent);
+  }
+
   async publishNewForm(formFileName, formContent) {
     const newFileContent = {
       message: `Nytt skjema ${formFileName}`,
@@ -134,8 +183,21 @@ export class PublishingService {
     await this.createOrUpdateFormInGH(formFileName, newFileContent);
   }
 
+  async publishNewTranslation(translationsFileName, translations) {
+    const newFileContent = {
+      message: `Ny oversettelse ${translationsFileName}`,
+      content: stringTobase64(JSON.stringify(translations)),
+      branch: this.tempGitRef(),
+    };
+    await this.createOrUpdateTranslationInGH(translationsFileName, newFileContent);
+  }
+
   async createOrUpdateFormInGH(formFileName, body) {
     return await this.createOrUpdateContentInGH(`skjema/${formFileName}`, body);
+  }
+
+  async createOrUpdateTranslationInGH(translationFileName, body) {
+    return await this.createOrUpdateContentInGH(`translation/${translationFileName}`, body);
   }
 
   async createOrUpdateContentInGH(filePath, body) {

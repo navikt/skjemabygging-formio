@@ -4,10 +4,12 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { renderHook } from "@testing-library/react-hooks";
 import NavForm from "./components/NavForm.jsx";
-import { useForms } from "./useForms";
+import { useForms } from "./hooks/useForms";
 import { AuthContext } from "./context/auth-context";
 import App from "./App";
 import Formiojs from "formiojs/Formio";
+import featureToggles from "./featureToggles.json";
+import { AppConfigProvider } from "./configContext";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();
@@ -40,11 +42,13 @@ describe("App", () => {
             logout: () => {},
           }}
         >
-          <App
-            store={formStore}
-            projectURL="http://myproject.example.org"
-            pusher={{subscribe: (name) => createFakeChannel()}}
-          />
+          <AppConfigProvider featureToggles={featureToggles}>
+            <App
+              store={formStore}
+              projectURL="http://myproject.example.org"
+              pusher={{ subscribe: (name) => createFakeChannel() }}
+            />
+          </AppConfigProvider>
         </AuthContext.Provider>
       </MemoryRouter>,
       {

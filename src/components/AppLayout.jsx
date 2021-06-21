@@ -36,6 +36,7 @@ const MainCol = styled("div")({
   "& .knapp": {
     display: "block",
     textAlign: "center",
+    maxWidth: "13rem",
     width: "100%",
   },
   "@media screen and (min-width: 23.875em)": {
@@ -88,6 +89,12 @@ const LeftCol = styled("div")({
   justifySelf: "start",
 });
 
+const RightCol = styled("div")({
+  gridColumn: "3",
+  alignSelf: "end",
+  justifySelf: "end",
+});
+
 const BasicAlertCol = ({ children, ...props }) => (
   <aside aria-live="polite" {...props}>
     {children}
@@ -101,17 +108,20 @@ const AlertCol = styled(BasicAlertCol)({
   paddingBottom: "2rem",
 });
 
-export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps }) => {
+export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps, rightCol }) => {
   const alertComponent = userAlerter.alertComponent();
   return (
     <>
       <NoScrollWrapper>
         <NavBar {...navBarProps} />
-        <ActionRow>
-          <LeftCol>{leftCol}</LeftCol>
-          <MainCol>{mainCol}</MainCol>
-          {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
-        </ActionRow>
+        {(leftCol || mainCol || rightCol || alertComponent) && (
+          <ActionRow>
+            <LeftCol>{leftCol}</LeftCol>
+            <MainCol>{mainCol}</MainCol>
+            <RightCol>{rightCol}</RightCol>
+            {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
+          </ActionRow>
+        )}
       </NoScrollWrapper>
       <Pagewrapper>{children}</Pagewrapper>
     </>

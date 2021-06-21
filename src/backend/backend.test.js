@@ -33,14 +33,17 @@ describe("Backend", () => {
       .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
       .mockReturnValueOnce(jsonToPromise(ListResponse))
       .mockReturnValueOnce(jsonToPromise(PublishResponse))
+      // TODO: Enable the next two lines once translations feature flag is turned on
+      //.mockReturnValueOnce(jsonToPromise(TranslationListResponse))
+      //.mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
       .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
       .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
       .mockReturnValueOnce(jsonToPromise(PatchRefResponse))
       .mockReturnValueOnce(Promise.resolve(new Response(null, { status: 204 })));
 
-    await backend.publishForm(token, {}, formPath);
-    expect(fetch).toHaveBeenCalledTimes(11);
+    await backend.publishForm(token, {}, {}, formPath);
+    expect(fetch).toHaveBeenCalledTimes(11); // TODO: Switch to 13 once translations feature flag is turned on
     const calls = fetch.mock.calls;
     expect(calls[0]).toEqual([
       `${backend.getProjectURL()}/current`,
@@ -157,6 +160,9 @@ describe("Backend", () => {
         .mockReturnValueOnce(jsonToPromise(CreateRefResponse))
         .mockReturnValueOnce(jsonToPromise(ListResponse))
         .mockReturnValueOnce(jsonToPromise(PublishResponse))
+        // TODO: Enable the next two lines once translations feature flag is turned on
+        //.mockReturnValueOnce(jsonToPromise(TranslationListResponse))
+        //.mockReturnValueOnce(jsonToPromise(PublishTranslationResponse))
         .mockReturnValueOnce(jsonToPromise(PackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(UpdatePackageJsonResponse))
         .mockReturnValueOnce(jsonToPromise(GetTempRefResponse))
@@ -168,13 +174,13 @@ describe("Backend", () => {
       spyUpdateFunction.mockRestore();
     });
     it("finds SHA from list of forms and tries to publish an update", async () => {
-      await backend.publishForm(token, {}, formPath);
+      await backend.publishForm(token, {}, {}, formPath);
       expect(spyUpdateFunction).toHaveBeenCalledTimes(1);
       expect(spyCreateFunction).toHaveBeenCalledTimes(0);
     });
 
     it("finds no matching SHA and tries to publish new form", async () => {
-      await backend.publishForm("token", {}, "skjemaSomIkkeFinnesFraFor");
+      await backend.publishForm("token", {}, {}, "skjemaSomIkkeFinnesFraFor");
       expect(spyUpdateFunction).toHaveBeenCalledTimes(0);
       expect(spyCreateFunction).toHaveBeenCalledTimes(1);
     });

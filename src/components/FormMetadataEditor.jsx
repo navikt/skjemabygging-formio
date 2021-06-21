@@ -9,6 +9,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     display,
     name,
     tags,
+    type,
     properties: { skjemanummer, tema },
   } = form;
   console.log(tags);
@@ -42,6 +43,20 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
       />
+      <Select
+        label="Type"
+        name="form-type"
+        id="form-type"
+        value={type}
+        onChange={(event) => onChange({ ...form, type: event.target.value })}
+      >
+        <option label="Form" value="form">
+          Form
+        </option>
+        <option label="Resource" value="resource">
+          Resource
+        </option>
+      </Select>
       <Select
         label="Vis som"
         name="form-display"
@@ -89,12 +104,8 @@ export const SkjemaVisningSelect = ({ form, onChange }) => {
       onChange={(event) => onChange({ ...form, display: event.target.value })}
       bredde="s"
     >
-      <option label="Skjema" value="form">
-        Skjema
-      </option>
-      <option label="Veiviser" value="wizard">
-        Veiviser
-      </option>
+      <option value="form">Skjema</option>
+      <option value="wizard">Veiviser</option>
     </Select>
   );
 };

@@ -7,7 +7,7 @@
             <div class="stegindikator__steg-num">
               <span class="nav-frontend-chevron chevronboks chevron--venstre" />
             </div>
-            <div class="stegindikator__steg-label">{{ctx.t('Forrige')}}</div>
+            <div class="stegindikator__steg-label">{{ctx.t('previous')}}</div>
           </button>
         </li>
       {% } %}
@@ -23,14 +23,14 @@
             <{{(ctx.currentPage === index) ? "div" : "button"}}
               class="stegindikator__steg-inner {{ctx.currentPage === index ? 'stegindikator__steg-inner--aktiv' : 'stegindikator__steg-inner--interaktiv'}} {{ctx.currentPage > index ? 'stegindikator__steg-inner--ferdig' : ''}}"
               ref="{{ctx.wizardKey}}-link"
-              title="{{ctx.panels[index].title}}"
+              title="{{ctx.t(ctx.panels[index].title)}}"
               {% if (ctx.currentPage === index) { %}
               tabindex="-1"
               {% } %}
             >
             <div class="stegindikator__steg-num">{{ctx.t(index+1)}}{{ctx.panels.length > 5 && ctx.currentPage === index && window.innerWidth > 600 ? ` av ${ctx.panels.length}` : ''}}</div>
             {% if (window.innerWidth > 600) { %}
-            <div class="stegindikator__steg-label">{{ctx.panels[index].title}}</div>
+            <div class="stegindikator__steg-label">{{ctx.t(ctx.panels[index].title)}}</div>
             {% } %}
           </{{(ctx.currentPage === index) ? "div" : "button"}}>
           </li>
@@ -42,7 +42,7 @@
           <div class="stegindikator__steg-num">
             <span class="nav-frontend-chevron chevronboks chevron--hoyre" />
           </div>
-          <div class="stegindikator__steg-label">{{ctx.t('Neste')}}</div>
+          <div class="stegindikator__steg-label">{{ctx.t('next')}}</div>
         </button>
       </li>
       {% } %}

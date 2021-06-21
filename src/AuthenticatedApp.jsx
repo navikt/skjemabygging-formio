@@ -1,17 +1,27 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
-import { useForms } from "./useForms";
-import {UserAlerterContext} from "./userAlerting";
+import { useForms } from "./hooks/useForms";
+import { UserAlerterContext } from "./userAlerting";
+import LoadingComponent from "./components/LoadingComponent";
+import TranslationsRouter from "./translations/TranslationsRouter";
 
-function AuthenticatedApp({ formio, store}) {
+function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useForms(
-    formio,
-    store,
-    userAlerter
-  );
+  const {
+    forms,
+    onChangeForm,
+    onSave,
+    onCreate,
+    onDelete,
+    onPublish,
+    loadGlobalTranslations,
+    loadTranslationsForEditPage,
+    deleteTranslation,
+    saveLocalTranslation,
+    saveGlobalTranslation,
+  } = useForms(formio, store, userAlerter);
 
   const history = useHistory();
   const wrappedCreate = (newForm) => {
@@ -19,6 +29,9 @@ function AuthenticatedApp({ formio, store}) {
       history.push(`/forms/${savedForm.path}/edit`);
     });
   };
+  if (!forms) {
+    return <LoadingComponent />;
+  }
   return (
     <>
       <Switch>
@@ -31,8 +44,21 @@ function AuthenticatedApp({ formio, store}) {
             onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
+            loadTranslations={loadTranslationsForEditPage}
           />
         </Route>
+        <Route path="/translations">
+          <TranslationsRouter
+            forms={forms}
+            projectURL={formio.projectUrl}
+            loadGlobalTranslations={loadGlobalTranslations}
+            loadTranslationsForEditPage={loadTranslationsForEditPage}
+            saveGlobalTranslation={saveGlobalTranslation}
+            saveLocalTranslation={saveLocalTranslation}
+            deleteTranslation={deleteTranslation}
+          />
+        </Route>
+
         <Route path="/">
           <Redirect to="/forms" />
         </Route>

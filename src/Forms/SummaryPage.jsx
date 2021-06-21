@@ -7,6 +7,8 @@ import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
 import { createFormSummaryObject } from "../util/formSummaryUtil";
+import TEXTS from "../texts";
+import { useLanguages } from "../context/languages";
 
 const FormSummaryField = ({ label, value }) => (
   <>
@@ -72,7 +74,8 @@ const ComponentSummary = ({ components }) => {
 };
 
 const FormSummary = ({ form, submission }) => {
-  const formSummaryObject = createFormSummaryObject(form, submission);
+  const { translate } = useLanguages();
+  const formSummaryObject = createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
   }
@@ -82,6 +85,7 @@ const FormSummary = ({ form, submission }) => {
 export function SummaryPage({ form, submission, formUrl }) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
+  const { translate } = useLanguages();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
@@ -91,17 +95,14 @@ export function SummaryPage({ form, submission, formUrl }) {
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <main id="maincontent" tabIndex={-1}>
         <Innholdstittel tag="h2" className="margin-bottom-default">
-          Oppsummering av søknaden din
+          {translate(TEXTS.summaryPage.title)}
         </Innholdstittel>
-        <Normaltekst className="margin-bottom-default">
-          Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres trykker du på
-          "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.
-        </Normaltekst>
+        <Normaltekst className="margin-bottom-default">{translate(TEXTS.summaryPage.description)}</Normaltekst>
         <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
-              Rediger svar
+              {translate(TEXTS.summaryPage.editAnswers)}
             </Link>
           </div>
           <div className="list-inline-item">
@@ -114,7 +115,9 @@ export function SummaryPage({ form, submission, formUrl }) {
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
             >
-              {form.properties.hasPapirInnsendingOnly ? "Gå videre" : "Send i posten"}
+              {form.properties.hasPapirInnsendingOnly
+                ? translate(TEXTS.summaryPage.continue)
+                : translate(TEXTS.summaryPage.continueToPostalSubmission)}
             </Link>
           </div>
           {!form.properties.hasPapirInnsendingOnly && (
@@ -124,7 +127,7 @@ export function SummaryPage({ form, submission, formUrl }) {
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
               >
-                Send inn digitalt
+                {translate(TEXTS.summaryPage.continueToDigitalSubmission)}
               </Link>
             </div>
           )}

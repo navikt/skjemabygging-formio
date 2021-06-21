@@ -9,6 +9,7 @@ import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
 import CustomComponents from "../customComponents";
 import Components from "formiojs/components/Components";
+import I18nProvider from "../context/i18n";
 
 const useLoadingStyles = makeStyles({
   root: {
@@ -32,8 +33,7 @@ const LoadingComponent = () => {
     </div>
   );
 };
-
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish }) => {
+export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadTranslations }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const { logout } = useAuth();
@@ -52,29 +52,38 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
           const form = getFormFromPath(forms, params.formpath);
           const testFormUrl = `${path}/${params.formpath}/view`;
           return (
-            <EditFormPage
-              onLogout={logout}
-              form={form}
-              testFormUrl={testFormUrl}
-              onSave={onSave}
-              onChange={onChange}
-              onPublish={onPublish}
-            />
+            <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
+              <EditFormPage
+                onLogout={logout}
+                form={form}
+                testFormUrl={testFormUrl}
+                onSave={onSave}
+                onChange={onChange}
+                onPublish={onPublish}
+              />
+            </I18nProvider>
           );
         }}
       />
       <Route
-        path={`${path}/:formpath/view`}
+        path={`${path}/:formPath/view`}
         render={({ match }) => {
+          let {
+            params: { formPath },
+          } = match;
+          const form = getFormFromPath(forms, formPath);
           return (
-            <TestFormPage
-              onLogout={logout}
-              form={getFormFromPath(forms, match.params.formpath)}
-              editFormUrl={`${path}/${match.params.formpath}/edit`}
-              onSave={onSave}
-              onChange={onChange}
-              onPublish={onPublish}
-            />
+            <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
+              <TestFormPage
+                {...match.params}
+                onLogout={logout}
+                loadTranslations={loadTranslations}
+                form={getFormFromPath(forms, formPath)}
+                editFormUrl={`${path}/${formPath}/edit`}
+                onSave={onSave}
+                onPublish={onPublish}
+              />
+            </I18nProvider>
           );
         }}
       />

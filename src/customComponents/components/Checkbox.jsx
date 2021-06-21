@@ -28,12 +28,12 @@ const CheckboxWrapper = class extends Component {
   };
 
   render() {
-    const component = this.props.component;
+    const { component, translate } = this.props;
     return (
       <Checkbox
         checkboxRef={this.props.checkboxRef}
         aria-describedby={`${component.key}-error`}
-        label={component.label}
+        label={translate(component.label)}
         onChange={(event) => this.setValue(!!this.state.value ? null : "ja")}
         required={component.validate.required}
         checked={this.state.value === "ja"}
@@ -99,6 +99,7 @@ export default class CheckboxComponent extends FormioReactComponent {
         value={this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkboxRef={(r) => (this.input = r)}
+        translate={(text) => this.t(text)}
       />,
       element
     );

@@ -1,4 +1,5 @@
 import { PublishingService, checkPublishingAccess, getGithubToken } from "./publishingService.js";
+import featureToggles from "../featureToggles";
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -15,7 +16,7 @@ export class Backend {
     return this.githubAppConfig.baseURL;
   }
 
-  async publishForm(userToken, form, formPath) {
+  async publishForm(userToken, form, translations, formPath) {
     await checkPublishingAccess(userToken, this.projectURL);
     const githubTokenResponse = await getGithubToken(this.githubAppConfig);
     const githubToken = githubTokenResponse.data.token;
@@ -27,6 +28,9 @@ export class Backend {
     await service.createTempCopyOfGitRef();
     try {
       await service.publishForm(formPath, form);
+      if (featureToggles.enableTranslations) {
+        await service.publishTranslationsForForm(formPath, translations);
+      }
       await service.updatePackageJson(this.gitVersion);
     } finally {
       await service.updateFromAndDeleteTempRef();

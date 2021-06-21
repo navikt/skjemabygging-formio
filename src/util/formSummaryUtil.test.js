@@ -1,78 +1,18 @@
 import { createFormSummaryObject, handleComponent } from "./formSummaryUtil";
+import {
+  createDummyContainerElement,
+  createDummyContentElement,
+  createDummyDataGrid,
+  createDummyEmail,
+  createDummyHTMLElement,
+  createDummyNavSkjemagruppe,
+  createDummyRadioPanel,
+  createDummyTextfield,
+  createFormObject,
+  createPanelObject,
+} from "./MockedComponentObjectForTest";
 
-const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
-
-const createDummyTextfield = (label = "Tekstfelt") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "textfield",
-});
-
-const createDummyEmail = (label = "Email") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "email",
-});
-
-const createDummyRadioPanel = (
-  label = "RadioPanel",
-  values = [
-    { label: "NO-label", value: "no" },
-    { label: "YES-label", value: "yes" },
-  ]
-) => ({
-  label,
-  key: keyFromLabel(label),
-  type: "radiopanel",
-  values,
-});
-
-const createDummyContentElement = (label = "Content") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "content",
-});
-
-const createDummyHTMLElement = (label = "HTMLelement") => ({
-  label,
-  key: keyFromLabel(label),
-  type: "htmlelement",
-});
-
-const createDummyContainerElement = (label = "Container", components) => ({
-  label,
-  key: keyFromLabel(label),
-  type: "container",
-  components,
-});
-
-const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
-  label: `${label}-label`,
-  legend: `${label}-legend`,
-  key: keyFromLabel(label),
-  type: "navSkjemagruppe",
-  components,
-});
-
-const createDummyDataGrid = (label = "DataGrid", components) => ({
-  label,
-  key: keyFromLabel(label),
-  type: "datagrid",
-  rowTitle: "datagrid-row-title",
-  components,
-});
-
-const createPanelObject = (title, components, label) => ({
-  title,
-  label,
-  key: keyFromLabel(title),
-  type: "panel",
-  components,
-});
-
-const createFormObject = (panels = []) => ({
-  components: panels,
-});
+const mockedTranslate = (value) => value;
 
 const dummySubmission = {
   data: {
@@ -84,7 +24,7 @@ const dummySubmission = {
 describe("When handling component", () => {
   describe("panel", () => {
     it("is ignored if it has no subComponents", () => {
-      const actual = handleComponent(createPanelObject(), {}, []);
+      const actual = handleComponent(createPanelObject(), {}, [], "", mockedTranslate);
       expect(actual.find((component) => component.type === "panel")).toBeUndefined();
     });
 
@@ -92,7 +32,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createPanelObject("Panel", [createDummyTextfield(), createDummyEmail(), createDummyRadioPanel()]),
         {},
-        []
+        [],
+        "",
+        mockedTranslate
       );
       expect(actual.find((component) => component.type === "panel")).toBeUndefined();
     });
@@ -101,7 +43,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createPanelObject("PanelTitle", [createDummyTextfield("TextField")], "PanelLabel (should not be included)"),
         { data: { textfield: "textValue" } },
-        []
+        [],
+        "",
+        mockedTranslate
       );
       expect(actual).toEqual([
         {
@@ -116,7 +60,7 @@ describe("When handling component", () => {
 
   describe("form fields", () => {
     it("are added with value from submission", () => {
-      const actual = handleComponent(createDummyTextfield(), dummySubmission, []);
+      const actual = handleComponent(createDummyTextfield(), dummySubmission, [], "", mockedTranslate);
       expect(actual).toContainEqual({
         label: "Tekstfelt",
         key: "tekstfelt",
@@ -139,14 +83,14 @@ describe("When handling component", () => {
   });
   describe("htmlelement", () => {
     it("is filtered away", () => {
-      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, []);
+      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, [], mockedTranslate());
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
     });
   });
 
   describe("container", () => {
     it("is never included", () => {
-      const actual = handleComponent(createDummyContainerElement(), dummySubmission, []);
+      const actual = handleComponent(createDummyContainerElement(), dummySubmission, [], "", mockedTranslate);
       expect(actual.find((component) => component.type === "container")).toBeUndefined();
     });
 
@@ -154,7 +98,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
         {},
-        []
+        [],
+        "",
+        mockedTranslate
       );
       expect(actual.find((component) => component.type === "container")).toBeUndefined();
       expect(actual.find((component) => component.type === "content")).toBeUndefined();
@@ -165,7 +111,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createDummyContainerElement("Container", [createDummyContentElement(), createDummyTextfield()]),
         { data: { container: dummySubmission.data } },
-        []
+        [],
+        "",
+        mockedTranslate
       );
       expect(actual).toEqual([
         {
@@ -192,7 +140,9 @@ describe("When handling component", () => {
             level1container: { tekstfelt: "Inni container 1", level2container: { tekstfelt: "Inni container 2" } },
           },
         },
-        []
+        [],
+        "",
+        mockedTranslate
       );
       expect(actual).toEqual([
         {
@@ -226,7 +176,7 @@ describe("When handling component", () => {
 
   describe("navSkjemagruppe", () => {
     it("is ignored if it has no subcomponents", () => {
-      const actual = handleComponent(createDummyNavSkjemagruppe(), {}, []);
+      const actual = handleComponent(createDummyNavSkjemagruppe(), {}, [], "", mockedTranslate);
       expect(actual.find((component) => component.type === "navSkjemagruppe")).toBeUndefined();
     });
 
@@ -234,7 +184,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createDummyNavSkjemagruppe("NavSkjemagruppe", [createDummyTextfield()]),
         dummySubmission,
-        []
+        [],
+        "",
+        mockedTranslate
       );
       const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
       expect(actualNavSkjemagruppe).toBeDefined();
@@ -244,7 +196,7 @@ describe("When handling component", () => {
 
   describe("DataGrid", () => {
     it("is ignored if it has no subComponents", () => {
-      const actual = handleComponent(createDummyDataGrid(), {}, []);
+      const actual = handleComponent(createDummyDataGrid(), {}, [], "", mockedTranslate);
       expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
     });
 
@@ -252,7 +204,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createDummyDataGrid("Datagrid", [createDummyTextfield(), createDummyEmail(), createDummyRadioPanel()]),
         { data: { datagrid: [] } },
-        []
+        [],
+        "",
+        mockedTranslate
       );
       expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
     });
@@ -261,7 +215,9 @@ describe("When handling component", () => {
       const actual = handleComponent(
         createDummyDataGrid("DataGrid", [createDummyTextfield()]),
         { data: { datagrid: [dummySubmission.data] } },
-        []
+        [],
+        "",
+        mockedTranslate
       );
 
       expect(actual).toEqual([
@@ -365,7 +321,8 @@ describe("When creating form summary object", () => {
           emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
           radiopanel: "yes",
         },
-      }
+      },
+      mockedTranslate
     );
     expect(actual).toEqual([
       {
@@ -521,7 +478,8 @@ describe("When creating form summary object", () => {
           createPanelObject("Panel 1", [createDummyTextfield()]),
           createPanelObject("Panel 2", [createDummyEmail()]),
         ]),
-        dummySubmission
+        dummySubmission,
+        mockedTranslate
       );
       expect(actual).toBeInstanceOf(Array);
       expect(actual.length).toEqual(2);

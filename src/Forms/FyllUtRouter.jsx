@@ -7,13 +7,16 @@ import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
+import { LanguagesProvider, LanguageSelector } from "../context/languages";
+import { useAppConfig } from "../configContext";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "800px",
 });
 
-const FyllUtRouter = ({ form }) => {
+const FyllUtRouter = ({ form, translations }) => {
+  const { featureToggles } = useAppConfig();
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -32,29 +35,32 @@ const FyllUtRouter = ({ form }) => {
   }, [loggSkjemaApnet]);
 
   return (
-    <FyllUtContainer>
-      <Switch>
-        <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
-        <Route exact path={path}>
-          <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
-        </Route>
-        <Route path={`${path}/oppsummering`}>
-          <SubmissionWrapper submission={submission} url={url}>
-            {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
-          </SubmissionWrapper>
-        </Route>
-        <Route path={`${path}/send-i-posten`}>
-          <SubmissionWrapper submission={submission} url={url}>
-            {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} />}
-          </SubmissionWrapper>
-        </Route>
-        <Route path={`${path}/forbered-innsending`}>
-          <SubmissionWrapper submission={submission} url={url}>
-            {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} />}
-          </SubmissionWrapper>
-        </Route>
-      </Switch>
-    </FyllUtContainer>
+    <LanguagesProvider translations={translations}>
+      <FyllUtContainer>
+        {featureToggles.enableTranslations && <LanguageSelector />}
+        <Switch>
+          <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
+          <Route exact path={path}>
+            <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
+          </Route>
+          <Route path={`${path}/oppsummering`}>
+            <SubmissionWrapper submission={submission} url={url}>
+              {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
+            </SubmissionWrapper>
+          </Route>
+          <Route path={`${path}/send-i-posten`}>
+            <SubmissionWrapper submission={submission} url={url}>
+              {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} formUrl={url} />}
+            </SubmissionWrapper>
+          </Route>
+          <Route path={`${path}/forbered-innsending`}>
+            <SubmissionWrapper submission={submission} url={url}>
+              {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} formUrl={url} />}
+            </SubmissionWrapper>
+          </Route>
+        </Switch>
+      </FyllUtContainer>
+    </LanguagesProvider>
   );
 };
 

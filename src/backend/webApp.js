@@ -12,7 +12,7 @@ export function dispatcherWithBackend(backend) {
           res.status(401).send("Unauthorized");
         }
         try {
-          await backend.publishForm(req.body.token, req.body.form, formPath);
+          await backend.publishForm(req.body.token, req.body.form, req.body.translations, formPath);
           res.send("Publisering vellykket!");
         } catch (error) {
           if (error instanceof HttpError && error.response.status === 401) {

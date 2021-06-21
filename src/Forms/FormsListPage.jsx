@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { SlettSkjemaKnapp } from "./components";
+import { SlettKnapp } from "./components";
 import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
+import { Hovedknapp } from "nav-frontend-knapper";
 
 const useFormsListStyles = makeStyles({
   list: {
@@ -124,17 +125,24 @@ function simplifiedForms(forms) {
   }));
 }
 
-export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
+function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   return (
     <AppLayoutWithContext
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
-        visLagNyttSkjema: true,
+        visOversettelseliste: true,
         logout: onLogout,
         onNew: onNew,
       }}
+      mainCol={
+        <nav className="list-inline">
+          <div className="list-inline-item">
+            <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
+          </div>
+        </nav>
+      }
     >
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
@@ -147,9 +155,9 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
-              <SlettSkjemaKnapp className="lenke" onClick={() => onDelete(form)}>
+              <SlettKnapp className="lenke" onClick={() => onDelete(form)}>
                 Slett skjema
-              </SlettSkjemaKnapp>
+              </SlettKnapp>
             </li>
           )}
         </FormsList>
@@ -157,3 +165,5 @@ export function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
     </AppLayoutWithContext>
   );
 }
+
+export { FormsListPage, FormsList, simplifiedForms };

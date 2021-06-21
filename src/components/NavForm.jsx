@@ -221,7 +221,9 @@ class NavForm extends Component {
         if (url) {
           this.formio.url = url;
         }
-
+        window.setLanguage = (lang) => {
+          this.formio.language = lang;
+        };
         return this.formio;
       });
     }
