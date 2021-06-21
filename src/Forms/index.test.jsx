@@ -11,7 +11,7 @@ import { Hovedknapp } from "nav-frontend-knapper";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
 import { UserAlerterContext } from "../userAlerting";
 import { AppConfigProvider } from "../configContext";
-import featureToggles from "../featureToggles.json";
+import featureToggles from "../featureToggles.js";
 import { FormsListPage } from "./FormsListPage";
 
 const context = new FakeBackendTestContext();

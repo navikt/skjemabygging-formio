@@ -8,7 +8,7 @@ import { AuthContext } from "../context/auth-context";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { MemoryRouter } from "react-router-dom";
 import { UserAlerterContext } from "../userAlerting";
-import featureToggles from "../featureToggles.json";
+import featureToggles from "../featureToggles.js";
 import { AppConfigProvider } from "../configContext";
 import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";

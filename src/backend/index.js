@@ -1,5 +1,5 @@
 import { PublishingService, checkPublishingAccess, getGithubToken } from "./publishingService.js";
-import featureToggles from "../featureToggles";
+import featureToggles from "../featureToggles.js";
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
