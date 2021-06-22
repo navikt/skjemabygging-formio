@@ -5,10 +5,6 @@
   "type": "module",
   "private": true,
   "cracoConfig": "craco.config.cjs",
-  "main": "dist/index.js",
-  "files": [
-    "dist"
-  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "proxy": "http://localhost:8080",
   "dependencies": {
@@ -78,7 +74,7 @@
   },
   "scripts": {
     "start": "cross-env-shell EXTEND_ESLINT=true craco start",
-    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
+    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROVelg skjema:XY=yes yarn start'  'nodemon server/index.mjs'",
     "build": "cross-env-shell REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\" --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject"
@@ -125,19 +121,5 @@
     "react-test-renderer": "^16.13.1",
     "rollup": "^1.29.0",
     "webpack-cli": "^3.3.12"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,cjs,mjs}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{md,mdx}": [
-      "prettier --write"
-    ]
   }
 }
