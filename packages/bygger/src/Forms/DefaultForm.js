@@ -1,4 +1,6 @@
-import {
+import { FormBuilderSchemas } from "@navikt/skjemadigitalisering-shared-components";
+
+const {
   fodselsNummerDNummerSchema,
   firstNameSchema,
   surnameSchema,
@@ -8,7 +10,7 @@ import {
   poststedSchema,
   landSchema,
   utenlandskPostkodeSchema,
-} from "./FormBuilderOptions";
+} = FormBuilderSchemas;
 
 const sokerPostfix = "Soker";
 

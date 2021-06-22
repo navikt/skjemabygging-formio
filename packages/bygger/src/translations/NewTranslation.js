@@ -1,7 +1,7 @@
 import React from "react";
 import { Pagewrapper } from "../Forms/components";
 import { styled } from "@material-ui/styles";
-import NavForm from "../components/NavForm";
+import { NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import { AppLayoutWithContext } from "../components/AppLayout";
 
 const StyledNavForm = styled(NavForm)({

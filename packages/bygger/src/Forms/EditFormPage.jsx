@@ -2,13 +2,11 @@ import { Link } from "react-router-dom";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
 import React from "react";
-import FormBuilderOptions from "./FormBuilderOptions";
+import { FormBuilderOptions, useTranslations, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
-import { useTranslations } from "../context/i18n";
-import { useAppConfig } from "../configContext";
 
 export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
   const { featureToggles } = useAppConfig();

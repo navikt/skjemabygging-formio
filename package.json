@@ -8,7 +8,7 @@
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
     "start": "lerna run --parallel start",
-    "start:bygger": "lerna run --scope bygger start",
+    "start:bygger": "lerna run --scope @navikt/bygger start",
     "test": "cross-env-shell CI=true lerna run --stream test"
   },
   "devDependencies": {

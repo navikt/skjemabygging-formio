@@ -28,7 +28,7 @@ import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { styled } from "@material-ui/styles";
-import navFormStyle from "./navFormStyle";
+import { navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
 
 const BuilderMountElement = styled("div")({
   "& .formbuilder": {

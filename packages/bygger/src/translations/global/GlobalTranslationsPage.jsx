@@ -1,15 +1,17 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
+import {
+  FormBuilderLanguageSelector,
+  guid,
+  languagesInNorwegian,
+  LanguagesProvider,
+  i18nData,
+} from "@navikt/skjemadigitalisering-shared-components";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { guid } from "../../util/guid";
 import { Innholdstittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
-import { languagesInNorwegian } from "../../context/i18n";
-import { LanguagesProvider } from "../../context/languages";
-import i18nData from "../../i18nData";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useHistory, useParams } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";

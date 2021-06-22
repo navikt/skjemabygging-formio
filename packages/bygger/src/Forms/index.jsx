@@ -7,9 +7,8 @@ import NewFormPage from "./NewFormPage";
 import { EditFormPage } from "./EditFormPage";
 import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
-import CustomComponents from "../customComponents";
+import { CustomComponents, I18nProvider } from "@navikt/skjemadigitalisering-shared-components";
 import Components from "formiojs/components/Components";
-import I18nProvider from "../context/i18n";
 
 const useLoadingStyles = makeStyles({
   root: {

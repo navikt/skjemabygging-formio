@@ -9,7 +9,7 @@ import AuthenticatedApp from "../AuthenticatedApp";
 import { MemoryRouter } from "react-router-dom";
 import { UserAlerterContext } from "../userAlerting";
 import featureToggles from "../featureToggles.js";
-import { AppConfigProvider } from "../configContext";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
 import { Formio } from "formiojs";

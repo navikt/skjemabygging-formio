@@ -3,13 +3,12 @@ import { Formio } from "formiojs";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { renderHook } from "@testing-library/react-hooks";
-import NavForm from "./components/NavForm.jsx";
+import { NavForm, AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { useForms } from "./hooks/useForms";
 import { AuthContext } from "./context/auth-context";
 import App from "./App";
 import Formiojs from "formiojs/Formio";
 import featureToggles from "./featureToggles.js";
-import { AppConfigProvider } from "./configContext";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();

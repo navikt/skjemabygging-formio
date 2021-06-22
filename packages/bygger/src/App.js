@@ -6,7 +6,7 @@ import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
 import "./overrideFormioStyles.less";
 import makeStyles from "@material-ui/styles/makeStyles";
-import { globalStyles, appStyles } from "./components/navGlobalStyles";
+import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
 
 const useStyles = makeStyles((theme) => ({
   "@global": globalStyles,

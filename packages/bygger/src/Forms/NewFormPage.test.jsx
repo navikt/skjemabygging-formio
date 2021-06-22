@@ -10,7 +10,7 @@ import React from "react";
 import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
 import { UserAlerterContext } from "../userAlerting";
 import featureToggles from "../featureToggles.js";
-import { AppConfigProvider } from "../configContext";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 
 const context = new FakeBackendTestContext();
 context.setupBeforeAfter();

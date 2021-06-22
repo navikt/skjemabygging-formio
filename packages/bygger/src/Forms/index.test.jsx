@@ -10,7 +10,7 @@ import { Formio } from "formiojs";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
 import { UserAlerterContext } from "../userAlerting";
-import { AppConfigProvider } from "../configContext";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import featureToggles from "../featureToggles.js";
 import { FormsListPage } from "./FormsListPage";
 

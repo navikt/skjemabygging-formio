@@ -2,12 +2,14 @@ import { Link, useHistory } from "react-router-dom";
 import React from "react";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import FyllUtRouter from "./FyllUtRouter";
-import AmplitudeProvider from "../context/amplitude";
+import {
+  FyllUtRouter,
+  AmplitudeProvider,
+  useTranslations,
+  useAppConfig,
+} from "@navikt/skjemadigitalisering-shared-components";
 import { useModal } from "../util/useModal";
 import ConfirmPublishModal from "./ConfirmPublishModal";
-import { useTranslations } from "../context/i18n";
-import { useAppConfig } from "../configContext";
 
 const MainCol = ({ editFormUrl, form, onSave }) => {
   const { featureToggles } = useAppConfig();

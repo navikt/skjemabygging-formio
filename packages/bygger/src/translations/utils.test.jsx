@@ -1,5 +1,6 @@
 import { getAllTextsForForm } from "./utils";
-import {
+import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
+const {
   createDummyCheckbox,
   createDummyContainerElement,
   createDummyContentElement,
@@ -11,7 +12,7 @@ import {
   createDummyTextfield,
   createFormObject,
   createPanelObject,
-} from "../util/MockedComponentObjectForTest";
+} = MockedComponentObjectForTest;
 
 describe("testGetAllTextsForForm", () => {
   it("Test empty form", () => {

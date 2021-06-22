@@ -1,4 +1,4 @@
-import { flattenComponents } from "../util/forsteside";
+import { flattenComponents } from "@navikt/skjemadigitalisering-shared-components";
 
 const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";

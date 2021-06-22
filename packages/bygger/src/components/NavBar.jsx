@@ -3,7 +3,7 @@ import { styled } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import navCssVariables from "nav-frontend-core";
 import { Undertittel } from "nav-frontend-typografi";
-import { useAppConfig } from "../configContext";
+import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 
 const NavBarContainer = styled("div")({
   backgroundColor: navCssVariables.navDypBlaLighten40,
