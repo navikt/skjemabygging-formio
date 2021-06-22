@@ -3,18 +3,18 @@ import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
-import { useTranslations } from "../context/i18n";
 import { useLanguages } from "../context/languages";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
+import { useAppConfig } from "../configContext";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
-  const { translationsForNavForm } = useTranslations();
-  const { initialLanguage, updateInitialLanguage } = useLanguages();
+  const { featureToggles } = useAppConfig();
+  const { initialLanguage, updateInitialLanguage, translationsForNavForm } = useLanguages();
   useEffect(() => updateInitialLanguage(), [updateInitialLanguage]);
 
-  if (!translationsForNavForm) {
+  if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
   }
   return (
