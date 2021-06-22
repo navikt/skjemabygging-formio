@@ -1,5 +1,5 @@
 {
-  "name": "bygger",
+  "name": "@navikt/bygger",
   "version": "0.1.0",
   "repository": "https://github.com/navikt/skjemabygging-formio.git",
   "type": "module",
