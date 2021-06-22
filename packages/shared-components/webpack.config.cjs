@@ -13,7 +13,7 @@ const config = {
   mode: "none",
   output: {
     libraryTarget: "commonjs2",
-    path: __dirname + "/lib",
+    path: __dirname + "/dist",
     filename: "index.js",
   },
   module: {

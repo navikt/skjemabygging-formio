@@ -30,7 +30,7 @@ const builderEditForm = {
   ],
 };
 
-export const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
+const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   label: "Fødselsnummer / D-nummer",
   type: "fnrfield",
   key: `fodselsnummerDNummer${keyPostfix}`,
@@ -45,7 +45,7 @@ export const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   },
 });
 
-export const firstNameSchema = (keyPostfix = "") => ({
+const firstNameSchema = (keyPostfix = "") => ({
   label: "Fornavn",
   type: "textfield",
   key: `fornavn${keyPostfix}`,
@@ -58,7 +58,7 @@ export const firstNameSchema = (keyPostfix = "") => ({
   },
 });
 
-export const surnameSchema = (keyPostfix = "") => ({
+const surnameSchema = (keyPostfix = "") => ({
   label: "Etternavn",
   type: "textfield",
   key: `etternavn${keyPostfix}`,
@@ -71,7 +71,7 @@ export const surnameSchema = (keyPostfix = "") => ({
   },
 });
 
-export const personaliaSchema = (keyPostfix = "") => ({
+const personaliaSchema = (keyPostfix = "") => ({
   label: "Personalia", // not used
   hideLabel: true,
   type: "container",
@@ -85,7 +85,7 @@ export const personaliaSchema = (keyPostfix = "") => ({
   ],
 });
 
-export const gateadresseSchema = (keyPostfix = "") => ({
+const gateadresseSchema = (keyPostfix = "") => ({
   label: "Gateadresse",
   type: "textfield",
   key: `gateadresse${keyPostfix}`,
@@ -99,7 +99,7 @@ export const gateadresseSchema = (keyPostfix = "") => ({
   },
 });
 
-export const postnrSchema = (keyPostfix = "") => ({
+const postnrSchema = (keyPostfix = "") => ({
   label: "Postnummer",
   type: "textfield",
   key: `postnr${keyPostfix}`,
@@ -116,7 +116,7 @@ export const postnrSchema = (keyPostfix = "") => ({
   },
 });
 
-export const utenlandskPostkodeSchema = (keyPostfix = "") => ({
+const utenlandskPostkodeSchema = (keyPostfix = "") => ({
   label: "Utenlandsk postkode",
   type: "textfield",
   key: `utenlandskPostkode${keyPostfix}`,
@@ -131,7 +131,7 @@ export const utenlandskPostkodeSchema = (keyPostfix = "") => ({
   },
 });
 
-export const poststedSchema = (keyPostfix = "") => ({
+const poststedSchema = (keyPostfix = "") => ({
   label: "Poststed",
   type: "textfield",
   key: `poststed${keyPostfix}`,
@@ -145,7 +145,7 @@ export const poststedSchema = (keyPostfix = "") => ({
   },
 });
 
-export const landSchema = (keyPostfix = "") => ({
+const landSchema = (keyPostfix = "") => ({
   label: "Land",
   type: "textfield",
   key: `land${keyPostfix}`,
@@ -159,7 +159,7 @@ export const landSchema = (keyPostfix = "") => ({
   },
 });
 
-export const epostSchema = () => ({
+const epostSchema = () => ({
   label: "E-post",
   type: "email",
   key: `epost`,
@@ -174,7 +174,7 @@ export const epostSchema = () => ({
   },
 });
 
-export const telefonSchema = (keyPostfix = "") => ({
+const telefonSchema = (keyPostfix = "") => ({
   label: "Telefonnummer",
   type: "phoneNumber",
   key: `telefonnummer${keyPostfix}`,
@@ -190,7 +190,7 @@ export const telefonSchema = (keyPostfix = "") => ({
   },
 });
 
-export const statsborgerskapSchema = (keyPostfix = "") => ({
+const statsborgerskapSchema = (keyPostfix = "") => ({
   label: "Statsborgerskap",
   type: "textfield",
   key: `statsborgerskap${keyPostfix}`,
@@ -204,7 +204,7 @@ export const statsborgerskapSchema = (keyPostfix = "") => ({
   },
 });
 
-export const borDuINorgeSchema = (keyPostfix = "") => ({
+const borDuINorgeSchema = (keyPostfix = "") => ({
   label: "Bor du i Norge?",
   type: "radiopanel",
   key: `borDuINorge${keyPostfix}`,
@@ -224,7 +224,7 @@ export const borDuINorgeSchema = (keyPostfix = "") => ({
   ],
 });
 
-export const kontaktInfoSchema = (keyPostfix = "") => ({
+const kontaktInfoSchema = (keyPostfix = "") => ({
   label: "Kontaktinfo",
   hideLabel: true,
   type: "container",
@@ -843,6 +843,23 @@ const builderPalett = {
       },
     },
   },
+};
+
+export const FormBuilderSchemas = {
+  fodselsNummerDNummerSchema,
+  firstNameSchema,
+  surnameSchema,
+  personaliaSchema,
+  gateadresseSchema,
+  postnrSchema,
+  utenlandskPostkodeSchema,
+  poststedSchema,
+  landSchema,
+  epostSchema,
+  telefonSchema,
+  statsborgerskapSchema,
+  borDuINorgeSchema,
+  kontaktInfoSchema,
 };
 
 export default {
