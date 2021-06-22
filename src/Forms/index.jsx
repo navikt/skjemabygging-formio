@@ -1,14 +1,13 @@
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import "nav-frontend-lenker-style";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 import { useAuth } from "../context/auth-context";
 import NewFormPage from "./NewFormPage";
-import { EditFormPage } from "./EditFormPage";
-import { TestFormPage } from "./TestFormPage";
 import { FormsListPage } from "./FormsListPage";
 import CustomComponents from "../customComponents";
 import Components from "formiojs/components/Components";
+import { FormPage } from "./FormPage";
 import I18nProvider from "../context/i18n";
 
 const useLoadingStyles = makeStyles({
@@ -46,50 +45,23 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
         <NewFormPage onCreate={onCreate} onLogout={logout} />
       </Route>
       <Route
-        path={`${path}/:formpath/edit`}
+        path={`${path}/:formpath`}
         render={({ match }) => {
-          let { params } = match;
-          const form = getFormFromPath(forms, params.formpath);
-          const testFormUrl = `${path}/${params.formpath}/view`;
+          const form = getFormFromPath(forms, match.params.formpath);
           return (
             <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
-              <EditFormPage
-                onLogout={logout}
-                form={form}
-                testFormUrl={testFormUrl}
-                onSave={onSave}
-                onChange={onChange}
-                onPublish={onPublish}
-              />
-            </I18nProvider>
-          );
-        }}
-      />
-      <Route
-        path={`${path}/:formPath/view`}
-        render={({ match }) => {
-          let {
-            params: { formPath },
-          } = match;
-          const form = getFormFromPath(forms, formPath);
-          return (
-            <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
-              <TestFormPage
+              <FormPage
                 {...match.params}
-                onLogout={logout}
-                loadTranslations={loadTranslations}
-                form={getFormFromPath(forms, formPath)}
-                editFormUrl={`${path}/${formPath}/edit`}
+                form={form}
+                onChange={onChange}
                 onSave={onSave}
                 onPublish={onPublish}
+                logout={logout}
               />
             </I18nProvider>
           );
         }}
       />
-      <Route path={`${path}/:formpath`}>
-        {({ match }) => <Redirect to={`${path}/${match.params.formpath}/edit`} />}
-      </Route>
       <Route path={path}>
         <FormsListPage onLogout={logout} forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
       </Route>

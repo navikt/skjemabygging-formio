@@ -23,11 +23,13 @@ function I18nProvider({ children, loadTranslations }) {
   const [currentTranslation, setCurrentTranslation] = useState({});
 
   useEffect(() => {
-    loadTranslations().then((translations) => {
-      setTranslations(translations);
-      setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
-    });
-  }, [loadTranslations]);
+    if (!translations || !translationsForNavForm) {
+      loadTranslations().then((translations) => {
+        setTranslations(translations);
+        setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
+      });
+    }
+  }, [loadTranslations, translations, translationsForNavForm]);
 
   const updateCurrentTranslation = (languageCode) => {
     const newTranslation = translations[languageCode] ? translations[languageCode].translations : {};
