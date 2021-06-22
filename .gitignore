@@ -22,3 +22,5 @@ environments
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+packages/bygger/node_modules/

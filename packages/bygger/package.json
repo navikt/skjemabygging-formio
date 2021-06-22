@@ -1,5 +1,5 @@
 {
-  "name": "skjemabygging-formio",
+  "name": "bygger",
   "version": "0.1.0",
   "repository": "https://github.com/navikt/skjemabygging-formio.git",
   "type": "module",
@@ -80,9 +80,7 @@
     "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes npm run start'  'nodemon server/index.mjs'",
     "build": "cross-env-shell REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\" --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
-    "eject": "craco eject",
-    "dist-build": "webpack --config webpack.config.cjs",
-    "prepare": "npm run dist-build"
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": "react-app"
