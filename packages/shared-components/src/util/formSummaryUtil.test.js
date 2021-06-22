@@ -1,5 +1,6 @@
 import { createFormSummaryObject, handleComponent } from "./formSummaryUtil";
-import {
+import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
+const {
   createDummyContainerElement,
   createDummyContentElement,
   createDummyDataGrid,
@@ -10,7 +11,7 @@ import {
   createDummyTextfield,
   createFormObject,
   createPanelObject,
-} from "./MockedComponentObjectForTest";
+} = MockedComponentObjectForTest;
 
 const mockedTranslate = (value) => value;
 

@@ -18,7 +18,9 @@
       "<rootDir>/setupTests.js"
     ],
     "moduleNameMapper": {
-      "nav-(.*)-style": "<rootDir>/__mocks__/styleMock.js"
+      "nav-(.*)-style": "<rootDir>/__mocks__/styleMock.js",
+      "nav-frontend-core": "<rootDir>/__mocks__/styleMock.js",
+      "@navikt/ds-icons": "<rootDir>/__mocks__/styleMock.js"
     }
   },
   "keywords": [],
