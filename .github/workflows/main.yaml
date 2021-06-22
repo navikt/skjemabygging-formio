@@ -1,5 +1,6 @@
 name: "Build and deploy skjemabygging-formio"
-on: push
+on:
+  workflow_dispatch
 env:
   IMAGE: "docker.pkg.github.com/${{ github.repository }}/skjemabygging-formio:${{ github.sha }}"
   CI: true
