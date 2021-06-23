@@ -1,8 +1,12 @@
 {
   "name": "@navikt/skjemabryggeriet",
-  "description": "Repository for skjemabygger og skjemautfyller",
-  "private": true,
   "version": "1.0.0",
+  "description": "Repository for skjemabygger og skjemautfyller",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git"
+  },
+  "private": true,
   "scripts": {
     "clean": "lerna clean -y",
     "bootstrap": "yarn && lerna bootstrap",

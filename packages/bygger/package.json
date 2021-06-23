@@ -1,7 +1,12 @@
 {
   "name": "@navikt/bygger",
   "version": "0.1.0",
-  "repository": "https://github.com/navikt/skjemabygging-formio.git",
+  "description": "WYSIWYG-skjemaeditor som lar deg bygge form.io-skjemaer.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/bygger"
+  },
   "type": "module",
   "private": true,
   "cracoConfig": "craco.config.cjs",

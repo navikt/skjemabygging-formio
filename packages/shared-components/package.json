@@ -1,7 +1,12 @@
 {
   "name": "@navikt/skjemadigitalisering-shared-components",
   "version": "1.0.0",
-  "description": "",
+  "description": "Komponenter som er delt mellom bygger og utfyller",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/shared-components"
+  },
   "type": "module",
   "main": "dist/index.js",
   "files": [
@@ -45,13 +50,6 @@
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-node-externals": "2.5.2"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/navikt/skjemabygger-monorepo-poc"
   },
   "dependencies": {
     "@material-ui/styles": "4.10.0",
