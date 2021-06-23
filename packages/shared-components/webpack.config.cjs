@@ -2,6 +2,7 @@ var nodeExternals = require("webpack-node-externals");
 
 const config = {
   externals: [
+    '@material-ui/styles',
     'react',
     'react-dom',
     'react-router-dom',
