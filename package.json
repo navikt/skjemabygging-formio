@@ -4,6 +4,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "clean": "lerna clean -y",
     "bootstrap": "yarn && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
