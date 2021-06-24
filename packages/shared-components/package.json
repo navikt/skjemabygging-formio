@@ -1,0 +1,94 @@
+{
+  "name": "@navikt/skjemadigitalisering-shared-components",
+  "version": "1.0.0",
+  "description": "Komponenter som er delt mellom bygger og utfyller",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/shared-components"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "webpack --config webpack.config.cjs",
+    "watch": "webpack --watch --config webpack.config.cjs",
+    "test": "jest --env=jsdom",
+    "prepare": "yarn run build"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
+    ],
+    "moduleNameMapper": {
+      "nav-(.*)-style": "<rootDir>/__mocks__/styleMock.js",
+      "nav-frontend-core": "<rootDir>/__mocks__/styleMock.js",
+      "@navikt/ds-icons": "<rootDir>/__mocks__/styleMock.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.14.5",
+    "@babel/preset-env": "^7.14.1",
+    "@babel/preset-react": "^7.13.13",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "10.4.7",
+    "@testing-library/user-event": "12.1.1",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.6",
+    "ejs-loader": "^0.5.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.0.4",
+    "less-loader": "^9.0.0",
+    "style-loader": "^2.0.0",
+    "webpack": "4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-node-externals": "2.5.2"
+  },
+  "dependencies": {
+    "@navikt/ds-icons": "^0.2.0",
+    "@navikt/fnrvalidator": "^1.1.3",
+    "amplitude-js": "7.3.3",
+    "classnames": "2.2.6",
+    "file-saver": "2.0.5",
+    "nav-datovelger": "^6.2.1",
+    "nav-frontend-alertstriper": "^3.0.23",
+    "nav-frontend-alertstriper-style": "^2.0.17",
+    "nav-frontend-chevron": "^1.0.13",
+    "nav-frontend-chevron-style": "^0.3.5",
+    "nav-frontend-core": "^5.0.11",
+    "nav-frontend-ikoner-assets": "^2.0.3",
+    "nav-frontend-ikonknapper": "^1.0.9",
+    "nav-frontend-js-utils": "^1.0.16",
+    "nav-frontend-knapper": "^2.0.9",
+    "nav-frontend-knapper-style": "^1.0.1",
+    "nav-frontend-lenker": "^1.0.58",
+    "nav-frontend-lenker-style": "^1.0.0",
+    "nav-frontend-lukknapp": "^1.0.50",
+    "nav-frontend-lukknapp-style": "^1.0.0",
+    "nav-frontend-modal": "^1.0.63",
+    "nav-frontend-modal-style": "^1.0.2",
+    "nav-frontend-paneler-style": "^1.0.0",
+    "nav-frontend-skjema": "^3.1.0",
+    "nav-frontend-skjema-style": "^2.1.0",
+    "nav-frontend-stegindikator-style": "^1.0.31",
+    "nav-frontend-toggle": "0.0.43",
+    "nav-frontend-toggle-style": "0.0.35",
+    "nav-frontend-typografi": "^3.0.2",
+    "nav-frontend-typografi-style": "^1.0.33",
+    "react-day-picker": "^7.4.8"
+  },
+  "peerDependencies": {
+    "@material-ui/styles": "4.10.0",
+    "formiojs": "4.12.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0"
+  }
+}

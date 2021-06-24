@@ -3,7 +3,7 @@
 *.iml
 
 # dependencies
-/node_modules
+**/node_modules
 /.pnp
 .pnp.js
 
@@ -11,8 +11,8 @@
 /coverage
 
 # production
-/build
-/dist
+**/build
+**/dist
 
 # misc
 .DS_Store
