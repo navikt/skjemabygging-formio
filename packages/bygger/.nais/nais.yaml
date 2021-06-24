@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "skjemabygging-formio"
+  name: "skjemabygging-formio-monorepo-poc"
   namespace: "skjemadigitalisering"
   labels:
     "team": "skjemadigitalisering"
@@ -35,10 +35,10 @@ spec:
       - {{url}}
     {{/each}}
   env:
-    - name: GITHUB_GIT_REF
-      value: "{{githubGitRef}}"
+    - name: PUBLISERING_WORKFLOW_DISPATCH_REF
+      value: "{{publiseringWorkflowDispatchRef}}"
   envFrom:
-    - secret: skjemabygging-formio
+    - secret: monorepo-poc-akg
   azure:
     application:
       enabled: true
