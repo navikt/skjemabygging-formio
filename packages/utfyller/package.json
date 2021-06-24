@@ -1,5 +1,5 @@
 {
-  "name": "skjemautfylling-formio",
+  "name": "@navikt/utfyller-frontend",
   "homepage": "/fyllut",
   "proxy": "http://localhost:8080",
   "version": "0.1.1",
