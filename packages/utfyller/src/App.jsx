@@ -1,14 +1,20 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { Components, Formio } from "formiojs";
-import { CustomComponents, Template } from "skjemabygging-formio";
+import {
+  CustomComponents,
+  Template,
+  FyllUtRouter,
+  AmplitudeProvider,
+  globalStyles,
+  appStyles
+} from "@navikt/skjemadigitalisering-shared-components";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { styled } from "@material-ui/styles";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
-import { FyllUtRouter, AmplitudeProvider, globalStyles, appStyles } from "skjemabygging-formio";
 import "./overrideFormioStyles.less";
 import makeStyles from "@material-ui/styles/makeStyles";
 

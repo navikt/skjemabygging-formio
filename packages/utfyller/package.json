@@ -9,6 +9,7 @@
   "dependencies": {
     "@craco/craco": "^5.6.4",
     "@material-ui/styles": "^4.10.0",
+    "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@sentry/browser": "^5.27.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.4",
@@ -61,20 +62,6 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,cjs,mjs}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{md,mdx}": [
-      "prettier --write"
     ]
   }
 }

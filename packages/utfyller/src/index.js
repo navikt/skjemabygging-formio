@@ -5,7 +5,7 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import { forms } from "skjemapublisering";
-import { AppConfigProvider } from "skjemabygging-formio";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import featureToggles from "./featureToggles.json";
 
