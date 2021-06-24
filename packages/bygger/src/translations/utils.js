@@ -4,10 +4,12 @@ const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
 };
 
+const getTextFromComponentProperty = (property) => (property !== "" ? property : undefined);
+
 export const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
-    .map(({ content, title, label, html, type, values, legend, description, suffix }) => ({
+    .map(({ content, title, label, html, type, values, legend, description, suffix, prefix }) => ({
       title,
       label:
         ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe"].indexOf(type) === -1 ? label : undefined,
@@ -15,8 +17,9 @@ export const getAllTextsForForm = (form) =>
       values: values ? values.map((value) => value.label) : undefined,
       content,
       legend,
-      description: description !== "" ? description : undefined,
-      suffix: suffix !== "" ? suffix : undefined,
+      description: getTextFromComponentProperty(description),
+      suffix: getTextFromComponentProperty(suffix),
+      prefix: getTextFromComponentProperty(prefix),
     }))
     .reduce((allTextsForForm, component) => {
       return [
