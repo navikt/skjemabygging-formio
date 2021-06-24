@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "type": "module",
+  "private": true,
   "config": {
     "icuDataDir": "./node_modules/full-icu",
     "decoratorUrl": "https://www.nav.no/dekoratoren?simple=true",

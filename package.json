@@ -12,8 +12,8 @@
     "bootstrap": "yarn && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
-    "start": "lerna run --parallel start",
     "start:bygger": "lerna run --scope @navikt/bygger start",
+    "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start",
     "test": "cross-env-shell CI=true lerna run --stream test"
   },
   "devDependencies": {

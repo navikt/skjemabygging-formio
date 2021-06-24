@@ -9,6 +9,8 @@ module.exports = {
     alias: {
       react: resolvePackage("./node_modules/react"),
       "react-dom": resolvePackage("./node_modules/react-dom"),
+      "react-router-dom": resolvePackage("./node_modules/react-router-dom"),
+      formiojs: resolvePackage("./node_modules/formiojs"),
     },
   },
 };

@@ -11407,9 +11407,9 @@ sisteransi@^1.0.4:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-"skjemabygging-formio@github:navikt/skjemabygging-formio#fe31380d4cb9d4d3ccd9d60a9692e1a8ba08f44c":
+"skjemabygging-formio@github:navikt/skjemabygging-formio#36299578792e4f4413a18fc720fef3b5c61c737a":
   version "0.1.0"
-  resolved "https://codeload.github.com/navikt/skjemabygging-formio/tar.gz/fe31380d4cb9d4d3ccd9d60a9692e1a8ba08f44c"
+  resolved "https://codeload.github.com/navikt/skjemabygging-formio/tar.gz/36299578792e4f4413a18fc720fef3b5c61c737a"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@material-ui/styles" "^4.10.0"
