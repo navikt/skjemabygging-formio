@@ -21,6 +21,7 @@ export default {
     cancel: "Avbryt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
     submit: "Neste",
+    optional: "valgfritt",
 
     //Dato / tid
     invalid_date: "{{field}} er ikke en gyldig dato.",

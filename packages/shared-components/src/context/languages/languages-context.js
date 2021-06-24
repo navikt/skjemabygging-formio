@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
 import { mapTranslationsToFormioI18nObject } from "../i18n/translationsMapper";
@@ -11,6 +11,15 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
 
   const currentTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (currentTranslation && currentTranslation.optional) {
+      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional.value})"`);
+    } else {
+      root.style.setProperty("--optionalLabel", `" (valgfritt)"`);
+    }
+  }, [currentTranslation]);
 
   function updateInitialLanguage() {
     initialLanguage.current = currentLanguage;

@@ -30,7 +30,7 @@ const requiredFieldStyles = {
     content: '""',
   },
   "& .skjemaelement__label:not(.field-required)::after": {
-    content: '" (valgfritt)"',
+    content: "var(--optionalLabel)",
   },
   "& .checkboks[required] + .skjemaelement__label::after": {
     content: '""',
