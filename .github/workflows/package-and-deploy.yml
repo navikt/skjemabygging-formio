@@ -1,0 +1,54 @@
+name: Package and deploy 'Byggeren'
+on:
+  repository_dispatch:
+    types: [new-release]
+env:
+  "IMAGE": "docker.pkg.github.com/${{ github.repository }}/skjemabygger-monorepo-poc:${{\
+    \ github.event.client_payload.sha }}"
+jobs:
+  package-and-push-skjemabygging-formio:
+    name: "Package skjemabygging-formio"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.client_payload.sha }}
+          fetch-depth: 0
+      - name: build shared-domain
+        working-directory: ./packages/shared-domain
+        run: yarn install --frozen-lockfile && yarn build
+      - name: build shared-components
+        working-directory: ./packages/shared-components
+        run: yarn install --frozen-lockfile && yarn build
+      - name: "Skjemabygging-formio (Frontend): Prepare local dependencies"
+        run: node bin/deploy-context.mjs ./packages/skjemabygging-formio --replace
+      - name: "Skjemabygging-formio (Frontend): install dependencies"
+        working-directory: ./packages/skjemabygging-formio
+        run: yarn install --frozen-lockfile && yarn build
+        env:
+          REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
+          REACT_APP_PUSHER_CLUSTER: "eu"
+          REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
+      - name: "Build and publish Docker image"
+        working-directory: ./packages/skjemabygging-formio
+        run: >
+          docker build --pull --tag ${IMAGE} --build-arg git_sha=${{ github.event.client_payload.sha }} .
+          && echo ${{ secrets.GITHUB_TOKEN }} | docker login
+          --username ${{ github.repository }} --password-stdin https://docker.pkg.github.com
+          && docker push ${IMAGE}
+  deploy-skjemabygging-formio-to-labs:
+    name: "Deploy skjemabygging-formio to labs"
+    needs: "package-and-push-skjemabygging-formio"
+    runs-on: "ubuntu-18.04"
+    steps:
+      - uses: "actions/checkout@v2"
+        with:
+          ref: ${{ github.event.client_payload.sha }}
+      - name: "Deploy to LABS"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "labs-gcp"
+          "RESOURCE": "./packages/skjemabygging-formio/.nais/nais.yaml"
+          "VARS": "./packages/skjemabygging-formio/.nais/labs.yaml"
