@@ -8,10 +8,11 @@
   "config": {
     "icuDataDir": "./node_modules/full-icu",
     "decoratorUrl": "https://www.nav.no/dekoratoren?simple=true",
-    "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside"
+    "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside",
+    "formioApiFormsUrl": "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=1000"
   },
   "scripts": {
-    "start": "cross-env-shell NODE_ENV=development FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=$npm_package_config_decoratorUrl nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start": "cross-env-shell NODE_ENV=development SKJEMA_URL=$npm_package_config_formioApiFormsUrl FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=$npm_package_config_decoratorUrl nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js",
     "check-env": "node -e 'console.log(process.env)' | grep npm"
@@ -28,6 +29,7 @@
     "express": "^4.17.1",
     "formiojs": "^4.12.3",
     "full-icu": "^1.3.1",
+    "glob": "^7.1.7",
     "jsdom": "^16.4.0",
     "luxon": "^1.25.0",
     "mustache-express": "^1.3.0",

@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/browser";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
-import { forms } from "skjemapublisering";
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import featureToggles from "./featureToggles.json";
@@ -22,18 +21,19 @@ fetch("/fyllut/config", { headers: { accept: "application/json" } })
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
     }
-    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
+    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME), json.FORMS || []);
   })
   .catch((error) => {
     if (process.env.NODE_ENV === "development") {
       console.log("config not loaded, using dummy config in development");
-      renderReact("https://example.org/dokumentinnsendingbaseurl");
+      // TODO løse hvordan skjema lastes ved lokal utvikling
+      renderReact("https://example.org/dokumentinnsendingbaseurl", []);
     } else {
       console.error(`Could not fetch config from server: ${error}`);
     }
   });
 
-function renderReact(dokumentInnsendingBaseURL) {
+function renderReact(dokumentInnsendingBaseURL, forms) {
   ReactDOM.render(
     <React.StrictMode>
       <AppConfigProvider
