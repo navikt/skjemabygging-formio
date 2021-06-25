@@ -1,0 +1,67 @@
+{
+  "name": "@navikt/fyllut-frontend",
+  "homepage": "/fyllut",
+  "proxy": "http://localhost:8080",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "cracoConfig": "craco.config.cjs",
+  "dependencies": {
+    "@craco/craco": "^5.6.4",
+    "@material-ui/styles": "^4.10.0",
+    "@navikt/skjemadigitalisering-shared-components": "1.0.0",
+    "@sentry/browser": "^5.27.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.0.4",
+    "bootstrap": "^4.4.1",
+    "classnames": "^2.2.6",
+    "craco-less": "^1.16.0",
+    "cross-env": "^7.0.2",
+    "formiojs": "^4.12.4",
+    "nav-frontend-chevron": "^1.0.28",
+    "nav-frontend-core": "^5.0.11",
+    "nav-frontend-js-utils": "^1.0.17",
+    "nav-frontend-lenker-style": "^1.0.2",
+    "nav-frontend-paneler-style": "^1.0.2",
+    "nav-frontend-skjema-style": "^2.1.0",
+    "nav-frontend-typografi": "^3.0.2",
+    "nav-frontend-typografi-style": "^1.0.33",
+    "pusher": "^3.0.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.4",
+    "skjemapublisering": "navikt/skjemapublisering.git#1bd99e98ee4104d4eafc62759271a3512cbf5e75"
+  },
+  "devDependencies": {
+    "husky": "^3.1.0",
+    "lint-staged": "^10.4.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "prop-types": "^15.7.2"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "cross-env-shell REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` craco build",
+    "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
+    "eject": "craco eject",
+    "install-all": "npm install && cd server && npm install",
+    "dev-server": "cross-env-shell cd server && npm start",
+    "check-env": "node -e 'console.log(process.env)' | grep npm"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
