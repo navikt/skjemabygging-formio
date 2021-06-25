@@ -1,0 +1,159 @@
+{
+  "form": {
+    "_id": "5f2812a61cd355000301f0d0",
+    "type": "form",
+    "tags": [
+      "nav-skjema"
+    ],
+    "owner": "5ee0eacc7665226ea32fd389",
+    "display": "wizard",
+    "name": "testChristianOgMona",
+    "title": "Test Christian og Mona",
+    "path": "testchristianogmona",
+    "machineName": "testChristianOgMona",
+    "components": [
+      {
+        "label": "HTML",
+        "key": "html",
+        "type": "htmlelement",
+        "input": false,
+        "id": "e5lcez"
+      },
+      {
+        "title": "Personalia",
+        "key": "personalia1",
+        "type": "panel",
+        "label": "Panel",
+        "input": false,
+        "id": "edfcko9",
+        "components": [
+          {
+            "label": "Personalia",
+            "key": "personalia",
+            "type": "container",
+            "input": true,
+            "id": "ehnaj4mb",
+            "components": [
+              {
+                "label": "Fornavn",
+                "type": "textfield",
+                "key": "fornavn",
+                "input": true,
+                "placeholder": "Fornavn",
+                "id": "e2i3kg5"
+              },
+              {
+                "label": "Etternavn",
+                "type": "textfield",
+                "key": "etternavn",
+                "input": true,
+                "placeholder": "Etternavn",
+                "id": "eu4ap99"
+              },
+              {
+                "key": "fodselsnummerDNummer",
+                "type": "fnrfield",
+                "input": true,
+                "label": "Fødselsnummer / D-nummer",
+                "id": "ecrz8yq"
+              }
+            ]
+          },
+          {
+            "label": "Har du hatt andre inntekter?",
+            "values": [
+              {
+                "label": "Ja",
+                "value": "ja",
+                "shortcut": ""
+              },
+              {
+                "label": "Nei",
+                "value": "nei",
+                "shortcut": ""
+              }
+            ],
+            "key": "harDuHattAndreInntekter",
+            "type": "radio",
+            "input": true,
+            "id": "ekmagkp"
+          },
+          {
+            "label": "Inntekt",
+            "key": "inntekt3",
+            "type": "currency",
+            "input": true,
+            "id": "ei5wbp"
+          },
+          {
+            "label": "Sum",
+            "key": "sum",
+            "type": "currency",
+            "input": true,
+            "id": "e5cym5"
+          },
+          {
+            "label": "Tall",
+            "key": "tall",
+            "type": "number",
+            "input": true,
+            "id": "exkmmf8"
+          }
+        ]
+      },
+      {
+        "title": "Summeringstest",
+        "key": "summeringstest",
+        "type": "panel",
+        "label": "Panel",
+        "input": false,
+        "id": "esu4ts",
+        "components": [
+          {
+            "label": "Summeringskonteiner",
+            "key": "summeringskonteiner",
+            "type": "container",
+            "input": true,
+            "id": "eym4bhm",
+            "components": [
+              {
+                "label": "Sum",
+                "key": "sum",
+                "type": "currency",
+                "input": true,
+                "id": "e6lbwub"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "submission": {
+    "data": {
+      "personalia": {
+        "fornavn": "Revys",
+        "etternavn": "Datsne",
+        "fodselsnummerDNummer": "123456 78911"
+      },
+      "harDuHattAndreInntekter": "nei",
+      "inntekt3": 0,
+      "sum": 10,
+      "tall": 10,
+      "summeringskonteiner": {
+        "sum": 3702
+      }
+    },
+    "metadata": {
+      "timezone": "Europe/Oslo",
+      "offset": 120,
+      "origin": "http://localhost:3000",
+      "referrer": "http://localhost:3000/fyllut/nynav760710registreringsskjemafortilskuddtilutdanning",
+      "browserName": "Netscape",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
+      "pathName": "/skjema/testchristianogmona",
+      "onLine": true
+    },
+    "state": "submitted"
+  }
+}

@@ -185,4 +185,29 @@ describe("testGetAllTextsForForm", () => {
       { text: "RyiX3OuRGRdTT1AIoP6qK2MLGPkXdij36yFs0NiTY1WfptfYkuY0cBZOIk4mLLMJWgEEt0SpaQUojObrM", type: "textarea" },
     ]);
   });
+  it("Test form with panel and text field with suffix and prefix", () => {
+    const actual = getAllTextsForForm(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [
+              { ...createDummyTextfield(), suffix: "centimeter" },
+              { ...createDummyTextfield(), prefix: "+47" },
+              createDummyTextfield("wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV"),
+            ],
+            "Introduksjon"
+          ),
+        ],
+        "test"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "Introduksjon", type: "text" },
+      { text: "Tekstfelt", type: "text" },
+      { text: "centimeter", type: "text" },
+      { text: "+47", type: "text" },
+      { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
+    ]);
+  });
 });
