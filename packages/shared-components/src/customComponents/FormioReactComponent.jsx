@@ -23,9 +23,6 @@
  * */
 
 import Field from "formiojs/components/_classes/field/Field";
-import FormioUtils from "formiojs/utils";
-
-const { getDataParentComponent } = FormioUtils;
 
 export default class FormioReactComponent extends Field {
   /**
@@ -153,13 +150,12 @@ export default class FormioReactComponent extends Field {
     return this.defaultValue;
   }
 
+  /**
+   * Component should be cleared when hidden if clearOnHide is set to true. Copied function from formio.js/component.js.
+   */
   clearOnHide() {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-    if (
-      this.component.clearOnHide !== false &&
-      !this.options.readOnly &&
-      !this.options.showHiddenFields
-    ) {
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
       if (!this.visible) {
         this.deleteValue();
       } else if (!this.hasValue() && this.shouldAddDefaultValue) {
