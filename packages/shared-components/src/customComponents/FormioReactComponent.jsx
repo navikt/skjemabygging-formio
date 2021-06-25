@@ -23,6 +23,9 @@
  * */
 
 import Field from "formiojs/components/_classes/field/Field";
+import FormioUtils from "formiojs/utils";
+
+const { getDataParentComponent } = FormioUtils;
 
 export default class FormioReactComponent extends Field {
   /**
@@ -148,6 +151,24 @@ export default class FormioReactComponent extends Field {
       return this.reactInstance.state.value;
     }
     return this.defaultValue;
+  }
+
+  clearOnHide() {
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (
+      this.component.clearOnHide !== false &&
+      !this.options.readOnly &&
+      !this.options.showHiddenFields
+    ) {
+      if (!this.visible) {
+        this.deleteValue();
+      } else if (!this.hasValue() && this.shouldAddDefaultValue) {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true,
+        });
+      }
+    }
   }
 
   /**
