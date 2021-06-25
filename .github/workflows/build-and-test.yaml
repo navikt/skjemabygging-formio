@@ -1,0 +1,62 @@
+name: Build, test monorepo. Deploy bygger if master
+on:
+  push
+env:
+  IMAGE: "docker.pkg.github.com/${{ github.repository }}/bygger-flump:${{github.sha }}"
+jobs:
+  build-and-test:
+    name: "Build and test packages"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.17.0'
+      - name: "Bootstrap"
+        run: yarn bootstrap
+      - name: "Build"
+        run: yarn build
+      - name: "Test"
+        run: yarn test
+  package-and-push-bygger:
+    if: github.ref == 'refs/heads/dra-inn-poc-kode' # only create new release on the master branch
+    needs: build-and-test
+    name: "Package bygger"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build shared-components
+        working-directory: ./packages/shared-components
+        run: yarn install --frozen-lockfile && yarn build
+      - name: "Skjemabygging-formio (Frontend): Prepare local dependencies"
+        run: node bin/deploy-context.mjs ./packages/bygger --replace
+      - name: "Skjemabygging-formio (Frontend): install dependencies"
+        working-directory: ./packages/bygger
+        run: yarn install --frozen-lockfile && yarn build
+        env:
+          REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
+          REACT_APP_PUSHER_CLUSTER: "eu"
+          REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
+          REACT_APP_GIT_VERSION: ${{ github.sha }}
+      - name: "Build and publish Docker image"
+        working-directory: ./packages/bygger
+        run: >
+          docker build --pull --tag ${IMAGE} --build-arg git_sha=${{ github.sha }} .
+          && echo ${{ secrets.GITHUB_TOKEN }} | docker login
+          --username ${{ github.repository }} --password-stdin https://docker.pkg.github.com
+          && docker push ${IMAGE}
+  deploy-bygger-to-labs:
+    name: "Deploy bygger to labs"
+    needs: package-and-push-bygger
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: "actions/checkout@v2"
+        with:
+          ref: ${{ github.event.client_payload.sha }}
+      - name: "Deploy to LABS"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "labs-gcp"
+          "RESOURCE": "./packages/bygger/.nais/nais.yaml"
+          "VARS": "./packages/bygger/.nais/labs.yaml"

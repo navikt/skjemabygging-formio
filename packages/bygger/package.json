@@ -79,8 +79,8 @@
   },
   "scripts": {
     "start": "cross-env-shell EXTEND_ESLINT=true craco start",
-    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROVelg skjema:XY=yes yarn start'  'nodemon server/index.mjs'",
-    "build": "cross-env-shell REACT_APP_GIT_VERSION=`scripts/git-version.sh` EXTEND_ESLINT=true craco build",
+    "start_with_proxied_server": "concurrently --raw --kill-others 'REACT_APP_BACKEND_PROXY=yes yarn start'  'nodemon server/index.mjs'",
+    "build": "cross-env-shell EXTEND_ESLINT=true craco build",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\" --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject"
   },

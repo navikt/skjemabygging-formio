@@ -2,27 +2,29 @@ import express from "express";
 import { Backend } from "../src/backend/index.js";
 import { dispatcherWithBackend } from "../src/backend/webApp.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
-import { gitVersionFromBuild } from "./commit_version.js";
 
 const app = express();
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 
-const githubAppConfig = {
-  gitRef: process.env.GITHUB_GIT_REF || "master",
-  baseURL: "https://api.github.com/",
-  key: process.env.GITHUB_KEY,
-  appID: process.env.GITHUB_PUBLISHING_APP_ID,
-  installationID: process.env.GITHUB_PUBLISHING_INSTALLATION_ID,
+const publiseringWorkflowDispatchConfig = {
+  workflowDispatchRef: process.env.PUBLISERING_WORKFLOW_DISPATCH_REF,
+  workflowDispatchToken: process.env.akg_pat,
+  workflowDispatchURL:
+    "https://api.github.com/repos/navikt/skjemapublisering-monorepo-poc/actions/workflows/publish.yaml/dispatches",
 };
 
 function gitVersion() {
+  const GIT_SHA = process.env.GIT_SHA;
   if (process.env.NODE_ENV === "development") {
-    if (!process.env.GIT_VERSION) {
+    if (!GIT_SHA) {
       return "dø-detta-er-development-vet-ikke-hva-versionen-er";
     }
-    return process.env.GIT_VERSION;
+    return GIT_SHA;
   } else {
-    return gitVersionFromBuild();
+    if (!GIT_SHA) {
+      throw new Error("missing GIT_SHA");
+    }
+    return GIT_SHA;
   }
 }
 
@@ -32,7 +34,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.get("/isAlive", (req, res) => res.send("Alive"));
 app.get("/isReady", (req, res) => res.send("Ready"));
-app.use("/api", dispatcherWithBackend(new Backend(projectURL, githubAppConfig, gitVersion())));
+app.use("/api", dispatcherWithBackend(new Backend(projectURL, publiseringWorkflowDispatchConfig, gitVersion())));
 
 const nodeEnv = process.env.NODE_ENV;
 if (nodeEnv === "production") {

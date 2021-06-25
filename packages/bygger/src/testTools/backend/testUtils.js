@@ -7,6 +7,7 @@ export function ghForTest() {
     appID: "123456",
     installationID: "123456",
     baseURL: "https://api.example.com/",
+    workflowDispatchURL: "https://api.github.com/navikt/repo/workflow_dispatch",
     gitRef: "krakra",
     key:
       "-----BEGIN RSA PRIVATE KEY-----\n" +

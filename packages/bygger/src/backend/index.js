@@ -1,5 +1,4 @@
-import { PublishingService, checkPublishingAccess, getGithubToken } from "./publishingService.js";
-import featureToggles from "../featureToggles.js";
+import { fetchWithErrorHandling } from "./fetchUtils.js";
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -8,32 +7,54 @@ export class Backend {
     this.gitVersion = gitVersion;
   }
 
+  ho() {
+    return "flups";
+  }
+
   getProjectURL() {
     return this.projectURL;
   }
 
   getGitURL() {
-    return this.githubAppConfig.baseURL;
+    return this.githubAppConfig.workflowDispatchURL;
+  }
+
+  payload(formJsonFileTitle, form, translations) {
+    return {
+      ref: this.githubAppConfig.workflowDispatchRef,
+      inputs: {
+        formJsonFileTitle,
+        translationJson: JSON.stringify(translations),
+        formJson: JSON.stringify(form),
+        monorepoGitHash: this.gitVersion,
+      },
+    };
+  }
+
+  async checkPublishingAccess(userToken) {
+    //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
+    const currentUserUrl = `${this.projectURL}/current`;
+    console.log("project url", currentUserUrl);
+    return fetchWithErrorHandling(currentUserUrl, {
+      headers: {
+        "Content-Type": "application/json",
+        "x-jwt-token": userToken,
+      },
+    });
   }
 
   async publishForm(userToken, form, translations, formPath) {
-    await checkPublishingAccess(userToken, this.projectURL);
-    const githubTokenResponse = await getGithubToken(this.githubAppConfig);
-    const githubToken = githubTokenResponse.data.token;
-    const service = new PublishingService(
-      githubToken,
-      `${this.githubAppConfig.baseURL}repos/navikt/skjemapublisering`,
-      this.githubAppConfig.gitRef
-    );
-    await service.createTempCopyOfGitRef();
-    try {
-      await service.publishForm(formPath, form);
-      if (featureToggles.enableTranslations) {
-        await service.publishTranslationsForForm(formPath, translations);
-      }
-      await service.updatePackageJson(this.gitVersion);
-    } finally {
-      await service.updateFromAndDeleteTempRef();
-    }
+    console.log("got here");
+    await this.checkPublishingAccess(userToken);
+    console.log("got there, token", this.githubAppConfig.workflowDispatchToken);
+    return await fetchWithErrorHandling(this.githubAppConfig.workflowDispatchURL, {
+      method: "POST",
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "Application/JSON",
+        Authorization: `token ${this.githubAppConfig.workflowDispatchToken}`,
+      },
+      body: JSON.stringify(this.payload(formPath, form, translations)),
+    });
   }
 }
