@@ -7,7 +7,10 @@ const resolvePackage = (relativePath) => path.resolve(__dirname, relativePath);
 
 module.exports = {
   jest: {
-    configure: { modulePaths: ["node_modules"] },
+    configure: {
+      // transformIgnorePatterns: ["node_modules/(?!@navikt/ds-icons/)"],
+      modulePaths: ["node_modules"],
+    },
   },
   webpack: {
     configure: function (webpackConfig) {
