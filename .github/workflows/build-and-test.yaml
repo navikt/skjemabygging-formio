@@ -19,7 +19,7 @@ jobs:
       - name: "Test"
         run: yarn test
   package-and-push-bygger:
-    if: github.ref == 'refs/heads/dra-inn-poc-kode' # only create new release on the master branch
+    if: github.ref == 'refs/heads/master' # only create new release on the master branch
     needs: build-and-test
     name: "Package bygger"
     runs-on: ubuntu-latest
