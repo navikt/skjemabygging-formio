@@ -16,7 +16,7 @@
 
 # misc
 .DS_Store
-.env*
+packages/bygger/.env
 environments
 
 npm-debug.log*
