@@ -1,0 +1,47 @@
+---
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: skjemautfylling
+  namespace: skjemadigitalisering
+  labels:
+    team: skjemadigitalisering
+spec:
+  image: {{image}}
+  team: skjemadigitalisering
+  port: 8080
+  ingresses:
+  {{#each ingresses as |url|}}
+     - {{url}}
+  {{/each}}
+  liveness:
+    path: /fyllut/internal/isAlive
+    initialDelay: 10
+  readiness:
+    path: /fyllut/internal/isReady
+    initialDelay: 10
+  replicas:
+    min: 2
+    max: 4
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  prometheus:
+    enabled: true  # default: false. Pod will now be scraped for metrics by Prometheus.
+    path: /fyllut/internal/metrics # Path where prometheus metrics are served.
+  accessPolicy:
+    outbound:
+      external:
+        - host: {{dekorator-host}}
+        - host: {{foersteside-host}}
+  env:
+    - name: DECORATOR_URL
+      value: {{dekorator-url}}
+    - name: FOERSTESIDE_URL
+      value: {{foersteside-url}}
+  envFrom:
+    - secret: sentry-dsn
