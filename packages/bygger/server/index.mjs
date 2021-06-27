@@ -9,8 +9,7 @@ const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protecte
 const publiseringWorkflowDispatchConfig = {
   workflowDispatchRef: process.env.PUBLISERING_WORKFLOW_DISPATCH_REF,
   workflowDispatchToken: process.env.akg_pat,
-  workflowDispatchURL:
-    "https://api.github.com/repos/navikt/skjemapublisering-monorepo-poc/actions/workflows/publish.yaml/dispatches",
+  workflowDispatchURL: process.env.PUBLISERING_WORKFLOW_DISPATCH_URL,
 };
 
 function gitVersion() {

@@ -37,6 +37,8 @@ spec:
   env:
     - name: PUBLISERING_WORKFLOW_DISPATCH_REF
       value: "{{publiseringWorkflowDispatchRef}}"
+    - name: PUBLISERING_WORKFLOW_DISPATCH_URL
+      value: "https://api.github.com/repos/navikt/skjemapublisering-monorepo-poc/actions/workflows/publish.yaml/dispatches"
   envFrom:
     - secret: monorepo-poc-akg
   azure:
