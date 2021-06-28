@@ -43,6 +43,7 @@
   "scripts": {
     "start": "craco start",
     "build": "cross-env-shell REACT_APP_GIT_VERSION=`git describe --always --match 'NOT A TAG' --abbrev=0 --dirty` craco build",
+    "build:prod": "craco build",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "eject": "craco eject",
     "install-all": "npm install && cd server && npm install",
