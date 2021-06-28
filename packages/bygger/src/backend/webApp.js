@@ -7,7 +7,8 @@ export function dispatcherWithBackend(backend) {
       GET: (req, res) => res.json(backend.ho()),
     },
     "/publish/:formPath": {
-      PUT: async (req, res, next, formPath) => {
+      PUT: (req, res) => res.status(503).send("Publisering er for øyeblikket under ombygging"),
+      /*PUT: async (req, res, next, formPath) => {
         if (!req.body.token) {
           res.status(401).send("Unauthorized");
         }
@@ -23,7 +24,7 @@ export function dispatcherWithBackend(backend) {
             res.status(500).send("Noe galt skjedde");
           }
         }
-      },
+      },*/
     },
   });
 }
