@@ -36,7 +36,11 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
             )}
           </ul>
         }
-        rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
+        rightCol={
+          <Knapp disabled onClick={() => setOpenModal(true)}>
+            Publiser
+          </Knapp>
+        }
         navBarProps={{
           title: title,
           visSkjemaliste: true,
