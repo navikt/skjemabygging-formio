@@ -1,4 +1,4 @@
 ingresses:
 - "https://skjemabygging-formio-monorepo-poc.labs.nais.io"
 image: {{image}}
-publiseringWorkflowDispatchRef: "ny-publiseringsflyt-med-monorepo"
+publiseringWorkflowDispatchRef: "mainformio"
