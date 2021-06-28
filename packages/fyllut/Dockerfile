@@ -11,8 +11,8 @@ ARG translation_dir
 
 COPY build build
 COPY server server
-COPY $skjema_dir/*.json $SKJEMA_DIR
-COPY $translation_dir/*.json $TRANSLATION_DIR
+COPY $skjema_dir/ $SKJEMA_DIR
+COPY $translation_dir/ $TRANSLATION_DIR
 
 ENV GIT_SHA=${git_sha}
 ENV MONOREPO_GIT_SHA=${monorepo_git_sha}
