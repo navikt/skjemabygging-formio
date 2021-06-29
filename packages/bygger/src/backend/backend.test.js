@@ -19,22 +19,28 @@ describe("Backend", () => {
   beforeEach(() => {
     fetch.mockRestore();
   });
+  describe("Payload encoding", () => {
+    it("roundtrips successfully", async () => {
+      const inputData = { number: 3, text: "flesk flesk" };
+      const roundTripped = await backend.decodeAndInflate(await backend.compressAndEncode(inputData));
+      expect(roundTripped).toEqual(inputData);
+    });
 
-  it("encodes the payload with gzip and b64", async () => {
-    const form = { key: "value" };
-    const translations = { otherKey: "otherValue" };
-    const payload = await backend.payload("fileTittel", form, translations);
-    const b64encoded = payload.inputs.formJson;
-    const buffer = Buffer.from(JSON.stringify(form), "utf-8");
-    const zippedBuffer = await promisifiedDeflate(buffer);
-    const expected = zippedBuffer.toString("base64");
-    expect(b64encoded).toEqual(expected);
-    const expectedTranslations = await backend.compressAndEncode(translations);
-    expect(payload.inputs.translationJson).toEqual(expectedTranslations);
-    const inflatedForm = await backend.decodeAndInflate(payload.inputs.formJson);
-    expect(inflatedForm).toEqual(form);
+    it("encodes the payload with gzip and b64", async () => {
+      const form = { key: "value" };
+      const translations = { otherKey: "otherValue" };
+      const payload = await backend.payload("fileTittel", form, translations);
+      const b64encoded = payload.inputs.formJson;
+      const buffer = Buffer.from(JSON.stringify(form), "utf-8");
+      const zippedBuffer = await promisifiedDeflate(buffer);
+      const expected = zippedBuffer.toString("base64");
+      expect(b64encoded).toEqual(expected);
+      const expectedTranslations = await backend.compressAndEncode(translations);
+      expect(payload.inputs.translationJson).toEqual(expectedTranslations);
+      const inflatedForm = await backend.decodeAndInflate(payload.inputs.formJson);
+      expect(inflatedForm).toEqual(form);
+    });
   });
-
   it("publishes forms and returns ok", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
