@@ -42,8 +42,8 @@ export class Backend {
       ref: this.githubAppConfig.workflowDispatchRef,
       inputs: {
         formJsonFileTitle,
-        translationJson: encodedTranslations,
-        formJson: encodedForm,
+        encodedTranslationJson: encodedTranslations,
+        encodedFormJson: encodedForm,
         monorepoGitHash: this.gitVersion,
       },
     };

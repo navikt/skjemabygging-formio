@@ -30,14 +30,12 @@ describe("Backend", () => {
       const form = { key: "value" };
       const translations = { otherKey: "otherValue" };
       const payload = await backend.payload("fileTittel", form, translations);
-      const b64encoded = payload.inputs.formJson;
-      const buffer = Buffer.from(JSON.stringify(form), "utf-8");
-      const zippedBuffer = await promisifiedDeflate(buffer);
-      const expected = zippedBuffer.toString("base64");
-      expect(b64encoded).toEqual(expected);
+      const b64encoded = payload.inputs.encodedFormJson;
+      const expectedFormJson = await backend.compressAndEncode(form);
+      expect(b64encoded).toEqual(expectedFormJson);
       const expectedTranslations = await backend.compressAndEncode(translations);
-      expect(payload.inputs.translationJson).toEqual(expectedTranslations);
-      const inflatedForm = await backend.decodeAndInflate(payload.inputs.formJson);
+      expect(payload.inputs.encodedTranslationJson).toEqual(expectedTranslations);
+      const inflatedForm = await backend.decodeAndInflate(payload.inputs.encodedFormJson);
       expect(inflatedForm).toEqual(form);
     });
   });
@@ -70,22 +68,22 @@ describe("Backend", () => {
     });
     const body = JSON.parse(calls[1][1].body);
 
-    const inflatedTranslation = await backend.decodeAndInflate(body.inputs.translationJson);
-    const inflatedForm = await backend.decodeAndInflate(body.inputs.formJson);
+    const inflatedTranslation = await backend.decodeAndInflate(body.inputs.encodedTranslationJson);
+    const inflatedForm = await backend.decodeAndInflate(body.inputs.encodedFormJson);
     const decodedBody = {
       ...body,
       inputs: {
         ...body.inputs,
-        translationJson: JSON.stringify(inflatedTranslation),
-        formJson: JSON.stringify(inflatedForm),
+        encodedTranslationJson: JSON.stringify(inflatedTranslation),
+        encodedFormJson: JSON.stringify(inflatedForm),
       },
     };
 
     expect(decodedBody).toEqual({
       inputs: {
         formJsonFileTitle: formPath,
-        translationJson: JSON.stringify(translation),
-        formJson: JSON.stringify(form),
+        encodedTranslationJson: JSON.stringify(translation),
+        encodedFormJson: JSON.stringify(form),
       },
     });
     expect(calls[1][0]).toEqual("https://api.github.com/navikt/repo/workflow_dispatch");
