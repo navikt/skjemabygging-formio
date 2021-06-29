@@ -1,4 +1,4 @@
 ingresses:
-- "https://skjemabygging-formio-monorepo-poc.labs.nais.io"
+- "https://skjemabygging-formio.labs.nais.io"
 image: {{image}}
-publiseringWorkflowDispatchRef: "mainformio"
+publiseringWorkflowDispatchRef: "master"
