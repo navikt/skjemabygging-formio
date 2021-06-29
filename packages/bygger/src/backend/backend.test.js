@@ -5,6 +5,7 @@ import { deflate, unzip } from "zlib";
 
 import fetch from "node-fetch";
 import { HttpError } from "./fetchUtils";
+
 const promisifiedDeflate = promisify(deflate);
 
 jest.mock("node-fetch");
@@ -28,6 +29,10 @@ describe("Backend", () => {
     const zippedBuffer = await promisifiedDeflate(buffer);
     const expected = zippedBuffer.toString("base64");
     expect(b64encoded).toEqual(expected);
+    const expectedTranslations = await backend.compressAndEncode(translations);
+    expect(payload.inputs.translationJson).toEqual(expectedTranslations);
+    const inflatedForm = await backend.decodeAndInflate(payload.inputs.formJson);
+    expect(inflatedForm).toEqual(form);
   });
 
   it("publishes forms and returns ok", async () => {
@@ -58,7 +63,19 @@ describe("Backend", () => {
       },
     });
     const body = JSON.parse(calls[1][1].body);
-    expect(body).toEqual({
+
+    const inflatedTranslation = await backend.decodeAndInflate(body.inputs.translationJson);
+    const inflatedForm = await backend.decodeAndInflate(body.inputs.formJson);
+    const decodedBody = {
+      ...body,
+      inputs: {
+        ...body.inputs,
+        translationJson: JSON.stringify(inflatedTranslation),
+        formJson: JSON.stringify(inflatedForm),
+      },
+    };
+
+    expect(decodedBody).toEqual({
       inputs: {
         formJsonFileTitle: formPath,
         translationJson: JSON.stringify(translation),

@@ -2,6 +2,7 @@ import { fetchWithErrorHandling } from "./fetchUtils.js";
 import { promisify } from "util";
 import { deflate, unzip } from "zlib";
 const promisifiedDeflate = promisify(deflate);
+const promisifiedInflate = promisify(unzip);
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -28,13 +29,20 @@ export class Backend {
     return zippedBuffer.toString("base64");
   }
 
+  async decodeAndInflate(string) {
+    const buffer = Buffer.from(string, "base64");
+    const inflated = await promisifiedInflate(buffer);
+    return JSON.parse(inflated.toString());
+  }
+
   async payload(formJsonFileTitle, form, translations) {
     const encodedForm = await this.compressAndEncode(form);
+    const encodedTranslations = await this.compressAndEncode(translations);
     return {
       ref: this.githubAppConfig.workflowDispatchRef,
       inputs: {
         formJsonFileTitle,
-        translationJson: JSON.stringify(translations),
+        translationJson: encodedTranslations,
         formJson: encodedForm,
         monorepoGitHash: this.gitVersion,
       },
@@ -54,9 +62,7 @@ export class Backend {
   }
 
   async publishForm(userToken, form, translations, formPath) {
-    console.log("got here");
     await this.checkPublishingAccess(userToken);
-    console.log("got there, token", this.githubAppConfig.workflowDispatchToken);
     const payload = await this.payload(formPath, form, translations);
     return await fetchWithErrorHandling(this.githubAppConfig.workflowDispatchURL, {
       method: "POST",
