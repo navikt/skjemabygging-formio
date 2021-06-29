@@ -823,6 +823,9 @@ const builderPalett = {
       datagrid: {
         ignore: true,
       },
+      editgrid: {
+        ignore: true,
+      },
       navDataGrid: {
         title: "Data Grid",
         icon: "th",

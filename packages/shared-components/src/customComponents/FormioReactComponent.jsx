@@ -151,6 +151,23 @@ export default class FormioReactComponent extends Field {
   }
 
   /**
+   * Component should be cleared when hidden if clearOnHide is set to true. Copied function from formio.js/component.js.
+   */
+  clearOnHide() {
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+      if (!this.visible) {
+        this.deleteValue();
+      } else if (!this.hasValue() && this.shouldAddDefaultValue) {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true,
+        });
+      }
+    }
+  }
+
+  /**
    * Override normal validation check to insert custom validation in react component.
    *
    * @param data
