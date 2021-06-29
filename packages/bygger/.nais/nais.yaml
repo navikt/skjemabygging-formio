@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "skjemabygging-formio-monorepo-poc"
+  name: "skjemabygging-formio"
   namespace: "skjemadigitalisering"
   labels:
     "team": "skjemadigitalisering"
@@ -38,7 +38,7 @@ spec:
     - name: PUBLISERING_WORKFLOW_DISPATCH_REF
       value: "{{publiseringWorkflowDispatchRef}}"
     - name: PUBLISERING_WORKFLOW_DISPATCH_URL
-      value: "https://api.github.com/repos/navikt/skjemapublisering-monorepo-poc/actions/workflows/publish.yaml/dispatches"
+      value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish.yaml/dispatches"
   envFrom:
     - secret: monorepo-poc-akg
   azure:
