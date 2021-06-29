@@ -47,7 +47,7 @@ export const useForms = (formio, store, userAlerter) => {
     });
   };
   const onPublish = async (form, translations) => {
-    const payload = JSON.stringify({
+    /*    const payload = JSON.stringify({
       form: form,
       translations: translations,
       token: Formiojs.getToken(),
@@ -62,7 +62,8 @@ export const useForms = (formio, store, userAlerter) => {
     } else {
       userAlerter.setErrorMessage("Publisering feilet " + response.status);
       console.error("Publisering feilet " + response.status);
-    }
+    }*/
+    console.warn("Publisering er for øyeblikket ikke tilgjengelig");
   };
 
   const fetchTranslations = (url) => {

@@ -47,7 +47,11 @@ export function TestFormPage({ editFormUrl, form, onSave, onLogout, onPublish })
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
       mainCol={<MainCol editFormUrl={editFormUrl} form={form} onSave={onSave} />}
-      rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
+      rightCol={
+        <Knapp disabled onClick={() => setOpenModal(true)}>
+          Publiser
+        </Knapp>
+      }
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
         <FyllUtRouter form={form} translations={featureToggles.enableTranslations ? translations : undefined} />
