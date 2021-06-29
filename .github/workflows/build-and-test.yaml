@@ -2,7 +2,7 @@ name: Build, test monorepo. Deploy bygger if master
 on:
   push
 env:
-  IMAGE: "docker.pkg.github.com/${{ github.repository }}/bygger-flump:${{github.sha }}"
+  IMAGE: "docker.pkg.github.com/${{ github.repository }}/bygger:${{github.sha }}"
 jobs:
   build-and-test:
     name: "Build and test packages"
