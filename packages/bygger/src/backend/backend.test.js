@@ -1,16 +1,11 @@
 import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
-import ListResponse from "../testTools/backend/json/GHListResponse.json";
-import PublishResponse from "../testTools/backend/json/GHPublishResponse.json";
 import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
-import TokenResponse from "../testTools/backend/json/TokenResponse.json";
-import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
-import PackageJsonResponse from "../testTools/backend/json/GHPackageJsonResponse.json";
-import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json";
-import GetTempRefResponse from "../testTools/backend/json/GHGetTempRefResponse.json";
-import PatchRefResponse from "../testTools/backend/json/GHPatchRefResponse.json";
+import { promisify } from "util";
+import { deflate, unzip } from "zlib";
 
 import fetch from "node-fetch";
 import { HttpError } from "./fetchUtils";
+const promisifiedDeflate = promisify(deflate);
 
 jest.mock("node-fetch");
 
@@ -22,6 +17,17 @@ describe("Backend", () => {
 
   beforeEach(() => {
     fetch.mockRestore();
+  });
+
+  it("encodes the payload with gzip and b64", async () => {
+    const form = { key: "value" };
+    const translations = { otherKey: "otherValue" };
+    const payload = await backend.payload("fileTittel", form, translations);
+    const b64encoded = payload.inputs.formJson;
+    const buffer = Buffer.from(JSON.stringify(form), "utf-8");
+    const zippedBuffer = await promisifiedDeflate(buffer);
+    const expected = zippedBuffer.toString("base64");
+    expect(b64encoded).toEqual(expected);
   });
 
   it("publishes forms and returns ok", async () => {

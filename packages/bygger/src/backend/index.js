@@ -1,4 +1,7 @@
 import { fetchWithErrorHandling } from "./fetchUtils.js";
+import { promisify } from "util";
+import { deflate, unzip } from "zlib";
+const promisifiedDeflate = promisify(deflate);
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -19,13 +22,20 @@ export class Backend {
     return this.githubAppConfig.workflowDispatchURL;
   }
 
-  payload(formJsonFileTitle, form, translations) {
+  async compressAndEncode(data) {
+    const buffer = Buffer.from(JSON.stringify(data), "utf-8");
+    const zippedBuffer = await promisifiedDeflate(buffer);
+    return zippedBuffer.toString("base64");
+  }
+
+  async payload(formJsonFileTitle, form, translations) {
+    const encodedForm = await this.compressAndEncode(form);
     return {
       ref: this.githubAppConfig.workflowDispatchRef,
       inputs: {
         formJsonFileTitle,
         translationJson: JSON.stringify(translations),
-        formJson: JSON.stringify(form),
+        formJson: encodedForm,
         monorepoGitHash: this.gitVersion,
       },
     };
@@ -47,6 +57,7 @@ export class Backend {
     console.log("got here");
     await this.checkPublishingAccess(userToken);
     console.log("got there, token", this.githubAppConfig.workflowDispatchToken);
+    const payload = await this.payload(formPath, form, translations);
     return await fetchWithErrorHandling(this.githubAppConfig.workflowDispatchURL, {
       method: "POST",
       headers: {
@@ -54,7 +65,7 @@ export class Backend {
         "Content-Type": "Application/JSON",
         Authorization: `token ${this.githubAppConfig.workflowDispatchToken}`,
       },
-      body: JSON.stringify(this.payload(formPath, form, translations)),
+      body: JSON.stringify(payload),
     });
   }
 }
