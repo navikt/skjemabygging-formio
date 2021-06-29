@@ -35,7 +35,7 @@ jobs:
         run: yarn install --frozen-lockfile && yarn build
         env:
           REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
-          REACT_APP_PUSHER_CLUSTER: "eu"
+          REACT_APP_PUSHER_CLUSTER: "mt1"
           REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
           REACT_APP_GIT_VERSION: ${{ github.sha }}
       - name: "Build and publish Docker image"
