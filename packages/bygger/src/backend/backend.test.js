@@ -63,23 +63,11 @@ describe("Backend", () => {
       },
     });
     const body = JSON.parse(calls[1][1].body);
-
-    const inflatedTranslation = await backend.decodeAndInflate(body.inputs.encodedTranslationJson);
-    const inflatedForm = await backend.decodeAndInflate(body.inputs.encodedFormJson);
-    const decodedBody = {
-      ...body,
-      inputs: {
-        ...body.inputs,
-        encodedTranslationJson: JSON.stringify(inflatedTranslation),
-        encodedFormJson: JSON.stringify(inflatedForm),
-      },
-    };
-
-    expect(decodedBody).toEqual({
+    expect(body).toEqual({
       inputs: {
         formJsonFileTitle: formPath,
-        encodedTranslationJson: JSON.stringify(translation),
-        encodedFormJson: JSON.stringify(form),
+        encodedTranslationJson: await backend.compressAndEncode(translation),
+        encodedFormJson: await backend.compressAndEncode(form),
       },
     });
     expect(calls[1][0]).toEqual("https://api.github.com/navikt/repo/workflow_dispatch");
