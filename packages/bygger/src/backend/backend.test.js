@@ -10,7 +10,6 @@ describe("Backend", () => {
   const backend = createBackendForTest();
   const token = "userToken";
   const formPath = "skjema";
-  const CreateRefResponse = {};
 
   beforeEach(() => {
     fetch.mockRestore();
@@ -18,7 +17,7 @@ describe("Backend", () => {
   describe("Payload encoding", () => {
     it("roundtrips successfully", async () => {
       const inputData = { number: 3, text: "flesk flesk" };
-      const roundTripped = await backend.decodeAndInflate(await backend.compressAndEncode(inputData));
+      const roundTripped = await backend.fromBase64GzipAndJson(await backend.toBase64GzipAndJson(inputData));
       expect(roundTripped).toEqual(inputData);
     });
 
@@ -26,15 +25,15 @@ describe("Backend", () => {
       const form = { key: "value" };
       const translations = { otherKey: "otherValue" };
       const payload = await backend.payload("fileTittel", form, translations);
-      const b64encoded = payload.inputs.encodedFormJson;
-      const expectedFormJson = await backend.compressAndEncode(form);
-      expect(b64encoded).toEqual(expectedFormJson);
-      const expectedTranslations = await backend.compressAndEncode(translations);
-      expect(payload.inputs.encodedTranslationJson).toEqual(expectedTranslations);
-      const inflatedForm = await backend.decodeAndInflate(payload.inputs.encodedFormJson);
-      expect(inflatedForm).toEqual(form);
+      expect(payload).toMatchObject({
+        inputs: {
+          encodedFormJson: await backend.toBase64GzipAndJson(form),
+          encodedTranslationJson: await backend.toBase64GzipAndJson(translations),
+        },
+      });
     });
   });
+
   it("publishes forms and returns ok", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
@@ -66,8 +65,9 @@ describe("Backend", () => {
     expect(body).toEqual({
       inputs: {
         formJsonFileTitle: formPath,
-        encodedTranslationJson: await backend.compressAndEncode(translation),
-        encodedFormJson: await backend.compressAndEncode(form),
+        encodedTranslationJson: await backend.toBase64GzipAndJson(translation),
+        encodedFormJson: await backend.toBase64GzipAndJson(form),
+        monorepoGitHash: "cafebabe",
       },
     });
     expect(calls[1][0]).toEqual("https://api.github.com/navikt/repo/workflow_dispatch");

@@ -23,21 +23,21 @@ export class Backend {
     return this.githubAppConfig.workflowDispatchURL;
   }
 
-  async compressAndEncode(data) {
+  async toBase64GzipAndJson(data) {
     const buffer = Buffer.from(JSON.stringify(data), "utf-8");
     const zippedBuffer = await promisifiedGzip(buffer);
     return zippedBuffer.toString("base64");
   }
 
-  async decodeAndInflate(string) {
+  async fromBase64GzipAndJson(string) {
     const buffer = Buffer.from(string, "base64");
     const inflated = await promisifiedGunzip(buffer);
     return JSON.parse(inflated.toString());
   }
 
   async payload(formJsonFileTitle, form, translations) {
-    const encodedForm = await this.compressAndEncode(form);
-    const encodedTranslations = await this.compressAndEncode(translations);
+    const encodedForm = await this.toBase64GzipAndJson(form);
+    const encodedTranslations = await this.toBase64GzipAndJson(translations);
     return {
       ref: this.githubAppConfig.workflowDispatchRef,
       inputs: {
