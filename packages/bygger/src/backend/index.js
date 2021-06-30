@@ -1,8 +1,8 @@
 import { fetchWithErrorHandling } from "./fetchUtils.js";
 import { promisify } from "util";
-import { deflate, unzip } from "zlib";
-const promisifiedDeflate = promisify(deflate);
-const promisifiedInflate = promisify(unzip);
+import { gzip, gunzip } from "zlib";
+const promisifiedDeflate = promisify(gzip);
+const promisifiedInflate = promisify(gunzip);
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
