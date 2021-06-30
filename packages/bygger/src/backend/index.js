@@ -1,8 +1,8 @@
 import { fetchWithErrorHandling } from "./fetchUtils.js";
 import { promisify } from "util";
 import { gzip, gunzip } from "zlib";
-const promisifiedDeflate = promisify(gzip);
-const promisifiedInflate = promisify(gunzip);
+const promisifiedGzip = promisify(gzip);
+const promisifiedGunzip = promisify(gunzip);
 
 export class Backend {
   constructor(projectURL, githubAppConfig, gitVersion) {
@@ -25,13 +25,13 @@ export class Backend {
 
   async compressAndEncode(data) {
     const buffer = Buffer.from(JSON.stringify(data), "utf-8");
-    const zippedBuffer = await promisifiedDeflate(buffer);
+    const zippedBuffer = await promisifiedGzip(buffer);
     return zippedBuffer.toString("base64");
   }
 
   async decodeAndInflate(string) {
     const buffer = Buffer.from(string, "base64");
-    const inflated = await promisifiedInflate(buffer);
+    const inflated = await promisifiedGunzip(buffer);
     return JSON.parse(inflated.toString());
   }
 
