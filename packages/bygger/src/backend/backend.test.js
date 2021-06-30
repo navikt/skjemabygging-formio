@@ -10,7 +10,6 @@ describe("Backend", () => {
   const backend = createBackendForTest();
   const token = "userToken";
   const formPath = "skjema";
-  const CreateRefResponse = {};
 
   beforeEach(() => {
     fetch.mockRestore();
@@ -26,15 +25,15 @@ describe("Backend", () => {
       const form = { key: "value" };
       const translations = { otherKey: "otherValue" };
       const payload = await backend.payload("fileTittel", form, translations);
-      const b64encoded = payload.inputs.encodedFormJson;
-      const expectedFormJson = await backend.compressAndEncode(form);
-      expect(b64encoded).toEqual(expectedFormJson);
-      const expectedTranslations = await backend.compressAndEncode(translations);
-      expect(payload.inputs.encodedTranslationJson).toEqual(expectedTranslations);
-      const inflatedForm = await backend.decodeAndInflate(payload.inputs.encodedFormJson);
-      expect(inflatedForm).toEqual(form);
+      expect(payload).toMatchObject({
+        inputs: {
+          encodedFormJson: await backend.compressAndEncode(form),
+          encodedTranslationJson: await backend.compressAndEncode(translations),
+        },
+      });
     });
   });
+
   it("publishes forms and returns ok", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
