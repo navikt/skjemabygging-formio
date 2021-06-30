@@ -17,7 +17,7 @@ describe("Backend", () => {
   describe("Payload encoding", () => {
     it("roundtrips successfully", async () => {
       const inputData = { number: 3, text: "flesk flesk" };
-      const roundTripped = await backend.decodeAndInflate(await backend.compressAndEncode(inputData));
+      const roundTripped = await backend.fromBase64GzipAndJson(await backend.toBase64GzipAndJson(inputData));
       expect(roundTripped).toEqual(inputData);
     });
 
@@ -27,8 +27,8 @@ describe("Backend", () => {
       const payload = await backend.payload("fileTittel", form, translations);
       expect(payload).toMatchObject({
         inputs: {
-          encodedFormJson: await backend.compressAndEncode(form),
-          encodedTranslationJson: await backend.compressAndEncode(translations),
+          encodedFormJson: await backend.toBase64GzipAndJson(form),
+          encodedTranslationJson: await backend.toBase64GzipAndJson(translations),
         },
       });
     });
@@ -65,8 +65,9 @@ describe("Backend", () => {
     expect(body).toEqual({
       inputs: {
         formJsonFileTitle: formPath,
-        encodedTranslationJson: await backend.compressAndEncode(translation),
-        encodedFormJson: await backend.compressAndEncode(form),
+        encodedTranslationJson: await backend.toBase64GzipAndJson(translation),
+        encodedFormJson: await backend.toBase64GzipAndJson(form),
+        monorepoGitHash: "cafebabe",
       },
     });
     expect(calls[1][0]).toEqual("https://api.github.com/navikt/repo/workflow_dispatch");
