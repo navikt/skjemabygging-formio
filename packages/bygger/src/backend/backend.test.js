@@ -1,12 +1,8 @@
 import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
 import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
-import { promisify } from "util";
-import { deflate, unzip } from "zlib";
 
 import fetch from "node-fetch";
 import { HttpError } from "./fetchUtils";
-
-const promisifiedDeflate = promisify(deflate);
 
 jest.mock("node-fetch");
 
