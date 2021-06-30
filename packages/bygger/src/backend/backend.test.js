@@ -1,13 +1,5 @@
 import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
-import ListResponse from "../testTools/backend/json/GHListResponse.json";
-import PublishResponse from "../testTools/backend/json/GHPublishResponse.json";
 import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
-import TokenResponse from "../testTools/backend/json/TokenResponse.json";
-import GetRefResponse from "../testTools/backend/json/GHGetRefResponse.json";
-import PackageJsonResponse from "../testTools/backend/json/GHPackageJsonResponse.json";
-import UpdatePackageJsonResponse from "../testTools/backend/json/GHUpdatePackageJsonResponse.json";
-import GetTempRefResponse from "../testTools/backend/json/GHGetTempRefResponse.json";
-import PatchRefResponse from "../testTools/backend/json/GHPatchRefResponse.json";
 
 import fetch from "node-fetch";
 import { HttpError } from "./fetchUtils";
@@ -23,7 +15,26 @@ describe("Backend", () => {
   beforeEach(() => {
     fetch.mockRestore();
   });
+  describe("Payload encoding", () => {
+    it("roundtrips successfully", async () => {
+      const inputData = { number: 3, text: "flesk flesk" };
+      const roundTripped = await backend.decodeAndInflate(await backend.compressAndEncode(inputData));
+      expect(roundTripped).toEqual(inputData);
+    });
 
+    it("encodes the payload with gzip and b64", async () => {
+      const form = { key: "value" };
+      const translations = { otherKey: "otherValue" };
+      const payload = await backend.payload("fileTittel", form, translations);
+      const b64encoded = payload.inputs.encodedFormJson;
+      const expectedFormJson = await backend.compressAndEncode(form);
+      expect(b64encoded).toEqual(expectedFormJson);
+      const expectedTranslations = await backend.compressAndEncode(translations);
+      expect(payload.inputs.encodedTranslationJson).toEqual(expectedTranslations);
+      const inflatedForm = await backend.decodeAndInflate(payload.inputs.encodedFormJson);
+      expect(inflatedForm).toEqual(form);
+    });
+  });
   it("publishes forms and returns ok", async () => {
     fetch
       .mockReturnValueOnce(jsonToPromise(TestUserResponse))
@@ -55,8 +66,8 @@ describe("Backend", () => {
     expect(body).toEqual({
       inputs: {
         formJsonFileTitle: formPath,
-        translationJson: JSON.stringify(translation),
-        formJson: JSON.stringify(form),
+        encodedTranslationJson: await backend.compressAndEncode(translation),
+        encodedFormJson: await backend.compressAndEncode(form),
       },
     });
     expect(calls[1][0]).toEqual("https://api.github.com/navikt/repo/workflow_dispatch");
