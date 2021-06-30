@@ -32,12 +32,12 @@ jobs:
         run: node bin/deploy-context.mjs ./packages/bygger --replace
       - name: "Skjemabygging-formio (Frontend): install dependencies"
         working-directory: ./packages/bygger
-        run: yarn install --frozen-lockfile && yarn build
         env:
           REACT_APP_FORMIO_PROJECT_URL: "https://protected-island-44773.herokuapp.com"
           REACT_APP_PUSHER_CLUSTER: "mt1"
           REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
           REACT_APP_GIT_VERSION: ${{ github.sha }}
+        run: yarn install --frozen-lockfile && yarn build
       - name: "Build and publish Docker image"
         working-directory: ./packages/bygger
         run: >
@@ -51,12 +51,10 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v2"
-        with:
-          ref: ${{ github.event.client_payload.sha }}
       - name: "Deploy to LABS"
-        uses: "nais/deploy/actions/deploy@v1"
         env:
-          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "labs-gcp"
-          "RESOURCE": "./packages/bygger/.nais/nais.yaml"
-          "VARS": "./packages/bygger/.nais/labs.yaml"
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "labs-gcp"
+          RESOURCE: "./packages/bygger/.nais/nais.yaml"
+          VARS: "./packages/bygger/.nais/labs.yaml"
+        uses: "nais/deploy/actions/deploy@v1"
