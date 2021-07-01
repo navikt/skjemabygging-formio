@@ -31,7 +31,7 @@
 {% if (ctx.component.isNavCheckboxPanel) { %}
 <fieldset class="skjemagruppe inputPanelGruppe">
   <legend class="skjemagruppe__legend">{{ctx.component.label}}</legend>
-  {% if (ctx.component.description && ctx.component.descriptionPosition !== "below" && ctx.component.descriptionPosition !== "above" ) { %}
+  {% if (ctx.component.description && ctx.component.descriptionPosition !== "above" ) { %}
     <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
   {% } %}
   <div class="inputPanelGruppe__inner">
@@ -60,8 +60,5 @@
       </label>
     {% }) %}
   </div>
-  {% if (ctx.component.description && ctx.component.descriptionPosition === "below") { %}
-    <div class="skjemagruppe__description skjemagruppe__checkbox-description--below">{{ctx.t(ctx.component.description)}}</div>
-  {% } %}
 </fieldset>
 {% } %}
