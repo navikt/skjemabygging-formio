@@ -12,23 +12,24 @@
     "bootstrap": "yarn && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
-    "start:bygger": "lerna run --scope @navikt/bygger start",
+    "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start",
     "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start",
     "test": "cross-env-shell CI=true lerna run --stream test"
   },
   "devDependencies": {
+    "@material-ui/styles": "4.10.0",
     "cross-env": "^7.0.2",
+    "formiojs": "4.12.3",
     "husky": "^3.1.0",
     "lerna": "^4.0.0",
     "lint-staged": "^10.4.0",
+    "nodemon": "^2.0.9",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.1",
-    "rimraf": "^3.0.2",
-    "@material-ui/styles": "4.10.0",
-    "formiojs": "4.12.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "rimraf": "^3.0.2"
   },
   "engines": {
     "node": ">=14.15.0 <=14.17.0"
