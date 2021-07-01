@@ -258,7 +258,6 @@ const kontaktInfoSchema = (keyPostfix = "") => ({
         eq: "nei",
       },
     },
-    telefonSchema(keyPostfix),
   ],
 });
 
