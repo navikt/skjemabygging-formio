@@ -24,7 +24,6 @@
     "classnames": "^2.2.6",
     "concurrently": "^5.3.0",
     "craco-less": "^1.17.0",
-    "dispatch": "^1.0.2",
     "ejs-loader": "^0.5.0",
     "eventemitter2": "^6.4.3",
     "file-saver": "^2.0.5",
