@@ -17,6 +17,19 @@ const FormSummaryField = ({ label, value }) => (
   </>
 );
 
+const SelectboxesSummary = ({ label, values }) => (
+  <>
+    <dt>{label}</dt>
+    <dd>
+      <ul>
+        {values.map((value) => (
+          <li>{value}</li>
+        ))}
+      </ul>
+    </dd>
+  </>
+);
+
 const FormSummaryFieldset = ({ label, components }) => (
   <div>
     <dt>{label}</dt>
@@ -67,6 +80,8 @@ const ComponentSummary = ({ components }) => {
       return <FormSummaryFieldset key={key} label={label} components={components} />;
     } else if (type === "datagrid") {
       return <DataGridSummary key={key} label={label} components={components} />;
+    } else if (type === "selectboxes") {
+      return <SelectboxesSummary key={key} label={label} values={value} />;
     } else {
       return <FormSummaryField key={key} label={label} value={value} />;
     }
