@@ -3,6 +3,9 @@ ENV NODE_ENV production
 ARG git_sha
 
 WORKDIR /app
-COPY . .
+COPY build build
+COPY server server
 ENV GIT_SHA=${git_sha}
-CMD ["node", "server/index.mjs"]
+
+WORKDIR server
+CMD ["node", "index.mjs"]
