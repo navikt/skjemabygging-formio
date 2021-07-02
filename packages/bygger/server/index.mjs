@@ -1,6 +1,6 @@
 import express from "express";
-import { Backend } from "../src/backend/index.js";
-import { dispatcherWithBackend } from "../src/backend/webApp.js";
+import { Backend } from "./backend/index.js";
+import { dispatcherWithBackend } from "./backend/webApp.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 
 const app = express();
