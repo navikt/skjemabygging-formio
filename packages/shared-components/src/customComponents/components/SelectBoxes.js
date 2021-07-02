@@ -1,6 +1,7 @@
 import SelectBoxes from "formiojs/components/selectboxes/SelectBoxes";
 import SelectBoxesEditForm from "formiojs/components/selectboxes/SelectBoxes.form";
 import { descriptionPositionField } from "./fields/descriptionPositionField";
+import { fieldSizeField } from "./fields/fieldSize";
 
 class CheckboxPanelGruppe extends SelectBoxes {
   static editForm() {
@@ -8,7 +9,7 @@ class CheckboxPanelGruppe extends SelectBoxes {
       {
         label: "Display",
         key: "display",
-        components: [descriptionPositionField],
+        components: [descriptionPositionField, fieldSizeField],
       },
     ]);
   }
