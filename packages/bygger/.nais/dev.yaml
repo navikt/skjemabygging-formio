@@ -1,0 +1,4 @@
+ingresses:
+- "https://skjemabygging-formio.dev.intern.nav.no"
+image: {{image}}
+publiseringWorkflowDispatchRef: "dev-publisering"

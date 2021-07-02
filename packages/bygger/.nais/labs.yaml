@@ -1,0 +1,4 @@
+ingresses:
+- "https://skjemabygging-formio.labs.nais.io"
+image: {{image}}
+publiseringWorkflowDispatchRef: "master"
