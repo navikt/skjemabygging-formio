@@ -1,4 +1,4 @@
-name: Build, test monorepo. Deploy bygger if master
+name: Build and test monorepo - deploy bygger if master
 on:
   push
 env:
@@ -6,6 +6,7 @@ env:
 jobs:
   build-and-test:
     name: "Build and test packages"
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,6 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.17.0'
       - name: build shared-components
         working-directory: ./packages/shared-components
         run: yarn install --frozen-lockfile && yarn build
@@ -48,9 +52,22 @@ jobs:
           && echo ${{ secrets.GITHUB_TOKEN }} | docker login
           --username ${{ github.repository }} --password-stdin https://docker.pkg.github.com
           && docker push ${IMAGE}
+  deploy-bygger-to-dev:
+    name: "Deploy bygger to dev"
+    needs: package-and-push-bygger
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        env:
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "dev-gcp"
+          RESOURCE: "./packages/bygger/.nais/nais.yaml"
+          VARS: "./packages/bygger/.nais/dev.yaml"
+        uses: "nais/deploy/actions/deploy@v1"
   deploy-bygger-to-labs:
     name: "Deploy bygger to labs"
-    needs: package-and-push-bygger
+    needs: deploy-bygger-to-dev
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v2"
