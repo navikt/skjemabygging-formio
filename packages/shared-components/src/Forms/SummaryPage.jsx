@@ -23,7 +23,7 @@ const SelectboxesSummary = ({ label, values }) => (
     <dd>
       <ul>
         {values.map((value) => (
-          <li>{value}</li>
+          <li key={`${label}_${value}`}>{value}</li>
         ))}
       </ul>
     </dd>

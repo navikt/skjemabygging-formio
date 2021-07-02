@@ -126,6 +126,21 @@ function handleFieldSet(component, submission, formSummaryObject, parentContaine
   ];
 }
 
+function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey) {
+  const { key, label, type, values } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.default.getValue(submission, componentKey);
+  return [
+    ...formSummaryObject,
+    {
+      label,
+      key,
+      type,
+      value: values.filter((checkbox) => submissionValue[checkbox.value] === true).map((checkbox) => checkbox.label),
+    },
+  ];
+}
+
 function handleField(component, submission, formSummaryObject, parentContainerKey) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -156,6 +171,8 @@ export function handleComponent(component, submission = { data: {} }, formSummar
       return handleContainer(component, submission, formSummaryObject);
     case "datagrid":
       return handleDataGrid(component, submission, formSummaryObject);
+    case "selectboxes":
+      return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey);
     case "fieldset":
     case "navSkjemagruppe":
       return handleFieldSet(component, submission, formSummaryObject, parentContainerKey);

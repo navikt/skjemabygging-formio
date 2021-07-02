@@ -426,6 +426,37 @@ describe("generating doc definition", () => {
     });
   });
 
+  describe("Selectboxes", () => {
+    const createSelectboxesSubmission = () => ({
+      state: "submitted",
+      data: { flervalg: { sugar: true, salt: false } },
+    });
+
+    const createSelectboxesFormDefinition = () => ({
+      name: "testSelecebox",
+      components: [
+        {
+          type: "selectboxes",
+          key: "flervalg",
+          label: "Flervalg",
+          input: true,
+          values: [
+            { label: "Sugar", value: "sugar" },
+            { label: "Salt", value: "salt" },
+          ],
+        },
+      ],
+    });
+
+    it("displays selectboxes", () => {
+      const formDefinition = createSelectboxesFormDefinition();
+      const submission = createSelectboxesSubmission();
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([["Flervalg", { ul: ["Sugar"] }]]);
+    });
+  });
+
   describe("PdfgenPapir", () => {
     it("generates with signature field", () => {
       const submission = { data: {}, metadata: {} };
