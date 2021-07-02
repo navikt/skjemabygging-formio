@@ -6,7 +6,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env GIT_SHA=dev nodemon index.mjs"
+    "start": "cross-env PORT=8080 GIT_SHA=dev nodemon index.mjs"
   },
   "author": "",
   "license": "ISC",

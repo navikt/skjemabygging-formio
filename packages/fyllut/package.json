@@ -1,7 +1,7 @@
 {
   "name": "@navikt/fyllut-frontend",
   "homepage": "/fyllut",
-  "proxy": "http://localhost:8080",
+  "proxy": "http://localhost:8081",
   "version": "0.1.1",
   "private": true,
   "type": "module",
@@ -41,7 +41,7 @@
     "prop-types": "^15.7.2"
   },
   "scripts": {
-    "start": "craco start",
+    "start": "cross-env-shell PORT=3001 craco start",
     "build": "cross-env-shell REACT_APP_GIT_VERSION=dev craco build",
     "build:prod": "craco build",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
