@@ -11,8 +11,6 @@
     "@material-ui/styles": "^4.10.0",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@sentry/browser": "^5.27.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.0.4",
     "bootstrap": "4.4.1",
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
@@ -34,6 +32,8 @@
     "skjemapublisering": "navikt/skjemapublisering.git#1bd99e98ee4104d4eafc62759271a3512cbf5e75"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.0.4",
     "husky": "^3.1.0",
     "lint-staged": "^10.4.0",
     "nodemon": "^2.0.4",
