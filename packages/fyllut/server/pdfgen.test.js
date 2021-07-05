@@ -427,12 +427,12 @@ describe("generating doc definition", () => {
   });
 
   describe("Selectboxes", () => {
-    const createSelectboxesSubmission = () => ({
+    const createSelectboxesSubmission = (answers) => ({
       state: "submitted",
-      data: { flervalg: { sugar: true, salt: false } },
+      data: { flervalg: answers },
     });
 
-    const createSelectboxesFormDefinition = () => ({
+    const createSelectboxesFormDefinition = (values) => ({
       name: "testSelecebox",
       components: [
         {
@@ -440,20 +440,25 @@ describe("generating doc definition", () => {
           key: "flervalg",
           label: "Flervalg",
           input: true,
-          values: [
-            { label: "Sugar", value: "sugar" },
-            { label: "Salt", value: "salt" },
-          ],
+          values: values.map((value) => ({ label: value, value: value.toLowerCase() })),
         },
       ],
     });
 
-    it("displays selectboxes", () => {
-      const formDefinition = createSelectboxesFormDefinition();
-      const submission = createSelectboxesSubmission();
+    it("adds a single list item if one option is selected", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: false });
       const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([["Flervalg", { ul: ["Sugar"] }]]);
+    });
+
+    it("adds multiple list items if more than one option is selected", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: true });
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([["Flervalg", { ul: ["Sugar", "Pepper"] }]]);
     });
   });
 
