@@ -5,10 +5,9 @@ import { makeStyles } from "@material-ui/styles";
 import { useAuth } from "../context/auth-context";
 import NewFormPage from "./NewFormPage";
 import { FormsListPage } from "./FormsListPage";
-import CustomComponents from "../customComponents";
-import Components from "formiojs/components/Components";
 import { FormPage } from "./FormPage";
-import I18nProvider from "../context/i18n";
+import { CustomComponents, I18nProvider } from "@navikt/skjemadigitalisering-shared-components";
+import Components from "formiojs/components/Components";
 
 const useLoadingStyles = makeStyles({
   root: {
