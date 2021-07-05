@@ -197,7 +197,7 @@ describe("When handling component", () => {
   });
 
   describe("Selectboxes", () => {
-    it("creates lines for each option", () => {
+    it("adds each option that is selected", () => {
       const actual = handleComponent(
         createDummySelectboxes(),
         { data: { selectboxes: { milk: true, bread: false, juice: true } } },
@@ -213,6 +213,16 @@ describe("When handling component", () => {
           value: ["Milk", "Juice"],
         },
       ]);
+    });
+    it("does not add anything if no options are selected", () => {
+      const actual = handleComponent(
+        createDummySelectboxes(),
+        { data: { selectboxes: { milk: false, bread: false, juice: false } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([]);
     });
   });
 

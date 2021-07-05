@@ -460,6 +460,13 @@ describe("generating doc definition", () => {
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([["Flervalg", { ul: ["Sugar", "Pepper"] }]]);
     });
+
+    it("does not add anything if no options are selected", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: false, salt: false, pepper: false });
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      expect(tableDef.table).toBeUndefined();
+    });
   });
 
   describe("PdfgenPapir", () => {
