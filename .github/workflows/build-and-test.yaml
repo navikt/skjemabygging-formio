@@ -19,6 +19,7 @@ jobs:
         run: yarn build
       - name: "Test"
         run: yarn test
+
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master' # only create new release on the master branch
     needs: build-and-test
@@ -52,6 +53,7 @@ jobs:
           && echo ${{ secrets.GITHUB_TOKEN }} | docker login
           --username ${{ github.repository }} --password-stdin https://docker.pkg.github.com
           && docker push ${IMAGE}
+
   deploy-bygger-to-dev:
     name: "Deploy bygger to dev"
     needs: package-and-push-bygger
@@ -65,6 +67,7 @@ jobs:
           RESOURCE: "./packages/bygger/.nais/nais.yaml"
           VARS: "./packages/bygger/.nais/dev.yaml"
         uses: "nais/deploy/actions/deploy@v1"
+
   deploy-bygger-to-labs:
     name: "Deploy bygger to labs"
     needs: deploy-bygger-to-dev
@@ -78,3 +81,17 @@ jobs:
           RESOURCE: "./packages/bygger/.nais/nais.yaml"
           VARS: "./packages/bygger/.nais/labs.yaml"
         uses: "nais/deploy/actions/deploy@v1"
+
+  trigger-deploy-fyllut-to-labs:
+    name: "Trigger deploy fyllut to labs"
+    needs: deploy-bygger-to-dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Trigger labs deploy"
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: "Trigger labs deploy"
+          repo: navikt/skjemautfylling-formio
+          ref: "labs-deploy"
+          token: ${{ secrets.TEAM_ACCESS_TOKEN }}
+          inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
