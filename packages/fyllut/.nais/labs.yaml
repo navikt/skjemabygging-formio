@@ -1,5 +1,5 @@
 ingresses:
-  - "https://fyllut.labs.nais.io/fyllut"
+  - "https://skjemautfylling-formio.labs.nais.io/fyllut"
 image: {{image}}
 foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside

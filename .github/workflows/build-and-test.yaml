@@ -87,7 +87,7 @@ jobs:
     needs: deploy-bygger-to-dev
     runs-on: ubuntu-latest
     steps:
-      - name: "Trigger labs deploy"
+      - name: "Trigger deploy fyllut to labs"
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: "Trigger labs deploy"
