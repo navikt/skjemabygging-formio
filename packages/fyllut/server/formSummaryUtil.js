@@ -146,7 +146,6 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
 }
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey) {
-  console.log(component);
   const { key, contentForPdf, type } = component;
   if (contentForPdf) {
     const componentKey = createComponentKey(parentContainerKey, key);
