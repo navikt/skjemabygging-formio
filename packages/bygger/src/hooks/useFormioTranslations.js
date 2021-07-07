@@ -1,5 +1,5 @@
 import Formiojs from "formiojs/Formio";
-import { combineTranslationResources } from "../context/i18n/translationsMapper";
+import { combineTranslationResources } from "@navikt/skjemadigitalisering-shared-components";
 
 export const useFormioTranslations = (formio, userAlerter) => {
   const fetchTranslations = (url) => {
@@ -10,7 +10,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log("***Response: ", response);
+        console.log("Response: ", response);
         return response;
       });
   };
