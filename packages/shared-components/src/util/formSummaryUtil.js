@@ -150,17 +150,20 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
 }
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey) {
-  const { key, content, type } = component;
-  const componentKey = createComponentKey(parentContainerKey, key);
-  return [
-    ...formSummaryObject,
-    {
-      label: content,
-      key: componentKey,
-      type,
-      value: "",
-    },
-  ];
+  const { key, contentForPdf, type } = component;
+  if (contentForPdf) {
+    const componentKey = createComponentKey(parentContainerKey, key);
+    return [
+      ...formSummaryObject,
+      {
+        label: contentForPdf,
+        key: componentKey,
+        type,
+        value: "",
+      },
+    ];
+  }
+  return formSummaryObject;
 }
 
 function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
@@ -195,6 +198,7 @@ export function handleComponent(
     case "content":
       return formSummaryObject;
     case "htmlelement":
+    case "alertstripe":
       return handleHtmlElement(component, formSummaryObject, parentContainerKey);
     case "container":
       return handleContainer(component, submission, formSummaryObject, translate);

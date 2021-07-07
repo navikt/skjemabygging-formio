@@ -42,6 +42,12 @@ class AlertStripe extends HTMLElement {
             ],
           },
           {
+            label: "Innhold som skal vises i pdf",
+            type: "textfield",
+            key: "contentForPdf",
+            input: true,
+          },
+          {
             label: "Inline?",
             type: "navCheckbox",
             key: "isInline",
