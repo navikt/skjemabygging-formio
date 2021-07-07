@@ -37,7 +37,7 @@
   <div class="inputPanelGruppe__inner">
     {% ctx.values.forEach(function(item) { %}
       <label class="inputPanel checkboksPanel{{item.disabled ? ' inputPanel--disabled' : ''}} {{ctx.component.fieldSize}}{{!ctx.component.fieldSize ? 'input--xxl' : ''}}" ref="wrapper">
-        <{{ctx.input.type}}
+        <input
           ref="input"
           type="checkbox"
           id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
@@ -55,7 +55,7 @@
           {% if (item.disabled) { %}
             disabled
           {% } %}
-        >
+        />
         <span class="inputPanel__label">{{ctx.t(item.label)}}</span>
       </label>
     {% }) %}
