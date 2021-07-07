@@ -1,8 +1,19 @@
-<fieldset class="skjemagruppe">
+{% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
+<div class="skjemagruppe__description" id="{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+{% } %}
+<fieldset
+    class="skjemagruppe"
+    {% if (ctx.component.description) { %}
+    aria-describedby="{{ctx.key}}-description"
+    {% } %}
+>
     {% if (ctx.component.legend) { %}
     <legend ref="header" class="skjemagruppe__legend">
         {{ctx.t(ctx.component.legend)}}
     </legend>
+    {% } %}
+    {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
+        <div class="skjemagruppe__description" id="{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
     {% } %}
     <div ref="{{ctx.nestedKey}}">
         {{ctx.children}}
