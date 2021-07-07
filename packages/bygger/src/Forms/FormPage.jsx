@@ -1,5 +1,4 @@
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
-import "nav-frontend-lenker-style";
 import React from "react";
 import { EditFormPage } from "./EditFormPage";
 import { TestFormPage } from "./TestFormPage";
