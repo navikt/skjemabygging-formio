@@ -145,6 +145,20 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
   ];
 }
 
+function handleHtmlElement(component, formSummaryObject, parentContainerKey) {
+  const { key, content, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  return [
+    ...formSummaryObject,
+    {
+      label: content,
+      key: componentKey,
+      type,
+      value: "",
+    },
+  ];
+}
+
 function handleField(component, submission, formSummaryObject, parentContainerKey) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -169,8 +183,9 @@ export function handleComponent(component, submission = { data: {} }, formSummar
       return handlePanel(component, submission, formSummaryObject, parentContainerKey);
     case "button":
     case "content":
-    case "htmlelement":
       return formSummaryObject;
+    case "htmlelement":
+      return handleHtmlElement(component, formSummaryObject, parentContainerKey);
     case "container":
       return handleContainer(component, submission, formSummaryObject);
     case "datagrid":
