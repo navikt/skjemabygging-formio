@@ -13,10 +13,6 @@ class Skjemagruppe extends Fieldset {
           ...FieldsetDisplayForm.filter((field) => field.key !== "description"),
           descriptionPositionField,
           {
-            key: "description",
-            ignore: false,
-          },
-          {
             key: "tooltip",
             ignore: true,
           },
