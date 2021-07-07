@@ -156,10 +156,10 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey) {
     return [
       ...formSummaryObject,
       {
-        label: contentForPdf,
+        label: "",
         key: componentKey,
         type,
-        value: "",
+        value: contentForPdf,
       },
     ];
   }

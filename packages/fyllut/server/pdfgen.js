@@ -137,7 +137,7 @@ export class Pdfgen {
           return [this.createRow(component.label, this.createList(component.value), false, areSubComponents)];
         case "htmlelement":
         case "alertstripe":
-          return [this.createRow(component.label, "", true, areSubComponents)];
+          return [this.createRow(component.value, "", true, areSubComponents)];
         default:
           return [this.createRow(component.label, component.value, false, areSubComponents)];
       }
