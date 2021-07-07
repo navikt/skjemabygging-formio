@@ -1,11 +1,11 @@
-import SelectBoxes from "formiojs/components/selectboxes/SelectBoxes";
-import SelectBoxesEditForm from "formiojs/components/selectboxes/SelectBoxes.form";
+import FormioSelectBoxes from "formiojs/components/selectboxes/SelectBoxes";
+import FormioSelectBoxesEditForm from "formiojs/components/selectboxes/SelectBoxes.form";
 import { descriptionPositionField } from "./fields/descriptionPositionField";
 import { fieldSizeField } from "./fields/fieldSize";
 
-class CheckboxPanelGruppe extends SelectBoxes {
+class SelectBoxes extends FormioSelectBoxes {
   static editForm() {
-    return SelectBoxesEditForm([
+    return FormioSelectBoxesEditForm([
       {
         label: "Display",
         key: "display",
@@ -60,4 +60,4 @@ class CheckboxPanelGruppe extends SelectBoxes {
   }
 }
 
-export default CheckboxPanelGruppe;
+export default SelectBoxes;
