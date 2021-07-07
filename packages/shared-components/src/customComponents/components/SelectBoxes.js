@@ -1,7 +1,6 @@
 import FormioSelectBoxes from "formiojs/components/selectboxes/SelectBoxes";
 import FormioSelectBoxesEditForm from "formiojs/components/selectboxes/SelectBoxes.form";
 import { descriptionPositionField } from "./fields/descriptionPositionField";
-import { fieldSizeField } from "./fields/fieldSize";
 
 class SelectBoxes extends FormioSelectBoxes {
   static editForm() {
@@ -9,7 +8,7 @@ class SelectBoxes extends FormioSelectBoxes {
       {
         label: "Display",
         key: "display",
-        components: [descriptionPositionField, fieldSizeField],
+        components: [descriptionPositionField],
       },
     ]);
   }
