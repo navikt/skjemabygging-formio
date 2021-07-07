@@ -8,6 +8,7 @@ const {
   createDummyHTMLElement,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
+  createDummySelectboxes,
   createDummyTextfield,
   createFormObject,
   createPanelObject,
@@ -192,6 +193,36 @@ describe("When handling component", () => {
       const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
       expect(actualNavSkjemagruppe).toBeDefined();
       expect(actualNavSkjemagruppe.label).toEqual("NavSkjemagruppe-legend");
+    });
+  });
+
+  describe("Selectboxes", () => {
+    it("adds each option that is selected", () => {
+      const actual = handleComponent(
+        createDummySelectboxes(),
+        { data: { selectboxes: { milk: true, bread: false, juice: true } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([
+        {
+          label: "Selectboxes",
+          key: "selectboxes",
+          type: "selectboxes",
+          value: ["Milk", "Juice"],
+        },
+      ]);
+    });
+    it("does not add anything if no options are selected", () => {
+      const actual = handleComponent(
+        createDummySelectboxes(),
+        { data: { selectboxes: { milk: false, bread: false, juice: false } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([]);
     });
   });
 

@@ -112,6 +112,12 @@ export class Pdfgen {
     return [textObject, value];
   }
 
+  createList(body = []) {
+    return {
+      ul: body,
+    };
+  }
+
   componentsToBody(components = [], areSubComponents = false) {
     return components.flatMap((component) => {
       switch (component.type) {
@@ -127,6 +133,8 @@ export class Pdfgen {
             return [this.createRow(component.label, "", true, true), ...body];
           }
           return [...body, [{ text: " ", colSpan: 2 }]];
+        case "selectboxes":
+          return [this.createRow(component.label, this.createList(component.value), false, areSubComponents)];
         default:
           return [this.createRow(component.label, component.value, false, areSubComponents)];
       }

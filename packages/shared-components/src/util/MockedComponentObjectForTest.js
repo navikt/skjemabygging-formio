@@ -31,6 +31,20 @@ const createDummyRadioPanel = (
   values,
 });
 
+const createDummySelectboxes = (
+  label = "Selectboxes",
+  values = [
+    { label: "Milk", value: "milk" },
+    { label: "Bread", value: "bread" },
+    { label: "Juice", value: "juice" },
+  ]
+) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "selectboxes",
+  values,
+});
+
 const createDummyContentElement = (label = "Content", html) => ({
   label,
   key: keyFromLabel(label),
@@ -90,6 +104,7 @@ export default {
   createDummyTextfield,
   createDummyEmail,
   createDummyRadioPanel,
+  createDummySelectboxes,
   createDummyContentElement,
   createDummyHTMLElement,
   createDummyContainerElement,

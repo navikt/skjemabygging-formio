@@ -2,11 +2,11 @@
 <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 
-{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe") { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe" && ctx.component.type !== "selectboxes") { %}
   {{ ctx.labelMarkup }}
 {% } %}
 
-{% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "datagrid" && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
+{% if (ctx.component.description && ctx.component.type !== "radiopanel" && ctx.component.type !== "datagrid" && ctx.component.type !== "selectboxes" && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
 <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 
@@ -16,6 +16,6 @@
 <div class="skjemagruppe__description skjemagruppe__checkbox-description--below">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 
-{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid") { %}
+{% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom' && ctx.component.type !== "radiopanel" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "selectboxes") { %}
   {{ ctx.labelMarkup }}
 {% } %}
