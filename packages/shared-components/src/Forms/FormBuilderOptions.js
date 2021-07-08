@@ -561,6 +561,7 @@ const builderPalett = {
           dataGridLabel: true,
           clearOnHide: true,
           validateOn: "blur",
+          autoExpand: true,
           validate: {
             required: true,
           },

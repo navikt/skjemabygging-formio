@@ -14,7 +14,6 @@ TextField.editForm = () => {
         fieldSizeField,
         descriptionPositionField,
         {
-          // You can ignore existing fields.
           key: "placeholder",
           ignore: true,
         },
