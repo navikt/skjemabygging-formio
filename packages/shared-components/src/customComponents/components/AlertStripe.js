@@ -3,6 +3,7 @@ import HTMLElementEditForm from "formiojs/components/html/HTML.form";
 import HTMLElementDisplayEditForm from "formiojs/components/html/editForm/HTML.edit.display";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
 import FormioReactComponent from "../FormioReactComponent";
+import { contentToIncludeInPdf } from "./fields/contentToIncludeInPdf";
 
 class AlertStripe extends HTMLElement {
   static get builderInfo() {
@@ -16,6 +17,7 @@ class AlertStripe extends HTMLElement {
         key: "display",
         components: [
           ...HTMLElementDisplayEditForm,
+          contentToIncludeInPdf,
           {
             label: "Type",
             type: "radiopanel",

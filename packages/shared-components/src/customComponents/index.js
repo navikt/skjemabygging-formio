@@ -1,4 +1,5 @@
 import Fodselsnummer from "./components/Fodselsnummer.jsx";
+import HTMLElement from "./components/HTMLElement";
 import NavDatepicker from "./components/NavDatepicker.jsx";
 import RadioPanelGruppeComponent from "./components/RadioPanelGruppe";
 import CheckboxComponent from "./components/Checkbox";
@@ -13,6 +14,7 @@ import AlertStripe from "./components/AlertStripe";
 export default {
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
+  htmlelement: HTMLElement,
   navDatepicker: NavDatepicker,
   radiopanel: RadioPanelGruppeComponent,
   navCheckbox: CheckboxComponent,
