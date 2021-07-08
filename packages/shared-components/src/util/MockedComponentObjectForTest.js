@@ -52,11 +52,19 @@ const createDummyContentElement = (label = "Content", html) => ({
   html,
 });
 
-const createDummyHTMLElement = (label = "HTMLelement", content) => ({
+const createDummyHTMLElement = (label = "HTMLelement", contentForPdf = "", content) => ({
   label,
   key: keyFromLabel(label),
   type: "htmlelement",
+  contentForPdf,
   content,
+});
+
+const createDummyAlertstripe = (label = "Alertstripe", contentForPdf = "") => ({
+  label,
+  key: keyFromLabel(label),
+  type: "alertstripe",
+  contentForPdf,
 });
 
 const createDummyContainerElement = (label = "Container", components, hideLabel) => ({
@@ -107,6 +115,7 @@ export default {
   createDummySelectboxes,
   createDummyContentElement,
   createDummyHTMLElement,
+  createDummyAlertstripe,
   createDummyContainerElement,
   createDummyNavSkjemagruppe,
   createDummyDataGrid,
