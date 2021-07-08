@@ -8,12 +8,6 @@ export const languagesInNorwegian = {
   en: "Engelsk",
   pl: "Polsk",
 };
-export const languagesInOriginalLanguage = {
-  "nb-NO": "Norsk bokmål",
-  "nn-NO": "Norsk nynorsk",
-  en: "English",
-  pl: "Polskie",
-};
 
 const I18nContext = createContext({});
 

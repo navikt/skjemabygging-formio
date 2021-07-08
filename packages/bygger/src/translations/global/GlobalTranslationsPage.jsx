@@ -1,11 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import {
-  guid,
-  languagesInNorwegian,
-  LanguagesProvider,
-  i18nData,
-} from "@navikt/skjemadigitalisering-shared-components";
+import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -16,6 +11,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
+import { languagesInNorwegian } from "../../context/i18n";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
