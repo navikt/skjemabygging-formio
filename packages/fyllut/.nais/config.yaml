@@ -43,8 +43,8 @@ spec:
       value: {{dekorator-url}}
     - name: FOERSTESIDE_URL
       value: {{foersteside-url}}
-    - name: USE_FORMIO_API
-      value: {{#if (use-formio-api)}}yes{{else}}no{{/if}}
+    - name: FORMS_SRC
+      value: {{forms-src}}
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}
