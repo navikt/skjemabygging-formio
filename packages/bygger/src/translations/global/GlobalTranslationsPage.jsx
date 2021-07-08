@@ -1,7 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import {
-  FormBuilderLanguageSelector,
   guid,
   languagesInNorwegian,
   LanguagesProvider,
@@ -16,6 +15,7 @@ import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode
 import { useHistory, useParams } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
+import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {

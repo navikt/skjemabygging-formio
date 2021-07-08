@@ -1,5 +1,5 @@
 import Formiojs from "formiojs/Formio";
-import { combineTranslationResources } from "@navikt/skjemadigitalisering-shared-components";
+import { combineTranslationResources } from "../context/i18n/translationsMapper";
 
 export const useFormioTranslations = (formio, userAlerter) => {
   const fetchTranslations = (url) => {

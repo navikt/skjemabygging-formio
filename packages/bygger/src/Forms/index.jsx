@@ -6,8 +6,9 @@ import { useAuth } from "../context/auth-context";
 import NewFormPage from "./NewFormPage";
 import { FormsListPage } from "./FormsListPage";
 import { FormPage } from "./FormPage";
-import { CustomComponents, I18nProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
 import Components from "formiojs/components/Components";
+import I18nProvider from "../context/i18n";
 
 const useLoadingStyles = makeStyles({
   root: {

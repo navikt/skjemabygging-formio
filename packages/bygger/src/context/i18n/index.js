@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { mapTranslationsToFormioI18nObject } from "./translationsMapper";
+import { mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components/src/context/languages/translationsMapper";
 
 export const supportedLanguages = ["nb-NO", "nn-NO", "en", "pl"];
 export const languagesInNorwegian = {
