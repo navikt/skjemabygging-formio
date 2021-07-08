@@ -43,8 +43,8 @@ spec:
       value: {{dekorator-url}}
     - name: FOERSTESIDE_URL
       value: {{foersteside-url}}
-    - name: USE_FORMIO_API
-      value: {{use-formio-api}}
+    - name: FORMS_SOURCE
+      value: {{forms-source}}
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}

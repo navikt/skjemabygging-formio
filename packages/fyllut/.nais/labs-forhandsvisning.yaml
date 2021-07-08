@@ -6,6 +6,6 @@ foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-host: www.nav.no
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
+forms-source: "formioapi"
 secrets:
-  - "formio"
-use-formio-api: "yes"
+  - formio
