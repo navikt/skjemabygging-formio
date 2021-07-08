@@ -6,8 +6,10 @@ const {
   createDummyDataGrid,
   createDummyEmail,
   createDummyHTMLElement,
+  createDummyAlertstripe,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
+  createDummySelectboxes,
   createDummyTextfield,
   createFormObject,
   createPanelObject,
@@ -83,9 +85,36 @@ describe("When handling component", () => {
     });
   });
   describe("htmlelement", () => {
-    it("is filtered away", () => {
+    it("is added if it contains content for PDF", () => {
+      const actual = handleComponent(
+        createDummyHTMLElement("HTML", "", "contentForPdf"),
+        dummySubmission,
+        [],
+        mockedTranslate()
+      );
+      expect(actual.find((component) => component.type === "htmlelement").value).toBe("contentForPdf");
+    });
+
+    it("is filtered out if it has no content for PDF", () => {
       const actual = handleComponent(createDummyHTMLElement(), dummySubmission, [], mockedTranslate());
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
+    });
+  });
+
+  describe("Alertstripe", () => {
+    it("is added if it contains content for PDF", () => {
+      const actual = handleComponent(
+        createDummyAlertstripe("HTML", "contentForPdf"),
+        dummySubmission,
+        [],
+        mockedTranslate()
+      );
+      expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
+    });
+
+    it("is filtered out if it has no content for PDF", () => {
+      const actual = handleComponent(createDummyAlertstripe(), dummySubmission, [], mockedTranslate());
+      expect(actual.find((component) => component.type === "alertstripe")).toBeUndefined();
     });
   });
 
@@ -192,6 +221,36 @@ describe("When handling component", () => {
       const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
       expect(actualNavSkjemagruppe).toBeDefined();
       expect(actualNavSkjemagruppe.label).toEqual("NavSkjemagruppe-legend");
+    });
+  });
+
+  describe("Selectboxes", () => {
+    it("adds each option that is selected", () => {
+      const actual = handleComponent(
+        createDummySelectboxes(),
+        { data: { selectboxes: { milk: true, bread: false, juice: true } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([
+        {
+          label: "Selectboxes",
+          key: "selectboxes",
+          type: "selectboxes",
+          value: ["Milk", "Juice"],
+        },
+      ]);
+    });
+    it("does not add anything if no options are selected", () => {
+      const actual = handleComponent(
+        createDummySelectboxes(),
+        { data: { selectboxes: { milk: false, bread: false, juice: false } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([]);
     });
   });
 

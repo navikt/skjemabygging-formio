@@ -31,6 +31,20 @@ const createDummyRadioPanel = (
   values,
 });
 
+const createDummySelectboxes = (
+  label = "Selectboxes",
+  values = [
+    { label: "Milk", value: "milk" },
+    { label: "Bread", value: "bread" },
+    { label: "Juice", value: "juice" },
+  ]
+) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "selectboxes",
+  values,
+});
+
 const createDummyContentElement = (label = "Content", html) => ({
   label,
   key: keyFromLabel(label),
@@ -38,11 +52,19 @@ const createDummyContentElement = (label = "Content", html) => ({
   html,
 });
 
-const createDummyHTMLElement = (label = "HTMLelement", content) => ({
+const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = "") => ({
   label,
   key: keyFromLabel(label),
   type: "htmlelement",
+  contentForPdf,
   content,
+});
+
+const createDummyAlertstripe = (label = "Alertstripe", contentForPdf = "") => ({
+  label,
+  key: keyFromLabel(label),
+  type: "alertstripe",
+  contentForPdf,
 });
 
 const createDummyContainerElement = (label = "Container", components, hideLabel) => ({
@@ -90,8 +112,10 @@ export default {
   createDummyTextfield,
   createDummyEmail,
   createDummyRadioPanel,
+  createDummySelectboxes,
   createDummyContentElement,
   createDummyHTMLElement,
+  createDummyAlertstripe,
   createDummyContainerElement,
   createDummyNavSkjemagruppe,
   createDummyDataGrid,

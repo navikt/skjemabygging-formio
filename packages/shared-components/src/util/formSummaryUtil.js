@@ -130,6 +130,42 @@ function handleFieldSet(component, submission, formSummaryObject, parentContaine
   ];
 }
 
+function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label, type, values } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  const value = values.filter((checkbox) => submissionValue[checkbox.value] === true).map((checkbox) => checkbox.label);
+  if (Array.isArray(value) && value.length === 0) {
+    return formSummaryObject;
+  }
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key,
+      type,
+      value,
+    },
+  ];
+}
+
+function handleHtmlElement(component, formSummaryObject, parentContainerKey) {
+  const { key, contentForPdf, type } = component;
+  if (contentForPdf) {
+    const componentKey = createComponentKey(parentContainerKey, key);
+    return [
+      ...formSummaryObject,
+      {
+        label: "Vær oppmerksom på",
+        key: componentKey,
+        type,
+        value: contentForPdf,
+      },
+    ];
+  }
+  return formSummaryObject;
+}
+
 function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -160,12 +196,16 @@ export function handleComponent(
       return handlePanel(component, submission, formSummaryObject, parentContainerKey, translate);
     case "button":
     case "content":
-    case "htmlelement":
       return formSummaryObject;
+    case "htmlelement":
+    case "alertstripe":
+      return handleHtmlElement(component, formSummaryObject, parentContainerKey);
     case "container":
       return handleContainer(component, submission, formSummaryObject, translate);
     case "datagrid":
       return handleDataGrid(component, submission, formSummaryObject, translate);
+    case "selectboxes":
+      return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case "fieldset":
     case "navSkjemagruppe":
       return handleFieldSet(component, submission, formSummaryObject, parentContainerKey, translate);

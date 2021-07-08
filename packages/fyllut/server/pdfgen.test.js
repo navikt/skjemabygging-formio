@@ -426,6 +426,49 @@ describe("generating doc definition", () => {
     });
   });
 
+  describe("Selectboxes", () => {
+    const createSelectboxesSubmission = (answers) => ({
+      state: "submitted",
+      data: { flervalg: answers },
+    });
+
+    const createSelectboxesFormDefinition = (values) => ({
+      name: "testSelecebox",
+      components: [
+        {
+          type: "selectboxes",
+          key: "flervalg",
+          label: "Flervalg",
+          input: true,
+          values: values.map((value) => ({ label: value, value: value.toLowerCase() })),
+        },
+      ],
+    });
+
+    it("adds a single list item if one option is selected", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: false });
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([["Flervalg", { ul: ["Sugar"] }]]);
+    });
+
+    it("adds multiple list items if more than one option is selected", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: true });
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([["Flervalg", { ul: ["Sugar", "Pepper"] }]]);
+    });
+
+    it("does not add anything if no options are selected", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: false, salt: false, pepper: false });
+      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      expect(tableDef.table).toBeUndefined();
+    });
+  });
+
   describe("PdfgenPapir", () => {
     it("generates with signature field", () => {
       const submission = { data: {}, metadata: {} };

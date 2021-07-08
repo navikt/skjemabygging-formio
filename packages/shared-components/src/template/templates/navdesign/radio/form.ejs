@@ -1,3 +1,4 @@
+{% if (!ctx.component.isNavCheckboxPanel) { %}
 <div class="form-radio radio" role="group" aria-labelledby="{{ctx.component.key}}-label" aria-describedby="{{ctx.component.key}}-error">
   {% ctx.values.forEach(function(item) { %}
   <div class="form-check{{ctx.inline ? '-inline' : ''}}" ref="wrapper">
@@ -26,3 +27,38 @@
   </div>
   {% }) %}
 </div>
+{% } %}
+{% if (ctx.component.isNavCheckboxPanel) { %}
+<fieldset class="skjemagruppe inputPanelGruppe">
+  <legend class="skjemagruppe__legend">{{ctx.component.label}}</legend>
+  {% if (ctx.component.description && ctx.component.descriptionPosition !== "above" ) { %}
+    <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
+  {% } %}
+  <div class="inputPanelGruppe__inner">
+    {% ctx.values.forEach(function(item) { %}
+      <label class="inputPanel checkboksPanel{{item.disabled ? ' inputPanel--disabled' : ''}} {{ctx.component.fieldSize}}{{!ctx.component.fieldSize ? 'input--xxl' : ''}}" ref="wrapper">
+        <input
+          ref="input"
+          type="checkbox"
+          id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+          class="inputPanel__field sr-only"
+          name="data[{{ctx.key}}][{{item.value}}]"
+          {% for (var attr in ctx.input.attr) { %}
+            {{attr}}="{{ctx.input.attr[attr]}}"
+          {% } %}
+          aria-checked="{{ctx.value[item.value] === true}}"
+          aria-describedby="{{ctx.key}}-error"
+          value="{{item.value}}"
+          {% if (ctx.value[item.value] === true) { %}
+            checked
+          {% } %}
+          {% if (item.disabled) { %}
+            disabled
+          {% } %}
+        />
+        <span class="inputPanel__label">{{ctx.t(item.label)}}</span>
+      </label>
+    {% }) %}
+  </div>
+</fieldset>
+{% } %}

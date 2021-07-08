@@ -639,6 +639,7 @@ const builderPalett = {
           key: "selectboxes",
           fieldSize: "input--xxl",
           input: true,
+          isNavCheckboxPanel: true,
           clearOnHide: true,
           validate: {
             required: true,

@@ -1,16 +1,17 @@
 import Fieldset from "formiojs/components/fieldset/Fieldset";
-import FieldsetForm from "formiojs/components/fieldset/Fieldset.form";
+import NestedComponentForm from "formiojs/components/_classes/nested/NestedComponent.form";
 import FieldsetDisplayForm from "formiojs/components/fieldset/editForm/Fieldset.edit.display";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import { descriptionPositionField } from "./fields/descriptionPositionField";
 
 class Skjemagruppe extends Fieldset {
   static editForm(...extend) {
-    return FieldsetForm([
+    return NestedComponentForm([
       {
-        label: "Display",
         key: "display",
         components: [
-          ...FieldsetDisplayForm,
+          ...FieldsetDisplayForm.filter((field) => field.key !== "description"),
+          descriptionPositionField,
           {
             key: "tooltip",
             ignore: true,
