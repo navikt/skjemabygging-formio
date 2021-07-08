@@ -53,6 +53,7 @@ const firstNameSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -66,6 +67,7 @@ const surnameSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -209,6 +211,7 @@ const borDuINorgeSchema = (keyPostfix = "") => ({
   type: "radiopanel",
   key: `borDuINorge${keyPostfix}`,
   input: true,
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -370,6 +373,7 @@ const builderPalett = {
           spellcheck: false,
           dataGridLabel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -475,6 +479,7 @@ const builderPalett = {
           dataGridLabel: true,
           spellcheck: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -492,6 +497,7 @@ const builderPalett = {
           input: true,
           dataGridLabel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -536,6 +542,7 @@ const builderPalett = {
           clearOnHide: true,
           fieldSize: "input--xxl",
           dataGridLabel: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -553,6 +560,7 @@ const builderPalett = {
           input: true,
           dataGridLabel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -571,6 +579,7 @@ const builderPalett = {
           dataGridLabel: true,
           spellcheck: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -589,6 +598,7 @@ const builderPalett = {
           clearOnHide: true,
           suffix: "%",
           fieldSize: "input--xs",
+          validateOn: "blur",
           validate: {
             required: true,
             min: 0,
@@ -624,6 +634,7 @@ const builderPalett = {
           input: true,
           hideLabel: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -641,6 +652,7 @@ const builderPalett = {
           input: true,
           isNavCheckboxPanel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -656,6 +668,7 @@ const builderPalett = {
           key: "select",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -674,6 +687,7 @@ const builderPalett = {
           input: true,
           hideLabel: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -699,6 +713,7 @@ const builderPalett = {
           key: "vedlegg",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -734,6 +749,7 @@ const builderPalett = {
           fieldSize: "input--xxl",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
         },
       },
       tags: {
@@ -747,6 +763,7 @@ const builderPalett = {
           fieldSize: "input--xxl",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
         },
       },
       signature: {
@@ -759,6 +776,7 @@ const builderPalett = {
           key: "signature",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
           footer: " ", // Trenger en blank space for å unngå at det kommer inn default 'sign above' tekst i dette feltet.
         },
       },
@@ -772,6 +790,7 @@ const builderPalett = {
           key: "survey",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
         },
       },
     },
