@@ -44,6 +44,8 @@ spec:
     - name: FOERSTESIDE_URL
       value: {{foersteside-url}}
     - name: USE_FORMIO_API
-      value: {{use-formio-api}}
+      value: "yes"
   envFrom:
-    - secret: formio
+  {{#each secrets as |secret|}}
+    - secret: {{secret}}
+  {{/each}}
