@@ -3,7 +3,7 @@ import {NaisCluster} from "./nais-cluster.js"
 const config = {
   sentryDsn: process.env.REACT_APP_SENTRY_DSN,
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
-  useFormioApi: process.env.USE_FORMIO_API === 'true',
+  useFormioApi: process.env.USE_FORMIO_API === 'yes',
   skjemaDir: process.env.SKJEMA_DIR,
   skjemaUrl: process.env.SKJEMA_URL,
   translationDir: process.env.TRANSLATION_DIR,

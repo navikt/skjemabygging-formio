@@ -8,4 +8,4 @@ dekorator-host: www.nav.no
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 secrets:
   - sentry-dsn
-use-formio-api: "false"
+use-formio-api: "no"
