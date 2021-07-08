@@ -87,7 +87,7 @@ describe("When handling component", () => {
   describe("htmlelement", () => {
     it("is added if it contains content for PDF", () => {
       const actual = handleComponent(
-        createDummyHTMLElement("HTML", "contentForPdf"),
+        createDummyHTMLElement("HTML", "", "contentForPdf"),
         dummySubmission,
         [],
         mockedTranslate()

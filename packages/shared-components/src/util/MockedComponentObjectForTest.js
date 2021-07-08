@@ -52,7 +52,7 @@ const createDummyContentElement = (label = "Content", html) => ({
   html,
 });
 
-const createDummyHTMLElement = (label = "HTMLelement", contentForPdf = "", content) => ({
+const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = "") => ({
   label,
   key: keyFromLabel(label),
   type: "htmlelement",
