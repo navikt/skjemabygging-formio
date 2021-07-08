@@ -156,7 +156,7 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey) {
     return [
       ...formSummaryObject,
       {
-        label: "",
+        label: "Vær oppmerksom på",
         key: componentKey,
         type,
         value: contentForPdf,
