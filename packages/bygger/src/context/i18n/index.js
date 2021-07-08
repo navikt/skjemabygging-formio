@@ -21,15 +21,17 @@ function I18nProvider({ children, loadTranslations }) {
   const [translations, setTranslations] = useState({});
   const [translationsForNavForm, setTranslationsForNavForm] = useState(null);
   const [currentTranslation, setCurrentTranslation] = useState({});
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!translations || !translationsForNavForm) {
+    if (!translationsLoaded) {
+      setTranslationsLoaded(true);
       loadTranslations().then((translations) => {
         setTranslations(translations);
         setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
       });
     }
-  }, [loadTranslations, translations, translationsForNavForm]);
+  }, [loadTranslations, translations, translationsForNavForm, translationsLoaded]);
 
   const updateCurrentTranslation = (languageCode) => {
     const newTranslation = translations[languageCode] ? translations[languageCode].translations : {};
