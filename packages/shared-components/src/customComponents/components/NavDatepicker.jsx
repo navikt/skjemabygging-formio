@@ -66,7 +66,20 @@ export default class NavDatepicker extends FormioReactComponent {
    * Defines the settingsForm when editing a component in the builder.
    */
   static editForm() {
-    const excludeFromDisplay = ["placeholder", "hidden", "disabled"];
+    const excludeFromDisplay = [
+      "placeholder",
+      "hidden",
+      "disabled",
+      "tooltip",
+      "customClass",
+      "labelPosition",
+      "tabindex",
+      "hideLabel",
+      "autofocus",
+      "tableView",
+      "modalEdit",
+      "unique",
+    ];
 
     return {
       type: "hidden",
@@ -95,7 +108,7 @@ export default class NavDatepicker extends FormioReactComponent {
               label: "Validering",
               key: "validation",
               weight: 20,
-              components: validationEditForm,
+              components: [...validationEditForm.filter((field) => !excludeFromDisplay.includes(field.key))],
             },
             {
               label: "Conditional",

@@ -42,7 +42,7 @@ class AlertStripe extends HTMLElement {
             ],
           },
           {
-            label: "Inline?",
+            label: "Inline",
             type: "navCheckbox",
             key: "isInline",
             input: true,
