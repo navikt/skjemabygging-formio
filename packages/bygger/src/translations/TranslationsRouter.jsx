@@ -2,9 +2,9 @@ import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { TranslationsListPage } from "./TranslationsListPage";
 import NewTranslation from "./NewTranslation";
-import { I18nProvider } from "@navikt/skjemadigitalisering-shared-components";
 import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 import TranslationsByFormPage from "./TranslationsByFormPage";
+import I18nProvider from "../context/i18n";
 
 const TranslationsRouter = ({
   deleteTranslation,

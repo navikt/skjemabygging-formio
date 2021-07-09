@@ -4,7 +4,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { renderHook } from "@testing-library/react-hooks";
 import { NavForm, AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { useForms } from "./hooks/useForms";
+import { useFormioForms } from "./hooks/useFormioForms";
 import { AuthContext } from "./context/auth-context";
 import App from "./App";
 import Formiojs from "formiojs/Formio";
@@ -66,7 +66,7 @@ describe("App", () => {
 
   it("loads all forms in the hook", async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
-      useForms(new Formiojs("http://myproject.example.org"), formStore)
+      useFormioForms(new Formiojs("http://myproject.example.org"), formStore)
     );
     expect(formStore.forms).toEqual(null);
     await waitForNextUpdate();

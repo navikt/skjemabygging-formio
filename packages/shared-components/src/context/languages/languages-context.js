@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
-import { mapTranslationsToFormioI18nObject } from "../i18n/translationsMapper";
+import { mapTranslationsToFormioI18nObject } from "./translationsMapper";
 
 const LanguagesContext = createContext({});
 

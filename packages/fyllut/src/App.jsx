@@ -7,7 +7,7 @@ import {
   FyllUtRouter,
   AmplitudeProvider,
   globalStyles,
-  appStyles
+  appStyles,
 } from "@navikt/skjemadigitalisering-shared-components";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";

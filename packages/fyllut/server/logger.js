@@ -4,6 +4,6 @@ export const logger = winston.createLogger({
     new winston.transports.Console({
       timestamp: true,
       format: winston.format.json(),
-    })
-  ]
+    }),
+  ],
 });
