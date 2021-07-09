@@ -457,6 +457,7 @@ const builderPalett = {
           dataGridLabel: true,
           validateOn: "blur",
           validate: {
+            custom: "valid = instance.validateDatePicker(input, component.mustBeAfter, data);",
             required: true,
           },
         },

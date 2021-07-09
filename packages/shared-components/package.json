@@ -57,6 +57,7 @@
     "amplitude-js": "7.3.3",
     "classnames": "2.2.6",
     "file-saver": "2.0.5",
+    "moment": "^2.29.1",
     "nav-datovelger": "^6.2.1",
     "nav-frontend-alertstriper": "^3.0.23",
     "nav-frontend-alertstriper-style": "^2.0.17",

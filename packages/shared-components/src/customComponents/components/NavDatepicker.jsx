@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Datovelger } from "nav-datovelger";
+import moment from "moment";
 
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
+import { getContextComponents } from "formiojs/utils/utils";
 
 import FormioReactComponent from "../FormioReactComponent.jsx";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
@@ -58,6 +60,12 @@ export default class NavDatepicker extends FormioReactComponent {
     };
   }
 
+  validateDatePicker(input, mustBeAfterComponentKey, submissionData) {
+    return mustBeAfterComponentKey && input
+      ? moment(submissionData[mustBeAfterComponentKey]) < moment(input) || "Til-dato må være senere enn fra-dato"
+      : true;
+  }
+
   static schema() {
     return FormioReactComponent.schema(FormBuilderOptions.builder.datoOgTid.components.datoVelger.schema);
   }
@@ -95,7 +103,22 @@ export default class NavDatepicker extends FormioReactComponent {
               label: "Validering",
               key: "validation",
               weight: 20,
-              components: validationEditForm,
+              components: [
+                {
+                  type: "select",
+                  input: true,
+                  label: "Dato må være etter",
+                  key: "mustBeAfter",
+                  dataSrc: "custom",
+                  valueProperty: "value",
+                  data: {
+                    custom(context) {
+                      return getContextComponents(context);
+                    },
+                  },
+                },
+                ...validationEditForm,
+              ],
             },
             {
               label: "Conditional",
