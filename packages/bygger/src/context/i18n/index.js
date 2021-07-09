@@ -25,7 +25,7 @@ function I18nProvider({ children, loadTranslations }) {
         setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
       });
     }
-  }, [loadTranslations, translations, translationsForNavForm, translationsLoaded]);
+  }, [loadTranslations, translationsLoaded]);
 
   const updateCurrentTranslation = (languageCode) => {
     const newTranslation = translations[languageCode] ? translations[languageCode].translations : {};
