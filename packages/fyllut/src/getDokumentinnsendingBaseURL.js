@@ -4,7 +4,7 @@ export default function getDokumentinnsendingBaseURL(naisClusterName) {
 
   if (naisClusterName === "prod-gcp") {
     return dokumentinnsendingProdURL;
-  } else if (naisClusterName === "dev-gcp") {
+  } else if (naisClusterName === "dev-gcp" || naisClusterName === "labs-gcp") {
     return dokumentinnsendingDevURL;
   } else {
     console.log(`Can't detect naiscluster, defaulting to ${dokumentinnsendingProdURL}`);

@@ -1,11 +1,11 @@
-app-name: skjemautfylling
+app-name: skjemautfylling-forhandsvisning
 ingresses:
-  - "https://skjemautfylling-formio.labs.nais.io/fyllut"
+  - "https://skjemaforhandsvisning.labs.nais.io/fyllut"
 image: {{image}}
 foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-host: www.nav.no
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
-forms-source: "static"
+forms-source: "formioapi"
 secrets:
-  - sentry-dsn
+  - formio
