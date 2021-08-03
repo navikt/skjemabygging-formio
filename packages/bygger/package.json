@@ -63,7 +63,7 @@
     "start": "cross-env-shell PORT=3000 EXTEND_ESLINT=true craco start",
     "build": "cross-env-shell EXTEND_ESLINT=true craco build",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\" --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
-    "test:coverage": "craco test --coverage --watchAll  --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\" --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
+    "test:coverage": "craco test --coverage --watchAll --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\" --env=jest-environment-jsdom-sixteen && echo Sjekk package.json: jest-environment-jsdom-sixteen kan sannsynligvis fjernes ved react-scripts@4.x.x",
     "eject": "craco eject"
   },
   "eslintConfig": {
