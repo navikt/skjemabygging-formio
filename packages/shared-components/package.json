@@ -45,7 +45,6 @@
     "css-loader": "^5.2.6",
     "ejs-loader": "^0.5.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.0.4",
     "less-loader": "^9.0.0",
     "style-loader": "^2.0.0",
     "webpack": "4.44.2",
@@ -72,7 +71,8 @@
     "nav-frontend-stegindikator-style": "^1.0.31",
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
-    "react-day-picker": "^7.4.8"
+    "react-day-picker": "^7.4.8",
+    "jest": "^27.0.4"
   },
   "peerDependencies": {
     "@material-ui/styles": "4.10.0",
