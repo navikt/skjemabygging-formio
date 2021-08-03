@@ -53,6 +53,7 @@ const firstNameSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  autocomplete: "given-name",
   validateOn: "blur",
   validate: {
     required: true,
@@ -67,6 +68,7 @@ const surnameSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  autocomplete: "family-name",
   validateOn: "blur",
   validate: {
     required: true,
@@ -95,6 +97,7 @@ const gateadresseSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   validateOn: "blur",
+  autocomplete: "street-address",
   clearOnHide: true,
   validate: {
     required: true,
@@ -110,6 +113,7 @@ const postnrSchema = (keyPostfix = "") => ({
   dataGridLabel: true,
   spellcheck: false,
   validateOn: "blur",
+  autocomplete: "postal-code",
   clearOnHide: true,
   validate: {
     required: true,
@@ -126,6 +130,7 @@ const utenlandskPostkodeSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   spellcheck: false,
+  autocomplete: "postal-code",
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -141,6 +146,7 @@ const poststedSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  autocomplete: "address-level2",
   validateOn: "blur",
   validate: {
     required: true,
@@ -154,6 +160,7 @@ const landSchema = (keyPostfix = "") => ({
   fieldSize: "input--xxl",
   input: true,
   dataGridLabel: true,
+  autocomplete: "country-name",
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -169,6 +176,7 @@ const epostSchema = () => ({
   input: true,
   dataGridLabel: true,
   validateOn: "blur",
+  autocomplete: "email",
   clearOnHide: true,
   spellcheck: false,
   validate: {
@@ -185,6 +193,7 @@ const telefonSchema = (keyPostfix = "") => ({
   dataGridLabel: true,
   inputMask: false,
   spellcheck: false,
+  autocomplete: "tel",
   validateOn: "blur",
   clearOnHide: true,
   validate: {
