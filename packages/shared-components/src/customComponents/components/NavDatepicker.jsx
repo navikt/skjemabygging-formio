@@ -60,10 +60,19 @@ export default class NavDatepicker extends FormioReactComponent {
     };
   }
 
-  validateDatePicker(input, mustBeAfterComponentKey, submissionData) {
-    return mustBeAfterComponentKey && input
-      ? moment(submissionData[mustBeAfterComponentKey]) < moment(input) || "Til-dato må være senere enn fra-dato"
-      : true;
+  isAfterBeforeDate(beforeDate, input, mayBeEqual) {
+    return mayBeEqual ? beforeDate <= input : beforeDate < input;
+  }
+
+  validateDatePicker(input, beforeDateInputKey, mayBeEqual, submissionData) {
+    if (input && beforeDateInputKey && submissionData[beforeDateInputKey]) {
+      const beforeDateAsMoment = moment(submissionData[beforeDateInputKey]);
+      const beforeDateAsString = beforeDateAsMoment.format("DD.MM.YYYY");
+      if(!this.isAfterBeforeDate(beforeDateAsMoment, moment(input), mayBeEqual)) {
+        return mayBeEqual ? `Datoen kan ikke være før fra-dato (${beforeDateAsString})` : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
+      }
+    }
+    return true;
   }
 
   static schema() {
@@ -105,17 +114,30 @@ export default class NavDatepicker extends FormioReactComponent {
               weight: 20,
               components: [
                 {
-                  type: "select",
-                  input: true,
-                  label: "Dato må være etter",
-                  key: "mustBeAfter",
-                  dataSrc: "custom",
-                  valueProperty: "value",
-                  data: {
-                    custom(context) {
-                      return getContextComponents(context);
+                  type: "panel",
+                  title: "Fra-til-dato",
+                  components: [
+                    {
+                      type: "select",
+                      input: true,
+                      label: "Datofelt for fra-dato",
+                      key: "beforeDateInputKey",
+                      dataSrc: "custom",
+                      valueProperty: "value",
+                      data: {
+                        custom(context) {
+                          return getContextComponents(context);
+                        },
+                      },
                     },
-                  },
+                    {
+                      type: "checkbox",
+                      label: "Kan være lik",
+                      key: "mayBeEqual",
+                      defaultValue: false,
+                      input: true,
+                    }
+                  ]
                 },
                 ...validationEditForm,
               ],
