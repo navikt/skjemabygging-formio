@@ -64,14 +64,42 @@ export default class NavDatepicker extends FormioReactComponent {
     return mayBeEqual ? beforeDate <= input : beforeDate < input;
   }
 
-  validateDatePicker(input, beforeDateInputKey, mayBeEqual, submissionData) {
-    if (input && beforeDateInputKey && submissionData[beforeDateInputKey]) {
+  validateDatePicker(input, submissionData, beforeDateInputKey, mayBeEqual, relativeEarliestAllowedDate, relativeLatestAllowedDate) {
+    if (!input) {
+      return true;
+    }
+
+    const inputAsMoment = moment(input);
+
+    if (beforeDateInputKey && submissionData[beforeDateInputKey]) {
       const beforeDateAsMoment = moment(submissionData[beforeDateInputKey]);
       const beforeDateAsString = beforeDateAsMoment.format("DD.MM.YYYY");
-      if(!this.isAfterBeforeDate(beforeDateAsMoment, moment(input), mayBeEqual)) {
+      if(!this.isAfterBeforeDate(beforeDateAsMoment, inputAsMoment, mayBeEqual)) {
         return mayBeEqual ? `Datoen kan ikke være før fra-dato (${beforeDateAsString})` : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
       }
     }
+
+    const today = moment();
+    const earliestAllowedDate = !!relativeEarliestAllowedDate ? today.add(relativeEarliestAllowedDate, 'd') : undefined;
+    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
+    const latestAllowedDate = !!relativeLatestAllowedDate ? today.add(relativeLatestAllowedDate, 'd') : undefined;
+    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
+    console.log("Today: ", today.format("DD.MM.YYYY"));
+    console.log("Earliest: ", earliestAllowedDateAsString);
+    console.log("Latest: ", latestAllowedDateAsString);
+
+    if(earliestAllowedDate && latestAllowedDate) {
+      return inputAsMoment <= earliestAllowedDate || latestAllowedDate <= inputAsMoment ? `Datoen må være mellom ${earliestAllowedDateAsString} og ${latestAllowedDateAsString}` : true;
+    }
+
+    if(earliestAllowedDate && inputAsMoment <= earliestAllowedDate) {
+      return `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString}`;
+    }
+
+    if(latestAllowedDate && latestAllowedDate <= inputAsMoment) {
+      return `Datoen kan ikke være senere enn ${latestAllowedDateAsString}`;
+    }
+
     return true;
   }
 
@@ -138,6 +166,18 @@ export default class NavDatepicker extends FormioReactComponent {
                       input: true,
                     }
                   ]
+                },
+                {
+                  type: "number",
+                  label: "Dato kan ikke være tidligere enn (dagens dato pluss x dager)",
+                  key: "earliestAllowedDate",
+                  input: true,
+                },
+                {
+                  type: "number",
+                  label: "Dato kan ikke være senere enn (dagens dato pluss x dager)",
+                  key: "latestAllowedDate",
+                  input: true,
                 },
                 ...validationEditForm,
               ],
