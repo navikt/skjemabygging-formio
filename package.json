@@ -15,7 +15,8 @@
     "start": "lerna run start",
     "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start",
     "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start",
-    "test": "cross-env-shell CI=true lerna run --stream test"
+    "test": "cross-env-shell CI=true lerna run --stream test",
+    "test:coverage": "cross-env-shell CI=true lerna run --stream test:coverage"
   },
   "devDependencies": {
     "@material-ui/styles": "4.10.0",
