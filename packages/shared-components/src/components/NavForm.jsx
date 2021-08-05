@@ -25,7 +25,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
-import { Form as FormioForm } from "formiojs";
+import { Form as FormioForm, Utils } from "formiojs";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { styled } from "@material-ui/styles";
@@ -33,6 +33,9 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
 import { overrideFormioWizardNextPageAndSubmit } from "../formio-overrides/wizard-overrides";
+import { checkConditionOverride } from "../formio-overrides/conditional-overrides";
+
+Utils.checkCondition = checkConditionOverride;
 
 class NavForm extends Component {
   static propTypes = {

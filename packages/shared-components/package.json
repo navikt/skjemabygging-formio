@@ -50,6 +50,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.0.4",
     "less-loader": "^9.0.0",
+    "lodash": "^4.17.21",
     "style-loader": "^2.0.0",
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
