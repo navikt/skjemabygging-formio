@@ -38,6 +38,43 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
   );
 };
 
+function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
+  return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
+}
+
+export function validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
+  if(isCorrectOrder(beforeDate, inputDate, mayBeEqual)) {
+    return true;
+  }
+  const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
+  return mayBeEqual ? `Datoen kan ikke være tidligere enn fra-dato (${beforeDateAsString})` : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
+}
+
+export function validateEarliestAndLatestDate(earliestFromToday, latestFromToday, inputDate) {
+  const earliestAllowedDate = earliestFromToday !== undefined ? moment().add(earliestFromToday, 'd') : undefined;
+  const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
+  const latestAllowedDate = latestFromToday !== undefined ? moment().add(latestFromToday, 'd') : undefined;
+  const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
+
+  if(earliestAllowedDate && latestAllowedDate) {
+    if(!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)){
+      return true;
+    }
+    return  inputDate.isBefore(earliestAllowedDate, 'd') || inputDate.isAfter(latestAllowedDate, 'd')
+      ? `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString} eller senere enn ${latestAllowedDateAsString}` : true;
+  }
+
+  if(earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, 'd')) {
+    return `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString}`;
+  }
+
+  if(latestAllowedDate && inputDate.isAfter(latestAllowedDate, 'd')) {
+    return `Datoen kan ikke være senere enn ${latestAllowedDateAsString}`;
+  }
+
+  return true;
+}
+
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
   reactElement = undefined;
@@ -60,41 +97,17 @@ export default class NavDatepicker extends FormioReactComponent {
     };
   }
 
-  isAfterBeforeDate(beforeDate, input, mayBeEqual) {
-    return mayBeEqual ? beforeDate.isSameOrBefore(input, 'd') : beforeDate.isBefore(input, 'd');
-  }
-
   validateDatePicker(input, submissionData, beforeDateInputKey, mayBeEqual, relativeEarliestAllowedDate, relativeLatestAllowedDate) {
     if (!input) {
       return true;
     }
 
-    const inputAsMoment = moment(input);
-
     if (beforeDateInputKey && submissionData[beforeDateInputKey]) {
-      const beforeDateAsMoment = moment(submissionData[beforeDateInputKey]);
-      const beforeDateAsString = beforeDateAsMoment.format("DD.MM.YYYY");
-      if(!this.isAfterBeforeDate(beforeDateAsMoment, inputAsMoment, mayBeEqual)) {
-        return mayBeEqual ? `Datoen kan ikke være før fra-dato (${beforeDateAsString})` : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
-      }
+      return validateToAndFromDate(moment(submissionData[beforeDateInputKey]), moment(input), mayBeEqual);
     }
 
-    const earliestAllowedDate = relativeEarliestAllowedDate !== undefined ? moment().add(relativeEarliestAllowedDate, 'd') : undefined;
-    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
-    const latestAllowedDate = relativeLatestAllowedDate !== undefined ? moment().add(relativeLatestAllowedDate, 'd') : undefined;
-    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
-
-    if(earliestAllowedDate && latestAllowedDate) {
-      return inputAsMoment.isBefore(earliestAllowedDate, 'd') || inputAsMoment.isAfter(latestAllowedDate, 'd')
-        ? `Datoen må være mellom ${earliestAllowedDateAsString} og ${latestAllowedDateAsString}` : true;
-    }
-
-    if(earliestAllowedDate && inputAsMoment.isBefore(earliestAllowedDate, 'd')) {
-      return `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString}`;
-    }
-
-    if(latestAllowedDate && inputAsMoment.isAfter(latestAllowedDate, 'd')) {
-      return `Datoen kan ikke være senere enn ${latestAllowedDateAsString}`;
+    if (relativeEarliestAllowedDate !== undefined || relativeLatestAllowedDate !== undefined) {
+      return validateEarliestAndLatestDate(relativeEarliestAllowedDate, relativeLatestAllowedDate, moment(input));
     }
 
     return true;
