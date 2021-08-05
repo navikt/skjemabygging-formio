@@ -1,4 +1,5 @@
-import _ from "lodash";
+import cloneDeep from "lodash.cloneDeep";
+import set from "lodash.set";
 import { Utils } from "formiojs";
 
 const {
@@ -39,7 +40,7 @@ function getRow(component, row, instance, conditional) {
   const condition = conditional || component.conditional;
   // If no component's instance passed (happens only in 6.x server), calculate its path based on the schema
   if (!instance) {
-    instance = _.cloneDeep(component);
+    instance = cloneDeep(component);
     setPathToComponentAndPerentSchema(instance);
   }
   const dataParent = getDataParentComponent(instance);
@@ -47,7 +48,7 @@ function getRow(component, row, instance, conditional) {
     dataParent && dataParent.path ? getComponentPathWithoutIndicies(dataParent.path) : null;
   if (dataParent && condition.when && condition.when.startsWith(parentPathWithoutIndicies)) {
     const newRow = {};
-    _.set(newRow, parentPathWithoutIndicies, row);
+    set(newRow, parentPathWithoutIndicies, row);
     row = newRow;
   }
 
