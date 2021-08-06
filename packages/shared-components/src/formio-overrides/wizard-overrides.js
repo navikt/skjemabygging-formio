@@ -105,6 +105,16 @@ Wizard.prototype.attachHeader = function () {
   addPageSwitchFunction(this.getNextPage(), nextRefId);
 };
 
+Wizard.prototype.detachHeader = function () {
+  this.refs[`${this.wizardKey}-link`].forEach((link) => {
+    this.removeEventListener(link, "click");
+  });
+  const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
+  this.removeEventListener(previousButton, "click");
+  const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
+  this.removeEventListener(nextButton, "click");
+};
+
 function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   Wizard.prototype.nextPage = function () {
     return originalNextPage
