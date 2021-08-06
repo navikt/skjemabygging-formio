@@ -106,13 +106,20 @@ Wizard.prototype.attachHeader = function () {
 };
 
 Wizard.prototype.detachHeader = function () {
-  this.refs[`${this.wizardKey}-link`].forEach((link) => {
-    this.removeEventListener(link, "click");
-  });
+  const links = this.refs[`${this.wizardKey}-link`];
+  if (links !== undefined) {
+    links.forEach((link) => {
+      this.removeEventListener(link, "click");
+    });
+  }
   const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
-  this.removeEventListener(previousButton, "click");
+  if (previousButton) {
+    this.removeEventListener(previousButton, "click");
+  }
   const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
-  this.removeEventListener(nextButton, "click");
+  if (nextButton) {
+    this.removeEventListener(nextButton, "click");
+  }
 };
 
 function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
