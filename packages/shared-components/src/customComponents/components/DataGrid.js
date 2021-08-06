@@ -37,6 +37,46 @@ class NavDataGrid extends DataGrid {
             weight: 412,
             input: true,
           },
+          {
+            key: "labelPosition",
+            ignore: true,
+          },
+          {
+            key: "tooltip",
+            ignore: true,
+          },
+          {
+            key: "disabled",
+            ignore: true,
+          },
+          {
+            key: "customClass",
+            ignore: true,
+          },
+          {
+            key: "disabled",
+            ignore: true,
+          },
+          {
+            key: "hidden",
+            ignore: true,
+          },
+          {
+            key: "autofocus",
+            ignore: true,
+          },
+          {
+            key: "tableView",
+            ignore: true,
+          },
+          {
+            key: "modalEdit",
+            ignore: true,
+          },
+          {
+            key: "tabindex",
+            ignore: true,
+          },
         ],
       },
       {
@@ -48,8 +88,69 @@ class NavDataGrid extends DataGrid {
             key: "defaultValue",
             ignore: true,
           },
+          {
+            key: "persistent",
+            ignore: true,
+          },
+
+          {
+            key: "protected",
+            ignore: true,
+          },
+          {
+            key: "dbIndex",
+            ignore: true,
+          },
+          {
+            key: "encrypted",
+            ignore: true,
+          },
+          {
+            key: "redrawOn",
+            ignore: true,
+          },
+          {
+            key: "calculateServer",
+            ignore: true,
+          },
+          {
+            key: "allowCalculateOverride",
+            ignore: true,
+          },
+          {
+            key: "dataType",
+            ignore: true,
+          },
         ],
       },
+      {
+        key: "validation",
+        components: [
+          {
+            key: "unique",
+            ignore: true,
+          },
+          {
+            key: "validateOn",
+            ignore: true,
+          },
+          {
+            key: "unique",
+            ignore: true,
+          },
+        ],
+      },
+      {
+        key: "logic",
+        ignore: true,
+        components: false,
+      },
+      {
+        key: "layout",
+        ignore: true,
+        components: false,
+      },
+
       ...extend,
     ]);
   }

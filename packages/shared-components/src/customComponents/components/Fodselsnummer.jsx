@@ -75,6 +75,42 @@ export default class Fodselsnummer extends TextFieldComponent {
               key: "placeholder",
               ignore: true,
             },
+            {
+              key: "tabindex",
+              ignore: true,
+            },
+            {
+              key: "tooltip",
+              ignore: true,
+            },
+            {
+              key: "customClass",
+              ignore: true,
+            },
+            {
+              key: "hidden",
+              ignore: true,
+            },
+            {
+              key: "hideLabel",
+              ignore: true,
+            },
+            {
+              key: "autofocus",
+              ignore: true,
+            },
+            {
+              key: "disabled",
+              ignore: true,
+            },
+            {
+              key: "tableView",
+              ignore: true,
+            },
+            {
+              key: "modalEdit",
+              ignore: true,
+            },
           ],
         },
         {
@@ -84,6 +120,16 @@ export default class Fodselsnummer extends TextFieldComponent {
         },
         {
           key: "validation",
+          ignore: true,
+          components: false,
+        },
+        {
+          key: "logic",
+          ignore: true,
+          components: false,
+        },
+        {
+          key: "layout",
           ignore: true,
           components: false,
         },

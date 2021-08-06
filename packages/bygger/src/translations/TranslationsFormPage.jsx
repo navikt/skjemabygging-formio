@@ -53,6 +53,8 @@ const FormItem = ({ currentTranslation, setTranslations, text, type, languageCod
       setGlobalTranslation(currentTranslation[text].value);
     } else {
       setGlobalTranslation("");
+      setHasGlobalTranslation(false);
+      setShowGlobalTranslation(false);
     }
   }, [currentTranslation, setTranslations, text]);
 

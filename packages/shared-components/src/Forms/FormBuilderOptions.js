@@ -53,6 +53,8 @@ const firstNameSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  autocomplete: "given-name",
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -66,6 +68,8 @@ const surnameSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  autocomplete: "family-name",
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -93,6 +97,7 @@ const gateadresseSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   validateOn: "blur",
+  autocomplete: "street-address",
   clearOnHide: true,
   validate: {
     required: true,
@@ -108,6 +113,7 @@ const postnrSchema = (keyPostfix = "") => ({
   dataGridLabel: true,
   spellcheck: false,
   validateOn: "blur",
+  autocomplete: "postal-code",
   clearOnHide: true,
   validate: {
     required: true,
@@ -124,6 +130,7 @@ const utenlandskPostkodeSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   spellcheck: false,
+  autocomplete: "postal-code",
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -139,6 +146,7 @@ const poststedSchema = (keyPostfix = "") => ({
   input: true,
   dataGridLabel: true,
   clearOnHide: true,
+  autocomplete: "address-level2",
   validateOn: "blur",
   validate: {
     required: true,
@@ -152,6 +160,7 @@ const landSchema = (keyPostfix = "") => ({
   fieldSize: "input--xxl",
   input: true,
   dataGridLabel: true,
+  autocomplete: "country-name",
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -167,6 +176,7 @@ const epostSchema = () => ({
   input: true,
   dataGridLabel: true,
   validateOn: "blur",
+  autocomplete: "email",
   clearOnHide: true,
   spellcheck: false,
   validate: {
@@ -183,6 +193,7 @@ const telefonSchema = (keyPostfix = "") => ({
   dataGridLabel: true,
   inputMask: false,
   spellcheck: false,
+  autocomplete: "tel",
   validateOn: "blur",
   clearOnHide: true,
   validate: {
@@ -209,6 +220,7 @@ const borDuINorgeSchema = (keyPostfix = "") => ({
   type: "radiopanel",
   key: `borDuINorge${keyPostfix}`,
   input: true,
+  validateOn: "blur",
   validate: {
     required: true,
   },
@@ -370,6 +382,7 @@ const builderPalett = {
           spellcheck: false,
           dataGridLabel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -478,6 +491,7 @@ const builderPalett = {
           dataGridLabel: true,
           spellcheck: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -495,6 +509,7 @@ const builderPalett = {
           input: true,
           dataGridLabel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -539,6 +554,7 @@ const builderPalett = {
           clearOnHide: true,
           fieldSize: "input--xxl",
           dataGridLabel: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -556,6 +572,8 @@ const builderPalett = {
           input: true,
           dataGridLabel: true,
           clearOnHide: true,
+          validateOn: "blur",
+          autoExpand: true,
           validate: {
             required: true,
           },
@@ -574,6 +592,7 @@ const builderPalett = {
           dataGridLabel: true,
           spellcheck: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -592,6 +611,7 @@ const builderPalett = {
           clearOnHide: true,
           suffix: "%",
           fieldSize: "input--xs",
+          validateOn: "blur",
           validate: {
             required: true,
             min: 0,
@@ -627,6 +647,7 @@ const builderPalett = {
           input: true,
           hideLabel: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -644,6 +665,7 @@ const builderPalett = {
           input: true,
           isNavCheckboxPanel: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -659,6 +681,7 @@ const builderPalett = {
           key: "select",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -677,6 +700,7 @@ const builderPalett = {
           input: true,
           hideLabel: false,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -702,6 +726,7 @@ const builderPalett = {
           key: "vedlegg",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
           validate: {
             required: true,
           },
@@ -737,6 +762,7 @@ const builderPalett = {
           fieldSize: "input--xxl",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
         },
       },
       tags: {
@@ -750,6 +776,7 @@ const builderPalett = {
           fieldSize: "input--xxl",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
         },
       },
       signature: {
@@ -762,6 +789,7 @@ const builderPalett = {
           key: "signature",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
           footer: " ", // Trenger en blank space for å unngå at det kommer inn default 'sign above' tekst i dette feltet.
         },
       },
@@ -775,6 +803,7 @@ const builderPalett = {
           key: "survey",
           input: true,
           clearOnHide: true,
+          validateOn: "blur",
         },
       },
     },

@@ -2,26 +2,22 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { FormsRouter } from "./Forms";
-import { useForms } from "./hooks/useForms";
+import { useFormioForms } from "./hooks/useFormioForms";
+import { useFormioTranslations } from "./hooks/useFormioTranslations";
 import { UserAlerterContext } from "./userAlerting";
 import LoadingComponent from "./components/LoadingComponent";
 import TranslationsRouter from "./translations/TranslationsRouter";
 
 function AuthenticatedApp({ formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
+  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useFormioForms(formio, store, userAlerter);
   const {
-    forms,
-    onChangeForm,
-    onSave,
-    onCreate,
-    onDelete,
-    onPublish,
     loadGlobalTranslations,
     loadTranslationsForEditPage,
     deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
-  } = useForms(formio, store, userAlerter);
+  } = useFormioTranslations(formio, userAlerter);
 
   const history = useHistory();
   const wrappedCreate = (newForm) => {

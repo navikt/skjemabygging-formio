@@ -1,7 +1,13 @@
 import React from "react";
-import { languagesInOriginalLanguage } from "../i18n/index";
-import LanguageSelector from "../../components/LanguageSelector";
-import { useLanguages } from "./languages-context";
+import LanguageSelector from "./LanguageSelector";
+import { useLanguages } from "../context/languages";
+
+export const languagesInOriginalLanguage = {
+  "nb-NO": "Norsk bokmål",
+  "nn-NO": "Norsk nynorsk",
+  en: "English",
+  pl: "Polskie",
+};
 
 const FyllUtLanguageSelector = () => {
   const { currentLanguage, availableLanguages } = useLanguages();

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { mapTranslationsToFormioI18nObject } from "./translationsMapper";
+import { mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components/src/context/languages/translationsMapper";
 
 export const supportedLanguages = ["nb-NO", "nn-NO", "en", "pl"];
 export const languagesInNorwegian = {
@@ -8,12 +8,6 @@ export const languagesInNorwegian = {
   en: "Engelsk",
   pl: "Polsk",
 };
-export const languagesInOriginalLanguage = {
-  "nb-NO": "Norsk bokmål",
-  "nn-NO": "Norsk nynorsk",
-  en: "English",
-  pl: "Polskie",
-};
 
 const I18nContext = createContext({});
 
@@ -21,13 +15,17 @@ function I18nProvider({ children, loadTranslations }) {
   const [translations, setTranslations] = useState({});
   const [translationsForNavForm, setTranslationsForNavForm] = useState(null);
   const [currentTranslation, setCurrentTranslation] = useState({});
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
   useEffect(() => {
-    loadTranslations().then((translations) => {
-      setTranslations(translations);
-      setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
-    });
-  }, [loadTranslations]);
+    if (!translationsLoaded) {
+      setTranslationsLoaded(true);
+      loadTranslations().then((translations) => {
+        setTranslations(translations);
+        setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
+      });
+    }
+  }, [loadTranslations, translationsLoaded]);
 
   const updateCurrentTranslation = (languageCode) => {
     const newTranslation = translations[languageCode] ? translations[languageCode].translations : {};

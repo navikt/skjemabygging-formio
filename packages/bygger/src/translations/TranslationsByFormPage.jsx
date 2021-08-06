@@ -1,16 +1,13 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import {
-  FormBuilderLanguageSelector,
-  useTranslations,
-  LanguagesProvider,
-  i18nData,
-} from "@navikt/skjemadigitalisering-shared-components";
+import { LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import { getAllTextsForForm } from "./utils";
+import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
+import { useTranslations } from "../context/i18n";
 
 const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
   const history = useHistory();

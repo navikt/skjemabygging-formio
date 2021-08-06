@@ -1,7 +1,13 @@
 import React from "react";
-import { languagesInOriginalLanguage, useTranslations } from "./index";
-import LanguageSelector from "../../components/LanguageSelector";
-import { useLanguages } from "../languages";
+import { LanguageSelector, useLanguages } from "@navikt/skjemadigitalisering-shared-components";
+import { useTranslations } from "./index";
+
+const languagesInOriginalLanguage = {
+  "nb-NO": "Norsk bokmål",
+  "nn-NO": "Norsk nynorsk",
+  en: "English",
+  pl: "Polskie",
+};
 
 const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) => {
   const { currentLanguage, availableLanguages } = useLanguages();

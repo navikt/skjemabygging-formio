@@ -24,7 +24,29 @@ class Skjemagruppe extends Fieldset {
             key: "modalEdit",
             ignore: true,
           },
+          {
+            key: "customClass",
+            ignore: true,
+          },
+          {
+            key: "hidden",
+            ignore: true,
+          },
+          {
+            key: "disabled",
+            ignore: true,
+          },
         ],
+      },
+      {
+        key: "logic",
+        ignore: true,
+        components: false,
+      },
+      {
+        key: "layout",
+        ignore: true,
+        components: false,
       },
       ...extend,
     ]);
