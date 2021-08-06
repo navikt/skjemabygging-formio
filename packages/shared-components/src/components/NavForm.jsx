@@ -70,6 +70,25 @@ Wizard.prototype.attach = function (element) {
     }
   });
 };
+
+Wizard.prototype.redrawHeader = function () {
+  if (this.element) {
+    let headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
+    if (headerElement) {
+      this.detachHeader();
+      headerElement.outerHTML = this.renderTemplate("wizardHeader", this.renderContext);
+      headerElement = this.element.querySelector(`#${this.wizardKey}-header`);
+      this.loadRefs(headerElement, {
+        [`${this.wizardKey}-link`]: "multiple",
+        [`${this.wizardKey}-tooltip`]: "multiple",
+        [`${this.wizardKey}-stepindicator-next`]: "single",
+        [`${this.wizardKey}-stepindicator-previous`]: "single",
+      });
+      this.attachHeader();
+    }
+  }
+};
+
 Wizard.prototype.attachHeader = function () {
   const isAllowPrevious = this.isAllowPrevious();
 
