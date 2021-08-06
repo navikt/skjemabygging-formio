@@ -192,7 +192,7 @@ export default class NavDatepicker extends FormioReactComponent {
                 },
                 {
                   type: "panel",
-                  title: "Begrens periode for tillatt dato",
+                  title: "Begrens periode relativt til dagens dato",
                   components: [
                     {
                       type: "number",
