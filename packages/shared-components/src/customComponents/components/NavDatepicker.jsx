@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Datovelger } from "nav-datovelger";
+import moment from "moment";
 
 import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
 import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
+import { getContextComponents } from "formiojs/utils/utils";
 
 import FormioReactComponent from "../FormioReactComponent.jsx";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
@@ -36,6 +38,43 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
   );
 };
 
+function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
+  return mayBeEqual ? beforeDate.isSameOrBefore(afterDate, 'd') : beforeDate.isBefore(afterDate, 'd');
+}
+
+export function validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
+  if(isCorrectOrder(beforeDate, inputDate, mayBeEqual)) {
+    return true;
+  }
+  const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
+  return mayBeEqual ? `Datoen kan ikke være tidligere enn fra-dato (${beforeDateAsString})` : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
+}
+
+export function validateEarliestAndLatestDate(earliestFromToday, latestFromToday, inputDate) {
+  const earliestAllowedDate = earliestFromToday !== undefined ? moment().add(earliestFromToday, 'd') : undefined;
+  const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
+  const latestAllowedDate = latestFromToday !== undefined ? moment().add(latestFromToday, 'd') : undefined;
+  const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
+
+  if(earliestAllowedDate && latestAllowedDate) {
+    if(!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)){
+      return true;
+    }
+    return  inputDate.isBefore(earliestAllowedDate, 'd') || inputDate.isAfter(latestAllowedDate, 'd')
+      ? `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString} eller senere enn ${latestAllowedDateAsString}` : true;
+  }
+
+  if(earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, 'd')) {
+    return `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString}`;
+  }
+
+  if(latestAllowedDate && inputDate.isAfter(latestAllowedDate, 'd')) {
+    return `Datoen kan ikke være senere enn ${latestAllowedDateAsString}`;
+  }
+
+  return true;
+}
+
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
   reactElement = undefined;
@@ -56,6 +95,22 @@ export default class NavDatepicker extends FormioReactComponent {
       weight: 0,
       schema: NavDatepicker.schema(),
     };
+  }
+
+  validateDatePicker(input, submissionData, beforeDateInputKey, mayBeEqual, relativeEarliestAllowedDate, relativeLatestAllowedDate) {
+    if (!input) {
+      return true;
+    }
+
+    if (beforeDateInputKey && submissionData[beforeDateInputKey]) {
+      return validateToAndFromDate(moment(submissionData[beforeDateInputKey]), moment(input), mayBeEqual);
+    }
+
+    if (relativeEarliestAllowedDate !== undefined || relativeLatestAllowedDate !== undefined) {
+      return validateEarliestAndLatestDate(relativeEarliestAllowedDate, relativeLatestAllowedDate, moment(input));
+    }
+
+    return true;
   }
 
   static schema() {
@@ -108,7 +163,59 @@ export default class NavDatepicker extends FormioReactComponent {
               label: "Validering",
               key: "validation",
               weight: 20,
-              components: [...validationEditForm.filter((field) => !excludeFromDisplay.includes(field.key))],
+              components: [
+                {
+                  type: "panel",
+                  title: "Fra-til-dato",
+                  components: [
+                    {
+                      type: "select",
+                      input: true,
+                      label: "Datofelt for fra-dato",
+                      key: "beforeDateInputKey",
+                      dataSrc: "custom",
+                      valueProperty: "value",
+                      data: {
+                        custom(context) {
+                          return getContextComponents(context);
+                        },
+                      },
+                    },
+                    {
+                      type: "checkbox",
+                      label: "Kan være lik",
+                      key: "mayBeEqual",
+                      defaultValue: false,
+                      input: true,
+                    }
+                  ]
+                },
+                {
+                  type: "panel",
+                  title: "Begrens periode relativt til dagens dato",
+                  components: [
+                    {
+                      type: "number",
+                      label: "Tidligst tillatt dato (antall dager fram/bak i tid)",
+                      key: "earliestAllowedDate",
+                      input: true,
+                    },
+                    {
+                      type: "number",
+                      label: "Senest tillatt dato (antall dager fram/bak i tid)",
+                      key: "latestAllowedDate",
+                      input: true,
+                    },
+                    {
+                      type: "alertstripe",
+                      key: "begrensTillattDatoInfo",
+                      content: "<div><p>Oppgi antall dager for å sette tidligste og seneste tillatte dato. Begrensningen er relativ til datoen skjemaet fylles ut. Bruk positive tall for å oppgi dager fram i tid, negative tall for å sette tillatt dato bakover i tid, og 0 for å sette dagens dato som tidligst/senest tillatt.</p><p>Eksempel: hvis tidligst tillatt er satt til -5, vil datoer før 10. august 2022 gi feilmelding når skjemaet fylles ut 15. august 2022</p></div>",
+                      alerttype: "info"
+                    },
+                  ]
+                },
+                ...validationEditForm.filter((field) => !excludeFromDisplay.includes(field.key))
+              ],
             },
             {
               label: "Conditional",
