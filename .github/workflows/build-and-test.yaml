@@ -30,6 +30,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.17.0'
+      - name: build shared-domain
+        working-directory: ./packages/shared-domain
+        run: yarn install --frozen-lockfile && yarn build
+      - name: "shared-components: Prepare local dependencies"
+        run: node bin/deploy-context.mjs ./packages/shared-components --replace
       - name: build shared-components
         working-directory: ./packages/shared-components
         run: yarn install --frozen-lockfile && yarn build

@@ -17,7 +17,7 @@
     "watch": "webpack --watch --config webpack.config.cjs",
     "test": "jest --env=jsdom",
     "prepare": "yarn run build",
-    "test:coverage":  "jest --env=jsdom --coverage"
+    "test:coverage": "jest --env=jsdom --coverage"
   },
   "jest": {
     "setupFilesAfterEnv": [
@@ -56,6 +56,7 @@
   "dependencies": {
     "@navikt/ds-icons": "^0.2.0",
     "@navikt/fnrvalidator": "^1.1.3",
+    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "amplitude-js": "7.3.3",
     "classnames": "2.2.6",
     "file-saver": "2.0.5",

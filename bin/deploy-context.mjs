@@ -10,7 +10,8 @@ const packagePath = path.join(root, packageFolder);
 const replaceFiles = args.indexOf('--replace') > -1;
 
 const sharedPackages = [
-    {name: "@navikt/skjemadigitalisering-shared-components", path: 'packages/shared-components'}
+  {name: "@navikt/skjemadigitalisering-shared-components", path: 'packages/shared-components'},
+  {name: "@navikt/skjemadigitalisering-shared-domain", path: 'packages/shared-domain'}
 ];
 sharedPackages.forEach(packageSpec => {
     packageSpec.fileDep = "file:" + path.relative(packagePath, path.join(root, packageSpec.path))
