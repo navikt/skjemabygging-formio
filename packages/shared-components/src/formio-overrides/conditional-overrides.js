@@ -11,21 +11,30 @@ const {
   checkJsonConditional,
 } = Utils;
 
-function addNullChecksForChainedLookups(text) {
-  let nullSafeText = text;
-  if (typeof text === "string") {
-    const arrayOfChainedLookups = text.match(/((\w+\.)+\w+)/g);
-    for (let i = 0; i < arrayOfChainedLookups.length; i++) {
-      const chainedLookup = arrayOfChainedLookups[i];
-      const chainedLookupParts = chainedLookup.split(".");
-      let safeChainedLookup = chainedLookupParts[0];
-      for (let j = 1; j < chainedLookupParts.length; j++) {
-        safeChainedLookup = safeChainedLookup + " && " + chainedLookupParts.slice(0, j + 1).join(".");
-      }
-      nullSafeText = nullSafeText.replaceAll(chainedLookup, safeChainedLookup);
-    }
+function addNullChecksToChainedLookup(chainedLookup, originalString) {
+  const chainedLookupParts = chainedLookup.split(".");
+  let safeChainedLookup = chainedLookupParts[0];
+  for (let j = 1; j < chainedLookupParts.length; j++) {
+    safeChainedLookup = safeChainedLookup + " && " + chainedLookupParts.slice(0, j + 1).join(".");
   }
-  return nullSafeText;
+  return originalString.replace(chainedLookup, safeChainedLookup);
+}
+
+function mapChainedLookups(text) {
+  let mappedString = text;
+  const arrayOfChainedLookups = text.match(/((\w+\.)+\w+)/g) || [];
+  for (let i = 0; i < arrayOfChainedLookups.length; i++) {
+    const chainedLookup = arrayOfChainedLookups[i];
+    mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString);
+  }
+  return mappedString;
+}
+
+function sanitizeCustomConditional(text) {
+  if (typeof text !== "string") {
+    return text;
+  }
+  return mapChainedLookups(text);
 }
 
 function setPathToComponentAndPerentSchema(component) {
@@ -60,7 +69,7 @@ function checkConditionOverride(component, row, data, form, instance) {
   if (customConditional) {
     return checkCustomConditional(
       component,
-      addNullChecksForChainedLookups(customConditional),
+      sanitizeCustomConditional(customConditional),
       row,
       data,
       form,
@@ -79,4 +88,4 @@ function checkConditionOverride(component, row, data, form, instance) {
   return true;
 }
 
-export { checkConditionOverride };
+export { sanitizeCustomConditional, checkConditionOverride };
