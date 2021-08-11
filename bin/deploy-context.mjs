@@ -23,15 +23,18 @@ const jsonDataString = fs.readFileSync(
     packageJsonFilename,
     {encoding: 'utf-8', flag: 'r'});
 const packageJson = JSON.parse(jsonDataString);
-const deps = packageJson.dependencies;
+const deps = packageJson.dependencies || {};
 const presentSharedPackages = sharedPackages.filter(packageSpec => packageSpec.name in deps);
+if (presentSharedPackages.length === 0) {
+  console.log(`Skipping package '${packageJson.name}', does not depend on shared package`);
+  process.exit(0);
+}
 
 function generateNewDeps(deps) {
     const newDeps = {...deps};
     presentSharedPackages.forEach((packageSpec) => {
         const depValue = newDeps[packageSpec.name];
-        console.log('original depValue for', packageSpec.name, depValue);
-        console.log('new dep value', packageSpec.fileDep);
+        console.log(`- ${packageSpec.name}: ${depValue} -> ${packageSpec.fileDep}`);
         newDeps[packageSpec.name] = packageSpec.fileDep;
     });
     return newDeps;
@@ -46,12 +49,13 @@ function generateNewYarnLock(deps) {
     return result;
 }
 
+console.log(`Processing package '${packageJson.name}':`);
 const newDeps = generateNewDeps(deps);
 fs.writeFileSync(packageJsonFilename + '.new', JSON.stringify({...packageJson, dependencies: newDeps}, null, 2) + '\n');
 if (replaceFiles) {
     fs.renameSync(packageJsonFilename, packageJsonFilename + '.backup');
     fs.renameSync(packageJsonFilename + '.new', packageJsonFilename);
-    console.log(`moved original file to *.backup, and replaced it with *.new [${packageJsonFilename}]`);
+    console.log(`- moved original package.json file to *.backup, and replaced it with *.new`);
 }
 
 
@@ -62,6 +66,6 @@ fs.writeFileSync(yarnLockFilename + '.new', updatedLockContent);
 if (replaceFiles) {
     fs.renameSync(yarnLockFilename, yarnLockFilename + '.backup');
     fs.renameSync(yarnLockFilename + '.new', yarnLockFilename);
-    console.log(`moved original file to *.backup, and replaced it with *.new [${yarnLockFilename}]`);
+    console.log(`- moved original yarn.lock file to *.backup, and replaced it with *.new`);
 }
 
