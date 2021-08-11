@@ -6,8 +6,10 @@ const root = process.cwd();
 const args = process.argv.slice(2);
 
 const packageFolder = args.find((arg) => !arg.startsWith('-'));
-const packagePath = path.join(root, packageFolder);
+const argIsAbsolutePath = args.indexOf('--absolute') > -1;
+const packagePath = argIsAbsolutePath ? packageFolder : path.join(root, packageFolder);
 const replaceFiles = args.indexOf('--replace') > -1;
+const dryRun = args.indexOf('--dry') > -1;
 
 const sharedPackages = [
   {name: "@navikt/skjemadigitalisering-shared-components", path: 'packages/shared-components'},
@@ -49,23 +51,38 @@ function generateNewYarnLock(deps) {
     return result;
 }
 
-console.log(`Processing package '${packageJson.name}':`);
+function writeNewFile(filename, fileContent) {
+  if (!dryRun) {
+    fs.writeFileSync(filename, fileContent);
+  }
+}
+
+function replaceFile(filename) {
+  if (!dryRun) {
+    fs.renameSync(filename, filename + '.backup');
+    fs.renameSync(filename + '.new', filename);
+  }
+}
+
+console.log(`Processing package '${packageJson.name}'${dryRun ? ' [dry-run]' : ''}:`);
 const newDeps = generateNewDeps(deps);
-fs.writeFileSync(packageJsonFilename + '.new', JSON.stringify({...packageJson, dependencies: newDeps}, null, 2) + '\n');
+const packageJsonContent = JSON.stringify({
+  ...packageJson,
+  dependencies: newDeps
+}, null, 2) + '\n';
+writeNewFile(packageJsonFilename + '.new', packageJsonContent);
 if (replaceFiles) {
-    fs.renameSync(packageJsonFilename, packageJsonFilename + '.backup');
-    fs.renameSync(packageJsonFilename + '.new', packageJsonFilename);
-    console.log(`- moved original package.json file to *.backup, and replaced it with *.new`);
+  replaceFile(packageJsonFilename);
+  console.log(`- moved original package.json file to *.backup, and replaced it with *.new`);
 }
 
 
 const newLockEntries = generateNewYarnLock(deps);
 const lockContent = fs.readFileSync(yarnLockFilename, {encoding: 'utf-8', flag: 'r'});
 const updatedLockContent = lockContent + "\n" + newLockEntries.join("\n\n");
-fs.writeFileSync(yarnLockFilename + '.new', updatedLockContent);
+writeNewFile(yarnLockFilename + '.new', updatedLockContent)
 if (replaceFiles) {
-    fs.renameSync(yarnLockFilename, yarnLockFilename + '.backup');
-    fs.renameSync(yarnLockFilename + '.new', yarnLockFilename);
-    console.log(`- moved original yarn.lock file to *.backup, and replaced it with *.new`);
+  replaceFile(yarnLockFilename);
+  console.log(`- moved original yarn.lock file to *.backup, and replaced it with *.new`);
 }
 
