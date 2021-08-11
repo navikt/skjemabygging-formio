@@ -7,9 +7,15 @@ export const globalStyles = {
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    lineHeight: "1.5",
+    fontSize: "1rem",
+    fontWeight: 400,
+    fontFamily: "Source Sans Pro, Arial, sans-serif",
+    textAlign: "left",
   },
   a: {
     color: "#0067c5",
+    textDecoration: "none",
   },
   ".pagewrapper": {
     flex: "1 0 auto",
@@ -19,6 +25,36 @@ export const globalStyles = {
   },
   html: {
     height: "100%",
+    fontFamily: "Source Sans Pro, Arial, sans-serif",
+  },
+  p: {
+    marginTop: "0",
+    marginBottom: "1rem",
+  },
+  fieldset: {
+    border: 0,
+
+    "& legend": {
+      fontSize: "1.5rem",
+      marginBottom: ".5rem",
+      lineHeight: "inherit",
+    },
+  },
+  dl: {
+    marginTop: 0,
+    "& dt": {
+      fontWeight: 700,
+    },
+    "& dd": {
+      marginBottom: ".5rem",
+      marginLeft: 0,
+    },
+  },
+  ol: {
+    marginTop: 0,
+  },
+  ul: {
+    marginTop: 0,
   },
   /* Set as global styles to apply inside of formio-dialog (modal), as it is not placed inside of NavFormBuilder */
   ".formio-fieldset": {
@@ -38,6 +74,51 @@ export const globalStyles = {
   },
   "main:focus": {
     outline: "none",
+  },
+  /* */
+
+  ".input-group": {
+    position: "relative",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "stretch",
+    width: "100%",
+    zIndex: "10000",
+
+    "& > .form-control": {
+      position: "relative",
+      flex: "1 1",
+      minWidth: 0,
+      marginBottom: 0,
+    },
+
+    "&> .form-control:not(:last-child)": {
+      borderTopRightRadius: 0,
+      borderBottomRightRadius: 0,
+    },
+    "& > .input-group-append > .input-group-text": {
+      borderTopLeftRadius: 0,
+      borderBottomLeftRadius: 0,
+    },
+  },
+  ".input-group-append": {
+    //marginLeft: "1px",
+    display: "flex",
+  },
+
+  ".input-group-text": {
+    display: "flex",
+    alignItems: "center",
+    padding: ".375rem .75rem",
+    marginBottom: 0,
+    fontSize: "1rem",
+    fontWeight: 400,
+    lineHeight: 1.5,
+    textAlign: "center",
+    whiteSpace: "nowrap",
+    backgroundColor: "#e9ecef",
+    border: "1px solid #ced4da",
+    borderRadius: ".25rem",
   },
 };
 
