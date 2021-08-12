@@ -8,7 +8,7 @@
   },
   "private": true,
   "scripts": {
-    "clean": "lerna clean -y",
+    "clean": "lerna run clean && lerna clean -y",
     "bootstrap": "yarn && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",

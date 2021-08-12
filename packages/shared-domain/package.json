@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir dist --ignore '**/*.test.js'",
+    "clean": "rimraf dist coverage",
     "watch": "babel -w src --out-dir dist --ignore '**/*.test.js'",
     "test": "jest",
     "test:coverage": "jest --coverage"

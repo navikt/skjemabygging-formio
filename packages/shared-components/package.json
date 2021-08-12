@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "build": "webpack --config webpack.config.cjs",
+    "clean": "rimraf dist coverage",
     "watch": "webpack --watch --config webpack.config.cjs",
     "test": "jest --env=jsdom",
     "prepare": "yarn run build",
