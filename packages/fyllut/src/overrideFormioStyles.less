@@ -22,12 +22,14 @@
     }
   }
 }
+
 //Stegindikator -- slutt
 
 
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
+
   &:after {
     display: none;
   }
@@ -43,12 +45,14 @@
     .skjemaelement-feilmarkering-mixin();
   }
 }
+
 //Select -- slutt
 
 //RadioPanel -- start
-.radioPanel{
+.radioPanel {
   .input--xxl();
 }
+
 //RadioPanel -- slutt
 
 //Skjemagruppe -- start
@@ -101,6 +105,7 @@
     }
   }
 }
+
 //Skjemagruppe -- slutt
 
 //Feilhåndtering -- start
@@ -112,6 +117,7 @@
   display: block;
   .typo-undertittel-mixin();
   color: @navMorkGra;
+
   ul > li {
     .lenke-mixin();
     .typo-normal-mixin();
@@ -141,6 +147,7 @@
 .form-control.is-invalid {
   background-image: none;
 }
+
 //Feilhåndtering -- slutt
 
 //NAV-knappestyling -- start
@@ -149,6 +156,7 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .list-inline-item {
   margin: 0.5rem;
 }
@@ -176,4 +184,58 @@
   .lenke-mixin();
   border: none;
 }
+
 //NAV-knappestyling -- slutt
+
+//Bootstrap prefix og suffix  -- start
+.input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+  z-index: 10000;
+
+  .form-control {
+    position: relative;
+    flex: 1 1;
+    min-width: 0;
+    margin-bottom: 0;
+
+  }
+
+  .form-control:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .input-group-append > .input-group-text {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .input-group-prepend > .input-group-text{
+    border-top-right-radius:0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.input-group-append, .input-group-prepend {
+  display: flex;
+}
+
+.input-group-text {
+  display: flex;
+  align-items: center;
+  padding: .375rem .75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+}
+//Bootstrap prefix og suffix  -- slutt

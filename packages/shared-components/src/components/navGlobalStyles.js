@@ -75,51 +75,6 @@ export const globalStyles = {
   "main:focus": {
     outline: "none",
   },
-  /* */
-
-  ".input-group": {
-    position: "relative",
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "stretch",
-    width: "100%",
-    zIndex: "10000",
-
-    "& > .form-control": {
-      position: "relative",
-      flex: "1 1",
-      minWidth: 0,
-      marginBottom: 0,
-    },
-
-    "&> .form-control:not(:last-child)": {
-      borderTopRightRadius: 0,
-      borderBottomRightRadius: 0,
-    },
-    "& > .input-group-append > .input-group-text": {
-      borderTopLeftRadius: 0,
-      borderBottomLeftRadius: 0,
-    },
-  },
-  ".input-group-append": {
-    //marginLeft: "1px",
-    display: "flex",
-  },
-
-  ".input-group-text": {
-    display: "flex",
-    alignItems: "center",
-    padding: ".375rem .75rem",
-    marginBottom: 0,
-    fontSize: "1rem",
-    fontWeight: 400,
-    lineHeight: 1.5,
-    textAlign: "center",
-    whiteSpace: "nowrap",
-    backgroundColor: "#e9ecef",
-    border: "1px solid #ced4da",
-    borderRadius: ".25rem",
-  },
 };
 
 export const appStyles = {
