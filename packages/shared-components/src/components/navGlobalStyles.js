@@ -15,7 +15,6 @@ export const globalStyles = {
   },
   a: {
     color: "#0067c5",
-    textDecoration: "none",
   },
   ".pagewrapper": {
     flex: "1 0 auto",
@@ -26,35 +25,6 @@ export const globalStyles = {
   html: {
     height: "100%",
     fontFamily: "Source Sans Pro, Arial, sans-serif",
-  },
-  p: {
-    marginTop: "0",
-    marginBottom: "1rem",
-  },
-  fieldset: {
-    border: 0,
-
-    "& legend": {
-      fontSize: "1.5rem",
-      marginBottom: ".5rem",
-      lineHeight: "inherit",
-    },
-  },
-  dl: {
-    marginTop: 0,
-    "& dt": {
-      fontWeight: 700,
-    },
-    "& dd": {
-      marginBottom: ".5rem",
-      marginLeft: 0,
-    },
-  },
-  ol: {
-    marginTop: 0,
-  },
-  ul: {
-    marginTop: 0,
   },
   /* Set as global styles to apply inside of formio-dialog (modal), as it is not placed inside of NavFormBuilder */
   ".formio-fieldset": {

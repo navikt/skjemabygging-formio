@@ -18,7 +18,37 @@ import "./overrideFormioStyles.less";
 import makeStyles from "@material-ui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
-  "@global": globalStyles,
+  "@global": {
+    p: {
+      marginTop: "0",
+      marginBottom: "1rem",
+    },
+    fieldset: {
+      border: 0,
+      "& legend": {
+        fontSize: "1.5rem",
+        marginBottom: ".5rem",
+        lineHeight: "inherit",
+      },
+    },
+    dl: {
+      marginTop: 0,
+      "& dt": {
+        fontWeight: 700,
+      },
+      "& dd": {
+        marginBottom: ".5rem",
+        marginLeft: 0,
+      },
+    },
+    ol: {
+      marginTop: 0,
+    },
+    ul: {
+      marginTop: 0,
+    },
+    ...globalStyles,
+  },
 }));
 
 Components.setComponents(CustomComponents);
