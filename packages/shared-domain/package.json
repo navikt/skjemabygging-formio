@@ -14,7 +14,8 @@
   "scripts": {
     "build": "babel src --out-dir dist --ignore '**/*.test.js'",
     "watch": "babel -w src --out-dir dist --ignore '**/*.test.js'",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "babel": {
     "presets": [
