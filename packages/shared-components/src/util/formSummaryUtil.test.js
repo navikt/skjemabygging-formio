@@ -1,4 +1,4 @@
-import { createFormSummaryObject, handleComponent } from "./formSummaryUtil";
+import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 const {
   createDummyContainerElement,
@@ -23,6 +23,21 @@ const dummySubmission = {
     tekstfelt: "tekstfelt-verdi",
   },
 };
+
+describe("Map and evaluate conditionals", () => {
+  it("evaluates conditional and returns a map", () => {
+    const formObject =       createFormObject([
+      createPanelObject("p1", [
+        createDummyRadioPanel(),
+        createDummyAlertstripe("Alert1", "", {show: true, when: "radiopanel", eq: "ja"}),
+        createDummyAlertstripe("Alert2", "", {show: false, when: "radiopanel", eq: "ja"})
+      ])
+    ]);
+    const data = {radiopanel: "ja",};
+
+    expect(mapAndEvaluateConditionals(formObject, data)).toEqual({alert1: true, alert2: false});
+  });
+});
 
 describe("When handling component", () => {
   describe("panel", () => {
@@ -90,13 +105,14 @@ describe("When handling component", () => {
         createDummyHTMLElement("HTML", "", "contentForPdf"),
         dummySubmission,
         [],
+        "",
         mockedTranslate()
       );
       expect(actual.find((component) => component.type === "htmlelement").value).toBe("contentForPdf");
     });
 
     it("is filtered out if it has no content for PDF", () => {
-      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, [], mockedTranslate());
+      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, [], "", mockedTranslate());
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
     });
   });
@@ -107,14 +123,41 @@ describe("When handling component", () => {
         createDummyAlertstripe("HTML", "contentForPdf"),
         dummySubmission,
         [],
+        "",
         mockedTranslate()
       );
       expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
     });
 
     it("is filtered out if it has no content for PDF", () => {
-      const actual = handleComponent(createDummyAlertstripe(), dummySubmission, [], mockedTranslate());
+      const actual = handleComponent(createDummyAlertstripe(), dummySubmission, [], "", mockedTranslate());
       expect(actual.find((component) => component.type === "alertstripe")).toBeUndefined();
+    });
+
+    describe("when a mapping of evaluated conditionals is passed to handleComponent", () => {
+      it("is ignored if the conditional is false", () => {
+        const actual = handleComponent(
+          createDummyAlertstripe("Alertstripe with conditional", "contentForPdf"),
+          dummySubmission,
+          [],
+          "",
+          mockedTranslate(),
+          {alertstripewithconditional: false}
+        );
+        expect(actual.find((component) => component.type === "alertstripe")).toBeUndefined();
+      });
+
+      it("is added if the conditional is true", () => {
+        const actual = handleComponent(
+          createDummyAlertstripe("Alertstripe with conditional", "contentForPdf"),
+          dummySubmission,
+          [],
+          "",
+          mockedTranslate(),
+          {alertstripewithconditional: true}
+        );
+        expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
+      });
     });
   });
 
