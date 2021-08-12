@@ -151,7 +151,6 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, conditionalMap) {
   const { key, contentForPdf, type } = component;
-  if (contentForPdf) {
   if (shouldShowInSummary(key, conditionalMap) && contentForPdf) {
     const componentKey = createComponentKey(parentContainerKey, key);
     return [
@@ -205,7 +204,7 @@ export function handleComponent(
     case "container":
       return handleContainer(component, submission, formSummaryObject, translate, conditionalMap);
     case "datagrid":
-      return handleDataGrid(component, submission, formSummaryObject, translate, conditionalMap);
+      return handleDataGrid(component, submission, formSummaryObject, translate);
     case "selectboxes":
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case "fieldset":
@@ -219,17 +218,15 @@ export function handleComponent(
 const shouldShowInSummary = (componentKey, conditionalMap) =>
   conditionalMap[componentKey] === undefined || conditionalMap[componentKey];
 
-const listEvaluatedConditional = (components, form, data, row = []) =>
+const evaluateConditionals = (components, form, data, row = []) =>
   components.flatMap((component) => {
     switch (component.type) {
       case "container":
-        return listEvaluatedConditional(component.components, form, data, data[component.key]);
+        return evaluateConditionals(component.components, form, data, data[component.key]);
       case "panel":
       case "fieldset":
       case "navSkjemagruppe":
-        return listEvaluatedConditional(component.components, form, data);
-      case "datagrid":
-        return data[component.key].flatMap((dataGridDataRow) => listEvaluatedConditional(component.components, form, data, dataGridDataRow));
+        return evaluateConditionals(component.components, form, data);
       case "htmlelement":
       case "alertstripe":
         return {key: component.key, show: FormioUtils.checkCondition(component, row, data, form)};
@@ -238,8 +235,8 @@ const listEvaluatedConditional = (components, form, data, row = []) =>
     }
   });
 
-const mapConditionalComponents = (form, data = []) =>
-  listEvaluatedConditional(form.components, form, data)
+const mapEvaluatedConditionals = (form, data = []) =>
+  evaluateConditionals(form.components, form, data)
     .reduce((map, {key, show}) => {
       if (key) {
         map[key] = show;
@@ -250,8 +247,7 @@ const mapConditionalComponents = (form, data = []) =>
 
 
 export function createFormSummaryObject(form, submission, translate) {
-  const conditionalMap = mapConditionalComponents(form, submission.data)
-
+  const conditionalMap = mapEvaluatedConditionals(form, submission.data)
   return form.components.reduce(
     (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject, "", translate, conditionalMap),
     []
