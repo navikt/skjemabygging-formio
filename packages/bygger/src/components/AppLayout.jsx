@@ -3,6 +3,7 @@ import { NavBar } from "./NavBar";
 import { UserAlerterContext } from "../userAlerting";
 import React from "react";
 import { styled } from "@material-ui/styles";
+import Row from "./layout/Row";
 
 const ActionRow = styled("div")({
   display: "flex",
@@ -114,14 +115,14 @@ export const AppLayout = ({ children, userAlerter, leftCol, mainCol, navBarProps
     <>
       <NoScrollWrapper>
         <NavBar {...navBarProps} />
-        {(leftCol || mainCol || rightCol || alertComponent) && (
-          <ActionRow>
+        {/* (leftCol || mainCol || rightCol || alertComponent) && (
+          <Row>
             <LeftCol>{leftCol}</LeftCol>
             <MainCol>{mainCol}</MainCol>
             <RightCol>{rightCol}</RightCol>
             {alertComponent && <AlertCol>{alertComponent()}</AlertCol>}
-          </ActionRow>
-        )}
+          </Row>
+        )*/}
       </NoScrollWrapper>
       <Pagewrapper>{children}</Pagewrapper>
     </>

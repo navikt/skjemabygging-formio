@@ -12,6 +12,9 @@ const useStyles = makeStyles({
     color: "#fff",
     padding: "1.5rem 0",
   },
+  title: {
+    textAlign: "center",
+  },
 });
 
 export const NavBar = ({ title, logout, visSkjemaliste, visOversettelseliste }) => {
@@ -30,7 +33,7 @@ export const NavBar = ({ title, logout, visSkjemaliste, visOversettelseliste }) 
             Oversettelser
           </Link>
         )}
-        <Undertittel>{title}</Undertittel>
+        <Undertittel className={styles.title}>{title}</Undertittel>
         <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
           Logg ut
         </Link>

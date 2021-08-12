@@ -5,10 +5,10 @@ import { makeStyles } from "@material-ui/styles";
 const useStyles = makeStyles({
   root: {
     display: "grid",
-    gridTemplateColumns: "12.875rem 50rem 10.625rem",
+    gridTemplateColumns: "12.875rem minmax(21rem, 50rem) 10.625rem",
     gap: "1.5rem",
     margin: "0 auto",
-    width: "79.5rem",
+    maxWidth: "79.5rem",
   },
 });
 
