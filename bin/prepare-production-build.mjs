@@ -9,6 +9,15 @@ const deployContextScript = path.join(scriptDir, 'deploy-context.mjs')
 
 const args = process.argv.slice(2)
 const dryRun = args.indexOf('--dry') > -1
+const printHelp = args.indexOf('--help') > -1 || args.indexOf('-h') > -1
+
+if (printHelp) {
+  console.log("Usage: node prepare-production-build.mjs [--dry]")
+  console.log()
+  console.log("Calls script that finds all packages under folder named packages/, then runs deploy-context.mjs for each package.")
+  console.log("Use option --dry for running this script without applying changes.")
+  process.exit(0)
+}
 
 const deployContextArgs = ['--replace', '--absolute']
 if (dryRun) {

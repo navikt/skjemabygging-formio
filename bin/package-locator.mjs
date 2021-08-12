@@ -8,6 +8,22 @@ const packagePath = path.join(root, folder)
 
 const excludedDirs = ["node_modules", ".nais"]
 
+const args = process.argv.slice(2)
+const printHelp = args.indexOf('--help') > -1 || args.indexOf('-h') > -1
+
+const pkg = (name, path) => ({name, path})
+const stdoutFormat = array => JSON.stringify(array)
+
+if (printHelp) {
+  console.log("Usage: node package-locator.mjs <path-to-search>")
+  console.log()
+  console.log("Finds all package.json files recursively under given path, and writes a list of objects with package name and path to stdout.")
+  console.log(`Example output: ${stdoutFormat([pkg("pkg-a", "/app/pkg-a"), pkg("pkg-b", "/app/pkg-b")])}`)
+  console.log()
+  console.log("Excluded directories:", JSON.stringify(excludedDirs))
+  process.exit(0)
+}
+
 function parsePackageJson(filename) {
   const jsonDataString = fs.readFileSync(
     filename,
@@ -33,11 +49,11 @@ function searchPath(startPath, targetFilename) {
     } else if (file === targetFilename) {
       const packageJson = parsePackageJson(filename)
       const currentDir = path.dirname(filename)
-      packages.push({name: packageJson.name, path: currentDir})
+      packages.push(pkg(packageJson.name, currentDir))
     }
 
   })
 }
 
 searchPath(packagePath, 'package.json')
-process.stdout.write(JSON.stringify(packages))
+process.stdout.write(stdoutFormat(packages))
