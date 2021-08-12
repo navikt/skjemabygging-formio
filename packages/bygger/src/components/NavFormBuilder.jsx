@@ -34,7 +34,7 @@ const BuilderMountElement = styled("div")({
   "& .formbuilder": {
     position: "relative",
     "@media screen and (min-width: 40rem)": {
-      height: "calc(100vh - 11.5rem)",
+      height: "calc(100vh - 17.975rem)",
       display: "grid",
       gridTemplateColumns: "12.875rem minmax(20rem, 50rem)",
       gridGap: "1.5rem",
@@ -46,7 +46,7 @@ const BuilderMountElement = styled("div")({
     },
   },
   "& .formarea": {
-    paddingBottom: "2rem",
+    paddingBottom: "20rem",
     overflowY: "auto",
     height: "100%",
   },
@@ -55,6 +55,7 @@ const BuilderMountElement = styled("div")({
     height: "100%",
     "& .builder-sidebar_scroll": {
       position: "initial",
+      paddingBottom: "10rem",
     },
   },
   "& .formio-dialog": {

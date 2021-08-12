@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, styled } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import { Link } from "react-router-dom";
 import navCssVariables from "nav-frontend-core";
 import { Undertittel } from "nav-frontend-typografi";
@@ -14,6 +14,7 @@ const useStyles = makeStyles({
   },
   title: {
     textAlign: "center",
+    gridColumn: "2 / 3",
   },
 });
 

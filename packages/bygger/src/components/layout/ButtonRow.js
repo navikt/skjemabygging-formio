@@ -10,6 +10,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
+    gridColumn: "2 / 3",
 
     "& > *:not(:last-child)": {
       marginRight: "1.5rem",
@@ -25,8 +26,8 @@ const ButtonRow = ({ children, className }) => {
         [className]: className,
       })}
     >
-      {children.map((child) => (
-        <li>{child}</li>
+      {children.map((child, index) => (
+        <li key={index}>{child}</li>
       ))}
     </ul>
   );

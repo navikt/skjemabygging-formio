@@ -10,15 +10,12 @@ import { useTranslations } from "../context/i18n";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import ButtonRow from "../components/layout/ButtonRow";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import { Link } from "react-router-dom";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components/src";
+import ActionRow from "../components/layout/ActionRow";
 
 const useStyles = makeStyles({
-  actionRow: {
-    padding: "2rem 0",
-  },
   formBuilder: {
     gridColumn: "1 / 3",
   },
@@ -45,23 +42,21 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           logout: onLogout,
         }}
       >
-        <Row className={styles.actionRow}>
-          <ButtonRow className={styles.centerColumn}>
-            {formSettingsUrl && (
-              <Link className="knapp" to={formSettingsUrl}>
-                Innstillinger
-              </Link>
-            )}
-            <Link className="knapp" to={testFormUrl}>
-              Forhåndsvis
+        <ActionRow>
+          {formSettingsUrl && (
+            <Link className="knapp" to={formSettingsUrl}>
+              Innstillinger
             </Link>
-            {featureToggles.enableTranslations && (
-              <Link className="knapp" to={`/translations/${form.path}`}>
-                Oversettelse
-              </Link>
-            )}
-          </ButtonRow>
-        </Row>
+          )}
+          <Link className="knapp" to={testFormUrl}>
+            Forhåndsvis
+          </Link>
+          {featureToggles.enableTranslations && (
+            <Link className="knapp" to={`/translations/${form.path}`}>
+              Oversettelse
+            </Link>
+          )}
+        </ActionRow>
         <Row>
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
