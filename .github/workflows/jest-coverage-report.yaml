@@ -13,9 +13,6 @@ jobs:
           node-version: '14.17.0'
       - name: "Bootstrap"
         run: yarn bootstrap
-      - name: "Build shared-domain"
-        working-directory: ./packages/shared-domain
-        run: yarn build
       - name: "Test with coverage report"
         run: yarn test:coverage
 
