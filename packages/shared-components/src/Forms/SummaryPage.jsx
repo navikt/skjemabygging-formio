@@ -6,8 +6,8 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
-import { createFormSummaryObject } from "../util/formSummaryUtil";
-import TEXTS from "../texts";
+import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
 const FormSummaryField = ({ label, value }) => (

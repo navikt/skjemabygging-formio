@@ -1,0 +1,39 @@
+{
+  "name": "@navikt/skjemadigitalisering-shared-domain",
+  "version": "1.0.0",
+  "description": "Kode som er delt mellom bygger og utfyller",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/navikt/skjemabygging-formio.git",
+    "directory": "packages/shared-domain"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist --ignore '**/*.test.js'",
+    "clean": "rimraf dist coverage",
+    "watch": "babel -w src --out-dir dist --ignore '**/*.test.js'",
+    "prepare": "yarn build",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "jest": "^27.0.4"
+  },
+  "peerDependencies": {
+    "formiojs": "4.12.3"
+  }
+}

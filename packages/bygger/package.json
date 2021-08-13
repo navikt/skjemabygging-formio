@@ -62,6 +62,7 @@
   "scripts": {
     "start": "cross-env-shell PORT=3000 EXTEND_ESLINT=true craco start",
     "build": "cross-env-shell EXTEND_ESLINT=true craco build",
+    "clean": "rimraf build coverage",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "test:coverage": "craco test --coverage --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "eject": "craco eject"

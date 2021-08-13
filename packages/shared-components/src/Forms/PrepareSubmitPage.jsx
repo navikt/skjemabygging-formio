@@ -9,7 +9,7 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
-import TEXTS from "../texts";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {

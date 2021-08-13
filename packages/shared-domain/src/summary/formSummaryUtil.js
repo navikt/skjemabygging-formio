@@ -1,5 +1,5 @@
 import FormioUtils from "formiojs/utils";
-import TEXTS from "../texts";
+import TEXTS from "./texts";
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
@@ -214,7 +214,7 @@ export function handleComponent(
   }
 }
 
-export function createFormSummaryObject(form, submission, translate) {
+export function createFormSummaryObject(form, submission, translate = txt => txt) {
   return form.components.reduce(
     (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject, "", translate),
     []

@@ -30,11 +30,14 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.17.0'
-      - name: build shared-components
+      - name: "Prepare local dependencies for shared packages"
+        run: node bin/prepare-production-build.mjs
+      - name: "Build shared-domain"
+        working-directory: ./packages/shared-domain
+        run: yarn install --frozen-lockfile && yarn build
+      - name: "Build shared-components"
         working-directory: ./packages/shared-components
         run: yarn install --frozen-lockfile && yarn build
-      - name: "Bygger (Frontend): Prepare local dependencies"
-        run: node bin/deploy-context.mjs ./packages/bygger --replace
       - name: "Bygger (Frontend): install dependencies and build"
         working-directory: ./packages/bygger
         env:
