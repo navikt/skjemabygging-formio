@@ -1,5 +1,5 @@
 import FormioUtils from "formiojs/utils";
-import TEXTS from "../texts";
+import TEXTS from "./texts";
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
@@ -60,7 +60,8 @@ function handleContainer(component, submission, formSummaryObject, translate, ev
     return formSummaryObject;
   } else {
     const mappedSubComponents = components.reduce(
-      (subComponents, subComponent) => handleComponent(subComponent, submission, subComponents, key, translate, evaluatedConditionals),
+      (subComponents, subComponent) =>
+        handleComponent(subComponent, submission, subComponents, key, translate, evaluatedConditionals),
       []
     );
     return [...formSummaryObject, ...mappedSubComponents];
@@ -106,14 +107,21 @@ function handleDataGrid(component, submission, formSummaryObject, translate) {
   ];
 }
 
-function handleFieldSet(component, submission, formSummaryObject, parentContainerKey, translate) {
+function handleFieldSet(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  evaluatedConditionals
+) {
   const { legend, key, components, type } = component;
   if (!components || components.length === 0) {
     return formSummaryObject;
   }
   const mappedSubComponents = components.reduce(
     (subComponents, subComponent) =>
-      handleComponent(subComponent, submission, subComponents, parentContainerKey, translate),
+      handleComponent(subComponent, submission, subComponents, parentContainerKey, translate, evaluatedConditionals),
     []
   );
   if (mappedSubComponents.length === 0) {
@@ -194,7 +202,14 @@ export function handleComponent(
 ) {
   switch (component.type) {
     case "panel":
-      return handlePanel(component, submission, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
+      return handlePanel(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals
+      );
     case "button":
     case "content":
       return formSummaryObject;
@@ -209,7 +224,14 @@ export function handleComponent(
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
     case "fieldset":
     case "navSkjemagruppe":
-      return handleFieldSet(component, submission, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
+      return handleFieldSet(
+        component,
+        submission,
+        formSummaryObject,
+        parentContainerKey,
+        translate,
+        evaluatedConditionals
+      );
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
   }
@@ -218,7 +240,7 @@ export function handleComponent(
 const shouldShowInSummary = (componentKey, evaluatedConditionals) =>
   evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
 
-function evaluateConditionals (components = [], form, data, row = []) {
+function evaluateConditionals(components = [], form, data, row = []) {
   return components.flatMap((component) => {
     switch (component.type) {
       case "container":
@@ -229,7 +251,7 @@ function evaluateConditionals (components = [], form, data, row = []) {
         return evaluateConditionals(component.components, form, data);
       case "htmlelement":
       case "alertstripe":
-        return {key: component.key, show: FormioUtils.checkCondition(component, row, data, form)};
+        return { key: component.key, show: FormioUtils.checkCondition(component, row, data, form) };
       default:
         return [];
     }
@@ -237,21 +259,19 @@ function evaluateConditionals (components = [], form, data, row = []) {
 }
 
 export function mapAndEvaluateConditionals(form, data = {}) {
-  return evaluateConditionals(form.components, form, data)
-    .reduce((map, {key, show}) => {
-      if (key) {
-        map[key] = show;
-      }
-      return map;
-    }, {});
+  return evaluateConditionals(form.components, form, data).reduce((map, { key, show }) => {
+    if (key) {
+      map[key] = show;
+    }
+    return map;
+  }, {});
 }
 
-
-
-export function createFormSummaryObject(form, submission, translate) {
-  const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data)
+export function createFormSummaryObject(form, submission, translate = (txt) => txt) {
+  const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
   return form.components.reduce(
-    (formSummaryObject, component) => handleComponent(component, submission, formSummaryObject, "", translate, evaluatedConditionalsMap),
+    (formSummaryObject, component) =>
+      handleComponent(component, submission, formSummaryObject, "", translate, evaluatedConditionalsMap),
     []
   );
 }

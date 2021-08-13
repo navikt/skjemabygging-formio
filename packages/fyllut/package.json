@@ -44,6 +44,7 @@
     "start": "cross-env-shell PORT=3001 craco start",
     "build": "cross-env-shell REACT_APP_GIT_VERSION=dev craco build",
     "build:prod": "craco build",
+    "clean": "rimraf build coverage",
     "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "test:coverage": "craco test --coverage --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "eject": "craco eject",
