@@ -862,6 +862,8 @@ const builderPalett = {
       editgrid: {
         ignore: true,
       },
+      datamap: null,
+      tree: null,
       navDataGrid: {
         title: "Data Grid",
         icon: "th",
