@@ -27,7 +27,7 @@ export const defaultFormFields = () => [
         type: "htmlelement",
         key: "veiledningstekst",
         input: false,
-        html: "Her skal det stå litt informasjon om søknaden",
+        content: "Her skal det stå litt informasjon om søknaden",
       },
     ],
   },
