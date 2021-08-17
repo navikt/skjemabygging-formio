@@ -2798,11 +2798,6 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap@4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.4.1.tgz#8582960eea0c5cd2bede84d8b0baf3789c3e8b01"
-  integrity sha512-tbx5cHubwE6e2ZG7nqM3g/FZ5PQEDMWmMGNrCUBVRPHXTJaH7CBDdsLeu3eCh3B1tzAxTnAbtmrzvWEvT2NNEA==
-
 boxen@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/boxen/-/boxen-4.2.0.tgz#e411b62357d6d6d36587c8ac3d5d974daa070e64"
@@ -11478,7 +11473,7 @@ skjemapublisering@navikt/skjemapublisering.git#1bd99e98ee4104d4eafc62759271a3512
   version "0.0.2"
   resolved "https://codeload.github.com/navikt/skjemapublisering/tar.gz/1bd99e98ee4104d4eafc62759271a3512cbf5e75"
   dependencies:
-    skjemabygging-formio "github:navikt/skjemabygging-formio#36299578792e4f4413a18fc720fef3b5c61c737a"
+    skjemabygging-formio "github:navikt/skjemabygging-formio#fe31380d4cb9d4d3ccd9d60a9692e1a8ba08f44c"
 
 slash@^1.0.0:
   version "1.0.0"
