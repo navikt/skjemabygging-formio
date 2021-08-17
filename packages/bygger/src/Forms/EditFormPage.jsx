@@ -9,7 +9,7 @@ import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
 import { useTranslations } from "../context/i18n";
 
-export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, onLogout }) {
+export function EditFormPage({ form, testFormUrl, formSettingsUrl, onSave, onChange, onPublish, onLogout }) {
   const { featureToggles } = useAppConfig();
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
@@ -23,6 +23,11 @@ export function EditFormPage({ form, testFormUrl, onSave, onChange, onPublish, o
             <li className="list-inline-item">
               <Link className="knapp" to={testFormUrl}>
                 Test
+              </Link>
+            </li>
+            <li className="list-inline-item">
+              <Link className="knapp" to={formSettingsUrl}>
+                Instillinger
               </Link>
             </li>
             <li className="list-inline-item">

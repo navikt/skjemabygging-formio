@@ -7,7 +7,7 @@ import { useModal } from "../util/useModal";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useTranslations } from "../context/i18n";
 
-const MainCol = ({ editFormUrl, form, onSave }) => {
+const MainCol = ({ editFormUrl, formSettingsUrl, form, onSave }) => {
   const { featureToggles } = useAppConfig();
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
@@ -17,6 +17,11 @@ const MainCol = ({ editFormUrl, form, onSave }) => {
       <li className="list-inline-item">
         <Link className="knapp" to={editFormUrl}>
           Rediger
+        </Link>
+      </li>
+      <li className="list-inline-item">
+        <Link className="knapp" to={formSettingsUrl}>
+          Instillinger
         </Link>
       </li>
       <li className="list-inline-item">
@@ -33,7 +38,7 @@ const MainCol = ({ editFormUrl, form, onSave }) => {
   );
 };
 
-export function TestFormPage({ editFormUrl, form, onSave, onLogout, onPublish }) {
+export function TestFormPage({ editFormUrl, formSettingsUrl, form, onSave, onLogout, onPublish }) {
   const { featureToggles } = useAppConfig();
   const { translations } = useTranslations();
   const title = `${form.title}`;
@@ -42,7 +47,7 @@ export function TestFormPage({ editFormUrl, form, onSave, onLogout, onPublish })
   return (
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
-      mainCol={<MainCol editFormUrl={editFormUrl} form={form} onSave={onSave} />}
+      mainCol={<MainCol editFormUrl={editFormUrl} formSettingsUrl={formSettingsUrl} form={form} onSave={onSave} />}
       rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
