@@ -4,13 +4,19 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
-import "./overrideFormioStyles.less";
+import "./components/bootstrapStyle.scss";
+import "formiojs/dist/formio.full.min.css";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
 
 const useStyles = makeStyles((theme) => ({
   "@global": globalStyles,
-  app: appStyles,
+  app: {
+    "& .list-inline": {
+      listStyle: "none",
+    },
+    ...appStyles,
+  },
 }));
 
 function App({ projectURL, store, pusher }) {

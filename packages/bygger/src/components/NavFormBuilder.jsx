@@ -29,6 +29,7 @@ import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { styled } from "@material-ui/styles";
 import { navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
+import "../overrideFormioStyles.less";
 
 const BuilderMountElement = styled("div")({
   "& .formbuilder": {
@@ -127,7 +128,7 @@ class NavFormBuilder extends Component {
   render = () => {
     return (
       <BuilderMountElement
-        className={this.props.className}
+        className={`${this.props.className} bootstrap-style`}
         data-testid="builderMountElement"
         ref={this.element}
       ></BuilderMountElement>

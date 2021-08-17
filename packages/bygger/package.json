@@ -57,7 +57,10 @@
     "react-modal": "^3.12.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
-    "wait-for-expect": "^3.0.2"
+    "wait-for-expect": "^3.0.2",
+    "bootstrap": "4.4.1",
+    "node-sass": "4.14.1",
+    "sass-loader": "12.0.0"
   },
   "scripts": {
     "start": "cross-env-shell PORT=3000 EXTEND_ESLINT=true craco start",
