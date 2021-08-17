@@ -1,5 +1,5 @@
 import React from "react";
-import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
+import { SkjemaGruppe, Input, Select, Checkbox } from "nav-frontend-skjema";
 import "nav-frontend-skjema-style";
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
@@ -10,9 +10,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     name,
     tags,
     type,
-    properties: { skjemanummer, tema },
+    properties: { skjemanummer, tema, hasPapirInnsendingOnly },
   } = form;
-  console.log(tags);
   return (
     <SkjemaGruppe>
       <Input
@@ -84,10 +83,17 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         label="Path"
         type="text"
         id="path"
-        style={{ textTransform: "lowercase", width: "120px" }}
+        style={{ textTransform: "lowercase" }}
         value={path}
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, path: event.target.value })}
+      />
+      <Checkbox
+        label="Tillat digital innsending"
+        checked={!hasPapirInnsendingOnly}
+        onChange={() =>
+          onChange({ ...form, properties: { ...form.properties, hasPapirInnsendingOnly: !hasPapirInnsendingOnly } })
+        }
       />
     </SkjemaGruppe>
   );
