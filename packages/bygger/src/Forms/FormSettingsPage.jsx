@@ -33,23 +33,20 @@ const MainCol = ({ editFormUrl, testFormUrl, form, onSave }) => {
   );
 };
 
-export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onLogout, onPublish }) {
+export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onLogout, onPublish }) {
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
-  const [newForm, setNewForm] = useState(form);
 
   return (
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
-      mainCol={
-        <MainCol editFormUrl={editFormUrl} testFormUrl={testFormUrl} form={form} onSave={() => onSave(newForm)} />
-      }
+      mainCol={<MainCol editFormUrl={editFormUrl} testFormUrl={testFormUrl} form={form} onSave={() => onSave(form)} />}
       rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
         <SettingsContainer>
           <h1 className="typo-sidetittel">{title}</h1>
-          <FormMetadataEditor form={newForm} onChange={setNewForm} />
+          <FormMetadataEditor form={form} onChange={onChange} />
         </SettingsContainer>
       </AmplitudeProvider>
 

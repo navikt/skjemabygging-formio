@@ -37,6 +37,7 @@ export const FormPage = ({ form, onChange, onSave, onPublish, logout }) => {
           editFormUrl={`${url}/edit`}
           testFormUrl={`${url}/view`}
           onSave={onSave}
+          onChange={onChange}
           onPublish={onPublish}
         />
       </Route>
