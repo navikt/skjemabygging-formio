@@ -45,6 +45,7 @@
     "nav-frontend-toggle-style": "0.0.35",
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
+    "nav-frontend-chevron": "^1.0.13",
     "prop-types": "^15.7.2",
     "pusher": "^3.0.1",
     "pusher-js": "^7.0.0",
