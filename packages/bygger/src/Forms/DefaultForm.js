@@ -19,14 +19,15 @@ export const defaultFormFields = () => [
     type: "panel",
     input: false,
     title: "Veiledning",
+    key: "veiledning",
     theme: "default",
     components: [
       {
         label: "Veiledningstekst",
-        type: "content",
+        type: "htmlelement",
         key: "veiledningstekst",
         input: false,
-        html: "Her skal det stå litt informasjon om søknaden",
+        content: "Her skal det stå litt informasjon om søknaden",
       },
     ],
   },
@@ -34,6 +35,7 @@ export const defaultFormFields = () => [
     type: "panel",
     input: false,
     title: "Dine opplysninger",
+    key: "personopplysninger",
     theme: "default",
     components: [
       fodselsNummerDNummerSchema(sokerPostfix),
@@ -72,6 +74,7 @@ export const defaultFormFields = () => [
     type: "panel",
     input: false,
     title: "Vedlegg",
+    key: "vedlegg",
     theme: "default",
     components: [
       {
