@@ -1,16 +1,15 @@
-import { Link } from "react-router-dom";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
 import React from "react";
-import { FormBuilderOptions, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
+import { Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
 import { useTranslations } from "../context/i18n";
+import { FormEditNavigation } from "./FormEditNavigation";
 
 export function EditFormPage({ form, testFormUrl, formSettingsUrl, onSave, onChange, onPublish, onLogout }) {
-  const { featureToggles } = useAppConfig();
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
   const { translationsForNavForm } = useTranslations();
@@ -19,28 +18,7 @@ export function EditFormPage({ form, testFormUrl, formSettingsUrl, onSave, onCha
       <AppLayoutWithContext
         leftCol={<SkjemaVisningSelect form={form} onChange={onChange} />}
         mainCol={
-          <ul className="list-inline">
-            <li className="list-inline-item">
-              <Link className="knapp" to={testFormUrl}>
-                Test
-              </Link>
-            </li>
-            <li className="list-inline-item">
-              <Link className="knapp" to={formSettingsUrl}>
-                Instillinger
-              </Link>
-            </li>
-            <li className="list-inline-item">
-              <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-            </li>
-            {featureToggles.enableTranslations && (
-              <li className="list-inline-item">
-                <Link className="knapp" to={`/translations/${form.path}`}>
-                  Oversettelse
-                </Link>
-              </li>
-            )}
-          </ul>
+          <FormEditNavigation testFormUrl={testFormUrl} formSettingsUrl={formSettingsUrl} form={form} onSave={onSave} />
         }
         rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
         navBarProps={{

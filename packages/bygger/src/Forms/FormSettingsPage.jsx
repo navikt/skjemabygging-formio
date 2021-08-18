@@ -1,37 +1,17 @@
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Knapp } from "nav-frontend-knapper";
+import React from "react";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { AmplitudeProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { useModal } from "../util/useModal";
 import { styled } from "@material-ui/styles";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
+import { FormEditNavigation } from "./FormEditNavigation";
 
 const SettingsContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "800px",
 });
-
-const MainCol = ({ editFormUrl, testFormUrl, form, onSave }) => {
-  return (
-    <ul className="list-inline">
-      <li className="list-inline-item">
-        <Link className="knapp" to={editFormUrl}>
-          Rediger
-        </Link>
-      </li>
-      <li className="list-inline-item">
-        <Link className="knapp" to={testFormUrl}>
-          Test
-        </Link>
-      </li>
-      <li className="list-inline-item">
-        <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-      </li>
-    </ul>
-  );
-};
 
 export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onLogout, onPublish }) {
   const title = `${form.title}`;
@@ -40,7 +20,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
   return (
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
-      mainCol={<MainCol editFormUrl={editFormUrl} testFormUrl={testFormUrl} form={form} onSave={() => onSave(form)} />}
+      mainCol={<FormEditNavigation editFormUrl={editFormUrl} testFormUrl={testFormUrl} form={form} onSave={onSave} />}
       rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>

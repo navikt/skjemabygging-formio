@@ -6,37 +6,7 @@ import { FyllUtRouter, AmplitudeProvider, useAppConfig } from "@navikt/skjemadig
 import { useModal } from "../util/useModal";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useTranslations } from "../context/i18n";
-
-const MainCol = ({ editFormUrl, formSettingsUrl, form, onSave }) => {
-  const { featureToggles } = useAppConfig();
-  const history = useHistory();
-  const params = new URLSearchParams(history.location.search);
-  const currentLanguage = params.get("lang");
-  return (
-    <ul className="list-inline">
-      <li className="list-inline-item">
-        <Link className="knapp" to={editFormUrl}>
-          Rediger
-        </Link>
-      </li>
-      <li className="list-inline-item">
-        <Link className="knapp" to={formSettingsUrl}>
-          Instillinger
-        </Link>
-      </li>
-      <li className="list-inline-item">
-        <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-      </li>
-      {featureToggles.enableTranslations && (
-        <li className="list-inline-item">
-          <Link className="knapp" to={`/translations/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
-            Oversettelse
-          </Link>
-        </li>
-      )}
-    </ul>
-  );
-};
+import { FormEditNavigation } from "./FormEditNavigation";
 
 export function TestFormPage({ editFormUrl, formSettingsUrl, form, onSave, onLogout, onPublish }) {
   const { featureToggles } = useAppConfig();
@@ -47,7 +17,9 @@ export function TestFormPage({ editFormUrl, formSettingsUrl, form, onSave, onLog
   return (
     <AppLayoutWithContext
       navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}
-      mainCol={<MainCol editFormUrl={editFormUrl} formSettingsUrl={formSettingsUrl} form={form} onSave={onSave} />}
+      mainCol={
+        <FormEditNavigation editFormUrl={editFormUrl} formSettingsUrl={formSettingsUrl} form={form} onSave={onSave} />
+      }
       rightCol={<Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>}
     >
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
