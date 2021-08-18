@@ -12,7 +12,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     type,
     properties: { skjemanummer, tema },
   } = form;
-  console.log(tags);
   return (
     <SkjemaGruppe>
       <Input
