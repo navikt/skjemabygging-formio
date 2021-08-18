@@ -8458,7 +8458,7 @@ nav-frontend-chevron-style@^0.3.5:
   resolved "https://registry.yarnpkg.com/nav-frontend-chevron-style/-/nav-frontend-chevron-style-0.3.10.tgz#ac4bb4689fb198475fea09ff15bd25fef5473c3f"
   integrity sha512-+GQ5zQYIFeZHNIaVVb/8PHKf/z9mFOtr8qPcwg4ERTu7xKYn1tecbJlhbiUYYDUmfJhzZTM0ZQoV8NS4vXz2Fg==
 
-nav-frontend-chevron@^1.0.13, nav-frontend-chevron@^1.0.28:
+nav-frontend-chevron@^1.0.13:
   version "1.0.28"
   resolved "https://registry.yarnpkg.com/nav-frontend-chevron/-/nav-frontend-chevron-1.0.28.tgz#1ec53e142f1b381ee9bd7874b505abd5bc3a6b2a"
   integrity sha512-gwM2eUTsUlEnxHoWJz4MU2nCGpmLWXBogiPDRd+gvdoDfD4qWMthm0ofaRz5yI3y7v5xKd+gzNq2Q2fDDO0Jvw==
@@ -8478,7 +8478,7 @@ nav-frontend-ikonknapper@^1.0.9:
   resolved "https://registry.yarnpkg.com/nav-frontend-ikonknapper/-/nav-frontend-ikonknapper-1.1.4.tgz#fe88144f8a76d91f04c24d24eabf681a76969244"
   integrity sha512-qvrBlpSdsFF3WdiSzt49F9UhBGubHKugIEQeR1rXhDwThGIEbt8EcaxF6hFVa0cClZRg/lbqlZptAAE27741Ow==
 
-nav-frontend-js-utils@^1.0.16, nav-frontend-js-utils@^1.0.17:
+nav-frontend-js-utils@^1.0.16:
   version "1.0.17"
   resolved "https://registry.yarnpkg.com/nav-frontend-js-utils/-/nav-frontend-js-utils-1.0.17.tgz#a39160bce2ec194bd6ab0f262529ee242ea44ff6"
   integrity sha512-iP4N25iuPi9uJO6UQUsTQq/D09kgSeEysNz+VqiUdXveJ+U8iAO/ik/tMUO5nIcZt117BvxB5URD4wAV1FkdFg==
@@ -8495,7 +8495,7 @@ nav-frontend-knapper@^2.0.9:
   resolved "https://registry.yarnpkg.com/nav-frontend-knapper/-/nav-frontend-knapper-2.1.4.tgz#8eea6a82a5f014987e22a4aba02f847a1382e220"
   integrity sha512-qq4d6mZ1wlvo62cNe4rwWbTgupEyJlaQzZNuYLWCCkIbSDNR6vz/pkfAue57lsFgeAXAWK4YC13r/8MbMu6f+w==
 
-nav-frontend-lenker-style@^1.0.0, nav-frontend-lenker-style@^1.0.2:
+nav-frontend-lenker-style@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nav-frontend-lenker-style/-/nav-frontend-lenker-style-1.0.2.tgz#2375f26c782ba6dd5c5102fbea0f575d03b80e82"
   integrity sha512-i4Gu5vIORbOvUeu7x77oxa9wv15p+zC1RlZDGN/pnPYuK6iCJEbliBzHYqeMmvlzHo0rTMl92tcpg1HCgl8i5A==
@@ -8525,7 +8525,7 @@ nav-frontend-modal@^1.0.63:
   resolved "https://registry.yarnpkg.com/nav-frontend-modal/-/nav-frontend-modal-1.2.2.tgz#c7175cc488103d38bae0adac8abb2e5bf4eb5fcd"
   integrity sha512-QdyG987LJpe8a2dOaAPQeQ577h4exYgqgG5sKycAYYOJ94gdf16DNZcEXzNxEhzF5qwsE17eAfBJmjAbVw4fmg==
 
-nav-frontend-paneler-style@^1.0.0, nav-frontend-paneler-style@^1.0.2:
+nav-frontend-paneler-style@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nav-frontend-paneler-style/-/nav-frontend-paneler-style-1.0.2.tgz#e10dfc27b18b2bd02d97d68194a33defca11beaa"
   integrity sha512-tiG/jcokzKhi6xnuV+qdNM7YHk0NmATn/Mb5MwHnPGJs9AoTInyWPShtdOBUWLx+3//oXWn3iAd9dGLrE57MNg==
@@ -11407,9 +11407,9 @@ sisteransi@^1.0.4:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-"skjemabygging-formio@github:navikt/skjemabygging-formio#36299578792e4f4413a18fc720fef3b5c61c737a":
+"skjemabygging-formio@github:navikt/skjemabygging-formio#fe31380d4cb9d4d3ccd9d60a9692e1a8ba08f44c":
   version "0.1.0"
-  resolved "https://codeload.github.com/navikt/skjemabygging-formio/tar.gz/36299578792e4f4413a18fc720fef3b5c61c737a"
+  resolved "https://codeload.github.com/navikt/skjemabygging-formio/tar.gz/fe31380d4cb9d4d3ccd9d60a9692e1a8ba08f44c"
   dependencies:
     "@craco/craco" "^5.6.4"
     "@material-ui/styles" "^4.10.0"
@@ -11478,7 +11478,7 @@ skjemapublisering@navikt/skjemapublisering.git#1bd99e98ee4104d4eafc62759271a3512
   version "0.0.2"
   resolved "https://codeload.github.com/navikt/skjemapublisering/tar.gz/1bd99e98ee4104d4eafc62759271a3512cbf5e75"
   dependencies:
-    skjemabygging-formio "github:navikt/skjemabygging-formio#36299578792e4f4413a18fc720fef3b5c61c737a"
+    skjemabygging-formio "github:navikt/skjemabygging-formio#fe31380d4cb9d4d3ccd9d60a9692e1a8ba08f44c"
 
 slash@^1.0.0:
   version "1.0.0"

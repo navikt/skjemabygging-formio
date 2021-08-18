@@ -15,8 +15,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { styled } from "@material-ui/styles";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
-import "./overrideFormioStyles.less";
 import makeStyles from "@material-ui/styles/makeStyles";
+import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 
 const useStyles = makeStyles((theme) => ({
   "@global": globalStyles,
