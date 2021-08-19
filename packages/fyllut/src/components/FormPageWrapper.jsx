@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 export const FormPageWrapper = ({ routeProps, forms, children }) => {
   const formPath = routeProps.match.params.formpath;
-  const targetForm = forms.find((form) => form.path === formPath);
+  const targetForm = forms.find(navFormUtils.formMatcherPredicate(formPath));
   const formTitle = targetForm ? targetForm.title : "";
 
   useEffect(() => {

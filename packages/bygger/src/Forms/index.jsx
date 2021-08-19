@@ -7,6 +7,7 @@ import NewFormPage from "./NewFormPage";
 import { FormsListPage } from "./FormsListPage";
 import { FormPage } from "./FormPage";
 import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Components from "formiojs/components/Components";
 import I18nProvider from "../context/i18n";
 
@@ -70,7 +71,7 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
 };
 
 const getFormFromPath = (forms, path) => {
-  const result = forms.find((form) => form.path === path);
+  const result = forms.find(navFormUtils.formMatcherPredicate(path));
   if (!result) {
     throw Error(`No form at path "${path}"`);
   }
