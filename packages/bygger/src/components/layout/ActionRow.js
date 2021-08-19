@@ -5,7 +5,7 @@ import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 
 const useStyles = makeStyles({
   actionRow: {
-    padding: "2rem 0",
+    padding: "0 0 2rem",
   },
   centerColumn: {
     gridColumn: "2 / 3",
