@@ -8,6 +8,7 @@ import "./components/bootstrapStyle.scss";
 import "formiojs/dist/formio.full.min.css";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
+import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 
 const useStyles = makeStyles((theme) => ({
   "@global": globalStyles,

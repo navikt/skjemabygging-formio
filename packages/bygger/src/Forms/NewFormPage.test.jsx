@@ -1,98 +1,47 @@
+import React from 'react'
+import {MemoryRouter} from "react-router-dom";
+import {render, waitFor, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {AppConfigProvider} from "@navikt/skjemadigitalisering-shared-components";
 import NewFormPage from "./NewFormPage";
-import waitForExpect from "wait-for-expect";
-import { UnstyledNavFormBuilder } from "../components/NavFormBuilder";
-import { Formio } from "formiojs";
-import { MemoryRouter } from "react-router-dom";
-import { AuthContext } from "../context/auth-context";
-import AuthenticatedApp from "../AuthenticatedApp";
-import { Hovedknapp } from "nav-frontend-knapper";
-import React from "react";
-import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
-import { UserAlerterContext } from "../userAlerting";
-import featureToggles from "../featureToggles.js";
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import {UserAlerterContext} from "../userAlerting";
+import featureToggles from "../featureToggles";
 
-const context = new FakeBackendTestContext();
-context.setupBeforeAfter();
+describe('NewFormPage', () => {
 
-const testRendererOptions = {
-  createNodeMock: (element) => {
-    if (["formMountElement", "builderMountElement"].includes(element.props["data-testid"])) {
-      return document.createElement("div");
-    }
-    return null;
-  },
-};
-
-describe("NewFormPage", () => {
-  let oldFormioFetch;
-  let formStore;
-  beforeEach(() => {
-    oldFormioFetch = Formio.fetch;
-    Formio.fetch = global.fetch;
-    formStore = { forms: null };
-  });
-  afterEach(() => {
-    Formio.fetch = oldFormioFetch;
-  });
-
-  function routeLocation() {
-    const memoryRouter = context.testRenderer.root;
-    return memoryRouter.instance.history.location;
-  }
-
-  function renderApp(pathname) {
-    const userAlerter = { flashSuccessMessage: jest.fn(), alertComponent: jest.fn() };
-    return context.render(
-      <MemoryRouter initialEntries={[pathname]}>
-        <AuthContext.Provider
-          value={{
-            userData: "fakeUser",
-            login: () => {},
-            logout: () => {},
-          }}
-        >
-          <UserAlerterContext.Provider value={userAlerter}>
-            <AppConfigProvider featureToggles={featureToggles}>
-              <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
-            </AppConfigProvider>
-          </UserAlerterContext.Provider>
-        </AuthContext.Provider>
-      </MemoryRouter>,
-      testRendererOptions
+  it('should create a new form with correct path, title and name', async () => {
+    const userAlerter = {flashSuccessMessage: jest.fn(), alertComponent: jest.fn()};
+    const onCreate = jest.fn();
+    const onLogout = jest.fn();
+    render(
+      <MemoryRouter>
+        <UserAlerterContext.Provider value={userAlerter}>
+          <AppConfigProvider featureToggles={featureToggles}>
+            <NewFormPage onCreate={onCreate} onLogout={onLogout}/>
+          </AppConfigProvider>
+        </UserAlerterContext.Provider>
+      </MemoryRouter>
     );
-  }
+    await waitFor(() => screen.getByText('Opprett nytt skjema'))
 
-  function clickHovedknapp(title) {
-    const knapp = context.testRenderer.root.findByType(Hovedknapp);
-    expect(knapp.props.children).toEqual(title);
-    context.act(() => knapp.props.onClick());
-  }
+    await userEvent.type(screen.getByLabelText('Skjemanummer'), 'NAV 10-20.30');
+    await userEvent.type(screen.getByLabelText('Tittel'), 'Et testskjema');
+    await userEvent.type(screen.getByLabelText('Temakode'), 'BIL');
+    await userEvent.click(screen.getByRole('button', {name: 'Opprett'}));
 
-  it("lets you create a new form", async () => {
-    renderApp("/forms/new");
-    // internal react timer
-    expect(setTimeout.mock.calls).toHaveLength(1);
-    jest.runOnlyPendingTimers();
-    const newFormPage = await context.waitForComponent(NewFormPage);
-    newFormPage.findByProps({ id: "title" }).props.onChange({ target: { value: "Meat" } });
-    expect(newFormPage.instance.state.form).toMatchObject({
+    expect(onCreate.mock.calls).toHaveLength(1);
+    const savedForm = onCreate.mock.calls[0][0];
+    expect(savedForm).toMatchObject({
       type: "form",
-      path: "meat",
+      path: "nav102030",
       display: "wizard",
-      name: "meat",
-      title: "Meat",
+      name: "nav102030",
+      title: "Et testskjema",
       tags: ["nav-skjema", ""],
     });
-    await waitForExpect(() => expect(formStore.forms).toHaveLength(2));
-    expect(context.backend.hasFormByPath("meat")).toBeFalsy();
-    clickHovedknapp("Opprett");
-    await waitForExpect(() => expect(context.backend.hasFormByPath("meat")).toBeTruthy());
-    expect(formStore.forms).toHaveLength(3);
-    expect(routeLocation().pathname).toEqual("/forms/meat/edit");
-    const formBuilder = context.testRenderer.root.findByType(UnstyledNavFormBuilder);
-    jest.runAllTimers();
-    await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("ready"));
-    expect(formBuilder.instance.builder.form).toMatchObject(context.backend.formByPath("meat"));
+    expect(savedForm.properties).toMatchObject({
+      skjemanummer: "NAV 10-20.30"
+    });
   });
+
 });

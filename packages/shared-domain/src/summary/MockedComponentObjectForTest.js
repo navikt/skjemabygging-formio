@@ -60,11 +60,12 @@ const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = 
   content,
 });
 
-const createDummyAlertstripe = (label = "Alertstripe", contentForPdf = "") => ({
+const createDummyAlertstripe = (label = "Alertstripe", contentForPdf = "", conditional = {}) => ({
   label,
   key: keyFromLabel(label),
   type: "alertstripe",
   contentForPdf,
+  conditional,
 });
 
 const createDummyContainerElement = (label = "Container", components, hideLabel) => ({

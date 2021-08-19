@@ -1,4 +1,4 @@
-import TEXTS from "./texts";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 export default {
   "nb-NO": {

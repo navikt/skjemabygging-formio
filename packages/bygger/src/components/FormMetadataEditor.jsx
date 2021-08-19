@@ -8,11 +8,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     path,
     display,
     name,
-    tags,
     type,
     properties: { skjemanummer, tema },
   } = form;
-  console.log(tags);
   return (
     <SkjemaGruppe>
       <Input

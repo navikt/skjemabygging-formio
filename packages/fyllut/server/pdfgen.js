@@ -1,6 +1,6 @@
 import PdfPrinter from "pdfmake";
 import luxon from "luxon";
-import { createFormSummaryObject } from "./formSummaryUtil.js";
+import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
 
 const { DateTime } = luxon;
 

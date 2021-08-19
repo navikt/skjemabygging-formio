@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
 import cloneDeep from "lodash.clonedeep";
-import camelCase from "lodash/camelCase";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { defaultFormFields } from "./DefaultForm";
+import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 class NewFormPage extends Component {
   state = {
@@ -24,9 +24,9 @@ class NewFormPage extends Component {
   setForm = (form) => {
     const newForm = cloneDeep(form);
     this.setState((oldState) => {
-      if (oldState.form.title !== newForm.title) {
-        newForm.name = camelCase(newForm.title);
-        newForm.path = camelCase(newForm.title).toLowerCase();
+      if (oldState.form.properties.skjemanummer !== newForm.properties.skjemanummer) {
+        newForm.name = stringUtils.camelCase(newForm.properties.skjemanummer);
+        newForm.path = navFormUtils.toFormPath(newForm.properties.skjemanummer);
       }
       return { form: newForm };
     });

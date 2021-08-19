@@ -42,5 +42,6 @@
     }
   ],
   "name": "columns",
-  "path": "columns"
+  "path": "columns",
+  "properties": {"skjemanummer": "NAV 12-13.15"}
 }

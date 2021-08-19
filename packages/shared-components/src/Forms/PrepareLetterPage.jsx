@@ -8,7 +8,7 @@ import { useAmplitude } from "../context/amplitude";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
 import { useAppConfig } from "../configContext";
-import TEXTS from "../texts";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {

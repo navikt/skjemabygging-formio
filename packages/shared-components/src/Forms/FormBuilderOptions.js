@@ -470,6 +470,10 @@ const builderPalett = {
           dataGridLabel: true,
           validateOn: "blur",
           validate: {
+            custom:
+              "valid = instance.validateDatePicker(input, data," +
+              "component.beforeDateInputKey, component.mayBeEqual, " +
+              "component.earliestAllowedDate, component.latestAllowedDate);",
             required: true,
           },
         },
@@ -539,6 +543,7 @@ const builderPalett = {
     components: {
       checkbox: null,
       radio: null,
+      textArea: null,
       textfield: {
         title: "Tekstfelt",
         key: "textfield",
@@ -808,6 +813,8 @@ const builderPalett = {
   layout: {
     title: "Layout",
     components: {
+      well: null,
+      content: null,
       alertstripe: {
         title: "Alertstripe",
         key: "alertstripe",
@@ -855,6 +862,8 @@ const builderPalett = {
       editgrid: {
         ignore: true,
       },
+      datamap: null,
+      tree: null,
       navDataGrid: {
         title: "Data Grid",
         icon: "th",
