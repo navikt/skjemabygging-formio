@@ -60,6 +60,18 @@ const BuilderMountElement = styled("div")({
   "& .formio-dialog": {
     zIndex: 900,
   },
+  "& .input--s": {
+    width: "140px",
+  },
+  "& .input--xs": {
+    width: "70px",
+  },
+  "& .form-builder-group-header": {
+    padding: 0,
+  },
+  "& a": {
+    color: "#0067c5",
+  },
 });
 
 class NavFormBuilder extends Component {

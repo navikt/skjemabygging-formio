@@ -12,6 +12,7 @@ export const globalStyles = {
     fontWeight: 400,
     fontFamily: "Source Sans Pro, Arial, sans-serif",
     textAlign: "left",
+    color: "#262626",
   },
   a: {
     color: "#0067c5",

@@ -1,6 +1,5 @@
 import React from "react";
 import { SkjemaGruppe, Input, Select } from "nav-frontend-skjema";
-import "nav-frontend-skjema-style";
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
   const {
