@@ -1,6 +1,7 @@
 @import "~nav-frontend-skjema-style";
 @import "~nav-frontend-typografi-style";
 @import "~nav-frontend-core";
+@import "~nav-frontend-chevron-style";
 @import "~nav-frontend-knapper-style";
 @import "~nav-frontend-lenker-style";
 @import "~nav-frontend-stegindikator-style";
@@ -21,12 +22,14 @@
     }
   }
 }
+
 //Stegindikator -- slutt
 
 
 //Select -- start
 .choices.form-group.formio-choices {
   .input--xxl();
+
   &:after {
     display: none;
   }
@@ -34,7 +37,7 @@
 
 .choices__list--dropdown.is-active {
   position: relative;
-  width: fit-content;
+  //width: fit-content;
 }
 
 .form-control.selection.dropdown {
@@ -47,12 +50,14 @@
     .skjemaelement-feilmarkering-mixin();
   }
 }
+
 //Select -- slutt
 
 //RadioPanel -- start
 .radioPanel {
   .input--xxl();
 }
+
 //RadioPanel -- slutt
 
 //Skjemagruppe -- start
@@ -78,6 +83,7 @@
 
 .skjemagruppe__description {
   .typo-normal-mixin();
+
   margin-bottom: 1rem;
 }
 
@@ -104,6 +110,7 @@
     }
   }
 }
+
 //Skjemagruppe -- slutt
 
 //Feilhåndtering -- start
@@ -115,6 +122,7 @@
   display: block;
   .typo-undertittel-mixin();
   color: @navMorkGra;
+
   ul > li {
     .lenke-mixin();
     .typo-normal-mixin();
@@ -144,6 +152,7 @@
 .form-control.is-invalid {
   background-image: none;
 }
+
 //Feilhåndtering -- slutt
 
 //NAV-knappestyling -- start
@@ -152,6 +161,7 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .list-inline-item {
   margin: 0.5rem;
 }
@@ -180,7 +190,5 @@
   .lenke-mixin();
   border: none;
 }
+
 //NAV-knappestyling -- slutt
-
-
-
