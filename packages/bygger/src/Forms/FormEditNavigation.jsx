@@ -27,7 +27,7 @@ export const FormEditNavigation = ({ editFormUrl, testFormUrl, formSettingsUrl, 
       {formSettingsUrl && (
         <li className="list-inline-item">
           <Link className="knapp" to={formSettingsUrl}>
-            Instillinger
+            Innstillinger
           </Link>
         </li>
       )}
