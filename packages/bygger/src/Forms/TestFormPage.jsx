@@ -1,6 +1,5 @@
-import { Link, useHistory } from "react-router-dom";
 import React from "react";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FyllUtRouter, AmplitudeProvider, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { useModal } from "../util/useModal";
