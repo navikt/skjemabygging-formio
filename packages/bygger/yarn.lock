@@ -9667,11 +9667,6 @@ nav-frontend-skjema@^3.1.0:
   resolved "https://registry.yarnpkg.com/nav-frontend-skjema/-/nav-frontend-skjema-3.1.0.tgz#8b90980527ff3d0fb738b369c4c5133613fc07c9"
   integrity sha512-SeV5v5pfEl8fLoj3eGfIeKhE0tu/ZNaWJPWAbqA/ne1PvawPTVvOyr8KQBrdr6o+KcENTFbbtmW5X6l2YrAGwQ==
 
-nav-frontend-stegindikator-style@^1.0.31:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/nav-frontend-stegindikator-style/-/nav-frontend-stegindikator-style-1.0.31.tgz#64272a3a151e142ac7ecb47588eb724195d68313"
-  integrity sha512-CBtFkPpCcH8uJCCA2DL5GGr+/J8CDkPNTeZbxJ2WzLedoqGCS2tsWL4qQaqSivYNCvfSxyc4FKlnBos9NsQquw==
-
 nav-frontend-toggle-style@0.0.35:
   version "0.0.35"
   resolved "https://registry.yarnpkg.com/nav-frontend-toggle-style/-/nav-frontend-toggle-style-0.0.35.tgz#62b922a7d9f60d4b5a375de4a6afd48b734dd2db"
