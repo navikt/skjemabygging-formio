@@ -8,7 +8,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     display,
     name,
     type,
-    properties: { skjemanummer, tema },
+    properties: { skjemanummer, tema, hasPapirInnsendingOnly },
   } = form;
   return (
     <SkjemaGruppe>
@@ -37,7 +37,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         id="tema"
         placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
-        readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
       />
       <Select
@@ -81,10 +80,17 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         label="Path"
         type="text"
         id="path"
-        style={{ textTransform: "lowercase", width: "120px" }}
+        style={{ textTransform: "lowercase" }}
         value={path}
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, path: event.target.value })}
+      />
+      <Checkbox
+        label="Tillat digital innsending"
+        checked={!hasPapirInnsendingOnly}
+        onChange={() =>
+          onChange({ ...form, properties: { ...form.properties, hasPapirInnsendingOnly: !hasPapirInnsendingOnly } })
+        }
       />
     </SkjemaGruppe>
   );
