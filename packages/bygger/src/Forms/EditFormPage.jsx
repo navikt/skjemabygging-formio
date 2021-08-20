@@ -12,7 +12,7 @@ import Column from "../components/layout/Column";
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import { Link } from "react-router-dom";
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components/src";
+import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import ActionRow from "../components/layout/ActionRow";
 
 const useStyles = makeStyles({
