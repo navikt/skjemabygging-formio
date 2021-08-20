@@ -141,7 +141,7 @@ function handleFieldSet(
 function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, values } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
-  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  const submissionValue = FormioUtils.getValue(submission, componentKey) || {};
   const value = values.filter((checkbox) => submissionValue[checkbox.value] === true).map((checkbox) => checkbox.label);
   if (Array.isArray(value) && value.length === 0) {
     return formSummaryObject;
