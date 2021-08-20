@@ -11,13 +11,14 @@ import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-com
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 
 const useStyles = makeStyles((theme) => ({
-  "@global": globalStyles,
-  app: {
-    "& .list-inline": {
+  "@global": {
+    ".list-inline": {
       listStyle: "none",
+      paddingLeft: 0,
     },
-    ...appStyles,
+    ...globalStyles,
   },
+  app: appStyles,
 }));
 
 function App({ projectURL, store, pusher }) {
