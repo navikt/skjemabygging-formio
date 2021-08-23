@@ -28,6 +28,9 @@ function formatValue(component, value, translate) {
     case "navCheckbox": {
       return value === "ja" ? translate(TEXTS.yes) : translate(TEXTS.no);
     }
+    case "select": {
+      return translate((component.data.values.find((option) => option.value === value) || {}).label);
+    }
     default:
       return value;
   }
