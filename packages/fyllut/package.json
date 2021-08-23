@@ -12,7 +12,6 @@
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@sentry/browser": "^5.27.0",
-    "bootstrap": "4.4.1",
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
     "cross-env": "^7.0.2",

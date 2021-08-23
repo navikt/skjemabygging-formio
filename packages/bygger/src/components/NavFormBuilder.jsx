@@ -60,6 +60,18 @@ const BuilderMountElement = styled("div")({
   "& .formio-dialog": {
     zIndex: 900,
   },
+  "& .input--s": {
+    width: "140px",
+  },
+  "& .input--xs": {
+    width: "70px",
+  },
+  "& .form-builder-group-header": {
+    padding: 0,
+  },
+  "& a": {
+    color: "#0067c5",
+  },
 });
 
 class NavFormBuilder extends Component {
@@ -127,7 +139,7 @@ class NavFormBuilder extends Component {
   render = () => {
     return (
       <BuilderMountElement
-        className={this.props.className}
+        className={`${this.props.className} bootstrap-style`}
         data-testid="builderMountElement"
         ref={this.element}
       ></BuilderMountElement>

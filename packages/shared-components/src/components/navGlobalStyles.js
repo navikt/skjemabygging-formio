@@ -7,6 +7,12 @@ export const globalStyles = {
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    lineHeight: "1.5",
+    fontSize: "1rem",
+    fontWeight: 400,
+    fontFamily: "Source Sans Pro, Arial, sans-serif",
+    textAlign: "left",
+    color: "#262626",
   },
   a: {
     color: "#0067c5",
@@ -19,6 +25,7 @@ export const globalStyles = {
   },
   html: {
     height: "100%",
+    fontFamily: "Source Sans Pro, Arial, sans-serif",
   },
   /* Set as global styles to apply inside of formio-dialog (modal), as it is not placed inside of NavFormBuilder */
   ".formio-fieldset": {
