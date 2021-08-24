@@ -141,21 +141,20 @@ export class Pdfgen {
     });
   }
 
-  mapFormSummaryObjectToPdf(formSummaryObject, pdfObject) {
-    const tables = formSummaryObject.flatMap((panel) => {
+  mapFormSummaryObjectToTables(formSummaryObject) {
+    return formSummaryObject.flatMap((panel) => {
       return [
         { text: panel.label, style: "subHeader" },
         this.createTableWithBody(this.componentsToBody(panel.components)),
       ];
     });
-    return [...pdfObject, ...tables];
   }
 
   generateContentFromSubmission() {
-    return [...this.generateFirstPart(), ...this.generateLastPart()];
+    return [this.generateHeader(), this.generateBody(), this.generateFooter()];
   }
 
-  generateLastPart() {
+  generateFooter() {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
     return [
       " ",
@@ -166,32 +165,30 @@ export class Pdfgen {
     ];
   }
 
-  generateFirstPart() {
+  generateBody() {
     const formSummaryObject = createFormSummaryObject(this.form, this.submission);
 
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
-    const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));
-    const pdfObjectBase = [this.header(), { text: " ", style: "ingress" }];
-    const startOfPdfObject =
-      homelessComponents.length > 0 ? [...pdfObjectBase, homelessComponentsTable] : pdfObjectBase;
-    return this.mapFormSummaryObjectToPdf(formSummaryObject, startOfPdfObject);
+    const homelessComponentsTable =
+      homelessComponents.length > 0 ? this.createTableWithBody(this.componentsToBody(homelessComponents)) : [];
+
+    return [...homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
   }
 
-  doGenerateDocDefinition(content) {
+  generateDocDefinition() {
     return {
       pageSize: "A4",
       pageMargins: [40, 80, 40, 80],
-      content: content,
+      content: this.generateContentFromSubmission(),
       styles: this.docStyles(),
     };
   }
 
-  generateDocDefinition() {
-    return this.doGenerateDocDefinition(this.generateContentFromSubmission());
-  }
-
-  header() {
-    return { text: this.form.title, style: "header" };
+  generateHeader() {
+    return [
+      { text: this.form.title, style: "header" },
+      { text: " ", style: "ingress" },
+    ];
   }
 }
 
@@ -226,9 +223,6 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateContentFromSubmission() {
-    const firstPart = this.generateFirstPart();
-    const signatures = this.generateSignatures();
-
-    return [...firstPart, ...signatures, this.generateLastPart()];
+    return [this.generateHeader(), this.generateBody(), this.generateSignatures(), this.generateFooter()];
   }
 }
