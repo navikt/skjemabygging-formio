@@ -34,7 +34,7 @@ const BuilderMountElement = styled("div")({
   "& .formbuilder": {
     position: "relative",
     "@media screen and (min-width: 40rem)": {
-      height: "calc(100vh - 17.975rem)",
+      height: "calc(100vh - 16.5rem)",
       display: "grid",
       gridTemplateColumns: "12.875rem minmax(20rem, 50rem)",
       gridGap: "1.5rem",

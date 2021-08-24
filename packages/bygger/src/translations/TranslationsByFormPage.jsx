@@ -8,6 +8,16 @@ import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import { getAllTextsForForm } from "./utils";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import { useTranslations } from "../context/i18n";
+import ActionRow from "../components/layout/ActionRow";
+import Row from "../components/layout/Row";
+import Column from "../components/layout/Column";
+import { makeStyles } from "@material-ui/styles";
+
+const useStyles = makeStyles({
+  mainCol: {
+    gridColumn: "2 / 3",
+  },
+});
 
 const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
   const history = useHistory();
@@ -20,6 +30,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
   useRedirectIfNoLanguageCode(languageCode, translations);
   const flattenedComponents = getAllTextsForForm(form);
   const translationId = (translations[languageCode] || {}).id;
+  const styles = useStyles();
   return (
     <LanguagesProvider translations={i18nData}>
       <AppLayoutWithContext
@@ -29,53 +40,47 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
           visLagNyttSkjema: false,
           visOversettelseliste: true,
         }}
-        leftCol={
-          <>
+      >
+        <ActionRow>
+          <Link className="knapp" to={`/forms/${path}/edit`}>
+            Rediger skjema
+          </Link>
+          <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
+            Vis skjema
+          </Link>
+        </ActionRow>
+        <Row>
+          <Column className={styles.mainCol}>
+            <TranslationsFormPage
+              skjemanummer={skjemanummer}
+              translations={translations}
+              languageCode={languageCode}
+              title={title}
+              flattenedComponents={flattenedComponents}
+              setTranslations={setTranslations}
+            />
+          </Column>
+          <Column>
             <FormBuilderLanguageSelector formPath={path} label={""} />
             <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>
-          </>
-        }
-        mainCol={
-          <ul className="list-inline">
-            <li className="list-inline-item">
-              <Link className="knapp" to={`/forms/${path}/edit`}>
-                Rediger skjema
-              </Link>
-            </li>
-            <li className="list-inline-item">
-              <Hovedknapp
-                onClick={() => {
-                  saveTranslation(
-                    projectURL,
-                    translationId,
-                    languageCode,
-                    translations[languageCode].translations,
-                    path,
-                    title
-                  );
-                }}
-              >
-                Lagre
-              </Hovedknapp>
-            </li>
-            <li className="list-inline-item">
-              <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
-                Vis skjema
-              </Link>
-            </li>
-          </ul>
-        }
-      >
-        <TranslationsFormPage
-          skjemanummer={skjemanummer}
-          translations={translations}
-          languageCode={languageCode}
-          title={title}
-          flattenedComponents={flattenedComponents}
-          setTranslations={setTranslations}
-        />
+            <Hovedknapp
+              onClick={() => {
+                saveTranslation(
+                  projectURL,
+                  translationId,
+                  languageCode,
+                  translations[languageCode].translations,
+                  path,
+                  title
+                );
+              }}
+            >
+              Lagre
+            </Hovedknapp>
+          </Column>
+        </Row>
       </AppLayoutWithContext>
     </LanguagesProvider>
   );
