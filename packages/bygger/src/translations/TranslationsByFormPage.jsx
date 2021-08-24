@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
@@ -12,6 +12,7 @@ import ActionRow from "../components/layout/ActionRow";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
 import { makeStyles } from "@material-ui/styles";
+import { UserAlerterContext } from "../userAlerting";
 
 const useStyles = makeStyles({
   mainCol: {
@@ -20,6 +21,8 @@ const useStyles = makeStyles({
 });
 
 const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
+  const userAlerter = useContext(UserAlerterContext);
+  const alertComponent = userAlerter.alertComponent();
   const history = useHistory();
   const {
     title,
@@ -79,6 +82,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
             >
               Lagre
             </Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
           </Column>
         </Row>
       </AppLayoutWithContext>

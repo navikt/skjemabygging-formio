@@ -1,6 +1,6 @@
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
-import React from "react";
+import React, { useContext } from "react";
 import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
@@ -14,6 +14,7 @@ import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import { Link } from "react-router-dom";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import ActionRow from "../components/layout/ActionRow";
+import { UserAlerterContext } from "../userAlerting";
 
 const useStyles = makeStyles({
   formBuilder: {
@@ -25,6 +26,8 @@ const useStyles = makeStyles({
 });
 
 export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onChange, onPublish, onLogout }) {
+  const userAlerter = useContext(UserAlerterContext);
+  const alertComponent = userAlerter.alertComponent();
   const { featureToggles } = useAppConfig();
   const {
     title,
@@ -74,6 +77,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           <Column>
             <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
             <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
           </Column>
         </Row>
       </AppLayoutWithContext>
