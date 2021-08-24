@@ -152,13 +152,18 @@ export class Pdfgen {
   }
 
   generateContentFromSubmission() {
-    let result = this.generateFirstPart();
-    return this.generateLastPart(result);
+    return [...this.generateFirstPart(), ...this.generateLastPart()];
   }
 
-  generateLastPart(result) {
+  generateLastPart() {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
-    return [...result, { text: `Skjemaet ble opprettet ${datoTid}` }, { text: `Skjemaversjon: ${this.gitVersion}` }];
+    return [
+      " ",
+      " ",
+      " ",
+      { text: `Skjemaet ble opprettet ${datoTid}` },
+      { text: `Skjemaversjon: ${this.gitVersion}` },
+    ];
   }
 
   generateFirstPart() {
@@ -191,26 +196,39 @@ export class Pdfgen {
 }
 
 export class PdfgenPapir extends Pdfgen {
-  generateContentFromSubmission() {
-    let result = this.generateFirstPart();
-    // her skal underskrift inn
-    const underskriftsFelter = [
+  newSignature(label) {
+    const signatureLabel = label ? [{ text: label, style: "groupHeader" }, " ", " "] : [];
+    return [
       " ",
       " ",
       " ",
       " ",
-      "_____________________________________",
-      "Sted og dato",
-      " ",
-      " ",
-      " ",
-      "_____________________________________",
-      "Underskrift",
-      " ",
-      " ",
+      {
+        stack: [
+          ...signatureLabel,
+          "_____________________________________\t\t_____________________________________",
+          "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
+        ],
+        unbreakable: true,
+      },
     ];
+  }
 
-    result = result.concat(underskriftsFelter);
-    return this.generateLastPart(result);
+  generateSignatures() {
+    const signatureLabels = this.form.properties.signatures
+      ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
+      : [];
+
+    if (signatureLabels.length > 0) {
+      return signatureLabels.flatMap((label) => this.newSignature(label));
+    }
+    return this.newSignature();
+  }
+
+  generateContentFromSubmission() {
+    const firstPart = this.generateFirstPart();
+    const signatures = this.generateSignatures();
+
+    return [...firstPart, ...signatures, this.generateLastPart()];
   }
 }
