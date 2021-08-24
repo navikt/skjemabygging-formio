@@ -9,12 +9,10 @@ import { SummaryPage } from "./SummaryPage.jsx";
 import { styled } from "@material-ui/styles";
 import { LanguagesProvider, LanguageSelector } from "../context/languages";
 import { useAppConfig } from "../configContext";
-import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "800px",
-  ...bootstrapStyles,
 });
 
 const FyllUtRouter = ({ form, translations }) => {

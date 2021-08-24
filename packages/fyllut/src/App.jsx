@@ -11,6 +11,7 @@ import {
 } from "@navikt/skjemadigitalisering-shared-components";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { styled } from "@material-ui/styles";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
