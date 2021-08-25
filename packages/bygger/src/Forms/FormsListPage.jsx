@@ -143,11 +143,9 @@ function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
       }}
     >
       <ActionRow>
-        {[
-          <Hovedknapp className={classes.centerColumn} onClick={onNew}>
-            Lag nytt skjema
-          </Hovedknapp>,
-        ]}
+        <Hovedknapp className={classes.centerColumn} onClick={onNew}>
+          Lag nytt skjema
+        </Hovedknapp>
       </ActionRow>
       <nav className={classes.root}>
         <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>

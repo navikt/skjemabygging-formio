@@ -26,9 +26,11 @@ const ButtonRow = ({ children, className }) => {
         [className]: className,
       })}
     >
-      {children.map((child, index) => (
-        <li key={index}>{child}</li>
-      ))}
+      {typeof children.map === "function" ? (
+        children.map((child, index) => <li key={index}>{child}</li>)
+      ) : (
+        <li>{children}</li>
+      )}
     </ul>
   );
 };
