@@ -4,18 +4,12 @@ import React from "react";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { AmplitudeProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { useModal } from "../util/useModal";
-import { makeStyles, styled } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
-import { FormEditNavigation } from "./FormEditNavigation";
 import ActionRow from "../components/layout/ActionRow";
 import { Link } from "react-router-dom";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
-
-const SettingsContainer = styled("div")({
-  margin: "0 auto",
-  maxWidth: "800px",
-});
 
 const useStyles = makeStyles({
   mainCol: {
