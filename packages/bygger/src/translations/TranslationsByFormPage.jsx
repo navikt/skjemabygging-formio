@@ -49,7 +49,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
             Rediger skjema
           </Link>
           <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
-            Vis skjema
+            Forhåndsvis
           </Link>
         </ActionRow>
         <Row>
