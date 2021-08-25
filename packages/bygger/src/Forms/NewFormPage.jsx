@@ -16,7 +16,13 @@ class NewFormPage extends Component {
       name: "",
       title: "",
       path: "",
-      properties: { skjemanummer: "", tema: "" },
+      properties: {
+        skjemanummer: "",
+        tema: "",
+        hasPapirInnsendingOnly: false,
+        hasLabeledSignatures: false,
+        signatures: { signature1: "", signature2: "", signature3: "", signature4: "", signature5: "" },
+      },
       components: defaultFormFields(),
     },
   };
