@@ -1,6 +1,6 @@
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React from "react";
+import React, { useContext } from "react";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { AmplitudeProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { useModal } from "../util/useModal";
@@ -10,6 +10,7 @@ import ActionRow from "../components/layout/ActionRow";
 import { Link } from "react-router-dom";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
+import { UserAlerterContext } from "../userAlerting";
 
 const useStyles = makeStyles({
   mainCol: {
@@ -18,6 +19,9 @@ const useStyles = makeStyles({
 });
 
 export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onLogout, onPublish }) {
+  const userAlerter = useContext(UserAlerterContext);
+  const alertComponent = userAlerter.alertComponent();
+
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
   const styles = useStyles();
@@ -41,6 +45,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
           <Column>
             <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
             <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
           </Column>
         </Row>
       </AmplitudeProvider>
