@@ -79,7 +79,7 @@ const FormsList = ({ forms, children }) => {
     });
 
   return (
-    <ul className={classes.list}>
+    <ul className={classes.list} data-testid="forms-list">
       <li className={classes.listTitles}>
         <div className={classes.listTitleItems} onClick={() => sortFormByFormNumber(forms)}>
           <Undertittel className={classes.listTitle}>Skjemanr.</Undertittel>
