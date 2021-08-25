@@ -44,7 +44,7 @@ export function TranslationsListPage({ onLogout, forms }) {
       }}
     >
       <main className={classes.root}>
-        <nav className="margin-bottom-large">
+        <nav className="margin-bottom-double">
           <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
           <ul className={classes.list}>
             <li className={classes.globalListItem}>
