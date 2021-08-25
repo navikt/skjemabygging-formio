@@ -151,7 +151,7 @@ export class Pdfgen {
   }
 
   generateContentFromSubmission() {
-    return [this.generateHeader(), this.generateBody(), this.generateFooter()];
+    return [...this.generateHeader(), ...this.generateBody(), ...this.generateFooter()];
   }
 
   generateFooter() {
@@ -172,7 +172,7 @@ export class Pdfgen {
     const homelessComponentsTable =
       homelessComponents.length > 0 ? this.createTableWithBody(this.componentsToBody(homelessComponents)) : [];
 
-    return [...homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
+    return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
   }
 
   generateDocDefinition() {
@@ -212,9 +212,10 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateSignatures() {
-    const signatureLabels = this.form.properties.signatures
-      ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
-      : [];
+    const signatureLabels =
+      this.form.properties && this.form.properties.signatures
+        ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
+        : [];
 
     if (signatureLabels.length > 0) {
       return signatureLabels.flatMap((label) => this.newSignature(label));
@@ -223,6 +224,6 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateContentFromSubmission() {
-    return [this.generateHeader(), this.generateBody(), this.generateSignatures(), this.generateFooter()];
+    return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures(), ...this.generateFooter()];
   }
 }
