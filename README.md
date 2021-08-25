@@ -33,11 +33,14 @@ Docker-image bygges og startes lokalt på følgende måte:
 
     # pwd => packages/fyllut
     docker build --tag fyllut --build-arg git_sha=local \
-       --build-arg skjema_dir=[local-skjema-dir] \
-       --build-arg translation_dir=[local-translations-dir] .
+       --build-arg skjema_dir=<local-skjema-dir> \
+       --build-arg translation_dir=<local-translations-dir> .
     docker run -e DECORATOR_URL="https://www.nav.no/dekoratoren?simple=true" \
        -e FOERSTESIDE_URL="https://www.nav.no/soknader/api/forsteside" \
        -e FORMS_SOURCE=static -p 8080:8080 fyllut
+
+```local-skjema-dir``` og ```local-translations-dir``` må ligge i docker build context,
+dvs. inne i ```packages/fyllut```.
 
 Har du problemer med kommandoene for å bygge eller kjøre docker-image lokalt, sjekk Dockerfile for forventede
 build-arg's, og se nais-config for eventuelle miljøvariabler som må settes for å starte docker-container.
