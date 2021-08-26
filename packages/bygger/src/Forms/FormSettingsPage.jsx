@@ -31,7 +31,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
   const styles = useStyles();
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true, logout: onLogout }}>
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
         <ActionRow>
           <Link className="knapp" to={editFormUrl}>
