@@ -522,6 +522,27 @@ describe("generating doc definition", () => {
         );
         expect(hasSignature3).toBe(false);
       });
+
+      describe("When hasLabeledSignature is false", () => {
+        const submission = { data: {}, metadata: {} };
+        const form = {
+          title: "With labeled signatures",
+          components: [],
+          properties: {
+            hasLabeledSignatures: false,
+            signatures: { signature1: "Signature label", signature2: "Signature label" },
+          },
+        };
+        const generator = new PdfgenPapir(submission, form, "", now());
+        const doc_definition = generator.generateDocDefinition();
+
+        it("doesn't generate signatures with labels", () => {
+          const hasSignatureLabel = doc_definition.content.some(
+            (line) => line.hasOwnProperty("stack") && line.stack[0].text === "Signature label"
+          );
+          expect(hasSignatureLabel).toBe(false);
+        });
+      });
     });
   });
 });

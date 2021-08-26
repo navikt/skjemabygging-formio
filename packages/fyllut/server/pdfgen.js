@@ -212,12 +212,11 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateSignatures() {
-    const signatureLabels =
-      this.form.properties && this.form.properties.signatures
-        ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
-        : [];
+    const signatureLabels = this.form?.properties?.signatures
+      ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
+      : [];
 
-    if (signatureLabels.length > 0) {
+    if (this.form?.properties?.hasLabeledSignatures && signatureLabels.length > 0) {
       return signatureLabels.flatMap((label) => this.newSignature(label));
     }
     return this.newSignature();
