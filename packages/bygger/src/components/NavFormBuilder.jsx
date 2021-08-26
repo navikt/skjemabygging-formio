@@ -72,6 +72,12 @@ const BuilderMountElement = styled("div")({
   "& a": {
     color: "#0067c5",
   },
+  "& .btn-block + .btn-block": {
+    marginTop: "0.2rem",
+  },
+  "& .btn": {
+    textAlign: "left",
+  },
 });
 
 class NavFormBuilder extends Component {
