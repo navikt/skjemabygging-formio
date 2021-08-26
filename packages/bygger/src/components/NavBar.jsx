@@ -10,7 +10,7 @@ const useStyles = makeStyles({
   navBar: {
     backgroundColor: navCssVariables.navDypBlaLighten40,
     color: "#fff",
-    padding: "1.5rem 0",
+    padding: "1.5rem 2rem",
   },
   title: {
     textAlign: "center",

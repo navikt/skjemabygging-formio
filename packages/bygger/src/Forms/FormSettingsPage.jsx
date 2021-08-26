@@ -43,7 +43,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
         </ActionRow>
         <Row className={styles.titleRow}>
           <Column className={styles.mainCol}>
-            <Undertittel>{title}</Undertittel>
+            <Undertittel tag="h1">{title}</Undertittel>
           </Column>
         </Row>
         <Row>
