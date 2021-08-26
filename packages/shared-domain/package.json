@@ -34,6 +34,6 @@
     "jest": "^27.0.4"
   },
   "peerDependencies": {
-    "formiojs": "4.12.3"
+    "formiojs": "4.13.5"
   }
 }

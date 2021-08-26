@@ -82,7 +82,7 @@
   },
   "peerDependencies": {
     "@material-ui/styles": "4.10.0",
-    "formiojs": "4.12.3",
+    "formiojs": "4.13.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0"
