@@ -8,7 +8,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
     display,
     name,
     type,
-    properties: { skjemanummer, tema, hasPapirInnsendingOnly },
+    properties: { skjemanummer, tema, hasPapirInnsendingOnly, hasLabeledSignatures, signatures },
   } = form;
   return (
     <SkjemaGruppe>
@@ -75,7 +75,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, name: event.target.value })}
       />
-
       <Input
         label="Path"
         type="text"
@@ -92,6 +91,30 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
           onChange({ ...form, properties: { ...form.properties, hasPapirInnsendingOnly: !hasPapirInnsendingOnly } })
         }
       />
+      <Checkbox
+        label="Skjemaet skal ha mer enn ett signaturfelt"
+        checked={!!hasLabeledSignatures}
+        onChange={() =>
+          onChange({ ...form, properties: { ...form.properties, hasLabeledSignatures: !hasLabeledSignatures } })
+        }
+      />
+      {hasLabeledSignatures &&
+        ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
+          <Input
+            label="Signeres av"
+            type="text"
+            key={signatureKey}
+            id={signatureKey}
+            placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
+            value={signatures ? signatures[signatureKey] : ""}
+            onChange={(event) =>
+              onChange({
+                ...form,
+                properties: { ...form.properties, signatures: { ...signatures, [signatureKey]: event.target.value } },
+              })
+            }
+          />
+        ))}
     </SkjemaGruppe>
   );
 };

@@ -74,7 +74,7 @@ describe("FormsRouter", () => {
   }
 
   function editFormLinks() {
-    const linkList = context.testRenderer.root.findByType("ul");
+    const linkList = context.testRenderer.root.findByProps({ "data-testid": "forms-list" });
     const lis = linkList.findAllByType("li");
     return lis.map((li) => li.findAllByProps({ "data-testid": "editLink" }));
   }

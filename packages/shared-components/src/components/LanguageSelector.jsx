@@ -4,15 +4,11 @@ import { makeStyles } from "@material-ui/styles";
 import navCssVariabler from "nav-frontend-core";
 
 const useLanguageSelectorStyling = makeStyles({
-  languageToggle: {
-    display: "flex",
-    justifyContent: "center",
-    padding: "0.5rem",
-  },
   languageToggleWrapper: {
-    minWidth: "230px",
-    position: "relative",
+    margin: "0 auto 1rem",
     outline: "none",
+    position: "relative",
+    width: "min(230px, 100%)",
   },
   languageSelect: {
     position: "relative",
@@ -52,6 +48,7 @@ const useLanguageSelectorStyling = makeStyles({
       position: "absolute",
       top: "2.8125rem",
       left: 0,
+      zIndex: 1,
     },
     "& .select-list__option": {
       borderBottom: "1px solid rgb(198, 194, 191)",
@@ -72,10 +69,8 @@ const useLanguageSelectorStyling = makeStyles({
 const LanguageSelector = ({ label, options }) => {
   const classes = useLanguageSelectorStyling();
   return (
-    <div className={classes.languageToggle}>
-      <div className={classes.languageToggleWrapper}>
-        <Select className={classes.languageSelect} label={label} options={options} />
-      </div>
+    <div className={classes.languageToggleWrapper}>
+      <Select className={classes.languageSelect} label={label} options={options} />
     </div>
   );
 };

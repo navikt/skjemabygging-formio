@@ -37,6 +37,9 @@ export const globalStyles = {
   ".margin-bottom-small": {
     marginBottom: "0.5rem",
   },
+  ".margin-bottom-double": {
+    marginBottom: "2rem",
+  },
   ".margin-bottom-large": {
     marginBottom: "8rem",
   },
