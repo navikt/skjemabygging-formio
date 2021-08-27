@@ -4,8 +4,6 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
-import "./bootstrapStyle.scss";
-import "./formioCSS.less";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
