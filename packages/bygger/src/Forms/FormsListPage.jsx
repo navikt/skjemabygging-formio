@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sidetittel, Undertittel } from "nav-frontend-typografi";
+import { Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SlettKnapp } from "./components";
@@ -148,7 +148,7 @@ function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
         </Hovedknapp>
       </ActionRow>
       <nav className={classes.root}>
-        <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
+        <Undertittel className="margin-bottom-default">Velg skjema:</Undertittel>
         <FormsList forms={simplifiedForms(forms)}>
           {(form) => (
             <li className={classes.listItem} key={form.path}>
