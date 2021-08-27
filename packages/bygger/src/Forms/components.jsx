@@ -3,7 +3,7 @@ import navCssVariables from "nav-frontend-core";
 
 export const Pagewrapper = styled("div")({
   margin: "0 auto",
-  padding: "0 2rem",
+  padding: "2rem 2rem 0",
 });
 
 export const SlettKnapp = styled("button")({

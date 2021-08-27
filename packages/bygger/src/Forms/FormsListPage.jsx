@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sidetittel, Undertittel } from "nav-frontend-typografi";
+import { Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SlettKnapp } from "./components";
 import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
 import { Hovedknapp } from "nav-frontend-knapper";
+import ActionRow from "../components/layout/ActionRow";
 
 const useFormsListStyles = makeStyles({
   list: {
@@ -78,7 +79,7 @@ const FormsList = ({ forms, children }) => {
     });
 
   return (
-    <ul className={classes.list}>
+    <ul className={classes.list} data-testid="forms-list">
       <li className={classes.listTitles}>
         <div className={classes.listTitleItems} onClick={() => sortFormByFormNumber(forms)}>
           <Undertittel className={classes.listTitle}>Skjemanr.</Undertittel>
@@ -111,6 +112,10 @@ const useFormsListPageStyles = makeStyles({
       backgroundColor: "#ddd",
     },
   },
+  centerColumn: {
+    gridColumn: "2 / 3",
+    width: "max-content",
+  },
 });
 
 function simplifiedForms(forms) {
@@ -136,16 +141,14 @@ function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
         logout: onLogout,
         onNew: onNew,
       }}
-      mainCol={
-        <nav className="list-inline">
-          <div className="list-inline-item">
-            <Hovedknapp onClick={onNew}>Lag nytt skjema</Hovedknapp>
-          </div>
-        </nav>
-      }
     >
+      <ActionRow>
+        <Hovedknapp className={classes.centerColumn} onClick={onNew}>
+          Lag nytt skjema
+        </Hovedknapp>
+      </ActionRow>
       <nav className={classes.root}>
-        <Sidetittel className="margin-bottom-default">Velg skjema:</Sidetittel>
+        <Undertittel className="margin-bottom-default">Velg skjema:</Undertittel>
         <FormsList forms={simplifiedForms(forms)}>
           {(form) => (
             <li className={classes.listItem} key={form.path}>

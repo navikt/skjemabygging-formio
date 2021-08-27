@@ -141,76 +141,88 @@ export class Pdfgen {
     });
   }
 
-  mapFormSummaryObjectToPdf(formSummaryObject, pdfObject) {
-    const tables = formSummaryObject.flatMap((panel) => {
+  mapFormSummaryObjectToTables(formSummaryObject) {
+    return formSummaryObject.flatMap((panel) => {
       return [
         { text: panel.label, style: "subHeader" },
         this.createTableWithBody(this.componentsToBody(panel.components)),
       ];
     });
-    return [...pdfObject, ...tables];
   }
 
   generateContentFromSubmission() {
-    let result = this.generateFirstPart();
-    return this.generateLastPart(result);
+    return [...this.generateHeader(), ...this.generateBody(), ...this.generateFooter()];
   }
 
-  generateLastPart(result) {
+  generateFooter() {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
-    return [...result, { text: `Skjemaet ble opprettet ${datoTid}` }, { text: `Skjemaversjon: ${this.gitVersion}` }];
+    return [
+      " ",
+      " ",
+      " ",
+      { text: `Skjemaet ble opprettet ${datoTid}` },
+      { text: `Skjemaversjon: ${this.gitVersion}` },
+    ];
   }
 
-  generateFirstPart() {
+  generateBody() {
     const formSummaryObject = createFormSummaryObject(this.form, this.submission);
 
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
-    const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));
-    const pdfObjectBase = [this.header(), { text: " ", style: "ingress" }];
-    const startOfPdfObject =
-      homelessComponents.length > 0 ? [...pdfObjectBase, homelessComponentsTable] : pdfObjectBase;
-    return this.mapFormSummaryObjectToPdf(formSummaryObject, startOfPdfObject);
+    const homelessComponentsTable =
+      homelessComponents.length > 0 ? this.createTableWithBody(this.componentsToBody(homelessComponents)) : [];
+
+    return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
   }
 
-  doGenerateDocDefinition(content) {
+  generateDocDefinition() {
     return {
       pageSize: "A4",
       pageMargins: [40, 80, 40, 80],
-      content: content,
+      content: this.generateContentFromSubmission(),
       styles: this.docStyles(),
     };
   }
 
-  generateDocDefinition() {
-    return this.doGenerateDocDefinition(this.generateContentFromSubmission());
-  }
-
-  header() {
-    return { text: this.form.title, style: "header" };
+  generateHeader() {
+    return [
+      { text: this.form.title, style: "header" },
+      { text: " ", style: "ingress" },
+    ];
   }
 }
 
 export class PdfgenPapir extends Pdfgen {
-  generateContentFromSubmission() {
-    let result = this.generateFirstPart();
-    // her skal underskrift inn
-    const underskriftsFelter = [
+  newSignature(label) {
+    const signatureLabel = label ? [{ text: label, style: "groupHeader" }, " ", " "] : [];
+    return [
       " ",
       " ",
       " ",
       " ",
-      "_____________________________________",
-      "Sted og dato",
-      " ",
-      " ",
-      " ",
-      "_____________________________________",
-      "Underskrift",
-      " ",
-      " ",
+      {
+        stack: [
+          ...signatureLabel,
+          "_____________________________________\t\t_____________________________________",
+          "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
+        ],
+        unbreakable: true,
+      },
     ];
+  }
 
-    result = result.concat(underskriftsFelter);
-    return this.generateLastPart(result);
+  generateSignatures() {
+    const signatureLabels = this.form?.properties?.signatures
+      ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
+      : [];
+
+    if (this.form?.properties?.hasLabeledSignatures && signatureLabels.length > 0) {
+      return signatureLabels.flatMap((label) => this.newSignature(label));
+    }
+    return this.newSignature();
+  }
+
+  generateContentFromSubmission() {
+    return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures(), ...this.generateFooter()];
   }
 }

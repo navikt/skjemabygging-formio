@@ -28,6 +28,9 @@ function formatValue(component, value, translate) {
     case "navCheckbox": {
       return value === "ja" ? translate(TEXTS.yes) : translate(TEXTS.no);
     }
+    case "select": {
+      return translate((component.data.values.find((option) => option.value === value) || {}).label);
+    }
     default:
       return value;
   }
@@ -141,7 +144,7 @@ function handleFieldSet(
 function handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, values } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
-  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  const submissionValue = FormioUtils.getValue(submission, componentKey) || {};
   const value = values.filter((checkbox) => submissionValue[checkbox.value] === true).map((checkbox) => checkbox.label);
   if (Array.isArray(value) && value.length === 0) {
     return formSummaryObject;

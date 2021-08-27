@@ -34,10 +34,10 @@ const BuilderMountElement = styled("div")({
   "& .formbuilder": {
     position: "relative",
     "@media screen and (min-width: 40rem)": {
-      height: "calc(100vh - 13.5rem)",
+      height: "calc(100vh - 16.5rem)",
       display: "grid",
-      gridTemplateColumns: "14rem minmax(20rem, 50rem)",
-      gridGap: "2rem",
+      gridTemplateColumns: "12.875rem minmax(20rem, 50rem)",
+      gridGap: "1.5rem",
       alignItems: "start",
       margin: "0 auto",
       maxWidth: "66rem",
@@ -46,7 +46,7 @@ const BuilderMountElement = styled("div")({
     },
   },
   "& .formarea": {
-    paddingBottom: "2rem",
+    paddingBottom: "20rem",
     overflowY: "auto",
     height: "100%",
   },
@@ -55,10 +55,35 @@ const BuilderMountElement = styled("div")({
     height: "100%",
     "& .builder-sidebar_scroll": {
       position: "initial",
+      paddingBottom: "10rem",
     },
   },
   "& .formio-dialog": {
     zIndex: 900,
+  },
+  "& .input--s": {
+    width: "140px",
+  },
+  "& .input--xs": {
+    width: "70px",
+  },
+  "& .form-builder-group-header": {
+    padding: 0,
+  },
+  "& a": {
+    color: "#0067c5",
+  },
+  "& .btn-block + .btn-block": {
+    marginTop: "0.2rem",
+  },
+  "& .btn": {
+    textAlign: "left",
+  },
+  "& .mr-2, .mx-2": {
+    marginBottom: "0.5rem",
+  },
+  "& .badge": {
+    fontSize: "1rem",
   },
 });
 
@@ -127,7 +152,7 @@ class NavFormBuilder extends Component {
   render = () => {
     return (
       <BuilderMountElement
-        className={this.props.className}
+        className={`${this.props.className} bootstrap-style`}
         data-testid="builderMountElement"
         ref={this.element}
       ></BuilderMountElement>
