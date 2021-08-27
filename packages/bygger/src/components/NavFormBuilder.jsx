@@ -79,6 +79,12 @@ const BuilderMountElement = styled("div")({
   "& .btn": {
     textAlign: "left",
   },
+  "& .mr-2, .mx-2": {
+    marginBottom: "0.5rem",
+  },
+  "& .badge": {
+    fontSize: "1rem",
+  },
 });
 
 class NavFormBuilder extends Component {
