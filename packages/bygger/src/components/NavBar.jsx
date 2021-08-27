@@ -34,7 +34,9 @@ export const NavBar = ({ title, logout, visSkjemaliste, visOversettelseliste }) 
             Oversettelser
           </Link>
         )}
-        <Undertittel className={styles.title}>{title}</Undertittel>
+        <Undertittel className={styles.title} tag="h1">
+          {title}
+        </Undertittel>
         <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
           Logg ut
         </Link>
