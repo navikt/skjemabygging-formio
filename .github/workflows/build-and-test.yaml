@@ -33,7 +33,7 @@ jobs:
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master' # only create new release on the master branch
-    needs: build-and-test
+    needs: [build-and-test, verify-scripts]
     name: "Package bygger"
     runs-on: ubuntu-latest
     steps:
