@@ -35,10 +35,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.8.0.tgz#bbbff68978fefdbe68ccb533bc8cbe1d1afb5413"
   integrity sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow==
 
-"@formio/bootstrap3@^2.11.4-rc.1":
-  version "2.11.4-rc.1"
-  resolved "https://registry.yarnpkg.com/@formio/bootstrap3/-/bootstrap3-2.11.4-rc.1.tgz#11a459fcd5dc6ec87e495489d3481a032cf8590f"
-  integrity sha512-HyQNjO9SRnLm/t2aQRbEPB3MMBcyOAnh8nholR+T1OnN2dHoq5521eOB2wyrxzV/DpgNJ0/SqMyu9xVsW1QLug==
+"@formio/bootstrap3@^2.12.0-rc.3":
+  version "2.12.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@formio/bootstrap3/-/bootstrap3-2.12.0-rc.3.tgz#7244d76d76feed484605a30fffe59b5b78e5786e"
+  integrity sha512-Vl6DMffq/lW3MoR9QT/2TArwAawS/EvV9Be7+Berim+LuaUsS9lx9+5WTaORIFvM0dXWoka65+i5IkYeCLV7kg==
   dependencies:
     resize-observer-polyfill "^1.5.1"
 
@@ -51,10 +51,10 @@
     fuse.js "^3.4.5"
     redux "^4.0.4"
 
-"@formio/semantic@^2.5.3":
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/@formio/semantic/-/semantic-2.5.3.tgz#06ee013b3ec72da04723fb72c6becd22a2fdf7af"
-  integrity sha512-dZ3L2565K5st8S93lwkx8VIdiZF3nnHi7qyfvzAF5AeIEl2YcXnRzp6Uvr2c5nD6Nk7F9V7tCzGFkJjz3WRPWA==
+"@formio/semantic@^2.6.0-rc.3":
+  version "2.6.0-rc.3"
+  resolved "https://registry.yarnpkg.com/@formio/semantic/-/semantic-2.6.0-rc.3.tgz#18e66eddb3ffb8b5c33f43a6aca33eca2dc43b06"
+  integrity sha512-usfvjxEANqiuaLAqvtRPoFGsHiizc3bswVcwGYOUbT+gjUX6EP4qTQQRQztf1n0wyjcXq2REnXEVrRRPWTczew==
 
 "@formio/vanilla-text-mask@^5.1.1":
   version "5.1.1"
@@ -2377,14 +2377,14 @@ form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
-formiojs@4.13.5:
-  version "4.13.5"
-  resolved "https://registry.yarnpkg.com/formiojs/-/formiojs-4.13.5.tgz#ca3d070dc22e5131556f77a04f35e1f239b4a63a"
-  integrity sha512-XW2uLBjVkixKz4zgCFqm034Ra6rx8EK6lzKDjX2DKT/5DieubUufMUgSgDjiuRwE6NHCmXzLjNNSZ2UBHJKZJQ==
+formiojs@4.14.0-rc.18:
+  version "4.14.0-rc.18"
+  resolved "https://registry.yarnpkg.com/formiojs/-/formiojs-4.14.0-rc.18.tgz#c9ee98890194946c99da865a11e99a50a326ac04"
+  integrity sha512-2XYFh9mESRxsvJaHlksIZPhwAJ5sQricZEAirOrAHhmlh5h/3Ui849pIvB5OtdWJzwDoQoKFzKekji7a5snvkQ==
   dependencies:
-    "@formio/bootstrap3" "^2.11.4-rc.1"
+    "@formio/bootstrap3" "^2.12.0-rc.3"
     "@formio/choices.js" "^9.0.1"
-    "@formio/semantic" "^2.5.3"
+    "@formio/semantic" "^2.6.0-rc.3"
     "@formio/vanilla-text-mask" "^5.1.1"
     autocompleter "^6.1.2"
     browser-cookies "^1.2.0"

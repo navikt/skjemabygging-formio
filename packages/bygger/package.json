@@ -23,7 +23,7 @@
     "classnames": "^2.2.6",
     "craco-less": "^1.17.0",
     "ejs-loader": "^0.5.0",
-    "formiojs": "4.13.3",
+    "formiojs": "4.14.0-rc.18",
     "jest-environment-jsdom-sixteen": "^2.0.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",

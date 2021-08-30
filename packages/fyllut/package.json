@@ -16,7 +16,7 @@
     "classnames": "^2.2.6",
     "craco-less": "^1.16.0",
     "cross-env": "^7.0.2",
-    "formiojs": "4.13.5",
+    "formiojs": "4.14.0-rc.18",
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
     "pusher": "^3.0.1",
