@@ -18,6 +18,10 @@
       "widget": {
         "type": "input"
       },
+      "addons": [],
+      "dataGridLabel": false,
+      "truncateMultipleSpaces": false,
+      "displayMask": "",
       "inputMask": "",
       "allowMultipleMasks": false,
       "customClass": "",
@@ -99,6 +103,10 @@
       "widget": {
         "type": "input"
       },
+      "addons": [],
+      "dataGridLabel": false,
+      "truncateMultipleSpaces": false,
+      "displayMask": "",
       "inputMask": "",
       "allowMultipleMasks": false,
       "customClass": "",
@@ -181,6 +189,10 @@
       "widget": {
         "type": "input"
       },
+      "addons": [],
+      "dataGridLabel": false,
+      "truncateMultipleSpaces": false,
+      "displayMask": "",
       "editor": "",
       "autoExpand": false,
       "customClass": "",
@@ -319,6 +331,9 @@
         "width": "",
         "height": ""
       },
+      "addons": [],
+      "truncateMultipleSpaces": false,
+      "displayMask": "",
       "allowCalculateOverride": false,
       "encrypted": false,
       "showCharCount": false,
