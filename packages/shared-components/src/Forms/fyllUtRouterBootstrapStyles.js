@@ -35,7 +35,6 @@ export const bootstrapStyles = {
 
     "& .form-control": {
       position: "relative",
-      //flex: "1 1",
       minWidth: 0,
       marginBottom: 0,
     },
@@ -75,4 +74,15 @@ export const bootstrapStyles = {
     borderRadius: ".25rem",
   },
   //Bootstrap prefix og suffix  -- slutt
+
+  //Bootstrap day component
+  "& .has-feedback .form-control": {
+    height: "calc(1.5em + .75rem + 2px)",
+    padding: ".375rem .75rem",
+    fontSize: "1rem",
+    fontWeight: "400",
+    lineHeight: "1.5",
+    border: "1px solid #ced4da",
+    borderRadius: ".25rem",
+  },
 };
