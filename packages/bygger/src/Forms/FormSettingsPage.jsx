@@ -11,10 +11,14 @@ import { Link } from "react-router-dom";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
 import { UserAlerterContext } from "../userAlerting";
+import { Undertittel } from "nav-frontend-typografi";
 
 const useStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
+  },
+  titleRow: {
+    height: "79px",
   },
 });
 
@@ -27,7 +31,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
   const styles = useStyles();
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: title, visSkjemaliste: true, logout: onLogout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true, logout: onLogout }}>
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
         <ActionRow>
           <Link className="knapp" to={editFormUrl}>
@@ -37,9 +41,13 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
             Forhåndsvis
           </Link>
         </ActionRow>
+        <Row className={styles.titleRow}>
+          <Column className={styles.mainCol}>
+            <Undertittel tag="h1">{title}</Undertittel>
+          </Column>
+        </Row>
         <Row>
           <Column className={styles.mainCol}>
-            <h1 className="typo-sidetittel">{title}</h1>
             <FormMetadataEditor form={form} onChange={onChange} />
           </Column>
           <Column>
