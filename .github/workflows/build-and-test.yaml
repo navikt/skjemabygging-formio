@@ -19,10 +19,21 @@ jobs:
         run: yarn build
       - name: "Test"
         run: yarn test
+  verify-scripts:
+    name: "Verify scripts"
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.17.0'
+      - name: "Build scripts"
+        run: yarn build:scripts
 
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master' # only create new release on the master branch
-    needs: build-and-test
+    needs: [build-and-test, verify-scripts]
     name: "Package bygger"
     runs-on: ubuntu-latest
     steps:

@@ -14,7 +14,7 @@ const ErrorAlertContent = styled("div")({
   },
   "& .knapp": {
     color: navCssVariabler.navMorkGra,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     "& svg": {
       fill: navCssVariabler.navMorkGra,
     },
@@ -50,7 +50,7 @@ const PublishSuccessAlert = ({ message, onClose }) => {
     <AlertStripeSuksess>
       <ErrorAlertContent>
         <h3>Publisering fullført</h3>
-        <div>{message.skjemapublisering.commitUrl} er nå publisert</div>
+        <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} er nå publisert</div>
         <Xknapp type="flat" onClick={onClose} />
       </ErrorAlertContent>
     </AlertStripeSuksess>
@@ -62,7 +62,7 @@ const PublishAbortedAlert = ({ message, onClose }) => {
     <AlertStripeFeil>
       <ErrorAlertContent>
         <h3>Publisering feilet</h3>
-        <div>{message.skjemapublisering.commitUrl} ble ikke publisert</div>
+        <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} ble ikke publisert</div>
         <Xknapp type="flat" onClick={onClose} />
       </ErrorAlertContent>
     </AlertStripeFeil>
@@ -185,6 +185,18 @@ export function useUserAlerting(pusher) {
     return () => {
       buildAbortedChannel.unbind("publication");
       buildAbortedChannel.unbind("other");
+    };
+  }, [pusher, userAlerter]);
+  useEffect(() => {
+    const buildAbortedChannel = pusher.subscribe("publish-aborted");
+    buildAbortedChannel.bind("failure", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <PublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
+    return () => {
+      buildAbortedChannel.unbind("failure");
     };
   }, [pusher, userAlerter]);
   return userAlerter;

@@ -12,6 +12,7 @@
     "bootstrap": "yarn && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
+    "build:scripts": "lerna exec --scope @navikt/skjemadigitalisering-scripts -- yarn install --frozen-lockfile",
     "start": "lerna run start",
     "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start",
     "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start",
