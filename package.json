@@ -22,7 +22,7 @@
   "devDependencies": {
     "@material-ui/styles": "4.10.0",
     "cross-env": "^7.0.2",
-    "formiojs": "4.12.3",
+    "formiojs": "4.14.0-rc.18",
     "husky": "^3.1.0",
     "lerna": "^4.0.0",
     "lint-staged": "^10.4.0",

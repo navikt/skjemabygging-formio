@@ -14,7 +14,7 @@ const ErrorAlertContent = styled("div")({
   },
   "& .knapp": {
     color: navCssVariabler.navMorkGra,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     "& svg": {
       fill: navCssVariabler.navMorkGra,
     },

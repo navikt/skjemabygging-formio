@@ -7,7 +7,6 @@ const config = {
     'react-dom',
     'react-router-dom',
     /^formiojs($|\/)/,
-    'eventemitter2',
     /^moment($|\/)/,
     nodeExternals()],
   entry: ["./src/index.js"],

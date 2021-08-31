@@ -2,8 +2,7 @@ import { renderHook, act } from "@testing-library/react-hooks";
 import { useUserAlerting } from "./userAlerting";
 import React from "react";
 
-describe('userAlerting', () => {
-
+describe("userAlerting", () => {
   let hookResult;
   let channelSubscriptions = {};
   beforeEach(() => {
@@ -18,24 +17,23 @@ describe('userAlerting', () => {
   });
 
   const pusherSubscribe = (channel) => {
-    channelSubscriptions[channel] = {}
+    channelSubscriptions[channel] = {};
     return {
       bind: (eventName, callback) => {
         channelSubscriptions[channel][eventName] = callback;
       },
       unbind: (eventName) => {
         channelSubscriptions[channel][eventName] = undefined;
-      }
-    }
-  }
+      },
+    };
+  };
 
   function runHook() {
     const fakePusher = { subscribe: pusherSubscribe };
     return renderHook(() => useUserAlerting(fakePusher));
   }
 
-  describe('general alerts', () => {
-
+  describe("general alerts", () => {
     it("removes the flash message after 5 seconds", async () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
       act(() => hookResult.result.current.flashSuccessMessage("Påske"));
@@ -66,38 +64,34 @@ describe('userAlerting', () => {
       act(() => hookResult.result.current.removeAlertComponent(key));
       expect(hookResult.result.current.alertComponent()).toBeNull();
     });
-
   });
 
-  describe('pusher messages', () => {
-
+  describe("pusher messages", () => {
     const pusherMessage = {
       skjemapublisering: {
         commitUrl: "nav123456",
-        skjematittel: "Et testskjema"
-      }
-    }
+        skjematittel: "Et testskjema",
+      },
+    };
 
     it("subscribes on mount", () => {
       expect(Object.keys(channelSubscriptions)).toEqual([
         "skjemautfyller-deployed",
         "build-aborted",
-        "publish-aborted"
+        "publish-aborted",
       ]);
     });
 
     it("renders pusher message skjemaufyller-deployed", () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
-      channelSubscriptions["skjemautfyller-deployed"]['publication'](pusherMessage);
+      channelSubscriptions["skjemautfyller-deployed"]["publication"](pusherMessage);
       expect(hookResult.result.current.alertComponent()).not.toBeNull();
     });
 
     it("renders pusher message build-aborted", () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
-      channelSubscriptions["build-aborted"]['publication'](pusherMessage);
+      channelSubscriptions["build-aborted"]["publication"](pusherMessage);
       expect(hookResult.result.current.alertComponent()).not.toBeNull();
     });
-
   });
-
 });

@@ -28,7 +28,7 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
-    "formiojs": "^4.12.3",
+    "formiojs": "4.14.0-rc.18",
     "full-icu": "^1.3.1",
     "glob": "^7.1.7",
     "jsdom": "^16.4.0",
