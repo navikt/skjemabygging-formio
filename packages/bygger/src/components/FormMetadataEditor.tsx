@@ -1,7 +1,17 @@
 import React from "react";
 import { SkjemaGruppe, Input, Select, Checkbox } from "nav-frontend-skjema";
+import {Display, Form} from '../Forms/form';
 
-const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
+type UpdateFormFunction = (form: Form) => void;
+type UsageContext = 'create' | 'edit';
+
+interface Props {
+  form: Form;
+  onChange: UpdateFormFunction;
+  usageContext: UsageContext;
+}
+
+const BasicFormMetadataEditor = ({ form, onChange, usageContext }: Props) => {
   const {
     title,
     path,
@@ -58,7 +68,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }) => {
         name="form-display"
         id="form-display"
         value={display}
-        onChange={(event) => onChange({ ...form, display: event.target.value })}
+        onChange={(event) => onChange({ ...form, display: event.target.value as Display })}
       >
         <option label="Skjema" value="form">
           Skjema
