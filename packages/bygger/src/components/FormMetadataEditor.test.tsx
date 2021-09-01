@@ -1,4 +1,4 @@
-import { FormMetadataEditor } from "./FormMetadataEditor";
+import {FormMetadataEditor, UpdateFormFunction} from "./FormMetadataEditor";
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -14,9 +14,10 @@ import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
 import { Formio } from "formiojs";
 import Formiojs from "formiojs/Formio";
+import {NavForm} from "../Forms/navForm";
 
 describe("FormMetadataEditor", () => {
-  let mockOnChange;
+  let mockOnChange: jest.MockedFunction<UpdateFormFunction>;
   let fakeBackend;
 
   beforeEach(() => {
@@ -37,7 +38,7 @@ describe("FormMetadataEditor", () => {
     );
 
     await userEvent.clear(screen.getByRole("textbox", { name: /Tittel/i }));
-    const clearedForm = { ...fakeBackend.form(), title: "" };
+    const clearedForm: NavForm = { ...fakeBackend.form(), title: "" };
     await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith(clearedForm));
 
     rerender(
@@ -46,7 +47,7 @@ describe("FormMetadataEditor", () => {
       </AppConfigProvider>
     );
     await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
-    const updatedForm = { ...fakeBackend.form(), title: "Søknad om førerhund" };
+    const updatedForm: NavForm = { ...fakeBackend.form(), title: "Søknad om førerhund" };
 
     rerender(
       <AppConfigProvider featureToggles={featureToggles}>
@@ -62,8 +63,9 @@ describe("FormMetadataEditor", () => {
         <FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />
       </AppConfigProvider>
     );
-    expect(screen.getByRole("textbox", { name: /Navn/i })).toBeVisible();
-    expect(screen.getByRole("textbox", { name: /Navn/i }).readOnly).toBe(true);
+    const navnInput = screen.getByRole("textbox", { name: /Navn/i }) as HTMLInputElement;
+    expect(navnInput).toBeVisible();
+    expect(navnInput.readOnly).toBe(true);
   });
 
   it("should update form when display is changed", async () => {
@@ -89,14 +91,16 @@ describe("FormMetadataEditor", () => {
         <FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />
       </AppConfigProvider>
     );
-    expect(screen.getByRole("textbox", { name: /Path/i })).toBeVisible();
-    expect(screen.getByRole("textbox", { name: /Path/i }).readOnly).toBe(true);
+    const pathInput = screen.getByRole("textbox", { name: /Path/i }) as HTMLInputElement;
+    expect(pathInput).toBeVisible();
+    expect(pathInput.readOnly).toBe(true);
   });
   describe("FormMetadataEditor", () => {
     let spy;
     let formioSpy;
 
     beforeEach(() => {
+      // @ts-ignore
       spy = jest.spyOn(global, "fetch");
       formioSpy = jest.spyOn(Formiojs, "fetch");
       const fetchAppGlue = new InprocessQuipApp(dispatcherWithBackend(fakeBackend));

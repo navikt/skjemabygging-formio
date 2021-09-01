@@ -1,17 +1,18 @@
 import React from "react";
 import { SkjemaGruppe, Input, Select, Checkbox } from "nav-frontend-skjema";
-import {Display, Form} from '../Forms/form';
+import {Display, NavForm} from '../Forms/navForm';
 
-type UpdateFormFunction = (form: Form) => void;
-type UsageContext = 'create' | 'edit';
+export type UpdateFormFunction = (form: NavForm) => void;
+export type UsageContext = 'create' | 'edit';
 
 interface Props {
-  form: Form;
+  form: NavForm;
   onChange: UpdateFormFunction;
-  usageContext: UsageContext;
 }
 
-const BasicFormMetadataEditor = ({ form, onChange, usageContext }: Props) => {
+type BasicFormProps = Props & {usageContext: UsageContext};
+
+const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
   const {
     title,
     path,
@@ -129,7 +130,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: Props) => {
   );
 };
 
-export const SkjemaVisningSelect = ({ form, onChange }) => {
+export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
   const { display } = form;
   return (
     <Select
@@ -137,7 +138,7 @@ export const SkjemaVisningSelect = ({ form, onChange }) => {
       name="form-display"
       id="form-display"
       value={display}
-      onChange={(event) => onChange({ ...form, display: event.target.value })}
+      onChange={(event) => onChange({ ...form, display: event.target.value as Display })}
       bredde="s"
     >
       <option value="form">Skjema</option>
@@ -145,10 +146,11 @@ export const SkjemaVisningSelect = ({ form, onChange }) => {
     </Select>
   );
 };
-export const CreationFormMetadataEditor = ({ form, onChange }) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={"create"} />
+
+export const CreationFormMetadataEditor = ({ form, onChange }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" />
 );
 
-export const FormMetadataEditor = ({ form, onChange }) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext={"edit"} />
+export const FormMetadataEditor = ({ form, onChange }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" />
 );

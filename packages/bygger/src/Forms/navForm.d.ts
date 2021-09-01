@@ -16,7 +16,7 @@ export interface FormProperties {
   signatures?: FormSignatures;
 }
 
-export interface Form {
+export interface NavForm {
   tags: string[];
   type: string;
   display: Display;
