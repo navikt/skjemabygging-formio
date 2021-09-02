@@ -5,7 +5,6 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
-import { Delete } from "@navikt/ds-icons";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useHistory, useParams } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
@@ -31,14 +30,11 @@ const useGlobalTranslationsPageStyles = makeStyles({
     marginBottom: "1rem",
     alignItems: "center",
   },
-  title: {
+  titleRow: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  titleItem: {
-    marginRight: "1rem",
-    display: "inline-block",
+    marginBottom: "3rem",
   },
   addButton: {
     maxWidth: "15rem",
@@ -227,6 +223,9 @@ const GlobalTranslationsPage = ({
             history.push(`/translations/global/${languageCode}/` + newTag);
           }}
         />
+        <Row className={classes.titleRow}>
+          {languageCode && <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>}
+        </Row>
         <Row>
           <Column className={classes.mainCol}>
             <GlobalTranslationsPanel
