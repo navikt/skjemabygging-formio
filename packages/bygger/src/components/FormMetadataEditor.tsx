@@ -1,6 +1,6 @@
 import React from "react";
 import { SkjemaGruppe, Input, Select, Checkbox } from "nav-frontend-skjema";
-import {Display, NavForm} from '../Forms/navForm';
+import {Display, Innsending, NavForm} from '../Forms/navForm';
 
 export type UpdateFormFunction = (form: NavForm) => void;
 export type UsageContext = 'create' | 'edit';
@@ -19,7 +19,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     display,
     name,
     type,
-    properties: { skjemanummer, tema, hasPapirInnsendingOnly, hasLabeledSignatures, signatures },
+    properties: { skjemanummer, tema, innsending, hasPapirInnsendingOnly, hasLabeledSignatures, signatures },
   } = form;
   return (
     <SkjemaGruppe>
@@ -95,13 +95,18 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, path: event.target.value })}
       />
-      <Checkbox
-        label="Tillat digital innsending"
-        checked={!hasPapirInnsendingOnly}
-        onChange={() =>
-          onChange({ ...form, properties: { ...form.properties, hasPapirInnsendingOnly: !hasPapirInnsendingOnly } })
-        }
-      />
+      <Select
+        label="Innsending"
+        name="form-innsending"
+        id="form-innsending"
+        value={innsending || (hasPapirInnsendingOnly ? 'KUN_PAPIR' : 'PAPIR_OG_DIGITAL')}
+        onChange={(event) => onChange({ ...form, properties: { ...form.properties, innsending: event.target.value as Innsending } })}
+      >
+        <option value="PAPIR_OG_DIGITAL">Papir og digital</option>
+        <option value="KUN_PAPIR">Kun papir</option>
+        <option value="KUN_DIGITAL">Kun digital</option>
+        <option value="INGEN">Ingen</option>
+      </Select>
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
         checked={!!hasLabeledSignatures}

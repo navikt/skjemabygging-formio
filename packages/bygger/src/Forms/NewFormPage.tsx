@@ -7,6 +7,7 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import { defaultFormFields } from "./DefaultForm";
 import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { makeStyles } from "@material-ui/styles";
+import {NavForm} from "./navForm";
 
 const useStyles = makeStyles({
   root: {
@@ -15,9 +16,18 @@ const useStyles = makeStyles({
   },
 });
 
-const NewFormPage = ({ onCreate, onLogout }) => {
+interface Props {
+  onCreate: Function;
+  onLogout: Function;
+}
+
+interface State {
+  form: NavForm;
+}
+
+const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElement => {
   const styles = useStyles();
-  const [state, setState] = useState({
+  const [state, setState] = useState<State>({
     form: {
       tags: ["nav-skjema", ""],
       type: "form",
@@ -28,7 +38,7 @@ const NewFormPage = ({ onCreate, onLogout }) => {
       properties: {
         skjemanummer: "",
         tema: "",
-        hasPapirInnsendingOnly: false,
+        innsending: "PAPIR_OG_DIGITAL",
         hasLabeledSignatures: false,
         signatures: { signature1: "", signature2: "", signature3: "", signature4: "", signature5: "" },
       },

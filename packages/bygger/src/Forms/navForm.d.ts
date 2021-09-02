@@ -1,4 +1,5 @@
 export type Display = 'wizard' | 'form';
+export type Innsending = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 
 export interface FormSignatures {
   signature1?: string;
@@ -11,7 +12,11 @@ export interface FormSignatures {
 export interface FormProperties {
   skjemanummer: string;
   tema: string;
-  hasPapirInnsendingOnly: boolean;
+  innsending?: Innsending;
+  /**
+   * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
+   */
+  hasPapirInnsendingOnly?: boolean;
   hasLabeledSignatures: boolean;
   signatures?: FormSignatures;
 }
