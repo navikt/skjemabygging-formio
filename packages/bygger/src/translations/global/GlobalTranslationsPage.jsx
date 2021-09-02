@@ -44,6 +44,13 @@ const useGlobalTranslationsPageStyles = makeStyles({
   },
 });
 
+const tags = {
+  SKJEMATEKSTER: "skjematekster",
+  GRENSESNITT: "grensesnitt",
+  STATISKE_TEKSTER: "statiske-tekster",
+  VALIDERING: "validering",
+};
+
 const createNewRow = () => ({
   id: guid(),
   originalText: "",
@@ -58,7 +65,7 @@ const GlobalTranslationsPage = ({
   saveTranslation,
 }) => {
   const { tag } = useParams();
-  const [selectedTag, setSelectedTag] = useState("skjematekster");
+  const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
 
   useEffect(() => {
     if (tag) {
@@ -214,14 +221,22 @@ const GlobalTranslationsPage = ({
         <ToggleGruppe
           className={classes.toggleGruppe}
           defaultToggles={[
-            { children: "Skjematekster", pressed: true },
-            { children: "Grensesnitt" },
-            { children: "Statiske tekster" },
-            { children: "Validering" },
+            {
+              children: "Skjematekster",
+              "data-key": tags.SKJEMATEKSTER,
+              pressed: selectedTag === tags.SKJEMATEKSTER,
+            },
+            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
+            {
+              children: "Statiske tekster",
+              "data-key": tags.STATISKE_TEKSTER,
+              pressed: selectedTag === tags.STATISKE_TEKSTER,
+            },
+            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
           ]}
           onChange={(event) => {
-            const newTag = event.target.innerText.toLowerCase().replace(" ", "-");
-            history.push(`/translations/global/${languageCode}/` + newTag);
+            const newTag = event.target.getAttribute("data-key");
+            history.push(`/translations/global/${languageCode}/${newTag}`);
           }}
         />
         <Row className={classes.titleRow}>
