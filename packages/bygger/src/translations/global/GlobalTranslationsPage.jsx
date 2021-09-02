@@ -189,16 +189,17 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const globalTranslationsToSave = currentTranslation.reduce(
-    (allCurrentTranslationAsObject, translation) => ({
-      ...allCurrentTranslationAsObject,
-      [translation.originalText]: {
-        scope: "global",
-        value: translation.translatedText,
-      },
-    }),
-    {}
-  );
+  const globalTranslationsToSave = () =>
+    currentTranslation.reduce(
+      (allCurrentTranslationAsObject, translation) => ({
+        ...allCurrentTranslationAsObject,
+        [translation.originalText]: {
+          scope: "global",
+          value: translation.translatedText,
+        },
+      }),
+      {}
+    );
 
   const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
@@ -254,7 +255,7 @@ const GlobalTranslationsPage = ({
             </Knapp>
             <Hovedknapp
               onClick={() =>
-                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave, selectedTag)
+                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
               }
             >
               Lagre
