@@ -1,13 +1,6 @@
-import React from "react";
 import * as formiojs from "formiojs";
 import waitForExpect from "wait-for-expect";
 import columnsForm from "../../example_data/columnsForm.json";
-import { render, screen } from "@testing-library/react";
-import NavFormBuilder from "../components/NavFormBuilder";
-import {FakeBackend} from "../fakeBackend/FakeBackend";
-// import { queryBySelector } from "@testing-library/dom"
-
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe("Formio.js replica", () => {
   let builderElement;
