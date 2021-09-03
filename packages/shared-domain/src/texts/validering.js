@@ -1,4 +1,4 @@
-export default {
+export const validering = {
   //Generelle feilmeldinger
   alertMessage: "{{message}}",
   error: "Vennligst fiks følgende feil:",

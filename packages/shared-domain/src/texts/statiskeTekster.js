@@ -1,4 +1,4 @@
-export default {
+export const statiske = {
   summaryPage: {
     title: "Oppsummering av søknaden din",
     description:

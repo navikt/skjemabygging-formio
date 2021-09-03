@@ -1,4 +1,4 @@
-export default {
+export const grensesnitt = {
   //Grensesnitt / navigering
   previous: "Forrige",
   next: "Neste",
