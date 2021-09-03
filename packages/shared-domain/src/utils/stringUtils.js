@@ -18,6 +18,7 @@ export const camelCase = str => {
     .replace(/^(.)/, s => s.toLowerCase());
 };
 
-export default {
+const stringUtils = {
   camelCase,
 };
+export default stringUtils;

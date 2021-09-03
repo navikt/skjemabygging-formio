@@ -11,7 +11,7 @@ import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import SelectBoxes from "./components/SelectBoxes";
 import AlertStripe from "./components/AlertStripe";
 
-export default {
+const customComponents = {
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
   htmlelement: HTMLElement,
@@ -25,3 +25,4 @@ export default {
   navSkjemagruppe: NavSkjemagruppe,
   selectboxes: SelectBoxes,
 };
+export default customComponents;

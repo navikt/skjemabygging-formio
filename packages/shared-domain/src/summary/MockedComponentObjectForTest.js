@@ -107,7 +107,7 @@ const createFormObject = (panels = [], title) => ({
   title,
 });
 
-export default {
+const mockedComponentObjectForTest = {
   keyFromLabel,
   createDummyCheckbox,
   createDummyTextfield,
@@ -123,3 +123,4 @@ export default {
   createPanelObject,
   createFormObject,
 };
+export default mockedComponentObjectForTest;
