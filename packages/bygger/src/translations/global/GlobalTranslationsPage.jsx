@@ -13,6 +13,7 @@ import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageS
 import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import EditGrensesnittTranslationsPanel from "./EditGrensesnittTranslationsPanel";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -51,10 +52,10 @@ const tags = {
   VALIDERING: "validering",
 };
 
-const createNewRow = () => ({
+const createNewRow = (originalText = "", translatedText = "") => ({
   id: guid(),
-  originalText: "",
-  translatedText: "",
+  originalText,
+  translatedText,
 });
 
 const GlobalTranslationsPage = ({
@@ -106,13 +107,11 @@ const GlobalTranslationsPage = ({
           });
         }
         case "updateTranslation": {
-          return state.map((translationObject) => {
-            if (translationObject.id === action.payload.id) {
-              return action.payload;
-            } else {
-              return translationObject;
-            }
-          });
+          const { id, originalText, translatedText } = action.payload;
+          if (id === "") {
+            return [...state, createNewRow(originalText, translatedText)];
+          }
+          return state.map((translation) => (translation.id === id ? action.payload : translation));
         }
         case "addNewTranslation": {
           return [...state, createNewRow()];
@@ -244,14 +243,23 @@ const GlobalTranslationsPage = ({
         </Row>
         <Row>
           <Column className={classes.mainCol}>
-            <GlobalTranslationsPanel
-              classes={classes}
-              currentTranslation={currentTranslation}
-              languageCode={languageCode}
-              updateOriginalText={updateOriginalText}
-              updateTranslation={updateTranslation}
-              deleteOneRow={deleteOneRow}
-            />
+            {selectedTag === tags.GRENSESNITT ? (
+              <EditGrensesnittTranslationsPanel
+                classes={classes}
+                currentTranslation={currentTranslation}
+                languageCode={languageCode}
+                updateTranslation={updateTranslation}
+              />
+            ) : (
+              <GlobalTranslationsPanel
+                classes={classes}
+                currentTranslation={currentTranslation}
+                languageCode={languageCode}
+                updateOriginalText={updateOriginalText}
+                updateTranslation={updateTranslation}
+                deleteOneRow={deleteOneRow}
+              />
+            )}
             <Knapp
               className={classes.addButton}
               onClick={() =>
