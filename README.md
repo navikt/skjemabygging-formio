@@ -16,6 +16,7 @@ og disse dataene vil så deployes sammen med fyllut.
 | yarn build  | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
 | yarn test  | kjører alle tester |
 | yarn clean  | sletter node_modules / dist / build / coverage for alle pakker i monorepoet |
+| yarn lint  | se etter problemer i koden |
 
 ## Bygge docker-image for testing av produksjonsbygg lokalt
 

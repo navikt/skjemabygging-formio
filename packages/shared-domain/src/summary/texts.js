@@ -1,4 +1,4 @@
-export default {
+const texts = {
   yes: "Ja",
   no: "Nei",
   downloadApplication: "Last ned Søknad",
@@ -51,3 +51,4 @@ export default {
     moveForward: "Gå videre",
   },
 };
+export default texts;

@@ -69,9 +69,6 @@
     "test:coverage": "craco test --coverage --env=jest-environment-jsdom-sixteen --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "eject": "craco eject"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "engines": {
     "node": ">= 14"
   },
