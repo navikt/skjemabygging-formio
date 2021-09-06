@@ -1,12 +1,12 @@
 import React from "react";
 import { SkjemaGruppe, Input, Select, Checkbox } from "nav-frontend-skjema";
-import {Display, NavForm} from '../Forms/navForm';
+import {DisplayType, NavFormType} from '../Forms/navForm';
 
-export type UpdateFormFunction = (form: NavForm) => void;
+export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = 'create' | 'edit';
 
 interface Props {
-  form: NavForm;
+  form: NavFormType;
   onChange: UpdateFormFunction;
 }
 
@@ -69,7 +69,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         name="form-display"
         id="form-display"
         value={display}
-        onChange={(event) => onChange({ ...form, display: event.target.value as Display })}
+        onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
       >
         <option label="Skjema" value="form">
           Skjema
@@ -138,7 +138,7 @@ export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
       name="form-display"
       id="form-display"
       value={display}
-      onChange={(event) => onChange({ ...form, display: event.target.value as Display })}
+      onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
       bredde="s"
     >
       <option value="form">Skjema</option>

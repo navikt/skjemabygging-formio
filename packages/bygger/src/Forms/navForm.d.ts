@@ -1,6 +1,6 @@
-export type Display = 'wizard' | 'form';
+export type DisplayType = 'wizard' | 'form';
 
-export interface FormSignatures {
+export interface FormSignaturesType {
   signature1?: string;
   signature2?: string;
   signature3?: string;
@@ -8,21 +8,21 @@ export interface FormSignatures {
   signature5?: string;
 }
 
-export interface FormProperties {
+export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
   hasPapirInnsendingOnly: boolean;
   hasLabeledSignatures: boolean;
-  signatures?: FormSignatures;
+  signatures?: FormSignaturesType;
 }
 
-export interface NavForm {
+export interface NavFormType {
   tags: string[];
   type: string;
-  display: Display;
+  display: DisplayType;
   name: string;
   title: string;
   path: string;
-  properties: FormProperties;
+  properties: FormPropertiesType;
   components: any[];
 }
