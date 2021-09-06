@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
-export default {
+const i18nData = {
   "nb-NO": {
     //Generelle feilmeldinger
     alertMessage: "{{message}}",
@@ -58,3 +58,4 @@ export default {
   en: {},
   pl: {},
 };
+export default i18nData;

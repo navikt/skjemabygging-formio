@@ -1,9 +1,7 @@
 import { gitVersionFromIndexHtml } from "./commit_version";
 import fs from "fs";
-import path from "path";
 
 import child_process from "child_process";
-import { fileURLToPath } from "url";
 import { buildDirectoryIndexHtml } from "./context";
 
 const htmlDocWithVersion = (version) => `

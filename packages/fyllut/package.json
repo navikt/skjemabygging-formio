@@ -46,9 +46,6 @@
     "dev-server": "cross-env-shell cd server && npm start",
     "check-env": "node -e 'console.log(process.env)' | grep npm"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",

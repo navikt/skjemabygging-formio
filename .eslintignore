@@ -1,1 +1,3 @@
-src/template/*
+**/src/template/**
+**/dist/**
+**/node_modules/**
