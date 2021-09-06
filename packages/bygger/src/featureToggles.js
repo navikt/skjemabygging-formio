@@ -1,3 +1,4 @@
-export default {
-  enableTranslations: true,
+const featureToggles = {
+  enableTranslations: false,
 };
+export default featureToggles;

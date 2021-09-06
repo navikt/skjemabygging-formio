@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
-export default {
+const i18nData = {
   "nb-NO": {
     //Generelle feilmeldinger
     //Erstattes av filen ../shared-domain/src/texts/validering.js når globale oversettelser er klar
@@ -64,3 +64,4 @@ export default {
   en: {},
   pl: {},
 };
+export default i18nData;

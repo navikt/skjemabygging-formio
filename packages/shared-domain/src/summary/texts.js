@@ -1,6 +1,6 @@
 //Denne filen erstattes av filene statiskeTekster.js, validering.js og grensesnitt.js (i src/texts/) når globale oversettelser er klar.
 // Linje 4 og 5 ("yes" og "no") håndteres av skjematekster i globale oversettelser.
-export default {
+const texts = {
   yes: "Ja",
   no: "Nei",
   downloadApplication: "Last ned Søknad",
@@ -53,3 +53,4 @@ export default {
     moveForward: "Gå videre",
   },
 };
+export default texts;
