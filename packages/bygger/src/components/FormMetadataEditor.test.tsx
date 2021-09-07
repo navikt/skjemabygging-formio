@@ -14,7 +14,7 @@ import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
 import { Formio } from "formiojs";
 import Formiojs from "formiojs/Formio";
-import {NavForm} from "../Forms/navForm";
+import {NavFormType} from "../Forms/navForm";
 
 describe("FormMetadataEditor", () => {
   let mockOnChange: jest.MockedFunction<UpdateFormFunction>;
@@ -38,7 +38,7 @@ describe("FormMetadataEditor", () => {
     );
 
     await userEvent.clear(screen.getByRole("textbox", { name: /Tittel/i }));
-    const clearedForm: NavForm = { ...fakeBackend.form(), title: "" };
+    const clearedForm: NavFormType = { ...fakeBackend.form(), title: "" };
     await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith(clearedForm));
 
     rerender(
@@ -47,7 +47,7 @@ describe("FormMetadataEditor", () => {
       </AppConfigProvider>
     );
     await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
-    const updatedForm: NavForm = { ...fakeBackend.form(), title: "Søknad om førerhund" };
+    const updatedForm: NavFormType = { ...fakeBackend.form(), title: "Søknad om førerhund" };
 
     rerender(
       <AppConfigProvider featureToggles={featureToggles}>

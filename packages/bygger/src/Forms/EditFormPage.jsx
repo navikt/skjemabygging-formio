@@ -1,7 +1,7 @@
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import NavFormBuilder from "../components/NavFormBuilder";
 import React, { useContext } from "react";
-import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
+import { FormBuilderOptions, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
@@ -12,7 +12,6 @@ import Column from "../components/layout/Column";
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import { Link } from "react-router-dom";
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import ActionRow from "../components/layout/ActionRow";
 import { UserAlerterContext } from "../userAlerting";
 

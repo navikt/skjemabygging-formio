@@ -7,7 +7,7 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import { defaultFormFields } from "./DefaultForm";
 import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { makeStyles } from "@material-ui/styles";
-import {NavForm} from "./navForm";
+import { NavFormType } from "./navForm";
 
 const useStyles = makeStyles({
   root: {
@@ -22,7 +22,7 @@ interface Props {
 }
 
 interface State {
-  form: NavForm;
+  form: NavFormType;
 }
 
 const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElement => {

@@ -1,13 +1,6 @@
-import React from "react";
 import * as formiojs from "formiojs";
 import waitForExpect from "wait-for-expect";
 import columnsForm from "../../example_data/columnsForm.json";
-import { render, screen } from "@testing-library/react";
-import NavFormBuilder from "../components/NavFormBuilder";
-import {FakeBackend} from "../fakeBackend/FakeBackend";
-// import { queryBySelector } from "@testing-library/dom"
-
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe("Formio.js replica", () => {
   let builderElement;
@@ -68,10 +61,10 @@ describe("Formio.js replica", () => {
   };
 
   const saveComponent = () => {
-    const click = new MouseEvent('click', {
+    const click = new MouseEvent("click", {
       view: window,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
 
     const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');

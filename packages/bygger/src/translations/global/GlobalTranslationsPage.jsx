@@ -5,13 +5,14 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
-import { Delete } from "@navikt/ds-icons";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useHistory, useParams } from "react-router-dom";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import { languagesInNorwegian } from "../../context/i18n";
+import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -29,14 +30,17 @@ const useGlobalTranslationsPageStyles = makeStyles({
     marginBottom: "1rem",
     alignItems: "center",
   },
-  title: {
+  titleRow: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: "3rem",
   },
-  titleItem: {
-    marginRight: "1rem",
-    display: "inline-block",
+  addButton: {
+    maxWidth: "15rem",
+  },
+  mainCol: {
+    gridColumn: "2 / 3",
   },
 });
 
@@ -205,61 +209,58 @@ const GlobalTranslationsPage = ({
           visOversettelseliste: true,
           visLagNyttSkjema: false,
         }}
-        leftCol={
-          <FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} tag={selectedTag} />
-        }
-        mainCol={
-          <ul className={classes.title}>
-            <li className={classes.titleItem}>
-              <Innholdstittel>{languageCode ? languagesInNorwegian[languageCode] : ""}</Innholdstittel>
-            </li>
-            <li className="list-inline-item">
-              <Delete onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))} />
-            </li>
-          </ul>
-        }
-        rightCol={
-          <Hovedknapp
-            onClick={() => {
-              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave, selectedTag);
-            }}
-          >
-            Lagre
-          </Hovedknapp>
-        }
       >
-        <div className={classes.root}>
-          <ToggleGruppe
-            className={classes.toggleGruppe}
-            defaultToggles={[
-              { children: "Skjematekster", pressed: true },
-              { children: "Grensesnitt" },
-              { children: "Statiske tekster" },
-              { children: "Validering" },
-            ]}
-            onChange={(event) => {
-              const newTag = event.target.innerText.toLowerCase().replace(" ", "-");
-              history.push(`/translations/global/${languageCode}/` + newTag);
-            }}
-          />
-          <GlobalTranslationsPanel
-            classes={classes}
-            currentTranslation={currentTranslation}
-            languageCode={languageCode}
-            updateOriginalText={updateOriginalText}
-            updateTranslation={updateTranslation}
-            deleteOneRow={deleteOneRow}
-          />
-          <Knapp
-            onClick={() =>
-              dispatch({
-                type: "addNewTranslation",
-              })
-            }
-          >
-            Legg til ny tekst
-          </Knapp>
-        </div>
+        <ToggleGruppe
+          className={classes.toggleGruppe}
+          defaultToggles={[
+            { children: "Skjematekster", pressed: true },
+            { children: "Grensesnitt" },
+            { children: "Statiske tekster" },
+            { children: "Validering" },
+          ]}
+          onChange={(event) => {
+            const newTag = event.target.innerText.toLowerCase().replace(" ", "-");
+            history.push(`/translations/global/${languageCode}/` + newTag);
+          }}
+        />
+        <Row className={classes.titleRow}>
+          {languageCode && <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>}
+        </Row>
+        <Row>
+          <Column className={classes.mainCol}>
+            <GlobalTranslationsPanel
+              classes={classes}
+              currentTranslation={currentTranslation}
+              languageCode={languageCode}
+              updateOriginalText={updateOriginalText}
+              updateTranslation={updateTranslation}
+              deleteOneRow={deleteOneRow}
+            />
+            <Knapp
+              className={classes.addButton}
+              onClick={() =>
+                dispatch({
+                  type: "addNewTranslation",
+                })
+              }
+            >
+              Legg til ny tekst
+            </Knapp>
+          </Column>
+          <Column>
+            <FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} tag={selectedTag} />
+            <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+              Slett språk
+            </Knapp>
+            <Hovedknapp
+              onClick={() =>
+                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave, selectedTag)
+              }
+            >
+              Lagre
+            </Hovedknapp>
+          </Column>
+        </Row>
       </AppLayoutWithContext>
     </LanguagesProvider>
   );

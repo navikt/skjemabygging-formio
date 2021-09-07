@@ -1,7 +1,7 @@
-export type Display = 'wizard' | 'form';
-export type Innsending = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+export type DisplayType = 'wizard' | 'form';
+export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
 
-export interface FormSignatures {
+export interface FormSignaturesType {
   signature1?: string;
   signature2?: string;
   signature3?: string;
@@ -9,25 +9,25 @@ export interface FormSignatures {
   signature5?: string;
 }
 
-export interface FormProperties {
+export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
-  innsending?: Innsending;
+  innsending?: InnsendingType;
   /**
    * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
    */
   hasPapirInnsendingOnly?: boolean;
   hasLabeledSignatures: boolean;
-  signatures?: FormSignatures;
+  signatures?: FormSignaturesType;
 }
 
-export interface NavForm {
+export interface NavFormType {
   tags: string[];
   type: string;
-  display: Display;
+  display: DisplayType;
   name: string;
   title: string;
   path: string;
-  properties: FormProperties;
+  properties: FormPropertiesType;
   components: any[];
 }

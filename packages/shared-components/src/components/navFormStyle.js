@@ -79,7 +79,7 @@ const styles = {
   },
 };
 
-export default {
+const navFormStyle = {
   ...styles,
   ...wizardSidevelgerStyles,
   ...requiredFieldStyles,
@@ -88,3 +88,4 @@ export default {
   ...dataGridStyles,
   ...errorValidationStyles,
 };
+export default navFormStyle;

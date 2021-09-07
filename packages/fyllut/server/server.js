@@ -8,7 +8,7 @@ import { buildDirectory } from "./context.js";
 import { logger } from "./logger.js";
 import cors from "cors";
 import { fetchFormsFromFormioApi, loadJsonFilesFromDisk } from "./utils/forms.js";
-import {config, checkConfigConsistency} from "./config/config.js";
+import { config, checkConfigConsistency } from "./config/config.js";
 
 const app = express();
 const skjemaApp = express();
@@ -21,15 +21,7 @@ skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
-const {
-  sentryDsn,
-  naisClusterName,
-  useFormioApi,
-  skjemaDir,
-  skjemaUrl,
-  translationDir,
-  gitVersion,
-} = config;
+const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, gitVersion } = config;
 checkConfigConsistency(config);
 
 const Registry = client.Registry;
@@ -86,17 +78,13 @@ const loadForms = async () => {
   return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadJsonFilesFromDisk(skjemaDir);
 };
 
-const loadTranslations = async () => {
-  return useFormioApi ? [] : await loadJsonFilesFromDisk(translationDir); // implementer henting av translations fra Formio API server
-};
-
 skjemaApp.get("/config", async (req, res) => {
   const forms = await loadForms();
 
   return res.json({
     NAIS_CLUSTER_NAME: naisClusterName,
     REACT_APP_SENTRY_DSN: sentryDsn,
-    FORMS: forms
+    FORMS: forms,
   });
 });
 

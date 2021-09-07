@@ -56,7 +56,7 @@ build_prod() {
     yarn build:prod || exit 1
 }
 
-yarn clean
+yarn && yarn clean
 node bin/prepare-production-build.mjs
 
 cd_package "shared-domain" && install && build

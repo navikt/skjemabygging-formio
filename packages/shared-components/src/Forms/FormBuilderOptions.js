@@ -903,9 +903,11 @@ export const FormBuilderSchemas = {
   kontaktInfoSchema,
 };
 
-export default {
+const FormBuilderOptions = {
   builder: builderPalett,
   editForm: builderEditForm,
   language: "nb-NO",
   sanitizeConfig: SANITIZE_CONFIG,
 };
+
+export default FormBuilderOptions;
