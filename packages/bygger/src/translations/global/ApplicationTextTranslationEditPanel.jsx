@@ -1,28 +1,14 @@
 import React from "react";
 import { Input, Textarea } from "nav-frontend-skjema";
-import { applicationTexts } from "@navikt/skjemadigitalisering-shared-domain";
-import { getInputType } from "../utils";
-
-const prepareTexts = (texts, parentKey = "") => {
-  return Object.entries(texts).flatMap((entry) => {
-    if (typeof entry[1] === "object") {
-      return prepareTexts(entry[1], entry[0]);
-    }
-
-    const key = parentKey.length > 0 ? `${parentKey}.${entry[0]}` : entry[0];
-    const text = entry[1];
-    return { key, text, type: getInputType(text) };
-  });
-};
 
 const getTranslation = (originalText, translations) =>
   translations.find((translation) => translation.originalText === originalText);
 
-const EditGrensesnittTranslationsPanel = ({ classes, currentTranslation, languageCode, updateTranslation }) => (
+const ApplicationTextTranslationEditPanel = ({ classes, texts, translations, languageCode, updateTranslation }) => (
   <form>
-    {prepareTexts(applicationTexts.grensesnitt).map(({ key, type, text }) => {
-      const id = getTranslation(text, currentTranslation)?.id || "";
-      const value = getTranslation(text, currentTranslation)?.translatedText || "";
+    {texts.map(({ key, type, text }) => {
+      const id = getTranslation(text, translations)?.id || "";
+      const value = getTranslation(text, translations)?.translatedText || "";
       return (
         <div key={`${key}-${languageCode}`} className={classes.list}>
           {type === "textarea" ? (
@@ -53,4 +39,4 @@ const EditGrensesnittTranslationsPanel = ({ classes, currentTranslation, languag
   </form>
 );
 
-export default EditGrensesnittTranslationsPanel;
+export default ApplicationTextTranslationEditPanel;

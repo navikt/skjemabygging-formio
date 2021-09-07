@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
+import { applicationTexts } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -13,7 +14,8 @@ import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageS
 import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import EditGrensesnittTranslationsPanel from "./EditGrensesnittTranslationsPanel";
+import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
+import { getInputType } from "../utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -207,6 +209,33 @@ const GlobalTranslationsPage = ({
       {}
     );
 
+  const prepareTextsForEditPanel = (texts, parentKey = "") => {
+    const concatKeys = (key, parentKey) => (parentKey.length > 0 ? `${parentKey}.${key}` : key);
+    return Object.entries(texts).flatMap((entry) => {
+      if (typeof entry[1] === "object") {
+        return prepareTextsForEditPanel(entry[1], concatKeys(parentKey, entry[0]));
+      }
+
+      const key = concatKeys(entry[0], parentKey);
+      const text = entry[1];
+      return { key, text, type: getInputType(text) };
+    });
+  };
+
+  function getApplicationTexts(tag) {
+    const { grensesnitt, statiske, validering } = applicationTexts;
+    switch (tag) {
+      case tags.GRENSESNITT:
+        return prepareTextsForEditPanel(grensesnitt);
+      case tags.STATISKE_TEKSTER:
+        return prepareTextsForEditPanel(statiske);
+      case tags.VALIDERING:
+        return prepareTextsForEditPanel(validering);
+      default:
+        return [];
+    }
+  }
+
   const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
     <LanguagesProvider translations={i18nData}>
@@ -243,14 +272,7 @@ const GlobalTranslationsPage = ({
         </Row>
         <Row>
           <Column className={classes.mainCol}>
-            {selectedTag === tags.GRENSESNITT ? (
-              <EditGrensesnittTranslationsPanel
-                classes={classes}
-                currentTranslation={currentTranslation}
-                languageCode={languageCode}
-                updateTranslation={updateTranslation}
-              />
-            ) : (
+            {selectedTag === tags.SKJEMATEKSTER ? (
               <GlobalTranslationsPanel
                 classes={classes}
                 currentTranslation={currentTranslation}
@@ -258,6 +280,14 @@ const GlobalTranslationsPage = ({
                 updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
+              />
+            ) : (
+              <ApplicationTextTranslationEditPanel
+                classes={classes}
+                texts={getApplicationTexts(selectedTag)}
+                translations={currentTranslation}
+                languageCode={languageCode}
+                updateTranslation={updateTranslation}
               />
             )}
             <Knapp
