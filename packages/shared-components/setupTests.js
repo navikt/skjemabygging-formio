@@ -19,4 +19,4 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-window.HTMLElement.prototype.scrollIntoView = function() {};
+window.HTMLElement.prototype.scrollIntoView = jest.fn();

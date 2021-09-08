@@ -1,5 +1,5 @@
 import React from "react";
-import { SkjemaGruppe, Input, Select, Checkbox } from "nav-frontend-skjema";
+import {SkjemaGruppe, Input, Select, Checkbox, Textarea} from "nav-frontend-skjema";
 import {DisplayType, InnsendingType, NavFormType} from '../Forms/navForm';
 
 export type UpdateFormFunction = (form: NavFormType) => void;
@@ -107,6 +107,22 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         <option value="KUN_DIGITAL">Kun digital</option>
         <option value="INGEN">Ingen</option>
       </Select>
+      {
+        innsending === 'INGEN' && (
+          <>
+            <Input
+              label="Overskrift til innsending"
+              value={form.properties.innsendingOverskrift || ''}
+              onChange={(event) => onChange({ ...form, properties: { ...form.properties, innsendingOverskrift: event.target.value } })}
+            />
+            <Textarea
+              label="Forklaring til innsending"
+              value={form.properties.innsendingForklaring || ''}
+              onChange={(event) => onChange({ ...form, properties: { ...form.properties, innsendingForklaring: event.target.value } })}
+            />
+          </>
+        )
+      }
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
         checked={!!hasLabeledSignatures}

@@ -13,6 +13,8 @@ export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
   innsending?: InnsendingType;
+  innsendingForklaring?: string;
+  innsendingOverskrift?: string;
   /**
    * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
    */

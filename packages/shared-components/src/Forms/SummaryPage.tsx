@@ -131,7 +131,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               {translate(TEXTS.summaryPage.editAnswers)}
             </Link>
           </div>
-          {innsending != 'KUN_DIGITAL' && (
+          {(innsending == 'KUN_PAPIR' || innsending == 'PAPIR_OG_DIGITAL') && (
             <div className="list-inline-item">
               <Link
                 className={`btn ${
@@ -148,7 +148,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               </Link>
             </div>
           )}
-          {innsending != 'KUN_PAPIR' && (
+          {(innsending == 'KUN_DIGITAL' || innsending == 'PAPIR_OG_DIGITAL') && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next wizard-button"
@@ -161,6 +161,17 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               </Link>
             </div>
           )}
+          {innsending == 'INGEN' &&
+          <div className="list-inline-item">
+            <Link
+              className="btn btn-primary btn-wizard-nav-next"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/ingen-innsending`, state: { previousPage: url } }}
+            >
+              {translate(TEXTS.summaryPage.continue)}
+            </Link>
+          </div>
+          }
         </nav>
       </main>
     </SummaryContent>
