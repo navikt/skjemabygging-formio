@@ -1,4 +1,4 @@
-import { getAllTextsForForm } from "./utils";
+import { getAllTextsAndTypeForForm } from "./utils";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
 const {
   createDummyCheckbox,
@@ -16,12 +16,12 @@ const {
 
 describe("testGetAllTextsForForm", () => {
   it("Test empty form", () => {
-    const actual = getAllTextsForForm(createFormObject([], "test"));
+    const actual = getAllTextsAndTypeForForm(createFormObject([], "test"));
     expect(actual).toEqual([]);
   });
 
   it("Test form with panel and text fields", () => {
-    const actual = getAllTextsForForm(
+    const actual = getAllTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -46,7 +46,7 @@ describe("testGetAllTextsForForm", () => {
   });
 
   it("Test form with panel, html elements and contents", () => {
-    const actual = getAllTextsForForm(
+    const actual = getAllTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -78,7 +78,7 @@ describe("testGetAllTextsForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe and radio panel", () => {
-    const actual = getAllTextsForForm(
+    const actual = getAllTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -108,7 +108,7 @@ describe("testGetAllTextsForForm", () => {
   });
 
   it("Test form with panel, skjemagruppe, datagrid and radio panel", () => {
-    const actual = getAllTextsForForm(
+    const actual = getAllTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -147,7 +147,7 @@ describe("testGetAllTextsForForm", () => {
   });
 
   it("Test form with panel, container and checkbox", () => {
-    const actual = getAllTextsForForm(
+    const actual = getAllTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -186,7 +186,7 @@ describe("testGetAllTextsForForm", () => {
     ]);
   });
   it("Test form with panel and text field with suffix and prefix", () => {
-    const actual = getAllTextsForForm(
+    const actual = getAllTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
