@@ -16,6 +16,8 @@ export const useFormioTranslations = (formio, userAlerter) => {
   };
 
   const loadGlobalTranslations = async (language, tag) => {
+    console.log("Load Global Translations");
+    console.log(language, tag);
     let filter = "";
     if (language) {
       filter += `&data.language=${language}`;

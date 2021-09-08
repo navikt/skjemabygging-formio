@@ -210,7 +210,7 @@ const GlobalTranslationsPage = ({
     );
 
   const flattenTextsForEditPanel = (texts) => {
-    return objectUtils.flatten(texts, (entry, parentKey) => {
+    return objectUtils.flattenToArray(texts, (entry, parentKey) => {
       const key = objectUtils.concatKeys(entry[0], parentKey);
       const text = entry[1];
       return { key, text, type: getInputType(text) };

@@ -1,24 +1,30 @@
 import objectUtils from "./objectUtils";
 
 describe("objectUtils", () => {
-  describe("flatten", () => {
+  const nestedObject = {
+    A: "a",
+    obj1: {
+      B: "b",
+    },
+    obj2: {
+      obj3: {
+        C: "c",
+      },
+    },
+  };
+
+  describe("flattenToArray", () => {
     it("returns an array based on callback function", () => {
-      expect(
-        objectUtils.flatten(
-          {
-            a: "a",
-            obj1: {
-              b: "b",
-            },
-            obj2: {
-              obj3: {
-                c: "c",
-              },
-            },
-          },
-          ([_, value]) => value
-        )
-      ).toEqual(["a", "b", "c"]);
+      expect(objectUtils.flattenToArray(nestedObject, ([_, value]) => value)).toEqual(["a", "b", "c"]);
+    });
+  });
+
+  describe("flatten", () => {
+    it("returns a flattened object", () => {
+      expect(objectUtils.flatten(nestedObject)).toEqual({ A: "a", B: "b", C: "c" });
+    });
+    it("returns a flattened object with value as key", () => {
+      expect(objectUtils.flatten(nestedObject, true)).toEqual({ a: "a", b: "b", c: "c" });
     });
   });
 

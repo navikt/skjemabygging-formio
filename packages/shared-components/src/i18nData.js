@@ -1,7 +1,5 @@
 import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
-const { flatten, addToMap } = objectUtils;
-
 const { validering, grensesnitt, ...remainingTexts } = TEXTS;
 const { navigation, ...remainingGrensesnittTexts } = grensesnitt;
 
@@ -24,11 +22,8 @@ const i18nData = {
     november: "November",
     december: "Desember",
 
-    ...flatten({ validering, navigation }, ([key, value]) => ({ key, value })).reduce(addToMap, {}),
-    ...flatten({ remainingGrensesnittTexts, remainingTexts }, ([_, value]) => ({
-      key: value,
-      value,
-    })).reduce(addToMap, {}),
+    ...objectUtils.flatten({ validering, navigation }),
+    ...objectUtils.flatten({ remainingGrensesnittTexts, remainingTexts }, true),
   },
   "nn-NO": {},
   en: {},
