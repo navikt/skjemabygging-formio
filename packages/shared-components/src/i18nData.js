@@ -1,4 +1,6 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+
+const { flatten, toMap } = objectUtils;
 
 const i18nData = {
   "nb-NO": {
@@ -51,14 +53,7 @@ const i18nData = {
     november: "November",
     december: "Desember",
 
-    [TEXTS.yes]: TEXTS.yes,
-    [TEXTS.no]: TEXTS.no,
-    [TEXTS.summaryPage.title]: TEXTS.summaryPage.title,
-    [TEXTS.summaryPage.description]: TEXTS.summaryPage.description,
-    [TEXTS.summaryPage.editAnswers]: TEXTS.summaryPage.editAnswers,
-    [TEXTS.summaryPage.continue]: TEXTS.summaryPage.continue,
-    [TEXTS.summaryPage.continueToPostalSubmission]: TEXTS.summaryPage.continueToPostalSubmission,
-    [TEXTS.summaryPage.continueToDigitalSubmission]: TEXTS.summaryPage.continueToDigitalSubmission,
+    ...flatten(TEXTS, ([_, value]) => ({ key: value, value })).reduce(toMap, {}),
   },
   "nn-NO": {},
   en: {},

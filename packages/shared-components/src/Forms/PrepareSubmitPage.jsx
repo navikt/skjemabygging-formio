@@ -49,15 +49,15 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
         {translate(form.title)}
       </Sidetittel>
       <main id="maincontent" tabIndex={-1}>
-        <section className="wizard-page" aria-label={translate(TEXTS.prepareSubmitPage.firstSectionTitle)}>
+        <section className="wizard-page" aria-label={translate(TEXTS.statiske.prepareSubmitPage.firstSectionTitle)}>
           <Systemtittel id="last-ned-soknad-overskrift" className="margin-bottom-default">
-            {translate(TEXTS.prepareSubmitPage.firstSectionTitle)}
+            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionTitle)}
           </Systemtittel>
           <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.prepareSubmitPage.firstSectionDescription)}
+            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionDescription)}
           </Normaltekst>
           <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.prepareSubmitPage.firstSectionInstruction)}
+            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction)}
           </Normaltekst>
           <form
             id={form.path}
@@ -76,46 +76,54 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               className="knapp"
               onClick={() => setHasDownloadedPDF(true)}
               type="submit"
-              value={translate(TEXTS.downloadApplication)}
+              value={translate(TEXTS.grensesnitt.downloadApplication)}
             />
           </div>
         </section>
-        <section className="wizard-page" aria-label={translate(TEXTS.prepareSubmitPage.secondSectionTitle)}>
+        <section className="wizard-page" aria-label={translate(TEXTS.statiske.prepareSubmitPage.secondSectionTitle)}>
           <Systemtittel id="instruksjoner-for-innsending-overskrift" className="margin-bottom-default">
-            {translate(TEXTS.prepareSubmitPage.secondSectionTitle)}
+            {translate(TEXTS.statiske.prepareSubmitPage.secondSectionTitle)}
           </Systemtittel>
           <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.prepareSubmitPage.secondSectionInstruction)}
+            {translate(TEXTS.statiske.prepareSubmitPage.secondSectionInstruction)}
           </Normaltekst>
           <BekreftCheckboksPanel
             className="margin-bottom-default"
-            label={translate(TEXTS.prepareSubmitPage.confirmCheckboxLabel)}
+            label={translate(TEXTS.grensesnitt.prepareSubmitPage.confirmCheckboxLabel)}
             checked={allowedToProgress}
             onChange={() => {
               setAllowedToProgress(!allowedToProgress);
             }}
           >
             <div className="margin-bottom-default">
-              <strong>{translate(TEXTS.prepareSubmitPage.confirmCheckboxDescription)}</strong>
+              <strong>{translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxDescription)}</strong>
             </div>
             <ol>
-              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionOne)}</li>
-              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionTwo)}</li>
-              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionThree)}</li>
-              <li className="typo-normal">{translate(TEXTS.prepareSubmitPage.confirmCheckboxInstructionFour)}</li>
+              <li className="typo-normal">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionOne)}
+              </li>
+              <li className="typo-normal">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionTwo)}
+              </li>
+              <li className="typo-normal">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionThree)}
+              </li>
+              <li className="typo-normal">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}
+              </li>
             </ol>
           </BekreftCheckboksPanel>
           <div aria-live="polite">
             {!allowedToProgress && (
               <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
-                {translate(TEXTS.prepareSubmitPage.confirmCheckboxWarning)}
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxWarning)}
               </AlertStripe>
             )}
           </div>
           <nav className="list-inline">
             <div className="list-inline-item">
               <Link className="knapp knapp--fullbredde" to={goBackUrl}>
-                {translate(TEXTS.goBack)}
+                {translate(TEXTS.grensesnitt.goBack)}
               </Link>
             </div>
             <div className="list-inline-item">
@@ -135,7 +143,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {translate(TEXTS.prepareSubmitPage.moveForward)}
+                {translate(TEXTS.grensesnitt.prepareSubmitPage.moveForward)}
               </a>
             </div>
           </nav>

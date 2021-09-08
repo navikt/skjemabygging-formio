@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
-import { applicationTexts } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -209,28 +209,23 @@ const GlobalTranslationsPage = ({
       {}
     );
 
-  const prepareTextsForEditPanel = (texts, parentKey = "") => {
-    const concatKeys = (key, parentKey) => (parentKey.length > 0 ? `${parentKey}.${key}` : key);
-    return Object.entries(texts).flatMap((entry) => {
-      if (typeof entry[1] === "object") {
-        return prepareTextsForEditPanel(entry[1], concatKeys(parentKey, entry[0]));
-      }
-
-      const key = concatKeys(entry[0], parentKey);
+  const flattenTextsForEditPanel = (texts) => {
+    return objectUtils.flatten(texts, (entry, parentKey) => {
+      const key = objectUtils.concatKeys(entry[0], parentKey);
       const text = entry[1];
       return { key, text, type: getInputType(text) };
     });
   };
 
   function getApplicationTexts(tag) {
-    const { grensesnitt, statiske, validering } = applicationTexts;
+    const { grensesnitt, statiske, validering } = TEXTS;
     switch (tag) {
       case tags.GRENSESNITT:
-        return prepareTextsForEditPanel(grensesnitt);
+        return flattenTextsForEditPanel(grensesnitt);
       case tags.STATISKE_TEKSTER:
-        return prepareTextsForEditPanel(statiske);
+        return flattenTextsForEditPanel(statiske);
       case tags.VALIDERING:
-        return prepareTextsForEditPanel(validering);
+        return flattenTextsForEditPanel(validering);
       default:
         return [];
     }

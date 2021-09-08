@@ -1,5 +1,5 @@
 import FormioUtils from "formiojs/utils";
-import TEXTS from "./texts";
+import TEXTS from "../texts";
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
@@ -26,7 +26,7 @@ function formatValue(component, value, translate) {
       return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
     }
     case "navCheckbox": {
-      return value === "ja" ? translate(TEXTS.yes) : translate(TEXTS.no);
+      return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
