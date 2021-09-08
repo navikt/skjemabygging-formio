@@ -34,7 +34,6 @@ const TranslationTextInput = ({
   text,
   value,
   type,
-  key,
   hasGlobalTranslation,
   tempGlobalTranslation,
   showGlobalTranslation,
@@ -47,11 +46,10 @@ const TranslationTextInput = ({
     <div className={classes.list}>
       {type === "textarea" ? (
         <Textarea
-          label={text}
           className="margin-bottom-default"
-          key={key}
-          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
+          label={text}
           value={value}
+          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           onChange={(event) => {
             onChange(event.target.value);
           }}
@@ -60,11 +58,10 @@ const TranslationTextInput = ({
       ) : (
         <Input
           className="margin-bottom-default"
-          key={key}
-          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           label={text}
           type={type}
           value={value}
+          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
           onChange={(event) => {
             onChange(event.target.value);
           }}
