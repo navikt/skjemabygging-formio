@@ -1,10 +1,12 @@
 export const grensesnitt = {
   //Grensesnitt / navigering
-  previous: "Forrige",
-  next: "Neste",
-  cancel: "Avbryt",
-  confirmCancel: "Er du sikker på at du vil avbryte?",
-  submit: "Neste",
+  navigation: {
+    previous: "Forrige",
+    next: "Neste",
+    cancel: "Avbryt",
+    confirmCancel: "Er du sikker på at du vil avbryte?",
+    submit: "Neste",
+  },
 
   downloadApplication: "Last ned Søknad",
   goBack: "Gå tilbake",
