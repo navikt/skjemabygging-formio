@@ -1,23 +1,60 @@
 <div class="builder-component" ref="dragComponent">
   <div class="component-btn-group" data-noattach="true">
-    <div class="btn btn-xxs btn-danger component-settings-button component-settings-button-remove" ref="removeComponent">
-      <i class="{{ctx.iconClass('remove')}}"></i>
+    <div
+      class="knapp knapp--standard knapp--kompakt knapp--hoved component-settings-button component-settings-button-edit"
+      ref="editComponent"
+      title="Rediger"
+    >
+      <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M14 0l1.195 3.584c.168.063.333.132.496.205l3.38-1.688L21.9 4.929l-1.689 3.38c.074.162.143.328.206.496L24 10v4l-3.584 1.196a8.933 8.933 0 01-.206.497l1.69 3.378L19.07 21.9l-3.379-1.689a8.933 8.933 0 01-.496.206L14 24h-4l-1.195-3.584a8.939 8.939 0 01-.497-.206l-3.38 1.69-2.827-2.829 1.688-3.38a8.94 8.94 0 01-.205-.496L0 14v-4l3.583-1.194c.064-.168.133-.334.206-.498l-1.688-3.38 2.828-2.827 3.38 1.688c.163-.073.329-.142.497-.206L10 0h4zm-1.442 2h-1.117l-1.038 3.116-.887.337-.194.077-.192.083-.866.39-2.94-1.47-.791.791 1.47 2.94-.39.866-.083.192-.077.194-.337.887L2 11.441v1.117l3.116 1.04.337.887.077.194.083.191.39.866-1.47 2.939.791.791 2.94-1.469.866.39.191.083.194.077.887.337L11.441 22h1.117l1.041-3.117.887-.337.194-.077.191-.082.866-.39 2.939 1.468.789-.789-1.469-2.939.39-.866.083-.191.077-.194.337-.887L22 12.558v-1.117l-3.116-1.039-.337-.887-.077-.194-.083-.191-.39-.866 1.469-2.94-.791-.791-2.939 1.47-.866-.39-.191-.083-.194-.077-.887-.337L12.558 2zM12 8a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4z" fill="currentColor"></path>
+      </svg>
     </div>
-    <div class="btn btn-xxs btn-default component-settings-button component-settings-button-copy" ref="copyComponent">
-      <i class="{{ctx.iconClass('copy')}}"></i>
-    </div>
-    <div class="btn btn-xxs btn-default component-settings-button component-settings-button-paste" ref="pasteComponent">
-      <i class="{{ctx.iconClass('save')}}"></i>
-    </div>
-    <div class="btn btn-xxs btn-default component-settings-button component-settings-button-edit-json" ref="editJson">
-      <i class="{{ctx.iconClass('wrench')}}"></i>
-    </div>
-    <div class="btn btn-xxs btn-default component-settings-button component-settings-button-move" ref="moveComponent">
-      <i class="{{ctx.iconClass('move')}}"></i>
-    </div>
-    <div class="btn btn-xxs btn-secondary component-settings-button component-settings-button-edit", ref="editComponent">
-      <i class="{{ctx.iconClass('cog')}}"></i>
-    </div>
+    <button
+      class="knapp knapp--standard knapp--kompakt component-settings-button component-settings-button-move"
+      ref="moveComponent"
+      role="button"
+    >
+      <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0a3 3 0 013 3v6l4.758.465c2.558.34 4.414 2.673 4.23 5.317L22.37 24H8.742l-6.068-7.791c-.98-1.258-.976-3.003.227-4.209 1.155-1.158 2.872-.992 3.964-.32L9 13V3a3 3 0 013-3zm0 2a1 1 0 00-.993.883L11 3v13.58l-5.051-3.11-.085-.055c-.508-.35-1.2-.35-1.547-.002-.412.412-.462.965-.145 1.455l.08.112 5.466 7.019h10.971l1.306-7.438.005-.102c.017-1.462-.976-2.715-2.273-2.976l-.164-.027L13 10.814V3a1 1 0 00-.883-.993L12 2z" fill="currentColor"></path>
+      </svg>
+    </button>
+    <button
+      class="knapp knapp--standard knapp--kompakt component-settings-button component-settings-button-edit-json"
+      ref="editJson"
+      role="button"
+    >
+      <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M22.835 1.165a3.976 3.976 0 010 5.623L8.073 21.549.682 24 0 23.318l2.45-7.392L17.21 1.165a3.977 3.977 0 015.624 0zm-4.218 7.029l-2.811-2.812L4.188 17l-1.393 4.205 4.207-1.395L18.618 8.194zM21.43 2.57a1.989 1.989 0 00-2.703-.1l-.108.1-1.406 1.406 2.811 2.812 1.406-1.406a1.988 1.988 0 00.101-2.703l-.1-.109z" fill="currentColor"></path>
+      </svg>
+    </button>
+    <button
+      class="knapp knapp--standard knapp--kompakt component-settings-button component-settings-button-paste"
+      ref="pasteComponent"
+      role="button"
+    >
+      <!-- Filler icon. Should get a new one -->
+      <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M3 18v2a2 2 0 001.85 1.994L5 22h14a2 2 0 001.994-1.85L21 20v-2h2v2a4 4 0 01-4 4H5a4 4 0 01-4-4v-2h2zM13 0v13.295L17.546 9 19 10.375 12 17l-7-6.625L6.455 9 11 13.295V0h2z" fill="currentColor"></path>
+      </svg>
+    </button>
+    <button
+      class="knapp knapp--standard knapp--kompakt component-settings-button component-settings-button-copy"
+      ref="copyComponent"
+      role="button"
+    >
+      <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M14 2v6h6v10H8V2h6zm8 18V6l-6-6H6v4H2v20h16v-4h4zm-6 0v2H4V6h2v14h10zm3.172-14L16 2.828V6h3.172z" fill="currentColor"></path>
+      </svg>
+    </button>
+    <button
+      class="knapp knapp--standard knapp--kompakt  knapp--fare component-settings-button component-settings-button-remove"
+      ref="removeComponent"
+      role="button"
+    >
+      <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385L13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385z" fill="currentColor"></path>
+      </svg>
+    </button>
   </div>
   {{ctx.html}}
 </div>

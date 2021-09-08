@@ -85,6 +85,30 @@ const BuilderMountElement = styled("div")({
   "& .badge": {
     fontSize: "1rem",
   },
+  "& .builder-component": {
+    position: "relative",
+
+    "&:not(:hover) .component-btn-group": {
+      display: "none",
+    },
+    "& .component-btn-group": {
+      display: "flex",
+      flexDirection: "row",
+      position: "absolute",
+      top: "0.5rem",
+      right: "0",
+      zIndex: "1001",
+
+      "& .component-settings-button:not(:last-of-type)": {
+        marginRight: "0.5rem",
+      },
+
+      "& svg": {
+        fontSize: "1rem",
+        verticalAlign: "initial",
+      },
+    },
+  },
 });
 
 class NavFormBuilder extends Component {
