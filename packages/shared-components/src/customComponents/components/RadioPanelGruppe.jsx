@@ -36,6 +36,9 @@ const RadioPanelGruppeWrapper = class extends Component {
     if (renderDescriptionAboveLabel) {
       descriptionId = guid();
     }
+    if (!component.values) {
+      return null;
+    }
     const radios = component.values.map(({ label, value }, index) => ({
       label: translate(label),
       value,
