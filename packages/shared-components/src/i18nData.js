@@ -1,6 +1,6 @@
 import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
-const { flatten, toMap } = objectUtils;
+const { flatten, addToMap } = objectUtils;
 
 const i18nData = {
   "nb-NO": {
@@ -53,7 +53,7 @@ const i18nData = {
     november: "November",
     december: "Desember",
 
-    ...flatten(TEXTS, ([_, value]) => ({ key: value, value })).reduce(toMap, {}),
+    ...flatten(TEXTS, ([_, value]) => ({ key: value, value })).reduce(addToMap, {}),
   },
   "nn-NO": {},
   en: {},

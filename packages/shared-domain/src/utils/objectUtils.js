@@ -6,11 +6,11 @@ export const flatten = (nestedObject, callback, parentKey = "") => {
   );
 };
 
-export const toMap = (map, obj) => ({ ...map, [obj.key]: obj.value });
+export const addToMap = (map, obj) => ({ ...map, [obj.key]: obj.value });
 
 const objectUtils = {
   concatKeys,
   flatten,
-  toMap,
+  addToMap,
 };
 export default objectUtils;

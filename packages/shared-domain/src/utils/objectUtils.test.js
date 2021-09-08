@@ -22,16 +22,16 @@ describe("objectUtils", () => {
     });
   });
 
-  describe("toMap", () => {
+  describe("addToMap", () => {
     it("adds entry to the map", () => {
-      expect(objectUtils.toMap({ a: "a", b: "b" }, { key: "c", value: "c" })).toEqual({ a: "a", b: "b", c: "c" });
+      expect(objectUtils.addToMap({ a: "a", b: "b" }, { key: "c", value: "c" })).toEqual({ a: "a", b: "b", c: "c" });
     });
     it("can be used as a callback to reduce", () => {
       expect(
         [
           { key: "a", value: "a" },
           { key: "b", value: "b" },
-        ].reduce(objectUtils.toMap, {})
+        ].reduce(objectUtils.addToMap, {})
       ).toEqual({ a: "a", b: "b" });
     });
   });
