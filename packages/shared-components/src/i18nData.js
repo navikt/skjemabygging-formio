@@ -8,7 +8,6 @@ const { navigation, ...remainingGrensesnittTexts } = grensesnitt;
 const i18nData = {
   "nb-NO": {
     //Erstattes av globalt oversatte skjematekster når globale oversettelser er klar
-    optional: "valgfritt",
     month: "Måned",
     day: "Dag",
     year: "År",
