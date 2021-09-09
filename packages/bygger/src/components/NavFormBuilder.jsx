@@ -67,9 +67,6 @@ const BuilderMountElement = styled("div")({
   "& .input--xs": {
     width: "70px",
   },
-  "& .form-builder-group-header": {
-    padding: 0,
-  },
   "& a": {
     color: "#0067c5",
   },
@@ -160,6 +157,35 @@ const BuilderMountElement = styled("div")({
         padding: "0 0 1rem",
         border: "none",
       },
+    },
+  },
+  "& .form-builder-panel": {
+    backgroundColor: "#ffffff",
+    borderRadius: ".25rem",
+
+    "& .form-builder-group-header": {
+      margin: "0",
+      padding: "0",
+    },
+
+    "& .builder-group-button": {
+      display: "block",
+      width: "100%",
+      backgroundColor: "rgba(0,0,0,.03)",
+      border: "1px solid rgba(0,0,0,.125)",
+      padding: ".375rem .75rem",
+      fontSize: "1rem",
+      lineHeight: "1.5",
+    },
+    "&:first-child .builder-group-button": {
+      borderRadius: ".25rem .25rem 0 0",
+    },
+    "&:last-child .builder-group-button": {
+      borderRadius: "0 0 .25rem .25rem",
+    },
+
+    "& .cardBody": {
+      padding: "0.2rem",
     },
   },
   "& .builder-component": {
