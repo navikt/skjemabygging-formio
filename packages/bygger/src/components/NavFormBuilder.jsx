@@ -233,8 +233,17 @@ const BuilderMountElement = styled("div")({
       right: "0",
       zIndex: "1001",
 
-      "& .component-settings-button:not(:last-of-type)": {
-        marginRight: "0.5rem",
+      "& .component-settings-button": {
+        "&:not(:last-child)": {
+          marginRight: "0.5rem",
+        },
+        "&.knapp--hoved": {
+          transform: "none",
+
+          "&:hover": {
+            transform: "none",
+          },
+        },
       },
 
       "& svg": {
