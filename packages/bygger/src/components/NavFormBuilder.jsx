@@ -187,6 +187,20 @@ const BuilderMountElement = styled("div")({
     "& .cardBody": {
       padding: "0.2rem",
     },
+
+    "& .formcomponent": {
+      backgroundColor: "#007bff",
+      borderColor: "#007bff",
+      borderRadius: ".3em",
+      color: "#fff",
+      display: "block",
+      fontSize: ".8em",
+      lineHeight: "1.2",
+      margin: ".2rem",
+      padding: "5px 5px 5px 8px",
+      textAlign: "left",
+      width: "block",
+    },
   },
   "& .builder-component": {
     position: "relative",
