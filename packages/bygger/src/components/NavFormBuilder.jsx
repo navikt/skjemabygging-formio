@@ -85,6 +85,31 @@ const BuilderMountElement = styled("div")({
   "& .badge": {
     fontSize: "1rem",
   },
+  "& .panel-body, & .tab-pane": {
+    "& >.drag-container.formio-builder-components": {
+      "&, &:hover": {
+        padding: "0 0 1rem",
+        border: "none",
+      },
+    },
+  },
+
+  "& .drag-container": {
+    padding: "10px",
+    border: "2px dotted #e8e8e8",
+
+    "&:hover": {
+      cursor: "move",
+      border: "2px dotted #ccc",
+    },
+
+    "&.formio-builder-form": {
+      "&, &:hover": {
+        padding: "0 0 1rem",
+        border: "none",
+      },
+    },
+  },
   "& .builder-component": {
     position: "relative",
 
