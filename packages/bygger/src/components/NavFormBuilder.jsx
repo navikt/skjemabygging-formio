@@ -159,9 +159,27 @@ const BuilderMountElement = styled("div")({
       },
     },
   },
+  "& .formcomponent": {
+    backgroundColor: "#007bff",
+    borderColor: "#007bff",
+    borderRadius: ".3em",
+    color: "#fff",
+    display: "block",
+    fontSize: ".8em",
+    lineHeight: "1.2",
+    margin: ".2rem",
+    padding: "5px 5px 5px 8px",
+    textAlign: "left",
+    width: "block",
+  },
+  "& .builder-sidebar": {
+    "& .card-body": {
+      padding: "0.2rem",
+    },
+  },
   "& .form-builder-panel": {
     backgroundColor: "#ffffff",
-    borderRadius: ".25rem",
+    borderRadius: "calc(.25rem - 1px)",
 
     "& .form-builder-group-header": {
       margin: "0",
@@ -172,34 +190,33 @@ const BuilderMountElement = styled("div")({
       display: "block",
       width: "100%",
       backgroundColor: "rgba(0,0,0,.03)",
-      border: "1px solid rgba(0,0,0,.125)",
+      border: "0",
       padding: ".375rem .75rem",
       fontSize: "1rem",
       lineHeight: "1.5",
     },
     "&:first-child .builder-group-button": {
-      borderRadius: ".25rem .25rem 0 0",
+      borderRadius: "calc(.25rem - 1px) calc(.25rem - 1px) 0 0",
     },
     "&:last-child .builder-group-button": {
-      borderRadius: "0 0 .25rem .25rem",
+      borderRadius: "0 0 calc(.25rem - 1px) calc(.25rem - 1px)",
     },
+  },
+  "& .card": {
+    backgroundColor: "#ffffff",
+    border: "1px solid #dee2e6",
+    borderRadius: "calc(.25rem - 1px)",
 
-    "& .cardBody": {
-      padding: "0.2rem",
+    "&-header": {
+      backgroundColor: "rgba(0,0,0,.03)",
+      borderBottom: "1px solid #dee2e6",
+      borderRadius: "calc(.25rem - 1px) calc(.25rem - 1px) 0 0",
+      padding: ".75rem 1.25rem",
     },
-
-    "& .formcomponent": {
-      backgroundColor: "#007bff",
-      borderColor: "#007bff",
-      borderRadius: ".3em",
-      color: "#fff",
-      display: "block",
-      fontSize: ".8em",
-      lineHeight: "1.2",
-      margin: ".2rem",
-      padding: "5px 5px 5px 8px",
-      textAlign: "left",
-      width: "block",
+    "&-body": {
+      flex: "1 1 auto",
+      minHeight: "1px",
+      padding: "1.25rem",
     },
   },
   "& .builder-component": {
