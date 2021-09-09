@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
@@ -16,6 +16,7 @@ import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { getInputType } from "../utils";
+import { UserAlerterContext } from "../../userAlerting";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -69,6 +70,8 @@ const GlobalTranslationsPage = ({
 }) => {
   const { tag } = useParams();
   const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
+
+  const alertComponent = useContext(UserAlerterContext).alertComponent();
 
   useEffect(() => {
     if (tag) {
@@ -297,7 +300,7 @@ const GlobalTranslationsPage = ({
             </Knapp>
           </Column>
           <Column>
-            <FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} tag={selectedTag} />
+            <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
             <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>
@@ -308,6 +311,7 @@ const GlobalTranslationsPage = ({
             >
               Lagre
             </Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
           </Column>
         </Row>
       </AppLayoutWithContext>
