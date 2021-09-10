@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, FunctionComponent } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
@@ -9,14 +9,14 @@ import navCssVariabler from "nav-frontend-core";
 import { TEXTS, createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
-const FormSummaryField = ({ label, value }) => (
+const FormSummaryField: FunctionComponent = ({ label, value }) => (
   <>
     <dt>{label}</dt>
     <dd>{value}</dd>
   </>
 );
 
-const SelectboxesSummary = ({ label, values }) => (
+const SelectboxesSummary: FunctionComponent = ({ label, values }) => (
   <>
     <dt>{label}</dt>
     <dd>
@@ -29,7 +29,7 @@ const SelectboxesSummary = ({ label, values }) => (
   </>
 );
 
-const FormSummaryFieldset = ({ label, components }) => (
+const FormSummaryFieldset: FunctionComponent = ({ label, components }) => (
   <div>
     <dt>{label}</dt>
     <dd>
@@ -40,7 +40,7 @@ const FormSummaryFieldset = ({ label, components }) => (
   </div>
 );
 
-const DataGridSummary = ({ label, components }) => (
+const DataGridSummary: FunctionComponent = ({ label, components }) => (
   <>
     <dt>{label}</dt>
     <dd>
@@ -51,7 +51,7 @@ const DataGridSummary = ({ label, components }) => (
   </>
 );
 
-const DataGridRow = ({ label, components }) => (
+const DataGridRow: FunctionComponent = ({ label, components }) => (
   <div className="data-grid__row skjemagruppe">
     {label && <p className="skjemagruppe__legend">{label}</p>}
     <dl>
@@ -60,7 +60,7 @@ const DataGridRow = ({ label, components }) => (
   </div>
 );
 
-const PanelSummary = ({ label, components }) => (
+const PanelSummary: FunctionComponent = ({ label, components }) => (
   <section className="margin-bottom-default wizard-page">
     <Systemtittel tag="h3" className="margin-bottom-default">
       {label}

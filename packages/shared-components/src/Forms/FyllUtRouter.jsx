@@ -5,7 +5,7 @@ import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
-import { SummaryPage } from "./SummaryPage.jsx";
+import { SummaryPage } from "./SummaryPage.tsx";
 import { styled } from "@material-ui/styles";
 import { LanguagesProvider, LanguageSelector } from "../context/languages";
 import { useAppConfig } from "../configContext";

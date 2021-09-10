@@ -20,7 +20,7 @@ const config = {
     // 3
     rules: [
       {
-        test: [/\.js$/, /\.jsx$/],
+        test: [/\.jsx?$/, /\.tsx?$/],
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -61,7 +61,7 @@ const config = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
 };
 module.exports = config;
