@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
 import { mapTranslationsToFormioI18nObject } from "./translationsMapper";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 const LanguagesContext = createContext({});
 
@@ -17,7 +18,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
     if (currentTranslation && currentTranslation.optional) {
       root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional.value})"`);
     } else {
-      root.style.setProperty("--optionalLabel", `" (valgfritt)"`);
+      root.style.setProperty("--optionalLabel", `" (${TEXTS.common.optional})"`);
     }
   }, [currentTranslation]);
 

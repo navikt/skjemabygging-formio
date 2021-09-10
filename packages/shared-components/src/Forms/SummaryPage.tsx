@@ -6,7 +6,7 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
-import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS, createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
 const FormSummaryField: FunctionComponent = ({ label, value }) => (
@@ -109,14 +109,14 @@ export function SummaryPage({ form, submission, formUrl }) {
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <main id="maincontent" tabIndex={-1}>
         <Innholdstittel tag="h2" className="margin-bottom-default">
-          {translate(TEXTS.summaryPage.title)}
+          {translate(TEXTS.statiske.summaryPage.title)}
         </Innholdstittel>
-        <Normaltekst className="margin-bottom-default">{translate(TEXTS.summaryPage.description)}</Normaltekst>
+        <Normaltekst className="margin-bottom-default">{translate(TEXTS.statiske.summaryPage.description)}</Normaltekst>
         <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
-              {translate(TEXTS.summaryPage.editAnswers)}
+              {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
           <div className="list-inline-item">
@@ -130,8 +130,8 @@ export function SummaryPage({ form, submission, formUrl }) {
               to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
             >
               {form.properties.hasPapirInnsendingOnly
-                ? translate(TEXTS.summaryPage.continue)
-                : translate(TEXTS.summaryPage.continueToPostalSubmission)}
+                ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
             </Link>
           </div>
           {!form.properties.hasPapirInnsendingOnly && (
@@ -141,7 +141,7 @@ export function SummaryPage({ form, submission, formUrl }) {
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
               >
-                {translate(TEXTS.summaryPage.continueToDigitalSubmission)}
+                {translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
               </Link>
             </div>
           )}
