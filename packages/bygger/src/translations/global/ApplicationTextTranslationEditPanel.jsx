@@ -1,14 +1,14 @@
 import React from "react";
 import TranslationTextInput from "../TranslationTextInput";
 
-const getTranslation = (originalText, translations) =>
+export const getTranslationByOriginalText = (originalText, translations) =>
   translations.find((translation) => translation.originalText === originalText);
 
 const ApplicationTextTranslationEditPanel = ({ texts, translations, languageCode, updateTranslation }) => (
   <form>
     {texts.map(({ key, type, text }) => {
-      const id = getTranslation(text, translations)?.id || "";
-      const value = getTranslation(text, translations)?.translatedText || "";
+      const id = getTranslationByOriginalText(text, translations)?.id || "";
+      const value = getTranslationByOriginalText(text, translations)?.translatedText || "";
       return (
         <TranslationTextInput
           text={text}
