@@ -3,6 +3,11 @@ import { Locked, Unlocked } from "@navikt/ds-icons";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
 
+const padLockIconStyle = {
+  marginLeft: "-20px",
+  zIndex: "1",
+  cursor: "pointer",
+};
 const useStyles = makeStyles({
   list: {
     display: "flex",
@@ -22,11 +27,13 @@ const useStyles = makeStyles({
       width: "100%",
     },
   },
-  padLockIcon: {
-    marginTop: "2rem",
-    marginLeft: "-20px",
-    zIndex: "1",
-    cursor: "pointer",
+  lockedIcon: {
+    ...padLockIconStyle,
+    marginTop: "2.5rem",
+  },
+  unlockedIcon: {
+    ...padLockIconStyle,
+    marginTop: "1rem",
   },
 });
 
@@ -49,7 +56,7 @@ const TranslationTextInput = ({
           className="margin-bottom-default"
           label={text}
           value={value}
-          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
+          description={hasGlobalTranslation ? "Denne teksten er globalt oversatt" : undefined}
           onChange={(event) => {
             onChange(event.target.value);
           }}
@@ -61,7 +68,7 @@ const TranslationTextInput = ({
           label={text}
           type={type}
           value={value}
-          description={hasGlobalTranslation ? "Denne teksten er global oversatt" : undefined}
+          description={hasGlobalTranslation ? "Denne teksten er globalt oversatt" : undefined}
           onChange={(event) => {
             onChange(event.target.value);
           }}
@@ -71,7 +78,8 @@ const TranslationTextInput = ({
       {showGlobalTranslation ? (
         hasGlobalTranslation ? (
           <Locked
-            className={classes.padLockIcon}
+            title="Lås opp for å overstyre global oversettelse"
+            className={classes.lockedIcon}
             onClick={() => {
               setHasGlobalTranslation(!hasGlobalTranslation);
               setGlobalTranslation("");
@@ -79,7 +87,8 @@ const TranslationTextInput = ({
           />
         ) : (
           <Unlocked
-            className={classes.padLockIcon}
+            title="Bruk global oversettelse"
+            className={classes.unlockedIcon}
             onClick={() => {
               setHasGlobalTranslation(!hasGlobalTranslation);
               setGlobalTranslation(tempGlobalTranslation);
