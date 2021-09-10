@@ -1,52 +1,149 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import TranslationTextInput from "./TranslationTextInput";
 
 describe("TranslationTextInput", () => {
-  const setUp = (type, hasGlobalTranslation = false, showGlobalTranslation = false) => {
+  const mockedOnChange = jest.fn();
+  const mockedSetHasGlobalTranslation = jest.fn();
+  const mockedSetGlobalTranslation = jest.fn();
+  const setUp = (
+    type,
+    value = "native translation",
+    hasGlobalTranslation = false,
+    showGlobalTranslation = false,
+    tempGlobalTranslation = undefined
+  ) => {
     render(
       <TranslationTextInput
         text={"Original text"}
-        value={"Value"}
+        value={value}
         type={type}
         hasGlobalTranslation={hasGlobalTranslation}
         showGlobalTranslation={showGlobalTranslation}
-        onChange={jest.fn()}
+        onChange={mockedOnChange}
+        setHasGlobalTranslation={mockedSetHasGlobalTranslation}
+        setGlobalTranslation={mockedSetGlobalTranslation}
+        tempGlobalTranslation={tempGlobalTranslation}
       />
     );
   };
 
-  it('renders textArea when type is "textArea"', () => {
-    setUp("textArea");
-    expect(screen.getByRole("textbox").getAttribute("type")).toBe("textArea");
+  afterEach(() => {
+    mockedOnChange.mockClear();
+    mockedSetHasGlobalTranslation.mockClear();
+    mockedSetGlobalTranslation.mockClear();
   });
 
-  it('renders Input with type text when type is "text"', () => {
-    setUp("text");
-    expect(screen.getByRole("textbox").getAttribute("type")).toBe("text");
-  });
-
-  it("does not render input description", () => {
-    setUp("text");
-    expect(screen.queryByText("Denne teksten er globalt oversatt")).toBeNull();
-  });
-
-  describe("When text has global translation", () => {
+  describe("when type is textArea", () => {
     beforeEach(() => {
-      setUp("text", true, true);
+      setUp("textArea", false, false, "textAreaValue");
     });
 
-    it("renders description", () => {
-      expect(screen.getByText("Denne teksten er globalt oversatt")).toBeDefined();
+    it("renders textArea", () => {
+      expect(screen.getByRole("textbox").getAttribute("type")).toBe("textArea");
     });
 
-    it("renders locked icon", () => {
-      expect(screen.getByTitle("Lås opp for å overstyre global oversettelse")).toBeDefined();
+    it("does not render input description", () => {
+      expect(screen.queryByText("Denne teksten er globalt oversatt")).toBeNull();
     });
 
-    it("renders unlocked icon when text no longer has global translation", () => {
-      setUp("text", false, true);
-      expect(screen.getByTitle("Bruk global oversettelse")).toBeDefined();
+    it("input is not readonly", () => {
+      expect(screen.getByRole("textbox")).not.toHaveAttribute("readonly");
+    });
+
+    it("calls onChange with value", () => {
+      const textArea = screen.getByRole("textbox");
+      fireEvent.change(textArea, { target: { value: "new textArea translation" } });
+      expect(mockedOnChange).toHaveBeenCalledTimes(1);
+      expect(mockedOnChange).toHaveBeenCalledWith("new textArea translation");
+    });
+  });
+
+  describe("when type is text", () => {
+    beforeEach(() => {
+      setUp("text");
+    });
+    it("renders Input with type text", () => {
+      expect(screen.getByRole("textbox").getAttribute("type")).toBe("text");
+    });
+
+    it("does not render input description", () => {
+      expect(screen.queryByText("Denne teksten er globalt oversatt")).toBeNull();
+    });
+
+    it("input is not readonly", () => {
+      expect(screen.getByRole("textbox")).not.toHaveAttribute("readonly");
+    });
+
+    it("calls onChange with value", () => {
+      const input = screen.getByRole("textbox");
+      fireEvent.change(input, { target: { value: "new input translation" } });
+      expect(mockedOnChange).toHaveBeenCalledTimes(1);
+      expect(mockedOnChange).toHaveBeenCalledWith("new input translation");
+    });
+  });
+
+  describe("When showGlobalTranslation is true", () => {
+    describe("When text has global translation", () => {
+      beforeEach(() => {
+        setUp("text", "global translation", true, true);
+      });
+
+      it("renders description", () => {
+        expect(screen.getByText("Denne teksten er globalt oversatt")).toBeDefined();
+      });
+
+      it("input is readonly", () => {
+        expect(screen.getByRole("textbox")).toHaveAttribute("readonly");
+      });
+
+      it("renders locked icon", () => {
+        expect(screen.getByTitle("Lås opp for å overstyre global oversettelse")).toBeDefined();
+      });
+
+      describe("onClick", () => {
+        beforeEach(() => {
+          const lockedIcon = screen.getByTitle("Lås opp for å overstyre global oversettelse");
+          fireEvent.click(lockedIcon);
+        });
+
+        it("toggles global translation", () => {
+          expect(mockedSetHasGlobalTranslation).toHaveBeenCalledTimes(1);
+          expect(mockedSetHasGlobalTranslation).toHaveBeenCalledWith(false);
+        });
+
+        it("sets global translation empty", () => {
+          expect(mockedSetGlobalTranslation).toHaveBeenCalledTimes(1);
+          expect(mockedSetGlobalTranslation).toHaveBeenCalledWith("");
+        });
+      });
+    });
+
+    describe("When text does not have global translation", () => {
+      beforeEach(() => {
+        setUp("text", "", false, true, "temporary global translation");
+      });
+
+      it("renders unlocked icon", () => {
+        expect(screen.getByTitle("Bruk global oversettelse")).toBeDefined();
+      });
+
+      describe("onClick", () => {
+        beforeEach(() => {
+          const lockedIcon = screen.getByTitle("Bruk global oversettelse");
+          fireEvent.click(lockedIcon);
+        });
+
+        it("toggles global translation", () => {
+          expect(mockedSetHasGlobalTranslation).toHaveBeenCalledTimes(1);
+          expect(mockedSetHasGlobalTranslation).toHaveBeenCalledWith(true);
+        });
+
+        it("sets global translation to tempGlobalTranslation", () => {
+          expect(mockedSetGlobalTranslation).toHaveBeenCalledTimes(1);
+          expect(mockedSetGlobalTranslation).toHaveBeenCalledWith("temporary global translation");
+        });
+      });
     });
   });
 });

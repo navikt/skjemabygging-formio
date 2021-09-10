@@ -2,7 +2,7 @@ import React from "react";
 import ApplicationTextTranslationEditPanel, {
   getTranslationByOriginalText,
 } from "./ApplicationTextTranslationEditPanel";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("ApplicationTextTranslationEditPanel", () => {
   describe("getTranslationByOriginalText", () => {
@@ -26,6 +26,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
   });
 
   describe("Rendering with three texts and one translation", () => {
+    const mockedUpdateTranslation = jest.fn();
     beforeEach(() => {
       render(
         <ApplicationTextTranslationEditPanel
@@ -36,9 +37,13 @@ describe("ApplicationTextTranslationEditPanel", () => {
           ]}
           translations={[{ id: "id", originalText: "text1", translatedText: "TEXT1" }]}
           languageCode={"en"}
-          updateTranslation={jest.fn()}
+          updateTranslation={mockedUpdateTranslation}
         />
       );
+    });
+
+    afterEach(() => {
+      mockedUpdateTranslation.mockClear();
     });
 
     it("renders all three inputs", () => {
@@ -51,6 +56,21 @@ describe("ApplicationTextTranslationEditPanel", () => {
 
     it("renders text2 without a value", () => {
       expect(screen.getByLabelText("text2").getAttribute("value")).toEqual("");
+    });
+
+    describe("onChange", () => {
+      it("calls updateTranslation with existing id, text and new value, when text already has a translation", () => {
+        const text1 = screen.getByLabelText("text1");
+        fireEvent.change(text1, { target: { value: "new global translation" } });
+        expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1);
+        expect(mockedUpdateTranslation).toHaveBeenCalledWith("id", "text1", "new global translation");
+      });
+      it("calls updateTranslation with empty string as id, text and new value, when text did not have a translation", () => {
+        const text1 = screen.getByLabelText("text2");
+        fireEvent.change(text1, { target: { value: "new global translation" } });
+        expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1);
+        expect(mockedUpdateTranslation).toHaveBeenCalledWith("", "text2", "new global translation");
+      });
     });
   });
 });
