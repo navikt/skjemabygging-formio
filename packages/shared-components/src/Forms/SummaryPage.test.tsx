@@ -50,10 +50,10 @@ type Buttons = {
 const getButton = (label): HTMLButtonElement => screen.queryByRole('link', {name: label}) as HTMLButtonElement;
 
 const getButtons = (): Buttons => {
-  const redigerSvarKnapp = getButton(TEXTS.summaryPage.editAnswers) as HTMLButtonElement;
-  const gaVidereKnapp = getButton(TEXTS.summaryPage.continue) as HTMLButtonElement;
-  const sendIPostenKnapp = getButton(TEXTS.summaryPage.continueToPostalSubmission) as HTMLButtonElement;
-  const sendDigitaltKnapp = getButton(TEXTS.summaryPage.continueToDigitalSubmission) as HTMLButtonElement;
+  const redigerSvarKnapp = getButton(TEXTS.grensesnitt.summaryPage.editAnswers) as HTMLButtonElement;
+  const gaVidereKnapp = getButton(TEXTS.grensesnitt.summaryPage.continue) as HTMLButtonElement;
+  const sendIPostenKnapp = getButton(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission) as HTMLButtonElement;
+  const sendDigitaltKnapp = getButton(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission) as HTMLButtonElement;
   return {redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp};
 }
 

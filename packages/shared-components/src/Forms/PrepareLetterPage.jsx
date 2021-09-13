@@ -15,12 +15,12 @@ import DownloadPdfButton from "./DownloadPdfButton";
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
   const attachmentSectionTitle = translate(
-    TEXTS.prepareLetterPage.attachmentSectionTitleAttachTo
+    TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo
       .concat(" ")
       .concat(
         skalSendeFlereVedlegg
-          ? TEXTS.prepareLetterPage.attachmentSectionTitleTheseAttachments
-          : TEXTS.prepareLetterPage.attachmentSectionTitleThisAttachment
+          ? TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments
+          : TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment
       )
   );
   return (
@@ -67,11 +67,16 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
   return (
-    <section className="wizard-page" aria-label={`${index}. ${translate(TEXTS.prepareLetterPage.firstSectionTitle)}`}>
+    <section
+      className="wizard-page"
+      aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
+    >
       <Systemtittel className="margin-bottom-default">
-        {`${index}. ${translate(TEXTS.prepareLetterPage.firstSectionTitle)}`}
+        {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
       </Systemtittel>
-      <Normaltekst className="margin-bottom-default">{translate(TEXTS.prepareLetterPage.firstDescription)}</Normaltekst>
+      <Normaltekst className="margin-bottom-default">
+        {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
+      </Normaltekst>
       <div className="margin-bottom-default">
         <button
           className="knapp knapp--fullbredde"
@@ -81,14 +86,14 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
               .catch(() => loggSkjemaInnsendingFeilet());
           }}
         >
-          {translate(TEXTS.prepareLetterPage.downloadCoverPage)}
+          {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         </button>
       </div>
       <DownloadPdfButton
         form={form}
         submission={submission}
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-        label={translate(TEXTS.downloadApplication)}
+        label={translate(TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         classNames="knapp knapp--fullbredde"
       />
@@ -99,35 +104,40 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
 const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) => (
   <section
     className="wizard-page"
-    aria-label={`${index}. ${translate(TEXTS.prepareLetterPage.sendInPapirSectionTitle)}`}
+    aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
   >
     <Systemtittel className="margin-bottom-default">
-      {`${index}. ${translate(TEXTS.prepareLetterPage.sendInPapirSectionTitle)}`}
+      {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
-      {translate(TEXTS.prepareLetterPage.SendInPapirSectionInstruction)}
+      {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
       {vedleggSomSkalSendes.length > 0 &&
         translate(
-          TEXTS.prepareLetterPage.sendInPapirSectionAttachTo
+          TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo
             .concat(" ")
             .concat(
               vedleggSomSkalSendes.length > 1
-                ? TEXTS.prepareLetterPage.sendInPapirSectionAttachments
-                : TEXTS.prepareLetterPage.sendInPapirSectionAttachment
+                ? TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments
+                : TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment
             )
             .concat(" ")
-            .concat(TEXTS.prepareLetterPage.sendInPapirSection)
+            .concat(TEXTS.statiske.prepareLetterPage.sendInPapirSection)
         )}
     </Normaltekst>
   </section>
 );
 
 const HvaSkjerVidereSection = ({ index, translate }) => (
-  <section className="wizard-page" aria-label={`${index}. ${translate(TEXTS.prepareLetterPage.lastSectionTitle)}`}>
+  <section
+    className="wizard-page"
+    aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.lastSectionTitle)}`}
+  >
     <Systemtittel className="margin-bottom-default">
-      {`${index}. ${translate(TEXTS.prepareLetterPage.lastSectionTitle)}`}
+      {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.lastSectionTitle)}`}
     </Systemtittel>
-    <Normaltekst className="margin-bottom-default">{translate(TEXTS.prepareLetterPage.lastSectionContent)}</Normaltekst>
+    <Normaltekst className="margin-bottom-default">
+      {translate(TEXTS.statiske.prepareLetterPage.lastSectionContent)}
+    </Normaltekst>
   </section>
 );
 
@@ -178,7 +188,7 @@ export function PrepareLetterPage({ form, submission, formUrl }) {
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
           <Link className="knapp knapp--fullbredde" to={goBackUrl}>
-            {translate(TEXTS.goBack)}
+            {translate(TEXTS.grensesnitt.goBack)}
           </Link>
         </div>
       </main>

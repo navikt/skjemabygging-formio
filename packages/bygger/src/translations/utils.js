@@ -1,6 +1,6 @@
 import { flattenComponents } from "@navikt/skjemadigitalisering-shared-components";
 
-const getInputType = (value) => {
+export const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
 };
 

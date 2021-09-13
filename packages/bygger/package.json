@@ -66,7 +66,7 @@
     "build": "cross-env-shell EXTEND_ESLINT=true craco build",
     "clean": "rimraf build coverage",
     "test": "craco test --env=jest-environment-jsdom-sixteen --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
-    "test:coverage": "craco test --coverage --env=jest-environment-jsdom-sixteen --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
+    "test:coverage": "craco test --coverage --watchAll=false --env=jest-environment-jsdom-sixteen --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "eject": "craco eject"
   },
   "engines": {
