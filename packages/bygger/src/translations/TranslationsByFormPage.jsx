@@ -5,7 +5,7 @@ import { LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import { getAllTextsAndTranslationsForForm, getAllTextsAndTypeForForm, getTextsAndTranslationsHeaders } from "./utils";
+import { getTextsAndTranslationsForForm, getTextsAndTypeForForm, getTextsAndTranslationsHeaders } from "./utils";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import { useTranslations } from "../context/i18n";
 import ActionRow from "../components/layout/ActionRow";
@@ -32,7 +32,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
   } = form;
   const { translations, setTranslations } = useTranslations();
   useRedirectIfNoLanguageCode(languageCode, translations);
-  const flattenedComponents = getAllTextsAndTypeForForm(form);
+  const flattenedComponents = getTextsAndTypeForForm(form);
   const translationId = (translations[languageCode] || {}).id;
   const styles = useStyles();
   return (
@@ -86,7 +86,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
             {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
             {console.log(translations[languageCode])}
             <CSVLink
-              data={getAllTextsAndTranslationsForForm(form, translations)}
+              data={getTextsAndTranslationsForForm(form, translations)}
               filename={`${title}_Norsk bokmål.csv`}
               className="knapp knapp--standard"
               separator={";"}

@@ -22,7 +22,7 @@ const getSimplifiedComponentObject = (form) =>
       prefix: getTextFromComponentProperty(prefix),
     }));
 
-const getComponentText = (textsForComponent, component, key) => {
+const getComponentTextAndType = (textsForComponent, component, key) => {
   if (key === "values") {
     return [
       ...textsForComponent,
@@ -43,6 +43,19 @@ const removeDuplicatedComponents = (components = []) => {
   );
 };
 
+const getTextsAndTypeForForm = (form) => {
+  const textComponentsWithType = getSimplifiedComponentObject(form).reduce((allTextsForForm, component) => {
+    return [
+      ...allTextsForForm,
+      ...Object.keys(component)
+        .filter((key) => component[key] !== undefined)
+        .reduce((textsForComponent, key) => getComponentTextAndType(textsForComponent, component, key), []),
+    ];
+  }, []);
+
+  return removeDuplicatedComponents(textComponentsWithType);
+};
+
 const parseText = (text) => {
   const pattern = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/gm;
   if (text.match(pattern)) {
@@ -53,7 +66,7 @@ const parseText = (text) => {
   return text.replace(/<\/?[^>]+(>|$)/gm, "").replace(/>(?=[^>]*)/gm, "");
 };
 
-const getAllTexts = (form) => {
+const getAllParsedTexts = (form) => {
   const textComponents = getSimplifiedComponentObject(form).reduce(
     (allTextsForForm, component) => {
       return [
@@ -78,21 +91,8 @@ const getAllTexts = (form) => {
   );
   return removeDuplicatedComponents(textComponents);
 };
-
-const getAllTextsAndTypeForForm = (form) => {
-  const textComponentsWithType = getSimplifiedComponentObject(form).reduce((allTextsForForm, component) => {
-    return [
-      ...allTextsForForm,
-      ...Object.keys(component)
-        .filter((key) => component[key] !== undefined)
-        .reduce((textsForComponent, key) => getComponentText(textsForComponent, component, key), []),
-    ];
-  }, []);
-  return removeDuplicatedComponents(textComponentsWithType);
-};
-
-const getAllTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getAllTexts(form);
+const getTextsAndTranslationsForForm = (form, translations) => {
+  const textComponents = getAllParsedTexts(form);
   let textsWithTranslations = [];
   Object.keys(translations).forEach((languageCode) => {
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
@@ -126,9 +126,9 @@ const getTextsAndTranslationsHeaders = (translations) => {
 };
 
 export {
-  getAllTexts,
-  getAllTextsAndTypeForForm,
-  getAllTextsAndTranslationsForForm,
+  getAllParsedTexts,
+  getTextsAndTypeForForm,
+  getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
   parseText,
 };

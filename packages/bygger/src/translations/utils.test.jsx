@@ -1,5 +1,11 @@
-import { getAllTextsAndTypeForForm, getTextsAndTranslationsHeaders, parseText } from "./utils";
+import {
+  getTextsAndTypeForForm,
+  getTextsAndTranslationsForForm,
+  getTextsAndTranslationsHeaders,
+  parseText,
+} from "./utils";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
+
 const {
   createDummyCheckbox,
   createDummyContainerElement,
@@ -14,14 +20,13 @@ const {
   createPanelObject,
 } = MockedComponentObjectForTest;
 
-describe("testGetAllTextsForForm", () => {
+describe("testGetAllTextsAndTypeForForm", () => {
   it("Test empty form", () => {
-    const actual = getAllTextsAndTypeForForm(createFormObject([], "test"));
+    const actual = getTextsAndTypeForForm(createFormObject([], "test"));
     expect(actual).toEqual([]);
   });
-
   it("Test form with panel and text fields", () => {
-    const actual = getAllTextsAndTypeForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -44,9 +49,8 @@ describe("testGetAllTextsForForm", () => {
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
   });
-
   it("Test form with panel, html elements and contents", () => {
-    const actual = getAllTextsAndTypeForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -78,7 +82,7 @@ describe("testGetAllTextsForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe and radio panel", () => {
-    const actual = getAllTextsAndTypeForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -106,9 +110,8 @@ describe("testGetAllTextsForForm", () => {
       { text: "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF", type: "textarea" },
     ]);
   });
-
   it("Test form with panel, skjemagruppe, datagrid and radio panel", () => {
-    const actual = getAllTextsAndTypeForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -145,9 +148,8 @@ describe("testGetAllTextsForForm", () => {
       { text: "Radio panel inside data grid without label", type: "text" },
     ]);
   });
-
   it("Test form with panel, container and checkbox", () => {
-    const actual = getAllTextsAndTypeForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -186,7 +188,7 @@ describe("testGetAllTextsForForm", () => {
     ]);
   });
   it("Test form with panel and text field with suffix and prefix", () => {
-    const actual = getAllTextsAndTypeForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -210,8 +212,41 @@ describe("testGetAllTextsForForm", () => {
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
   });
+  it("Test form with duplicated text field", () => {
+    const actual = getTextsAndTypeForForm(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [createDummyTextfield("same textfield"), createDummyEmail(), createDummyTextfield("same textfield")],
+            "Introduksjon"
+          ),
+        ],
+        "test"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "Introduksjon", type: "text" },
+      { text: "same textfield", type: "text" },
+      { text: "Email", type: "text" },
+    ]);
+  });
 });
+describe("testGetTextsAndTranslationsForForm", () => {
+  const form = createFormObject(
+    [createPanelObject("Introduksjon", [createDummyTextfield("Ja")], [createDummyTextfield("Jeg")], "Introduksjon")],
+    "test"
+  );
+  const translations = {
+    en: { id: "123", translations: { Ja: { value: "Yes", scope: "global" } } },
+    "nn-NO": { id: "2345", translations: { Jeg: { value: "Eg", scope: "global" } } },
+  };
 
+  it("Test form with translations", () => {
+    const actual = getTextsAndTranslationsForForm(form, translations);
+    expect(actual).toEqual([{ text: "test" }, { text: "Introduksjon" }, { text: "Ja", en: "Yes" }]);
+  });
+});
 describe("testGetCSVfileHeaders", () => {
   it("Test headers with only origin form text", () => {
     const actual = getTextsAndTranslationsHeaders([]);
