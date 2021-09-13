@@ -10,6 +10,7 @@ import { lastNedFilBase64 } from "../util/pdf";
 import { useAppConfig } from "../configContext";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
+import DownloadPdfButton from "./DownloadPdfButton";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -83,26 +84,14 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
           {translate(TEXTS.prepareLetterPage.downloadCoverPage)}
         </button>
       </div>
-      <form
-        id={form.path}
-        action={`${fyllutBaseURL}/pdf-form-papir`}
-        method="post"
-        acceptCharset="utf-8"
-        target="_blank"
-        hidden
-      >
-        <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
-        <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
-      </form>
-      <div>
-        <input
-          form={form.path}
-          className="knapp knapp--fullbredde"
-          onClick={() => setHasDownloadedPDF(true)}
-          type="submit"
-          value={translate(TEXTS.downloadApplication)}
-        />
-      </div>
+      <DownloadPdfButton
+        form={form}
+        submission={submission}
+        actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
+        label={translate(TEXTS.downloadApplication)}
+        onClick={() => setHasDownloadedPDF(true)}
+        classNames="knapp knapp--fullbredde"
+      />
     </section>
   );
 };
