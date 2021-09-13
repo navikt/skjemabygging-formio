@@ -286,6 +286,11 @@ describe("testParsingTextWithHTMLTag", () => {
     expect(actual).toEqual("(hello.hello.world)test");
   });
 
+  it("Test form text with only a tag when there is target attribute", () => {
+    const actual = parseText('<a href="hello.hello.world" target="_blank">test</a>');
+    expect(actual).toEqual("(hello.hello.world) test");
+  });
+
   it("Test form text with only a tag when there is space before link", () => {
     const actual = parseText('<a href= "hello.hello.world">test</a>');
     expect(actual).toEqual("test");

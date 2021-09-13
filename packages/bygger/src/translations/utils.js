@@ -59,9 +59,11 @@ const getTextsAndTypeForForm = (form) => {
 const parseText = (text) => {
   const pattern = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/gm;
   if (text.match(pattern)) {
-    text = text.replace(pattern, (match, p1, offset) => {
-      return "(" + offset + ")";
-    });
+    text = text
+      .replace(pattern, (match, p1, offset) => {
+        return "(" + offset + ")";
+      })
+      .replace('target="_blank"', "");
   }
   return text.replace(/<\/?[^>]+(>|$)/gm, "").replace(/>(?=[^>]*)/gm, "");
 };
