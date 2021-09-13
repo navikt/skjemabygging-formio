@@ -177,10 +177,6 @@ describe("FormMetadataEditor", () => {
 
     describe('Forklaring til innsending', () => {
 
-      beforeEach(() => {
-
-      });
-
       test('Viser input for forklaring når innsending settes til INGEN', async () => {
         const { rerender } = render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
