@@ -39,14 +39,14 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
             form={form}
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-            label={translate(TEXTS.downloadApplication)}
+            label={translate(TEXTS.grensesnitt.downloadApplication)}
             onClick={() => loggSkjemaFullfort("ingeninnsending")}
             classNames="knapp knapp--fullbredde"
           />
         </section>
         <div>
           <Link className="knapp knapp--fullbredde" to={goBackUrl}>
-            {translate(TEXTS.goBack)}
+            {translate(TEXTS.grensesnitt.goBack)}
           </Link>
         </div>
       </main>

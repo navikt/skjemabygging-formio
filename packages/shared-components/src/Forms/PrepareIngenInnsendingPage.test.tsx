@@ -58,7 +58,7 @@ describe('PrepareIngenInnsendingPage', () => {
   });
 
   test('Nedlasting av pdf', () => {
-    const lastNedSoknadKnapp = screen.getByRole('button', {name: TEXTS.downloadApplication});
+    const lastNedSoknadKnapp = screen.getByRole('button', {name: TEXTS.grensesnitt.downloadApplication});
     userEvent.click(lastNedSoknadKnapp);
     expect(submitCalls).toHaveLength(1);
 
