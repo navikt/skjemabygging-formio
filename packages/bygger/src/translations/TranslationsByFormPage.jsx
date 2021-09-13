@@ -5,7 +5,7 @@ import { LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import { getAllTexts, getAllTextsAndTypeForForm } from "./utils";
+import { getAllTextsAndTranslationsForForm, getAllTextsAndTypeForForm, getTextsAndTranslationsHeaders } from "./utils";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import { useTranslations } from "../context/i18n";
 import ActionRow from "../components/layout/ActionRow";
@@ -86,11 +86,11 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
             {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
             {console.log(translations[languageCode])}
             <CSVLink
-              data={[{ text: title }, ...getAllTexts(form)]}
-              target="_blank"
-              filename={`${title}-${languageCode}`}
+              data={getAllTextsAndTranslationsForForm(form, translations)}
+              filename={`${title}_Norsk bokmål.csv`}
               className="knapp knapp--standard"
-              headers={[{ label: "Skjematekster", key: "text" }]}
+              separator={";"}
+              headers={getTextsAndTranslationsHeaders(translations)}
             >
               Eksporter
             </CSVLink>

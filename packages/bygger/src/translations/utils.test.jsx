@@ -1,4 +1,4 @@
-import { getAllTextsAndTypeForForm } from "./utils";
+import { getAllTextsAndTypeForForm, getTextsAndTranslationsHeaders, parseText } from "./utils";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
 const {
   createDummyCheckbox,
@@ -209,5 +209,50 @@ describe("testGetAllTextsForForm", () => {
       { text: "+47", type: "text" },
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
+  });
+});
+
+describe("testGetCSVfileHeaders", () => {
+  it("Test headers with only origin form text", () => {
+    const actual = getTextsAndTranslationsHeaders([]);
+    expect(actual).toEqual([{ key: "text", label: "Skjematekster" }]);
+  });
+
+  it("Test headers with origin form text and language code", () => {
+    const actual = getTextsAndTranslationsHeaders({ en: {}, "nn-NO": {} });
+    expect(actual).toEqual([
+      { key: "text", label: "Skjematekster" },
+      { key: "en", label: "EN" },
+      { key: "nn-NO", label: "NN-NO" },
+    ]);
+  });
+});
+describe("testParsingTextWithHTMLTag", () => {
+  it("Test form text with HTML element", () => {
+    const actual = parseText(
+      '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/> '
+    );
+    expect(actual).toEqual(
+      'Eventuell utbetaling av AAP Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt (https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader) target="_blank" endre hvilket kontonummer vi benytter (åpnes i ny fane).  '
+    );
+  });
+
+  it("Test form text with HTML element besides a tag", () => {
+    const actual = parseText(
+      "<p>Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke på</p><ul><li>Stønad til barnetilsyn på grunn av arbeid</li><li>Stønad til skolepenger</li></ul><p>Stønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger.</p>"
+    );
+    expect(actual).toEqual(
+      "Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke påStønad til barnetilsyn på grunn av arbeidStønad til skolepengerStønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger."
+    );
+  });
+
+  it("Test form text with only a tag when there is no space before link ", () => {
+    const actual = parseText('<a href="hello.hello.world">test</a>');
+    expect(actual).toEqual("(hello.hello.world)test");
+  });
+
+  it("Test form text with only a tag when there is space before link", () => {
+    const actual = parseText('<a href= "hello.hello.world">test</a>');
+    expect(actual).toEqual('<a href= "hello.hello.world">test</a>');
   });
 });

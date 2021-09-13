@@ -43,26 +43,39 @@ const removeDuplicatedComponents = (components = []) => {
   );
 };
 
+const parseText = (text) => {
+  const pattern = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/gm;
+  if (text.match(pattern)) {
+    text = text.replace(pattern, (match, p1, offset) => {
+      return "(" + offset + ")";
+    });
+  }
+  return text.replace(/<\/?[^>]+(>|$)/gm, "").replace(/>(?=[^>]*)/gm, "");
+};
+
 const getAllTexts = (form) => {
-  const textComponents = getSimplifiedComponentObject(form).reduce((allTextsForForm, component) => {
-    return [
-      ...allTextsForForm,
-      ...Object.keys(component)
-        .filter((key) => component[key] !== undefined)
-        .reduce((textsForComponent, key) => {
-          if (key === "values") {
-            return [
-              ...textsForComponent,
-              ...component[key].map((value) => ({
-                text: value.replace(/<\/?[^>]+(>|$)/gm, ""),
-              })),
-            ];
-          } else {
-            return [...textsForComponent, { text: component[key].replace(/<\/?[^>]+(>|$)/gm, "") }];
-          }
-        }, []),
-    ];
-  }, []);
+  const textComponents = getSimplifiedComponentObject(form).reduce(
+    (allTextsForForm, component) => {
+      return [
+        ...allTextsForForm,
+        ...Object.keys(component)
+          .filter((key) => component[key] !== undefined)
+          .reduce((textsForComponent, key) => {
+            if (key === "values") {
+              return [
+                ...textsForComponent,
+                ...component[key].map((value) => ({
+                  text: parseText(value),
+                })),
+              ];
+            } else {
+              return [...textsForComponent, { text: parseText(component[key]) }];
+            }
+          }, []),
+      ];
+    },
+    [{ text: form.title }]
+  );
   return removeDuplicatedComponents(textComponents);
 };
 
@@ -78,4 +91,44 @@ const getAllTextsAndTypeForForm = (form) => {
   return removeDuplicatedComponents(textComponentsWithType);
 };
 
-export { getAllTexts, getAllTextsAndTypeForForm };
+const getAllTextsAndTranslationsForForm = (form, translations) => {
+  const textComponents = getAllTexts(form);
+  let textsWithTranslations = [];
+  Object.keys(translations).forEach((languageCode) => {
+    textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
+      if (Object.keys(translations[languageCode].translations).indexOf(textComponent.text) < 0) {
+        return [...newTextComponent, textComponent];
+      }
+      return [
+        ...newTextComponent,
+        Object.assign(textComponent, {
+          [languageCode]: translations[languageCode].translations[textComponent.text].value,
+        }),
+      ];
+    }, []);
+  });
+  return textsWithTranslations;
+};
+
+const getTextsAndTranslationsHeaders = (translations) => {
+  return Object.keys(translations).reduce(
+    (headers, languageCode) => {
+      return [
+        ...headers,
+        {
+          label: languageCode.toUpperCase(),
+          key: languageCode,
+        },
+      ];
+    },
+    [{ label: "Skjematekster", key: "text" }]
+  );
+};
+
+export {
+  getAllTexts,
+  getAllTextsAndTypeForForm,
+  getAllTextsAndTranslationsForForm,
+  getTextsAndTranslationsHeaders,
+  parseText,
+};
