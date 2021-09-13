@@ -63,6 +63,8 @@
     "classnames": "2.2.6",
     "eventemitter2": "^6.4.4",
     "file-saver": "2.0.5",
+    "lodash.set": "^4.3.2",
+    "lodash.clonedeep": "^4.5.0",
     "moment": "^2.29.1",
     "nav-datovelger": "^6.2.1",
     "nav-frontend-alertstriper": "^3.0.23",
