@@ -1,4 +1,4 @@
-import cloneDeep from "lodash.cloneDeep";
+import cloneDeep from "lodash.clonedeep";
 import set from "lodash.set";
 import { Utils } from "formiojs";
 
