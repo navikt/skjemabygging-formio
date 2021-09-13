@@ -32,8 +32,7 @@ import { styled } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
-import { overrideFormioWizardNextPageAndSubmit } from "../formio-overrides/wizard-overrides";
-import { checkConditionOverride } from "../formio-overrides/conditional-overrides";
+import { checkConditionOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
 
 Utils.checkCondition = checkConditionOverride;
 
