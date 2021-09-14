@@ -6,6 +6,23 @@ const getInputType = (value) => {
 
 const getTextFromComponentProperty = (property) => (property !== "" ? property : undefined);
 
+const extractTextsFromProperties = (props) => {
+  const array = [];
+  if (props?.innsendingOverskrift) {
+    array.push({
+      text: props.innsendingOverskrift,
+      type: getInputType(props.innsendingOverskrift),
+    });
+  }
+  if (props?.innsendingForklaring) {
+    array.push({
+      text: props.innsendingForklaring,
+      type: getInputType(props.innsendingForklaring),
+    });
+  }
+  return array;
+};
+
 const getSimplifiedComponentObject = (form) =>
   flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
@@ -42,17 +59,17 @@ const removeDuplicatedComponents = (components = []) => {
       index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
   );
 };
-
 const getTextsAndTypeForForm = (form) => {
-  const textComponentsWithType = getSimplifiedComponentObject(form).reduce((allTextsForForm, component) => {
-    return [
-      ...allTextsForForm,
-      ...Object.keys(component)
-        .filter((key) => component[key] !== undefined)
-        .reduce((textsForComponent, key) => getComponentTextAndType(textsForComponent, component, key), []),
-    ];
-  }, []);
-
+  const textComponentsWithType = getSimplifiedComponentObject(form)
+    .reduce((allTextsForForm, component) => {
+      return [
+        ...allTextsForForm,
+        ...Object.keys(component)
+          .filter((key) => component[key] !== undefined)
+          .reduce((textsForComponent, key) => getComponentTextAndType(textsForComponent, component, key), []),
+      ];
+    }, [])
+    .concat(extractTextsFromProperties(form.properties));
   return removeDuplicatedComponents(textComponentsWithType);
 };
 
@@ -93,6 +110,7 @@ const getAllParsedTexts = (form) => {
   );
   return removeDuplicatedComponents(textComponents);
 };
+
 const getTextsAndTranslationsForForm = (form, translations) => {
   const textComponents = getAllParsedTexts(form);
   let textsWithTranslations = [];
@@ -138,4 +156,5 @@ export {
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
   parseText,
+  getInputType,
 };

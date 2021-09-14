@@ -5,7 +5,6 @@ import {
   parseText,
 } from "./utils";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
-
 const {
   createDummyCheckbox,
   createDummyContainerElement,
@@ -231,6 +230,25 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Email", type: "text" },
     ]);
   });
+
+  it("Henter innsendingsrelaterte tekster fra form properties", () => {
+    const actual = getAllTextsForForm({
+      components: [],
+      type: "form",
+      title: "Testskjema",
+      properties: {
+        skjemanummer: "TST 12.13-14",
+        innsending: 'INGEN',
+        innsendingOverskrift: "Gi det til pasienten",
+        innsendingForklaring: "Skriv ut skjemaet",
+      }
+    });
+    expect(actual).toEqual([
+      { text: "Gi det til pasienten", type: "text" },
+      { text: "Skriv ut skjemaet", type: "text" },
+    ]);
+  });
+
 });
 describe("testGetTextsAndTranslationsForForm", () => {
   const form = createFormObject(

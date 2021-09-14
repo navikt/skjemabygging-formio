@@ -53,9 +53,9 @@ export function validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
 }
 
 export function validateEarliestAndLatestDate(earliestFromToday, latestFromToday, inputDate) {
-  const earliestAllowedDate = earliestFromToday !== undefined ? moment().add(earliestFromToday, "d") : undefined;
+  const earliestAllowedDate = !!earliestFromToday ? moment().add(earliestFromToday, "d") : undefined;
   const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
-  const latestAllowedDate = latestFromToday !== undefined ? moment().add(latestFromToday, "d") : undefined;
+  const latestAllowedDate = !!latestFromToday ? moment().add(latestFromToday, "d") : undefined;
   const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
 
   if (earliestAllowedDate && latestAllowedDate) {
@@ -118,7 +118,7 @@ export default class NavDatepicker extends FormioReactComponent {
         : true;
 
     const earliestAndLatestDateValidation =
-      relativeEarliestAllowedDate !== undefined || relativeLatestAllowedDate !== undefined
+      !!relativeEarliestAllowedDate || !!relativeLatestAllowedDate
         ? validateEarliestAndLatestDate(relativeEarliestAllowedDate, relativeLatestAllowedDate, moment(input))
         : true;
 
