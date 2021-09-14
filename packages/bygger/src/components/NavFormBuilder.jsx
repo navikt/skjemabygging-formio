@@ -27,232 +27,263 @@ import PropTypes from "prop-types";
 import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
-import { styled } from "@material-ui/styles";
+import { makeStyles, styled } from "@material-ui/styles";
 import { navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
 
-const BuilderMountElement = styled("div")({
-  "& .formbuilder": {
-    position: "relative",
-    "@media screen and (min-width: 40rem)": {
-      height: "calc(100vh - 16.5rem)",
-      display: "grid",
-      gridTemplateColumns: "12.875rem minmax(20rem, 50rem)",
-      gridGap: "1.5rem",
-      alignItems: "start",
-      margin: "0 auto",
-      maxWidth: "66rem",
-      minWidth: "36rem",
-      overflow: "hidden",
-    },
-  },
-  "& .formarea": {
-    paddingBottom: "20rem",
-    overflowY: "auto",
-    height: "100%",
-  },
-  "& .formcomponents": {
-    overflowY: "auto",
-    height: "100%",
-    "& .builder-sidebar_scroll": {
-      position: "initial",
-      paddingBottom: "10rem",
-    },
-  },
-  "& .formio-dialog": {
-    zIndex: 900,
-  },
-  "& .input--s": {
-    width: "140px",
-  },
-  "& .input--xs": {
-    width: "70px",
-  },
-  "& a": {
-    color: "#0067c5",
-  },
-  "& .btn-block + .btn-block": {
-    marginTop: "0.2rem",
-  },
-  "& .btn": {
-    textAlign: "left",
-  },
-  "& .breadcrumb": {
-    display: "flex",
-    flexWrap: "wrap",
-    padding: "0.75rem 1rem",
-    margin: "0 0 1rem",
-    listStyle: "none",
-    backgroundColor: "#e9ecef",
-    borderRadius: "0.25rem",
+const useBuilderMountElementStyles = makeStyles({
+  "@global": {
+    // Start form builder
+    ".formbuilder": {
+      position: "relative",
 
-    "& .wizard-page-label": {
-      alignItems: "center",
-      backgroundColor: "#17a2b8",
-      border: "none",
-      borderRadius: "0.25rem",
-      color: "white",
-      cursor: "pointer",
-      display: "flex",
-      padding: "0.3rem 0.5rem",
-      fontSize: "1rem",
-      fontWeight: "700",
-      lineHeight: "1",
-      marginBottom: "0.5rem",
-      textAlign: "center",
-      textDecoration: "none",
-      verticalAlign: "baseline",
-      whiteSpace: "nowrap",
-
-      "&:focus": {
-        border: "0.1rem solid #17a2b8",
-        backgroundColor: "white",
-        color: "#17a2b8",
-        outline: "none",
-        padding: "0.2rem 0.4rem",
+      "@media screen and (min-width: 40rem)": {
+        height: "calc(100vh - 16.5rem)",
+        display: "grid",
+        gridTemplateColumns: "12.875rem minmax(20rem, 50rem)",
+        gridGap: "1.5rem",
+        alignItems: "start",
+        margin: "0 auto",
+        maxWidth: "66rem",
+        minWidth: "36rem",
+        overflow: "hidden",
       },
+    },
+    // End form builder
+    // Start form component list
+    ".formcomponents": {
+      overflowY: "auto",
+      height: "100%",
+      "& .builder-sidebar_scroll": {
+        position: "initial",
+        paddingBottom: "10rem",
+      },
+      "& .card-body": {
+        padding: "0.2rem",
+      },
+      "& .form-builder-panel": {
+        backgroundColor: "#ffffff",
+        borderRadius: "calc(.25rem - 1px)",
 
-      "&[aria-current]": {
+        "& .form-builder-group-header": {
+          margin: "0",
+          padding: "0",
+        },
+
+        "& .builder-group-button": {
+          display: "block",
+          width: "100%",
+          backgroundColor: "rgba(0,0,0,.03)",
+          border: "0",
+          padding: ".375rem .75rem",
+          fontSize: "1rem",
+          lineHeight: "1.5",
+
+          "&:not(:first-child)": {
+            marginTop: "0.2rem",
+          },
+        },
+        "&:first-child .builder-group-button": {
+          borderRadius: "calc(.25rem - 1px) calc(.25rem - 1px) 0 0",
+        },
+        "&:last-child .builder-group-button": {
+          borderRadius: "0 0 calc(.25rem - 1px) calc(.25rem - 1px)",
+        },
+      },
+      "& .formcomponent": {
         backgroundColor: "#007bff",
+        borderColor: "#007bff",
+        borderRadius: ".3em",
+        color: "#fff",
+        display: "block",
+        fontSize: ".8em",
+        lineHeight: "1.2",
+        margin: ".2rem",
+        padding: "5px 5px 5px 8px",
+        textAlign: "left",
+        width: "block",
+      },
+    },
+    // End form component list
+    // Start edit form area
+    ".formarea": {
+      paddingBottom: "20rem",
+      overflowY: "auto",
+      height: "100%",
 
-        "&:focus": {
-          border: "0.1rem solid #007bff",
-          backgroundColor: "white",
-          color: "#007bff",
+      // Start form panel list
+      "& .breadcrumb": {
+        display: "flex",
+        flexWrap: "wrap",
+        padding: "0.75rem 1rem",
+        margin: "0 0 1rem",
+        listStyle: "none",
+        backgroundColor: "#e9ecef",
+        borderRadius: "0.25rem",
+
+        "& .wizard-page-label": {
+          alignItems: "center",
+          backgroundColor: "#17a2b8",
+          border: "none",
+          borderRadius: "0.25rem",
+          color: "white",
+          cursor: "pointer",
+          display: "flex",
+          padding: "0.3rem 0.5rem",
+          fontSize: "1rem",
+          fontWeight: "700",
+          lineHeight: "1",
+          marginBottom: "0.5rem",
+          textAlign: "center",
+          textDecoration: "none",
+          verticalAlign: "baseline",
+          whiteSpace: "nowrap",
+
+          "&:focus": {
+            border: "0.1rem solid #17a2b8",
+            backgroundColor: "white",
+            color: "#17a2b8",
+            outline: "none",
+            padding: "0.2rem 0.4rem",
+          },
+
+          "&[aria-current]": {
+            backgroundColor: "#007bff",
+
+            "&:focus": {
+              border: "0.1rem solid #007bff",
+              backgroundColor: "white",
+              color: "#007bff",
+            },
+          },
+          "&__add-new": {
+            backgroundColor: "#28a745",
+
+            "&:focus": {
+              border: "0.1rem solid #28a745",
+              backgroundColor: "white",
+              color: "#28a745",
+            },
+          },
         },
-      },
-      "&__add-new": {
-        backgroundColor: "#28a745",
-
-        "&:focus": {
-          border: "0.1rem solid #28a745",
-          backgroundColor: "white",
-          color: "#28a745",
-        },
-      },
-    },
-    "& li:not(:last-child) .wizard-page-label": {
-      marginRight: "0.5rem",
-    },
-  },
-  "& .panel-body, & .tab-pane": {
-    "& >.drag-container.formio-builder-components": {
-      "&, &:hover": {
-        padding: "0 0 1rem",
-        border: "none",
-      },
-    },
-  },
-
-  "& .drag-container": {
-    padding: "10px",
-    border: "2px dotted #e8e8e8",
-
-    "&:hover": {
-      cursor: "move",
-      border: "2px dotted #ccc",
-    },
-
-    "&.formio-builder-form": {
-      "&, &:hover": {
-        padding: "0 0 1rem",
-        border: "none",
-      },
-    },
-  },
-  "& .formcomponent": {
-    backgroundColor: "#007bff",
-    borderColor: "#007bff",
-    borderRadius: ".3em",
-    color: "#fff",
-    display: "block",
-    fontSize: ".8em",
-    lineHeight: "1.2",
-    margin: ".2rem",
-    padding: "5px 5px 5px 8px",
-    textAlign: "left",
-    width: "block",
-  },
-  "& .builder-sidebar": {
-    "& .card-body": {
-      padding: "0.2rem",
-    },
-  },
-  "& .form-builder-panel": {
-    backgroundColor: "#ffffff",
-    borderRadius: "calc(.25rem - 1px)",
-
-    "& .form-builder-group-header": {
-      margin: "0",
-      padding: "0",
-    },
-
-    "& .builder-group-button": {
-      display: "block",
-      width: "100%",
-      backgroundColor: "rgba(0,0,0,.03)",
-      border: "0",
-      padding: ".375rem .75rem",
-      fontSize: "1rem",
-      lineHeight: "1.5",
-    },
-    "&:first-child .builder-group-button": {
-      borderRadius: "calc(.25rem - 1px) calc(.25rem - 1px) 0 0",
-    },
-    "&:last-child .builder-group-button": {
-      borderRadius: "0 0 calc(.25rem - 1px) calc(.25rem - 1px)",
-    },
-  },
-  "& .card": {
-    backgroundColor: "#ffffff",
-    border: "1px solid #dee2e6",
-    borderRadius: "calc(.25rem - 1px)",
-
-    "&-header": {
-      backgroundColor: "rgba(0,0,0,.03)",
-      borderBottom: "1px solid #dee2e6",
-      borderRadius: "calc(.25rem - 1px) calc(.25rem - 1px) 0 0",
-      padding: ".75rem 1.25rem",
-    },
-    "&-body": {
-      flex: "1 1 auto",
-      minHeight: "1px",
-      padding: "1.25rem",
-    },
-  },
-  "& .builder-component": {
-    position: "relative",
-
-    "&:not(:hover) .component-btn-group": {
-      display: "none",
-    },
-    "& .component-btn-group": {
-      display: "flex",
-      flexDirection: "row",
-      position: "absolute",
-      top: "0.5rem",
-      right: "0",
-      zIndex: "1001",
-
-      "& .component-settings-button": {
-        "&:not(:last-child)": {
+        "& li:not(:last-child) .wizard-page-label": {
           marginRight: "0.5rem",
         },
-        "&.knapp--hoved": {
-          transform: "none",
+      },
+      // End form panel list
 
-          "&:hover": {
-            transform: "none",
+      //Start builder-component
+      "& .builder-component": {
+        position: "relative",
+
+        "&:not(:hover) .component-btn-group": {
+          display: "none",
+        },
+        "& .component-btn-group": {
+          display: "flex",
+          flexDirection: "row",
+          position: "absolute",
+          top: "0.5rem",
+          right: "0",
+          zIndex: "1001",
+
+          "& .component-settings-button": {
+            "&:not(:last-child)": {
+              marginRight: "0.5rem",
+            },
+            "&.knapp--hoved": {
+              transform: "none",
+
+              "&:hover": {
+                transform: "none",
+              },
+            },
+          },
+
+          "& svg": {
+            fontSize: "1rem",
+            verticalAlign: "initial",
           },
         },
       },
+      // End builder-component
 
-      "& svg": {
-        fontSize: "1rem",
-        verticalAlign: "initial",
+      // Start drag-container
+      "& .drag-container": {
+        padding: "10px",
+        border: "2px dotted #e8e8e8",
+
+        "&:hover": {
+          cursor: "move",
+          border: "2px dotted #ccc",
+        },
+
+        "&.formio-builder-form": {
+          "&, &:hover": {
+            padding: "0 0 1rem",
+            border: "none",
+          },
+        },
+      },
+      // End drag-container
+    },
+    // End edit form area
+    // Start card styling
+    ".card": {
+      backgroundColor: "#ffffff",
+      border: "1px solid #dee2e6",
+      borderRadius: "calc(.25rem - 1px)",
+
+      "&-header": {
+        backgroundColor: "rgba(0,0,0,.03)",
+        borderBottom: "1px solid #dee2e6",
+        borderRadius: "calc(.25rem - 1px) calc(.25rem - 1px) 0 0",
+        padding: ".75rem 1.25rem",
+      },
+      "&-body": {
+        flex: "1 1 auto",
+        minHeight: "1px",
+        padding: "1.25rem",
       },
     },
+    // End card styling
+    // Start formio-dialog
+    ".formio-dialog": {
+      zIndex: 900,
+    },
+    // End formio-dialog
+    // Start miscellaneous styling
+    ".panel-body, .tab-pane": {
+      "& >.drag-container.formio-builder-components": {
+        "&, &:hover": {
+          padding: "0 0 1rem",
+          border: "none",
+        },
+      },
+    },
+    ".input--s": {
+      width: "140px",
+    },
+    ".input--xs": {
+      width: "70px",
+    },
+    a: {
+      color: "#0067c5",
+    },
+    ".btn": {
+      textAlign: "left",
+    },
+    // End miscellaneous styling
   },
 });
+
+const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
+  useBuilderMountElementStyles();
+  return (
+    <div className={className} ref={setRef} {...rest}>
+      {children}
+    </div>
+  );
+};
 
 class NavFormBuilder extends Component {
   builderState = "preparing";
@@ -321,7 +352,7 @@ class NavFormBuilder extends Component {
       <BuilderMountElement
         className={`${this.props.className} bootstrap-style`}
         data-testid="builderMountElement"
-        ref={this.element}
+        setRef={this.element}
       ></BuilderMountElement>
     );
   };
