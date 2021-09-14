@@ -232,23 +232,22 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
 
   it("Henter innsendingsrelaterte tekster fra form properties", () => {
-    const actual = getAllTextsForForm({
+    const actual = getTextsAndTypeForForm({
       components: [],
       type: "form",
       title: "Testskjema",
       properties: {
         skjemanummer: "TST 12.13-14",
-        innsending: 'INGEN',
+        innsending: "INGEN",
         innsendingOverskrift: "Gi det til pasienten",
         innsendingForklaring: "Skriv ut skjemaet",
-      }
+      },
     });
     expect(actual).toEqual([
       { text: "Gi det til pasienten", type: "text" },
       { text: "Skriv ut skjemaet", type: "text" },
     ]);
   });
-
 });
 describe("testGetTextsAndTranslationsForForm", () => {
   const form = createFormObject(
