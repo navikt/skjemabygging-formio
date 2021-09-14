@@ -15,13 +15,13 @@ describe("NavDatePicker", () => {
     });
 
     it("returns error message for to and from date, when both validations fail", () => {
-      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-21" }, "fromDate", false, 10)).toBe(
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-21" }, "fromDate", false, "10")).toBe(
         "Datoen må være senere enn fra-dato (21.05.2030)"
       );
     });
 
     it("returns error message for earliest/latest date when only earliest/latest validation fails", () => {
-      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, "fromDate", false, 10)).toBe(
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, "fromDate", false, "10")).toBe(
         "Datoen kan ikke være tidligere enn 25.05.2030"
       );
     });
@@ -77,68 +77,66 @@ describe("NavDatePicker", () => {
     describe("validateEarliestAndLatestDate", () => {
       describe("When earliestFromToday and latestFromToday are set", () => {
         it("doesn't fail if latest is before earliest", () => {
-          expect(validateEarliestAndLatestDate(2, 1, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("2", "1", moment())).toBe(true);
         });
 
         it("fails with appropriate message if input is before earliest date", () => {
-          expect(validateEarliestAndLatestDate(1, 2, moment())).toBe(
+          expect(validateEarliestAndLatestDate("1", "2", moment())).toBe(
             "Datoen kan ikke være tidligere enn 16.05.2030 eller senere enn 17.05.2030"
           );
         });
 
         it("fails with appropriate message if input is after latest date", () => {
-          expect(validateEarliestAndLatestDate(-2, -1, moment())).toBe(
+          expect(validateEarliestAndLatestDate("-2", "-1", moment())).toBe(
             "Datoen kan ikke være tidligere enn 13.05.2030 eller senere enn 14.05.2030"
           );
         });
 
         it("returns true if input is same as earliest date", () => {
-          expect(validateEarliestAndLatestDate(0, 1, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("0", "1", moment())).toBe(true);
         });
 
         it("returns true if input is between earliest and latest date", () => {
-          expect(validateEarliestAndLatestDate(-1, 1, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("-1", "1", moment())).toBe(true);
         });
 
         it("returns true if input is same as latest date", () => {
-          expect(validateEarliestAndLatestDate(-1, 0, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("-1", "0", moment())).toBe(true);
         });
       });
 
       describe("When earliestFromToday is set", () => {
         it("fails with appropriate message if input is before earliest date", () => {
-          expect(validateEarliestAndLatestDate(1, undefined, moment())).toBe(
+          expect(validateEarliestAndLatestDate("1", "", moment())).toBe(
             "Datoen kan ikke være tidligere enn 16.05.2030"
           );
         });
 
         it("returns true if input is same as earliest date", () => {
-          expect(validateEarliestAndLatestDate(0, undefined, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("0", "", moment())).toBe(true);
         });
 
         it("returns true if input is after earliest", () => {
-          expect(validateEarliestAndLatestDate(-1, undefined, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("-1", "", moment())).toBe(true);
         });
       });
 
       describe("When latestFromToday is set", () => {
         it("fails with appropriate message if input is after latest date", () => {
-          expect(validateEarliestAndLatestDate(undefined, -1, moment())).toBe(
-            "Datoen kan ikke være senere enn 14.05.2030"
-          );
+          expect(validateEarliestAndLatestDate("", "-1", moment())).toBe("Datoen kan ikke være senere enn 14.05.2030");
         });
 
         it("returns true if input is same as latest date", () => {
-          expect(validateEarliestAndLatestDate(undefined, 0, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("", "0", moment())).toBe(true);
         });
 
         it("returns true if input is before latest", () => {
-          expect(validateEarliestAndLatestDate(undefined, 1, moment())).toBe(true);
+          expect(validateEarliestAndLatestDate("", "1", moment())).toBe(true);
         });
       });
 
       it("returns true if neither earliestFromToday or latestFromToday are set", () => {
-        expect(validateEarliestAndLatestDate(undefined, undefined, moment())).toBe(true);
+        expect(validateEarliestAndLatestDate("", "", moment())).toBe(true);
       });
     });
   });
