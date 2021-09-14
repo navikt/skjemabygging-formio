@@ -59,6 +59,7 @@
     "react-modal": "^3.12.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
+    "react-csv": "^2.0.3",
     "wait-for-expect": "^3.0.2"
   },
   "scripts": {

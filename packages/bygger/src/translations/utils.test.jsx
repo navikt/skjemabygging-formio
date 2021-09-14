@@ -1,4 +1,9 @@
-import { getAllTextsForForm } from "./utils";
+import {
+  getTextsAndTypeForForm,
+  getTextsAndTranslationsForForm,
+  getTextsAndTranslationsHeaders,
+  parseText,
+} from "./utils";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
 const {
   createDummyCheckbox,
@@ -14,14 +19,13 @@ const {
   createPanelObject,
 } = MockedComponentObjectForTest;
 
-describe("testGetAllTextsForForm", () => {
+describe("testGetAllTextsAndTypeForForm", () => {
   it("Test empty form", () => {
-    const actual = getAllTextsForForm(createFormObject([], "test"));
+    const actual = getTextsAndTypeForForm(createFormObject([], "test"));
     expect(actual).toEqual([]);
   });
-
   it("Test form with panel and text fields", () => {
-    const actual = getAllTextsForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -44,9 +48,8 @@ describe("testGetAllTextsForForm", () => {
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
   });
-
   it("Test form with panel, html elements and contents", () => {
-    const actual = getAllTextsForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -78,7 +81,7 @@ describe("testGetAllTextsForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe and radio panel", () => {
-    const actual = getAllTextsForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -106,9 +109,8 @@ describe("testGetAllTextsForForm", () => {
       { text: "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF", type: "textarea" },
     ]);
   });
-
   it("Test form with panel, skjemagruppe, datagrid and radio panel", () => {
-    const actual = getAllTextsForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -145,9 +147,8 @@ describe("testGetAllTextsForForm", () => {
       { text: "Radio panel inside data grid without label", type: "text" },
     ]);
   });
-
   it("Test form with panel, container and checkbox", () => {
-    const actual = getAllTextsForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -186,7 +187,7 @@ describe("testGetAllTextsForForm", () => {
     ]);
   });
   it("Test form with panel and text field with suffix and prefix", () => {
-    const actual = getAllTextsForForm(
+    const actual = getTextsAndTypeForForm(
       createFormObject(
         [
           createPanelObject(
@@ -210,21 +211,112 @@ describe("testGetAllTextsForForm", () => {
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
   });
+  it("Test form with duplicated text field", () => {
+    const actual = getTextsAndTypeForForm(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [createDummyTextfield("same textfield"), createDummyEmail(), createDummyTextfield("same textfield")],
+            "Introduksjon"
+          ),
+        ],
+        "test"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "Introduksjon", type: "text" },
+      { text: "same textfield", type: "text" },
+      { text: "Email", type: "text" },
+    ]);
+  });
+
   it("Henter innsendingsrelaterte tekster fra form properties", () => {
-    const actual = getAllTextsForForm({
+    const actual = getTextsAndTypeForForm({
       components: [],
       type: "form",
       title: "Testskjema",
       properties: {
         skjemanummer: "TST 12.13-14",
-        innsending: 'INGEN',
+        innsending: "INGEN",
         innsendingOverskrift: "Gi det til pasienten",
         innsendingForklaring: "Skriv ut skjemaet",
-      }
+      },
     });
     expect(actual).toEqual([
       { text: "Gi det til pasienten", type: "text" },
       { text: "Skriv ut skjemaet", type: "text" },
     ]);
+  });
+});
+describe("testGetTextsAndTranslationsForForm", () => {
+  const form = createFormObject(
+    [createPanelObject("Introduksjon", [createDummyTextfield("Ja")], [createDummyTextfield("Jeg")], "Introduksjon")],
+    "test"
+  );
+  const translations = {
+    en: { id: "123", translations: { Ja: { value: "Yes", scope: "global" } } },
+    "nn-NO": { id: "2345", translations: { Jeg: { value: "Eg", scope: "local" } } },
+  };
+
+  it("Test form with translations", () => {
+    const actual = getTextsAndTranslationsForForm(form, translations);
+    expect(actual).toEqual([{ text: "test" }, { text: "Introduksjon" }, { text: "Ja", en: "Yes (Global Tekst)" }]);
+  });
+});
+describe("testGetCSVfileHeaders", () => {
+  it("Test headers with only origin form text", () => {
+    const actual = getTextsAndTranslationsHeaders([]);
+    expect(actual).toEqual([{ key: "text", label: "Skjematekster" }]);
+  });
+
+  it("Test headers with origin form text and language code", () => {
+    const actual = getTextsAndTranslationsHeaders({ en: {}, "nn-NO": {} });
+    expect(actual).toEqual([
+      { key: "text", label: "Skjematekster" },
+      { key: "en", label: "EN" },
+      { key: "nn-NO", label: "NN-NO" },
+    ]);
+  });
+});
+describe("testParsingTextWithHTMLTag", () => {
+  it("Test form text with HTML element", () => {
+    const actual = parseText(
+      '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/> '
+    );
+    expect(actual).toEqual(
+      "Eventuell utbetaling av AAP Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt (https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader)  endre hvilket kontonummer vi benytter (åpnes i ny fane).  "
+    );
+  });
+
+  it("Test form text with HTML element besides a tag", () => {
+    const actual = parseText(
+      "<p>Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke på</p><ul><li>Stønad til barnetilsyn på grunn av arbeid</li><li>Stønad til skolepenger</li></ul><p>Stønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger.</p>"
+    );
+    expect(actual).toEqual(
+      "Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke påStønad til barnetilsyn på grunn av arbeidStønad til skolepengerStønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger."
+    );
+  });
+
+  it("Test form text with only a tag when there is no space before link ", () => {
+    const actual = parseText('<a href="hello.hello.world">test</a>');
+    expect(actual).toEqual("(hello.hello.world)test");
+  });
+
+  it("Test form text with only a tag when there is target attribute", () => {
+    const actual = parseText('<a href="hello.hello.world" target="_blank">test</a>');
+    expect(actual).toEqual("(hello.hello.world) test");
+  });
+
+  it("Test form text with only a tag when there is space before link", () => {
+    const actual = parseText('<a href= "hello.hello.world">test</a>');
+    expect(actual).toEqual("(hello.hello.world)test");
+  });
+
+  it("Test form text with multiple a tag ", () => {
+    const actual = parseText(
+      '<a href="hello.hello.world" target="_blank">test</a><a href="another.test" target="_blank">another test</a>'
+    );
+    expect(actual).toEqual("(hello.hello.world) test(another.test) another test");
   });
 });
