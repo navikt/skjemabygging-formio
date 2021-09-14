@@ -84,7 +84,6 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
               Lagre
             </Hovedknapp>
             {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-            {console.log(translations[languageCode])}
             <CSVLink
               data={getTextsAndTranslationsForForm(form, translations)}
               filename={`${title}(${path})_Oversettelser.csv`}
