@@ -6,6 +6,23 @@ export const getInputType = (value) => {
 
 const getTextFromComponentProperty = (property) => (property !== "" ? property : undefined);
 
+const extractTextsFromProperties = props => {
+  const array = [];
+  if (props?.innsendingOverskrift) {
+    array.push({
+      text: props.innsendingOverskrift,
+      type: getInputType(props.innsendingOverskrift)
+    });
+  }
+  if (props?.innsendingForklaring) {
+    array.push({
+      text: props.innsendingForklaring,
+      type: getInputType(props.innsendingForklaring)
+    });
+  }
+  return array;
+}
+
 export const getAllTextsForForm = (form) =>
   flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
@@ -41,6 +58,7 @@ export const getAllTextsForForm = (form) =>
           }, []),
       ];
     }, [])
+    .concat(extractTextsFromProperties(form.properties))
     //remove duplicated components
     .filter(
       (component, index, currentComponents) =>

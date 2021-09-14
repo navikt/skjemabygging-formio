@@ -9,6 +9,9 @@ import navCssVariabler from "nav-frontend-core";
 import { TEXTS, createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
+// duplisert fra bygger
+type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+
 const FormSummaryField: FunctionComponent = ({ label, value }) => (
   <>
     <dt>{label}</dt>
@@ -96,13 +99,22 @@ const FormSummary = ({ form, submission }) => {
   return <ComponentSummary components={formSummaryObject} />;
 };
 
-export function SummaryPage({ form, submission, formUrl }) {
+export interface Props {
+  form: any;
+  submission: any;
+  formUrl: string;
+}
+
+export function SummaryPage({ form, submission, formUrl }: Props) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
+
+  const innsending: InnsendingType = form.properties.innsending
+    || (form.properties.hasPapirInnsendingOnly ? 'KUN_PAPIR' : 'PAPIR_OG_DIGITAL');
 
   return (
     <SummaryContent>
@@ -119,32 +131,47 @@ export function SummaryPage({ form, submission, formUrl }) {
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
-          <div className="list-inline-item">
-            <Link
-              className={`btn ${
-                form.properties.hasPapirInnsendingOnly
-                  ? "btn-primary btn-wizard-nav-next"
-                  : "btn-secondary btn-wizard-nav-previous"
-              }`}
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
-            >
-              {form.properties.hasPapirInnsendingOnly
-                ? translate(TEXTS.grensesnitt.summaryPage.continue)
-                : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
-            </Link>
-          </div>
-          {!form.properties.hasPapirInnsendingOnly && (
+          {(innsending == 'KUN_PAPIR' || innsending == 'PAPIR_OG_DIGITAL') && (
+            <div className="list-inline-item">
+              <Link
+                className={`btn ${
+                  innsending == 'KUN_PAPIR'
+                    ? "btn-primary btn-wizard-nav-next"
+                    : "btn-secondary btn-wizard-nav-previous"
+                }`}
+                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+              >
+                {innsending == 'KUN_PAPIR'
+                  ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                  : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+              </Link>
+            </div>
+          )}
+          {(innsending == 'KUN_DIGITAL' || innsending == 'PAPIR_OG_DIGITAL') && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next wizard-button"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
               >
-                {translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
+                {innsending == 'KUN_DIGITAL'
+                  ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                  : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
               </Link>
             </div>
           )}
+          {innsending == 'INGEN' &&
+          <div className="list-inline-item">
+            <Link
+              className="btn btn-primary btn-wizard-nav-next"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/ingen-innsending`, state: { previousPage: url } }}
+            >
+              {translate(TEXTS.grensesnitt.summaryPage.continue)}
+            </Link>
+          </div>
+          }
         </nav>
       </main>
     </SummaryContent>

@@ -210,4 +210,21 @@ describe("testGetAllTextsForForm", () => {
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
   });
+  it("Henter innsendingsrelaterte tekster fra form properties", () => {
+    const actual = getAllTextsForForm({
+      components: [],
+      type: "form",
+      title: "Testskjema",
+      properties: {
+        skjemanummer: "TST 12.13-14",
+        innsending: 'INGEN',
+        innsendingOverskrift: "Gi det til pasienten",
+        innsendingForklaring: "Skriv ut skjemaet",
+      }
+    });
+    expect(actual).toEqual([
+      { text: "Gi det til pasienten", type: "text" },
+      { text: "Skriv ut skjemaet", type: "text" },
+    ]);
+  });
 });

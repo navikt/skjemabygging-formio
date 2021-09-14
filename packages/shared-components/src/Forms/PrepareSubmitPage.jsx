@@ -11,6 +11,7 @@ import { useAmplitude } from "../context/amplitude";
 import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
+import DownloadPdfButton from "./DownloadPdfButton";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(
@@ -59,26 +60,14 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
           <Normaltekst className="margin-bottom-default">
             {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction)}
           </Normaltekst>
-          <form
-            id={form.path}
-            action={`${fyllutBaseURL}/pdf-form`}
-            method="post"
-            acceptCharset="utf-8"
-            target="_blank"
-            hidden
-          >
-            <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
-            <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
-          </form>
-          <div>
-            <input
-              form={form.path}
-              className="knapp"
-              onClick={() => setHasDownloadedPDF(true)}
-              type="submit"
-              value={translate(TEXTS.grensesnitt.downloadApplication)}
-            />
-          </div>
+          <DownloadPdfButton
+            form={form}
+            submission={submission}
+            actionUrl={`${fyllutBaseURL}/pdf-form`}
+            label={translate(TEXTS.grensesnitt.downloadApplication)}
+            onClick={() => setHasDownloadedPDF(true)}
+            classNames="knapp"
+          />
         </section>
         <section className="wizard-page" aria-label={translate(TEXTS.statiske.prepareSubmitPage.secondSectionTitle)}>
           <Systemtittel id="instruksjoner-for-innsending-overskrift" className="margin-bottom-default">
