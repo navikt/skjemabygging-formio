@@ -239,12 +239,12 @@ describe("testGetTextsAndTranslationsForForm", () => {
   );
   const translations = {
     en: { id: "123", translations: { Ja: { value: "Yes", scope: "global" } } },
-    "nn-NO": { id: "2345", translations: { Jeg: { value: "Eg", scope: "global" } } },
+    "nn-NO": { id: "2345", translations: { Jeg: { value: "Eg", scope: "local" } } },
   };
 
   it("Test form with translations", () => {
     const actual = getTextsAndTranslationsForForm(form, translations);
-    expect(actual).toEqual([{ text: "test" }, { text: "Introduksjon" }, { text: "Ja", en: "Yes" }]);
+    expect(actual).toEqual([{ text: "test" }, { text: "Introduksjon" }, { text: "Ja", en: "Yes (Global Tekst)" }]);
   });
 });
 describe("testGetCSVfileHeaders", () => {
