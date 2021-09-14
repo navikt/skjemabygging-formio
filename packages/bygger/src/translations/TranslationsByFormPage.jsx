@@ -87,7 +87,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
             {console.log(translations[languageCode])}
             <CSVLink
               data={getTextsAndTranslationsForForm(form, translations)}
-              filename={`${title}_Norsk bokmål.csv`}
+              filename={`${title}(${path})_Oversettelser.csv`}
               className="knapp knapp--standard"
               separator={";"}
               headers={getTextsAndTranslationsHeaders(translations)}

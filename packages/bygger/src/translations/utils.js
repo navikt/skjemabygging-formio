@@ -100,13 +100,18 @@ const getTextsAndTranslationsForForm = (form, translations) => {
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
       if (Object.keys(translations[languageCode].translations).indexOf(textComponent.text) < 0) {
         return [...newTextComponent, textComponent];
+      } else {
+        const translation =
+          translations[languageCode].translations[textComponent.text].scope === "global"
+            ? translations[languageCode].translations[textComponent.text].value.concat(" (Global Tekst)")
+            : translations[languageCode].translations[textComponent.text].value;
+        return [
+          ...newTextComponent,
+          Object.assign(textComponent, {
+            [languageCode]: translation,
+          }),
+        ];
       }
-      return [
-        ...newTextComponent,
-        Object.assign(textComponent, {
-          [languageCode]: translations[languageCode].translations[textComponent.text].value,
-        }),
-      ];
     }, []);
   });
   return textsWithTranslations;
