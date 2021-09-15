@@ -190,13 +190,6 @@ const useBuilderMountElementStyles = makeStyles({
             "&:not(:last-child)": {
               marginRight: "0.5rem",
             },
-            "&.knapp--hoved": {
-              transform: "none",
-
-              "&:hover": {
-                transform: "none",
-              },
-            },
           },
 
           "& svg": {
@@ -351,6 +344,15 @@ const useBuilderMountElementStyles = makeStyles({
     },
     ".btn": {
       textAlign: "left",
+    },
+    ".knapp": {
+      "&.knapp--hoved, &.knapp--fare": {
+        transform: "none",
+
+        "&:hover": {
+          transform: "none",
+        },
+      },
     },
     // End miscellaneous styling
   },
