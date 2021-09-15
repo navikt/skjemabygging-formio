@@ -307,23 +307,42 @@ const useBuilderMountElementStyles = makeStyles({
           maxWidth: "100%",
         },
       },
-    },
-    "& .card-title": {
-      margin: "0",
-    },
 
-    "& h4": {
-      fontSize: "1.4rem",
-      fontWeight: "500",
-      lineHeight: "1.2",
-    },
+      "& .nav-frontend-tabs": {
+        "&__tab-inner.active": {
+          color: "#262626",
+          background: "white",
+          border: "1px solid #c9c9c9",
+          borderBottom: "1px solid white",
+          position: "relative",
+          top: "1px",
+        },
 
-    "& .lead": {
-      fontSize: "1.25rem",
-      fontWeight: "300",
-      margin: "0 0 1rem",
+        "& ~ .panel": {
+          borderTop: "0",
+          borderTopLeftRadius: "0",
+          borderTopRightRadius: "0",
+        },
+      },
+
+      "& .card-title": {
+        margin: "0",
+      },
+
+      "& h4": {
+        fontSize: "1.4rem",
+        fontWeight: "500",
+        lineHeight: "1.2",
+      },
+
+      "& .lead": {
+        fontSize: "1.25rem",
+        fontWeight: "300",
+        margin: "0 0 1rem",
+      },
     },
     // End formio-dialog
+
     // Start miscellaneous styling
     ".panel-body, .tab-pane": {
       "& >.drag-container.formio-builder-components": {
