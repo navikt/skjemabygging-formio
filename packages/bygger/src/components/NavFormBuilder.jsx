@@ -315,6 +315,21 @@ const useBuilderMountElementStyles = makeStyles({
         },
       },
     },
+    "& .card-title": {
+      margin: "0",
+    },
+
+    "& h4": {
+      fontSize: "1.4rem",
+      fontWeight: "500",
+      lineHeight: "1.2",
+    },
+
+    "& .lead": {
+      fontSize: "1.25rem",
+      fontWeight: "300",
+      margin: "0 0 1rem",
+    },
     // End formio-dialog
     // Start miscellaneous styling
     ".panel-body, .tab-pane": {
