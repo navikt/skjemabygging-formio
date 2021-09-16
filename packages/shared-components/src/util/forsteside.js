@@ -1,17 +1,17 @@
-export function genererPersonalia(fodselsNummer, adresse) {
-  if (fodselsNummer) {
+export function genererPersonalia(fnrEllerDnr, adresse) {
+  if (fnrEllerDnr) {
     return {
       bruker: {
-        brukerId: fodselsNummer,
+        brukerId: fnrEllerDnr,
         brukerType: "PERSON",
       },
     };
   } else if (adresse) {
     return {
-      ukjentBrukerPersonInfo:
+      ukjentBrukerPersoninfo:
         `${adresse.navn || ""}, ` +
         `${adresse.adresse || ""} ` +
-        `${adresse.postNummer || ""} ` +
+        `${adresse.postnummer || ""} ` +
         `${adresse.sted || ""} ` +
         `${adresse.land || ""}.`,
     };
@@ -66,7 +66,7 @@ export function genererAdresse(submission) {
   const {
     gateadresseSoker,
     landSoker,
-    postnummerSoker,
+    postnrSoker,
     poststedSoker,
     fornavnSoker,
     etternavnSoker,
@@ -75,7 +75,7 @@ export function genererAdresse(submission) {
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
     adresse: gateadresseSoker,
-    postnummer: postnummerSoker || utenlandskPostkodeSoker,
+    postnummer: postnrSoker || utenlandskPostkodeSoker,
     sted: poststedSoker,
     land: landSoker || "Norge",
   };
