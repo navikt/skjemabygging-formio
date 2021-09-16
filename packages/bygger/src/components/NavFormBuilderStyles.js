@@ -107,6 +107,13 @@ const bootstrapFormInputs = {
     position: "absolute",
     zIndex: "-1",
   },
+
+  "& .form-check-inline": {
+    display: "inline-flex",
+    alignItems: "center",
+    paddingLeft: "0",
+    marginRight: ".75rem",
+  },
 };
 
 export { bootstrapFormInputs };
