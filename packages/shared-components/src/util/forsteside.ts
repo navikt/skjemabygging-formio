@@ -1,4 +1,35 @@
-export function genererPersonalia(fnrEllerDnr, adresse) {
+type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
+
+interface Bruker {
+  brukerId: string;
+  brukerType: string;
+}
+
+interface UkjentBruker {
+  ukjentBrukerPersoninfo: string;
+}
+
+interface KjentBruker {
+  bruker: Bruker;
+}
+
+type BrukerInfo = KjentBruker | UkjentBruker;
+
+interface ForstesideInfo {
+  foerstesidetype: ForstesideType;
+  navSkjemaId: string;
+  spraakkode: string;
+  overskriftstittel: string;
+  arkivtittel: string;
+  tema: string;
+  vedleggsliste: string[];
+  dokumentlisteFoersteside: string[];
+  netsPostboks: string;
+}
+
+type ForstesideRequestBody = ForstesideInfo & BrukerInfo;
+
+export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
   if (fnrEllerDnr) {
     return {
       bruker: {
@@ -81,7 +112,7 @@ export function genererAdresse(submission) {
   };
 }
 
-export function genererFoerstesideData(form, submission) {
+export function genererFoerstesideData(form, submission): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema },
     title,
