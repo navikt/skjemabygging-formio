@@ -27,11 +27,14 @@ import PropTypes from "prop-types";
 import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
-import { makeStyles, styled } from "@material-ui/styles";
-import { navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles } from "@material-ui/styles";
+import { bootstrapStyles, navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
 
 const useBuilderMountElementStyles = makeStyles({
   "@global": {
+    ".formio-form": {
+      ...navFormStyle,
+    },
     // Start form builder
     ".formbuilder": {
       position: "relative",
@@ -340,6 +343,8 @@ const useBuilderMountElementStyles = makeStyles({
         fontWeight: "300",
         margin: "0 0 1rem",
       },
+
+      ...bootstrapStyles,
     },
     // End formio-dialog
 
@@ -460,4 +465,4 @@ class NavFormBuilder extends Component {
 }
 
 export { NavFormBuilder as UnstyledNavFormBuilder };
-export default styled(NavFormBuilder)(navFormStyle);
+export default NavFormBuilder;
