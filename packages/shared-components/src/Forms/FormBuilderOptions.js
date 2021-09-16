@@ -527,7 +527,7 @@ const builderPalett = {
               required: true,
             },
             year: {
-              fieldSize: "input--xs",
+              fieldSize: "input--s",
               type: "number",
               placeholder: "År",
               required: true,
