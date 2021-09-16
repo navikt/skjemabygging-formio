@@ -42,7 +42,7 @@ export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
       ukjentBrukerPersoninfo:
         `${adresse.navn || ""}, ` +
         `${adresse.adresse || ""} ` +
-        `${adresse.postnummer || ""} ` +
+        `${adresse.postnr || ""} ` +
         `${adresse.sted || ""} ` +
         `${adresse.land || ""}.`,
     };
@@ -106,7 +106,7 @@ export function genererAdresse(submission) {
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
     adresse: gateadresseSoker,
-    postnummer: postnrSoker || utenlandskPostkodeSoker,
+    postnr: postnrSoker || utenlandskPostkodeSoker,
     sted: poststedSoker,
     land: landSoker || "Norge",
   };

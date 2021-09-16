@@ -45,7 +45,7 @@ describe("genererPersonalia", () => {
     const actual = genererPersonalia(null, {
       navn: "Test Testesen",
       adresse: "Testveien 1",
-      postnummer: "1234",
+      postnr: "1234",
       sted: "Oslo",
       land: "Norge",
     });
@@ -233,7 +233,7 @@ describe("genererAdresse", () => {
     expect(actual).toEqual({
       navn: `Test Testesen`,
       adresse: "Testveien 1",
-      postnummer: "1234",
+      postnr: "1234",
       sted: "Oslo",
       land: "Norge",
     });
@@ -251,7 +251,7 @@ describe("genererAdresse", () => {
     expect(actual).toEqual({
       navn: `Test Testesen`,
       adresse: "Testveien 1",
-      postnummer: "1234",
+      postnr: "1234",
       sted: "NY",
       land: "USA",
     });
