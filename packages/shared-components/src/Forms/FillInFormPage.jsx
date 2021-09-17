@@ -21,8 +21,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       {form.properties && form.properties.skjemanummer && <p>{form.properties.skjemanummer}</p>}
       <NavForm
         form={form}
-        language={currentLanguage}
-        i18n={translationsForNavForm}
+        language={featureToggles.enableTranslations ? currentLanguage : undefined}
+        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
