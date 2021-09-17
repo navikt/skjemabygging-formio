@@ -33,14 +33,13 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
 import { checkConditionOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
+import {SANITIZE_CONFIG} from "../template/sanitizeConfig";
 
 Utils.checkCondition = checkConditionOverride;
 
 const defaultProps = {
-  options: {
-    language: "nb-NO",
-    i18n: i18nData,
-  },
+  language: "nb-NO",
+  i18n: i18nData,
   onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
   onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
 }
@@ -55,8 +54,13 @@ const NavForm = (props = defaultProps) => {
   useEffect(() => () => formio ? formio.destroy(true) : null, [formio]);
 
   const createWebformInstance = (srcOrForm) => {
-    const {options = {}, formioform, formReady} = props;
-    instance = new (formioform || FormioForm)(element, srcOrForm, options);
+    const {formioform, formReady, language, i18n} = props;
+    instance = new (formioform || FormioForm)(element, srcOrForm, {
+      language,
+      i18n,
+      sanitizeConfig: SANITIZE_CONFIG,
+      events: NavForm.getDefaultEmitter()
+    });
     createPromise = instance.ready.then(formioInstance => {
       setFormio(formioInstance);
       if (formReady) {
@@ -99,7 +103,7 @@ const NavForm = (props = defaultProps) => {
       });
       initializeFormio();
     }
-  }, [props.src]);
+  }, [props.src, props.i18n, props.language]);
 
   useEffect(() => {
     const {form, url} = props;
@@ -115,7 +119,7 @@ const NavForm = (props = defaultProps) => {
       });
       initializeFormio();
     }
-  }, [props.form]);
+  }, [props.form, props.i18n, props.language]);
 
   useEffect(() => {
     overrideFormioWizardNextPageAndSubmit(
@@ -123,13 +127,6 @@ const NavForm = (props = defaultProps) => {
       props.loggSkjemaValideringFeilet
     );
   }, [props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet]);
-
-  useEffect(() => {
-    const {options = {}} = props;
-    if (!options.events) {
-      options.events = NavForm.getDefaultEmitter();
-    }
-  }, [props.options]);
 
   useEffect(() => {
     const {submission} = props;
@@ -153,13 +150,8 @@ NavForm.propTypes = {
   url: PropTypes.string,
   form: PropTypes.object,
   submission: PropTypes.object,
-  options: PropTypes.shape({
-    readOnly: PropTypes.boolean,
-    noAlerts: PropTypes.boolean,
-    i18n: PropTypes.object,
-    template: PropTypes.string,
-    saveDraft: PropTypes.boolean,
-  }),
+  i18n: PropTypes.object,
+  language: PropTypes.string,
   onPrevPage: PropTypes.func,
   onNextPage: PropTypes.func,
   onCancel: PropTypes.func,
