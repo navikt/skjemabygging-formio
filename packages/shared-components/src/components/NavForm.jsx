@@ -37,14 +37,7 @@ import {SANITIZE_CONFIG} from "../template/sanitizeConfig";
 
 Utils.checkCondition = checkConditionOverride;
 
-const defaultProps = {
-  language: "nb-NO",
-  i18n: i18nData,
-  onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
-  onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
-}
-
-const NavForm = (props = defaultProps) => {
+const NavForm = (props) => {
 
   let instance;
   let createPromise;
@@ -170,6 +163,13 @@ NavForm.propTypes = {
   onInitialized: PropTypes.func,
   formReady: PropTypes.func,
   formioform: PropTypes.any
+};
+
+NavForm.defaultProps = {
+  language: "nb-NO",
+  i18n: i18nData,
+  onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
+  onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
 };
 
 NavForm.getDefaultEmitter = () => {
