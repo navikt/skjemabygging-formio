@@ -29,13 +29,14 @@ import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
 import { bootstrapStyles, navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
-import { bootstrapFormInputs } from "./NavFormBuilderStyles";
+import { bootstrapFormInputs, formioTable } from "./NavFormBuilderStyles";
 
 const useBuilderMountElementStyles = makeStyles({
   "@global": {
     ".formio-form": {
       ...navFormStyle,
       ...bootstrapFormInputs,
+      ...formioTable,
     },
     // Start form builder
     ".formbuilder": {
