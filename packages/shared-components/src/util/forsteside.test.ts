@@ -45,12 +45,12 @@ describe("genererPersonalia", () => {
     const actual = genererPersonalia(null, {
       navn: "Test Testesen",
       adresse: "Testveien 1",
-      postNummer: "1234",
+      postnr: "1234",
       sted: "Oslo",
       land: "Norge",
     });
     expect(actual).toEqual({
-      ukjentBrukerPersonInfo: "Test Testesen, Testveien 1 1234 Oslo Norge.",
+      ukjentBrukerPersoninfo: "Test Testesen, Testveien 1 1234 Oslo Norge.",
     });
   });
 
@@ -225,7 +225,7 @@ describe("genererAdresse", () => {
   it("generates correct Norwegian address", () => {
     const actual = genererAdresse({
       gateadresseSoker: "Testveien 1",
-      postnummerSoker: "1234",
+      postnrSoker: "1234",
       poststedSoker: "Oslo",
       fornavnSoker: "Test",
       etternavnSoker: "Testesen",
@@ -233,7 +233,7 @@ describe("genererAdresse", () => {
     expect(actual).toEqual({
       navn: `Test Testesen`,
       adresse: "Testveien 1",
-      postnummer: "1234",
+      postnr: "1234",
       sted: "Oslo",
       land: "Norge",
     });
@@ -251,7 +251,7 @@ describe("genererAdresse", () => {
     expect(actual).toEqual({
       navn: `Test Testesen`,
       adresse: "Testveien 1",
-      postnummer: "1234",
+      postnr: "1234",
       sted: "NY",
       land: "USA",
     });
