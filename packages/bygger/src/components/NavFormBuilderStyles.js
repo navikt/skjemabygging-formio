@@ -1,4 +1,7 @@
 const bootstrapFormInputs = {
+  "& .mb-2": {
+    marginBottom: "0.5rem",
+  },
   "& [hidden]": {
     display: "none !important",
   },
