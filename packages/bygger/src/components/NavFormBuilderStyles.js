@@ -22,20 +22,14 @@ const bootstrapFormInputs = {
       listStyle: "none",
 
       "&--multiple": {
-        display: "flex",
-        flexDirection: "row",
+        display: "inline",
         float: "left",
 
         "& .choices__item": {
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
+          display: "inline-block",
           width: "fit-content",
-          //display: "inline-block",
-          //verticalAlign: "middle",
           fontSize: "12px",
           fontWeight: "500",
-          //marginRight: "3.75px",
           backgroundColor: "#00bcd4",
           border: "1px solid #00a5bb",
           color: "#fff",
@@ -167,12 +161,12 @@ const bootstrapFormInputs = {
       padding: "0",
       backgroundColor: "transparent",
       backgroundImage:
-        "url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMi41OTIuMDQ0bDE4LjM2NCAxOC4zNjQtMi41NDggMi41NDhMLjA0NCAyLjU5MnoiLz48cGF0aCBkPSJNMCAxOC4zNjRMMTguMzY0IDBsMi41NDggMi41NDhMMi41NDggMjAuOTEyeiIvPjwvZz48L3N2Zz4=)",
+        "url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI0ZGRiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMi41OTIuMDQ0bDE4LjM2NCAxOC4zNjQtMi41NDggMi41NDhMLjA0NCAyLjU5MnoiLz48cGF0aCBkPSJNMCAxOC4zNjRMMTguMzY0IDBsMi41NDggMi41NDhMMi41NDggMjAuOTEyeiIvPjwvZz48L3N2Zz4=)",
       backgroundRepeat: "no-repeat",
       backgroundPosition: "50%",
       backgroundSize: "8px",
       border: "0",
-      borderLeft: "1px solid black",
+      borderLeft: "1px solid #008fa1",
       position: "absolute",
       top: "50%",
       right: "0",
