@@ -60,8 +60,8 @@ class Day extends FormioDay {
       max = 12;
     }
     if (name === "year") {
-      min = _.get(this.component, "fields.year.minYear", 1940) || 1940;
-      max = _.get(this.component, "fields.year.maxYear", 2090) || 2090;
+      min = _.get(this.component, "fields.year.minYear", 1990) || 1990;
+      max = _.get(this.component, "fields.year.maxYear", 2050) || 2050;
     }
     return {
       type: "input",
