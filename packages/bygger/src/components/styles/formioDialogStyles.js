@@ -59,6 +59,7 @@ const formioDialogStyles = {
       "&-sm-6": {
         flex: "0 0 50%",
         maxWidth: "50%",
+        padding: "0 15px",
       },
 
       "&-sm-12": {
