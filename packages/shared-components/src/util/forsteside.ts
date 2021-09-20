@@ -1,17 +1,48 @@
-export function genererPersonalia(fodselsNummer, adresse) {
-  if (fodselsNummer) {
+type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
+
+interface Bruker {
+  brukerId: string;
+  brukerType: string;
+}
+
+interface UkjentBruker {
+  ukjentBrukerPersoninfo: string;
+}
+
+interface KjentBruker {
+  bruker: Bruker;
+}
+
+type BrukerInfo = KjentBruker | UkjentBruker;
+
+interface ForstesideInfo {
+  foerstesidetype: ForstesideType;
+  navSkjemaId: string;
+  spraakkode: string;
+  overskriftstittel: string;
+  arkivtittel: string;
+  tema: string;
+  vedleggsliste: string[];
+  dokumentlisteFoersteside: string[];
+  netsPostboks: string;
+}
+
+type ForstesideRequestBody = ForstesideInfo & BrukerInfo;
+
+export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
+  if (fnrEllerDnr) {
     return {
       bruker: {
-        brukerId: fodselsNummer,
+        brukerId: fnrEllerDnr,
         brukerType: "PERSON",
       },
     };
   } else if (adresse) {
     return {
-      ukjentBrukerPersonInfo:
+      ukjentBrukerPersoninfo:
         `${adresse.navn || ""}, ` +
         `${adresse.adresse || ""} ` +
-        `${adresse.postNummer || ""} ` +
+        `${adresse.postnr || ""} ` +
         `${adresse.sted || ""} ` +
         `${adresse.land || ""}.`,
     };
@@ -66,7 +97,7 @@ export function genererAdresse(submission) {
   const {
     gateadresseSoker,
     landSoker,
-    postnummerSoker,
+    postnrSoker,
     poststedSoker,
     fornavnSoker,
     etternavnSoker,
@@ -75,13 +106,13 @@ export function genererAdresse(submission) {
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
     adresse: gateadresseSoker,
-    postnummer: postnummerSoker || utenlandskPostkodeSoker,
+    postnr: postnrSoker || utenlandskPostkodeSoker,
     sted: poststedSoker,
     land: landSoker || "Norge",
   };
 }
 
-export function genererFoerstesideData(form, submission) {
+export function genererFoerstesideData(form, submission): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema },
     title,

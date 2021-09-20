@@ -2,7 +2,6 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import React, { useContext } from "react";
 import ConfirmPublishModal from "./ConfirmPublishModal";
-import { AmplitudeProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { useModal } from "../util/useModal";
 import { makeStyles } from "@material-ui/styles";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
@@ -32,31 +31,29 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true, logout: onLogout }}>
-      <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-        <ActionRow>
-          <Link className="knapp" to={editFormUrl}>
-            Rediger skjema
-          </Link>
-          <Link className="knapp" to={testFormUrl}>
-            Forhåndsvis
-          </Link>
-        </ActionRow>
-        <Row className={styles.titleRow}>
-          <Column className={styles.mainCol}>
-            <Undertittel tag="h1">{title}</Undertittel>
-          </Column>
-        </Row>
-        <Row>
-          <Column className={styles.mainCol}>
-            <FormMetadataEditor form={form} onChange={onChange} />
-          </Column>
-          <Column>
-            <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
-            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-          </Column>
-        </Row>
-      </AmplitudeProvider>
+      <ActionRow>
+        <Link className="knapp" to={editFormUrl}>
+          Rediger skjema
+        </Link>
+        <Link className="knapp" to={testFormUrl}>
+          Forhåndsvis
+        </Link>
+      </ActionRow>
+      <Row className={styles.titleRow}>
+        <Column className={styles.mainCol}>
+          <Undertittel tag="h1">{title}</Undertittel>
+        </Column>
+      </Row>
+      <Row>
+        <Column className={styles.mainCol}>
+          <FormMetadataEditor form={form} onChange={onChange} />
+        </Column>
+        <Column>
+          <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
+          <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+        </Column>
+      </Row>
 
       <ConfirmPublishModal
         openModal={openModal}
