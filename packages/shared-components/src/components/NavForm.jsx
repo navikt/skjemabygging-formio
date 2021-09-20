@@ -104,7 +104,7 @@ const NavForm = (props) => {
       });
       initializeFormio();
     }
-  }, [props.src, props.i18n, props.language]);
+  }, [props.src, props.i18n]);
 
   useEffect(() => {
     const {form, url} = props;
@@ -120,7 +120,13 @@ const NavForm = (props) => {
       });
       initializeFormio();
     }
-  }, [props.form, props.i18n, props.language]);
+  }, [props.form, props.i18n]);
+
+  useEffect(() => {
+    if (formio) {
+      formio.language = props.language;
+    }
+  }, [props.language]);
 
   useEffect(() => {
     overrideFormioWizardNextPageAndSubmit(

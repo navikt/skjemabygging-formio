@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
 import { mapTranslationsToFormioI18nObject } from "./translationsMapper";
@@ -10,6 +10,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const languageCodeFromUrl = useLanguageCodeFromURL();
   const availableLanguages = Object.keys(translations);
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
+  const [translationsForNavForm, setTranslationsForNavForm] = useState({});
 
   const currentTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
 
@@ -22,9 +23,9 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
     }
   }, [currentTranslation]);
 
-  function updateInitialLanguage() {
-    initialLanguage.current = currentLanguage;
-  }
+  useEffect(() => {
+    setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
+  }, [translations]);
 
   function translate(originalText) {
     return currentTranslation[originalText] ? currentTranslation[originalText].value : originalText;
@@ -37,8 +38,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
         currentLanguage,
         initialLanguage,
         translate,
-        updateInitialLanguage,
-        translationsForNavForm: mapTranslationsToFormioI18nObject(translations),
+        translationsForNavForm,
       }}
     >
       {children}
