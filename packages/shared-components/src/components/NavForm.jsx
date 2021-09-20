@@ -22,7 +22,7 @@
  * SOFTWARE.
  * */
 
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
@@ -43,8 +43,14 @@ const NavForm = (props) => {
   let createPromise;
   let element;
   const [formio, setFormio] = useState(undefined);
+  const mountedRef = useRef(true);
 
-  useEffect(() => () => formio ? formio.destroy(true) : null, [formio]);
+  useEffect(() => () => {
+    mountedRef.current = false;
+    if (formio) {
+      formio.destroy(true);
+    }
+  }, [formio]);
 
   const createWebformInstance = (srcOrForm) => {
     const {formioform, formReady, language, i18n} = props;
@@ -55,9 +61,11 @@ const NavForm = (props) => {
       events: NavForm.getDefaultEmitter()
     });
     createPromise = instance.ready.then(formioInstance => {
-      setFormio(formioInstance);
-      if (formReady) {
-        formReady(formioInstance);
+      if (mountedRef.current) {
+        setFormio(formioInstance);
+        if (formReady) {
+          formReady(formioInstance);
+        }
       }
     });
 

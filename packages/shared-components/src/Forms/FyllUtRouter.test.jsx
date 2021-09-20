@@ -46,7 +46,7 @@ describe('FyllUtRouter', () => {
 
   describe('Endring av språk', () => {
 
-    it('Skjematittel oversettes fra norsk til engelsk', () => {
+    it('Skjema oversettes fra norsk til engelsk', async () => {
       const norskTittel = form.title;
       const engelskTittel = translations['en'].translations[`${form.title}`].value;
       renderFyllUtRouter({form, translations});
@@ -54,14 +54,21 @@ describe('FyllUtRouter', () => {
       expect(screen.queryByRole('heading', {name: norskTittel})).toBeTruthy();
       expect(screen.queryByRole('heading', {name: engelskTittel})).toBeNull();
 
+      expect(screen.queryByText("Veiledning")).toBeTruthy();
+      expect(screen.queryByText("Guidance")).toBeNull();
+
       const velgSprakButton = screen.getByRole('button', {name: labelNorskBokmal});
       userEvent.click(velgSprakButton);
 
       const englishOption = screen.getByRole('link', {name: 'English'});
       userEvent.click(englishOption);
 
-      expect(screen.queryByRole('heading', {name: engelskTittel})).toBeTruthy();
+      expect(await screen.findByRole('heading', {name: engelskTittel})).toBeTruthy();
       expect(screen.queryByRole('heading', {name: norskTittel})).toBeNull();
+
+      expect(screen.queryByText("Guidance")).toBeTruthy();
+      expect(screen.queryByText( "Veiledning")).toBeNull();
+
     });
 
   });
