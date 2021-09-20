@@ -343,12 +343,6 @@ describe("When handling component", () => {
   });
 });
 
-describe("Day component", () => {
-  it("show only month name and year", () => {
-    const actual = handleComponent(createDummyDayComponent(), { manedAr: "09/00/2021" }, []);
-    expect(actual.toBe("September, 2021"));
-  });
-});
 describe("When creating form summary object", () => {
   it("it is created as it should", () => {
     const actual = createFormSummaryObject(
