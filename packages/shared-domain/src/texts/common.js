@@ -14,5 +14,8 @@ const common = {
   october: "Oktober",
   november: "November",
   december: "Desember",
+  month: "Måned",
+  day: "Dag",
+  year: "År",
 };
 export default common;
