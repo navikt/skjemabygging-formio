@@ -51,6 +51,12 @@ const formComponentsListStyles = {
     padding: "5px 5px 5px 8px",
     textAlign: "left",
     width: "block",
+
+    "&:hover": {
+      backgroundColor: "#0069d9",
+      borderColor: "#0062cc",
+      cursor: "pointer",
+    },
   },
 };
 
