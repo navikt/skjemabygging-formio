@@ -3,9 +3,17 @@ import { navFormStyle, bootstrapStyles } from "@navikt/skjemadigitalisering-shar
 import formioTableStyles from "./formioTableStyles";
 import bootstrapFormInputStyles from "./bootstrapFormInputStyles";
 import listGroupStyles from "./listGroupStyles";
+import choicesStyles from "./choicesStyles";
 
 const formioFormStyles = {
-  ".formio-form": merge(navFormStyle, bootstrapFormInputStyles, formioTableStyles, listGroupStyles, bootstrapStyles),
+  ".formio-form": merge(
+    navFormStyle,
+    bootstrapFormInputStyles,
+    choicesStyles,
+    formioTableStyles,
+    listGroupStyles,
+    bootstrapStyles
+  ),
 };
 
 export default formioFormStyles;
