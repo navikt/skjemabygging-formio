@@ -1,5 +1,53 @@
+const choicesButtonStyles = {
+  "&__button": {
+    padding: "0",
+    backgroundColor: "transparent",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "50%",
+    backgroundSize: "8px",
+    border: "0",
+    textIndent: "-9999px",
+  },
+  "&[data-type*=select-multiple], &[data-type*=text]": {
+    "& .choices__button": {
+      position: "relative",
+      display: "inline-block",
+      margin: "0 -4px 0 8px",
+      paddingLeft: "16px",
+      borderLeft: "1px solid #008fa1",
+      backgroundImage:
+        "url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI0ZGRiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMi41OTIuMDQ0bDE4LjM2NCAxOC4zNjQtMi41NDggMi41NDhMLjA0NCAyLjU5MnoiLz48cGF0aCBkPSJNMCAxOC4zNjRMMTguMzY0IDBsMi41NDggMi41NDhMMi41NDggMjAuOTEyeiIvPjwvZz48L3N2Zz4=)",
+      backgroundSize: "8px",
+      width: "8px",
+      lineHeight: "1",
+      opacity: ".75",
+      borderRadius: "0",
+    },
+  },
+
+  "&[data-type*=select-one]": {
+    "& .choices__button": {
+      backgroundImage:
+        "url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMi41OTIuMDQ0bDE4LjM2NCAxOC4zNjQtMi41NDggMi41NDhMLjA0NCAyLjU5MnoiLz48cGF0aCBkPSJNMCAxOC4zNjRMMTguMzY0IDBsMi41NDggMi41NDhMMi41NDggMjAuOTEyeiIvPjwvZz48L3N2Zz4=)",
+      padding: "0",
+      backgroundSize: "8px",
+      position: "absolute",
+      top: "50%",
+      right: "0",
+      marginTop: "-10px",
+      marginRight: "25px",
+      height: "20px",
+      width: "20px",
+      borderRadius: "10em",
+      opacity: ".5",
+    },
+  },
+};
+
 const choicesStyles = {
   "& .choices": {
+    ...choicesButtonStyles,
+
     "&.form-group:not(.formio-hidden)": {
       marginBottom: "0",
     },
@@ -30,7 +78,6 @@ const choicesStyles = {
           marginRight: "0.25rem",
 
           "&[data-deletable]": {
-            paddingRight: "1.5rem",
             position: "relative",
           },
         },
@@ -80,23 +127,6 @@ const choicesStyles = {
           },
 
           "&[data-deletable]": {},
-
-          "&[data-type*=select-multiple], [data-type*=text]": {
-            "& .choices__button": {
-              position: "relative",
-              display: "inline-block",
-              margin: "0 -4px 0 8px",
-              paddingLeft: "16px",
-              borderLeft: "1px solid #008fa1",
-              backgroundImage:
-                "url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI0ZGRiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMi41OTIuMDQ0bDE4LjM2NCAxOC4zNjQtMi41NDggMi41NDhMLjA0NCAyLjU5MnoiLz48cGF0aCBkPSJNMCAxOC4zNjRMMTguMzY0IDBsMi41NDggMi41NDhMMi41NDggMjAuOTEyeiIvPjwvZz48L3N2Zz4=)",
-              backgroundSize: "8px",
-              width: "8px",
-              lineHeight: "1",
-              opacity: ".75",
-              borderRadius: "0",
-            },
-          },
         },
 
         "& .choices__input": {
@@ -144,25 +174,6 @@ const choicesStyles = {
       "&:focus": {
         outline: "0",
       },
-    },
-    "&__button": {
-      padding: "0",
-      backgroundColor: "transparent",
-      backgroundImage:
-        "url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0iI0ZGRiIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMi41OTIuMDQ0bDE4LjM2NCAxOC4zNjQtMi41NDggMi41NDhMLjA0NCAyLjU5MnoiLz48cGF0aCBkPSJNMCAxOC4zNjRMMTguMzY0IDBsMi41NDggMi41NDhMMi41NDggMjAuOTEyeiIvPjwvZz48L3N2Zz4=)",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "50%",
-      backgroundSize: "8px",
-      border: "0",
-      borderLeft: "1px solid #008fa1",
-      position: "absolute",
-      top: "50%",
-      right: "0",
-      marginTop: "-10px",
-      height: "1.25rem",
-      width: "1.25rem",
-      opacity: ".5",
-      textIndent: "-9999px",
     },
   },
 };
