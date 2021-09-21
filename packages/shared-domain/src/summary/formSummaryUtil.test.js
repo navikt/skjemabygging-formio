@@ -394,9 +394,10 @@ describe("When creating form summary object", () => {
             createDummyEmail("Email in NavSkjemagruppe"),
           ]),
         ]),
-        createPanelObject("Panel with radioPanel and day component", [
-          createDummyRadioPanel("RadioPanel"),
-          createDummyDayComponent(),
+        createPanelObject("Panel with radioPanel", [createDummyRadioPanel("RadioPanel")]),
+        createPanelObject("Panel with day component", [
+          createDummyDayComponent("Year contains 00"),
+          createDummyDayComponent("Year without 00"),
         ]),
       ]),
       {
@@ -427,7 +428,8 @@ describe("When creating form summary object", () => {
           textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
           emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
           radiopanel: "yes",
-          manedAr: "09/00/2021",
+          yearcontains00: "09/00/2000",
+          yearwithout00: "03/00/2021",
         },
       },
       mockedTranslate
@@ -564,8 +566,8 @@ describe("When creating form summary object", () => {
         ],
       },
       {
-        label: "Panel with radioPanel and day component",
-        key: "panelwithradiopanelanddaycomponent",
+        label: "Panel with radioPanel",
+        key: "panelwithradiopanel",
         type: "panel",
         components: [
           {
@@ -574,11 +576,24 @@ describe("When creating form summary object", () => {
             type: "radiopanel",
             value: "YES-label",
           },
+        ],
+      },
+      {
+        label: "Panel with day component",
+        key: "panelwithdaycomponent",
+        type: "panel",
+        components: [
           {
-            label: "Mnd/år",
-            key: "manedAr",
+            label: "Year contains 00",
+            key: "yearcontains00",
             type: "day",
-            value: "September, 2021",
+            value: "September, 2000",
+          },
+          {
+            label: "Year without 00",
+            key: "yearwithout00",
+            type: "day",
+            value: "Mars, 2021",
           },
         ],
       },

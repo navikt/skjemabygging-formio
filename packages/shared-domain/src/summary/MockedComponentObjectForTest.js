@@ -95,7 +95,7 @@ const createDummyDataGrid = (label = "DataGrid", components, hideLabel) => ({
 
 const createDummyDayComponent = (label = "Mnd/år") => ({
   label,
-  key: "manedAr",
+  key: keyFromLabel(label),
   type: "day",
 });
 
