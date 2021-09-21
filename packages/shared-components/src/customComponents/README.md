@@ -162,4 +162,7 @@ In some cases, like where we create some specific standard-components, like `add
 
 ### Create new React Component
 
-TODO
+So far, we have struggled making custom React-based components. We do it using FormioReactComponent, but it does not work correctly.
+Values are not loaded correctly when navgating back to the wizard from the summary page, there are warnings about memory leaks, etc.
+
+As such, we prefer not to create these types of components at this time, although that would be the end goal: We want to use NAV Design System components directly.
