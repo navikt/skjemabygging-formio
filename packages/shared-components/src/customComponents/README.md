@@ -53,7 +53,8 @@ Most changes we make tend to be done for the components `editForm`, `builderInfo
                             input: true,
                         }
                     ]
-                }
+                },
+                ...extend
             ])
         }
         ```
