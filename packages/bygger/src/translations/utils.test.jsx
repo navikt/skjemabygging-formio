@@ -211,6 +211,29 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
   });
+  it("Test form with panel and text fields with special suffix", () => {
+    const actual = getTextsAndTypeForForm(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [
+              { ...createDummyTextfield(), suffix: "cm" },
+              { ...createDummyTextfield(), suffix: "kg" },
+              { ...createDummyTextfield(), suffix: "%" },
+            ],
+            "Introduksjon"
+          ),
+        ],
+        "test"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "Introduksjon", type: "text" },
+      { text: "Tekstfelt", type: "text" },
+    ]);
+  });
+
   it("Test form with duplicated text field", () => {
     const actual = getTextsAndTypeForForm(
       createFormObject(

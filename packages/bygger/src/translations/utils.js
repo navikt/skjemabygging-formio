@@ -4,6 +4,11 @@ const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
 };
 
+const filterSpecialSuffix = (suffix) => {
+  const specialSuffixList = ["%", "km", "cm", "kg", "kr"];
+  return specialSuffixList.indexOf(suffix) >= 0 ? "" : suffix;
+};
+
 const getTextFromComponentProperty = (property) => (property !== "" ? property : undefined);
 
 const extractTextsFromProperties = (props) => {
@@ -29,13 +34,15 @@ const getSimplifiedComponentObject = (form) =>
     .map(({ content, title, label, html, type, values, legend, description, suffix, prefix }) => ({
       title,
       label:
-        ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe"].indexOf(type) === -1 ? label : undefined,
+        ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe", "alertstripe"].indexOf(type) === -1
+          ? label
+          : undefined,
       html,
       values: values ? values.map((value) => value.label) : undefined,
-      content,
+      content: getTextFromComponentProperty(content),
       legend,
       description: getTextFromComponentProperty(description),
-      suffix: getTextFromComponentProperty(suffix),
+      suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
       prefix: getTextFromComponentProperty(prefix),
     }));
 
