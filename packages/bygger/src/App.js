@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 function App({ projectURL, store, pusher }) {
   const styles = useStyles();
   const userAlerter = useUserAlerting(pusher);
-  console.log("userAlerter", userAlerter);
   const { userData } = useAuth();
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const contentFunc = userData

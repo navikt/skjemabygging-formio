@@ -1,38 +1,34 @@
-import { FakeBackendTestContext } from "./testTools/frontend/FakeBackendTestContext";
-import { Formio } from "formiojs";
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
-import { renderHook } from "@testing-library/react-hooks";
-import { NavForm, AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { useFormioForms } from "./hooks/useFormioForms";
-import { AuthContext } from "./context/auth-context";
+import {render, screen} from '@testing-library/react';
 import App from "./App";
-import Formiojs from "formiojs/Formio";
-import featureToggles from "./featureToggles.js";
-
-const context = new FakeBackendTestContext();
-context.setupBeforeAfter();
+import {AuthContext} from "./context/auth-context";
+import featureToggles from "./featureToggles";
+import {AppConfigProvider} from "@navikt/skjemadigitalisering-shared-components";
+import {MemoryRouter} from "react-router-dom";
+import {InprocessQuipApp} from "./fakeBackend/InprocessQuipApp";
+import {dispatcherWithBackend} from "./fakeBackend/fakeWebApp";
+import {FakeBackend} from "./fakeBackend/FakeBackend";
+import fetchMock from "jest-fetch-mock";
 
 const createFakeChannel = () => ({
   bind: jest.fn(),
   unbind: jest.fn(),
 });
 
-describe("App", () => {
-  let oldFormioFetch;
-  let formStore;
+describe('App', () => {
+
   beforeEach(() => {
-    oldFormioFetch = Formio.fetch;
-    Formio.fetch = global.fetch;
-    formStore = { forms: null };
-  });
-  afterEach(() => {
-    Formio.fetch = oldFormioFetch;
+    const mockBackend = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
+    fetchMock.mockImplementation(mockBackend.fetchImpl);
   });
 
-  it("baseURL renders loginform when unauthenticated", async () => {
-    let formElement;
-    context.render(
+  afterEach(() => {
+    fetchMock.resetMocks();
+  });
+
+  test('Redirect til login form', async () => {
+    const formStore = {forms: null};
+    render(
       <MemoryRouter initialEntries={["/"]}>
         <AuthContext.Provider
           value={{
@@ -45,32 +41,15 @@ describe("App", () => {
             <App
               store={formStore}
               projectURL="http://myproject.example.org"
-              pusher={{ subscribe: (name) => createFakeChannel() }}
+              pusher={{ subscribe: () => createFakeChannel() }}
             />
           </AppConfigProvider>
         </AuthContext.Provider>
-      </MemoryRouter>,
-      {
-        createNodeMock: (element) => {
-          if (element.props["data-testid"] === "formMountElement") {
-            formElement = document.createElement("div");
-            return formElement;
-          }
-        },
-      }
+      </MemoryRouter>
     );
-    await context.waitForComponent(NavForm); // Misvisende - must investigate
-    expect(formElement.querySelectorAll("label")).toHaveLength(2);
-    expect(formElement.querySelectorAll("label")[0].textContent.trim()).toEqual("Email");
+
+    expect(await screen.findByLabelText("Email")).toBeTruthy();
+    expect(await screen.findByLabelText("Password")).toBeTruthy();
   });
 
-  it("loads all forms in the hook", async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useFormioForms(new Formiojs("http://myproject.example.org"), formStore)
-    );
-    expect(formStore.forms).toEqual(null);
-    await waitForNextUpdate();
-    expect(result.current.forms).toEqual(context.backend.allForms);
-    expect(context.backend.allForms).toEqual(formStore.forms);
-  });
 });

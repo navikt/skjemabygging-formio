@@ -22,7 +22,7 @@
  * SOFTWARE.
  * */
 
-import React, { Component } from "react";
+import React, { Component, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
@@ -33,161 +33,165 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
 import { checkConditionOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
+import {SANITIZE_CONFIG} from "../template/sanitizeConfig";
 
 Utils.checkCondition = checkConditionOverride;
 
-class NavForm extends Component {
-  static propTypes = {
-    className: PropTypes.string,
-    src: PropTypes.string,
-    url: PropTypes.string,
-    form: PropTypes.object,
-    submission: PropTypes.object,
-    options: PropTypes.shape({
-      language: PropTypes.string,
-      readOnly: PropTypes.bool,
-      noAlerts: PropTypes.bool,
-      i18n: PropTypes.object,
-      template: PropTypes.string,
-      saveDraft: PropTypes.bool,
-    }),
-    onPrevPage: PropTypes.func,
-    onNextPage: PropTypes.func,
-    onCancel: PropTypes.func,
-    onChange: PropTypes.func,
-    onCustomEvent: PropTypes.func,
-    onComponentChange: PropTypes.func,
-    onSubmit: PropTypes.func,
-    onSubmitDone: PropTypes.func,
-    onFormLoad: PropTypes.func,
-    onError: PropTypes.func,
-    onRender: PropTypes.func,
-    onAttach: PropTypes.func,
-    onBuild: PropTypes.func,
-    onFocus: PropTypes.func,
-    onBlur: PropTypes.func,
-    onInitialized: PropTypes.func,
-    formioform: PropTypes.any,
-    loggSkjemaStegFullfort: PropTypes.func,
-    loggSkjemaValideringFeilet: PropTypes.func,
-  };
+const NavForm = (props) => {
 
-  static defaultProps = {
-    options: {
-      language: "nb-NO",
-      i18n: i18nData,
-    },
-    onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
-    onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
-  };
+  let instance;
+  let createPromise;
+  let element;
+  const [formio, setFormio] = useState(undefined);
+  const mountedRef = useRef(true);
 
-  static getDefaultEmitter() {
-    return new EventEmitter({
-      wildcard: false,
-      maxListeners: 0,
+  useEffect(() => () => {
+    mountedRef.current = false;
+    if (formio) {
+      formio.destroy(true);
+    }
+  }, [formio]);
+
+  const createWebformInstance = (srcOrForm) => {
+    const {formioform, formReady, language, i18n} = props;
+    instance = new (formioform || FormioForm)(element, srcOrForm, {
+      language,
+      i18n,
+      sanitizeConfig: SANITIZE_CONFIG,
+      events: NavForm.getDefaultEmitter()
     });
-  }
+    createPromise = instance.ready.then(formioInstance => {
+      if (mountedRef.current) {
+        setFormio(formioInstance);
+        if (formReady) {
+          formReady(formioInstance);
+        }
+      }
+    });
 
-  componentDidMount = () => {
-    const { options, src, url, form } = this.props;
+    return createPromise;
+  };
 
-    if (!options.events) {
-      options.events = NavForm.getDefaultEmitter();
+  const onAnyEvent = (event, ...args) => {
+    if (event.startsWith('formio.')) {
+      const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
+      // eslint-disable-next-line no-prototype-builtins
+      if (props.hasOwnProperty(funcName) && typeof (props[funcName]) === 'function') {
+        props[funcName](...args);
+      }
     }
+  };
 
+  const initializeFormio = () => {
+    const {submission} = props;
+    if (createPromise) {
+      instance.onAny(onAnyEvent);
+      createPromise.then(() => {
+        if (formio && submission) {
+          formio.submission = submission;
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    const {src} = props;
     if (src) {
-      this.instance = new (this.props.formioform || FormioForm)(this.element, src, options);
-      this.createPromise = this.instance.ready.then((formio) => {
-        this.formio = formio;
-        this.formio.src = src;
+      createWebformInstance(src).then(() => {
+        if (formio) {
+          formio.src = src;
+        }
       });
+      initializeFormio();
     }
+  }, [props.src, props.i18n]);
+
+  useEffect(() => {
+    const {form, url} = props;
     if (form) {
-      this.instance = new (this.props.formioform || FormioForm)(this.element, form, options);
-      this.createPromise = this.instance.ready.then((formio) => {
-        this.formio = formio;
-        this.formio.form = form;
-        if (url) {
-          this.formio.url = url;
-        }
-        window.setLanguage = (lang) => {
-          this.formio.language = lang;
-        };
-        return this.formio;
-      });
-    }
-
-    this.initializeFormio();
-  };
-
-  componentWillUnmount = () => {
-    if (this.formio !== undefined) {
-      this.formio.destroy(true);
-    }
-  };
-
-  initializeFormio = () => {
-    if (this.createPromise) {
-      this.instance.onAny((event, ...args) => {
-        if (event.startsWith("formio.")) {
-          const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
-          if (this.props.hasOwnProperty(funcName) && typeof this.props[funcName] === "function") {
-            this.props[funcName](...args);
+      createWebformInstance(form).then(() => {
+        if (formio) {
+          formio.form = form;
+          if (url) {
+            formio.url = url;
           }
+          return formio;
         }
       });
-      this.createPromise.then(() => {
-        if (this.props.submission) {
-          this.formio.submission = this.props.submission;
-        }
-      });
+      initializeFormio();
     }
+  }, [props.form, props.i18n]);
+
+  useEffect(() => {
+    if (formio) {
+      formio.language = props.language;
+    }
+  }, [props.language]);
+
+  useEffect(() => {
     overrideFormioWizardNextPageAndSubmit(
-      this.props.form,
-      this.props.loggSkjemaStegFullfort,
-      this.props.loggSkjemaValideringFeilet
+      props.loggSkjemaStegFullfort,
+      props.loggSkjemaValideringFeilet
     );
-  };
+  }, [props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet]);
 
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { options = {}, src, form, submission } = this.props;
-
-    if (!options.events) {
-      options.events = NavForm.getDefaultEmitter();
+  useEffect(() => {
+    const {submission} = props;
+    if (formio && submission) {
+      formio.submission = submission;
     }
+  }, [props.submission, formio]);
 
-    if (src !== nextProps.src) {
-      this.instance = new (this.props.formioform || FormioForm)(this.element, nextProps.src, options);
-      this.createPromise = this.instance.ready.then((formio) => {
-        this.formio = formio;
-        this.formio.src = nextProps.src;
-      });
-      this.initializeFormio();
-    }
-    if (form !== nextProps.form) {
-      this.instance = new (this.props.formioform || FormioForm)(this.element, nextProps.form, options);
-      this.createPromise = this.instance.ready.then((formio) => {
-        this.formio = formio;
-        this.formio.form = nextProps.form;
-      });
-      this.initializeFormio();
-    }
+  return (
+    <div
+      className={props.className}
+      data-testid="formMountElement"
+      ref={el => element = el}
+    />
+  );
+};
 
-    if (submission !== nextProps.submission && this.formio) {
-      this.formio.submission = nextProps.submission;
-    }
-  };
+NavForm.propTypes = {
+  className: PropTypes.string,
+  src: PropTypes.string,
+  url: PropTypes.string,
+  form: PropTypes.object,
+  submission: PropTypes.object,
+  i18n: PropTypes.object,
+  language: PropTypes.string,
+  onPrevPage: PropTypes.func,
+  onNextPage: PropTypes.func,
+  onCancel: PropTypes.func,
+  onChange: PropTypes.func,
+  onCustomEvent: PropTypes.func,
+  onComponentChange: PropTypes.func,
+  onSubmit: PropTypes.func,
+  onSubmitDone: PropTypes.func,
+  onFormLoad: PropTypes.func,
+  onError: PropTypes.func,
+  onRender: PropTypes.func,
+  onAttach: PropTypes.func,
+  onBuild: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  onInitialized: PropTypes.func,
+  formReady: PropTypes.func,
+  formioform: PropTypes.any
+};
 
-  render = () => {
-    return (
-      <div
-        className={this.props.className}
-        data-testid="formMountElement"
-        ref={(element) => (this.element = element)}
-      />
-    );
-  };
-}
+NavForm.defaultProps = {
+  language: "nb-NO",
+  i18n: i18nData,
+  onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
+  onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
+};
+
+NavForm.getDefaultEmitter = () => {
+  return new EventEmitter({
+    wildcard: false,
+    maxListeners: 0
+  });
+};
 
 const withAmplitudeHooks = (Component) => {
   return (props) => {

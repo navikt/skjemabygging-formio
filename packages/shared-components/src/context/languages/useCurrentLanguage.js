@@ -12,9 +12,6 @@ const useCurrentLanguage = (languageCodeFromUrl, translations) => {
   useEffect(() => {
     if (languageCodeFromUrl) {
       setCurrentLanguage(languageCodeFromUrl);
-      if (window.setLanguage !== undefined) {
-        window.setLanguage(languageCodeFromUrl);
-      }
     } else {
       setCurrentLanguage(initialLanguage.current);
     }
