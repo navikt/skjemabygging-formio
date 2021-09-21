@@ -5,11 +5,6 @@ export const bootstrapStyles = {
   },
   "& fieldset": {
     border: 0,
-    "& legend": {
-      fontSize: "1.5rem",
-      marginBottom: ".5rem",
-      lineHeight: "inherit",
-    },
   },
   "& dl": {
     marginTop: 0,
