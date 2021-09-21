@@ -166,3 +166,10 @@ So far, we have struggled making custom React-based components. We do it using F
 Values are not loaded correctly when navgating back to the wizard from the summary page, there are warnings about memory leaks, etc.
 
 As such, we prefer not to create these types of components at this time, although that would be the end goal: We want to use NAV Design System components directly.
+
+#### FormioReactComponent
+
+To render React-based components, we have FormioReactComponent. This is a custom renderer that wraps React-components.
+The React component will need a wrapper that extends FormioReactComponent, and then render the actual React component, e.g. a NAV Design System component.
+
+Changes to FormioReactComponent should normally be limited to bugfixes making sure these custom components are rendered/updated as they should, but changes to all such components can also be added here. 
