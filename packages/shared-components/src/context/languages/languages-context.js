@@ -24,7 +24,9 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   }, [currentTranslation]);
 
   useEffect(() => {
-    setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
+    if (availableLanguages.length > 0) {
+      setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
+    }
   }, [translations]);
 
   function translate(originalText) {
