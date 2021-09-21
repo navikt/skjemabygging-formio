@@ -523,13 +523,13 @@ const builderPalett = {
             month: {
               fieldSize: "input--s",
               type: "select",
-              placeholder: "Måned",
+              placeholder: "month",
               required: true,
             },
             year: {
-              fieldSize: "input--xs",
+              fieldSize: "input--s",
               type: "number",
-              placeholder: "År",
+              placeholder: "year",
               required: true,
             },
           },

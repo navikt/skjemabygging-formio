@@ -93,6 +93,12 @@ const createDummyDataGrid = (label = "DataGrid", components, hideLabel) => ({
   hideLabel,
 });
 
+const createDummyDayComponent = (label = "Mnd/år") => ({
+  label,
+  key: keyFromLabel(label),
+  type: "day",
+});
+
 const createPanelObject = (title, components, label) => ({
   title,
   label,
@@ -122,5 +128,6 @@ const mockedComponentObjectForTest = {
   createDummyDataGrid,
   createPanelObject,
   createFormObject,
+  createDummyDayComponent,
 };
 export default mockedComponentObjectForTest;
