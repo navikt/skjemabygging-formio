@@ -15,6 +15,7 @@ const {
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
   createDummyTextfield,
+  createDummyAlertstripe,
   createFormObject,
   createPanelObject,
 } = MockedComponentObjectForTest;
@@ -193,8 +194,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           createPanelObject(
             "Introduksjon",
             [
-              { ...createDummyTextfield(), suffix: "centimeter" },
-              { ...createDummyTextfield(), prefix: "+47" },
+              { ...createDummyTextfield("TestFieldWithSuffix"), suffix: "centimeter" },
+              { ...createDummyTextfield("TestFieldWithprefix"), prefix: "+47" },
               createDummyTextfield("wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV"),
             ],
             "Introduksjon"
@@ -205,8 +206,9 @@ describe("testGetAllTextsAndTypeForForm", () => {
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
-      { text: "Tekstfelt", type: "text" },
+      { text: "TestFieldWithSuffix", type: "text" },
       { text: "centimeter", type: "text" },
+      { text: "TestFieldWithprefix", type: "text" },
       { text: "+47", type: "text" },
       { text: "wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV", type: "textarea" },
     ]);
@@ -240,7 +242,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
         [
           createPanelObject(
             "Introduksjon",
-            [createDummyTextfield("same textfield"), createDummyEmail(), createDummyTextfield("same textfield")],
+            [createDummyTextfield("Same textfield"), createDummyEmail(), createDummyTextfield("Same textfield")],
             "Introduksjon"
           ),
         ],
@@ -249,8 +251,39 @@ describe("testGetAllTextsAndTypeForForm", () => {
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
-      { text: "same textfield", type: "text" },
+      { text: "Same textfield", type: "text" },
       { text: "Email", type: "text" },
+    ]);
+  });
+
+  it("Test form with alertstripes", () => {
+    const actual = getTextsAndTypeForForm(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [
+              createDummyAlertstripe("Alertstripe with a short content", "Test Alertstripe"),
+              createDummyAlertstripe("Alertstripe without content"),
+              createDummyAlertstripe(
+                "Alertstripe with a long content",
+                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.'
+              ),
+            ],
+            "Introduksjon"
+          ),
+        ],
+        "test"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "Introduksjon", type: "text" },
+      { text: "Test Alertstripe", type: "text" },
+      {
+        text:
+          'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        type: "textarea",
+      },
     ]);
   });
 
