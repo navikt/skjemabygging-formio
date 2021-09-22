@@ -5,7 +5,7 @@ const getInputType = (value) => {
 };
 
 const filterSpecialSuffix = (suffix) => {
-  const specialSuffixList = ["%", "km", "cm", "kg", "kr"];
+  const specialSuffixList = ["%", "km", "cm", "kg", "kr", "m"];
   return specialSuffixList.indexOf(suffix) >= 0 ? "" : suffix;
 };
 
