@@ -24,11 +24,14 @@
     "setupFilesAfterEnv": [
       "<rootDir>/setupTests.js"
     ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ],
     "moduleNameMapper": {
       "nav-(.*)-style": "<rootDir>/__mocks__/styleMock.js",
       "nav-frontend-core": "<rootDir>/__mocks__/styleMock.js",
       "nav-datovelger": "<rootDir>/__mocks__/styleMock.js",
-      "@navikt/ds-icons": "<rootDir>/__mocks__/styleMock.js"
+      "@navikt/ds-icons": "<rootDir>/__mocks__/dsIconsMock.js"
     }
   },
   "keywords": [],
@@ -40,6 +43,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
     "@babel/preset-env": "^7.14.1",
     "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.15.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
     "@testing-library/user-event": "13.2.1",
@@ -62,6 +66,8 @@
     "classnames": "2.2.6",
     "eventemitter2": "^6.4.4",
     "file-saver": "2.0.5",
+    "lodash.set": "^4.3.2",
+    "lodash.clonedeep": "^4.5.0",
     "moment": "^2.29.1",
     "nav-datovelger": "^6.2.1",
     "nav-frontend-alertstriper": "^3.0.23",
@@ -73,9 +79,10 @@
     "nav-frontend-knapper-style": "^1.0.1",
     "nav-frontend-lenker": "^1.0.58",
     "nav-frontend-lenker-style": "^1.0.2",
-    "nav-frontend-paneler-style": "^1.0.2",
+    "nav-frontend-paneler-style": "^2.0.1",
     "nav-frontend-skjema": "^3.1.0",
     "nav-frontend-skjema-style": "^2.1.0",
+    "nav-frontend-tabs-style": "^2.0.1",
     "nav-frontend-stegindikator-style": "^1.0.31",
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",

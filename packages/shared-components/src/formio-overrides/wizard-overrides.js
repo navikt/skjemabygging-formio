@@ -122,7 +122,7 @@ Wizard.prototype.detachHeader = function () {
   }
 };
 
-function overrideFormioWizardNextPageAndSubmit(form, loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
+function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
   Wizard.prototype.nextPage = function () {
     return originalNextPage
       .call(this)

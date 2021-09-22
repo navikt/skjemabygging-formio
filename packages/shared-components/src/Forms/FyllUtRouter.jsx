@@ -5,7 +5,8 @@ import { FillInFormPage } from "./FillInFormPage.jsx";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
-import { SummaryPage } from "./SummaryPage.jsx";
+import { SummaryPage } from "./SummaryPage.tsx";
+import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { styled } from "@material-ui/styles";
 import { LanguagesProvider, LanguageSelector } from "../context/languages";
 import { useAppConfig } from "../configContext";
@@ -58,6 +59,11 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route path={`${path}/forbered-innsending`}>
             <SubmissionWrapper submission={submission} url={url}>
               {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} formUrl={url} />}
+            </SubmissionWrapper>
+          </Route>
+          <Route path={`${path}/ingen-innsending`}>
+            <SubmissionWrapper submission={submission} url={url}>
+              {(submissionObject) => <PrepareIngenInnsendingPage form={form} submission={submissionObject} formUrl={url} />}
             </SubmissionWrapper>
           </Route>
         </Switch>

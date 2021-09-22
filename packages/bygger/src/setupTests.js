@@ -3,8 +3,9 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
-
 import waitForExpect from 'wait-for-expect';
+import fetchMock from "jest-fetch-mock";
 
 waitForExpect.defaults.timeout = 250;
 // waitForExpect.defaults.interval = 10;
+fetchMock.enableMocks();

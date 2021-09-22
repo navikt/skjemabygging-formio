@@ -10,6 +10,7 @@ import Number from "./components/Number";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import SelectBoxes from "./components/SelectBoxes";
 import AlertStripe from "./components/AlertStripe";
+import Day from "./components/Day";
 
 const customComponents = {
   alertstripe: AlertStripe,
@@ -24,5 +25,6 @@ const customComponents = {
   number: Number,
   navSkjemagruppe: NavSkjemagruppe,
   selectboxes: SelectBoxes,
+  day: Day,
 };
 export default customComponents;

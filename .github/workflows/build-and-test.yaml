@@ -41,6 +41,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '14.17.0'
+      - name: "Install top-level dependencies"
+        run: yarn install --frozen-lockfile
       - name: "Prepare local dependencies for shared packages"
         run: node bin/prepare-production-build.mjs
       - name: "Build shared-domain"

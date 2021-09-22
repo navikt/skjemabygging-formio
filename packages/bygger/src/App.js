@@ -4,8 +4,6 @@ import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import Formiojs from "formiojs/Formio";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
-import "./bootstrapStyle.scss";
-import "./formioCSS.less";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
@@ -24,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 function App({ projectURL, store, pusher }) {
   const styles = useStyles();
   const userAlerter = useUserAlerting(pusher);
-  console.log("userAlerter", userAlerter);
   const { userData } = useAuth();
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const contentFunc = userData

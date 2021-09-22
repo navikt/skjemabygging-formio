@@ -14,7 +14,7 @@ Formio.use(navdesign);
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
-const fyllutBaseURL = "https://www.nav.no/fyllut";
+const fyllutBaseURL = process.env.REACT_APP_FYLLUT_BASE_URL || "https://www.nav.no/fyllut";
 
 const store = { forms: null };
 

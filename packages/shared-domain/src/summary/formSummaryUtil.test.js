@@ -13,6 +13,7 @@ const {
   createDummyTextfield,
   createFormObject,
   createPanelObject,
+  createDummyDayComponent,
 } = MockedComponentObjectForTest;
 
 const mockedTranslate = (value) => value;
@@ -26,16 +27,16 @@ const dummySubmission = {
 
 describe("Map and evaluate conditionals", () => {
   it("evaluates conditional and returns a map", () => {
-    const formObject =       createFormObject([
+    const formObject = createFormObject([
       createPanelObject("p1", [
         createDummyRadioPanel(),
-        createDummyAlertstripe("Alert1", "", {show: true, when: "radiopanel", eq: "ja"}),
-        createDummyAlertstripe("Alert2", "", {show: false, when: "radiopanel", eq: "ja"})
-      ])
+        createDummyAlertstripe("Alert1", "", { show: true, when: "radiopanel", eq: "ja" }),
+        createDummyAlertstripe("Alert2", "", { show: false, when: "radiopanel", eq: "ja" }),
+      ]),
     ]);
-    const data = {radiopanel: "ja",};
+    const data = { radiopanel: "ja" };
 
-    expect(mapAndEvaluateConditionals(formObject, data)).toEqual({alert1: true, alert2: false});
+    expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ alert1: true, alert2: false });
   });
 });
 
@@ -142,7 +143,7 @@ describe("When handling component", () => {
           [],
           "",
           mockedTranslate(),
-          {alertstripewithconditional: false}
+          { alertstripewithconditional: false }
         );
         expect(actual.find((component) => component.type === "alertstripe")).toBeUndefined();
       });
@@ -154,7 +155,7 @@ describe("When handling component", () => {
           [],
           "",
           mockedTranslate(),
-          {alertstripewithconditional: true}
+          { alertstripewithconditional: true }
         );
         expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
       });
@@ -394,6 +395,10 @@ describe("When creating form summary object", () => {
           ]),
         ]),
         createPanelObject("Panel with radioPanel", [createDummyRadioPanel("RadioPanel")]),
+        createPanelObject("Panel with day component", [
+          createDummyDayComponent("Year contains 00"),
+          createDummyDayComponent("Year without 00"),
+        ]),
       ]),
       {
         data: {
@@ -423,6 +428,8 @@ describe("When creating form summary object", () => {
           textfieldinnavskjemagruppe: "textfieldinnavskjemagruppe-value",
           emailinnavskjemagruppe: "emailinnavskjemagruppe-value",
           radiopanel: "yes",
+          yearcontains00: "09/00/2000",
+          yearwithout00: "03/00/2021",
         },
       },
       mockedTranslate
@@ -568,6 +575,25 @@ describe("When creating form summary object", () => {
             key: "radiopanel",
             type: "radiopanel",
             value: "YES-label",
+          },
+        ],
+      },
+      {
+        label: "Panel with day component",
+        key: "panelwithdaycomponent",
+        type: "panel",
+        components: [
+          {
+            label: "Year contains 00",
+            key: "yearcontains00",
+            type: "day",
+            value: "September, 2000",
+          },
+          {
+            label: "Year without 00",
+            key: "yearwithout00",
+            type: "day",
+            value: "Mars, 2021",
           },
         ],
       },

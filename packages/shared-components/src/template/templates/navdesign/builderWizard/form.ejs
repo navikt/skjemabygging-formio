@@ -3,18 +3,23 @@
     {{ctx.sidebar}}
   </div>
   <div class="formarea">
-    <ol class="breadcrumb">
-      {% ctx.pages.forEach(function(page, pageIndex) { %}
-      <li>
-        <span title="{{page.title}}" class="mr-2 badge {% if (pageIndex === ctx.self.page) { %}badge-primary{% } else { %}badge-info{% } %} wizard-page-label" ref="gotoPage">{{page.title}}</span>
-      </li>
-      {% }) %}
-      <li>
-        <span title="{{ctx.t('Create Page')}}" class="mr-2 badge badge-success wizard-page-label" ref="addPage">
-          <i class="{{ctx.iconClass('plus')}}"></i> {{ctx.t('Page')}}
-        </span>
-      </li>
-    </ol>
+    <nav aria-label="Velg steg">
+      <ol class="breadcrumb">
+        {% ctx.pages.forEach(function(page, pageIndex) { %}
+        <li>
+          <a href="#{{page.title}}" class="wizard-page-label" {% if (pageIndex === ctx.self.page) { %}aria-current="step"{% } %} ref="gotoPage">{{page.title}}</a>
+        </li>
+        {% }) %}
+        <li>
+          <button class="wizard-page-label wizard-page-label__add-new" ref="addPage">
+            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8z" fill="currentColor"></path>
+            </svg>
+            {{ctx.t('Legg til nytt steg')}}
+          </button>
+        </li>
+      </ol>
+    </nav>
     <div ref="form">
       {{ctx.form}}
     </div>

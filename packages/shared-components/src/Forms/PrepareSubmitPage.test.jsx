@@ -5,20 +5,6 @@ import { AppConfigProvider } from "../configContext";
 import { computeDokumentinnsendingURL, PrepareSubmitPage } from "./PrepareSubmitPage";
 import { LanguagesProvider } from "../context/languages";
 
-beforeEach(() => {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: jest.fn().mockImplementation((_query) => ({
-      matches: false,
-    })),
-  });
-  Element.prototype.scrollIntoView = jest.fn();
-});
-
-afterEach(() => {
-  Element.prototype.scrollIntoView = undefined;
-});
-
 test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krysset av på at de har lest instruksjonene", () => {
   // we had to provide previousPage in state since all navigations to this page sets that value
   render(

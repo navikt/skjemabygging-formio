@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { RadioPanelGruppe } from "nav-frontend-skjema";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 import radioEditForm from "formiojs/components/radio/Radio.form";
 import FormBuilderOptions from "../../Forms/FormBuilderOptions";
@@ -60,7 +61,7 @@ const RadioPanelGruppeWrapper = class extends Component {
           legend={
             component.validate.required
               ? translate(component.label)
-              : `${translate(component.label)} (${translate("valgfritt")})`
+              : `${translate(component.label)} (${translate(TEXTS.common.optional)})`
           }
           description={renderDescriptionAboveLabel ? undefined : translate(component.description)}
           name={`data[${component.key}][${component.id}]`}

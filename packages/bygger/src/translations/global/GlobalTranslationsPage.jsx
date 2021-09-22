@@ -1,6 +1,7 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
+import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -13,6 +14,9 @@ import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageS
 import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
+import { getInputType } from "../utils";
+import { UserAlerterContext } from "../../userAlerting";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -44,10 +48,17 @@ const useGlobalTranslationsPageStyles = makeStyles({
   },
 });
 
-const createNewRow = () => ({
+const tags = {
+  SKJEMATEKSTER: "skjematekster",
+  GRENSESNITT: "grensesnitt",
+  STATISKE_TEKSTER: "statiske-tekster",
+  VALIDERING: "validering",
+};
+
+const createNewRow = (originalText = "", translatedText = "") => ({
   id: guid(),
-  originalText: "",
-  translatedText: "",
+  originalText,
+  translatedText,
 });
 
 const GlobalTranslationsPage = ({
@@ -58,7 +69,9 @@ const GlobalTranslationsPage = ({
   saveTranslation,
 }) => {
   const { tag } = useParams();
-  const [selectedTag, setSelectedTag] = useState("skjematekster");
+  const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
+
+  const alertComponent = useContext(UserAlerterContext).alertComponent();
 
   useEffect(() => {
     if (tag) {
@@ -99,13 +112,11 @@ const GlobalTranslationsPage = ({
           });
         }
         case "updateTranslation": {
-          return state.map((translationObject) => {
-            if (translationObject.id === action.payload.id) {
-              return action.payload;
-            } else {
-              return translationObject;
-            }
-          });
+          const { id, originalText, translatedText } = action.payload;
+          if (id === "") {
+            return [...state, createNewRow(originalText, translatedText)];
+          }
+          return state.map((translation) => (translation.id === id ? action.payload : translation));
         }
         case "addNewTranslation": {
           return [...state, createNewRow()];
@@ -189,16 +200,39 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const globalTranslationsToSave = currentTranslation.reduce(
-    (allCurrentTranslationAsObject, translation) => ({
-      ...allCurrentTranslationAsObject,
-      [translation.originalText]: {
-        scope: "global",
-        value: translation.translatedText,
-      },
-    }),
-    {}
-  );
+  const globalTranslationsToSave = () =>
+    currentTranslation.reduce(
+      (allCurrentTranslationAsObject, translation) => ({
+        ...allCurrentTranslationAsObject,
+        [translation.originalText]: {
+          scope: "global",
+          value: translation.translatedText,
+        },
+      }),
+      {}
+    );
+
+  const flattenTextsForEditPanel = (texts) => {
+    return objectUtils.flattenToArray(texts, (entry, parentKey) => {
+      const key = objectUtils.concatKeys(entry[0], parentKey);
+      const text = entry[1];
+      return { key, text, type: getInputType(text) };
+    });
+  };
+
+  function getApplicationTexts(tag) {
+    const { grensesnitt, statiske, validering, common } = TEXTS;
+    switch (tag) {
+      case tags.GRENSESNITT:
+        return flattenTextsForEditPanel({ ...grensesnitt, ...common });
+      case tags.STATISKE_TEKSTER:
+        return flattenTextsForEditPanel(statiske);
+      case tags.VALIDERING:
+        return flattenTextsForEditPanel(validering);
+      default:
+        return [];
+    }
+  }
 
   const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
@@ -213,14 +247,22 @@ const GlobalTranslationsPage = ({
         <ToggleGruppe
           className={classes.toggleGruppe}
           defaultToggles={[
-            { children: "Skjematekster", pressed: true },
-            { children: "Grensesnitt" },
-            { children: "Statiske tekster" },
-            { children: "Validering" },
+            {
+              children: "Skjematekster",
+              "data-key": tags.SKJEMATEKSTER,
+              pressed: selectedTag === tags.SKJEMATEKSTER,
+            },
+            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
+            {
+              children: "Statiske tekster",
+              "data-key": tags.STATISKE_TEKSTER,
+              pressed: selectedTag === tags.STATISKE_TEKSTER,
+            },
+            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
           ]}
           onChange={(event) => {
-            const newTag = event.target.innerText.toLowerCase().replace(" ", "-");
-            history.push(`/translations/global/${languageCode}/` + newTag);
+            const newTag = event.target.getAttribute("data-key");
+            history.push(`/translations/global/${languageCode}/${newTag}`);
           }}
         />
         <Row className={classes.titleRow}>
@@ -228,14 +270,24 @@ const GlobalTranslationsPage = ({
         </Row>
         <Row>
           <Column className={classes.mainCol}>
-            <GlobalTranslationsPanel
-              classes={classes}
-              currentTranslation={currentTranslation}
-              languageCode={languageCode}
-              updateOriginalText={updateOriginalText}
-              updateTranslation={updateTranslation}
-              deleteOneRow={deleteOneRow}
-            />
+            {selectedTag === tags.SKJEMATEKSTER ? (
+              <GlobalTranslationsPanel
+                classes={classes}
+                currentTranslation={currentTranslation}
+                languageCode={languageCode}
+                updateOriginalText={updateOriginalText}
+                updateTranslation={updateTranslation}
+                deleteOneRow={deleteOneRow}
+              />
+            ) : (
+              <ApplicationTextTranslationEditPanel
+                classes={classes}
+                texts={getApplicationTexts(selectedTag)}
+                translations={currentTranslation}
+                languageCode={languageCode}
+                updateTranslation={updateTranslation}
+              />
+            )}
             <Knapp
               className={classes.addButton}
               onClick={() =>
@@ -248,17 +300,18 @@ const GlobalTranslationsPage = ({
             </Knapp>
           </Column>
           <Column>
-            <FormBuilderLanguageSelector formPath="global" languageSelectorLabel={"Velg språk"} tag={selectedTag} />
+            <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
             <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>
             <Hovedknapp
               onClick={() =>
-                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave, selectedTag)
+                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
               }
             >
               Lagre
             </Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
           </Column>
         </Row>
       </AppLayoutWithContext>

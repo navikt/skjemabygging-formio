@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, FunctionComponent } from "react";
 import { Link, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
@@ -6,17 +6,20 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
 import { getPanels } from "../util/form";
 import navCssVariabler from "nav-frontend-core";
-import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS, createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
 
-const FormSummaryField = ({ label, value }) => (
+// duplisert fra bygger
+type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+
+const FormSummaryField: FunctionComponent = ({ label, value }) => (
   <>
     <dt>{label}</dt>
     <dd>{value}</dd>
   </>
 );
 
-const SelectboxesSummary = ({ label, values }) => (
+const SelectboxesSummary: FunctionComponent = ({ label, values }) => (
   <>
     <dt>{label}</dt>
     <dd>
@@ -29,7 +32,7 @@ const SelectboxesSummary = ({ label, values }) => (
   </>
 );
 
-const FormSummaryFieldset = ({ label, components }) => (
+const FormSummaryFieldset: FunctionComponent = ({ label, components }) => (
   <div>
     <dt>{label}</dt>
     <dd>
@@ -40,7 +43,7 @@ const FormSummaryFieldset = ({ label, components }) => (
   </div>
 );
 
-const DataGridSummary = ({ label, components }) => (
+const DataGridSummary: FunctionComponent = ({ label, components }) => (
   <>
     <dt>{label}</dt>
     <dd>
@@ -51,7 +54,7 @@ const DataGridSummary = ({ label, components }) => (
   </>
 );
 
-const DataGridRow = ({ label, components }) => (
+const DataGridRow: FunctionComponent = ({ label, components }) => (
   <div className="data-grid__row skjemagruppe">
     {label && <p className="skjemagruppe__legend">{label}</p>}
     <dl>
@@ -60,7 +63,7 @@ const DataGridRow = ({ label, components }) => (
   </div>
 );
 
-const PanelSummary = ({ label, components }) => (
+const PanelSummary: FunctionComponent = ({ label, components }) => (
   <section className="margin-bottom-default wizard-page">
     <Systemtittel tag="h3" className="margin-bottom-default">
       {label}
@@ -96,7 +99,13 @@ const FormSummary = ({ form, submission }) => {
   return <ComponentSummary components={formSummaryObject} />;
 };
 
-export function SummaryPage({ form, submission, formUrl }) {
+export interface Props {
+  form: any;
+  submission: any;
+  formUrl: string;
+}
+
+export function SummaryPage({ form, submission, formUrl }: Props) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
@@ -104,47 +113,65 @@ export function SummaryPage({ form, submission, formUrl }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
+  const innsending: InnsendingType = form.properties.innsending
+    || (form.properties.hasPapirInnsendingOnly ? 'KUN_PAPIR' : 'PAPIR_OG_DIGITAL');
+
   return (
     <SummaryContent>
       <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
       <main id="maincontent" tabIndex={-1}>
         <Innholdstittel tag="h2" className="margin-bottom-default">
-          {translate(TEXTS.summaryPage.title)}
+          {translate(TEXTS.statiske.summaryPage.title)}
         </Innholdstittel>
-        <Normaltekst className="margin-bottom-default">{translate(TEXTS.summaryPage.description)}</Normaltekst>
+        <Normaltekst className="margin-bottom-default">{translate(TEXTS.statiske.summaryPage.description)}</Normaltekst>
         <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
-              {translate(TEXTS.summaryPage.editAnswers)}
+              {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
-          <div className="list-inline-item">
-            <Link
-              className={`btn ${
-                form.properties.hasPapirInnsendingOnly
-                  ? "btn-primary btn-wizard-nav-next"
-                  : "btn-secondary btn-wizard-nav-previous"
-              }`}
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
-            >
-              {form.properties.hasPapirInnsendingOnly
-                ? translate(TEXTS.summaryPage.continue)
-                : translate(TEXTS.summaryPage.continueToPostalSubmission)}
-            </Link>
-          </div>
-          {!form.properties.hasPapirInnsendingOnly && (
+          {(innsending == 'KUN_PAPIR' || innsending == 'PAPIR_OG_DIGITAL') && (
+            <div className="list-inline-item">
+              <Link
+                className={`btn ${
+                  innsending == 'KUN_PAPIR'
+                    ? "btn-primary btn-wizard-nav-next"
+                    : "btn-secondary btn-wizard-nav-previous"
+                }`}
+                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+              >
+                {innsending == 'KUN_PAPIR'
+                  ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                  : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+              </Link>
+            </div>
+          )}
+          {(innsending == 'KUN_DIGITAL' || innsending == 'PAPIR_OG_DIGITAL') && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next wizard-button"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
               >
-                {translate(TEXTS.summaryPage.continueToDigitalSubmission)}
+                {innsending == 'KUN_DIGITAL'
+                  ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                  : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
               </Link>
             </div>
           )}
+          {innsending == 'INGEN' &&
+          <div className="list-inline-item">
+            <Link
+              className="btn btn-primary btn-wizard-nav-next"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/ingen-innsending`, state: { previousPage: url } }}
+            >
+              {translate(TEXTS.grensesnitt.summaryPage.continue)}
+            </Link>
+          </div>
+          }
         </nav>
       </main>
     </SummaryContent>

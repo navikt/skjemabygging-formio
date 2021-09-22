@@ -1,5 +1,7 @@
 import FormioUtils from "formiojs/utils";
-import TEXTS from "./texts";
+import TEXTS from "../texts";
+import { addToMap } from "../utils/objectUtils";
+import moment from "moment";
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
@@ -26,10 +28,15 @@ function formatValue(component, value, translate) {
       return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
     }
     case "navCheckbox": {
-      return value === "ja" ? translate(TEXTS.yes) : translate(TEXTS.no);
+      return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
+    }
+    case "day": {
+      const validValue = moment(value.replace("00", "01"), "MM/DD/YYYY");
+      const month = validValue.format("MMMM").toLowerCase();
+      return translate(TEXTS.common[month]).concat(`, ${validValue.format("YYYY")}`);
     }
     default:
       return value;
@@ -254,7 +261,7 @@ function evaluateConditionals(components = [], form, data, row = []) {
         return evaluateConditionals(component.components, form, data);
       case "htmlelement":
       case "alertstripe":
-        return { key: component.key, show: FormioUtils.checkCondition(component, row, data, form) };
+        return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
       default:
         return [];
     }
@@ -262,12 +269,7 @@ function evaluateConditionals(components = [], form, data, row = []) {
 }
 
 export function mapAndEvaluateConditionals(form, data = {}) {
-  return evaluateConditionals(form.components, form, data).reduce((map, { key, show }) => {
-    if (key) {
-      map[key] = show;
-    }
-    return map;
-  }, {});
+  return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
 }
 
 export function createFormSummaryObject(form, submission, translate = (txt) => txt) {
