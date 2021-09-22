@@ -87,7 +87,7 @@ const parseText = (text) => {
       .replace(pattern, (match, p1, offset) => {
         return "(" + offset + ")";
       })
-      .replace(/target="_blank"/g, "");
+      .replace(/target=["']_blank["']/g, "");
   }
   return text.replace(/<\/?[^>]+(>|$)/gm, "").replace(/>(?=[^>]*)/gm, "");
 };

@@ -355,13 +355,15 @@ describe("testParsingTextWithHTMLTag", () => {
   });
 
   it("Test form text with only a tag when there is no space before link ", () => {
-    const actual = parseText('<a href="hello.hello.world">test</a>');
-    expect(actual).toEqual("(hello.hello.world)test");
+    const actual = parseText("<a href=\"hello.hello.world\">test</a> <a href='hello.world'>hohoho</a>");
+    expect(actual).toEqual("(hello.hello.world)test (hello.world)hohoho");
   });
 
   it("Test form text with only a tag when there is target attribute", () => {
-    const actual = parseText('<a href="hello.hello.world" target="_blank">test</a>');
-    expect(actual).toEqual("(hello.hello.world) test");
+    const actual = parseText(
+      '<a href="hello.hello.world" target="_blank">test</a> <a href="hello.world" target=\'_blank\'>hohoho</a>'
+    );
+    expect(actual).toEqual("(hello.hello.world) test (hello.world) hohoho");
   });
 
   it("Test form text with only a tag when there is space before link", () => {
