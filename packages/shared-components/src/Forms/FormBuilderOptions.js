@@ -1,4 +1,7 @@
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
+import { norskVegadresseSchema } from "./norskVegadresse";
+import { norskPostboksadresseSchema } from "./norskPostboksadresse";
+import { utenlandskAdresseSchema } from "./utenlandskAdresse";
 
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
@@ -76,17 +79,12 @@ const surnameSchema = (keyPostfix = "") => ({
 });
 
 const personaliaSchema = (keyPostfix = "") => ({
-  label: "Personalia", // not used
+  label: "Personalia",
   hideLabel: true,
   type: "container",
-  key: "personalia", // er denne viktig?
-  input: true, // er denne viktig??
-  components: [
-    // denne er kjempeviktig
-    fodselsNummerDNummerSchema(keyPostfix),
-    firstNameSchema(keyPostfix),
-    surnameSchema(keyPostfix),
-  ],
+  key: "personalia",
+  input: true,
+  components: [fodselsNummerDNummerSchema(keyPostfix), firstNameSchema(keyPostfix), surnameSchema(keyPostfix)],
 });
 
 const gateadresseSchema = (keyPostfix = "") => ({
@@ -273,6 +271,484 @@ const kontaktInfoSchema = (keyPostfix = "") => ({
   ],
 });
 
+const komplettKontaktInfoSchema = (keyPostfix = "") => ({
+  label: "Komplett kontaktinfo",
+  hideLabel: true,
+  type: "container",
+  key: `komplettKontaktinfo${keyPostfix}`,
+  input: true,
+  components: [
+    {
+      key: "harDuNorskFodselsnummerEllerDNummer",
+      type: "radiopanel",
+      input: true,
+      validateOn: "blur",
+      tableView: false,
+      label: "Har du norsk fødselsnummer eller D-nummer?",
+      values: [
+        {
+          value: "ja",
+          label: "Ja",
+        },
+        {
+          value: "nei",
+          label: "Nei",
+        },
+      ],
+      validate: {
+        required: true,
+      },
+    },
+    {
+      label: "Fødselsnummer / D-nummer",
+      key: "fodselsnummerDNummerSoker",
+      type: "fnrfield",
+      input: true,
+      tableView: true,
+      conditional: {
+        show: true,
+        when: "harDuNorskFodselsnummerEllerDNummer",
+        eq: "ja",
+      },
+    },
+    {
+      visArvelger: true,
+      label: "Fødselsdato (dd.mm.åååå)",
+      mayBeEqual: false,
+      key: "fodselsdatoDdMmAaaaSoker",
+      type: "navDatepicker",
+      dataGridLabel: true,
+      input: true,
+      tableView: false,
+      validateOn: "blur",
+      validate: {
+        required: true,
+        custom:
+          "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+      },
+      conditional: {
+        show: true,
+        when: "harDuNorskFodselsnummerEllerDNummer",
+        eq: "nei",
+      },
+    },
+    {
+      content:
+        'NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra NAV på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.',
+      key: "alertstripe",
+      type: "alertstripe",
+      label: "Alertstripe",
+      alerttype: "info",
+      input: true,
+      tableView: false,
+      conditional: {
+        show: true,
+        when: "harDuNorskFodselsnummerEllerDNummer",
+        eq: "ja",
+      },
+    },
+    {
+      label: "Bor du i Norge?",
+      key: "borDuINorge",
+      type: "radiopanel",
+      input: true,
+      tableView: false,
+      validateOn: "blur",
+      validate: {
+        required: true,
+      },
+      values: [
+        {
+          value: "ja",
+          label: "Ja",
+        },
+        {
+          value: "nei",
+          label: "Nei",
+        },
+      ],
+      conditional: {
+        show: true,
+        when: "harDuNorskFodselsnummerEllerDNummer",
+        eq: "nei",
+      },
+    },
+    {
+      label: "Er kontaktadressen din en vegadresse eller postboksadresse",
+      key: "vegadresseEllerPostboksadresse",
+      type: "radiopanel",
+      input: true,
+      validateOn: "blur",
+      tableView: false,
+      values: [
+        {
+          value: "vegadresse",
+          label: "Vegadresse",
+        },
+        {
+          value: "postboksadresse",
+          label: "Postboksadresse",
+        },
+      ],
+      validate: {
+        required: true,
+      },
+      conditional: {
+        show: true,
+        when: "borDuINorge",
+        eq: "ja",
+      },
+    },
+    {
+      legend: "Kontaktadresse",
+      key: "navSkjemagruppeVegadresse",
+      type: "navSkjemagruppe",
+      label: "Kontaktadresse",
+      input: false,
+      tableView: false,
+      conditional: {
+        show: true,
+        when: "vegadresseEllerPostboksadresse",
+        eq: "vegadresse",
+      },
+      components: [
+        {
+          label: "C/O",
+          fieldSize: "input--xxl",
+          validateOn: "blur",
+          key: "coSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Vegadresse",
+          fieldSize: "input--xxl",
+          autocomplete: "street-address",
+          validateOn: "blur",
+          key: "vegadresseSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+          validate: {
+            required: true,
+          },
+        },
+        {
+          label: "Husnummer (og evt. bokstav)",
+          fieldSize: "input--xs",
+          validateOn: "blur",
+          key: "husnummerSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Postnummer",
+          fieldSize: "input--xs",
+          key: "postnrSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+          autocomplete: "postal-code",
+          spellcheck: false,
+          validateOn: "blur",
+          validate: {
+            required: true,
+            minLength: 4,
+            maxLength: 4,
+          },
+        },
+        {
+          label: "Poststed",
+          fieldSize: "input--xxl",
+          key: "poststedSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+          autocomplete: "address-level2",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+        {
+          visArvelger: true,
+          label: "Gyldig fra og med dato (dd.mm.åååå)",
+          key: "gyldigFraDatoDdMmAaaa1",
+          type: "navDatepicker",
+          dataGridLabel: true,
+          input: true,
+          tableView: false,
+          mayBeEqual: false,
+          validateOn: "blur",
+          validate: {
+            required: true,
+            custom:
+              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+          },
+        },
+        {
+          visArvelger: true,
+          label: "Gyldig til og med dato (dd.mm.åååå)",
+          key: "gyldigTilDatoDdMmAaaa1",
+          type: "navDatepicker",
+          dataGridLabel: true,
+          input: true,
+          tableView: false,
+          latestAllowedDate: 365,
+          description:
+            "Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.",
+          beforeDateInputKey: "gyldigFraDatoDdMmAaaa1",
+          mayBeEqual: false,
+          validateOn: "blur",
+          validate: {
+            custom:
+              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+          },
+        },
+      ],
+    },
+    {
+      legend: "Kontaktadresse",
+      key: "navSkjemagruppePostboksadresse",
+      type: "navSkjemagruppe",
+      label: "Kontaktadresse",
+      input: false,
+      tableView: false,
+      conditional: {
+        show: true,
+        when: "vegadresseEllerPostboksadresse",
+        eq: "postboksadresse",
+      },
+      components: [
+        {
+          label: "Navn på eier av postboksen",
+          fieldSize: "input--xxl",
+          validateOn: "blur",
+          key: "navnPaEierAvPostboksenSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Postboks",
+          fieldSize: "input--s",
+          key: "postboksSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+        {
+          label: "Postnummer",
+          fieldSize: "input--xs",
+          autocomplete: "postal-code",
+          spellcheck: false,
+          validateOn: "blur",
+          validate: {
+            required: true,
+            minLength: 4,
+            maxLength: 4,
+          },
+          key: "postboksPostnrSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Poststed",
+          fieldSize: "input--xxl",
+          autocomplete: "address-level2",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+          key: "postboksPoststedSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          visArvelger: true,
+          label: "Gyldig fra og med dato (dd.mm.åååå)",
+          mayBeEqual: false,
+          validate: {
+            required: true,
+            custom:
+              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+          },
+          validateOn: "blur",
+          key: "gyldigFraDatoDdMmAaaa2",
+          type: "navDatepicker",
+          dataGridLabel: true,
+          input: true,
+          tableView: false,
+        },
+        {
+          visArvelger: true,
+          label: "Gyldig til og med dato (dd.mm.åååå)",
+          description:
+            "Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.",
+          beforeDateInputKey: "gyldigFraDatoDdMmAaaa2",
+          mayBeEqual: false,
+          validate: {
+            custom:
+              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+          },
+          validateOn: "blur",
+          key: "gyldigTilDatoDdMmAaaa2",
+          type: "navDatepicker",
+          dataGridLabel: true,
+          input: true,
+          tableView: false,
+          latestAllowedDate: 365,
+        },
+      ],
+    },
+    {
+      legend: "Utenlandsk kontaktadresse",
+      key: "navSkjemagruppeUtland",
+      type: "navSkjemagruppe",
+      label: "Utenlandsk kontaktadresse",
+      input: false,
+      tableView: false,
+      conditional: {
+        show: true,
+        when: "borDuINorge",
+        eq: "nei",
+      },
+      components: [
+        {
+          label: "C/O",
+          fieldSize: "input--xxl",
+          validateOn: "blur",
+          key: "utlandCoSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Gatenavn og husnummer, evt. postboks",
+          fieldSize: "input--xxl",
+          key: "utlandVegadresseOgHusnummerSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+          autocomplete: "street-address",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+        {
+          label: "Bygning",
+          fieldSize: "input--xxl",
+          validateOn: "blur",
+          key: "utlandBygningSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Postkode",
+          fieldSize: "input--s",
+          validateOn: "blur",
+          key: "utlandPostkodeSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "By / stedsnavn",
+          fieldSize: "input--xxl",
+          validateOn: "blur",
+          key: "utlandByStedSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Region",
+          fieldSize: "input--xxl",
+          validateOn: "blur",
+          key: "utlandRegionSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+        },
+        {
+          label: "Land",
+          fieldSize: "input--xxl",
+          key: "utlandLandSoker",
+          type: "textfield",
+          input: true,
+          dataGridLabel: true,
+          tableView: true,
+          autocomplete: "country-name",
+          validateOn: "blur",
+          validate: {
+            required: true,
+          },
+        },
+        {
+          visArvelger: true,
+          label: "Gyldig fra og med dato (dd.mm.åååå)",
+          key: "gyldigFraDatoDdMmAaaa",
+          type: "navDatepicker",
+          dataGridLabel: true,
+          input: true,
+          tableView: false,
+          mayBeEqual: false,
+          validateOn: "blur",
+          validate: {
+            required: true,
+            custom:
+              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+          },
+        },
+        {
+          visArvelger: true,
+          label: "Gyldig til og med dato (dd.mm.åååå)",
+          key: "gyldigTilDatoDdMmAaaa",
+          type: "navDatepicker",
+          dataGridLabel: true,
+          input: true,
+          tableView: false,
+          description:
+            "Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.",
+          beforeDateInputKey: "gyldigFraDatoDdMmAaaa",
+          mayBeEqual: false,
+          validateOn: "blur",
+          validate: {
+            required: true,
+            custom:
+              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+          },
+        },
+      ],
+    },
+  ],
+});
+
 const builderPalett = {
   advanced: null,
   premium: null,
@@ -313,6 +789,34 @@ const builderPalett = {
         icon: "home",
         weight: 40,
         schema: kontaktInfoSchema(),
+      },
+      komplettKontaktInfo: {
+        title: "Komplett kontaktinfo",
+        key: "komplettKontaktinfo",
+        icon: "home",
+        weight: 40,
+        schema: komplettKontaktInfoSchema(),
+      },
+      norskVegadresse: {
+        title: "Norsk vegadresse",
+        icon: "home",
+        key: "norskVegadresse",
+        weight: 40,
+        schema: norskVegadresseSchema(),
+      },
+      norskPostboksadresse: {
+        title: "Norsk postboksadresse",
+        key: "norskPostboksadresse",
+        icon: "home",
+        weight: 40,
+        schema: norskPostboksadresseSchema(),
+      },
+      utenlandskAdresse: {
+        title: "Utenlandsk adresse",
+        key: "utenlandskAdresse",
+        icon: "home",
+        weight: 40,
+        schema: utenlandskAdresseSchema(),
       },
       streetAddress: {
         title: "Gatedresse",
