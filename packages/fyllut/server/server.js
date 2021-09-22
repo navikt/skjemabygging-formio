@@ -7,7 +7,7 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import { logger } from "./logger.js";
 import cors from "cors";
-import { fetchFormsFromFormioApi, loadJsonFilesFromDisk } from "./utils/forms.js";
+import { fetchFormsFromFormioApi, loadJsonFilesFromDisk, loadJsonFileFromDisk } from "./utils/forms.js";
 import { config, checkConfigConsistency } from "./config/config.js";
 
 const app = express();
@@ -78,6 +78,11 @@ const loadForms = async () => {
   return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadJsonFilesFromDisk(skjemaDir);
 };
 
+const loadTranslations = async (formName) => {
+  // return useFormioApi ? {} : await loadJsonFilesFromDisk(translationDir);
+  return await loadJsonFileFromDisk("../temp-translations/" + formName);
+};
+
 skjemaApp.get("/config", async (req, res) => {
   const forms = await loadForms();
 
@@ -89,6 +94,8 @@ skjemaApp.get("/config", async (req, res) => {
 });
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
+
+skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTranslations(req.params.form)));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
