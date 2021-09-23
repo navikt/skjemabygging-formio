@@ -63,7 +63,7 @@ const Select = ({ label, className, options }) => {
         className={`${className} ${classes.nav}`}
         onKeyUp={(event) => closeOnEscape(event, () => setShowItems(false), buttonRef)}
       >
-        <button className="select-button" onClick={() => setShowItems(!showItems)} ref={buttonRef}>
+        <button className="select-button" onClick={() => setShowItems(!showItems)} type="button" ref={buttonRef}>
           {label}
           {showItems ? <Collapse className="select__chevron" /> : <Expand className="select__chevron" />}
         </button>

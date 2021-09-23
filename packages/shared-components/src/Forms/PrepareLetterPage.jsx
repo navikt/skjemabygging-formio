@@ -85,6 +85,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
               .then(() => setHasDownloadedFoersteside(true))
               .catch(() => loggSkjemaInnsendingFeilet());
           }}
+          type="button"
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         </button>
