@@ -70,25 +70,6 @@ export const norskPostboksadresseSchema = (keyPostfix = "") => ({
   ],
 });
 
-const postnummerSchema = (keyPostfix = "") => ({
-  label: "Postnummer",
-  type: "textfield",
-  key: `postnr${keyPostfix}`,
-  autocomplete: "postal-code",
-  spellcheck: false,
-  fieldSize: "input--xs",
-  input: true,
-  dataGridLabel: true,
-  validateOn: "blur",
-  clearOnHide: true,
-  tableView: true,
-  validate: {
-    required: true,
-    minLength: 4,
-    maxLength: 4,
-  },
-});
-
 const poststedSchema = (keyPostfix = "") => ({
   label: "Poststed",
   type: "textfield",

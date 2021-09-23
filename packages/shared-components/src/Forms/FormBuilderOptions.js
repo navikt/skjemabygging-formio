@@ -1,7 +1,7 @@
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
-import { norskVegadresseSchema } from "./norskVegadresse";
-import { norskPostboksadresseSchema } from "./norskPostboksadresse";
-import { utenlandskAdresseSchema } from "./utenlandskAdresse";
+//import { norskPostboksadresseSchema } from "./norskPostboksadresse";
+
+const sokerPostfix = "Soker";
 
 const builderEditForm = {
   // placeholder, just defines defaults. Modifiy this later
@@ -87,83 +87,198 @@ const personaliaSchema = (keyPostfix = "") => ({
   components: [fodselsNummerDNummerSchema(keyPostfix), firstNameSchema(keyPostfix), surnameSchema(keyPostfix)],
 });
 
-const gateadresseSchema = (keyPostfix = "") => ({
-  label: "Gateadresse",
+const coAdresseSchema = (keyPostfix = "") => ({
+  label: "C/O",
   type: "textfield",
-  key: `gateadresse${keyPostfix}`,
+  key: `co${keyPostfix}`,
   fieldSize: "input--xxl",
-  input: true,
-  dataGridLabel: true,
-  validateOn: "blur",
-  autocomplete: "street-address",
-  clearOnHide: true,
-  validate: {
-    required: true,
-  },
-});
-
-const postnrSchema = (keyPostfix = "") => ({
-  label: "Postnummer",
-  type: "textfield",
-  key: `postnr${keyPostfix}`,
-  fieldSize: "input--xs",
-  input: true,
-  dataGridLabel: true,
-  spellcheck: false,
-  validateOn: "blur",
-  autocomplete: "postal-code",
-  clearOnHide: true,
-  validate: {
-    required: true,
-    maxLength: 4,
-    minLength: 4,
-  },
-});
-
-const utenlandskPostkodeSchema = (keyPostfix = "") => ({
-  label: "Utenlandsk postkode",
-  type: "textfield",
-  key: `utenlandskPostkode${keyPostfix}`,
-  fieldSize: "input--m",
-  input: true,
-  dataGridLabel: true,
-  spellcheck: false,
-  autocomplete: "postal-code",
-  validateOn: "blur",
-  clearOnHide: true,
   validate: {
     required: false,
   },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const vegadresseSchema = (keyPostfix = "") => ({
+  label: "Vegadresse",
+  type: "textfield",
+  key: `vegadresse${keyPostfix}`,
+  fieldSize: "input--xxl",
+  autocomplete: "street-address",
+  validate: {
+    required: true,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const postnummerSchema = (keyPostfix = "") => ({
+  label: "Postnummer",
+  type: "textfield",
+  key: `postnr${keyPostfix}`,
+  autocomplete: "postal-code",
+  spellcheck: false,
+  fieldSize: "input--xs",
+  validate: {
+    required: true,
+    minLength: 4,
+    maxLength: 4,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
 });
 
 const poststedSchema = (keyPostfix = "") => ({
   label: "Poststed",
   type: "textfield",
   key: `poststed${keyPostfix}`,
-  fieldSize: "input--xxl",
-  input: true,
-  dataGridLabel: true,
-  clearOnHide: true,
   autocomplete: "address-level2",
-  validateOn: "blur",
+  fieldSize: "input--xxl",
   validate: {
     required: true,
   },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
 });
 
-const landSchema = (keyPostfix = "") => ({
-  label: "Land",
+const norskVegadresseSchema = (keyPostfix = "") => ({
+  legend: "Kontaktadresse",
+  key: "navSkjemagruppeVegadresse",
+  type: "navSkjemagruppe",
+  label: "Kontaktadresse",
+  input: false,
+  tableView: false,
+  components: [
+    coAdresseSchema(sokerPostfix),
+    vegadresseSchema(sokerPostfix),
+    postnummerSchema(sokerPostfix),
+    poststedSchema(sokerPostfix),
+  ],
+});
+
+const utlandVegadressePostboksSchema = (keyPostfix = "") => ({
+  label: "Gatenavn og husnummer, evt. postboks",
   type: "textfield",
-  key: `land${keyPostfix}`,
+  key: `utlandVegadressePostboks${keyPostfix}`,
+  autocomplete: "street-address",
   fieldSize: "input--xxl",
-  input: true,
-  dataGridLabel: true,
-  autocomplete: "country-name",
-  validateOn: "blur",
-  clearOnHide: true,
   validate: {
     required: true,
   },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const utlandBygningSchema = (keyPostfix = "") => ({
+  label: "Bygning",
+  type: "textfield",
+  key: `utlandBygning${keyPostfix}`,
+  fieldSize: "input--xxl",
+  validate: {
+    required: false,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const utlandPostkodeSchema = (keyPostfix = "") => ({
+  label: "Postkode",
+  type: "textfield",
+  key: `utlandPostkode${keyPostfix}`,
+  autocomplete: "postal-code",
+  fieldSize: "input--s",
+  validate: {
+    required: false,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const utlandByStedSchema = (keyPostfix = "") => ({
+  label: "By / stedsnavn",
+  type: "textfield",
+  key: `utlandBySted${keyPostfix}`,
+  autocomplete: "address-level2",
+  fieldSize: "input--xxl",
+  validate: {
+    required: false,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const utlandRegionSchema = (keyPostfix = "") => ({
+  label: "Region",
+  type: "textfield",
+  key: `utlandRegion${keyPostfix}`,
+  autocomplete: "address-level1",
+  fieldSize: "input--xxl",
+  validate: {
+    required: false,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const utlandLandSchema = (keyPostfix = "") => ({
+  label: "Land",
+  type: "textfield",
+  key: `utlandLand${keyPostfix}`,
+  autocomplete: "country-name",
+  fieldSize: "input--xxl",
+  validate: {
+    required: true,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const utenlandskAdresseSchema = (keyPostfix = "") => ({
+  legend: "Utenlandsk kontaktadresse",
+  key: `navSkjemagruppeUtland${keyPostfix}`,
+  type: "navSkjemagruppe",
+  label: "Utenlandsk kontaktadresse",
+  input: false,
+  tableView: false,
+  components: [
+    coAdresseSchema({ keyPostfix }),
+    utlandVegadressePostboksSchema({ keyPostfix }),
+    utlandBygningSchema({ keyPostfix }),
+    utlandPostkodeSchema({ keyPostfix }),
+    utlandByStedSchema({ keyPostfix }),
+    utlandRegionSchema({ keyPostfix }),
+    utlandLandSchema({ keyPostfix }),
+  ],
 });
 
 const epostSchema = () => ({
@@ -230,43 +345,6 @@ const borDuINorgeSchema = (keyPostfix = "") => ({
     {
       value: "nei",
       label: "Nei",
-    },
-  ],
-});
-
-const kontaktInfoSchema = (keyPostfix = "") => ({
-  label: "Kontaktinfo",
-  hideLabel: true,
-  type: "container",
-  key: `kontaktinfo${keyPostfix}`,
-  input: true,
-  components: [
-    borDuINorgeSchema(keyPostfix),
-    gateadresseSchema(keyPostfix),
-    {
-      ...postnrSchema(keyPostfix),
-      conditional: {
-        show: false,
-        when: borDuINorgeSchema(keyPostfix).key,
-        eq: "nei",
-      },
-    },
-    {
-      ...utenlandskPostkodeSchema(keyPostfix),
-      conditional: {
-        show: true,
-        when: borDuINorgeSchema(keyPostfix).key,
-        eq: "nei",
-      },
-    },
-    poststedSchema(keyPostfix),
-    {
-      ...landSchema(keyPostfix),
-      conditional: {
-        show: true,
-        when: borDuINorgeSchema(keyPostfix).key,
-        eq: "nei",
-      },
     },
   ],
 });
@@ -783,13 +861,13 @@ const builderPalett = {
         weight: 30,
         schema: surnameSchema(),
       },
-      kontaktinfo: {
+      /* kontaktinfo: {
         title: "Kontaktinfo",
         key: "kontaktinfo",
         icon: "home",
         weight: 40,
         schema: kontaktInfoSchema(),
-      },
+      },*/
       komplettKontaktInfo: {
         title: "Komplett kontaktinfo",
         key: "komplettKontaktinfo",
@@ -804,13 +882,13 @@ const builderPalett = {
         weight: 40,
         schema: norskVegadresseSchema(),
       },
-      norskPostboksadresse: {
+      /* norskPostboksadresse: {
         title: "Norsk postboksadresse",
         key: "norskPostboksadresse",
         icon: "home",
         weight: 40,
         schema: norskPostboksadresseSchema(),
-      },
+      },*/
       utenlandskAdresse: {
         title: "Utenlandsk adresse",
         key: "utenlandskAdresse",
@@ -819,18 +897,18 @@ const builderPalett = {
         schema: utenlandskAdresseSchema(),
       },
       streetAddress: {
-        title: "Gatedresse",
-        key: "gateadresse",
+        title: "Vegdresse",
+        key: "vegadresse",
         icon: "home",
         weight: 50,
-        schema: gateadresseSchema(),
+        schema: vegadresseSchema(),
       },
       postcode: {
         title: "Postnummer",
         key: "postnr",
         icon: "home",
         weight: 60,
-        schema: postnrSchema(),
+        schema: postnummerSchema(),
       },
       city: {
         title: "Poststed",
@@ -844,7 +922,7 @@ const builderPalett = {
         key: "land",
         icon: "home",
         weight: 70,
-        schema: landSchema(),
+        schema: utlandLandSchema(),
       },
       email: {
         title: "E-post",
@@ -1395,16 +1473,16 @@ export const FormBuilderSchemas = {
   firstNameSchema,
   surnameSchema,
   personaliaSchema,
-  gateadresseSchema,
-  postnrSchema,
-  utenlandskPostkodeSchema,
+  vegadresseSchema,
+  postnummerSchema,
+  //utenlandskPostkodeSchema,
   poststedSchema,
-  landSchema,
+  utlandLandSchema,
   epostSchema,
   telefonSchema,
   statsborgerskapSchema,
   borDuINorgeSchema,
-  kontaktInfoSchema,
+  //kontaktInfoSchema,
 };
 
 const FormBuilderOptions = {
