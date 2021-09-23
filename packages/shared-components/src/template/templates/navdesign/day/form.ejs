@@ -2,7 +2,7 @@
   {% if (ctx.dayFirst && ctx.showDay) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-day" class="skjemaelement__label{% if(ctx.component.fields.day.required) { %} field-required{% } %}">{{ctx.t('Dag')}}</label>
+    <label for="{{ctx.component.key}}-day" class="skjemaelement__label{% if(ctx.component.fields.day.required) { %} field-required{% } %}">{{ctx.t('day')}}</label>
     {% } %}
     <div class="{% if (ctx.component.fields.day.fieldSize) { %} {{ctx.component.fields.day.fieldSize}}{% } %}">{{ctx.day}}</div>
   </div>
@@ -10,7 +10,7 @@
   {% if (ctx.showMonth) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-month" class="skjemaelement__label{% if(ctx.component.fields.month.required) { %} field-required{% } %}">{{ctx.t('Måned')}}</label>
+    <label for="{{ctx.component.key}}-month" class="skjemaelement__label{% if(ctx.component.fields.month.required) { %} field-required{% } %}">{{ctx.t('month')}}</label>
     {% } %}
     <div class="{% if (ctx.component.fields.month.fieldSize) { %} {{ctx.component.fields.month.fieldSize}}{% } %}">{{ctx.month}}</div>
   </div>
@@ -18,7 +18,7 @@
   {% if (!ctx.dayFirst && ctx.showDay) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-day" class="skjemaelement__label{% if(ctx.component.fields.day.required) { %} field-required{% } %}">{{ctx.t('Dag')}}</label>
+    <label for="{{ctx.component.key}}-day" class="skjemaelement__label{% if(ctx.component.fields.day.required) { %} field-required{% } %}">{{ctx.t('day')}}</label>
     {% } %}
     <div class="{% if (ctx.component.fields.day.fieldSize) { %} {{ctx.component.fields.day.fieldSize}}{% } %}">{{ctx.day}}</div>
   </div>
@@ -26,7 +26,7 @@
   {% if (ctx.showYear) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-year" class="skjemaelement__label{% if(ctx.component.fields.year.required) { %} field-required{% } %}">{{ctx.t('År')}}</label>
+    <label for="{{ctx.component.key}}-year" class="skjemaelement__label{% if(ctx.component.fields.year.required) { %} field-required{% } %}">{{ctx.t('year')}}</label>
     {% } %}
     <div class="{% if (ctx.component.fields.year.fieldSize) { %} {{ctx.component.fields.year.fieldSize}}{% } %}">{{ctx.year}}</div>
   </div>

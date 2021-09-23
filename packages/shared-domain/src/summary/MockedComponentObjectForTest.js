@@ -52,7 +52,7 @@ const createDummyContentElement = (label = "Content", html) => ({
   html,
 });
 
-const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = "") => ({
+const createDummyHTMLElement = (label = "HTMLelement", content = "", contentForPdf = "") => ({
   label,
   key: keyFromLabel(label),
   type: "htmlelement",
@@ -60,12 +60,13 @@ const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = 
   content,
 });
 
-const createDummyAlertstripe = (label = "Alertstripe", contentForPdf = "", conditional = {}) => ({
+const createDummyAlertstripe = (label = "Alertstripe", content, contentForPdf = "", conditional = {}) => ({
   label,
   key: keyFromLabel(label),
   type: "alertstripe",
   contentForPdf,
   conditional,
+  content,
 });
 
 const createDummyContainerElement = (label = "Container", components, hideLabel) => ({
@@ -91,6 +92,12 @@ const createDummyDataGrid = (label = "DataGrid", components, hideLabel) => ({
   rowTitle: "datagrid-row-title",
   components,
   hideLabel,
+});
+
+const createDummyDayComponent = (label = "Mnd/år") => ({
+  label,
+  key: keyFromLabel(label),
+  type: "day",
 });
 
 const createPanelObject = (title, components, label) => ({
@@ -122,5 +129,6 @@ const mockedComponentObjectForTest = {
   createDummyDataGrid,
   createPanelObject,
   createFormObject,
+  createDummyDayComponent,
 };
 export default mockedComponentObjectForTest;

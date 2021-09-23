@@ -221,10 +221,10 @@ const GlobalTranslationsPage = ({
   };
 
   function getApplicationTexts(tag) {
-    const { grensesnitt, statiske, validering } = TEXTS;
+    const { grensesnitt, statiske, validering, common } = TEXTS;
     switch (tag) {
       case tags.GRENSESNITT:
-        return flattenTextsForEditPanel(grensesnitt);
+        return flattenTextsForEditPanel({ ...grensesnitt, ...common });
       case tags.STATISKE_TEKSTER:
         return flattenTextsForEditPanel(statiske);
       case tags.VALIDERING:

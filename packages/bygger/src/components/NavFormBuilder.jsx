@@ -27,65 +27,19 @@ import PropTypes from "prop-types";
 import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
-import { styled } from "@material-ui/styles";
-import { navFormStyle } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles } from "@material-ui/styles";
+import { builderStyles } from "./styles";
 
-const BuilderMountElement = styled("div")({
-  "& .formbuilder": {
-    position: "relative",
-    "@media screen and (min-width: 40rem)": {
-      height: "calc(100vh - 16.5rem)",
-      display: "grid",
-      gridTemplateColumns: "12.875rem minmax(20rem, 50rem)",
-      gridGap: "1.5rem",
-      alignItems: "start",
-      margin: "0 auto",
-      maxWidth: "66rem",
-      minWidth: "36rem",
-      overflow: "hidden",
-    },
-  },
-  "& .formarea": {
-    paddingBottom: "20rem",
-    overflowY: "auto",
-    height: "100%",
-  },
-  "& .formcomponents": {
-    overflowY: "auto",
-    height: "100%",
-    "& .builder-sidebar_scroll": {
-      position: "initial",
-      paddingBottom: "10rem",
-    },
-  },
-  "& .formio-dialog": {
-    zIndex: 900,
-  },
-  "& .input--s": {
-    width: "140px",
-  },
-  "& .input--xs": {
-    width: "70px",
-  },
-  "& .form-builder-group-header": {
-    padding: 0,
-  },
-  "& a": {
-    color: "#0067c5",
-  },
-  "& .btn-block + .btn-block": {
-    marginTop: "0.2rem",
-  },
-  "& .btn": {
-    textAlign: "left",
-  },
-  "& .mr-2, .mx-2": {
-    marginBottom: "0.5rem",
-  },
-  "& .badge": {
-    fontSize: "1rem",
-  },
-});
+const useBuilderMountElementStyles = makeStyles(builderStyles);
+
+const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
+  useBuilderMountElementStyles();
+  return (
+    <div className={className} ref={setRef} {...rest}>
+      {children}
+    </div>
+  );
+};
 
 class NavFormBuilder extends Component {
   builderState = "preparing";
@@ -154,11 +108,11 @@ class NavFormBuilder extends Component {
       <BuilderMountElement
         className={`${this.props.className} bootstrap-style`}
         data-testid="builderMountElement"
-        ref={this.element}
+        setRef={this.element}
       ></BuilderMountElement>
     );
   };
 }
 
 export { NavFormBuilder as UnstyledNavFormBuilder };
-export default styled(NavFormBuilder)(navFormStyle);
+export default NavFormBuilder;
