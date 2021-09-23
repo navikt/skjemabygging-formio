@@ -30,8 +30,8 @@ describe("Map and evaluate conditionals", () => {
     const formObject = createFormObject([
       createPanelObject("p1", [
         createDummyRadioPanel(),
-        createDummyAlertstripe("Alert1", "", { show: true, when: "radiopanel", eq: "ja" }),
-        createDummyAlertstripe("Alert2", "", { show: false, when: "radiopanel", eq: "ja" }),
+        createDummyAlertstripe("Alert1", "", "", { show: true, when: "radiopanel", eq: "ja" }),
+        createDummyAlertstripe("Alert2", "", "", { show: false, when: "radiopanel", eq: "ja" }),
       ]),
     ]);
     const data = { radiopanel: "ja" };
@@ -121,7 +121,7 @@ describe("When handling component", () => {
   describe("Alertstripe", () => {
     it("is added if it contains content for PDF", () => {
       const actual = handleComponent(
-        createDummyAlertstripe("HTML", "contentForPdf"),
+        createDummyAlertstripe("HTML", "", "contentForPdf"),
         dummySubmission,
         [],
         "",
@@ -138,7 +138,7 @@ describe("When handling component", () => {
     describe("when a mapping of evaluated conditionals is passed to handleComponent", () => {
       it("is ignored if the conditional is false", () => {
         const actual = handleComponent(
-          createDummyAlertstripe("Alertstripe with conditional", "contentForPdf"),
+          createDummyAlertstripe("Alertstripe with conditional", "", "contentForPdf"),
           dummySubmission,
           [],
           "",
@@ -150,7 +150,7 @@ describe("When handling component", () => {
 
       it("is added if the conditional is true", () => {
         const actual = handleComponent(
-          createDummyAlertstripe("Alertstripe with conditional", "contentForPdf"),
+          createDummyAlertstripe("Alertstripe with conditional", "", "contentForPdf"),
           dummySubmission,
           [],
           "",
