@@ -347,33 +347,10 @@ describe("genererFoerstesideData", () => {
           .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
       });
 
-      it("henter gate fra gateadresseSoker, og husnummer fra husnummerSoker", () => {
-        const submission = {
-          ...navnPostnrPoststed,
-          gateadresseSoker: "Flåklypatoppen",
-          husnummerSoker: "1"
-        }
-        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
-      });
-
-      it("henter gate fra vegadresseSoker, husnummer fra husnummerSoker", () => {
-        const submission = {
-          ...navnPostnrPoststed,
-          vegadresseSoker: "Flåklypatoppen",
-          husnummerSoker: "1"
-        }
-        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
-      });
-
-      it("henter gate og husnummer fra vegadresseSoker, husnummerSoker er valgfritt", () => {
+      it("henter gate og husnummer fra vegadresseSoker", () => {
         const submission = {
           ...navnPostnrPoststed,
           vegadresseSoker: "Flåklypatoppen 1",
-          husnummerSoker: undefined
         }
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
@@ -384,8 +361,7 @@ describe("genererFoerstesideData", () => {
         const submission = {
           ...navnPostnrPoststed,
           coSoker: "Reodor Felgen",
-          vegadresseSoker: "Flåklypatoppen",
-          husnummerSoker: "1"
+          vegadresseSoker: "Flåklypatoppen 1",
         }
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
@@ -407,7 +383,7 @@ describe("genererFoerstesideData", () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.")
+          .toEqual("Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.")
       });
 
       it("Tar hensyn til at det er valgfritt å oppgi eier på postboks", () => {

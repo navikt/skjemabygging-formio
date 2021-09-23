@@ -50,7 +50,7 @@ export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
       ukjentBrukerPersoninfo:
         `${adresse.navn || ""}, ` +
         adressLine(adresse.co, "c/o") +
-        adressLine(adresse.postboksEier) +
+        adressLine(adresse.postboksEier, "c/o") +
         `${adresse.adresse || ""}, ` +
         adressLine(adresse.bygning) +
         `${adresse.postnr || ""} ` +
@@ -105,18 +105,10 @@ export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form
   ];
 }
 
-const gateadresseMedHusnr = (gateadresse, husnummer?) => {
-  if (gateadresse) {
-    return husnummer ? `${gateadresse} ${husnummer}` : gateadresse;
-  }
-  return undefined;
-};
-
 export function genererAdresse(submission) {
   const {
     gateadresseSoker,
     vegadresseSoker,
-    husnummerSoker,
     landSoker,
     postnrSoker,
     poststedSoker,
@@ -140,8 +132,8 @@ export function genererAdresse(submission) {
     navn: `${fornavnSoker} ${etternavnSoker}`,
     co: coSoker || utlandCoSoker,
     postboksEier: navnPaEierAvPostboksenSoker,
-    adresse: gateadresseMedHusnr(gateadresseSoker, husnummerSoker)
-      || gateadresseMedHusnr(vegadresseSoker, husnummerSoker)
+    adresse: gateadresseSoker
+      || vegadresseSoker
       || (postboksSoker && `Postboks ${postboksSoker}`)
       || utlandVegadresseOgHusnummerSoker,
     bygning: utlandBygningSoker,
