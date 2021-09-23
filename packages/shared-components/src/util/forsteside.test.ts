@@ -1,12 +1,13 @@
 import {
   flattenComponents,
+  ForstesideRequestBody,
   genererAdresse,
   genererDokumentlisteFoersteside,
   genererFoerstesideData,
   genererPersonalia,
   genererSkjemaTittel,
-  genererVedleggsListe,
   genererVedleggKeysSomSkalSendes,
+  genererVedleggsListe,
   getVedleggsFelterSomSkalSendes,
 } from "./forsteside";
 
@@ -50,7 +51,7 @@ describe("genererPersonalia", () => {
       land: "Norge",
     });
     expect(actual).toEqual({
-      ukjentBrukerPersoninfo: "Test Testesen, Testveien 1 1234 Oslo Norge.",
+      ukjentBrukerPersoninfo: "Test Testesen, Testveien 1, 1234 Oslo, Norge.",
     });
   });
 
@@ -275,6 +276,16 @@ describe("genererAdresse", () => {
 });
 
 describe("genererFoerstesideData", () => {
+
+  const defaultForm = {
+    title: "Testskjema",
+    properties: {
+      skjemanummer: "WIP 12.34-56",
+      tema: "BIL"
+    },
+    components: []
+  }
+
   it("correctly generates foersteside data", () => {
     const actual = genererFoerstesideData(
       {
@@ -314,4 +325,162 @@ describe("genererFoerstesideData", () => {
       netsPostboks: "1400",
     });
   });
+
+  describe('Bruker uten fødselsnummer', () => {
+
+    describe('med norsk vegadresse', () => {
+
+      const navnPostnrPoststed = {
+        fornavnSoker: "Solan",
+        etternavnSoker: "Gundersen",
+        postnrSoker: "3520",
+        poststedSoker: "Jevnaker",
+      };
+
+      it("henter gate og husnummer fra gateadresseSoker", () => {
+        const submission = {
+          ...navnPostnrPoststed,
+          gateadresseSoker: "Flåklypatoppen 1"
+        }
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+      });
+
+      it("henter gate fra gateadresseSoker, og husnummer fra husnummerSoker", () => {
+        const submission = {
+          ...navnPostnrPoststed,
+          gateadresseSoker: "Flåklypatoppen",
+          husnummerSoker: "1"
+        }
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+      });
+
+      it("henter gate fra vegadresseSoker, husnummer fra husnummerSoker", () => {
+        const submission = {
+          ...navnPostnrPoststed,
+          vegadresseSoker: "Flåklypatoppen",
+          husnummerSoker: "1"
+        }
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+      });
+
+      it("henter gate og husnummer fra vegadresseSoker, husnummerSoker er valgfritt", () => {
+        const submission = {
+          ...navnPostnrPoststed,
+          vegadresseSoker: "Flåklypatoppen 1",
+          husnummerSoker: undefined
+        }
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+      });
+
+      it("legger til c/o-adressering", () => {
+        const submission = {
+          ...navnPostnrPoststed,
+          coSoker: "Reodor Felgen",
+          vegadresseSoker: "Flåklypatoppen",
+          husnummerSoker: "1"
+        }
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+      });
+
+    });
+
+    describe('med norsk postboksadresse', () => {
+
+      it("Tar med navn på eier av postboksen", () => {
+        const submission = {
+          fornavnSoker: "Solan",
+          etternavnSoker: "Gundersen",
+          navnPaEierAvPostboksenSoker: "Reodor Felgen",
+          postboksSoker: "55 Toppen",
+          postboksPostnrSoker: "3520",
+          postboksPoststedSoker: "Jevnaker",
+        };
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.")
+      });
+
+      it("Tar hensyn til at det er valgfritt å oppgi eier på postboks", () => {
+        const submission = {
+          fornavnSoker: "Solan",
+          etternavnSoker: "Gundersen",
+          navnPaEierAvPostboksenSoker: undefined,
+          postboksSoker: "55 Toppen",
+          postboksPostnrSoker: "3520",
+          postboksPoststedSoker: "Jevnaker",
+        };
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, Postboks 55 Toppen, 3520 Jevnaker, Norge.")
+      });
+
+    });
+
+    describe('med utenlandsk adresse', () => {
+
+      it("Formatteres korrekt", () => {
+        const submission = {
+          fornavnSoker: "Solan",
+          etternavnSoker: "Gundersen",
+          utlandCoSoker: undefined,
+          utlandVegadresseOgHusnummerSoker: "12603 Denmark Drive",
+          utlandBygningSoker: "Apt.556",
+          utlandPostkodeSoker: "VA 22071-9945",
+          utlandByStedSoker: "Herndon",
+          utlandRegionSoker: undefined,
+          utlandLandSoker: "USA",
+        };
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.")
+      });
+
+      it("Formatteres korrekt med c/o-adressering", () => {
+        const submission = {
+          fornavnSoker: "Solan",
+          etternavnSoker: "Gundersen",
+          utlandCoSoker: "Bart Simpson",
+          utlandVegadresseOgHusnummerSoker: "12603 Denmark Drive",
+          utlandBygningSoker: "Apt.556",
+          utlandPostkodeSoker: "VA 22071-9945",
+          utlandByStedSoker: "Herndon",
+          utlandRegionSoker: undefined,
+          utlandLandSoker: "USA",
+        };
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.")
+      });
+
+      it("Formatteres korrekt med region", () => {
+        const submission = {
+          fornavnSoker: "Solan",
+          etternavnSoker: "Gundersen",
+          utlandCoSoker: undefined,
+          utlandVegadresseOgHusnummerSoker: "12603 Denmark Drive",
+          utlandBygningSoker: "Apt.556",
+          utlandPostkodeSoker: "VA 22071-9945",
+          utlandByStedSoker: "Herndon",
+          utlandRegionSoker: "Dulles",
+          utlandLandSoker: "USA",
+        };
+        const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
+        expect(forsteside.ukjentBrukerPersoninfo)
+          .toEqual("Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA.")
+      });
+
+    });
+
+  });
+
 });

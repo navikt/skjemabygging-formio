@@ -15,7 +15,7 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
-interface ForstesideInfo {
+export interface ForstesideRequestBody {
   foerstesidetype: ForstesideType;
   navSkjemaId: string;
   spraakkode: string;
@@ -25,9 +25,17 @@ interface ForstesideInfo {
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
   netsPostboks: string;
+
+  bruker?: Bruker;
+  ukjentBrukerPersoninfo?: string;
 }
 
-type ForstesideRequestBody = ForstesideInfo & BrukerInfo;
+const adressLine = (text, prefix?) => {
+  if (text) {
+    return prefix ? `${prefix} ${text}, ` : `${text}, `;
+  }
+  return "";
+}
 
 export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
   if (fnrEllerDnr) {
@@ -41,9 +49,13 @@ export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
     return {
       ukjentBrukerPersoninfo:
         `${adresse.navn || ""}, ` +
-        `${adresse.adresse || ""} ` +
+        adressLine(adresse.co, "c/o") +
+        adressLine(adresse.postboksEier) +
+        `${adresse.adresse || ""}, ` +
+        adressLine(adresse.bygning) +
         `${adresse.postnr || ""} ` +
-        `${adresse.sted || ""} ` +
+        `${adresse.sted || ""}, ` +
+        adressLine(adresse.region) +
         `${adresse.land || ""}.`,
     };
   } else {
@@ -93,22 +105,50 @@ export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form
   ];
 }
 
+const gateadresseMedHusnr = (gateadresse, husnummer?) => {
+  if (gateadresse) {
+    return husnummer ? `${gateadresse} ${husnummer}` : gateadresse;
+  }
+  return undefined;
+};
+
 export function genererAdresse(submission) {
   const {
     gateadresseSoker,
+    vegadresseSoker,
+    husnummerSoker,
     landSoker,
     postnrSoker,
     poststedSoker,
     fornavnSoker,
     etternavnSoker,
+    coSoker,
     utenlandskPostkodeSoker,
+    postboksSoker,
+    postboksPostnrSoker,
+    postboksPoststedSoker,
+    navnPaEierAvPostboksenSoker,
+    utlandCoSoker,
+    utlandVegadresseOgHusnummerSoker,
+    utlandBygningSoker,
+    utlandPostkodeSoker,
+    utlandByStedSoker,
+    utlandLandSoker,
+    utlandRegionSoker,
   } = submission;
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
-    adresse: gateadresseSoker,
-    postnr: postnrSoker || utenlandskPostkodeSoker,
-    sted: poststedSoker,
-    land: landSoker || "Norge",
+    co: coSoker || utlandCoSoker,
+    postboksEier: navnPaEierAvPostboksenSoker,
+    adresse: gateadresseMedHusnr(gateadresseSoker, husnummerSoker)
+      || gateadresseMedHusnr(vegadresseSoker, husnummerSoker)
+      || (postboksSoker && `Postboks ${postboksSoker}`)
+      || utlandVegadresseOgHusnummerSoker,
+    bygning: utlandBygningSoker,
+    postnr: postnrSoker || postboksPostnrSoker || utenlandskPostkodeSoker || utlandPostkodeSoker,
+    sted: poststedSoker || postboksPoststedSoker || utlandByStedSoker,
+    region: utlandRegionSoker,
+    land: landSoker || utlandLandSoker || "Norge",
   };
 }
 
