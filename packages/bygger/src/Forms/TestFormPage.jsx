@@ -10,7 +10,7 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
   const currentLanguage = params.get("lang");
-  const { translations } = useTranslations();
+  const { translationsForNavForm } = useTranslations();
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
@@ -29,7 +29,7 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
           </Link>
         )}
       </ActionRow>
-      <FyllUtRouter form={form} translations={featureToggles.enableTranslations ? translations : undefined} />
+      <FyllUtRouter form={form} translations={featureToggles.enableTranslations ? translationsForNavForm : undefined} />
     </AppLayoutWithContext>
   );
 }

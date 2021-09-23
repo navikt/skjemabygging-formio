@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Components, Formio } from "formiojs";
 import {
@@ -24,6 +24,24 @@ const useStyles = makeStyles((theme) => ({
 Components.setComponents(CustomComponents);
 Formio.use(Template);
 
+function FyllUtFormPage({ form }) {
+  const [translation, setTranslation] = useState(undefined);
+  useEffect(() => {
+    fetch(`/fyllut/translations/${form.path}`, { headers: { accept: "application/json" } }).then((response) => {
+      response.json().then(setTranslation);
+    });
+  }, [form]);
+
+  if (translation) {
+    return (
+      <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+        <FyllUtRouter form={form} translations={translation} />
+      </AmplitudeProvider>
+    );
+  }
+  return <></>;
+}
+
 function App({ forms, className }) {
   useStyles();
   return (
@@ -38,11 +56,7 @@ function App({ forms, className }) {
           render={(routeProps) => {
             return (
               <FormPageWrapper routeProps={routeProps} forms={forms}>
-                {(form) => (
-                  <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-                    <FyllUtRouter form={form} />
-                  </AmplitudeProvider>
-                )}
+                {(form) => <FyllUtFormPage form={form} />}
               </FormPageWrapper>
             );
           }}

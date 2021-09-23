@@ -12,12 +12,12 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
 
-  const currentTranslation = translations[currentLanguage] ? translations[currentLanguage].translations : {};
+  const currentTranslation = translations[currentLanguage] || {};
 
   useEffect(() => {
     const root = document.documentElement;
     if (currentTranslation && currentTranslation.optional) {
-      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional.value})"`);
+      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional})"`);
     } else {
       root.style.setProperty("--optionalLabel", `" (${TEXTS.common.optional})"`);
     }
@@ -25,12 +25,12 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
 
   useEffect(() => {
     if (availableLanguages.length > 0) {
-      setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
+      setTranslationsForNavForm(translations);
     }
   }, [translations]);
 
   function translate(originalText) {
-    return currentTranslation[originalText] ? currentTranslation[originalText].value : originalText;
+    return currentTranslation[originalText] ? currentTranslation[originalText] : originalText;
   }
 
   return (
