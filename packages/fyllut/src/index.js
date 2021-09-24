@@ -6,7 +6,7 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
-import featureToggles from "./featureToggles.json";
+import featureToggles from "./featureToggles.js";
 
 class HttpError extends Error {}
 

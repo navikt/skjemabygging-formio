@@ -21,7 +21,7 @@ skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
-const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, gitVersion } = config;
+const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, translationDir, gitVersion } = config;
 checkConfigConsistency(config);
 
 const Registry = client.Registry;
@@ -78,9 +78,8 @@ const loadForms = async () => {
   return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadJsonFilesFromDisk(skjemaDir);
 };
 
-const loadTranslations = async (formName) => {
-  // return useFormioApi ? {} : await loadJsonFilesFromDisk(translationDir);
-  return await loadJsonFileFromDisk("../temp-translations/" + formName);
+const loadTranslations = async (formPath) => {
+  return await loadJsonFileFromDisk(translationDir, formPath);
 };
 
 skjemaApp.get("/config", async (req, res) => {
