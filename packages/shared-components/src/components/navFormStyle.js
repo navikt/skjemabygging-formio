@@ -74,7 +74,7 @@ const styles = {
       flex: "initial",
     },
   },
-  "& .formio-component-avkryssingsboks .skjemagruppe__checkbox-description--below": {
+  "& .formio-component-navCheckbox .skjemagruppe__checkbox-description--below": {
     marginTop: "1rem",
   },
 };
