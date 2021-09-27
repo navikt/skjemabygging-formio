@@ -1,13 +1,35 @@
-import i18next from 'i18next';
-import assert from 'power-assert';
-import _ from 'lodash';
-import EventEmitter from 'eventemitter2';
-import FormBuilder from 'formiojs';
+import i18next from "i18next";
+import assert from "power-assert";
+import merge from "lodash.merge";
+import EventEmitter from "eventemitter2";
+import FormBuilder from "formiojs";
 import Components from "formiojs/components/Components";
 import CustomComponents from "../src/customComponents/index";
 import i18Defaults from "../src/i18nData";
 
 Components.setComponents(CustomComponents);
+
+const utils = {
+  cloneDeep: obj => JSON.parse(JSON.stringify(obj)),
+  merge: (obj1, obj2) => merge(obj1, obj2),
+  get: (object, keys, defaultVal) => {
+    keys = Array.isArray(keys) ? keys : keys.split('.');
+    object = object[keys[0]];
+    if (object && keys.length > 1) {
+      return utils.get(object, keys.slice(1));
+    }
+    return object === undefined ? defaultVal : object;
+  },
+  set: (object, keys, val) => {
+    keys = Array.isArray(keys) ? keys : keys.split('.');
+    if (keys.length > 1) {
+      object[keys[0]] = object[keys[0]] || {};
+      return utils.set(object[keys[0]], keys.slice(1), val);
+    }
+    object[keys[0]] = val;
+  },
+  each: (arr, func) => arr.forEach(func),
+}
 
 if (process) {
   // Do not handle unhandled rejections.
@@ -74,7 +96,7 @@ const Harness = {
     let builderGroup = null;
     let groupName = '';
 
-    _.each(webformBuilder.groups, (group, key) => {
+    utils.each(webformBuilder.groups, (group, key) => {
       if (group.components[type]) {
         groupName = key;
         return false;
@@ -107,13 +129,13 @@ const Harness = {
   },
 
   setComponentProperty(property, before, after, cb) {
-    const component = _.cloneDeep(formBuilder.editForm.submission);
-    assert.equal(_.get(component.data, property), before);
-    _.set(component.data, property, after);
+    const component = utils.cloneDeep(formBuilder.editForm.submission);
+    assert.equal(utils.get(component.data, property), before);
+    utils.set(component.data, property, after);
     formBuilder.off('updateComponent');
     formBuilder.on('updateComponent', () => {
       const preview = formBuilder.componentPreview.innerHTML;
-      assert.equal(_.get(formBuilder.editForm.submission.data, property), after);
+      assert.equal(utils.get(formBuilder.editForm.submission.data, property), after);
       cb(preview);
     });
     formBuilder.editForm.submission = component;
@@ -136,8 +158,8 @@ const Harness = {
     return (new Date(timestamp * 1000)).toISOString();
   },
   testCreate(Component, componentSettings, options = {}) {
-    const compSettings = _.cloneDeep(componentSettings);
-    const component = new Component(compSettings, _.merge({
+    const compSettings = utils.cloneDeep(componentSettings);
+    const component = new Component(compSettings, utils.merge({
       events: new EventEmitter(),
     }, options));
     component.pristine = false;
@@ -265,7 +287,7 @@ const Harness = {
     return element;
   },
   testSetGet(component, value) {
-    const originValue = _.cloneDeep(value);
+    const originValue = utils.cloneDeep(value);
     component.setValue(value);
     assert.deepEqual(component.getValue(), originValue);
     return component;
@@ -308,7 +330,7 @@ const Harness = {
   },
   testErrors(form, submission, errors, done) {
     form.on('error', (err) => {
-      _.each(errors, (error, index) => {
+      utils.each(errors, (error, index) => {
         error.component = form.getComponent(error.component).component;
         assert.deepEqual(err[index].component, error.component);
         assert.equal(err[index].message, error.message);
@@ -389,7 +411,7 @@ const Harness = {
   testWizardPrevPage(form, errors, onPrevPage) {
     if (errors) {
       form.on('error', (err) => {
-        _.each(errors, (error, index) => {
+        utils.each(errors, (error, index) => {
           error.component = form.getComponent(error.component).component;
           assert.deepEqual(err[index], error);
         });
@@ -403,7 +425,7 @@ const Harness = {
   testWizardNextPage(form, errors, onNextPage) {
     if (errors) {
       form.on('error', (err) => {
-        _.each(errors, (error, index) => {
+        utils.each(errors, (error, index) => {
           error.component = form.getComponent(error.component).component;
           assert.deepEqual(err[index], error);
         });
@@ -415,7 +437,7 @@ const Harness = {
     return form.nextPage();
   },
   testNumberBlur(cmp, inv, outv, display, index = 0) {
-    const input = _.get(cmp, ['refs', 'input', index], {});
+    const input = utils.get(cmp, ['refs', 'input', index], {});
     input.value = inv;
     input.dispatchEvent(new Event('blur'));
     assert.strictEqual(cmp.getValueAt(index), outv);
