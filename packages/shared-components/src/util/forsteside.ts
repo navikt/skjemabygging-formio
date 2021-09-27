@@ -116,12 +116,12 @@ export function genererAdresse(submission) {
     etternavnSoker,
     coSoker,
     utenlandskPostkodeSoker,
-    postboksSoker,
+    postboksNrSoker,
     postboksPostnrSoker,
     postboksPoststedSoker,
-    navnPaEierAvPostboksenSoker,
+    postboksCoSoker,
     utlandCoSoker,
-    utlandVegadresseOgHusnummerSoker,
+    utlandVegadressePostboksSoker,
     utlandBygningSoker,
     utlandPostkodeSoker,
     utlandByStedSoker,
@@ -131,11 +131,11 @@ export function genererAdresse(submission) {
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
     co: coSoker || utlandCoSoker,
-    postboksEier: navnPaEierAvPostboksenSoker,
+    postboksEier: postboksCoSoker,
     adresse: gateadresseSoker
       || vegadresseSoker
-      || (postboksSoker && `Postboks ${postboksSoker}`)
-      || utlandVegadresseOgHusnummerSoker,
+      || (postboksNrSoker && `Postboks ${postboksNrSoker}`)
+      || utlandVegadressePostboksSoker,
     bygning: utlandBygningSoker,
     postnr: postnrSoker || postboksPostnrSoker || utenlandskPostkodeSoker || utlandPostkodeSoker,
     sted: poststedSoker || postboksPoststedSoker || utlandByStedSoker,

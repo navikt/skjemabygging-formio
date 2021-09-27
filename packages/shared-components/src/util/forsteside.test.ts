@@ -376,8 +376,8 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          navnPaEierAvPostboksenSoker: "Reodor Felgen",
-          postboksSoker: "55 Toppen",
+          postboksCoSoker: "Reodor Felgen",
+          postboksNrSoker: "55 Toppen",
           postboksPostnrSoker: "3520",
           postboksPoststedSoker: "Jevnaker",
         };
@@ -390,8 +390,8 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          navnPaEierAvPostboksenSoker: undefined,
-          postboksSoker: "55 Toppen",
+          postboksCoSoker: undefined,
+          postboksNrSoker: "55 Toppen",
           postboksPostnrSoker: "3520",
           postboksPoststedSoker: "Jevnaker",
         };
@@ -409,7 +409,7 @@ describe("genererFoerstesideData", () => {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
           utlandCoSoker: undefined,
-          utlandVegadresseOgHusnummerSoker: "12603 Denmark Drive",
+          utlandVegadressePostboksSoker: "12603 Denmark Drive",
           utlandBygningSoker: "Apt.556",
           utlandPostkodeSoker: "VA 22071-9945",
           utlandByStedSoker: "Herndon",
@@ -426,7 +426,7 @@ describe("genererFoerstesideData", () => {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
           utlandCoSoker: "Bart Simpson",
-          utlandVegadresseOgHusnummerSoker: "12603 Denmark Drive",
+          utlandVegadressePostboksSoker: "12603 Denmark Drive",
           utlandBygningSoker: "Apt.556",
           utlandPostkodeSoker: "VA 22071-9945",
           utlandByStedSoker: "Herndon",
@@ -443,7 +443,7 @@ describe("genererFoerstesideData", () => {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
           utlandCoSoker: undefined,
-          utlandVegadresseOgHusnummerSoker: "12603 Denmark Drive",
+          utlandVegadressePostboksSoker: "12603 Denmark Drive",
           utlandBygningSoker: "Apt.556",
           utlandPostkodeSoker: "VA 22071-9945",
           utlandByStedSoker: "Herndon",
