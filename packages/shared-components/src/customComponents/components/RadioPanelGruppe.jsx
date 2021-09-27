@@ -10,6 +10,13 @@ import { descriptionPositionField } from "./fields/descriptionPositionField";
 import { guid } from "../../util/guid";
 
 /**
+ * NB! This component is no longer used, but saved for now, in case we manage to fix FormioReactComponent.
+ *
+ * The reason for stopping to use this component is that it is buggy, i.e. with clearOnHide functionality
+ * and loading values when going back from the summary page.
+ */
+
+/**
  * The wrapper for our custom React component
  *
  * It needs to have two things.

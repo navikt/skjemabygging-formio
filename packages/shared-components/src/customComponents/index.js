@@ -1,7 +1,7 @@
 import Fodselsnummer from "./components/Fodselsnummer.jsx";
 import HTMLElement from "./components/HTMLElement";
 import NavDatepicker from "./components/NavDatepicker.jsx";
-import RadioPanelGruppeComponent from "./components/RadioPanelGruppe";
+import Radio from "./components/Radio"
 import CheckboxComponent from "./components/Checkbox";
 import DataGrid from "./components/DataGrid";
 import TextField from "./components/TextField";
@@ -17,7 +17,7 @@ const customComponents = {
   fnrfield: Fodselsnummer,
   htmlelement: HTMLElement,
   navDatepicker: NavDatepicker,
-  radiopanel: RadioPanelGruppeComponent,
+  radiopanel: Radio,
   navCheckbox: CheckboxComponent,
   datagrid: DataGrid,
   textfield: TextField,
