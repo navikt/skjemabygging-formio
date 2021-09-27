@@ -1,4 +1,13 @@
-import {formMatcherPredicate, toFormPath} from "./navFormUtils";
+import {
+  findDependentComponents,
+  formMatcherPredicate,
+  toFormPath,
+  flattenComponents
+} from "./navFormUtils";
+import formWithSimpleConditional from "./testdata/conditional-simple";
+import formWithCustomConditional from "./testdata/conditional-custom";
+import formWithJsonConditional from "./testdata/conditional-json";
+import formWithMultipleConditionalDependencies from "./testdata/conditional-multiple-dependencies";
 
 describe('navFormUtils', () => {
 
@@ -75,6 +84,119 @@ describe('navFormUtils', () => {
 
       it('should not match other skjemanummer', () => {
         expect(formMatcherPredicate('nav654321')(form)).toBe(false);
+      });
+
+    });
+
+  });
+
+  describe("flattenComponents", () => {
+
+    it("returns a flat array of all nested components", () => {
+      const actual = flattenComponents([
+        {
+          title: "Personopplysninger",
+          key: "panel",
+          properties: {},
+          type: "panel",
+          label: "Panel",
+          components: [
+            {
+              key: "fodselsnummerDNummer",
+              type: "fnrfield",
+              label: "Fødselsnummer / D-nummer",
+              properties: {},
+            },
+            {
+              label: "Fornavn",
+              type: "textfield",
+              key: "fornavn",
+              properties: {},
+            },
+          ],
+        },
+      ]);
+      expect(actual.map((component) => component.key)).toEqual(["panel", "fodselsnummerDNummer", "fornavn"]);
+    });
+
+  });
+
+  describe('findDependentComponents', () => {
+
+    describe('A form where one component has a simple conditional on another component', () => {
+
+      it('Returns empty array when component has no conditional', () => {
+        const dependentKeys = findDependentComponents("oppgiYndlingsfarge", formWithSimpleConditional);
+        expect(dependentKeys).toHaveLength(0);
+      });
+
+      it('Returns an array with the key of the component it has a conditional on', () => {
+        const dependentKeys = findDependentComponents("harDuEnYndlingsfarge", formWithSimpleConditional);
+        expect(dependentKeys).toHaveLength(1);
+        expect(dependentKeys.includes("oppgiYndlingsfarge")).toBeTruthy();
+      });
+
+    });
+
+    describe('A form where one component has a custom conditional', () => {
+
+      it('Returns empty array when component has no conditional', () => {
+        const dependentKeys = findDependentComponents("oppgiYndlingsfarge", formWithCustomConditional);
+        expect(dependentKeys).toHaveLength(0);
+      });
+
+      it('Returns an array with the key of the component it has a conditional on', () => {
+        const dependentKeys = findDependentComponents("harDuEnYndlingsfarge", formWithCustomConditional);
+        expect(dependentKeys).toHaveLength(1);
+        expect(dependentKeys.includes("oppgiYndlingsfarge")).toBeTruthy();
+      });
+
+    });
+
+    describe('A form where one component has a conditional json statement', () => {
+
+      it('Returns empty array when component has no conditional', () => {
+        const dependentKeys = findDependentComponents("oppgiYndlingsfarge", formWithJsonConditional);
+        expect(dependentKeys).toHaveLength(0);
+      });
+
+      it('Returns an array with the key of the component it has a conditional on', () => {
+        const dependentKeys = findDependentComponents("harDuEnYndlingsfarge", formWithJsonConditional);
+        expect(dependentKeys).toHaveLength(1);
+        expect(dependentKeys.includes("oppgiYndlingsfarge")).toBeTruthy();
+      });
+
+    });
+
+    describe('A form with multiple conditional dependencies', () => {
+
+      const testForm = formWithMultipleConditionalDependencies;
+
+      it('returns three dependent component keys for \'frukt\'', () => {
+        const dependentKeys = findDependentComponents("frukt", testForm);
+        expect(dependentKeys).toEqual(
+          expect.arrayContaining([
+            "hvorforLikerDuEpler",
+            "hvorforLikerDuPaerer",
+            "hvorforLikerDuBanan",
+          ])
+        )
+      });
+
+      it('returns two dependenct component keys for \'likerDuFrukt\'', () => {
+        const dependentKeys = findDependentComponents("likerDuFrukt", testForm);
+        expect(dependentKeys).toEqual(
+          expect.arrayContaining([
+            "alertstripe",
+            "frukt",
+          ])
+        )
+      });
+
+      it('returns no dependent keys for components with no conditional', () => {
+        expect(findDependentComponents("hvorforLikerDuEpler", testForm)).toHaveLength(0);
+        expect(findDependentComponents("hvorforLikerDuPaerer", testForm)).toHaveLength(0);
+        expect(findDependentComponents("hvorforLikerDuBanan", testForm)).toHaveLength(0);
       });
 
     });

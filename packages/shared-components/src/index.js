@@ -12,7 +12,6 @@ import Template from "./template";
 import { LanguagesProvider, useLanguages } from "./context/languages";
 import LanguageSelector from "./components/LanguageSelector";
 import i18nData from "./i18nData";
-import { flattenComponents } from "./util/forsteside";
 import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 
 export {
@@ -33,7 +32,6 @@ export {
   LanguagesProvider,
   i18nData,
   guid,
-  flattenComponents,
   MockedComponentObjectForTest,
   LanguageSelector,
   useLanguages,

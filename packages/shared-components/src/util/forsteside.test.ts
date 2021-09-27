@@ -1,5 +1,4 @@
 import {
-  flattenComponents,
   genererAdresse,
   genererDokumentlisteFoersteside,
   genererFoerstesideData,
@@ -129,35 +128,6 @@ describe("genererVedleggSomSkalSendes", () => {
       vedleggO9: "leggerVedNaa",
     });
     expect(actual).toEqual(["O9"]);
-  });
-});
-
-describe("flattenComponents", () => {
-  it("returns a flat array of all nested components", () => {
-    const actual = flattenComponents([
-      {
-        title: "Personopplysninger",
-        key: "panel",
-        properties: {},
-        type: "panel",
-        label: "Panel",
-        components: [
-          {
-            key: "fodselsnummerDNummer",
-            type: "fnrfield",
-            label: "Fødselsnummer / D-nummer",
-            properties: {},
-          },
-          {
-            label: "Fornavn",
-            type: "textfield",
-            key: "fornavn",
-            properties: {},
-          },
-        ],
-      },
-    ]);
-    expect(actual.map((component) => component.key)).toEqual(["panel", "fodselsnummerDNummer", "fornavn"]);
   });
 });
 
