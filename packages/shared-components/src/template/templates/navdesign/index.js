@@ -41,6 +41,7 @@ import pdf from "./pdf";
 import pdfBuilder from "./pdfBuilder";
 import pdfBuilderUpload from "./pdfBuilderUpload";
 import radio from "./radio";
+import radiopanel from "./radiopanel";
 import resourceAdd from "./resourceAdd";
 import select from "./select";
 import selectOption from "./selectOption";
@@ -113,6 +114,7 @@ export default {
   pdfBuilder,
   pdfBuilderUpload,
   radio,
+  "radio-radiopanel": radiopanel,
   resourceAdd,
   select,
   selectOption,

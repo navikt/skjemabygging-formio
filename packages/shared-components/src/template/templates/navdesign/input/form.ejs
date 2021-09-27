@@ -19,7 +19,7 @@
     {% if (ctx.component.validate.required) { %}
     required="{{ctx.component.validate.required}}"
     {% } %}
-    aria-describedby="{{ctx.component.key}}-error"
+    aria-describedby="{{ ctx.component.description ? `${ctx.component.id}-${ctx.component.key}-description ` : '' }}{{ctx.component.key}}-error"
     >{{ctx.input.content}}
 </{{ctx.input.type}}>
 {% } %}
