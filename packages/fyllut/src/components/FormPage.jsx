@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import { AmplitudeProvider, FyllUtRouter } from "@navikt/skjemadigitalisering-shared-components";
 
 function FormPage({ form }) {
-  const [translation, setTranslation] = useState(undefined);
+  const [translation, setTranslation] = useState({});
+  const [hasResolvedTranslations, setHasResolvedTranslations] = useState(false);
   useEffect(() => {
     fetch(`/fyllut/translations/${form.path}`, { headers: { accept: "application/json" } }).then((response) => {
-      response.json().then(setTranslation);
+      response.json().then((translation) => {
+        setTranslation(translation);
+        setHasResolvedTranslations(true);
+      });
     });
   }, [form]);
 
-  if (translation) {
+  if (hasResolvedTranslations) {
     return (
       <AmplitudeProvider form={form} shouldUseAmplitude={true}>
         <FyllUtRouter form={form} translations={translation} />
