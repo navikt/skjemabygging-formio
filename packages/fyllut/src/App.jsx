@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { Components, Formio } from "formiojs";
-import {
-  CustomComponents,
-  Template,
-  FyllUtRouter,
-  AmplitudeProvider,
-  globalStyles,
-  appStyles,
-} from "@navikt/skjemadigitalisering-shared-components";
+import { CustomComponents, Template, globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
 import "nav-frontend-typografi-style";
 import "formiojs/dist/formio.full.min.css";
 import { styled } from "@material-ui/styles";
@@ -16,6 +9,7 @@ import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
 import makeStyles from "@material-ui/styles/makeStyles";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
+import FormPage from "./components/FormPage";
 
 const useStyles = makeStyles((theme) => ({
   "@global": globalStyles,
@@ -23,24 +17,6 @@ const useStyles = makeStyles((theme) => ({
 
 Components.setComponents(CustomComponents);
 Formio.use(Template);
-
-function FyllUtFormPage({ form }) {
-  const [translation, setTranslation] = useState(undefined);
-  useEffect(() => {
-    fetch(`/fyllut/translations/${form.path}`, { headers: { accept: "application/json" } }).then((response) => {
-      response.json().then(setTranslation);
-    });
-  }, [form]);
-
-  if (translation) {
-    return (
-      <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-        <FyllUtRouter form={form} translations={translation} />
-      </AmplitudeProvider>
-    );
-  }
-  return <></>;
-}
 
 function App({ forms, className }) {
   useStyles();
@@ -56,7 +32,7 @@ function App({ forms, className }) {
           render={(routeProps) => {
             return (
               <FormPageWrapper routeProps={routeProps} forms={forms}>
-                {(form) => <FyllUtFormPage form={form} />}
+                {(form) => <FormPage form={form} />}
               </FormPageWrapper>
             );
           }}
