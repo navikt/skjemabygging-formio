@@ -34,6 +34,7 @@ import message from "./message";
 import multipleMasksInput from "./multipleMasksInput";
 import multiValueRow from "./multiValueRow";
 import multiValueTable from "./multiValueTable";
+import navCheckbox from "./navCheckbox";
 import navSkjemagruppe from "./navSkjemagruppe";
 import panel from "./panel";
 import pdf from "./pdf";
@@ -83,6 +84,7 @@ export default {
   builderWizard,
   button,
   checkbox,
+  "checkbox-navCheckbox": navCheckbox,
   columns,
   component,
   componentModal,
