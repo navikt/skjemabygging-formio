@@ -11,8 +11,8 @@ const readFile = async (filepath) => {
 
 const loadJsonFileFromDisk = async (dir, filename) => {
   const existingFileNames = fs.readdirSync(dir);
-  const existingFileName = existingFileNames.find((acceptedFileName) =>
-    new RegExp(`${filename}(\.json)?`).test(acceptedFileName)
+  const existingFileName = existingFileNames.find(
+    (approvedFileName) => approvedFileName.replace(".json", "") === filename.replace(".json", "")
   );
   if (existingFileName) {
     const file = await readFile(`${dir}/${existingFileName}`);
