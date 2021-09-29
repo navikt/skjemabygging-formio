@@ -1,4 +1,5 @@
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
+import { addPrefixOrPostfix } from "../util/text-util";
 //import { defaultFormFields } from "../../../bygger/src/Forms/DefaultForm";
 
 const postboksPrefix = "postboks";
@@ -88,10 +89,10 @@ const surnameSchema = (keyPostfix = "") => ({
   components: [fodselsNummerDNummerSchema(keyPostfix), firstNameSchema(keyPostfix), surnameSchema(keyPostfix)],
 });*/
 
-const coAdresseSchema = (keyPostfix = "") => ({
+const coAdresseSchema = (keyPrefix, keyPostfix = "") => ({
   label: "C/O",
   type: "textfield",
-  key: `co${keyPostfix}`,
+  key: addPrefixOrPostfix("co", keyPrefix, keyPostfix),
   fieldSize: "input--xxl",
   autocomplete: false,
   validate: {
@@ -135,10 +136,10 @@ const postboksSchema = (keyPostfix = "") => ({
   validateOn: "blur",
 });
 
-const postnummerSchema = (keyPostfix = "") => ({
+const postnummerSchema = (keyPrefix, keyPostfix = "") => ({
   label: "Postnummer",
   type: "textfield",
-  key: `postnr${keyPostfix}`,
+  key: addPrefixOrPostfix("postnr", keyPrefix, keyPostfix),
   autocomplete: "postal-code",
   spellcheck: false,
   fieldSize: "input--xs",
@@ -154,10 +155,10 @@ const postnummerSchema = (keyPostfix = "") => ({
   validateOn: "blur",
 });
 
-const poststedSchema = (keyPostfix = "") => ({
+const poststedSchema = (keyPrefix, keyPostfix = "") => ({
   label: "Poststed",
   type: "textfield",
-  key: `poststed${keyPostfix}`,
+  key: addPrefixOrPostfix("poststed", keyPrefix, keyPostfix),
   autocomplete: "address-level2",
   fieldSize: "input--xxl",
   validate: {
@@ -178,14 +179,14 @@ const norskVegadresseSchema = (keyPostfix = "") => ({
   input: false,
   tableView: false,
   components: [
-    coAdresseSchema(keyPostfix),
+    coAdresseSchema("", keyPostfix),
     vegadresseSchema(keyPostfix),
-    postnummerSchema(keyPostfix),
-    poststedSchema(keyPostfix),
+    postnummerSchema("" ,keyPostfix),
+    poststedSchema("", keyPostfix),
   ],
 });
 
-const norskPostboksadresseSchema = (keyPrefix = "", keyPostfix = "") => ({
+const norskPostboksadresseSchema = (keyPostfix = "") => ({
   key: "norskPostboksadresse",
   type: "container",
   label: "Postboksadresse",
@@ -193,10 +194,10 @@ const norskPostboksadresseSchema = (keyPrefix = "", keyPostfix = "") => ({
   input: false,
   tableView: false,
   components: [
-    coAdresseSchema(keyPostfix),
+    coAdresseSchema("postboks", keyPostfix),
     postboksSchema(keyPostfix),
-    postnummerSchema(keyPostfix),
-    poststedSchema(keyPostfix),
+    postnummerSchema("postboks", keyPostfix),
+    poststedSchema("postboks", keyPostfix),
   ],
 });
 
@@ -303,7 +304,7 @@ const utenlandskAdresseSchema = (keyPostfix = "") => ({
   input: false,
   tableView: false,
   components: [
-    coAdresseSchema(keyPostfix),
+    coAdresseSchema("utland", keyPostfix),
     utlandVegadressePostboksSchema(keyPostfix),
     utlandBygningSchema(keyPostfix),
     utlandPostkodeSchema(keyPostfix),
