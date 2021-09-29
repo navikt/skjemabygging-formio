@@ -10,9 +10,10 @@ const readFile = async (filepath) => {
 };
 
 const loadJsonFileFromDisk = async (dir, filename) => {
+  const acceptedFileNames = fs.readdirSync(dir);
   const jsonFileName = filename.endsWith(".json") ? filename : `${filename}.json`;
   const jsonFilePath = `${dir}/${jsonFileName}`;
-  if (fs.existsSync(jsonFilePath)) {
+  if (acceptedFileNames.includes(jsonFileName)) {
     const file = await readFile(jsonFilePath);
     return JSON.parse(file);
   }
