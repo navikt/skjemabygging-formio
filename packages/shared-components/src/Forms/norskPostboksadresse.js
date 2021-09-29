@@ -13,61 +13,41 @@ export const norskPostboksadresseSchema = (keyPostfix = "") => ({
     eq: "postboksadresse",
   },
   components: [
-    {
-      label: "Navn på eier av postboksen",
-      fieldSize: "input--xxl",
-      validateOn: "blur",
-      key: "navnPaEierAvPostboksenSoker",
-      type: "textfield",
-      input: true,
-      dataGridLabel: true,
-      tableView: true,
-    },
-    {
-      label: "Postboks",
-      fieldSize: "input--s",
-      key: "postboksSoker",
-      type: "textfield",
-      input: true,
-      dataGridLabel: true,
-      tableView: true,
-      validateOn: "blur",
-      validate: {
-        required: true,
-      },
-    },
-    {
-      label: "Postnummer",
-      fieldSize: "input--xs",
-      autocomplete: "postal-code",
-      spellcheck: false,
-      validateOn: "blur",
-      validate: {
-        required: true,
-        minLength: 4,
-        maxLength: 4,
-      },
-      key: "postboksPostnrSoker",
-      type: "textfield",
-      input: true,
-      dataGridLabel: true,
-      tableView: true,
-    },
-    {
-      label: "Poststed",
-      fieldSize: "input--xxl",
-      autocomplete: "address-level2",
-      validateOn: "blur",
-      validate: {
-        required: true,
-      },
-      key: "postboksPoststedSoker",
-      type: "textfield",
-      input: true,
-      dataGridLabel: true,
-      tableView: true,
-    },
+    coAdresseSchema(sokerPostfix),
+    postboksSchema(sokerPostfix),
+    postnummerSchema(sokerPostfix),
+    poststedSchema(sokerPostfix),
   ],
+});
+
+const coAdresseSchema = (keyPostfix = "") => ({
+  label: "C/O",
+  type: "textfield",
+  key: `co${keyPostfix}`,
+  fieldSize: "input--xxl",
+  validate: {
+    required: false,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
+});
+
+const postboksSchema = (keyPostfix = "") => ({
+  label: "Postboks",
+  type: "textfield",
+  key: `postboks${keyPostfix}`,
+  fieldSize: "input--s",
+  validate: {
+    required: true,
+  },
+  input: true,
+  clearOnHide: true,
+  dataGridLabel: true,
+  tableView: true,
+  validateOn: "blur",
 });
 
 const poststedSchema = (keyPostfix = "") => ({

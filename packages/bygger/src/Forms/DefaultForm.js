@@ -1,6 +1,7 @@
 import { FormBuilderSchemas } from "@navikt/skjemadigitalisering-shared-components";
 
-const { firstNameSchema, surnameSchema } = FormBuilderSchemas;
+const { firstNameSchema, surnameSchema, norskVegadresseSchema, norskPostboksadresseSchema, utenlandskAdresseSchema } =
+  FormBuilderSchemas;
 
 const sokerPostfix = "Soker";
 
@@ -30,6 +31,7 @@ export const defaultFormFields = () => [
     components: [
       firstNameSchema(sokerPostfix),
       surnameSchema(sokerPostfix),
+
       {
         key: "harDuNorskFodselsnummerEllerDNummer",
         type: "radiopanel",
@@ -65,7 +67,7 @@ export const defaultFormFields = () => [
       },
       {
         visArvelger: true,
-        label: "Fødselsdato (dd.mm.åååå)",
+        label: "Din fødselsdato (dd.mm.åååå)",
         mayBeEqual: false,
         key: "fodselsdatoDdMmAaaaSoker",
         type: "navDatepicker",
@@ -164,71 +166,7 @@ export const defaultFormFields = () => [
           eq: "vegadresse",
         },
         components: [
-          {
-            label: "C/O",
-            fieldSize: "input--xxl",
-            validateOn: "blur",
-            key: "coSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Vegadresse",
-            fieldSize: "input--xxl",
-            autocomplete: "street-address",
-            validateOn: "blur",
-            key: "vegadresseSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-            validate: {
-              required: true,
-            },
-          },
-          {
-            label: "Husnummer (og evt. bokstav)",
-            fieldSize: "input--xs",
-            validateOn: "blur",
-            key: "husnummerSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Postnummer",
-            fieldSize: "input--xs",
-            key: "postnrSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-            autocomplete: "postal-code",
-            spellcheck: false,
-            validateOn: "blur",
-            validate: {
-              required: true,
-              minLength: 4,
-              maxLength: 4,
-            },
-          },
-          {
-            label: "Poststed",
-            fieldSize: "input--xxl",
-            key: "poststedSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-            autocomplete: "address-level2",
-            validateOn: "blur",
-            validate: {
-              required: true,
-            },
-          },
+          norskVegadresseSchema(sokerPostfix),
           {
             visArvelger: true,
             label: "Gyldig fra og med dato (dd.mm.åååå)",
@@ -279,75 +217,22 @@ export const defaultFormFields = () => [
           eq: "postboksadresse",
         },
         components: [
-          {
-            label: "Navn på eier av postboksen",
-            fieldSize: "input--xxl",
-            validateOn: "blur",
-            key: "navnPaEierAvPostboksenSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Postboks",
-            fieldSize: "input--s",
-            key: "postboksSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-            validateOn: "blur",
-            validate: {
-              required: true,
-            },
-          },
-          {
-            label: "Postnummer",
-            fieldSize: "input--xs",
-            autocomplete: "postal-code",
-            spellcheck: false,
-            validateOn: "blur",
-            validate: {
-              required: true,
-              minLength: 4,
-              maxLength: 4,
-            },
-            key: "postboksPostnrSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Poststed",
-            fieldSize: "input--xxl",
-            autocomplete: "address-level2",
-            validateOn: "blur",
-            validate: {
-              required: true,
-            },
-            key: "postboksPoststedSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
+          norskPostboksadresseSchema(sokerPostfix),
           {
             visArvelger: true,
             label: "Gyldig fra og med dato (dd.mm.åååå)",
-            mayBeEqual: false,
-            validate: {
-              required: true,
-              custom:
-                "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
-            },
-            validateOn: "blur",
             key: "gyldigFraDatoDdMmAaaa2",
             type: "navDatepicker",
             dataGridLabel: true,
             input: true,
             tableView: false,
+            mayBeEqual: false,
+            validateOn: "blur",
+            validate: {
+              required: true,
+              custom:
+                "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate);",
+            },
           },
           {
             visArvelger: true,
@@ -383,84 +268,7 @@ export const defaultFormFields = () => [
           eq: "nei",
         },
         components: [
-          {
-            label: "C/O",
-            fieldSize: "input--xxl",
-            validateOn: "blur",
-            key: "utlandCoSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Gatenavn og husnummer, evt. postboks",
-            fieldSize: "input--xxl",
-            key: "utlandVegadresseOgHusnummerSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-            autocomplete: "street-address",
-            validateOn: "blur",
-            validate: {
-              required: true,
-            },
-          },
-          {
-            label: "Bygning",
-            fieldSize: "input--xxl",
-            validateOn: "blur",
-            key: "utlandBygningSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Postkode",
-            fieldSize: "input--s",
-            validateOn: "blur",
-            key: "utlandPostkodeSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "By / stedsnavn",
-            fieldSize: "input--xxl",
-            validateOn: "blur",
-            key: "utlandByStedSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Region",
-            fieldSize: "input--xxl",
-            validateOn: "blur",
-            key: "utlandRegionSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-          },
-          {
-            label: "Land",
-            fieldSize: "input--xxl",
-            key: "utlandLandSoker",
-            type: "textfield",
-            input: true,
-            dataGridLabel: true,
-            tableView: true,
-            autocomplete: "country-name",
-            validateOn: "blur",
-            validate: {
-              required: true,
-            },
-          },
+          utenlandskAdresseSchema(sokerPostfix),
           {
             visArvelger: true,
             label: "Gyldig fra og med dato (dd.mm.åååå)",
