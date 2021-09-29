@@ -29,8 +29,10 @@ const requiredFieldStyles = {
   "& .skjemaelement__label.field-required::after": {
     content: '""',
   },
-  "& .skjemaelement__label:not(.field-required)::after": {
-    content: "var(--optionalLabel)",
+  "& .skjemaelement__label, & .radiogruppe .skjemagruppe__legend": {
+    "&:not(.field-required)::after": {
+      content: "var(--optionalLabel)",
+    },
   },
   "& .checkboks[required] + .skjemaelement__label::after": {
     content: '""',
@@ -74,7 +76,7 @@ const styles = {
       flex: "initial",
     },
   },
-  "& .formio-component-avkryssingsboks .skjemagruppe__checkbox-description--below": {
+  "& .formio-component-navCheckbox .skjemagruppe__checkbox-description--below": {
     marginTop: "1rem",
   },
 };

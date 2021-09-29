@@ -34,12 +34,14 @@ import message from "./message";
 import multipleMasksInput from "./multipleMasksInput";
 import multiValueRow from "./multiValueRow";
 import multiValueTable from "./multiValueTable";
+import navCheckbox from "./navCheckbox";
 import navSkjemagruppe from "./navSkjemagruppe";
 import panel from "./panel";
 import pdf from "./pdf";
 import pdfBuilder from "./pdfBuilder";
 import pdfBuilderUpload from "./pdfBuilderUpload";
 import radio from "./radio";
+import radiopanel from "./radiopanel";
 import resourceAdd from "./resourceAdd";
 import select from "./select";
 import selectOption from "./selectOption";
@@ -82,6 +84,7 @@ export default {
   builderWizard,
   button,
   checkbox,
+  "checkbox-navCheckbox": navCheckbox,
   columns,
   component,
   componentModal,
@@ -111,6 +114,7 @@ export default {
   pdfBuilder,
   pdfBuilderUpload,
   radio,
+  "radio-radiopanel": radiopanel,
   resourceAdd,
   select,
   selectOption,

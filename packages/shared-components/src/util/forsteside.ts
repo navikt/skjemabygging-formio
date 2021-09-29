@@ -15,7 +15,7 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
-interface ForstesideInfo {
+export interface ForstesideRequestBody {
   foerstesidetype: ForstesideType;
   navSkjemaId: string;
   spraakkode: string;
@@ -25,9 +25,17 @@ interface ForstesideInfo {
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
   netsPostboks: string;
+
+  bruker?: Bruker;
+  ukjentBrukerPersoninfo?: string;
 }
 
-type ForstesideRequestBody = ForstesideInfo & BrukerInfo;
+const adressLine = (text, prefix?) => {
+  if (text) {
+    return prefix ? `${prefix} ${text}, ` : `${text}, `;
+  }
+  return "";
+}
 
 export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
   if (fnrEllerDnr) {
@@ -41,9 +49,13 @@ export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
     return {
       ukjentBrukerPersoninfo:
         `${adresse.navn || ""}, ` +
-        `${adresse.adresse || ""} ` +
+        adressLine(adresse.co, "c/o") +
+        adressLine(adresse.postboksEier, "c/o") +
+        `${adresse.adresse || ""}, ` +
+        adressLine(adresse.bygning) +
         `${adresse.postnr || ""} ` +
-        `${adresse.sted || ""} ` +
+        `${adresse.sted || ""}, ` +
+        adressLine(adresse.region) +
         `${adresse.land || ""}.`,
     };
   } else {
@@ -96,19 +108,39 @@ export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form
 export function genererAdresse(submission) {
   const {
     gateadresseSoker,
+    vegadresseSoker,
     landSoker,
     postnrSoker,
     poststedSoker,
     fornavnSoker,
     etternavnSoker,
+    coSoker,
     utenlandskPostkodeSoker,
+    postboksNrSoker,
+    postboksPostnrSoker,
+    postboksPoststedSoker,
+    postboksCoSoker,
+    utlandCoSoker,
+    utlandVegadressePostboksSoker,
+    utlandBygningSoker,
+    utlandPostkodeSoker,
+    utlandByStedSoker,
+    utlandLandSoker,
+    utlandRegionSoker,
   } = submission;
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
-    adresse: gateadresseSoker,
-    postnr: postnrSoker || utenlandskPostkodeSoker,
-    sted: poststedSoker,
-    land: landSoker || "Norge",
+    co: coSoker || utlandCoSoker,
+    postboksEier: postboksCoSoker,
+    adresse: gateadresseSoker
+      || vegadresseSoker
+      || (postboksNrSoker && `Postboks ${postboksNrSoker}`)
+      || utlandVegadressePostboksSoker,
+    bygning: utlandBygningSoker,
+    postnr: postnrSoker || postboksPostnrSoker || utenlandskPostkodeSoker || utlandPostkodeSoker,
+    sted: poststedSoker || postboksPoststedSoker || utlandByStedSoker,
+    region: utlandRegionSoker,
+    land: landSoker || utlandLandSoker || "Norge",
   };
 }
 
