@@ -11,7 +11,7 @@ function formatValue(component, value, translate) {
   switch (component.type) {
     case "radiopanel":
     case "radio":
-      const valueObject = component.values.find((valueObject) => valueObject.value === value);
+      const valueObject = component.values.find((valueObject) => String(valueObject.value).toString() === String(value).toString());
       if (!valueObject) {
         console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
         return "";
