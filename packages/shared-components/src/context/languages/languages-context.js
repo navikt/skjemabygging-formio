@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
-import { mapTranslationsToFormioI18nObject } from "./translationsMapper";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 const LanguagesContext = createContext({});

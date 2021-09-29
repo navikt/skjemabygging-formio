@@ -1,7 +1,6 @@
 import fs from "fs";
 import glob from "glob";
 import fetch from "node-fetch";
-import path from "path";
 
 const readFile = async (filepath) => {
   const filehandle = await fs.promises.open(filepath, "r");
@@ -12,7 +11,7 @@ const readFile = async (filepath) => {
 
 const loadJsonFileFromDisk = async (dir, filename) => {
   const jsonFileName = filename.endsWith(".json") ? filename : `${filename}.json`;
-  const jsonFilePath = path.join(dir, jsonFileName);
+  const jsonFilePath = `${dir}/${jsonFileName}`;
   if (fs.existsSync(jsonFilePath)) {
     const file = await readFile(jsonFilePath);
     return JSON.parse(file);
