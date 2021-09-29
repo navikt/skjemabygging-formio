@@ -8,11 +8,11 @@ const fsOpenMock = jest.fn().mockImplementation(() => ({
 }));
 
 describe("get forms", () => {
-  fs.existsSync = jest.fn(() => true);
+  fs.readdirSync = jest.fn(() => ["fileNameWithoutExtension.json", "fileNameWithExtension.json", "filename.json"]);
   fs.promises.open = fsOpenMock;
 
   afterEach(() => {
-    fs.existsSync.mockClear();
+    fs.readdirSync.mockClear();
     fsOpenMock.mockClear();
   });
 
@@ -30,12 +30,10 @@ describe("get forms", () => {
     });
 
     it("returns empty object if file doesn't exist", async () => {
-      fs.existsSync.mockImplementation(() => false);
       await loadJsonFileFromDisk("dir", "missingFile.json").then((data) => expect(data).toEqual({}));
     });
 
     it("returns content of file if it exists", async () => {
-      fs.existsSync.mockImplementation(() => true);
       await loadJsonFileFromDisk("", "filename").then((data) => expect(data).toEqual({ content: "fileContent" }));
     });
   });
