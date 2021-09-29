@@ -10,14 +10,15 @@ const readFile = async (filepath) => {
 };
 
 const loadJsonFileFromDisk = async (dir, filename) => {
-  const acceptedFileNames = fs.readdirSync(dir);
-  const jsonFileName = filename.endsWith(".json") ? filename : `${filename}.json`;
-  const jsonFilePath = `${dir}/${jsonFileName}`;
-  if (acceptedFileNames.includes(jsonFileName)) {
-    const file = await readFile(jsonFilePath);
+  const existingFileNames = fs.readdirSync(dir);
+  const existingFileName = existingFileNames.find((acceptedFileName) =>
+    new RegExp(`${filename}(\.json)?`).test(acceptedFileName)
+  );
+  if (existingFileName) {
+    const file = await readFile(`${dir}/${existingFileName}`);
     return JSON.parse(file);
   }
-  console.warn("File does not exist:", jsonFilePath);
+  console.warn(`File "${filename}" does not exist in directory "${dir}"`);
   return {};
 };
 
