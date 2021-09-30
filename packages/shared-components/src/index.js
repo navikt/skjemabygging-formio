@@ -14,6 +14,8 @@ import LanguageSelector from "./components/LanguageSelector";
 import i18nData from "./i18nData";
 import { flattenComponents } from "./util/forsteside";
 import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
+import useCurrentLanguage from "./context/languages/useCurrentLanguage";
+import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
 
 export {
   NavForm,
@@ -37,4 +39,6 @@ export {
   MockedComponentObjectForTest,
   LanguageSelector,
   useLanguages,
+  useCurrentLanguage,
+  useLanguageCodeFromURL,
 };
