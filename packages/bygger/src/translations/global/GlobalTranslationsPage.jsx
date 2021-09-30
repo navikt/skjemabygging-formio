@@ -15,7 +15,7 @@ import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import { getInputType } from "../utils";
+import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
 
 const useGlobalTranslationsPageStyles = makeStyles({
@@ -225,11 +225,13 @@ const GlobalTranslationsPage = ({
   };
 
   const flattenTextsForEditPanel = (texts) => {
-    return objectUtils.flattenToArray(texts, (entry, parentKey) => {
-      const key = objectUtils.concatKeys(entry[0], parentKey);
-      const text = entry[1];
-      return { key, text, type: getInputType(text) };
-    });
+    return removeDuplicatedComponents(
+      objectUtils.flattenToArray(texts, (entry, parentKey) => {
+        const key = objectUtils.concatKeys(entry[0], parentKey);
+        const text = entry[1];
+        return { key, text, type: getInputType(text) };
+      })
+    );
   };
 
   function getApplicationTexts(tag) {
