@@ -12,6 +12,7 @@ import borDuINorgeSchema from "./borDuINorgeSchema";
 import norskVegadresseSchema from "./norskVegadresseSchema";
 import norskPostboksadresseSchema from "./norskPostboksadresseSchema";
 import utenlandskAdresseSchema from "./utenlandskAdresseSchema";
+import panelSchemas from "./panels";
 
 export const FormBuilderSchemas = {
   fodselsNummerDNummerSchema,
@@ -29,6 +30,7 @@ export const FormBuilderSchemas = {
   norskVegadresseSchema,
   norskPostboksadresseSchema,
   utenlandskAdresseSchema,
+  ...panelSchemas,
 };
 
 export default FormBuilderSchemas;

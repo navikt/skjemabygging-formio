@@ -5,6 +5,7 @@ import datoOgTidPalett from "./datoOgTidPalett";
 import basicPalett from "./basicPalett";
 import layoutPalett from "./layoutPalett";
 import dataPalett from "./dataPalett";
+import panelsPalett from "./panelsPalett";
 
 const builderPalett = {
   advanced: null,
@@ -16,6 +17,8 @@ const builderPalett = {
   basic: basicPalett,
   layout: layoutPalett,
   data: dataPalett,
+  panels: panelsPalett,
+
 };
 
 export default builderPalett;
