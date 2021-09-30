@@ -172,17 +172,19 @@ export const useFormioTranslations = (formio, userAlerter) => {
     }
   };
   const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, tag) => {
-    const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
-      if (translations[translatedText].value) {
-        return {
-          ...translationsToSave,
-          [translatedText]: translations[translatedText].value,
-        };
-      } else {
-        return translationsToSave;
-      }
-    }, {});
-    saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
+    if (Object.keys(translations).length !== 0) {
+      const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+        if (translations[translatedText].value) {
+          return {
+            ...translationsToSave,
+            [translatedText]: translations[translatedText].value,
+          };
+        } else {
+          return translationsToSave;
+        }
+      }, {});
+      saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
+    }
   };
 
   return {
