@@ -132,7 +132,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {translate(TEXTS.grensesnitt.prepareSubmitPage.moveForward)}
+                {translate(TEXTS.grensesnitt.moveForward)}
               </a>
             </div>
           </nav>

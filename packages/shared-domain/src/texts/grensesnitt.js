@@ -10,10 +10,10 @@ export const grensesnitt = {
 
   downloadApplication: "Last ned Søknad",
   goBack: "Gå tilbake",
+  moveForward: "Gå videre",
 
   summaryPage: {
     editAnswers: "Rediger svar",
-    continue: "Gå videre",
     continueToPostalSubmission: "Send i posten",
     continueToDigitalSubmission: "Send inn digitalt",
   },
@@ -22,6 +22,5 @@ export const grensesnitt = {
   },
   prepareSubmitPage: {
     confirmCheckboxLabel: "Jeg har lastet ned PDF-en og lest instruksjonene.",
-    moveForward: "Gå videre",
   },
 };

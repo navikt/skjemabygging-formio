@@ -200,6 +200,12 @@ const GlobalTranslationsPage = ({
     });
   };
 
+  const addNewTranslation = () => {
+    dispatch({
+      type: "addNewTranslation",
+    });
+  };
+
   const globalTranslationsToSave = () =>
     currentTranslation.reduce(
       (allCurrentTranslationAsObject, translation) => ({
@@ -278,6 +284,7 @@ const GlobalTranslationsPage = ({
                 updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
+                addNewTranslation={addNewTranslation}
               />
             ) : (
               <ApplicationTextTranslationEditPanel
@@ -288,16 +295,6 @@ const GlobalTranslationsPage = ({
                 updateTranslation={updateTranslation}
               />
             )}
-            <Knapp
-              className={classes.addButton}
-              onClick={() =>
-                dispatch({
-                  type: "addNewTranslation",
-                })
-              }
-            >
-              Legg til ny tekst
-            </Knapp>
           </Column>
           <Column>
             <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />

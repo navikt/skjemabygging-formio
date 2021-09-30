@@ -1,6 +1,7 @@
 import { Undertittel } from "nav-frontend-typografi";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import React from "react";
+import { Knapp } from "nav-frontend-knapper";
 
 const GlobalTranslationsPanel = ({
   classes,
@@ -9,6 +10,7 @@ const GlobalTranslationsPanel = ({
   updateOriginalText,
   updateTranslation,
   deleteOneRow,
+  addNewTranslation,
 }) => {
   return (
     <form>
@@ -28,6 +30,9 @@ const GlobalTranslationsPanel = ({
           deleteOneRow={deleteOneRow}
         />
       ))}
+      <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
+        Legg til ny tekst
+      </Knapp>
     </form>
   );
 };
