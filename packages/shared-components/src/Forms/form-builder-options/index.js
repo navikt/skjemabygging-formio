@@ -1,5 +1,5 @@
-import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
-import { addPrefixOrPostfix } from "../util/text-util";
+import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
+import { addPrefixOrPostfix } from "../../util/text-util";
 //import { defaultFormFields } from "../../../bygger/src/Forms/DefaultForm";
 
 const postboksPrefix = "postboks";

@@ -4,7 +4,7 @@ import { RadioPanelGruppe } from "nav-frontend-skjema";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 import radioEditForm from "formiojs/components/radio/Radio.form";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { descriptionPositionField } from "./fields/descriptionPositionField";
 import { guid } from "../../util/guid";

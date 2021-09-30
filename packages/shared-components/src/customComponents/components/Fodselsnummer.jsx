@@ -1,6 +1,6 @@
 import TextFieldComponent from "formiojs/components/textfield/TextField";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 
 const k1 = [3, 7, 6, 1, 8, 9, 4, 5, 2];
 const k2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
