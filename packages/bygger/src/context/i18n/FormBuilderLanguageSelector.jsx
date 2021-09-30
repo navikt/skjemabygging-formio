@@ -11,7 +11,6 @@ const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) =
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
   const supportedLanguageLists = Object.keys(i18nData).filter((languageCode) => languageCode !== "nb-NO");
   const { availableLanguages } = useTranslations();
-  const defaultLabel = "Velg språk";
 
   const options = supportedLanguageLists
     .map((languageCode) => ({
@@ -29,7 +28,7 @@ const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) =
     ? languageSelectorLabel
     : languagesInNorwegian[currentLanguage]
     ? languagesInNorwegian[currentLanguage]
-    : defaultLabel;
+    : "Velg språk";
 
   return <LanguageSelector label={label} options={options} />;
 };
