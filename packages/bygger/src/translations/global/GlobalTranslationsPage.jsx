@@ -206,17 +206,23 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const globalTranslationsToSave = () =>
-    currentTranslation.reduce(
-      (allCurrentTranslationAsObject, translation) => ({
-        ...allCurrentTranslationAsObject,
-        [translation.originalText]: {
-          scope: "global",
-          value: translation.translatedText,
-        },
-      }),
-      {}
-    );
+  const globalTranslationsToSave = () => {
+    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
+      if (translation.originalText !== "" && translation.translatedText !== "") {
+        return {
+          ...allCurrentTranslationAsObject,
+          [translation.originalText]: {
+            scope: "global",
+            value: translation.translatedText,
+          },
+        };
+      } else {
+        return {
+          ...allCurrentTranslationAsObject,
+        };
+      }
+    }, {});
+  };
 
   const flattenTextsForEditPanel = (texts) => {
     return objectUtils.flattenToArray(texts, (entry, parentKey) => {

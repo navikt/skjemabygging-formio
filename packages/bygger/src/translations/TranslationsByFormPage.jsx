@@ -73,7 +73,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
                 projectURL,
                 translationId,
                 languageCode,
-                translations[languageCode].translations,
+                translations[languageCode] && translations[languageCode].translations,
                 path,
                 title
               );
