@@ -1,39 +1,10 @@
 import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { addPrefixOrPostfix } from "../../util/text-util";
+import builderEditForm from "./builderEditForm";
 //import { defaultFormFields } from "../../../bygger/src/Forms/DefaultForm";
 
 const postboksPrefix = "postboks";
 const utlandPrefix = "utland";
-
-const builderEditForm = {
-  // placeholder, just defines defaults. Modifiy this later
-  textfield: [
-    {
-      key: "display",
-      components: [],
-    },
-    {
-      key: "data",
-      components: [],
-    },
-    {
-      key: "validation",
-      components: [],
-    },
-    {
-      key: "api",
-      components: [],
-    },
-    {
-      key: "conditional",
-      components: [],
-    },
-    {
-      key: "logic",
-      components: [],
-    },
-  ],
-};
 
 const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   label: "Fødselsnummer / D-nummer",
