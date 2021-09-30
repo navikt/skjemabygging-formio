@@ -7,9 +7,9 @@ const sokerPostfix = "Soker";
 
 export const defaultFormFields = () => [
   {
+    title: "Veiledning",
     type: "panel",
     input: false,
-    title: "Veiledning",
     key: "veiledning",
     theme: "default",
     components: [
@@ -23,9 +23,9 @@ export const defaultFormFields = () => [
     ],
   },
   {
+    title: "Dine opplysninger",
     type: "panel",
     input: false,
-    title: "Dine opplysninger",
     key: "personopplysninger",
     theme: "default",
     components: [
@@ -33,12 +33,12 @@ export const defaultFormFields = () => [
       surnameSchema(sokerPostfix),
 
       {
+        label: "Har du norsk fødselsnummer eller D-nummer?",
         key: "harDuNorskFodselsnummerEllerDNummer",
         type: "radiopanel",
         input: true,
         validateOn: "blur",
         tableView: false,
-        label: "Har du norsk fødselsnummer eller D-nummer?",
         values: [
           {
             value: "ja",
@@ -66,8 +66,8 @@ export const defaultFormFields = () => [
         },
       },
       {
-        visArvelger: true,
         label: "Din fødselsdato (dd.mm.åååå)",
+        visArvelger: true,
         mayBeEqual: false,
         key: "fodselsdatoDdMmAaaaSoker",
         type: "navDatepicker",
@@ -87,11 +87,11 @@ export const defaultFormFields = () => [
         },
       },
       {
+        label: "Alertstripe",
         content:
           'NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra NAV på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.',
         key: "alertstripe",
         type: "alertstripe",
-        label: "Alertstripe",
         alerttype: "info",
         input: true,
         tableView: false,
@@ -157,7 +157,7 @@ export const defaultFormFields = () => [
         legend: "Kontaktadresse",
         key: "navSkjemagruppeVegadresse",
         type: "navSkjemagruppe",
-        label: "Kontaktadresse",
+        label: "Kontaktadresse", // TODO: Kan slettes?
         input: false,
         tableView: false,
         conditional: {
@@ -168,8 +168,8 @@ export const defaultFormFields = () => [
         components: [
           norskVegadresseSchema(sokerPostfix),
           {
-            visArvelger: true,
             label: "Gyldig fra og med dato (dd.mm.åååå)",
+            visArvelger: true,
             key: "gyldigFraDatoDdMmAaaa1",
             type: "navDatepicker",
             dataGridLabel: true,
@@ -184,8 +184,8 @@ export const defaultFormFields = () => [
             },
           },
           {
-            visArvelger: true,
             label: "Gyldig til og med dato (dd.mm.åååå)",
+            visArvelger: true,
             key: "gyldigTilDatoDdMmAaaa1",
             type: "navDatepicker",
             dataGridLabel: true,
@@ -219,8 +219,8 @@ export const defaultFormFields = () => [
         components: [
           norskPostboksadresseSchema(sokerPostfix),
           {
-            visArvelger: true,
             label: "Gyldig fra og med dato (dd.mm.åååå)",
+            visArvelger: true,
             key: "gyldigFraDatoDdMmAaaa2",
             type: "navDatepicker",
             dataGridLabel: true,
@@ -235,8 +235,8 @@ export const defaultFormFields = () => [
             },
           },
           {
-            visArvelger: true,
             label: "Gyldig til og med dato (dd.mm.åååå)",
+            visArvelger: true,
             description:
               "Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.",
             beforeDateInputKey: "gyldigFraDatoDdMmAaaa2",
@@ -270,8 +270,8 @@ export const defaultFormFields = () => [
         components: [
           utenlandskAdresseSchema(sokerPostfix),
           {
-            visArvelger: true,
             label: "Gyldig fra og med dato (dd.mm.åååå)",
+            visArvelger: true,
             key: "gyldigFraDatoDdMmAaaa",
             type: "navDatepicker",
             dataGridLabel: true,
@@ -286,8 +286,8 @@ export const defaultFormFields = () => [
             },
           },
           {
-            visArvelger: true,
             label: "Gyldig til og med dato (dd.mm.åååå)",
+            visArvelger: true,
             key: "gyldigTilDatoDdMmAaaa",
             type: "navDatepicker",
             dataGridLabel: true,
@@ -309,9 +309,9 @@ export const defaultFormFields = () => [
     ],
   },
   {
+    title: "Vedlegg",
     type: "panel",
     input: false,
-    title: "Vedlegg",
     key: "vedlegg",
     theme: "default",
     components: [
