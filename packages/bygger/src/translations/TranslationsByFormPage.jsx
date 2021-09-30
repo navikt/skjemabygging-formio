@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
@@ -36,67 +35,65 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
   const translationId = (translations[languageCode] || {}).id;
   const styles = useStyles();
   return (
-    <LanguagesProvider translations={i18nData}>
-      <AppLayoutWithContext
-        navBarProps={{
-          title: "Rediger oversettelse",
-          visSkjemaliste: false,
-          visLagNyttSkjema: false,
-          visOversettelseliste: true,
-        }}
-      >
-        <ActionRow>
-          <Link className="knapp" to={`/forms/${path}/edit`}>
-            Rediger skjema
-          </Link>
-          <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
-            Forhåndsvis
-          </Link>
-        </ActionRow>
-        <Row>
-          <Column className={styles.mainCol}>
-            <TranslationsFormPage
-              skjemanummer={skjemanummer}
-              translations={translations}
-              languageCode={languageCode}
-              title={title}
-              flattenedComponents={flattenedComponents}
-              setTranslations={setTranslations}
-            />
-          </Column>
-          <Column>
-            <FormBuilderLanguageSelector formPath={path} label={""} />
-            <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
-              Slett språk
-            </Knapp>
-            <Hovedknapp
-              onClick={() => {
-                saveTranslation(
-                  projectURL,
-                  translationId,
-                  languageCode,
-                  translations[languageCode].translations,
-                  path,
-                  title
-                );
-              }}
-            >
-              Lagre
-            </Hovedknapp>
-            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-            <CSVLink
-              data={getTextsAndTranslationsForForm(form, translations)}
-              filename={`${title}(${path})_Oversettelser.csv`}
-              className="knapp knapp--standard"
-              separator={";"}
-              headers={getTextsAndTranslationsHeaders(translations)}
-            >
-              Eksporter
-            </CSVLink>
-          </Column>
-        </Row>
-      </AppLayoutWithContext>
-    </LanguagesProvider>
+    <AppLayoutWithContext
+      navBarProps={{
+        title: "Rediger oversettelse",
+        visSkjemaliste: false,
+        visLagNyttSkjema: false,
+        visOversettelseliste: true,
+      }}
+    >
+      <ActionRow>
+        <Link className="knapp" to={`/forms/${path}/edit`}>
+          Rediger skjema
+        </Link>
+        <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
+          Forhåndsvis
+        </Link>
+      </ActionRow>
+      <Row>
+        <Column className={styles.mainCol}>
+          <TranslationsFormPage
+            skjemanummer={skjemanummer}
+            translations={translations}
+            languageCode={languageCode}
+            title={title}
+            flattenedComponents={flattenedComponents}
+            setTranslations={setTranslations}
+          />
+        </Column>
+        <Column>
+          <FormBuilderLanguageSelector formPath={path} label={""} />
+          <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+            Slett språk
+          </Knapp>
+          <Hovedknapp
+            onClick={() => {
+              saveTranslation(
+                projectURL,
+                translationId,
+                languageCode,
+                translations[languageCode].translations,
+                path,
+                title
+              );
+            }}
+          >
+            Lagre
+          </Hovedknapp>
+          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+          <CSVLink
+            data={getTextsAndTranslationsForForm(form, translations)}
+            filename={`${title}(${path})_Oversettelser.csv`}
+            className="knapp knapp--standard"
+            separator={";"}
+            headers={getTextsAndTranslationsHeaders(translations)}
+          >
+            Eksporter
+          </CSVLink>
+        </Column>
+      </Row>
+    </AppLayoutWithContext>
   );
 };
 

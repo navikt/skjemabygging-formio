@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
+import { guid } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
@@ -242,77 +242,75 @@ const GlobalTranslationsPage = ({
 
   const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
-    <LanguagesProvider translations={i18nData}>
-      <AppLayoutWithContext
-        navBarProps={{
-          title: "Globale oversettelser",
-          visOversettelseliste: true,
-          visLagNyttSkjema: false,
+    <AppLayoutWithContext
+      navBarProps={{
+        title: "Globale oversettelser",
+        visOversettelseliste: true,
+        visLagNyttSkjema: false,
+      }}
+    >
+      <ToggleGruppe
+        className={classes.toggleGruppe}
+        defaultToggles={[
+          {
+            children: "Skjematekster",
+            "data-key": tags.SKJEMATEKSTER,
+            pressed: selectedTag === tags.SKJEMATEKSTER,
+          },
+          { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
+          {
+            children: "Statiske tekster",
+            "data-key": tags.STATISKE_TEKSTER,
+            pressed: selectedTag === tags.STATISKE_TEKSTER,
+          },
+          { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
+        ]}
+        onChange={(event) => {
+          const newTag = event.target.getAttribute("data-key");
+          history.push(`/translations/global/${languageCode}/${newTag}`);
         }}
-      >
-        <ToggleGruppe
-          className={classes.toggleGruppe}
-          defaultToggles={[
-            {
-              children: "Skjematekster",
-              "data-key": tags.SKJEMATEKSTER,
-              pressed: selectedTag === tags.SKJEMATEKSTER,
-            },
-            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
-            {
-              children: "Statiske tekster",
-              "data-key": tags.STATISKE_TEKSTER,
-              pressed: selectedTag === tags.STATISKE_TEKSTER,
-            },
-            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
-          ]}
-          onChange={(event) => {
-            const newTag = event.target.getAttribute("data-key");
-            history.push(`/translations/global/${languageCode}/${newTag}`);
-          }}
-        />
-        <Row className={classes.titleRow}>
-          {languageCode && <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>}
-        </Row>
-        <Row>
-          <Column className={classes.mainCol}>
-            {selectedTag === tags.SKJEMATEKSTER ? (
-              <GlobalTranslationsPanel
-                classes={classes}
-                currentTranslation={currentTranslation}
-                languageCode={languageCode}
-                updateOriginalText={updateOriginalText}
-                updateTranslation={updateTranslation}
-                deleteOneRow={deleteOneRow}
-                addNewTranslation={addNewTranslation}
-              />
-            ) : (
-              <ApplicationTextTranslationEditPanel
-                classes={classes}
-                texts={getApplicationTexts(selectedTag)}
-                translations={currentTranslation}
-                languageCode={languageCode}
-                updateTranslation={updateTranslation}
-              />
-            )}
-          </Column>
-          <Column>
-            <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
-            <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
-              Slett språk
-            </Knapp>
-            <Hovedknapp
-              onClick={() =>
-                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
-              }
-            >
-              Lagre
-            </Hovedknapp>
-            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-          </Column>
-        </Row>
-      </AppLayoutWithContext>
-    </LanguagesProvider>
+      />
+      <Row className={classes.titleRow}>
+        {languageCode && <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>}
+      </Row>
+      <Row>
+        <Column className={classes.mainCol}>
+          {selectedTag === tags.SKJEMATEKSTER ? (
+            <GlobalTranslationsPanel
+              classes={classes}
+              currentTranslation={currentTranslation}
+              languageCode={languageCode}
+              updateOriginalText={updateOriginalText}
+              updateTranslation={updateTranslation}
+              deleteOneRow={deleteOneRow}
+              addNewTranslation={addNewTranslation}
+            />
+          ) : (
+            <ApplicationTextTranslationEditPanel
+              classes={classes}
+              texts={getApplicationTexts(selectedTag)}
+              translations={currentTranslation}
+              languageCode={languageCode}
+              updateTranslation={updateTranslation}
+            />
+          )}
+        </Column>
+        <Column>
+          <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
+          <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+            Slett språk
+          </Knapp>
+          <Hovedknapp
+            onClick={() =>
+              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
+            }
+          >
+            Lagre
+          </Hovedknapp>
+          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+        </Column>
+      </Row>
+    </AppLayoutWithContext>
   );
 };
 
