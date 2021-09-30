@@ -3,24 +3,16 @@ import { AmplitudeProvider, FyllUtRouter } from "@navikt/skjemadigitalisering-sh
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
-  const [hasResolvedTranslations, setHasResolvedTranslations] = useState(false);
   useEffect(() => {
     fetch(`/fyllut/translations/${form.path}`, { headers: { accept: "application/json" } }).then((response) => {
-      response.json().then((translation) => {
-        setTranslation(translation);
-        setHasResolvedTranslations(true);
-      });
+      response.json().then((translation) => setTranslation(translation));
     });
   }, [form]);
-
-  if (hasResolvedTranslations) {
-    return (
-      <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-        <FyllUtRouter form={form} translations={translation} />
-      </AmplitudeProvider>
-    );
-  }
-  return <></>;
+  return (
+    <AmplitudeProvider form={form} shouldUseAmplitude={true}>
+      <FyllUtRouter form={form} translations={translation} />
+    </AmplitudeProvider>
+  );
 }
 
 export default FormPage;

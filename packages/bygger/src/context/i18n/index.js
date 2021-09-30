@@ -13,7 +13,7 @@ const I18nContext = createContext({});
 
 function I18nProvider({ children, loadTranslations }) {
   const [translations, setTranslations] = useState({});
-  const [translationsForNavForm, setTranslationsForNavForm] = useState(null);
+  const [translationsForNavForm, setTranslationsForNavForm] = useState(undefined);
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
 

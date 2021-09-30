@@ -9,7 +9,7 @@ const readFile = async (filepath) => {
   return fileContents;
 };
 
-const loadJsonFileFromDisk = async (dir, filename) => {
+const loadFileFromDirectory = async (dir, filename) => {
   const existingFileNames = fs.readdirSync(dir);
   const existingFileName = existingFileNames.find(
     (approvedFileName) => approvedFileName.replace(".json", "") === filename.replace(".json", "")
@@ -22,7 +22,7 @@ const loadJsonFileFromDisk = async (dir, filename) => {
   return {};
 };
 
-const loadJsonFilesFromDisk = async (dir) => {
+const loadAllJsonFilesFromDirectory = async (dir) => {
   if (fs.existsSync(dir)) {
     const files = glob.sync(`${dir}/*.json`);
     const promises = files.map(readFile);
@@ -44,4 +44,4 @@ const fetchFormsFromFormioApi = async (url) => {
   return [];
 };
 
-export { loadJsonFilesFromDisk, loadJsonFileFromDisk, fetchFormsFromFormioApi };
+export { loadAllJsonFilesFromDirectory, loadFileFromDirectory, fetchFormsFromFormioApi };

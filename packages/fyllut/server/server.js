@@ -7,7 +7,7 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import { logger } from "./logger.js";
 import cors from "cors";
-import { fetchFormsFromFormioApi, loadJsonFilesFromDisk, loadJsonFileFromDisk } from "./utils/forms.js";
+import { fetchFormsFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import { config, checkConfigConsistency } from "./config/config.js";
 
 const app = express();
@@ -75,11 +75,11 @@ skjemaApp.post("/foersteside", async (req, res) => {
 });
 
 const loadForms = async () => {
-  return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadJsonFilesFromDisk(skjemaDir);
+  return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
 };
 
 const loadTranslations = async (formPath) => {
-  return await loadJsonFileFromDisk(translationDir, formPath);
+  return await loadFileFromDirectory(translationDir, formPath);
 };
 
 skjemaApp.get("/config", async (req, res) => {

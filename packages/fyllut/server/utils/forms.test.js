@@ -1,4 +1,4 @@
-import { loadJsonFileFromDisk } from "./forms";
+import { loadFileFromDirectory } from "./forms";
 import { jest } from "@jest/globals";
 import fs from "fs";
 
@@ -16,25 +16,25 @@ describe("get forms", () => {
     fsOpenMock.mockClear();
   });
 
-  describe("loadJsonFileFromDisk", () => {
+  describe("loadFileFromDirectory", () => {
     it("adds .json extension on file name, if missing", async () => {
-      await loadJsonFileFromDisk("dir", "fileNameWithoutExtension");
+      await loadFileFromDirectory("dir", "fileNameWithoutExtension");
       expect(fsOpenMock).toHaveBeenCalledTimes(1);
       expect(fsOpenMock).toHaveBeenCalledWith("dir/fileNameWithoutExtension.json", "r");
     });
 
     it("does not add file extension if filename ends with .json", async () => {
-      await loadJsonFileFromDisk("dir", "fileNameWithExtension.json");
+      await loadFileFromDirectory("dir", "fileNameWithExtension.json");
       expect(fsOpenMock).toHaveBeenCalledTimes(1);
       expect(fsOpenMock).toHaveBeenCalledWith("dir/fileNameWithExtension.json", "r");
     });
 
     it("returns empty object if file doesn't exist", async () => {
-      await loadJsonFileFromDisk("dir", "missingFile.json").then((data) => expect(data).toEqual({}));
+      await loadFileFromDirectory("dir", "missingFile.json").then((data) => expect(data).toEqual({}));
     });
 
     it("returns content of file if it exists", async () => {
-      await loadJsonFileFromDisk("", "filename").then((data) => expect(data).toEqual({ content: "fileContent" }));
+      await loadFileFromDirectory("", "filename").then((data) => expect(data).toEqual({ content: "fileContent" }));
     });
   });
 });
