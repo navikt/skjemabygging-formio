@@ -279,20 +279,24 @@ const GlobalTranslationsPage = ({
         }}
       />
       <Row className={classes.titleRow}>
-        {languageCode && <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>}
+        {languageCode ? <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel> : ""}
       </Row>
       <Row>
         <Column className={classes.mainCol}>
           {selectedTag === tags.SKJEMATEKSTER ? (
-            <GlobalTranslationsPanel
-              classes={classes}
-              currentTranslation={currentTranslation}
-              languageCode={languageCode}
-              updateOriginalText={updateOriginalText}
-              updateTranslation={updateTranslation}
-              deleteOneRow={deleteOneRow}
-              addNewTranslation={addNewTranslation}
-            />
+            <div>
+              <GlobalTranslationsPanel
+                classes={classes}
+                currentTranslation={currentTranslation}
+                languageCode={languageCode}
+                updateOriginalText={updateOriginalText}
+                updateTranslation={updateTranslation}
+                deleteOneRow={deleteOneRow}
+              />
+              <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
+                Legg til ny tekst
+              </Knapp>
+            </div>
           ) : (
             <ApplicationTextTranslationEditPanel
               classes={classes}
