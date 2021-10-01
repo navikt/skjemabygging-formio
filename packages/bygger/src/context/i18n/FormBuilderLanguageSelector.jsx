@@ -24,13 +24,17 @@ const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) =
       lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
     );
 
-  const label = languageSelectorLabel
-    ? languageSelectorLabel
-    : languagesInNorwegian[currentLanguage]
-    ? languagesInNorwegian[currentLanguage]
-    : "Velg språk";
+  const getLanguageSelectorLabel = () => {
+    if (languageSelectorLabel) {
+      return languageSelectorLabel;
+    } else if (languagesInNorwegian[currentLanguage]) {
+      return languagesInNorwegian[currentLanguage];
+    } else {
+      return "Velg språk";
+    }
+  };
 
-  return <LanguageSelector label={label} options={options} />;
+  return <LanguageSelector label={getLanguageSelectorLabel()} options={options} />;
 };
 
 export default FormBuilderLanguageSelector;
