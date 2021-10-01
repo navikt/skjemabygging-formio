@@ -145,7 +145,7 @@ export function PrepareLetterPage({ form, submission, formUrl }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
-  const { state } = useLocation();
+  const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
 
   useEffect(() => {
@@ -187,7 +187,7 @@ export function PrepareLetterPage({ form, submission, formUrl }) {
       <main id="maincontent" tabIndex={-1}>
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
-          <Link className="knapp knapp--fullbredde" to={goBackUrl}>
+          <Link className="knapp knapp--fullbredde" to={{ pathName: goBackUrl, search }}>
             {translate(TEXTS.grensesnitt.goBack)}
           </Link>
         </div>

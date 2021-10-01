@@ -19,7 +19,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
-  const { state } = useLocation();
+  const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
 
@@ -33,7 +33,9 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
       <Sidetittel className="margin-bottom-large">{translate(form.title)}</Sidetittel>
       <main id="maincontent" tabIndex={-1}>
         <section className="wizard-page" aria-label={translate(form.properties.innsendingOverskrift)}>
-          <Systemtittel className="margin-bottom-default">{translate(form.properties.innsendingOverskrift)}</Systemtittel>
+          <Systemtittel className="margin-bottom-default">
+            {translate(form.properties.innsendingOverskrift)}
+          </Systemtittel>
           <Normaltekst>{translate(form.properties.innsendingForklaring)}</Normaltekst>
           <DownloadPdfButton
             form={form}
@@ -45,7 +47,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
           />
         </section>
         <div>
-          <Link className="knapp knapp--fullbredde" to={goBackUrl}>
+          <Link className="knapp knapp--fullbredde" to={{ pathName: goBackUrl, search }}>
             {translate(TEXTS.grensesnitt.goBack)}
           </Link>
         </div>
