@@ -112,7 +112,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
           </div>
           <nav className="list-inline">
             <div className="list-inline-item">
-              <Link className="knapp knapp--fullbredde" to={{ pathName: goBackUrl, search }}>
+              <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
                 {translate(TEXTS.grensesnitt.goBack)}
               </Link>
             </div>

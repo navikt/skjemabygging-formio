@@ -47,7 +47,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
           />
         </section>
         <div>
-          <Link className="knapp knapp--fullbredde" to={{ pathName: goBackUrl, search }}>
+          <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
             {translate(TEXTS.grensesnitt.goBack)}
           </Link>
         </div>
