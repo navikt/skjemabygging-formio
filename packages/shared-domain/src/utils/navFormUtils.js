@@ -12,27 +12,61 @@ export const formMatcherPredicate = (pathFromUrl) => (form) => {
 
 export function flattenComponents(components) {
   return components.reduce(
-    (flattenedComponents, currentComponent) => [
-      ...flattenedComponents,
-      currentComponent,
-      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-    ],
+    (flattenedComponents, currentComponent) => {
+      return [
+        ...flattenedComponents,
+        currentComponent,
+        ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
+      ]
+    },
     []
   );
 }
 
+function hasConditionalOn(keys, component) {
+  return (component.conditional &&
+      (keys.includes(component.conditional.when)
+        || (component.conditional.json && keys.some(key => JSON.stringify(component.conditional.json).search(key) > -1))
+      )
+    )
+    || (component.customConditional && keys.some(key => component.customConditional.search(key) > -1));
+}
+
+const recursivelyFindDependentComponents = (keys, comps) => {
+  const dependentKeys = [];
+  comps.forEach(comp => {
+    if (hasConditionalOn(keys, comp)) {
+      dependentKeys.push({key: comp.key, label: comp.label});
+    }
+    if (comp.components?.length > 0) {
+      dependentKeys.push(...recursivelyFindDependentComponents(keys, comp.components));
+    }
+  })
+  return dependentKeys;
+}
+
+const findByKey = (key, components) => {
+  for (const component of components) {
+    if (component.key === key) {
+      return component;
+    }
+    if (component.components) {
+      const result = findByKey(key, component.components);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+}
+
 export const findDependentComponents = (key, form) => {
-  const comps = flattenComponents(form.components);
-  return comps
-    .filter(c => {
-      return (c.conditional &&
-          (c.conditional.when === key
-            || (c.conditional.json && JSON.stringify(c.conditional.json).search(key) > -1)
-          )
-        )
-        || (c.customConditional && c.customConditional.search(key) > -1)
-    })
-    .map(c => c.key);
+  const component = findByKey(key, form.components);
+  if (component) {
+    const keys = flattenComponents([component]).map(comp => comp.key);
+    return recursivelyFindDependentComponents(keys, form.components);
+  }
+  return [];
 };
 
 const navFormUtils = {

@@ -8,6 +8,9 @@ import formWithSimpleConditional from "./testdata/conditional-simple";
 import formWithCustomConditional from "./testdata/conditional-custom";
 import formWithJsonConditional from "./testdata/conditional-json";
 import formWithMultipleConditionalDependencies from "./testdata/conditional-multiple-dependencies";
+import formWithSkjemagruppe from "./testdata/conditional-skjemagruppe";
+import formWithPanel from "./testdata/conditional-panel";
+import formWithContainer from "./testdata/conditional-container";
 
 describe('navFormUtils', () => {
 
@@ -126,14 +129,17 @@ describe('navFormUtils', () => {
     describe('A form where one component has a simple conditional on another component', () => {
 
       it('Returns empty array when component has no conditional', () => {
-        const dependentKeys = findDependentComponents("oppgiYndlingsfarge", formWithSimpleConditional);
-        expect(dependentKeys).toHaveLength(0);
+        const actual = findDependentComponents("oppgiYndlingsfarge", formWithSimpleConditional);
+        expect(actual).toHaveLength(0);
       });
 
       it('Returns an array with the key of the component it has a conditional on', () => {
-        const dependentKeys = findDependentComponents("harDuEnYndlingsfarge", formWithSimpleConditional);
-        expect(dependentKeys).toHaveLength(1);
-        expect(dependentKeys.includes("oppgiYndlingsfarge")).toBeTruthy();
+        const actual = findDependentComponents("harDuEnYndlingsfarge", formWithSimpleConditional);
+        const expected = [expect.objectContaining({key: "oppgiYndlingsfarge"})];
+        expect(actual).toEqual(
+          expect.arrayContaining(expected)
+        );
+        expect(actual).toHaveLength(expected.length);
       });
 
     });
@@ -141,14 +147,17 @@ describe('navFormUtils', () => {
     describe('A form where one component has a custom conditional', () => {
 
       it('Returns empty array when component has no conditional', () => {
-        const dependentKeys = findDependentComponents("oppgiYndlingsfarge", formWithCustomConditional);
-        expect(dependentKeys).toHaveLength(0);
+        const actual = findDependentComponents("oppgiYndlingsfarge", formWithCustomConditional);
+        expect(actual).toHaveLength(0);
       });
 
       it('Returns an array with the key of the component it has a conditional on', () => {
-        const dependentKeys = findDependentComponents("harDuEnYndlingsfarge", formWithCustomConditional);
-        expect(dependentKeys).toHaveLength(1);
-        expect(dependentKeys.includes("oppgiYndlingsfarge")).toBeTruthy();
+        const actual = findDependentComponents("harDuEnYndlingsfarge", formWithCustomConditional);
+        const expected = [expect.objectContaining({key: "oppgiYndlingsfarge"})];
+        expect(actual).toEqual(
+          expect.arrayContaining(expected)
+        );
+        expect(actual).toHaveLength(expected.length);
       });
 
     });
@@ -156,14 +165,17 @@ describe('navFormUtils', () => {
     describe('A form where one component has a conditional json statement', () => {
 
       it('Returns empty array when component has no conditional', () => {
-        const dependentKeys = findDependentComponents("oppgiYndlingsfarge", formWithJsonConditional);
-        expect(dependentKeys).toHaveLength(0);
+        const actual = findDependentComponents("oppgiYndlingsfarge", formWithJsonConditional);
+        expect(actual).toHaveLength(0);
       });
 
       it('Returns an array with the key of the component it has a conditional on', () => {
-        const dependentKeys = findDependentComponents("harDuEnYndlingsfarge", formWithJsonConditional);
-        expect(dependentKeys).toHaveLength(1);
-        expect(dependentKeys.includes("oppgiYndlingsfarge")).toBeTruthy();
+        const actual = findDependentComponents("harDuEnYndlingsfarge", formWithJsonConditional);
+        const expected = [expect.objectContaining({key: "oppgiYndlingsfarge"})];
+        expect(actual).toEqual(
+          expect.arrayContaining(expected)
+        );
+        expect(actual).toHaveLength(expected.length);
       });
 
     });
@@ -173,30 +185,83 @@ describe('navFormUtils', () => {
       const testForm = formWithMultipleConditionalDependencies;
 
       it('returns three dependent component keys for \'frukt\'', () => {
-        const dependentKeys = findDependentComponents("frukt", testForm);
-        expect(dependentKeys).toEqual(
-          expect.arrayContaining([
-            "hvorforLikerDuEpler",
-            "hvorforLikerDuPaerer",
-            "hvorforLikerDuBanan",
-          ])
-        )
+        const actual = findDependentComponents("frukt", testForm);
+        const expected = [
+          expect.objectContaining({key: "hvorforLikerDuEpler"}),
+          expect.objectContaining({key: "hvorforLikerDuPaerer"}),
+          expect.objectContaining({key: "hvorforLikerDuBanan"})
+        ];
+        expect(actual).toEqual(
+          expect.arrayContaining(expected)
+        );
+        expect(actual).toHaveLength(expected.length);
       });
 
-      it('returns two dependenct component keys for \'likerDuFrukt\'', () => {
-        const dependentKeys = findDependentComponents("likerDuFrukt", testForm);
-        expect(dependentKeys).toEqual(
-          expect.arrayContaining([
-            "alertstripe",
-            "frukt",
-          ])
-        )
+      it('returns two dependent component keys for \'likerDuFrukt\'', () => {
+        const actual = findDependentComponents("likerDuFrukt", testForm);
+        const expected = [
+          expect.objectContaining({key: "alertstripe"}),
+          expect.objectContaining({key: "frukt"})
+        ];
+        expect(actual).toEqual(
+          expect.arrayContaining(expected)
+        );
+        expect(actual).toHaveLength(expected.length);
       });
 
       it('returns no dependent keys for components with no conditional', () => {
         expect(findDependentComponents("hvorforLikerDuEpler", testForm)).toHaveLength(0);
         expect(findDependentComponents("hvorforLikerDuPaerer", testForm)).toHaveLength(0);
         expect(findDependentComponents("hvorforLikerDuBanan", testForm)).toHaveLength(0);
+      });
+
+    });
+
+    it('Returns empty array for unknown key', () => {
+      const actual = findDependentComponents("ukjentkey", formWithMultipleConditionalDependencies);
+      expect(actual).toHaveLength(0);
+    });
+
+    describe('A form with group of components with external conditional dependencies', () => {
+
+      const testForms = [formWithSkjemagruppe, formWithPanel, formWithContainer];
+
+      testForms.forEach(testForm => {
+
+        describe(`Grouped with ${testForm.title}`, () => {
+
+          it('returns two dependenct component keys for \'oppgiYndlingsfarge\'', () => {
+            const dependentKeys = findDependentComponents("oppgiYndlingsfarge", testForm);
+            const actual = [
+              expect.objectContaining({key: "hvilkenGronnFruktLikerDuBest"}),
+              expect.objectContaining({key: "hvilkenRodFruktLikerDuBest"})
+            ];
+            expect(dependentKeys).toEqual(
+              expect.arrayContaining(actual)
+            );
+            expect(dependentKeys).toHaveLength(actual.length);
+          });
+
+          it('returns one dependenct component keys for \'hvilkenGronnFruktLikerDuBest\'', () => {
+            const actual = findDependentComponents("hvilkenGronnFruktLikerDuBest", testForm);
+            const expected = [expect.objectContaining({key: "alertstripe"})];
+            expect(actual).toEqual(
+              expect.arrayContaining(expected)
+            );
+            expect(actual).toHaveLength(expected.length);
+          });
+
+          it('returns one dependenct component keys for \'minGruppering\'', () => {
+            const actual = findDependentComponents("minGruppering", testForm);
+            const expected = [expect.objectContaining({key: "alertstripe"})];
+            expect(actual).toEqual(
+              expect.arrayContaining(expected)
+            );
+            expect(actual).toHaveLength(expected.length);
+          });
+
+        });
+
       });
 
     });
