@@ -28,6 +28,7 @@ import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { builderStyles } from "./styles";
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
@@ -41,6 +42,15 @@ const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
   );
 };
 
+const changeEventNames = [
+  "addComponent",
+  "saveComponent",
+  "updateComponent",
+  "removeComponent",
+  "deleteComponent",
+  "pdfUploaded",
+]
+
 class NavFormBuilder extends Component {
   builderState = "preparing";
   element = React.createRef();
@@ -51,10 +61,22 @@ class NavFormBuilder extends Component {
   };
 
   handleChange = () => {
-    if (this.builder) {
-      this.props.onChange(cloneDeep(this.builder.instance.form));
-    }
+    this.props.onChange(cloneDeep(this.builder.instance.form));
   };
+
+  handleEditComponent = (component) => {
+    const dependentComponents = navFormUtils.findDependentComponents(component.key, this.props.form);
+    if (dependentComponents.length > 0) {
+      const componentEdit = this.builder.instance.componentEdit;
+      if (componentEdit) {
+        const element = componentEdit.querySelector('[ref="conditionalAlert"]');
+        this.builder.instance.setContent(
+          element,
+          `<div class="alertstripe alertstripe--advarsel" style="margin: 0 0 1em 0;"><div><span>Følgende komponenter har avhengighet til denne:</span><ul>${dependentComponents.map(c => `<li>${c.label} (${c.key})</li>`).join("")}</ul></div></div>`
+        );
+      }
+    }
+  }
 
   createBuilder = () => {
     this.builder = new formiojs.FormBuilder(
@@ -66,16 +88,18 @@ class NavFormBuilder extends Component {
     this.builderReady.then(() => {
       this.builderState = "ready";
       this.handleChange();
-      this.builder.instance.on("addComponent", this.handleChange);
-      this.builder.instance.on("saveComponent", this.handleChange);
-      this.builder.instance.on("updateComponent", this.handleChange);
-      this.builder.instance.on("removeComponent", this.handleChange);
-      this.builder.instance.on("deleteComponent", this.handleChange);
-      this.builder.instance.on("pdfUploaded", this.handleChange);
+      changeEventNames.forEach(eventName => {
+        this.builder.instance.on(eventName, this.handleChange);
+      });
+      this.builder.instance.on("editComponent", this.handleEditComponent);
     });
   };
 
   destroyBuilder = () => {
+    changeEventNames.forEach(eventName => {
+      this.builder.instance.off(eventName, this.handleChange);
+    });
+    this.builder.instance.off("editComponent", this.handleEditComponent);
     this.builder.destroy();
     this.builder.instance.destroy(true);
     this.builder = null;
