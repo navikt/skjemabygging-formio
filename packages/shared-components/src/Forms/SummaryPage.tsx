@@ -1,5 +1,5 @@
 import React, { useEffect, FunctionComponent } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
@@ -109,6 +109,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   let { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
+  const { search } = useLocation();
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
@@ -127,7 +128,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
-            <Link className="btn btn-secondary btn-wizard-nav-previous" to={formUrl}>
+            <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: formUrl, search }}>
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
@@ -140,7 +141,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
                     : "btn-secondary btn-wizard-nav-previous"
                 }`}
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/send-i-posten`, state: { previousPage: url } }}
+                to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
               >
                 {innsending == "KUN_PAPIR"
                   ? translate(TEXTS.grensesnitt.moveForward)
@@ -153,7 +154,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               <Link
                 className="btn btn-primary btn-wizard-nav-next wizard-button"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/forbered-innsending`, state: { previousPage: url } }}
+                to={{ pathname: `${formUrl}/forbered-innsending`, search, state: { previousPage: url } }}
               >
                 {innsending == "KUN_DIGITAL"
                   ? translate(TEXTS.grensesnitt.moveForward)
@@ -166,7 +167,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               <Link
                 className="btn btn-primary btn-wizard-nav-next"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/ingen-innsending`, state: { previousPage: url } }}
+                 to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
               >
                 {translate(TEXTS.grensesnitt.moveForward)}
               </Link>
