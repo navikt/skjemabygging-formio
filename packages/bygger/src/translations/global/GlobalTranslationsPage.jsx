@@ -218,7 +218,9 @@ const GlobalTranslationsPage = ({
         }}
       />
       <Row className={classes.titleRow}>
-        {languageCode ? <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel> : ""}
+        <Innholdstittel>
+          {languageCode && languageCode !== "undefined" ? languagesInNorwegian[languageCode] : ""}
+        </Innholdstittel>
       </Row>
       <Row>
         <Column className={classes.mainCol}>
