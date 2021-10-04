@@ -42,15 +42,6 @@ const BuilderMountElement = ({ children, className, setRef, ...rest }) => {
   );
 };
 
-const changeEventNames = [
-  "addComponent",
-  "saveComponent",
-  "updateComponent",
-  "removeComponent",
-  "deleteComponent",
-  "pdfUploaded",
-]
-
 class NavFormBuilder extends Component {
   builderState = "preparing";
   element = React.createRef();
@@ -88,17 +79,13 @@ class NavFormBuilder extends Component {
     this.builderReady.then(() => {
       this.builderState = "ready";
       this.handleChange();
-      changeEventNames.forEach(eventName => {
-        this.builder.instance.on(eventName, this.handleChange);
-      });
+      this.builder.instance.on("change", this.handleChange);
       this.builder.instance.on("editComponent", this.handleEditComponent);
     });
   };
 
   destroyBuilder = () => {
-    changeEventNames.forEach(eventName => {
-      this.builder.instance.off(eventName, this.handleChange);
-    });
+    this.builder.instance.off("change", this.handleChange);
     this.builder.instance.off("editComponent", this.handleEditComponent);
     this.builder.destroy();
     this.builder.instance.destroy(true);
