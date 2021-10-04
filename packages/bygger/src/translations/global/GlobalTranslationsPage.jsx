@@ -74,6 +74,7 @@ const GlobalTranslationsPage = ({
   }, [tag]);
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
+  const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
   const history = useHistory();
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => getCurrenttranslationsReducer(state, action),
@@ -81,15 +82,29 @@ const GlobalTranslationsPage = ({
     (state) => state
   );
 
+  const getGlobalTranslationsWithLanguageAndTag = (allGlobalTranslations, languageCode, selectedTag) => {
+    const indexOfTranslationWithTag = allGlobalTranslations[languageCode].findIndex(
+      (globalTranslations) => globalTranslations.tag === selectedTag
+    );
+    return allGlobalTranslations[languageCode][indexOfTranslationWithTag];
+  };
+
   useEffect(() => {
-    loadGlobalTranslations(languageCode, selectedTag).then((translations) => setAllGlobalTranslations(translations));
+    loadGlobalTranslations(languageCode).then((translations) => {
+      setAllGlobalTranslations(translations);
+
+      if (languageCode)
+        setGlobalTranslationsWithLanguagecodeAndTag(
+          getGlobalTranslationsWithLanguageAndTag(translations, languageCode, selectedTag)
+        );
+    });
   }, [loadGlobalTranslations, languageCode, selectedTag]);
 
   useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
   useEffect(() => {
     const translationsForLoadedLanguage =
-      allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].translations;
+      globalTranslationsWithLanguagecodeAndTag && globalTranslationsWithLanguagecodeAndTag.translations;
     if (translationsForLoadedLanguage) {
       dispatch({
         type: "loadNewLanguage",
