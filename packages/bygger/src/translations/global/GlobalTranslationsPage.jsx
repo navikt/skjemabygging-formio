@@ -117,7 +117,7 @@ const GlobalTranslationsPage = ({
         type: "initializeLanguage",
       });
     }
-  }, [languageCode, allGlobalTranslations]);
+  }, [globalTranslationsWithLanguagecodeAndTag]);
 
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
