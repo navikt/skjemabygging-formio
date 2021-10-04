@@ -32,14 +32,16 @@ function hasConditionalOn(keys, component) {
     || (component.customConditional && keys.some(key => component.customConditional.search(key) > -1));
 }
 
-const recursivelyFindDependentComponents = (keys, comps) => {
+const recursivelyFindDependentComponents = (mainKey, downstreamKeys, comps) => {
   const dependentKeys = [];
   comps.forEach(comp => {
-    if (hasConditionalOn(keys, comp)) {
-      dependentKeys.push({key: comp.key, label: comp.label});
-    }
-    if (comp.components?.length > 0) {
-      dependentKeys.push(...recursivelyFindDependentComponents(keys, comp.components));
+    if (comp.key !== mainKey) {
+      if (hasConditionalOn(downstreamKeys, comp)) {
+        dependentKeys.push({key: comp.key, label: comp.label});
+      }
+      if (comp.components?.length > 0) {
+        dependentKeys.push(...recursivelyFindDependentComponents(mainKey, downstreamKeys, comp.components));
+      }
     }
   })
   return dependentKeys;
@@ -63,8 +65,8 @@ const findByKey = (key, components) => {
 export const findDependentComponents = (key, form) => {
   const component = findByKey(key, form.components);
   if (component) {
-    const keys = flattenComponents([component]).map(comp => comp.key);
-    return recursivelyFindDependentComponents(keys, form.components);
+    const downstreamKeys = flattenComponents([component]).map(comp => comp.key);
+    return recursivelyFindDependentComponents(key, downstreamKeys, form.components);
   }
   return [];
 };

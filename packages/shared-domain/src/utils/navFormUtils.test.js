@@ -142,6 +142,11 @@ describe('navFormUtils', () => {
         expect(actual).toHaveLength(expected.length);
       });
 
+      it('Returns empty array for unknown key', () => {
+        const actual = findDependentComponents("ukjentkey", formWithMultipleConditionalDependencies);
+        expect(actual).toHaveLength(0);
+      });
+
     });
 
     describe('A form where one component has a custom conditional', () => {
@@ -215,11 +220,11 @@ describe('navFormUtils', () => {
         expect(findDependentComponents("hvorforLikerDuBanan", testForm)).toHaveLength(0);
       });
 
-    });
+      it('does not return components downstream to given key', () => {
+        const actual = findDependentComponents("personopplysninger", testForm);
+        expect(actual).toHaveLength(0);
+      })
 
-    it('Returns empty array for unknown key', () => {
-      const actual = findDependentComponents("ukjentkey", formWithMultipleConditionalDependencies);
-      expect(actual).toHaveLength(0);
     });
 
     describe('A form with group of components with external conditional dependencies', () => {
