@@ -31,26 +31,29 @@ export const useFormioTranslations = (formio, userAlerter) => {
       .then((response) => {
         return response.reduce((globalTranslations, translation) => {
           const { data, _id: id } = translation;
-          const { i18n, scope, name } = data;
-          return {
-            ...globalTranslations,
-            [data.language]: {
-              id,
-              name,
-              scope,
-              translations: Object.keys(i18n).reduce(
-                (translationsObjects, translatedText) => ({
-                  ...translationsObjects,
-                  [translatedText]: {
-                    value: i18n[translatedText],
-                    scope,
-                  },
-                }),
-                {}
-              ),
-            },
-          };
-        }, []);
+          const { i18n, scope, name, tag } = data;
+          if (!globalTranslations[data.language]) {
+            globalTranslations[data.language] = [];
+          }
+          globalTranslations[data.language].push({
+            id,
+            name,
+            scope,
+            tag,
+            translations: Object.keys(i18n).reduce(
+              (translationsObjects, translatedText) => ({
+                ...translationsObjects,
+                [translatedText]: {
+                  value: i18n[translatedText],
+                  scope,
+                },
+              }),
+              {}
+            ),
+          });
+
+          return globalTranslations;
+        }, {});
       })
       .then((globalTranslations) => {
         console.log("Fetched global translations", globalTranslations);
