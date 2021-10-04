@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+/*import { useHistory } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 export const supportedLanguages = ["nb-NO", "nn-NO", "en", "pl"];
@@ -32,4 +32,4 @@ const useLanguages = () => {
   };
 };
 
-export default useLanguages;
+export default useLanguages;*/

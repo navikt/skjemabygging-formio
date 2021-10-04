@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { guid, LanguagesProvider, i18nData } from "@navikt/skjemadigitalisering-shared-components";
+import { guid } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
@@ -15,7 +15,7 @@ import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import { getInputType } from "../utils";
+import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
 
 const useGlobalTranslationsPageStyles = makeStyles({
@@ -200,24 +200,38 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const globalTranslationsToSave = () =>
-    currentTranslation.reduce(
-      (allCurrentTranslationAsObject, translation) => ({
-        ...allCurrentTranslationAsObject,
-        [translation.originalText]: {
-          scope: "global",
-          value: translation.translatedText,
-        },
-      }),
-      {}
-    );
+  const addNewTranslation = () => {
+    dispatch({
+      type: "addNewTranslation",
+    });
+  };
+
+  const globalTranslationsToSave = () => {
+    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
+      if (translation.originalText !== "" && translation.translatedText !== "") {
+        return {
+          ...allCurrentTranslationAsObject,
+          [translation.originalText]: {
+            scope: "global",
+            value: translation.translatedText,
+          },
+        };
+      } else {
+        return {
+          ...allCurrentTranslationAsObject,
+        };
+      }
+    }, {});
+  };
 
   const flattenTextsForEditPanel = (texts) => {
-    return objectUtils.flattenToArray(texts, (entry, parentKey) => {
-      const key = objectUtils.concatKeys(entry[0], parentKey);
-      const text = entry[1];
-      return { key, text, type: getInputType(text) };
-    });
+    return removeDuplicatedComponents(
+      objectUtils.flattenToArray(texts, (entry, parentKey) => {
+        const key = objectUtils.concatKeys(entry[0], parentKey);
+        const text = entry[1];
+        return { key, text, type: getInputType(text) };
+      })
+    );
   };
 
   function getApplicationTexts(tag) {
@@ -236,41 +250,41 @@ const GlobalTranslationsPage = ({
 
   const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
   return (
-    <LanguagesProvider translations={i18nData}>
-      <AppLayoutWithContext
-        navBarProps={{
-          title: "Globale oversettelser",
-          visOversettelseliste: true,
-          visLagNyttSkjema: false,
+    <AppLayoutWithContext
+      navBarProps={{
+        title: "Globale oversettelser",
+        visOversettelseliste: true,
+        visLagNyttSkjema: false,
+      }}
+    >
+      <ToggleGruppe
+        className={classes.toggleGruppe}
+        defaultToggles={[
+          {
+            children: "Skjematekster",
+            "data-key": tags.SKJEMATEKSTER,
+            pressed: selectedTag === tags.SKJEMATEKSTER,
+          },
+          { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
+          {
+            children: "Statiske tekster",
+            "data-key": tags.STATISKE_TEKSTER,
+            pressed: selectedTag === tags.STATISKE_TEKSTER,
+          },
+          { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
+        ]}
+        onChange={(event) => {
+          const newTag = event.target.getAttribute("data-key");
+          history.push(`/translations/global/${languageCode}/${newTag}`);
         }}
-      >
-        <ToggleGruppe
-          className={classes.toggleGruppe}
-          defaultToggles={[
-            {
-              children: "Skjematekster",
-              "data-key": tags.SKJEMATEKSTER,
-              pressed: selectedTag === tags.SKJEMATEKSTER,
-            },
-            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
-            {
-              children: "Statiske tekster",
-              "data-key": tags.STATISKE_TEKSTER,
-              pressed: selectedTag === tags.STATISKE_TEKSTER,
-            },
-            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
-          ]}
-          onChange={(event) => {
-            const newTag = event.target.getAttribute("data-key");
-            history.push(`/translations/global/${languageCode}/${newTag}`);
-          }}
-        />
-        <Row className={classes.titleRow}>
-          {languageCode && <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel>}
-        </Row>
-        <Row>
-          <Column className={classes.mainCol}>
-            {selectedTag === tags.SKJEMATEKSTER ? (
+      />
+      <Row className={classes.titleRow}>
+        {languageCode ? <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel> : ""}
+      </Row>
+      <Row>
+        <Column className={classes.mainCol}>
+          {selectedTag === tags.SKJEMATEKSTER ? (
+            <div>
               <GlobalTranslationsPanel
                 classes={classes}
                 currentTranslation={currentTranslation}
@@ -279,43 +293,36 @@ const GlobalTranslationsPage = ({
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
               />
-            ) : (
-              <ApplicationTextTranslationEditPanel
-                classes={classes}
-                texts={getApplicationTexts(selectedTag)}
-                translations={currentTranslation}
-                languageCode={languageCode}
-                updateTranslation={updateTranslation}
-              />
-            )}
-            <Knapp
-              className={classes.addButton}
-              onClick={() =>
-                dispatch({
-                  type: "addNewTranslation",
-                })
-              }
-            >
-              Legg til ny tekst
-            </Knapp>
-          </Column>
-          <Column>
-            <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
-            <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
-              Slett språk
-            </Knapp>
-            <Hovedknapp
-              onClick={() =>
-                saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
-              }
-            >
-              Lagre
-            </Hovedknapp>
-            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-          </Column>
-        </Row>
-      </AppLayoutWithContext>
-    </LanguagesProvider>
+              <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
+                Legg til ny tekst
+              </Knapp>
+            </div>
+          ) : (
+            <ApplicationTextTranslationEditPanel
+              classes={classes}
+              texts={getApplicationTexts(selectedTag)}
+              translations={currentTranslation}
+              languageCode={languageCode}
+              updateTranslation={updateTranslation}
+            />
+          )}
+        </Column>
+        <Column>
+          <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
+          <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+            Slett språk
+          </Knapp>
+          <Hovedknapp
+            onClick={() =>
+              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
+            }
+          >
+            Lagre
+          </Hovedknapp>
+          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+        </Column>
+      </Row>
+    </AppLayoutWithContext>
   );
 };
 

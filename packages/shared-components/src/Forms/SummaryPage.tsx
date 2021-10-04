@@ -144,7 +144,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
                 to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
               >
                 {innsending == "KUN_PAPIR"
-                  ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                  ? translate(TEXTS.grensesnitt.moveForward)
                   : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
               </Link>
             </div>
@@ -157,7 +157,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
                 to={{ pathname: `${formUrl}/forbered-innsending`, search, state: { previousPage: url } }}
               >
                 {innsending == "KUN_DIGITAL"
-                  ? translate(TEXTS.grensesnitt.summaryPage.continue)
+                  ? translate(TEXTS.grensesnitt.moveForward)
                   : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
               </Link>
             </div>
@@ -167,9 +167,9 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               <Link
                 className="btn btn-primary btn-wizard-nav-next"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+                 to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
               >
-                {translate(TEXTS.grensesnitt.summaryPage.continue)}
+                {translate(TEXTS.grensesnitt.moveForward)}
               </Link>
             </div>
           )}
