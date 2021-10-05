@@ -22,6 +22,8 @@ const findClosestWithAttribute = (element, {name, value}) => {
   return findClosestWithAttribute(element.parentElement, {name, value});
 }
 
+const BUILDER_COMP_TESTID_ATTR = {name: "data-testid", value: "builder-component"};
+
 describe("NavFormBuilder", () => {
 
   beforeAll(() => {
@@ -37,6 +39,7 @@ describe("NavFormBuilder", () => {
 
   afterEach(() => {
     fetchMock.resetMocks();
+    window.confirm = undefined;
   });
 
   describe('A form with conditional dependencies', () => {
@@ -52,28 +55,84 @@ describe("NavFormBuilder", () => {
       onChangeMock.mockReset();
     });
 
-    it("renders link for the first page in form definition",  async () => {
+    it("renders link for the first page in form definition",async () => {
       expect(await screen.findByRole("link",{name: "Dine opplysninger"})).toBeInTheDocument();
     });
 
-    it("adds another page",  async () => {
+    it("adds another page",async () => {
       const leggTilNyttStegKnapp = await screen.findByRole("button", {name: "Legg til nytt steg"});
       userEvent.click(leggTilNyttStegKnapp);
       expect(await screen.findByRole("link",{name: "Page 2"})).toBeTruthy();
       await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
     });
 
-    it("removes a component",  async () => {
-      const checkbox = screen.queryByLabelText("Jeg har en yndlingsfarge");
-      expect(checkbox).toBeInTheDocument();
+    describe('remove button', () => {
 
-      const builderComponent = findClosestWithAttribute(checkbox, {name: "data-testid", value: "builder-component"});
+      it("removes a component which no other component depends on", async () => {
+        const checkbox = screen.queryByLabelText("Oppgi din favorittfarge");
+        expect(checkbox).toBeInTheDocument();
 
-      const removeComponentButton = await within(builderComponent).findByTitle("Slett");
-      userEvent.click(removeComponentButton);
+        const builderComponent = findClosestWithAttribute(checkbox, BUILDER_COMP_TESTID_ATTR);
 
-      expect(screen.queryByLabelText("Jeg har en yndlingsfarge")).not.toBeInTheDocument();
-      await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+        const removeComponentButton = await within(builderComponent).findByTitle("Slett");
+        userEvent.click(removeComponentButton);
+
+        expect(screen.queryByLabelText("Oppgi din favorittfarge")).not.toBeInTheDocument();
+        await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+      });
+
+      it("prompts user when removing a component which other components depends on", async () => {
+        window.confirm = jest.fn().mockImplementation(() => true)
+        const fieldset = screen.queryByRole("group", { name: "Hva er din favorittårstid?" });
+        expect(fieldset).toBeInTheDocument();
+
+        const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
+
+        const removeComponentButton = await within(builderComponent).findByTitle("Slett");
+        userEvent.click(removeComponentButton);
+
+        expect(screen.queryByRole("group", { name: "Hva er din favorittårstid?" })).not.toBeInTheDocument();
+        await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+      });
+
+      it("does not remove component if user declines prompt",  async () => {
+        window.confirm = jest.fn().mockImplementation(() => false)
+        const fieldset = screen.queryByRole("group", { name: "Hva er din favorittårstid?" });
+        expect(fieldset).toBeInTheDocument();
+
+        const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
+
+        const removeComponentButton = await within(builderComponent).findByTitle("Slett");
+        userEvent.click(removeComponentButton);
+
+        expect(screen.queryByRole("group", { name: "Hva er din favorittårstid?" })).toBeInTheDocument();
+        expect(onChangeMock.mock.calls).toHaveLength(0);
+
+        expect(window.confirm.mock.calls).toHaveLength(1);
+        expect(window.confirm.mock.calls[0][0]).toEqual("En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?");
+      });
+
+      it("prompts user when removing component containing component which other components depends on", async () => {
+        window.confirm = jest.fn().mockImplementation(() => true)
+        const panel = screen.queryByText("Tilbakemelding");
+        expect(panel).toBeInTheDocument();
+
+        const builderComponent = findClosestWithAttribute(panel, BUILDER_COMP_TESTID_ATTR);
+        const fieldset = await within(builderComponent).findByRole("group", { name: "Hva er din favorittårstid?" });
+        expect(fieldset).toBeInTheDocument();
+
+        const removeComponentButtons = await within(builderComponent).findAllByTitle("Slett");
+        userEvent.click(removeComponentButtons[0]);
+
+        expect(screen.queryByText("Tilbakemelding")).not.toBeInTheDocument();
+        expect(screen.queryByRole("group", { name: "Hva er din favorittårstid?" })).not.toBeInTheDocument();
+        await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+
+        expect(window.confirm.mock.calls).toHaveLength(2);
+        expect(window.confirm.mock.calls[0][0]).toEqual("En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?");
+        expect(window.confirm.mock.calls[1][0]).toEqual("Removing this component will also remove all of its children. Are you sure you want to do this?");
+      });
+
     });
 
   });

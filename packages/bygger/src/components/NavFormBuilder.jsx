@@ -30,6 +30,7 @@ import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { builderStyles } from "./styles";
+require("../formio-overrides/webform-builder-overrides");
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
 
@@ -70,11 +71,22 @@ class NavFormBuilder extends Component {
     }
   }
 
+  getConditionalConfirmationMessage = (component, parent, original) => {
+    const dependentComponents = navFormUtils.findDependentComponents(original?.key || component.key, this.props.form);
+    if (dependentComponents.length > 0) {
+      return "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?"
+    }
+    return null;
+  }
+
   createBuilder = () => {
     this.builder = new formiojs.FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
-      this.props.formBuilderOptions
+      {
+        ...(this.props.formBuilderOptions || {}),
+        getRemovalConfirmationMessage: this.getConditionalConfirmationMessage
+      }
     );
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
