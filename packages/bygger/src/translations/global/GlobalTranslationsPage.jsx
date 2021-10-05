@@ -93,7 +93,7 @@ const GlobalTranslationsPage = ({
     loadGlobalTranslations(languageCode).then((translations) => {
       setAllGlobalTranslations(translations);
 
-      if (languageCode)
+      if (languageCode && translations[languageCode])
         setGlobalTranslationsWithLanguagecodeAndTag(
           getGlobalTranslationsWithLanguageAndTag(translations, languageCode, selectedTag)
         );
@@ -202,7 +202,13 @@ const GlobalTranslationsPage = ({
     }
   }
 
-  const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
+  const getTranslationIdsForLanguage = () => {
+    return allGlobalTranslations[languageCode].reduce((translationId, translations) => {
+      const { id } = translations;
+      return [...translationId, id];
+    }, []);
+  };
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -265,12 +271,23 @@ const GlobalTranslationsPage = ({
         </Column>
         <Column>
           <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
-          <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+          <Knapp
+            onClick={() => {
+              getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
+              history.push("/translations");
+            }}
+          >
             Slett språk
           </Knapp>
           <Hovedknapp
             onClick={() =>
-              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
+              saveTranslation(
+                projectURL,
+                globalTranslationsWithLanguagecodeAndTag?.id,
+                languageCode,
+                globalTranslationsToSave(),
+                selectedTag
+              )
             }
           >
             Lagre
