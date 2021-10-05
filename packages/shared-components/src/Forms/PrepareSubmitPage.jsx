@@ -36,8 +36,9 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
   const { translate } = useLanguages();
-  const { state } = useLocation();
+  const { state, search } = useLocation();
 
+  console.log("PrepareSubmitPage", state, search);
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -111,7 +112,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
           </div>
           <nav className="list-inline">
             <div className="list-inline-item">
-              <Link className="knapp knapp--fullbredde" to={goBackUrl}>
+              <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
                 {translate(TEXTS.grensesnitt.goBack)}
               </Link>
             </div>
