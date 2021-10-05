@@ -15,8 +15,10 @@
   <div class="col col-sm-12">
     <div class="alertstripe alertstripe--advarsel margin-bottom-default">
       <div>
-        <span>{{ctx.instance.conditionalAlert.message}}</span>
-        <ul>{{ctx.instance.conditionalAlert.components.map(c => `<li>${c.label} (${c.key})</li>`).join("")}}</ul>
+        <span id="conditional-alert-heading">{{ctx.instance.conditionalAlert.message}}</span>
+        <ul aria-labelledby="conditional-alert-heading">
+        {{ctx.instance.conditionalAlert.components.map(c => `<li>${c.label} (${c.key})</li>`).join("")}}
+        </ul>
       </div>
     </div>
   </div>
