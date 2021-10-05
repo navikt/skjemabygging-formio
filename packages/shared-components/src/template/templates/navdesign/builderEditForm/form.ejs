@@ -11,10 +11,16 @@
   </div>
 </div>
 <div class="row">
+  {% if (ctx.instance.conditionalAlert) { %}
   <div class="col col-sm-12">
-    <div ref="conditionalAlert">
+    <div class="alertstripe alertstripe--advarsel margin-bottom-default">
+      <div>
+        <span>{{ctx.instance.conditionalAlert.message}}</span>
+        <ul>{{ctx.instance.conditionalAlert.components.map(c => `<li>${c.label} (${c.key})</li>`).join("")}}</ul>
+      </div>
     </div>
   </div>
+  {% } %}
   {% if (ctx.preview) { %}
   <div class="col col-sm-12">
     <div class="card preview-panel">

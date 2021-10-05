@@ -28,7 +28,6 @@ import * as formiojs from "formiojs";
 import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { builderStyles } from "./styles";
 require("../formio-overrides/webform-builder-overrides");
 
@@ -57,41 +56,15 @@ class NavFormBuilder extends Component {
     this.props.onChange(cloneDeep(this.builder.instance.form));
   };
 
-  handleEditComponent = (component) => {
-    const dependentComponents = navFormUtils.findDependentComponents(component.key, this.props.form);
-    if (dependentComponents.length > 0) {
-      const componentEdit = this.builder.instance.componentEdit;
-      if (componentEdit) {
-        const element = componentEdit.querySelector('[ref="conditionalAlert"]');
-        this.builder.instance.setContent(
-          element,
-          `<div class="alertstripe alertstripe--advarsel" style="margin: 0 0 1em 0;"><div><span>Følgende komponenter har avhengighet til denne:</span><ul>${dependentComponents.map(c => `<li>${c.label} (${c.key})</li>`).join("")}</ul></div></div>`
-        );
-      }
-    }
-  }
-
-  getConditionalConfirmationMessage = (component, parent, original) => {
-    const dependentComponents = navFormUtils.findDependentComponents(original?.key || component.key, this.props.form);
-    if (dependentComponents.length > 0) {
-      return "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?"
-    }
-    return null;
-  }
-
   createBuilder = () => {
     this.builder = new formiojs.FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
-      {
-        ...(this.props.formBuilderOptions || {}),
-        getRemovalConfirmationMessage: this.getConditionalConfirmationMessage
-      }
+      this.props.formBuilderOptions
     );
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builder.instance.on("change", this.handleChange);
-      this.builder.instance.on("editComponent", this.handleEditComponent);
       this.builderState = "ready";
       this.handleChange();
       if (this.props.onReady) {
@@ -102,7 +75,6 @@ class NavFormBuilder extends Component {
 
   destroyBuilder = () => {
     this.builder.instance.off("change", this.handleChange);
-    this.builder.instance.off("editComponent", this.handleEditComponent);
     this.builder.instance.destroy(true);
     this.builder.destroy();
     this.builder = null;
