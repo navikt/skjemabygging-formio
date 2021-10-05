@@ -1,124 +1,81 @@
 import React from "react";
-import { FakeBackendTestContext } from "../testTools/frontend/FakeBackendTestContext";
-import NavFormBuilder, { UnstyledNavFormBuilder } from "./NavFormBuilder";
-import waitForExpect from "wait-for-expect";
-import { isEqual, cloneDeep } from "lodash";
-import columnsForm from "../../example_data/columnsForm.json";
+import {render, screen, within, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {InprocessQuipApp} from "../fakeBackend/InprocessQuipApp";
+import {dispatcherWithBackend} from "../fakeBackend/fakeWebApp";
+import {FakeBackend} from "../fakeBackend/FakeBackend";
+import NavFormBuilder from "./NavFormBuilder";
+import testform from "./testdata/conditional-multiple-dependencies";
+import Components from "formiojs/components/Components";
 import { Formio } from "formiojs";
+import { Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
+import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
+import fetchMock from "jest-fetch-mock";
 
-const context = new FakeBackendTestContext();
-context.setupBeforeAfter();
+const findClosestWithAttribute = (element, {name, value}) => {
+  if (element.getAttribute(name) === value) {
+    return element;
+  }
+  if (!element.parentElement) {
+    return null;
+  }
+  return findClosestWithAttribute(element.parentElement, {name, value});
+}
 
 describe("NavFormBuilder", () => {
-  let oldFormioFetch;
-  let htmlDivElement;
+
+  beforeAll(() => {
+    Formio.use(navdesign);
+    Components.setComponents(CustomComponents);
+    new Formio("http://unittest.nav-formio-api.no");
+  });
+
   beforeEach(() => {
-    oldFormioFetch = Formio.fetch;
-    Formio.fetch = global.fetch;
-    htmlDivElement = document.createElement("div");
-    document.body.appendChild(htmlDivElement);
+    const mockBackend = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
+    fetchMock.mockImplementation(mockBackend.fetchImpl);
   });
+
   afterEach(() => {
-    Formio.fetch = oldFormioFetch;
-    document.body.removeChild(htmlDivElement);
+    fetchMock.resetMocks();
   });
 
-  const renderOptions = {
-    createNodeMock: (element) => {
-      if (element.props["data-testid"] === "builderMountElement") {
-        return htmlDivElement;
-      }
-    },
-  };
+  describe('A form with conditional dependencies', () => {
 
-  it("is a learning test for lodash cloneDeep", () => {
-    const deepClone = cloneDeep(context.backend.form());
-    expect(deepClone).toEqual(context.backend.form());
-    expect(isEqual(deepClone, context.backend.form())).toBeTruthy();
-  });
+    let onChangeMock;
+    let onReadyMock;
 
-  it("is a learing test for interaction between setTimeout, fakeTimers and wait for expect", async () => {
-    let flesk = "bacon";
-    setTimeout(() => (flesk = "duppe"), 5000);
-    jest.advanceTimersByTime(5000);
-    await waitForExpect(() => expect(flesk).toEqual("duppe"));
-  });
-
-  it("should call onChange after the form has been built", async () => {
-    context.render(
-      <NavFormBuilder form={context.backend.form()} onChange={jest.fn()} formBuilderOptions={{}} />,
-      renderOptions
-    );
-    const formBuilder = await context.waitForComponent(NavFormBuilder);
-    expect(formBuilder.props.form).toEqual(context.backend.form());
-    jest.runAllTimers();
-    await waitForExpect(() => expect(formBuilder.props.onChange).toHaveBeenCalled());
-  });
-
-  describe("Formio.js focused tests", () => {
-    const buildComponent = (builder, type, container) => {
-      // Get the builder sidebar component.
-      const webformBuilder = builder.instance;
-      let builderGroup = null;
-      let groupName = "";
-      Object.entries(webformBuilder.groups).forEach(([key, group]) => {
-        if (group.components[type]) {
-          groupName = key;
-          return false;
-        }
-      });
-
-      if (!groupName) {
-        return;
-      }
-      const openedGroup = document.getElementById(`group-${groupName}"`);
-      if (openedGroup) {
-        openedGroup.classList.remove("in");
-      }
-      const group = document.getElementById(`group-${groupName}`);
-      group && group.classList.add("in");
-
-      let component = webformBuilder.element.querySelector(`span[data-type='${type}']`);
-      if (component) {
-        component = component && component.cloneNode(true);
-        const element = container || webformBuilder.element.querySelector(".drag-container.formio-builder-form");
-        element.appendChild(component);
-        builderGroup = document.getElementById(`group-container-${groupName}`);
-        webformBuilder.onDrop(component, element, builderGroup);
-      } else {
-        return;
-      }
-
-      return webformBuilder;
-    };
-
-    const saveComponent = (builder) => {
-      const click = new MouseEvent("click", {
-        view: window,
-        bubbles: true,
-        cancelable: true,
-      });
-
-      const saveBtn = builder.instance.componentEdit.querySelector('[ref="saveButton"]');
-      if (saveBtn) {
-        saveBtn.dispatchEvent(click);
-      }
-    };
-
-    it("add new component", async () => {
-      context.render(<NavFormBuilder form={columnsForm} onChange={jest.fn()} />, renderOptions);
-      const navFormBuilder = await context.waitForComponent(UnstyledNavFormBuilder);
-      jest.runAllTimers();
-      await waitForExpect(() => expect(navFormBuilder.props.onChange).toHaveBeenCalled());
-      const formioJsBuilder = navFormBuilder.instance.builder;
-      const column1 = htmlDivElement.querySelector('[ref="columns-container"]');
-      buildComponent(formioJsBuilder, "textfield", column1);
-      jest.advanceTimersByTime(150);
-      saveComponent(formioJsBuilder);
-      jest.advanceTimersByTime(150);
-      const columns = formioJsBuilder.instance.webform.getComponent("columns");
-      expect(columns.columns[0]).toHaveLength(1);
-      jest.clearAllTimers();
+    beforeEach(async () => {
+      onChangeMock = jest.fn();
+      onReadyMock = jest.fn();
+      render(<NavFormBuilder form={testform} onChange={onChangeMock} onReady={onReadyMock} />);
+      await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
+      onChangeMock.mockReset();
     });
+
+    it("renders link for the first page in form definition",  async () => {
+      expect(await screen.findByRole("link",{name: "Dine opplysninger"})).toBeInTheDocument();
+    });
+
+    it("adds another page",  async () => {
+      const leggTilNyttStegKnapp = await screen.findByRole("button", {name: "Legg til nytt steg"});
+      userEvent.click(leggTilNyttStegKnapp);
+      expect(await screen.findByRole("link",{name: "Page 2"})).toBeTruthy();
+      await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+    });
+
+    it("removes a component",  async () => {
+      const checkbox = screen.queryByLabelText("Jeg har en yndlingsfarge");
+      expect(checkbox).toBeInTheDocument();
+
+      const builderComponent = findClosestWithAttribute(checkbox, {name: "data-testid", value: "builder-component"});
+
+      const removeComponentButton = await within(builderComponent).findByTitle("Slett");
+      userEvent.click(removeComponentButton);
+
+      expect(screen.queryByLabelText("Jeg har en yndlingsfarge")).not.toBeInTheDocument();
+      await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
+    });
+
   });
+
 });

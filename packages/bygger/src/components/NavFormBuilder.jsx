@@ -48,6 +48,7 @@ class NavFormBuilder extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
+    onReady: PropTypes.func,
     formBuilderOptions: PropTypes.object,
   };
 
@@ -77,21 +78,23 @@ class NavFormBuilder extends Component {
     );
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
-      this.builderState = "ready";
-      this.handleChange();
       this.builder.instance.on("change", this.handleChange);
       this.builder.instance.on("editComponent", this.handleEditComponent);
+      this.builderState = "ready";
+      this.handleChange();
+      if (this.props.onReady) {
+        this.props.onReady();
+      }
     });
   };
 
   destroyBuilder = () => {
     this.builder.instance.off("change", this.handleChange);
     this.builder.instance.off("editComponent", this.handleEditComponent);
-    this.builder.destroy();
     this.builder.instance.destroy(true);
+    this.builder.destroy();
     this.builder = null;
     this.builderState = "destroyed";
-    console.log("destroyed builder");
   };
 
   updateFormBuilder() {
