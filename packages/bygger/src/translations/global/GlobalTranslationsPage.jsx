@@ -90,15 +90,16 @@ const GlobalTranslationsPage = ({
   };
 
   useEffect(() => {
-    loadGlobalTranslations(languageCode).then((translations) => {
-      setAllGlobalTranslations(translations);
+    loadGlobalTranslations(languageCode).then((translations) => setAllGlobalTranslations(translations));
+  }, [loadGlobalTranslations, languageCode]);
 
-      if (languageCode && translations[languageCode])
-        setGlobalTranslationsWithLanguagecodeAndTag(
-          getGlobalTranslationsWithLanguageAndTag(translations, languageCode, selectedTag)
-        );
-    });
-  }, [loadGlobalTranslations, languageCode, selectedTag]);
+  useEffect(() => {
+    if (languageCode && allGlobalTranslations[languageCode])
+      setGlobalTranslationsWithLanguagecodeAndTag(
+        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, selectedTag)
+      );
+    else setGlobalTranslationsWithLanguagecodeAndTag({});
+  }, [allGlobalTranslations, languageCode, selectedTag]);
 
   useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
