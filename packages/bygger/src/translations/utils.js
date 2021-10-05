@@ -164,4 +164,5 @@ export {
   getTextsAndTranslationsHeaders,
   parseText,
   getInputType,
+  removeDuplicatedComponents,
 };

@@ -31,6 +31,19 @@ const createDummyRadioPanel = (
   values,
 });
 
+const createDummyRadioPanelWithNumberValues = (
+  label = "RadioPanelWithNumberValues",
+  values = [
+    { label: "30-label", value: "30" },
+    { label: "40-label", value: "40" },
+  ]
+) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "radiopanel",
+  values,
+});
+
 const createDummySelectboxes = (
   label = "Selectboxes",
   values = [
@@ -120,6 +133,7 @@ const mockedComponentObjectForTest = {
   createDummyTextfield,
   createDummyEmail,
   createDummyRadioPanel,
+  createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
   createDummyContentElement,
   createDummyHTMLElement,

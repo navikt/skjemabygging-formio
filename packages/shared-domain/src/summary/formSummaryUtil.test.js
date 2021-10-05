@@ -9,6 +9,7 @@ const {
   createDummyAlertstripe,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
+  createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
   createDummyTextfield,
   createFormObject,
@@ -91,6 +92,18 @@ describe("When handling component", () => {
     it("are not added if they don't have a submission value", () => {
       const actual = handleComponent(createDummyTextfield(), {}, []);
       expect(actual.find((component) => component.type === "textfield")).toBeUndefined();
+    });
+  });
+
+  describe("radiopanel", () => {
+    it("is correctly added when using string values", () => {
+      const actual = handleComponent(createDummyRadioPanel(), { data: { radiopanel: "yes" }}, [], "", mockedTranslate);
+      expect(actual.find((component) => component.type === "radiopanel").value).toBe("YES-label")
+    });
+
+    it("is correctly added when using string values even though submission data value is a string", () => {
+      const actual = handleComponent(createDummyRadioPanelWithNumberValues(), { data: { radiopanelwithnumbervalues: 40 }}, [], "", mockedTranslate);
+      expect(actual.find((component) => component.type === "radiopanel").value).toBe("40-label")
     });
   });
 

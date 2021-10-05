@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
@@ -11,6 +11,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translate, translationsForNavForm } = useLanguages();
+  const { search } = useLocation();
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -28,7 +29,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
         onSubmit={(submission) => {
           setSubmission(submission);
-          history.push(`${formUrl}/oppsummering`);
+          history.push(`${formUrl}/oppsummering${search}`);
         }}
       />
     </div>
