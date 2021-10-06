@@ -4,6 +4,7 @@ import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 const WebformBuilder = Builders.builders.webform;
 const originalRemoveComponent = WebformBuilder.prototype.removeComponent;
 const originalEditComponent = WebformBuilder.prototype.editComponent;
+const originalDestroy = WebformBuilder.prototype.destroy;
 
 WebformBuilder.prototype.removeComponent = function (component, parent, original) {
   if (!parent) {
@@ -34,4 +35,12 @@ WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJ
     }
   }
   originalEditComponent.call(this, component, parent, isNew, isJsonEdit, original, flags);
+}
+
+WebformBuilder.prototype.destroy = function (...args) {
+  this.conditionalAlert = null;
+  if (this.dialog) {
+    this.dialog.close();
+  }
+  originalDestroy.call(this, ...args);
 }

@@ -137,21 +137,6 @@ describe("NavFormBuilder", () => {
 
     describe("conditional alert message in edit component", () => {
 
-      it("is not visible when component is not depended upon by other components", async () => {
-        const textInput = screen.queryByLabelText("Oppgi din favorittfarge");
-        expect(textInput).toBeInTheDocument();
-
-        const builderComponent = findClosestWithAttribute(textInput, BUILDER_COMP_TESTID_ATTR);
-
-        const editComponentButton = await within(builderComponent).findByTitle("Rediger");
-        userEvent.click(editComponentButton);
-
-        const conditionalAlert = screen.queryByRole("list", {
-          name: "Følgende komponenter har avhengighet til denne:",
-        });
-        expect(conditionalAlert).not.toBeInTheDocument();
-      });
-
       it("is visible when component is depended upon by other components", async () => {
         const fieldset = screen.queryByRole("group", { name: "Hva er din favorittårstid?" });
         expect(fieldset).toBeInTheDocument();
@@ -167,6 +152,21 @@ describe("NavFormBuilder", () => {
         expect(conditionalAlert).toBeInTheDocument();
         const dependentComponents = within(conditionalAlert).getAllByRole("listitem");
         expect(dependentComponents).toHaveLength(2);
+      });
+
+      it("is not visible when component is not depended upon by other components", async () => {
+        const textInput = screen.queryByLabelText("Oppgi din favorittfarge");
+        expect(textInput).toBeInTheDocument();
+
+        const builderComponent = findClosestWithAttribute(textInput, BUILDER_COMP_TESTID_ATTR);
+
+        const editComponentButton = await within(builderComponent).findByTitle("Rediger");
+        userEvent.click(editComponentButton);
+
+        const conditionalAlert = screen.queryByRole("list", {
+          name: "Følgende komponenter har avhengighet til denne:",
+        });
+        expect(conditionalAlert).not.toBeInTheDocument();
       });
 
     });
