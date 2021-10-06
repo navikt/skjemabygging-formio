@@ -17,6 +17,7 @@ import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEdi
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import merge from "lodash.merge";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -164,13 +165,19 @@ const GlobalTranslationsPage = ({
   const globalTranslationsToSave = () => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
-        return {
-          ...allCurrentTranslationAsObject,
-          [translation.originalText]: {
-            scope: "global",
-            value: translation.translatedText,
-          },
-        };
+        if (getAllOriginalTexts().indexOf(translation.originalText) < 0) {
+          return {
+            ...allCurrentTranslationAsObject,
+            [translation.originalText]: {
+              scope: "global",
+              value: translation.translatedText,
+            },
+          };
+        } else {
+          return {
+            ...allCurrentTranslationAsObject,
+          };
+        }
       } else {
         return {
           ...allCurrentTranslationAsObject,
@@ -208,6 +215,23 @@ const GlobalTranslationsPage = ({
       const { id } = translations;
       return [...translationId, id];
     }, []);
+  };
+
+  const getAllOriginalTexts = () => {
+    const { grensesnitt, statiske, validering, common } = TEXTS;
+    const predefinedTexts = objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
+      return entry[1];
+    });
+
+    const textInSavedGlobalTranslations = allGlobalTranslations[languageCode].reduce(
+      (originalText, globalTranslationObject) => {
+        const { tag, translations } = globalTranslationObject;
+        if (tag === tags.SKJEMATEKSTER) return Object.keys(translations);
+        else return originalText;
+      },
+      []
+    );
+    return [...predefinedTexts, ...textInSavedGlobalTranslations];
   };
 
   return (
