@@ -298,8 +298,10 @@ const GlobalTranslationsPage = ({
           <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
           <Knapp
             onClick={() => {
-              getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
-              history.push("/translations");
+              if (allGlobalTranslations[languageCode]) {
+                getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
+                history.push("/translations");
+              }
             }}
           >
             Slett språk
