@@ -127,7 +127,7 @@
                 class="knapp knapp--standard knapp--fjern"
                 ref="{{ctx.datagridKey}}-removeRow"
               >
-                {{ctx.t(ctx.component.removeAnother || 'Fjern')}}
+                {{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}
               </button>
             </div>
           {% } %}
@@ -146,7 +146,7 @@
         ref="{{ctx.datagridKey}}-addRow"
         type="button"
       >
-        {{ctx.t(ctx.component.addAnother || 'Legg til')}}
+        {{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}
       </button>
     </div>
     {% } %}
