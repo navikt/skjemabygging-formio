@@ -162,30 +162,6 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const globalTranslationsToSave = () => {
-    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
-      if (translation.originalText !== "" && translation.translatedText !== "") {
-        if (getAllOriginalTexts().indexOf(translation.originalText) < 0) {
-          return {
-            ...allCurrentTranslationAsObject,
-            [translation.originalText]: {
-              scope: "global",
-              value: translation.translatedText,
-            },
-          };
-        } else {
-          return {
-            ...allCurrentTranslationAsObject,
-          };
-        }
-      } else {
-        return {
-          ...allCurrentTranslationAsObject,
-        };
-      }
-    }, {});
-  };
-
   const flattenTextsForEditPanel = (texts) => {
     return removeDuplicatedComponents(
       objectUtils.flattenToArray(texts, (entry, parentKey) => {
@@ -222,16 +198,34 @@ const GlobalTranslationsPage = ({
     const predefinedTexts = objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
       return entry[1];
     });
+    return predefinedTexts;
+  };
 
-    const textInSavedGlobalTranslations = allGlobalTranslations[languageCode].reduce(
-      (originalText, globalTranslationObject) => {
-        const { tag, translations } = globalTranslationObject;
-        if (tag === tags.SKJEMATEKSTER) return Object.keys(translations);
-        else return originalText;
-      },
-      []
-    );
-    return [...predefinedTexts, ...textInSavedGlobalTranslations];
+  const globalTranslationsToSave = () => {
+    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
+      if (translation.originalText !== "" && translation.translatedText !== "") {
+        if (
+          getAllOriginalTexts().indexOf(translation.originalText) < 0 &&
+          Object.keys(allCurrentTranslationAsObject).indexOf(translation.originalText) < 0
+        ) {
+          return {
+            ...allCurrentTranslationAsObject,
+            [translation.originalText]: {
+              scope: "global",
+              value: translation.translatedText,
+            },
+          };
+        } else {
+          return {
+            ...allCurrentTranslationAsObject,
+          };
+        }
+      } else {
+        return {
+          ...allCurrentTranslationAsObject,
+        };
+      }
+    }, {});
   };
 
   return (
