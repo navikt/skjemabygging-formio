@@ -6,6 +6,8 @@ export const grensesnitt = {
     cancel: "Avbryt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
     submit: "Neste",
+    "Legg til": "Legg til",
+    Fjern: "Fjern",
   },
 
   downloadApplication: "Last ned Søknad",

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 const LanguagesContext = createContext({});
 
@@ -12,15 +11,6 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
 
   const currentTranslation = translations[currentLanguage] || {};
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (currentTranslation && currentTranslation.optional) {
-      root.style.setProperty("--optionalLabel", `" (${currentTranslation.optional})"`);
-    } else {
-      root.style.setProperty("--optionalLabel", `" (${TEXTS.common.optional})"`);
-    }
-  }, [currentTranslation]);
 
   useEffect(() => {
     if (availableLanguages.length > 0) {
