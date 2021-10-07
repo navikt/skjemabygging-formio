@@ -49,8 +49,6 @@ describe("GlobalTranslationsPage", () => {
       expect(languageSelectorLabel).toBeDefined();
       expect(addNewTranslationButton).toBeDefined();
       expect(languageHeading).toBeDefined();
-      userEvent.click(screen.getByRole("button", { name: "Grensesnitt" }));
-      expect(screen.getByRole("button", { name: "Legg til ny tekst" })).toBeUndefined();
     });
     /*    it("renders legg til ny tekst button only in skjematekst panel", () => {
       userEvent.click(screen.getByRole("button", { name: "Grensesnitt" }));
