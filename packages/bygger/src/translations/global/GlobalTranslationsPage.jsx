@@ -215,16 +215,9 @@ const GlobalTranslationsPage = ({
               value: translation.translatedText,
             },
           };
-        } else {
-          return {
-            ...allCurrentTranslationAsObject,
-          };
         }
-      } else {
-        return {
-          ...allCurrentTranslationAsObject,
-        };
       }
+      return allCurrentTranslationAsObject;
     }, {});
   };
 
