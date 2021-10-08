@@ -29,7 +29,7 @@ import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
 import { builderStyles } from "./styles";
-require("../formio-overrides/webform-builder-overrides");
+import "../formio-overrides/webform-builder-overrides";
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
 
