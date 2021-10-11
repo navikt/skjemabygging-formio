@@ -317,7 +317,7 @@ export default {
         "id": "em3qhgj",
         "defaultValue": ""
       }],
-      "id": "eeeet21"
+      "id": "e34565l"
     }, {
       "labelWidth": "",
       "labelMargin": "",
@@ -326,7 +326,7 @@ export default {
       "isInline": false,
       "contentForPdf": "",
       "key": "alertstripe",
-      "conditional": {"show": true, "when": "hvilkenGronnFruktLikerDuBest", "eq": "pære", "json": ""},
+      "conditional": {"show": true, "when": "minGruppering.hvilkenGronnFruktLikerDuBest", "eq": "pære", "json": ""},
       "customConditional": "",
       "addons": [],
       "type": "alertstripe",

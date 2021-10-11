@@ -1,3 +1,4 @@
+import FormioUtils from "formiojs/utils";
 import { camelCase } from "./stringUtils";
 
 export const toFormPath = (text) => camelCase(text).toLowerCase();
@@ -23,37 +24,37 @@ export function flattenComponents(components) {
   );
 }
 
-function hasConditionalOn(keys, component) {
+function hasConditionalOn(paths, component) {
   return (component.conditional &&
-      (keys.includes(component.conditional.when)
-        || (component.conditional.json && keys.some(key => JSON.stringify(component.conditional.json).search(key) > -1))
+      (paths.includes(component.conditional.when)
+        || (component.conditional.json && paths.some(key => JSON.stringify(component.conditional.json).search(`data.${key}[^a-zA-z0-9_-]`) > -1))
       )
     )
-    || (component.customConditional && keys.some(key => component.customConditional.search(key) > -1));
+    || (component.customConditional && paths.some(key => component.customConditional.search(`data.${key}[^a-zA-z0-9_-]`) > -1));
 }
 
-const recursivelyFindDependentComponents = (mainKey, downstreamKeys, comps) => {
+const recursivelyFindDependentComponents = (mainId, downstreamPaths, comps) => {
   const dependentKeys = [];
   comps.forEach(comp => {
-    if (comp.key !== mainKey) {
-      if (hasConditionalOn(downstreamKeys, comp)) {
+    if (comp.id !== mainId) {
+      if (hasConditionalOn(downstreamPaths, comp)) {
         dependentKeys.push({key: comp.key, label: comp.label});
       }
       if (comp.components?.length > 0) {
-        dependentKeys.push(...recursivelyFindDependentComponents(mainKey, downstreamKeys, comp.components));
+        dependentKeys.push(...recursivelyFindDependentComponents(mainId, downstreamPaths, comp.components));
       }
     }
   })
   return dependentKeys;
 }
 
-const findByKey = (key, components) => {
+const findById = (id, components) => {
   for (const component of components) {
-    if (component.key === key) {
+    if (component.id === id) {
       return component;
     }
     if (component.components) {
-      const result = findByKey(key, component.components);
+      const result = findById(id, component.components);
       if (result) {
         return result;
       }
@@ -62,11 +63,16 @@ const findByKey = (key, components) => {
   return undefined;
 }
 
-export const findDependentComponents = (key, form) => {
-  const component = findByKey(key, form.components);
+export const findDependentComponents = (id, form) => {
+  const idToPathMapping = {};
+  FormioUtils.eachComponent(form.components, (component, path) => {
+    idToPathMapping[component.id] = path;
+  });
+
+  const component = findById(id, form.components);
   if (component) {
-    const downstreamKeys = flattenComponents([component]).map(comp => comp.key);
-    return recursivelyFindDependentComponents(key, downstreamKeys, form.components);
+    const downstreamPaths = flattenComponents([component]).map(comp => idToPathMapping[comp.id]);
+    return recursivelyFindDependentComponents(id, downstreamPaths, form.components);
   }
   return [];
 };
