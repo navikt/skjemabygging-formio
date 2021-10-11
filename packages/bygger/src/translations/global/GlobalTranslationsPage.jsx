@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { guid } from "@navikt/skjemadigitalisering-shared-components";
-import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -17,6 +16,8 @@ import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
+import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import merge from "lodash.merge";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -55,12 +56,6 @@ const tags = {
   VALIDERING: "validering",
 };
 
-const createNewRow = (originalText = "", translatedText = "") => ({
-  id: guid(),
-  originalText,
-  translatedText,
-});
-
 const GlobalTranslationsPage = ({
   deleteTranslation,
   languageCode,
@@ -80,77 +75,38 @@ const GlobalTranslationsPage = ({
   }, [tag]);
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
+  const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
   const history = useHistory();
   const [currentTranslation, dispatch] = useReducer(
-    (state, action) => {
-      switch (action.type) {
-        case "initializeLanguage": {
-          return [createNewRow()];
-        }
-        case "loadNewLanguage": {
-          const newState = Object.keys(action.payload.translations).map((originalText) => ({
-            id: guid(),
-            originalText,
-            translatedText: action.payload.translations[originalText].value,
-          }));
-          if (newState.length > 0) {
-            return newState;
-          } else {
-            return [createNewRow()];
-          }
-        }
-        case "updateOriginalText": {
-          return state.map((translationObject) => {
-            if (translationObject.id === action.payload.id) {
-              return {
-                ...translationObject,
-                originalText: action.payload.newOriginalText,
-              };
-            } else {
-              return translationObject;
-            }
-          });
-        }
-        case "updateTranslation": {
-          const { id, originalText, translatedText } = action.payload;
-          if (id === "") {
-            return [...state, createNewRow(originalText, translatedText)];
-          }
-          return state.map((translation) => (translation.id === id ? action.payload : translation));
-        }
-        case "addNewTranslation": {
-          return [...state, createNewRow()];
-        }
-        case "deleteOneRow": {
-          const newState = state.filter((translationObject) => translationObject.id !== action.payload.id);
-          if (newState.length > 0) {
-            return newState;
-          } else {
-            return [createNewRow()];
-          }
-        }
-        default: {
-          if (state.length > 0) {
-            return state;
-          } else {
-            return [createNewRow()];
-          }
-        }
-      }
-    },
+    (state, action) => getCurrenttranslationsReducer(state, action),
     [],
     (state) => state
   );
 
+  const getGlobalTranslationsWithLanguageAndTag = (allGlobalTranslations, languageCode, selectedTag) => {
+    const indexOfTranslationWithTag = allGlobalTranslations[languageCode].findIndex(
+      (globalTranslations) => globalTranslations.tag === selectedTag
+    );
+    return allGlobalTranslations[languageCode][indexOfTranslationWithTag];
+  };
+
   useEffect(() => {
-    loadGlobalTranslations(languageCode, selectedTag).then((translations) => setAllGlobalTranslations(translations));
-  }, [loadGlobalTranslations, languageCode, selectedTag]);
+    loadGlobalTranslations(languageCode).then((translations) => setAllGlobalTranslations(translations));
+  }, [loadGlobalTranslations, languageCode]);
+
+  useEffect(() => {
+    if (languageCode && allGlobalTranslations[languageCode])
+      setGlobalTranslationsWithLanguagecodeAndTag(
+        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, selectedTag)
+      );
+    else setGlobalTranslationsWithLanguagecodeAndTag({});
+  }, [allGlobalTranslations, languageCode, selectedTag]);
 
   useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
   useEffect(() => {
     const translationsForLoadedLanguage =
-      allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].translations;
+      globalTranslationsWithLanguagecodeAndTag && globalTranslationsWithLanguagecodeAndTag.translations;
     if (translationsForLoadedLanguage) {
       dispatch({
         type: "loadNewLanguage",
@@ -163,7 +119,7 @@ const GlobalTranslationsPage = ({
         type: "initializeLanguage",
       });
     }
-  }, [languageCode, allGlobalTranslations]);
+  }, [globalTranslationsWithLanguagecodeAndTag]);
 
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
@@ -206,24 +162,6 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const globalTranslationsToSave = () => {
-    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
-      if (translation.originalText !== "" && translation.translatedText !== "") {
-        return {
-          ...allCurrentTranslationAsObject,
-          [translation.originalText]: {
-            scope: "global",
-            value: translation.translatedText,
-          },
-        };
-      } else {
-        return {
-          ...allCurrentTranslationAsObject,
-        };
-      }
-    }, {});
-  };
-
   const flattenTextsForEditPanel = (texts) => {
     return removeDuplicatedComponents(
       objectUtils.flattenToArray(texts, (entry, parentKey) => {
@@ -248,7 +186,40 @@ const GlobalTranslationsPage = ({
     }
   }
 
-  const translationId = allGlobalTranslations[languageCode] && allGlobalTranslations[languageCode].id;
+  const getTranslationIdsForLanguage = () => {
+    return allGlobalTranslations[languageCode].reduce((translationId, translations) => {
+      const { id } = translations;
+      return [...translationId, id];
+    }, []);
+  };
+
+  const getAllPredefinedOriginalTexts = () => {
+    const { grensesnitt, statiske, validering, common } = TEXTS;
+    return objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
+      return entry[1];
+    });
+  };
+
+  const globalTranslationsToSave = () => {
+    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
+      if (translation.originalText !== "" && translation.translatedText !== "") {
+        if (
+          getAllPredefinedOriginalTexts().indexOf(translation.originalText) < 0 &&
+          Object.keys(allCurrentTranslationAsObject).indexOf(translation.originalText) < 0
+        ) {
+          return {
+            ...allCurrentTranslationAsObject,
+            [translation.originalText]: {
+              scope: "global",
+              value: translation.translatedText,
+            },
+          };
+        }
+      }
+      return allCurrentTranslationAsObject;
+    }, {});
+  };
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -279,7 +250,9 @@ const GlobalTranslationsPage = ({
         }}
       />
       <Row className={classes.titleRow}>
-        {languageCode ? <Innholdstittel>{languagesInNorwegian[languageCode]}</Innholdstittel> : ""}
+        <Innholdstittel>
+          {languageCode && languageCode !== "undefined" ? languagesInNorwegian[languageCode] : ""}
+        </Innholdstittel>
       </Row>
       <Row>
         <Column className={classes.mainCol}>
@@ -309,12 +282,25 @@ const GlobalTranslationsPage = ({
         </Column>
         <Column>
           <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
-          <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+          <Knapp
+            onClick={() => {
+              if (allGlobalTranslations[languageCode]) {
+                getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
+                history.push("/translations");
+              }
+            }}
+          >
             Slett språk
           </Knapp>
           <Hovedknapp
             onClick={() =>
-              saveTranslation(projectURL, translationId, languageCode, globalTranslationsToSave(), selectedTag)
+              saveTranslation(
+                projectURL,
+                globalTranslationsWithLanguagecodeAndTag?.id,
+                languageCode,
+                globalTranslationsToSave(),
+                selectedTag
+              )
             }
           >
             Lagre
