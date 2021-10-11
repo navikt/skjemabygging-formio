@@ -31,6 +31,19 @@ const createDummyRadioPanel = (
   values,
 });
 
+const createDummyRadioPanelWithNumberValues = (
+  label = "RadioPanelWithNumberValues",
+  values = [
+    { label: "30-label", value: "30" },
+    { label: "40-label", value: "40" },
+  ]
+) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "radiopanel",
+  values,
+});
+
 const createDummySelectboxes = (
   label = "Selectboxes",
   values = [
@@ -52,7 +65,7 @@ const createDummyContentElement = (label = "Content", html) => ({
   html,
 });
 
-const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = "") => ({
+const createDummyHTMLElement = (label = "HTMLelement", content = "", contentForPdf = "") => ({
   label,
   key: keyFromLabel(label),
   type: "htmlelement",
@@ -60,12 +73,13 @@ const createDummyHTMLElement = (label = "HTMLelement", content, contentForPdf = 
   content,
 });
 
-const createDummyAlertstripe = (label = "Alertstripe", contentForPdf = "", conditional = {}) => ({
+const createDummyAlertstripe = (label = "Alertstripe", content, contentForPdf = "", conditional = {}) => ({
   label,
   key: keyFromLabel(label),
   type: "alertstripe",
   contentForPdf,
   conditional,
+  content,
 });
 
 const createDummyContainerElement = (label = "Container", components, hideLabel) => ({
@@ -119,6 +133,7 @@ const mockedComponentObjectForTest = {
   createDummyTextfield,
   createDummyEmail,
   createDummyRadioPanel,
+  createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
   createDummyContentElement,
   createDummyHTMLElement,

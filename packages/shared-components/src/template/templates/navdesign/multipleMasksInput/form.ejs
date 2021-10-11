@@ -8,7 +8,7 @@
     ref="select"
     {% if (ctx.input.attr.disabled) { %}disabled{% } %}>
     {% ctx.selectOptions.forEach(function(option) { %}
-    <option value="{{option.value}}">{{option.label}}</option>
+    <option value="{{option.value}}">{{ctx.t(option.label)}}</option>
     {% }); %}
   </select>
   <input

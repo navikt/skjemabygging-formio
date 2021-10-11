@@ -28,7 +28,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
         onSubmit={(submission) => {
           setSubmission(submission);
-          history.push(`${formUrl}/oppsummering`);
+          const urlSearchParams = new URLSearchParams(window.location.search).toString();
+          history.push(`${formUrl}/oppsummering?${urlSearchParams}`);
         }}
       />
     </div>

@@ -7,7 +7,7 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import { logger } from "./logger.js";
 import cors from "cors";
-import { fetchFormsFromFormioApi, loadJsonFilesFromDisk } from "./utils/forms.js";
+import { fetchFormsFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import { config, checkConfigConsistency } from "./config/config.js";
 
 const app = express();
@@ -21,7 +21,7 @@ skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
-const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, gitVersion } = config;
+const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, translationDir, gitVersion } = config;
 checkConfigConsistency(config);
 
 const Registry = client.Registry;
@@ -75,7 +75,11 @@ skjemaApp.post("/foersteside", async (req, res) => {
 });
 
 const loadForms = async () => {
-  return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadJsonFilesFromDisk(skjemaDir);
+  return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
+};
+
+const loadTranslations = async (formPath) => {
+  return await loadFileFromDirectory(translationDir, formPath);
 };
 
 skjemaApp.get("/config", async (req, res) => {
@@ -89,6 +93,8 @@ skjemaApp.get("/config", async (req, res) => {
 });
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
+
+skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTranslations(req.params.form)));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 

@@ -3,6 +3,7 @@ import TEXTS from "../texts";
 import { addToMap } from "../utils/objectUtils";
 import moment from "moment";
 
+require("moment/locale/nb.js");
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
 }
@@ -10,7 +11,7 @@ function formatValue(component, value, translate) {
   switch (component.type) {
     case "radiopanel":
     case "radio":
-      const valueObject = component.values.find((valueObject) => valueObject.value === value);
+      const valueObject = component.values.find((valueObject) => String(valueObject.value).toString() === String(value).toString());
       if (!valueObject) {
         console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
         return "";
@@ -35,8 +36,8 @@ function formatValue(component, value, translate) {
     }
     case "day": {
       const validValue = moment(value.replace("00", "01"), "MM/DD/YYYY");
-      const month = validValue.format("MMMM").toLowerCase();
-      return translate(TEXTS.common[month]).concat(`, ${validValue.format("YYYY")}`);
+      const month = validValue.format("MMMM");
+      return translate(`${month.charAt(0).toUpperCase()}${month.slice(1)}, ${validValue.format("YYYY")}`);
     }
     default:
       return value;

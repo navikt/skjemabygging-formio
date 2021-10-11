@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components/src/context/languages/translationsMapper";
 
-export const supportedLanguages = ["nb-NO", "nn-NO", "en", "pl"];
 export const languagesInNorwegian = {
-  "nb-NO": "Norsk bokmål",
   "nn-NO": "Norsk nynorsk",
   en: "Engelsk",
   pl: "Polsk",
@@ -13,14 +11,16 @@ const I18nContext = createContext({});
 
 function I18nProvider({ children, loadTranslations }) {
   const [translations, setTranslations] = useState({});
-  const [translationsForNavForm, setTranslationsForNavForm] = useState(null);
+  const [translationsForNavForm, setTranslationsForNavForm] = useState(undefined);
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
+  const [availableLanguages, setAvailableLanguages] = useState([]);
 
   useEffect(() => {
     if (!translationsLoaded) {
       setTranslationsLoaded(true);
       loadTranslations().then((translations) => {
+        setAvailableLanguages(Object.keys(translations));
         setTranslations(translations);
         setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
       });
@@ -46,6 +46,7 @@ function I18nProvider({ children, loadTranslations }) {
         translationsForNavForm,
         setTranslations,
         updateCurrentTranslation,
+        availableLanguages,
       }}
     >
       {children}

@@ -25,18 +25,6 @@ const allFieldsStyles = {
   },
 };
 
-const requiredFieldStyles = {
-  "& .skjemaelement__label.field-required::after": {
-    content: '""',
-  },
-  "& .skjemaelement__label:not(.field-required)::after": {
-    content: "var(--optionalLabel)",
-  },
-  "& .checkboks[required] + .skjemaelement__label::after": {
-    content: '""',
-  },
-};
-
 /* CSS grid for arranging fields side by side. Used by Day component */
 const fieldsSideBySideStyles = {
   "& .skjemaelement__rad": {
@@ -74,7 +62,7 @@ const styles = {
       flex: "initial",
     },
   },
-  "& .formio-component-avkryssingsboks .skjemagruppe__checkbox-description--below": {
+  "& .formio-component-navCheckbox .skjemagruppe__checkbox-description--below": {
     marginTop: "1rem",
   },
 };
@@ -82,7 +70,6 @@ const styles = {
 const navFormStyle = {
   ...styles,
   ...wizardSidevelgerStyles,
-  ...requiredFieldStyles,
   ...fieldsSideBySideStyles,
   ...allFieldsStyles,
   ...dataGridStyles,

@@ -9,6 +9,7 @@ const {
   createDummyAlertstripe,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
+  createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
   createDummyTextfield,
   createFormObject,
@@ -30,8 +31,8 @@ describe("Map and evaluate conditionals", () => {
     const formObject = createFormObject([
       createPanelObject("p1", [
         createDummyRadioPanel(),
-        createDummyAlertstripe("Alert1", "", { show: true, when: "radiopanel", eq: "ja" }),
-        createDummyAlertstripe("Alert2", "", { show: false, when: "radiopanel", eq: "ja" }),
+        createDummyAlertstripe("Alert1", "", "", { show: true, when: "radiopanel", eq: "ja" }),
+        createDummyAlertstripe("Alert2", "", "", { show: false, when: "radiopanel", eq: "ja" }),
       ]),
     ]);
     const data = { radiopanel: "ja" };
@@ -94,6 +95,18 @@ describe("When handling component", () => {
     });
   });
 
+  describe("radiopanel", () => {
+    it("is correctly added when using string values", () => {
+      const actual = handleComponent(createDummyRadioPanel(), { data: { radiopanel: "yes" }}, [], "", mockedTranslate);
+      expect(actual.find((component) => component.type === "radiopanel").value).toBe("YES-label")
+    });
+
+    it("is correctly added when using string values even though submission data value is a string", () => {
+      const actual = handleComponent(createDummyRadioPanelWithNumberValues(), { data: { radiopanelwithnumbervalues: 40 }}, [], "", mockedTranslate);
+      expect(actual.find((component) => component.type === "radiopanel").value).toBe("40-label")
+    });
+  });
+
   describe("content", () => {
     it("is filtered away", () => {
       const actual = handleComponent(createDummyContentElement(), dummySubmission, []);
@@ -121,7 +134,7 @@ describe("When handling component", () => {
   describe("Alertstripe", () => {
     it("is added if it contains content for PDF", () => {
       const actual = handleComponent(
-        createDummyAlertstripe("HTML", "contentForPdf"),
+        createDummyAlertstripe("HTML", "", "contentForPdf"),
         dummySubmission,
         [],
         "",
@@ -138,7 +151,7 @@ describe("When handling component", () => {
     describe("when a mapping of evaluated conditionals is passed to handleComponent", () => {
       it("is ignored if the conditional is false", () => {
         const actual = handleComponent(
-          createDummyAlertstripe("Alertstripe with conditional", "contentForPdf"),
+          createDummyAlertstripe("Alertstripe with conditional", "", "contentForPdf"),
           dummySubmission,
           [],
           "",
@@ -150,7 +163,7 @@ describe("When handling component", () => {
 
       it("is added if the conditional is true", () => {
         const actual = handleComponent(
-          createDummyAlertstripe("Alertstripe with conditional", "contentForPdf"),
+          createDummyAlertstripe("Alertstripe with conditional", "", "contentForPdf"),
           dummySubmission,
           [],
           "",

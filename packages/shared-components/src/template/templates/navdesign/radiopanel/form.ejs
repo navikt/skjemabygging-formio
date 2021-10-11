@@ -1,0 +1,31 @@
+<fieldset class="skjemagruppe radiogruppe" aria-labelledby="{{ctx.component.key}}-label" aria-describedby="{{ctx.component.key}}-error {% if (ctx.component.description) { %}{{ctx.component.id}}-{{ctx.component.key}}-description{% } %}">
+  <legend class="skjemagruppe__legend{% if (ctx.component.validate.required) { %} field-required{%}%}">
+    {{ctx.t(ctx.component.label)}}
+    {% if(ctx.component.validate.required === false) { %}
+      ({{ctx.t("valgfritt")}})
+    {% } %}
+  </legend>
+  {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
+    <div class="skjemagruppe__description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  {% } %}
+  {% ctx.values.forEach(function(item) { %}
+  <div class="skjemaelement" ref="wrapper">
+    <{{ctx.input.type}}
+      class="skjemaelement__input radioknapp"
+      ref="input"
+      {% for (var attr in ctx.input.attr) { %}
+      {{attr}}="{{ctx.input.attr[attr]}}"
+      {% } %}
+      value="{{item.value}}"
+      {% if (ctx.value && (ctx.value === item.value || (typeof ctx.value === 'object' && ctx.value.hasOwnProperty(item.value) && ctx.value[item.value]))) { %}
+      checked=true
+      {% } %}
+      {% if (item.disabled) { %}
+      disabled=true
+      {% } %}
+      id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
+    >
+    <label class="skjemaelement__label field-required" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">{{ctx.t(item.label)}}  </label>
+  </div>
+  {% }) %}
+</fieldset>

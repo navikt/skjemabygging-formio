@@ -1,65 +1,76 @@
 const htmlComponent = {
-  "label": "HTML",
-  "content": "Her skal det stå litt informasjon om søknaden",
-  "key": "html",
-  "type": "htmlelement",
-  "id": "ecip4o"
+  label: "HTML",
+  content: "Her skal det stå litt informasjon om søknaden",
+  key: "html",
+  type: "htmlelement",
+  id: "ecip4o",
 };
 
 const panelVeiledning = {
-  "type": "panel",
-  "key": "veiledning",
-  "title": "Veiledning",
-  "label": "Veiledning",
-  "labelPosition": "top",
-  "validateOn": "change",
-  "id": "jdh58d",
-  "breadcrumb": "default",
-  "components": [
-    htmlComponent
-  ]
+  type: "panel",
+  key: "veiledning",
+  title: "Veiledning",
+  label: "Veiledning",
+  labelPosition: "top",
+  validateOn: "change",
+  id: "jdh58d",
+  breadcrumb: "default",
+  components: [htmlComponent],
 };
 
 const form = {
-  "_id": "61405cb95dbf1200033aa272",
-  "type": "form",
-  "tags": ["nav-skjema", ""],
-  "owner": "606ea4ab852cf50003ac20d3",
-  "components": [
-    panelVeiledning
-  ],
-  "display": "wizard",
-  "name": "wip123456",
-  "title": "Søknad om førerhund",
-  "path": "wip123456",
-  "properties": {
-    "skjemanummer": "WIP 12.34-56",
-    "tema": "VEN",
-    "hasPapirInnsendingOnly": true,
-    "hasLabeledSignatures": false,
+  _id: "61405cb95dbf1200033aa272",
+  type: "form",
+  tags: ["nav-skjema", ""],
+  owner: "606ea4ab852cf50003ac20d3",
+  components: [panelVeiledning],
+  display: "wizard",
+  name: "wip123456",
+  title: "Søknad om førerhund",
+  path: "wip123456",
+  properties: {
+    skjemanummer: "WIP 12.34-56",
+    tema: "VEN",
+    hasPapirInnsendingOnly: true,
+    hasLabeledSignatures: false,
   },
-  "machineName": "wip123456"
+  machineName: "wip123456",
 };
 
 const translations = {
-  "en": {
-    "id": "1",
-    "translations": {
-      [`${form.title}`]: {scope: "local", value: "Application for guide dog"},
-      [`${panelVeiledning.label}`]: {scope: "local", value: "Guidance"},
-      [`${htmlComponent.content}`]: {scope: "local", value: "Some information about the application"},
-      "Avbryt": {scope: "global", value: "Cancel"},
-      "Neste": {scope: "global", value: "Next"},
-    }
+  en: {
+    id: "1",
+    translations: {
+      [`${form.title}`]: { scope: "local", value: "Application for guide dog" },
+      [`${panelVeiledning.label}`]: { scope: "local", value: "Guidance" },
+      [`${htmlComponent.content}`]: { scope: "local", value: "Some information about the application" },
+      Avbryt: { scope: "global", value: "Cancel" },
+      Neste: { scope: "global", value: "Next" },
+    },
   },
   "nn-NO": {
-    "id": "2",
-    "translations": {
-      [`${form.title}`]: {scope: "local", value: "Søknad om førarhund"},
-      [`${panelVeiledning.label}`]: {scope: "local", value: "Veiledning"},
-      [`${htmlComponent.content}`]: {scope: "local", value: "Her kjem det til å stå litt om søknaden"},
-    }
-  }
+    id: "2",
+    translations: {
+      [`${form.title}`]: { scope: "local", value: "Søknad om førarhund" },
+      [`${panelVeiledning.label}`]: { scope: "local", value: "Veiledning" },
+      [`${htmlComponent.content}`]: { scope: "local", value: "Her kjem det til å stå litt om søknaden" },
+    },
+  },
 };
 
-export {form, translations};
+const translationsForNavForm = {
+  en: {
+    [`${form.title}`]: "Application for guide dog",
+    [`${panelVeiledning.label}`]: "Guidance",
+    [`${htmlComponent.content}`]: "Some information about the application",
+    Avbryt: "Cancel",
+    Neste: "Next",
+  },
+  "nn-NO": {
+    [`${form.title}`]: "Søknad om førarhund",
+    [`${panelVeiledning.label}`]: "Veiledning",
+    [`${htmlComponent.content}`]: "Her kjem det til å stå litt om søknaden",
+  },
+};
+
+export { form, translations, translationsForNavForm };
