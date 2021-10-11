@@ -48,7 +48,7 @@ const useLanguageSelectorStyling = makeStyles({
       position: "absolute",
       top: "2.8125rem",
       left: 0,
-      zIndex: 1,
+      zIndex: 1000,
     },
     "& .select-list__option": {
       borderBottom: "1px solid rgb(198, 194, 191)",
