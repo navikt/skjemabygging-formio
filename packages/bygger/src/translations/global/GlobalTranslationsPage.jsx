@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -193,19 +193,18 @@ const GlobalTranslationsPage = ({
     }, []);
   };
 
-  const getAllOriginalTexts = () => {
+  const getAllPredefinedOriginalTexts = () => {
     const { grensesnitt, statiske, validering, common } = TEXTS;
-    const predefinedTexts = objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
+    return objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
       return entry[1];
     });
-    return predefinedTexts;
   };
 
   const globalTranslationsToSave = () => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
         if (
-          getAllOriginalTexts().indexOf(translation.originalText) < 0 &&
+          getAllPredefinedOriginalTexts().indexOf(translation.originalText) < 0 &&
           Object.keys(allCurrentTranslationAsObject).indexOf(translation.originalText) < 0
         ) {
           return {
