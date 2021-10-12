@@ -65,6 +65,9 @@ const styles = {
   "& .formio-component-navCheckbox .skjemagruppe__checkbox-description--below": {
     marginTop: "1rem",
   },
+  "& .inputPanel__label": {
+    display: "inline-block",
+  },
 };
 
 const navFormStyle = {
