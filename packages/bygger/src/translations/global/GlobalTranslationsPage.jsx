@@ -16,7 +16,7 @@ import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer.ts";
 import merge from "lodash.merge";
 
 const useGlobalTranslationsPageStyles = makeStyles({
