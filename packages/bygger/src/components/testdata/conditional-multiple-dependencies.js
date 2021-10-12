@@ -151,19 +151,19 @@ export default {
       "tree": false,
       "lazyLoad": false,
       "components": [{
-        "label": "Hva er din favorittårstid?",
+        "label": "Your favorite time of the year?",
         "descriptionPosition": "",
         "labelWidth": "",
         "labelMargin": "",
         "description": "",
         "hideLabel": false,
-        "values": [{"value": "var", "label": "vår", "shortcut": ""}, {
-          "value": "sommer",
-          "label": "sommer",
+        "values": [{"value": "spring", "label": "spring", "shortcut": ""}, {
+          "value": "summer",
+          "label": "summer",
           "shortcut": ""
-        }, {"label": "høst", "value": "host", "shortcut": ""}, {
-          "label": "vinter",
-          "value": "vinter",
+        }, {"label": "autumn", "value": "autumn", "shortcut": ""}, {
+          "label": "winter",
+          "value": "winter",
           "shortcut": ""
         }],
         "clearOnHide": true,
@@ -225,7 +225,7 @@ export default {
         "id": "e0n4i9",
         "defaultValue": ""
       }, {
-        "label": "Hvorfor sommer?",
+        "label": "Why summer?",
         "fieldSize": "input--xxl",
         "descriptionPosition": "",
         "labelWidth": "",
@@ -263,10 +263,10 @@ export default {
         },
         "errorLabel": "",
         "errors": "",
-        "key": "hvorforSommer",
+        "key": "whySummer",
         "tags": [],
         "properties": {},
-        "conditional": {"show": true, "when": "toggle", "eq": "sommer", "json": ""},
+        "conditional": {"show": true, "when": "toggle", "eq": "summer", "json": ""},
         "customConditional": "",
         "addons": [],
         "type": "textfield",
@@ -344,7 +344,7 @@ export default {
       "key": "oppgiDinFavorittfarge",
       "tags": [],
       "properties": {},
-      "conditional": {"show": true, "when": "toggle", "eq": "vinter", "json": ""},
+      "conditional": {"show": true, "when": "toggle", "eq": "winter", "json": ""},
       "customConditional": "",
       "addons": [],
       "type": "textfield",

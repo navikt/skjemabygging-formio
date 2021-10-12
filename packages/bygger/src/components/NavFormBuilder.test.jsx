@@ -83,7 +83,7 @@ describe("NavFormBuilder", () => {
 
       it("prompts user when removing a component which other components depends on", async () => {
         window.confirm = jest.fn().mockImplementation(() => true)
-        const fieldset = screen.queryByRole("group", { name: "Hva er din favorittårstid?" });
+        const fieldset = screen.queryByRole("group", { name: "Your favorite time of the year?" });
         expect(fieldset).toBeInTheDocument();
 
         const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
@@ -91,13 +91,13 @@ describe("NavFormBuilder", () => {
         const removeComponentButton = await within(builderComponent).findByTitle("Slett");
         userEvent.click(removeComponentButton);
 
-        expect(screen.queryByRole("group", { name: "Hva er din favorittårstid?" })).not.toBeInTheDocument();
+        expect(screen.queryByRole("group", { name: "Your favorite time of the year?" })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
       });
 
       it("does not remove component if user declines prompt",  async () => {
         window.confirm = jest.fn().mockImplementation(() => false)
-        const fieldset = screen.queryByRole("group", { name: "Hva er din favorittårstid?" });
+        const fieldset = screen.queryByRole("group", { name: "Your favorite time of the year?" });
         expect(fieldset).toBeInTheDocument();
 
         const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
@@ -105,7 +105,7 @@ describe("NavFormBuilder", () => {
         const removeComponentButton = await within(builderComponent).findByTitle("Slett");
         userEvent.click(removeComponentButton);
 
-        expect(screen.queryByRole("group", { name: "Hva er din favorittårstid?" })).toBeInTheDocument();
+        expect(screen.queryByRole("group", { name: "Your favorite time of the year?" })).toBeInTheDocument();
         expect(onChangeMock.mock.calls).toHaveLength(0);
 
         expect(window.confirm.mock.calls).toHaveLength(1);
@@ -118,14 +118,14 @@ describe("NavFormBuilder", () => {
         expect(panel).toBeInTheDocument();
 
         const builderComponent = findClosestWithAttribute(panel, BUILDER_COMP_TESTID_ATTR);
-        const fieldset = await within(builderComponent).findByRole("group", { name: "Hva er din favorittårstid?" });
+        const fieldset = await within(builderComponent).findByRole("group", { name: "Your favorite time of the year?" });
         expect(fieldset).toBeInTheDocument();
 
         const removeComponentButtons = await within(builderComponent).findAllByTitle("Slett");
         userEvent.click(removeComponentButtons[0]);
 
         expect(screen.queryByText("Tilbakemelding")).not.toBeInTheDocument();
-        expect(screen.queryByRole("group", { name: "Hva er din favorittårstid?" })).not.toBeInTheDocument();
+        expect(screen.queryByRole("group", { name: "Your favorite time of the year?" })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
 
         expect(window.confirm.mock.calls).toHaveLength(2);
@@ -138,7 +138,7 @@ describe("NavFormBuilder", () => {
     describe("conditional alert message in edit component", () => {
 
       it("is visible when component is depended upon by other components", async () => {
-        const fieldset = screen.queryByRole("group", { name: "Hva er din favorittårstid?" });
+        const fieldset = screen.queryByRole("group", { name: "Your favorite time of the year?" });
         expect(fieldset).toBeInTheDocument();
 
         const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
