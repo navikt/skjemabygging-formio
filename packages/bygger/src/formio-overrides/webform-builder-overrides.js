@@ -1,5 +1,6 @@
 import {Builders} from "formiojs";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import featureToggles from "../featureToggles";
 
 const WebformBuilder = Builders.builders.webform;
 const originalRemoveComponent = WebformBuilder.prototype.removeComponent;
@@ -10,7 +11,7 @@ WebformBuilder.prototype.removeComponent = function (component, parent, original
   if (!parent) {
     return;
   }
-  if (original && original.id) {
+  if (featureToggles.enableConditionalAlert && original && original.id) {
     let confirmationMessage;
     const dependentComponents = navFormUtils.findDependentComponents(original.id, this.form);
     if (dependentComponents.length > 0) {
@@ -28,7 +29,7 @@ WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJ
   if (!component.key) {
     return;
   }
-  if (original && original.id) {
+  if (featureToggles.enableConditionalAlert && original && original.id) {
     this.conditionalAlert = null;
     const dependentComponents = navFormUtils.findDependentComponents(original.id, this.form);
     if (dependentComponents.length > 0) {

@@ -12,6 +12,10 @@ import { Template as navdesign } from "@navikt/skjemadigitalisering-shared-compo
 import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
 import fetchMock from "jest-fetch-mock";
 
+jest.mock("../featureToggles", () => ({
+  enableConditionalAlert: true,
+}));
+
 const findClosestWithAttribute = (element, {name, value}) => {
   if (element.getAttribute(name) === value) {
     return element;
