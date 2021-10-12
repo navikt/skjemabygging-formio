@@ -1,4 +1,4 @@
-import { flattenComponents } from "@navikt/skjemadigitalisering-shared-components";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
@@ -29,7 +29,7 @@ const extractTextsFromProperties = (props) => {
 };
 
 const getSimplifiedComponentObject = (form) =>
-  flattenComponents(form.components)
+  navFormUtils.flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
     .map(({ content, title, label, html, type, values, legend, description, suffix, prefix }) => ({
       title,

@@ -17,6 +17,9 @@ export function dispatcherWithBackend(backend) {
 
   return parseQueryParams(
     dispatch({
+      "/": (req, res) => {
+        res.json(backend.project());
+      },
       "/testForm": (req, res) => {
         res.json(backend.form());
       },
