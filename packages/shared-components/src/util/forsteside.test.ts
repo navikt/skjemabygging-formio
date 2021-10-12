@@ -306,22 +306,22 @@ describe("genererFoerstesideData", () => {
       expect(forstesideRequest.spraakkode).toEqual("NB");
     });
 
-    it("Bokmål brukes dersom 'nn-NO' er valgt", () => {
-      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nn-NO");
-      expect(forstesideRequest.spraakkode).toEqual("NN");
-    });
-
     it("Bokmål brukes dersom 'nb-NO' er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nb-NO");
       expect(forstesideRequest.spraakkode).toEqual("NB");
     });
 
-    it("Bokmål brukes dersom 'en' er valgt", () => {
+    it("Nynorsk brukes dersom 'nn-NO' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nn-NO");
+      expect(forstesideRequest.spraakkode).toEqual("NN");
+    });
+
+    it("Engelsk brukes dersom 'en' er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "en");
       expect(forstesideRequest.spraakkode).toEqual("EN");
     });
 
-    it("Engelsk brukes dersom annet språk er valgt", () => {
+    it("Engelsk brukes dersom et annet språk er valgt", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "pl");
       expect(forstesideRequest.spraakkode).toEqual("EN");
     });
