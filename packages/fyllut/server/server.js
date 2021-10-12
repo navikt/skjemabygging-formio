@@ -9,6 +9,7 @@ import { logger } from "./logger.js";
 import cors from "cors";
 import { fetchFormsFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import { config, checkConfigConsistency } from "./config/config.js";
+import { getCountries } from "./utils/countries.js";
 
 const app = express();
 const skjemaApp = express();
@@ -95,6 +96,8 @@ skjemaApp.get("/config", async (req, res) => {
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
 skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTranslations(req.params.form)));
+
+skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
