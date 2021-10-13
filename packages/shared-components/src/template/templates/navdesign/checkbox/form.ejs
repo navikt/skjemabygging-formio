@@ -10,8 +10,11 @@
   {{ctx.input.content}}
 </{{ctx.input.type}}>
 {% if (!ctx.self.labelIsHidden()) { %}
-<label class="skjemaelement__label {% if (ctx.component.validate.required) { %} field-required{% } %}" for="{{ctx.component.key}}">
+<label class="skjemaelement__label" for="{{ctx.component.key}}">
   {{ctx.input.label}}
+  {% if(ctx.component.validate.required === false) { %}
+    ({{ctx.t("valgfritt")}})
+  {% } %}
 </label>
 {% } %}
 </div>

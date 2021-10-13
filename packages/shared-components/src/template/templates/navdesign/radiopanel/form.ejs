@@ -1,5 +1,5 @@
 <fieldset class="skjemagruppe radiogruppe" aria-labelledby="{{ctx.component.key}}-label" aria-describedby="{{ctx.component.key}}-error {% if (ctx.component.description) { %}{{ctx.component.id}}-{{ctx.component.key}}-description{% } %}">
-  <legend class="skjemagruppe__legend{% if (ctx.component.validate.required) { %} field-required{%}%}">
+  <legend class="skjemagruppe__legend">
     {{ctx.t(ctx.component.label)}}
     {% if(ctx.component.validate.required === false) { %}
       ({{ctx.t("valgfritt")}})
@@ -25,7 +25,7 @@
       {% } %}
       id="{{ctx.id}}{{ctx.row}}-{{item.value}}"
     >
-    <label class="skjemaelement__label field-required" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">{{ctx.t(item.label)}}  </label>
+    <label class="skjemaelement__label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">{{ctx.t(item.label)}}  </label>
   </div>
   {% }) %}
 </fieldset>
