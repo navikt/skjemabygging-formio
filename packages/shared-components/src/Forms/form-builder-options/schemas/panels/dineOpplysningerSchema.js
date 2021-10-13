@@ -151,7 +151,7 @@ const dineOpplysningerSchema = {
       components: [
         norskVegadresseSchema(sokerPostfix),
         {
-          label: "Gyldig fra og med dato (dd.mm.åååå)",
+          label: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
           visArvelger: true,
           key: "gyldigFraDatoDdMmAaaa1",
           type: "navDatepicker",
@@ -167,7 +167,7 @@ const dineOpplysningerSchema = {
           },
         },
         {
-          label: "Gyldig til og med dato (dd.mm.åååå)",
+          label: "Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
           visArvelger: true,
           key: "gyldigTilDatoDdMmAaaa1",
           type: "navDatepicker",
@@ -202,7 +202,7 @@ const dineOpplysningerSchema = {
       components: [
         norskPostboksadresseSchema(sokerPostfix),
         {
-          label: "Gyldig fra og med dato (dd.mm.åååå)",
+          label: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
           visArvelger: true,
           key: "gyldigFraDatoDdMmAaaa2",
           type: "navDatepicker",
@@ -218,7 +218,7 @@ const dineOpplysningerSchema = {
           },
         },
         {
-          label: "Gyldig til og med dato (dd.mm.åååå)",
+          label: "Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
           visArvelger: true,
           description:
             "Du velger selv hvor lenge adressen skal være gyldig, maksimalt 1 år. Etter 1 år må du endre eller forlenge adressen.",
@@ -253,7 +253,7 @@ const dineOpplysningerSchema = {
       components: [
         utenlandskAdresseSchema(sokerPostfix),
         {
-          label: "Gyldig fra og med dato (dd.mm.åååå)",
+          label: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
           visArvelger: true,
           key: "gyldigFraDatoDdMmAaaa",
           type: "navDatepicker",
@@ -269,7 +269,7 @@ const dineOpplysningerSchema = {
           },
         },
         {
-          label: "Gyldig til og med dato (dd.mm.åååå)",
+          label: "Til hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
           visArvelger: true,
           key: "gyldigTilDatoDdMmAaaa",
           type: "navDatepicker",
