@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -14,10 +14,9 @@ import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer.ts";
-import merge from "lodash.merge";
+import { flattenTextsForEditPanel, getAllPredefinedOriginalTexts } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -162,16 +161,6 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const flattenTextsForEditPanel = (texts) => {
-    return removeDuplicatedComponents(
-      objectUtils.flattenToArray(texts, (entry, parentKey) => {
-        const key = objectUtils.concatKeys(entry[0], parentKey);
-        const text = entry[1];
-        return { key, text, type: getInputType(text) };
-      })
-    );
-  };
-
   function getApplicationTexts(tag) {
     const { grensesnitt, statiske, validering, common } = TEXTS;
     switch (tag) {
@@ -191,13 +180,6 @@ const GlobalTranslationsPage = ({
       const { id } = translations;
       return [...translationId, id];
     }, []);
-  };
-
-  const getAllPredefinedOriginalTexts = () => {
-    const { grensesnitt, statiske, validering, common } = TEXTS;
-    return objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
-      return entry[1];
-    });
   };
 
   const globalTranslationsToSave = () => {
