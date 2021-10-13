@@ -5,14 +5,27 @@ import { Delete } from "@navikt/ds-icons";
 import { getAllPredefinedOriginalTexts } from "./utils";
 
 const useTranslationRowStyles = makeStyles({
-  root: {
+  warning: {
+    color: "#ba3a26",
+    fontWeight: "600",
+    lineHeight: "1.375rem",
+    marginTop: "-2rem",
+    marginBottom: "1rem",
+  },
+  row: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr auto",
     gap: "2rem",
-    marginBottom: "1rem",
     alignItems: "center",
+    marginBottom: "1rem",
   },
 });
+
+const removeLastUpdatedOriginalText = (currentOriginalText, currentOriginalTextList) => {
+  if (currentOriginalTextList[currentOriginalTextList.length - 1] === currentOriginalText.toUpperCase()) {
+    currentOriginalTextList.pop();
+  }
+};
 
 const GlobalTranslationRow = ({
   id,
@@ -26,8 +39,8 @@ const GlobalTranslationRow = ({
   const classes = useTranslationRowStyles();
   const [duplicatedWarning, setDuplicatedWarning] = useState(false);
   return (
-    <>
-      <div className={classes.root}>
+    <div>
+      <div className={classes.row}>
         <Input
           className="margin-bottom-default"
           type="text"
@@ -37,9 +50,7 @@ const GlobalTranslationRow = ({
             setDuplicatedWarning(false);
           }}
           onBlur={(event) => {
-            if (currentOriginalTextList[currentOriginalTextList.length - 1] === event.target.value.toUpperCase()) {
-              currentOriginalTextList.pop();
-            }
+            removeLastUpdatedOriginalText(event.target.value, currentOriginalTextList);
 
             if (
               getAllPredefinedOriginalTexts().indexOf(event.target.value.toUpperCase()) < 0 &&
@@ -62,8 +73,8 @@ const GlobalTranslationRow = ({
         />
         <Delete onClick={() => deleteOneRow(id)} />
       </div>
-      {duplicatedWarning && <div className="form-text error">Duplisert originaltekst</div>}
-    </>
+      {duplicatedWarning && <div className={classes.warning}>Duplisert originaltekst</div>}
+    </div>
   );
 };
 
