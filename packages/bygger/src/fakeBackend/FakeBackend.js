@@ -14,6 +14,10 @@ export class FakeBackend {
     return loginform;
   }
 
+  project() {
+    return {};
+  }
+
   form() {
     return form;
   }

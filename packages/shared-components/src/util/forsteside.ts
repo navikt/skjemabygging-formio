@@ -1,3 +1,5 @@
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+
 type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
 
 interface Bruker {
@@ -71,25 +73,14 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
  * Basert på at custom property vedleggskode er satt og at verdien er leggerVedNaa.
  */
 export function genererVedleggKeysSomSkalSendes(form, submissionData) {
-  return flattenComponents(form.components)
+  return navFormUtils.flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa")
     .map((vedlegg) => vedlegg.properties.vedleggskode);
 }
 
-export function flattenComponents(components) {
-  return components.reduce(
-    (flattenedComponents, currentComponent) => [
-      ...flattenedComponents,
-      currentComponent,
-      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-    ],
-    []
-  );
-}
-
 export function getVedleggsFelterSomSkalSendes(submissionData, form) {
-  return flattenComponents(form.components)
+  return navFormUtils.flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa");
 }
