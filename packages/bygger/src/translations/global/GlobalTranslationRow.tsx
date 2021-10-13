@@ -55,6 +55,7 @@ const GlobalTranslationRow = ({
           className="margin-bottom-default"
           type="text"
           value={originalText}
+          data-testid="originalText"
           onChange={(event) => {
             updateOriginalText(id, event.target.value, originalText);
             setDuplicatedWarning(false);
@@ -77,6 +78,7 @@ const GlobalTranslationRow = ({
           className="margin-bottom-default"
           type="text"
           value={duplicatedWarning ? "" : translatedText}
+          data-testid="translation"
           disabled={duplicatedWarning}
           onChange={(event) => {
             updateTranslation(id, originalText, event.target.value);
