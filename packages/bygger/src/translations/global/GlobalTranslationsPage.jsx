@@ -202,6 +202,14 @@ const GlobalTranslationsPage = ({
     }, {});
   };
 
+  const getCurrentOriginalTextList = () => {
+    return currentTranslation.reduce((originalTextList, translations) => {
+      const { originalText } = translations;
+      if (originalText !== "") return [...originalTextList, originalText.toUpperCase()];
+      else return originalTextList;
+    }, []);
+  };
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -247,6 +255,7 @@ const GlobalTranslationsPage = ({
                 updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
+                currentOriginalTextList={getCurrentOriginalTextList()}
               />
               <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
                 Legg til ny tekst

@@ -9,6 +9,7 @@ const GlobalTranslationsPanel = ({
   updateOriginalText,
   updateTranslation,
   deleteOneRow,
+  currentOriginalTextList,
 }) => {
   return (
     <form>
@@ -26,6 +27,7 @@ const GlobalTranslationsPanel = ({
           updateOriginalText={updateOriginalText}
           updateTranslation={updateTranslation}
           deleteOneRow={deleteOneRow}
+          currentOriginalTextList={currentOriginalTextList}
         />
       ))}
     </form>
