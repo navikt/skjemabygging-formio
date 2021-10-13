@@ -168,6 +168,22 @@ const landSchema = (keyPostfix = "") => ({
   },
 });
 
+const landvelgerSchema = () => ({
+  label: "Velg land",
+  type: "landvelger",
+  key: "landvelger",
+  input: true,
+  clearOnHide: true,
+  validateOn: "blur",
+  data: {
+    url: "http://localhost:8080/countries?lang=nb",
+  },
+  dataSrc: "url",
+  validate: {
+    required: true,
+  },
+});
+
 const epostSchema = () => ({
   label: "E-post",
   type: "email",
@@ -341,6 +357,13 @@ const builderPalett = {
         icon: "home",
         weight: 70,
         schema: landSchema(),
+      },
+      landvelger: {
+        title: "Landvelger",
+        key: "landvelger",
+        icon: "home",
+        weight: 70,
+        schema: landvelgerSchema(),
       },
       email: {
         title: "E-post",
@@ -896,6 +919,7 @@ export const FormBuilderSchemas = {
   utenlandskPostkodeSchema,
   poststedSchema,
   landSchema,
+  landvelgerSchema,
   epostSchema,
   telefonSchema,
   statsborgerskapSchema,

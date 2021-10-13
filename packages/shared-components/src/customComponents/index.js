@@ -11,11 +11,13 @@ import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import SelectBoxes from "./components/SelectBoxes";
 import AlertStripe from "./components/AlertStripe";
 import Day from "./components/Day";
+import CountrySelect from "./components/CountrySelect";
 
 const customComponents = {
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
   htmlelement: HTMLElement,
+  landvelger: CountrySelect,
   navDatepicker: NavDatepicker,
   radiopanel: Radio,
   navCheckbox: NavCheckbox,
