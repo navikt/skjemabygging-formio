@@ -176,9 +176,11 @@ const landvelgerSchema = () => ({
   clearOnHide: true,
   validateOn: "blur",
   data: {
-    url: "http://localhost:8080/countries?lang=nb",
+    url: "http://localhost:8081/fyllut/countries?lang=nb",
   },
   dataSrc: "url",
+  valueProperty: "label",
+  limit: 300,
   validate: {
     required: true,
   },

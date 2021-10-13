@@ -33,6 +33,8 @@ class CountrySelect extends Select {
           { key: "data.url", ignore: true },
           { key: "data.headers", ignore: true },
           { key: "data.values", ignore: true },
+          { key: "valueProperty", ignore: true },
+          { key: "limit", ignore: true },
         ],
       },
       ...extend,
