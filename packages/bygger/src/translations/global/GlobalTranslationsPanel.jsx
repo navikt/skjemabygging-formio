@@ -1,5 +1,5 @@
 import { Undertittel } from "nav-frontend-typografi";
-import GlobalTranslationRow from "./GlobalTranslationRow";
+import GlobalTranslationRow from "./GlobalTranslationRow.tsx";
 import React from "react";
 
 const GlobalTranslationsPanel = ({

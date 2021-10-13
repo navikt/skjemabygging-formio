@@ -7,7 +7,7 @@ import { getAllPredefinedOriginalTexts } from "./utils";
 const useTranslationRowStyles = makeStyles({
   warning: {
     color: "#ba3a26",
-    fontWeight: "600",
+    fontWeight: 600,
     lineHeight: "1.375rem",
     marginTop: "-2rem",
     marginBottom: "1rem",
@@ -27,6 +27,16 @@ const removeLastUpdatedOriginalText = (currentOriginalText, currentOriginalTextL
   }
 };
 
+type Props = {
+  id: string;
+  originalText: string;
+  translatedText: string;
+  updateTranslation: Function;
+  updateOriginalText: Function;
+  deleteOneRow: Function;
+  currentOriginalTextList: string[];
+};
+
 const GlobalTranslationRow = ({
   id,
   originalText,
@@ -35,7 +45,7 @@ const GlobalTranslationRow = ({
   updateOriginalText,
   deleteOneRow,
   currentOriginalTextList,
-}) => {
+}: Props) => {
   const classes = useTranslationRowStyles();
   const [duplicatedWarning, setDuplicatedWarning] = useState(false);
   return (
@@ -59,13 +69,14 @@ const GlobalTranslationRow = ({
               setDuplicatedWarning(false);
             } else {
               setDuplicatedWarning(true);
+              updateTranslation(id, originalText, "");
             }
           }}
         />
         <Input
           className="margin-bottom-default"
           type="text"
-          value={translatedText}
+          value={duplicatedWarning ? "" : translatedText}
           disabled={duplicatedWarning}
           onChange={(event) => {
             updateTranslation(id, originalText, event.target.value);
