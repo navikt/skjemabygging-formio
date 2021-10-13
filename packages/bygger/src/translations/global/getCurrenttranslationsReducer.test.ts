@@ -12,7 +12,7 @@ const mockedPayload = {
 
 const mockedEmptyState = [
   {
-    id: "123",
+    id: "000",
     originalText: "",
     translatedText: "",
   },
@@ -77,31 +77,28 @@ describe("Test getCurrenttranslationsReducer", () => {
     });
   });
 
-  /*  describe("Test update translation action", () => {
-    it("with empty original text and translation,  return empty original text and new translation", () => {
+  describe("Test update translation action", () => {
+    it("update only an empty translation,  return empty original text and new translation", () => {
       const updatedState = getCurrenttranslationsReducer(mockedEmptyState, {
         type: "updateTranslation",
-        payload: { id: "345", originalText: "", translatedText: "Yes" },
+        payload: { id: "000", originalText: "", translatedText: "Yes" },
       });
-      console.log("updatedState", updatedState);
       expect(updatedState[0].originalText).toEqual("");
       expect(updatedState[0].translatedText).toEqual("Yes");
     });
 
-    it("with mocked original text and translation,  return existing original text and translation and new original text and translation", () => {
+    it("update mocked translation,  return existing original text and new translation", () => {
       const updatedState = getCurrenttranslationsReducer(mockedState, {
         type: "updateTranslation",
-        payload: { id: "345", originalText: "Ja", translatedText: "Yes" },
+        payload: { id: "123", originalText: "Bor du i Norge?", translatedText: "Do you live in Norway" },
       });
       console.log("updatedState", updatedState);
       expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
+      expect(updatedState[0].translatedText).toEqual("Do you live in Norway");
       expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
       expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
-      //expect(updatedState[2].originalText).toEqual("Ja");
-      //expect(updatedState[2].translatedText).toEqual("Yes");
     });
-  });*/
+  });
 
   describe("Test delete one row action", () => {
     it("delete empty row with is,  return empty original text and new translation", () => {
