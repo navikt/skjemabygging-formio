@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import userEvent from "@testing-library/user-event";
 
@@ -39,7 +39,7 @@ describe("GlobalTranslationRow", () => {
     expect(screen.getByTestId("translation")).toHaveValue("");
   });
 
-  it("renders one globalTranslation row with originalText and translation", () => {
+  it("renders globalTranslation row with originalText and translation", () => {
     renderGlobalTranslationRow("forrige", "previous", ["AVBRYT, NESTE"]);
     expect(screen.getByTestId("originalText")).toHaveValue("forrige");
     expect(screen.getByTestId("translation")).toHaveValue("previous");
