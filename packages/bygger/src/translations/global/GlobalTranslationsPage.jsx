@@ -16,7 +16,7 @@ import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer.ts";
-import { flattenTextsForEditPanel, getAllPredefinedOriginalTexts } from "./utils";
+import { flattenTextsForEditPanel } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -185,18 +185,13 @@ const GlobalTranslationsPage = ({
   const globalTranslationsToSave = () => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
-        if (
-          getAllPredefinedOriginalTexts().indexOf(translation.originalText) < 0 &&
-          Object.keys(allCurrentTranslationAsObject).indexOf(translation.originalText) < 0
-        ) {
-          return {
-            ...allCurrentTranslationAsObject,
-            [translation.originalText]: {
-              scope: "global",
-              value: translation.translatedText,
-            },
-          };
-        }
+        return {
+          ...allCurrentTranslationAsObject,
+          [translation.originalText]: {
+            scope: "global",
+            value: translation.translatedText,
+          },
+        };
       }
       return allCurrentTranslationAsObject;
     }, {});
