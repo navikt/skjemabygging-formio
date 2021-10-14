@@ -5,19 +5,21 @@ import { Delete } from "@navikt/ds-icons";
 import { getAllPredefinedOriginalTexts } from "./utils";
 
 const useTranslationRowStyles = makeStyles({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: "2rem",
+  },
   warning: {
     color: "#ba3a26",
     fontWeight: 600,
     lineHeight: "1.375rem",
-    marginTop: "-2rem",
-    marginBottom: "1rem",
   },
   row: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr auto",
     gap: "2rem",
     alignItems: "center",
-    marginBottom: "1rem",
   },
 });
 
@@ -49,10 +51,9 @@ const GlobalTranslationRow = ({
   const classes = useTranslationRowStyles();
   const [duplicatedWarning, setDuplicatedWarning] = useState(false);
   return (
-    <div>
+    <div className={classes.root}>
       <div className={classes.row}>
         <Input
-          className="margin-bottom-default"
           type="text"
           value={originalText}
           data-testid="originalText"
@@ -62,7 +63,6 @@ const GlobalTranslationRow = ({
           }}
           onBlur={(event) => {
             removeLastUpdatedOriginalText(event.target.value, currentOriginalTextList);
-
             if (
               getAllPredefinedOriginalTexts().indexOf(event.target.value.toUpperCase()) < 0 &&
               currentOriginalTextList.indexOf(event.target.value.toUpperCase()) < 0
@@ -75,7 +75,6 @@ const GlobalTranslationRow = ({
           }}
         />
         <Input
-          className="margin-bottom-default"
           type="text"
           value={duplicatedWarning ? "" : translatedText}
           data-testid="translation"
