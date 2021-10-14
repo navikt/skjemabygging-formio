@@ -138,7 +138,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
     }).then((response) => {
       if (response.ok) {
         userAlerter.flashSuccessMessage(
-          !formTitle ? "Lagret globale oversettelser" : "Lagret oversettelser for skjema: " + formTitle
+          !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
         );
       } else {
         response.json().then((r) => {
@@ -172,6 +172,8 @@ export const useFormioTranslations = (formio, userAlerter) => {
         undefined,
         formTitle
       );
+    } else {
+      userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
   const saveGlobalTranslation = (
@@ -183,6 +185,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
     hasDuplicatedOriginalText
   ) => {
     if (hasDuplicatedOriginalText) {
+      userAlerter.setErrorMessage("Du har fortsatt en duplisert original tekst");
       return;
     }
 
@@ -198,6 +201,8 @@ export const useFormioTranslations = (formio, userAlerter) => {
         }
       }, {});
       saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
+    } else {
+      userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
 
