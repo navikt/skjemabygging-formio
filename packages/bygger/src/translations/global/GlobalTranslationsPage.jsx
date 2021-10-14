@@ -16,7 +16,7 @@ import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer.ts";
-import { flattenTextsForEditPanel } from "./utils";
+import { flattenTextsForEditPanel, getAllPredefinedOriginalTexts } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -205,6 +205,15 @@ const GlobalTranslationsPage = ({
     }, []);
   };
 
+  const hasDuplicatedOriginalText = () => {
+    const originalTextList = Object.keys(globalTranslationsToSave()).map((text) => text.toUpperCase());
+    return originalTextList.some(
+      (translation) =>
+        getAllPredefinedOriginalTexts().indexOf(translation.toUpperCase()) >= 0 ||
+        originalTextList.filter((originalText) => originalText === translation.toUpperCase()).length > 1
+    );
+  };
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -285,7 +294,8 @@ const GlobalTranslationsPage = ({
                 globalTranslationsWithLanguagecodeAndTag?.id,
                 languageCode,
                 globalTranslationsToSave(),
-                selectedTag
+                selectedTag,
+                hasDuplicatedOriginalText()
               )
             }
           >

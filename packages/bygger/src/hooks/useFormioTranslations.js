@@ -174,7 +174,18 @@ export const useFormioTranslations = (formio, userAlerter) => {
       );
     }
   };
-  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, tag) => {
+  const saveGlobalTranslation = (
+    projectUrl,
+    translationId,
+    languageCode,
+    translations,
+    tag,
+    hasDuplicatedOriginalText
+  ) => {
+    if (hasDuplicatedOriginalText) {
+      return;
+    }
+
     if (Object.keys(translations).length !== 0) {
       const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].value) {
