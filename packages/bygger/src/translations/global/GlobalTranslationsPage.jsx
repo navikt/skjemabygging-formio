@@ -295,7 +295,7 @@ const GlobalTranslationsPage = ({
                 languageCode,
                 globalTranslationsToSave(),
                 selectedTag,
-                hasDuplicatedOriginalText()
+                selectedTag === tags.SKJEMATEKSTER ? hasDuplicatedOriginalText() : false
               )
             }
           >
