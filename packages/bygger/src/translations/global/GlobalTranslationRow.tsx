@@ -84,7 +84,7 @@ const GlobalTranslationRow = ({
         />
         <Delete onClick={() => deleteOneRow(id)} />
       </div>
-      {duplicatedWarning && <div className={classes.warning}>Duplisert originaltekst</div>}
+      {duplicatedWarning && <div className={classes.warning}>Denne teksten er allerede oversatt.</div>}
     </div>
   );
 };
