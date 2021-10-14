@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import GlobalTranslationsPage from "./GlobalTranslationsPage";
 import { MemoryRouter } from "react-router-dom";
 import { UserAlerterContext } from "../../userAlerting";
