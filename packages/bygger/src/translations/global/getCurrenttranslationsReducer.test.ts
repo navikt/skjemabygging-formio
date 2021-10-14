@@ -2,7 +2,7 @@ import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 
 const mockedPayload = {
   translations: {
-    "Bor du i Norge?": { value: "Do you live in Norway?", scope: "global" },
+    "Bor du i Danmark?": { value: "Do you live in Denmark?", scope: "global" },
     "Har du noen tilleggsdokumentasjon?": {
       value: "Do you have any additional documentation?",
       scope: "global",
@@ -46,8 +46,8 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "loadNewLanguage",
         payload: mockedPayload,
       });
-      expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
-      expect(updatedState[0].translatedText).toEqual("Do you live in Norway?");
+      expect(updatedState[0].originalText).toEqual("Bor du i Danmark?");
+      expect(updatedState[0].translatedText).toEqual("Do you live in Denmark?");
       expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");
       expect(updatedState[1].translatedText).toEqual("Do you have any additional documentation?");
     });
@@ -95,7 +95,6 @@ describe("Test getCurrenttranslationsReducer", () => {
         type: "updateTranslation",
         payload: { id: "123", originalText: "Bor du i Norge?", translatedText: "Do you live in Norway" },
       });
-      console.log("updatedState", updatedState);
       expect(updatedState[0].originalText).toEqual("Bor du i Norge?");
       expect(updatedState[0].translatedText).toEqual("Do you live in Norway");
       expect(updatedState[1].originalText).toEqual("Har du noen tilleggsdokumentasjon?");

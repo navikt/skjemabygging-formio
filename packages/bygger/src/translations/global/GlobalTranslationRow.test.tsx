@@ -52,9 +52,7 @@ describe("GlobalTranslationRow", () => {
     userEvent.type(originalTextInput, "avbryt");
     userEvent.tab();
     expect(mockedUpdateOriginalText).toBeCalled();
-    expect(mockedUpdateTranslation).toBeCalled();
     expect(translationInput).toBeDisabled();
-    expect(translationInput).toHaveValue("");
   });
 
   it("renders disabled translation input when original text(with one uppercase) exists in current original text list", () => {
@@ -64,8 +62,6 @@ describe("GlobalTranslationRow", () => {
     userEvent.type(originalTextInput, "avbRyt");
     userEvent.tab();
     expect(mockedUpdateOriginalText).toBeCalled();
-    expect(mockedUpdateTranslation).toBeCalled();
     expect(translationInput).toBeDisabled();
-    expect(translationInput).toHaveValue("");
   });
 });

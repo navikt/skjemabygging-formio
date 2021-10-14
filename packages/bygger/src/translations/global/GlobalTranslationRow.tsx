@@ -70,13 +70,12 @@ const GlobalTranslationRow = ({
               setDuplicatedWarning(false);
             } else {
               setDuplicatedWarning(true);
-              updateTranslation(id, originalText, "");
             }
           }}
         />
         <Input
           type="text"
-          value={duplicatedWarning ? "" : translatedText}
+          value={translatedText}
           data-testid="translation"
           disabled={duplicatedWarning}
           onChange={(event) => {
