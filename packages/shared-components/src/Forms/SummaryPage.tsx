@@ -1,6 +1,6 @@
 import React, { useEffect, FunctionComponent } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
-import { styled } from "@material-ui/styles";
+import {makeStyles, styled} from "@material-ui/styles";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
@@ -63,21 +63,54 @@ const DataGridRow: FunctionComponent = ({ label, components }) => (
   </div>
 );
 
-const PanelSummary: FunctionComponent = ({ label, components }) => (
-  <section className="margin-bottom-default wizard-page">
-    <Systemtittel tag="h3" className="margin-bottom-default">
-      {label}
-    </Systemtittel>
-    <dl>
-      <ComponentSummary components={components} />
-    </dl>
-  </section>
-);
+const panelStyles = makeStyles({
+  panelHeading: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(21rem, 1fr))",
+    justifyContent: "space-between",
 
-const ComponentSummary = ({ components }) => {
+    "& .knapp": {
+      justifySelf: "flex-start",
+      marginLeft: "-0.75rem",
+      marginBottom: "1rem",
+
+      "@media screen and (min-width: 48rem)": {
+        justifySelf: "flex-end",
+        marginLeft: "0",
+        marginBottom: "0",
+      }
+    },
+  },
+})
+
+const PanelSummary: FunctionComponent = ({ label, formUrl, path, components }) => {
+  const { translate } = useLanguages();
+  const { search } = useLocation();
+  const classes = panelStyles();
+  return (
+    <section className="margin-bottom-default wizard-page">
+      <div className={classes.panelHeading}>
+        <Systemtittel tag="h3" className="margin-bottom-default">
+          {label}
+        </Systemtittel>
+        <Link className="knapp knapp--flat knapp--kompakt" to={{ pathname: `${formUrl}/${path}`, search }}>
+          <span>{translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}</span>
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="presentation">
+            <path fillRule="evenodd" clipRule="evenodd" d="M22.835 1.165a3.976 3.976 0 010 5.623L8.073 21.549.682 24 0 23.318l2.45-7.392L17.21 1.165a3.977 3.977 0 015.624 0zm-4.218 7.029l-2.811-2.812L4.188 17l-1.393 4.205 4.207-1.395L18.618 8.194zM21.43 2.57a1.989 1.989 0 00-2.703-.1l-.108.1-1.406 1.406 2.811 2.812 1.406-1.406a1.988 1.988 0 00.101-2.703l-.1-.109z" fill="currentColor" />
+          </svg>
+        </Link>
+      </div>
+      <dl>
+        <ComponentSummary components={components} />
+      </dl>
+    </section>
+  )
+};
+
+const ComponentSummary = ({ components, formUrl }) => {
   return components.map(({ type, key, label, components, value }) => {
     if (type === "panel") {
-      return <PanelSummary key={key} label={label} components={components} />;
+      return <PanelSummary key={key} label={label} formUrl={formUrl} path={key} components={components} />;
     } else if (type === "fieldset" || type === "navSkjemagruppe") {
       return <FormSummaryFieldset key={key} label={label} components={components} />;
     } else if (type === "datagrid") {
@@ -90,13 +123,13 @@ const ComponentSummary = ({ components }) => {
   });
 };
 
-const FormSummary = ({ form, submission }) => {
+const FormSummary = ({ form, formUrl, submission }) => {
   const { translate } = useLanguages();
   const formSummaryObject = createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
   }
-  return <ComponentSummary components={formSummaryObject} />;
+  return <ComponentSummary components={formSummaryObject} formUrl={formUrl} />;
 };
 
 export interface Props {
@@ -125,7 +158,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           {translate(TEXTS.statiske.summaryPage.title)}
         </Innholdstittel>
         <Normaltekst className="margin-bottom-default">{translate(TEXTS.statiske.summaryPage.description)}</Normaltekst>
-        <FormSummary submission={submission} form={form} />
+        <FormSummary submission={submission} form={form} formUrl={formUrl} />
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: formUrl, search }}>

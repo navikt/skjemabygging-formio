@@ -15,6 +15,7 @@ export const grensesnitt = {
   moveForward: "Gå videre",
 
   summaryPage: {
+    edit: "Rediger",
     editAnswers: "Rediger svar",
     continueToPostalSubmission: "Send i posten",
     continueToDigitalSubmission: "Send inn digitalt",
