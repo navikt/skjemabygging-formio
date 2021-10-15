@@ -122,7 +122,10 @@ Wizard.prototype.detachHeader = function () {
   }
 };
 
-function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
+const originalEmitWizardPageSelected = Wizard.prototype.emitWizardPageSelected;
+const originalBeforePage = Wizard.prototype.beforePage;
+
+function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet, history, search, formUrl) {
   Wizard.prototype.nextPage = function () {
     return originalNextPage
       .call(this)
@@ -149,6 +152,15 @@ function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjem
         return Promise.reject(error);
       });
   };
+
+  Wizard.prototype.beforePage = function(next) {
+    history.push(`${formUrl}/${this.currentPanels[next ? this.currentNextPage : this.page - 1]}?${search}`)
+    return originalBeforePage.call(this, next);
+  }
+  Wizard.prototype.emitWizardPageSelected = function(index) {
+    history.push(`${formUrl}/${this.currentPanels[index]}?${search}`)
+    return originalEmitWizardPageSelected.call(this, index);
+  }
 }
 
 export { overrideFormioWizardNextPageAndSubmit };

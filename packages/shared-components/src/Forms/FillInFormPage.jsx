@@ -1,5 +1,5 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect } from "react";
+import {useHistory, useParams} from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
@@ -11,6 +11,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translate, translationsForNavForm } = useLanguages();
+  const { panel } = useParams();
+
+  useEffect(() => {
+    window.form = window.form || { pages: [] };
+    if(panel && window.form.pages.find(page => page.path === panel)) {
+      window.form.setPage(window.form.pages.map(page => page.path).indexOf(panel));
+    }
+  }, [panel]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -21,6 +29,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       {form.properties && form.properties.skjemanummer && <p>{form.properties.skjemanummer}</p>}
       <NavForm
         form={form}
+        formUrl={formUrl}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}

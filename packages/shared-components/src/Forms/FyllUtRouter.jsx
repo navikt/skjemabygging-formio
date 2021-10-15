@@ -43,9 +43,6 @@ const FyllUtRouter = ({ form, translations }) => {
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
-          <Route exact path={path}>
-            <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
-          </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={url}>
               {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
@@ -65,6 +62,9 @@ const FyllUtRouter = ({ form, translations }) => {
             <SubmissionWrapper submission={submission} url={url}>
               {(submissionObject) => <PrepareIngenInnsendingPage form={form} submission={submissionObject} formUrl={url} />}
             </SubmissionWrapper>
+          </Route>
+          <Route exact path={`${path}/:panel?`}>
+            <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
           </Route>
         </Switch>
       </FyllUtContainer>

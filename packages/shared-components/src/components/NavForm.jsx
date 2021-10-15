@@ -22,7 +22,7 @@
  * SOFTWARE.
  * */
 
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, {Component, useEffect, useRef, useState} from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
@@ -34,6 +34,7 @@ import { useAmplitude } from "../context/amplitude";
 import navFormStyle from "./navFormStyle";
 import { checkConditionOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
 import {SANITIZE_CONFIG} from "../template/sanitizeConfig";
+import {useHistory, useLocation, useParams} from "react-router-dom";
 
 Utils.checkCondition = checkConditionOverride;
 
@@ -44,6 +45,9 @@ const NavForm = (props) => {
   let element;
   const [formio, setFormio] = useState(undefined);
   const mountedRef = useRef(true);
+  const { panel } = useParams();
+  const history = useHistory();
+  const { search } = useLocation();
 
   useEffect(() => () => {
     mountedRef.current = false;
@@ -61,6 +65,10 @@ const NavForm = (props) => {
       events: NavForm.getDefaultEmitter()
     });
     createPromise = instance.ready.then(formioInstance => {
+      window.form = formioInstance;
+      if (panel) {
+        formioInstance.setPage(formioInstance.pages.map(page => page.path).indexOf(panel));
+      }
       if (mountedRef.current) {
         setFormio(formioInstance);
         if (formReady) {
@@ -131,7 +139,10 @@ const NavForm = (props) => {
   useEffect(() => {
     overrideFormioWizardNextPageAndSubmit(
       props.loggSkjemaStegFullfort,
-      props.loggSkjemaValideringFeilet
+      props.loggSkjemaValideringFeilet,
+      history,
+      search,
+      props.formUrl,
     );
   }, [props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet]);
 
