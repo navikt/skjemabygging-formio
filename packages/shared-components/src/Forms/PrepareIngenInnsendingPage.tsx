@@ -41,7 +41,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
             form={form}
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-            label={translate(TEXTS.grensesnitt.downloadApplication)}
+            label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
             onClick={() => loggSkjemaFullfort("ingeninnsending")}
             classNames="knapp knapp--fullbredde"
           />

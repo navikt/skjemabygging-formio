@@ -65,7 +65,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
             form={form}
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form`}
-            label={translate(TEXTS.grensesnitt.downloadApplication)}
+            label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
             onClick={() => setHasDownloadedPDF(true)}
             classNames="knapp"
           />

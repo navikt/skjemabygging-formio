@@ -94,7 +94,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
         form={form}
         submission={submission}
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-        label={translate(TEXTS.grensesnitt.downloadApplication)}
+        label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         classNames="knapp knapp--fullbredde"
       />
