@@ -296,6 +296,38 @@ describe("genererFoerstesideData", () => {
     });
   });
 
+  describe("Språkkode", () => {
+
+    const defaultForm = {properties: {skjemanummer: "TST 10.11-12"}, components: []};
+    const defaultSubmission = {};
+
+    it("Bokmål brukes dersom språk ikke er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);
+      expect(forstesideRequest.spraakkode).toEqual("NB");
+    });
+
+    it("Bokmål brukes dersom 'nb-NO' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nb-NO");
+      expect(forstesideRequest.spraakkode).toEqual("NB");
+    });
+
+    it("Nynorsk brukes dersom 'nn-NO' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nn-NO");
+      expect(forstesideRequest.spraakkode).toEqual("NN");
+    });
+
+    it("Engelsk brukes dersom 'en' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "en");
+      expect(forstesideRequest.spraakkode).toEqual("EN");
+    });
+
+    it("Engelsk brukes dersom et annet språk er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "pl");
+      expect(forstesideRequest.spraakkode).toEqual("EN");
+    });
+
+  });
+
   describe('Bruker uten fødselsnummer', () => {
 
     describe('med norsk vegadresse', () => {

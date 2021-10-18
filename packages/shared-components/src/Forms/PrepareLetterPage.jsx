@@ -35,11 +35,11 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-function lastNedFoersteside(form, submission, fyllutBaseURL) {
+function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
   return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(genererFoerstesideData(form, submission.data)),
+    body: JSON.stringify(genererFoerstesideData(form, submission.data, language)),
   })
     .then((response) => {
       if (response.ok) {
@@ -60,6 +60,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { currentLanguage } = useLanguages();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -81,7 +82,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            lastNedFoersteside(form, submission, fyllutBaseURL)
+            lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage)
               .then(() => setHasDownloadedFoersteside(true))
               .catch(() => loggSkjemaInnsendingFeilet());
           }}
