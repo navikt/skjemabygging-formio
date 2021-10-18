@@ -176,11 +176,11 @@ const landvelgerSchema = () => ({
   clearOnHide: true,
   validateOn: "blur",
   data: {
-    url: "http://localhost:8081/fyllut/countries?lang=nb",
+    url: "https://skjemautfylling-formio.labs.nais.io/fyllut/countries?lang=nb",
   },
   dataSrc: "url",
   valueProperty: "label",
-  limit: 300,
+  disableLimit: true,
   validate: {
     required: true,
   },
