@@ -189,7 +189,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
       return;
     }
 
-    if (Object.keys(translations).length !== 0) {
+    if (Object.keys(translations).length !== 0 || tag === "skjematekster") {
       const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].value) {
           return {
