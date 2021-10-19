@@ -206,12 +206,12 @@ const GlobalTranslationsPage = ({
   };
 
   const hasDuplicatedOriginalText = () => {
-    const duplicatedOriginalText = getCurrentOriginalTextList().filter((originalText, index, array) => {
+    const duplicatedOriginalTextList = getCurrentOriginalTextList().filter((originalText, index, array) => {
       if (getAllPredefinedOriginalTexts().indexOf(originalText) >= 0) return originalText;
       return array.indexOf(originalText) !== index;
     });
 
-    return duplicatedOriginalText.length > 0;
+    return duplicatedOriginalTextList.length > 0;
   };
 
   return (
