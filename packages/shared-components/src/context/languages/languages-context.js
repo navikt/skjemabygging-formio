@@ -18,8 +18,17 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
     }
   }, [translations]);
 
-  function translate(originalText) {
-    return currentTranslation[originalText] ? currentTranslation[originalText] : originalText;
+  function translate(originalText, params) {
+    return currentTranslation[originalText]
+      ? injectParams(currentTranslation[originalText], params)
+      : injectParams(originalText, params);
+  }
+
+  const injectParams = (template, params) => {
+    if (template && params) {
+      return template.replace(/({{\s*(.*?)\s*}})/g, (match, $1, $2) => translate(params[$2]) || match);
+    }
+    return template;
   }
 
   return (

@@ -25,7 +25,7 @@ export const statiske = {
     firstSectionTitle:
       "1. Last ned det ferdig utfylte dokumentet (PDF). Du blir bedt om å laste det opp på neste side.",
     firstSectionDescription:
-      'Når du klikker på "Last ned søknad" åpnes dokumentet  i en ny fane i nettleseren. Du må lagre pdf-filen på maskinen din på en plass hvor du kan finne den igjen.',
+      'Når du klikker på "{{downloadApplication}}" åpnes dokumentet  i en ny fane i nettleseren. Du må lagre pdf-filen på maskinen din på en plass hvor du kan finne den igjen.',
     firstSectionInstruction:
       "Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending til NAV.",
     secondSectionTitle: "2. Instruksjoner for innsending",
