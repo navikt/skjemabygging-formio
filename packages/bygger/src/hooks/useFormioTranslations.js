@@ -93,7 +93,10 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     keyNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
     valueNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
     return keyNames.reduce(
-      (acc, { label }, index) => ({ ...acc, [label]: { value: valueNames[index].label, scope: "global" } }),
+      (acc, { label }, index) => ({
+        ...acc,
+        [label]: { value: valueNames[index].label, scope: "component-countryName" },
+      }),
       {}
     );
   };

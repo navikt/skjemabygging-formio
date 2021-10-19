@@ -11,7 +11,6 @@ const I18nContext = createContext({});
 
 function I18nProvider({ children, loadTranslations }) {
   const [translations, setTranslations] = useState({});
-  const [translationsForNavForm, setTranslationsForNavForm] = useState(undefined);
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState([]);
@@ -22,7 +21,6 @@ function I18nProvider({ children, loadTranslations }) {
       loadTranslations().then((translations) => {
         setAvailableLanguages(Object.keys(translations));
         setTranslations(translations);
-        setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
       });
     }
   }, [loadTranslations, translationsLoaded]);
@@ -38,12 +36,24 @@ function I18nProvider({ children, loadTranslations }) {
       : originalText;
   }
 
+  function hasComponentType(form, type) {
+    const isAnyComponentOfType = (components) =>
+      components?.some((component) => component.type === type || isAnyComponentOfType(component?.components));
+    return form?.components ? isAnyComponentOfType(form?.components) : false;
+  }
+
+  function getTranslationsForNavForm(form) {
+    const hasLandvelger = hasComponentType(form, "landvelger");
+    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
+    return mapTranslationsToFormioI18nObject(translations, hasLandvelger ? undefined : withoutCountryNames);
+  }
+
   return (
     <I18nContext.Provider
       value={{
         translate,
         translations,
-        translationsForNavForm,
+        getTranslationsForNavForm,
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
