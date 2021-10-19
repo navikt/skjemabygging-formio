@@ -64,4 +64,14 @@ describe("GlobalTranslationRow", () => {
     expect(mockedUpdateOriginalText).toBeCalled();
     expect(translationInput).toBeDisabled();
   });
+
+  it("renders same original text and translation when there is no change only tabbed over", () => {
+    renderGlobalTranslationRow("forrige", "previous", ["AVBRYT, NESTE"]);
+    const originalTextInput = screen.getByTestId("originalText");
+    const translationInput = screen.getByTestId("translation");
+    userEvent.tab();
+    expect(mockedUpdateOriginalText).not.toBeCalled();
+    expect(originalTextInput).toHaveValue("forrige");
+    expect(translationInput).toHaveValue("previous");
+  });
 });

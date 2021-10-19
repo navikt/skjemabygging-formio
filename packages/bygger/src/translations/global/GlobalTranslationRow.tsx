@@ -23,12 +23,6 @@ const useTranslationRowStyles = makeStyles({
   },
 });
 
-const removeLastUpdatedOriginalText = (currentOriginalText, currentOriginalTextList) => {
-  if (currentOriginalTextList[currentOriginalTextList.length - 1] === currentOriginalText.toUpperCase()) {
-    currentOriginalTextList.pop();
-  }
-};
-
 type Props = {
   id: string;
   originalText: string;
@@ -62,12 +56,17 @@ const GlobalTranslationRow = ({
             setDuplicatedWarning(false);
           }}
           onBlur={(event) => {
-            removeLastUpdatedOriginalText(event.target.value, currentOriginalTextList);
-            if (
-              getAllPredefinedOriginalTexts().indexOf(event.target.value.toUpperCase()) < 0 &&
-              currentOriginalTextList.indexOf(event.target.value.toUpperCase()) < 0
-            ) {
-              setDuplicatedWarning(false);
+            if (getAllPredefinedOriginalTexts().indexOf(event.target.value.toUpperCase()) < 0) {
+              if (
+                currentOriginalTextList.filter((originalText) => originalText === event.target.value.toUpperCase())
+                  .length > 1
+              ) {
+                currentOriginalTextList.pop();
+
+                if (currentOriginalTextList.indexOf(event.target.value.toUpperCase()) >= 0) {
+                  setDuplicatedWarning(true);
+                }
+              }
             } else {
               setDuplicatedWarning(true);
             }
