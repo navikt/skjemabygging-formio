@@ -232,14 +232,38 @@ describe("FormMetadataEditor", () => {
       expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
     });
 
-    it("Egendefinert tekst på knapp for nedlasting av pdf lagres i properties", async () => {
-      render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
-      const input = screen.getByLabelText("Tekst på knapp for nedlasting av pdf");
-      await userEvent.paste(input, "Last ned pdf");
+    describe("Egendefinert tekst på knapp for nedlasting av pdf", () => {
 
-      expect(mockOnChange).toHaveBeenCalledTimes(1);
-      const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-      expect(updatedForm.properties.downloadPdfButtonText).toEqual("Last ned pdf");
+      const formMedDownloadPdfButtonText = downloadPdfButtonText => ({
+        ...defaultForm,
+        properties: {
+          ...defaultForm.properties,
+          downloadPdfButtonText,
+        }
+      })
+
+      it("lagres i properties", async () => {
+        const form = formMedDownloadPdfButtonText(undefined);
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        const input = screen.getByLabelText("Tekst på knapp for nedlasting av pdf");
+        await userEvent.paste(input, "Last ned pdf");
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.downloadPdfButtonText).toEqual("Last ned pdf");
+      });
+
+      it("nullstilles i properties", async () => {
+        const form = formMedDownloadPdfButtonText("Last meg ned");
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        const input = screen.getByLabelText("Tekst på knapp for nedlasting av pdf");
+        await userEvent.clear(input);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.downloadPdfButtonText).toEqual("");
+      });
+
     });
 
   });
