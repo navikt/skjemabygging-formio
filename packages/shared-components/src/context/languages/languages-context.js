@@ -26,7 +26,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
 
   const injectParams = (template, params) => {
     if (template && params) {
-      return template.replace(/{{([^}]*)}}/g, (match, $1) => translate(params[$1]) || match);
+      return template.replace(/[{]{2}([^{}]*)[}]{2}/g, (match, $1) => translate(params[$1]) || match);
     }
     return template;
   }
