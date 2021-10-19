@@ -1,4 +1,5 @@
 import React from "react";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import {SkjemaGruppe, Input, Select, Checkbox, Textarea} from "nav-frontend-skjema";
 import {DisplayType, InnsendingType, NavFormType} from '../Forms/navForm';
 
@@ -19,7 +20,15 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     display,
     name,
     type,
-    properties: { skjemanummer, tema, innsending, hasPapirInnsendingOnly, hasLabeledSignatures, signatures },
+    properties: {
+      skjemanummer,
+      tema,
+      downloadPdfButtonText,
+      innsending,
+      hasPapirInnsendingOnly,
+      hasLabeledSignatures,
+      signatures
+    },
   } = form;
   return (
     <SkjemaGruppe>
@@ -94,6 +103,14 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         value={path}
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, path: event.target.value })}
+      />
+      <Input
+        label="Tekst på knapp for nedlasting av pdf"
+        type="text"
+        id="downloadPdfButtonText"
+        value={downloadPdfButtonText || ""}
+        onChange={(event) => onChange({ ...form, properties: { ...form.properties, downloadPdfButtonText: event.target.value } })}
+        placeholder={TEXTS.grensesnitt.downloadApplication}
       />
       <Select
         label="Innsending"

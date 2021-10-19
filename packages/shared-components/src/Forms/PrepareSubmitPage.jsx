@@ -38,13 +38,13 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
   const { translate } = useLanguages();
   const { state, search } = useLocation();
 
-  console.log("PrepareSubmitPage", state, search);
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
     else setGoBackURL(state.previousPage);
   }, [state, formUrl]);
 
+  const downloadPdfButtonText = form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication;
   return (
     <ResultContent>
       <Sidetittel className="margin-bottom-large" id="form-title">
@@ -56,7 +56,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
             {translate(TEXTS.statiske.prepareSubmitPage.firstSectionTitle)}
           </Systemtittel>
           <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionDescription)}
+            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionDescription, {downloadApplication: downloadPdfButtonText})}
           </Normaltekst>
           <Normaltekst className="margin-bottom-default">
             {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction)}
@@ -65,7 +65,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
             form={form}
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form`}
-            label={translate(TEXTS.grensesnitt.downloadApplication)}
+            label={translate(downloadPdfButtonText)}
             onClick={() => setHasDownloadedPDF(true)}
             classNames="knapp"
           />

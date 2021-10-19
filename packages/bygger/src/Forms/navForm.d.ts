@@ -12,6 +12,7 @@ export interface FormSignaturesType {
 export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
+  downloadPdfButtonText?: string;
   innsending?: InnsendingType;
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
