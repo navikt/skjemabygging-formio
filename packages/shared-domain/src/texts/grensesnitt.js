@@ -10,7 +10,7 @@ export const grensesnitt = {
     Fjern: "Fjern",
   },
 
-  downloadApplication: "Last ned Søknad",
+  downloadApplication: "Last ned søknad",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
 
