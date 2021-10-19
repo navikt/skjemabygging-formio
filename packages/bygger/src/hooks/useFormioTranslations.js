@@ -1,7 +1,7 @@
 import Formiojs from "formiojs/Formio";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
 
-export const useFormioTranslations = (formio, userAlerter) => {
+export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   const fetchTranslations = (url) => {
     return fetch(url, {
       headers: {
@@ -10,7 +10,6 @@ export const useFormioTranslations = (formio, userAlerter) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log("Response: ", response);
         return response;
       });
   };
@@ -25,7 +24,6 @@ export const useFormioTranslations = (formio, userAlerter) => {
     }
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
       .then((response) => {
-        console.log("Fetched: ", response);
         return response;
       })
       .then((response) => {
@@ -56,18 +54,15 @@ export const useFormioTranslations = (formio, userAlerter) => {
         }, {});
       })
       .then((globalTranslations) => {
-        console.log("Fetched global translations", globalTranslations);
         return globalTranslations;
       });
   };
 
   const loadTranslationsForForm = async (formPath) => {
-    console.log("Form path", formPath);
     return fetchTranslations(
       `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=null`
     )
       .then((response) => {
-        console.log("Fetched", response);
         return response;
       })
       .then((translations) => {
@@ -83,9 +78,44 @@ export const useFormioTranslations = (formio, userAlerter) => {
         );
       })
       .then((translations) => {
-        console.log("Fetched and filtered", translations);
         return translations;
       });
+  };
+
+  const loadCountryNames = async (locale) => {
+    const languageCodesIso639_1 = { "nn-NO": "nn", "nb-NO": "nb" };
+    return fetch(`${serverURL}/countries?lang=${languageCodesIso639_1[locale] || locale}`).then((response) =>
+      response.json()
+    );
+  };
+
+  const zipCountryNames = (keyNames, valueNames) => {
+    keyNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
+    valueNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
+    return keyNames.reduce(
+      (acc, { label }, index) => ({ ...acc, [label]: { value: valueNames[index].label, scope: "global" } }),
+      {}
+    );
+  };
+
+  const loadAndInsertCountryNames = async (translations) => {
+    const localesInTranslations = Object.keys(translations);
+    const norwegianCountryNames = await loadCountryNames("nb");
+    return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) =>
+      localesInTranslations.reduce(
+        (accumulated, locale, index) => ({
+          ...accumulated,
+          [locale]: {
+            ...translations[locale],
+            translations: {
+              ...translations[locale].translations,
+              ...zipCountryNames(norwegianCountryNames, loadedCountryNames[index]),
+            },
+          },
+        }),
+        {}
+      )
+    );
   };
 
   const loadTranslationsForEditPage = async (formPath) => {
@@ -98,8 +128,8 @@ export const useFormioTranslations = (formio, userAlerter) => {
           }))
           .reduce(combineTranslationResources, {})
       )
+      .then(loadAndInsertCountryNames)
       .then((translations) => {
-        console.log("loadTranslationsForEditPage", translations);
         return translations;
       });
   };
