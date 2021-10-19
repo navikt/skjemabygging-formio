@@ -206,12 +206,12 @@ const GlobalTranslationsPage = ({
   };
 
   const hasDuplicatedOriginalText = () => {
-    const originalTextList = Object.keys(globalTranslationsToSave()).map((text) => text.toUpperCase());
-    return originalTextList.some(
-      (translation) =>
-        getAllPredefinedOriginalTexts().indexOf(translation.toUpperCase()) >= 0 ||
-        originalTextList.filter((originalText) => originalText === translation.toUpperCase()).length > 1
-    );
+    const duplicatedOriginalText = getCurrentOriginalTextList().filter((originalText, index, array) => {
+      if (getAllPredefinedOriginalTexts().indexOf(originalText) >= 0) return originalText;
+      return array.indexOf(originalText) !== index;
+    });
+
+    return duplicatedOriginalText.length > 0;
   };
 
   return (
