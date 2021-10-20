@@ -206,12 +206,10 @@ const GlobalTranslationsPage = ({
   };
 
   const hasDuplicatedOriginalText = () => {
-    const duplicatedOriginalTextList = getCurrentOriginalTextList().filter((originalText, index, array) => {
+    return getCurrentOriginalTextList().filter((originalText, index, array) => {
       if (getAllPredefinedOriginalTexts().indexOf(originalText) >= 0) return originalText;
       return array.indexOf(originalText) !== index;
     });
-
-    return duplicatedOriginalTextList.length > 0;
   };
 
   return (
@@ -288,16 +286,25 @@ const GlobalTranslationsPage = ({
             Slett språk
           </Knapp>
           <Hovedknapp
-            onClick={() =>
-              saveTranslation(
-                projectURL,
-                globalTranslationsWithLanguagecodeAndTag?.id,
-                languageCode,
-                globalTranslationsToSave(),
-                selectedTag,
-                selectedTag === tags.SKJEMATEKSTER ? hasDuplicatedOriginalText() : false
-              )
-            }
+            onClick={() => {
+              if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+                alert(
+                  `Du har fortsatt ${
+                    hasDuplicatedOriginalText().length > 1
+                      ? "flere dupliserte original tekster"
+                      : "en duplisert original tekst"
+                  } (${hasDuplicatedOriginalText()})`
+                );
+              } else {
+                saveTranslation(
+                  projectURL,
+                  globalTranslationsWithLanguagecodeAndTag?.id,
+                  languageCode,
+                  globalTranslationsToSave(),
+                  selectedTag
+                );
+              }
+            }}
           >
             Lagre
           </Hovedknapp>
