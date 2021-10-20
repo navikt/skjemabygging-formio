@@ -1,5 +1,3 @@
-import GlobalTranslations from "../../i18nData";
-
 const flattenTranslationObject = (translationObject) => {
   return Object.keys(translationObject).reduce(
     (acc, val) => ({
@@ -18,9 +16,7 @@ const mapTranslationsToFormioI18nObject = (translations) => {
         ...flattenTranslationObject(translations[languageCode].translations || {}),
       },
     }),
-    {
-      ...flattenTranslationObject(GlobalTranslations),
-    }
+    {}
   );
 };
 
