@@ -3,6 +3,7 @@ import LanguageSelector from "./LanguageSelector";
 import { useLanguages } from "../context/languages";
 
 const languagesInOriginalLanguage = {
+  "nb-NO": "Norsk bokmål",
   "nn-NO": "Norsk nynorsk",
   en: "English",
   pl: "Polskie",
@@ -21,7 +22,7 @@ const FyllUtLanguageSelector = () => {
 
   const label = languagesInOriginalLanguage[currentLanguage]
     ? languagesInOriginalLanguage[currentLanguage]
-    : "Språk/Language";
+    : "Norsk bokmål";
 
   return <LanguageSelector label={label} options={options} />;
 };
