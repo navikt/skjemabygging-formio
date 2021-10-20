@@ -2,7 +2,7 @@ import React from "react";
 import LanguageSelector from "./LanguageSelector";
 import { useLanguages } from "../context/languages";
 
-const languagesInOriginalLanguage = {
+export const languagesInOriginalLanguage = {
   "nb-NO": "Norsk bokmål",
   "nn-NO": "Norsk nynorsk",
   en: "English",
