@@ -1,6 +1,5 @@
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import merge from "lodash.merge";
 
 const flattenTextsForEditPanel = (texts) => {
   return removeDuplicatedComponents(
@@ -14,7 +13,7 @@ const flattenTextsForEditPanel = (texts) => {
 
 const getAllPredefinedOriginalTexts = () => {
   const { grensesnitt, statiske, validering, common } = TEXTS;
-  return objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
+  return objectUtils.flattenToArray({ ...grensesnitt, ...statiske, ...validering, ...common }, (entry) => {
     return entry[1].toUpperCase();
   });
 };
