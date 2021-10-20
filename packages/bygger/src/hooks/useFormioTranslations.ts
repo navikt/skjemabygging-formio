@@ -111,7 +111,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     );
   };
 
-  const loadAndInsertCountryNames = async (translations: FormioTranslation): Promise<FormioTranslation | {}> => {
+  const loadAndInsertCountryNames = async (translations: FormioTranslationMap): Promise<FormioTranslation | {}> => {
     const localesInTranslations = Object.keys(translations).filter((lang): lang is Language => !!(lang as Language));
     const norwegianCountryNames = await loadCountryNames("nb-NO");
     return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) =>
@@ -143,7 +143,6 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       )
       .then(loadAndInsertCountryNames)
       .then((translations) => {
-        console.log("loadTranslationsForEditPage", translations);
         return translations;
       });
   };

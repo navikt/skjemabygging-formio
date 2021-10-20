@@ -9,7 +9,7 @@ export interface ScopedTranslationMap {
 }
 
 export interface FormioTranslation {
-  id: string;
+  id?: string;
   translations: ScopedTranslationMap;
 }
 
@@ -29,11 +29,11 @@ export interface FormioTranslationData {
 export interface FormioTranslationPayload {
   _id: string;
   owner: string;
-  roles: any[];
+  roles: unknown[];
   data: FormioTranslationData;
-  access: any[];
+  access: unknown[];
   form: string;
-  externalIds: any[];
+  externalIds: unknown[];
   created: string;
   modified: string;
 }
