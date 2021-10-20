@@ -14,7 +14,7 @@ const utenlandskAdresseSchema = (keyPostfix = "") => ({
   input: false,
   tableView: false,
   components: [
-    coAdresseSchema("utland", keyPostfix),
+    coAdresseSchema(keyPostfix),
     utlandVegadressePostboksSchema(keyPostfix),
     utlandBygningSchema(keyPostfix),
     utlandPostkodeSchema(keyPostfix),

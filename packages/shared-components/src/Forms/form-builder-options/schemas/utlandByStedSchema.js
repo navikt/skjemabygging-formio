@@ -1,7 +1,7 @@
 const utlandByStedSchema = (keyPostfix = "") => ({
   label: "By / stedsnavn",
   type: "textfield",
-  key: `utlandBySted${keyPostfix}`,
+  key: `poststed${keyPostfix}`,
   autocomplete: "address-level2",
   fieldSize: "input--xxl",
   validate: {

@@ -1,9 +1,7 @@
-import {addPrefixOrPostfix} from "../../../util/text-util";
-
-const postnummerSchema = (keyPrefix, keyPostfix = "") => ({
+const postnummerSchema = (keyPostfix = "") => ({
   label: "Postnummer",
   type: "textfield",
-  key: addPrefixOrPostfix("postnr", keyPrefix, keyPostfix),
+  key: `postnr${keyPostfix}`,
   autocomplete: "postal-code",
   spellcheck: false,
   fieldSize: "input--xs",

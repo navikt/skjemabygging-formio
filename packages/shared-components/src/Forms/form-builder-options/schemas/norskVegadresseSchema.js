@@ -11,10 +11,10 @@ const norskVegadresseSchema = (keyPostfix = "") => ({
   input: false,
   tableView: false,
   components: [
-    coAdresseSchema("", keyPostfix),
+    coAdresseSchema(keyPostfix),
     vegadresseSchema(keyPostfix),
-    postnummerSchema("" ,keyPostfix),
-    poststedSchema("", keyPostfix),
+    postnummerSchema(keyPostfix),
+    poststedSchema(keyPostfix),
   ],
 });
 

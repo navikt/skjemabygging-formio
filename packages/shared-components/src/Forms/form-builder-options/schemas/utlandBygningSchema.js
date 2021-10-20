@@ -1,7 +1,7 @@
 const utlandBygningSchema = (keyPostfix = "") => ({
   label: "Bygning",
   type: "textfield",
-  key: `utlandBygning${keyPostfix}`,
+  key: `bygning${keyPostfix}`,
   fieldSize: "input--xxl",
   validate: {
     required: false,

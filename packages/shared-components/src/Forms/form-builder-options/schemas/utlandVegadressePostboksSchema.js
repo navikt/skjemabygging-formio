@@ -1,7 +1,7 @@
 const utlandVegadressePostboksSchema = (keyPostfix = "") => ({
   label: "Vegnavn og husnummer, evt. postboks",
   type: "textfield",
-  key: `utlandVegadressePostboks${keyPostfix}`,
+  key: `postboksNr${keyPostfix}`,
   autocomplete: "street-address",
   fieldSize: "input--xxl",
   validate: {

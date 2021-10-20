@@ -9,7 +9,7 @@ const vedleggSchema = {
       label: "Annen dokumentasjon",
       description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
       type: "radiopanel",
-      key: "vedlegg",
+      key: "annenDokumentasjon",
       input: true,
       clearOnHide: true,
       validate: {

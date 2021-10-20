@@ -11,10 +11,10 @@ const norskPostboksadresseSchema = (keyPostfix = "") => ({
   input: false,
   tableView: false,
   components: [
-    coAdresseSchema("postboks", keyPostfix),
+    coAdresseSchema(keyPostfix),
     postboksSchema(keyPostfix),
-    postnummerSchema("postboks", keyPostfix),
-    poststedSchema("postboks", keyPostfix),
+    postnummerSchema(keyPostfix),
+    poststedSchema(keyPostfix),
   ],
 });
 

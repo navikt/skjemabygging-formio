@@ -1,7 +1,7 @@
 const utlandRegionSchema = (keyPostfix = "") => ({
   label: "Region",
   type: "textfield",
-  key: `utlandRegion${keyPostfix}`,
+  key: `region${keyPostfix}`,
   autocomplete: "address-level1",
   fieldSize: "input--xxl",
   validate: {

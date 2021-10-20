@@ -1,9 +1,7 @@
-import {addPrefixOrPostfix} from "../../../util/text-util";
-
-const poststedSchema = (keyPrefix, keyPostfix = "") => ({
+const poststedSchema = (keyPostfix = "") => ({
   label: "Poststed",
   type: "textfield",
-  key: addPrefixOrPostfix("poststed", keyPrefix, keyPostfix),
+  key: `poststed${keyPostfix}`,
   autocomplete: "address-level2",
   fieldSize: "input--xxl",
   validate: {

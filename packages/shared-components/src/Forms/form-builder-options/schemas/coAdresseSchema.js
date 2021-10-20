@@ -1,9 +1,7 @@
-import { addPrefixOrPostfix } from "../../../util/text-util";
-
-const coAdresseSchema = (keyPrefix, keyPostfix = "") => ({
+const coAdresseSchema = (keyPostfix = "") => ({
   label: "C/O",
   type: "textfield",
-  key: addPrefixOrPostfix("co", keyPrefix, keyPostfix),
+  key: `co${keyPostfix}`,
   fieldSize: "input--xxl",
   autocomplete: false,
   validate: {
