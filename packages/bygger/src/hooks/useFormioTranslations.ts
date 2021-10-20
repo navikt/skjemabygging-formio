@@ -1,5 +1,18 @@
 import Formiojs from "formiojs/Formio";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
+import {
+  FormioTranslation,
+  FormioTranslationMap,
+  FormioTranslationPayload,
+  I18nTranslationMap,
+  Language,
+  LanguageCodeIso639_1,
+  ScopedTranslationMap,
+  TranslationScope,
+  TranslationTag,
+} from "../../types/translations";
+
+type Country = { label: string; value: string };
 
 export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   const fetchTranslations = (url) => {
@@ -14,7 +27,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       });
   };
 
-  const loadGlobalTranslations = async (language, tag) => {
+  const loadGlobalTranslations = async (language?: Language, tag?: TranslationTag): Promise<FormioTranslationMap> => {
     let filter = "";
     if (language) {
       filter += `&data.language=${language}`;
@@ -22,11 +35,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     if (tag) {
       filter += `&data.tag=${tag}`;
     }
-    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
-      .then((response) => {
-        return response;
-      })
-      .then((response) => {
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`).then(
+      (response) => {
         return response.reduce((globalTranslations, translation) => {
           const { data, _id: id } = translation;
           const { i18n, scope, name, tag } = data;
@@ -52,44 +62,44 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
           return globalTranslations;
         }, {});
-      })
-      .then((globalTranslations) => {
-        return globalTranslations;
-      });
+      }
+    );
   };
 
-  const loadTranslationsForForm = async (formPath) => {
+  const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {
     return fetchTranslations(
       `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=null`
-    )
-      .then((response) => {
-        return response;
-      })
-      .then((translations) => {
-        const languagesWithLocalTranslation = translations.reduce((localTranslations, translation) => {
-          if (localTranslations.indexOf(translation.data.language) === -1) {
-            return [...localTranslations, translation.data.language];
-          } else {
-            return localTranslations;
-          }
-        }, []);
-        return translations.filter(
-          (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1
-        );
-      })
-      .then((translations) => {
-        return translations;
-      });
+    ).then((translations: FormioTranslationPayload[]) => {
+      const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
+        if (localTranslations.indexOf(translation.data.language) === -1) {
+          return [...localTranslations, translation.data.language];
+        } else {
+          return localTranslations;
+        }
+      }, []);
+      return translations.filter(
+        (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1
+      );
+    });
   };
 
-  const loadCountryNames = async (locale) => {
-    const languageCodesIso639_1 = { "nn-NO": "nn", "nb-NO": "nb" };
-    return fetch(`${serverURL}/countries?lang=${languageCodesIso639_1[locale] || locale}`).then((response) =>
+  const loadCountryNames = async (locale: Language): Promise<Country[]> => {
+    const getLanguageCodeAsIso639_1 = (locale: Language): LanguageCodeIso639_1 => {
+      switch (locale) {
+        case "nn-NO":
+          return "nn";
+        case "nb-NO":
+          return "nb";
+        default:
+          return locale;
+      }
+    };
+    return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
       response.json()
     );
   };
 
-  const zipCountryNames = (keyNames, valueNames) => {
+  const zipCountryNames = (keyNames: Country[], valueNames: Country[]): ScopedTranslationMap => {
     keyNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
     valueNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
     return keyNames.reduce(
@@ -101,9 +111,9 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     );
   };
 
-  const loadAndInsertCountryNames = async (translations) => {
-    const localesInTranslations = Object.keys(translations);
-    const norwegianCountryNames = await loadCountryNames("nb");
+  const loadAndInsertCountryNames = async (translations: FormioTranslation): Promise<FormioTranslation | {}> => {
+    const localesInTranslations = Object.keys(translations).filter((lang): lang is Language => !!(lang as Language));
+    const norwegianCountryNames = await loadCountryNames("nb-NO");
     return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) =>
       localesInTranslations.reduce(
         (accumulated, locale, index) => ({
@@ -121,7 +131,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     );
   };
 
-  const loadTranslationsForEditPage = async (formPath) => {
+  const loadTranslationsForEditPage = async (formPath: string): Promise<FormioTranslationMap> => {
     return loadTranslationsForForm(formPath)
       .then((translations) =>
         translations
@@ -133,6 +143,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       )
       .then(loadAndInsertCountryNames)
       .then((translations) => {
+        console.log("loadTranslationsForEditPage", translations);
         return translations;
       });
   };
@@ -151,7 +162,18 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     });
   };
 
-  const saveTranslation = (projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle) => {
+  const saveTranslation = (
+    projectUrl: string,
+    translationId,
+    language: Language,
+    i18n: I18nTranslationMap,
+    name: string,
+    scope: TranslationScope,
+    form?: string,
+    tag?: TranslationTag,
+    formTitle?: string
+  ) => {
+    console.log(projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle);
     Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -182,9 +204,16 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     });
   };
 
-  const saveLocalTranslation = (projectUrl, translationId, languageCode, translations, formPath, formTitle) => {
+  const saveLocalTranslation = (
+    projectUrl: string,
+    translationId: string,
+    languageCode: Language,
+    translations: ScopedTranslationMap,
+    formPath: string,
+    formTitle: string
+  ) => {
     if (translations) {
-      const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+      const i18n: I18nTranslationMap = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].scope === "local" && translations[translatedText].value) {
           return {
             ...translationsToSave,
@@ -207,9 +236,15 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       );
     }
   };
-  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, tag) => {
+  const saveGlobalTranslation = (
+    projectUrl: string,
+    translationId: string,
+    languageCode: Language,
+    translations: ScopedTranslationMap,
+    tag: TranslationTag
+  ) => {
     if (Object.keys(translations).length !== 0) {
-      const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+      const i18n: I18nTranslationMap = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].value) {
           return {
             ...translationsToSave,
