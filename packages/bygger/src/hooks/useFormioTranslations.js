@@ -176,19 +176,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
-  const saveGlobalTranslation = (
-    projectUrl,
-    translationId,
-    languageCode,
-    translations,
-    tag,
-    hasDuplicatedOriginalText
-  ) => {
-    if (hasDuplicatedOriginalText) {
-      userAlerter.setErrorMessage("Du har fortsatt en duplisert original tekst");
-      return;
-    }
-
+  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, tag) => {
     if (Object.keys(translations).length !== 0 || tag === "skjematekster") {
       const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].value) {
