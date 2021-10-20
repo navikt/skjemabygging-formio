@@ -304,6 +304,22 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Skriv ut skjemaet", type: "text" },
     ]);
   });
+
+  it("Henter downloadPdfButtonText form properties", () => {
+    const actual = getTextsAndTypeForForm({
+      components: [],
+      type: "form",
+      title: "Testskjema",
+      properties: {
+        skjemanummer: "TST 12.13-14",
+        innsending: "KUN_PAPIR",
+        downloadPdfButtonText: "Last ned pdf",
+      },
+    });
+    expect(actual).toEqual([
+      { text: "Last ned pdf", type: "text" },
+    ]);
+  });
 });
 describe("testGetTextsAndTranslationsForForm", () => {
   const form = createFormObject(

@@ -135,7 +135,19 @@ export function genererAdresse(submission) {
   };
 }
 
-export function genererFoerstesideData(form, submission): ForstesideRequestBody {
+const parseLanguage = language => {
+  switch (language) {
+    case "nn-NO":
+      return "NN";
+    case "nb-NO":
+      return "NB";
+    case "en":
+    default:
+      return "EN";
+  }
+}
+
+export function genererFoerstesideData(form, submission, language = "nb-NO"): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema },
     title,
@@ -146,7 +158,7 @@ export function genererFoerstesideData(form, submission): ForstesideRequestBody 
     ...genererPersonalia(fodselsnummerDNummerSoker, adresse),
     foerstesidetype: "SKJEMA",
     navSkjemaId: skjemanummer,
-    spraakkode: "NB",
+    spraakkode: parseLanguage(language),
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
     tema,
