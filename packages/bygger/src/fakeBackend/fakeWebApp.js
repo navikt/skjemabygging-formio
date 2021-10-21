@@ -15,8 +15,8 @@ export function parseQueryParams(dispatcher) {
 export function dispatcherWithBackend(backend) {
   const translations = [{ data: { i18n: { ja: "yes" }, language: "en", scope: "global" } }];
   const countries = [
-    { label: "Noreg", value: "NO" },
-    { label: "Austerrike", value: "AT" },
+    { label: "Norway", value: "NO" },
+    { label: "Austria", value: "AT" },
   ];
 
   return parseQueryParams(
