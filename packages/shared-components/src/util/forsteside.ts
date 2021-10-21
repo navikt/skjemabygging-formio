@@ -17,6 +17,14 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
+interface MottakerAdresse {
+  adresselinje1: string;
+  adresselinje2?: string;
+  adresselinje3?: string;
+  postnummer: string;
+  poststed: string;
+}
+
 export interface ForstesideRequestBody {
   foerstesidetype: ForstesideType;
   navSkjemaId: string;
@@ -26,7 +34,8 @@ export interface ForstesideRequestBody {
   tema: string;
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
-  netsPostboks: string;
+  netsPostboks?: string;
+  adresse?: MottakerAdresse;
 
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;
@@ -147,9 +156,19 @@ const parseLanguage = language => {
   }
 }
 
-export function genererFoerstesideData(form, submission, language = "nb-NO"): ForstesideRequestBody {
+function genererMottaksadresse(mottaksadresseId: string, mottaksadresser) {
+  if (mottaksadresseId) {
+    const mottaksadresse = mottaksadresser.find(a => a._id === mottaksadresseId);
+    if (mottaksadresse) {
+      return {adresse: {...mottaksadresse.data}};
+    }
+  }
+  return {netsPostboks: "1400"};
+}
+
+export function genererFoerstesideData(form, submission, language = "nb-NO", mottaksadresser): ForstesideRequestBody {
   const {
-    properties: { skjemanummer, tema },
+    properties: { skjemanummer, tema, mottaksadresseId },
     title,
   } = form;
   const { fodselsnummerDNummerSoker } = submission;
@@ -164,6 +183,6 @@ export function genererFoerstesideData(form, submission, language = "nb-NO"): Fo
     tema,
     vedleggsliste: genererVedleggsListe(form, submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
-    netsPostboks: "1400",
+    ...genererMottaksadresse(mottaksadresseId, mottaksadresser)
   };
 }

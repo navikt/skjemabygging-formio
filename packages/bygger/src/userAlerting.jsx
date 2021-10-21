@@ -199,5 +199,15 @@ export function useUserAlerting(pusher) {
       buildAbortedChannel.unbind("failure");
     };
   }, [pusher, userAlerter]);
+  useEffect(() => {
+    const buildAbortedChannel = pusher.subscribe("publish-resource-aborted");
+    buildAbortedChannel.bind("failure", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <PublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
+    return () => buildAbortedChannel.unbind("failure");
+  }, [pusher, userAlerter]);
   return userAlerter;
 }
