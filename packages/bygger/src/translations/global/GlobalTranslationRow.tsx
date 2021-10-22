@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Input } from "nav-frontend-skjema";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
-import { getAllPredefinedOriginalTexts } from "./utils";
 
 const useTranslationRowStyles = makeStyles({
   root: {
@@ -31,6 +30,7 @@ type Props = {
   updateOriginalText: Function;
   deleteOneRow: Function;
   currentOriginalTextList: string[];
+  predefinedGlobalOriginalTexts: string[];
 };
 
 const GlobalTranslationRow = ({
@@ -41,6 +41,7 @@ const GlobalTranslationRow = ({
   updateOriginalText,
   deleteOneRow,
   currentOriginalTextList,
+  predefinedGlobalOriginalTexts,
 }: Props) => {
   const classes = useTranslationRowStyles();
   const [duplicatedWarning, setDuplicatedWarning] = useState(false);
@@ -56,7 +57,7 @@ const GlobalTranslationRow = ({
             setDuplicatedWarning(false);
           }}
           onBlur={(event) => {
-            if (getAllPredefinedOriginalTexts().indexOf(event.target.value.toUpperCase()) < 0) {
+            if (predefinedGlobalOriginalTexts.indexOf(event.target.value.toUpperCase()) < 0) {
               if (
                 currentOriginalTextList.filter((originalText) => originalText === event.target.value.toUpperCase())
                   .length > 1

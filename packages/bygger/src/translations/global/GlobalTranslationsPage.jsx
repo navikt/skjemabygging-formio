@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
@@ -15,7 +15,7 @@ import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { UserAlerterContext } from "../../userAlerting";
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer.ts";
+import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import { flattenTextsForEditPanel, getAllPredefinedOriginalTexts } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
@@ -120,6 +120,7 @@ const GlobalTranslationsPage = ({
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
 
+  const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
   }
@@ -207,7 +208,7 @@ const GlobalTranslationsPage = ({
 
   const hasDuplicatedOriginalText = () => {
     return getCurrentOriginalTextList().filter((originalText, index, array) => {
-      if (getAllPredefinedOriginalTexts().indexOf(originalText) >= 0) return originalText;
+      if (predefinedOriginalTextList.indexOf(originalText) >= 0) return originalText;
       return array.indexOf(originalText) !== index;
     });
   };
@@ -258,6 +259,7 @@ const GlobalTranslationsPage = ({
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
                 currentOriginalTextList={getCurrentOriginalTextList()}
+                predefinedGlobalOriginalTexts={predefinedOriginalTextList}
               />
               <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
                 Legg til ny tekst
