@@ -75,6 +75,7 @@ const GlobalTranslationsPage = ({
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
+  const [currentOriginalTextList, setCurrentOriginalTextList] = useState();
   const history = useHistory();
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => getCurrenttranslationsReducer(state, action),
@@ -120,6 +121,15 @@ const GlobalTranslationsPage = ({
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
 
+  useEffect(() => {
+    setCurrentOriginalTextList(
+      currentTranslation.reduce((originalTextList, translations) => {
+        const { originalText } = translations;
+        if (originalText !== "") return [...originalTextList, originalText.toUpperCase()];
+        else return originalTextList;
+      }, [])
+    );
+  }, [currentTranslation]);
   const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
@@ -198,16 +208,8 @@ const GlobalTranslationsPage = ({
     }, {});
   };
 
-  const getCurrentOriginalTextList = () => {
-    return currentTranslation.reduce((originalTextList, translations) => {
-      const { originalText } = translations;
-      if (originalText !== "") return [...originalTextList, originalText.toUpperCase()];
-      else return originalTextList;
-    }, []);
-  };
-
   const hasDuplicatedOriginalText = () => {
-    return getCurrentOriginalTextList().filter((originalText, index, array) => {
+    return currentOriginalTextList.filter((originalText, index, array) => {
       if (predefinedOriginalTextList.indexOf(originalText) >= 0) return originalText;
       return array.indexOf(originalText) !== index;
     });
@@ -258,7 +260,7 @@ const GlobalTranslationsPage = ({
                 updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
-                currentOriginalTextList={getCurrentOriginalTextList()}
+                currentOriginalTextList={currentOriginalTextList}
                 predefinedGlobalOriginalTexts={predefinedOriginalTextList}
               />
               <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
