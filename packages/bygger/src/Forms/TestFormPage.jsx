@@ -12,7 +12,7 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
   const currentLanguage = params.get("lang");
   const { getTranslationsForNavForm } = useTranslations();
 
-  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(form), [form]);
+  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(form), [getTranslationsForNavForm, form]);
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
