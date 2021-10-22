@@ -1,5 +1,5 @@
 import { Undertittel } from "nav-frontend-typografi";
-import GlobalTranslationRow from "./GlobalTranslationRow.tsx";
+import GlobalTranslationRow from "./GlobalTranslationRow";
 import React from "react";
 
 const GlobalTranslationsPanel = ({
@@ -10,6 +10,7 @@ const GlobalTranslationsPanel = ({
   updateTranslation,
   deleteOneRow,
   currentOriginalTextList,
+  predefinedGlobalOriginalTexts,
 }) => {
   return (
     <form>
@@ -28,6 +29,7 @@ const GlobalTranslationsPanel = ({
           updateTranslation={updateTranslation}
           deleteOneRow={deleteOneRow}
           currentOriginalTextList={currentOriginalTextList}
+          predefinedGlobalOriginalTexts={predefinedGlobalOriginalTexts}
         />
       ))}
     </form>

@@ -22,6 +22,7 @@ describe("GlobalTranslationRow", () => {
         updateOriginalText={mockedUpdateOriginalText}
         deleteOneRow={mockedDeleteOneRow}
         currentOriginalTextList={mockedCurrentOriginalTextList}
+        predefinedGlobalOriginalTexts={["FORRIGE", "NESTE", "FJERN"]}
       />
     );
 
@@ -40,38 +41,30 @@ describe("GlobalTranslationRow", () => {
   });
 
   it("renders globalTranslation row with originalText and translation", () => {
-    renderGlobalTranslationRow("forrige", "previous", ["AVBRYT, NESTE"]);
-    expect(screen.getByTestId("originalText")).toHaveValue("forrige");
-    expect(screen.getByTestId("translation")).toHaveValue("previous");
+    renderGlobalTranslationRow("Norge", "Norway", ["FORNAVN", "ETTERNAVN"]);
+    expect(screen.getByTestId("originalText")).toHaveValue("Norge");
+    expect(screen.getByTestId("translation")).toHaveValue("Norway");
   });
 
-  it("renders disabled translation input when original text(lower case) exists in current original text list", () => {
-    renderGlobalTranslationRow("forrige", "previous", ["AVBRYT, NESTE"]);
+  it("renders disabled translation input when original text exists in predefined original text list ", () => {
+    renderGlobalTranslationRow("forrige", "", []);
     const originalTextInput = screen.getByTestId("originalText");
     const translationInput = screen.getByTestId("translation");
-    userEvent.type(originalTextInput, "avbryt");
+    expect(originalTextInput).toHaveValue("forrige");
+    expect(translationInput).toHaveValue("");
+    originalTextInput.focus();
     userEvent.tab();
-    expect(mockedUpdateOriginalText).toBeCalled();
-    expect(translationInput).toBeDisabled();
-  });
-
-  it("renders disabled translation input when original text(with one uppercase) exists in current original text list", () => {
-    renderGlobalTranslationRow("forrige", "previous", ["AVBRYT, NESTE"]);
-    const originalTextInput = screen.getByTestId("originalText");
-    const translationInput = screen.getByTestId("translation");
-    userEvent.type(originalTextInput, "avbRyt");
-    userEvent.tab();
-    expect(mockedUpdateOriginalText).toBeCalled();
+    expect(screen.getByText("Denne teksten er allerede oversatt.")).toBeTruthy();
     expect(translationInput).toBeDisabled();
   });
 
   it("renders same original text and translation when there is no change only tabbed over", () => {
-    renderGlobalTranslationRow("forrige", "previous", ["AVBRYT, NESTE"]);
+    renderGlobalTranslationRow("Norge", "Norway", ["FORNAVN", "ETTERNAVN"]);
     const originalTextInput = screen.getByTestId("originalText");
     const translationInput = screen.getByTestId("translation");
     userEvent.tab();
     expect(mockedUpdateOriginalText).not.toBeCalled();
-    expect(originalTextInput).toHaveValue("forrige");
-    expect(translationInput).toHaveValue("previous");
+    expect(originalTextInput).toHaveValue("Norge");
+    expect(translationInput).toHaveValue("Norway");
   });
 });
