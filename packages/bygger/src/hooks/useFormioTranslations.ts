@@ -20,11 +20,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
       },
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        return response;
-      });
+    }).then((response) => response.json());
   };
 
   const loadGlobalTranslations = async (language?: Language, tag?: TranslationTag): Promise<FormioTranslationMap> => {
@@ -141,10 +137,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           }))
           .reduce(combineTranslationResources, {})
       )
-      .then(loadAndInsertCountryNames)
-      .then((translations) => {
-        return translations;
-      });
+      .then(loadAndInsertCountryNames);
   };
 
   const deleteTranslation = async (id) => {

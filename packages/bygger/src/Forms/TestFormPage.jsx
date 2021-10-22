@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FyllUtRouter, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
@@ -11,6 +11,8 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
   const params = new URLSearchParams(history.location.search);
   const currentLanguage = params.get("lang");
   const { getTranslationsForNavForm } = useTranslations();
+
+  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(form), [form]);
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
@@ -29,10 +31,7 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
           </Link>
         )}
       </ActionRow>
-      <FyllUtRouter
-        form={form}
-        translations={featureToggles.enableTranslations ? getTranslationsForNavForm(form) : undefined}
-      />
+      <FyllUtRouter form={form} translations={featureToggles.enableTranslations ? translationsForNavForm : undefined} />
     </AppLayoutWithContext>
   );
 }
