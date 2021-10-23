@@ -10,9 +10,10 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
   const currentLanguage = params.get("lang");
-  const { getTranslationsForNavForm } = useTranslations();
+  const { getTranslationsForNavForm, getCountryNameTranslations } = useTranslations();
 
-  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(form), [getTranslationsForNavForm, form]);
+  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(), [getTranslationsForNavForm]);
+  const countryNameTranslations = useMemo(() => getCountryNameTranslations(), [getCountryNameTranslations]);
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
@@ -31,7 +32,11 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
           </Link>
         )}
       </ActionRow>
-      <FyllUtRouter form={form} translations={featureToggles.enableTranslations ? translationsForNavForm : undefined} />
+      <FyllUtRouter
+        form={form}
+        translations={featureToggles.enableTranslations && translationsForNavForm}
+        countryNameTranslations={featureToggles.enableTranslations && countryNameTranslations}
+      />
     </AppLayoutWithContext>
   );
 }

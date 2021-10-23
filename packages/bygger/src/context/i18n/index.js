@@ -36,16 +36,14 @@ function I18nProvider({ children, loadTranslations }) {
       : originalText;
   }
 
-  function hasComponentType(form, type) {
-    const isAnyComponentOfType = (components) =>
-      components?.some((component) => component.type === type || isAnyComponentOfType(component?.components));
-    return form?.components ? isAnyComponentOfType(form?.components) : false;
+  function getTranslationsForNavForm() {
+    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
+    return mapTranslationsToFormioI18nObject(translations, withoutCountryNames);
   }
 
-  function getTranslationsForNavForm(form) {
-    const hasLandvelger = hasComponentType(form, "landvelger");
-    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
-    return mapTranslationsToFormioI18nObject(translations, hasLandvelger ? undefined : withoutCountryNames);
+  function getCountryNameTranslations() {
+    const countryNamesOnly = (translation) => translation.scope === "component-countryName";
+    return mapTranslationsToFormioI18nObject(translations, countryNamesOnly);
   }
 
   return (
@@ -54,6 +52,7 @@ function I18nProvider({ children, loadTranslations }) {
         translate,
         translations,
         getTranslationsForNavForm,
+        getCountryNameTranslations,
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
