@@ -1,4 +1,5 @@
 import Formiojs from "formiojs/Formio";
+import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import {
   FormioTranslation,
@@ -6,11 +7,12 @@ import {
   FormioTranslationPayload,
   I18nTranslationMap,
   Language,
-  LanguageCodeIso639_1,
   ScopedTranslationMap,
   TranslationScope,
   TranslationTag,
 } from "../../types/translations";
+
+const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
 type Country = { label: string; value: string };
 
@@ -80,30 +82,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   };
 
   const loadCountryNames = async (locale: Language): Promise<Country[]> => {
-    const getLanguageCodeAsIso639_1 = (locale: Language): LanguageCodeIso639_1 => {
-      switch (locale) {
-        case "nn-NO":
-          return "nn";
-        case "nb-NO":
-          return "nb";
-        default:
-          return locale;
-      }
-    };
     return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
       response.json()
-    );
-  };
-
-  const zipCountryNames = (keyNames: Country[], valueNames: Country[]): ScopedTranslationMap => {
-    keyNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
-    valueNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
-    return keyNames.reduce(
-      (acc, { label }, index) => ({
-        ...acc,
-        [label]: { value: valueNames[index].label, scope: "component-countryName" },
-      }),
-      {}
     );
   };
 
@@ -118,7 +98,10 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
             ...translations[locale],
             translations: {
               ...translations[locale].translations,
-              ...zipCountryNames(norwegianCountryNames, loadedCountryNames[index]),
+              ...zipCountryNames(norwegianCountryNames, loadedCountryNames[index], (countryName) => ({
+                value: countryName.label,
+                scope: "component-countryName",
+              })),
             },
           },
         }),

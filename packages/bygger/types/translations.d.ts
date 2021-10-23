@@ -1,5 +1,4 @@
 export type Language = "nb-NO" | "nn-NO" | "en" | "pl";
-export type LanguageCodeIso639_1 = "nb" | "nn" | "en" | "pl";
 export type TranslationScope = "global" | "local" | "component-countryName";
 export type TranslationTag = "skjematekster" | "grensesnitt" | "statiske-tekster" | "validering";
 export type I18nTranslationMap = { [key: string]: string };
