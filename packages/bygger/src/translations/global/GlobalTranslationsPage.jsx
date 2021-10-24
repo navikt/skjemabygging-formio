@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -16,7 +15,7 @@ import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
-import { flattenTextsForEditPanel, getAllPredefinedOriginalTexts } from "./utils";
+import { getAllPredefinedOriginalTexts, tags } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -47,13 +46,6 @@ const useGlobalTranslationsPageStyles = makeStyles({
     gridColumn: "2 / 3",
   },
 });
-
-const tags = {
-  SKJEMATEKSTER: "skjematekster",
-  GRENSESNITT: "grensesnitt",
-  STATISKE_TEKSTER: "statiske-tekster",
-  VALIDERING: "validering",
-};
 
 const GlobalTranslationsPage = ({
   deleteTranslation,
@@ -172,20 +164,6 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  function getApplicationTexts(tag) {
-    const { grensesnitt, statiske, validering, common } = TEXTS;
-    switch (tag) {
-      case tags.GRENSESNITT:
-        return flattenTextsForEditPanel({ ...grensesnitt, ...common });
-      case tags.STATISKE_TEKSTER:
-        return flattenTextsForEditPanel(statiske);
-      case tags.VALIDERING:
-        return flattenTextsForEditPanel(validering);
-      default:
-        return [];
-    }
-  }
-
   const getTranslationIdsForLanguage = () => {
     return allGlobalTranslations[languageCode].reduce((translationId, translations) => {
       const { id } = translations;
@@ -270,7 +248,7 @@ const GlobalTranslationsPage = ({
           ) : (
             <ApplicationTextTranslationEditPanel
               classes={classes}
-              texts={getApplicationTexts(selectedTag)}
+              selectedTag={selectedTag}
               translations={currentTranslation}
               languageCode={languageCode}
               updateTranslation={updateTranslation}

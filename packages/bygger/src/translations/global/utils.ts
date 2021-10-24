@@ -1,7 +1,14 @@
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
-const flattenTextsForEditPanel = (texts) => {
+const tags = {
+  SKJEMATEKSTER: "skjematekster",
+  GRENSESNITT: "grensesnitt",
+  STATISKE_TEKSTER: "statiske-tekster",
+  VALIDERING: "validering",
+};
+
+const flattenTextsForEditPanel = (texts: any): Array<any> => {
   return removeDuplicatedComponents(
     objectUtils.flattenToArray(texts, (entry, parentKey) => {
       const key = objectUtils.concatKeys(entry[0], parentKey);
@@ -11,11 +18,11 @@ const flattenTextsForEditPanel = (texts) => {
   );
 };
 
-const getAllPredefinedOriginalTexts = () => {
+const getAllPredefinedOriginalTexts = (): string[] => {
   const { grensesnitt, statiske, validering, common } = TEXTS;
   return objectUtils.flattenToArray({ ...grensesnitt, ...statiske, ...validering, ...common }, (entry) => {
     return entry[1].toUpperCase();
   });
 };
 
-export { flattenTextsForEditPanel, getAllPredefinedOriginalTexts };
+export { tags, flattenTextsForEditPanel, getAllPredefinedOriginalTexts };
