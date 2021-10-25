@@ -11,6 +11,7 @@ import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
 import { UserAlerterContext } from "../userAlerting";
 import { Undertittel } from "nav-frontend-typografi";
+import { useTranslations } from "../context/i18n";
 
 const useStyles = makeStyles({
   mainCol: {
@@ -28,6 +29,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
   const title = `${form.title}`;
   const [openModal, setOpenModal] = useModal(false);
   const styles = useStyles();
+  const { getTranslationsForNavForm } = useTranslations();
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true, logout: onLogout }}>
@@ -60,6 +62,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
         closeModal={() => setOpenModal(false)}
         form={form}
         onPublish={onPublish}
+        translations={getTranslationsForNavForm()}
       />
     </AppLayoutWithContext>
   );
