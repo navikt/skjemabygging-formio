@@ -15,6 +15,7 @@ import i18nData from "./i18nData";
 import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 import useCurrentLanguage from "./context/languages/useCurrentLanguage";
 import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
+import { mapTranslationsToFormioI18nObject } from "./context/languages/translationsMapper";
 
 export {
   NavForm,
@@ -39,4 +40,5 @@ export {
   useLanguages,
   useCurrentLanguage,
   useLanguageCodeFromURL,
+  mapTranslationsToFormioI18nObject,
 };

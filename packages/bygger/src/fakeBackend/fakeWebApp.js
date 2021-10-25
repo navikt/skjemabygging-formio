@@ -15,6 +15,10 @@ export function parseQueryParams(dispatcher) {
 
 export function dispatcherWithBackend(backend) {
   const translations = [{ data: { i18n: { ja: "yes" }, language: "en", scope: "global" } }];
+  const countries = [
+    { label: "Norway", value: "NO" },
+    { label: "Austria", value: "AT" },
+  ];
 
   return parseQueryParams(
     dispatch({
@@ -41,6 +45,10 @@ export function dispatcherWithBackend(backend) {
         GET: (req, res) => {
           res.json(translations);
         },
+      },
+
+      "/countries": (req, res) => {
+        res.json(countries);
       },
 
       "/mottaksadresse/submission": {
