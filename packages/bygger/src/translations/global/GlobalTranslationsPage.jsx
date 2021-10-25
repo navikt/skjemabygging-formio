@@ -259,12 +259,13 @@ const GlobalTranslationsPage = ({
           <Hovedknapp
             onClick={() => {
               if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+                const duplicatedOriginalText = hasDuplicatedOriginalText();
                 alert(
                   `Du har fortsatt ${
-                    hasDuplicatedOriginalText().length > 1
+                    duplicatedOriginalText.length > 1
                       ? "flere dupliserte original tekster"
                       : "en duplisert original tekst"
-                  } (${hasDuplicatedOriginalText()})`
+                  } (${duplicatedOriginalText})`
                 );
               } else {
                 saveTranslation(
