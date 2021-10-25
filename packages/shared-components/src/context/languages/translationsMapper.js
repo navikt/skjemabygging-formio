@@ -8,12 +8,19 @@ const flattenTranslationObject = (translationObject) => {
   );
 };
 
-const mapTranslationsToFormioI18nObject = (translations) => {
+const mapTranslationsToFormioI18nObject = (translations, filterPredicate) => {
+  const getTranslationsForLanguageCode = (languageCode) => {
+    const translationsForLanguage = translations[languageCode].translations;
+    return filterPredicate
+      ? Object.fromEntries(Object.entries(translationsForLanguage).filter(([_, value]) => filterPredicate(value)))
+      : translationsForLanguage;
+  };
+
   return Object.keys(translations).reduce(
     (formioI18nObject, languageCode) => ({
       ...formioI18nObject,
       [languageCode]: {
-        ...flattenTranslationObject(translations[languageCode].translations || {}),
+        ...flattenTranslationObject(getTranslationsForLanguageCode(languageCode) || {}),
       },
     }),
     {}

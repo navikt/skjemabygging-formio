@@ -8,7 +8,7 @@ import { UserAlerterContext } from "./userAlerting";
 import LoadingComponent from "./components/LoadingComponent";
 import TranslationsRouter from "./translations/TranslationsRouter";
 
-function AuthenticatedApp({ formio, store }) {
+function AuthenticatedApp({ serverURL, formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
   const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useFormioForms(formio, store, userAlerter);
   const {
@@ -17,7 +17,7 @@ function AuthenticatedApp({ formio, store }) {
     deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
-  } = useFormioTranslations(formio, userAlerter);
+  } = useFormioTranslations(serverURL, formio, userAlerter);
 
   const history = useHistory();
   const wrappedCreate = (newForm) => {

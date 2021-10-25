@@ -1,6 +1,17 @@
-import { combineTranslationResources } from "./translationsMapper";
+import { combineTranslationResources, TranslationResource } from "./translationsMapper";
 
-const mockTranslationBokmalLocal = {
+const defaultTranslationResource: TranslationResource = {
+  id: "",
+  language: "en",
+  scope: "local",
+  i18n: {},
+  name: "name",
+  form: "form",
+  tag: "",
+};
+
+const mockTranslationBokmalLocal: TranslationResource = {
+  ...defaultTranslationResource,
   id: "bokmal-local",
   language: "nb-NO",
   scope: "local",
@@ -10,7 +21,8 @@ const mockTranslationBokmalLocal = {
   },
 };
 
-const mockTranslationNynorskLocal = {
+const mockTranslationNynorskLocal: TranslationResource = {
+  ...defaultTranslationResource,
   id: "nynorsk-local",
   language: "nn-NO",
   scope: "local",
@@ -20,7 +32,8 @@ const mockTranslationNynorskLocal = {
   },
 };
 
-const mockTranslationNynorskGlobal = {
+const mockTranslationNynorskGlobal: TranslationResource = {
+  ...defaultTranslationResource,
   id: "nynorsk-global",
   language: "nn-NO",
   scope: "global",
@@ -29,7 +42,8 @@ const mockTranslationNynorskGlobal = {
   },
 };
 
-const mockTranslationEnglishGlobal = {
+const mockTranslationEnglishGlobal: TranslationResource = {
+  ...defaultTranslationResource,
   id: "english-global",
   language: "en",
   scope: "global",

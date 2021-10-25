@@ -25,17 +25,13 @@ describe("ApplicationTextTranslationEditPanel", () => {
     });
   });
 
-  describe("Rendering with three texts and one translation", () => {
+  describe("Rendering with Grensesnitt texts and one translation", () => {
     const mockedUpdateTranslation = jest.fn();
     beforeEach(() => {
       render(
         <ApplicationTextTranslationEditPanel
-          texts={[
-            { key: "key1", text: "text1" },
-            { key: "key2", text: "text2" },
-            { key: "key3", text: "text3" },
-          ]}
-          translations={[{ id: "id", originalText: "text1", translatedText: "TEXT1" }]}
+          selectedTag={"grensesnitt"}
+          translations={[{ id: "id", originalText: "Juli", translatedText: "July" }]}
           languageCode={"en"}
           updateTranslation={mockedUpdateTranslation}
         />
@@ -46,30 +42,30 @@ describe("ApplicationTextTranslationEditPanel", () => {
       mockedUpdateTranslation.mockClear();
     });
 
-    it("renders all three inputs", () => {
-      expect(screen.getAllByRole("textbox")).toHaveLength(3);
+    it("renders all grensesnitt inputs", () => {
+      expect(screen.getAllByRole("textbox")).toHaveLength(32);
     });
 
-    it("renders text1 with translatedText as value", () => {
-      expect(screen.getByLabelText("text1").getAttribute("value")).toEqual("TEXT1");
+    it("renders originalText with translatedText as value", () => {
+      expect(screen.getByLabelText("Juli").getAttribute("value")).toEqual("July");
     });
 
-    it("renders text2 without a value", () => {
-      expect(screen.getByLabelText("text2").getAttribute("value")).toEqual("");
+    it("renders originalText without a value", () => {
+      expect(screen.getByLabelText("Juni").getAttribute("value")).toEqual("");
     });
 
     describe("onChange", () => {
       it("calls updateTranslation with existing id, text and new value, when text already has a translation", () => {
-        const text1 = screen.getByLabelText("text1");
+        const text1 = screen.getByLabelText("Juli");
         fireEvent.change(text1, { target: { value: "new global translation" } });
         expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1);
-        expect(mockedUpdateTranslation).toHaveBeenCalledWith("id", "text1", "new global translation");
+        expect(mockedUpdateTranslation).toHaveBeenCalledWith("id", "Juli", "new global translation");
       });
       it("calls updateTranslation with empty string as id, text and new value, when text did not have a translation", () => {
-        const text1 = screen.getByLabelText("text2");
+        const text1 = screen.getByLabelText("Juni");
         fireEvent.change(text1, { target: { value: "new global translation" } });
         expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1);
-        expect(mockedUpdateTranslation).toHaveBeenCalledWith("", "text2", "new global translation");
+        expect(mockedUpdateTranslation).toHaveBeenCalledWith("", "Juni", "new global translation");
       });
     });
   });

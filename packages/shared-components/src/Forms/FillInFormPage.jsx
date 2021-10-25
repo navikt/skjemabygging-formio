@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
@@ -10,7 +10,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
-  const { currentLanguage, translate, translationsForNavForm } = useLanguages();
+  const { currentLanguage, translate, getTranslationsForNavForm } = useLanguages();
+
+  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(), [getTranslationsForNavForm]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;

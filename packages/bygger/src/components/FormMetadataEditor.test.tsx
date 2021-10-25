@@ -1,4 +1,4 @@
-import {CreationFormMetadataEditor, FormMetadataEditor, UpdateFormFunction} from "./FormMetadataEditor";
+import { CreationFormMetadataEditor, FormMetadataEditor, UpdateFormFunction } from "./FormMetadataEditor";
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -14,10 +14,9 @@ import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
 import { Formio } from "formiojs";
 import Formiojs from "formiojs/Formio";
-import {NavFormType} from "../Forms/navForm";
+import { NavFormType } from "../Forms/navForm";
 
 describe("FormMetadataEditor", () => {
-
   let mockOnChange: jest.MockedFunction<UpdateFormFunction>;
 
   beforeEach(() => {
@@ -25,7 +24,6 @@ describe("FormMetadataEditor", () => {
   });
 
   describe("Usage context: EDIT", () => {
-
     let fakeBackend;
 
     beforeEach(() => {
@@ -138,6 +136,7 @@ describe("FormMetadataEditor", () => {
               <UserAlerterContext.Provider value={userAlerter}>
                 <AppConfigProvider featureToggles={featureToggles}>
                   <AuthenticatedApp
+                    serverURL={"http://myproject.example.org"}
                     formio={new Formio("http://myproject.example.org")}
                     store={{ forms: [fakeBackend.form()] }}
                   />
@@ -153,11 +152,9 @@ describe("FormMetadataEditor", () => {
         await waitFor(() => expect(visningsModus).toHaveValue("wizard"));
       });
     });
-
   });
 
   describe("Usage context: CREATE", () => {
-
     const defaultForm: NavFormType = {
       title: "Testskjema",
       name: "testskjema",
@@ -172,11 +169,10 @@ describe("FormMetadataEditor", () => {
         tema: "BIL",
         hasLabeledSignatures: false,
       },
-      display: "wizard"
+      display: "wizard",
     };
 
     describe("Forklaring til innsending", () => {
-
       it("Viser input for forklaring når innsending settes til INGEN", async () => {
         const { rerender } = render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
@@ -195,9 +191,9 @@ describe("FormMetadataEditor", () => {
           ...defaultForm,
           properties: {
             ...defaultForm.properties,
-            innsending: "INGEN"
-          }
-        }
+            innsending: "INGEN",
+          },
+        };
         const { rerender } = render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).not.toBeNull();
         userEvent.selectOptions(screen.getByLabelText("Innsending"), "KUN_PAPIR");
@@ -209,17 +205,16 @@ describe("FormMetadataEditor", () => {
         rerender(<CreationFormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
       });
-
-    })
+    });
 
     it("Valg av innsending=KUN_PAPIR", async () => {
       const form: NavFormType = {
         ...defaultForm,
         properties: {
           ...defaultForm.properties,
-          innsending: "PAPIR_OG_DIGITAL"
-        }
-      }
+          innsending: "PAPIR_OG_DIGITAL",
+        },
+      };
       const { rerender } = render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
       expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
       userEvent.selectOptions(screen.getByLabelText("Innsending"), "KUN_PAPIR");
@@ -233,14 +228,13 @@ describe("FormMetadataEditor", () => {
     });
 
     describe("Egendefinert tekst på knapp for nedlasting av pdf", () => {
-
-      const formMedDownloadPdfButtonText = downloadPdfButtonText => ({
+      const formMedDownloadPdfButtonText = (downloadPdfButtonText) => ({
         ...defaultForm,
         properties: {
           ...defaultForm.properties,
           downloadPdfButtonText,
-        }
-      })
+        },
+      });
 
       it("lagres i properties", async () => {
         const form = formMedDownloadPdfButtonText(undefined);
@@ -263,9 +257,6 @@ describe("FormMetadataEditor", () => {
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
         expect(updatedForm.properties.downloadPdfButtonText).toEqual("");
       });
-
     });
-
   });
-
 });

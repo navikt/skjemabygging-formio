@@ -64,7 +64,11 @@ describe("FormsRouter", () => {
         >
           <UserAlerterContext.Provider value={userAlerter}>
             <AppConfigProvider featureToggles={featureToggles}>
-              <AuthenticatedApp store={formStore} formio={new Formio("http://myproject.example.org")} />
+              <AuthenticatedApp
+                store={formStore}
+                formio={new Formio("http://myproject.example.org")}
+                serverURL={"http://myproject.example.org"}
+              />
             </AppConfigProvider>
           </UserAlerterContext.Provider>
         </AuthContext.Provider>
@@ -189,7 +193,7 @@ describe("FormsRouter", () => {
     await waitForExpect(() => expect(formBuilder.instance.builderState).toEqual("destroyed"));
   });
 
-  it("lets navigate from the list to the editor", async () => {
+  it("navigates from the list to the editor", async () => {
     renderApp("/forms");
     setTimeout.mock.calls[0][0]();
     await waitForExpect(() => expect(formStore.forms).toHaveLength(2));

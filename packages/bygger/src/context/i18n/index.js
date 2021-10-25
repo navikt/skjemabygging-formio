@@ -11,7 +11,6 @@ const I18nContext = createContext({});
 
 function I18nProvider({ children, loadTranslations }) {
   const [translations, setTranslations] = useState({});
-  const [translationsForNavForm, setTranslationsForNavForm] = useState(undefined);
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState([]);
@@ -22,7 +21,6 @@ function I18nProvider({ children, loadTranslations }) {
       loadTranslations().then((loadedTranslations) => {
         setAvailableLanguages(Object.keys(loadedTranslations));
         setTranslations(loadedTranslations);
-        setTranslationsForNavForm(mapTranslationsToFormioI18nObject(loadedTranslations));
       });
     }
   }, [loadTranslations, translationsLoaded]);
@@ -38,12 +36,23 @@ function I18nProvider({ children, loadTranslations }) {
       : originalText;
   }
 
+  function getTranslationsForNavForm() {
+    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
+    return mapTranslationsToFormioI18nObject(translations, withoutCountryNames);
+  }
+
+  function getCountryNameTranslations() {
+    const countryNamesOnly = (translation) => translation.scope === "component-countryName";
+    return mapTranslationsToFormioI18nObject(translations, countryNamesOnly);
+  }
+
   return (
     <I18nContext.Provider
       value={{
         translate,
         translations,
-        translationsForNavForm,
+        getTranslationsForNavForm,
+        getCountryNameTranslations,
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
