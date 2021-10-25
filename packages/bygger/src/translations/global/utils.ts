@@ -25,4 +25,12 @@ const getAllPredefinedOriginalTexts = (): string[] => {
   });
 };
 
-export { tags, flattenTextsForEditPanel, getAllPredefinedOriginalTexts };
+const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] => {
+  return currentTranslation.reduce((originalTextList, translations) => {
+    const { originalText } = translations;
+    if (originalText !== "") return [...originalTextList, originalText.toUpperCase()];
+    else return originalTextList;
+  }, []);
+};
+
+export { tags, flattenTextsForEditPanel, getAllPredefinedOriginalTexts, getCurrentOriginalTextList };

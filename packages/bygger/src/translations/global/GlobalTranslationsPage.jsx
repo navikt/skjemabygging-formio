@@ -15,7 +15,7 @@ import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
-import { getAllPredefinedOriginalTexts, tags } from "./utils";
+import { getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -67,7 +67,6 @@ const GlobalTranslationsPage = ({
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
-  const [currentOriginalTextList, setCurrentOriginalTextList] = useState();
   const history = useHistory();
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => getCurrenttranslationsReducer(state, action),
@@ -113,15 +112,6 @@ const GlobalTranslationsPage = ({
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
 
-  useEffect(() => {
-    setCurrentOriginalTextList(
-      currentTranslation.reduce((originalTextList, translations) => {
-        const { originalText } = translations;
-        if (originalText !== "") return [...originalTextList, originalText.toUpperCase()];
-        else return originalTextList;
-      }, [])
-    );
-  }, [currentTranslation]);
   const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
@@ -187,7 +177,7 @@ const GlobalTranslationsPage = ({
   };
 
   const hasDuplicatedOriginalText = () => {
-    return currentOriginalTextList.filter((originalText, index, array) => {
+    return getCurrentOriginalTextList(currentTranslation).filter((originalText, index, array) => {
       if (predefinedOriginalTextList.indexOf(originalText) >= 0) return originalText;
       return array.indexOf(originalText) !== index;
     });
@@ -238,7 +228,6 @@ const GlobalTranslationsPage = ({
                 updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
-                currentOriginalTextList={currentOriginalTextList}
                 predefinedGlobalOriginalTexts={predefinedOriginalTextList}
               />
               <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
