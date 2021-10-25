@@ -14,15 +14,22 @@ const FyllUtLanguageSelector = () => {
   if (availableLanguages.length === 0) {
     return null;
   }
-  const options = availableLanguages.map((languageCode) => ({
-    languageCode,
-    optionLabel: languagesInOriginalLanguage[languageCode],
-    href: `?lang=${languageCode}`,
-  }));
+
+  if (currentLanguage !== "nb-NO") {
+    availableLanguages.push("nb-NO");
+  }
+
+  const options = availableLanguages
+    .filter((languageCode) => languageCode !== currentLanguage)
+    .map((languageCode) => ({
+      languageCode,
+      optionLabel: languagesInOriginalLanguage[languageCode],
+      href: `?lang=${languageCode}`,
+    }));
 
   const label = languagesInOriginalLanguage[currentLanguage]
     ? languagesInOriginalLanguage[currentLanguage]
-    : "Språk/Language";
+    : "Norsk bokmål";
 
   return <LanguageSelector label={label} options={options} />;
 };
