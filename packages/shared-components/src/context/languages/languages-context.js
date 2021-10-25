@@ -1,24 +1,36 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
 
 const LanguagesContext = createContext({});
 
-export const LanguagesProvider = ({ children, translations = {} }) => {
+export const LanguagesProvider = ({ children, translations = {}, countryNameTranslations = {} }) => {
   const languageCodeFromUrl = useLanguageCodeFromURL();
   const availableLanguages = Object.keys(translations);
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
-  const [translationsForNavForm, setTranslationsForNavForm] = useState({});
 
-  const currentTranslation = translations[currentLanguage] || {};
+  function getTranslationsForNavForm() {
+    return availableLanguages.reduce(
+      (acc, language) => ({
+        ...acc,
+        [language]: {
+          ...translations[language],
+          ...countryNameTranslations[language],
+        },
+      }),
+      {}
+    );
+  }
 
-  useEffect(() => {
-    if (availableLanguages.length > 0) {
-      setTranslationsForNavForm(translations);
-    }
-  }, [translations]);
+  function getCurrentTranslation() {
+    return {
+      ...translations[currentLanguage],
+      ...countryNameTranslations[currentLanguage],
+    };
+  }
 
   function translate(originalText, params) {
+    const currentTranslation = getCurrentTranslation();
     return currentTranslation[originalText]
       ? injectParams(currentTranslation[originalText], params)
       : injectParams(originalText, params);
@@ -29,7 +41,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
       return template.replace(/{{2}([^{}]*)}{2}/g, (match, $1) => translate(params[$1]) || match);
     }
     return template;
-  }
+  };
 
   return (
     <LanguagesContext.Provider
@@ -38,7 +50,7 @@ export const LanguagesProvider = ({ children, translations = {} }) => {
         currentLanguage,
         initialLanguage,
         translate,
-        translationsForNavForm,
+        getTranslationsForNavForm,
       }}
     >
       {children}
