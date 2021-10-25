@@ -158,7 +158,6 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     tag?: TranslationTag,
     formTitle?: string
   ) => {
-    console.log(projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle);
     Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
