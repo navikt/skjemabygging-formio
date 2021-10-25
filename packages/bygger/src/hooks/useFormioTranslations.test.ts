@@ -43,16 +43,6 @@ describe("useFormioTranslations", () => {
         expectedHeader
       );
     });
-
-    it("fetches all global translations for the given language and tag", async () => {
-      const translations = formioTranslations.loadGlobalTranslations("en", "skjematekster");
-      await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
-      expect(fetchSpy).toHaveBeenCalledWith(
-        `${projectUrl}/language/submission?data.name=global&data.language=en&data.tag=skjematekster&limit=null`,
-        expectedHeader
-      );
-    });
   });
 
   describe("loadTranslationsForEditPage", () => {

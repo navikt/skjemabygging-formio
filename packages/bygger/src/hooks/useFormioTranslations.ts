@@ -22,19 +22,26 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
       },
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log("Response: ", response);
+        return response;
+      });
   };
 
-  const loadGlobalTranslations = async (language?: Language, tag?: TranslationTag): Promise<FormioTranslationMap> => {
+  const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
     let filter = "";
     if (language) {
       filter += `&data.language=${language}`;
     }
-    if (tag) {
-      filter += `&data.tag=${tag}`;
-    }
-    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`).then(
-      (response) => {
+
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
+      .then((response) => {
+        console.log("Fetched: ", response);
+        return response;
+      })
+      .then((response) => {
         return response.reduce((globalTranslations, translation) => {
           const { data, _id: id } = translation;
           const { i18n, scope, name, tag } = data;
@@ -60,8 +67,11 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
           return globalTranslations;
         }, {});
-      }
-    );
+      })
+      .then((globalTranslations) => {
+        console.log("Fetched global translations", globalTranslations);
+        return globalTranslations;
+      });
   };
 
   const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {
@@ -148,7 +158,6 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     tag?: TranslationTag,
     formTitle?: string
   ) => {
-    console.log(projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle);
     Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -168,7 +177,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }).then((response) => {
       if (response.ok) {
         userAlerter.flashSuccessMessage(
-          !formTitle ? "Lagret globale oversettelser" : "Lagret oversettelser for skjema: " + formTitle
+          !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
         );
       } else {
         response.json().then((r) => {
@@ -209,6 +218,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         undefined,
         formTitle
       );
+    } else {
+      userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
   const saveGlobalTranslation = (
@@ -218,7 +229,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     translations: ScopedTranslationMap,
     tag: TranslationTag
   ) => {
-    if (Object.keys(translations).length !== 0) {
+    if (Object.keys(translations).length !== 0 || tag === "skjematekster") {
       const i18n: I18nTranslationMap = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].value) {
           return {
@@ -230,6 +241,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         }
       }, {});
       saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
+    } else {
+      userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
 

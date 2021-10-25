@@ -6,7 +6,9 @@ const createNewRow = (originalText = "", translatedText = "") => ({
   translatedText,
 });
 
-const getCurrenttranslationsReducer = (state, action) => {
+type ReducerActionType = { type: string; payload: any };
+
+const getCurrenttranslationsReducer = (state: Array<any>, action: ReducerActionType) => {
   switch (action.type) {
     case "initializeLanguage": {
       return [createNewRow()];
