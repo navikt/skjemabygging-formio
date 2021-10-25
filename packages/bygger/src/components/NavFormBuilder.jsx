@@ -29,6 +29,7 @@ import isEqual from "lodash.isequal";
 import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
 import { builderStyles } from "./styles";
+import "../formio-overrides/webform-builder-overrides";
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
 
@@ -47,13 +48,12 @@ class NavFormBuilder extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
+    onReady: PropTypes.func,
     formBuilderOptions: PropTypes.object,
   };
 
   handleChange = () => {
-    if (this.builder) {
-      this.props.onChange(cloneDeep(this.builder.instance.form));
-    }
+    this.props.onChange(cloneDeep(this.builder.instance.form));
   };
 
   createBuilder = () => {
@@ -64,23 +64,21 @@ class NavFormBuilder extends Component {
     );
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
+      this.builder.instance.on("change", this.handleChange);
       this.builderState = "ready";
       this.handleChange();
-      this.builder.instance.on("addComponent", this.handleChange);
-      this.builder.instance.on("saveComponent", this.handleChange);
-      this.builder.instance.on("updateComponent", this.handleChange);
-      this.builder.instance.on("removeComponent", this.handleChange);
-      this.builder.instance.on("deleteComponent", this.handleChange);
-      this.builder.instance.on("pdfUploaded", this.handleChange);
+      if (this.props.onReady) {
+        this.props.onReady();
+      }
     });
   };
 
   destroyBuilder = () => {
-    this.builder.destroy();
+    this.builder.instance.off("change", this.handleChange);
     this.builder.instance.destroy(true);
+    this.builder.destroy();
     this.builder = null;
     this.builderState = "destroyed";
-    console.log("destroyed builder");
   };
 
   updateFormBuilder() {

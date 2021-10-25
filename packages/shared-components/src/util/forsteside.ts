@@ -1,3 +1,5 @@
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+
 type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
 
 interface Bruker {
@@ -71,25 +73,14 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
  * Basert på at custom property vedleggskode er satt og at verdien er leggerVedNaa.
  */
 export function genererVedleggKeysSomSkalSendes(form, submissionData) {
-  return flattenComponents(form.components)
+  return navFormUtils.flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa")
     .map((vedlegg) => vedlegg.properties.vedleggskode);
 }
 
-export function flattenComponents(components) {
-  return components.reduce(
-    (flattenedComponents, currentComponent) => [
-      ...flattenedComponents,
-      currentComponent,
-      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-    ],
-    []
-  );
-}
-
 export function getVedleggsFelterSomSkalSendes(submissionData, form) {
-  return flattenComponents(form.components)
+  return navFormUtils.flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa");
 }
@@ -144,7 +135,19 @@ export function genererAdresse(submission) {
   };
 }
 
-export function genererFoerstesideData(form, submission): ForstesideRequestBody {
+const parseLanguage = language => {
+  switch (language) {
+    case "nn-NO":
+      return "NN";
+    case "nb-NO":
+      return "NB";
+    case "en":
+    default:
+      return "EN";
+  }
+}
+
+export function genererFoerstesideData(form, submission, language = "nb-NO"): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema },
     title,
@@ -155,7 +158,7 @@ export function genererFoerstesideData(form, submission): ForstesideRequestBody 
     ...genererPersonalia(fodselsnummerDNummerSoker, adresse),
     foerstesidetype: "SKJEMA",
     navSkjemaId: skjemanummer,
-    spraakkode: "NB",
+    spraakkode: parseLanguage(language),
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
     tema,

@@ -1,4 +1,4 @@
-import { flattenComponents } from "@navikt/skjemadigitalisering-shared-components";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
@@ -25,11 +25,17 @@ const extractTextsFromProperties = (props) => {
       type: getInputType(props.innsendingForklaring),
     });
   }
+  if (props?.downloadPdfButtonText) {
+    array.push({
+      text: props.downloadPdfButtonText,
+      type: getInputType(props.downloadPdfButtonText),
+    });
+  }
   return array;
 };
 
 const getSimplifiedComponentObject = (form) =>
-  flattenComponents(form.components)
+  navFormUtils.flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
     .map(({ content, title, label, html, type, values, legend, description, suffix, prefix }) => ({
       title,

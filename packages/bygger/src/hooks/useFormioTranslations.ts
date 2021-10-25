@@ -1,7 +1,22 @@
 import Formiojs from "formiojs/Formio";
+import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
+import {
+  FormioTranslation,
+  FormioTranslationMap,
+  FormioTranslationPayload,
+  I18nTranslationMap,
+  Language,
+  ScopedTranslationMap,
+  TranslationScope,
+  TranslationTag,
+} from "../../types/translations";
 
-export const useFormioTranslations = (formio, userAlerter) => {
+const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
+
+type Country = { label: string; value: string };
+
+export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   const fetchTranslations = (url) => {
     return fetch(url, {
       headers: {
@@ -15,7 +30,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
       });
   };
 
-  const loadGlobalTranslations = async (language) => {
+  const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
     let filter = "";
     if (language) {
       filter += `&data.language=${language}`;
@@ -59,34 +74,53 @@ export const useFormioTranslations = (formio, userAlerter) => {
       });
   };
 
-  const loadTranslationsForForm = async (formPath) => {
-    console.log("Form path", formPath);
+  const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {
     return fetchTranslations(
       `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=null`
-    )
-      .then((response) => {
-        console.log("Fetched", response);
-        return response;
-      })
-      .then((translations) => {
-        const languagesWithLocalTranslation = translations.reduce((localTranslations, translation) => {
-          if (localTranslations.indexOf(translation.data.language) === -1) {
-            return [...localTranslations, translation.data.language];
-          } else {
-            return localTranslations;
-          }
-        }, []);
-        return translations.filter(
-          (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1
-        );
-      })
-      .then((translations) => {
-        console.log("Fetched and filtered", translations);
-        return translations;
-      });
+    ).then((translations: FormioTranslationPayload[]) => {
+      const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
+        if (localTranslations.indexOf(translation.data.language) === -1) {
+          return [...localTranslations, translation.data.language];
+        } else {
+          return localTranslations;
+        }
+      }, []);
+      return translations.filter(
+        (translation) => languagesWithLocalTranslation.indexOf(translation.data.language) !== -1
+      );
+    });
   };
 
-  const loadTranslationsForEditPage = async (formPath) => {
+  const loadCountryNames = async (locale: Language): Promise<Country[]> => {
+    return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
+      response.json()
+    );
+  };
+
+  const loadAndInsertCountryNames = async (translations: FormioTranslationMap): Promise<FormioTranslation | {}> => {
+    const localesInTranslations = Object.keys(translations).filter((lang): lang is Language => !!(lang as Language));
+    const norwegianCountryNames = await loadCountryNames("nb-NO");
+    return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) =>
+      localesInTranslations.reduce(
+        (accumulated, locale, index) => ({
+          ...accumulated,
+          [locale]: {
+            ...translations[locale],
+            translations: {
+              ...translations[locale].translations,
+              ...zipCountryNames(norwegianCountryNames, loadedCountryNames[index], (countryName) => ({
+                value: countryName.label,
+                scope: "component-countryName",
+              })),
+            },
+          },
+        }),
+        {}
+      )
+    );
+  };
+
+  const loadTranslationsForEditPage = async (formPath: string): Promise<FormioTranslationMap> => {
     return loadTranslationsForForm(formPath)
       .then((translations) =>
         translations
@@ -96,10 +130,7 @@ export const useFormioTranslations = (formio, userAlerter) => {
           }))
           .reduce(combineTranslationResources, {})
       )
-      .then((translations) => {
-        console.log("loadTranslationsForEditPage", translations);
-        return translations;
-      });
+      .then(loadAndInsertCountryNames);
   };
 
   const deleteTranslation = async (id) => {
@@ -116,7 +147,18 @@ export const useFormioTranslations = (formio, userAlerter) => {
     });
   };
 
-  const saveTranslation = (projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle) => {
+  const saveTranslation = (
+    projectUrl: string,
+    translationId,
+    language: Language,
+    i18n: I18nTranslationMap,
+    name: string,
+    scope: TranslationScope,
+    form?: string,
+    tag?: TranslationTag,
+    formTitle?: string
+  ) => {
+    console.log(projectUrl, translationId, language, i18n, name, scope, form, tag, formTitle);
     Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -147,9 +189,16 @@ export const useFormioTranslations = (formio, userAlerter) => {
     });
   };
 
-  const saveLocalTranslation = (projectUrl, translationId, languageCode, translations, formPath, formTitle) => {
+  const saveLocalTranslation = (
+    projectUrl: string,
+    translationId: string,
+    languageCode: Language,
+    translations: ScopedTranslationMap,
+    formPath: string,
+    formTitle: string
+  ) => {
     if (translations) {
-      const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+      const i18n: I18nTranslationMap = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].scope === "local" && translations[translatedText].value) {
           return {
             ...translationsToSave,
@@ -174,9 +223,15 @@ export const useFormioTranslations = (formio, userAlerter) => {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
-  const saveGlobalTranslation = (projectUrl, translationId, languageCode, translations, tag) => {
+  const saveGlobalTranslation = (
+    projectUrl: string,
+    translationId: string,
+    languageCode: Language,
+    translations: ScopedTranslationMap,
+    tag: TranslationTag
+  ) => {
     if (Object.keys(translations).length !== 0 || tag === "skjematekster") {
-      const i18n = Object.keys(translations).reduce((translationsToSave, translatedText) => {
+      const i18n: I18nTranslationMap = Object.keys(translations).reduce((translationsToSave, translatedText) => {
         if (translations[translatedText].value) {
           return {
             ...translationsToSave,
