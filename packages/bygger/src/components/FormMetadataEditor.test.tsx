@@ -27,6 +27,12 @@ jest.mock("../hooks/useMottaksadresser", () => () => {
   }
 });
 
+jest.mock("react-router-dom", () => ({
+  // @ts-ignore
+  ...jest.requireActual("react-router-dom"),
+  Link: () => <a href="/">testlink</a>,
+}));
+
 describe("FormMetadataEditor", () => {
 
   let mockOnChange: jest.MockedFunction<UpdateFormFunction>;

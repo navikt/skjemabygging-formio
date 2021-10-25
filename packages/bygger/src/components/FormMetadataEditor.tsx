@@ -4,6 +4,7 @@ import {SkjemaGruppe, Input, Select, Checkbox, Textarea} from "nav-frontend-skje
 import {AlertStripeFeil} from "nav-frontend-alertstriper";
 import {DisplayType, InnsendingType, NavFormType} from '../Forms/navForm';
 import useMottaksadresser from "../hooks/useMottaksadresser";
+import {Link} from "react-router-dom";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = 'create' | 'edit';
@@ -165,6 +166,11 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
           </div>
         )
       }
+      <div className="margin-bottom-default">
+        <Link to="/mottaksadresser">
+          Rediger mottaksadresser
+        </Link>
+      </div>
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
         checked={!!hasLabeledSignatures}
