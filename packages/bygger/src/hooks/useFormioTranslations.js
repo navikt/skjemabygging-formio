@@ -15,14 +15,12 @@ export const useFormioTranslations = (formio, userAlerter) => {
       });
   };
 
-  const loadGlobalTranslations = async (language, tag) => {
+  const loadGlobalTranslations = async (language) => {
     let filter = "";
     if (language) {
       filter += `&data.language=${language}`;
     }
-    if (tag) {
-      filter += `&data.tag=${tag}`;
-    }
+
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
       .then((response) => {
         console.log("Fetched: ", response);
