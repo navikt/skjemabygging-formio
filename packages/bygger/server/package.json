@@ -6,7 +6,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "clean": "rimraf build coverage",
+    "clean": "rimraf coverage",
     "start": "cross-env PORT=8080 GIT_SHA=dev nodemon index.mjs",
     "test": "jest",
     "test:coverage": "jest --coverage"
