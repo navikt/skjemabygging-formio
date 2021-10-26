@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Formiojs from "formiojs/Formio";
 import {fromEntity, Mottaksadresse, MottaksadresseEntity} from "./mottaksadresser";
+import {UserAlerterContext} from "../userAlerting";
 
 interface Output {
   mottaksadresser: Mottaksadresse[];
@@ -9,10 +10,12 @@ interface Output {
   errorMessage?: string;
   loadMottaksadresser: Function;
   deleteMottaksadresse: Function;
+  publishMottaksadresser: Function;
 }
 
 const useMottaksadresser = (): Output => {
 
+  const userAlerter = useContext(UserAlerterContext);
   const [mottaksadresser, setMottaksadresser] = useState<Mottaksadresse[]>([]);
   const [mottaksadresseEntities, setMottaksadresseEntities] = useState<MottaksadresseEntity[]>([]);
   const [ready, setReady] = useState<boolean>(false);
@@ -47,17 +50,39 @@ const useMottaksadresser = (): Output => {
       .then(res => {
         if (res.ok) {
           loadMottaksadresser();
+          userAlerter.flashSuccessMessage("Mottaksadresse slettet");
         } else {
           setErrorMessage("Feil ved sletting av mottaksadresse");
-          throw new Error(`Feil ved sletting av mottaksadresse: ${res.status}`);
+          userAlerter.setErrorMessage(`Sletting feilet: ${res.status}`);
         }
       })
       .catch(err => console.error(err));
   }
 
+  const publishMottaksadresser = () => {
+    const payload = {
+      token: Formiojs.getToken(),
+      resource: mottaksadresseEntities,
+    }
+    return fetch("/api/published-resource/mottaksadresser", {
+      headers: {
+        "content-type": "application/json"
+      },
+      method: "PUT",
+      body: JSON.stringify(payload),
+    })
+      .then(res => {
+        if (res.ok) {
+          userAlerter.flashSuccessMessage("Publisering fullført");
+        } else {
+          userAlerter.setErrorMessage(`Publisering feilet: ${res.status}`);
+        }
+      });
+  }
+
   useEffect(loadMottaksadresser, []);
 
-  return {ready, errorMessage, mottaksadresser, mottaksadresseEntities, loadMottaksadresser, deleteMottaksadresse};
+  return {ready, errorMessage, mottaksadresser, mottaksadresseEntities, loadMottaksadresser, deleteMottaksadresse, publishMottaksadresser};
 
 };
 

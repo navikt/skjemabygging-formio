@@ -6,13 +6,23 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env PORT=8080 GIT_SHA=dev nodemon index.mjs"
+    "clean": "rimraf build coverage",
+    "start": "cross-env PORT=8080 GIT_SHA=dev nodemon index.mjs",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dispatch": "^1.0.2",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.1",
-    "dispatch": "^1.0.2"
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "babel-jest": "^27.3.1",
+    "jest": "^27.3.1",
+    "rimraf": "^3.0.2"
   }
 }

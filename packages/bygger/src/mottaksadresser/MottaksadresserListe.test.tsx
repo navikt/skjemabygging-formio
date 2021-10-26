@@ -7,6 +7,7 @@ import Formiojs from "formiojs/Formio";
 import mockMottaksadresser from "./testdata/mottaksadresser";
 import mockMottaksadresseForm from "./testdata/mottaksadresse-form";
 import {MottaksadresseEntity} from "../hooks/mottaksadresser";
+import {UserAlerterContext} from "../userAlerting";
 
 const FORMIO_PROJECT_URL = "http://unittest.nav.no/formio";
 
@@ -63,7 +64,12 @@ describe("MottakeradresseListe", () => {
   });
 
   const renderMottaksadresseListe = async () => {
-    render(<MottaksadresserListe />);
+    const userAlerter = {flashSuccessMessage: jest.fn(), setErrorMessage: jest.fn(), alertComponent: jest.fn()};
+    render(
+      <UserAlerterContext.Provider value={userAlerter}>
+        <MottaksadresserListe />
+      </UserAlerterContext.Provider>
+    );
     await waitForElementToBeRemoved(() => screen.queryByText("Laster mottaksadresser..."));
   }
 

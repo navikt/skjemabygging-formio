@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Hovedknapp, Knapp} from "nav-frontend-knapper";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import {makeStyles} from "@material-ui/styles";
 import MottaksadresseEditor from "./MottaksadresseEditor";
 import Column from "../components/layout/Column";
+import {UserAlerterContext} from "../userAlerting";
 
 const useStyles = makeStyles({
   mottaksadresser: {
@@ -14,9 +15,13 @@ const useStyles = makeStyles({
 const MottaksadresserListe = () => {
 
   const styles = useStyles();
-  const {mottaksadresseEntities, ready, errorMessage, loadMottaksadresser, deleteMottaksadresse} = useMottaksadresser();
+  const {mottaksadresseEntities, ready, errorMessage, loadMottaksadresser, deleteMottaksadresse, publishMottaksadresser} = useMottaksadresser();
   const [editAddressId, setEditAddressId] = useState<string | undefined>(undefined);
   const [loadingForm, setLoadingForm] = useState<boolean>(false);
+  const [publishing, setPublishing] = useState<boolean>(false);
+
+  const userAlerter = useContext(UserAlerterContext);
+  const alertComponent = userAlerter.alertComponent();
 
   const onSubmitDone = () => {
     setEditAddressId(undefined);
@@ -30,6 +35,12 @@ const MottaksadresserListe = () => {
 
   const clearEditAddressId = () => {
     setEditAddressId(undefined);
+  }
+
+  const onPublish = () => {
+    setPublishing(true);
+    publishMottaksadresser()
+      .finally(() => setPublishing(false));
   }
 
   return (
@@ -65,8 +76,9 @@ const MottaksadresserListe = () => {
         }
       </Column>
       <Column>
-        <Hovedknapp>Publiser</Hovedknapp>
+        <Hovedknapp onClick={onPublish} spinner={publishing}>Publiser</Hovedknapp>
         <Knapp onClick={() => editMottaksadresse("new")}>Legg til ny</Knapp>
+        {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
       </Column>
     </>
   );
