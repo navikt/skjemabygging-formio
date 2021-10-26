@@ -129,7 +129,7 @@ describe("MottakeradresseListe", () => {
     userEvent.type(screen.getByLabelText("Postnummer"), "1500");
 
     userEvent.click(await within(panel).findByRole("button", {name: "Lagre"}));
-    expect(await screen.findByText("Poststed is required")).toBeTruthy();
+    expect(await screen.findByText("Du må fylle ut: Poststed")).toBeTruthy();
 
     expect(savedMottaksadresseRequests).toHaveLength(0);
   });

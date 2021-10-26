@@ -9,15 +9,6 @@ import Panel from 'nav-frontend-paneler';
 import {MottaksadresseEntity} from "../hooks/mottaksadresser";
 import Column from "../components/layout/Column";
 
-const i18nMottaksadresseForm = {
-  language: "nb-NO",
-  i18n: {
-    "nb-NO": {
-      "Submit": "Lagre"
-    }
-  }
-}
-
 const useStyles = makeStyles({
   panel: {
     display: "flex"
@@ -71,8 +62,6 @@ const MottaksadresseEditor = (
                 src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
                 onSubmitDone={onSubmitDone}
-                language={i18nMottaksadresseForm.language}
-                i18n={i18nMottaksadresseForm.i18n}
                 formReady={onFormReady}
               />
             </>

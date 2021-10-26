@@ -211,7 +211,7 @@ export default {
   }, {
     "autofocus": false,
     "input": true,
-    "label": "Submit",
+    "label": "Lagre",
     "tableView": false,
     "key": "submit",
     "size": "md",
