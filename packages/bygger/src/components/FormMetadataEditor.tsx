@@ -18,7 +18,7 @@ type BasicFormProps = Props & {usageContext: UsageContext};
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
 
-  const {mottaksadresser, errorMessage: mottaksadresseError} = useMottaksadresser();
+  const {mottaksadresser, ready, errorMessage: mottaksadresseError} = useMottaksadresser();
 
   const {
     title,
@@ -156,10 +156,10 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
               name="form-mottaksadresse"
               id="form-mottaksadresse"
               value={mottaksadresseId}
-              disabled={!!mottaksadresseError}
+              disabled={!ready}
               onChange={(event) => onChange({ ...form, properties: { ...form.properties, mottaksadresseId: event.target.value || undefined } })}
             >
-              <option value="">{mottaksadresseError && mottaksadresseId ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}</option>
+              <option value="">{mottaksadresseId && !ready ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}</option>
               {mottaksadresser.map(adresse => <option value={adresse.id} key={adresse.id}>{adresse.toString()}</option>)}
             </Select>
             {mottaksadresseError && <AlertStripeFeil>{mottaksadresseError}</AlertStripeFeil>}
