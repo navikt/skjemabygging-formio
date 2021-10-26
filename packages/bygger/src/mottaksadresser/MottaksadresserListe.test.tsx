@@ -59,6 +59,9 @@ describe("MottakeradresseListe", () => {
       if (url === `${FORMIO_PROJECT_URL}/mottaksadresse`) {
         return Promise.resolve(new Response(JSON.stringify(mockMottaksadresseForm), RESPONSE_HEADERS));
       }
+      if (url.includes("/form?type=form&tags=nav-skjema&limit=1000&properties.mottaksadresseId=")) {
+        return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
+      }
       fail(`Manglende testoppsett: Ukjent url ${url}, options = ${JSON.stringify(options)}`);
     });
   });

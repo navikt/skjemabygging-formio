@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import Formiojs from "formiojs/Formio";
 import {fromEntity, Mottaksadresse, MottaksadresseEntity} from "./mottaksadresser";
 import {UserAlerterContext} from "../userAlerting";
+import {NavFormType} from "../Forms/navForm";
 
 interface Output {
   mottaksadresser: Mottaksadresse[];
@@ -40,23 +41,31 @@ const useMottaksadresser = (): Output => {
       .catch(err => console.error(err));
   };
 
-  const deleteMottaksadresse = (submissionId) => {
-    fetch(`${Formiojs.getProjectUrl()}/mottaksadresse/submission/${submissionId}`, {
-      headers: {
-        "x-jwt-token": Formiojs.getToken(),
-      },
-      method: "DELETE",
-    })
-      .then(res => {
-        if (res.ok) {
-          loadMottaksadresser();
-          userAlerter.flashSuccessMessage("Mottaksadresse slettet");
-        } else {
-          setErrorMessage("Feil ved sletting av mottaksadresse");
-          userAlerter.setErrorMessage(`Sletting feilet: ${res.status}`);
-        }
+  const deleteMottaksadresse = async (mottaksadresseId) => {
+    const forms = await getFormsWithMottaksadresse(mottaksadresseId);
+    if (forms.length > 0) {
+      const skjemanummerliste = forms.map(form => form.properties.skjemanummer).join(", ");
+      userAlerter.setErrorMessage(`Mottaksadressen brukes i følgende skjema: ${skjemanummerliste}`);
+      return Promise.reject();
+    } else {
+      return fetch(`${Formiojs.getProjectUrl()}/mottaksadresse/submission/${mottaksadresseId}`, {
+        headers: {
+          "x-jwt-token": Formiojs.getToken(),
+        },
+        method: "DELETE",
       })
-      .catch(err => console.error(err));
+        .then(res => {
+          if (res.ok) {
+            loadMottaksadresser();
+            userAlerter.flashSuccessMessage("Mottaksadresse slettet");
+          } else {
+            setErrorMessage("Feil ved sletting av mottaksadresse");
+            userAlerter.setErrorMessage(`Sletting feilet: ${res.status}`);
+          }
+        })
+        .catch(err => console.error(err));
+
+    }
   }
 
   const publishMottaksadresser = () => {
@@ -79,6 +88,13 @@ const useMottaksadresser = (): Output => {
         }
       });
   }
+
+  const getFormsWithMottaksadresse = async (mottaksadresseId): Promise<NavFormType[]> => {
+    return fetch(`${Formiojs.getProjectUrl()}/form?type=form&tags=nav-skjema&limit=1000&properties.mottaksadresseId=${mottaksadresseId}`, {
+      method: "GET"
+    })
+      .then(forms => forms.json());
+  };
 
   useEffect(loadMottaksadresser, []);
 

@@ -47,7 +47,8 @@ const MottaksadresseEditor = (
   const onDelete = () => {
     if (deleteMottaksadresse && mottaksadresse) {
       setDeleting(true);
-      deleteMottaksadresse(mottaksadresse._id);
+      deleteMottaksadresse(mottaksadresse._id)
+        .catch(() => setDeleting(false));
     }
   }
 
