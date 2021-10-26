@@ -5,20 +5,20 @@ const config = {
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   useFormioApi: process.env.FORMS_SOURCE === 'formioapi',
   skjemaDir: process.env.SKJEMA_DIR,
-  skjemaUrl: process.env.SKJEMA_URL,
+  formioProjectUrl: process.env.FORMIO_PROJECT_URL,
   translationDir: process.env.TRANSLATION_DIR,
   gitVersion: process.env.GIT_SHA,
 }
 
 const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {
-  const {useFormioApi, naisClusterName, skjemaUrl} = config;
+  const {useFormioApi, naisClusterName, formioProjectUrl} = config;
   if (useFormioApi) {
     if (naisClusterName === NaisCluster.PROD) {
       logError(`FormioApi is not allowed in ${naisClusterName}`)
       exit(1)
     }
-    if (!skjemaUrl) {
-      logError('SKJEMA_URL is required when using FormioApi')
+    if (!formioProjectUrl) {
+      logError('FORMIO_PROJECT_URL is required when using FormioApi')
       exit(1)
     }
   }

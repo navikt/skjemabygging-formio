@@ -22,7 +22,7 @@ skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
-const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, translationDir, gitVersion } = config;
+const { sentryDsn, naisClusterName, useFormioApi, formioProjectUrl, skjemaDir, translationDir, gitVersion } = config;
 checkConfigConsistency(config);
 
 const Registry = client.Registry;
@@ -75,12 +75,21 @@ skjemaApp.post("/foersteside", async (req, res) => {
   }
 });
 
+const fetchTranslationsFromFormioApi = async (formPath) => {
+  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=null`, { method: "GET" });
+  if (response.ok) {
+    const translationsForForm = await response.json();
+    return translationsForForm.reduce((acc, obj) => ({...acc, [obj.data.language]: {...obj.data.i18n}}), {});
+  }
+  return {};
+}
+
 const loadForms = async () => {
-  return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
+  return useFormioApi ? await fetchFormsFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000`) : await loadAllJsonFilesFromDirectory(skjemaDir);
 };
 
 const loadTranslations = async (formPath) => {
-  return await loadFileFromDirectory(translationDir, formPath);
+  return useFormioApi ? await fetchTranslationsFromFormioApi(formPath) : await loadFileFromDirectory(translationDir, formPath);
 };
 
 skjemaApp.get("/config", async (req, res) => {
