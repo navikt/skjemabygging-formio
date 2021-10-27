@@ -219,7 +219,7 @@ function genererMottaksadresse(mottaksadresseId: string, mottaksadresser) {
   return {netsPostboks: "1400"};
 }
 
-export function genererFoerstesideData(form, submission, language = "nb-NO", mottaksadresser): ForstesideRequestBody {
+export function genererFoerstesideData(form, submission, language= "nb-NO", mottaksadresser = []): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema, mottaksadresseId },
     title,
