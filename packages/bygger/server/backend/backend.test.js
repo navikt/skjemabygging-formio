@@ -113,7 +113,7 @@ describe("Backend", () => {
         .mockReturnValueOnce(jsonToPromise(TestUserResponse))
         .mockReturnValue(Promise.resolve({ok: true, status: 204}));
 
-      const mottaksadresser = [{ _id: "123", data: {adresserlinje1: "NAV Pensjon", adresselinje2: "Postboks 123", postnummer: "1234", poststed: "Oslo"} }];
+      const mottaksadresser = [{ _id: "123", data: {adresselinje1: "NAV Pensjon", adresselinje2: "Postboks 123", postnummer: "1234", poststed: "Oslo"} }];
       await backend.publishResource(token, "mottaksadresser", mottaksadresser);
       expect(fetch).toHaveBeenCalledTimes(2);
       const calls = fetch.mock.calls;
