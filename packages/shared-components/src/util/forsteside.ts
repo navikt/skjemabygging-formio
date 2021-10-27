@@ -1,3 +1,5 @@
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+
 type ForstesideType = 'SKJEMA' | 'ETTERSENDELSE';
 
 interface Bruker {
@@ -15,6 +17,14 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
+interface MottakerAdresse {
+  adresselinje1: string;
+  adresselinje2?: string;
+  adresselinje3?: string;
+  postnummer: string;
+  poststed: string;
+}
+
 export interface ForstesideRequestBody {
   foerstesidetype: ForstesideType;
   navSkjemaId: string;
@@ -24,7 +34,8 @@ export interface ForstesideRequestBody {
   tema: string;
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
-  netsPostboks: string;
+  netsPostboks?: string;
+  adresse?: MottakerAdresse;
 
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;
@@ -71,25 +82,14 @@ export function genererSkjemaTittel(skjemaTittel, skjemanummer) {
  * Basert på at custom property vedleggskode er satt og at verdien er leggerVedNaa.
  */
 export function genererVedleggKeysSomSkalSendes(form, submissionData) {
-  return flattenComponents(form.components)
+  return navFormUtils.flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa")
     .map((vedlegg) => vedlegg.properties.vedleggskode);
 }
 
-export function flattenComponents(components) {
-  return components.reduce(
-    (flattenedComponents, currentComponent) => [
-      ...flattenedComponents,
-      currentComponent,
-      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-    ],
-    []
-  );
-}
-
 export function getVedleggsFelterSomSkalSendes(submissionData, form) {
-  return flattenComponents(form.components)
+  return navFormUtils.flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa");
 }
@@ -197,9 +197,31 @@ export function genererAdresse(submission: Submission): Adresse {
   };
 }
 
-export function genererFoerstesideData(form, submission): ForstesideRequestBody {
+const parseLanguage = language => {
+  switch (language) {
+    case "nn-NO":
+      return "NN";
+    case "nb-NO":
+      return "NB";
+    case "en":
+    default:
+      return "EN";
+  }
+}
+
+function genererMottaksadresse(mottaksadresseId: string, mottaksadresser) {
+  if (mottaksadresseId) {
+    const mottaksadresse = mottaksadresser.find(a => a._id === mottaksadresseId);
+    if (mottaksadresse) {
+      return {adresse: {...mottaksadresse.data}};
+    }
+  }
+  return {netsPostboks: "1400"};
+}
+
+export function genererFoerstesideData(form, submission, language = "nb-NO", mottaksadresser): ForstesideRequestBody {
   const {
-    properties: { skjemanummer, tema },
+    properties: { skjemanummer, tema, mottaksadresseId },
     title,
   } = form;
   const { fodselsnummerDNummerSoker } = submission;
@@ -208,12 +230,12 @@ export function genererFoerstesideData(form, submission): ForstesideRequestBody 
     ...genererPersonalia(fodselsnummerDNummerSoker, adresse),
     foerstesidetype: "SKJEMA",
     navSkjemaId: skjemanummer,
-    spraakkode: "NB",
+    spraakkode: parseLanguage(language),
     overskriftstittel: genererSkjemaTittel(title, skjemanummer),
     arkivtittel: genererSkjemaTittel(title, skjemanummer),
     tema,
     vedleggsliste: genererVedleggsListe(form, submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
-    netsPostboks: "1400",
+    ...genererMottaksadresse(mottaksadresseId, mottaksadresser)
   };
 }

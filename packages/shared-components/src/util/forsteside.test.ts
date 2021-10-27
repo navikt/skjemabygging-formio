@@ -1,5 +1,4 @@
 import {
-  flattenComponents,
   ForstesideRequestBody,
   genererAdresse,
   genererDokumentlisteFoersteside,
@@ -130,35 +129,6 @@ describe("genererVedleggSomSkalSendes", () => {
       vedleggO9: "leggerVedNaa",
     });
     expect(actual).toEqual(["O9"]);
-  });
-});
-
-describe("flattenComponents", () => {
-  it("returns a flat array of all nested components", () => {
-    const actual = flattenComponents([
-      {
-        title: "Personopplysninger",
-        key: "panel",
-        properties: {},
-        type: "panel",
-        label: "Panel",
-        components: [
-          {
-            key: "fodselsnummerDNummer",
-            type: "fnrfield",
-            label: "Fødselsnummer / D-nummer",
-            properties: {},
-          },
-          {
-            label: "Fornavn",
-            type: "textfield",
-            key: "fornavn",
-            properties: {},
-          },
-        ],
-      },
-    ]);
-    expect(actual.map((component) => component.key)).toEqual(["panel", "fodselsnummerDNummer", "fornavn"]);
   });
 });
 
@@ -324,6 +294,38 @@ describe("genererFoerstesideData", () => {
       },
       netsPostboks: "1400",
     });
+  });
+
+  describe("Språkkode", () => {
+
+    const defaultForm = {properties: {skjemanummer: "TST 10.11-12"}, components: []};
+    const defaultSubmission = {};
+
+    it("Bokmål brukes dersom språk ikke er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, undefined);
+      expect(forstesideRequest.spraakkode).toEqual("NB");
+    });
+
+    it("Bokmål brukes dersom 'nb-NO' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nb-NO");
+      expect(forstesideRequest.spraakkode).toEqual("NB");
+    });
+
+    it("Nynorsk brukes dersom 'nn-NO' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "nn-NO");
+      expect(forstesideRequest.spraakkode).toEqual("NN");
+    });
+
+    it("Engelsk brukes dersom 'en' er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "en");
+      expect(forstesideRequest.spraakkode).toEqual("EN");
+    });
+
+    it("Engelsk brukes dersom et annet språk er valgt", () => {
+      const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "pl");
+      expect(forstesideRequest.spraakkode).toEqual("EN");
+    });
+
   });
 
   describe('Bruker uten fødselsnummer', () => {

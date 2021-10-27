@@ -4,6 +4,7 @@ import surnameSchema from "./surnameSchema";
 import vegadresseSchema from "./vegadresseSchema";
 import postnummerSchema from "./postnummerSchema";
 import poststedSchema from "./poststedSchema";
+import landvelgerSchema from "./landvelgerSchema";
 import utlandLandSchema from "./utlandLandSchema";
 import epostSchema from "./epostSchema";
 import telefonSchema from "./telefonSchema";
@@ -21,6 +22,7 @@ export const FormBuilderSchemas = {
   vegadresseSchema,
   postnummerSchema,
   poststedSchema,
+  landvelgerSchema,
   utlandLandSchema,
   epostSchema,
   telefonSchema,

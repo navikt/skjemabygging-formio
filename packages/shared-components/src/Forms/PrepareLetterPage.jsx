@@ -35,11 +35,18 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-function lastNedFoersteside(form, submission, fyllutBaseURL) {
+async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
+  const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      return [];
+    });
   return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(genererFoerstesideData(form, submission.data)),
+    body: JSON.stringify(genererFoerstesideData(form, submission.data, language, mottaksadresser)),
   })
     .then((response) => {
       if (response.ok) {
@@ -60,6 +67,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { currentLanguage } = useLanguages();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -81,7 +89,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            lastNedFoersteside(form, submission, fyllutBaseURL)
+            lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage)
               .then(() => setHasDownloadedFoersteside(true))
               .catch(() => loggSkjemaInnsendingFeilet());
           }}
@@ -93,7 +101,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
         form={form}
         submission={submission}
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-        label={translate(TEXTS.grensesnitt.downloadApplication)}
+        label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         classNames="knapp knapp--fullbredde"
       />

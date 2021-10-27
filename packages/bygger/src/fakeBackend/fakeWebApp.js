@@ -1,4 +1,5 @@
 import dispatch from "dispatch";
+import mottaksadresser from "./mock-mottaksadresser";
 
 export function parseQueryParams(dispatcher) {
   return (request, responseContext, next) => {
@@ -14,9 +15,16 @@ export function parseQueryParams(dispatcher) {
 
 export function dispatcherWithBackend(backend) {
   const translations = [{ data: { i18n: { ja: "yes" }, language: "en", scope: "global" } }];
+  const countries = [
+    { label: "Norway", value: "NO" },
+    { label: "Austria", value: "AT" },
+  ];
 
   return parseQueryParams(
     dispatch({
+      "/": (req, res) => {
+        res.json(backend.project());
+      },
       "/testForm": (req, res) => {
         res.json(backend.form());
       },
@@ -36,6 +44,16 @@ export function dispatcherWithBackend(backend) {
       "/language/submission": {
         GET: (req, res) => {
           res.json(translations);
+        },
+      },
+
+      "/countries": (req, res) => {
+        res.json(countries);
+      },
+
+      "/mottaksadresse/submission": {
+        GET: (req, res) => {
+          res.json(mottaksadresser);
         },
       },
     })

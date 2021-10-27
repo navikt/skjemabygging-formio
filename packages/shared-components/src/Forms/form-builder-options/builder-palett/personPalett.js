@@ -7,6 +7,7 @@ import utenlandskAdresseSchema from "../schemas/utenlandskAdresseSchema";
 import vegadresseSchema from "../schemas/vegadresseSchema";
 import postnummerSchema from "../schemas/postnummerSchema";
 import poststedSchema from "../schemas/poststedSchema";
+import landvelgerSchema from "../schemas/landvelgerSchema";
 import utlandLandSchema from "../schemas/utlandLandSchema";
 import epostSchema from "../schemas/epostSchema";
 import telefonSchema from "../schemas/telefonSchema";
@@ -84,6 +85,13 @@ const personPalett = {
       icon: "home",
       weight: 70,
       schema: utlandLandSchema(),
+    },
+    landvelger: {
+      title: "Landvelger",
+      key: "landvelger",
+      icon: "home",
+      weight: 71,
+      schema: landvelgerSchema(),
     },
     email: {
       title: "E-post",

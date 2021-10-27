@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { AppLayoutWithContext } from "../../components/AppLayout";
-import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import LoadingComponent from "../../components/LoadingComponent";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -14,10 +13,9 @@ import { languagesInNorwegian } from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import { getInputType, removeDuplicatedComponents } from "../utils";
 import { UserAlerterContext } from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
-import merge from "lodash.merge";
+import { getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -48,13 +46,6 @@ const useGlobalTranslationsPageStyles = makeStyles({
     gridColumn: "2 / 3",
   },
 });
-
-const tags = {
-  SKJEMATEKSTER: "skjematekster",
-  GRENSESNITT: "grensesnitt",
-  STATISKE_TEKSTER: "statiske-tekster",
-  VALIDERING: "validering",
-};
 
 const GlobalTranslationsPage = ({
   deleteTranslation,
@@ -121,6 +112,7 @@ const GlobalTranslationsPage = ({
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
 
+  const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
   }
@@ -162,30 +154,6 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const flattenTextsForEditPanel = (texts) => {
-    return removeDuplicatedComponents(
-      objectUtils.flattenToArray(texts, (entry, parentKey) => {
-        const key = objectUtils.concatKeys(entry[0], parentKey);
-        const text = entry[1];
-        return { key, text, type: getInputType(text) };
-      })
-    );
-  };
-
-  function getApplicationTexts(tag) {
-    const { grensesnitt, statiske, validering, common } = TEXTS;
-    switch (tag) {
-      case tags.GRENSESNITT:
-        return flattenTextsForEditPanel({ ...grensesnitt, ...common });
-      case tags.STATISKE_TEKSTER:
-        return flattenTextsForEditPanel(statiske);
-      case tags.VALIDERING:
-        return flattenTextsForEditPanel(validering);
-      default:
-        return [];
-    }
-  }
-
   const getTranslationIdsForLanguage = () => {
     return allGlobalTranslations[languageCode].reduce((translationId, translations) => {
       const { id } = translations;
@@ -193,31 +161,26 @@ const GlobalTranslationsPage = ({
     }, []);
   };
 
-  const getAllPredefinedOriginalTexts = () => {
-    const { grensesnitt, statiske, validering, common } = TEXTS;
-    return objectUtils.flattenToArray(merge(grensesnitt, statiske, validering, common), (entry) => {
-      return entry[1];
-    });
-  };
-
   const globalTranslationsToSave = () => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
-        if (
-          getAllPredefinedOriginalTexts().indexOf(translation.originalText) < 0 &&
-          Object.keys(allCurrentTranslationAsObject).indexOf(translation.originalText) < 0
-        ) {
-          return {
-            ...allCurrentTranslationAsObject,
-            [translation.originalText]: {
-              scope: "global",
-              value: translation.translatedText,
-            },
-          };
-        }
+        return {
+          ...allCurrentTranslationAsObject,
+          [translation.originalText]: {
+            scope: "global",
+            value: translation.translatedText,
+          },
+        };
       }
       return allCurrentTranslationAsObject;
     }, {});
+  };
+
+  const hasDuplicatedOriginalText = () => {
+    return getCurrentOriginalTextList(currentTranslation).filter((originalText, index, array) => {
+      if (predefinedOriginalTextList.indexOf(originalText) >= 0) return originalText;
+      return array.indexOf(originalText) !== index;
+    });
   };
 
   return (
@@ -265,6 +228,7 @@ const GlobalTranslationsPage = ({
                 updateOriginalText={updateOriginalText}
                 updateTranslation={updateTranslation}
                 deleteOneRow={deleteOneRow}
+                predefinedGlobalOriginalTexts={predefinedOriginalTextList}
               />
               <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
                 Legg til ny tekst
@@ -273,7 +237,7 @@ const GlobalTranslationsPage = ({
           ) : (
             <ApplicationTextTranslationEditPanel
               classes={classes}
-              texts={getApplicationTexts(selectedTag)}
+              selectedTag={selectedTag}
               translations={currentTranslation}
               languageCode={languageCode}
               updateTranslation={updateTranslation}
@@ -293,15 +257,26 @@ const GlobalTranslationsPage = ({
             Slett språk
           </Knapp>
           <Hovedknapp
-            onClick={() =>
-              saveTranslation(
-                projectURL,
-                globalTranslationsWithLanguagecodeAndTag?.id,
-                languageCode,
-                globalTranslationsToSave(),
-                selectedTag
-              )
-            }
+            onClick={() => {
+              if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+                const duplicatedOriginalText = hasDuplicatedOriginalText();
+                alert(
+                  `Du har fortsatt ${
+                    duplicatedOriginalText.length > 1
+                      ? "flere dupliserte original tekster"
+                      : "en duplisert original tekst"
+                  } (${duplicatedOriginalText})`
+                );
+              } else {
+                saveTranslation(
+                  projectURL,
+                  globalTranslationsWithLanguagecodeAndTag?.id,
+                  languageCode,
+                  globalTranslationsToSave(),
+                  selectedTag
+                );
+              }
+            }}
           >
             Lagre
           </Hovedknapp>
