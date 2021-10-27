@@ -6,7 +6,6 @@ import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
-import { useTranslations } from "../context/i18n";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
@@ -33,7 +32,6 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
     properties: { skjemanummer },
   } = form;
   const [openModal, setOpenModal] = useModal(false);
-  const { getTranslationsForNavForm } = useTranslations();
   const styles = useStyles();
   return (
     <>
@@ -85,7 +83,6 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
         openModal={openModal}
         closeModal={() => setOpenModal(false)}
         form={form}
-        translations={getTranslationsForNavForm()}
         onPublish={onPublish}
       />
     </>

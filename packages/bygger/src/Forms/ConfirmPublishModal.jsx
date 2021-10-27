@@ -2,6 +2,7 @@ import Modal from "nav-frontend-modal";
 import { Knapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/styles";
+import { useTranslations } from "../context/i18n";
 
 const useModalStyles = makeStyles({
   modal: {
@@ -15,9 +16,10 @@ const useModalStyles = makeStyles({
   },
 });
 
-const ConfirmPublishModal = ({ openModal, closeModal, form, translations, onPublish }) => {
+const ConfirmPublishModal = ({ openModal, closeModal, form, onPublish }) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
+  const { getTranslationsForNavForm } = useTranslations();
 
   const onPublishClick = async (form, translations) => {
     setPubliserer(true);
@@ -41,7 +43,7 @@ const ConfirmPublishModal = ({ openModal, closeModal, form, translations, onPubl
       <div className={styles.modal_text}>Er du sikker på at dette skjemaet skal publiseres?</div>
       <ul className="list-inline">
         <li className="list-inline-item">
-          <Knapp onClick={() => onPublishClick(form, translations)} spinner={publiserer}>
+          <Knapp onClick={() => onPublishClick(form, getTranslationsForNavForm())} spinner={publiserer}>
             Ja, publiser skjemaet
           </Knapp>
         </li>
