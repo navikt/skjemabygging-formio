@@ -7,8 +7,9 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
 import { logger } from "./logger.js";
 import cors from "cors";
-import { fetchFormsFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
+import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import { config, checkConfigConsistency } from "./config/config.js";
+import { getCountries } from "./utils/countries.js";
 
 const app = express();
 const skjemaApp = express();
@@ -21,7 +22,17 @@ skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
 
-const { sentryDsn, naisClusterName, useFormioApi, skjemaDir, skjemaUrl, translationDir, gitVersion } = config;
+const {
+  sentryDsn,
+  naisClusterName,
+  useFormioApi,
+  skjemaDir,
+  skjemaUrl,
+  mottakeradresserUrl,
+  resourcesDir,
+  translationDir,
+  gitVersion
+} = config;
 checkConfigConsistency(config);
 
 const Registry = client.Registry;
@@ -75,12 +86,18 @@ skjemaApp.post("/foersteside", async (req, res) => {
 });
 
 const loadForms = async () => {
-  return useFormioApi ? await fetchFormsFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
+  return useFormioApi ? await fetchFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
 };
 
 const loadTranslations = async (formPath) => {
   return await loadFileFromDirectory(translationDir, formPath);
 };
+
+const loadMottakeradresser = async () => {
+  return useFormioApi
+    ? await fetchFromFormioApi(mottakeradresserUrl)
+    : await loadFileFromDirectory(resourcesDir, "mottakeradresser.json", []);
+}
 
 skjemaApp.get("/config", async (req, res) => {
   const forms = await loadForms();
@@ -95,6 +112,10 @@ skjemaApp.get("/config", async (req, res) => {
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
 skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTranslations(req.params.form)));
+
+skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
+
+skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottakeradresser()));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 

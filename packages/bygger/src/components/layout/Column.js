@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Column = ({ children, className }) => {
+const Column = ({ children, className = "" }) => {
   const styles = useStyles();
   return (
     <div

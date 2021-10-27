@@ -1,6 +1,7 @@
 import { Undertittel } from "nav-frontend-typografi";
 import GlobalTranslationRow from "./GlobalTranslationRow";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getCurrentOriginalTextList } from "./utils";
 
 const GlobalTranslationsPanel = ({
   classes,
@@ -9,7 +10,12 @@ const GlobalTranslationsPanel = ({
   updateOriginalText,
   updateTranslation,
   deleteOneRow,
+  predefinedGlobalOriginalTexts,
 }) => {
+  const [currentOriginalTextList, setCurrentOriginalTextList] = useState();
+  useEffect(() => {
+    setCurrentOriginalTextList(getCurrentOriginalTextList(currentTranslation));
+  }, [currentTranslation]);
   return (
     <form>
       <li className={classes.label}>
@@ -26,6 +32,8 @@ const GlobalTranslationsPanel = ({
           updateOriginalText={updateOriginalText}
           updateTranslation={updateTranslation}
           deleteOneRow={deleteOneRow}
+          currentOriginalTextList={currentOriginalTextList}
+          predefinedGlobalOriginalTexts={predefinedGlobalOriginalTexts}
         />
       ))}
     </form>

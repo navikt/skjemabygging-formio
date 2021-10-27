@@ -18,7 +18,7 @@ const FyllUtContainer = styled("div")({
   ...bootstrapStyles,
 });
 
-const FyllUtRouter = ({ form, translations }) => {
+const FyllUtRouter = ({ form, translations, countryNameTranslations }) => {
   const { featureToggles } = useAppConfig();
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
@@ -38,7 +38,7 @@ const FyllUtRouter = ({ form, translations }) => {
   }, [loggSkjemaApnet]);
 
   return (
-    <LanguagesProvider translations={translations}>
+    <LanguagesProvider translations={translations} countryNameTranslations={countryNameTranslations}>
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>
@@ -63,7 +63,9 @@ const FyllUtRouter = ({ form, translations }) => {
           </Route>
           <Route path={`${path}/ingen-innsending`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => <PrepareIngenInnsendingPage form={form} submission={submissionObject} formUrl={url} />}
+              {(submissionObject) => (
+                <PrepareIngenInnsendingPage form={form} submission={submissionObject} formUrl={url} />
+              )}
             </SubmissionWrapper>
           </Route>
         </Switch>

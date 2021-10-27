@@ -1,6 +1,10 @@
 import React from "react";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import {SkjemaGruppe, Input, Select, Checkbox, Textarea} from "nav-frontend-skjema";
+import {AlertStripeFeil} from "nav-frontend-alertstriper";
 import {DisplayType, InnsendingType, NavFormType} from '../Forms/navForm';
+import useMottaksadresser from "../hooks/useMottaksadresser";
+import {Link} from "react-router-dom";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = 'create' | 'edit';
@@ -13,14 +17,27 @@ interface Props {
 type BasicFormProps = Props & {usageContext: UsageContext};
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
+
+  const {mottaksadresser, ready, errorMessage: mottaksadresseError} = useMottaksadresser();
+
   const {
     title,
     path,
     display,
     name,
     type,
-    properties: { skjemanummer, tema, innsending, hasPapirInnsendingOnly, hasLabeledSignatures, signatures },
+    properties: {
+      skjemanummer,
+      tema,
+      downloadPdfButtonText,
+      innsending: innsendingFraProps,
+      hasPapirInnsendingOnly,
+      mottaksadresseId,
+      hasLabeledSignatures,
+      signatures
+    },
   } = form;
+  const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? 'KUN_PAPIR' : 'PAPIR_OG_DIGITAL');
   return (
     <SkjemaGruppe>
       <Input
@@ -95,11 +112,19 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         readOnly={usageContext === "edit"}
         onChange={(event) => onChange({ ...form, path: event.target.value })}
       />
+      <Input
+        label="Tekst på knapp for nedlasting av pdf"
+        type="text"
+        id="downloadPdfButtonText"
+        value={downloadPdfButtonText || ""}
+        onChange={(event) => onChange({ ...form, properties: { ...form.properties, downloadPdfButtonText: event.target.value } })}
+        placeholder={TEXTS.grensesnitt.downloadApplication}
+      />
       <Select
         label="Innsending"
         name="form-innsending"
         id="form-innsending"
-        value={innsending || (hasPapirInnsendingOnly ? 'KUN_PAPIR' : 'PAPIR_OG_DIGITAL')}
+        value={innsending}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, innsending: event.target.value as InnsendingType } })}
       >
         <option value="PAPIR_OG_DIGITAL">Papir og digital</option>
@@ -123,6 +148,29 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
           </>
         )
       }
+      {
+        (innsending === 'KUN_PAPIR' || innsending === 'PAPIR_OG_DIGITAL') && (
+          <div className="margin-bottom-default">
+            <Select
+              label="Mottaksadresse"
+              name="form-mottaksadresse"
+              id="form-mottaksadresse"
+              value={mottaksadresseId}
+              disabled={!ready}
+              onChange={(event) => onChange({ ...form, properties: { ...form.properties, mottaksadresseId: event.target.value || undefined } })}
+            >
+              <option value="">{mottaksadresseId && !ready ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}</option>
+              {mottaksadresser.map(adresse => <option value={adresse.id} key={adresse.id}>{adresse.toString()}</option>)}
+            </Select>
+            {mottaksadresseError && <AlertStripeFeil>{mottaksadresseError}</AlertStripeFeil>}
+          </div>
+        )
+      }
+      <div className="margin-bottom-default">
+        <Link to="/mottaksadresser">
+          Rediger mottaksadresser
+        </Link>
+      </div>
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
         checked={!!hasLabeledSignatures}

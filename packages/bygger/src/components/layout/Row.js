@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Row = ({ children, className }) => {
+const Row = ({ children, className = "" }) => {
   const styles = useStyles();
 
   return (

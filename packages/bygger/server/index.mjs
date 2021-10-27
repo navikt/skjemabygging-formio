@@ -10,6 +10,7 @@ const publiseringWorkflowDispatchConfig = {
   workflowDispatchRef: process.env.PUBLISERING_WORKFLOW_DISPATCH_REF,
   workflowDispatchToken: process.env.akg_pat,
   workflowDispatchURL: process.env.PUBLISERING_WORKFLOW_DISPATCH_URL,
+  publishResourceUrl: process.env.PUBLISH_RESOURCE_URL,
 };
 
 function gitVersion() {

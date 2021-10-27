@@ -12,6 +12,7 @@ export interface FormSignaturesType {
 export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
+  downloadPdfButtonText?: string;
   innsending?: InnsendingType;
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
@@ -19,6 +20,7 @@ export interface FormPropertiesType {
    * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
    */
   hasPapirInnsendingOnly?: boolean;
+  mottaksadresseId?: string;
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
 }
