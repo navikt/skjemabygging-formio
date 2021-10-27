@@ -18,7 +18,6 @@ export const FormBuilderSchemas = {
   fodselsNummerDNummerSchema,
   firstNameSchema,
   surnameSchema,
-  // personaliaSchema,
   vegadresseSchema,
   postnummerSchema,
   poststedSchema,

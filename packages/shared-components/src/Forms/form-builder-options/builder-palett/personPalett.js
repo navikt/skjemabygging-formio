@@ -15,13 +15,6 @@ import statsborgerskapSchema from "../schemas/statsborgerskapSchema";
 const personPalett = {
   title: "Person",
   components: {
-    /*personalia: {
-      title: "Personalia",
-      key: "personalia",
-      icon: "user",
-      weight: 0,
-      schema: personaliaSchema(),
-    },*/
     fnrfield: {
       title: "Fødselsnummer",
       group: "person",
@@ -43,13 +36,6 @@ const personPalett = {
       weight: 30,
       schema: surnameSchema(),
     },
-    /*komplettKontaktInfo: {
-      title: "Komplett kontaktinfo",
-      key: "komplettKontaktinfo",
-      icon: "home",
-      weight: 40,
-      schema: komplettKontaktInfoSchema(),
-    },*/
     norskVegadresse: {
       title: "Norsk vegadresse",
       icon: "home",
