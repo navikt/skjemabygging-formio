@@ -1,8 +1,12 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { FyllUtRouter, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import {
+  FyllUtRouter,
+  useAppConfig,
+  i18nData,
   useLanguageCodeFromURL,
+} from "@navikt/skjemadigitalisering-shared-components";
 import { useTranslations } from "../context/i18n";
 import ActionRow from "../components/layout/ActionRow";
 
@@ -13,6 +17,8 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
 
   const translationsForNavForm = useMemo(() => getTranslationsForNavForm(), [getTranslationsForNavForm]);
   const countryNameTranslations = useMemo(() => getCountryNameTranslations(), [getCountryNameTranslations]);
+
+  const i18nNorskData = { "nb-NO": i18nData["nb-NO"] };
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
@@ -33,7 +39,7 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
       </ActionRow>
       <FyllUtRouter
         form={form}
-        translations={featureToggles.enableTranslations && translationsForNavForm}
+        translations={featureToggles.enableTranslations && { ...i18nNorskData, ...translationsForNavForm }}
         countryNameTranslations={featureToggles.enableTranslations && countryNameTranslations}
       />
     </AppLayoutWithContext>
