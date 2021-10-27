@@ -39,6 +39,8 @@ spec:
       value: "{{publiseringWorkflowDispatchRef}}"
     - name: PUBLISERING_WORKFLOW_DISPATCH_URL
       value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish.yaml/dispatches"
+    - name: PUBLISH_RESOURCE_URL
+      value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish-resource.yaml/dispatches"
   envFrom:
     - secret: monorepo-poc-akg
   azure:

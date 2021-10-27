@@ -14,7 +14,24 @@ import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
 import { Formio } from "formiojs";
 import Formiojs from "formiojs/Formio";
-import { NavFormType } from "../Forms/navForm";
+import {FormPropertiesType, NavFormType} from "../Forms/navForm";
+import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
+import {fromEntity, Mottaksadresse} from "../hooks/mottaksadresser";
+
+const MOCK_DEFAULT_MOTTAKSADRESSER = mockMottaksadresser.map(fromEntity);
+jest.mock("../hooks/useMottaksadresser", () => () => {
+  return {
+    ready: true,
+    mottaksadresser: MOCK_DEFAULT_MOTTAKSADRESSER,
+    errorMessage: undefined,
+  }
+});
+
+jest.mock("react-router-dom", () => ({
+  // @ts-ignore
+  ...jest.requireActual("react-router-dom"),
+  Link: () => <a href="/">testlink</a>,
+}));
 
 describe("FormMetadataEditor", () => {
   let mockOnChange: jest.MockedFunction<UpdateFormFunction>;
@@ -258,5 +275,82 @@ describe("FormMetadataEditor", () => {
         expect(updatedForm.properties.downloadPdfButtonText).toEqual("");
       });
     });
+
+    describe("Mottaksadresse", () => {
+
+      const formMedProps = (props: Partial<FormPropertiesType>) => ({
+        ...defaultForm,
+        properties: {
+          ...defaultForm.properties,
+          ...props,
+        }
+      });
+
+      describe("Dropdown med mottaksadresser", () => {
+
+        it("Vises ikke når innsending=INGEN", async () => {
+          const form: NavFormType = formMedProps({innsending: "INGEN"});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
+        });
+
+        it("Vises ikke når innsending=KUN_DIGITAL", async () => {
+          const form: NavFormType = formMedProps({innsending: "KUN_DIGITAL"});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
+        });
+
+        it("Vises når innsending=KUN_PAPIR", async () => {
+          const form: NavFormType = formMedProps({innsending: "KUN_PAPIR"});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
+        });
+
+        it("Vises når innsending=PAPIR_OG_DIGITAL", async () => {
+          const form: NavFormType = formMedProps({innsending: "PAPIR_OG_DIGITAL"});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
+        });
+
+        it("Vises når innsending=undefined", async () => {
+          const form: NavFormType = formMedProps({innsending: undefined});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
+        });
+
+        it("Viser valgt mottaksadresse med formattering", async () => {
+          const form: NavFormType = formMedProps({mottaksadresseId: "1"});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.getByDisplayValue("NAV alternativ skanning, Postboks 3, 0591 Oslo")).toBeTruthy();
+        });
+
+      });
+
+      describe("Endring av mottaksadresse", () => {
+
+        it("Setter ny mottaksadresse", async () => {
+          const form: NavFormType = formMedProps({mottaksadresseId: undefined});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "1");
+
+          expect(mockOnChange).toHaveBeenCalledTimes(1);
+          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+          expect(updatedForm.properties.mottaksadresseId).toEqual("1");
+        });
+
+        it("Fjerner valgt mottaksadresse", async () => {
+          const form: NavFormType = formMedProps({mottaksadresseId: "1"});
+          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+          userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "");
+
+          expect(mockOnChange).toHaveBeenCalledTimes(1);
+          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+          expect(updatedForm.properties.mottaksadresseId).toBeUndefined();
+        });
+
+      });
+
+    });
+
   });
 });

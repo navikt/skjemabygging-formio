@@ -20,6 +20,7 @@ export interface FormPropertiesType {
    * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
    */
   hasPapirInnsendingOnly?: boolean;
+  mottaksadresseId?: string;
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
 }

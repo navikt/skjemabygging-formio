@@ -7,6 +7,7 @@ import { useFormioTranslations } from "./hooks/useFormioTranslations";
 import { UserAlerterContext } from "./userAlerting";
 import LoadingComponent from "./components/LoadingComponent";
 import TranslationsRouter from "./translations/TranslationsRouter";
+import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
 
 function AuthenticatedApp({ serverURL, formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -53,6 +54,9 @@ function AuthenticatedApp({ serverURL, formio, store }) {
             saveLocalTranslation={saveLocalTranslation}
             deleteTranslation={deleteTranslation}
           />
+        </Route>
+        <Route path="/mottaksadresser">
+          <MottaksadresserPage />
         </Route>
 
         <Route path="/">

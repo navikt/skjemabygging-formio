@@ -9,7 +9,7 @@ const readFile = async (filepath) => {
   return fileContents;
 };
 
-const loadFileFromDirectory = async (dir, filename) => {
+const loadFileFromDirectory = async (dir, filename, defaultReturn = {}) => {
   const existingFileNames = fs.readdirSync(dir);
   const existingFileName = existingFileNames.find(
     (approvedFileName) => approvedFileName.replace(".json", "") === filename.replace(".json", "")
@@ -19,7 +19,7 @@ const loadFileFromDirectory = async (dir, filename) => {
     return JSON.parse(file);
   }
   console.warn(`File "${filename}" does not exist in directory "${dir}"`);
-  return {};
+  return defaultReturn;
 };
 
 const loadAllJsonFilesFromDirectory = async (dir) => {
@@ -33,7 +33,7 @@ const loadAllJsonFilesFromDirectory = async (dir) => {
   return [];
 };
 
-const fetchFormsFromFormioApi = async (url) => {
+const fetchFromFormioApi = async (url) => {
   if (url) {
     const response = await fetch(url, { method: "GET" });
     if (response.ok) {
@@ -44,4 +44,4 @@ const fetchFormsFromFormioApi = async (url) => {
   return [];
 };
 
-export { loadAllJsonFilesFromDirectory, loadFileFromDirectory, fetchFormsFromFormioApi };
+export { loadAllJsonFilesFromDirectory, loadFileFromDirectory, fetchFromFormioApi };
