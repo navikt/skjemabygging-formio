@@ -124,7 +124,7 @@ interface UtenlandskAdresse {
   postboksNrSoker: string;
   bygningSoker: string;
   postkodeSoker: string,
-  byStedSoker: string;
+  poststedSoker: string;
   landSoker: string;
   regionSoker: string;
 }
@@ -190,7 +190,7 @@ export function genererAdresse(submission: Submission): Adresse {
       || postnummerSoker,
     sted: (norskVegadresse && norskVegadresse.poststedSoker)
       || (norskPostboksadresse && norskPostboksadresse.poststedSoker)
-      || (utenlandskAdresse && utenlandskAdresse.byStedSoker)
+      || (utenlandskAdresse && utenlandskAdresse.poststedSoker)
       || poststedSoker,
     region: (utenlandskAdresse && utenlandskAdresse.regionSoker),
     land: landSoker || (utenlandskAdresse && utenlandskAdresse.landSoker) || "Norge",
