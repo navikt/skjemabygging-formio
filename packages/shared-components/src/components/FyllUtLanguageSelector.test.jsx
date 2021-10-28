@@ -29,7 +29,18 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
     expect(screen.getByText("Norsk nynorsk")).toBeTruthy();
   });
 
-  it("render languageSelector with Nynorsk as label and Bokmål as option when the selected language and only nynorsk translations ", () => {
+  it("render languageSelector with Nynorsk as label and Bokmål as option when the selected language is nynorsk and there is only nynorsk translations ", () => {
+    renderFyllUtLanguageSelector(
+      { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
+      "/testForm/view?lang=nn-NO"
+    );
+    const languageSelector = screen.getByRole("button", { name: "Norsk nynorsk" });
+    expect(languageSelector).toBeDefined();
+    userEvent.click(languageSelector);
+    expect(screen.getByText("Norsk bokmål")).toBeTruthy();
+  });
+
+  it("render languageSelector with Nynorsk as label and Bokmål as option when there are bokmål translations and nynorsk translations ", () => {
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
       "/testForm/view?lang=nn-NO"
