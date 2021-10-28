@@ -84,7 +84,6 @@ function handleDataGridRows(component, submission, translate) {
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission.map((rowSubmission, index) => {
     const dataGridRowComponents = components
-      .filter((component) => Object.keys(rowSubmission).indexOf(component.key) >= 0)
       .reduce(
         (handledComponents, subComponent) =>
           handleComponent(subComponent, { data: rowSubmission }, handledComponents, "", translate),
