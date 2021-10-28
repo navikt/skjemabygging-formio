@@ -59,7 +59,6 @@ const useMottaksadresser = (): Output => {
             loadMottaksadresser();
             userAlerter.flashSuccessMessage("Mottaksadresse slettet");
           } else {
-            setErrorMessage("Feil ved sletting av mottaksadresse");
             userAlerter.setErrorMessage(`Sletting feilet: ${res.status}`);
           }
         })
@@ -82,7 +81,7 @@ const useMottaksadresser = (): Output => {
     })
       .then(res => {
         if (res.ok) {
-          userAlerter.flashSuccessMessage("Publisering fullført");
+          userAlerter.flashSuccessMessage("Publisering startet");
         } else {
           userAlerter.setErrorMessage(`Publisering feilet: ${res.status}`);
         }

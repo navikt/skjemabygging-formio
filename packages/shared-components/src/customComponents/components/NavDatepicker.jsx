@@ -10,7 +10,7 @@ import apiEditForm from "formiojs/components/_classes/component/editForm/Compone
 import { getContextComponents } from "formiojs/utils/utils";
 
 import FormioReactComponent from "../FormioReactComponent.jsx";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 
 require("moment/locale/nb.js"); // For datovelger
 

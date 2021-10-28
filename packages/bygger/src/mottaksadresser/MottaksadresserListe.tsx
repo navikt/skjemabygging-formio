@@ -9,6 +9,9 @@ import {UserAlerterContext} from "../userAlerting";
 const useStyles = makeStyles({
   mottaksadresser: {
     gridColumn: "2 / 3",
+  },
+  publishButton: {
+    whiteSpace: "inherit"
   }
 });
 
@@ -76,8 +79,12 @@ const MottaksadresserListe = () => {
         }
       </Column>
       <Column>
-        <Hovedknapp onClick={onPublish} spinner={publishing}>Publiser</Hovedknapp>
-        <Knapp onClick={() => editMottaksadresse("new")}>Legg til ny</Knapp>
+        <Hovedknapp onClick={onPublish} spinner={publishing} className={styles.publishButton}>
+          Publiser mottaksadresser
+        </Hovedknapp>
+        <Knapp onClick={() => editMottaksadresse("new")}>
+          Legg til ny
+        </Knapp>
         {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
       </Column>
     </>
