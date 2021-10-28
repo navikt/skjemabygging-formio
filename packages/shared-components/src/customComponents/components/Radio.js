@@ -1,7 +1,7 @@
 import FormioRadio from "formiojs/components/radio/Radio";
 import radioEditForm from "formiojs/components/radio/Radio.form";
 import {descriptionPositionField} from "./fields/descriptionPositionField";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 
 class Radio extends FormioRadio {
   static get builderInfo() {

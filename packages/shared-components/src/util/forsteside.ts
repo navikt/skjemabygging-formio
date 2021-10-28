@@ -17,6 +17,14 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
+interface MottakerAdresse {
+  adresselinje1: string;
+  adresselinje2?: string;
+  adresselinje3?: string;
+  postnummer: string;
+  poststed: string;
+}
+
 export interface ForstesideRequestBody {
   foerstesidetype: ForstesideType;
   navSkjemaId: string;
@@ -26,7 +34,8 @@ export interface ForstesideRequestBody {
   tema: string;
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
-  netsPostboks: string;
+  netsPostboks?: string;
+  adresse?: MottakerAdresse;
 
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;
@@ -39,7 +48,7 @@ const adressLine = (text, prefix?) => {
   return "";
 }
 
-export function genererPersonalia(fnrEllerDnr, adresse): BrukerInfo {
+export function genererPersonalia(fnrEllerDnr?: string, adresse?: Adresse): BrukerInfo {
   if (fnrEllerDnr) {
     return {
       bruker: {
@@ -96,42 +105,95 @@ export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form
   ];
 }
 
-export function genererAdresse(submission) {
+interface NorskVegadresse {
+  coSoker: string;
+  vegadresseSoker: string;
+  postnrSoker: string;
+  poststedSoker: string;
+}
+
+interface NorskPostboksAdresse {
+  coSoker: string;
+  postboksNrSoker: string;
+  postnrSoker: string;
+  poststedSoker: string;
+}
+
+interface UtenlandskAdresse {
+  coSoker: string;
+  postboksNrSoker: string;
+  bygningSoker: string;
+  postkodeSoker: string,
+  poststedSoker: string;
+  landSoker: string;
+  regionSoker: string;
+}
+
+type Submission = {
+  fornavnSoker: string;
+  etternavnSoker: string;
+  coSoker?: string;
+  postnummerSoker?: string;
+  postnrSoker?: string;
+  utenlandskPostkodeSoker?: string;
+  poststedSoker: string;
+  landSoker?: string;
+  gateadresseSoker?: string;
+  norskVegadresse?: NorskVegadresse;
+  norskPostboksadresse?: NorskPostboksAdresse;
+  utenlandskAdresse?: UtenlandskAdresse;
+}
+
+type Adresse = {
+  navn: string;
+  co?: string;
+  postboksEier?: string;
+  adresse?: string;
+  bygning?: string;
+  postnr?: string;
+  sted: string;
+  region?: string;
+  land: string;
+}
+
+export function genererAdresse(submission: Submission): Adresse {
   const {
-    gateadresseSoker,
-    vegadresseSoker,
-    landSoker,
-    postnrSoker,
-    poststedSoker,
     fornavnSoker,
     etternavnSoker,
     coSoker,
+    gateadresseSoker,
+    poststedSoker,
+    postnummerSoker,
+    postnrSoker,
+    landSoker,
     utenlandskPostkodeSoker,
-    postboksNrSoker,
-    postboksPostnrSoker,
-    postboksPoststedSoker,
-    postboksCoSoker,
-    utlandCoSoker,
-    utlandVegadressePostboksSoker,
-    utlandBygningSoker,
-    utlandPostkodeSoker,
-    utlandByStedSoker,
-    utlandLandSoker,
-    utlandRegionSoker,
+    norskVegadresse,
+    norskPostboksadresse,
+    utenlandskAdresse,
   } = submission;
   return {
     navn: `${fornavnSoker} ${etternavnSoker}`,
-    co: coSoker || utlandCoSoker,
-    postboksEier: postboksCoSoker,
-    adresse: gateadresseSoker
-      || vegadresseSoker
-      || (postboksNrSoker && `Postboks ${postboksNrSoker}`)
-      || utlandVegadressePostboksSoker,
-    bygning: utlandBygningSoker,
-    postnr: postnrSoker || postboksPostnrSoker || utenlandskPostkodeSoker || utlandPostkodeSoker,
-    sted: poststedSoker || postboksPoststedSoker || utlandByStedSoker,
-    region: utlandRegionSoker,
-    land: landSoker || utlandLandSoker || "Norge",
+    co: (norskVegadresse && norskVegadresse.coSoker)
+      || (utenlandskAdresse && utenlandskAdresse.coSoker)
+      || coSoker,
+    postboksEier: (norskPostboksadresse && norskPostboksadresse.coSoker),
+    adresse: (norskVegadresse && norskVegadresse.vegadresseSoker)
+      || (norskPostboksadresse && norskPostboksadresse.postboksNrSoker && `Postboks ${norskPostboksadresse.postboksNrSoker}`)
+      || (utenlandskAdresse && utenlandskAdresse.postboksNrSoker)
+      || gateadresseSoker,
+    bygning: (utenlandskAdresse && utenlandskAdresse.bygningSoker),
+    postnr: (norskVegadresse && norskVegadresse.postnrSoker)
+      || (norskPostboksadresse && norskPostboksadresse.postnrSoker)
+      || (utenlandskAdresse && utenlandskAdresse.postkodeSoker)
+      || postnrSoker
+      || utenlandskPostkodeSoker
+      || postnummerSoker,
+    sted: (norskVegadresse && norskVegadresse.poststedSoker)
+      || (norskPostboksadresse && norskPostboksadresse.poststedSoker)
+      || (utenlandskAdresse && utenlandskAdresse.poststedSoker)
+      || poststedSoker,
+    region: (utenlandskAdresse && utenlandskAdresse.regionSoker),
+    land: landSoker || (utenlandskAdresse && utenlandskAdresse.landSoker) || "Norge",
   };
 }
 
@@ -147,9 +209,19 @@ const parseLanguage = language => {
   }
 }
 
-export function genererFoerstesideData(form, submission, language = "nb-NO"): ForstesideRequestBody {
+function genererMottaksadresse(mottaksadresseId: string, mottaksadresser) {
+  if (mottaksadresseId) {
+    const mottaksadresse = mottaksadresser.find(a => a._id === mottaksadresseId);
+    if (mottaksadresse) {
+      return {adresse: {...mottaksadresse.data}};
+    }
+  }
+  return {netsPostboks: "1400"};
+}
+
+export function genererFoerstesideData(form, submission, language= "nb-NO", mottaksadresser = []): ForstesideRequestBody {
   const {
-    properties: { skjemanummer, tema },
+    properties: { skjemanummer, tema, mottaksadresseId },
     title,
   } = form;
   const { fodselsnummerDNummerSoker } = submission;
@@ -164,6 +236,6 @@ export function genererFoerstesideData(form, submission, language = "nb-NO"): Fo
     tema,
     vedleggsliste: genererVedleggsListe(form, submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
-    netsPostboks: "1400",
+    ...genererMottaksadresse(mottaksadresseId, mottaksadresser)
   };
 }

@@ -1,7 +1,7 @@
 import HTMLElement from "formiojs/components/html/HTML";
 import HTMLElementEditForm from "formiojs/components/html/HTML.form";
 import HTMLElementDisplayEditForm from "formiojs/components/html/editForm/HTML.edit.display";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { contentToIncludeInPdf } from "./fields/contentToIncludeInPdf";
 

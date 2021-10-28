@@ -53,7 +53,6 @@ export class Backend {
   async checkPublishingAccess(userToken) {
     //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
     const currentUserUrl = `${this.projectURL}/current`;
-    console.log("project url", currentUserUrl);
     return fetchWithErrorHandling(currentUserUrl, {
       headers: {
         "Content-Type": "application/json",
@@ -66,6 +65,27 @@ export class Backend {
     await this.checkPublishingAccess(userToken);
     const payload = await this.payload(formPath, form, translations);
     return await fetchWithErrorHandling(this.githubAppConfig.workflowDispatchURL, {
+      method: "POST",
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "Application/JSON",
+        Authorization: `token ${this.githubAppConfig.workflowDispatchToken}`,
+      },
+      body: JSON.stringify(payload),
+    });
+  }
+
+  async publishResource(userToken, resourceName, resourceContent) {
+    await this.checkPublishingAccess(userToken);
+    const encodedResourceContent = await this.toBase64GzipAndJson(resourceContent);
+    const payload = {
+      ref: this.githubAppConfig.workflowDispatchRef,
+      inputs: {
+        resourceName,
+        encodedJson: encodedResourceContent,
+      },
+    };
+    return await fetchWithErrorHandling(this.githubAppConfig.publishResourceUrl, {
       method: "POST",
       headers: {
         Accept: "application/vnd.github.v3+json",

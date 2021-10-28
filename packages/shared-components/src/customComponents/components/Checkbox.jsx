@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Checkbox } from "nav-frontend-skjema";
 import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
 
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { descriptionPositionField } from "./fields/descriptionPositionField";
 
