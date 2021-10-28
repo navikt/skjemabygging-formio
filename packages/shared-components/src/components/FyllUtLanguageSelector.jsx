@@ -15,7 +15,7 @@ const FyllUtLanguageSelector = () => {
     return null;
   }
 
-  if (currentLanguage !== "nb-NO") {
+  if (currentLanguage !== "nb-NO" && availableLanguages.indexOf("nb-NO") < 0) {
     availableLanguages.push("nb-NO");
   }
 

@@ -1,6 +1,6 @@
 import Select from "formiojs/components/select/Select";
 import selectEditForm from "formiojs/components/select/Select.form";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 
 class CountrySelect extends Select {
   static get builderInfo() {

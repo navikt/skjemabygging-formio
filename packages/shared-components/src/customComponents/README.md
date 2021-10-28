@@ -79,7 +79,7 @@ Most changes we make tend to be done for the components `editForm`, `builderInfo
         }
         ```
 
-We have standardized on specifying `builderInfo` and `schema` details in `packages/shared-components/src/Forms/FormBuilderOptions.js`, to make it easier to make "sweeping" changes for multiple components at once.
+We have standardized on specifying `builderInfo` and `schema` details in `packages/shared-components/src/Forms/form-builder-options/index.js`, to make it easier to make "sweeping" changes for multiple components at once.
 
 The property name/key used in `index.js` must match the name used in FormBuilderOptions, but otherwise naming is flexible. However, it is recommended to use the same class name.
 
@@ -105,9 +105,9 @@ class ExtendedComponent extends OriginalComponent {
 }
 ```
 
-The type is set in the `schema`-part in `FormBuilderOptions.js`:
+The type is set in the `schema`-part in `form-builder-options/index.js`:
 
-<b>FormBuilderOptions.js</b>
+<b>FormBuilderOptions</b>
 
 ```
 const builderPalette = {

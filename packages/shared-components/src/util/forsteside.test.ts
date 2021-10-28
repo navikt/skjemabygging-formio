@@ -32,7 +32,7 @@ const genererVedleggComponent = (key, label, vedleggskode, vedleggstittel) => ({
 
 describe("genererPersonalia", () => {
   it("returns bruker if we have fodselsNummer", () => {
-    const actual = genererPersonalia("12345678911", {});
+    const actual = genererPersonalia("12345678911");
     expect(actual).toEqual({
       bruker: {
         brukerId: "12345678911",
@@ -42,7 +42,7 @@ describe("genererPersonalia", () => {
   });
 
   it("returns ukjentBruker if we do not have fodselsNummer", () => {
-    const actual = genererPersonalia(null, {
+    const actual = genererPersonalia(undefined, {
       navn: "Test Testesen",
       adresse: "Testveien 1",
       postnr: "1234",
@@ -55,7 +55,7 @@ describe("genererPersonalia", () => {
   });
 
   it("throws error is both fodselsNummer and address is missing", () => {
-    expect(() => genererPersonalia(null, null)).toThrowError("User needs to submit either fodselsNummer or address");
+    expect(() => genererPersonalia(undefined,undefined)).toThrowError("User needs to submit either fodselsNummer or address");
   });
 });
 
@@ -335,8 +335,10 @@ describe("genererFoerstesideData", () => {
       const navnPostnrPoststed = {
         fornavnSoker: "Solan",
         etternavnSoker: "Gundersen",
-        postnrSoker: "3520",
-        poststedSoker: "Jevnaker",
+        norskVegadresse: {
+          postnrSoker: "3520",
+          poststedSoker: "Jevnaker",
+        },
       };
 
       it("henter gate og husnummer fra gateadresseSoker", () => {
@@ -352,8 +354,11 @@ describe("genererFoerstesideData", () => {
       it("henter gate og husnummer fra vegadresseSoker", () => {
         const submission = {
           ...navnPostnrPoststed,
-          vegadresseSoker: "Flåklypatoppen 1",
-        }
+          norskVegadresse: {
+            ...navnPostnrPoststed.norskVegadresse,
+            vegadresseSoker: "Flåklypatoppen 1",
+          },
+        };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
           .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
@@ -362,9 +367,12 @@ describe("genererFoerstesideData", () => {
       it("legger til c/o-adressering", () => {
         const submission = {
           ...navnPostnrPoststed,
-          coSoker: "Reodor Felgen",
-          vegadresseSoker: "Flåklypatoppen 1",
-        }
+          norskVegadresse: {
+            ...navnPostnrPoststed.norskVegadresse,
+            coSoker: "Reodor Felgen",
+            vegadresseSoker: "Flåklypatoppen 1",
+          },
+        };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
           .toEqual("Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
@@ -378,10 +386,12 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          postboksCoSoker: "Reodor Felgen",
-          postboksNrSoker: "55 Toppen",
-          postboksPostnrSoker: "3520",
-          postboksPoststedSoker: "Jevnaker",
+          norskPostboksadresse: {
+            coSoker: "Reodor Felgen",
+            postboksNrSoker: "55 Toppen",
+            postnrSoker: "3520",
+            poststedSoker: "Jevnaker",
+          }
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
@@ -392,10 +402,12 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          postboksCoSoker: undefined,
-          postboksNrSoker: "55 Toppen",
-          postboksPostnrSoker: "3520",
-          postboksPoststedSoker: "Jevnaker",
+          norskPostboksadresse: {
+            oSoker: undefined,
+            postboksNrSoker: "55 Toppen",
+            postnrSoker: "3520",
+            poststedSoker: "Jevnaker",
+          },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
@@ -410,13 +422,16 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          utlandCoSoker: undefined,
-          utlandVegadressePostboksSoker: "12603 Denmark Drive",
-          utlandBygningSoker: "Apt.556",
-          utlandPostkodeSoker: "VA 22071-9945",
-          utlandByStedSoker: "Herndon",
-          utlandRegionSoker: undefined,
-          utlandLandSoker: "USA",
+          utenlandskAdresse: {
+
+            coSoker: undefined,
+            postboksNrSoker: "12603 Denmark Drive",
+            bygningSoker: "Apt.556",
+            postkodeSoker: "VA 22071-9945",
+            poststedSoker: "Herndon",
+            regionSoker: undefined,
+            landSoker: "USA",
+          }
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
@@ -427,13 +442,15 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          utlandCoSoker: "Bart Simpson",
-          utlandVegadressePostboksSoker: "12603 Denmark Drive",
-          utlandBygningSoker: "Apt.556",
-          utlandPostkodeSoker: "VA 22071-9945",
-          utlandByStedSoker: "Herndon",
-          utlandRegionSoker: undefined,
-          utlandLandSoker: "USA",
+          utenlandskAdresse: {
+            coSoker: "Bart Simpson",
+            postboksNrSoker: "12603 Denmark Drive",
+            bygningSoker: "Apt.556",
+            postkodeSoker: "VA 22071-9945",
+            poststedSoker: "Herndon",
+            regionSoker: undefined,
+            landSoker: "USA",
+          },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
@@ -444,13 +461,15 @@ describe("genererFoerstesideData", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
-          utlandCoSoker: undefined,
-          utlandVegadressePostboksSoker: "12603 Denmark Drive",
-          utlandBygningSoker: "Apt.556",
-          utlandPostkodeSoker: "VA 22071-9945",
-          utlandByStedSoker: "Herndon",
-          utlandRegionSoker: "Dulles",
-          utlandLandSoker: "USA",
+          utenlandskAdresse: {
+            coSoker: undefined,
+            postboksNrSoker: "12603 Denmark Drive",
+            bygningSoker: "Apt.556",
+            postkodeSoker: "VA 22071-9945",
+            poststedSoker: "Herndon",
+            regionSoker: "Dulles",
+            landSoker: "USA",
+          },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo)
