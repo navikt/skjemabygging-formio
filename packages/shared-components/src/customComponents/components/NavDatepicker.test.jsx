@@ -26,6 +26,12 @@ describe("NavDatePicker", () => {
       );
     });
 
+    it("returns error message when both earliest/latest is set to number 0", () => {
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, "fromDate", false, 0, 0)).toBe(
+        "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030"
+      );
+    });
+
     describe("validateToAndFromDate", () => {
       let fromDate;
       let earlierThanFromDate;
@@ -135,9 +141,46 @@ describe("NavDatePicker", () => {
         });
       });
 
+      describe("latestFromToday is set to number 0", () => {
+
+        it("fails if selected date is tomorrow", () => {
+          expect(validateEarliestAndLatestDate(undefined, 0, moment().add(1, "d"))).toBe("Datoen kan ikke være senere enn 15.05.2030");
+        });
+
+        it("validates ok if selected date is today", () => {
+          expect(validateEarliestAndLatestDate(undefined, 0, moment())).toBe(true);
+        });
+
+        it("validates ok if selected date is yesterday", () => {
+          expect(validateEarliestAndLatestDate(undefined, 0, moment().subtract(1, "d"))).toBe(true);
+        });
+
+      });
+
+      describe("earliestFromToday is set to number 0", () => {
+
+        it("fails if selected date is yesterday", () => {
+          expect(validateEarliestAndLatestDate(0, undefined, moment().subtract(1, "d"))).toBe("Datoen kan ikke være tidligere enn 15.05.2030");
+        });
+
+        it("validates ok if selected date is today", () => {
+          expect(validateEarliestAndLatestDate(0, undefined, moment())).toBe(true);
+        });
+
+        it("validates ok if selected date is tomorrow", () => {
+          expect(validateEarliestAndLatestDate(0, undefined, moment().add(1, "d"))).toBe(true);
+        });
+
+      });
+
       it("returns true if neither earliestFromToday or latestFromToday are set", () => {
         expect(validateEarliestAndLatestDate("", "", moment())).toBe(true);
       });
+
+      it("returns true if both earliestFromToday or latestFromToday are undefined", () => {
+        expect(validateEarliestAndLatestDate(undefined, undefined, moment())).toBe(true);
+      });
+
     });
   });
 });
