@@ -41,6 +41,12 @@ function I18nProvider({ children, loadTranslations }) {
     return mapTranslationsToFormioI18nObject(translations, withoutCountryNames);
   }
 
+  function getLocalTranslationsForNavForm() {
+    const withoutCountryNames = (translation) =>
+      translation.scope !== "component-countryName" && translation.scope !== "global";
+    return mapTranslationsToFormioI18nObject(translations, withoutCountryNames);
+  }
+
   function getCountryNameTranslations() {
     const countryNamesOnly = (translation) => translation.scope === "component-countryName";
     return mapTranslationsToFormioI18nObject(translations, countryNamesOnly);
@@ -56,6 +62,7 @@ function I18nProvider({ children, loadTranslations }) {
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
+        getLocalTranslationsForNavForm,
       }}
     >
       {children}
