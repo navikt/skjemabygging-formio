@@ -1,7 +1,7 @@
 import Fieldset from "formiojs/components/fieldset/Fieldset";
 import NestedComponentForm from "formiojs/components/_classes/nested/NestedComponent.form";
 import FieldsetDisplayForm from "formiojs/components/fieldset/editForm/Fieldset.edit.display";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 import { descriptionPositionField } from "./fields/descriptionPositionField";
 
 class Skjemagruppe extends Fieldset {

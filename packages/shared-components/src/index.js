@@ -6,7 +6,8 @@ import { createFormSummaryObject, MockedComponentObjectForTest } from "@navikt/s
 import { guid } from "./util/guid";
 import NavForm from "./components/NavForm";
 import navFormStyle from "./components/navFormStyle";
-import FormBuilderOptions, { FormBuilderSchemas } from "./Forms/FormBuilderOptions";
+import FormBuilderOptions from "./Forms/form-builder-options";
+import FormBuilderSchemas from "./Forms/form-builder-options/schemas"
 import { appStyles, globalStyles } from "./components/navGlobalStyles";
 import Template from "./template";
 import { LanguagesProvider, useLanguages } from "./context/languages";

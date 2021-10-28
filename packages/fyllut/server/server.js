@@ -31,7 +31,7 @@ const {
   mottakeradresserUrl,
   resourcesDir,
   translationDir,
-  gitVersion
+  gitVersion,
 } = config;
 checkConfigConsistency(config);
 
@@ -97,7 +97,7 @@ const loadMottakeradresser = async () => {
   return useFormioApi
     ? await fetchFromFormioApi(mottakeradresserUrl)
     : await loadFileFromDirectory(resourcesDir, "mottakeradresser.json", []);
-}
+};
 
 skjemaApp.get("/config", async (req, res) => {
   const forms = await loadForms();
