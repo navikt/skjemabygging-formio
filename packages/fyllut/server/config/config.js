@@ -7,7 +7,7 @@ const config = {
   skjemaDir: process.env.SKJEMA_DIR,
   skjemaUrl: process.env.SKJEMA_URL,
   resourcesDir: process.env.RESOURCES_DIR,
-  mottakeradresserUrl: process.env.MOTTAKERADRESSER_URL,
+  mottaksadresserUrl: process.env.MOTTAKERADRESSER_URL,
   translationDir: process.env.TRANSLATION_DIR,
   gitVersion: process.env.GIT_SHA,
 };
