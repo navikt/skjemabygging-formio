@@ -35,7 +35,8 @@ const extractTextsFromProperties = (props) => {
 };
 
 const getSimplifiedComponentObject = (form) =>
-  navFormUtils.flattenComponents(form.components)
+  navFormUtils
+    .flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
     .map(({ content, title, label, html, type, values, legend, description, suffix, prefix }) => ({
       title,
@@ -98,7 +99,7 @@ const parseText = (text) => {
   return text.replace(/<\/?[^>]+(>|$)/gm, "").replace(/>(?=[^>]*)/gm, "");
 };
 
-const getAllParsedTexts = (form) => {
+const getAllTextsOrParsedTexts = (form, shouldParseText = true) => {
   const textComponents = getSimplifiedComponentObject(form).reduce(
     (allTextsForForm, component) => {
       return [
@@ -110,11 +111,11 @@ const getAllParsedTexts = (form) => {
               return [
                 ...textsForComponent,
                 ...component[key].map((value) => ({
-                  text: parseText(value),
+                  text: shouldParseText ? parseText(value) : value,
                 })),
               ];
             } else {
-              return [...textsForComponent, { text: parseText(component[key]) }];
+              return [...textsForComponent, { text: shouldParseText ? parseText(component[key]) : component[key] }];
             }
           }, []),
       ];
@@ -125,7 +126,7 @@ const getAllParsedTexts = (form) => {
 };
 
 const getTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getAllParsedTexts(form);
+  const textComponents = getAllTextsOrParsedTexts(form);
   let textsWithTranslations = [];
   Object.keys(translations).forEach((languageCode) => {
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
@@ -164,7 +165,7 @@ const getTextsAndTranslationsHeaders = (translations) => {
 };
 
 export {
-  getAllParsedTexts,
+  getAllTextsOrParsedTexts,
   getTextsAndTypeForForm,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,

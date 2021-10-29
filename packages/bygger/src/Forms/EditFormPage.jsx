@@ -4,7 +4,6 @@ import React, { useContext } from "react";
 import { FormBuilderOptions, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
@@ -13,6 +12,8 @@ import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import { Link } from "react-router-dom";
 import ActionRow from "../components/layout/ActionRow";
 import { UserAlerterContext } from "../userAlerting";
+import PublishSettingsModal from "./PublishSettingsModal";
+import ConfirmPublishModal from "./ConfirmPublishModal";
 
 const useStyles = makeStyles({
   formBuilder: {
@@ -31,7 +32,8 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
     title,
     properties: { skjemanummer },
   } = form;
-  const [openModal, setOpenModal] = useModal(false);
+  const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
+  const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal(false);
   const styles = useStyles();
   return (
     <>
@@ -72,16 +74,26 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
             formBuilderOptions={FormBuilderOptions}
           />
           <Column>
-            <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
+            <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
             <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
             {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
           </Column>
         </Row>
       </AppLayoutWithContext>
 
+      <PublishSettingsModal
+        openModal={openPublishSettingModal}
+        closeModal={() => setOpenPublishSettingModal(false)}
+        publishModal={() => {
+          setOpenConfirmPublishModal(true);
+          setOpenPublishSettingModal(false);
+        }}
+        form={form}
+      />
+
       <ConfirmPublishModal
-        openModal={openModal}
-        closeModal={() => setOpenModal(false)}
+        openModal={openConfirmPublishModal}
+        closeModal={() => setOpenConfirmPublishModal(false)}
         form={form}
         onPublish={onPublish}
       />
