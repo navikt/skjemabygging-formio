@@ -55,12 +55,15 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
           <Systemtittel id="last-ned-soknad-overskrift" className="margin-bottom-default">
             {translate(TEXTS.statiske.prepareSubmitPage.firstSectionTitle)}
           </Systemtittel>
-          <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionDescription, {downloadApplication: downloadPdfButtonText})}
-          </Normaltekst>
-          <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction)}
-          </Normaltekst>
+          <ul>
+            <li>
+              {translate(TEXTS.statiske.prepareSubmitPage.firstSectionBullet1, {
+                downloadApplication: downloadPdfButtonText,
+              })}
+              <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionBullet2)}</li>
+            </li>
+            <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionBullet3)}</li>
+          </ul>
           <DownloadPdfButton
             form={form}
             submission={submission}
@@ -88,7 +91,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
             <div className="margin-bottom-default">
               <strong>{translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxDescription)}</strong>
             </div>
-            <ol>
+            <ul className="margin-bottom-default">
               <li className="typo-normal">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionOne)}
               </li>
@@ -101,15 +104,15 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               <li className="typo-normal">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}
               </li>
-            </ol>
+              <li className="typo-normal">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFive)}
+              </li>
+              <li className="typo-normal">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionSix)}
+              </li>
+            </ul>
           </BekreftCheckboksPanel>
-          <div aria-live="polite">
-            {!allowedToProgress && (
-              <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
-                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxWarning)}
-              </AlertStripe>
-            )}
-          </div>
+          <div aria-live="polite">{!allowedToProgress}</div>
           <nav className="list-inline">
             <div className="list-inline-item">
               <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
