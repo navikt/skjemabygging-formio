@@ -1,5 +1,7 @@
-import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
+import {createFormSummaryObject, handleComponent, mapAndEvaluateConditionals} from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
+import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
+
 const {
   createDummyContainerElement,
   createDummyContentElement,
@@ -7,6 +9,7 @@ const {
   createDummyEmail,
   createDummyHTMLElement,
   createDummyAlertstripe,
+  createDummyNavDatepicker,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
   createDummyRadioPanelWithNumberValues,
@@ -627,4 +630,130 @@ describe("When creating form summary object", () => {
       expect(actual.length).toEqual(2);
     });
   });
+
+  describe("En datagrid med et tekstfelt og en navDatepicker", () => {
+
+    const form = createFormObject([
+      createPanelObject("Page 1", [
+        createDummyDataGrid("Data Grid", [
+          createDummyTextfield("Fornavn"),
+          createDummyNavDatepicker("Startdato")
+        ]),
+      ])
+    ]);
+
+    const summaryWithDatagridComponents = datagridComponents => ({
+      "label": "Page 1",
+      "key": "page1",
+      "type": "panel",
+      "components": [
+        {
+          "label": "Data Grid",
+          "key": "datagrid",
+          "type": "datagrid",
+          "components": [
+            {
+              "type": "datagrid-row",
+              "label": "datagrid-row-title",
+              "key": "datagrid-row-0",
+              "components": datagridComponents
+            }
+          ]
+        }
+      ]
+    });
+
+    it("Oppsummeringen inneholder både fornavn og startdato", () => {
+      const actual = createFormSummaryObject(
+        form,
+        {
+          "data": {
+            "datagrid": [{"fornavn": "Trine", "startdato": "2021-10-03"}],
+          }
+        }
+      );
+      expect(actual).toEqual([summaryWithDatagridComponents([
+        {
+          "label": "Fornavn",
+          "key": "fornavn",
+          "type": "textfield",
+          "value": "Trine"
+        },
+        {
+          "label": "Startdato-label",
+          "key": "startdato",
+          "type": "navDatepicker",
+          "value": "3.10.2021"
+        }
+      ])]);
+    });
+
+
+    it("Oppsummeringen inneholder kun startdato siden fornavn ikke er oppgitt", () => {
+      const actual = createFormSummaryObject(
+        form,
+        {
+          "data": {
+            "datagrid": [{"startdato": "2021-10-03"}],
+          }
+        }
+      );
+      expect(actual).toEqual([summaryWithDatagridComponents([
+        {
+          "label": "Startdato-label",
+          "key": "startdato",
+          "type": "navDatepicker",
+          "value": "3.10.2021"
+        }
+      ])]);
+    });
+  });
+
+  it("dato og data grid / skjemagruppe", () => {
+    const actual = createFormSummaryObject(
+      datoISkjemagruppeIDatagrid.form,
+      datoISkjemagruppeIDatagrid.submission,
+      mockedTranslate
+    );
+    expect(actual).toHaveLength(1);
+    expect(actual[0].components).toHaveLength(3);
+
+    const datoUtenfor = actual[0].components[0];
+    expect(datoUtenfor.type).toEqual("navDatepicker");
+    expect(datoUtenfor.label).toEqual("Dato utenfor");
+    expect(datoUtenfor.value).toEqual("1.10.2021");
+
+    const dataGrid = actual[0].components[1];
+    expect(dataGrid.type).toEqual("datagrid")
+    expect(dataGrid.label).toEqual("Data Grid")
+    expect(dataGrid.components).toHaveLength(1);
+
+    const dataGridRow1 = dataGrid.components[0];
+    expect(dataGridRow1.type).toEqual("datagrid-row");
+    expect(dataGridRow1.components).toHaveLength(2);
+
+    const datoIDataGrid = dataGridRow1.components[0];
+    expect(datoIDataGrid.type).toEqual("navDatepicker");
+    expect(datoIDataGrid.label).toEqual("Dato i data grid");
+    expect(datoIDataGrid.value).toEqual("2.10.2021");
+
+    const skjemagruppe = dataGridRow1.components[1];
+    expect(skjemagruppe.type).toEqual("navSkjemagruppe");
+    expect(skjemagruppe.components).toHaveLength(1);
+
+    const datoISkjemagruppeInneIDataGrid = skjemagruppe.components[0];
+    expect(datoISkjemagruppeInneIDataGrid.type).toEqual("navDatepicker");
+    expect(datoISkjemagruppeInneIDataGrid.label).toEqual("Dato i skjemagruppe i data grid");
+    expect(datoISkjemagruppeInneIDataGrid.value).toEqual("3.10.2021");
+
+    const skjemagruppeUtenforDataGrid = actual[0].components[2];
+    expect(skjemagruppeUtenforDataGrid.type).toEqual("navSkjemagruppe");
+    expect(skjemagruppeUtenforDataGrid.components).toHaveLength(1);
+
+    const datoISkjemagruppeUtenforDataGrid = skjemagruppeUtenforDataGrid.components[0];
+    expect(datoISkjemagruppeUtenforDataGrid.type).toEqual("navDatepicker");
+    expect(datoISkjemagruppeUtenforDataGrid.label).toEqual("Dato i skjemagruppe utenfor Data Grid");
+    expect(datoISkjemagruppeUtenforDataGrid.value).toEqual("4.10.2021");
+  });
+
 });
