@@ -32,6 +32,36 @@ describe("NavDatePicker", () => {
       );
     });
 
+    describe("Validation inside data grid", () => {
+
+      it("fails validation for date inside data grid", () => {
+        expect(datePicker.validateDatePicker(
+          "2021-10-01",
+          {"datagrid":[{"fraDato":"2021-10-02","tilDato":"2021-10-01"}]},
+          "datagrid.fraDato",
+          true,
+          undefined,
+          undefined,
+          {"fraDato":"2021-10-02","tilDato":"2021-10-01"}
+        )).toBe(
+          "Datoen kan ikke være tidligere enn fra-dato (02.10.2021)"
+        );
+      });
+
+      it("validation ok when date is later than fromDate inside data grid", () => {
+        expect(datePicker.validateDatePicker(
+          "2021-10-03",
+          {"datagrid":[{"fraDato":"2021-10-02","tilDato":"2021-10-03"}]},
+          "datagrid.fraDato",
+          true,
+          undefined,
+          undefined,
+          {"fraDato":"2021-10-02","tilDato":"2021-10-03"}
+        )).toBe(true);
+      });
+
+    });
+
     describe("validateToAndFromDate", () => {
       let fromDate;
       let earlierThanFromDate;
