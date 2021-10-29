@@ -141,6 +141,22 @@ describe("NavDatePicker", () => {
         });
       });
 
+      describe("both earliestFromToday and latestFromToday is set to number 0", () => {
+
+        it("fails if selected date is tomorrow", () => {
+          expect(validateEarliestAndLatestDate(0, 0, moment().add(1, "d"))).toBe("Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030");
+        });
+
+        it("validates ok if selected date is today", () => {
+          expect(validateEarliestAndLatestDate(0, 0, moment())).toBe(true);
+        });
+
+        it("validates ok if selected date is yesterday", () => {
+          expect(validateEarliestAndLatestDate(0, 0, moment().subtract(1, "d"))).toBe("Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030");
+        });
+
+      });
+
       describe("latestFromToday is set to number 0", () => {
 
         it("fails if selected date is tomorrow", () => {
