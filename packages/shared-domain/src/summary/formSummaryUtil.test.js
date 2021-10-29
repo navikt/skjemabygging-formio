@@ -1,6 +1,7 @@
-import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
+import {createFormSummaryObject, handleComponent, mapAndEvaluateConditionals} from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
+
 const {
   createDummyContainerElement,
   createDummyContentElement,
@@ -8,6 +9,7 @@ const {
   createDummyEmail,
   createDummyHTMLElement,
   createDummyAlertstripe,
+  createDummyNavDatepicker,
   createDummyNavSkjemagruppe,
   createDummyRadioPanel,
   createDummyRadioPanelWithNumberValues,
@@ -626,6 +628,84 @@ describe("When creating form summary object", () => {
       );
       expect(actual).toBeInstanceOf(Array);
       expect(actual.length).toEqual(2);
+    });
+  });
+
+  describe("En datagrid med et tekstfelt og en navDatepicker", () => {
+
+    const form = createFormObject([
+      createPanelObject("Page 1", [
+        createDummyDataGrid("Data Grid", [
+          createDummyTextfield("Fornavn"),
+          createDummyNavDatepicker("Startdato")
+        ]),
+      ])
+    ]);
+
+    const summaryWithDatagridComponents = datagridComponents => ({
+      "label": "Page 1",
+      "key": "page1",
+      "type": "panel",
+      "components": [
+        {
+          "label": "Data Grid",
+          "key": "datagrid",
+          "type": "datagrid",
+          "components": [
+            {
+              "type": "datagrid-row",
+              "label": "datagrid-row-title",
+              "key": "datagrid-row-0",
+              "components": datagridComponents
+            }
+          ]
+        }
+      ]
+    });
+
+    it("Oppsummeringen inneholder både fornavn og startdato", () => {
+      const actual = createFormSummaryObject(
+        form,
+        {
+          "data": {
+            "datagrid": [{"fornavn": "Trine", "startdato": "2021-10-03"}],
+          }
+        }
+      );
+      expect(actual).toEqual([summaryWithDatagridComponents([
+        {
+          "label": "Fornavn",
+          "key": "fornavn",
+          "type": "textfield",
+          "value": "Trine"
+        },
+        {
+          "label": "Startdato-label",
+          "key": "startdato",
+          "type": "navDatepicker",
+          "value": "3.10.2021"
+        }
+      ])]);
+    });
+
+
+    it("Oppsummeringen inneholder kun startdato siden fornavn ikke er oppgitt", () => {
+      const actual = createFormSummaryObject(
+        form,
+        {
+          "data": {
+            "datagrid": [{"startdato": "2021-10-03"}],
+          }
+        }
+      );
+      expect(actual).toEqual([summaryWithDatagridComponents([
+        {
+          "label": "Startdato-label",
+          "key": "startdato",
+          "type": "navDatepicker",
+          "value": "3.10.2021"
+        }
+      ])]);
     });
   });
 

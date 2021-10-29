@@ -98,6 +98,13 @@ const createDummyNavSkjemagruppe = (label = "NavSkjemagruppe", components) => ({
   components,
 });
 
+const createDummyNavDatepicker = (label = "NavSkjemagruppe") => ({
+  label: `${label}-label`,
+  legend: `${label}-legend`,
+  key: keyFromLabel(label),
+  type: "navDatepicker",
+});
+
 const createDummyDataGrid = (label = "DataGrid", components, hideLabel) => ({
   label,
   key: keyFromLabel(label),
@@ -139,6 +146,7 @@ const mockedComponentObjectForTest = {
   createDummyHTMLElement,
   createDummyAlertstripe,
   createDummyContainerElement,
+  createDummyNavDatepicker,
   createDummyNavSkjemagruppe,
   createDummyDataGrid,
   createPanelObject,
