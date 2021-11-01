@@ -105,10 +105,8 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               <li className="typo-normal, margin-bottom-default">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionThree)}
               </li>
-              <Normaltekst className="typo-normal">
-                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}
-              </Normaltekst>
             </ul>
+            <Normaltekst>{translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}</Normaltekst>
           </BekreftCheckboksPanel>
           <div aria-live="polite">
             {!allowedToProgress && (
