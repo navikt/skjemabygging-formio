@@ -10,19 +10,19 @@ export const grensesnitt = {
     Fjern: "Fjern",
   },
 
-  downloadApplication: "Last ned søknad",
+  downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
 
   summaryPage: {
-    editAnswers: "Rediger svar",
+    editAnswers: "Rediger søknaden",
     continueToPostalSubmission: "Send i posten",
-    continueToDigitalSubmission: "Send inn digitalt",
+    continueToDigitalSubmission: "Til digital innsending",
   },
   prepareLetterPage: {
     downloadCoverPage: "Last ned førsteside",
   },
   prepareSubmitPage: {
-    confirmCheckboxLabel: "Jeg har lastet ned PDF-en og lest instruksjonene.",
+    confirmCheckboxLabel: "Jeg har lest instruksjonene.",
   },
 };

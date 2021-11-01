@@ -32,7 +32,8 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
 export function PrepareSubmitPage({ form, submission, formUrl }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL, fyllutBaseURL } = useAppConfig();
-  const [, setHasDownloadedPDF] = useState(false);
+  const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(undefined);
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
   const { translate } = useLanguages();
@@ -55,18 +56,24 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
           <Systemtittel id="last-ned-soknad-overskrift" className="margin-bottom-default">
             {translate(TEXTS.statiske.prepareSubmitPage.firstSectionTitle)}
           </Systemtittel>
-          <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionDescription, {downloadApplication: downloadPdfButtonText})}
-          </Normaltekst>
-          <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction)}
-          </Normaltekst>
+          <ul>
+            <li>
+              {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction1, {
+                downloadApplication: downloadPdfButtonText,
+              })}
+            </li>
+            <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction2)}</li>
+            <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction3)}</li>
+          </ul>
           <DownloadPdfButton
             form={form}
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form`}
             label={translate(downloadPdfButtonText)}
-            onClick={() => setHasDownloadedPDF(true)}
+            onClick={() => {
+              setHasDownloadedPDF(true);
+              setErrorMessage(undefined);
+            }}
             classNames="knapp"
           />
         </section>
@@ -88,25 +95,28 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
             <div className="margin-bottom-default">
               <strong>{translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxDescription)}</strong>
             </div>
-            <ol>
+            <ul className="margin-bottom-default">
               <li className="typo-normal">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionOne)}
               </li>
               <li className="typo-normal">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionTwo)}
               </li>
-              <li className="typo-normal">
+              <li className="typo-normal, margin-bottom-default">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionThree)}
               </li>
-              <li className="typo-normal">
-                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}
-              </li>
-            </ol>
+            </ul>
+            <Normaltekst>{translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}</Normaltekst>
           </BekreftCheckboksPanel>
           <div aria-live="polite">
             {!allowedToProgress && (
               <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxWarning)}
+              </AlertStripe>
+            )}
+            {errorMessage && (
+              <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
+                {translate(errorMessage)}
               </AlertStripe>
             )}
           </div>
@@ -124,8 +134,10 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
                   if (!allowedToProgress) {
                     event.preventDefault();
                     event.stopPropagation();
-                    //} else if (!hasDownloadedPDF) {
-                    // Gi beskjed til bruker
+                  } else if (!hasDownloadedPDF) {
+                    setErrorMessage(TEXTS.statiske.prepareSubmitPage.confirmDownloadedPdf);
+                    event.preventDefault();
+                    event.stopPropagation();
                   } else {
                     loggSkjemaFullfort("dokumentinnsending");
                   }
