@@ -114,7 +114,6 @@ export default {
   pdfBuilder,
   pdfBuilderUpload,
   radio: radiopanel,
-  "radio-radiopanel": radiopanel,
   "radio-selectboxes": selectboxes,
   resourceAdd,
   select,
