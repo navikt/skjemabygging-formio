@@ -57,12 +57,12 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
           </Systemtittel>
           <ul>
             <li>
-              {translate(TEXTS.statiske.prepareSubmitPage.firstSectionBullet1, {
+              {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction1, {
                 downloadApplication: downloadPdfButtonText,
               })}
-              <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionBullet2)}</li>
+              <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction2)}</li>
             </li>
-            <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionBullet3)}</li>
+            <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction3)}</li>
           </ul>
           <DownloadPdfButton
             form={form}

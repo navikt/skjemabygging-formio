@@ -23,10 +23,10 @@ export const statiske = {
   },
   prepareSubmitPage: {
     firstSectionTitle: "1. Last ned den ferdig utfylte søknaden til enheten din",
-    firstSectionBullet1:
+    firstSectionInstruction1:
       'Klikk på "{{downloadApplication}}". Da åpnes den ferdig utfylte søknaden din i en ny fane i nettleseren. ',
-    firstSectionBullet2: "Du må lagre søknaden (PDF) på enheten din slik at du enkelt kan finne den igjen.",
-    firstSectionBullet3:
+    firstSectionInstruction2: "Du må lagre søknaden (PDF) på enheten din slik at du enkelt kan finne den igjen.",
+    firstSectionInstruction3:
       "Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.",
     secondSectionTitle: "2. Last opp søknaden din til NAV",
     secondSectionInstruction:
