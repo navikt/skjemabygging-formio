@@ -19,7 +19,7 @@ const RESPONSE_HEADERS = {
 
 const SUBMISSION_PUT_REGEX = /http:\/\/.*\/mottaksadresse\/submission\/(.*)$/;
 
-describe("MottakeradresseListe", () => {
+describe("MottaksadresseListe", () => {
 
   beforeAll(() => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);

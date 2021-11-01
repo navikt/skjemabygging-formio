@@ -17,7 +17,7 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
-interface MottakerAdresse {
+interface MottaksAdresse {
   adresselinje1: string;
   adresselinje2?: string;
   adresselinje3?: string;
@@ -35,7 +35,7 @@ export interface ForstesideRequestBody {
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
   netsPostboks?: string;
-  adresse?: MottakerAdresse;
+  adresse?: MottaksAdresse;
 
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;

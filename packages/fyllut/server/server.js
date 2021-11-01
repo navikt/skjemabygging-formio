@@ -28,7 +28,7 @@ const {
   useFormioApi,
   skjemaDir,
   skjemaUrl,
-  mottakeradresserUrl,
+  mottaksadresserUrl,
   resourcesDir,
   translationDir,
   gitVersion,
@@ -93,10 +93,10 @@ const loadTranslations = async (formPath) => {
   return await loadFileFromDirectory(translationDir, formPath);
 };
 
-const loadMottakeradresser = async () => {
+const loadMottaksadresser = async () => {
   return useFormioApi
-    ? await fetchFromFormioApi(mottakeradresserUrl)
-    : await loadFileFromDirectory(resourcesDir, "mottakeradresser.json", []);
+    ? await fetchFromFormioApi(mottaksadresserUrl)
+    : await loadFileFromDirectory(resourcesDir, "mottaksadresser.json", []);
 };
 
 skjemaApp.get("/config", async (req, res) => {
@@ -115,7 +115,7 @@ skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTran
 
 skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
 
-skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottakeradresser()));
+skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaksadresser()));
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
