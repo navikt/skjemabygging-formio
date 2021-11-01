@@ -1,6 +1,6 @@
 import FormioCheckbox from "formiojs/components/checkbox/Checkbox";
 import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
-import {descriptionPositionField} from "./fields/descriptionPositionField";
+import { descriptionPositionField } from "./fields/descriptionPositionField";
 
 export default class NavCheckbox extends FormioCheckbox {
 
