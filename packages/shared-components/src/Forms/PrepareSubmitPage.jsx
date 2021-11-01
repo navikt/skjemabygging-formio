@@ -98,18 +98,12 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               <li className="typo-normal">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionTwo)}
               </li>
-              <li className="typo-normal">
+              <li className="typo-normal, margin-bottom-default">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionThree)}
               </li>
-              <li className="typo-normal">
+              <Normaltekst className="typo-normal">
                 {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFour)}
-              </li>
-              <li className="typo-normal">
-                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionFive)}
-              </li>
-              <li className="typo-normal">
-                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxInstructionSix)}
-              </li>
+              </Normaltekst>
             </ul>
           </BekreftCheckboksPanel>
           <div aria-live="polite">{!allowedToProgress}</div>

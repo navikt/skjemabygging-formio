@@ -3,7 +3,7 @@ export const statiske = {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres " +
-      'trykker du på "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.',
+      "trykker du på «{{editAnswers}}» på bunnen av siden. Hvis alle svarene er riktige går du videre til steg 2.",
   },
   prepareLetterPage: {
     firstSectionTitle: "Last ned og skriv ut dokumentene til saken din",
@@ -24,19 +24,18 @@ export const statiske = {
   prepareSubmitPage: {
     firstSectionTitle: "1. Last ned den ferdig utfylte søknaden til enheten din",
     firstSectionInstruction1:
-      'Klikk på "{{downloadApplication}}". Da åpnes den ferdig utfylte søknaden din i en ny fane i nettleseren. ',
+      "Klikk på «{{downloadApplication}}». Da åpnes den ferdig utfylte søknaden din i en ny fane i nettleseren. ",
     firstSectionInstruction2: "Du må lagre søknaden (PDF) på enheten din slik at du enkelt kan finne den igjen.",
     firstSectionInstruction3:
       "Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.",
     secondSectionTitle: "2. Last opp søknaden din til NAV",
     secondSectionInstruction:
-      'Når du klikker på "Gå videre" åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.',
+      "Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.",
     confirmCheckboxDescription: "På neste side laster du opp søknaden slik:",
-    confirmCheckboxInstructionOne: 'Trykk på "Fyll ut og last opp".',
-    confirmCheckboxInstructionTwo: 'Hopp over trinn 1 "Forbered skjema" og gå direkte til trinn 2 "Last opp skjema".',
-    confirmCheckboxInstructionThree: 'Trykk på "Finn filen" og last opp søknaden som du lagret på enheten din.',
-    confirmCheckboxInstructionFour: "Last opp eventuelle vedlegg.",
-    confirmCheckboxInstructionFive: 'Trykk på "Bekreft" for å gå videre til innsending av søknaden.',
-    confirmCheckboxInstructionSix: 'Trykk på "Send til NAV" nederst på siden for å sende inn søknaden din.',
+    confirmCheckboxInstructionOne: "Trykk på «Fyll ut og last opp».",
+    confirmCheckboxInstructionTwo: "Hopp over trinn 1 «Forbered skjema» og gå direkte til trinn 2 «Last opp skjema».",
+    confirmCheckboxInstructionThree: "Trykk på «Finn filen» og last opp søknaden som du lagret på enheten din.",
+    confirmCheckboxInstructionFour:
+      "Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.",
   },
 };
