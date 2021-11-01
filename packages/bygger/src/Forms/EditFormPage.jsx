@@ -12,8 +12,7 @@ import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import { Link } from "react-router-dom";
 import ActionRow from "../components/layout/ActionRow";
 import { UserAlerterContext } from "../userAlerting";
-import PublishSettingsModal from "./PublishSettingsModal";
-import ConfirmPublishModal from "./ConfirmPublishModal";
+import PublishModalComponents from "./PublishModalComponents";
 
 const useStyles = makeStyles({
   formBuilder: {
@@ -33,7 +32,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
     properties: { skjemanummer },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
-  const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal(false);
+
   const styles = useStyles();
   return (
     <>
@@ -81,21 +80,11 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
         </Row>
       </AppLayoutWithContext>
 
-      <PublishSettingsModal
-        openModal={openPublishSettingModal}
-        closeModal={() => setOpenPublishSettingModal(false)}
-        publishModal={() => {
-          setOpenConfirmPublishModal(true);
-          setOpenPublishSettingModal(false);
-        }}
-        form={form}
-      />
-
-      <ConfirmPublishModal
-        openModal={openConfirmPublishModal}
-        closeModal={() => setOpenConfirmPublishModal(false)}
+      <PublishModalComponents
         form={form}
         onPublish={onPublish}
+        openPublishSettingModal={openPublishSettingModal}
+        setOpenPublishSettingModal={setOpenPublishSettingModal}
       />
     </>
   );

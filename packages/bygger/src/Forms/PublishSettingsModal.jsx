@@ -1,6 +1,6 @@
 import Modal from "nav-frontend-modal";
 import { Hovedknapp } from "nav-frontend-knapper";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { CheckboxGruppe, Checkbox } from "nav-frontend-skjema";
 import { Undertittel, Normaltekst } from "nav-frontend-typografi";
@@ -23,24 +23,32 @@ const useModalStyles = makeStyles({
 const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }) => {
   const styles = useModalStyles();
   const { getTranslationsForNavForm } = useTranslations();
-  const allFormText = getAllTextsOrParsedTexts(form, false).reduce((allTexts, texts) => {
-    const { text } = texts;
-    return [...allTexts, text];
-  }, []);
-  const translationsForNavForm = getTranslationsForNavForm();
-  const completeTranslationList = [];
-  //console.log("form text", allFormText);
-  //console.log("translation", translationsForNavForm);
+  const [allFormText, setAllFormText] = useState([]);
+  const [completeTranslationList, setCompleteTranslationList] = useState([]);
+  const [publishLanguageCodeList, setPublishLanguageCodeList] = useState([]);
 
-  Object.keys(translationsForNavForm).forEach((languageCode) => {
-    const incompleteTranslationList = allFormText.filter(
-      (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0
+  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(), [getTranslationsForNavForm]);
+
+  useEffect(() => {
+    setAllFormText(
+      getAllTextsOrParsedTexts(form, false).reduce((allTexts, texts) => {
+        const { text } = texts;
+        return [...allTexts, text];
+      }, [])
     );
+  }, [form]);
 
-    if (incompleteTranslationList.length === 0) completeTranslationList.push(languageCode);
-  });
+  useEffect(() => {
+    Object.keys(translationsForNavForm).forEach((languageCode) => {
+      const incompleteTranslationList = allFormText.filter(
+        (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0
+      );
 
-  console.log("completeTranslation", completeTranslationList);
+      if (incompleteTranslationList.length === 0) {
+        setCompleteTranslationList((completeTranslationList) => [...completeTranslationList, languageCode]);
+      }
+    });
+  }, [allFormText, translationsForNavForm]);
 
   return (
     <Modal
@@ -63,6 +71,13 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }) => 
             className="margin-bottom-default"
             label={`${languagesInNorwegian[completeTranslation]}(${completeTranslation})`}
             key={completeTranslation}
+            onChange={(event) => {
+              if (event.target.value === "on")
+                setPublishLanguageCodeList((publishLanguageCodeList) => [
+                  ...publishLanguageCodeList,
+                  completeTranslation,
+                ]);
+            }}
           />
         ))}
       </CheckboxGruppe>
@@ -74,7 +89,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }) => 
         Hvis du savner en språkversjon må du åpne redigering av det språket og sørge for at alle tekstene er oversatt.
       </Normaltekst>
 
-      <Hovedknapp className={styles.modal_button} onClick={publishModal}>
+      <Hovedknapp className={styles.modal_button} onClick={() => publishModal(publishLanguageCodeList)}>
         Publiser
       </Hovedknapp>
     </Modal>
