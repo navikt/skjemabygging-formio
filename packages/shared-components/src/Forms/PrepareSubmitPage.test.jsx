@@ -19,7 +19,7 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
       </MemoryRouter>
     </AppConfigProvider>
   );
-  const harLestVilkaarInput = screen.getByLabelText("Jeg har lastet ned PDF-en og lest instruksjonene.");
+  const harLestVilkaarInput = screen.getByLabelText("Jeg har lest instruksjonene.");
   expect(harLestVilkaarInput).not.toBeChecked();
   const mustConfirmUserHasReadInstructionsWarningBeforeConfirmation = screen.getByText(
     "Du må bekrefte at du har lest instruksjonene over før du kan gå videre."

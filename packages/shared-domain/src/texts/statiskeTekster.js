@@ -3,7 +3,7 @@ export const statiske = {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres " +
-      "trykker du på «{{editAnswers}}» på bunnen av siden. Hvis alle svarene er riktige går du videre til steg 2.",
+      "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle svarene er riktige går du videre til steg 2.",
   },
   prepareLetterPage: {
     firstSectionTitle: "Last ned og skriv ut dokumentene til saken din",
@@ -37,5 +37,7 @@ export const statiske = {
     confirmCheckboxInstructionThree: "Trykk på «Finn filen» og last opp søknaden som du lagret på enheten din.",
     confirmCheckboxInstructionFour:
       "Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.",
+    confirmCheckboxWarning: "Du må bekrefte at du har lest instruksjonene over før du kan gå videre.",
+    confirmDownloadedPdf: "Du må laste ned søknaden din før du kan gå videre.",
   },
 };

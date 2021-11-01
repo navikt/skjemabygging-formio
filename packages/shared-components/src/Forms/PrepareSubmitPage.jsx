@@ -32,7 +32,8 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
 export function PrepareSubmitPage({ form, submission, formUrl }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL, fyllutBaseURL } = useAppConfig();
-  const [, setHasDownloadedPDF] = useState(false);
+  const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(undefined);
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
   const { translate } = useLanguages();
@@ -60,8 +61,8 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               {translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction1, {
                 downloadApplication: downloadPdfButtonText,
               })}
-              <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction2)}</li>
             </li>
+            <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction2)}</li>
             <li>{translate(TEXTS.statiske.prepareSubmitPage.firstSectionInstruction3)}</li>
           </ul>
           <DownloadPdfButton
@@ -69,7 +70,10 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form`}
             label={translate(downloadPdfButtonText)}
-            onClick={() => setHasDownloadedPDF(true)}
+            onClick={() => {
+              setHasDownloadedPDF(true);
+              setErrorMessage(undefined);
+            }}
             classNames="knapp"
           />
         </section>
@@ -106,7 +110,18 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               </Normaltekst>
             </ul>
           </BekreftCheckboksPanel>
-          <div aria-live="polite">{!allowedToProgress}</div>
+          <div aria-live="polite">
+            {!allowedToProgress && (
+              <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
+                {translate(TEXTS.statiske.prepareSubmitPage.confirmCheckboxWarning)}
+              </AlertStripe>
+            )}
+            {errorMessage && (
+              <AlertStripe className="margin-bottom-default" type="advarsel" form="inline">
+                {translate(errorMessage)}
+              </AlertStripe>
+            )}
+          </div>
           <nav className="list-inline">
             <div className="list-inline-item">
               <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
@@ -121,8 +136,10 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
                   if (!allowedToProgress) {
                     event.preventDefault();
                     event.stopPropagation();
-                    //} else if (!hasDownloadedPDF) {
-                    // Gi beskjed til bruker
+                  } else if (!hasDownloadedPDF) {
+                    setErrorMessage(TEXTS.statiske.prepareSubmitPage.confirmDownloadedPdf);
+                    event.preventDefault();
+                    event.stopPropagation();
                   } else {
                     loggSkjemaFullfort("dokumentinnsending");
                   }
