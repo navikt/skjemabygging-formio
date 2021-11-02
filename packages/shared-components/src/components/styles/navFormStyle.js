@@ -1,3 +1,4 @@
+import merge from "lodash.merge";
 import navCssVariabler from "nav-frontend-core";
 
 const wizardSidevelgerStyles = {
@@ -70,12 +71,12 @@ const styles = {
   },
 };
 
-const navFormStyle = {
-  ...styles,
-  ...wizardSidevelgerStyles,
-  ...fieldsSideBySideStyles,
-  ...allFieldsStyles,
-  ...dataGridStyles,
-  ...errorValidationStyles,
-};
+const navFormStyle = merge(
+  styles,
+  wizardSidevelgerStyles,
+  fieldsSideBySideStyles,
+  allFieldsStyles,
+  dataGridStyles,
+  errorValidationStyles,
+);
 export default navFormStyle;

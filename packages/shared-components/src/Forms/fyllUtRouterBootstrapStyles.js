@@ -80,4 +80,9 @@ export const bootstrapStyles = {
     border: "1px solid #ced4da",
     borderRadius: ".25rem",
   },
+  " & .formio-select-autocomplete-input": {
+    opacity: 0,
+    zIndex: -1,
+    position: "absolute",
+  }
 };
