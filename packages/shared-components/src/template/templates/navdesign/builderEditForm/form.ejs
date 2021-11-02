@@ -17,12 +17,27 @@
       <div>
         <span id="conditional-alert-heading">{{ctx.instance.conditionalAlert.message}}</span>
         <ul aria-labelledby="conditional-alert-heading">
-        {{ctx.instance.conditionalAlert.components.map(c => `<li>${c.label} (${c.key})</li>`).join("")}}
+          {{ctx.instance.conditionalAlert.components.map(c => `<li>${c.label} (${c.key})</li>`).join("")}}
         </ul>
       </div>
     </div>
   </div>
   {% } %}
+  <div class="col col-sm-12">
+    <div ref="editForm">
+        {{ctx.editForm}}
+    </div>
+    {% if (ctx.componentInfo.help) { %}
+    <div class="card card-body bg-light formio-settings-help">
+      {{ ctx.t(ctx.componentInfo.help) }}
+    </div>
+    {% } %}
+    <div style="margin-top: 10px; margin-bottom: 20px;">
+      <button class="knapp knapp--hoved" style="margin-right: 10px;" type="button" ref="saveButton">{{ctx.t('Save')}}</button>
+      <button class="knapp" style="margin-right: 10px;" type="button" ref="cancelButton">{{ctx.t('Cancel')}}</button>
+      <button class="knapp knapp--fare" type="button" ref="removeButton">{{ctx.t('Remove')}}</button>
+    </div>
+  </div>
   {% if (ctx.preview) { %}
   <div class="col col-sm-12">
     <div class="card preview-panel">
@@ -35,28 +50,6 @@
         </div>
       </div>
     </div>
-    {% if (ctx.componentInfo.help) { %}
-    <div class="card card-body bg-light formio-settings-help">
-      {{ ctx.t(ctx.componentInfo.help) }}
-    </div>
-    {% } %}
-    <div style="margin-top: 10px; margin-bottom: 20px;">
-      <button class="knapp knapp--hoved" style="margin-right: 10px;" ref="saveButton">{{ctx.t('Save')}}</button>
-      <button class="knapp" style="margin-right: 10px;" ref="cancelButton">{{ctx.t('Cancel')}}</button>
-      <button class="knapp knapp--fare" ref="removeButton">{{ctx.t('Remove')}}</button>
-    </div>
   </div>
   {% } %}
-  <div class="col col-sm-12">
-    <div ref="editForm">
-        {{ctx.editForm}}
-    </div>
-    {% if (!ctx.preview) { %}
-    <div style="margin-top: 10px;">
-      <button class="btn btn-success" style="margin-right: 10px;" ref="saveButton">{{ctx.t('Save')}}</button>
-      <button class="btn btn-secondary" style="margin-right: 10px;" ref="cancelButton">{{ctx.t('Cancel')}}</button>
-      <button class="btn btn-danger" ref="removeButton">{{ctx.t('Remove')}}</button>
-    </div>
-    {% } %}
-  </div>
 </div>

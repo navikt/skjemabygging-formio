@@ -9,10 +9,11 @@
     "icuDataDir": "./node_modules/full-icu",
     "decoratorUrl": "https://www.nav.no/dekoratoren?simple=true",
     "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside",
-    "formioProjectUrl": "https://protected-island-44773.herokuapp.com"
+    "formioProjectUrl": "https://protected-island-44773.herokuapp.com",
+    "formioApiMottakeradresserUrl": "https://protected-island-44773.herokuapp.com/mottaksadresse/submission"
   },
   "scripts": {
-    "start": "cross-env-shell PORT=8081 NODE_ENV=development FORMS_SOURCE=formioapi FORMIO_PROJECT_URL=$npm_package_config_formioProjectUrl FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=$npm_package_config_decoratorUrl nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start": "cross-env-shell PORT=8081 NODE_ENV=development FORMS_SOURCE=formioapi FORMIO_PROJECT_URL=$npm_package_config_formioProjectUrl MOTTAKERADRESSER_URL=$npm_package_config_formioApiMottakeradresserUrl FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=$npm_package_config_decoratorUrl nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js",
     "check-env": "node -e 'console.log(process.env)' | grep npm"

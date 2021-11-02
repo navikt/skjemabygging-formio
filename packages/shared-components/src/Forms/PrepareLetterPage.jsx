@@ -35,11 +35,18 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
+async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
+  const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      return [];
+    });
   return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(genererFoerstesideData(form, submission.data, language)),
+    body: JSON.stringify(genererFoerstesideData(form, submission.data, language, mottaksadresser)),
   })
     .then((response) => {
       if (response.ok) {
@@ -86,6 +93,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
               .then(() => setHasDownloadedFoersteside(true))
               .catch(() => loggSkjemaInnsendingFeilet());
           }}
+          type="button"
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         </button>

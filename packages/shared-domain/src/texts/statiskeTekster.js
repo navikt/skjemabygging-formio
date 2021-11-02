@@ -3,7 +3,7 @@ export const statiske = {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle svarene dine er riktige. Hvis du finner noe som må korrigeres " +
-      'trykker du på "Rediger"-knappen nedenfor. Hvis alle svarene er riktige går du videre til steg 2.',
+      "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle svarene er riktige går du videre til steg 2.",
   },
   prepareLetterPage: {
     firstSectionTitle: "Last ned og skriv ut dokumentene til saken din",
@@ -22,21 +22,22 @@ export const statiske = {
     lastSectionContent: "Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.",
   },
   prepareSubmitPage: {
-    firstSectionTitle:
-      "1. Last ned det ferdig utfylte dokumentet (PDF). Du blir bedt om å laste det opp på neste side.",
-    firstSectionDescription:
-      'Når du klikker på "{{downloadApplication}}" åpnes dokumentet  i en ny fane i nettleseren. Du må lagre pdf-filen på maskinen din på en plass hvor du kan finne den igjen.',
-    firstSectionInstruction:
-      "Du trenger pdf-filen i neste steg. Kom deretter tilbake hit for å gå videre til innsending til NAV.",
-    secondSectionTitle: "2. Instruksjoner for innsending",
+    firstSectionTitle: "1. Last ned den ferdig utfylte søknaden til enheten din",
+    firstSectionInstruction1:
+      "Klikk på «{{downloadApplication}}». Da åpnes den ferdig utfylte søknaden din i en ny fane i nettleseren. ",
+    firstSectionInstruction2: "Du må lagre søknaden (PDF) på enheten din slik at du enkelt kan finne den igjen.",
+    firstSectionInstruction3:
+      "Etter at du har lastet ned og lagret søknaden din, må du laste den opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.",
+    secondSectionTitle: "2. Last opp søknaden din til NAV",
     secondSectionInstruction:
-      'Når du klikker på "Gå videre" nedenfor åpnes det en ny side med en opplastingstjeneste (krever innlogging) for å laste opp pdf-filen som du lagret på maskinen din i forrige steg.',
-    confirmCheckboxDescription: "Etter at du har logget inn:",
-    confirmCheckboxInstructionOne: 'Trykk på "Fyll ut og last opp"',
-    confirmCheckboxInstructionTwo: 'Trykk på "Finn filen". (OBS! IKKE trykk på "Åpne skjema"-knappen)',
-    confirmCheckboxInstructionThree: "Finn og velg filen som du lastet ned og lagret på maskinen din",
+      "Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp søknaden din.",
+    confirmCheckboxDescription: "På neste side laster du opp søknaden slik:",
+    confirmCheckboxInstructionOne: "Trykk på «Fyll ut og last opp».",
+    confirmCheckboxInstructionTwo: "Hopp over trinn 1 «Forbered skjema» og gå direkte til trinn 2 «Last opp skjema».",
+    confirmCheckboxInstructionThree: "Trykk på «Finn filen» og last opp søknaden som du lagret på enheten din.",
     confirmCheckboxInstructionFour:
-      "Følg instruksjonene videre for å laste opp eventuelle vedlegg og fullføre innsendingen",
+      "Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av søknaden. Trykk på knappen «Send til NAV» nederst på siden for å sende inn søknaden din.",
     confirmCheckboxWarning: "Du må bekrefte at du har lest instruksjonene over før du kan gå videre.",
+    confirmDownloadedPdf: "Du må laste ned søknaden din før du kan gå videre.",
   },
 };

@@ -26,6 +26,42 @@ describe("NavDatePicker", () => {
       );
     });
 
+    it("returns error message when both earliest/latest is set to number 0", () => {
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, "fromDate", false, 0, 0)).toBe(
+        "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030"
+      );
+    });
+
+    describe("Validation inside data grid", () => {
+
+      it("fails validation for date inside data grid", () => {
+        expect(datePicker.validateDatePicker(
+          "2021-10-01",
+          {"datagrid":[{"fraDato":"2021-10-02","tilDato":"2021-10-01"}]},
+          "datagrid.fraDato",
+          true,
+          undefined,
+          undefined,
+          {"fraDato":"2021-10-02","tilDato":"2021-10-01"}
+        )).toBe(
+          "Datoen kan ikke være tidligere enn fra-dato (02.10.2021)"
+        );
+      });
+
+      it("validation ok when date is later than fromDate inside data grid", () => {
+        expect(datePicker.validateDatePicker(
+          "2021-10-03",
+          {"datagrid":[{"fraDato":"2021-10-02","tilDato":"2021-10-03"}]},
+          "datagrid.fraDato",
+          true,
+          undefined,
+          undefined,
+          {"fraDato":"2021-10-02","tilDato":"2021-10-03"}
+        )).toBe(true);
+      });
+
+    });
+
     describe("validateToAndFromDate", () => {
       let fromDate;
       let earlierThanFromDate;
@@ -135,9 +171,62 @@ describe("NavDatePicker", () => {
         });
       });
 
+      describe("both earliestFromToday and latestFromToday is set to number 0", () => {
+
+        it("fails if selected date is tomorrow", () => {
+          expect(validateEarliestAndLatestDate(0, 0, moment().add(1, "d"))).toBe("Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030");
+        });
+
+        it("validates ok if selected date is today", () => {
+          expect(validateEarliestAndLatestDate(0, 0, moment())).toBe(true);
+        });
+
+        it("validates ok if selected date is yesterday", () => {
+          expect(validateEarliestAndLatestDate(0, 0, moment().subtract(1, "d"))).toBe("Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030");
+        });
+
+      });
+
+      describe("latestFromToday is set to number 0", () => {
+
+        it("fails if selected date is tomorrow", () => {
+          expect(validateEarliestAndLatestDate(undefined, 0, moment().add(1, "d"))).toBe("Datoen kan ikke være senere enn 15.05.2030");
+        });
+
+        it("validates ok if selected date is today", () => {
+          expect(validateEarliestAndLatestDate(undefined, 0, moment())).toBe(true);
+        });
+
+        it("validates ok if selected date is yesterday", () => {
+          expect(validateEarliestAndLatestDate(undefined, 0, moment().subtract(1, "d"))).toBe(true);
+        });
+
+      });
+
+      describe("earliestFromToday is set to number 0", () => {
+
+        it("fails if selected date is yesterday", () => {
+          expect(validateEarliestAndLatestDate(0, undefined, moment().subtract(1, "d"))).toBe("Datoen kan ikke være tidligere enn 15.05.2030");
+        });
+
+        it("validates ok if selected date is today", () => {
+          expect(validateEarliestAndLatestDate(0, undefined, moment())).toBe(true);
+        });
+
+        it("validates ok if selected date is tomorrow", () => {
+          expect(validateEarliestAndLatestDate(0, undefined, moment().add(1, "d"))).toBe(true);
+        });
+
+      });
+
       it("returns true if neither earliestFromToday or latestFromToday are set", () => {
         expect(validateEarliestAndLatestDate("", "", moment())).toBe(true);
       });
+
+      it("returns true if both earliestFromToday or latestFromToday are undefined", () => {
+        expect(validateEarliestAndLatestDate(undefined, undefined, moment())).toBe(true);
+      });
+
     });
   });
 });

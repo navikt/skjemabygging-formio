@@ -15,15 +15,20 @@ export interface PusherMessage {
   formJsonFileTitle?: string;
 }
 
-export interface WorkflowDispatchInputs {
-  formJsonFileTitle: string,
-  formDescription?: string,
-  encodedFormJson: string,
-  encodedTranslationJson?: string,
-  monorepoGitHash: string
+export interface PublishFormInputs {
+  formJsonFileTitle: string;
+  formDescription?: string;
+  encodedFormJson: string;
+  encodedTranslationJson?: string;
+  monorepoGitHash: string;
 }
 
-export type PusherChannel = 'skjemautfyller-deployed' | 'build-aborted' | 'publish-aborted';
+export interface PublishResourceInputs {
+  resourceName: string;
+  encodedJson: string;
+}
+
+export type PusherChannel = 'skjemautfyller-deployed' | 'build-aborted' | 'publish-aborted' | 'publish-resource-aborted';
 export type PusherEvent = 'publication' | 'other' | 'failure';
 
 const PUBLISH_COMMIT_REGEXP = /^\[publisering\].*/;
@@ -62,7 +67,7 @@ const run = (channel: PusherChannel, eventMessage: PushEvent, pusherApp: Options
 }
 
 const buildPublishAbortedMessage = (message: WorkflowDispatchEvent): PusherMessage => {
-  const inputs: WorkflowDispatchInputs = message.inputs as unknown as WorkflowDispatchInputs;
+  const inputs: PublishFormInputs = message.inputs as unknown as PublishFormInputs;
   return {
     skjemapublisering: {
       commitUrl: inputs.formJsonFileTitle,
@@ -72,11 +77,24 @@ const buildPublishAbortedMessage = (message: WorkflowDispatchEvent): PusherMessa
     formJsonFileTitle: inputs.formJsonFileTitle,
   };
 }
+const buildPublishResourceAbortedMessage = (message: WorkflowDispatchEvent): PusherMessage => {
+  const inputs: PublishResourceInputs = message.inputs as unknown as PublishResourceInputs;
+  return {
+    skjemapublisering: {
+      skjematittel: inputs.resourceName,
+    },
+  };
+}
 
 export const execute = (channel: PusherChannel, pusherConfig: Options, githubEventMessage: PushEvent | WorkflowDispatchEvent) => {
   if (channel === "publish-aborted") {
     const pusher = PusherFactory.createInstance(pusherConfig);
     const pusherMessage = buildPublishAbortedMessage(githubEventMessage as WorkflowDispatchEvent);
+    const event = "failure";
+    sendMessage(pusher, channel, event, pusherMessage);
+  } else if (channel === "publish-resource-aborted") {
+    const pusher = PusherFactory.createInstance(pusherConfig);
+    const pusherMessage = buildPublishResourceAbortedMessage(githubEventMessage as WorkflowDispatchEvent);
     const event = "failure";
     sendMessage(pusher, channel, event, pusherMessage);
   } else {

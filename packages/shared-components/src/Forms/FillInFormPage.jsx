@@ -5,6 +5,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../configContext";
+import i18nData from "../i18nData";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
@@ -17,6 +18,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
   }
+
+  const i18nNorskData = { "nb-NO": i18nData["nb-NO"] };
+
   return (
     <div>
       <Sidetittel>{translate(form.title)}</Sidetittel>
@@ -24,7 +28,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       <NavForm
         form={form}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
-        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
+        i18n={featureToggles.enableTranslations ? { ...i18nNorskData, ...translationsForNavForm } : undefined}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}

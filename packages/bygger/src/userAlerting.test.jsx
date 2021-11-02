@@ -79,6 +79,7 @@ describe("userAlerting", () => {
         "skjemautfyller-deployed",
         "build-aborted",
         "publish-aborted",
+        "publish-resource-aborted",
       ]);
     });
 

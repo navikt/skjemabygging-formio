@@ -10,7 +10,7 @@ import apiEditForm from "formiojs/components/_classes/component/editForm/Compone
 import { getContextComponents } from "formiojs/utils/utils";
 
 import FormioReactComponent from "../FormioReactComponent.jsx";
-import FormBuilderOptions from "../../Forms/FormBuilderOptions";
+import FormBuilderOptions from "../../Forms/form-builder-options";
 
 require("moment/locale/nb.js"); // For datovelger
 
@@ -52,10 +52,10 @@ export function validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
     : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
 }
 
-export function validateEarliestAndLatestDate(earliestFromToday, latestFromToday, inputDate) {
-  const earliestAllowedDate = !!earliestFromToday ? moment().add(earliestFromToday, "d") : undefined;
+export function validateEarliestAndLatestDate(earliestFromToday = "", latestFromToday = "", inputDate) {
+  const earliestAllowedDate = !!String(earliestFromToday) ? moment().add(String(earliestFromToday), "d") : undefined;
   const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
-  const latestAllowedDate = !!latestFromToday ? moment().add(latestFromToday, "d") : undefined;
+  const latestAllowedDate = !!String(latestFromToday) ? moment().add(String(latestFromToday), "d") : undefined;
   const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
 
   if (earliestAllowedDate && latestAllowedDate) {
@@ -105,21 +105,27 @@ export default class NavDatepicker extends FormioReactComponent {
     submissionData,
     beforeDateInputKey,
     mayBeEqual,
-    relativeEarliestAllowedDate,
-    relativeLatestAllowedDate
+    relativeEarliestAllowedDate = "",
+    relativeLatestAllowedDate = "",
+    row
   ) {
     if (!input) {
       return true;
     }
 
-    const toAndFromDateValidation =
-      beforeDateInputKey && submissionData[beforeDateInputKey]
-        ? validateToAndFromDate(moment(submissionData[beforeDateInputKey]), moment(input), mayBeEqual)
-        : true;
+    let toAndFromDateValidation = true;
+    if (beforeDateInputKey) {
+      const beforeDateValue = submissionData[beforeDateInputKey] || (beforeDateInputKey.includes(".") && row && row[beforeDateInputKey.replace(/.*\./i, "")]);
+      if (beforeDateValue) {
+        toAndFromDateValidation = validateToAndFromDate(moment(beforeDateValue), moment(input), mayBeEqual);
+      }
+    }
 
+    const earliestFromToday = String(relativeEarliestAllowedDate);
+    const latestFromToday = String(relativeLatestAllowedDate);
     const earliestAndLatestDateValidation =
-      !!relativeEarliestAllowedDate || !!relativeLatestAllowedDate
-        ? validateEarliestAndLatestDate(relativeEarliestAllowedDate, relativeLatestAllowedDate, moment(input))
+      !!earliestFromToday || !!latestFromToday
+        ? validateEarliestAndLatestDate(earliestFromToday, latestFromToday, moment(input))
         : true;
 
     if (typeof toAndFromDateValidation === "string") {

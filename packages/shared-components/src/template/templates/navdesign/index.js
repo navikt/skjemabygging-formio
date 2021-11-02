@@ -40,10 +40,10 @@ import panel from "./panel";
 import pdf from "./pdf";
 import pdfBuilder from "./pdfBuilder";
 import pdfBuilderUpload from "./pdfBuilderUpload";
-import radio from "./radio";
 import radiopanel from "./radiopanel";
 import resourceAdd from "./resourceAdd";
 import select from "./select";
+import selectboxes from "./selectboxes";
 import selectOption from "./selectOption";
 import signature from "./signature";
 import survey from "./survey";
@@ -113,8 +113,8 @@ export default {
   pdf,
   pdfBuilder,
   pdfBuilderUpload,
-  radio,
-  "radio-radiopanel": radiopanel,
+  radio: radiopanel,
+  "radio-selectboxes": selectboxes,
   resourceAdd,
   select,
   selectOption,

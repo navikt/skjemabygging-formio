@@ -124,7 +124,11 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         <Innholdstittel tag="h2" className="margin-bottom-default">
           {translate(TEXTS.statiske.summaryPage.title)}
         </Innholdstittel>
-        <Normaltekst className="margin-bottom-default">{translate(TEXTS.statiske.summaryPage.description)}</Normaltekst>
+        <Normaltekst className="margin-bottom-default">
+          {translate(TEXTS.statiske.summaryPage.description, {
+            editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
+          })}
+        </Normaltekst>
         <FormSummary submission={submission} form={form} />
         <nav className="list-inline">
           <div className="list-inline-item">
@@ -167,7 +171,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               <Link
                 className="btn btn-primary btn-wizard-nav-next"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                 to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+                to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
               >
                 {translate(TEXTS.grensesnitt.moveForward)}
               </Link>

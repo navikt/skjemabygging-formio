@@ -1,4 +1,5 @@
 import dispatch from "dispatch";
+import mottaksadresser from "./mock-mottaksadresser";
 
 export function parseQueryParams(dispatcher) {
   return (request, responseContext, next) => {
@@ -48,6 +49,12 @@ export function dispatcherWithBackend(backend) {
 
       "/countries": (req, res) => {
         res.json(countries);
+      },
+
+      "/mottaksadresse/submission": {
+        GET: (req, res) => {
+          res.json(mottaksadresser);
+        },
       },
     })
   );

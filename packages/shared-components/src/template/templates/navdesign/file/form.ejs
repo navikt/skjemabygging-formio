@@ -59,8 +59,8 @@
 {% if (!ctx.disabled && (ctx.component.multiple || !ctx.files.length)) { %}
   {% if (ctx.self.useWebViewCamera) { %}
     <div class="fileSelector">
-      <button class="btn btn-primary" ref="galleryButton"><i class="fa fa-book"></i> {{ctx.t('Gallery')}}</button>
-      <button class="btn btn-primary" ref="cameraButton"><i class="fa fa-camera"></i> {{ctx.t('Camera')}}</button>
+      <button class="btn btn-primary" type="button" ref="galleryButton"><i class="fa fa-book"></i> {{ctx.t('Gallery')}}</button>
+      <button class="btn btn-primary" type="button" ref="cameraButton"><i class="fa fa-camera"></i> {{ctx.t('Camera')}}</button>
     </div>
   {% } else if (!ctx.self.cameraMode) { %}
     <div class="fileSelector" ref="fileDrop">
@@ -74,8 +74,8 @@
     <div>
       <video class="video" autoplay="true" ref="videoPlayer"></video>
     </div>
-    <button class="btn btn-primary" ref="takePictureButton"><i class="fa fa-camera"></i> {{ctx.t('Take Picture')}}</button>
-    <button class="btn btn-primary" ref="toggleCameraMode">{{ctx.t('Switch to file upload')}}</button>
+    <button class="btn btn-primary" type="button" ref="takePictureButton"><i class="fa fa-camera"></i> {{ctx.t('Take Picture')}}</button>
+    <button class="btn btn-primary" type="button" ref="toggleCameraMode">{{ctx.t('Switch to file upload')}}</button>
   {% } %}
 {% } %}
 {% ctx.statuses.forEach(function(status) { %}
