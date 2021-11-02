@@ -1,9 +1,10 @@
 import merge from "lodash.merge";
-import { navFormStyle, bootstrapStyles } from "@navikt/skjemadigitalisering-shared-components";
-import formioTableStyles from "./formioTableStyles";
 import bootstrapFormInputStyles from "./bootstrapFormInputStyles";
-import listGroupStyles from "./listGroupStyles";
 import choicesStyles from "./choicesStyles";
+import formioTableStyles from "./formioTableStyles";
+import listGroupStyles from "./listGroupStyles";
+import navFormStyle from "./navFormStyle";
+import { bootstrapStyles } from "../../Forms/fyllUtRouterBootstrapStyles";
 
 const formioFormStyles = {
   ".formio-form": merge(

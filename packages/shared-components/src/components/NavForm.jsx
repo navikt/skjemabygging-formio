@@ -28,14 +28,20 @@ import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
-import { styled } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { useAmplitude } from "../context/amplitude";
-import navFormStyle from "./navFormStyle";
+import formioFormStyles from "./styles/formioFormStyles";
 import { checkConditionOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
 import {SANITIZE_CONFIG} from "../template/sanitizeConfig";
 
 Utils.checkCondition = checkConditionOverride;
+
+const useStyles = makeStyles({
+  "@global": {
+    ...formioFormStyles,
+  },
+});
 
 const NavForm = (props) => {
 
@@ -44,6 +50,7 @@ const NavForm = (props) => {
   let element;
   const [formio, setFormio] = useState(undefined);
   const mountedRef = useRef(true);
+  useStyles();
 
   useEffect(() => () => {
     mountedRef.current = false;
@@ -206,4 +213,4 @@ const withAmplitudeHooks = (Component) => {
   };
 };
 
-export default styled(withAmplitudeHooks(NavForm))(navFormStyle);
+export default withAmplitudeHooks(NavForm);
