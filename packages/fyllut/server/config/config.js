@@ -7,7 +7,6 @@ const config = {
   skjemaDir: process.env.SKJEMA_DIR,
   formioProjectUrl: process.env.FORMIO_PROJECT_URL,
   resourcesDir: process.env.RESOURCES_DIR,
-  mottaksadresserUrl: process.env.MOTTAKERADRESSER_URL,
   translationDir: process.env.TRANSLATION_DIR,
   gitVersion: process.env.GIT_SHA,
 };

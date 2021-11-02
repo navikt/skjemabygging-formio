@@ -28,7 +28,6 @@ const {
   useFormioApi,
   skjemaDir,
   formioProjectUrl,
-  mottaksadresserUrl,
   resourcesDir,
   translationDir,
   gitVersion,
@@ -104,7 +103,7 @@ const loadTranslations = async (formPath) => {
 
 const loadMottaksadresser = async () => {
   return useFormioApi
-    ? await fetchFromFormioApi(mottaksadresserUrl)
+    ? await fetchFromFormioApi(`${formioProjectUrl}/mottaksadresse/submission`)
     : await loadFileFromDirectory(resourcesDir, "mottaksadresser.json", []);
 };
 
