@@ -24,9 +24,9 @@ const useModalStyles = makeStyles({
 
 interface Props {
   form: NavFormType;
-  openModal: any;
-  closeModal: any;
-  publishModal: any;
+  openModal: boolean;
+  closeModal: () => void;
+  publishModal: (string) => void;
 }
 
 export const getCompleteTranslationLanguageCodeList = (
