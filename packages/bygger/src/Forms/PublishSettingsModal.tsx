@@ -91,19 +91,20 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
         Språkversjoner som ikke publiseres blir utilgjengelige for brukerne.
       </Normaltekst>
       <CheckboxGruppe className="margin-bottom-default">
-        {completeTranslationLanguageCodeList
-          .filter((languagaugeCode, index) => completeTranslationLanguageCodeList.indexOf(languagaugeCode) === index)
-          .map((languageCode) => (
-            <Checkbox
-              className="margin-bottom-default"
-              label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
-              key={languageCode}
-              onChange={(event) => {
-                if (event.target.value === "on")
-                  setPublishLanguageCodeList((publishLanguageCodeList) => [...publishLanguageCodeList, languageCode]);
-              }}
-            />
-          ))}
+        {completeTranslationLanguageCodeList.map((languageCode) => (
+          <Checkbox
+            className="margin-bottom-default"
+            label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
+            key={languageCode}
+            onChange={(event) => {
+              if (event.target.checked) setPublishLanguageCodeList([...publishLanguageCodeList, languageCode]);
+              else
+                setPublishLanguageCodeList([
+                  ...publishLanguageCodeList.filter((publishedLanguageCode) => publishedLanguageCode !== languageCode),
+                ]);
+            }}
+          />
+        ))}
       </CheckboxGruppe>
       <Normaltekst>Bare komplette språkversjoner vises i listen ovenfor.</Normaltekst>
       <Normaltekst className="margin-bottom-default">
