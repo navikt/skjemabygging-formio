@@ -62,7 +62,7 @@ function I18nProvider({ children, loadTranslations }) {
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
-        getLocalTranslationsForNavForm,
+        localTranslationsForNavForm: getLocalTranslationsForNavForm(),
       }}
     >
       {children}

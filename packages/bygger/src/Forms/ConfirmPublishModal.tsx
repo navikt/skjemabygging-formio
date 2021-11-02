@@ -1,6 +1,6 @@
 import Modal from "nav-frontend-modal";
 import { Knapp } from "nav-frontend-knapper";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { useTranslations } from "../context/i18n";
 import { Normaltekst } from "nav-frontend-typografi";
@@ -25,28 +25,29 @@ interface Props {
   onPublish: Function;
 }
 
+const getCompleteLocalTranslationsForNavForm = (
+  localTranslationsForNavForm: I18nTranslationMap,
+  publishLanguageCodeList: string[]
+): I18nTranslationMap => {
+  return Object.keys(localTranslationsForNavForm).reduce((translations: {}, languageCode: string) => {
+    if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
+      return { ...translations, [languageCode]: localTranslationsForNavForm[languageCode] };
+    } else return { ...translations };
+  }, {});
+};
+
 const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeList, onPublish }: Props) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
-  const { getLocalTranslationsForNavForm }: any = useTranslations();
+  const { localTranslationsForNavForm }: any = useTranslations();
   const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslationMap>(
     {}
   );
 
-  const localTranslationsForNavForm: I18nTranslationMap = useMemo(
-    () => getLocalTranslationsForNavForm(),
-    [getLocalTranslationsForNavForm]
-  );
-
   useEffect(() => {
-    Object.keys(localTranslationsForNavForm).forEach((languageCode) => {
-      if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
-        setCompleteLocalTranslationsForNavForm((completeLocalTranslationsForNavForm) => ({
-          ...completeLocalTranslationsForNavForm,
-          [languageCode]: localTranslationsForNavForm[languageCode],
-        }));
-      }
-    });
+    setCompleteLocalTranslationsForNavForm(
+      getCompleteLocalTranslationsForNavForm(localTranslationsForNavForm, publishLanguageCodeList)
+    );
   }, [publishLanguageCodeList, localTranslationsForNavForm]);
 
   const onPublishClick = async (form, translations) => {
