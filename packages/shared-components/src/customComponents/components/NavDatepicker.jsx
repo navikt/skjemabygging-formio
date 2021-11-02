@@ -106,16 +106,20 @@ export default class NavDatepicker extends FormioReactComponent {
     beforeDateInputKey,
     mayBeEqual,
     relativeEarliestAllowedDate = "",
-    relativeLatestAllowedDate = ""
+    relativeLatestAllowedDate = "",
+    row
   ) {
     if (!input) {
       return true;
     }
 
-    const toAndFromDateValidation =
-      beforeDateInputKey && submissionData[beforeDateInputKey]
-        ? validateToAndFromDate(moment(submissionData[beforeDateInputKey]), moment(input), mayBeEqual)
-        : true;
+    let toAndFromDateValidation = true;
+    if (beforeDateInputKey) {
+      const beforeDateValue = submissionData[beforeDateInputKey] || (beforeDateInputKey.includes(".") && row && row[beforeDateInputKey.replace(/.*\./i, "")]);
+      if (beforeDateValue) {
+        toAndFromDateValidation = validateToAndFromDate(moment(beforeDateValue), moment(input), mayBeEqual);
+      }
+    }
 
     const earliestFromToday = String(relativeEarliestAllowedDate);
     const latestFromToday = String(relativeLatestAllowedDate);

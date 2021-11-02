@@ -16,7 +16,7 @@ const datoOgTidPalett = {
           custom:
             "valid = instance.validateDatePicker(input, data," +
             "component.beforeDateInputKey, component.mayBeEqual, " +
-            "component.earliestAllowedDate, component.latestAllowedDate);",
+            "component.earliestAllowedDate, component.latestAllowedDate, row);",
           required: true,
         },
       },
