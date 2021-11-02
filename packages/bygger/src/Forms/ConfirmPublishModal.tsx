@@ -4,6 +4,8 @@ import React, { useMemo, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { useTranslations } from "../context/i18n";
 import { Normaltekst } from "nav-frontend-typografi";
+import { NavFormType } from "./navForm";
+import { I18nTranslationMap } from "../../types/translations";
 
 const useModalStyles = makeStyles({
   modal: {
@@ -15,24 +17,37 @@ const useModalStyles = makeStyles({
   },
 });
 
-const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCode, onPublish }) => {
+interface Props {
+  form: NavFormType;
+  openModal: any;
+  closeModal: any;
+  publishLanguageCodeList: string[];
+  onPublish: Function;
+}
+
+const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeList, onPublish }: Props) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
-  const { getLocalTranslationsForNavForm } = useTranslations();
-  const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState({});
+  const { getLocalTranslationsForNavForm }: any = useTranslations();
+  const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslationMap>(
+    {}
+  );
 
-  const localTranslationsForNavForm = useMemo(() => getLocalTranslationsForNavForm(), [getLocalTranslationsForNavForm]);
+  const localTranslationsForNavForm: I18nTranslationMap = useMemo(
+    () => getLocalTranslationsForNavForm(),
+    [getLocalTranslationsForNavForm]
+  );
 
   useEffect(() => {
     Object.keys(localTranslationsForNavForm).forEach((languageCode) => {
-      if (publishLanguageCode.indexOf(languageCode) >= 0) {
+      if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
         setCompleteLocalTranslationsForNavForm((completeLocalTranslationsForNavForm) => ({
           ...completeLocalTranslationsForNavForm,
           [languageCode]: localTranslationsForNavForm[languageCode],
         }));
       }
     });
-  }, [publishLanguageCode, localTranslationsForNavForm]);
+  }, [publishLanguageCodeList, localTranslationsForNavForm]);
 
   const onPublishClick = async (form, translations) => {
     setPubliserer(true);

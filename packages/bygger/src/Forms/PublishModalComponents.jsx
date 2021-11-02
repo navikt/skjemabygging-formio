@@ -5,7 +5,7 @@ import { useModal } from "../util/useModal";
 
 const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {
   const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal(false);
-  const [languageCodeList, setLanguageCodeList] = useState([]);
+  const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState([]);
 
   return (
     <>
@@ -13,19 +13,18 @@ const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setO
         openModal={openPublishSettingModal}
         closeModal={() => setOpenPublishSettingModal(false)}
         publishModal={(languageCode) => {
-          setOpenConfirmPublishModal(true);
           setOpenPublishSettingModal(false);
-          setLanguageCodeList(languageCode);
+          setOpenConfirmPublishModal(true);
+          setSelectedLanguageCodeList(languageCode);
         }}
         form={form}
       />
-
       <ConfirmPublishModal
         openModal={openConfirmPublishModal}
         closeModal={() => setOpenConfirmPublishModal(false)}
         form={form}
         onPublish={onPublish}
-        publishLanguageCode={languageCodeList}
+        publishLanguageCodeList={selectedLanguageCodeList}
       />
     </>
   );
