@@ -36,7 +36,7 @@ describe("GlobalTranslationsPage", () => {
       <AppConfigProvider featureToggles={{ enableTranslations: true }}>
         <MemoryRouter initialEntries={[`/translations/global/${languageCode}/skjematekster`]}>
           <UserAlerterContext.Provider value={userAlerter}>
-            <I18nProvider loadTranslations={loadTranslation}>
+            <I18nProvider loadTranslations={loadTranslation} forGlobal>
               <GlobalTranslationsPage
                 loadGlobalTranslations={loadTranslation}
                 projectURL={""}
@@ -79,10 +79,10 @@ describe("GlobalTranslationsPage", () => {
     beforeEach(() => {
       renderGlobalTranslationsPage(mockedLoadTranslation, "en");
     });
-    it("renders header with English label", () => {
+    it("renders header with English label", async () => {
       const addNewTranslationButton = screen.getByRole("button", { name: "Legg til ny tekst" });
       const languageHeading = screen.getByRole("heading", { level: 1, name: "Engelsk" });
-      const originalTextField = screen.getByDisplayValue("Bor du i Norge?");
+      const originalTextField = await screen.findByDisplayValue("Bor du i Norge?");
       const translationField = screen.getByDisplayValue("Do you live in Norway?");
 
       expect(addNewTranslationButton).toBeDefined();

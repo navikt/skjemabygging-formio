@@ -9,7 +9,7 @@ export const languagesInNorwegian = {
 
 const I18nContext = createContext({});
 
-function I18nProvider({ children, loadTranslations }) {
+function I18nProvider({ children, loadTranslations, forGlobal = false }) {
   const [translations, setTranslations] = useState({});
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
@@ -23,7 +23,9 @@ function I18nProvider({ children, loadTranslations }) {
       setTranslationsLoaded(true);
       loadTranslations().then((loadedTranslations) => {
         setAvailableLanguages(Object.keys(loadedTranslations));
-        setTranslations(loadedTranslations);
+        if (!forGlobal) {
+          setTranslations(loadedTranslations);
+        }
       });
     }
   }, [loadTranslations, translationsLoaded]);
