@@ -35,9 +35,13 @@ function formatValue(component, value, translate) {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
     case "day": {
-      const validValue = moment(value.replace("00", "01"), "MM/DD/YYYY");
-      const month = validValue.format("MMMM");
-      return translate(`${month.charAt(0).toUpperCase()}${month.slice(1)}, ${validValue.format("YYYY")}`);
+      if (value.match("00/00/")) {
+        return value.slice(6);
+      } else {
+        const validValue = moment(value.replace("00", "01"), "MM/DD/YYYY");
+        const month = validValue.format("MMMM");
+        return `${translate(month.charAt(0).toUpperCase().concat(month.slice(1)))}, ${validValue.format("YYYY")}`;
+      }
     }
     default:
       return value;
