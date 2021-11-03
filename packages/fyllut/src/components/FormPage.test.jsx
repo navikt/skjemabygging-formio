@@ -23,6 +23,16 @@ const translations = {
 
 describe("FormPage", () => {
 
+  const renderFormPage = (form, enableTranslations = true) => {
+    render(
+      <MemoryRouter>
+        <AppConfigProvider featureToggles={{enableTranslations}}>
+          <FormPage form={form} />
+        </AppConfigProvider>
+      </MemoryRouter>
+    );
+  }
+
   describe("Language selector", () => {
 
     it("is not rendered if no translations are available", async () => {
@@ -37,13 +47,8 @@ describe("FormPage", () => {
         return Promise.reject(new Error(`Ukjent url: ${url}`));
       });
 
-      render(
-        <MemoryRouter>
-          <AppConfigProvider featureToggles={{enableTranslations: true}}>
-            <FormPage form={form} />
-          </AppConfigProvider>
-        </MemoryRouter>
-      );
+      renderFormPage(form);
+
       expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
       expect(await screen.queryByRole("button", {name: "Norsk bokmål"})).not.toBeInTheDocument();
     });
@@ -60,13 +65,8 @@ describe("FormPage", () => {
         return Promise.reject(new Error(`Ukjent url: ${url}`));
       });
 
-      render(
-        <MemoryRouter>
-          <AppConfigProvider featureToggles={{enableTranslations: true}}>
-            <FormPage form={form} />
-          </AppConfigProvider>
-        </MemoryRouter>
-      );
+      renderFormPage(form);
+
       expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
       const languageSelector = screen.queryByRole("button", {name: "Norsk bokmål"});
       expect(languageSelector).toBeInTheDocument();
