@@ -1,6 +1,6 @@
 import Modal from "nav-frontend-modal";
 import { Knapp } from "nav-frontend-knapper";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { useTranslations } from "../context/i18n";
 import { Normaltekst } from "nav-frontend-typografi";
@@ -39,9 +39,14 @@ const getCompleteLocalTranslationsForNavForm = (
 const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeList, onPublish }: Props) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
-  const { localTranslationsForNavForm }: any = useTranslations();
+  const { getLocalTranslationsForNavForm }: any = useTranslations();
   const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslationMap>(
     {}
+  );
+
+  const localTranslationsForNavForm: I18nTranslationMap = useMemo(
+    () => getLocalTranslationsForNavForm(),
+    [getLocalTranslationsForNavForm]
   );
 
   useEffect(() => {
