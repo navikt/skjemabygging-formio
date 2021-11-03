@@ -13,10 +13,13 @@ const TestComponent = ({text, params}) => {
   return <div>{translate(text, params)}</div>
 }
 
-const renderTestComponent = ({text, params}, translations = {}) => {
+const defaultTranslations = {};
+const defaultCountryNameTranslations = {};
+
+const renderTestComponent = ({text, params}, translations) => {
   render(
     <BrowserRouter>
-      <LanguagesProvider translations={translations}>
+      <LanguagesProvider translations={translations || defaultTranslations} countryNameTranslations={defaultCountryNameTranslations}>
         <TestComponent text={text} params={params} />
       </LanguagesProvider>
     </BrowserRouter>

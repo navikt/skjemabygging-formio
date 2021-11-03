@@ -33,7 +33,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
     properties: { skjemanummer },
   } = form;
   const [openModal, setOpenModal] = useModal(false);
-  const { getTranslationsForNavForm } = useTranslations();
+  const { translationsForNavForm } = useTranslations();
   const styles = useStyles();
   return (
     <>
@@ -85,7 +85,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
         openModal={openModal}
         closeModal={() => setOpenModal(false)}
         form={form}
-        translations={getTranslationsForNavForm()}
+        translations={translationsForNavForm}
         onPublish={onPublish}
       />
     </>

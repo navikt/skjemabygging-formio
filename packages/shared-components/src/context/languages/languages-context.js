@@ -5,7 +5,7 @@ import i18nData from "../../i18nData";
 
 const LanguagesContext = createContext({});
 
-export const LanguagesProvider = ({ children, translations = {}, countryNameTranslations = {} }) => {
+export const LanguagesProvider = ({ children, translations, countryNameTranslations }) => {
 
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});

@@ -1,4 +1,4 @@
 const featureToggles = {
-  enableTranslations: false,
+  enableTranslations: true,
 };
 export default featureToggles;
