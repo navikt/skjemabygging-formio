@@ -28,7 +28,7 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
         }
       });
     }
-  }, [loadTranslations, translationsLoaded]);
+  }, [loadTranslations, translationsLoaded, forGlobal]);
 
   useEffect(() => {
     const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
