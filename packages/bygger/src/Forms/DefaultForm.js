@@ -2,8 +2,4 @@ import { FormBuilderSchemas } from "@navikt/skjemadigitalisering-shared-componen
 
 const { veiledningSchema, dineOpplysningerSchema, vedleggSchema } = FormBuilderSchemas;
 
-export const defaultFormFields = () => [
-  veiledningSchema,
-  dineOpplysningerSchema,
-  vedleggSchema,
-];
+export const defaultFormFields = () => [veiledningSchema, dineOpplysningerSchema, vedleggSchema];

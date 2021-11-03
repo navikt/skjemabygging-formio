@@ -48,6 +48,12 @@ function I18nProvider({ children, loadTranslations }) {
       : originalText;
   }
 
+  function getLocalTranslationsForNavForm() {
+    const withoutCountryNames = (translation) =>
+      translation.scope !== "component-countryName" && translation.scope !== "global";
+    return mapTranslationsToFormioI18nObject(translations, withoutCountryNames);
+  }
+
   return (
     <I18nContext.Provider
       value={{
@@ -58,6 +64,7 @@ function I18nProvider({ children, loadTranslations }) {
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
+        getLocalTranslationsForNavForm,
       }}
     >
       {children}

@@ -5,10 +5,11 @@ import FyllUtRouter from "./Forms/FyllUtRouter";
 import { createFormSummaryObject, MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
 import { guid } from "./util/guid";
 import NavForm from "./components/NavForm";
-import navFormStyle from "./components/navFormStyle";
+import navFormStyle from "./components/styles/navFormStyle";
 import FormBuilderOptions from "./Forms/form-builder-options";
 import FormBuilderSchemas from "./Forms/form-builder-options/schemas"
-import { appStyles, globalStyles } from "./components/navGlobalStyles";
+import { appStyles, globalStyles } from "./components/styles/navGlobalStyles";
+import formioFormStyles from "./components/styles/formioFormStyles";
 import Template from "./template";
 import { LanguagesProvider, useLanguages } from "./context/languages";
 import LanguageSelector from "./components/LanguageSelector";
@@ -33,6 +34,7 @@ export {
   globalStyles,
   appStyles,
   bootstrapStyles,
+  formioFormStyles,
   LanguagesProvider,
   i18nData,
   guid,
