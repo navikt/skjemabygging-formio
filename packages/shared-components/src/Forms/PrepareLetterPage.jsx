@@ -63,7 +63,7 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
     .catch((e) => console.log("Failed to download foersteside", e));
 }
 
-const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translate }) => {
+const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translate, translations }) => {
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
@@ -105,6 +105,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         classNames="knapp knapp--fullbredde"
+        translations={translations}
       />
     </section>
   );
@@ -171,6 +172,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       submission={submission}
       fyllutBaseURL={fyllutBaseURL}
       translate={translate}
+      translations={translations}
     />
   );
   if (vedleggSomSkalSendes.length > 0) {

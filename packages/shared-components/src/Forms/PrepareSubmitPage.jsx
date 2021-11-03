@@ -75,6 +75,7 @@ export function PrepareSubmitPage({ form, submission, formUrl, translations }) {
               setErrorMessage(undefined);
             }}
             classNames="knapp"
+            translations={translations}
           />
         </section>
         <section className="wizard-page" aria-label={translate(TEXTS.statiske.prepareSubmitPage.secondSectionTitle)}>

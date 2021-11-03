@@ -45,6 +45,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
             onClick={() => loggSkjemaFullfort("ingeninnsending")}
             classNames="knapp knapp--fullbredde"
+            translations={translations}
           />
         </section>
         <div>
