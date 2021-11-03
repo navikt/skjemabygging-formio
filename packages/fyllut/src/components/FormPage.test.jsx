@@ -23,31 +23,58 @@ const translations = {
 
 describe("FormPage", () => {
 
-  it("selects other language for form", async () => {
+  describe("Language selector", () => {
 
-    fetchMock.mockImplementation((url, options) => {
-      if (url === "/fyllut/translations/testskjema") {
-        return Promise.resolve(new Response(JSON.stringify(translations)));
-      }
-      if (url.startsWith("/fyllut/countries")) {
-        return Promise.resolve(new Response(JSON.stringify([])));
-      }
-      return Promise.reject(new Error(`Ukjent url: ${url}`));
+    it("is not rendered if no translations are available", async () => {
+
+      fetchMock.mockImplementation((url, options) => {
+        if (url === "/fyllut/translations/testskjema") {
+          return Promise.resolve(new Response(JSON.stringify({})));
+        }
+        if (url.startsWith("/fyllut/countries")) {
+          return Promise.resolve(new Response(JSON.stringify([])));
+        }
+        return Promise.reject(new Error(`Ukjent url: ${url}`));
+      });
+
+      render(
+        <MemoryRouter>
+          <AppConfigProvider featureToggles={{enableTranslations: true}}>
+            <FormPage form={form} />
+          </AppConfigProvider>
+        </MemoryRouter>
+      );
+      expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
+      expect(await screen.queryByRole("button", {name: "Norsk bokmål"})).not.toBeInTheDocument();
     });
 
-    render(
-      <MemoryRouter>
-        <AppConfigProvider featureToggles={{enableTranslations: true}}>
-          <FormPage form={form} />
-        </AppConfigProvider>
-      </MemoryRouter>
-    );
-    expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
-    const languageSelector = await screen.findByRole("button", {name: "Norsk bokmål"});
-    expect(languageSelector).toBeInTheDocument();
-    userEvent.click(languageSelector);
-    userEvent.click(await screen.findByRole("link", {name: "English"}));
-    expect(await screen.findByRole("heading", {name: "Test form"})).toBeInTheDocument();
+    it("allows selection of other language for the form", async () => {
+
+      fetchMock.mockImplementation((url, options) => {
+        if (url === "/fyllut/translations/testskjema") {
+          return Promise.resolve(new Response(JSON.stringify(translations)));
+        }
+        if (url.startsWith("/fyllut/countries")) {
+          return Promise.resolve(new Response(JSON.stringify([])));
+        }
+        return Promise.reject(new Error(`Ukjent url: ${url}`));
+      });
+
+      render(
+        <MemoryRouter>
+          <AppConfigProvider featureToggles={{enableTranslations: true}}>
+            <FormPage form={form} />
+          </AppConfigProvider>
+        </MemoryRouter>
+      );
+      expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
+      const languageSelector = screen.queryByRole("button", {name: "Norsk bokmål"});
+      expect(languageSelector).toBeInTheDocument();
+      userEvent.click(languageSelector);
+      userEvent.click(await screen.findByRole("link", {name: "English"}));
+      expect(await screen.findByRole("heading", {name: "Test form"})).toBeInTheDocument();
+    });
+
   });
 
 });
