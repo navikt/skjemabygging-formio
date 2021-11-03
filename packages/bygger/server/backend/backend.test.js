@@ -35,11 +35,10 @@ describe("Backend", () => {
   });
 
   describe("publishForm", () => {
-
     it("publishes forms and returns ok", async () => {
       fetch
         .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-        .mockReturnValue(Promise.resolve({ok: true, status: 204}));
+        .mockReturnValue(Promise.resolve({ ok: true, status: 204 }));
 
       const form = { id: "testskjema" };
       const translation = {};
@@ -103,17 +102,20 @@ describe("Backend", () => {
       await expect(backend.publishForm(token, {}, {}, formPath)).rejects.toThrow(HttpError);
       expect(fetch).toHaveBeenCalledTimes(2);
     });
-
   });
 
   describe("publishResource", () => {
-
     it("publishes forms and returns ok", async () => {
       fetch
         .mockReturnValueOnce(jsonToPromise(TestUserResponse))
-        .mockReturnValue(Promise.resolve({ok: true, status: 204}));
+        .mockReturnValue(Promise.resolve({ ok: true, status: 204 }));
 
-      const mottaksadresser = [{ _id: "123", data: {adresselinje1: "NAV Pensjon", adresselinje2: "Postboks 123", postnummer: "1234", poststed: "Oslo"} }];
+      const mottaksadresser = [
+        {
+          _id: "123",
+          data: { adresselinje1: "NAV Pensjon", adresselinje2: "Postboks 123", postnummer: "1234", poststed: "Oslo" },
+        },
+      ];
       await backend.publishResource(token, "mottaksadresser", mottaksadresser);
       expect(fetch).toHaveBeenCalledTimes(2);
       const calls = fetch.mock.calls;
@@ -142,7 +144,5 @@ describe("Backend", () => {
         },
       });
     });
-
   });
-
 });

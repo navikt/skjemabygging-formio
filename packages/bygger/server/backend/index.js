@@ -78,7 +78,7 @@ export class Backend {
   async publishResource(userToken, resourceName, resourceContent) {
     await this.checkPublishingAccess(userToken);
     const encodedResourceContent = await this.toBase64GzipAndJson(resourceContent);
-    const payload =  {
+    const payload = {
       ref: this.githubAppConfig.workflowDispatchRef,
       inputs: {
         resourceName,
