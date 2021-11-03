@@ -150,7 +150,7 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
   </section>
 );
 
-export function PrepareLetterPage({ form, submission, formUrl }) {
+export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();

@@ -13,9 +13,10 @@ export interface Props {
   form: any;
   submission: any;
   formUrl: string;
+  translations: any;
 }
 
-export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props) {
+export function PrepareIngenInnsendingPage({ form, submission, formUrl, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
