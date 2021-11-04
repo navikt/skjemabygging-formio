@@ -13,7 +13,7 @@ jest.mock("../context/i18n/index", () => {
     pl: "Polsk",
   };
 
-  const mockGetTranslationsForNavForm = () => ({
+  const mockTranslationsForNavForm = {
     en: {
       "Bor du i Norge?": "Do you live in Norway?",
       Veiledning: "Guidance",
@@ -23,9 +23,9 @@ jest.mock("../context/i18n/index", () => {
       Personinformasjon: "Personal information",
     },
     "nn-NO": { "YES-label": "yes" },
-  });
+  };
   const mockUseTranslation = () => ({
-    getTranslationsForNavForm: mockGetTranslationsForNavForm,
+    translationsForNavForm: mockTranslationsForNavForm,
   });
   return {
     useTranslations: mockUseTranslation,
