@@ -13,7 +13,7 @@ export interface Props {
   form: any;
   submission: any;
   formUrl: string;
-  translations: { [key: string]: string };
+  translations: { [key: string]: string } | {};
 }
 
 export function PrepareIngenInnsendingPage({ form, submission, formUrl, translations }: Props) {

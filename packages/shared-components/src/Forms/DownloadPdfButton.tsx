@@ -8,11 +8,12 @@ interface Props {
   label: string;
   onClick: Function;
   classNames: string;
-  translations: { [key: string]: string };
+  translations: { [key: string]: string } | {};
 }
 
 const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, classNames, translations }: Props) => {
   const { currentLanguage } = useLanguages();
+  const translationsForPDF = currentLanguage !== "nb-NO" ? translations[currentLanguage] : {};
   return (
     <>
       <form id={form.path} action={actionUrl} method="post" acceptCharset="utf-8" target="_blank" hidden>
@@ -23,7 +24,7 @@ const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, classN
           name="translations"
           readOnly={true}
           required
-          value={translations && JSON.stringify(translations[currentLanguage])}
+          value={JSON.stringify(translationsForPDF)}
         />
       </form>
       <div>

@@ -1,22 +1,21 @@
 import React from "react";
-import {render, screen} from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {MemoryRouter} from "react-router-dom";
-import {TEXTS} from "@navikt/skjemadigitalisering-shared-domain";
-import {PrepareIngenInnsendingPage} from "./PrepareIngenInnsendingPage";
+import { MemoryRouter } from "react-router-dom";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 
-jest.mock('../context/languages', () => ({
-  useLanguages: () => ({translate: text => text}),
+jest.mock("../context/languages", () => ({
+  useLanguages: () => ({ translate: (text) => text }),
 }));
 
-describe('PrepareIngenInnsendingPage', () => {
-
+describe("PrepareIngenInnsendingPage", () => {
   let submitCalls: React.SyntheticEvent<HTMLFormElement>[] = [];
 
-  const submitEventListener = event => {
+  const submitEventListener = (event) => {
     event.preventDefault();
     submitCalls.push(event);
-  }
+  };
 
   beforeAll(() => {
     window.addEventListener("submit", submitEventListener);
@@ -37,28 +36,27 @@ describe('PrepareIngenInnsendingPage', () => {
       skjemanummer: "",
       innsending: "INGEN",
       innsendingOverskrift: "Skriv ut skjemaet",
-      innsendingForklaring: "Gi det til pasienten"
-
+      innsendingForklaring: "Gi det til pasienten",
     },
-    components: []
+    components: [],
   };
 
   beforeEach(() => {
     submitCalls = [];
     render(
       <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
-        <PrepareIngenInnsendingPage form={testForm} submission={{}} formUrl="/testskjema"/>
+        <PrepareIngenInnsendingPage form={testForm} submission={{}} formUrl="/testskjema" translations={{}} />
       </MemoryRouter>
     );
-  })
+  });
 
-  test('Rendring av oppgitt overskrift og forklaring ved ingen innsending', () => {
-    expect(screen.queryByRole('heading', {name: testForm.properties.innsendingOverskrift})).toBeTruthy();
+  test("Rendring av oppgitt overskrift og forklaring ved ingen innsending", () => {
+    expect(screen.queryByRole("heading", { name: testForm.properties.innsendingOverskrift })).toBeTruthy();
     expect(screen.queryByText(testForm.properties.innsendingForklaring)).toBeTruthy();
   });
 
-  test('Nedlasting av pdf', () => {
-    const lastNedSoknadKnapp = screen.getByRole('button', {name: TEXTS.grensesnitt.downloadApplication});
+  test("Nedlasting av pdf", () => {
+    const lastNedSoknadKnapp = screen.getByRole("button", { name: TEXTS.grensesnitt.downloadApplication });
     userEvent.click(lastNedSoknadKnapp);
     expect(submitCalls).toHaveLength(1);
 
@@ -70,5 +68,4 @@ describe('PrepareIngenInnsendingPage', () => {
     const formInputValueJson = JSON.parse(formInput.value);
     expect(formInputValueJson.title).toEqual(testForm.title);
   });
-
 });
