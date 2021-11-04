@@ -38,7 +38,7 @@ export class Pdfgen {
   }
 
   translate(originalText) {
-    return this.translations[originalText] ? this.translations[originalText] : originalText;
+    return this.translations?.[originalText] ? this.translations[originalText] : originalText;
   }
 
   docStyles() {
