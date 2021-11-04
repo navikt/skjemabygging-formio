@@ -414,6 +414,7 @@ describe("When creating form summary object", () => {
         createPanelObject("Panel with day component", [
           createDummyDayComponent("Year contains 00"),
           createDummyDayComponent("Year without 00"),
+          createDummyDayComponent("Month is not required"),
         ]),
       ]),
       {
@@ -446,6 +447,7 @@ describe("When creating form summary object", () => {
           radiopanel: "yes",
           yearcontains00: "09/00/2000",
           yearwithout00: "03/00/2021",
+          monthisnotrequired: "00/00/2000",
         },
       },
       mockedTranslate
@@ -610,6 +612,12 @@ describe("When creating form summary object", () => {
             key: "yearwithout00",
             type: "day",
             value: "Mars, 2021",
+          },
+          {
+            label: "Month is not required",
+            key: "monthisnotrequired",
+            type: "day",
+            value: "2000",
           },
         ],
       },
