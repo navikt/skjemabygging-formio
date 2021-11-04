@@ -2,6 +2,7 @@ import FormioUtils from "formiojs/utils";
 import TEXTS from "../texts";
 import { addToMap } from "../utils/objectUtils";
 import moment from "moment";
+import { toPascalCase } from "../utils/text-util";
 
 require("moment/locale/nb.js");
 function createComponentKey(parentContainerKey, key) {
@@ -40,7 +41,7 @@ function formatValue(component, value, translate) {
       } else {
         const validValue = moment(value.replace("00", "01"), "MM/DD/YYYY");
         const month = validValue.format("MMMM");
-        return `${translate(month.charAt(0).toUpperCase().concat(month.slice(1)))}, ${validValue.format("YYYY")}`;
+        return `${translate(toPascalCase(month))}, ${validValue.format("YYYY")}`;
       }
     }
     default:
