@@ -54,6 +54,10 @@ class SelectBoxes extends FormioSelectBoxes {
             key: "modalEdit",
             ignore: true,
           },
+          {
+            key: "hideLabel",
+            ignore: true,
+          },
         ],
       },
       {
