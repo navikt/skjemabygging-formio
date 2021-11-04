@@ -17,6 +17,10 @@ const useCurrentLanguage = (languageCodeFromUrl, translations) => {
     }
   }, [languageCodeFromUrl]);
 
+  useEffect(() => {
+    document.documentElement.lang = currentLanguage;
+  }, [currentLanguage])
+
   return { currentLanguage, initialLanguage };
 };
 
