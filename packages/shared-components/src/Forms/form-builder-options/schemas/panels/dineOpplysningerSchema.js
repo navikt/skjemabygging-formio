@@ -111,7 +111,7 @@ const dineOpplysningerSchema = {
       },
     },
     {
-      label: "Er kontaktadressen din en vegadresse eller postboksadresse",
+      label: "Er kontaktadressen din en vegadresse eller postboksadresse?",
       key: "vegadresseEllerPostboksadresse",
       type: "radiopanel",
       input: true,
