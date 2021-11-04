@@ -32,7 +32,6 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
     properties: { skjemanummer },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
-
   const styles = useStyles();
   return (
     <>

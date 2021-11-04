@@ -1,6 +1,6 @@
 import Modal from "nav-frontend-modal";
 import { Hovedknapp } from "nav-frontend-knapper";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { CheckboxGruppe, Checkbox } from "nav-frontend-skjema";
 import { Undertittel, Normaltekst } from "nav-frontend-typografi";
@@ -50,15 +50,10 @@ export const getCompleteTranslationLanguageCodeList = (
 
 const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Props) => {
   const styles = useModalStyles();
-  const { getTranslationsForNavForm }: any = useTranslations();
+  const { translationsForNavForm }: any = useTranslations();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
   const [publishLanguageCodeList, setPublishLanguageCodeList] = useState<string[]>([]);
-
-  const translationsForNavForm: I18nTranslationMap = useMemo(
-    () => getTranslationsForNavForm(),
-    [getTranslationsForNavForm]
-  );
 
   useEffect(() => {
     setAllFormOriginalTexts(

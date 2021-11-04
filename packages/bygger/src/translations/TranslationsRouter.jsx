@@ -27,7 +27,7 @@ const TranslationsRouter = ({
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
         render={({ match }) => (
-          <I18nProvider loadTranslations={loadGlobalTranslations}>
+          <I18nProvider loadTranslations={loadGlobalTranslations} forGlobal>
             <GlobalTranslationsPage
               {...match.params}
               loadGlobalTranslations={loadGlobalTranslations}

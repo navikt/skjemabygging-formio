@@ -14,13 +14,14 @@ jest.mock("react-router-dom", () => ({
 }));
 
 const labelNorskBokmal = languagesInOriginalLanguage["nb-NO"];
+const defaultCountryNameTranslations = {};
 
 describe("FyllUtRouter", () => {
   const renderFyllUtRouter = ({ form, translationsForNavForm }, enableTranslations = true) => {
     render(
       <AppConfigProvider featureToggles={{ enableTranslations }}>
         <MemoryRouter initialEntries={[{ pathname: mockFormPath }]}>
-          <FyllUtRouter form={form} translations={translationsForNavForm} />
+          <FyllUtRouter form={form} translations={translationsForNavForm} countryNameTranslations={defaultCountryNameTranslations} />
         </MemoryRouter>
       </AppConfigProvider>
     );
