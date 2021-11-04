@@ -23,7 +23,7 @@ const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, classN
           name="translations"
           readOnly={true}
           required
-          value={JSON.stringify(translations[currentLanguage])}
+          value={translations && JSON.stringify(translations[currentLanguage])}
         />
       </form>
       <div>
