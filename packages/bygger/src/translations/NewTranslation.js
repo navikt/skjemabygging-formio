@@ -9,12 +9,13 @@ const StyledNavForm = styled(NavForm)({
   maxWidth: "26.25rem",
 });
 
-const NewTranslation = ({ projectURL }) => (
+const NewTranslation = ({ projectURL, onLogout }) => (
   <AppLayoutWithContext
     navBarProps={{
       title: "Oversettelser",
       visOversettelseliste: true,
       visLagNyttSkjema: false,
+      logout: onLogout,
     }}
   >
     <Pagewrapper>
