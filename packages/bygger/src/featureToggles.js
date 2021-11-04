@@ -1,5 +1,5 @@
 const featureToggles = {
-  enableTranslations: false,
+  enableTranslations: true,
   enableConditionalAlert: true,
 };
 export default featureToggles;
