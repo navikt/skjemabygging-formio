@@ -4,7 +4,6 @@ import { HttpError } from "./fetchUtils.js";
 const ALLOWED_RESOURCES = ["mottaksadresser"];
 
 export function dispatcherWithBackend(backend) {
-
   function handleError(error, res) {
     if (error instanceof HttpError && error.response.status === 401) {
       console.log("Unauthorized", error.message);
@@ -48,7 +47,7 @@ export function dispatcherWithBackend(backend) {
         } catch (error) {
           handleError(error, res);
         }
-      }
-    }
+      },
+    },
   });
 }

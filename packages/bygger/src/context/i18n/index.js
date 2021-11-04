@@ -9,21 +9,42 @@ export const languagesInNorwegian = {
 
 const I18nContext = createContext({});
 
-function I18nProvider({ children, loadTranslations }) {
+function I18nProvider({ children, loadTranslations, forGlobal = false }) {
   const [translations, setTranslations] = useState({});
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState([]);
+  const [translationsForNavForm, setTranslationsForNavForm] = useState({});
+  const [localTranslationsForNavForm, setLocalTranslationsForNavForm] = useState({});
+  const [countryNameTranslations, setCountryNameTranslations] = useState({});
 
   useEffect(() => {
     if (!translationsLoaded) {
       setTranslationsLoaded(true);
       loadTranslations().then((loadedTranslations) => {
         setAvailableLanguages(Object.keys(loadedTranslations));
-        setTranslations(loadedTranslations);
+        if (!forGlobal) {
+          setTranslations(loadedTranslations);
+        }
       });
     }
-  }, [loadTranslations, translationsLoaded]);
+  }, [loadTranslations, translationsLoaded, forGlobal]);
+
+  useEffect(() => {
+    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
+    setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations, withoutCountryNames));
+  }, [translations]);
+
+  useEffect(() => {
+    const countryNamesOnly = (translation) => translation.scope === "component-countryName";
+    setCountryNameTranslations(mapTranslationsToFormioI18nObject(translations, countryNamesOnly));
+  }, [translations]);
+
+  useEffect(() => {
+    const withoutCountryNames = (translation) =>
+      translation.scope !== "component-countryName" && translation.scope !== "global";
+    setLocalTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations, withoutCountryNames));
+  }, [translations]);
 
   const updateCurrentTranslation = (languageCode) => {
     const newTranslation = translations[languageCode] ? translations[languageCode].translations : {};
@@ -36,26 +57,17 @@ function I18nProvider({ children, loadTranslations }) {
       : originalText;
   }
 
-  function getTranslationsForNavForm() {
-    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
-    return mapTranslationsToFormioI18nObject(translations, withoutCountryNames);
-  }
-
-  function getCountryNameTranslations() {
-    const countryNamesOnly = (translation) => translation.scope === "component-countryName";
-    return mapTranslationsToFormioI18nObject(translations, countryNamesOnly);
-  }
-
   return (
     <I18nContext.Provider
       value={{
         translate,
         translations,
-        getTranslationsForNavForm,
-        getCountryNameTranslations,
+        translationsForNavForm,
+        countryNameTranslations,
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,
+        localTranslationsForNavForm,
       }}
     >
       {children}

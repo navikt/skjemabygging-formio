@@ -1,7 +1,6 @@
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import React, { useContext } from "react";
-import ConfirmPublishModal from "./ConfirmPublishModal";
 import { useModal } from "../util/useModal";
 import { makeStyles } from "@material-ui/styles";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
@@ -11,6 +10,7 @@ import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
 import { UserAlerterContext } from "../userAlerting";
 import { Undertittel } from "nav-frontend-typografi";
+import PublishModalComponents from "./PublishModalComponents";
 
 const useStyles = makeStyles({
   mainCol: {
@@ -26,7 +26,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
   const alertComponent = userAlerter.alertComponent();
 
   const title = `${form.title}`;
-  const [openModal, setOpenModal] = useModal(false);
+  const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
 
   return (
@@ -49,17 +49,17 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
           <FormMetadataEditor form={form} onChange={onChange} />
         </Column>
         <Column>
-          <Knapp onClick={() => setOpenModal(true)}>Publiser</Knapp>
+          <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
           <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
           {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
         </Column>
       </Row>
 
-      <ConfirmPublishModal
-        openModal={openModal}
-        closeModal={() => setOpenModal(false)}
+      <PublishModalComponents
         form={form}
         onPublish={onPublish}
+        openPublishSettingModal={openPublishSettingModal}
+        setOpenPublishSettingModal={setOpenPublishSettingModal}
       />
     </AppLayoutWithContext>
   );

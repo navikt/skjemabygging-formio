@@ -5,10 +5,13 @@ import React from "react";
 import FyllUtLanguageSelector from "./FyllUtLanguageSelector";
 import userEvent from "@testing-library/user-event";
 
-const renderFyllUtLanguageSelector = (translations = {}, path = "") => {
+const defaultTranslations = {};
+const defaultCountryNameTranslations = {};
+
+const renderFyllUtLanguageSelector = (translations, path = "") => {
   render(
     <MemoryRouter initialEntries={[path]}>
-      <LanguagesProvider translations={translations}>
+      <LanguagesProvider translations={translations || defaultTranslations} countryNameTranslations={defaultCountryNameTranslations}>
         <FyllUtLanguageSelector />
       </LanguagesProvider>
     </MemoryRouter>

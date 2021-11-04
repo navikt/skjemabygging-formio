@@ -1,25 +1,20 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../configContext";
-import i18nData from "../i18nData";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
-  const { currentLanguage, translate, getTranslationsForNavForm } = useLanguages();
-
-  const translationsForNavForm = useMemo(() => getTranslationsForNavForm(), [getTranslationsForNavForm]);
+  const { currentLanguage, translate, translationsForNavForm } = useLanguages();
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
   }
-
-  const i18nNorskData = { "nb-NO": i18nData["nb-NO"] };
 
   return (
     <div>
@@ -28,7 +23,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       <NavForm
         form={form}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
-        i18n={featureToggles.enableTranslations ? { ...i18nNorskData, ...translationsForNavForm } : undefined}
+        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
