@@ -53,6 +53,7 @@ const GlobalTranslationsPage = ({
   loadGlobalTranslations,
   projectURL,
   saveTranslation,
+  onLogout,
 }) => {
   const { tag } = useParams();
   const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
@@ -189,6 +190,7 @@ const GlobalTranslationsPage = ({
         title: "Globale oversettelser",
         visOversettelseliste: true,
         visLagNyttSkjema: false,
+        logout: onLogout,
       }}
     >
       <ToggleGruppe
