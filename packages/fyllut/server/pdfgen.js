@@ -119,7 +119,7 @@ export class Pdfgen {
 
   createList(body = []) {
     return {
-      ul: body,
+      ul: body.map((item) => this.translate(item)),
     };
   }
 
@@ -143,12 +143,7 @@ export class Pdfgen {
           return [...body, [{ text: " ", colSpan: 2 }]];
         case "selectboxes":
           return [
-            this.createRow(
-              this.translate(component.label),
-              this.createList(this.translate(component.value)),
-              false,
-              areSubComponents
-            ),
+            this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
           ];
         default:
           return [

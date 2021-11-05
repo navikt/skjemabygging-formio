@@ -503,6 +503,20 @@ describe("generating doc definition", () => {
       const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
       expect(tableDef.table).toBeUndefined();
     });
+
+    it("display translated selected options", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: true });
+      const translations = {
+        Flervalg: "Selectboxes",
+        Sugar: "Sukker",
+        Pepper: "Pepper",
+        Salt: "Salt",
+      };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([["Selectboxes", { ul: ["Sukker", "Pepper"] }]]);
+    });
   });
 
   describe("PdfgenPapir", () => {
