@@ -2,7 +2,6 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 import "nav-frontend-lenker-style";
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import { useAuth } from "../context/auth-context";
 import NewFormPage from "./NewFormPage";
 import { FormsListPage } from "./FormsListPage";
 import { FormPage } from "./FormPage";
@@ -33,17 +32,26 @@ const LoadingComponent = () => {
     </div>
   );
 };
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadTranslations }) => {
+export const FormsRouter = ({
+  forms,
+  onChange,
+  onSave,
+  onNew,
+  onCreate,
+  onDelete,
+  onPublish,
+  loadTranslations,
+  onLogout,
+}) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
-  const { logout } = useAuth();
   if (!forms) {
     return <LoadingComponent />;
   }
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage onCreate={onCreate} onLogout={logout} />
+        <NewFormPage onCreate={onCreate} onLogout={onLogout} />
       </Route>
       <Route
         path={`${path}/:formpath`}
@@ -57,14 +65,14 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
                 onChange={onChange}
                 onSave={onSave}
                 onPublish={onPublish}
-                logout={logout}
+                onLogout={onLogout}
               />
             </I18nProvider>
           );
         }}
       />
       <Route path={path}>
-        <FormsListPage onLogout={logout} forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
+        <FormsListPage onLogout={onLogout} forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
       </Route>
     </Switch>
   );

@@ -8,6 +8,7 @@ import { UserAlerterContext } from "./userAlerting";
 import LoadingComponent from "./components/LoadingComponent";
 import TranslationsRouter from "./translations/TranslationsRouter";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
+import { useAuth } from "./context/auth-context";
 
 function AuthenticatedApp({ serverURL, formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
@@ -21,6 +22,7 @@ function AuthenticatedApp({ serverURL, formio, store }) {
   } = useFormioTranslations(serverURL, formio, userAlerter);
 
   const history = useHistory();
+  const { logout } = useAuth();
   const wrappedCreate = (newForm) => {
     onCreate(newForm).then((savedForm) => {
       history.push(`/forms/${savedForm.path}/edit`);
@@ -42,6 +44,7 @@ function AuthenticatedApp({ serverURL, formio, store }) {
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
             loadTranslations={loadTranslationsForEditPage}
+            onLogout={logout}
           />
         </Route>
         <Route path="/translations">
@@ -53,6 +56,7 @@ function AuthenticatedApp({ serverURL, formio, store }) {
             saveGlobalTranslation={saveGlobalTranslation}
             saveLocalTranslation={saveLocalTranslation}
             deleteTranslation={deleteTranslation}
+            onLogout={logout}
           />
         </Route>
         <Route path="/mottaksadresser">
