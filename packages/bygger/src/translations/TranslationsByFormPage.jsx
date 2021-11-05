@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
+const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL, onLogout }) => {
   const userAlerter = useContext(UserAlerterContext);
   const alertComponent = userAlerter.alertComponent();
   const history = useHistory();
@@ -41,6 +41,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
         visSkjemaliste: false,
         visLagNyttSkjema: false,
         visOversettelseliste: true,
+        logout: onLogout,
       }}
     >
       <ActionRow>
