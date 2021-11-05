@@ -14,6 +14,7 @@ function AuthenticatedApp({ serverURL, formio, store }) {
   const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useFormioForms(formio, store, userAlerter);
   const {
     loadGlobalTranslations,
+    publishGlobalTranslations,
     loadTranslationsForEditPage,
     deleteTranslation,
     saveLocalTranslation,
@@ -49,6 +50,7 @@ function AuthenticatedApp({ serverURL, formio, store }) {
             forms={forms}
             projectURL={formio.projectUrl}
             loadGlobalTranslations={loadGlobalTranslations}
+            publishGlobalTranslations={publishGlobalTranslations}
             loadTranslationsForEditPage={loadTranslationsForEditPage}
             saveGlobalTranslation={saveGlobalTranslation}
             saveLocalTranslation={saveLocalTranslation}

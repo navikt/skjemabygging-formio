@@ -5,18 +5,30 @@ import { FakeBackend } from "../fakeBackend/FakeBackend";
 import { Formio } from "formiojs";
 import { waitFor } from "@testing-library/react";
 
+const MOCK_PREDEFINED_TEXTS_I18N_EN = {
+  "Ja": "Yes",
+  "Nei": "No",
+  "Forrige": "Previous",
+  "Neste": "Next",
+}
+jest.mock("../translations/global/utils", () => ({
+  getAllPredefinedOriginalTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
+}));
+
 describe("useFormioTranslations", () => {
   const projectUrl = "http://myProject.example.org";
   const expectedHeader = { headers: { "x-jwt-token": "" } };
   let fetchSpy;
   let formioTranslations: ReturnType<typeof useFormioTranslations>;
+  let mockUserAlerter;
 
   beforeEach(() => {
     fetchSpy = jest.spyOn(global, "fetch");
     const fetchAppGlue = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
     fetchSpy.mockImplementation(fetchAppGlue.fetchImpl);
+    mockUserAlerter = {setErrorMessage: jest.fn(), flashSuccessMessage: jest.fn()};
 
-    formioTranslations = useFormioTranslations(projectUrl, new Formio(projectUrl), undefined);
+    formioTranslations = useFormioTranslations(projectUrl, new Formio(projectUrl), mockUserAlerter);
   });
 
   afterEach(() => {
@@ -43,6 +55,75 @@ describe("useFormioTranslations", () => {
         expectedHeader
       );
     });
+  });
+
+  describe("Publisering av globale oversettelser",() => {
+
+    const LOAD_GLOBAL_TRANSLATIONS_REGEX = /\/language\/submission\?data\.name=global&data\.language=([a-z]{2}(-NO)?)&limit=null$/;
+
+    const fetchMockImpl = (globalTranslations) => {
+      return (url, options) => {
+        if (LOAD_GLOBAL_TRANSLATIONS_REGEX.test(url)) {
+          const languageCode = LOAD_GLOBAL_TRANSLATIONS_REGEX.exec(url)?.[1];
+          return Promise.resolve(new Response(JSON.stringify(languageCode ? globalTranslations[languageCode] : {})));
+        }
+        if (url === "/api/published-resource/global-translations-en") {
+          return Promise.resolve(new Response("Ok"));
+        }
+        fail(`Manglende testoppsett: Ukjent url ${url}, options = ${JSON.stringify(options)}`);
+      };
+    }
+
+    it("Publisering starter dersom alle predefinerte tekster er oversatt", (done) => {
+      fetchSpy.mockImplementation(fetchMockImpl({
+        en: [{
+          data: {
+            language: "en",
+            name: "global",
+            scope: "global",
+            tag: "validering",
+            i18n: MOCK_PREDEFINED_TEXTS_I18N_EN
+          }
+        }]
+      }));
+      formioTranslations.publishGlobalTranslations("en")
+        .then(() => {
+          expect(mockUserAlerter.setErrorMessage).not.toHaveBeenCalled();
+          expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled();
+          const errorMessages = mockUserAlerter.flashSuccessMessage.mock.calls;
+          expect(errorMessages).toHaveLength(1);
+          expect(errorMessages[0][0]).toEqual("Publisering av Engelsk startet");
+          done();
+        });
+    });
+
+    it("Feiler dersom det mangler oversettelser for noen av de predefinerte tekstene", (done) => {
+      fetchSpy.mockImplementation(fetchMockImpl({
+        en: [{
+          data: {
+            language: "en",
+            name: "global",
+            scope: "global",
+            tag: "validering",
+            i18n: {
+              ...MOCK_PREDEFINED_TEXTS_I18N_EN,
+              "Forrige": undefined,
+              "Neste": undefined,
+            }
+          }
+        }]
+      }));
+      formioTranslations.publishGlobalTranslations("en")
+        .then(() => {
+          expect(mockUserAlerter.flashSuccessMessage).not.toHaveBeenCalled();
+          expect(mockUserAlerter.setErrorMessage).toHaveBeenCalled();
+          const errorMessages = mockUserAlerter.setErrorMessage.mock.calls;
+          expect(errorMessages).toHaveLength(1);
+          expect(errorMessages[0][0]).toEqual("Det mangler oversettelser for følgende tekster: Forrige, Neste");
+          done();
+        });
+    });
+
   });
 
   describe("loadTranslationsForEditPage", () => {
