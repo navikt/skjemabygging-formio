@@ -28,7 +28,7 @@ describe('config', () => {
       naisClusterName: NaisCluster.LABS,
     }
     checkConfigConsistency(config, logError, exit)
-    expect(logError).toBeCalledWith('SKJEMA_URL is required when using FormioApi')
+    expect(logError).toBeCalledWith('FORMIO_PROJECT_URL is required when using FormioApi')
     expect(exit).toBeCalledWith(1)
   })
 
@@ -36,7 +36,7 @@ describe('config', () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.LABS,
-      skjemaUrl: 'https://form.io/skjemaurl',
+      formioProjectUrl: 'https://form.io',
     }
     checkConfigConsistency(config, logError, exit)
     expect(logError).not.toBeCalled()

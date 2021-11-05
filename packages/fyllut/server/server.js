@@ -27,8 +27,7 @@ const {
   naisClusterName,
   useFormioApi,
   skjemaDir,
-  skjemaUrl,
-  mottaksadresserUrl,
+  formioProjectUrl,
   resourcesDir,
   translationDir,
   gitVersion,
@@ -85,17 +84,26 @@ skjemaApp.post("/foersteside", async (req, res) => {
   }
 });
 
+const fetchTranslationsFromFormioApi = async (formPath) => {
+  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=null`, { method: "GET" });
+  if (response.ok) {
+    const translationsForForm = await response.json();
+    return translationsForForm.reduce((acc, obj) => ({...acc, [obj.data.language]: {...obj.data.i18n}}), {});
+  }
+  return {};
+}
+
 const loadForms = async () => {
-  return useFormioApi ? await fetchFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
+  return useFormioApi ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000`) : await loadAllJsonFilesFromDirectory(skjemaDir);
 };
 
 const loadTranslations = async (formPath) => {
-  return await loadFileFromDirectory(translationDir, formPath);
+  return useFormioApi ? await fetchTranslationsFromFormioApi(formPath) : await loadFileFromDirectory(translationDir, formPath);
 };
 
 const loadMottaksadresser = async () => {
   return useFormioApi
-    ? await fetchFromFormioApi(mottaksadresserUrl)
+    ? await fetchFromFormioApi(`${formioProjectUrl}/mottaksadresse/submission`)
     : await loadFileFromDirectory(resourcesDir, "mottaksadresser.json", []);
 };
 
