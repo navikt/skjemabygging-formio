@@ -56,7 +56,7 @@ const ApplicationTextTranslationEditPanel = ({ selectedTag, translations, langua
         updateTranslation={updateTranslation}
       />
       {showPdfStatiske && (
-        <Undertittel className={"margin-bottom-default"}>Tekster brukes til Pdf generering</Undertittel>
+        <Undertittel className={"margin-bottom-default"}>Tekster som brukes ved generering av PDF</Undertittel>
       )}
       {showPdfStatiske && (
         <TranslationEditPanelComponent
