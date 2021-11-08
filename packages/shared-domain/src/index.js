@@ -5,6 +5,7 @@ import stringUtils from "./utils/stringUtils";
 import objectUtils from "./utils/objectUtils";
 import TEXTS from "./texts";
 import localizationUtils from "./utils/localization";
+import languagesUtil from "./languages/languagesUtil";
 
 export {
   createFormSummaryObject,
@@ -14,4 +15,5 @@ export {
   stringUtils,
   objectUtils,
   localizationUtils,
+  languagesUtil,
 };

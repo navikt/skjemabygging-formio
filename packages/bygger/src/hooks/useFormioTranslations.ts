@@ -1,5 +1,5 @@
 import Formiojs from "formiojs/Formio";
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { localizationUtils, languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import {
   FormioTranslation,
@@ -41,33 +41,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         console.log("Fetched: ", response);
         return response;
       })
-      .then((response) => {
-        return response.reduce((globalTranslations, translation) => {
-          const { data, _id: id } = translation;
-          const { i18n, scope, name, tag } = data;
-          if (!globalTranslations[data.language]) {
-            globalTranslations[data.language] = [];
-          }
-          globalTranslations[data.language].push({
-            id,
-            name,
-            scope,
-            tag,
-            translations: Object.keys(i18n).reduce(
-              (translationsObjects, translatedText) => ({
-                ...translationsObjects,
-                [translatedText]: {
-                  value: i18n[translatedText],
-                  scope,
-                },
-              }),
-              {}
-            ),
-          });
-
-          return globalTranslations;
-        }, {});
-      })
+      .then((response) => languagesUtil.globalEntitiesToI18nGroupedByTag(response))
       .then((globalTranslations) => {
         console.log("Fetched global translations", globalTranslations);
         return globalTranslations;

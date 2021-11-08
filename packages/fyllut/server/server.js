@@ -2,6 +2,7 @@ import express from "express";
 import mustacheExpress from "mustache-express";
 import client from "prom-client";
 import fetch from "node-fetch";
+import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import getDecorator from "./dekorator.js";
 import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { buildDirectory } from "./context.js";
@@ -93,12 +94,28 @@ const fetchTranslationsFromFormioApi = async (formPath) => {
   return {};
 }
 
+const fetchGlobalTranslationsFromFormioApi = async (lang) => {
+  const response = await fetch(`${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=null`, { method: "GET" });
+  if (response.ok) {
+    const responseJson = await response.json();
+    return languagesUtil.globalEntitiesToI18nGroupedByTag(responseJson);
+  }
+  return {};
+}
+
 const loadForms = async () => {
   return useFormioApi ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000`) : await loadAllJsonFilesFromDirectory(skjemaDir);
 };
 
 const loadTranslations = async (formPath) => {
   return useFormioApi ? await fetchTranslationsFromFormioApi(formPath) : await loadFileFromDirectory(translationDir, formPath);
+};
+
+const loadGlobalTranslations = async (languageCode) => {
+  const globalTranslations = useFormioApi
+    ? await fetchGlobalTranslationsFromFormioApi(languageCode)
+    : await loadFileFromDirectory(resourcesDir, `global-translations-${languageCode}`);
+  return languagesUtil.flattenGlobalI18nGroupedByTag(globalTranslations);
 };
 
 const loadMottaksadresser = async () => {
@@ -120,6 +137,8 @@ skjemaApp.get("/config", async (req, res) => {
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
 skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTranslations(req.params.form)));
+
+skjemaApp.get("/global-translations/:languageCode", async (req, res) => res.json(await loadGlobalTranslations(req.params.languageCode)));
 
 skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
 

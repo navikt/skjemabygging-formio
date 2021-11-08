@@ -6,14 +6,13 @@ import { computeDokumentinnsendingURL, PrepareSubmitPage } from "./PrepareSubmit
 import { LanguagesProvider } from "../context/languages";
 
 const defaultTranslations = {};
-const defaultCountryNameTranslations = {};
 
 test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krysset av på at de har lest instruksjonene", () => {
   // we had to provide previousPage in state since all navigations to this page sets that value
   render(
     <AppConfigProvider>
       <MemoryRouter initialEntries={[{ state: { previousPage: "/blask-blask" } }]}>
-        <LanguagesProvider translations={defaultTranslations} countryNameTranslations={defaultCountryNameTranslations}>
+        <LanguagesProvider translations={defaultTranslations}>
           <PrepareSubmitPage
             form={{ title: "Test form", properties: { skjemanummer: "NAV 76-07.10" } }}
             submission={{}}

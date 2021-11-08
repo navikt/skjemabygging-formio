@@ -16,7 +16,6 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
   const [localTranslationsForNavForm, setLocalTranslationsForNavForm] = useState({});
-  const [countryNameTranslations, setCountryNameTranslations] = useState({});
 
   useEffect(() => {
     if (!translationsLoaded) {
@@ -31,13 +30,7 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
   }, [loadTranslations, translationsLoaded, forGlobal]);
 
   useEffect(() => {
-    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
-    setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations, withoutCountryNames));
-  }, [translations]);
-
-  useEffect(() => {
-    const countryNamesOnly = (translation) => translation.scope === "component-countryName";
-    setCountryNameTranslations(mapTranslationsToFormioI18nObject(translations, countryNamesOnly));
+    setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations));
   }, [translations]);
 
   useEffect(() => {
@@ -63,7 +56,6 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
         translate,
         translations,
         translationsForNavForm,
-        countryNameTranslations,
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,

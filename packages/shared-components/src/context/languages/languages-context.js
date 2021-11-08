@@ -1,11 +1,10 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
-import i18nData from "../../i18nData";
 
 const LanguagesContext = createContext({});
 
-export const LanguagesProvider = ({ children, translations, countryNameTranslations }) => {
+export const LanguagesProvider = ({ children, translations }) => {
 
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
@@ -18,37 +17,12 @@ export const LanguagesProvider = ({ children, translations, countryNameTranslati
   }, [translations]);
 
   useEffect(() => {
-    const languages = Object.keys(translations);
-    const formTranslations = languages.reduce(
-      (acc, language) => ({
-        ...acc,
-        [language]: {
-          ...translations[language],
-          ...countryNameTranslations[language],
-        },
-      }),
-      {}
-    );
-    setTranslationsForNavForm({
-      ...formTranslations,
-      "nb-NO": {
-        ...formTranslations["nb-NO"],
-        ...i18nData["nb-NO"]
-      }
-    });
-
-  }, [translations, countryNameTranslations]);
-
-  function getCurrentTranslation() {
-    return {
-      ...translations[currentLanguage],
-      ...countryNameTranslations[currentLanguage],
-    };
-  }
+    setTranslationsForNavForm(translations);
+  }, [translations]);
 
   function translate(originalText, params) {
-    const currentTranslation = getCurrentTranslation();
-    return currentTranslation[originalText]
+    const currentTranslation = translations[currentLanguage];
+    return currentTranslation && currentTranslation[originalText]
       ? injectParams(currentTranslation[originalText], params)
       : injectParams(originalText, params);
   }

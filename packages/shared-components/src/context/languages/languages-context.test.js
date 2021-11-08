@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { LanguagesProvider, useLanguages } from "./languages-context";
 
@@ -14,12 +14,11 @@ const TestComponent = ({text, params}) => {
 }
 
 const defaultTranslations = {};
-const defaultCountryNameTranslations = {};
 
 const renderTestComponent = ({text, params}, translations) => {
   render(
     <BrowserRouter>
-      <LanguagesProvider translations={translations || defaultTranslations} countryNameTranslations={defaultCountryNameTranslations}>
+      <LanguagesProvider translations={translations || defaultTranslations}>
         <TestComponent text={text} params={params} />
       </LanguagesProvider>
     </BrowserRouter>
