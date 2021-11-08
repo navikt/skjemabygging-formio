@@ -10,6 +10,7 @@ const TranslationsRouter = ({
   deleteTranslation,
   forms,
   loadGlobalTranslations,
+  publishGlobalTranslations,
   loadTranslationsForEditPage,
   projectURL,
   saveGlobalTranslation,
@@ -33,6 +34,7 @@ const TranslationsRouter = ({
             <GlobalTranslationsPage
               {...match.params}
               loadGlobalTranslations={loadGlobalTranslations}
+              publishGlobalTranslations={publishGlobalTranslations}
               projectURL={projectURL}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveGlobalTranslation}

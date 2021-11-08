@@ -51,12 +51,20 @@ const GlobalTranslationsPage = ({
   deleteTranslation,
   languageCode,
   loadGlobalTranslations,
+  publishGlobalTranslations,
   projectURL,
   saveTranslation,
   onLogout,
 }) => {
   const { tag } = useParams();
   const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
+  const [publishing, setPublishing] = useState(false);
+
+  const publish = () => {
+    setPublishing(true);
+    publishGlobalTranslations(languageCode)
+      .finally(() => setPublishing(false));
+  }
 
   const alertComponent = useContext(UserAlerterContext).alertComponent();
 
@@ -257,6 +265,9 @@ const GlobalTranslationsPage = ({
             }}
           >
             Slett språk
+          </Knapp>
+          <Knapp onClick={publish} spinner={publishing}>
+            Publiser
           </Knapp>
           <Hovedknapp
             onClick={() => {
