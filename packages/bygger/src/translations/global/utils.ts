@@ -18,10 +18,10 @@ const flattenTextsForEditPanel = (texts: any): Array<any> => {
   );
 };
 
-const getAllPredefinedOriginalTexts = (): string[] => {
+const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
   const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
   return objectUtils.flattenToArray({ ...grensesnitt, ...statiske, ...validering, ...common, pdfStatiske }, (entry) => {
-    return entry[1].toUpperCase();
+    return skipUpperCasing ? entry[1] : entry[1].toUpperCase();
   });
 };
 
