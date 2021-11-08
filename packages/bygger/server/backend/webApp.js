@@ -2,9 +2,9 @@ import dispatch from "dispatch";
 import { HttpError } from "./fetchUtils.js";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];
-export const isValidResource = resourceName => {
-  return ALLOWED_RESOURCES.some(regex => regex.test(resourceName));
-}
+export const isValidResource = (resourceName) => {
+  return ALLOWED_RESOURCES.some((regex) => regex.test(resourceName));
+};
 
 export function dispatcherWithBackend(backend) {
   function handleError(error, res) {

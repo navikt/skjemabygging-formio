@@ -17,6 +17,7 @@ test("Gå videre (til dokumentinnsending) er ikke tillatt før brukeren har krys
           <PrepareSubmitPage
             form={{ title: "Test form", properties: { skjemanummer: "NAV 76-07.10" } }}
             submission={{}}
+            translations={{}}
           />
         </LanguagesProvider>
       </MemoryRouter>

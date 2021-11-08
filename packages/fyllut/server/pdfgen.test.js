@@ -203,8 +203,8 @@ describe("generating doc definition", () => {
     return DateTime.fromObject({ year: 1992, day: 19, month: 10, zone: "Europe/Oslo" });
   }
 
-  function setupDocDefinitionContent(submission, form, version = "deadbeef") {
-    const generator = new Pdfgen(submission, form, version, now());
+  function setupDocDefinitionContent(submission, form, version = "deadbeef", translations = {}) {
+    const generator = new Pdfgen(submission, form, version, now(), translations);
     const doc_definition = generator.generateDocDefinition();
     return doc_definition.content;
   }
@@ -336,7 +336,7 @@ describe("generating doc definition", () => {
       ],
     });
 
-    it("displays legend and content of navSkjemagruppe", () => {
+    it("displays legend and content of navSkjemagruppe with empty translations", () => {
       const formDefinition = createFormDefinitionWithNavSkjemaGruppe();
       const submission = {
         data: {
@@ -344,7 +344,7 @@ describe("generating doc definition", () => {
           fieldOutsideNavSkjemaGruppe: "Value for field outside of skjemaGruppe",
         },
       };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {})[2];
       expect(tableDef.table.body).toEqual([
         [{ text: "navSkjemaGruppe-Legend", colSpan: 2, style: ["groupHeader"] }, ""],
         [{ text: "Textfield inside NavSkjemaGruppe", style: ["subComponent"] }, "Value for field inside skjemaGruppe"],
@@ -358,6 +358,19 @@ describe("generating doc definition", () => {
       const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
       expect(tableDef.table.body).toEqual([
         ["Textfield outside NavSkjemaGruppe", "Value for field outside of skjemaGruppe"],
+      ]);
+    });
+
+    it("show translation for labels in navSkjemaGruppe", () => {
+      const formDefinition = createFormDefinitionWithNavSkjemaGruppe();
+      const submission = { data: { fieldOutsideNavSkjemaGruppe: "Value for field outside of skjemaGruppe" } };
+      const translations = {
+        "Value for field outside of skjemaGruppe": "Verdi for felt some utenfor skjemaGruppe",
+        "Textfield outside NavSkjemaGruppe": "Textfelt utenfor skjemaGruppe",
+      };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "version", translations)[2];
+      expect(tableDef.table.body).toEqual([
+        ["Textfelt utenfor skjemaGruppe", "Verdi for felt some utenfor skjemaGruppe"],
       ]);
     });
   });
@@ -401,10 +414,10 @@ describe("generating doc definition", () => {
       expect(tableDef.table.body).toEqual([["TextFieldOutsideOfDataGrid", "ValueForFieldOutsideDataGrid"]]);
     });
 
-    it("displays all datagrid rows with row title", () => {
+    it("displays all datagrid rows with row title with empty translation", () => {
       const formDefinition = createFormDefinitionWithDatagridHavingRowTitle();
       const submission = createSubmissionForDatagridRows();
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {})[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([
         [{ text: "DataGrid", style: ["groupHeader"], colSpan: 2 }, ""],
@@ -415,10 +428,10 @@ describe("generating doc definition", () => {
       ]);
     });
 
-    it("displays all datagrid rows with empty row below it, when datagrid has no row title", () => {
+    it("displays all datagrid rows with empty row below it, when datagrid has no row title with empty translation", () => {
       const formDefinition = createFormDefinitionWithDatagrid();
       const submission = createSubmissionForDatagridRows();
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {})[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([
         [{ text: "DataGrid", style: ["groupHeader"], colSpan: 2 }, ""],
@@ -426,6 +439,43 @@ describe("generating doc definition", () => {
         [{ text: " ", colSpan: 2 }],
         [{ text: "Tekstfelt", style: ["subComponent"] }, "AnotherValue"],
         [{ text: " ", colSpan: 2 }],
+      ]);
+    });
+
+    it("displays all datagrid rows with translated row title", () => {
+      const formDefinition = createFormDefinitionWithDatagridHavingRowTitle();
+      const submission = createSubmissionForDatagridRows();
+      const translations = {
+        DataGrid: "DataGrid Translation",
+        DatagridRowTitle: "DatagridRowTitle Translation",
+        Tekstfelt: "Text field",
+      };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([
+        [{ text: "DataGrid Translation", style: ["groupHeader"], colSpan: 2 }, ""],
+        [{ text: "DatagridRowTitle Translation", colSpan: 2, style: ["groupHeader", "subComponent"] }, ""],
+        [{ text: "Text field", style: ["subComponent"] }, "SomeValue"],
+        [{ text: "DatagridRowTitle Translation", colSpan: 2, style: ["groupHeader", "subComponent"] }, ""],
+        [{ text: "Text field", style: ["subComponent"] }, "AnotherValue"],
+      ]);
+    });
+
+    it("displays all datagrid rows with partial translated row title", () => {
+      const formDefinition = createFormDefinitionWithDatagridHavingRowTitle();
+      const submission = createSubmissionForDatagridRows();
+      const translations = {
+        DataGrid: "DataGrid Translation",
+        DatagridRowTitle: "DatagridRowTitle Translation",
+      };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([
+        [{ text: "DataGrid Translation", style: ["groupHeader"], colSpan: 2 }, ""],
+        [{ text: "DatagridRowTitle Translation", colSpan: 2, style: ["groupHeader", "subComponent"] }, ""],
+        [{ text: "Tekstfelt", style: ["subComponent"] }, "SomeValue"],
+        [{ text: "DatagridRowTitle Translation", colSpan: 2, style: ["groupHeader", "subComponent"] }, ""],
+        [{ text: "Tekstfelt", style: ["subComponent"] }, "AnotherValue"],
       ]);
     });
   });
@@ -470,6 +520,20 @@ describe("generating doc definition", () => {
       const submission = createSelectboxesSubmission({ sugar: false, salt: false, pepper: false });
       const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
       expect(tableDef.table).toBeUndefined();
+    });
+
+    it("display translated selected options", () => {
+      const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
+      const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: true });
+      const translations = {
+        Flervalg: "Selectboxes",
+        Sugar: "Sukker",
+        Pepper: "Pepper",
+        Salt: "Salt",
+      };
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableData = tableDef.table.body;
+      expect(tableData).toEqual([["Selectboxes", { ul: ["Sukker", "Pepper"] }]]);
     });
   });
 

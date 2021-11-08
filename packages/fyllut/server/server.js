@@ -41,21 +41,23 @@ client.collectDefaultMetrics({ register });
 const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  return [form, submission];
+  const translations = JSON.parse(req.body.translations);
+  return [form, submission, translations];
 };
 
 const jsonRequestHandler = (req) => {
   const submission = req.body.submission;
   const form = req.body.form;
-  return [form, submission];
+  const translations = req.body.translations;
+  return [form, submission, translations];
 };
 
 const pdfGenHandler = (pdfGenClass, requestHandler) => {
   return (req, res) => {
-    const [form, submission] = requestHandler(req);
+    const [form, submission, translations] = requestHandler(req);
     logger.debug({ label: "request submission", message: submission });
     res.contentType("application/pdf");
-    pdfGenClass.generatePdf(submission, form, gitVersion, res);
+    pdfGenClass.generatePdf(submission, form, gitVersion, res, translations);
   };
 };
 

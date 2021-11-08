@@ -62,9 +62,8 @@ const GlobalTranslationsPage = ({
 
   const publish = () => {
     setPublishing(true);
-    publishGlobalTranslations(languageCode)
-      .finally(() => setPublishing(false));
-  }
+    publishGlobalTranslations(languageCode).finally(() => setPublishing(false));
+  };
 
   const alertComponent = useContext(UserAlerterContext).alertComponent();
 

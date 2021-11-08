@@ -1,15 +1,12 @@
-import {isValidResource} from "./webApp";
+import { isValidResource } from "./webApp";
 
 describe("webApp", () => {
-
   describe("isValidResource", () => {
-
     it("mottaksadresser is valid", () => {
       expect(isValidResource("mottaksadresser")).toBe(true);
     });
 
     describe("global-translations", () => {
-
       it("global-translations without language code is not valid", () => {
         expect(isValidResource("global-translations")).toBe(false);
       });
@@ -29,9 +26,6 @@ describe("webApp", () => {
       it("accepts only language codes as postfix", () => {
         expect(isValidResource("global-translations-randomstring")).toBe(false);
       });
-
     });
-
   });
-
 });
