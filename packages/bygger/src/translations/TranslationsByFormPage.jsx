@@ -1,42 +1,42 @@
-import React, {useContext} from "react";
-import {Link, useHistory} from "react-router-dom";
-import {AppLayoutWithContext} from "../components/AppLayout";
-import {Hovedknapp, Knapp} from "nav-frontend-knapper";
+import React, { useContext } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { AppLayoutWithContext } from "../components/AppLayout";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import TranslationsFormPage from "./TranslationsFormPage";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import {getTextsAndTranslationsForForm, getTextsAndTypeForForm, getTextsAndTranslationsHeaders} from "./utils";
+import { getTextsAndTranslationsForForm, getTextsAndTypeForForm, getTextsAndTranslationsHeaders } from "./utils";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
-import {useTranslations} from "../context/i18n";
+import { useTranslations } from "../context/i18n";
 import ActionRow from "../components/layout/ActionRow";
 import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
-import {makeStyles} from "@material-ui/styles";
-import {UserAlerterContext} from "../userAlerting";
-import {CSVLink} from "react-csv";
+import { makeStyles } from "@material-ui/styles";
+import { UserAlerterContext } from "../userAlerting";
+import { CSVLink } from "react-csv";
 
 const useStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
   },
   sideBarContainer: {
-    height: "100%"
+    height: "100%",
   },
   stickySideBar: {
     position: "sticky",
-    top: "7rem"
+    top: "7rem",
   },
 });
 
-const TranslationsByFormPage = ({deleteTranslation, saveTranslation, form, languageCode, projectURL, onLogout}) => {
+const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL, onLogout }) => {
   const userAlerter = useContext(UserAlerterContext);
   const alertComponent = userAlerter.alertComponent();
   const history = useHistory();
   const {
     title,
     path,
-    properties: {skjemanummer},
+    properties: { skjemanummer },
   } = form;
-  const {translations, setTranslations} = useTranslations();
+  const { translations, setTranslations } = useTranslations();
   useRedirectIfNoLanguageCode(languageCode, translations);
   const flattenedComponents = getTextsAndTypeForForm(form);
   const translationId = (translations[languageCode] || {}).id;
@@ -72,7 +72,7 @@ const TranslationsByFormPage = ({deleteTranslation, saveTranslation, form, langu
         </Column>
         <div className={styles.sideBarContainer}>
           <Column className={styles.stickySideBar}>
-            <FormBuilderLanguageSelector formPath={path} label={""}/>
+            <FormBuilderLanguageSelector formPath={path} label={""} />
             <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
               Slett språk
             </Knapp>
