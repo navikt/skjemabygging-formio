@@ -45,6 +45,13 @@ const useGlobalTranslationsPageStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
   },
+  sideBarContainer: {
+    height: "100%"
+  },
+  stickySideBar: {
+    position: "sticky",
+    top: "7rem"
+  }
 });
 
 const GlobalTranslationsPage = ({
@@ -253,7 +260,8 @@ const GlobalTranslationsPage = ({
             />
           )}
         </Column>
-        <Column>
+        <div className={classes.sideBarContainer}>
+        <Column className={classes.stickySideBar}>
           <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
           <Knapp
             onClick={() => {
@@ -294,6 +302,7 @@ const GlobalTranslationsPage = ({
           </Hovedknapp>
           {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
         </Column>
+        </div>
       </Row>
     </AppLayoutWithContext>
   );
