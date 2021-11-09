@@ -31,6 +31,15 @@ const extractTextsFromProperties = (props) => {
       type: getInputType(props.downloadPdfButtonText),
     });
   }
+  if (props?.signatures) {
+    Object.values(props.signatures).forEach((signature) => {
+      if (signature !== "")
+        array.push({
+          text: signature,
+          type: getInputType(signature),
+        });
+    });
+  }
   return array;
 };
 
