@@ -33,7 +33,7 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
     const i18n = mapTranslationsToFormioI18nObject(translations);
     setTranslationsForNavForm({
       ...i18n,
-      ["nb-NO"]: {
+      "nb-NO": {
         ...i18n["nb-NO"],
         ...i18nData["nb-NO"],
       }
