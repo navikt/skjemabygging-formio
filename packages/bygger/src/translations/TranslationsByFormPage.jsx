@@ -18,6 +18,13 @@ const useStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
   },
+  sideBarContainer: {
+    height: "100%",
+  },
+  stickySideBar: {
+    position: "sticky",
+    top: "7rem",
+  },
 });
 
 const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL, onLogout }) => {
@@ -63,36 +70,38 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
             setTranslations={setTranslations}
           />
         </Column>
-        <Column>
-          <FormBuilderLanguageSelector formPath={path} label={""} />
-          <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
-            Slett språk
-          </Knapp>
-          <Hovedknapp
-            onClick={() => {
-              saveTranslation(
-                projectURL,
-                translationId,
-                languageCode,
-                translations[languageCode]?.translations,
-                path,
-                title
-              );
-            }}
-          >
-            Lagre
-          </Hovedknapp>
-          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-          <CSVLink
-            data={getTextsAndTranslationsForForm(form, translations)}
-            filename={`${title}(${path})_Oversettelser.csv`}
-            className="knapp knapp--standard"
-            separator={";"}
-            headers={getTextsAndTranslationsHeaders(translations)}
-          >
-            Eksporter
-          </CSVLink>
-        </Column>
+        <div className={styles.sideBarContainer}>
+          <Column className={styles.stickySideBar}>
+            <FormBuilderLanguageSelector formPath={path} label={""} />
+            <Knapp onClick={() => deleteTranslation(translationId).then(() => history.push("/translations"))}>
+              Slett språk
+            </Knapp>
+            <Hovedknapp
+              onClick={() => {
+                saveTranslation(
+                  projectURL,
+                  translationId,
+                  languageCode,
+                  translations[languageCode]?.translations,
+                  path,
+                  title
+                );
+              }}
+            >
+              Lagre
+            </Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+            <CSVLink
+              data={getTextsAndTranslationsForForm(form, translations)}
+              filename={`${title}(${path})_Oversettelser.csv`}
+              className="knapp knapp--standard"
+              separator={";"}
+              headers={getTextsAndTranslationsHeaders(translations)}
+            >
+              Eksporter
+            </CSVLink>
+          </Column>
+        </div>
       </Row>
     </AppLayoutWithContext>
   );

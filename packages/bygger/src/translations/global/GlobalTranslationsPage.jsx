@@ -45,6 +45,13 @@ const useGlobalTranslationsPageStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
   },
+  sideBarContainer: {
+    height: "100%",
+  },
+  stickySideBar: {
+    position: "sticky",
+    top: "7rem",
+  },
 });
 
 const GlobalTranslationsPage = ({
@@ -253,47 +260,49 @@ const GlobalTranslationsPage = ({
             />
           )}
         </Column>
-        <Column>
-          <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
-          <Knapp
-            onClick={() => {
-              if (allGlobalTranslations[languageCode]) {
-                getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
-                history.push("/translations");
-              }
-            }}
-          >
-            Slett språk
-          </Knapp>
-          <Knapp onClick={publish} spinner={publishing}>
-            Publiser
-          </Knapp>
-          <Hovedknapp
-            onClick={() => {
-              if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
-                const duplicatedOriginalText = hasDuplicatedOriginalText();
-                alert(
-                  `Du har fortsatt ${
-                    duplicatedOriginalText.length > 1
-                      ? "flere dupliserte original tekster"
-                      : "en duplisert original tekst"
-                  } (${duplicatedOriginalText})`
-                );
-              } else {
-                saveTranslation(
-                  projectURL,
-                  globalTranslationsWithLanguagecodeAndTag?.id,
-                  languageCode,
-                  globalTranslationsToSave(),
-                  selectedTag
-                );
-              }
-            }}
-          >
-            Lagre
-          </Hovedknapp>
-          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
-        </Column>
+        <div className={classes.sideBarContainer}>
+          <Column className={classes.stickySideBar}>
+            <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
+            <Knapp
+              onClick={() => {
+                if (allGlobalTranslations[languageCode]) {
+                  getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
+                  history.push("/translations");
+                }
+              }}
+            >
+              Slett språk
+            </Knapp>
+            <Knapp onClick={publish} spinner={publishing}>
+              Publiser
+            </Knapp>
+            <Hovedknapp
+              onClick={() => {
+                if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+                  const duplicatedOriginalText = hasDuplicatedOriginalText();
+                  alert(
+                    `Du har fortsatt ${
+                      duplicatedOriginalText.length > 1
+                        ? "flere dupliserte original tekster"
+                        : "en duplisert original tekst"
+                    } (${duplicatedOriginalText})`
+                  );
+                } else {
+                  saveTranslation(
+                    projectURL,
+                    globalTranslationsWithLanguagecodeAndTag?.id,
+                    languageCode,
+                    globalTranslationsToSave(),
+                    selectedTag
+                  );
+                }
+              }}
+            >
+              Lagre
+            </Hovedknapp>
+            {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+          </Column>
+        </div>
       </Row>
     </AppLayoutWithContext>
   );
