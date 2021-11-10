@@ -37,6 +37,11 @@ const ConfirmDeleteLanguageModal = ({
   language,
   isGlobal = false,
 }: ConfirmDeleteLanguageModalProps): JSX.Element => {
+  const modalTextForGlobalTranslations = `Ved å klikke på "slett språk" fjerner du alle globale oversettelser til ${language?.toLowerCase()}, for godt.
+        Denne handlingen kan ikke angres.`;
+  const modalTextForFormTranslations = `Ved å klikke på "slett språk" fjerner du alle oversettelser til ${language?.toLowerCase()} for dette skjemaet, for godt.
+        Denne handlingen kan ikke angres.`;
+
   const styles = useStyles();
   return (
     <Modal
@@ -50,8 +55,7 @@ const ConfirmDeleteLanguageModal = ({
     >
       <Undertittel className="margin-bottom-double">Er du sikker på at du ønsker å slette språket?</Undertittel>
       <Normaltekst className="margin-bottom-default">
-        {`Ved å klikke på "slett språk" fjerner du alle oversettelser til ${language?.toLowerCase()} for dette skjemaet, for godt.
-        Denne handlingen kan ikke angres.`}
+        {isGlobal ? modalTextForGlobalTranslations : modalTextForFormTranslations}
       </Normaltekst>
       <div className={styles.buttonRow}>
         <Knapp className={styles.modal_button} onClick={closeModal}>
