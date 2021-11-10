@@ -23,10 +23,10 @@ const translations = {
 
 describe("FormPage", () => {
 
-  const renderFormPage = (form, enableTranslations = true) => {
+  const renderFormPage = (form, featureToggles = {enableTranslations: true}) => {
     render(
       <MemoryRouter>
-        <AppConfigProvider featureToggles={{enableTranslations}}>
+        <AppConfigProvider featureToggles={featureToggles}>
           <FormPage form={form} />
         </AppConfigProvider>
       </MemoryRouter>
@@ -40,7 +40,7 @@ describe("FormPage", () => {
         return Promise.reject(new Error(`Ingen kall til backend forventes: ${url}`));
       });
 
-      renderFormPage(form, false);
+      renderFormPage(form, {enableTranslations: false});
 
       expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
       expect(await screen.queryByRole("button", {name: "Norsk bokmål"})).not.toBeInTheDocument();
