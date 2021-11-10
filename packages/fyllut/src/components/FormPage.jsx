@@ -75,7 +75,7 @@ function FormPage({ form }) {
     } else {
       setReady(true);
     }
-  }, [form]);
+  }, [form, featureToggles.enableTranslations]);
 
   if (!ready) {
     return <div>Laster skjema...</div>
