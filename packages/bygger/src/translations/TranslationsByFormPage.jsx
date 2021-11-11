@@ -77,7 +77,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
           </Column>
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
-              <FormBuilderLanguageSelector className={styles.languageSelector} formPath={path} label={""} />
+              <FormBuilderLanguageSelector formPath={path} label={""} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <Hovedknapp
                 onClick={() => {

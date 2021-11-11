@@ -36,7 +36,7 @@ const ConfirmDeleteLanguageModal = ({
   onConfirm,
   language,
   isGlobal = false,
-}: ConfirmDeleteLanguageModalProps): JSX.Element => {
+}: ConfirmDeleteLanguageModalProps) => {
   const modalTextForGlobalTranslations = `Ved å klikke på "slett språk" fjerner du alle globale oversettelser til ${language?.toLowerCase()}, for godt.
         Denne handlingen kan ikke angres.`;
   const modalTextForFormTranslations = `Ved å klikke på "slett språk" fjerner du alle oversettelser til ${language?.toLowerCase()} for dette skjemaet, for godt.
