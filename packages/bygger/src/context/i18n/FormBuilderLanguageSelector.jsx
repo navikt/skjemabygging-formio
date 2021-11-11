@@ -1,12 +1,12 @@
-import React from "react";
+import { makeStyles } from "@material-ui/styles";
 import {
-  LanguageSelector,
   i18nData,
+  LanguageSelector,
   useCurrentLanguage,
   useLanguageCodeFromURL,
 } from "@navikt/skjemadigitalisering-shared-components";
+import React from "react";
 import { languagesInNorwegian, useTranslations } from "./index";
-import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles({
   sideBarLanguageSelector: {

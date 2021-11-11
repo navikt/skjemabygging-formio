@@ -1,20 +1,20 @@
+import { makeStyles } from "@material-ui/styles";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import React, { useContext } from "react";
+import { CSVLink } from "react-csv";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import TranslationsFormPage from "./TranslationsFormPage";
-import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import { getTextsAndTranslationsForForm, getTextsAndTypeForForm, getTextsAndTranslationsHeaders } from "./utils";
-import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
-import { languagesInNorwegian, useTranslations } from "../context/i18n";
 import ActionRow from "../components/layout/ActionRow";
-import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
-import { makeStyles } from "@material-ui/styles";
+import Row from "../components/layout/Row";
+import { languagesInNorwegian, useTranslations } from "../context/i18n";
+import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
+import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import { UserAlerterContext } from "../userAlerting";
-import { CSVLink } from "react-csv";
-import ConfirmDeleteLanguageModal from "./ConfirmDeleteLanguageModal";
 import { useModal } from "../util/useModal";
+import ConfirmDeleteLanguageModal from "./ConfirmDeleteLanguageModal";
+import TranslationsFormPage from "./TranslationsFormPage";
+import { getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders, getTextsAndTypeForForm } from "./utils";
 
 const useStyles = makeStyles({
   mainCol: {

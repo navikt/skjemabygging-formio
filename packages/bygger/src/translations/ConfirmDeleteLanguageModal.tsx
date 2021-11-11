@@ -1,8 +1,8 @@
+import { makeStyles } from "@material-ui/styles";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import React from "react";
-import { makeStyles } from "@material-ui/styles";
 
 type ConfirmDeleteLanguageModalProps = {
   isOpen: boolean;

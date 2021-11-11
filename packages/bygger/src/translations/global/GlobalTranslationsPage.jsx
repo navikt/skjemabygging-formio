@@ -1,23 +1,23 @@
-import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
-import { AppLayoutWithContext } from "../../components/AppLayout";
-import LoadingComponent from "../../components/LoadingComponent";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { Innholdstittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
-import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { useHistory, useParams } from "react-router-dom";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
-import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
-import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
-import { languagesInNorwegian } from "../../context/i18n";
+import { Innholdstittel } from "nav-frontend-typografi";
+import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
+import LoadingComponent from "../../components/LoadingComponent";
+import { languagesInNorwegian } from "../../context/i18n";
+import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
+import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { UserAlerterContext } from "../../userAlerting";
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
-import { getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags } from "./utils";
-import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import { useModal } from "../../util/useModal";
+import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
+import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
+import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
+import { getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags } from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
