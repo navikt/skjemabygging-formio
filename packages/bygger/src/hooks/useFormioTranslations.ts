@@ -310,7 +310,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           return translationsToSave;
         }
       }, {});
-      saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
+      console.log("i18n", i18n);
+      //saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
     } else {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }

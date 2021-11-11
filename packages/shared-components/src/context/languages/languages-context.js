@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 import useCurrentLanguage from "./useCurrentLanguage";
 import i18nData from "../../i18nData";
@@ -6,7 +6,6 @@ import i18nData from "../../i18nData";
 const LanguagesContext = createContext({});
 
 export const LanguagesProvider = ({ children, translations, countryNameTranslations }) => {
-
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
 
@@ -14,10 +13,12 @@ export const LanguagesProvider = ({ children, translations, countryNameTranslati
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
 
   useEffect(() => {
+    console.log("useLanguages1");
     setAvailableLanguages(Object.keys(translations));
   }, [translations]);
 
   useEffect(() => {
+    console.log("useLanguages2");
     const languages = Object.keys(translations);
     const formTranslations = languages.reduce(
       (acc, language) => ({
@@ -29,14 +30,14 @@ export const LanguagesProvider = ({ children, translations, countryNameTranslati
       }),
       {}
     );
+    console.log("translations", translations);
     setTranslationsForNavForm({
       ...formTranslations,
       "nb-NO": {
         ...formTranslations["nb-NO"],
-        ...i18nData["nb-NO"]
-      }
+        ...i18nData["nb-NO"],
+      },
     });
-
   }, [translations, countryNameTranslations]);
 
   function getCurrentTranslation() {
