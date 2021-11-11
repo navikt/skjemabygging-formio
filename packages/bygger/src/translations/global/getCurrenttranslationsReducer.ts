@@ -1,9 +1,10 @@
 import { guid } from "@navikt/skjemadigitalisering-shared-components";
 
-const createNewRow = (originalText = "", translatedText = "") => ({
+const createNewRow = (originalText = "", translatedText = "", key?: string) => ({
   id: guid(),
   originalText,
   translatedText,
+  key,
 });
 
 type ReducerActionType = { type: string; payload: any };
@@ -38,9 +39,9 @@ const getCurrenttranslationsReducer = (state: Array<any>, action: ReducerActionT
       });
     }
     case "updateTranslation": {
-      const { id, originalText, translatedText } = action.payload;
+      const { id, originalText, translatedText, key } = action.payload;
       if (id === "") {
-        return [...state, createNewRow(originalText, translatedText)];
+        return [...state, createNewRow(originalText, translatedText, key)];
       }
       return state.map((translation) => (translation.id === id ? action.payload : translation));
     }

@@ -1,5 +1,5 @@
 import Formiojs from "formiojs/Formio";
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { localizationUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import {
   FormioTranslation,
@@ -11,8 +11,8 @@ import {
   TranslationScope,
   TranslationTag,
 } from "../../types/translations";
-import {getAllPredefinedOriginalTexts} from "../translations/global/utils";
-import {languagesInNorwegian} from "../context/i18n";
+import { getAllPredefinedOriginalTexts, tags } from "../translations/global/utils";
+import { languagesInNorwegian } from "../context/i18n";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -30,6 +30,38 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         console.log("Response: ", response);
         return response;
       });
+  };
+
+  const mapOriginalTextWithFormioKey = (tag: string, i18n: I18nTranslationMap, scope: TranslationScope) => {
+    if (tag === tags.VALIDERING) {
+      let translationKey = "";
+      return Object.keys(i18n).reduce((translationsObjects, translatedText) => {
+        let valideringKey: string | undefined = undefined;
+        Object.keys(TEXTS.validering).forEach((key) => {
+          if (key === translatedText) {
+            valideringKey = TEXTS.validering[key];
+          }
+        });
+        translationKey = valideringKey ? valideringKey : translatedText;
+        return {
+          ...translationsObjects,
+          [translationKey]: {
+            value: i18n[translatedText],
+            scope,
+          },
+        };
+      }, {});
+    } else {
+      return Object.keys(i18n).reduce((translationsObjects, translatedText) => {
+        return {
+          ...translationsObjects,
+          [translatedText]: {
+            value: i18n[translatedText],
+            scope,
+          },
+        };
+      }, {});
+    }
   };
 
   const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
@@ -55,16 +87,19 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
             name,
             scope,
             tag,
-            translations: Object.keys(i18n).reduce(
-              (translationsObjects, translatedText) => ({
+            translations: mapOriginalTextWithFormioKey(
+              tag,
+              i18n,
+              scope
+            ) /*Object.keys(i18n).reduce((translationsObjects, translatedText) => {
+              return {
                 ...translationsObjects,
                 [translatedText]: {
                   value: i18n[translatedText],
                   scope,
                 },
-              }),
-              {}
-            ),
+              };
+            }, {})*/,
           });
 
           return globalTranslations;
@@ -78,32 +113,36 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
   const publishGlobalTranslations = async (languageCode) => {
     const globalTranslationsForCurrentLanguage = await loadGlobalTranslations(languageCode);
-    const i18n = globalTranslationsForCurrentLanguage[languageCode].reduce((acc, cur) => ({...acc, ...cur.translations}), {});
+    const i18n = globalTranslationsForCurrentLanguage[languageCode].reduce(
+      (acc, cur) => ({ ...acc, ...cur.translations }),
+      {}
+    );
     const originalTexts = getAllPredefinedOriginalTexts(true);
-    const originalTextsWithNoTranslation = originalTexts.filter(text => !i18n[text]);
+    const originalTextsWithNoTranslation = originalTexts.filter((text) => !i18n[text]);
     if (originalTextsWithNoTranslation.length > 0) {
-      userAlerter.setErrorMessage(`Det mangler oversettelser for følgende tekster: ${originalTextsWithNoTranslation.join(", ")}`);
+      userAlerter.setErrorMessage(
+        `Det mangler oversettelser for følgende tekster: ${originalTextsWithNoTranslation.join(", ")}`
+      );
       return Promise.resolve();
     }
     const payload = {
       token: Formiojs.getToken(),
       resource: globalTranslationsForCurrentLanguage,
-    }
+    };
     return fetch(`/api/published-resource/global-translations-${languageCode}`, {
       headers: {
-        "content-type": "application/json"
+        "content-type": "application/json",
       },
       method: "PUT",
       body: JSON.stringify(payload),
-    })
-      .then(res => {
-        if (res.ok) {
-          userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
-        } else {
-          userAlerter.setErrorMessage("Publisering feilet");
-        }
-      });
-  }
+    }).then((res) => {
+      if (res.ok) {
+        userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
+      } else {
+        userAlerter.setErrorMessage("Publisering feilet");
+      }
+    });
+  };
 
   const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {
     return fetchTranslations(

@@ -7,7 +7,7 @@ import { Undertittel } from "nav-frontend-typografi";
 export const getTranslationByOriginalText = (originalText, translations) =>
   translations.find((translation) => translation.originalText === originalText);
 
-const TranslationEditPanelComponent = ({ components, languageCode, updateTranslation, translations }) => {
+const TranslationEditPanelComponent = ({ components, languageCode, updateTranslation, translations, tag }) => {
   return components.map(({ key, type, text }) => {
     const id = getTranslationByOriginalText(text, translations)?.id || "";
     const value = getTranslationByOriginalText(text, translations)?.translatedText || "";
@@ -19,7 +19,7 @@ const TranslationEditPanelComponent = ({ components, languageCode, updateTransla
         key={`${key}-${languageCode}`}
         hasGlobalTranslation={false}
         showGlobalTranslation={false}
-        onChange={(value) => updateTranslation(id, text, value)}
+        onChange={(value) => updateTranslation(id, text, value, tag ? key : undefined)}
       />
     );
   });
@@ -54,6 +54,7 @@ const ApplicationTextTranslationEditPanel = ({ selectedTag, translations, langua
         languageCode={languageCode}
         translations={translations}
         updateTranslation={updateTranslation}
+        tag={selectedTag === tags.VALIDERING ? tags.VALIDERING : undefined}
       />
       {showPdfStatiske && (
         <Undertittel className={"margin-bottom-default"}>Tekster som brukes ved generering av PDF</Undertittel>

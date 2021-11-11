@@ -143,13 +143,14 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const updateTranslation = (id, originalText, translatedText) => {
+  const updateTranslation = (id, originalText, translatedText, key) => {
     dispatch({
       type: "updateTranslation",
       payload: {
         id,
         originalText,
         translatedText,
+        key,
       },
     });
   };
@@ -182,6 +183,22 @@ const GlobalTranslationsPage = ({
         return {
           ...allCurrentTranslationAsObject,
           [translation.originalText]: {
+            scope: "global",
+            value: translation.translatedText,
+          },
+        };
+      }
+      return allCurrentTranslationAsObject;
+    }, {});
+  };
+
+  const globalValideringTranslationsToSave = () => {
+    console.log("new to save", currentTranslation);
+    return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
+      if (translation.originalText !== "" && translation.translatedText !== "") {
+        return {
+          ...allCurrentTranslationAsObject,
+          [translation.key]: {
             scope: "global",
             value: translation.translatedText,
           },
@@ -292,7 +309,7 @@ const GlobalTranslationsPage = ({
                     projectURL,
                     globalTranslationsWithLanguagecodeAndTag?.id,
                     languageCode,
-                    globalTranslationsToSave(),
+                    selectedTag === tags.VALIDERING ? globalValideringTranslationsToSave() : globalTranslationsToSave(),
                     selectedTag
                   );
                 }
