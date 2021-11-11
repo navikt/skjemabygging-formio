@@ -59,7 +59,7 @@ const ConfirmDeleteLanguageModal = ({
       </Normaltekst>
       <div className={styles.buttonRow}>
         <Knapp className={styles.modal_button} onClick={closeModal}>
-          Angre
+          Avbryt
         </Knapp>
         <Hovedknapp className={styles.modal_button} onClick={onConfirm}>
           Slett språk
