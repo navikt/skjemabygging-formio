@@ -33,4 +33,46 @@ const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] =>
   }, []);
 };
 
-export { tags, flattenTextsForEditPanel, getAllPredefinedOriginalTexts, getCurrentOriginalTextList };
+const getGlobalTranslationsWithLanguageAndTag = (allGlobalTranslations, languageCode, selectedTag) => {
+  const globalTranslationsResourcesForSelectedLanguage = allGlobalTranslations[languageCode];
+  const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage.find(
+    (globalTranslations) => globalTranslations.tag === selectedTag
+  );
+  const missingOriginalTexts = Object.keys(allGlobalTranslations)
+    .filter((language) => language !== languageCode)
+    .map((language) => allGlobalTranslations[language])
+    .map((translationResourcesWithDifferentTags) =>
+      translationResourcesWithDifferentTags.find((translationResource) => translationResource.tag === selectedTag)
+    )
+    .map((translationResource) => (translationResource ? translationResource.translations : {}))
+    .reduce((missingOriginalTexts, translationsResource) => {
+      if (translationsResource) {
+        return [
+          ...missingOriginalTexts,
+          ...Object.keys(translationsResource).filter(
+            (key) =>
+              translationsResourceWithSelectedLanguageAndTag.translations[key] === undefined &&
+              missingOriginalTexts.indexOf(key) === -1
+          ),
+        ];
+      } else {
+        return missingOriginalTexts;
+      }
+    }, []);
+  missingOriginalTexts.forEach(
+    (missingKey) =>
+      (translationsResourceWithSelectedLanguageAndTag.translations[missingKey] = {
+        scope: "global",
+        value: undefined,
+      })
+  );
+  return translationsResourceWithSelectedLanguageAndTag;
+};
+
+export {
+  tags,
+  flattenTextsForEditPanel,
+  getGlobalTranslationsWithLanguageAndTag,
+  getAllPredefinedOriginalTexts,
+  getCurrentOriginalTextList,
+};
