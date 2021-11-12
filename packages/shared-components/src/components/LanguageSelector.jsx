@@ -1,7 +1,8 @@
+import { makeStyles } from "@material-ui/styles";
+import classNames from "classnames";
+import navCssVariabler from "nav-frontend-core";
 import React from "react";
 import Select from "./Select";
-import { makeStyles } from "@material-ui/styles";
-import navCssVariabler from "nav-frontend-core";
 
 const useLanguageSelectorStyling = makeStyles({
   languageToggleWrapper: {
@@ -66,10 +67,14 @@ const useLanguageSelectorStyling = makeStyles({
   },
 });
 
-const LanguageSelector = ({ label, options }) => {
+const LanguageSelector = ({ label, options, className }) => {
   const classes = useLanguageSelectorStyling();
   return (
-    <div className={classes.languageToggleWrapper}>
+    <div
+      className={classNames(classes.languageToggleWrapper, {
+        [className]: className,
+      })}
+    >
       <Select className={classes.languageSelect} label={label} options={options} />
     </div>
   );
