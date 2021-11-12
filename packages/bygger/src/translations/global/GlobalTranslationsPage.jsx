@@ -17,7 +17,12 @@ import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
-import { getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags } from "./utils";
+import {
+  getAllPredefinedOriginalTexts,
+  getCurrentOriginalTextList,
+  getGlobalTranslationsWithLanguageAndTag,
+  tags,
+} from "./utils";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -91,13 +96,6 @@ const GlobalTranslationsPage = ({
     [],
     (state) => state
   );
-
-  const getGlobalTranslationsWithLanguageAndTag = (allGlobalTranslations, languageCode, selectedTag) => {
-    const indexOfTranslationWithTag = allGlobalTranslations[languageCode].findIndex(
-      (globalTranslations) => globalTranslations.tag === selectedTag
-    );
-    return allGlobalTranslations[languageCode][indexOfTranslationWithTag];
-  };
 
   useEffect(() => {
     loadGlobalTranslations(languageCode).then((translations) => setAllGlobalTranslations(translations));
