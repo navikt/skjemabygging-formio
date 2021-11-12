@@ -31,6 +31,15 @@ const extractTextsFromProperties = (props) => {
       type: getInputType(props.downloadPdfButtonText),
     });
   }
+  if (props?.signatures) {
+    Object.values(props.signatures).forEach((signature) => {
+      if (signature !== "")
+        array.push({
+          text: signature,
+          type: getInputType(signature),
+        });
+    });
+  }
   return array;
 };
 
@@ -100,28 +109,30 @@ const parseText = (text) => {
 };
 
 const getAllTextsOrParsedTexts = (form, shouldParseText = true) => {
-  const textComponents = getSimplifiedComponentObject(form).reduce(
-    (allTextsForForm, component) => {
-      return [
-        ...allTextsForForm,
-        ...Object.keys(component)
-          .filter((key) => component[key] !== undefined)
-          .reduce((textsForComponent, key) => {
-            if (key === "values") {
-              return [
-                ...textsForComponent,
-                ...component[key].map((value) => ({
-                  text: shouldParseText ? parseText(value) : value,
-                })),
-              ];
-            } else {
-              return [...textsForComponent, { text: shouldParseText ? parseText(component[key]) : component[key] }];
-            }
-          }, []),
-      ];
-    },
-    [{ text: form.title }]
-  );
+  const textComponents = getSimplifiedComponentObject(form)
+    .reduce(
+      (allTextsForForm, component) => {
+        return [
+          ...allTextsForForm,
+          ...Object.keys(component)
+            .filter((key) => component[key] !== undefined)
+            .reduce((textsForComponent, key) => {
+              if (key === "values") {
+                return [
+                  ...textsForComponent,
+                  ...component[key].map((value) => ({
+                    text: shouldParseText ? parseText(value) : value,
+                  })),
+                ];
+              } else {
+                return [...textsForComponent, { text: shouldParseText ? parseText(component[key]) : component[key] }];
+              }
+            }, []),
+        ];
+      },
+      [{ text: form.title }]
+    )
+    .concat(extractTextsFromProperties(form.properties));
   return removeDuplicatedComponents(textComponents);
 };
 
