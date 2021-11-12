@@ -1,5 +1,6 @@
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TranslationResource } from "../../../types/translations";
 
 const tags = {
   SKJEMATEKSTER: "skjematekster",
@@ -33,19 +34,28 @@ const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] =>
   }, []);
 };
 
-const getGlobalTranslationsWithLanguageAndTag = (allGlobalTranslations, languageCode, selectedTag) => {
+const isTranslationResourceForSelectedTag =
+  (selectedTag: string) =>
+  (translationResource): boolean =>
+    translationResource.tag === selectedTag;
+
+const getGlobalTranslationsWithLanguageAndTag = (
+  allGlobalTranslations: object,
+  languageCode: string,
+  selectedTag: string
+): TranslationResource => {
   const globalTranslationsResourcesForSelectedLanguage = allGlobalTranslations[languageCode];
   const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage.find(
-    (globalTranslations) => globalTranslations.tag === selectedTag
+    isTranslationResourceForSelectedTag(selectedTag)
   );
   const missingOriginalTexts = Object.keys(allGlobalTranslations)
     .filter((language) => language !== languageCode)
     .map((language) => allGlobalTranslations[language])
     .map((translationResourcesWithDifferentTags) =>
-      translationResourcesWithDifferentTags.find((translationResource) => translationResource.tag === selectedTag)
+      translationResourcesWithDifferentTags.find(isTranslationResourceForSelectedTag(selectedTag))
     )
     .map((translationResource) => (translationResource ? translationResource.translations : {}))
-    .reduce((missingOriginalTexts, translationsResource) => {
+    .reduce((missingOriginalTexts, translationsResource): string[] => {
       if (translationsResource) {
         return [
           ...missingOriginalTexts,
