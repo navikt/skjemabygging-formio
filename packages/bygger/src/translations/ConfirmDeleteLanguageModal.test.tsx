@@ -23,15 +23,15 @@ describe("ConfirmDeleteLanguageModal", () => {
   });
 
   describe("When 'Slett språk' is clicked", () => {
-    it("calls onConfirm ", async () => {
-      await screen.getByRole("button", { name: "Slett språk" }).click();
+    it("calls onConfirm ", () => {
+      screen.getByRole("button", { name: "Slett språk" }).click();
       expect(mockedOnConfirm).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('When "Avbryt" is clocked', () => {
-    it("calls closeModal", async () => {
-      await screen.getByRole("button", { name: "Avbryt" }).click();
+    it("calls closeModal", () => {
+      screen.getByRole("button", { name: "Avbryt" }).click();
       expect(mockedCloseModal).toHaveBeenCalledTimes(1);
     });
   });
@@ -41,8 +41,8 @@ describe("ConfirmDeleteLanguageModal", () => {
       renderModal("Norsk", true);
     });
 
-    it("displays text for global translations, with language in lowercase", async () => {
-      const modalText = await screen.queryByText(
+    it("displays text for global translations, with language in lowercase", () => {
+      const modalText = screen.queryByText(
         'Ved å klikke på "slett språk" fjerner du alle oversettelser til norsk for dette skjemaet, for godt. Denne handlingen kan ikke angres.'
       );
       expect(modalText).toBeDefined();
@@ -54,8 +54,8 @@ describe("ConfirmDeleteLanguageModal", () => {
       renderModal("Svensk", true);
     });
 
-    it("displays text for form translations, with language in lowercase", async () => {
-      const modalText = await screen.queryByText(
+    it("displays text for form translations, with language in lowercase", () => {
+      const modalText = screen.queryByText(
         `Ved å klikke på "slett språk" fjerner du alle oversettelser til "svensk" for dette skjemaet, for godt. Denne handlingen kan ikke angres.`
       );
       expect(modalText).toBeDefined();
