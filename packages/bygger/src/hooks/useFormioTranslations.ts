@@ -1,6 +1,6 @@
 import Formiojs from "formiojs/Formio";
-import { localizationUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { combineTranslationResources } from "../context/i18n/translationsMapper";
+import {localizationUtils, TEXTS} from "@navikt/skjemadigitalisering-shared-domain";
+import {combineTranslationResources} from "../context/i18n/translationsMapper";
 import {
   FormioTranslation,
   FormioTranslationMap,
@@ -11,10 +11,10 @@ import {
   TranslationScope,
   TranslationTag,
 } from "../../types/translations";
-import { getAllPredefinedOriginalTexts, tags } from "../translations/global/utils";
-import { languagesInNorwegian } from "../context/i18n";
+import {getAllPredefinedOriginalTexts, tags} from "../translations/global/utils";
+import {languagesInNorwegian} from "../context/i18n";
 
-const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
+const {getLanguageCodeAsIso639_1, zipCountryNames} = localizationUtils;
 
 type Country = { label: string; value: string };
 
@@ -32,36 +32,24 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       });
   };
 
-  const mapOriginalTextWithFormioKey = (tag: string, i18n: I18nTranslationMap, scope: TranslationScope) => {
-    if (tag === tags.VALIDERING) {
-      let translationKey = "";
-      return Object.keys(i18n).reduce((translationsObjects, translatedText) => {
-        let valideringKey: string | undefined = undefined;
+  const mapFormioKeyWithNorwegianText = (tag: string, i18n: I18nTranslationMap, scope: TranslationScope) => {
+    return Object.keys(i18n).reduce((translationsObjects, translatedText) => {
+      let originalText = translatedText;
+      if (tag === tags.VALIDERING) {
         Object.keys(TEXTS.validering).forEach((key) => {
           if (key === translatedText) {
-            valideringKey = TEXTS.validering[key];
+            originalText = TEXTS.validering[key];
           }
         });
-        translationKey = valideringKey ? valideringKey : translatedText;
-        return {
-          ...translationsObjects,
-          [translationKey]: {
-            value: i18n[translatedText],
-            scope,
-          },
-        };
-      }, {});
-    } else {
-      return Object.keys(i18n).reduce((translationsObjects, translatedText) => {
-        return {
-          ...translationsObjects,
-          [translatedText]: {
-            value: i18n[translatedText],
-            scope,
-          },
-        };
-      }, {});
-    }
+      }
+      return {
+        ...translationsObjects,
+        [originalText]: {
+          value: i18n[translatedText],
+          scope,
+        },
+      };
+    }, {});
   };
 
   const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
@@ -72,13 +60,9 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
       .then((response) => {
-        console.log("Fetched: ", response);
-        return response;
-      })
-      .then((response) => {
         return response.reduce((globalTranslations, translation) => {
-          const { data, _id: id } = translation;
-          const { i18n, scope, name, tag } = data;
+          const {data, _id: id} = translation;
+          const {i18n, scope, name, tag} = data;
           if (!globalTranslations[data.language]) {
             globalTranslations[data.language] = [];
           }
@@ -87,19 +71,11 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
             name,
             scope,
             tag,
-            translations: mapOriginalTextWithFormioKey(
+            translations: mapFormioKeyWithNorwegianText(
               tag,
               i18n,
               scope
-            ) /*Object.keys(i18n).reduce((translationsObjects, translatedText) => {
-              return {
-                ...translationsObjects,
-                [translatedText]: {
-                  value: i18n[translatedText],
-                  scope,
-                },
-              };
-            }, {})*/,
+            ),
           });
 
           return globalTranslations;
@@ -114,7 +90,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   const publishGlobalTranslations = async (languageCode) => {
     const globalTranslationsForCurrentLanguage = await loadGlobalTranslations(languageCode);
     const i18n = globalTranslationsForCurrentLanguage[languageCode].reduce(
-      (acc, cur) => ({ ...acc, ...cur.translations }),
+      (acc, cur) => ({...acc, ...cur.translations}),
       {}
     );
     const originalTexts = getAllPredefinedOriginalTexts(true);
