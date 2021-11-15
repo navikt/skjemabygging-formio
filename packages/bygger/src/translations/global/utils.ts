@@ -48,34 +48,33 @@ const getGlobalTranslationsWithLanguageAndTag = (
   const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage.find(
     isTranslationResourceForSelectedTag(selectedTag)
   ) || { translations: {} };
-  const missingOriginalTexts = Object.keys(allGlobalTranslations)
-    .filter((language) => language !== languageCode)
-    .map((language) => allGlobalTranslations[language])
-    .map((translationResourcesWithDifferentTags) =>
-      translationResourcesWithDifferentTags.find(isTranslationResourceForSelectedTag(selectedTag))
-    )
-    .map((translationResource) => (translationResource ? translationResource.translations : {}))
-    .reduce((missingOriginalTexts, translationsResource): string[] => {
-      if (translationsResource) {
-        return [
+  if (selectedTag === "skjematekster") {
+    Object.keys(allGlobalTranslations)
+      .filter((language) => language !== languageCode)
+      .map((language) => allGlobalTranslations[language])
+      .map((translationResourcesWithDifferentTags) =>
+        translationResourcesWithDifferentTags.find(isTranslationResourceForSelectedTag(selectedTag))
+      )
+      .map((translationResource) => (translationResource ? translationResource.translations : {}))
+      .reduce(
+        (missingOriginalTexts, translations): string[] => [
           ...missingOriginalTexts,
-          ...Object.keys(translationsResource).filter(
+          ...Object.keys(translations).filter(
             (key) =>
               translationsResourceWithSelectedLanguageAndTag.translations[key] === undefined &&
               missingOriginalTexts.indexOf(key) === -1
           ),
-        ];
-      } else {
-        return missingOriginalTexts;
-      }
-    }, []);
-  missingOriginalTexts.forEach(
-    (missingKey) =>
-      (translationsResourceWithSelectedLanguageAndTag.translations[missingKey] = {
-        scope: "global",
-        value: undefined,
-      })
-  );
+        ],
+        []
+      )
+      .forEach(
+        (missingKey) =>
+          (translationsResourceWithSelectedLanguageAndTag.translations[missingKey] = {
+            scope: "global",
+            value: undefined,
+          })
+      );
+  }
   return translationsResourceWithSelectedLanguageAndTag;
 };
 

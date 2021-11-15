@@ -76,7 +76,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
             scope: "global",
             tag: "skjematekster",
             translations: {
-              "Originaltekst 3": {
+              "Originaltekst 2": {
                 scope: "global",
                 value: "Oversatt tekst 2 - nn-NO",
               },
@@ -88,7 +88,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       "skjematekster"
     );
     expect(actual.translations).toHaveProperty("Originaltekst 1");
-    expect(actual.translations).toHaveProperty("Originaltekst 3");
+    expect(actual.translations).toHaveProperty("Originaltekst 2");
   });
 
   it("should not add original texts from other tags", () => {
