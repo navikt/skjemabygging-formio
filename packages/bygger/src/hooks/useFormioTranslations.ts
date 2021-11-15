@@ -11,8 +11,8 @@ import {
   TranslationScope,
   TranslationTag,
 } from "../../types/translations";
-import {getAllPredefinedOriginalTexts} from "../translations/global/utils";
-import {languagesInNorwegian} from "../context/i18n";
+import { getAllPredefinedOriginalTexts } from "../translations/global/utils";
+import { languagesInNorwegian } from "../context/i18n";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -38,7 +38,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       filter += `&data.language=${language}`;
     }
 
-    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=null`)
+    return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
       .then((response) => {
         console.log("Fetched: ", response);
         return response;
@@ -78,32 +78,36 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
   const publishGlobalTranslations = async (languageCode) => {
     const globalTranslationsForCurrentLanguage = await loadGlobalTranslations(languageCode);
-    const i18n = globalTranslationsForCurrentLanguage[languageCode].reduce((acc, cur) => ({...acc, ...cur.translations}), {});
+    const i18n = globalTranslationsForCurrentLanguage[languageCode].reduce(
+      (acc, cur) => ({ ...acc, ...cur.translations }),
+      {}
+    );
     const originalTexts = getAllPredefinedOriginalTexts(true);
-    const originalTextsWithNoTranslation = originalTexts.filter(text => !i18n[text]);
+    const originalTextsWithNoTranslation = originalTexts.filter((text) => !i18n[text]);
     if (originalTextsWithNoTranslation.length > 0) {
-      userAlerter.setErrorMessage(`Det mangler oversettelser for følgende tekster: ${originalTextsWithNoTranslation.join(", ")}`);
+      userAlerter.setErrorMessage(
+        `Det mangler oversettelser for følgende tekster: ${originalTextsWithNoTranslation.join(", ")}`
+      );
       return Promise.resolve();
     }
     const payload = {
       token: Formiojs.getToken(),
       resource: globalTranslationsForCurrentLanguage,
-    }
+    };
     return fetch(`/api/published-resource/global-translations-${languageCode}`, {
       headers: {
-        "content-type": "application/json"
+        "content-type": "application/json",
       },
       method: "PUT",
       body: JSON.stringify(payload),
-    })
-      .then(res => {
-        if (res.ok) {
-          userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
-        } else {
-          userAlerter.setErrorMessage("Publisering feilet");
-        }
-      });
-  }
+    }).then((res) => {
+      if (res.ok) {
+        userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
+      } else {
+        userAlerter.setErrorMessage("Publisering feilet");
+      }
+    });
+  };
 
   const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {
     return fetchTranslations(
