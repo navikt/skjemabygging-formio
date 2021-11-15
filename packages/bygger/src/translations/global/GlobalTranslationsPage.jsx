@@ -185,9 +185,8 @@ const GlobalTranslationsPage = ({
       if (translation.originalText !== "" && translation.translatedText !== "") {
         let originalTextOrKey = translation.originalText;
         if (selectedTag === tags.VALIDERING) {
-          const valideringsText = TEXTS.validering;
-          Object.entries(valideringsText).forEach(([key, value]) => {
-            if (value === translation.originalText) {
+          Object.entries(TEXTS.validering).forEach(([key, value]) => {
+            if (translation.originalText === value) {
               originalTextOrKey = key;
             }
           });
@@ -298,7 +297,7 @@ const GlobalTranslationsPage = ({
                       projectURL,
                       globalTranslationsWithLanguagecodeAndTag?.id,
                       languageCode,
-                      globalTranslationsToSave(),
+                      globalTranslationsToSave(selectedTag),
                       selectedTag
                     );
                   }
