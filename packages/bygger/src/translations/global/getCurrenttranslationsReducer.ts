@@ -39,9 +39,9 @@ const getCurrenttranslationsReducer = (state: Array<any>, action: ReducerActionT
       });
     }
     case "updateTranslation": {
-      const { id, originalText, translatedText, key } = action.payload;
+      const { id, originalText, translatedText} = action.payload;
       if (id === "") {
-        return [...state, createNewRow(originalText, translatedText, key)];
+        return [...state, createNewRow(originalText, translatedText)];
       }
       return state.map((translation) => (translation.id === id ? action.payload : translation));
     }

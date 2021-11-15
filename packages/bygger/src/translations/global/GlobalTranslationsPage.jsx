@@ -1,21 +1,22 @@
-import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
-import { AppLayoutWithContext } from "../../components/AppLayout";
+import React, {useContext, useEffect, useMemo, useReducer, useState} from "react";
+import {AppLayoutWithContext} from "../../components/AppLayout";
 import LoadingComponent from "../../components/LoadingComponent";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { Innholdstittel } from "nav-frontend-typografi";
-import { makeStyles } from "@material-ui/styles";
+import {Hovedknapp, Knapp} from "nav-frontend-knapper";
+import {Innholdstittel} from "nav-frontend-typografi";
+import {makeStyles} from "@material-ui/styles";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { useHistory, useParams } from "react-router-dom";
-import { ToggleGruppe } from "nav-frontend-toggle";
+import {useHistory, useParams} from "react-router-dom";
+import {ToggleGruppe} from "nav-frontend-toggle";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
-import { languagesInNorwegian } from "../../context/i18n";
+import {languagesInNorwegian} from "../../context/i18n";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import { UserAlerterContext } from "../../userAlerting";
+import {UserAlerterContext} from "../../userAlerting";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
-import { getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags } from "./utils";
+import {getAllPredefinedOriginalTexts, getCurrentOriginalTextList, tags} from "./utils";
+import {TEXTS} from "@navikt/skjemadigitalisering-shared-domain";
 
 const useGlobalTranslationsPageStyles = makeStyles({
   root: {
@@ -55,15 +56,15 @@ const useGlobalTranslationsPageStyles = makeStyles({
 });
 
 const GlobalTranslationsPage = ({
-  deleteTranslation,
-  languageCode,
-  loadGlobalTranslations,
-  publishGlobalTranslations,
-  projectURL,
-  saveTranslation,
-  onLogout,
-}) => {
-  const { tag } = useParams();
+                                  deleteTranslation,
+                                  languageCode,
+                                  loadGlobalTranslations,
+                                  publishGlobalTranslations,
+                                  projectURL,
+                                  saveTranslation,
+                                  onLogout,
+                                }) => {
+  const {tag} = useParams();
   const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
   const [publishing, setPublishing] = useState(false);
 
@@ -129,7 +130,7 @@ const GlobalTranslationsPage = ({
 
   const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
   if (Object.keys(currentTranslation).length === 0) {
-    return <LoadingComponent />;
+    return <LoadingComponent/>;
   }
 
   const updateOriginalText = (id, newOriginalText, oldOriginalText) => {
@@ -143,14 +144,13 @@ const GlobalTranslationsPage = ({
     });
   };
 
-  const updateTranslation = (id, originalText, translatedText, key) => {
+  const updateTranslation = (id, originalText, translatedText) => {
     dispatch({
       type: "updateTranslation",
       payload: {
         id,
         originalText,
         translatedText,
-        key,
       },
     });
   };
@@ -172,7 +172,7 @@ const GlobalTranslationsPage = ({
 
   const getTranslationIdsForLanguage = () => {
     return allGlobalTranslations[languageCode].reduce((translationId, translations) => {
-      const { id } = translations;
+      const {id} = translations;
       return [...translationId, id];
     }, []);
   };
@@ -180,7 +180,16 @@ const GlobalTranslationsPage = ({
   const globalTranslationsToSave = (selectedTag) => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
-        const originalTextOrKey = selectedTag === tags.VALIDERING ? translation.key : translation.originalText;
+        let originalTextOrKey = translation.originalText;
+        if (selectedTag === tags.VALIDERING) {
+          const valideringsText = TEXTS.validering;
+          Object.entries(valideringsText).forEach(([key, value]) => {
+            if (value === translation.originalText) {
+              originalTextOrKey = key;
+            }
+          });
+        }
+
         return {
           ...allCurrentTranslationAsObject,
           [originalTextOrKey]: {
@@ -217,13 +226,13 @@ const GlobalTranslationsPage = ({
             "data-key": tags.SKJEMATEKSTER,
             pressed: selectedTag === tags.SKJEMATEKSTER,
           },
-          { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
+          {children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT},
           {
             children: "Statiske tekster",
             "data-key": tags.STATISKE_TEKSTER,
             pressed: selectedTag === tags.STATISKE_TEKSTER,
           },
-          { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
+          {children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING},
         ]}
         onChange={(event) => {
           const newTag = event.target.getAttribute("data-key");
@@ -264,7 +273,7 @@ const GlobalTranslationsPage = ({
         </Column>
         <div className={classes.sideBarContainer}>
           <Column className={classes.stickySideBar}>
-            <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
+            <FormBuilderLanguageSelector formPath="global" tag={selectedTag}/>
             <Knapp
               onClick={() => {
                 if (allGlobalTranslations[languageCode]) {

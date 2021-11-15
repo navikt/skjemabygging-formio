@@ -19,7 +19,7 @@ const TranslationEditPanelComponent = ({ components, languageCode, updateTransla
         key={`${key}-${languageCode}`}
         hasGlobalTranslation={false}
         showGlobalTranslation={false}
-        onChange={(value) => updateTranslation(id, text, value, tag ? key : undefined)}
+        onChange={(value) => updateTranslation(id, text, value)}
       />
     );
   });
