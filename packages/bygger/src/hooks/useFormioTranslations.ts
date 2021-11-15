@@ -111,7 +111,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
   const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {
     return fetchTranslations(
-      `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=null`
+      `${formio.projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`
     ).then((translations: FormioTranslationPayload[]) => {
       const languagesWithLocalTranslation = translations.reduce((localTranslations: Language[], translation) => {
         if (localTranslations.indexOf(translation.data.language) === -1) {
