@@ -98,8 +98,8 @@ const GlobalTranslationsPage = ({
   );
 
   useEffect(() => {
-    loadGlobalTranslations(languageCode).then((translations) => setAllGlobalTranslations(translations));
-  }, [loadGlobalTranslations, languageCode]);
+    loadGlobalTranslations().then((translations) => setAllGlobalTranslations(translations));
+  }, [loadGlobalTranslations]);
 
   useEffect(() => {
     if (languageCode && allGlobalTranslations[languageCode])

@@ -47,7 +47,7 @@ const getGlobalTranslationsWithLanguageAndTag = (
   const globalTranslationsResourcesForSelectedLanguage = allGlobalTranslations[languageCode];
   const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage.find(
     isTranslationResourceForSelectedTag(selectedTag)
-  );
+  ) || { translations: {} };
   const missingOriginalTexts = Object.keys(allGlobalTranslations)
     .filter((language) => language !== languageCode)
     .map((language) => allGlobalTranslations[language])
