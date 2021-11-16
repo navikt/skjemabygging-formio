@@ -1,8 +1,8 @@
-const vedleggSchema = {
+const vedleggPanelSchema = {
   title: "Vedlegg",
   type: "panel",
   input: false,
-  key: "vedlegg",
+  key: "vedleggpanel",
   theme: "default",
   components: [
     {
@@ -37,4 +37,4 @@ const vedleggSchema = {
   ],
 };
 
-export default vedleggSchema;
+export default vedleggPanelSchema;
