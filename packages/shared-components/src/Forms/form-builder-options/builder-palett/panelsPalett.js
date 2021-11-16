@@ -1,6 +1,6 @@
 import dineOpplysningerSchema from "../schemas/panels/dineOpplysningerSchema";
 import veiledningSchema from "../schemas/panels/veiledningSchema";
-import vedleggSchema from "../schemas/panels/vedleggSchema";
+import vedleggPanelSchema from "../schemas/panels/vedleggPanelSchema";
 
 const panelsPalett = {
   title: "Paneler",
@@ -17,13 +17,13 @@ const panelsPalett = {
       weight: "20",
       schema: dineOpplysningerSchema,
     },
-    vedlegg: {
+    vedleggpanel: {
       title: "Vedlegg",
-      key: "vedlegg",
+      key: "vedleggpanel",
       weight: "30",
-      schema: vedleggSchema,
-    }
-  }
+      schema: vedleggPanelSchema,
+    },
+  },
 };
 
 export default panelsPalett;

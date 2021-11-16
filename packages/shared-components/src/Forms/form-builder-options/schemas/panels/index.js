@@ -1,11 +1,11 @@
 import veiledningSchema from "./veiledningSchema";
 import dineOpplysningerSchema from "./dineOpplysningerSchema";
-import vedleggSchema from "./vedleggSchema";
+import vedleggPanelSchema from "./vedleggPanelSchema";
 
 const panelSchemas = {
   veiledningSchema,
   dineOpplysningerSchema,
-  vedleggSchema,
+  vedleggSchema: vedleggPanelSchema,
 };
 
 export default panelSchemas;
