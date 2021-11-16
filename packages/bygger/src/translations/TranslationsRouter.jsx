@@ -10,19 +10,22 @@ const TranslationsRouter = ({
   deleteTranslation,
   forms,
   loadGlobalTranslations,
+  publishGlobalTranslations,
   loadTranslationsForEditPage,
   projectURL,
   saveGlobalTranslation,
   saveLocalTranslation,
+  onLogout,
 }) => {
   let { path } = useRouteMatch();
+
   return (
     <Switch>
       <Route exact path={`${path}/`}>
-        <TranslationsListPage forms={forms} />
+        <TranslationsListPage forms={forms} onLogout={onLogout} />
       </Route>
       <Route path={`${path}/new`}>
-        <NewTranslation projectURL={projectURL} />
+        <NewTranslation projectURL={projectURL} onLogout={onLogout} />
       </Route>
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
@@ -31,9 +34,11 @@ const TranslationsRouter = ({
             <GlobalTranslationsPage
               {...match.params}
               loadGlobalTranslations={loadGlobalTranslations}
+              publishGlobalTranslations={publishGlobalTranslations}
               projectURL={projectURL}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveGlobalTranslation}
+              onLogout={onLogout}
             />
           </I18nProvider>
         )}
@@ -50,6 +55,7 @@ const TranslationsRouter = ({
                 projectURL={projectURL}
                 deleteTranslation={deleteTranslation}
                 saveTranslation={saveLocalTranslation}
+                onLogout={onLogout}
               />
             </I18nProvider>
           );

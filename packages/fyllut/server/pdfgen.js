@@ -22,18 +22,23 @@ const fonts = {
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
-  static generatePdf(submission, form, gitVersion, stream) {
+  static generatePdf(submission, form, gitVersion, stream, translations) {
     const now = DateTime.local().setZone("Europe/Oslo");
-    const generator = new this(submission, form, gitVersion, now);
+    const generator = new this(submission, form, gitVersion, now, translations);
     const docDefinition = generator.generateDocDefinition();
     generator.writeDocDefinitionToStream(docDefinition, stream);
   }
 
-  constructor(submission, form, gitVersion, nowAsLuxonDateTime) {
+  constructor(submission, form, gitVersion, nowAsLuxonDateTime, translations) {
     this.gitVersion = gitVersion;
     this.submission = submission;
     this.form = form;
     this.now = nowAsLuxonDateTime;
+    this.translations = translations;
+  }
+
+  translate(originalText) {
+    return this.translations?.[originalText] ? this.translations[originalText] : originalText;
   }
 
   docStyles() {
@@ -114,7 +119,7 @@ export class Pdfgen {
 
   createList(body = []) {
     return {
-      ul: body,
+      ul: body.map((item) => this.translate(item)),
     };
   }
 
@@ -126,17 +131,24 @@ export class Pdfgen {
         case "panel":
         case "navSkjemagruppe":
         case "datagrid":
-          return [this.createRow(component.label, "", true), ...this.componentsToBody(component.components, true)];
+          return [
+            this.createRow(this.translate(component.label), "", true),
+            ...this.componentsToBody(component.components, true),
+          ];
         case "datagrid-row":
           const body = this.componentsToBody(component.components, true);
           if (component.label) {
-            return [this.createRow(component.label, "", true, true), ...body];
+            return [this.createRow(this.translate(component.label), "", true, true), ...body];
           }
           return [...body, [{ text: " ", colSpan: 2 }]];
         case "selectboxes":
-          return [this.createRow(component.label, this.createList(component.value), false, areSubComponents)];
+          return [
+            this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
+          ];
         default:
-          return [this.createRow(component.label, component.value, false, areSubComponents)];
+          return [
+            this.createRow(this.translate(component.label), this.translate(component.value), false, areSubComponents),
+          ];
       }
     });
   }
@@ -144,7 +156,7 @@ export class Pdfgen {
   mapFormSummaryObjectToTables(formSummaryObject) {
     return formSummaryObject.flatMap((panel) => {
       return [
-        { text: panel.label, style: "subHeader" },
+        { text: this.translate(panel.label), style: "subHeader" },
         this.createTableWithBody(this.componentsToBody(panel.components)),
       ];
     });
@@ -160,8 +172,8 @@ export class Pdfgen {
       " ",
       " ",
       " ",
-      { text: `Skjemaet ble opprettet ${datoTid}` },
-      { text: `Skjemaversjon: ${this.gitVersion}` },
+      { text: `${this.translate("Skjemaet ble opprettet")} ${datoTid}` },
+      { text: `${this.translate("Skjemaversjon")}: ${this.gitVersion}` },
     ];
   }
 
@@ -186,7 +198,7 @@ export class Pdfgen {
 
   generateHeader() {
     return [
-      { text: this.form.title, style: "header" },
+      { text: this.translate(this.form.title), style: "header" },
       { text: " ", style: "ingress" },
     ];
   }
@@ -194,7 +206,7 @@ export class Pdfgen {
 
 export class PdfgenPapir extends Pdfgen {
   newSignature(label) {
-    const signatureLabel = label ? [{ text: label, style: "groupHeader" }, " ", " "] : [];
+    const signatureLabel = label ? [{ text: this.translate(label), style: "groupHeader" }, " ", " "] : [];
     return [
       " ",
       " ",
@@ -204,7 +216,7 @@ export class PdfgenPapir extends Pdfgen {
         stack: [
           ...signatureLabel,
           "_____________________________________\t\t_____________________________________",
-          "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
+          `${this.translate("Sted og dato")}\t\t\t\t\t\t\t\t\t\t\t\t\t ${this.translate("Underskrift")}`,
         ],
         unbreakable: true,
       },

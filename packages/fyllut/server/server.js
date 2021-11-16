@@ -27,8 +27,7 @@ const {
   naisClusterName,
   useFormioApi,
   skjemaDir,
-  skjemaUrl,
-  mottaksadresserUrl,
+  formioProjectUrl,
   resourcesDir,
   translationDir,
   gitVersion,
@@ -42,21 +41,23 @@ client.collectDefaultMetrics({ register });
 const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
-  return [form, submission];
+  const translations = JSON.parse(req.body.translations);
+  return [form, submission, translations];
 };
 
 const jsonRequestHandler = (req) => {
   const submission = req.body.submission;
   const form = req.body.form;
-  return [form, submission];
+  const translations = req.body.translations;
+  return [form, submission, translations];
 };
 
 const pdfGenHandler = (pdfGenClass, requestHandler) => {
   return (req, res) => {
-    const [form, submission] = requestHandler(req);
+    const [form, submission, translations] = requestHandler(req);
     logger.debug({ label: "request submission", message: submission });
     res.contentType("application/pdf");
-    pdfGenClass.generatePdf(submission, form, gitVersion, res);
+    pdfGenClass.generatePdf(submission, form, gitVersion, res, translations);
   };
 };
 
@@ -85,17 +86,26 @@ skjemaApp.post("/foersteside", async (req, res) => {
   }
 });
 
+const fetchTranslationsFromFormioApi = async (formPath) => {
+  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=null`, { method: "GET" });
+  if (response.ok) {
+    const translationsForForm = await response.json();
+    return translationsForForm.reduce((acc, obj) => ({...acc, [obj.data.language]: {...obj.data.i18n}}), {});
+  }
+  return {};
+}
+
 const loadForms = async () => {
-  return useFormioApi ? await fetchFromFormioApi(skjemaUrl) : await loadAllJsonFilesFromDirectory(skjemaDir);
+  return useFormioApi ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000`) : await loadAllJsonFilesFromDirectory(skjemaDir);
 };
 
 const loadTranslations = async (formPath) => {
-  return await loadFileFromDirectory(translationDir, formPath);
+  return useFormioApi ? await fetchTranslationsFromFormioApi(formPath) : await loadFileFromDirectory(translationDir, formPath);
 };
 
 const loadMottaksadresser = async () => {
   return useFormioApi
-    ? await fetchFromFormioApi(mottaksadresserUrl)
+    ? await fetchFromFormioApi(`${formioProjectUrl}/mottaksadresse/submission`)
     : await loadFileFromDirectory(resourcesDir, "mottaksadresser.json", []);
 };
 

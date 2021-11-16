@@ -1,16 +1,25 @@
-import React from "react";
+import { makeStyles } from "@material-ui/styles";
 import {
-  LanguageSelector,
   i18nData,
+  LanguageSelector,
   useCurrentLanguage,
   useLanguageCodeFromURL,
 } from "@navikt/skjemadigitalisering-shared-components";
+import React from "react";
 import { languagesInNorwegian, useTranslations } from "./index";
+
+const useStyles = makeStyles({
+  sideBarLanguageSelector: {
+    margin: "0 auto 4rem",
+  },
+});
 
 const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) => {
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
   const supportedLanguageLists = Object.keys(i18nData).filter((languageCode) => languageCode !== "nb-NO");
   const { availableLanguages } = useTranslations();
+
+  const styles = useStyles();
 
   const options = supportedLanguageLists
     .map((languageCode) => ({
@@ -34,7 +43,9 @@ const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) =
     }
   };
 
-  return <LanguageSelector label={getLanguageSelectorLabel()} options={options} />;
+  return (
+    <LanguageSelector className={styles.sideBarLanguageSelector} label={getLanguageSelectorLabel()} options={options} />
+  );
 };
 
 export default FormBuilderLanguageSelector;

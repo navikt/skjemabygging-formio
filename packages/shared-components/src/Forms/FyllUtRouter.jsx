@@ -53,18 +53,37 @@ const FyllUtRouter = ({ form, translations, countryNameTranslations }) => {
           </Route>
           <Route path={`${path}/send-i-posten`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => <PrepareLetterPage form={form} submission={submissionObject} formUrl={url} />}
+              {(submissionObject) => (
+                <PrepareLetterPage
+                  form={form}
+                  submission={submissionObject}
+                  formUrl={url}
+                  translations={translations}
+                />
+              )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/forbered-innsending`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => <PrepareSubmitPage form={form} submission={submissionObject} formUrl={url} />}
+              {(submissionObject) => (
+                <PrepareSubmitPage
+                  form={form}
+                  submission={submissionObject}
+                  formUrl={url}
+                  translations={translations}
+                />
+              )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/ingen-innsending`}>
             <SubmissionWrapper submission={submission} url={url}>
               {(submissionObject) => (
-                <PrepareIngenInnsendingPage form={form} submission={submissionObject} formUrl={url} />
+                <PrepareIngenInnsendingPage
+                  form={form}
+                  submission={submissionObject}
+                  formUrl={url}
+                  translations={translations}
+                />
               )}
             </SubmissionWrapper>
           </Route>
