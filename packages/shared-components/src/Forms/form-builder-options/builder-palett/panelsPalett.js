@@ -17,13 +17,13 @@ const panelsPalett = {
       weight: "20",
       schema: dineOpplysningerSchema,
     },
-    vedlegg: {
+    vedleggpanel: {
       title: "Vedlegg",
-      key: "vedlegg",
+      key: "vedleggpanel",
       weight: "30",
       schema: vedleggSchema,
-    }
-  }
+    },
+  },
 };
 
 export default panelsPalett;

@@ -2,7 +2,7 @@ const vedleggSchema = {
   title: "Vedlegg",
   type: "panel",
   input: false,
-  key: "vedlegg",
+  key: "vedleggpanel",
   theme: "default",
   components: [
     {
