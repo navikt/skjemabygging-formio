@@ -13,12 +13,10 @@ export const LanguagesProvider = ({ children, translations, countryNameTranslati
   const { currentLanguage, initialLanguage } = useCurrentLanguage(languageCodeFromUrl, translations);
 
   useEffect(() => {
-    console.log("useLanguages1");
     setAvailableLanguages(Object.keys(translations));
   }, [translations]);
 
   useEffect(() => {
-    console.log("useLanguages2");
     const languages = Object.keys(translations);
     const formTranslations = languages.reduce(
       (acc, language) => ({
@@ -30,7 +28,6 @@ export const LanguagesProvider = ({ children, translations, countryNameTranslati
       }),
       {}
     );
-    console.log("translations", translations);
     setTranslationsForNavForm({
       ...formTranslations,
       "nb-NO": {
