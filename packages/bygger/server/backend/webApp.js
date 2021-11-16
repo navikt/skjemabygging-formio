@@ -1,7 +1,10 @@
 import dispatch from "dispatch";
 import { HttpError } from "./fetchUtils.js";
 
-const ALLOWED_RESOURCES = ["mottaksadresser"];
+const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];
+export const isValidResource = (resourceName) => {
+  return ALLOWED_RESOURCES.some((regex) => regex.test(resourceName));
+};
 
 export function dispatcherWithBackend(backend) {
   function handleError(error, res) {
@@ -37,7 +40,7 @@ export function dispatcherWithBackend(backend) {
           res.status(401).send("Unauthorized");
           return;
         }
-        if (!ALLOWED_RESOURCES.includes(resourceName)) {
+        if (!isValidResource(resourceName)) {
           res.status(400).send(`Illegal resourceName: ${resourceName}`);
           return;
         }

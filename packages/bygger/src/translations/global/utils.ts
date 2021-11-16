@@ -1,5 +1,6 @@
 import { getInputType, removeDuplicatedComponents } from "../utils";
 import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TranslationResource } from "../../../types/translations";
 
 const tags = {
   SKJEMATEKSTER: "skjematekster",
@@ -18,10 +19,10 @@ const flattenTextsForEditPanel = (texts: any): Array<any> => {
   );
 };
 
-const getAllPredefinedOriginalTexts = (): string[] => {
-  const { grensesnitt, statiske, validering, common } = TEXTS;
-  return objectUtils.flattenToArray({ ...grensesnitt, ...statiske, ...validering, ...common }, (entry) => {
-    return entry[1].toUpperCase();
+const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
+  const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
+  return objectUtils.flattenToArray({ ...grensesnitt, ...statiske, ...validering, ...common, pdfStatiske }, (entry) => {
+    return skipUpperCasing ? entry[1] : entry[1].toUpperCase();
   });
 };
 
@@ -33,4 +34,54 @@ const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] =>
   }, []);
 };
 
-export { tags, flattenTextsForEditPanel, getAllPredefinedOriginalTexts, getCurrentOriginalTextList };
+const isTranslationResourceForSelectedTag =
+  (selectedTag: string) =>
+  (translationResource): boolean =>
+    translationResource.tag === selectedTag;
+
+const getGlobalTranslationsWithLanguageAndTag = (
+  allGlobalTranslations: object,
+  languageCode: string,
+  selectedTag: string
+): TranslationResource => {
+  const globalTranslationsResourcesForSelectedLanguage = allGlobalTranslations[languageCode];
+  const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage.find(
+    isTranslationResourceForSelectedTag(selectedTag)
+  ) || { translations: {} };
+  if (selectedTag === "skjematekster") {
+    Object.keys(allGlobalTranslations)
+      .filter((language) => language !== languageCode)
+      .map((language) => allGlobalTranslations[language])
+      .map((translationResourcesWithDifferentTags) =>
+        translationResourcesWithDifferentTags.find(isTranslationResourceForSelectedTag(selectedTag))
+      )
+      .map((translationResource) => (translationResource ? translationResource.translations : {}))
+      .reduce(
+        (missingOriginalTexts, translations): string[] => [
+          ...missingOriginalTexts,
+          ...Object.keys(translations).filter(
+            (key) =>
+              translationsResourceWithSelectedLanguageAndTag.translations[key] === undefined &&
+              missingOriginalTexts.indexOf(key) === -1
+          ),
+        ],
+        []
+      )
+      .forEach(
+        (missingKey) =>
+          (translationsResourceWithSelectedLanguageAndTag.translations[missingKey] = {
+            scope: "global",
+            value: undefined,
+          })
+      );
+  }
+  return translationsResourceWithSelectedLanguageAndTag;
+};
+
+export {
+  tags,
+  flattenTextsForEditPanel,
+  getGlobalTranslationsWithLanguageAndTag,
+  getAllPredefinedOriginalTexts,
+  getCurrentOriginalTextList,
+};

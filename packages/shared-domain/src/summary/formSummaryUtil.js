@@ -2,7 +2,7 @@ import FormioUtils from "formiojs/utils";
 import TEXTS from "../texts";
 import { addToMap } from "../utils/objectUtils";
 import moment from "moment";
-import { toPascalCase } from "../utils/text-util";
+import { toPascalCase } from "../utils/stringUtils";
 
 require("moment/locale/nb.js");
 function createComponentKey(parentContainerKey, key) {
@@ -12,7 +12,9 @@ function formatValue(component, value, translate) {
   switch (component.type) {
     case "radiopanel":
     case "radio":
-      const valueObject = component.values.find((valueObject) => String(valueObject.value).toString() === String(value).toString());
+      const valueObject = component.values.find(
+        (valueObject) => String(valueObject.value).toString() === String(value).toString()
+      );
       if (!valueObject) {
         console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
         return "";
@@ -88,12 +90,11 @@ function handleDataGridRows(component, submission, translate) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
   return dataGridSubmission.map((rowSubmission, index) => {
-    const dataGridRowComponents = components
-      .reduce(
-        (handledComponents, subComponent) =>
-          handleComponent(subComponent, { data: rowSubmission }, handledComponents, "", translate),
-        []
-      );
+    const dataGridRowComponents = components.reduce(
+      (handledComponents, subComponent) =>
+        handleComponent(subComponent, { data: rowSubmission }, handledComponents, "", translate),
+      []
+    );
     return {
       type: "datagrid-row",
       label: translate(rowTitle),

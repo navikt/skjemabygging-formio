@@ -16,6 +16,14 @@ export interface FormioTranslationMap {
   [key: Language]: FormioTranslation[];
 }
 
+export type TranslationResource = {
+  id: string;
+  name: string;
+  scope: TranslationScope;
+  tag: TranslationTag;
+  translations: ScopedTranslationMap;
+};
+
 export interface FormioTranslationData {
   name: string;
   scope: TranslationScope;

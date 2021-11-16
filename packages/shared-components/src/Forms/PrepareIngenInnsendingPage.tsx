@@ -13,9 +13,10 @@ export interface Props {
   form: any;
   submission: any;
   formUrl: string;
+  translations: { [key: string]: string } | {};
 }
 
-export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props) {
+export function PrepareIngenInnsendingPage({ form, submission, formUrl, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
@@ -44,6 +45,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl }: Props)
             label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
             onClick={() => loggSkjemaFullfort("ingeninnsending")}
             classNames="knapp knapp--fullbredde"
+            translations={translations}
           />
         </section>
         <div>

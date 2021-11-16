@@ -29,7 +29,7 @@ export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, su
   return url;
 };
 
-export function PrepareSubmitPage({ form, submission, formUrl }) {
+export function PrepareSubmitPage({ form, submission, formUrl, translations }) {
   const [allowedToProgress, setAllowedToProgress] = useState(false);
   const { dokumentinnsendingBaseURL, fyllutBaseURL } = useAppConfig();
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
@@ -75,6 +75,7 @@ export function PrepareSubmitPage({ form, submission, formUrl }) {
               setErrorMessage(undefined);
             }}
             classNames="knapp"
+            translations={translations}
           />
         </section>
         <section className="wizard-page" aria-label={translate(TEXTS.statiske.prepareSubmitPage.secondSectionTitle)}>
