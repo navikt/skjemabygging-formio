@@ -1,4 +1,4 @@
-const vedleggSchema = {
+const vedleggPanelSchema = {
   title: "Vedlegg",
   type: "panel",
   input: false,
@@ -37,4 +37,4 @@ const vedleggSchema = {
   ],
 };
 
-export default vedleggSchema;
+export default vedleggPanelSchema;
