@@ -1,10 +1,5 @@
-import {
-  getTextsAndTypeForForm,
-  getTextsAndTranslationsForForm,
-  getTextsAndTranslationsHeaders,
-  parseText,
-} from "./utils";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
+import { getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders, getTextsAndTypeForForm } from "./utils";
 const {
   createDummyCheckbox,
   createDummyContainerElement,
@@ -280,8 +275,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
-        text:
-          'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
         type: "textarea",
       },
     ]);
@@ -316,9 +310,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
         downloadPdfButtonText: "Last ned pdf",
       },
     });
-    expect(actual).toEqual([
-      { text: "Last ned pdf", type: "text" },
-    ]);
+    expect(actual).toEqual([{ text: "Last ned pdf", type: "text" }]);
   });
 });
 describe("testGetTextsAndTranslationsForForm", () => {
@@ -349,48 +341,5 @@ describe("testGetCSVfileHeaders", () => {
       { key: "en", label: "EN" },
       { key: "nn-NO", label: "NN-NO" },
     ]);
-  });
-});
-describe("testParsingTextWithHTMLTag", () => {
-  it("Test form text with HTML element", () => {
-    const actual = parseText(
-      '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/> '
-    );
-    expect(actual).toEqual(
-      "Eventuell utbetaling av AAP Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt (https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader)  endre hvilket kontonummer vi benytter (åpnes i ny fane).  "
-    );
-  });
-
-  it("Test form text with HTML element besides a tag", () => {
-    const actual = parseText(
-      "<p>Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke på</p><ul><li>Stønad til barnetilsyn på grunn av arbeid</li><li>Stønad til skolepenger</li></ul><p>Stønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger.</p>"
-    );
-    expect(actual).toEqual(
-      "Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke påStønad til barnetilsyn på grunn av arbeidStønad til skolepengerStønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger."
-    );
-  });
-
-  it("Test form text with only a tag when there is no space before link ", () => {
-    const actual = parseText("<a href=\"hello.hello.world\">test</a> <a href='hello.world'>hohoho</a>");
-    expect(actual).toEqual("(hello.hello.world)test (hello.world)hohoho");
-  });
-
-  it("Test form text with only a tag when there is target attribute", () => {
-    const actual = parseText(
-      '<a href="hello.hello.world" target="_blank">test</a> <a href="hello.world" target=\'_blank\'>hohoho</a>'
-    );
-    expect(actual).toEqual("(hello.hello.world) test (hello.world) hohoho");
-  });
-
-  it("Test form text with only a tag when there is space before link", () => {
-    const actual = parseText('<a href= "hello.hello.world">test</a>');
-    expect(actual).toEqual("(hello.hello.world)test");
-  });
-
-  it("Test form text with multiple a tag ", () => {
-    const actual = parseText(
-      '<a href="hello.hello.world" target="_blank">test</a><a href="another.test" target="_blank">another test</a>'
-    );
-    expect(actual).toEqual("(hello.hello.world) test(another.test) another test");
   });
 });

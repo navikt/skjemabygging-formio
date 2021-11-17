@@ -97,19 +97,7 @@ const getTextsAndTypeForForm = (form) => {
   return removeDuplicatedComponents(textComponentsWithType);
 };
 
-const parseText = (text) => {
-  const pattern = /<a\s+(?:[^>]*?\s+)?href=\s?(["'])(.*?)\1/gm;
-  if (text.match(pattern)) {
-    text = text
-      .replace(pattern, (match, p1, offset) => {
-        return "(" + offset + ")";
-      })
-      .replace(/target=["']_blank["']/g, "");
-  }
-  return text.replace(/<\/?[^>]+(>|$)/gm, "").replace(/>(?=[^>]*)/gm, "");
-};
-
-const getAllTextsOrParsedTexts = (form, shouldParseText = true) => {
+const getAllFormTexts = (form) => {
   const textComponents = getSimplifiedComponentObject(form)
     .reduce(
       (allTextsForForm, component) => {
@@ -122,11 +110,11 @@ const getAllTextsOrParsedTexts = (form, shouldParseText = true) => {
                 return [
                   ...textsForComponent,
                   ...component[key].map((value) => ({
-                    text: shouldParseText ? parseText(value) : value,
+                    text: value,
                   })),
                 ];
               } else {
-                return [...textsForComponent, { text: shouldParseText ? parseText(component[key]) : component[key] }];
+                return [...textsForComponent, { text: component[key] }];
               }
             }, []),
         ];
@@ -138,7 +126,7 @@ const getAllTextsOrParsedTexts = (form, shouldParseText = true) => {
 };
 
 const getTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getAllTextsOrParsedTexts(form);
+  const textComponents = getAllFormTexts(form);
   let textsWithTranslations = [];
   Object.keys(translations).forEach((languageCode) => {
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
@@ -177,11 +165,10 @@ const getTextsAndTranslationsHeaders = (translations) => {
 };
 
 export {
-  getAllTextsOrParsedTexts,
+  getAllFormTexts,
   getTextsAndTypeForForm,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
-  parseText,
   getInputType,
   removeDuplicatedComponents,
 };
