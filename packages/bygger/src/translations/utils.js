@@ -77,14 +77,11 @@ const getComponentTextAndType = (textsForComponent, component, key) => {
   }
 };
 
-const removeDuplicatedComponents = (components = []) => {
-  return components.filter(
-    (component, index, currentComponents) =>
-      index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text)
-  );
-};
+const removeDuplicatedComponents = (component, index, currentComponents) =>
+  index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);
+
 const getTextsAndTypeForForm = (form) => {
-  const textComponentsWithType = getSimplifiedComponentObject(form)
+  return getSimplifiedComponentObject(form)
     .reduce((allTextsForForm, component) => {
       return [
         ...allTextsForForm,
@@ -93,12 +90,12 @@ const getTextsAndTypeForForm = (form) => {
           .reduce((textsForComponent, key) => getComponentTextAndType(textsForComponent, component, key), []),
       ];
     }, [])
-    .concat(extractTextsFromProperties(form.properties));
-  return removeDuplicatedComponents(textComponentsWithType);
+    .concat(extractTextsFromProperties(form.properties))
+    .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
 };
 
 const getAllFormTexts = (form) => {
-  const textComponents = getSimplifiedComponentObject(form)
+  return getSimplifiedComponentObject(form)
     .reduce(
       (allTextsForForm, component) => {
         return [
@@ -121,8 +118,8 @@ const getAllFormTexts = (form) => {
       },
       [{ text: form.title }]
     )
-    .concat(extractTextsFromProperties(form.properties));
-  return removeDuplicatedComponents(textComponents);
+    .concat(extractTextsFromProperties(form.properties))
+    .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
 };
 
 const getTextsAndTranslationsForForm = (form, translations) => {
