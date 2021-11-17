@@ -1,5 +1,5 @@
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
-import { getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders, getTextsAndTypeForForm } from "./utils";
+import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 const {
   createDummyCheckbox,
   createDummyContainerElement,
@@ -17,11 +17,11 @@ const {
 
 describe("testGetAllTextsAndTypeForForm", () => {
   it("Test empty form", () => {
-    const actual = getTextsAndTypeForForm(createFormObject([], "test"));
+    const actual = getFormTexts(createFormObject([], "test"), true);
     expect(actual).toEqual([]);
   });
   it("Test form with panel and text fields", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -35,7 +35,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -45,7 +46,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, html elements and contents", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -66,7 +67,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -77,7 +79,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe and radio panel", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -94,7 +96,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -106,7 +109,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe, datagrid and radio panel", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -129,7 +132,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -144,7 +148,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, container and checkbox", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -171,7 +175,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -183,7 +188,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel and text field with suffix and prefix", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -197,7 +202,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -209,7 +215,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel and text fields with special suffix", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -223,7 +229,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -232,7 +239,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
 
   it("Test form with duplicated text field", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -242,7 +249,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -252,7 +260,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
 
   it("Test form with alertstripes", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -269,7 +277,8 @@ describe("testGetAllTextsAndTypeForForm", () => {
           ),
         ],
         "test"
-      )
+      ),
+      true
     );
     expect(actual).toEqual([
       { text: "Introduksjon", type: "text" },
@@ -282,17 +291,20 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
 
   it("Henter innsendingsrelaterte tekster fra form properties", () => {
-    const actual = getTextsAndTypeForForm({
-      components: [],
-      type: "form",
-      title: "Testskjema",
-      properties: {
-        skjemanummer: "TST 12.13-14",
-        innsending: "INGEN",
-        innsendingOverskrift: "Gi det til pasienten",
-        innsendingForklaring: "Skriv ut skjemaet",
+    const actual = getFormTexts(
+      {
+        components: [],
+        type: "form",
+        title: "Testskjema",
+        properties: {
+          skjemanummer: "TST 12.13-14",
+          innsending: "INGEN",
+          innsendingOverskrift: "Gi det til pasienten",
+          innsendingForklaring: "Skriv ut skjemaet",
+        },
       },
-    });
+      true
+    );
     expect(actual).toEqual([
       { text: "Gi det til pasienten", type: "text" },
       { text: "Skriv ut skjemaet", type: "text" },
@@ -300,16 +312,19 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
 
   it("Henter downloadPdfButtonText form properties", () => {
-    const actual = getTextsAndTypeForForm({
-      components: [],
-      type: "form",
-      title: "Testskjema",
-      properties: {
-        skjemanummer: "TST 12.13-14",
-        innsending: "KUN_PAPIR",
-        downloadPdfButtonText: "Last ned pdf",
+    const actual = getFormTexts(
+      {
+        components: [],
+        type: "form",
+        title: "Testskjema",
+        properties: {
+          skjemanummer: "TST 12.13-14",
+          innsending: "KUN_PAPIR",
+          downloadPdfButtonText: "Last ned pdf",
+        },
       },
-    });
+      true
+    );
     expect(actual).toEqual([{ text: "Last ned pdf", type: "text" }]);
   });
 });

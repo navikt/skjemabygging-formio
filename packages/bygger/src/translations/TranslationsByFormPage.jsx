@@ -14,7 +14,7 @@ import { UserAlerterContext } from "../userAlerting";
 import { useModal } from "../util/useModal";
 import ConfirmDeleteLanguageModal from "./ConfirmDeleteLanguageModal";
 import TranslationsFormPage from "./TranslationsFormPage";
-import { getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders, getTextsAndTypeForForm } from "./utils";
+import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
 const useStyles = makeStyles({
   mainCol: {
@@ -42,7 +42,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
   } = form;
   const { translations, setTranslations } = useTranslations();
   useRedirectIfNoLanguageCode(languageCode, translations);
-  const flattenedComponents = getTextsAndTypeForForm(form);
+  const flattenedComponents = getFormTexts(form, true);
   const translationId = (translations[languageCode] || {}).id;
   const styles = useStyles();
   return (

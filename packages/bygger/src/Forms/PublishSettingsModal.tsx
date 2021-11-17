@@ -6,7 +6,7 @@ import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { I18nTranslationMap } from "../../types/translations";
 import { languagesInNorwegian, useTranslations } from "../context/i18n";
-import { getAllFormTexts } from "../translations/utils";
+import { getFormTexts } from "../translations/utils";
 import { NavFormType } from "./navForm";
 
 const useModalStyles = makeStyles({
@@ -57,7 +57,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
 
   useEffect(() => {
     setAllFormOriginalTexts(
-      getAllFormTexts(form).reduce((allTexts, texts) => {
+      getFormTexts(form).reduce((allTexts, texts) => {
         const { text } = texts;
         return [...allTexts, text];
       }, [])

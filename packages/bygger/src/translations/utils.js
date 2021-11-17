@@ -63,38 +63,22 @@ const getSimplifiedComponentObject = (form) =>
       data: data ? data.values.map((value) => value.label) : undefined,
     }));
 
-const getComponentTextAndType = (textsForComponent, component, key) => {
-  if (key === "values" || key === "data") {
-    return [
-      ...textsForComponent,
-      ...component[key].map((value) => ({
-        text: value,
-        type: getInputType(value),
-      })),
-    ];
-  } else {
-    return [...textsForComponent, { text: component[key], type: getInputType(component[key]) }];
-  }
-};
-
 const removeDuplicatedComponents = (component, index, currentComponents) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);
 
-const getTextsAndTypeForForm = (form) => {
-  return getSimplifiedComponentObject(form)
-    .reduce((allTextsForForm, component) => {
-      return [
-        ...allTextsForForm,
-        ...Object.keys(component)
-          .filter((key) => component[key] !== undefined)
-          .reduce((textsForComponent, key) => getComponentTextAndType(textsForComponent, component, key), []),
-      ];
-    }, [])
-    .concat(extractTextsFromProperties(form.properties))
-    .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
+const textObject = (withInputType, value) => {
+  if (withInputType)
+    return {
+      text: value,
+      type: getInputType(value),
+    };
+  else
+    return {
+      text: value,
+    };
 };
 
-const getAllFormTexts = (form) => {
+const getFormTexts = (form, withInputType = false) => {
   return getSimplifiedComponentObject(form)
     .reduce(
       (allTextsForForm, component) => {
@@ -106,24 +90,24 @@ const getAllFormTexts = (form) => {
               if (key === "values" || key === "data") {
                 return [
                   ...textsForComponent,
-                  ...component[key].map((value) => ({
-                    text: value,
-                  })),
+                  ...component[key].map((value) => {
+                    return textObject(withInputType, value);
+                  }),
                 ];
               } else {
-                return [...textsForComponent, { text: component[key] }];
+                return [...textsForComponent, textObject(withInputType, component[key])];
               }
             }, []),
         ];
       },
-      [{ text: form.title }]
+      withInputType ? [] : [{ text: form.title }]
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
 };
 
 const getTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getAllFormTexts(form);
+  const textComponents = getFormTexts(form);
   let textsWithTranslations = [];
   Object.keys(translations).forEach((languageCode) => {
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
@@ -162,10 +146,9 @@ const getTextsAndTranslationsHeaders = (translations) => {
 };
 
 export {
-  getAllFormTexts,
-  getTextsAndTypeForForm,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
   getInputType,
   removeDuplicatedComponents,
+  getFormTexts,
 };

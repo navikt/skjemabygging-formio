@@ -16,9 +16,7 @@ const flattenTextsForEditPanel = (texts: any): Array<any> => {
       const text = entry[1];
       return { key, text, type: getInputType(text) };
     })
-    .filter((component, index, currentComponents) => {
-      removeDuplicatedComponents(component, index, currentComponents);
-    });
+    .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
 };
 
 const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
