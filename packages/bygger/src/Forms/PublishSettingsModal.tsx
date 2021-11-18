@@ -31,7 +31,7 @@ interface Props {
 
 export const getCompleteTranslationLanguageCodeList = (
   allFormOriginalTexts: string[],
-  translationsForNavForm: I18nTranslationMap
+  translationsForNavForm: Record<string, I18nTranslationMap>
 ): string[] => {
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {
