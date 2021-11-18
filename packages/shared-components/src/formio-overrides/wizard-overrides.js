@@ -2,8 +2,19 @@ import { Formio } from "formiojs";
 import { scrollToAndSetFocus } from "../util/focus-management";
 
 const Wizard = Formio.Displays.displays.wizard;
+const WebForm = Formio.Displays.displays.webform;
 const originalNextPage = Wizard.prototype.nextPage;
 const originalSubmit = Wizard.prototype.submit;
+
+WebForm.prototype.cancel = function (noconfirm) {
+  const shouldReset = this.hook("beforeCancel", true);
+  if (shouldReset && (noconfirm || confirm(this.t("Er du sikker på at du vil avbryte?")))) {
+    this.resetValue();
+    return true;
+  } else {
+    return false;
+  }
+};
 
 Wizard.prototype.attach = function (element) {
   this.element = element;
