@@ -67,10 +67,12 @@ const getComponentTextAndType = (textsForComponent, component, key) => {
   if (key === "values" || key === "data") {
     return [
       ...textsForComponent,
-      ...component[key].map((value) => ({
-        text: value,
-        type: getInputType(value),
-      })),
+      ...component[key]
+        .filter((value) => value)
+        .map((value) => ({
+          text: value,
+          type: getInputType(value),
+        })),
     ];
   } else {
     return [...textsForComponent, { text: component[key], type: getInputType(component[key]) }];
