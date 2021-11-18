@@ -11,6 +11,7 @@ const {
   createDummyRadioPanel,
   createDummyTextfield,
   createDummyAlertstripe,
+  createDummySelectComponent,
   createFormObject,
   createPanelObject,
 } = MockedComponentObjectForTest;
@@ -237,7 +238,6 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Tekstfelt", type: "text" },
     ]);
   });
-
   it("Test form with duplicated text field", () => {
     const actual = getFormTexts(
       createFormObject(
@@ -258,7 +258,6 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Email", type: "text" },
     ]);
   });
-
   it("Test form with alertstripes", () => {
     const actual = getFormTexts(
       createFormObject(
@@ -289,7 +288,19 @@ describe("testGetAllTextsAndTypeForForm", () => {
       },
     ]);
   });
-
+  it("Test form with select component", () => {
+    const actual = getFormTexts(
+      createFormObject([createPanelObject("Introduksjon", [createDummySelectComponent()], "Introduksjon")], "test"),
+      true
+    );
+    expect(actual).toEqual([
+      { text: "Introduksjon", type: "text" },
+      { text: "Select", type: "text" },
+      { text: "Milk", type: "text" },
+      { text: "Bread", type: "text" },
+      { text: "Juice", type: "text" },
+    ]);
+  });
   it("Henter innsendingsrelaterte tekster fra form properties", () => {
     const actual = getFormTexts(
       {
@@ -310,7 +321,6 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Skriv ut skjemaet", type: "text" },
     ]);
   });
-
   it("Henter downloadPdfButtonText form properties", () => {
     const actual = getFormTexts(
       {
