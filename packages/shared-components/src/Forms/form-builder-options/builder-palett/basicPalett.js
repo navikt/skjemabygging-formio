@@ -268,6 +268,7 @@ const basicPalett = {
         clearOnHide: true,
         validateOn: "blur",
       },
+      ignore: true,
     },
   },
 };
