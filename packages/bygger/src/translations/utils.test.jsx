@@ -338,6 +338,55 @@ describe("testGetAllTextsAndTypeForForm", () => {
     expect(actual).toEqual([{ text: "Last ned pdf", type: "text" }]);
   });
 });
+
+describe("test get all texts", () => {
+  it("Test form with panel, skjemagruppe, datagrid, radio panel and select component", () => {
+    const actual = getFormTexts(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [
+              createDummyNavSkjemagruppe("NavSkjemagruppe", [
+                createDummyRadioPanel(),
+                createDummyRadioPanel(
+                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF"
+                ),
+                createDummyDataGrid("DataGrid", [
+                  createDummyRadioPanel("Radio panel inside data grid"),
+                  createDummySelectComponent(),
+                ]),
+                createDummyDataGrid(
+                  "DataGrid",
+                  [createDummyRadioPanel("Radio panel inside data grid without label")],
+                  true
+                ),
+              ]),
+            ],
+            "Introduksjon"
+          ),
+        ],
+        "test"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "test" },
+      { text: "Introduksjon" },
+      { text: "NavSkjemagruppe-legend" },
+      { text: "RadioPanel" },
+      { text: "NO-label" },
+      { text: "YES-label" },
+      { text: "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF" },
+      { text: "DataGrid" },
+      { text: "Radio panel inside data grid" },
+      { text: "Select" },
+      { text: "Milk" },
+      { text: "Bread" },
+      { text: "Juice" },
+      { text: "Radio panel inside data grid without label" },
+    ]);
+  });
+});
 describe("testGetTextsAndTranslationsForForm", () => {
   const form = createFormObject(
     [createPanelObject("Introduksjon", [createDummyTextfield("Ja")], [createDummyTextfield("Jeg")], "Introduksjon")],
