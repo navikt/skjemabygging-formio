@@ -63,19 +63,16 @@ const getSimplifiedComponentObject = (form) =>
       data: data ? data.values.map((value) => value.label) : undefined,
     }));
 
-const getComponentTextAndType = (textsForComponent, component, key) => {
+const getComponentTextAndType = (component, key) => {
   if (key === "values" || key === "data") {
-    return [
-      ...textsForComponent,
-      ...component[key]
-        .filter((value) => value)
-        .map((value) => ({
-          text: value,
-          type: getInputType(value),
-        })),
-    ];
+    return component[key]
+      .filter((value) => value)
+      .map((value) => ({
+        text: value,
+        type: getInputType(value),
+      }));
   } else {
-    return [...textsForComponent, { text: component[key], type: getInputType(component[key]) }];
+    return [{ text: component[key], type: getInputType(component[key]) }];
   }
 };
 
@@ -92,7 +89,7 @@ const getTextsAndTypeForForm = (form) => {
         ...allTextsForForm,
         ...Object.keys(component)
           .filter((key) => component[key] !== undefined)
-          .reduce((textsForComponent, key) => getComponentTextAndType(textsForComponent, component, key), []),
+          .flatMap((key) => getComponentTextAndType(component, key)),
       ];
     }, [])
     .concat(extractTextsFromProperties(form.properties));
