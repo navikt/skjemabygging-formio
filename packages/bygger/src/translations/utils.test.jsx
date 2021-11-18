@@ -1,10 +1,11 @@
+import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
 import {
-  getTextsAndTypeForForm,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
+  getTextsAndTypeForForm,
   parseText,
 } from "./utils";
-import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
+
 const {
   createDummyCheckbox,
   createDummyContainerElement,
@@ -256,7 +257,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
 
-  it("Test form with alertstripes", () => {
+  it("Test form with alertstripes and HTML element", () => {
     const actual = getTextsAndTypeForForm(
       createFormObject(
         [
@@ -269,6 +270,16 @@ describe("testGetAllTextsAndTypeForForm", () => {
                 "Alertstripe with a long content",
                 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.'
               ),
+              createDummyAlertstripe("Alertstripe", "Alertstrip with content", "show content in Pdf"),
+              createDummyHTMLElement(
+                "HTML element",
+                '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>'
+              ),
+              createDummyHTMLElement(
+                "HTML element",
+                "<h3>Eventuell utbetaling av AAP</h3>",
+                "Eventuell utbetaling av AAP"
+              ),
             ],
             "Introduksjon"
           ),
@@ -280,10 +291,17 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
-        text:
-          'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
         type: "textarea",
       },
+      { text: "Alertstrip with content", type: "text" },
+      { text: "show content in Pdf", type: "text" },
+      {
+        text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
+        type: "textarea",
+      },
+      { text: "<h3>Eventuell utbetaling av AAP</h3>", type: "text" },
+      { text: "Eventuell utbetaling av AAP", type: "text" },
     ]);
   });
 
@@ -316,9 +334,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
         downloadPdfButtonText: "Last ned pdf",
       },
     });
-    expect(actual).toEqual([
-      { text: "Last ned pdf", type: "text" },
-    ]);
+    expect(actual).toEqual([{ text: "Last ned pdf", type: "text" }]);
   });
 });
 describe("testGetTextsAndTranslationsForForm", () => {
