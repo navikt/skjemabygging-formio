@@ -1,11 +1,10 @@
 import { TEXTS, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
-const { validering, grensesnitt, common, ...remainingTexts } = TEXTS;
-const { navigation, ...remainingGrensesnittTexts } = grensesnitt;
+const { validering, grensesnitt} = TEXTS;
+const { navigation} = grensesnitt;
 const i18nData = {
   "nb-NO": {
-    ...objectUtils.flatten({ validering, navigation, common }),
-    ...objectUtils.flatten({ remainingGrensesnittTexts, remainingTexts }, true),
+    ...objectUtils.flatten({ validering, navigation})
   },
   "nn-NO": {},
   en: {},

@@ -1,6 +1,5 @@
+import { languagesUtil, localizationUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import { localizationUtils, languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
-import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import {
   FormioTranslation,
   FormioTranslationMap,
@@ -11,8 +10,9 @@ import {
   TranslationScope,
   TranslationTag,
 } from "../../types/translations";
-import { getAllPredefinedOriginalTexts } from "../translations/global/utils";
 import { languagesInNorwegian } from "../context/i18n";
+import { combineTranslationResources } from "../context/i18n/translationsMapper";
+import { getAllPredefinedOriginalTexts, tags } from "../translations/global/utils";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -32,6 +32,22 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       });
   };
 
+  const mapFormioKeyWithNorwegianText = (i18n: I18nTranslationMap) => {
+    return Object.keys(i18n).reduce((translationEntries, translatedText) => {
+      let originalText: string = translatedText;
+      Object.entries(TEXTS.validering as I18nTranslationMap).forEach(([key, value]) => {
+        if (translatedText === key) {
+          originalText = value;
+        }
+      });
+
+      return {
+        ...translationEntries,
+        [originalText]: i18n[translatedText],
+      };
+    }, {});
+  };
+
   const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
     let filter = "";
     if (language) {
@@ -41,6 +57,19 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
       .then((response) => {
         console.log("Fetched: ", response);
+        return response;
+      })
+      .then((response) =>
+        response.map(({ data, ...translationObject }) => ({
+          ...translationObject,
+          data: {
+            ...data,
+            i18n: data.tag === tags.VALIDERING ? mapFormioKeyWithNorwegianText(data.i18n) : data.i18n,
+          },
+        }))
+      )
+      .then((response) => {
+        console.log("Mapped: ", response);
         return response;
       })
       .then((response) => languagesUtil.globalEntitiesToI18nGroupedByTag(response))

@@ -13,6 +13,7 @@ const MOCK_PREDEFINED_TEXTS_I18N_EN = {
 };
 jest.mock("../translations/global/utils", () => ({
   getAllPredefinedOriginalTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
+  tags: { VALIDERING: "validering", GRENSESNITT: "grensesnitt" },
 }));
 
 describe("useFormioTranslations", () => {
@@ -54,6 +55,56 @@ describe("useFormioTranslations", () => {
         `${projectUrl}/language/submission?data.name=global&data.language=en&limit=1000`,
         expectedHeader
       );
+    });
+
+    it("fetches English translations and check the response with validering tag", async () => {
+      const fetchMockImpl = (globalTranslations) => {
+        return () => {
+          return Promise.resolve(new Response(JSON.stringify(globalTranslations["en"])));
+        };
+      };
+
+      fetchSpy.mockImplementation(
+        fetchMockImpl({
+          en: [
+            {
+              data: {
+                language: "en",
+                name: "global",
+                scope: "global",
+                tag: "validering",
+                i18n: {
+                  minYear: "{{field}} cannot be before {{minYear}}",
+                  maxYear: "{{field}} cannot be later than {{maxYear}}",
+                },
+              },
+            },
+          ],
+        })
+      );
+
+      formioTranslations.loadGlobalTranslations("en").then((globalTranslation) => {
+        expect(globalTranslation).toEqual({
+          en: [
+            {
+              id: undefined,
+              name: "global",
+              scope: "global",
+              tag: "validering",
+              translations: {
+                "{{field}} kan ikke være før {{minYear}}": {
+                  scope: "global",
+                  value: "{{field}} cannot be before {{minYear}}",
+                },
+                "{{field}} kan ikke være senere enn {{maxYear}}": {
+                  scope: "global",
+                  value: "{{field}} cannot be later than {{maxYear}}",
+                },
+              },
+            },
+          ],
+        });
+      });
     });
   });
 

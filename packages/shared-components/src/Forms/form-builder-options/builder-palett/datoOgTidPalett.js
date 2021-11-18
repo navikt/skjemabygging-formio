@@ -66,13 +66,13 @@ const datoOgTidPalett = {
           month: {
             fieldSize: "input--s",
             type: "select",
-            placeholder: "month",
+            placeholder: "Måned",
             required: true,
           },
           year: {
             fieldSize: "input--s",
             type: "number",
-            placeholder: "year",
+            placeholder: "År",
             required: true,
           },
         },

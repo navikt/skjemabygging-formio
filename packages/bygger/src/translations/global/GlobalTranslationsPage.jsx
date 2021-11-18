@@ -17,6 +17,7 @@ import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
@@ -177,12 +178,21 @@ const GlobalTranslationsPage = ({
     }, []);
   };
 
-  const globalTranslationsToSave = () => {
+  const globalTranslationsToSave = (selectedTag) => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
+        let originalTextOrKey = translation.originalText;
+        if (selectedTag === tags.VALIDERING) {
+          Object.entries(TEXTS.validering).forEach(([key, value]) => {
+            if (translation.originalText === value) {
+              originalTextOrKey = key;
+            }
+          });
+        }
+
         return {
           ...allCurrentTranslationAsObject,
-          [translation.originalText]: {
+          [originalTextOrKey]: {
             scope: "global",
             value: translation.translatedText,
           },
@@ -285,7 +295,7 @@ const GlobalTranslationsPage = ({
                       projectURL,
                       globalTranslationsWithLanguagecodeAndTag?.id,
                       languageCode,
-                      globalTranslationsToSave(),
+                      globalTranslationsToSave(selectedTag),
                       selectedTag
                     );
                   }

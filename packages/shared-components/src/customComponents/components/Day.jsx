@@ -200,20 +200,20 @@ class Day extends FormioDay {
     this._months = [
       {
         value: "",
-        label: _.get(this.component, "fields.month.placeholder") || (this.hideInputLabels ? this.t("month") : ""),
+        label: _.get(this.component, "fields.month.placeholder") || (this.hideInputLabels ? this.t("Måned") : ""),
       },
-      { value: 1, label: this.t("january") },
-      { value: 2, label: this.t("february") },
-      { value: 3, label: this.t("march") },
-      { value: 4, label: this.t("april") },
-      { value: 5, label: this.t("may") },
-      { value: 6, label: this.t("june") },
-      { value: 7, label: this.t("july") },
-      { value: 8, label: this.t("august") },
-      { value: 9, label: this.t("september") },
-      { value: 10, label: this.t("october") },
-      { value: 11, label: this.t("november") },
-      { value: 12, label: this.t("december") },
+      { value: 1, label: this.t("Januar") },
+      { value: 2, label: this.t("Februar") },
+      { value: 3, label: this.t("Mars") },
+      { value: 4, label: this.t("April") },
+      { value: 5, label: this.t("Mai") },
+      { value: 6, label: this.t("Juni") },
+      { value: 7, label: this.t("Juli") },
+      { value: 8, label: this.t("August") },
+      { value: 9, label: this.t("September") },
+      { value: 10, label: this.t("Oktober") },
+      { value: 11, label: this.t("November") },
+      { value: 12, label: this.t("Desember") },
     ];
     return this._months;
   }
