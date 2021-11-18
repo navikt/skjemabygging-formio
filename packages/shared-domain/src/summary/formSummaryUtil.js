@@ -187,7 +187,7 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey, tra
         label: translate(TEXTS.grensesnitt.formSummaryUtils.payAttentionTo),
         key: componentKey,
         type,
-        value: contentForPdf,
+        value: translate(contentForPdf),
       },
     ];
   }
