@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from "react";
 import {
   AmplitudeProvider,
   FyllUtRouter,
   i18nData,
-  useAppConfig
+  useAppConfig,
 } from "@navikt/skjemadigitalisering-shared-components";
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-
-const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
-
-const loadCountryNames = async (locale) => {
-  return fetch(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) => response.json());
-};
-
-const loadGlobalTranslations = async (languageCode) => {
-  return fetch(`/fyllut/global-translations/${languageCode}`, {headers: {accept: "application/json"}}).then((response) => response.json());
-};
+import React, { useEffect, useState } from "react";
+import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from "../api";
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
@@ -23,63 +13,41 @@ function FormPage({ form }) {
   const { featureToggles } = useAppConfig();
 
   useEffect(() => {
-    if (featureToggles.enableTranslations) {
-      fetch(`/fyllut/translations/${form.path}`, {headers: {accept: "application/json"}}).then((response) => {
-        response
-          .json()
-          .then(async (localTranslationsForForm) => {
-            const availableLanguages = Object.keys(localTranslationsForForm);
-            const countryNamesInBokmaal = await loadCountryNames("nb-NO");
-            return Promise.all(availableLanguages.map(loadCountryNames)).then((loadedCountryNames) => {
-              return loadedCountryNames.reduce(
-                (acc, countryNamesPerLocale, index) => ({
-                  ...acc,
-                  [availableLanguages[index]]: zipCountryNames(
-                    countryNamesInBokmaal,
-                    countryNamesPerLocale,
-                    (countryName) => countryName.label
-                  ),
-                }),
-                {}
-              );
-            }).then(async (countryNameTranslations) => {
+    async function fetchTranslations() {
+      if (featureToggles.enableTranslations) {
+        const localTranslationsForForm = await loadFormTranslations(form.path);
+        const availableLanguages = Object.keys(localTranslationsForForm);
+        const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
+        const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
 
-              await Promise.all(availableLanguages.map(loadGlobalTranslations)).then(allGlobalTranslations => {
-                const completeGlobalTranslations = allGlobalTranslations.reduce((accumulated, translationsForLanguage) => {
-                  return {
-                    ...accumulated,
-                    ...Object.keys(translationsForLanguage).reduce((translations, lang) => (
-                      {...translations, [lang]: {...translationsForLanguage[lang]}}
-                    ), {})
-                  }
-                }, {});
-
-                const completeI18n = availableLanguages
-                  .reduce((accumulated, lang) => ({
-                    ...accumulated,
-                    [lang]: {
-                      ...accumulated[lang],
-                      ...countryNameTranslations[lang],
-                      ...completeGlobalTranslations[lang],
-                      ...localTranslationsForForm[lang]
-                    }
-                  }), availableLanguages.length > 0 ? {"nb-NO": i18nData["nb-NO"]} : {});
-
-                setTranslation(completeI18n);
-                setReady(true);
-              });
-            });
-
-          });
-      });
-    } else {
-      setReady(true);
+        return availableLanguages.reduce(
+          (accumulated, lang) => ({
+            ...accumulated,
+            [lang]: {
+              ...accumulated[lang],
+              ...countryNameTranslations[lang],
+              ...globalTranslations[lang],
+              ...localTranslationsForForm[lang],
+            },
+          }),
+          availableLanguages.length > 0 ? { "nb-NO": i18nData["nb-NO"] } : {}
+        );
+      } else {
+        return undefined;
+      }
     }
+    fetchTranslations().then((completeI18n) => {
+      setReady(true);
+      if (completeI18n) {
+        setTranslation(completeI18n);
+      }
+    });
   }, [form, featureToggles.enableTranslations]);
 
   if (!ready) {
-    return <div>Laster skjema...</div>
+    return <div>Laster skjema...</div>;
   }
+
   return (
     <AmplitudeProvider form={form} shouldUseAmplitude={true}>
       <FyllUtRouter form={form} translations={translation} />
