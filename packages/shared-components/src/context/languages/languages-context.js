@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import i18nData from "../../i18nData";
 import useCurrentLanguage from "./useCurrentLanguage";
 import useLanguageCodeFromURL from "./useLanguageCodeFromURL";
 
@@ -17,21 +16,7 @@ export const LanguagesProvider = ({ children, translations }) => {
   }, [translations]);
 
   useEffect(() => {
-    const languages = Object.keys(translations);
-    const formTranslations = languages.reduce(
-      (acc, language) => ({
-        ...acc,
-        [language]: translations[language],
-      }),
-      {}
-    );
-    setTranslationsForNavForm({
-      ...formTranslations,
-      "nb-NO": {
-        ...formTranslations["nb-NO"],
-        ...i18nData["nb-NO"],
-      },
-    });
+    setTranslationsForNavForm(translations);
   }, [translations]);
 
   function translate(originalText, params) {
