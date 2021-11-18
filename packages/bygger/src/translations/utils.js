@@ -66,7 +66,7 @@ const getSimplifiedComponentObject = (form) =>
 const getComponentTextAndType = (component, key) => {
   if (key === "values" || key === "data") {
     return component[key]
-      .filter((value) => value)
+      .filter((value) => value !== "")
       .map((value) => ({
         text: value,
         type: getInputType(value),
