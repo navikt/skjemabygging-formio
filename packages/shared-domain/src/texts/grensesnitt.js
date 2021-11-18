@@ -14,6 +14,10 @@ export const grensesnitt = {
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
 
+  formSummaryUtils: {
+    payAttentionTo: "Vær oppmerksom på",
+  },
+
   summaryPage: {
     editAnswers: "Rediger søknaden",
     continueToPostalSubmission: "Send i posten",
