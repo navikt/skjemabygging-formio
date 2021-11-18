@@ -1,8 +1,8 @@
+import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import PublishSettingsModal, { getCompleteTranslationLanguageCodeList } from "./PublishSettingsModal";
-import { render, screen } from "@testing-library/react";
-import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
-import userEvent from "@testing-library/user-event";
 
 const { createDummyRadioPanel, createFormObject, createPanelObject } = MockedComponentObjectForTest;
 
