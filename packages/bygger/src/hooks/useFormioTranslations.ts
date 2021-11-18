@@ -32,7 +32,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       });
   };
 
-  const mapFormioKeyWithNorwegianText = (i18n: I18nTranslationMap) => {
+  const mapFormioKeyToLabel = (i18n: I18nTranslationMap) => {
     return Object.keys(i18n).reduce((translationEntries, translatedText) => {
       let originalText: string = translatedText;
       Object.entries(TEXTS.validering as I18nTranslationMap).forEach(([key, value]) => {
@@ -48,6 +48,15 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }, {});
   };
 
+  const mapFormioKeysToLabelsForValidering = (translationPayload) =>
+    translationPayload.map(({ data, ...translationObject }) => ({
+      ...translationObject,
+      data: {
+        ...data,
+        i18n: data.tag === tags.VALIDERING ? mapFormioKeyToLabel(data.i18n) : data.i18n,
+      },
+    }));
+
   const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
     let filter = "";
     if (language) {
@@ -55,28 +64,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }
 
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
-      .then((response) => {
-        console.log("Fetched: ", response);
-        return response;
-      })
-      .then((response) =>
-        response.map(({ data, ...translationObject }) => ({
-          ...translationObject,
-          data: {
-            ...data,
-            i18n: data.tag === tags.VALIDERING ? mapFormioKeyWithNorwegianText(data.i18n) : data.i18n,
-          },
-        }))
-      )
-      .then((response) => {
-        console.log("Mapped: ", response);
-        return response;
-      })
-      .then((response) => languagesUtil.globalEntitiesToI18nGroupedByTag(response))
-      .then((globalTranslations) => {
-        console.log("Fetched global translations", globalTranslations);
-        return globalTranslations;
-      });
+      .then(mapFormioKeysToLabelsForValidering)
+      .then(languagesUtil.globalEntitiesToI18nGroupedByTag);
   };
 
   const publishGlobalTranslations = async (languageCode) => {
