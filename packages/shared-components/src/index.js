@@ -1,23 +1,22 @@
-import AmplitudeProvider from "./context/amplitude";
-import { AppConfigProvider, useAppConfig } from "./configContext";
-import CustomComponents from "./customComponents";
-import FyllUtRouter from "./Forms/FyllUtRouter";
-import { createFormSummaryObject, MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
-import { guid } from "./util/guid";
-import NavForm from "./components/NavForm";
-import navFormStyle from "./components/styles/navFormStyle";
-import FormBuilderOptions from "./Forms/form-builder-options";
-import FormBuilderSchemas from "./Forms/form-builder-options/schemas"
-import { appStyles, globalStyles } from "./components/styles/navGlobalStyles";
-import formioFormStyles from "./components/styles/formioFormStyles";
-import Template from "./template";
-import { LanguagesProvider, useLanguages } from "./context/languages";
 import LanguageSelector from "./components/LanguageSelector";
-import i18nData from "./i18nData";
-import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
+import NavForm from "./components/NavForm";
+import formioFormStyles from "./components/styles/formioFormStyles";
+import navFormStyle from "./components/styles/navFormStyle";
+import { appStyles, globalStyles } from "./components/styles/navGlobalStyles";
+import { AppConfigProvider, useAppConfig } from "./configContext";
+import AmplitudeProvider from "./context/amplitude";
+import { LanguagesProvider, useLanguages } from "./context/languages";
+import { mapTranslationsToFormioI18nObject } from "./context/languages/translationsMapper";
 import useCurrentLanguage from "./context/languages/useCurrentLanguage";
 import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
-import { mapTranslationsToFormioI18nObject } from "./context/languages/translationsMapper";
+import CustomComponents from "./customComponents";
+import FormBuilderOptions from "./Forms/form-builder-options";
+import FormBuilderSchemas from "./Forms/form-builder-options/schemas";
+import FyllUtRouter from "./Forms/FyllUtRouter";
+import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
+import i18nData from "./i18nData";
+import Template from "./template";
+import { guid } from "./util/guid";
 
 export {
   NavForm,
@@ -25,7 +24,6 @@ export {
   Template,
   FormBuilderOptions,
   FormBuilderSchemas,
-  createFormSummaryObject,
   AmplitudeProvider,
   AppConfigProvider,
   useAppConfig,
@@ -38,7 +36,6 @@ export {
   LanguagesProvider,
   i18nData,
   guid,
-  MockedComponentObjectForTest,
   LanguageSelector,
   useLanguages,
   useCurrentLanguage,

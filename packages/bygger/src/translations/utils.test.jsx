@@ -1,10 +1,5 @@
-import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
-import {
-  getTextsAndTranslationsForForm,
-  getTextsAndTranslationsHeaders,
-  getTextsAndTypeForForm,
-  parseText,
-} from "./utils";
+import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
+import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
 const {
   createDummyCheckbox,
@@ -17,17 +12,18 @@ const {
   createDummyRadioPanel,
   createDummyTextfield,
   createDummyAlertstripe,
+  createDummySelectComponent,
   createFormObject,
   createPanelObject,
 } = MockedComponentObjectForTest;
 
 describe("testGetAllTextsAndTypeForForm", () => {
   it("Test empty form", () => {
-    const actual = getTextsAndTypeForForm(createFormObject([], "test"));
-    expect(actual).toEqual([]);
+    const actual = getFormTexts(createFormObject([], "title"), true);
+    expect(actual).toEqual([{ text: "title", type: "text" }]);
   });
   it("Test form with panel and text fields", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -40,10 +36,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Tekstfelt", type: "text" },
       { text: "Email", type: "text" },
@@ -51,7 +49,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, html elements and contents", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -71,10 +69,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Test html element", type: "text" },
       { text: "VB2fDXfOP4frsF1EAggorIU2H4jdosE4J3jYQYn0vZGtqK5yqVWAFLPelnffebNBKxMaUbQ4IKFp6QsD9", type: "textarea" },
@@ -83,7 +83,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe and radio panel", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -99,10 +99,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "NavSkjemagruppe-legend", type: "text" },
       { text: "RadioPanel", type: "text" },
@@ -112,7 +114,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, skjemagruppe, datagrid and radio panel", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -134,10 +136,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "NavSkjemagruppe-legend", type: "text" },
       { text: "RadioPanel", type: "text" },
@@ -150,7 +154,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel, container and checkbox", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -176,10 +180,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Container", type: "text" },
       { text: "NavCheckbox", type: "text" },
@@ -189,7 +195,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel and text field with suffix and prefix", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -202,10 +208,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "TestFieldWithSuffix", type: "text" },
       { text: "centimeter", type: "text" },
@@ -215,7 +223,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
     ]);
   });
   it("Test form with panel and text fields with special suffix", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -228,17 +236,18 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Tekstfelt", type: "text" },
     ]);
   });
-
   it("Test form with duplicated text field", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -247,18 +256,19 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Same textfield", type: "text" },
       { text: "Email", type: "text" },
     ]);
   });
-
   it("Test form with alertstripes and HTML element", () => {
-    const actual = getTextsAndTypeForForm(
+    const actual = getFormTexts(
       createFormObject(
         [
           createPanelObject(
@@ -284,10 +294,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
-      )
+        "title"
+      ),
+      true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
@@ -304,37 +316,108 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Eventuell utbetaling av AAP", type: "text" },
     ]);
   });
-
-  it("Henter innsendingsrelaterte tekster fra form properties", () => {
-    const actual = getTextsAndTypeForForm({
-      components: [],
-      type: "form",
-      title: "Testskjema",
-      properties: {
-        skjemanummer: "TST 12.13-14",
-        innsending: "INGEN",
-        innsendingOverskrift: "Gi det til pasienten",
-        innsendingForklaring: "Skriv ut skjemaet",
-      },
-    });
+  it("Test form with select component", () => {
+    const actual = getFormTexts(
+      createFormObject([createPanelObject("Introduksjon", [createDummySelectComponent()], "Introduksjon")], "title"),
+      true
+    );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
+      { text: "Introduksjon", type: "text" },
+      { text: "Select", type: "text" },
+      { text: "Milk", type: "text" },
+      { text: "Bread", type: "text" },
+      { text: "Juice", type: "text" },
+    ]);
+  });
+  it("Henter innsendingsrelaterte tekster fra form properties", () => {
+    const actual = getFormTexts(
+      {
+        components: [],
+        type: "form",
+        title: "Testskjema",
+        properties: {
+          skjemanummer: "TST 12.13-14",
+          innsending: "INGEN",
+          innsendingOverskrift: "Gi det til pasienten",
+          innsendingForklaring: "Skriv ut skjemaet",
+        },
+      },
+      true
+    );
+    expect(actual).toEqual([
+      { text: "Testskjema", type: "text" },
       { text: "Gi det til pasienten", type: "text" },
       { text: "Skriv ut skjemaet", type: "text" },
     ]);
   });
-
   it("Henter downloadPdfButtonText form properties", () => {
-    const actual = getTextsAndTypeForForm({
-      components: [],
-      type: "form",
-      title: "Testskjema",
-      properties: {
-        skjemanummer: "TST 12.13-14",
-        innsending: "KUN_PAPIR",
-        downloadPdfButtonText: "Last ned pdf",
+    const actual = getFormTexts(
+      {
+        components: [],
+        type: "form",
+        title: "Testskjema",
+        properties: {
+          skjemanummer: "TST 12.13-14",
+          innsending: "KUN_PAPIR",
+          downloadPdfButtonText: "Last ned pdf",
+        },
       },
-    });
-    expect(actual).toEqual([{ text: "Last ned pdf", type: "text" }]);
+      true
+    );
+    expect(actual).toEqual([
+      { text: "Testskjema", type: "text" },
+      { text: "Last ned pdf", type: "text" },
+    ]);
+  });
+});
+
+describe("test get all texts", () => {
+  it("Test form with panel, skjemagruppe, datagrid, radio panel and select component", () => {
+    const actual = getFormTexts(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [
+              createDummyNavSkjemagruppe("NavSkjemagruppe", [
+                createDummyRadioPanel(),
+                createDummyRadioPanel(
+                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF"
+                ),
+                createDummyDataGrid("DataGrid", [
+                  createDummyRadioPanel("Radio panel inside data grid"),
+                  createDummySelectComponent(),
+                ]),
+                createDummyDataGrid(
+                  "DataGrid",
+                  [createDummyRadioPanel("Radio panel inside data grid without label")],
+                  true
+                ),
+              ]),
+            ],
+            "Introduksjon"
+          ),
+        ],
+        "title"
+      )
+    );
+    expect(actual).toEqual([
+      { text: "title" },
+      { text: "Introduksjon" },
+      { text: "NavSkjemagruppe-legend" },
+      { text: "RadioPanel" },
+      { text: "NO-label" },
+      { text: "YES-label" },
+      { text: "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF" },
+      { text: "DataGrid" },
+      { text: "Radio panel inside data grid" },
+      { text: "Select" },
+      { text: "Milk" },
+      { text: "Bread" },
+      { text: "Juice" },
+      { text: "Radio panel inside data grid without label" },
+    ]);
   });
 });
 describe("testGetTextsAndTranslationsForForm", () => {
@@ -365,48 +448,5 @@ describe("testGetCSVfileHeaders", () => {
       { key: "en", label: "EN" },
       { key: "nn-NO", label: "NN-NO" },
     ]);
-  });
-});
-describe("testParsingTextWithHTMLTag", () => {
-  it("Test form text with HTML element", () => {
-    const actual = parseText(
-      '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/> '
-    );
-    expect(actual).toEqual(
-      "Eventuell utbetaling av AAP Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt (https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader)  endre hvilket kontonummer vi benytter (åpnes i ny fane).  "
-    );
-  });
-
-  it("Test form text with HTML element besides a tag", () => {
-    const actual = parseText(
-      "<p>Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke på</p><ul><li>Stønad til barnetilsyn på grunn av arbeid</li><li>Stønad til skolepenger</li></ul><p>Stønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger.</p>"
-    );
-    expect(actual).toEqual(
-      "Hvis du er gjenlevende ektefelle/partner/samboer eller ugift familiepleier kan du bruke dette skjema til å søke påStønad til barnetilsyn på grunn av arbeidStønad til skolepengerStønad til barnetilsyn gjelder kun utgifter du har til barnepass mens du studerer eller jobber. Studiene dine må være offentlig godkjent for at du skal få skolepenger."
-    );
-  });
-
-  it("Test form text with only a tag when there is no space before link ", () => {
-    const actual = parseText("<a href=\"hello.hello.world\">test</a> <a href='hello.world'>hohoho</a>");
-    expect(actual).toEqual("(hello.hello.world)test (hello.world)hohoho");
-  });
-
-  it("Test form text with only a tag when there is target attribute", () => {
-    const actual = parseText(
-      '<a href="hello.hello.world" target="_blank">test</a> <a href="hello.world" target=\'_blank\'>hohoho</a>'
-    );
-    expect(actual).toEqual("(hello.hello.world) test (hello.world) hohoho");
-  });
-
-  it("Test form text with only a tag when there is space before link", () => {
-    const actual = parseText('<a href= "hello.hello.world">test</a>');
-    expect(actual).toEqual("(hello.hello.world)test");
-  });
-
-  it("Test form text with multiple a tag ", () => {
-    const actual = parseText(
-      '<a href="hello.hello.world" target="_blank">test</a><a href="another.test" target="_blank">another test</a>'
-    );
-    expect(actual).toEqual("(hello.hello.world) test(another.test) another test");
   });
 });

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Sidetittel } from "nav-frontend-typografi";
-import { Input } from "nav-frontend-skjema";
 import { makeStyles } from "@material-ui/styles";
+import { Sidetittel } from "nav-frontend-typografi";
+import React, { useEffect, useState } from "react";
 import TranslationTextInput from "./TranslationTextInput";
 
 const useTranslationsListStyles = makeStyles({
@@ -82,25 +81,6 @@ const TranslationsFormPage = ({
       <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
       <p className="margin-bottom-large">{skjemanummer}</p>
       <form>
-        <Input
-          className="margin-bottom-default"
-          label={title}
-          type={"text"}
-          key={`title-${title}`}
-          value={(currentTranslation[title] && currentTranslation[title].value) || ""}
-          onChange={(event) => {
-            setTranslations({
-              ...translations,
-              [languageCode]: {
-                ...translations[languageCode],
-                translations: {
-                  ...currentTranslation,
-                  [title]: { value: event.target.value, scope: "local" },
-                },
-              },
-            });
-          }}
-        />
         {flattenedComponents.map(({ text, type }) => {
           return (
             <FormItem
