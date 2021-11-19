@@ -18,8 +18,8 @@ const {
 
 describe("testGetAllTextsAndTypeForForm", () => {
   it("Test empty form", () => {
-    const actual = getFormTexts(createFormObject([], "test"), true);
-    expect(actual).toEqual([]);
+    const actual = getFormTexts(createFormObject([], "title"), true);
+    expect(actual).toEqual([{ text: "title", type: "text" }]);
   });
   it("Test form with panel and text fields", () => {
     const actual = getFormTexts(
@@ -35,11 +35,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Tekstfelt", type: "text" },
       { text: "Email", type: "text" },
@@ -67,11 +68,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Test html element", type: "text" },
       { text: "VB2fDXfOP4frsF1EAggorIU2H4jdosE4J3jYQYn0vZGtqK5yqVWAFLPelnffebNBKxMaUbQ4IKFp6QsD9", type: "textarea" },
@@ -96,11 +98,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "NavSkjemagruppe-legend", type: "text" },
       { text: "RadioPanel", type: "text" },
@@ -132,11 +135,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "NavSkjemagruppe-legend", type: "text" },
       { text: "RadioPanel", type: "text" },
@@ -175,11 +179,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Container", type: "text" },
       { text: "NavCheckbox", type: "text" },
@@ -202,11 +207,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "TestFieldWithSuffix", type: "text" },
       { text: "centimeter", type: "text" },
@@ -229,11 +235,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Tekstfelt", type: "text" },
     ]);
@@ -248,11 +255,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Same textfield", type: "text" },
       { text: "Email", type: "text" },
@@ -275,11 +283,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       ),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
@@ -290,10 +299,11 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
   it("Test form with select component", () => {
     const actual = getFormTexts(
-      createFormObject([createPanelObject("Introduksjon", [createDummySelectComponent()], "Introduksjon")], "test"),
+      createFormObject([createPanelObject("Introduksjon", [createDummySelectComponent()], "Introduksjon")], "title"),
       true
     );
     expect(actual).toEqual([
+      { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Select", type: "text" },
       { text: "Milk", type: "text" },
@@ -317,6 +327,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
       true
     );
     expect(actual).toEqual([
+      { text: "Testskjema", type: "text" },
       { text: "Gi det til pasienten", type: "text" },
       { text: "Skriv ut skjemaet", type: "text" },
     ]);
@@ -335,7 +346,10 @@ describe("testGetAllTextsAndTypeForForm", () => {
       },
       true
     );
-    expect(actual).toEqual([{ text: "Last ned pdf", type: "text" }]);
+    expect(actual).toEqual([
+      { text: "Testskjema", type: "text" },
+      { text: "Last ned pdf", type: "text" },
+    ]);
   });
 });
 
@@ -366,11 +380,11 @@ describe("test get all texts", () => {
             "Introduksjon"
           ),
         ],
-        "test"
+        "title"
       )
     );
     expect(actual).toEqual([
-      { text: "test" },
+      { text: "title" },
       { text: "Introduksjon" },
       { text: "NavSkjemagruppe-legend" },
       { text: "RadioPanel" },
