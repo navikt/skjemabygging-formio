@@ -43,10 +43,11 @@ const extractTextsFromProperties = (props) => {
   return array;
 };
 
-const getSimplifiedComponentObject = (form) =>
+const getTranslatablePropertiesFromForm = (form) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
+    .filter((component) => component.type !== "hidden")
     .map(({ content, title, label, html, type, values, legend, description, suffix, prefix, data }) => ({
       title,
       label:
@@ -84,7 +85,7 @@ const removeDuplicatedComponents = (components = []) => {
   );
 };
 const getTextsAndTypeForForm = (form) => {
-  const textComponentsWithType = getSimplifiedComponentObject(form)
+  const textComponentsWithType = getTranslatablePropertiesFromForm(form)
     .reduce((allTextsForForm, component) => {
       return [
         ...allTextsForForm,
@@ -110,7 +111,7 @@ const parseText = (text) => {
 };
 
 const getAllTextsOrParsedTexts = (form, shouldParseText = true) => {
-  const textComponents = getSimplifiedComponentObject(form)
+  const textComponents = getTranslatablePropertiesFromForm(form)
     .reduce(
       (allTextsForForm, component) => {
         return [
