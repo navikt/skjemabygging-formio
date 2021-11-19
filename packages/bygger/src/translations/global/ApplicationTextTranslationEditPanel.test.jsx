@@ -1,8 +1,8 @@
+import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import ApplicationTextTranslationEditPanel, {
   getTranslationByOriginalText,
 } from "./ApplicationTextTranslationEditPanel";
-import { fireEvent, render, screen } from "@testing-library/react";
 
 describe("ApplicationTextTranslationEditPanel", () => {
   describe("getTranslationByOriginalText", () => {
@@ -43,7 +43,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
     });
 
     it("renders all grensesnitt inputs", () => {
-      expect(screen.getAllByRole("textbox")).toHaveLength(32);
+      expect(screen.getAllByRole("textbox")).toHaveLength(33);
     });
 
     it("renders originalText with translatedText as value", () => {

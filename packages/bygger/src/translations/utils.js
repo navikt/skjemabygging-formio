@@ -47,7 +47,7 @@ const getSimplifiedComponentObject = (form) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
-    .map(({ content, title, label, html, type, values, legend, description, suffix, prefix, data }) => ({
+    .map(({ content, title, label, html, type, values, legend, description, suffix, prefix, data, contentForPdf }) => ({
       title,
       label:
         ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe", "alertstripe"].indexOf(type) === -1
@@ -61,6 +61,7 @@ const getSimplifiedComponentObject = (form) =>
       suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
       prefix: getTextFromComponentProperty(prefix),
       data: data ? data.values.map((value) => value.label) : undefined,
+      contentForPdf: getTextFromComponentProperty(contentForPdf),
     }));
 
 const getComponentTextAndType = (textsForComponent, component, key) => {
