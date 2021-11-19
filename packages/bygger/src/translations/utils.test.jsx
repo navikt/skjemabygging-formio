@@ -1,4 +1,4 @@
-import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-components";
+import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
 import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
 const {
