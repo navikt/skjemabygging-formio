@@ -43,10 +43,11 @@ const extractTextsFromProperties = (props) => {
   return array;
 };
 
-const getSimplifiedComponentObject = (form) =>
+const getTranslatablePropertiesFromForm = (form) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
+    .filter((component) => component.type !== "hidden")
     .map(({ content, title, label, html, type, values, legend, description, suffix, prefix, data, contentForPdf }) => ({
       title,
       label:
@@ -80,7 +81,7 @@ const textObject = (withInputType, value) => {
 };
 
 const getFormTexts = (form, withInputType = false) => {
-  const simplifiedComponentObject = getSimplifiedComponentObject(form);
+  const simplifiedComponentObject = getTranslatablePropertiesFromForm(form);
   simplifiedComponentObject.splice(0, 0, {
     title: form.title,
   });
