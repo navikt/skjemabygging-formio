@@ -18,6 +18,9 @@ export const loadFormTranslations = async (formPath) =>
   );
 
 export const loadCountryNamesForLanguages = async (languages) => {
+  if (languages.length === 0) {
+    return Promise.resolve({});
+  }
   const countryNamesInBokmaal = await loadCountryNames("nb-NO");
   return Promise.all(languages.map(loadCountryNames)).then((loadedCountryNames) =>
     loadedCountryNames.reduce(
