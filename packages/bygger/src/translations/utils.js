@@ -100,7 +100,7 @@ const getFormTexts = (form, withInputType = false) => {
             }, []),
         ];
       },
-      withInputType ? [] : [{ text: form.title }]
+      [{ text: form.title }]
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
