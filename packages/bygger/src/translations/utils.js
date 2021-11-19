@@ -63,7 +63,7 @@ const getSimplifiedComponentObject = (form) =>
       data: data ? data.values.map((value) => value.label) : undefined,
     }));
 
-const removeDuplicatedComponents = (component, index, currentComponents) =>
+const withoutDuplicatedComponents = (component, index, currentComponents) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);
 
 const textObject = (withInputType, value) => {
@@ -104,7 +104,7 @@ const getFormTexts = (form, withInputType = false) => {
       ];
     }, [])
     .concat(extractTextsFromProperties(form.properties))
-    .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
+    .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
 const getTextsAndTranslationsForForm = (form, translations) => {
@@ -150,6 +150,6 @@ export {
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
   getInputType,
-  removeDuplicatedComponents,
+  withoutDuplicatedComponents,
   getFormTexts,
 };

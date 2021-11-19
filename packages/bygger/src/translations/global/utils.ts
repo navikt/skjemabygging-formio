@@ -1,6 +1,6 @@
 import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { TranslationResource } from "../../../types/translations";
-import { getInputType, removeDuplicatedComponents } from "../utils";
+import { getInputType, withoutDuplicatedComponents } from "../utils";
 
 const tags = {
   SKJEMATEKSTER: "skjematekster",
@@ -16,7 +16,7 @@ const flattenTextsForEditPanel = (texts: any): Array<any> => {
       const text = entry[1];
       return { key, text, type: getInputType(text) };
     })
-    .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
+    .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
 const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
