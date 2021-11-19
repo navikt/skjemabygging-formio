@@ -1,4 +1,4 @@
-import {createFormSummaryObject, handleComponent, mapAndEvaluateConditionals} from "./formSummaryUtil";
+import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
 
@@ -100,13 +100,19 @@ describe("When handling component", () => {
 
   describe("radiopanel", () => {
     it("is correctly added when using string values", () => {
-      const actual = handleComponent(createDummyRadioPanel(), { data: { radiopanel: "yes" }}, [], "", mockedTranslate);
-      expect(actual.find((component) => component.type === "radiopanel").value).toBe("YES-label")
+      const actual = handleComponent(createDummyRadioPanel(), { data: { radiopanel: "yes" } }, [], "", mockedTranslate);
+      expect(actual.find((component) => component.type === "radiopanel").value).toBe("YES-label");
     });
 
     it("is correctly added when using string values even though submission data value is a string", () => {
-      const actual = handleComponent(createDummyRadioPanelWithNumberValues(), { data: { radiopanelwithnumbervalues: 40 }}, [], "", mockedTranslate);
-      expect(actual.find((component) => component.type === "radiopanel").value).toBe("40-label")
+      const actual = handleComponent(
+        createDummyRadioPanelWithNumberValues(),
+        { data: { radiopanelwithnumbervalues: 40 } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual.find((component) => component.type === "radiopanel").value).toBe("40-label");
     });
   });
 
@@ -123,13 +129,13 @@ describe("When handling component", () => {
         dummySubmission,
         [],
         "",
-        mockedTranslate()
+        mockedTranslate
       );
       expect(actual.find((component) => component.type === "htmlelement").value).toBe("contentForPdf");
     });
 
     it("is filtered out if it has no content for PDF", () => {
-      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, [], "", mockedTranslate());
+      const actual = handleComponent(createDummyHTMLElement(), dummySubmission, [], "", mockedTranslate);
       expect(actual.find((component) => component.type === "htmlelement")).toBeUndefined();
     });
   });
@@ -141,13 +147,13 @@ describe("When handling component", () => {
         dummySubmission,
         [],
         "",
-        mockedTranslate()
+        mockedTranslate
       );
       expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
     });
 
     it("is filtered out if it has no content for PDF", () => {
-      const actual = handleComponent(createDummyAlertstripe(), dummySubmission, [], "", mockedTranslate());
+      const actual = handleComponent(createDummyAlertstripe(), dummySubmission, [], "", mockedTranslate);
       expect(actual.find((component) => component.type === "alertstripe")).toBeUndefined();
     });
 
@@ -170,7 +176,7 @@ describe("When handling component", () => {
           dummySubmission,
           [],
           "",
-          mockedTranslate(),
+          mockedTranslate,
           { alertstripewithconditional: true }
         );
         expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
@@ -640,80 +646,73 @@ describe("When creating form summary object", () => {
   });
 
   describe("En datagrid med et tekstfelt og en navDatepicker", () => {
-
     const form = createFormObject([
       createPanelObject("Page 1", [
-        createDummyDataGrid("Data Grid", [
-          createDummyTextfield("Fornavn"),
-          createDummyNavDatepicker("Startdato")
-        ]),
-      ])
+        createDummyDataGrid("Data Grid", [createDummyTextfield("Fornavn"), createDummyNavDatepicker("Startdato")]),
+      ]),
     ]);
 
-    const summaryWithDatagridComponents = datagridComponents => ({
-      "label": "Page 1",
-      "key": "page1",
-      "type": "panel",
-      "components": [
+    const summaryWithDatagridComponents = (datagridComponents) => ({
+      label: "Page 1",
+      key: "page1",
+      type: "panel",
+      components: [
         {
-          "label": "Data Grid",
-          "key": "datagrid",
-          "type": "datagrid",
-          "components": [
+          label: "Data Grid",
+          key: "datagrid",
+          type: "datagrid",
+          components: [
             {
-              "type": "datagrid-row",
-              "label": "datagrid-row-title",
-              "key": "datagrid-row-0",
-              "components": datagridComponents
-            }
-          ]
-        }
-      ]
+              type: "datagrid-row",
+              label: "datagrid-row-title",
+              key: "datagrid-row-0",
+              components: datagridComponents,
+            },
+          ],
+        },
+      ],
     });
 
     it("Oppsummeringen inneholder både fornavn og startdato", () => {
-      const actual = createFormSummaryObject(
-        form,
-        {
-          "data": {
-            "datagrid": [{"fornavn": "Trine", "startdato": "2021-10-03"}],
-          }
-        }
-      );
-      expect(actual).toEqual([summaryWithDatagridComponents([
-        {
-          "label": "Fornavn",
-          "key": "fornavn",
-          "type": "textfield",
-          "value": "Trine"
+      const actual = createFormSummaryObject(form, {
+        data: {
+          datagrid: [{ fornavn: "Trine", startdato: "2021-10-03" }],
         },
-        {
-          "label": "Startdato-label",
-          "key": "startdato",
-          "type": "navDatepicker",
-          "value": "3.10.2021"
-        }
-      ])]);
+      });
+      expect(actual).toEqual([
+        summaryWithDatagridComponents([
+          {
+            label: "Fornavn",
+            key: "fornavn",
+            type: "textfield",
+            value: "Trine",
+          },
+          {
+            label: "Startdato-label",
+            key: "startdato",
+            type: "navDatepicker",
+            value: "3.10.2021",
+          },
+        ]),
+      ]);
     });
 
-
     it("Oppsummeringen inneholder kun startdato siden fornavn ikke er oppgitt", () => {
-      const actual = createFormSummaryObject(
-        form,
-        {
-          "data": {
-            "datagrid": [{"startdato": "2021-10-03"}],
-          }
-        }
-      );
-      expect(actual).toEqual([summaryWithDatagridComponents([
-        {
-          "label": "Startdato-label",
-          "key": "startdato",
-          "type": "navDatepicker",
-          "value": "3.10.2021"
-        }
-      ])]);
+      const actual = createFormSummaryObject(form, {
+        data: {
+          datagrid: [{ startdato: "2021-10-03" }],
+        },
+      });
+      expect(actual).toEqual([
+        summaryWithDatagridComponents([
+          {
+            label: "Startdato-label",
+            key: "startdato",
+            type: "navDatepicker",
+            value: "3.10.2021",
+          },
+        ]),
+      ]);
     });
   });
 
@@ -732,8 +731,8 @@ describe("When creating form summary object", () => {
     expect(datoUtenfor.value).toEqual("1.10.2021");
 
     const dataGrid = actual[0].components[1];
-    expect(dataGrid.type).toEqual("datagrid")
-    expect(dataGrid.label).toEqual("Data Grid")
+    expect(dataGrid.type).toEqual("datagrid");
+    expect(dataGrid.label).toEqual("Data Grid");
     expect(dataGrid.components).toHaveLength(1);
 
     const dataGridRow1 = dataGrid.components[0];
@@ -763,5 +762,4 @@ describe("When creating form summary object", () => {
     expect(datoISkjemagruppeUtenforDataGrid.label).toEqual("Dato i skjemagruppe utenfor Data Grid");
     expect(datoISkjemagruppeUtenforDataGrid.value).toEqual("4.10.2021");
   });
-
 });
