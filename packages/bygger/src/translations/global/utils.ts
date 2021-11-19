@@ -1,6 +1,6 @@
-import { getInputType, removeDuplicatedComponents } from "../utils";
 import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { TranslationResource } from "../../../types/translations";
+import { getInputType, withoutDuplicatedComponents } from "../utils";
 
 const tags = {
   SKJEMATEKSTER: "skjematekster",
@@ -10,13 +10,13 @@ const tags = {
 };
 
 const flattenTextsForEditPanel = (texts: any): Array<any> => {
-  return removeDuplicatedComponents(
-    objectUtils.flattenToArray(texts, (entry, parentKey) => {
+  return objectUtils
+    .flattenToArray(texts, (entry, parentKey) => {
       const key = objectUtils.concatKeys(entry[0], parentKey);
       const text = entry[1];
       return { key, text, type: getInputType(text) };
     })
-  );
+    .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
 const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
