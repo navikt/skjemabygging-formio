@@ -79,29 +79,30 @@ const textObject = (withInputType, value) => {
 };
 
 const getFormTexts = (form, withInputType = false) => {
-  return getSimplifiedComponentObject(form)
-    .reduce(
-      (allTextsForForm, component) => {
-        return [
-          ...allTextsForForm,
-          ...Object.keys(component)
-            .filter((key) => component[key] !== undefined)
-            .reduce((textsForComponent, key) => {
-              if (key === "values" || key === "data") {
-                return [
-                  ...textsForComponent,
-                  ...component[key].map((value) => {
-                    return textObject(withInputType, value);
-                  }),
-                ];
-              } else {
-                return [...textsForComponent, textObject(withInputType, component[key])];
-              }
-            }, []),
-        ];
-      },
-      [{ text: form.title }]
-    )
+  const simplifiedComponentObject = getSimplifiedComponentObject(form);
+  simplifiedComponentObject.splice(0, 0, {
+    title: form.title,
+  });
+  return simplifiedComponentObject
+    .reduce((allTextsForForm, component) => {
+      return [
+        ...allTextsForForm,
+        ...Object.keys(component)
+          .filter((key) => component[key] !== undefined)
+          .reduce((textsForComponent, key) => {
+            if (key === "values" || key === "data") {
+              return [
+                ...textsForComponent,
+                ...component[key].map((value) => {
+                  return textObject(withInputType, value);
+                }),
+              ];
+            } else {
+              return [...textsForComponent, textObject(withInputType, component[key])];
+            }
+          }, []),
+      ];
+    }, [])
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => removeDuplicatedComponents(component, index, currentComponents));
 };
