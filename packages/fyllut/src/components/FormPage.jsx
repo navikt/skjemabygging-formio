@@ -30,15 +30,15 @@ function FormPage({ form }) {
               ...localTranslationsForForm[lang],
             },
           }),
-          availableLanguages.length > 0 ? { "nb-NO": i18nData["nb-NO"] } : {}
+          { "nb-NO": i18nData["nb-NO"] }
         );
       } else {
-        return undefined;
+        return {};
       }
     }
     fetchTranslations().then((completeI18n) => {
       setReady(true);
-      if (completeI18n) {
+      if (Object.keys(completeI18n).length > 0) {
         setTranslation(completeI18n);
       }
     });
