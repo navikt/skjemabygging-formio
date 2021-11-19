@@ -120,6 +120,20 @@ const createDummyDayComponent = (label = "Mnd/år") => ({
   type: "day",
 });
 
+const createDummySelectComponent = (
+  label = "Select",
+  values = [
+    { label: "Milk", value: "milk" },
+    { label: "Bread", value: "bread" },
+    { label: "Juice", value: "juice" },
+  ]
+) => ({
+  label,
+  key: keyFromLabel(label),
+  type: "select",
+  data: { values },
+});
+
 const createPanelObject = (title, components, label) => ({
   title,
   label,
@@ -152,5 +166,6 @@ const mockedComponentObjectForTest = {
   createPanelObject,
   createFormObject,
   createDummyDayComponent,
+  createDummySelectComponent,
 };
 export default mockedComponentObjectForTest;

@@ -1,13 +1,15 @@
 import FormioUtils from "formiojs/utils";
+import moment from "moment";
 import TEXTS from "../texts";
 import { addToMap } from "../utils/objectUtils";
-import moment from "moment";
 import { toPascalCase } from "../utils/stringUtils";
 
 require("moment/locale/nb.js");
+
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
 }
+
 function formatValue(component, value, translate) {
   switch (component.type) {
     case "radiopanel":
@@ -175,17 +177,17 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
   ];
 }
 
-function handleHtmlElement(component, formSummaryObject, parentContainerKey, evaluatedConditionals) {
+function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
   const { key, contentForPdf, type } = component;
   if (shouldShowInSummary(key, evaluatedConditionals) && contentForPdf) {
     const componentKey = createComponentKey(parentContainerKey, key);
     return [
       ...formSummaryObject,
       {
-        label: "Vær oppmerksom på",
+        label: translate(TEXTS.grensesnitt.formSummaryUtils.payAttentionTo),
         key: componentKey,
         type,
-        value: contentForPdf,
+        value: translate(contentForPdf),
       },
     ];
   }
@@ -233,7 +235,7 @@ export function handleComponent(
       return formSummaryObject;
     case "htmlelement":
     case "alertstripe":
-      return handleHtmlElement(component, formSummaryObject, parentContainerKey, evaluatedConditionals);
+      return handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals);
     case "container":
       return handleContainer(component, submission, formSummaryObject, translate, evaluatedConditionals);
     case "datagrid":

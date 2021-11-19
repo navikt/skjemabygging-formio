@@ -1,13 +1,13 @@
-import Modal from "nav-frontend-modal";
-import { Hovedknapp } from "nav-frontend-knapper";
-import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { CheckboxGruppe, Checkbox } from "nav-frontend-skjema";
-import { Undertittel, Normaltekst } from "nav-frontend-typografi";
-import { getAllTextsOrParsedTexts } from "../translations/utils";
-import { languagesInNorwegian, useTranslations } from "../context/i18n";
-import { NavFormType } from "./navForm";
+import { Hovedknapp } from "nav-frontend-knapper";
+import Modal from "nav-frontend-modal";
+import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
+import { Normaltekst, Undertittel } from "nav-frontend-typografi";
+import React, { useEffect, useState } from "react";
 import { I18nTranslationMap } from "../../types/translations";
+import { languagesInNorwegian, useTranslations } from "../context/i18n";
+import { getFormTexts } from "../translations/utils";
+import { NavFormType } from "./navForm";
 
 const useModalStyles = makeStyles({
   modal: {
@@ -31,7 +31,7 @@ interface Props {
 
 export const getCompleteTranslationLanguageCodeList = (
   allFormOriginalTexts: string[],
-  translationsForNavForm: I18nTranslationMap
+  translationsForNavForm: Record<string, I18nTranslationMap>
 ): string[] => {
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {
@@ -57,7 +57,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
 
   useEffect(() => {
     setAllFormOriginalTexts(
-      getAllTextsOrParsedTexts(form, false).reduce((allTexts, texts) => {
+      getFormTexts(form).reduce((allTexts, texts) => {
         const { text } = texts;
         return [...allTexts, text];
       }, [])
