@@ -8,7 +8,7 @@ const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   dataGridLabel: true,
   validateOn: "blur",
   validate: {
-    custom: "valid = instance.validateFnr(input) ? true : 'Dette er ikke et gyldig fødselsnummer eller D-nummer';",
+    custom: "valid = instance.validateFnr(input) === 'true'? true: instance.validateFnr(input);",
     required: true,
   },
 });

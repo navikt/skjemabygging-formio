@@ -1,3 +1,4 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import TextFieldComponent from "formiojs/components/textfield/TextField";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
@@ -50,10 +51,14 @@ export default class Fodselsnummer extends TextFieldComponent {
   validateFnr(fnrTekstWithMiddleSpace) {
     if (fnrTekstWithMiddleSpace === "") {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
-      return true;
+      return "true";
     }
+
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
-    return erGyldigFodselsnummer(fnrTekst);
+    if (!erGyldigeKontrollsifre(fnrTekst)) {
+      return TEXTS.validering.fodselsnummerDNummer;
+    }
+    return "true";
   }
 
   get defaultSchema() {
