@@ -1,3 +1,4 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
 import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
 import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
@@ -46,8 +47,8 @@ export function validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
   }
   const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
   return mayBeEqual
-    ? `Datoen kan ikke være tidligere enn fra-dato (${beforeDateAsString})`
-    : `Datoen må være senere enn fra-dato (${beforeDateAsString})`;
+    ? `${TEXTS.validering.dateNotBeforeFromDate} (${beforeDateAsString})`
+    : `${TEXTS.validering.dateAfterFromDate} (${beforeDateAsString})`;
 }
 
 export function validateEarliestAndLatestDate(earliestFromToday = "", latestFromToday = "", inputDate) {
@@ -61,16 +62,16 @@ export function validateEarliestAndLatestDate(earliestFromToday = "", latestFrom
       return true;
     }
     return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
-      ? `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString} eller senere enn ${latestAllowedDateAsString}`
+      ? `${TEXTS.validering.dateNotBeforeAllowedDate} ${earliestAllowedDateAsString} ${TEXTS.validering.orLaterThan} ${latestAllowedDateAsString}`
       : true;
   }
 
   if (earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, "d")) {
-    return `Datoen kan ikke være tidligere enn ${earliestAllowedDateAsString}`;
+    return `${TEXTS.validering.dateNotBeforeAllowedDate} ${earliestAllowedDateAsString}`;
   }
 
   if (latestAllowedDate && inputDate.isAfter(latestAllowedDate, "d")) {
-    return `Datoen kan ikke være senere enn ${latestAllowedDateAsString}`;
+    return `${TEXTS.validering.dateNotLaterThanAllowedDate} ${latestAllowedDateAsString}`;
   }
 
   return true;

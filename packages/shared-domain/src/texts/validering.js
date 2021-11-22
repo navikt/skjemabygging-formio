@@ -22,4 +22,9 @@ export const validering = {
 
   //custom component
   fodselsnummerDNummer: "Dette er ikke et gyldig fødselsnummer eller D-nummer",
+  dateNotBeforeFromDate: "Datoen kan ikke være tidligere enn fra-dato",
+  dateAfterFromDate: "Datoen må være senere enn fra-dato",
+  dateNotBeforeAllowedDate: "Datoen kan ikke være tidligere enn",
+  orLaterThan: "eller senere enn",
+  dateNotLaterThanAllowedDate: "Datoen kan ikke være senere enn",
 };
