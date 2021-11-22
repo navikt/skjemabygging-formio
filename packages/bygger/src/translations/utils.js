@@ -86,25 +86,16 @@ const getFormTexts = (form, withInputType = false) => {
     title: form.title,
   });
   return simplifiedComponentObject
-    .reduce((allTextsForForm, component) => {
-      return [
-        ...allTextsForForm,
-        ...Object.keys(component)
-          .filter((key) => component[key] !== undefined)
-          .reduce((textsForComponent, key) => {
-            if (key === "values" || key === "data") {
-              return [
-                ...textsForComponent,
-                ...component[key].map((value) => {
-                  return textObject(withInputType, value);
-                }),
-              ];
-            } else {
-              return [...textsForComponent, textObject(withInputType, component[key])];
-            }
-          }, []),
-      ];
-    }, [])
+    .flatMap((component) =>
+      Object.keys(component)
+        .filter((key) => component[key] !== undefined)
+        .flatMap((key) => {
+          if (key === "values" || key === "data") {
+            return component[key].filter((value) => value !== "").map((value) => textObject(withInputType, value));
+          }
+          return textObject(withInputType, component[key]);
+        })
+    )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
