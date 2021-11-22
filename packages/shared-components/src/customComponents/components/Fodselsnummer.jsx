@@ -56,7 +56,7 @@ export default class Fodselsnummer extends TextFieldComponent {
 
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
     if (!erGyldigeKontrollsifre(fnrTekst)) {
-      return TEXTS.validering.fodselsnummerDNummer;
+      return this.t(TEXTS.validering.fodselsnummerDNummer);
     }
     return "true";
   }
