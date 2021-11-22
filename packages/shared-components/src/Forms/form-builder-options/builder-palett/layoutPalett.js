@@ -3,6 +3,15 @@ const layoutPalett = {
   components: {
     well: null,
     content: null,
+    columns: {
+      ignore: true,
+    },
+    table: {
+      ignore: true,
+    },
+    tabs: {
+      ignore: true,
+    },
     alertstripe: {
       title: "Alertstripe",
       key: "alertstripe",
