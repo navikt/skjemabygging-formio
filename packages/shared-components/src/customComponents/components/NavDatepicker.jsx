@@ -1,16 +1,14 @@
+import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
+import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
+import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
+import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
+import { getContextComponents } from "formiojs/utils/utils";
+import moment from "moment";
+import { Datovelger } from "nav-datovelger";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Datovelger } from "nav-datovelger";
-import moment from "moment";
-
-import validationEditForm from "formiojs/components/_classes/component/editForm/Component.edit.validation";
-import displayEditForm from "formiojs/components/_classes/component/editForm/Component.edit.display";
-import conditionalEditForm from "formiojs/components/_classes/component/editForm/Component.edit.conditional";
-import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
-import { getContextComponents } from "formiojs/utils/utils";
-
-import FormioReactComponent from "../FormioReactComponent.jsx";
 import FormBuilderOptions from "../../Forms/form-builder-options";
+import FormioReactComponent from "../FormioReactComponent.jsx";
 
 require("moment/locale/nb.js"); // For datovelger
 
@@ -115,7 +113,9 @@ export default class NavDatepicker extends FormioReactComponent {
 
     let toAndFromDateValidation = true;
     if (beforeDateInputKey) {
-      const beforeDateValue = submissionData[beforeDateInputKey] || (beforeDateInputKey.includes(".") && row && row[beforeDateInputKey.replace(/.*\./i, "")]);
+      const beforeDateValue =
+        submissionData[beforeDateInputKey] ||
+        (beforeDateInputKey.includes(".") && row && row[beforeDateInputKey.replace(/.*\./i, "")]);
       if (beforeDateValue) {
         toAndFromDateValidation = validateToAndFromDate(moment(beforeDateValue), moment(input), mayBeEqual);
       }
