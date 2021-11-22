@@ -1,6 +1,6 @@
 import React from "react";
-import LanguageSelector from "./LanguageSelector";
 import { useLanguages } from "../context/languages";
+import LanguageSelector from "./LanguageSelector";
 
 export const languagesInOriginalLanguage = {
   "nb-NO": "Norsk bokmål",
@@ -31,7 +31,7 @@ const FyllUtLanguageSelector = () => {
     ? languagesInOriginalLanguage[currentLanguage]
     : "Norsk bokmål";
 
-  return <LanguageSelector label={label} options={options} />;
+  return options.length > 0 ? <LanguageSelector label={label} options={options} /> : <></>;
 };
 
 export default FyllUtLanguageSelector;

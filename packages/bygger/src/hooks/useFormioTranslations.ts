@@ -1,6 +1,5 @@
+import { languagesUtil, localizationUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import { localizationUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import {
   FormioTranslation,
   FormioTranslationMap,
@@ -11,8 +10,9 @@ import {
   TranslationScope,
   TranslationTag,
 } from "../../types/translations";
-import { getAllPredefinedOriginalTexts, tags } from "../translations/global/utils";
 import { languagesInNorwegian } from "../context/i18n";
+import { combineTranslationResources } from "../context/i18n/translationsMapper";
+import { getAllPredefinedOriginalTexts, tags } from "../translations/global/utils";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -32,25 +32,30 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       });
   };
 
-  const mapFormioKeyWithNorwegianText = (tag: string, i18n: I18nTranslationMap, scope: TranslationScope) => {
-    return Object.keys(i18n).reduce((translationsObjects, translatedText) => {
+  const mapFormioKeyToLabel = (i18n: I18nTranslationMap) => {
+    return Object.keys(i18n).reduce((translationEntries, translatedText) => {
       let originalText: string = translatedText;
-      if (tag === tags.VALIDERING) {
-        Object.entries(TEXTS.validering as I18nTranslationMap).forEach(([key, value]) => {
-          if (translatedText === key) {
-            originalText = value;
-          }
-        });
-      }
+      Object.entries(TEXTS.validering as I18nTranslationMap).forEach(([key, value]) => {
+        if (translatedText === key) {
+          originalText = value;
+        }
+      });
+
       return {
-        ...translationsObjects,
-        [originalText]: {
-          value: i18n[translatedText],
-          scope,
-        },
+        ...translationEntries,
+        [originalText]: i18n[translatedText],
       };
     }, {});
   };
+
+  const mapFormioKeysToLabelsForValidering = (translationPayload) =>
+    translationPayload.map(({ data, ...translationObject }) => ({
+      ...translationObject,
+      data: {
+        ...data,
+        i18n: data.tag === tags.VALIDERING ? mapFormioKeyToLabel(data.i18n) : data.i18n,
+      },
+    }));
 
   const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
     let filter = "";
@@ -59,28 +64,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }
 
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
-      .then((response) => {
-        return response.reduce((globalTranslations, translation) => {
-          const { data, _id: id } = translation;
-          const { i18n, scope, name, tag } = data;
-          if (!globalTranslations[data.language]) {
-            globalTranslations[data.language] = [];
-          }
-          globalTranslations[data.language].push({
-            id,
-            name,
-            scope,
-            tag,
-            translations: mapFormioKeyWithNorwegianText(tag, i18n, scope),
-          });
-
-          return globalTranslations;
-        }, {});
-      })
-      .then((globalTranslations) => {
-        console.log("Fetched global translations", globalTranslations);
-        return globalTranslations;
-      });
+      .then(mapFormioKeysToLabelsForValidering)
+      .then(languagesUtil.globalEntitiesToI18nGroupedByTag);
   };
 
   const publishGlobalTranslations = async (languageCode) => {

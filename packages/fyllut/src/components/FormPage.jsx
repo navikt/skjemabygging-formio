@@ -1,48 +1,56 @@
+import {
+  AmplitudeProvider,
+  FyllUtRouter,
+  i18nData,
+  useAppConfig,
+} from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
-import { AmplitudeProvider, FyllUtRouter } from "@navikt/skjemadigitalisering-shared-components";
-import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-
-const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
-
-const loadCountryNames = async (locale) => {
-  return fetch(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) => response.json());
-};
+import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from "../api";
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
-  const [countryNameTranslations, setCountryNameTranslations] = useState({});
+  const [ready, setReady] = useState(false);
+  const { featureToggles } = useAppConfig();
 
   useEffect(() => {
-    fetch(`/fyllut/translations/${form.path}`, { headers: { accept: "application/json" } }).then((response) => {
-      response
-        .json()
-        .then((loadedTranslations) => {
-          setTranslation(loadedTranslations);
-          return loadedTranslations;
-        })
-        .then(async (loadedTranslations) => {
-          const localesInTranslations = Object.keys(loadedTranslations);
-          const countryNamesInBokmaal = await loadCountryNames("nb-NO");
-          await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) => {
-            const result = loadedCountryNames.reduce(
-              (acc, countryNamesPerLocale, index) => ({
-                ...acc,
-                [localesInTranslations[index]]: zipCountryNames(
-                  countryNamesInBokmaal,
-                  countryNamesPerLocale,
-                  (countryName) => countryName.label
-                ),
-              }),
-              {}
-            );
-            setCountryNameTranslations(result);
-          });
-        });
+    async function fetchTranslations() {
+      if (featureToggles.enableTranslations) {
+        const localTranslationsForForm = await loadFormTranslations(form.path);
+        const availableLanguages = Object.keys(localTranslationsForForm);
+        const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
+        const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
+
+        return availableLanguages.reduce(
+          (accumulated, lang) => ({
+            ...accumulated,
+            [lang]: {
+              ...accumulated[lang],
+              ...countryNameTranslations[lang],
+              ...globalTranslations[lang],
+              ...localTranslationsForForm[lang],
+            },
+          }),
+          { "nb-NO": i18nData["nb-NO"] }
+        );
+      } else {
+        return {};
+      }
+    }
+    fetchTranslations().then((completeI18n) => {
+      setReady(true);
+      if (Object.keys(completeI18n).length > 0) {
+        setTranslation(completeI18n);
+      }
     });
-  }, [form]);
+  }, [form, featureToggles.enableTranslations]);
+
+  if (!ready) {
+    return <div>Laster skjema...</div>;
+  }
+
   return (
     <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-      <FyllUtRouter form={form} translations={translation} countryNameTranslations={countryNameTranslations} />
+      <FyllUtRouter form={form} translations={translation} />
     </AmplitudeProvider>
   );
 }

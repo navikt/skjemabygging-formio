@@ -18,7 +18,7 @@ const FyllUtContainer = styled("div")({
   ...bootstrapStyles,
 });
 
-const FyllUtRouter = ({ form, translations, countryNameTranslations }) => {
+const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
@@ -38,7 +38,7 @@ const FyllUtRouter = ({ form, translations, countryNameTranslations }) => {
   }, [loggSkjemaApnet]);
 
   return (
-    <LanguagesProvider translations={translations} countryNameTranslations={countryNameTranslations}>
+    <LanguagesProvider translations={translations}>
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>

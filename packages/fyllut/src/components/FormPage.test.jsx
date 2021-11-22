@@ -23,15 +23,30 @@ const translations = {
 
 describe("FormPage", () => {
 
-  const renderFormPage = (form, enableTranslations = true) => {
+  const renderFormPage = (form, featureToggles = {enableTranslations: true}) => {
     render(
       <MemoryRouter>
-        <AppConfigProvider featureToggles={{enableTranslations}}>
+        <AppConfigProvider featureToggles={featureToggles}>
           <FormPage form={form} />
         </AppConfigProvider>
       </MemoryRouter>
     );
   }
+
+  describe("FeatureToggle enableTranslations=false", () => {
+
+    it("renders form when translations are not enabled", async () => {
+      fetchMock.mockImplementation((url, options) => {
+        return Promise.reject(new Error(`Ingen kall til backend forventes: ${url}`));
+      });
+
+      renderFormPage(form, {enableTranslations: false});
+
+      expect(await screen.findByRole("heading", {name: "Testskjema"})).toBeInTheDocument();
+      expect(await screen.queryByRole("button", {name: "Norsk bokmål"})).not.toBeInTheDocument();
+    });
+
+  });
 
   describe("Language selector", () => {
 
@@ -43,6 +58,9 @@ describe("FormPage", () => {
         }
         if (url.startsWith("/fyllut/countries")) {
           return Promise.resolve(new Response(JSON.stringify([])));
+        }
+        if (url.startsWith("/fyllut/global-translations/")) {
+          return Promise.resolve(new Response(JSON.stringify({})));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));
       });
@@ -61,6 +79,9 @@ describe("FormPage", () => {
         }
         if (url.startsWith("/fyllut/countries")) {
           return Promise.resolve(new Response(JSON.stringify([])));
+        }
+        if (url.startsWith("/fyllut/global-translations/")) {
+          return Promise.resolve(new Response(JSON.stringify({})));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));
       });

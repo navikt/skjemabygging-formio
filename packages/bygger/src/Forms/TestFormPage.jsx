@@ -12,7 +12,7 @@ import ActionRow from "../components/layout/ActionRow";
 export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
   const { featureToggles } = useAppConfig();
   const currentLanguage = useLanguageCodeFromURL();
-  const { translationsForNavForm, countryNameTranslations } = useTranslations();
+  const { translationsForNavForm } = useTranslations();
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
@@ -34,7 +34,6 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
       <FyllUtRouter
         form={form}
         translations={featureToggles.enableTranslations && translationsForNavForm}
-        countryNameTranslations={featureToggles.enableTranslations && countryNameTranslations}
       />
     </AppLayoutWithContext>
   );

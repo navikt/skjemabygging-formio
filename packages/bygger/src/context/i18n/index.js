@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
+import { mapTranslationsToFormioI18nObject, i18nData } from "@navikt/skjemadigitalisering-shared-components";
 
 export const languagesInNorwegian = {
   "nn-NO": "Norsk nynorsk",
@@ -16,7 +16,6 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
   const [localTranslationsForNavForm, setLocalTranslationsForNavForm] = useState({});
-  const [countryNameTranslations, setCountryNameTranslations] = useState({});
 
   useEffect(() => {
     if (!translationsLoaded) {
@@ -31,13 +30,14 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
   }, [loadTranslations, translationsLoaded, forGlobal]);
 
   useEffect(() => {
-    const withoutCountryNames = (translation) => translation.scope !== "component-countryName";
-    setTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations, withoutCountryNames));
-  }, [translations]);
-
-  useEffect(() => {
-    const countryNamesOnly = (translation) => translation.scope === "component-countryName";
-    setCountryNameTranslations(mapTranslationsToFormioI18nObject(translations, countryNamesOnly));
+    const i18n = mapTranslationsToFormioI18nObject(translations);
+    setTranslationsForNavForm({
+      ...i18n,
+      "nb-NO": {
+        ...i18n["nb-NO"],
+        ...i18nData["nb-NO"],
+      }
+    });
   }, [translations]);
 
   useEffect(() => {
@@ -63,7 +63,6 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
         translate,
         translations,
         translationsForNavForm,
-        countryNameTranslations,
         setTranslations,
         updateCurrentTranslation,
         availableLanguages,

@@ -6,12 +6,11 @@ import FyllUtLanguageSelector from "./FyllUtLanguageSelector";
 import userEvent from "@testing-library/user-event";
 
 const defaultTranslations = {};
-const defaultCountryNameTranslations = {};
 
 const renderFyllUtLanguageSelector = (translations, path = "") => {
   render(
     <MemoryRouter initialEntries={[path]}>
-      <LanguagesProvider translations={translations || defaultTranslations} countryNameTranslations={defaultCountryNameTranslations}>
+      <LanguagesProvider translations={translations || defaultTranslations}>
         <FyllUtLanguageSelector />
       </LanguagesProvider>
     </MemoryRouter>
