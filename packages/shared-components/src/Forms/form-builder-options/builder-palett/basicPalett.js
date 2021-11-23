@@ -215,6 +215,7 @@ const basicPalett = {
       },
     },
     url: {
+      ignore: true,
       title: "Nettsted",
       key: "url",
       icon: "link",
