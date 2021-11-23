@@ -1,3 +1,5 @@
+import ibanSchema from "../schemas/ibanSchema";
+
 const pengerOgKontoPalett = {
   title: "Penger og konto",
   components: {
@@ -41,6 +43,12 @@ const pengerOgKontoPalett = {
           minLength: 11,
         },
       },
+    },
+    iban: {
+      title: "IBAN",
+      key: "iban",
+      icon: "bank",
+      schema: ibanSchema(),
     },
   },
 };
