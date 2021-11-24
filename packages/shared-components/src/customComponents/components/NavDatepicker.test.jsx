@@ -2,9 +2,9 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import moment from "moment";
 import NavDatePicker from "./NavDatepicker";
 
+Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
 describe("NavDatePicker", () => {
   describe("validation", () => {
-    Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
     let datePicker;
     const mockedShowNorwegianOrTranslation = (text) => TEXTS.validering[text];
 
@@ -15,9 +15,6 @@ describe("NavDatePicker", () => {
         .mockImplementation((text) => mockedShowNorwegianOrTranslation(text));
     });
 
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
     it("returns true when input is undefined", () => {
       expect(datePicker.validateDatePicker(undefined)).toBe(true);
     });
@@ -217,7 +214,6 @@ describe("NavDatePicker", () => {
 
       describe("earliestFromToday is set to number 0", () => {
         it("fails if selected date is yesterday", () => {
-          console.log("moment", moment());
           expect(datePicker.validateEarliestAndLatestDate(0, undefined, moment().subtract(1, "d"))).toBe(
             "Datoen kan ikke være tidligere enn 15.05.2030"
           );
