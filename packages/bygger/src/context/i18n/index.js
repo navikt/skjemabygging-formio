@@ -48,7 +48,7 @@ function I18nProvider({ children, loadTranslations, forGlobal = false, form }) {
         ...nbNoI18nFormTexts
       }
     });
-  }, [translations]);
+  }, [translations, form]);
 
   useEffect(() => {
     const withoutCountryNames = (translation) =>
