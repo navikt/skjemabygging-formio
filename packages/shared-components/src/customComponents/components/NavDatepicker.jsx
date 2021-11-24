@@ -63,6 +63,53 @@ export default class NavDatepicker extends FormioReactComponent {
     };
   }
 
+  showNorwegianOrTranslation(text) {
+    if (this.t(text) === text) {
+      return TEXTS.validering[text];
+    }
+    return this.t(text);
+  }
+
+  validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
+    if (isCorrectOrder(beforeDate, inputDate, mayBeEqual)) {
+      return true;
+    }
+    const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
+    return mayBeEqual
+      ? `${this.showNorwegianOrTranslation("dateNotBeforeFromDate")} (${beforeDateAsString})`
+      : `${this.showNorwegianOrTranslation("dateAfterFromDate")} (${beforeDateAsString})`;
+  }
+
+  validateEarliestAndLatestDate(earliestFromToday = "", latestFromToday = "", inputDate) {
+    const earliestAllowedDate = !!String(earliestFromToday) ? moment().add(String(earliestFromToday), "d") : undefined;
+    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
+    const latestAllowedDate = !!String(latestFromToday) ? moment().add(String(latestFromToday), "d") : undefined;
+    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
+
+    if (earliestAllowedDate && latestAllowedDate) {
+      if (!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)) {
+        return true;
+      }
+      return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
+        ? `${this.showNorwegianOrTranslation(
+            "dateNotBeforeAllowedDate"
+          )} ${earliestAllowedDateAsString} ${this.showNorwegianOrTranslation(
+            "orLaterThan"
+          )} ${latestAllowedDateAsString}`
+        : true;
+    }
+
+    if (earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, "d")) {
+      return `${this.showNorwegianOrTranslation("dateNotBeforeAllowedDate")} ${earliestAllowedDateAsString}`;
+    }
+
+    if (latestAllowedDate && inputDate.isAfter(latestAllowedDate, "d")) {
+      return `${this.showNorwegianOrTranslation("dateNotLaterThanAllowedDate")} ${latestAllowedDateAsString}`;
+    }
+
+    return true;
+  }
+
   validateDatePicker(
     input,
     submissionData,
@@ -76,69 +123,22 @@ export default class NavDatepicker extends FormioReactComponent {
       return true;
     }
 
-    const showNorwegianOrTranslation = (text) => {
-      if (this.t(text) === text) {
-        return TEXTS.validering[text];
-      }
-      return this.t(text);
-    };
-
-    const validateToAndFromDate = (beforeDate, inputDate, mayBeEqual) => {
-      if (isCorrectOrder(beforeDate, inputDate, mayBeEqual)) {
-        return true;
-      }
-      const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
-      return mayBeEqual
-        ? `${showNorwegianOrTranslation("dateNotBeforeFromDate")} (${beforeDateAsString})`
-        : `${showNorwegianOrTranslation("dateAfterFromDate")} (${beforeDateAsString})`;
-    };
-
     let toAndFromDateValidation = true;
     if (beforeDateInputKey) {
       const beforeDateValue =
         submissionData[beforeDateInputKey] ||
         (beforeDateInputKey.includes(".") && row && row[beforeDateInputKey.replace(/.*\./i, "")]);
       if (beforeDateValue) {
-        toAndFromDateValidation = validateToAndFromDate(moment(beforeDateValue), moment(input), mayBeEqual);
+        toAndFromDateValidation = this.validateToAndFromDate(moment(beforeDateValue), moment(input), mayBeEqual);
       }
     }
 
     const earliestFromToday = String(relativeEarliestAllowedDate);
     const latestFromToday = String(relativeLatestAllowedDate);
 
-    const validateEarliestAndLatestDate = (earliestFromToday = "", latestFromToday = "", inputDate) => {
-      const earliestAllowedDate = !!String(earliestFromToday)
-        ? moment().add(String(earliestFromToday), "d")
-        : undefined;
-      const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
-      const latestAllowedDate = !!String(latestFromToday) ? moment().add(String(latestFromToday), "d") : undefined;
-      const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
-
-      if (earliestAllowedDate && latestAllowedDate) {
-        if (!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)) {
-          return true;
-        }
-        return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
-          ? `${showNorwegianOrTranslation(
-              "dateNotBeforeAllowedDate"
-            )} ${earliestAllowedDateAsString} ${showNorwegianOrTranslation("orLaterThan")} ${latestAllowedDateAsString}`
-          : true;
-      }
-
-      if (earliestAllowedDate && inputDate.isBefore(earliestAllowedDate, "d")) {
-        return `${showNorwegianOrTranslation("dateNotBeforeAllowedDate")} ${earliestAllowedDateAsString}`;
-      }
-
-      if (latestAllowedDate && inputDate.isAfter(latestAllowedDate, "d")) {
-        return `${showNorwegianOrTranslation("dateNotLaterThanAllowedDate")} ${latestAllowedDateAsString}`;
-      }
-
-      return true;
-    };
-
     const earliestAndLatestDateValidation =
       !!earliestFromToday || !!latestFromToday
-        ? validateEarliestAndLatestDate(earliestFromToday, latestFromToday, moment(input))
+        ? this.validateEarliestAndLatestDate(earliestFromToday, latestFromToday, moment(input))
         : true;
 
     if (typeof toAndFromDateValidation === "string") {
