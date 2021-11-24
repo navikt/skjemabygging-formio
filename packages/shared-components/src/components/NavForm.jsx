@@ -26,6 +26,8 @@ import React, { Component, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
+import { fastCloneDeep } from "formiojs/utils/utils";
+import i18nFormioDefaults from "formiojs/i18n";
 import "nav-frontend-skjema-style";
 import i18nData from "../i18nData";
 import { makeStyles } from "@material-ui/styles";
@@ -42,6 +44,22 @@ const useStyles = makeStyles({
     ...formioFormStyles,
   },
 });
+
+const toLegacy = (i18n) => {
+  // using legacy way of doing translations due to bug https://github.com/formio/formio.js/issues/4465
+  const i18nLegacy = fastCloneDeep(i18nFormioDefaults);
+  Object.keys(i18n).forEach(lang => {
+    if (!i18nLegacy.resources[lang]) {
+      i18nLegacy.resources[lang] = {
+        // extend the default translations (validations, buttons etc.) in case they are not in the options.
+        translation: Object.assign(fastCloneDeep(i18nFormioDefaults.resources.en.translation), i18n[lang])
+      }
+    } else {
+      Object.assign(i18nLegacy.resources[lang].translation, i18n[lang]);
+    }
+  });
+  return i18nLegacy;
+};
 
 const NavForm = (props) => {
 
@@ -61,9 +79,10 @@ const NavForm = (props) => {
 
   const createWebformInstance = (srcOrForm) => {
     const {formioform, formReady, language, i18n} = props;
+    const i18nLegacy = toLegacy(i18n);
     instance = new (formioform || FormioForm)(element, srcOrForm, {
       language,
-      i18n,
+      i18n: i18nLegacy,
       sanitizeConfig: SANITIZE_CONFIG,
       events: NavForm.getDefaultEmitter()
     });
