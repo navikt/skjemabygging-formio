@@ -8,7 +8,7 @@ const ibanSchema = () => ({
   dataGridLabel: true,
   validateOn: "blur",
   validate: {
-    custom: "valid = instance.validateIban(input) ? true : 'Dette er ikke et gyldig IBAN kontonummer';",
+    custom: "valid = instance.validateIban(input);",
     required: true,
   },
 });
