@@ -12,27 +12,21 @@ export default class IBAN extends TextField {
 
   validateIban(iban) {
     const { validateIBAN, ValidationErrorsIBAN } = require("ibantools");
-    const validationResult = validateIBAN(iban);
-    if (validationResult.valid) {
+    const { valid, errorCodes } = validateIBAN(iban);
+    if (valid) {
       return true;
     }
-    console.log("ValidationErrorsIBAN", ValidationErrorsIBAN);
-    console.log("errors: ", validationResult.errorCodes);
-    switch (validationResult.errorCodes[0]) {
-      case ValidationErrorsIBAN.NoIBANProvided:
-        return "Gyldig IBAN er ikke oppgitt";
-      case ValidationErrorsIBAN.NoIBANCountry:
-        return "Oppgitt IBAN mangler landkode (to bokstaver i starten av IBAN-koden)";
-      case ValidationErrorsIBAN.ChecksumNotNumber:
-        return "Oppgitt IBAN er ikke gyldig fordi sjekksummen ikke er et gyldig tall";
-      case ValidationErrorsIBAN.WrongIBANChecksum:
-        return "Oppgitt IBAN har ikke riktig sjekksum. Sjekk at du har tastet riktig.";
-      case ValidationErrorsIBAN.WrongBBANLength:
-        return "Oppgitt IBAN har feil lengde.";
-      case ValidationErrorsIBAN.WrongBBANFormat:
-      default:
-        return "Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig";
-    }
+
+    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) return "Gyldig IBAN er ikke oppgitt";
+    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return "Oppgitt IBAN har feil lengde.";
+    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry))
+      return "Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)";
+    if (errorCodes.includes(ValidationErrorsIBAN.ChecksumNotNumber))
+      return "Oppgitt IBAN er ugyldig fordi sjekksummen ikke er et tall";
+    if (errorCodes.includes(ValidationErrorsIBAN.WrongIBANChecksum))
+      return "Oppgitt IBAN har ikke riktig sjekksum. Sjekk at du har tastet riktig.";
+
+    return "Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig";
   }
 
   get defaultSchema() {
