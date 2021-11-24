@@ -28,8 +28,8 @@ describe("NavForm", () => {
 
   describe("i18n", () => {
 
-    it("should render norwegian label as specified in form definition", async () => {
-      const i18n = {"en": {"Fornavn": "First name"}, "nb-NO": {"submit": "Lagre"}};
+    it("should render norwegian label as specified in i18n", async () => {
+      const i18n = {"en": {"Fornavn": "First name"}, "nb-NO": {"Fornavn": "Fornavn", "submit": "Lagre"}};
       await renderNavForm({
         form: testskjemaForOversettelser,
         language: "nb-NO",
@@ -40,7 +40,7 @@ describe("NavForm", () => {
     });
 
     it("should render the english label as specified in i18n", async () => {
-      const i18n = {"en": {"Fornavn": "First name"}, "nb-NO": {"submit": "Lagre"}};
+      const i18n = {"en": {"Fornavn": "First name"}, "nb-NO": {"Fornavn": "Fornavn", "submit": "Lagre"}};
       await renderNavForm({
         form: testskjemaForOversettelser,
         language: "en",
@@ -51,7 +51,7 @@ describe("NavForm", () => {
     });
 
     it("should change language from norwegian to english", async () => {
-      const i18n = {"en": {"Fornavn": "First name"}, "nb-NO": {"submit": "Lagre"}};
+      const i18n = {"en": {"Fornavn": "First name"}, "nb-NO": {"Fornavn": "Fornavn", "submit": "Lagre"}};
       const {rerender} = await renderNavForm({
         form: testskjemaForOversettelser,
         language: "nb-NO",

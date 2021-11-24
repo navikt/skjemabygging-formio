@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { mapTranslationsToFormioI18nObject, i18nData } from "@navikt/skjemadigitalisering-shared-components";
+import {getFormTexts} from "../../translations/utils";
 
 export const languagesInNorwegian = {
   "nn-NO": "Norsk nynorsk",
@@ -9,7 +10,14 @@ export const languagesInNorwegian = {
 
 const I18nContext = createContext({});
 
-function I18nProvider({ children, loadTranslations, forGlobal = false }) {
+const extractDefaultI18nNbNoFormTexts = form => {
+  // i18n for nb-NO texts as a workaround to bug https://github.com/formio/formio.js/issues/4465
+  return form
+    ? getFormTexts(form).reduce((i18n, formText) => ({...i18n, [formText.text]: formText.text}), {})
+    : {}
+};
+
+function I18nProvider({ children, loadTranslations, forGlobal = false, form }) {
   const [translations, setTranslations] = useState({});
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
@@ -31,11 +39,13 @@ function I18nProvider({ children, loadTranslations, forGlobal = false }) {
 
   useEffect(() => {
     const i18n = mapTranslationsToFormioI18nObject(translations);
+    let nbNoI18nFormTexts = extractDefaultI18nNbNoFormTexts(form);
     setTranslationsForNavForm({
       ...i18n,
       "nb-NO": {
         ...i18n["nb-NO"],
         ...i18nData["nb-NO"],
+        ...nbNoI18nFormTexts
       }
     });
   }, [translations]);
