@@ -129,4 +129,13 @@ describe("getCompleteTranslationLanguageCodeList", () => {
     });
     expect(actual).toEqual(["en", "nn-NO"]);
   });
+
+  it("does not include nb-NO even if complete", () => {
+    const actual = getCompleteTranslationLanguageCodeList(["Bor du i Norge?", "Ja", "Nei"], {
+      en: { "Bor du i Norge?": "Do you live in Norway?", Ja: "Yes", Nei: "No" },
+      "nn-NO": { "Bor du i Norge?": "Bur du i Noreg?", Ja: "Ja", Nei: "Nei", Takk: "Takk" },
+      "nb-NO": { "Bor du i Norge?": "Bor du i Norge?", Ja: "Ja", Nei: "Nei", Takk: "Takk" },
+    });
+    expect(actual).toEqual(["en", "nn-NO"]);
+  });
 });
