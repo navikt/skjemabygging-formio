@@ -48,6 +48,7 @@ export default class Fodselsnummer extends TextFieldComponent {
     });
   }
 
+  //Beholdes for å sikre bakoverkompatibilitet for eldre skjemaer
   validateFnr(fnrTekstWithMiddleSpace) {
     if (fnrTekstWithMiddleSpace === "") {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
@@ -55,13 +56,24 @@ export default class Fodselsnummer extends TextFieldComponent {
     }
 
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
+    return erGyldigFodselsnummer(fnrTekst);
+  }
+
+  validateFnrNew(fnrTekstWithMiddleSpace) {
+    if (fnrTekstWithMiddleSpace === "") {
+      // Vi lar default required-validering ta hånd om tomt felt feilmelding
+      return true;
+    }
+
+    const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
+
     if (!erGyldigeKontrollsifre(fnrTekst)) {
       //translate based on key in validering file.
       return this.t("fodselsnummerDNummer") === "fodselsnummerDNummer"
         ? TEXTS.validering.fodselsnummerDNummer
         : this.t("fodselsnummerDNummer");
     }
-    return "true";
+    return true;
   }
 
   get defaultSchema() {

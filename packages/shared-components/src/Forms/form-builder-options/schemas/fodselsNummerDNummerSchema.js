@@ -8,7 +8,7 @@ const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
   dataGridLabel: true,
   validateOn: "blur",
   validate: {
-    custom: "valid = instance.validateFnr(input) === 'true'? true: instance.validateFnr(input);",
+    custom: "valid = instance.validateFnrNew(input)",
     required: true,
   },
 });
