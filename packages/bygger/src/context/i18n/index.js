@@ -1,5 +1,5 @@
+import { i18nData, mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { mapTranslationsToFormioI18nObject, i18nData } from "@navikt/skjemadigitalisering-shared-components";
 import {getFormTexts} from "../../translations/utils";
 
 export const languagesInNorwegian = {
@@ -19,7 +19,6 @@ const extractDefaultI18nNbNoFormTexts = form => {
 
 function I18nProvider({ children, loadTranslations, forGlobal = false, form }) {
   const [translations, setTranslations] = useState({});
-  const [currentTranslation, setCurrentTranslation] = useState({});
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState({});
@@ -46,7 +45,7 @@ function I18nProvider({ children, loadTranslations, forGlobal = false, form }) {
         ...i18n["nb-NO"],
         ...i18nData["nb-NO"],
         ...nbNoI18nFormTexts
-      }
+      },
     });
   }, [translations, form]);
 
@@ -56,25 +55,12 @@ function I18nProvider({ children, loadTranslations, forGlobal = false, form }) {
     setLocalTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations, withoutCountryNames));
   }, [translations]);
 
-  const updateCurrentTranslation = (languageCode) => {
-    const newTranslation = translations[languageCode] ? translations[languageCode].translations : {};
-    setCurrentTranslation(newTranslation);
-  };
-
-  function translate(originalText) {
-    return currentTranslation && currentTranslation[originalText]
-      ? currentTranslation[originalText].value
-      : originalText;
-  }
-
   return (
     <I18nContext.Provider
       value={{
-        translate,
         translations,
         translationsForNavForm,
         setTranslations,
-        updateCurrentTranslation,
         availableLanguages,
         localTranslationsForNavForm,
       }}
