@@ -63,11 +63,11 @@ export default class NavDatepicker extends FormioReactComponent {
     };
   }
 
-  showNorwegianOrTranslation(text) {
-    if (this.t(text) === text) {
-      return TEXTS.validering[text];
+  showNorwegianOrTranslation(key) {
+    if (this.t(key) === key) {
+      return TEXTS.validering[key];
     }
-    return this.t(text);
+    return this.t(key);
   }
 
   validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
