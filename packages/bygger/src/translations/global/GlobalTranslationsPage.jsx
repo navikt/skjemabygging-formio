@@ -18,6 +18,7 @@ import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
+import PublishGlobalTranslationsButton from "./PublishGlobalTranslationsButton";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
@@ -73,13 +74,8 @@ const GlobalTranslationsPage = ({
 }) => {
   const params = useParams();
   const selectedTag = params.tag || tags.SKJEMATEKSTER;
-  const [publishing, setPublishing] = useState(false);
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
-  const publish = () => {
-    setPublishing(true);
-    publishGlobalTranslations(languageCode).finally(() => setPublishing(false));
-  };
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
@@ -268,9 +264,10 @@ const GlobalTranslationsPage = ({
             <Column className={classes.stickySideBar}>
               <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
-              <Knapp onClick={publish} spinner={publishing}>
-                Publiser
-              </Knapp>
+              <PublishGlobalTranslationsButton
+                languageCode={languageCode}
+                publishGlobalTranslations={publishGlobalTranslations}
+              />
               <Hovedknapp
                 onClick={() => {
                   if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
