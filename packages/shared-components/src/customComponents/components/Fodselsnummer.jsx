@@ -52,7 +52,7 @@ export default class Fodselsnummer extends TextFieldComponent {
   validateFnr(fnrTekstWithMiddleSpace) {
     if (fnrTekstWithMiddleSpace === "") {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
-      return "true";
+      return true;
     }
 
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
