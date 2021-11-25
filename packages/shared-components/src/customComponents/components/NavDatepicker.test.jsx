@@ -6,13 +6,19 @@ Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
 describe("NavDatePicker", () => {
   describe("validation", () => {
     let datePicker;
-    const mockedShowNorwegianOrTranslation = (text) => TEXTS.validering[text];
+    const mockedShowNorwegianOrTranslation = (text, params) => {
+      if (params)
+        return TEXTS.validering[text]
+          .replace(/{{2}([^{}]*)}{2}/, params.minDate)
+          .replace(/{{2}([^{}]*)}{2}/, params.maxDate);
+      else return TEXTS.validering[text];
+    };
 
     beforeEach(() => {
       datePicker = new NavDatePicker();
       jest
         .spyOn(NavDatePicker.prototype, "showNorwegianOrTranslation")
-        .mockImplementation((text) => mockedShowNorwegianOrTranslation(text));
+        .mockImplementation((text, params) => mockedShowNorwegianOrTranslation(text, params));
     });
 
     it("returns true when input is undefined", () => {

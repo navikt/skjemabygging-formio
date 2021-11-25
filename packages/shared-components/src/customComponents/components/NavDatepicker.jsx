@@ -63,11 +63,11 @@ export default class NavDatepicker extends FormioReactComponent {
     };
   }
 
-  showNorwegianOrTranslation(key) {
-    if (this.t(key) === key) {
-      return TEXTS.validering[key];
+  showNorwegianOrTranslation(key, params) {
+    if (params) {
+      return this.t(key) === key ? this.t(TEXTS.validering[key], params) : this.t(key, params);
     }
-    return this.t(key);
+    return this.t(key) === key ? TEXTS.validering[key] : this.t(key);
   }
 
   validateToAndFromDate(beforeDate, inputDate, mayBeEqual) {
@@ -91,11 +91,10 @@ export default class NavDatepicker extends FormioReactComponent {
         return true;
       }
       return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
-        ? `${this.showNorwegianOrTranslation(
-            "dateNotBeforeAllowedDate"
-          )} ${earliestAllowedDateAsString} ${this.showNorwegianOrTranslation(
-            "orLaterThan"
-          )} ${latestAllowedDateAsString}`
+        ? `${this.showNorwegianOrTranslation("dateInBetween", {
+            minDate: earliestAllowedDateAsString,
+            maxDate: latestAllowedDateAsString,
+          })}`
         : true;
     }
 

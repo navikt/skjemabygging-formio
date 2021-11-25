@@ -25,6 +25,6 @@ export const validering = {
   dateNotBeforeFromDate: "Datoen kan ikke være tidligere enn fra-dato",
   dateAfterFromDate: "Datoen må være senere enn fra-dato",
   dateNotBeforeAllowedDate: "Datoen kan ikke være tidligere enn",
-  orLaterThan: "eller senere enn",
+  dateInBetween: "Datoen kan ikke være tidligere enn {{minDate}} eller senere enn {{maxDate}}",
   dateNotLaterThanAllowedDate: "Datoen kan ikke være senere enn",
 };
