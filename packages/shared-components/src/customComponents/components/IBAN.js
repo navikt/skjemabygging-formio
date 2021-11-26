@@ -1,3 +1,4 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import TextField from "formiojs/components/textfield/TextField";
 import TextFieldEditForm from "formiojs/components/textfield/TextField.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
@@ -10,6 +11,10 @@ export default class IBAN extends TextField {
     });
   }
 
+  getErrorMessage(key) {
+    return this.t(key) === key ? TEXTS.validering[key] : this.t(key);
+  }
+
   validateIban(iban) {
     const { validateIBAN, ValidationErrorsIBAN } = require("ibantools");
     const { valid, errorCodes } = validateIBAN(iban);
@@ -17,16 +22,13 @@ export default class IBAN extends TextField {
       return true;
     }
 
-    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) return "Gyldig IBAN er ikke oppgitt";
-    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return "Oppgitt IBAN har feil lengde.";
-    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry))
-      return "Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)";
-    if (errorCodes.includes(ValidationErrorsIBAN.ChecksumNotNumber))
-      return "Oppgitt IBAN er ugyldig fordi sjekksummen ikke er et tall";
-    if (errorCodes.includes(ValidationErrorsIBAN.WrongIBANChecksum))
-      return "Oppgitt IBAN har ikke riktig sjekksum. Sjekk at du har tastet riktig.";
+    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) return this.getErrorMessage("noIBANProvided");
+    if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return this.getErrorMessage("wrongBBANLength");
+    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage("noIBANCountry");
+    if (errorCodes.includes(ValidationErrorsIBAN.ChecksumNotNumber)) return this.getErrorMessage("checksumNotNumber");
+    if (errorCodes.includes(ValidationErrorsIBAN.WrongIBANChecksum)) return this.getErrorMessage("wrongIBANChecksum");
 
-    return "Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig";
+    return this.getErrorMessage("invalidIBAN");
   }
 
   get defaultSchema() {
