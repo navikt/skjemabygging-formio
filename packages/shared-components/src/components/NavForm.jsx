@@ -22,20 +22,21 @@
  * SOFTWARE.
  * */
 
-import React, { Component, useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/styles";
 import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
 import "nav-frontend-skjema-style";
-import i18nData from "../i18nData";
-import { makeStyles } from "@material-ui/styles";
-import { scrollToAndSetFocus } from "../util/focus-management";
+import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
 import { useAmplitude } from "../context/amplitude";
+import { checkConditionOverride, evaluateOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
+import i18nData from "../i18nData";
+import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
+import { scrollToAndSetFocus } from "../util/focus-management";
 import formioFormStyles from "./styles/formioFormStyles";
-import { checkConditionOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
-import {SANITIZE_CONFIG} from "../template/sanitizeConfig";
 
 Utils.checkCondition = checkConditionOverride;
+Utils.evaluate = evaluateOverride;
 
 const useStyles = makeStyles({
   "@global": {
@@ -44,7 +45,6 @@ const useStyles = makeStyles({
 });
 
 const NavForm = (props) => {
-
   let instance;
   let createPromise;
   let element;
@@ -52,22 +52,25 @@ const NavForm = (props) => {
   const mountedRef = useRef(true);
   useStyles();
 
-  useEffect(() => () => {
-    mountedRef.current = false;
-    if (formio) {
-      formio.destroy(true);
-    }
-  }, [formio]);
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
+      if (formio) {
+        formio.destroy(true);
+      }
+    },
+    [formio]
+  );
 
   const createWebformInstance = (srcOrForm) => {
-    const {formioform, formReady, language, i18n} = props;
+    const { formioform, formReady, language, i18n } = props;
     instance = new (formioform || FormioForm)(element, srcOrForm, {
       language,
       i18n,
       sanitizeConfig: SANITIZE_CONFIG,
-      events: NavForm.getDefaultEmitter()
+      events: NavForm.getDefaultEmitter(),
     });
-    createPromise = instance.ready.then(formioInstance => {
+    createPromise = instance.ready.then((formioInstance) => {
       if (mountedRef.current) {
         setFormio(formioInstance);
         if (formReady) {
@@ -80,17 +83,17 @@ const NavForm = (props) => {
   };
 
   const onAnyEvent = (event, ...args) => {
-    if (event.startsWith('formio.')) {
+    if (event.startsWith("formio.")) {
       const funcName = `on${event.charAt(7).toUpperCase()}${event.slice(8)}`;
       // eslint-disable-next-line no-prototype-builtins
-      if (props.hasOwnProperty(funcName) && typeof (props[funcName]) === 'function') {
+      if (props.hasOwnProperty(funcName) && typeof props[funcName] === "function") {
         props[funcName](...args);
       }
     }
   };
 
   const initializeFormio = () => {
-    const {submission} = props;
+    const { submission } = props;
     if (createPromise) {
       instance.onAny(onAnyEvent);
       createPromise.then(() => {
@@ -102,7 +105,7 @@ const NavForm = (props) => {
   };
 
   useEffect(() => {
-    const {src} = props;
+    const { src } = props;
     if (src) {
       createWebformInstance(src).then(() => {
         if (formio) {
@@ -114,7 +117,7 @@ const NavForm = (props) => {
   }, [props.src, props.i18n]);
 
   useEffect(() => {
-    const {form, url} = props;
+    const { form, url } = props;
     if (form) {
       createWebformInstance(form).then(() => {
         if (formio) {
@@ -136,26 +139,17 @@ const NavForm = (props) => {
   }, [props.language]);
 
   useEffect(() => {
-    overrideFormioWizardNextPageAndSubmit(
-      props.loggSkjemaStegFullfort,
-      props.loggSkjemaValideringFeilet
-    );
+    overrideFormioWizardNextPageAndSubmit(props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet);
   }, [props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet]);
 
   useEffect(() => {
-    const {submission} = props;
+    const { submission } = props;
     if (formio && submission) {
       formio.submission = submission;
     }
   }, [props.submission, formio]);
 
-  return (
-    <div
-      className={props.className}
-      data-testid="formMountElement"
-      ref={el => element = el}
-    />
-  );
+  return <div className={props.className} data-testid="formMountElement" ref={(el) => (element = el)} />;
 };
 
 NavForm.propTypes = {
@@ -183,7 +177,7 @@ NavForm.propTypes = {
   onBlur: PropTypes.func,
   onInitialized: PropTypes.func,
   formReady: PropTypes.func,
-  formioform: PropTypes.any
+  formioform: PropTypes.any,
 };
 
 NavForm.defaultProps = {
@@ -196,7 +190,7 @@ NavForm.defaultProps = {
 NavForm.getDefaultEmitter = () => {
   return new EventEmitter({
     wildcard: false,
-    maxListeners: 0
+    maxListeners: 0,
   });
 };
 
