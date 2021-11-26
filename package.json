@@ -15,7 +15,8 @@
     "build:scripts": "lerna exec --scope @navikt/skjemadigitalisering-scripts -- yarn install --frozen-lockfile",
     "start": "lerna run start",
     "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start",
-    "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start",
+    "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start ",
+    "start:fyllut-sof": "lerna run --scope @navikt/fyllut-sof --scope @navikt/fyllut-backend start ",
     "test": "cross-env-shell CI=true lerna run --stream test",
     "test:coverage": "cross-env-shell CI=true lerna run --stream test:coverage",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs"
@@ -46,9 +47,6 @@
     "react-router-dom": "^5.2.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.2"
-  },
-  "engines": {
-    "node": ">=14.15.0 <=14.17.0"
   },
   "husky": {
     "hooks": {

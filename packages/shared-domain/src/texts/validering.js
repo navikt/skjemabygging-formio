@@ -1,5 +1,6 @@
 export const validering = {
   //Generelle feilmeldinger
+  alertMessage: "{{message}}",
   error: "For å gå videre må du rette opp følgende:",
   invalid_email: "{{field}} må være en gyldig epost-adresse.",
   invalid_regex: "{{field}} passer ikke til uttrykket {{regex}}.",

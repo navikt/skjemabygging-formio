@@ -1,0 +1,2555 @@
+[
+  {
+    "fullUrl": "https://hint-api-sit.utvikling.local/kontaktregister/ekstern/Practitioner/be54c000-e7e4-4f1b-9be8-2f5b13d91fb5",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "be54c000-e7e4-4f1b-9be8-2f5b13d91fb5",
+      "meta": {
+        "extension": [
+          {
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+            "valueString": "a3113a66-7b5a-4835-9696-8d250451f291"
+          }
+        ],
+        "versionId": "28",
+        "lastUpdated": "2021-04-09T13:57:16.939+00:00",
+        "profile": [
+          "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Practitioner-v1"
+        ],
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "N",
+            "display": "normal"
+          },
+          {
+            "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+            "version": "deprecated",
+            "code": "Ugradert"
+          }
+        ]
+      },
+      "extension": [
+        {
+          "extension": [
+            {
+              "url": "fregPersonStatus",
+              "valueCode": "bosatt"
+            }
+          ],
+          "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+        },
+        {
+          "extension": [
+            {
+              "url": "date",
+              "valueDateTime": "1975-11-02T23:00:00+00:00"
+            },
+            {
+              "url": "status",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                    "code": "1",
+                    "display": "Bosatt"
+                  }
+                ],
+                "text": "Bosatt"
+              }
+            }
+          ],
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+        },
+        {
+          "extension": [
+            {
+              "url": "code",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NO",
+                    "display": "Norge"
+                  }
+                ],
+                "text": "Norge"
+              }
+            }
+          ],
+          "url": "http://hl7.no/fhir/StructureDefinition/no-basis-person-citizenship"
+        }
+      ],
+      "identifier": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+              "valueCode": "iBruk"
+            }
+          ],
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+          "value": "09047608543"
+        },
+        {
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.4",
+          "value": "9111492"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-OwnerName",
+              "valueString": "hdir:helseaktorportalen"
+            }
+          ],
+          "system": "portalpilot",
+          "value": "MINE-OPPGJOR_MANUELL-REGISTRERING,PRAKSIS_VELGER"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-OwnerName",
+              "valueString": "hdir:sar-import"
+            }
+          ],
+          "system": "hdir:sar:id",
+          "value": "1001754195"
+        }
+      ],
+      "active": true,
+      "name": [
+        {
+          "use": "official",
+          "text": "Mats Johannes Våge",
+          "family": "Våge",
+          "given": [
+            "Mats Johannes"
+          ]
+        },
+        {
+          "use": "usual",
+          "given": [
+            "Mats",
+            "Johannes"
+          ]
+        }
+      ],
+      "telecom": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-OwnerName",
+              "valueString": "hdir:sar-import"
+            }
+          ],
+          "system": "other",
+          "value": "+4712345678;+4798765432;",
+          "use": "work"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-OwnerName",
+              "valueString": "hdir:kontaktvedlikehold"
+            }
+          ],
+          "system": "email",
+          "value": "foo@bar.foobar.no",
+          "use": "work",
+          "rank": 1
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-OwnerName",
+              "valueString": "hdir:kontaktvedlikehold"
+            }
+          ],
+          "system": "phone",
+          "value": "+4722222222",
+          "use": "work",
+          "rank": 1
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1976-04-09",
+      "qualification": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  }
+                ],
+                "text": "Autorisasjon"
+              }
+            },
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-godkjentTurnus",
+              "valueDate": "2007-09-21"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      }
+                    ],
+                    "text": "Full rekvisisjonsrett"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2007-09-20T22:00:00+00:00",
+                    "end": "2056-04-08T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "3",
+                        "display": "Allmenlege med trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Allmenlege med trygderefusjon"
+                      }
+                    ],
+                    "text": "Allmenlege med trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2009-12-13T23:00:00+00:00",
+                    "end": "2046-05-08T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "6",
+                        "display": "Egenerklært kurs i trygdemedisin (del av grunnkurs B)"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "6",
+                        "display": "Egenerklært kurs i trygdemedisin (del av grunnkurs B)"
+                      }
+                    ],
+                    "text": "Egenerklært kurs i trygdemedisin (del av grunnkurs B)"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2013-04-27T22:00:00+00:00",
+                    "end": "2056-04-08T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "2005-06-17"
+                },
+                {
+                  "url": "institution",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "hdir:nhn:hpr:utdanningsinstitusjon",
+                        "code": "974757486",
+                        "display": "Universitetet i Tromsø"
+                      }
+                    ],
+                    "text": "Universitetet i Tromsø"
+                  }
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NO",
+                        "display": "Norge"
+                      }
+                    ],
+                    "text": "Norge"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2007-09-20T22:00:00+00:00",
+            "end": "2056-04-08T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        }
+      ]
+    },
+    "search": {
+      "mode": "match"
+    }
+  },
+  {
+    "fullUrl": "https://hint-api-sit.utvikling.local/kontaktregister/ekstern/Practitioner/cee294ac-7383-462a-930e-7fc0d9ef5d54",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "cee294ac-7383-462a-930e-7fc0d9ef5d54",
+      "meta": {
+        "extension": [
+          {
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+            "valueString": "1673e0ee-0d49-4996-9269-f618d075d3a8"
+          }
+        ],
+        "versionId": "3",
+        "lastUpdated": "2020-12-16T14:40:19.189+00:00",
+        "profile": [
+          "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Practitioner-v1"
+        ],
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "N",
+            "display": "normal"
+          },
+          {
+            "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+            "version": "deprecated",
+            "code": "Ugradert"
+          }
+        ]
+      },
+      "extension": [
+        {
+          "extension": [
+            {
+              "url": "fregPersonStatus",
+              "valueCode": "bosatt"
+            }
+          ],
+          "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+        },
+        {
+          "extension": [
+            {
+              "url": "date",
+              "valueDateTime": "1962-06-22T22:00:00+00:00"
+            },
+            {
+              "url": "status",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                    "code": "1",
+                    "display": "Bosatt"
+                  }
+                ],
+                "text": "Bosatt"
+              }
+            }
+          ],
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+        },
+        {
+          "extension": [
+            {
+              "url": "code",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DK",
+                    "display": "Danmark"
+                  }
+                ],
+                "text": "Danmark"
+              }
+            }
+          ],
+          "url": "http://hl7.no/fhir/StructureDefinition/no-basis-person-citizenship"
+        }
+      ],
+      "identifier": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+              "valueCode": "iBruk"
+            }
+          ],
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+          "value": "29126203584"
+        },
+        {
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.4",
+          "value": "8297177"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-OwnerName",
+              "valueString": "hdir:sar-import"
+            }
+          ],
+          "system": "hdir:sar:id",
+          "value": "1003548758"
+        }
+      ],
+      "active": true,
+      "name": [
+        {
+          "use": "official",
+          "text": "Mats Sannerud",
+          "family": "Sannerud",
+          "given": [
+            "Mats"
+          ]
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1962-12-29",
+      "qualification": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  }
+                ],
+                "text": "Autorisasjon"
+              }
+            },
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-godkjentTurnus",
+              "valueDate": "2003-08-15"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7426",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      },
+                      {
+                        "system": "7426",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      }
+                    ],
+                    "text": "Allmennmedisin"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2009-06-17T22:00:00+00:00",
+                    "end": "2014-06-17T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-speciality"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7426",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      },
+                      {
+                        "system": "7426",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      }
+                    ],
+                    "text": "Allmennmedisin"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2014-06-17T22:00:00+00:00",
+                    "end": "2042-12-28T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-speciality"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      }
+                    ],
+                    "text": "Full rekvisisjonsrett"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2003-08-14T22:00:00+00:00",
+                    "end": "2042-12-28T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "3",
+                        "display": "Allmenlege med trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Allmenlege med trygderefusjon"
+                      }
+                    ],
+                    "text": "Allmenlege med trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2009-06-17T22:00:00+00:00",
+                    "end": "2042-12-28T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      }
+                    ],
+                    "text": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2013-12-09T23:00:00+00:00",
+                    "end": "2042-12-28T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "9",
+                        "display": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "9",
+                        "display": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                      }
+                    ],
+                    "text": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2014-06-17T22:00:00+00:00",
+                    "end": "2019-06-17T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "9",
+                        "display": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "9",
+                        "display": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                      }
+                    ],
+                    "text": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2019-06-17T22:00:00+00:00",
+                    "end": "2024-06-17T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "1986-01-01"
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BG",
+                        "display": "Bulgaria"
+                      }
+                    ],
+                    "text": "Bulgaria"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2003-08-14T22:00:00+00:00",
+            "end": "2042-12-28T23:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        }
+      ]
+    },
+    "search": {
+      "mode": "match"
+    }
+  },
+  {
+    "fullUrl": "https://hint-api-sit.utvikling.local/kontaktregister/ekstern/Practitioner/fdb2f752-c450-4886-ba5f-e85df1e69932",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "fdb2f752-c450-4886-ba5f-e85df1e69932",
+      "meta": {
+        "extension": [
+          {
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+            "valueString": "529abe7d-f3a8-48f5-b8d1-4ad8a678af52"
+          }
+        ],
+        "versionId": "2",
+        "lastUpdated": "2021-01-22T00:02:04.181+00:00",
+        "profile": [
+          "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Practitioner-v1"
+        ],
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "N",
+            "display": "normal"
+          },
+          {
+            "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+            "version": "deprecated",
+            "code": "Ugradert"
+          }
+        ]
+      },
+      "extension": [
+        {
+          "extension": [
+            {
+              "url": "fregPersonStatus",
+              "valueCode": "bosatt"
+            }
+          ],
+          "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+        },
+        {
+          "extension": [
+            {
+              "url": "status",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                    "code": "1",
+                    "display": "Bosatt"
+                  }
+                ],
+                "text": "Bosatt"
+              }
+            }
+          ],
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+        },
+        {
+          "extension": [
+            {
+              "url": "code",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NO",
+                    "display": "Norge"
+                  }
+                ],
+                "text": "Norge"
+              }
+            }
+          ],
+          "url": "http://hl7.no/fhir/StructureDefinition/no-basis-person-citizenship"
+        }
+      ],
+      "identifier": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+              "valueCode": "iBruk"
+            }
+          ],
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+          "value": "31038604166"
+        },
+        {
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.4",
+          "value": "7483074"
+        }
+      ],
+      "active": true,
+      "name": [
+        {
+          "use": "official",
+          "text": "Mats Bøe",
+          "family": "Bøe",
+          "given": [
+            "Mats"
+          ]
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1986-03-31",
+      "qualification": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  }
+                ],
+                "text": "Autorisasjon"
+              }
+            },
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-godkjentTurnus",
+              "valueDate": "2013-02-15"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      }
+                    ],
+                    "text": "Full rekvisisjonsrett"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2013-03-11T23:00:00+00:00",
+                    "end": "2066-03-30T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      }
+                    ],
+                    "text": "Lege under veiledning med rett til trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2013-03-11T23:00:00+00:00",
+                    "end": "2013-09-10T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      }
+                    ],
+                    "text": "Lege under veiledning med rett til trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2013-09-11T22:00:00+00:00",
+                    "end": "2014-01-11T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      }
+                    ],
+                    "text": "Lege under veiledning med rett til trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2014-01-11T23:00:00+00:00",
+                    "end": "2015-01-10T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "3",
+                        "display": "Allmenlege med trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Allmenlege med trygderefusjon"
+                      }
+                    ],
+                    "text": "Allmenlege med trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2015-01-11T23:00:00+00:00",
+                    "end": "2066-03-30T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "2011-06-08"
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SK",
+                        "display": "Slovakia"
+                      }
+                    ],
+                    "text": "Slovakia"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2013-03-11T23:00:00+00:00",
+            "end": "2066-03-30T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        }
+      ]
+    },
+    "search": {
+      "mode": "match"
+    }
+  },
+  {
+    "fullUrl": "https://hint-api-sit.utvikling.local/kontaktregister/ekstern/Practitioner/7dcc6558-a116-4bc7-b2b4-d78a5e26ef78",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "7dcc6558-a116-4bc7-b2b4-d78a5e26ef78",
+      "meta": {
+        "extension": [
+          {
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+            "valueString": "88aab017-6797-4a42-955e-f5f6a2cafcfd"
+          }
+        ],
+        "versionId": "1",
+        "lastUpdated": "2020-11-09T14:36:42.065+00:00",
+        "profile": [
+          "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Practitioner-v1"
+        ],
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "N",
+            "display": "normal"
+          },
+          {
+            "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+            "version": "deprecated",
+            "code": "Ugradert"
+          }
+        ]
+      },
+      "extension": [
+        {
+          "extension": [
+            {
+              "url": "fregPersonStatus",
+              "valueCode": "bosatt"
+            }
+          ],
+          "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+        },
+        {
+          "extension": [
+            {
+              "url": "date",
+              "valueDateTime": "1951-08-02T22:00:00+00:00"
+            },
+            {
+              "url": "status",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                    "code": "1",
+                    "display": "Bosatt"
+                  }
+                ],
+                "text": "Bosatt"
+              }
+            }
+          ],
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+        },
+        {
+          "extension": [
+            {
+              "url": "code",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NO",
+                    "display": "Norge"
+                  }
+                ],
+                "text": "Norge"
+              }
+            }
+          ],
+          "url": "http://hl7.no/fhir/StructureDefinition/no-basis-person-citizenship"
+        }
+      ],
+      "identifier": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+              "valueCode": "iBruk"
+            }
+          ],
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+          "value": "27075106373"
+        },
+        {
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.4",
+          "value": "2098717"
+        }
+      ],
+      "active": true,
+      "name": [
+        {
+          "use": "official",
+          "text": "Mateusz Mats Stavik",
+          "family": "Stavik",
+          "given": [
+            "Mateusz Mats"
+          ]
+        },
+        {
+          "use": "usual",
+          "given": [
+            "Mateusz",
+            "Mats"
+          ]
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1951-07-27",
+      "qualification": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  }
+                ],
+                "text": "Autorisasjon"
+              }
+            },
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-godkjentTurnus",
+              "valueDate": "1980-12-05"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7426",
+                        "code": "42",
+                        "display": "Samfunnsmedisin"
+                      },
+                      {
+                        "system": "7426",
+                        "version": "deprecated",
+                        "code": "42",
+                        "display": "Samfunnsmedisin"
+                      }
+                    ],
+                    "text": "Samfunnsmedisin"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "1994-03-15T23:00:00+00:00",
+                    "end": "2031-07-26T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-speciality"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7426",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      },
+                      {
+                        "system": "7426",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      }
+                    ],
+                    "text": "Allmennmedisin"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "1991-04-14T22:00:00+00:00",
+                    "end": "2016-04-14T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-speciality"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7426",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      },
+                      {
+                        "system": "7426",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Allmennmedisin"
+                      }
+                    ],
+                    "text": "Allmennmedisin"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2016-04-14T22:00:00+00:00",
+                    "end": "2031-07-26T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-speciality"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      }
+                    ],
+                    "text": "Full rekvisisjonsrett"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "1980-12-04T23:00:00+00:00",
+                    "end": "2031-07-26T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "9",
+                        "display": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "9",
+                        "display": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                      }
+                    ],
+                    "text": "Tillegg for spesialist i allmennmedisin (tilleggstakst)"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2016-04-14T22:00:00+00:00",
+                    "end": "2022-04-14T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "1978-12-01"
+                },
+                {
+                  "url": "institution",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "hdir:nhn:hpr:utdanningsinstitusjon",
+                        "code": "974716860",
+                        "display": "Universitetet i Oslo"
+                      }
+                    ],
+                    "text": "Universitetet i Oslo"
+                  }
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NO",
+                        "display": "Norge"
+                      }
+                    ],
+                    "text": "Norge"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "1980-12-04T23:00:00+00:00",
+            "end": "2031-07-26T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        }
+      ]
+    },
+    "search": {
+      "mode": "match"
+    }
+  },
+  {
+    "fullUrl": "https://hint-api-sit.utvikling.local/kontaktregister/ekstern/Practitioner/c3d77cb8-5450-4c5c-b0a1-5588db092a7b",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "c3d77cb8-5450-4c5c-b0a1-5588db092a7b",
+      "meta": {
+        "extension": [
+          {
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+            "valueString": "7251f1b1-92b8-4ac9-b978-563b4aaa7473"
+          }
+        ],
+        "versionId": "2",
+        "lastUpdated": "2021-01-12T00:12:23.987+00:00",
+        "profile": [
+          "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Practitioner-v1"
+        ],
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "N",
+            "display": "normal"
+          },
+          {
+            "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+            "version": "deprecated",
+            "code": "Ugradert"
+          }
+        ]
+      },
+      "extension": [
+        {
+          "extension": [
+            {
+              "url": "fregPersonStatus",
+              "valueCode": "bosatt"
+            }
+          ],
+          "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+        },
+        {
+          "extension": [
+            {
+              "url": "date",
+              "valueDateTime": "1988-05-12T22:00:00+00:00"
+            },
+            {
+              "url": "status",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                    "code": "1",
+                    "display": "Bosatt"
+                  }
+                ],
+                "text": "Bosatt"
+              }
+            }
+          ],
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+        },
+        {
+          "extension": [
+            {
+              "url": "code",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SE",
+                    "display": "Sverige"
+                  }
+                ],
+                "text": "Sverige"
+              }
+            }
+          ],
+          "url": "http://hl7.no/fhir/StructureDefinition/no-basis-person-citizenship"
+        }
+      ],
+      "identifier": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+              "valueCode": "iBruk"
+            }
+          ],
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+          "value": "15058805138"
+        },
+        {
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.4",
+          "value": "10006233"
+        }
+      ],
+      "active": true,
+      "name": [
+        {
+          "use": "official",
+          "text": "Mats Hansen Flatebø",
+          "family": "Flatebø",
+          "given": [
+            "Mats",
+            "Hansen"
+          ]
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1988-05-15",
+      "qualification": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  }
+                ],
+                "text": "Autorisasjon"
+              }
+            },
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-godkjentTurnus",
+              "valueDate": "2019-02-22"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      }
+                    ],
+                    "text": "Full rekvisisjonsrett"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2015-07-28T22:00:00+00:00",
+                    "end": "2068-05-14T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      }
+                    ],
+                    "text": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2015-07-28T22:00:00+00:00",
+                    "end": "2068-05-14T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      }
+                    ],
+                    "text": "Lege under veiledning med rett til trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2015-07-28T22:00:00+00:00",
+                    "end": "2015-12-31T23:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "2",
+                        "display": "Lege under veiledning med rett til trygderefusjon"
+                      }
+                    ],
+                    "text": "Lege under veiledning med rett til trygderefusjon"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2015-12-31T23:00:00+00:00",
+                    "end": "2016-04-29T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "2015-07-29"
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SK",
+                        "display": "Slovakia"
+                      }
+                    ],
+                    "text": "Slovakia"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2015-07-28T22:00:00+00:00",
+            "end": "2068-05-14T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-endReason",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7705",
+                    "code": "1",
+                    "display": "Tilbakekalt"
+                  },
+                  {
+                    "system": "7705",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Tilbakekalt"
+                  }
+                ],
+                "text": "Tilbakekalt"
+              }
+            },
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "3",
+                    "display": "Studentlisens"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "3",
+                    "display": "Studentlisens"
+                  }
+                ],
+                "text": "Studentlisens"
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "3",
+                        "display": "Rekvisisjonsrett uten gruppe A preparater"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Rekvisisjonsrett uten gruppe A preparater"
+                      }
+                    ],
+                    "text": "Rekvisisjonsrett uten gruppe A preparater"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2014-05-31T22:00:00+00:00",
+                    "end": "2015-07-28T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      }
+                    ],
+                    "text": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2015-06-22T22:00:00+00:00",
+                    "end": "2015-07-28T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SK",
+                        "display": "Slovakia"
+                      }
+                    ],
+                    "text": "Slovakia"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2014-05-31T22:00:00+00:00",
+            "end": "2015-07-28T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        }
+      ]
+    },
+    "search": {
+      "mode": "match"
+    }
+  },
+  {
+    "fullUrl": "https://hint-api-sit.utvikling.local/kontaktregister/ekstern/Practitioner/75b2e1d8-db47-40bf-bf1a-f9ba7bbf8f50",
+    "resource": {
+      "resourceType": "Practitioner",
+      "id": "75b2e1d8-db47-40bf-bf1a-f9ba7bbf8f50",
+      "meta": {
+        "extension": [
+          {
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+            "valueString": "99d833f2-b14d-4f54-bd69-5a2d09841159"
+          }
+        ],
+        "versionId": "2",
+        "lastUpdated": "2021-01-16T00:08:00.707+00:00",
+        "profile": [
+          "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Practitioner-v1"
+        ],
+        "security": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+            "code": "N",
+            "display": "normal"
+          },
+          {
+            "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+            "version": "deprecated",
+            "code": "Ugradert"
+          }
+        ]
+      },
+      "extension": [
+        {
+          "extension": [
+            {
+              "url": "fregPersonStatus",
+              "valueCode": "bosatt"
+            }
+          ],
+          "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+        },
+        {
+          "extension": [
+            {
+              "url": "date",
+              "valueDateTime": "1991-01-10T23:00:00+00:00"
+            },
+            {
+              "url": "status",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                    "code": "1",
+                    "display": "Bosatt"
+                  }
+                ],
+                "text": "Bosatt"
+              }
+            }
+          ],
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+        },
+        {
+          "extension": [
+            {
+              "url": "code",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NO",
+                    "display": "Norge"
+                  }
+                ],
+                "text": "Norge"
+              }
+            }
+          ],
+          "url": "http://hl7.no/fhir/StructureDefinition/no-basis-person-citizenship"
+        }
+      ],
+      "identifier": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+              "valueCode": "iBruk"
+            }
+          ],
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+          "value": "05089104779"
+        },
+        {
+          "use": "official",
+          "system": "urn:oid:2.16.578.1.12.4.1.4.4",
+          "value": "10034000"
+        }
+      ],
+      "active": true,
+      "name": [
+        {
+          "use": "official",
+          "text": "Mats Hagen",
+          "family": "Hagen",
+          "given": [
+            "Mats"
+          ]
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1991-08-05",
+      "qualification": [
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "1",
+                    "display": "Autorisasjon"
+                  }
+                ],
+                "text": "Autorisasjon"
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "1",
+                        "display": "Full rekvisisjonsrett"
+                      }
+                    ],
+                    "text": "Full rekvisisjonsrett"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2017-12-20T23:00:00+00:00",
+                    "end": "2071-08-04T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "5",
+                        "display": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                      }
+                    ],
+                    "text": "Gjennomført opplæring i sykemelderarbeid / gjennomført e-læringskurs i sykmelding"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2018-06-03T22:00:00+00:00",
+                    "end": "2071-08-04T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7702",
+                        "code": "12",
+                        "display": "Læringsmålene i spesialistutdanningens del 1 er godkjent"
+                      },
+                      {
+                        "system": "7702",
+                        "version": "deprecated",
+                        "code": "12",
+                        "display": "Læringsmålene i spesialistutdanningens del 1 er godkjent"
+                      }
+                    ],
+                    "text": "Læringsmålene i spesialistutdanningens del 1 er godkjent"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2019-09-05T22:00:00+00:00",
+                    "end": "2071-08-04T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-additionalRegistration"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "2016-01-12"
+                },
+                {
+                  "url": "institution",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "hdir:nhn:hpr:utdanningsinstitusjon",
+                        "code": "974716860",
+                        "display": "Universitetet i Oslo"
+                      }
+                    ],
+                    "text": "Universitetet i Oslo"
+                  }
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NO",
+                        "display": "Norge"
+                      }
+                    ],
+                    "text": "Norge"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2017-12-20T23:00:00+00:00",
+            "end": "2071-08-04T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-approvalType",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.7704",
+                    "code": "3",
+                    "display": "Studentlisens"
+                  },
+                  {
+                    "system": "7704",
+                    "version": "deprecated",
+                    "code": "3",
+                    "display": "Studentlisens"
+                  }
+                ],
+                "text": "Studentlisens"
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "code",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7701",
+                        "code": "3",
+                        "display": "Rekvisisjonsrett uten gruppe A preparater"
+                      },
+                      {
+                        "system": "7701",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Rekvisisjonsrett uten gruppe A preparater"
+                      }
+                    ],
+                    "text": "Rekvisisjonsrett uten gruppe A preparater"
+                  }
+                },
+                {
+                  "url": "period",
+                  "valuePeriod": {
+                    "start": "2016-01-11T23:00:00+00:00",
+                    "end": "2017-08-31T22:00:00+00:00"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-prescriptionCapability"
+            },
+            {
+              "extension": [
+                {
+                  "url": "type",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1.7703",
+                        "code": "3",
+                        "display": "Universitet"
+                      },
+                      {
+                        "system": "7703",
+                        "version": "deprecated",
+                        "code": "3",
+                        "display": "Universitet"
+                      }
+                    ],
+                    "text": "Universitet"
+                  }
+                },
+                {
+                  "url": "date",
+                  "valueDate": "2016-01-12"
+                },
+                {
+                  "url": "institution",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "hdir:nhn:hpr:utdanningsinstitusjon",
+                        "code": "974716860",
+                        "display": "Universitetet i Oslo"
+                      }
+                    ],
+                    "text": "Universitetet i Oslo"
+                  }
+                },
+                {
+                  "url": "country",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NO",
+                        "display": "Norge"
+                      }
+                    ],
+                    "text": "Norge"
+                  }
+                }
+              ],
+              "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Diploma"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "urn:oid:2.16.578.1.12.4.1.1.9060",
+                "code": "LE",
+                "display": "Lege"
+              },
+              {
+                "system": "9060",
+                "version": "deprecated",
+                "code": "LE",
+                "display": "Lege"
+              }
+            ],
+            "text": "Lege"
+          },
+          "period": {
+            "start": "2016-01-11T23:00:00+00:00",
+            "end": "2017-08-31T22:00:00+00:00"
+          },
+          "issuer": {
+            "reference": "Organization/e62f7f42-a3d3-4e7f-9e0e-ec1df11d7528",
+            "type": "Organization",
+            "identifier": {
+              "system": "urn:oid:2.16.578.1.12.4.1.4.101",
+              "value": "983544622"
+            },
+            "display": "Helsedirektoratet"
+          }
+        }
+      ]
+    },
+    "search": {
+      "mode": "match"
+    }
+  }
+]

@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  hapi:
+    image: hapiproject/hapi:latest-distroless
+    ports:
+      - "8096:8096"
+    environment:
+      hapi.fhir.server_address: "http://${INTERNAL_HOST:-host.docker.internal}:8096/fhir"
+      hapi.fhir.tester.home.server_address: "http://${INTERNAL_HOST:-host.docker.internal}:8096/fhir"
+      server.port: "8096"
+    hostname: "${INTERNAL_HOST:-host.docker.internal}"
+
+  launcher:
+    image: smartonfhir/smart-launcher
+    ports:
+      - "8099:8099"
+    environment:
+      FHIR_SERVER_R4: "http://${INTERNAL_HOST:-host.docker.internal}:8096/fhir"
+      BASE_URL: "http://${INTERNAL_HOST:-host.docker.internal}:8099"
+      PICKER_ORIGIN: "http://${INTERNAL_HOST:-host.docker.internal}:8199"
+      LAUNCHER_PORT: "8099"
+
+  patient-browser:
+    image: smartonfhir/patient-browser
+    ports:
+      - "8199:80"
+
+  data-loader:
+    build: example_data
+    environment:
+      FHIR_SERVER_R4: "http://${INTERNAL_HOST:-host.docker.internal}:8096/fhir"

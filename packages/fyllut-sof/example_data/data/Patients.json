@@ -1,0 +1,3016 @@
+[
+  {
+    "resourceType": "Patient",
+    "id": "cc4563db-89d0-41c4-8e44-b0b59f0b0286",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.763+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-06-05T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "PH",
+                  "display": "Filippinene"
+                }
+              ],
+              "text": "Filippinene"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018093924"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Viggo Eriksen",
+        "family": "Eriksen",
+        "given": [
+          "Viggo"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3025"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "3484 HOLMSBU, NORGE",
+        "city": "HOLMSBU",
+        "district": "ASKER",
+        "postalCode": "3484",
+        "country": "NO",
+        "period": {
+          "start": "2017-10-16T22:00:00+00:00"
+        }
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "U",
+          "display": "unmarried"
+        }
+      ],
+      "text": "unmarried"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "59893503-c1d2-4c6f-9372-9cde15ef6312",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.764+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "forsvunnet"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-08-20T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "4",
+                  "display": "Forsvunnet (inaktiv for Dnr)"
+                }
+              ],
+              "text": "Forsvunnet (inaktiv for Dnr)"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "NO",
+                  "display": "Norge"
+                }
+              ],
+              "text": "Norge"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.2",
+        "value": "41018039611"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Eskil Nilssen Enge-Kristoffersen",
+        "family": "Enge-Kristoffersen",
+        "given": [
+          "Eskil",
+          "Nilssen"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "9911"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "3055 KROKSTADELVA, NORGE",
+        "city": "KROKSTADELVA",
+        "postalCode": "3055",
+        "country": "NO",
+        "period": {
+          "start": "1986-04-22T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "9911"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Amundsenstien, 5132 NYBORG, NORGE",
+        "line": [
+          "Amundsenstien"
+        ],
+        "city": "NYBORG",
+        "postalCode": "5132",
+        "country": "NO",
+        "period": {
+          "start": "1984-04-11T22:00:00+00:00",
+          "end": "1986-04-22T22:00:00+00:00"
+        }
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "U",
+          "display": "unmarried"
+        }
+      ],
+      "text": "unmarried"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "4cb24f2d-3428-435f-9039-117c097e19d3",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.789+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-09-21T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "NO",
+                  "display": "Norge"
+                }
+              ],
+              "text": "Norge"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018020838"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Bjørg Berdal",
+        "family": "Berdal",
+        "given": [
+          "Bjørg"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "1134"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "Charlotteallé U, 4233 ERFJORD, NORGE",
+        "line": [
+          "Charlotteallé U"
+        ],
+        "city": "ERFJORD",
+        "district": "SULDAL",
+        "postalCode": "4233",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "0301"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "0, 0169 OSLO, NORGE",
+        "line": [
+          "0"
+        ],
+        "city": "OSLO",
+        "district": "OSLO",
+        "postalCode": "0169",
+        "country": "NO",
+        "period": {
+          "start": "2017-04-09T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3446"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Teodorgate 518, 2760 BRANDBU, NORGE",
+        "line": [
+          "Teodorgate 518"
+        ],
+        "city": "BRANDBU",
+        "district": "GRAN",
+        "postalCode": "2760",
+        "country": "NO",
+        "period": {
+          "start": "2004-09-13T22:00:00+00:00",
+          "end": "2017-04-09T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "0301"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "HOVSETERVEI 14, NORGE",
+        "line": [
+          "HOVSETERVEI 14"
+        ],
+        "district": "OSLO",
+        "country": "NO",
+        "period": {
+          "start": "1997-06-22T22:00:00+00:00",
+          "end": "2004-09-13T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "BAKÅSVEIEN 12, NORGE",
+        "line": [
+          "BAKÅSVEIEN 12"
+        ],
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "M",
+          "display": "Married"
+        }
+      ],
+      "text": "Married"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "f1264c20-6015-4dde-b84b-d98ec67b9497",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.804+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "forsvunnet"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "4",
+                  "display": "Forsvunnet (inaktiv for Dnr)"
+                }
+              ],
+              "text": "Forsvunnet (inaktiv for Dnr)"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "DE",
+                  "display": "Tyskland"
+                }
+              ],
+              "text": "Tyskland"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.2",
+        "value": "41018036140"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Jarle Eggen",
+        "family": "Eggen",
+        "given": [
+          "Jarle"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "2300"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "Ritaalléen, 9750 HONNINGSVÅG, NORGE",
+        "line": [
+          "Ritaalléen"
+        ],
+        "city": "HONNINGSVÅG",
+        "postalCode": "9750",
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "U",
+          "display": "unmarried"
+        }
+      ],
+      "text": "unmarried"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "128dbf5b-b3ab-435d-92e1-f92c2030e067",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.828+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "PL",
+                  "display": "Polen"
+                }
+              ],
+              "text": "Polen"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018043153"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Svein Haaland",
+        "family": "Haaland",
+        "given": [
+          "Svein"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "postal",
+        "text": "AKSEL AAMODTS VEI, EIDSLIVEIEN 43, 1940 BJØRKELANGEN, NORGE",
+        "line": [
+          "AKSEL AAMODTS VEI",
+          "EIDSLIVEIEN 43"
+        ],
+        "city": "BJØRKELANGEN",
+        "postalCode": "1940",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3003"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "physical",
+        "text": "13, NORGE",
+        "line": [
+          "13"
+        ],
+        "district": "SARPSBORG",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3020"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-urban-district",
+            "valueCoding": {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.3403",
+              "code": "302058",
+              "display": "Hjelledal"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "0, NORGE",
+        "line": [
+          "0"
+        ],
+        "district": "NORDRE FOLLO",
+        "country": "NO",
+        "period": {
+          "start": "2018-01-04T23:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3805"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Enoksengate, 3270 LARVIK, NORGE",
+        "line": [
+          "Enoksengate"
+        ],
+        "city": "LARVIK",
+        "district": "LARVIK",
+        "postalCode": "3270",
+        "country": "NO",
+        "period": {
+          "start": "2001-02-05T23:00:00+00:00",
+          "end": "2018-01-04T23:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "5001"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-urban-district",
+            "valueCoding": {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.3403",
+              "code": "500184",
+              "display": "Danielberg"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Hansbakke, 7021 TRONDHEIM, NORGE",
+        "line": [
+          "Hansbakke"
+        ],
+        "city": "TRONDHEIM",
+        "district": "TRONDHEIM",
+        "postalCode": "7021",
+        "country": "NO",
+        "period": {
+          "start": "1996-09-14T22:00:00+00:00",
+          "end": "2001-02-05T23:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3049"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "physical",
+        "text": "Erikalléen, 3405 LIER, NORGE",
+        "line": [
+          "Erikalléen"
+        ],
+        "city": "LIER",
+        "district": "LIER",
+        "postalCode": "3405",
+        "country": "NO",
+        "period": {
+          "start": "1989-04-19T22:00:00+00:00",
+          "end": "1996-09-14T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "0301"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "0, NORGE",
+        "line": [
+          "0"
+        ],
+        "district": "OSLO",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "postal",
+        "text": "Postboks KJELSÅS, Postboks 107 KJELSÅS, 0411 OSLO, NORGE",
+        "line": [
+          "Postboks KJELSÅS",
+          "Postboks 107 KJELSÅS"
+        ],
+        "city": "OSLO",
+        "postalCode": "0411",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "5403"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "physical",
+        "text": "Jørgensenveg 109, NORGE",
+        "line": [
+          "Jørgensenveg 109"
+        ],
+        "district": "ALTA",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "postal",
+        "text": "ARVID ANDRESENS VEI, HESTEHAGEN 24, 1394 NESBRU, NORGE",
+        "line": [
+          "ARVID ANDRESENS VEI",
+          "HESTEHAGEN 24"
+        ],
+        "city": "NESBRU",
+        "postalCode": "1394",
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "M",
+          "display": "Married"
+        }
+      ],
+      "text": "Married"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "405ca62c-d415-43f1-9485-79bd86dbbc9a",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.908+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-07-24T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "SG",
+                  "display": "Singapore"
+                }
+              ],
+              "text": "Singapore"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018039628"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "opphørt"
+          }
+        ],
+        "use": "old",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018031422"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Kaia Elin Dyb",
+        "family": "Dyb",
+        "given": [
+          "Kaia Elin"
+        ]
+      },
+      {
+        "use": "usual",
+        "given": [
+          "Kaia",
+          "Elin"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4618"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "Vikenstubben, 5770 TYSSEDAL, NORGE",
+        "line": [
+          "Vikenstubben"
+        ],
+        "city": "TYSSEDAL",
+        "district": "ULLENSVANG",
+        "postalCode": "5770",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "postal",
+        "text": "Postboks SKØYEN, Postboks 677 SKØYEN, 0214 OSLO, NORGE",
+        "line": [
+          "Postboks SKØYEN",
+          "Postboks 677 SKØYEN"
+        ],
+        "city": "OSLO",
+        "postalCode": "0214",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4203"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "physical",
+        "text": "652, NORGE",
+        "line": [
+          "652"
+        ],
+        "district": "ARENDAL",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "postal",
+        "text": "ARNOLD HAUKELANDS PL., BRODTKORBSGATE 19, 1338 SANDVIKA, NORGE",
+        "line": [
+          "ARNOLD HAUKELANDS PL.",
+          "BRODTKORBSGATE 19"
+        ],
+        "city": "SANDVIKA",
+        "postalCode": "1338",
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "M",
+          "display": "Married"
+        }
+      ],
+      "text": "Married"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "c0a16abe-3f87-4949-8ee2-68a5d1c84bf9",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.963+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-05-31T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                },
+                {
+                  "system": "http://ehelse.no/fhir/CodeSystem/gd-person-status-v05",
+                  "code": "aktiv",
+                  "display": "Aktiv"
+                }
+              ],
+              "text": "Aktiv"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "PL",
+                  "display": "Polen"
+                }
+              ],
+              "text": "Polen"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.2",
+        "value": "41018031173"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Øyvind Vegard Sharif Brustad",
+        "family": "Brustad",
+        "given": [
+          "Øyvind Vegard",
+          "Sharif"
+        ]
+      },
+      {
+        "use": "usual",
+        "given": [
+          "Øyvind",
+          "Vegard"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "postal",
+        "text": "BAKKEHAGAN, STUBBVEIEN 5, NORGE",
+        "line": [
+          "BAKKEHAGAN",
+          "STUBBVEIEN 5"
+        ],
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "9908"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "physical",
+        "text": "1 B, 1534 MOSS, NORGE",
+        "line": [
+          "1 B"
+        ],
+        "city": "MOSS",
+        "postalCode": "1534",
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "M",
+          "display": "Married"
+        }
+      ],
+      "text": "Married"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "07ba4147-3974-40dd-a578-6b44c2548f92",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.95+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-06-28T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "NO",
+                  "display": "Norge"
+                }
+              ],
+              "text": "Norge"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018009125"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Per Eriksrud",
+        "family": "Eriksrud",
+        "given": [
+          "Per"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4204"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "Wahlvei, NORGE",
+        "line": [
+          "Wahlvei"
+        ],
+        "district": "KRISTIANSAND",
+        "country": "NO",
+        "period": {
+          "start": "1995-05-25T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4601"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-urban-district",
+            "valueCoding": {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.3403",
+              "code": "460194",
+              "display": "Evensenstøl"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Grandegata, NORGE",
+        "line": [
+          "Grandegata"
+        ],
+        "district": "BERGEN",
+        "country": "NO",
+        "period": {
+          "start": "2020-10-11T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3005"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Storebøterrasse, 3023 DRAMMEN, NORGE",
+        "line": [
+          "Storebøterrasse"
+        ],
+        "city": "DRAMMEN",
+        "district": "DRAMMEN",
+        "postalCode": "3023",
+        "country": "NO",
+        "period": {
+          "start": "1996-01-02T23:00:00+00:00",
+          "end": "2020-10-11T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "0301"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "0, NORGE",
+        "line": [
+          "0"
+        ],
+        "district": "OSLO",
+        "country": "NO",
+        "period": {
+          "start": "1982-04-29T22:00:00+00:00",
+          "end": "1996-01-02T23:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "0301"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "BÅHUSVEIEN 2, 0573 OSLO, NORGE",
+        "line": [
+          "BÅHUSVEIEN 2"
+        ],
+        "city": "OSLO",
+        "district": "OSLO",
+        "postalCode": "0573",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "3004"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "0, 1613 FREDRIKSTAD, NORGE",
+        "line": [
+          "0"
+        ],
+        "city": "FREDRIKSTAD",
+        "district": "FREDRIKSTAD",
+        "postalCode": "1613",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4617"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Ovehaugen, 5470 ROSENDAL, NORGE",
+        "line": [
+          "Ovehaugen"
+        ],
+        "city": "ROSENDAL",
+        "district": "KVINNHERAD",
+        "postalCode": "5470",
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "M",
+          "display": "Married"
+        }
+      ],
+      "text": "Married"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "ef7b3632-7f83-4383-a3a4-a16bddb27d78",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:35.989+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-05-12T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "NO",
+                  "display": "Norge"
+                }
+              ],
+              "text": "Norge"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018006835"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Oda Brunes",
+        "family": "Brunes",
+        "given": [
+          "Oda"
+        ]
+      }
+    ],
+    "gender": "female",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "5443"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "D, 9990 BÅTSFJORD, NORGE",
+        "line": [
+          "D"
+        ],
+        "city": "BÅTSFJORD",
+        "district": "BÅTSFJORD",
+        "postalCode": "9990",
+        "country": "NO",
+        "period": {
+          "start": "1999-11-18T23:00:00+00:00"
+        }
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "M",
+          "display": "Married"
+        }
+      ],
+      "text": "Married"
+    }
+  },
+  {
+    "resourceType": "Patient",
+    "id": "b6b55704-5119-4e46-be08-10670bf2aa19",
+    "meta": {
+      "extension": [
+        {
+          "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-CorrelationId",
+          "valueString": "163a7b2e-0afc-4906-8e20-392dc0f799ca"
+        }
+      ],
+      "versionId": "1",
+      "lastUpdated": "2021-05-12T05:42:36.034+00:00",
+      "profile": [
+        "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-Patient-v1"
+      ],
+      "security": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+          "code": "N",
+          "display": "normal"
+        },
+        {
+          "system": "https://ehelse.no/fhir/CodeSystem/gd-address-confidentiality-v05",
+          "version": "deprecated",
+          "code": "Ugradert"
+        }
+      ]
+    },
+    "extension": [
+      {
+        "extension": [
+          {
+            "url": "fregPersonStatus",
+            "valueCode": "bosatt"
+          }
+        ],
+        "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-status"
+      },
+      {
+        "extension": [
+          {
+            "url": "date",
+            "valueDateTime": "1980-03-30T22:00:00+00:00"
+          },
+          {
+            "url": "status",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsedirektoratet.no/fhir/CodeSystem/nhn-preg-person-status",
+                  "code": "1",
+                  "display": "Bosatt"
+                }
+              ],
+              "text": "Bosatt"
+            }
+          }
+        ],
+        "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PersonStatus"
+      },
+      {
+        "extension": [
+          {
+            "url": "code",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:iso:std:iso:3166",
+                  "code": "PL",
+                  "display": "Polen"
+                }
+              ],
+              "text": "Polen"
+            }
+          }
+        ],
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
+      }
+    ],
+    "identifier": [
+      {
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/gd-person-identifier-status",
+            "valueCode": "iBruk"
+          }
+        ],
+        "use": "official",
+        "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+        "value": "01018091328"
+      }
+    ],
+    "active": true,
+    "name": [
+      {
+        "use": "official",
+        "text": "Karsten Austad",
+        "family": "Austad",
+        "given": [
+          "Karsten"
+        ]
+      }
+    ],
+    "gender": "male",
+    "birthDate": "1980-01-01",
+    "deceasedBoolean": false,
+    "address": [
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4601"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-urban-district",
+            "valueCoding": {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.3403",
+              "code": "460192",
+              "display": "Jakobsennes"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "home",
+        "type": "both",
+        "text": "Torgate, NORGE",
+        "line": [
+          "Torgate"
+        ],
+        "district": "BERGEN",
+        "country": "NO",
+        "period": {
+          "start": "1997-05-05T22:00:00+00:00"
+        }
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4601"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              },
+              {
+                "url": "date",
+                "valueDateTime": "2021-12-08T15:01:23.513+00:00"
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Jacekallé 572, NORGE",
+        "line": [
+          "Jacekallé 572"
+        ],
+        "district": "BERGEN",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "4601"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-urban-district",
+            "valueCoding": {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.3403",
+              "code": "460147",
+              "display": "Olsenbostad"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "NESODDVEIENSOMMERVEIEN 16, Brovoldstrand, NORGE",
+        "line": [
+          "NESODDVEIENSOMMERVEIEN 16",
+          "Brovoldstrand"
+        ],
+        "district": "BERGEN",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "5001"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "Helenhagen, NORGE",
+        "line": [
+          "Helenhagen"
+        ],
+        "district": "TRONDHEIM",
+        "country": "NO"
+      },
+      {
+        "extension": [
+          {
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-address-official",
+            "valueBoolean": true
+          },
+          {
+            "extension": [
+              {
+                "url": "municipality",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.3402",
+                  "code": "5054"
+                }
+              }
+            ],
+            "url": "http://hl7.no/fhir/StructureDefinition/no-basis-propertyinformation"
+          },
+          {
+            "extension": [
+              {
+                "url": "type",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://ehelse.no/fhir/CodeSystem/gd-address-postaltype-v01.codesystem",
+                      "code": "0",
+                      "display": "Vanlig bosatt"
+                    }
+                  ],
+                  "text": "Vanlig bosatt"
+                }
+              }
+            ],
+            "url": "http://helsedirektoratet.no/fhir/StructureDefinition/hdir-PostalType"
+          }
+        ],
+        "use": "old",
+        "type": "both",
+        "text": "V, 7112 HASSELVIKA, NORGE",
+        "line": [
+          "V"
+        ],
+        "city": "HASSELVIKA",
+        "district": "INDRE FOSEN",
+        "postalCode": "7112",
+        "country": "NO"
+      }
+    ],
+    "maritalStatus": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+          "code": "U",
+          "display": "unmarried"
+        }
+      ],
+      "text": "unmarried"
+    }
+  }
+]

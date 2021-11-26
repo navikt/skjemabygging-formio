@@ -1,6 +1,6 @@
-import { Utils } from "formiojs";
 import cloneDeep from "lodash.clonedeep";
 import set from "lodash.set";
+import { Utils } from "formiojs";
 
 const {
   getComponentPath,
@@ -30,7 +30,7 @@ function mapChainedLookups(text) {
   return mappedString;
 }
 
-function sanitizeJavaScriptCode(text) {
+function sanitizeCustomConditional(text) {
   if (typeof text !== "string") {
     return text;
   }
@@ -69,7 +69,7 @@ function checkConditionOverride(component, row, data, form, instance) {
   if (customConditional) {
     return checkCustomConditional(
       component,
-      sanitizeJavaScriptCode(customConditional),
+      sanitizeCustomConditional(customConditional),
       row,
       data,
       form,
@@ -88,4 +88,4 @@ function checkConditionOverride(component, row, data, form, instance) {
   return true;
 }
 
-export { sanitizeJavaScriptCode, checkConditionOverride };
+export { sanitizeCustomConditional, checkConditionOverride };

@@ -35,7 +35,7 @@ export const getCompleteTranslationLanguageCodeList = (
 ): string[] => {
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {
-    Object.keys(translationsForNavForm).filter(lang => lang !== "nb-NO").forEach((languageCode) => {
+    Object.keys(translationsForNavForm).forEach((languageCode) => {
       const incompleteTranslationList: string[] = allFormOriginalTexts.filter(
         (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0
       );
