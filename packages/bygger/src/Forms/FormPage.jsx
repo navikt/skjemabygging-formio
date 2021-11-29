@@ -23,7 +23,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogo
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [loadForm, formPath]);
 
   if (status === "LOADING") {
     return <LoadingComponent />;

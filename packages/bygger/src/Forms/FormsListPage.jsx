@@ -141,7 +141,7 @@ function FormsListPage({ url, loadFormsList, onDelete, onNew, onLogout }) {
       setForms(forms);
       setStatus("FINISHED LOADING");
     });
-  }, []);
+  }, [loadFormsList]);
 
   if (status === "LOADING") {
     return <LoadingComponent />;
