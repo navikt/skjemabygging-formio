@@ -29,6 +29,19 @@ export const useFormioForms = (formio, store, userAlerter) => {
     });
   };
 
+  const loadForm = (formPath) => {
+    return formio
+      .loadForms({
+        params: {
+          type: "form",
+          tags: "nav-skjema",
+          path: formPath,
+          limit: 1,
+        },
+      })
+      .then((forms) => forms[0]);
+  };
+
   const onChangeForm = (form) => {
     setForms([...forms.filter((each) => each.path !== form.path), form]);
   };
@@ -76,8 +89,8 @@ export const useFormioForms = (formio, store, userAlerter) => {
   };
   return {
     forms,
+    loadForm,
     loadFormsList,
-    onChangeForm,
     onSave,
     onCreate,
     onDelete,

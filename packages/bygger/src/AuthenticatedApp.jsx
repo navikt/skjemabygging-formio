@@ -11,7 +11,7 @@ import { UserAlerterContext } from "./userAlerting";
 
 function AuthenticatedApp({ serverURL, formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, loadFormsList, onChangeForm, onSave, onCreate, onDelete, onPublish } = useFormioForms(
+  const { forms, loadForm, loadFormsList, onSave, onCreate, onDelete, onPublish } = useFormioForms(
     formio,
     store,
     userAlerter
@@ -38,12 +38,12 @@ function AuthenticatedApp({ serverURL, formio, store }) {
         <Route path="/forms">
           <FormsRouter
             forms={forms}
-            onChange={onChangeForm}
             onSave={onSave}
             onCreate={wrappedCreate}
             onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
+            loadForm={loadForm}
             loadFormsList={loadFormsList}
             loadTranslations={loadTranslationsForEditPage}
             onLogout={logout}

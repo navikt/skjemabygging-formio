@@ -1,18 +1,15 @@
 import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Components from "formiojs/components/Components";
 import "nav-frontend-lenker-style";
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import I18nProvider from "../context/i18n";
 import { FormPage } from "./FormPage";
 import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
 export const FormsRouter = ({
-  forms,
+  loadForm,
   loadFormsList,
-  onChange,
   onSave,
   onNew,
   onCreate,
@@ -28,35 +25,18 @@ export const FormsRouter = ({
       <Route path={`${path}/new`}>
         <NewFormPage onCreate={onCreate} onLogout={onLogout} />
       </Route>
-      <Route
-        path={`${path}/:formpath`}
-        render={({ match }) => {
-          const form = getFormFromPath(forms, match.params.formpath);
-          return (
-            <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
-              <FormPage
-                {...match.params}
-                form={form}
-                onChange={onChange}
-                onSave={onSave}
-                onPublish={onPublish}
-                onLogout={onLogout}
-              />
-            </I18nProvider>
-          );
-        }}
-      />
+      <Route path={`${path}/:formPath`}>
+        <FormPage
+          loadForm={loadForm}
+          loadTranslations={loadTranslations}
+          onSave={onSave}
+          onPublish={onPublish}
+          onLogout={onLogout}
+        />
+      </Route>
       <Route path={path}>
         <FormsListPage loadFormsList={loadFormsList} onLogout={onLogout} url={url} onDelete={onDelete} onNew={onNew} />
       </Route>
     </Switch>
   );
-};
-
-const getFormFromPath = (forms, path) => {
-  const result = forms.find(navFormUtils.formMatcherPredicate(path));
-  if (!result) {
-    throw Error(`No form at path "${path}"`);
-  }
-  return result;
 };
