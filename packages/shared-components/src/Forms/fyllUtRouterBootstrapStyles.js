@@ -26,7 +26,6 @@ export const bootstrapStyles = {
     flexWrap: "wrap",
     alignItems: "stretch",
     width: "100%",
-    zIndex: 10000,
 
     "& .form-control": {
       position: "relative",
@@ -84,5 +83,5 @@ export const bootstrapStyles = {
     opacity: 0,
     zIndex: -1,
     position: "absolute",
-  }
+  },
 };

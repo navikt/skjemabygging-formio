@@ -1,15 +1,15 @@
-import { AppLayoutWithContext } from "../components/AppLayout";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React, { useContext } from "react";
-import { useModal } from "../util/useModal";
 import { makeStyles } from "@material-ui/styles";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Undertittel } from "nav-frontend-typografi";
+import React from "react";
+import { Link } from "react-router-dom";
+import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
 import ActionRow from "../components/layout/ActionRow";
-import { Link } from "react-router-dom";
-import Row from "../components/layout/Row";
 import Column from "../components/layout/Column";
-import { UserAlerterContext } from "../userAlerting";
-import { Undertittel } from "nav-frontend-typografi";
+import Row from "../components/layout/Row";
+import UserFeedback from "../components/UserFeedback";
+import { useModal } from "../util/useModal";
 import PublishModalComponents from "./PublishModalComponents";
 
 const useStyles = makeStyles({
@@ -22,9 +22,6 @@ const useStyles = makeStyles({
 });
 
 export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onLogout, onPublish }) {
-  const userAlerter = useContext(UserAlerterContext);
-  const alertComponent = userAlerter.alertComponent();
-
   const title = `${form.title}`;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
@@ -51,7 +48,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
         <Column>
           <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
           <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
-          {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+          <UserFeedback />
         </Column>
       </Row>
 

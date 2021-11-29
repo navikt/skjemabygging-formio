@@ -1,4 +1,5 @@
+import { checkConditionOverride, sanitizeJavaScriptCode } from "./conditional-overrides";
+import { evaluateOverride } from "./utils-overrides";
 import { overrideFormioWizardNextPageAndSubmit } from "./wizard-overrides";
-import { checkConditionOverride, sanitizeCustomConditional } from "./conditional-overrides";
 
-export { checkConditionOverride, overrideFormioWizardNextPageAndSubmit, sanitizeCustomConditional };
+export { checkConditionOverride, evaluateOverride, overrideFormioWizardNextPageAndSubmit, sanitizeJavaScriptCode };

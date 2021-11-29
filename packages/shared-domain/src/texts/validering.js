@@ -1,6 +1,5 @@
 export const validering = {
   //Generelle feilmeldinger
-  alertMessage: "{{message}}",
   error: "For å gå videre må du rette opp følgende:",
   invalid_email: "{{field}} må være en gyldig epost-adresse.",
   invalid_regex: "{{field}} passer ikke til uttrykket {{regex}}.",
@@ -27,4 +26,12 @@ export const validering = {
   checksumNotNumber: "Oppgitt IBAN er ugyldig fordi sjekksummen ikke er et tall",
   wrongIBANChecksum: "Oppgitt IBAN har feil sjekksum. Sjekk at du har tastet riktig.",
   invalidIBAN: "Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig.",
+
+  //custom component
+  fodselsnummerDNummer: "Dette er ikke et gyldig fødselsnummer eller D-nummer",
+  dateNotBeforeFromDate: "Datoen kan ikke være tidligere enn fra-dato",
+  dateAfterFromDate: "Datoen må være senere enn fra-dato",
+  dateNotBeforeAllowedDate: "Datoen kan ikke være tidligere enn",
+  dateInBetween: "Datoen kan ikke være tidligere enn {{minDate}} eller senere enn {{maxDate}}",
+  dateNotLaterThanAllowedDate: "Datoen kan ikke være senere enn",
 };

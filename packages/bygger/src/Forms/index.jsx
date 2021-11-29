@@ -58,7 +58,7 @@ export const FormsRouter = ({
         render={({ match }) => {
           const form = getFormFromPath(forms, match.params.formpath);
           return (
-            <I18nProvider loadTranslations={() => loadTranslations(form.path)}>
+            <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
               <FormPage
                 {...match.params}
                 form={form}

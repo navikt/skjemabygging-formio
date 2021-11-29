@@ -1,3 +1,4 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import TextFieldComponent from "formiojs/components/textfield/TextField";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
@@ -47,13 +48,32 @@ export default class Fodselsnummer extends TextFieldComponent {
     });
   }
 
+  //Beholdes for å sikre bakoverkompatibilitet for eldre skjemaer
   validateFnr(fnrTekstWithMiddleSpace) {
     if (fnrTekstWithMiddleSpace === "") {
       // Vi lar default required-validering ta hånd om tomt felt feilmelding
       return true;
     }
+
     const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
     return erGyldigFodselsnummer(fnrTekst);
+  }
+
+  validateFnrNew(fnrTekstWithMiddleSpace) {
+    if (fnrTekstWithMiddleSpace === "") {
+      // Vi lar default required-validering ta hånd om tomt felt feilmelding
+      return true;
+    }
+
+    const fnrTekst = fnrTekstWithMiddleSpace.replace(" ", "");
+
+    if (!erGyldigeKontrollsifre(fnrTekst)) {
+      //translate based on key in validering file.
+      return this.t("fodselsnummerDNummer") === "fodselsnummerDNummer"
+        ? TEXTS.validering.fodselsnummerDNummer
+        : this.t("fodselsnummerDNummer");
+    }
+    return true;
   }
 
   get defaultSchema() {
