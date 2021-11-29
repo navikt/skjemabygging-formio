@@ -1,15 +1,38 @@
-import React, { useEffect } from "react";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import PropTypes from "prop-types";
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import React, { useEffect, useState } from "react";
+import FormPage from "./FormPage";
 
-export const FormPageWrapper = ({ routeProps, forms, children }) => {
+class HttpError extends Error {}
+
+export const FormPageWrapper = ({ routeProps }) => {
   const formPath = routeProps.match.params.formpath;
-  const targetForm = forms.find(navFormUtils.formMatcherPredicate(formPath));
+  // const targetForm = forms.find(navFormUtils.formMatcherPredicate(formPath));
+  const [status, setStatus] = useState("LOADING");
+  const [targetForm, setTargetForm] = useState();
+  useEffect(() => {
+    fetch(`/fyllut/forms/${formPath}`, { headers: { accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) {
+          throw new HttpError(response.statusText);
+        }
+        return response.json();
+      })
+      .then((results) => {
+        setTargetForm(results[0]);
+        setStatus("FINISHED LOADING");
+      });
+  }, [formPath]);
+
   const formTitle = targetForm ? targetForm.title : "";
 
   useEffect(() => {
     document.title = `${formTitle} | www.nav.no`;
   }, [formTitle]);
+
+  if (status === "LOADING") {
+    return <LoadingComponent />;
+  }
 
   if (!targetForm) {
     return (
@@ -18,11 +41,11 @@ export const FormPageWrapper = ({ routeProps, forms, children }) => {
       </h1>
     );
   }
-  return children(targetForm);
+  return <FormPage form={targetForm} />;
 };
 
 FormPageWrapper.propTypes = {
   routeProps: PropTypes.object.isRequired,
-  forms: PropTypes.array.isRequired,
+  //forms: PropTypes.array.isRequired,
   children: PropTypes.func.isRequired,
 };

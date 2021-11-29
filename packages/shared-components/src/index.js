@@ -1,4 +1,5 @@
 import LanguageSelector from "./components/LanguageSelector";
+import LoadingComponent from "./components/LoadingComponent";
 import NavForm from "./components/NavForm";
 import formioFormStyles from "./components/styles/formioFormStyles";
 import navFormStyle from "./components/styles/navFormStyle";
@@ -37,6 +38,7 @@ export {
   i18nData,
   guid,
   LanguageSelector,
+  LoadingComponent,
   useLanguages,
   useCurrentLanguage,
   useLanguageCodeFromURL,

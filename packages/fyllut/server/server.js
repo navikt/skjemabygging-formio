@@ -1,16 +1,16 @@
+import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
+import cors from "cors";
 import express from "express";
 import mustacheExpress from "mustache-express";
-import client from "prom-client";
 import fetch from "node-fetch";
-import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
-import getDecorator from "./dekorator.js";
-import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
+import client from "prom-client";
+import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
+import getDecorator from "./dekorator.js";
 import { logger } from "./logger.js";
-import cors from "cors";
-import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
-import { config, checkConfigConsistency } from "./config/config.js";
+import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
+import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 
 const app = express();
 const skjemaApp = express();
@@ -88,29 +88,44 @@ skjemaApp.post("/foersteside", async (req, res) => {
 });
 
 const fetchTranslationsFromFormioApi = async (formPath) => {
-  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=null`, { method: "GET" });
+  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=null`, {
+    method: "GET",
+  });
   if (response.ok) {
     const translationsForForm = await response.json();
-    return translationsForForm.reduce((acc, obj) => ({...acc, [obj.data.language]: {...obj.data.i18n}}), {});
+    return translationsForForm.reduce((acc, obj) => ({ ...acc, [obj.data.language]: { ...obj.data.i18n } }), {});
   }
   return {};
-}
+};
 
 const fetchGlobalTranslationsFromFormioApi = async (lang) => {
-  const response = await fetch(`${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=null`, { method: "GET" });
+  const response = await fetch(
+    `${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=null`,
+    { method: "GET" }
+  );
   if (response.ok) {
     const responseJson = await response.json();
     return languagesUtil.globalEntitiesToI18nGroupedByTag(responseJson);
   }
   return {};
-}
+};
 
 const loadForms = async () => {
-  return useFormioApi ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000`) : await loadAllJsonFilesFromDirectory(skjemaDir);
+  return useFormioApi
+    ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000`)
+    : await loadAllJsonFilesFromDirectory(skjemaDir);
+};
+
+const loadForm = async (formPath) => {
+  return useFormioApi
+    ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`)
+    : await loadFileFromDirectory(skjemaDir, formPath);
 };
 
 const loadTranslations = async (formPath) => {
-  return useFormioApi ? await fetchTranslationsFromFormioApi(formPath) : await loadFileFromDirectory(translationDir, formPath);
+  return useFormioApi
+    ? await fetchTranslationsFromFormioApi(formPath)
+    : await loadFileFromDirectory(translationDir, formPath);
 };
 
 const loadGlobalTranslations = async (languageCode) => {
@@ -127,20 +142,32 @@ const loadMottaksadresser = async () => {
 };
 
 skjemaApp.get("/config", async (req, res) => {
-  const forms = await loadForms();
+  //const forms = await loadForms();
 
   return res.json({
     NAIS_CLUSTER_NAME: naisClusterName,
     REACT_APP_SENTRY_DSN: sentryDsn,
-    FORMS: forms,
+    //FORMS: forms,
   });
+});
+
+skjemaApp.get("/forms/:formPath", async (req, res) => {
+  const form = await loadForm(req.params.formPath);
+  return res.json(form);
+});
+
+skjemaApp.get("/forms", async (req, res) => {
+  const form = await loadForms();
+  return res.json(form);
 });
 
 skjemaApp.use("/", express.static(buildDirectory, { index: false }));
 
 skjemaApp.get("/translations/:form", async (req, res) => res.json(await loadTranslations(req.params.form)));
 
-skjemaApp.get("/global-translations/:languageCode", async (req, res) => res.json(await loadGlobalTranslations(req.params.languageCode)));
+skjemaApp.get("/global-translations/:languageCode", async (req, res) =>
+  res.json(await loadGlobalTranslations(req.params.languageCode))
+);
 
 skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
 
