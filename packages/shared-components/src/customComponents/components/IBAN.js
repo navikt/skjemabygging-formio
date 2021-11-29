@@ -40,6 +40,104 @@ export default class IBAN extends TextField {
   }
 
   static editForm(...extend) {
-    return TextFieldEditForm(...extend);
+    return TextFieldEditForm([
+      {
+        key: "display",
+        components: [
+          {
+            key: "prefix",
+            ignore: true,
+          },
+          {
+            key: "suffix",
+            ignore: true,
+          },
+          {
+            key: "customClass",
+            ignore: true,
+          },
+          {
+            key: "hidden",
+            ignore: true,
+          },
+          {
+            key: "hideLabel",
+            ignore: true,
+          },
+          {
+            key: "showWordCount",
+            ignore: true,
+          },
+          {
+            key: "tableView",
+            ignore: true,
+          },
+          {
+            key: "modalEdit",
+            ignore: true,
+          },
+          {
+            key: "widget.type",
+            ignore: true,
+          },
+        ],
+      },
+      {
+        key: "data",
+        components: [
+          {
+            key: "multiple",
+            ignore: true,
+          },
+          {
+            key: "persistent",
+            ignore: true,
+          },
+          {
+            key: "inputFormat",
+            ignore: true,
+          },
+          {
+            key: "protected",
+            ignore: true,
+          },
+          {
+            key: "dbIndex",
+            ignore: true,
+          },
+          {
+            key: "case",
+            ignore: true,
+          },
+          {
+            key: "encrypted",
+            ignore: true,
+          },
+          {
+            key: "redrawOn",
+            ignore: true,
+          },
+          {
+            key: "calculateServer",
+            ignore: true,
+          },
+          {
+            key: "allowCalculateOverride",
+            ignore: true,
+          },
+        ],
+      },
+      {
+        key: "logic",
+        ignore: true,
+        components: false,
+      },
+      {
+        key: "layout",
+        ignore: true,
+        components: false,
+      },
+      ...extend,
+    ]);
   }
 }

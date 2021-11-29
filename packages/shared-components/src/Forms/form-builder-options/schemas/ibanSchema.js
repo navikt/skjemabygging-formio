@@ -2,7 +2,7 @@ const ibanSchema = () => ({
   label: "IBAN",
   type: "iban",
   key: `iban`,
-  fieldSize: "input--m",
+  fieldSize: "input--l",
   input: true,
   spellcheck: false,
   dataGridLabel: true,
