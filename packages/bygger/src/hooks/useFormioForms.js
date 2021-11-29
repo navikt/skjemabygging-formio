@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
+import cloneDeep from "lodash.clonedeep";
+import { useCallback, useState } from "react";
 
 export const useFormioForms = (formio, store, userAlerter) => {
   const [forms, setFormsInternal] = useState(store.forms);
@@ -12,11 +12,22 @@ export const useFormioForms = (formio, store, userAlerter) => {
     [setFormsInternal, store.forms]
   );
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (forms === null) {
       formio.loadForms({ params: { type: "form", tags: "nav-skjema", limit: 1000 } }).then(setForms);
     }
-  }, [forms, setForms, formio]);
+  }, [forms, setForms, formio]); */
+
+  const loadFormsList = () => {
+    return formio.loadForms({
+      params: {
+        type: "form",
+        tags: "nav-skjema",
+        limit: 1000,
+        select: "title, path, tags, properties, modified, _id",
+      },
+    });
+  };
 
   const onChangeForm = (form) => {
     setForms([...forms.filter((each) => each.path !== form.path), form]);
@@ -65,6 +76,7 @@ export const useFormioForms = (formio, store, userAlerter) => {
   };
   return {
     forms,
+    loadFormsList,
     onChangeForm,
     onSave,
     onCreate,

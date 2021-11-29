@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
-import { AppLayoutWithContext } from "../components/AppLayout";
-import { SlettKnapp } from "./components";
-import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
+import { CollapseFilled, ExpandFilled } from "@navikt/ds-icons";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp } from "nav-frontend-knapper";
+import { Undertittel } from "nav-frontend-typografi";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
+import { SlettKnapp } from "./components";
 
 const useFormsListStyles = makeStyles({
   list: {
@@ -130,8 +131,26 @@ function simplifiedForms(forms) {
   }));
 }
 
-function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
+function FormsListPage({ url, loadFormsList, onDelete, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
+  const [status, setStatus] = useState("LOADING");
+  const [forms, setForms] = useState();
+
+  useEffect(() => {
+    loadFormsList().then((forms) => {
+      setForms(forms);
+      setStatus("FINISHED LOADING");
+    });
+  }, []);
+
+  if (status === "LOADING") {
+    return <LoadingComponent />;
+  }
+
+  if (!forms) {
+    return <h1>Finner ingen skjemaer...</h1>;
+  }
+
   return (
     <AppLayoutWithContext
       navBarProps={{
