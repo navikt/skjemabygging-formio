@@ -18,4 +18,12 @@ export const validering = {
   minDate: "{{field}} kan ikke inneholde dato før {{- minDate}}",
   maxYear: "{{field}} kan ikke være senere enn {{maxYear}}",
   minYear: "{{field}} kan ikke være før {{minYear}}",
+
+  //custom component
+  fodselsnummerDNummer: "Dette er ikke et gyldig fødselsnummer eller D-nummer",
+  dateNotBeforeFromDate: "Datoen kan ikke være tidligere enn fra-dato",
+  dateAfterFromDate: "Datoen må være senere enn fra-dato",
+  dateNotBeforeAllowedDate: "Datoen kan ikke være tidligere enn",
+  dateInBetween: "Datoen kan ikke være tidligere enn {{minDate}} eller senere enn {{maxDate}}",
+  dateNotLaterThanAllowedDate: "Datoen kan ikke være senere enn",
 };
