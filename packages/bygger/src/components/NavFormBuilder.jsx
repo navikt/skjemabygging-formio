@@ -22,14 +22,14 @@
  * SOFTWARE.
  * */
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import * as formiojs from "formiojs";
-import isEqual from "lodash.isequal";
-import cloneDeep from "lodash.clonedeep";
 import { makeStyles } from "@material-ui/styles";
-import { builderStyles } from "./styles";
+import * as formiojs from "formiojs";
+import cloneDeep from "lodash.clonedeep";
+import isEqual from "lodash.isequal";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import "../formio-overrides/webform-builder-overrides";
+import { builderStyles } from "./styles";
 
 const useBuilderMountElementStyles = makeStyles(builderStyles);
 
@@ -66,7 +66,6 @@ class NavFormBuilder extends Component {
     this.builderReady.then(() => {
       this.builder.instance.on("change", this.handleChange);
       this.builderState = "ready";
-      this.handleChange();
       if (this.props.onReady) {
         this.props.onReady();
       }
