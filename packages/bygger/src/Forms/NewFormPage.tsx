@@ -20,7 +20,6 @@ const useStyles = makeStyles({
 
 interface Props {
   formio: any;
-  onCreate: Function;
   onLogout: Function;
 }
 
