@@ -22,7 +22,7 @@ function App({ className }) {
     <div className={className}>
       <Switch>
         <Route exact path="/">
-          <AllForms forms={[]} />
+          <AllForms />
         </Route>
         <Route path="/:formpath" render={(routeProps) => <FormPageWrapper routeProps={routeProps} />} />
       </Switch>
