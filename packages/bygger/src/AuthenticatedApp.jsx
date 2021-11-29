@@ -10,9 +10,9 @@ import TranslationsRouter from "./translations/TranslationsRouter";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
 import { useAuth } from "./context/auth-context";
 
-function AuthenticatedApp({ serverURL, formio, store }) {
+function AuthenticatedApp({ serverURL, formio }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useFormioForms(formio, store, userAlerter);
+  const { forms, onChangeForm, onSave, onCreate, onDelete, onPublish } = useFormioForms(formio, userAlerter);
   const {
     loadGlobalTranslations,
     publishGlobalTranslations,
@@ -74,7 +74,6 @@ function AuthenticatedApp({ serverURL, formio, store }) {
 }
 
 AuthenticatedApp.propTypes = {
-  store: PropTypes.object.isRequired,
   formio: PropTypes.object.isRequired,
 };
 

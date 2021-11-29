@@ -1,16 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import cloneDeep from "lodash.clonedeep";
 import Formiojs from "formiojs/Formio";
 
-export const useFormioForms = (formio, store, userAlerter) => {
-  const [forms, setFormsInternal] = useState(store.forms);
-  const setForms = useCallback(
-    (forms) => {
-      setFormsInternal(forms);
-      store.forms = forms;
-    },
-    [setFormsInternal, store.forms]
-  );
+export const useFormioForms = (formio, userAlerter) => {
+  const [forms, setForms] = useState(null);
 
   useEffect(() => {
     if (forms === null) {
