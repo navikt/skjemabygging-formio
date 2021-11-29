@@ -53,14 +53,6 @@ export const useFormioForms = (formio, store, userAlerter) => {
     });
   };
 
-  const onCreate = (form) => {
-    return formio.saveForm(form).then((form) => {
-      userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
-      setForms(forms.concat([form]));
-      return form;
-    });
-  };
-
   const onDelete = (form) => {
     const update = cloneDeep(form);
     update.tags = update.tags.filter((each) => each !== "nav-skjema");
@@ -92,7 +84,6 @@ export const useFormioForms = (formio, store, userAlerter) => {
     loadForm,
     loadFormsList,
     onSave,
-    onCreate,
     onDelete,
     onPublish,
   };

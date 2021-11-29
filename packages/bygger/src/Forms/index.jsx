@@ -8,11 +8,11 @@ import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
 export const FormsRouter = ({
+  formio,
   loadForm,
   loadFormsList,
   onSave,
   onNew,
-  onCreate,
   onDelete,
   onPublish,
   loadTranslations,
@@ -23,7 +23,7 @@ export const FormsRouter = ({
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage onCreate={onCreate} onLogout={onLogout} />
+        <NewFormPage formio={formio} onLogout={onLogout} />
       </Route>
       <Route path={`${path}/:formPath`}>
         <FormPage

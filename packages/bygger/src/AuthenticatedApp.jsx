@@ -11,11 +11,7 @@ import { UserAlerterContext } from "./userAlerting";
 
 function AuthenticatedApp({ serverURL, formio, store }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, loadForm, loadFormsList, onSave, onCreate, onDelete, onPublish } = useFormioForms(
-    formio,
-    store,
-    userAlerter
-  );
+  const { forms, loadForm, loadFormsList, onSave, onDelete, onPublish } = useFormioForms(formio, store, userAlerter);
   const {
     loadGlobalTranslations,
     publishGlobalTranslations,
@@ -27,19 +23,14 @@ function AuthenticatedApp({ serverURL, formio, store }) {
 
   const history = useHistory();
   const { logout } = useAuth();
-  const wrappedCreate = (newForm) => {
-    onCreate(newForm).then((savedForm) => {
-      history.push(`/forms/${savedForm.path}/edit`);
-    });
-  };
   return (
     <>
       <Switch>
         <Route path="/forms">
           <FormsRouter
+            formio={formio}
             forms={forms}
             onSave={onSave}
-            onCreate={wrappedCreate}
             onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}

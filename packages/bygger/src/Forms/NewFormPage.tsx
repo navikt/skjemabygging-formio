@@ -1,12 +1,14 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Hovedknapp } from "nav-frontend-knapper";
-import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
-import cloneDeep from "lodash.clonedeep";
-import { AppLayoutWithContext } from "../components/AppLayout";
-import { defaultFormFields } from "./DefaultForm";
-import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { makeStyles } from "@material-ui/styles";
+import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import cloneDeep from "lodash.clonedeep";
+import { Hovedknapp } from "nav-frontend-knapper";
+import PropTypes from "prop-types";
+import React, { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { AppLayoutWithContext } from "../components/AppLayout";
+import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
+import { UserAlerterContext } from "../userAlerting";
+import { defaultFormFields } from "./DefaultForm";
 import { NavFormType } from "./navForm";
 
 const useStyles = makeStyles({
@@ -17,6 +19,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
+  formio: any;
   onCreate: Function;
   onLogout: Function;
 }
@@ -25,7 +28,9 @@ interface State {
   form: NavFormType;
 }
 
-const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElement => {
+const NewFormPage: React.FC<Props> = ({ formio, onLogout }): React.ReactElement => {
+  const userAlerter = useContext(UserAlerterContext);
+  const history = useHistory();
   const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
@@ -57,18 +62,24 @@ const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElemen
     });
   };
 
+  const onCreate = () => {
+    formio.saveForm(state.form).then((form) => {
+      userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
+      history.push(`/forms/${form.path}/edit`);
+    });
+  };
+
   return (
     <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true, logout: onLogout }}>
       <main className={styles.root}>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} />
-        <Hovedknapp onClick={() => onCreate(state.form)}>Opprett</Hovedknapp>
+        <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
       </main>
     </AppLayoutWithContext>
   );
 };
 
 NewFormPage.propTypes = {
-  onCreate: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
 };
 
