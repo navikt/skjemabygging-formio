@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -17,7 +18,6 @@ import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
@@ -71,8 +71,8 @@ const GlobalTranslationsPage = ({
   saveTranslation,
   onLogout,
 }) => {
-  const { tag } = useParams();
-  const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
+  const params = useParams();
+  const selectedTag = params.tag || tags.SKJEMATEKSTER;
   const [publishing, setPublishing] = useState(false);
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
@@ -80,12 +80,6 @@ const GlobalTranslationsPage = ({
     setPublishing(true);
     publishGlobalTranslations(languageCode).finally(() => setPublishing(false));
   };
-
-  useEffect(() => {
-    if (tag) {
-      setSelectedTag(tag);
-    }
-  }, [tag]);
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
