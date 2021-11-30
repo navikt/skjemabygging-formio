@@ -18,15 +18,12 @@ export default class IBAN extends TextField {
   validateIban(iban) {
     const { validateIBAN, ValidationErrorsIBAN } = require("ibantools");
     const { valid, errorCodes } = validateIBAN(iban);
-    if (valid) {
+    if (valid || errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) {
       return true;
     }
 
-    if (errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) return this.getErrorMessage("noIBANProvided");
     if (errorCodes.includes(ValidationErrorsIBAN.WrongBBANLength)) return this.getErrorMessage("wrongBBANLength");
     if (errorCodes.includes(ValidationErrorsIBAN.NoIBANCountry)) return this.getErrorMessage("noIBANCountry");
-    if (errorCodes.includes(ValidationErrorsIBAN.ChecksumNotNumber)) return this.getErrorMessage("checksumNotNumber");
-    if (errorCodes.includes(ValidationErrorsIBAN.WrongIBANChecksum)) return this.getErrorMessage("wrongIBANChecksum");
 
     return this.getErrorMessage("invalidIBAN");
   }

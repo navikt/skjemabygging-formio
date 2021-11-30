@@ -2,8 +2,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { validateIBAN, ValidationErrorsIBAN } from "ibantools";
 import IBAN from "./IBAN";
 
-const { noIBANProvided, wrongBBANLength, noIBANCountry, checksumNotNumber, wrongIBANChecksum, invalidIBAN } =
-  TEXTS.validering;
+const { noIBANProvided, wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
 
 const iban = new IBAN();
 
@@ -19,10 +18,11 @@ describe("IBAN", () => {
       expect(iban.validateIban("ValidIBAN")).toBe(true);
     });
 
-    it("returns noIBANProvided error message when no IBAN is provided", () => {
+    it("returns true when no IBAN is provided", () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANProvided] });
-      expect(iban.validateIban("ValidIBAN")).toBe(noIBANProvided);
+      expect(iban.validateIban("ValidIBAN")).toBe(true);
     });
+
     it("returns wrongBBANLength error message when BBAN part of IBAN has the wrong length", () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongBBANLength] });
       expect(iban.validateIban("ValidIBAN")).toBe(wrongBBANLength);
@@ -30,14 +30,6 @@ describe("IBAN", () => {
     it("returns noIBANCountry error message when no country code is provided", () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.NoIBANCountry] });
       expect(iban.validateIban("ValidIBAN")).toBe(noIBANCountry);
-    });
-    it("returns checksumNotNumber error message when no IBAN checksum is not number", () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.ChecksumNotNumber] });
-      expect(iban.validateIban("ValidIBAN")).toBe(checksumNotNumber);
-    });
-    it("returns wrongIBANChecksum error message when the IBAN checksum is wrong", () => {
-      validateIBAN.mockReturnValue({ valid: false, errorCodes: [ValidationErrorsIBAN.WrongIBANChecksum] });
-      expect(iban.validateIban("ValidIBAN")).toBe(wrongIBANChecksum);
     });
     it("returns invalidIBAN error message when the IBAN is incorrect for other reasons", () => {
       validateIBAN.mockReturnValue({ valid: false, errorCodes: [99] });

@@ -23,8 +23,6 @@ export const validering = {
   noIBANProvided: "Gyldig IBAN er ikke oppgitt",
   wrongBBANLength: "Oppgitt IBAN har feil lengde.",
   noIBANCountry: "Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)",
-  checksumNotNumber: "Oppgitt IBAN er ugyldig fordi sjekksummen ikke er et tall",
-  wrongIBANChecksum: "Oppgitt IBAN har feil sjekksum. Sjekk at du har tastet riktig.",
   invalidIBAN: "Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig.",
 
   //custom component
