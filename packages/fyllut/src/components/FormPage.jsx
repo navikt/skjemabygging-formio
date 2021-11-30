@@ -2,6 +2,7 @@ import {
   AmplitudeProvider,
   FyllUtRouter,
   i18nData,
+  LoadingComponent,
   useAppConfig,
 } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
@@ -44,7 +45,7 @@ function FormPage({ form }) {
   }, [form, featureToggles.enableTranslations]);
 
   if (!ready) {
-    return <div>Laster skjema...</div>;
+    return <LoadingComponent />;
   }
 
   return (

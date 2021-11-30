@@ -1,17 +1,18 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { useRouteMatch } from "react-router-dom";
 import FormPage from "./FormPage";
 
 class HttpError extends Error {}
 
-export const FormPageWrapper = ({ routeProps }) => {
-  const formPath = routeProps.match.params.formpath;
-  // const targetForm = forms.find(navFormUtils.formMatcherPredicate(formPath));
+export const FormPageWrapper = () => {
+  const {
+    params: { formpath },
+  } = useRouteMatch();
   const [status, setStatus] = useState("LOADING");
   const [targetForm, setTargetForm] = useState();
   useEffect(() => {
-    fetch(`/fyllut/forms/${formPath}`, { headers: { accept: "application/json" } })
+    fetch(`/fyllut/forms/${formpath}`, { headers: { accept: "application/json" } })
       .then((response) => {
         if (!response.ok) {
           throw new HttpError(response.statusText);
@@ -22,7 +23,7 @@ export const FormPageWrapper = ({ routeProps }) => {
         setTargetForm(results[0]);
         setStatus("FINISHED LOADING");
       });
-  }, [formPath]);
+  }, [formpath]);
 
   const formTitle = targetForm ? targetForm.title : "";
 
@@ -37,15 +38,9 @@ export const FormPageWrapper = ({ routeProps }) => {
   if (!targetForm) {
     return (
       <h1>
-        Finner ikke skjemaet <em>{formPath}</em>
+        Finner ikke skjemaet <em>{formpath}</em>
       </h1>
     );
   }
   return <FormPage form={targetForm} />;
-};
-
-FormPageWrapper.propTypes = {
-  routeProps: PropTypes.object.isRequired,
-  //forms: PropTypes.array.isRequired,
-  children: PropTypes.func.isRequired,
 };
