@@ -71,7 +71,8 @@ const GlobalTranslationsPage = ({
   saveTranslation,
   onLogout,
 }) => {
-  const { tag } = useParams();
+  const params = useParams();
+  const tag = params.tag || tags.SKJEMATEKSTER;
   const [publishing, setPublishing] = useState(false);
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
