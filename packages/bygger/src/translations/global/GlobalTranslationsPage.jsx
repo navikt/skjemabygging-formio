@@ -72,7 +72,7 @@ const GlobalTranslationsPage = ({
   onLogout,
 }) => {
   const params = useParams();
-  const tag = params.tag || tags.SKJEMATEKSTER;
+  const selectedTag = params.tag || tags.SKJEMATEKSTER;
   const [publishing, setPublishing] = useState(false);
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
@@ -97,10 +97,10 @@ const GlobalTranslationsPage = ({
   useEffect(() => {
     if (languageCode && allGlobalTranslations[languageCode])
       setGlobalTranslationsWithLanguagecodeAndTag(
-        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, tag)
+        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, selectedTag)
       );
     else setGlobalTranslationsWithLanguagecodeAndTag({});
-  }, [allGlobalTranslations, languageCode, tag]);
+  }, [allGlobalTranslations, languageCode, selectedTag]);
 
   useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
@@ -170,11 +170,11 @@ const GlobalTranslationsPage = ({
     }, []);
   };
 
-  const globalTranslationsToSave = (tag) => {
+  const globalTranslationsToSave = (selectedTag) => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
         let originalTextOrKey = translation.originalText;
-        if (tag === tags.VALIDERING) {
+        if (selectedTag === tags.VALIDERING) {
           Object.entries(TEXTS.validering).forEach(([key, value]) => {
             if (translation.originalText === value) {
               originalTextOrKey = key;
@@ -217,15 +217,15 @@ const GlobalTranslationsPage = ({
             {
               children: "Skjematekster",
               "data-key": tags.SKJEMATEKSTER,
-              pressed: tag === tags.SKJEMATEKSTER,
+              pressed: selectedTag === tags.SKJEMATEKSTER,
             },
-            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: tag === tags.GRENSESNITT },
+            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
             {
               children: "Statiske tekster",
               "data-key": tags.STATISKE_TEKSTER,
-              pressed: tag === tags.STATISKE_TEKSTER,
+              pressed: selectedTag === tags.STATISKE_TEKSTER,
             },
-            { children: "Validering", "data-key": tags.VALIDERING, pressed: tag === tags.VALIDERING },
+            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
           ]}
           onChange={(event) => {
             const newTag = event.target.getAttribute("data-key");
@@ -239,7 +239,7 @@ const GlobalTranslationsPage = ({
         </Row>
         <Row>
           <Column className={classes.mainCol}>
-            {tag === tags.SKJEMATEKSTER ? (
+            {selectedTag === tags.SKJEMATEKSTER ? (
               <div>
                 <GlobalTranslationsPanel
                   classes={classes}
@@ -257,7 +257,7 @@ const GlobalTranslationsPage = ({
             ) : (
               <ApplicationTextTranslationEditPanel
                 classes={classes}
-                selectedTag={tag}
+                selectedTag={selectedTag}
                 translations={currentTranslation}
                 languageCode={languageCode}
                 updateTranslation={updateTranslation}
@@ -266,14 +266,14 @@ const GlobalTranslationsPage = ({
           </Column>
           <div className={classes.sideBarContainer}>
             <Column className={classes.stickySideBar}>
-              <FormBuilderLanguageSelector formPath="global" tag={tag} />
+              <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <Knapp onClick={publish} spinner={publishing}>
                 Publiser
               </Knapp>
               <Hovedknapp
                 onClick={() => {
-                  if (tag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+                  if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
                     const duplicatedOriginalText = hasDuplicatedOriginalText();
                     alert(
                       `Du har fortsatt ${
@@ -287,8 +287,8 @@ const GlobalTranslationsPage = ({
                       projectURL,
                       globalTranslationsWithLanguagecodeAndTag?.id,
                       languageCode,
-                      globalTranslationsToSave(tag),
-                      tag
+                      globalTranslationsToSave(selectedTag),
+                      selectedTag
                     );
                   }
                 }}
