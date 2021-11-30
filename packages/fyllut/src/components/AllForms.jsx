@@ -5,10 +5,6 @@ import { Link } from "react-router-dom";
 
 class HttpError extends Error {}
 
-const FormsList = ({ forms, children }) => {
-  return <ul>{forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map(children)}</ul>;
-};
-
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState();
@@ -39,15 +35,17 @@ export const AllForms = () => {
     <main>
       <h1>Velg et skjema</h1>
       <nav>
-        <FormsList forms={forms}>
-          {(form) => (
-            <li key={form._id}>
-              <Link to={form.path}>
-                <Normaltekst>{form.title}</Normaltekst>
-              </Link>
-            </li>
-          )}
-        </FormsList>
+        <ul>
+          {forms
+            .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+            .map((form) => (
+              <li key={form._id}>
+                <Link to={form.path}>
+                  <Normaltekst>{form.title}</Normaltekst>
+                </Link>
+              </li>
+            ))}
+        </ul>
       </nav>
     </main>
   );
