@@ -17,8 +17,6 @@ const serverURL = "https://skjemautfylling-formio.labs.nais.io/fyllut";
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 const fyllutBaseURL = process.env.REACT_APP_FYLLUT_BASE_URL || "https://www.nav.no/fyllut";
 
-const store = { forms: null };
-
 Pusher.logToConsole = true;
 
 const pusherAppKey = process.env.REACT_APP_PUSHER_KEY;
@@ -37,7 +35,7 @@ ReactDOM.render(
         featureToggles={featureToggles}
       >
         <AuthProvider>
-          <App store={store} projectURL={projectURL} serverURL={serverURL} pusher={pusher} />
+          <App projectURL={projectURL} serverURL={serverURL} pusher={pusher} />
         </AuthProvider>
       </AppConfigProvider>
     </BrowserRouter>

@@ -2,16 +2,16 @@ import { makeStyles } from "@material-ui/styles";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
-import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import LoadingComponent from "../../components/LoadingComponent";
+import UserFeedback from "../../components/UserFeedback";
 import { languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { UserAlerterContext } from "../../userAlerting";
 import { useModal } from "../../util/useModal";
 import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
@@ -80,8 +80,6 @@ const GlobalTranslationsPage = ({
     setPublishing(true);
     publishGlobalTranslations(languageCode).finally(() => setPublishing(false));
   };
-
-  const alertComponent = useContext(UserAlerterContext).alertComponent();
 
   useEffect(() => {
     if (tag) {
@@ -303,7 +301,7 @@ const GlobalTranslationsPage = ({
               >
                 Lagre
               </Hovedknapp>
-              {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+              <UserFeedback />
             </Column>
           </div>
         </Row>

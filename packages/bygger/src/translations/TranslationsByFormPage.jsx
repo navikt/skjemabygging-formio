@@ -1,16 +1,16 @@
 import { makeStyles } from "@material-ui/styles";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React, { useContext } from "react";
+import React from "react";
 import { CSVLink } from "react-csv";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
+import UserFeedback from "../components/UserFeedback";
 import { languagesInNorwegian, useTranslations } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import { UserAlerterContext } from "../userAlerting";
 import { useModal } from "../util/useModal";
 import ConfirmDeleteLanguageModal from "./ConfirmDeleteLanguageModal";
 import TranslationsFormPage from "./TranslationsFormPage";
@@ -32,8 +32,6 @@ const useStyles = makeStyles({
 const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL, onLogout }) => {
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
-  const userAlerter = useContext(UserAlerterContext);
-  const alertComponent = userAlerter.alertComponent();
   const history = useHistory();
   const {
     title,
@@ -93,7 +91,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
               >
                 Lagre
               </Hovedknapp>
-              {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+              <UserFeedback />
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}
                 filename={`${title}(${path})_Oversettelser.csv`}
