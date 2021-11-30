@@ -88,7 +88,7 @@ skjemaApp.post("/foersteside", async (req, res) => {
 });
 
 const fetchTranslationsFromFormioApi = async (formPath) => {
-  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=null`, {
+  const response = await fetch(`${formioProjectUrl}/language/submission?data.form=${formPath}&limit=1000`, {
     method: "GET",
   });
   if (response.ok) {
@@ -100,7 +100,7 @@ const fetchTranslationsFromFormioApi = async (formPath) => {
 
 const fetchGlobalTranslationsFromFormioApi = async (lang) => {
   const response = await fetch(
-    `${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=null`,
+    `${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=1000`,
     { method: "GET" }
   );
   if (response.ok) {
