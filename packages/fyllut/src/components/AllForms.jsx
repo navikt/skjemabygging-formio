@@ -7,7 +7,7 @@ class HttpError extends Error {}
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
-  const [forms, setForms] = useState();
+  const [forms, setForms] = useState([]);
 
   useEffect(() => {
     fetch(`/fyllut/allforms`, { headers: { accept: "application/json" } })
@@ -27,7 +27,7 @@ export const AllForms = () => {
     return <LoadingComponent />;
   }
 
-  if (!forms) {
+  if (forms.length === 0) {
     return <h1>Finner ingen skjemaer</h1>;
   }
 
