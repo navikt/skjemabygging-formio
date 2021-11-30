@@ -62,17 +62,6 @@ const useGlobalTranslationsPageStyles = makeStyles({
   },
 });
 
-const useSelectedTag = () => {
-  const { tag } = useParams();
-  const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
-  useEffect(() => {
-    if (tag) {
-      setSelectedTag(tag);
-    }
-  }, [tag]);
-  return selectedTag;
-};
-
 const GlobalTranslationsPage = ({
   deleteTranslation,
   languageCode,
@@ -82,9 +71,9 @@ const GlobalTranslationsPage = ({
   saveTranslation,
   onLogout,
 }) => {
+  const { tag } = useParams();
   const [publishing, setPublishing] = useState(false);
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
-  const selectedTag = useSelectedTag();
 
   const publish = () => {
     setPublishing(true);
@@ -107,10 +96,10 @@ const GlobalTranslationsPage = ({
   useEffect(() => {
     if (languageCode && allGlobalTranslations[languageCode])
       setGlobalTranslationsWithLanguagecodeAndTag(
-        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, selectedTag)
+        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, tag)
       );
     else setGlobalTranslationsWithLanguagecodeAndTag({});
-  }, [allGlobalTranslations, languageCode, selectedTag]);
+  }, [allGlobalTranslations, languageCode, tag]);
 
   useRedirectIfNoLanguageCode(languageCode, allGlobalTranslations);
 
@@ -180,11 +169,11 @@ const GlobalTranslationsPage = ({
     }, []);
   };
 
-  const globalTranslationsToSave = (selectedTag) => {
+  const globalTranslationsToSave = (tag) => {
     return currentTranslation.reduce((allCurrentTranslationAsObject, translation) => {
       if (translation.originalText !== "" && translation.translatedText !== "") {
         let originalTextOrKey = translation.originalText;
-        if (selectedTag === tags.VALIDERING) {
+        if (tag === tags.VALIDERING) {
           Object.entries(TEXTS.validering).forEach(([key, value]) => {
             if (translation.originalText === value) {
               originalTextOrKey = key;
@@ -227,15 +216,15 @@ const GlobalTranslationsPage = ({
             {
               children: "Skjematekster",
               "data-key": tags.SKJEMATEKSTER,
-              pressed: selectedTag === tags.SKJEMATEKSTER,
+              pressed: tag === tags.SKJEMATEKSTER,
             },
-            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
+            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: tag === tags.GRENSESNITT },
             {
               children: "Statiske tekster",
               "data-key": tags.STATISKE_TEKSTER,
-              pressed: selectedTag === tags.STATISKE_TEKSTER,
+              pressed: tag === tags.STATISKE_TEKSTER,
             },
-            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
+            { children: "Validering", "data-key": tags.VALIDERING, pressed: tag === tags.VALIDERING },
           ]}
           onChange={(event) => {
             const newTag = event.target.getAttribute("data-key");
@@ -249,7 +238,7 @@ const GlobalTranslationsPage = ({
         </Row>
         <Row>
           <Column className={classes.mainCol}>
-            {selectedTag === tags.SKJEMATEKSTER ? (
+            {tag === tags.SKJEMATEKSTER ? (
               <div>
                 <GlobalTranslationsPanel
                   classes={classes}
@@ -267,7 +256,7 @@ const GlobalTranslationsPage = ({
             ) : (
               <ApplicationTextTranslationEditPanel
                 classes={classes}
-                selectedTag={selectedTag}
+                selectedTag={tag}
                 translations={currentTranslation}
                 languageCode={languageCode}
                 updateTranslation={updateTranslation}
@@ -276,14 +265,14 @@ const GlobalTranslationsPage = ({
           </Column>
           <div className={classes.sideBarContainer}>
             <Column className={classes.stickySideBar}>
-              <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
+              <FormBuilderLanguageSelector formPath="global" tag={tag} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <Knapp onClick={publish} spinner={publishing}>
                 Publiser
               </Knapp>
               <Hovedknapp
                 onClick={() => {
-                  if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+                  if (tag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
                     const duplicatedOriginalText = hasDuplicatedOriginalText();
                     alert(
                       `Du har fortsatt ${
@@ -297,8 +286,8 @@ const GlobalTranslationsPage = ({
                       projectURL,
                       globalTranslationsWithLanguagecodeAndTag?.id,
                       languageCode,
-                      globalTranslationsToSave(selectedTag),
-                      selectedTag
+                      globalTranslationsToSave(tag),
+                      tag
                     );
                   }
                 }}
