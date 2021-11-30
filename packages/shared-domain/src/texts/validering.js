@@ -19,6 +19,12 @@ export const validering = {
   maxYear: "{{field}} kan ikke være senere enn {{maxYear}}",
   minYear: "{{field}} kan ikke være før {{minYear}}",
 
+  //IBAN
+  noIBANProvided: "Gyldig IBAN er ikke oppgitt",
+  wrongBBANLength: "Oppgitt IBAN har feil lengde.",
+  noIBANCountry: "Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)",
+  invalidIBAN: "Oppgitt IBAN er ugyldig. Sjekk at du har tastet riktig.",
+
   //custom component
   fodselsnummerDNummer: "Dette er ikke et gyldig fødselsnummer eller D-nummer",
   dateNotBeforeFromDate: "Datoen kan ikke være tidligere enn fra-dato",
