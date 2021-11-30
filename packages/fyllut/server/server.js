@@ -112,8 +112,14 @@ const fetchGlobalTranslationsFromFormioApi = async (lang) => {
 
 const loadForms = async () => {
   return useFormioApi
-    ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=title,path`)
-    : await loadAllJsonFilesFromDirectory(skjemaDir).map((form) => ({ title: form.title, path: form.path }));
+    ? await fetchFromFormioApi(
+        `${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=title,path,modified`
+      )
+    : await loadAllJsonFilesFromDirectory(skjemaDir).map((form) => ({
+        title: form.title,
+        path: form.path,
+        modified: form.modified,
+      }));
 };
 
 const loadForm = async (formPath) => {
