@@ -10,7 +10,7 @@ export const FormPageWrapper = () => {
     params: { formpath },
   } = useRouteMatch();
   const [status, setStatus] = useState("LOADING");
-  const [targetForm, setTargetForm] = useState();
+  const [targetForm, setTargetForm] = useState([]);
   useEffect(() => {
     fetch(`/fyllut/forms/${formpath}`, { headers: { accept: "application/json" } })
       .then((response) => {
@@ -20,7 +20,7 @@ export const FormPageWrapper = () => {
         return response.json();
       })
       .then((results) => {
-        setTargetForm(results[0]);
+        if (results.length !== 0) setTargetForm(results[0]);
         setStatus("FINISHED LOADING");
       });
   }, [formpath]);
@@ -35,7 +35,7 @@ export const FormPageWrapper = () => {
     return <LoadingComponent />;
   }
 
-  if (!targetForm) {
+  if (targetForm.length === 0) {
     return (
       <h1>
         Finner ikke skjemaet <em>{formpath}</em>
