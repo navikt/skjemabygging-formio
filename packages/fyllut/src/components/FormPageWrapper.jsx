@@ -10,7 +10,7 @@ export const FormPageWrapper = () => {
     params: { formpath },
   } = useRouteMatch();
   const [status, setStatus] = useState("LOADING");
-  const [targetForm, setTargetForm] = useState([]);
+  const [targetForm, setTargetForm] = useState({});
   useEffect(() => {
     fetch(`/fyllut/forms/${formpath}`, { headers: { accept: "application/json" } })
       .then((response) => {
@@ -25,7 +25,7 @@ export const FormPageWrapper = () => {
       });
   }, [formpath]);
 
-  const formTitle = targetForm ? targetForm.title : "";
+  const formTitle = Object.keys(targetForm).length !== 0 ? targetForm.title : "";
 
   useEffect(() => {
     document.title = `${formTitle} | www.nav.no`;
@@ -35,7 +35,7 @@ export const FormPageWrapper = () => {
     return <LoadingComponent />;
   }
 
-  if (targetForm.length === 0) {
+  if (Object.keys(targetForm).length === 0) {
     return (
       <h1>
         Finner ikke skjemaet <em>{formpath}</em>
