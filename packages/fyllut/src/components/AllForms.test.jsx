@@ -5,7 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import { AllForms } from "./AllForms";
 
 describe("AllForms", () => {
-  it("Show loading when fetching forms from backend", async () => {
+  it("Show loading when fetching forms from backend and show find no forms when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
       return Promise.resolve(new Response(JSON.stringify([])));
     });
@@ -17,18 +17,6 @@ describe("AllForms", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Laster..." })).toBeInTheDocument();
-  });
-
-  it("Show no form founded when there is no form from backend", async () => {
-    fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response(JSON.stringify([])));
-    });
-
-    render(
-      <MemoryRouter initialEntries={["/fyllut"]}>
-        <AllForms />
-      </MemoryRouter>
-    );
     expect(await screen.findByRole("heading", { name: "Finner ingen skjemaer" })).toBeInTheDocument();
   });
 

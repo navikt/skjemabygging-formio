@@ -8,7 +8,7 @@ import { FormPageWrapper } from "./FormPageWrapper";
 describe("FormPageWrapper", () => {
   afterEach(() => fetchMock.resetMocks());
 
-  it("Show loading when fetching a form from backend", async () => {
+  it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
       return Promise.resolve(new Response(JSON.stringify([])));
     });
@@ -26,20 +26,6 @@ describe("FormPageWrapper", () => {
         name: "Laster...",
       })
     ).toBeInTheDocument();
-  });
-
-  it("Show no form founded when there is no form from backend", async () => {
-    fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response(JSON.stringify([])));
-    });
-
-    render(
-      <MemoryRouter initialEntries={["/fyllut/forms/newForm"]}>
-        <Route path="/fyllut/forms/:formpath">
-          <FormPageWrapper />
-        </Route>
-      </MemoryRouter>
-    );
     expect(await screen.findByRole("heading", { name: "Finner ikke skjemaet newForm" })).toBeInTheDocument();
     await waitFor(() => expect(document.title).toEqual("| www.nav.no"));
   });
