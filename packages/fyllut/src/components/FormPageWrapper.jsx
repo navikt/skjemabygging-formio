@@ -8,7 +8,7 @@ class HttpError extends Error {}
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
-  const [targetForm, setTargetForm] = useState();
+  const [form, setForm] = useState();
   useEffect(() => {
     fetch(`/fyllut/forms/${formPath}`, { headers: { accept: "application/json" } })
       .then((response) => {
@@ -18,7 +18,7 @@ export const FormPageWrapper = () => {
         return response.json();
       })
       .then((form) => {
-        setTargetForm(form);
+        setForm(form);
         setStatus("FINISHED LOADING");
       })
       .catch((e) => {
@@ -27,7 +27,7 @@ export const FormPageWrapper = () => {
       });
   }, [formPath]);
 
-  const formTitle = !!targetForm ? targetForm.title : "";
+  const formTitle = !!form ? form.title : "";
 
   useEffect(() => {
     document.title = `${formTitle} | www.nav.no`;
@@ -37,12 +37,12 @@ export const FormPageWrapper = () => {
     return <LoadingComponent />;
   }
 
-  if (status === "FORM NOT FOUND" || !targetForm) {
+  if (status === "FORM NOT FOUND" || !form) {
     return (
       <h1>
         Finner ikke skjemaet <em>{formPath}</em>
       </h1>
     );
   }
-  return <FormPage form={targetForm} />;
+  return <FormPage form={form} />;
 };
