@@ -1,13 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { render, screen, waitFor } from "@testing-library/react";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route } from "react-router-dom";
 import { FormPageWrapper } from "./FormPageWrapper";
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useRouteMatch: () => ({ params: { formpath: "newForm" } }),
-}));
 
 describe("FormPageWrapper", () => {
   afterEach(() => fetchMock.resetMocks());
@@ -19,11 +15,17 @@ describe("FormPageWrapper", () => {
 
     render(
       <MemoryRouter initialEntries={["/fyllut/forms/newForm"]}>
-        <FormPageWrapper />
+        <Route path="/fyllut/forms/:formpath">
+          <FormPageWrapper />
+        </Route>
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: "Laster..." })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "Laster...",
+      })
+    ).toBeInTheDocument();
   });
 
   it("Show no form founded when there is no form from backend", async () => {
@@ -32,10 +34,33 @@ describe("FormPageWrapper", () => {
     });
 
     render(
-      <MemoryRouter initialEntries={["/fyllut"]}>
-        <FormPageWrapper />
+      <MemoryRouter initialEntries={["/fyllut/forms/newForm"]}>
+        <Route path="/fyllut/forms/:formpath">
+          <FormPageWrapper />
+        </Route>
       </MemoryRouter>
     );
     expect(await screen.findByRole("heading", { name: "Finner ikke skjemaet newForm" })).toBeInTheDocument();
+    await waitFor(() => expect(document.title).toEqual("| www.nav.no"));
+  });
+
+  it("Show target form when there is one", async () => {
+    const mockedForm = [
+      { _id: "000", path: "newform", title: "New form", modified: "2021-11-30T14:10:21.487Z", components: [] },
+    ];
+    fetchMock.mockImplementation((url) => {
+      return Promise.resolve(new Response(JSON.stringify(mockedForm)));
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/fyllut/forms/newForm"]}>
+        <AppConfigProvider featureToggles={{}}>
+          <Route path="/fyllut/forms/:formpath">
+            <FormPageWrapper />
+          </Route>
+        </AppConfigProvider>
+      </MemoryRouter>
+    );
+    await waitFor(() => expect(document.title).toEqual("New form | www.nav.no"));
   });
 });
