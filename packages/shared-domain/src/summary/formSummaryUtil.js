@@ -36,6 +36,9 @@ function formatValue(component, value, translate) {
     case "navCheckbox": {
       return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
+    case "landvelger":
+      // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
+      return translate(typeof value === "string" ? value : value?.label);
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
@@ -198,7 +201,12 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
-  if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
+  if (
+    submissionValue === null ||
+    submissionValue === undefined ||
+    submissionValue === "" ||
+    (type === "landvelger" && Object.keys(submissionValue).length === 0)
+  ) {
     return formSummaryObject;
   }
   return [

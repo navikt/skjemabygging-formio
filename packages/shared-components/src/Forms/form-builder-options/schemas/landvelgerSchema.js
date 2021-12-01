@@ -9,7 +9,6 @@ const landvelgerSchema = () => ({
     url: "https://www.nav.no/fyllut/countries?lang=nb",
   },
   dataSrc: "url",
-  valueProperty: "label",
   disableLimit: true,
   validate: {
     required: true,
