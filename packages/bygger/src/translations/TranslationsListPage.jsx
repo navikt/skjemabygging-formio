@@ -1,8 +1,8 @@
-import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import { AppLayoutWithContext } from "../components/AppLayout";
-import { Link } from "react-router-dom";
 import { Innholdstittel } from "nav-frontend-typografi";
+import React from "react";
+import { Link } from "react-router-dom";
+import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormsList, simplifiedForms } from "../Forms/FormsListPage";
 
 const useTranslationsListStyles = makeStyles({
@@ -48,7 +48,7 @@ export function TranslationsListPage({ onLogout, forms }) {
           <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
           <ul className={classes.list}>
             <li className={classes.globalListItem}>
-              <Link to="/translations/global">Felles oversettelser for alle skjemaer</Link>
+              <Link to="/translations/global/nn-NO/skjematekster">Felles oversettelser for alle skjemaer</Link>
             </li>
           </ul>
         </nav>

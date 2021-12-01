@@ -1,17 +1,18 @@
+import AlertStripe from "./components/AlertStripe";
+import CountrySelect from "./components/CountrySelect";
+import DataGrid from "./components/DataGrid";
+import Day from "./components/Day";
 import Fodselsnummer from "./components/Fodselsnummer.jsx";
 import HTMLElement from "./components/HTMLElement";
-import NavDatepicker from "./components/NavDatepicker.jsx";
-import Radio from "./components/Radio"
+import IBAN from "./components/IBAN";
 import NavCheckbox from "./components/NavCheckbox";
-import DataGrid from "./components/DataGrid";
-import TextField from "./components/TextField";
-import Textarea from "./components/TextArea";
-import Number from "./components/Number";
+import NavDatepicker from "./components/NavDatepicker.jsx";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
+import Number from "./components/Number";
+import Radio from "./components/Radio";
 import SelectBoxes from "./components/SelectBoxes";
-import AlertStripe from "./components/AlertStripe";
-import Day from "./components/Day";
-import CountrySelect from "./components/CountrySelect";
+import Textarea from "./components/TextArea";
+import TextField from "./components/TextField";
 
 const customComponents = {
   alertstripe: AlertStripe,
@@ -28,5 +29,6 @@ const customComponents = {
   navSkjemagruppe: NavSkjemagruppe,
   selectboxes: SelectBoxes,
   day: Day,
+  iban: IBAN,
 };
 export default customComponents;

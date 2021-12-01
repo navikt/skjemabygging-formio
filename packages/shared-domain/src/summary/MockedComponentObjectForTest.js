@@ -18,6 +18,12 @@ const createDummyEmail = (label = "Email") => ({
   type: "email",
 });
 
+const createDummyLandvelger = (label = "Land") => ({
+  label,
+  key: keyFromLabel(label),
+  type: "landvelger",
+});
+
 const createDummyRadioPanel = (
   label = "RadioPanel",
   values = [
@@ -167,5 +173,6 @@ const mockedComponentObjectForTest = {
   createFormObject,
   createDummyDayComponent,
   createDummySelectComponent,
+  createDummyLandvelger,
 };
 export default mockedComponentObjectForTest;
