@@ -4,16 +4,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import waitForExpect from "wait-for-expect";
 import { FakeBackend } from "../fakeBackend/FakeBackend";
-import { AuthContext } from "../context/auth-context";
-import AuthenticatedApp from "../AuthenticatedApp";
-import { MemoryRouter } from "react-router-dom";
-import { UserAlerterContext } from "../userAlerting";
 import featureToggles from "../featureToggles.js";
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
-import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
-import { Formio } from "formiojs";
-import Formiojs from "formiojs/Formio";
 import {FormPropertiesType, NavFormType} from "../Forms/navForm";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
 import {fromEntity, Mottaksadresse} from "../hooks/mottaksadresser";
@@ -118,57 +110,6 @@ describe("FormMetadataEditor", () => {
       expect(pathInput.readOnly).toBe(true);
     });
 
-    describe("FormMetadataEditor", () => {
-      let spy;
-      let formioSpy;
-
-      beforeEach(() => {
-        // @ts-ignore
-        spy = jest.spyOn(global, "fetch");
-        formioSpy = jest.spyOn(Formiojs, "fetch");
-        const fetchAppGlue = new InprocessQuipApp(dispatcherWithBackend(fakeBackend));
-        spy.mockImplementation(fetchAppGlue.fetchImpl);
-        formioSpy.mockImplementation(fetchAppGlue.fetchImpl);
-      });
-
-      afterEach(() => {
-        spy.mockReset();
-        formioSpy.mockReset();
-      });
-
-      it("should display changes when onChange is called", async () => {
-        const userAlerter = {
-          flashSuccessMessage: jest.fn(),
-          alertComponent: jest.fn(),
-        };
-        render(
-          <MemoryRouter initialEntries={[`/forms/${fakeBackend.form().path}/edit`]}>
-            <AuthContext.Provider
-              value={{
-                userData: "fakeUser",
-                login: () => {},
-                logout: () => {},
-              }}
-            >
-              <UserAlerterContext.Provider value={userAlerter}>
-                <AppConfigProvider featureToggles={featureToggles}>
-                  <AuthenticatedApp
-                    serverURL={"http://myproject.example.org"}
-                    formio={new Formio("http://myproject.example.org")}
-                    store={{ forms: [fakeBackend.form()] }}
-                  />
-                </AppConfigProvider>
-              </UserAlerterContext.Provider>
-            </AuthContext.Provider>
-          </MemoryRouter>
-        );
-        let visningsModus = await screen.getByLabelText(/Vis som/i);
-        expect(visningsModus).toHaveValue("form");
-        await userEvent.selectOptions(visningsModus, "wizard");
-        jest.runAllTimers();
-        await waitFor(() => expect(visningsModus).toHaveValue("wizard"));
-      });
-    });
   });
 
   describe("Usage context: CREATE", () => {

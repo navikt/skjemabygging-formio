@@ -1,19 +1,20 @@
-import fodselsNummerDNummerSchema from "./fodselsNummerDNummerSchema";
+import borDuINorgeSchema from "./borDuINorgeSchema";
+import epostSchema from "./epostSchema";
 import firstNameSchema from "./firstNameSchema";
-import surnameSchema from "./surnameSchema";
-import vegadresseSchema from "./vegadresseSchema";
+import fodselsNummerDNummerSchema from "./fodselsNummerDNummerSchema";
+import ibanSchema from "./ibanSchema";
+import landvelgerSchema from "./landvelgerSchema";
+import norskPostboksadresseSchema from "./norskPostboksadresseSchema";
+import norskVegadresseSchema from "./norskVegadresseSchema";
+import panelSchemas from "./panels";
 import postnummerSchema from "./postnummerSchema";
 import poststedSchema from "./poststedSchema";
-import landvelgerSchema from "./landvelgerSchema";
-import utlandLandSchema from "./utlandLandSchema";
-import epostSchema from "./epostSchema";
-import telefonSchema from "./telefonSchema";
 import statsborgerskapSchema from "./statsborgerskapSchema";
-import borDuINorgeSchema from "./borDuINorgeSchema";
-import norskVegadresseSchema from "./norskVegadresseSchema";
-import norskPostboksadresseSchema from "./norskPostboksadresseSchema";
+import surnameSchema from "./surnameSchema";
+import telefonSchema from "./telefonSchema";
 import utenlandskAdresseSchema from "./utenlandskAdresseSchema";
-import panelSchemas from "./panels";
+import utlandLandSchema from "./utlandLandSchema";
+import vegadresseSchema from "./vegadresseSchema";
 
 export const FormBuilderSchemas = {
   fodselsNummerDNummerSchema,
@@ -31,6 +32,7 @@ export const FormBuilderSchemas = {
   norskVegadresseSchema,
   norskPostboksadresseSchema,
   utenlandskAdresseSchema,
+  ibanSchema,
   ...panelSchemas,
 };
 

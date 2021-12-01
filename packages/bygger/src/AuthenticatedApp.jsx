@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import { default as React, default as React, useContext } from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { useAuth } from "./context/auth-context";
 import { FormsRouter } from "./Forms";
@@ -9,9 +9,9 @@ import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
 import TranslationsRouter from "./translations/TranslationsRouter";
 import { UserAlerterContext } from "./userAlerting";
 
-function AuthenticatedApp({ serverURL, formio, store }) {
+function AuthenticatedApp({ serverURL, formio }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, loadForm, loadFormsList, onSave, onDelete, onPublish } = useFormioForms(formio, store, userAlerter);
+  const { forms, loadForm, loadFormsList, onSave, onDelete, onPublish } = useFormioForms(formio, userAlerter);
   const {
     loadGlobalTranslations,
     publishGlobalTranslations,
@@ -66,7 +66,6 @@ function AuthenticatedApp({ serverURL, formio, store }) {
 }
 
 AuthenticatedApp.propTypes = {
-  store: PropTypes.object.isRequired,
   formio: PropTypes.object.isRequired,
 };
 

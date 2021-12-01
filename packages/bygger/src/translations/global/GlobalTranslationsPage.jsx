@@ -1,23 +1,24 @@
 import { makeStyles } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
-import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import LoadingComponent from "../../components/LoadingComponent";
+import UserFeedback from "../../components/UserFeedback";
 import { languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
-import { UserAlerterContext } from "../../userAlerting";
 import { useModal } from "../../util/useModal";
 import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import PublishGlobalTranslationsButton from "./PublishGlobalTranslationsButton";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
@@ -71,23 +72,10 @@ const GlobalTranslationsPage = ({
   saveTranslation,
   onLogout,
 }) => {
-  const { tag } = useParams();
-  const [selectedTag, setSelectedTag] = useState(tags.SKJEMATEKSTER);
-  const [publishing, setPublishing] = useState(false);
+  const params = useParams();
+  const selectedTag = params.tag || tags.SKJEMATEKSTER;
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
-  const publish = () => {
-    setPublishing(true);
-    publishGlobalTranslations(languageCode).finally(() => setPublishing(false));
-  };
-
-  const alertComponent = useContext(UserAlerterContext).alertComponent();
-
-  useEffect(() => {
-    if (tag) {
-      setSelectedTag(tag);
-    }
-  }, [tag]);
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
@@ -276,9 +264,10 @@ const GlobalTranslationsPage = ({
             <Column className={classes.stickySideBar}>
               <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
-              <Knapp onClick={publish} spinner={publishing}>
-                Publiser
-              </Knapp>
+              <PublishGlobalTranslationsButton
+                languageCode={languageCode}
+                publishGlobalTranslations={publishGlobalTranslations}
+              />
               <Hovedknapp
                 onClick={() => {
                   if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
@@ -303,7 +292,7 @@ const GlobalTranslationsPage = ({
               >
                 Lagre
               </Hovedknapp>
-              {alertComponent && <aside aria-live="polite">{alertComponent()}</aside>}
+              <UserFeedback />
             </Column>
           </div>
         </Row>

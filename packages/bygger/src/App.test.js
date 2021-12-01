@@ -27,7 +27,6 @@ describe('App', () => {
   });
 
   test('Redirect til login form', async () => {
-    const formStore = {forms: null};
     render(
       <MemoryRouter initialEntries={["/"]}>
         <AuthContext.Provider
@@ -39,7 +38,6 @@ describe('App', () => {
         >
           <AppConfigProvider featureToggles={featureToggles}>
             <App
-              store={formStore}
               projectURL="http://myproject.example.org"
               pusher={{ subscribe: () => createFakeChannel() }}
             />
