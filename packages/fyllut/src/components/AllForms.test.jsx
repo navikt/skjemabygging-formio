@@ -35,8 +35,8 @@ describe("AllForms", () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText("Velg et skjema")).toBeInTheDocument();
-    expect(await screen.findByText("New form")).toBeInTheDocument();
-    expect(await screen.findByText("Test new form")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Velg et skjema" })).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "New form" })).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Test new form" })).toBeInTheDocument();
   });
 });
