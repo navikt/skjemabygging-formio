@@ -34,4 +34,9 @@ describe("sanitizeJavaScriptCode", () => {
       "show = a && a.b === 'c' || a && a.b === 'd'"
     );
   });
+
+  it("correctly add null/undefined checks when variable names includes numbers", () => {
+    const inputWithMultipleEqualChainedLookups = "show = a1.b2 === 'c'";
+    expect(sanitizeJavaScriptCode(inputWithMultipleEqualChainedLookups)).toEqual("show = a1 && a1.b2 === 'c'");
+  });
 });
