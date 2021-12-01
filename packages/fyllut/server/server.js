@@ -155,7 +155,10 @@ skjemaApp.get("/config", async (req, res) => {
 });
 
 skjemaApp.get("/forms/:formPath", async (req, res) => {
-  const form = await loadForm(req.params.formPath);
+  const form = await loadForm(req.params.formPath).then((results) => (results.length === 1 ? results[0] : null));
+  if (!form) {
+    return res.sendStatus(404);
+  }
   return res.json(form);
 });
 
