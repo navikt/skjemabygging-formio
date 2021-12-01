@@ -5,13 +5,9 @@ import { MemoryRouter } from "react-router-dom";
 import { AllForms } from "./AllForms";
 
 describe("AllForms", () => {
-  afterEach(() => fetchMock.resetMocks());
-
   it("Show loading when fetching forms from backend", async () => {
     fetchMock.mockImplementation((url) => {
-      if (url === "/fyllut/allforms") {
-        return Promise.resolve(new Response(JSON.stringify([])));
-      }
+      return Promise.resolve(new Response(JSON.stringify([])));
     });
 
     render(
@@ -25,7 +21,7 @@ describe("AllForms", () => {
 
   it("Show no form founded when there is no form from backend", async () => {
     fetchMock.mockImplementation((url) => {
-      if (url === "/fyllut/allforms") return Promise.resolve(new Response(JSON.stringify([])));
+      return Promise.resolve(new Response(JSON.stringify([])));
     });
 
     render(
@@ -42,7 +38,7 @@ describe("AllForms", () => {
       { _id: "111", path: "testnewform", title: "Test new form", modified: "2021-11-29T14:10:21.487Z" },
     ];
     fetchMock.mockImplementation((url) => {
-      if (url === "/fyllut/allforms") return Promise.resolve(new Response(JSON.stringify(mockedForm)));
+      return Promise.resolve(new Response(JSON.stringify(mockedForm)));
     });
 
     render(
@@ -51,6 +47,7 @@ describe("AllForms", () => {
       </MemoryRouter>
     );
 
+    expect(await screen.findByText("Velg et skjema")).toBeInTheDocument();
     expect(await screen.findByText("New form")).toBeInTheDocument();
     expect(await screen.findByText("Test new form")).toBeInTheDocument();
   });
