@@ -27,4 +27,11 @@ describe("sanitizeJavaScriptCode", () => {
       "show = a && a.b && a.b.c && a.b.c.d && a.b.c.d.e === 'f'"
     );
   });
+
+  it("correctly add null/undefined checks for multiple equal chained lookups", () => {
+    const inputWithMultipleEqualChainedLookups = "show = a.b === 'c' || a.b === 'd'";
+    expect(sanitizeJavaScriptCode(inputWithMultipleEqualChainedLookups)).toEqual(
+      "show = a && a.b === 'c' || a && a.b === 'd'"
+    );
+  });
 });
