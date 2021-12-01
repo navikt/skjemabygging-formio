@@ -159,7 +159,7 @@ skjemaApp.get("/forms/:formPath", async (req, res) => {
   return res.json(form);
 });
 
-skjemaApp.get("/allforms", async (req, res) => {
+skjemaApp.get("/forms", async (req, res) => {
   const form = await loadForms();
   return res.json(form);
 });

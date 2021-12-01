@@ -10,7 +10,7 @@ export const AllForms = () => {
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    fetch(`/fyllut/allforms`, { headers: { accept: "application/json" } })
+    fetch(`/fyllut/forms`, { headers: { accept: "application/json" } })
       .then((response) => {
         if (!response.ok) {
           throw new HttpError(response.statusText);
