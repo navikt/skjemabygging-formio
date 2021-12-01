@@ -31,9 +31,9 @@ export const FormsRouter = ({
         <NewFormPage onCreate={onCreate} onLogout={onLogout} />
       </Route>
       <Route
-        path={`${path}/:formpath`}
+        path={`${path}/:formPath`}
         render={({ match }) => {
-          const form = getFormFromPath(forms, match.params.formpath);
+          const form = getFormFromPath(forms, match.params.formPath);
           return (
             <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
               <FormPage
