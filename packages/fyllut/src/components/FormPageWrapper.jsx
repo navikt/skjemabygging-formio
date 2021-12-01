@@ -27,11 +27,11 @@ export const FormPageWrapper = () => {
       });
   }, [formPath]);
 
-  const formTitle = !!form ? form.title : "";
-
   useEffect(() => {
-    document.title = `${formTitle} | www.nav.no`;
-  }, [formTitle]);
+    if (form && form.title) {
+      document.title = `${form.title} | www.nav.no`;
+    }
+  }, [form]);
 
   if (status === "LOADING") {
     return <LoadingComponent />;
@@ -44,5 +44,6 @@ export const FormPageWrapper = () => {
       </h1>
     );
   }
+
   return <FormPage form={form} />;
 };
