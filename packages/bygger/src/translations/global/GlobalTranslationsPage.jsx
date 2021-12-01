@@ -1,4 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
@@ -7,7 +9,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
-import LoadingComponent from "../../components/LoadingComponent";
 import UserFeedback from "../../components/UserFeedback";
 import { languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
@@ -17,7 +18,6 @@ import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
