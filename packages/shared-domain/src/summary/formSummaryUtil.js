@@ -201,7 +201,12 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
   const { key, label, type } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
   const submissionValue = FormioUtils.getValue(submission, componentKey);
-  if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
+  if (
+    submissionValue === null ||
+    submissionValue === undefined ||
+    submissionValue === "" ||
+    (type === "landvelger" && Object.keys(submissionValue).length === 0)
+  ) {
     return formSummaryObject;
   }
   return [

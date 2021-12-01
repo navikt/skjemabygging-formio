@@ -18,6 +18,7 @@ const {
   createFormObject,
   createPanelObject,
   createDummyDayComponent,
+  createDummyLandvelger,
 } = MockedComponentObjectForTest;
 
 const mockedTranslate = (value) => value;
@@ -316,6 +317,48 @@ describe("When handling component", () => {
         "",
         mockedTranslate
       );
+      expect(actual).toEqual([]);
+    });
+  });
+
+  describe("Landvelger", () => {
+    it("adds the selected value for old version of landvelger", () => {
+      const actual = handleComponent(createDummyLandvelger(), { data: { land: "Norge" } }, [], "", mockedTranslate);
+      expect(actual).toEqual([
+        {
+          key: "land",
+          type: "landvelger",
+          label: "Land",
+          value: "Norge",
+        },
+      ]);
+    });
+
+    it("adds the selected value for landvelger where label and value is stored in submission", () => {
+      const actual = handleComponent(
+        createDummyLandvelger(),
+        { data: { land: { value: "NO", label: "Norge" } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([
+        {
+          key: "land",
+          type: "landvelger",
+          label: "Land",
+          value: "Norge",
+        },
+      ]);
+    });
+
+    it("does not add anything if no option is selected (old version of landvelger)", () => {
+      const actual = handleComponent(createDummyLandvelger(), { data: { land: "" } }, [], "", mockedTranslate);
+      expect(actual).toEqual([]);
+    });
+
+    it("does not add anything if no option is selected (current version of landvelger)", () => {
+      const actual = handleComponent(createDummyLandvelger(), { data: { land: {} } }, [], "", mockedTranslate);
       expect(actual).toEqual([]);
     });
   });
