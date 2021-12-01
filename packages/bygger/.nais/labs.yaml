@@ -2,3 +2,9 @@ ingresses:
 - "https://skjemabygging-formio.labs.nais.io"
 image: {{image}}
 publiseringWorkflowDispatchRef: "master"
+accessPolicy:
+  outbound:
+    rules:
+      - application: skjemabygging-proxy
+        namespace: skjemadigitalisering
+        cluster: prod-fss

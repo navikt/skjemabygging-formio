@@ -48,6 +48,12 @@ spec:
       enabled: true
   accessPolicy:
     outbound:
+      rules:
+      {{#each accessPolicy.outbound.rules}}
+        - application: {{this.application}}
+          namespace: {{this.namespace}}
+          cluster: {{this.cluster}}
+      {{/each}}
       external:
         - host: protected-island-44773.herokuapp.com
         - host: api.github.com
