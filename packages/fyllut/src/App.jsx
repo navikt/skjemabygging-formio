@@ -24,7 +24,7 @@ function App({ className }) {
         <Route exact path="/">
           <AllForms />
         </Route>
-        <Route path="/:formpath">
+        <Route path="/:formPath">
           <FormPageWrapper />
         </Route>
       </Switch>
