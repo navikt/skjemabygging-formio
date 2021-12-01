@@ -1,14 +1,12 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
-import { useRouteMatch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import FormPage from "./FormPage";
 
 class HttpError extends Error {}
 
 export const FormPageWrapper = () => {
-  const {
-    params: { formpath },
-  } = useRouteMatch();
+  const { formpath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [targetForm, setTargetForm] = useState({});
   useEffect(() => {
