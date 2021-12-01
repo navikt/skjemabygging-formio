@@ -148,12 +148,9 @@ const loadMottaksadresser = async () => {
 };
 
 skjemaApp.get("/config", async (req, res) => {
-  //const forms = await loadForms();
-
   return res.json({
     NAIS_CLUSTER_NAME: naisClusterName,
     REACT_APP_SENTRY_DSN: sentryDsn,
-    //FORMS: forms,
   });
 });
 
