@@ -1,6 +1,6 @@
-import { sanitizeJavaScriptCode } from "./conditional-overrides";
+import { sanitizeJavaScriptCode } from "./utils-overrides";
 
-describe("addNullChecksForChainedLookups()", () => {
+describe("sanitizeJavaScriptCode", () => {
   it("does not change a string without chained lookups", () => {
     const aSentence = "this is a string.";
     expect(sanitizeJavaScriptCode(aSentence)).toEqual(aSentence);
