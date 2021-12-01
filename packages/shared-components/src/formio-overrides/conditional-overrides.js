@@ -10,10 +10,9 @@ function addNullChecksToChainedLookup(chainedLookup, originalString) {
 function mapChainedLookups(text) {
   let mappedString = text;
   const arrayOfChainedLookups = text.match(/((\w+\.)+\w+)/g) || [];
-  for (let i = 0; i < arrayOfChainedLookups.length; i++) {
-    const chainedLookup = arrayOfChainedLookups[i];
-    mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString);
-  }
+  [...new Set(arrayOfChainedLookups)].forEach(
+    (chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString))
+  );
   return mappedString;
 }
 
