@@ -127,7 +127,7 @@ const loadForms = async () => {
 const loadForm = async (formPath) => {
   return useFormioApi
     ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`)
-    : await loadFileFromDirectory(skjemaDir, formPath);
+    : await loadFileFromDirectory(skjemaDir, formPath, []);
 };
 
 const loadTranslations = async (formPath) => {
