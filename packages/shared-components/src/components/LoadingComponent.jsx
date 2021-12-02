@@ -1,5 +1,5 @@
-import React from "react";
 import { makeStyles } from "@material-ui/styles";
+import React from "react";
 
 const useLoadingStyles = makeStyles({
   root: {
@@ -7,7 +7,6 @@ const useLoadingStyles = makeStyles({
     alignItems: "center",
     justifyContent: "center",
     height: "100vh",
-    width: "100vw",
     "& h1": {
       fontSize: "3rem",
       fontWeight: "bolder",
