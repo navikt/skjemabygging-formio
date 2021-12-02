@@ -1,12 +1,12 @@
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
-import * as Sentry from "@sentry/browser";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter } from "react-router-dom";
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
+import App from "./App";
 import featureToggles from "./featureToggles.js";
+import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
+import * as serviceWorker from "./serviceWorker";
 
 class HttpError extends Error {}
 
@@ -21,19 +21,19 @@ fetch("/fyllut/config", { headers: { accept: "application/json" } })
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
     }
-    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME), json.FORMS || []);
+    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
   })
   .catch((error) => {
     if (process.env.NODE_ENV === "development") {
       console.log("config not loaded, using dummy config in development");
       // TODO løse hvordan skjema lastes ved lokal utvikling
-      renderReact("https://example.org/dokumentinnsendingbaseurl", []);
+      renderReact("https://example.org/dokumentinnsendingbaseurl");
     } else {
       console.error(`Could not fetch config from server: ${error}`);
     }
   });
 
-function renderReact(dokumentInnsendingBaseURL, forms) {
+function renderReact(dokumentInnsendingBaseURL) {
   ReactDOM.render(
     <React.StrictMode>
       <AppConfigProvider
@@ -42,7 +42,7 @@ function renderReact(dokumentInnsendingBaseURL, forms) {
         fyllutBaseURL={"/fyllut"}
       >
         <BrowserRouter basename="/fyllut">
-          <App forms={forms} />
+          <App />
         </BrowserRouter>
       </AppConfigProvider>
     </React.StrictMode>,

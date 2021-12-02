@@ -2,6 +2,7 @@ import {
   AmplitudeProvider,
   FyllUtRouter,
   i18nData,
+  LoadingComponent,
   useAppConfig,
 } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
@@ -11,7 +12,6 @@ function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
   const [ready, setReady] = useState(false);
   const { featureToggles } = useAppConfig();
-
   useEffect(() => {
     async function fetchTranslations() {
       if (featureToggles.enableTranslations) {
@@ -45,7 +45,7 @@ function FormPage({ form }) {
   }, [form, featureToggles.enableTranslations]);
 
   if (!ready) {
-    return <div>Laster skjema...</div>;
+    return <LoadingComponent />;
   }
 
   return (

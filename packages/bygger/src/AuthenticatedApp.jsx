@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import PropTypes from "prop-types";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import React, { useContext } from "react";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
+import { useAuth } from "./context/auth-context";
 import { FormsRouter } from "./Forms";
 import { useFormioForms } from "./hooks/useFormioForms";
 import { useFormioTranslations } from "./hooks/useFormioTranslations";
-import { UserAlerterContext } from "./userAlerting";
-import LoadingComponent from "./components/LoadingComponent";
-import TranslationsRouter from "./translations/TranslationsRouter";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
-import { useAuth } from "./context/auth-context";
+import TranslationsRouter from "./translations/TranslationsRouter";
+import { UserAlerterContext } from "./userAlerting";
 
 function AuthenticatedApp({ serverURL, formio }) {
   const userAlerter = useContext(UserAlerterContext);

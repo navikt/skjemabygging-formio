@@ -1,37 +1,14 @@
-import { Route, Switch, useRouteMatch } from "react-router-dom";
-import "nav-frontend-lenker-style";
-import React from "react";
-import { makeStyles } from "@material-ui/styles";
-import NewFormPage from "./NewFormPage";
-import { FormsListPage } from "./FormsListPage";
-import { FormPage } from "./FormPage";
-import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
+import { CustomComponents, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Components from "formiojs/components/Components";
+import "nav-frontend-lenker-style";
+import React from "react";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 import I18nProvider from "../context/i18n";
+import { FormPage } from "./FormPage";
+import { FormsListPage } from "./FormsListPage";
+import NewFormPage from "./NewFormPage";
 
-const useLoadingStyles = makeStyles({
-  root: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-    width: "100vw",
-    "& h1": {
-      fontSize: "3rem",
-      fontWeight: "bolder",
-    },
-  },
-});
-
-const LoadingComponent = () => {
-  const classes = useLoadingStyles();
-  return (
-    <div className={classes.root}>
-      <h1>Laster...</h1>
-    </div>
-  );
-};
 export const FormsRouter = ({
   forms,
   onChange,
@@ -54,9 +31,9 @@ export const FormsRouter = ({
         <NewFormPage onCreate={onCreate} onLogout={onLogout} />
       </Route>
       <Route
-        path={`${path}/:formpath`}
+        path={`${path}/:formPath`}
         render={({ match }) => {
-          const form = getFormFromPath(forms, match.params.formpath);
+          const form = getFormFromPath(forms, match.params.formPath);
           return (
             <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
               <FormPage
