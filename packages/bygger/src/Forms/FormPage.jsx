@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import LoadingComponent from "../components/LoadingComponent";
 import I18nProvider from "../context/i18n";
 import { EditFormPage } from "./EditFormPage";
@@ -7,10 +7,8 @@ import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogout }) => {
-  let {
-    url,
-    params: { formPath },
-  } = useRouteMatch();
+  let { url } = useRouteMatch();
+  const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
 
