@@ -10,7 +10,7 @@ describe("FormPageWrapper", () => {
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response(JSON.stringify([])));
+      return Promise.resolve(new Response());
     });
 
     render(
@@ -27,13 +27,17 @@ describe("FormPageWrapper", () => {
       })
     ).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Finner ikke skjemaet newForm" })).toBeInTheDocument();
-    await waitFor(() => expect(document.title).toEqual("| www.nav.no"));
+    await waitFor(() => expect(document.title).toEqual(""));
   });
 
   it("Show target form when there is one", async () => {
-    const mockedForm = [
-      { _id: "000", path: "newform", title: "New form", modified: "2021-11-30T14:10:21.487Z", components: [] },
-    ];
+    const mockedForm = {
+      _id: "000",
+      path: "newform",
+      title: "New form",
+      modified: "2021-11-30T14:10:21.487Z",
+      components: [],
+    };
     fetchMock.mockImplementation((url) => {
       return Promise.resolve(new Response(JSON.stringify(mockedForm)));
     });
