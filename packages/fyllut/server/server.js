@@ -115,17 +115,19 @@ const loadForms = async () => {
     ? await fetchFromFormioApi(
         `${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=title,path,modified`
       )
-    : await loadAllJsonFilesFromDirectory(skjemaDir).map((form) => ({
-        title: form.title,
-        path: form.path,
-        modified: form.modified,
-      }));
+    : await loadAllJsonFilesFromDirectory(skjemaDir).then((forms) =>
+        forms.map((form) => ({
+          title: form.title,
+          path: form.path,
+          modified: form.modified,
+        }))
+      );
 };
 
 const loadForm = async (formPath) => {
   return useFormioApi
     ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`)
-    : await loadFileFromDirectory(skjemaDir, formPath);
+    : await loadFileFromDirectory(skjemaDir, formPath, []);
 };
 
 const loadTranslations = async (formPath) => {
