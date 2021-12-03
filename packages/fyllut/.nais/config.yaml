@@ -10,6 +10,10 @@ spec:
   image: {{image}}
   team: skjemadigitalisering
   port: 8080
+  azure:
+    application:
+      enabled: true
+      tenant: {{azure.application.tenant}}
   ingresses:
   {{#each ingresses as |url|}}
      - {{url}}
@@ -38,6 +42,7 @@ spec:
       external:
         - host: {{dekorator-host}}
         - host: {{foersteside-host}}
+        - host: {{skjemabygging-proxy-host}}
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
