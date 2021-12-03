@@ -71,7 +71,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+            <Hovedknapp onClick={() => onSave({ ...form, display: "wizard" })}>Lagre</Hovedknapp>
             <UserFeedback />
           </Column>
         </Row>
