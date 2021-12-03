@@ -12,7 +12,7 @@ function addNullChecksToChainedLookup(chainedLookup, originalString) {
   for (let j = 1; j < chainedLookupParts.length; j++) {
     safeChainedLookup = safeChainedLookup + " && " + chainedLookupParts.slice(0, j + 1).join(".");
   }
-  return originalString.replace(new RegExp(chainedLookup, "g"), safeChainedLookup);
+  return originalString.replace(new RegExp(chainedLookup, "g"), `(${safeChainedLookup})`);
 }
 
 function mapChainedLookups(text) {
