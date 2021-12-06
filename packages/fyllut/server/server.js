@@ -4,6 +4,7 @@ import express from "express";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
+import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
 import getDecorator from "./dekorator.js";
@@ -32,6 +33,11 @@ const {
   resourcesDir,
   translationDir,
   gitVersion,
+  skjemabyggingProxyUrl,
+  skjemabyggingProxyClientId,
+  azureOpenidTokenEndpoint,
+  clientId,
+  clientSecret,
 } = config;
 checkConfigConsistency(config);
 
@@ -182,6 +188,42 @@ skjemaApp.get("/global-translations/:languageCode", async (req, res) =>
 skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
 
 skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaksadresser()));
+
+const postData = {
+  grant_type: "client_credentials",
+  scope: `openid api://${skjemabyggingProxyClientId}/.default`,
+  client_id: clientId,
+  client_secret: clientSecret,
+  client_auth_method: "client_secret_basic",
+};
+
+const toJsonOrThrowError = (errorMessage) => async (response) => {
+  if (response.ok) {
+    return response.json();
+  }
+  console.log(errorMessage, await response.json());
+  throw new Error(errorMessage);
+};
+
+skjemaApp.get("/enhetsliste", (req, res) => {
+  const body = qs.stringify(postData);
+  fetch(azureOpenidTokenEndpoint, {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    method: "POST",
+    body: body,
+  })
+    .then(toJsonOrThrowError("Feil ved autentisering"))
+    .then(({ access_token }) =>
+      fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet`, {
+        headers: { Authorization: `Bearer ${access_token}` },
+      })
+    )
+    .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
+    .then((enhetsliste) => res.send(enhetsliste))
+    .catch((err) => {
+      res.status(500).send(err.message);
+    });
+});
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 

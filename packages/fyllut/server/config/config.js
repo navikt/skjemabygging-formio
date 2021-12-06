@@ -1,4 +1,7 @@
+import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
+
+dotenv.config();
 
 const config = {
   sentryDsn: process.env.REACT_APP_SENTRY_DSN,
@@ -9,17 +12,22 @@ const config = {
   resourcesDir: process.env.RESOURCES_DIR,
   translationDir: process.env.TRANSLATION_DIR,
   gitVersion: process.env.GIT_SHA,
+  skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL,
+  skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID,
+  azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT,
+  clientId: process.env.AZURE_APP_CLIENT_ID,
+  clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
 };
 
 const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {
-  const {useFormioApi, naisClusterName, formioProjectUrl} = config;
+  const { useFormioApi, naisClusterName, formioProjectUrl } = config;
   if (useFormioApi) {
     if (naisClusterName === NaisCluster.PROD) {
       logError(`FormioApi is not allowed in ${naisClusterName}`);
       exit(1);
     }
     if (!formioProjectUrl) {
-      logError('FORMIO_PROJECT_URL is required when using FormioApi');
+      logError("FORMIO_PROJECT_URL is required when using FormioApi");
       exit(1);
     }
   }
