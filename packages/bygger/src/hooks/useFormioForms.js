@@ -1,5 +1,4 @@
 import Formiojs from "formiojs/Formio";
-import cloneDeep from "lodash.clonedeep";
 import { useState } from "react";
 
 export const useFormioForms = (formio, userAlerter) => {
@@ -46,12 +45,9 @@ export const useFormioForms = (formio, userAlerter) => {
     });
   };
 
-  const onDelete = (form) => {
-    const update = cloneDeep(form);
-    update.tags = update.tags.filter((each) => each !== "nav-skjema");
-    formio.saveForm(update).then(() => {
-      userAlerter.flashSuccessMessage("Slettet skjemaet " + form.title);
-      setForms(forms.filter((each) => each._id !== form._id));
+  const deleteForm = async (formId, tags, title) => {
+    formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== "nav-skjema") }).then(() => {
+      userAlerter.flashSuccessMessage("Slettet skjemaet " + title);
     });
   };
   const onPublish = async (form, translations) => {
@@ -73,11 +69,11 @@ export const useFormioForms = (formio, userAlerter) => {
     }
   };
   return {
+    deleteForm,
     forms,
     loadForm,
     loadFormsList,
     onSave,
-    onDelete,
     onPublish,
   };
 };

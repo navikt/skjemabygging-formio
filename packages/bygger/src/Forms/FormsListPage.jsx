@@ -131,7 +131,7 @@ function simplifiedForms(forms) {
   }));
 }
 
-function FormsListPage({ url, loadFormsList, onDelete, onNew, onLogout }) {
+function FormsListPage({ url, loadFormsList, deleteForm, onNew, onLogout }) {
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState();
@@ -150,6 +150,12 @@ function FormsListPage({ url, loadFormsList, onDelete, onNew, onLogout }) {
   if (!forms) {
     return <h1>Finner ingen skjemaer...</h1>;
   }
+
+  const onDelete = (formId, tags, title) => {
+    deleteForm(formId, tags, title).then(() => {
+      setForms(forms.filter((form) => form._id !== formId));
+    });
+  };
 
   return (
     <AppLayoutWithContext
@@ -177,7 +183,7 @@ function FormsListPage({ url, loadFormsList, onDelete, onNew, onLogout }) {
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
-              <SlettKnapp className="lenke" onClick={() => onDelete(form)}>
+              <SlettKnapp className="lenke" onClick={() => onDelete(form._id, form.tags, form.title)}>
                 Slett skjema
               </SlettKnapp>
             </li>

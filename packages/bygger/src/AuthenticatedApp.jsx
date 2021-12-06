@@ -11,7 +11,7 @@ import { UserAlerterContext } from "./userAlerting";
 
 function AuthenticatedApp({ serverURL, formio }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { loadForm, loadFormsList, onSave, onDelete, onPublish } = useFormioForms(formio, userAlerter);
+  const { deleteForm, loadForm, loadFormsList, onSave, onPublish } = useFormioForms(formio, userAlerter);
   const {
     loadGlobalTranslations,
     publishGlobalTranslations,
@@ -28,9 +28,9 @@ function AuthenticatedApp({ serverURL, formio }) {
       <Switch>
         <Route path="/forms">
           <FormsRouter
+            deleteForm={deleteForm}
             formio={formio}
             onSave={onSave}
-            onDelete={onDelete}
             onPublish={onPublish}
             onNew={() => history.push("/forms/new")}
             loadForm={loadForm}

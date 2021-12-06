@@ -8,12 +8,12 @@ import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
 export const FormsRouter = ({
+  deleteForm,
   formio,
   loadForm,
   loadFormsList,
   onSave,
   onNew,
-  onDelete,
   onPublish,
   loadTranslations,
   onLogout,
@@ -35,7 +35,13 @@ export const FormsRouter = ({
         />
       </Route>
       <Route path={path}>
-        <FormsListPage loadFormsList={loadFormsList} onLogout={onLogout} url={url} onDelete={onDelete} onNew={onNew} />
+        <FormsListPage
+          loadFormsList={loadFormsList}
+          onLogout={onLogout}
+          url={url}
+          deleteForm={deleteForm}
+          onNew={onNew}
+        />
       </Route>
     </Switch>
   );
