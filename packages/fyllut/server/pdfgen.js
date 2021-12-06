@@ -1,6 +1,6 @@
-import PdfPrinter from "pdfmake";
-import luxon from "luxon";
 import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
+import luxon from "luxon";
+import PdfPrinter from "pdfmake";
 
 const { DateTime } = luxon;
 
@@ -163,7 +163,7 @@ export class Pdfgen {
   }
 
   generateContentFromSubmission() {
-    return [...this.generateHeader(), ...this.generateBody(), ...this.generateFooter()];
+    return [...this.generateHeader(), ...this.generateBody()];
   }
 
   generateFooter() {
@@ -192,6 +192,7 @@ export class Pdfgen {
       pageSize: "A4",
       pageMargins: [40, 80, 40, 80],
       content: this.generateContentFromSubmission(),
+      footer: this.generateFooter(),
       styles: this.docStyles(),
     };
   }
@@ -235,6 +236,6 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateContentFromSubmission() {
-    return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures(), ...this.generateFooter()];
+    return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures()];
   }
 }
