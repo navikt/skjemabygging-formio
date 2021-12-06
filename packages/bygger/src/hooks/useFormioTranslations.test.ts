@@ -219,16 +219,16 @@ describe("useFormioTranslations", () => {
       await expect(translations).resolves.toStrictEqual({
         "nb-NO": {
           translations: {
-            Austria: { value: "Austria", scope: "component-countryName" },
-            Norway: { value: "Norway", scope: "component-countryName" },
+            Sverige: { value: "Sverige", scope: "component-countryName" },
+            Norge: { value: "Norge", scope: "component-countryName" },
           },
         },
         en: {
           id: undefined,
           translations: {
             ja: { value: "yes", scope: "global" },
-            Norway: { value: "Norway", scope: "component-countryName" },
-            Austria: { value: "Austria", scope: "component-countryName" },
+            Norge: { value: "Norway", scope: "component-countryName" },
+            Sverige: { value: "Sweden", scope: "component-countryName" },
           },
         },
       });
