@@ -1,9 +1,11 @@
 import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
+import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
 import getDecorator from "./dekorator.js";
@@ -12,6 +14,7 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 
+dotenv.config();
 const app = express();
 const skjemaApp = express();
 
@@ -182,6 +185,43 @@ skjemaApp.get("/global-translations/:languageCode", async (req, res) =>
 skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang)));
 
 skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaksadresser()));
+
+const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT;
+const postData = {
+  grant_type: "client_credentials",
+  scope: `openid api://${process.env.SKJEMABYGGER_PROXY_CLIENT_ID}/.default`,
+  client_id: process.env.AZURE_APP_CLIENT_ID,
+  client_secret: process.env.AZURE_APP_CLIENT_SECRET,
+  client_auth_method: "client_secret_basic",
+};
+
+const toJsonOrThrowError = (errorMessage) => async (response) => {
+  if (response.ok) {
+    return response.json();
+  }
+  console.log(errorMessage, await response.json());
+  throw new Error(errorMessage);
+};
+
+skjemaApp.get("/enhetsliste", (req, res) => {
+  const body = qs.stringify(postData);
+  fetch(tokenEndpoint, {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    method: "POST",
+    body: body,
+  })
+    .then(toJsonOrThrowError("Feil ved autentisering"))
+    .then(({ access_token }) =>
+      fetch("https://skjemabygging-proxy.dev.intern.nav.no/norg2/api/v1/enhet", {
+        headers: { Authorization: `Bearer ${access_token}` },
+      })
+    )
+    .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
+    .then((enhetsliste) => res.send(enhetsliste))
+    .catch((err) => {
+      res.status(500).send(err.message);
+    });
+});
 
 skjemaApp.get("/internal/isAlive|isReady", (req, res) => res.sendStatus(200));
 
