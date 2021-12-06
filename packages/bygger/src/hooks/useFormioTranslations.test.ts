@@ -1,9 +1,9 @@
-import { useFormioTranslations } from "./useFormioTranslations";
-import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
-import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
-import { FakeBackend } from "../fakeBackend/FakeBackend";
-import { Formio } from "formiojs";
 import { waitFor } from "@testing-library/react";
+import { Formio } from "formiojs";
+import { FakeBackend } from "../fakeBackend/FakeBackend";
+import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
+import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
+import { useFormioTranslations } from "./useFormioTranslations";
 
 const MOCK_PREDEFINED_TEXTS_I18N_EN = {
   Ja: "Yes",
@@ -217,12 +217,18 @@ describe("useFormioTranslations", () => {
       expect.assertions(2);
       await waitFor(() => expect(translations).toBeDefined());
       await expect(translations).resolves.toStrictEqual({
+        "nb-NO": {
+          translations: {
+            Sverige: { value: "Sverige", scope: "component-countryName" },
+            Norge: { value: "Norge", scope: "component-countryName" },
+          },
+        },
         en: {
           id: undefined,
           translations: {
             ja: { value: "yes", scope: "global" },
-            Norway: { value: "Norway", scope: "component-countryName" },
-            Austria: { value: "Austria", scope: "component-countryName" },
+            Norge: { value: "Norway", scope: "component-countryName" },
+            Sverige: { value: "Sweden", scope: "component-countryName" },
           },
         },
       });
