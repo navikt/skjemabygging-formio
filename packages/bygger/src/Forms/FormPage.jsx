@@ -30,6 +30,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogo
   if (!form) {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
+
   return (
     <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
       <Switch>
@@ -50,8 +51,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogo
             form={form}
             editFormUrl={`${url}/edit`}
             formSettingsUrl={`${url}/settings`}
-            onSave={onSave}
-            onPublish={onPublish}
           />
         </Route>
         <Route path={`${url}/settings`}>

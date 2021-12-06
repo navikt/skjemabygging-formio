@@ -1,9 +1,6 @@
 import Formiojs from "formiojs/Formio";
-import { useState } from "react";
 
 export const useFormioForms = (formio, userAlerter) => {
-  const [forms, setForms] = useState(null);
-
   /* useEffect(() => {
     if (forms === null) {
       formio.loadForms({ params: { type: "form", tags: "nav-skjema", limit: 1000 } }).then(setForms);
@@ -34,14 +31,10 @@ export const useFormioForms = (formio, userAlerter) => {
       .then((forms) => forms[0]);
   };
 
-  const onChangeForm = (form) => {
-    setForms([...forms.filter((each) => each.path !== form.path), form]);
-  };
-
   const onSave = (callbackForm) => {
     formio.saveForm(callbackForm).then((form) => {
       userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
-      onChangeForm(form);
+      return form;
     });
   };
 
@@ -70,7 +63,6 @@ export const useFormioForms = (formio, userAlerter) => {
   };
   return {
     deleteForm,
-    forms,
     loadForm,
     loadFormsList,
     onSave,
