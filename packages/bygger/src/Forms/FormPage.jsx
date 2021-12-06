@@ -1,6 +1,6 @@
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
-import LoadingComponent from "../components/LoadingComponent";
 import I18nProvider from "../context/i18n";
 import { EditFormPage } from "./EditFormPage";
 import { FormSettingsPage } from "./FormSettingsPage";

@@ -1,14 +1,6 @@
 import Formiojs from "formiojs/Formio";
-import cloneDeep from "lodash.clonedeep";
-import { useEffect, useState } from "react";
 
 export const useFormioForms = (formio, userAlerter) => {
-  /* useEffect(() => {
-    if (forms === null) {
-      formio.loadForms({ params: { type: "form", tags: "nav-skjema", limit: 1000 } }).then(setForms);
-    }
-  }, [forms, setForms, formio]); */
-
   const loadFormsList = () => {
     return formio.loadForms({
       params: {

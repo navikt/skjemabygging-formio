@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
@@ -7,7 +8,6 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
-import LoadingComponent from "../components/LoadingComponent";
 import UserFeedback from "../components/UserFeedback";
 import { languagesInNorwegian, useTranslations } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
