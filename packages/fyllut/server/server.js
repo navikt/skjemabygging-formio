@@ -1,6 +1,5 @@
 import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
@@ -14,7 +13,6 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 
-dotenv.config();
 const app = express();
 const skjemaApp = express();
 
@@ -35,6 +33,11 @@ const {
   resourcesDir,
   translationDir,
   gitVersion,
+  skjemabyggingProxyUrl,
+  skjemabyggingProxyClientId,
+  azureOpenidTokenEndpoint,
+  clientId,
+  clientSecret,
 } = config;
 checkConfigConsistency(config);
 
@@ -186,12 +189,11 @@ skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang))
 
 skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaksadresser()));
 
-const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT;
 const postData = {
   grant_type: "client_credentials",
-  scope: `openid api://${process.env.SKJEMABYGGER_PROXY_CLIENT_ID}/.default`,
-  client_id: process.env.AZURE_APP_CLIENT_ID,
-  client_secret: process.env.AZURE_APP_CLIENT_SECRET,
+  scope: `openid api://${skjemabyggingProxyClientId}/.default`,
+  client_id: clientId,
+  client_secret: clientSecret,
   client_auth_method: "client_secret_basic",
 };
 
@@ -205,14 +207,14 @@ const toJsonOrThrowError = (errorMessage) => async (response) => {
 
 skjemaApp.get("/enhetsliste", (req, res) => {
   const body = qs.stringify(postData);
-  fetch(tokenEndpoint, {
+  fetch(azureOpenidTokenEndpoint, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
     body: body,
   })
     .then(toJsonOrThrowError("Feil ved autentisering"))
     .then(({ access_token }) =>
-      fetch("https://skjemabygging-proxy.dev.intern.nav.no/norg2/api/v1/enhet", {
+      fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet`, {
         headers: { Authorization: `Bearer ${access_token}` },
       })
     )
