@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import I18nProvider from "../context/i18n";
+import { useFormioForms } from "../hooks/useFormioForms";
+import { useFormioTranslations } from "../hooks/useFormioTranslations";
+import { UserAlerterContext } from "../userAlerting";
 import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 import NewTranslation from "./NewTranslation";
 import TranslationsByFormPage from "./TranslationsByFormPage";
 import { TranslationsListPage } from "./TranslationsListPage";
 
-const TranslationsRouter = ({
-  deleteTranslation,
-  loadForm,
-  loadFormsList,
-  loadGlobalTranslations,
-  publishGlobalTranslations,
-  loadTranslationsForEditPage,
-  saveGlobalTranslation,
-  saveLocalTranslation,
-  onLogout,
-}) => {
+const TranslationsRouter = ({ formio, serverURL, onLogout }) => {
   let { path } = useRouteMatch();
+  const userAlerter = useContext(UserAlerterContext);
+  const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
+  const {
+    loadGlobalTranslations,
+    publishGlobalTranslations,
+    loadTranslationsForEditPage,
+    deleteTranslation,
+    saveLocalTranslation,
+    saveGlobalTranslation,
+  } = useFormioTranslations(serverURL, formio, userAlerter);
 
   return (
     <Switch>
