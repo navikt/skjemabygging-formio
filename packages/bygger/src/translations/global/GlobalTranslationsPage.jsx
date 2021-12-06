@@ -68,7 +68,6 @@ const GlobalTranslationsPage = ({
   languageCode,
   loadGlobalTranslations,
   publishGlobalTranslations,
-  projectURL,
   saveTranslation,
   onLogout,
 }) => {
@@ -281,7 +280,6 @@ const GlobalTranslationsPage = ({
                     );
                   } else {
                     saveTranslation(
-                      projectURL,
                       globalTranslationsWithLanguagecodeAndTag?.id,
                       languageCode,
                       globalTranslationsToSave(selectedTag),

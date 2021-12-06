@@ -176,7 +176,6 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   };
 
   const saveTranslation = (
-    projectUrl: string,
     translationId,
     language: Language,
     i18n: I18nTranslationMap,
@@ -186,7 +185,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     tag?: TranslationTag,
     formTitle?: string
   ) => {
-    Formiojs.fetch(`${projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
+    Formiojs.fetch(`${formio.projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
         "content-type": "application/json",
@@ -217,7 +216,6 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   };
 
   const saveLocalTranslation = (
-    projectUrl: string,
     translationId: string,
     languageCode: Language,
     translations: ScopedTranslationMap,
@@ -235,23 +233,12 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           return translationsToSave;
         }
       }, {});
-      saveTranslation(
-        projectUrl,
-        translationId,
-        languageCode,
-        i18n,
-        `global.${formPath}`,
-        "local",
-        formPath,
-        undefined,
-        formTitle
-      );
+      saveTranslation(translationId, languageCode, i18n, `global.${formPath}`, "local", formPath, undefined, formTitle);
     } else {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
   const saveGlobalTranslation = (
-    projectUrl: string,
     translationId: string,
     languageCode: Language,
     translations: ScopedTranslationMap,
@@ -268,7 +255,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           return translationsToSave;
         }
       }, {});
-      saveTranslation(projectUrl, translationId, languageCode, i18n, "global", "global", undefined, tag);
+      saveTranslation(translationId, languageCode, i18n, "global", "global", undefined, tag);
     } else {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }

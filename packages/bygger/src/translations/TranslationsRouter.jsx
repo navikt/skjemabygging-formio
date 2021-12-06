@@ -13,7 +13,6 @@ const TranslationsRouter = ({
   loadGlobalTranslations,
   publishGlobalTranslations,
   loadTranslationsForEditPage,
-  projectURL,
   saveGlobalTranslation,
   saveLocalTranslation,
   onLogout,
@@ -26,7 +25,7 @@ const TranslationsRouter = ({
         <TranslationsListPage loadFormsList={loadFormsList} onLogout={onLogout} />
       </Route>
       <Route path={`${path}/new`}>
-        <NewTranslation projectURL={projectURL} onLogout={onLogout} />
+        <NewTranslation projectURL={formio.projectURL} onLogout={onLogout} />
       </Route>
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
@@ -36,7 +35,6 @@ const TranslationsRouter = ({
               {...match.params}
               loadGlobalTranslations={loadGlobalTranslations}
               publishGlobalTranslations={publishGlobalTranslations}
-              projectURL={projectURL}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveGlobalTranslation}
               onLogout={onLogout}
@@ -50,7 +48,6 @@ const TranslationsRouter = ({
           <I18nProvider loadTranslations={() => loadTranslationsForEditPage(match.params.formPath)}>
             <TranslationsByFormPage
               loadForm={loadForm}
-              projectURL={projectURL}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveLocalTranslation}
               onLogout={onLogout}

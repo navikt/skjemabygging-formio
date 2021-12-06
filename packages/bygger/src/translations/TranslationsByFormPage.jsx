@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation, projectURL, onLogout }) => {
+const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation, onLogout }) => {
   const { formPath, languageCode } = useParams();
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
   const [form, setForm] = useState();
@@ -105,14 +105,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation, 
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <Hovedknapp
                 onClick={() => {
-                  saveTranslation(
-                    projectURL,
-                    translationId,
-                    languageCode,
-                    translations[languageCode]?.translations,
-                    path,
-                    title
-                  );
+                  saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title);
                 }}
               >
                 Lagre

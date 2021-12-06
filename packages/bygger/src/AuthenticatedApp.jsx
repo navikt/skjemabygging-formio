@@ -41,7 +41,6 @@ function AuthenticatedApp({ serverURL, formio }) {
         </Route>
         <Route path="/translations">
           <TranslationsRouter
-            projectURL={formio.projectUrl}
             loadForm={loadForm}
             loadFormsList={loadFormsList}
             loadGlobalTranslations={loadGlobalTranslations}
