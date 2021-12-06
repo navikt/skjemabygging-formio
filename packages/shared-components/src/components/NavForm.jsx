@@ -29,13 +29,12 @@ import "nav-frontend-skjema-style";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { useAmplitude } from "../context/amplitude";
-import { checkConditionOverride, evaluateOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
+import { evaluateOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
 import i18nData from "../i18nData";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import formioFormStyles from "./styles/formioFormStyles";
 
-Utils.checkCondition = checkConditionOverride;
 Utils.evaluate = evaluateOverride;
 
 const useStyles = makeStyles({

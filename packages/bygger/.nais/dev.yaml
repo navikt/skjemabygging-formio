@@ -2,3 +2,9 @@ ingresses:
 - "https://skjemabygging-formio.dev.intern.nav.no"
 image: {{image}}
 publiseringWorkflowDispatchRef: "dev-publisering"
+accessPolicy:
+  outbound:
+    rules:
+      - application: skjemabygging-proxy
+        namespace: skjemadigitalisering
+        cluster: dev-fss

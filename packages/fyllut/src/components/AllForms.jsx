@@ -5,16 +5,12 @@ import { Link } from "react-router-dom";
 
 class HttpError extends Error {}
 
-const FormsList = ({ forms, children }) => {
-  return <ul>{forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map(children)}</ul>;
-};
-
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
-  const [forms, setForms] = useState();
+  const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    fetch(`/fyllut/allforms`, { headers: { accept: "application/json" } })
+    fetch(`/fyllut/forms`, { headers: { accept: "application/json" } })
       .then((response) => {
         if (!response.ok) {
           throw new HttpError(response.statusText);
@@ -31,7 +27,7 @@ export const AllForms = () => {
     return <LoadingComponent />;
   }
 
-  if (!forms) {
+  if (forms.length === 0) {
     return <h1>Finner ingen skjemaer</h1>;
   }
 
@@ -39,15 +35,17 @@ export const AllForms = () => {
     <main>
       <h1>Velg et skjema</h1>
       <nav>
-        <FormsList forms={forms}>
-          {(form) => (
-            <li key={form._id}>
-              <Link to={form.path}>
-                <Normaltekst>{form.title}</Normaltekst>
-              </Link>
-            </li>
-          )}
-        </FormsList>
+        <ul>
+          {forms
+            .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+            .map((form) => (
+              <li key={form._id}>
+                <Link to={form.path}>
+                  <Normaltekst>{form.title}</Normaltekst>
+                </Link>
+              </li>
+            ))}
+        </ul>
       </nav>
     </main>
   );

@@ -33,13 +33,6 @@ const loadAllJsonFilesFromDirectory = async (dir) => {
   return [];
 };
 
-/*const loadJsonFileFromDirectory = async (dir, formPath) => {
-  if (fs.existsSync(dir)) {
-    const fileContents = await readFile(`${dir}/${formPath}.json`);
-    return JSON.parse(fileContents);
-  }
-};*/
-
 const fetchFromFormioApi = async (url) => {
   if (url) {
     const response = await fetch(url, { method: "GET" });

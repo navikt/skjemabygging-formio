@@ -1,4 +1,6 @@
 import Formiojs from "formiojs/Formio";
+import cloneDeep from "lodash.clonedeep";
+import { useEffect, useState } from "react";
 
 export const useFormioForms = (formio, userAlerter) => {
   /* useEffect(() => {
@@ -32,7 +34,7 @@ export const useFormioForms = (formio, userAlerter) => {
   };
 
   const onSave = (callbackForm) => {
-    formio.saveForm(callbackForm).then((form) => {
+    formio.saveForm({ ...callbackForm, display: "wizard" }).then((form) => {
       userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
       return form;
     });

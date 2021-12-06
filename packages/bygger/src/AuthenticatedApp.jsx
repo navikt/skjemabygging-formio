@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { useAuth } from "./context/auth-context";
 import { FormsRouter } from "./Forms";
