@@ -81,6 +81,9 @@ const textObject = (withInputType, value) => {
 };
 
 const getFormTexts = (form, withInputType = false) => {
+  if (!form) {
+    return [];
+  }
   const simplifiedComponentObject = getTranslatablePropertiesFromForm(form);
   simplifiedComponentObject.splice(0, 0, {
     title: form.title,

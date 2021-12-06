@@ -1,12 +1,13 @@
 import { makeStyles } from "@material-ui/styles";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
+import LoadingComponent from "../components/LoadingComponent";
 import UserFeedback from "../components/UserFeedback";
 import { languagesInNorwegian, useTranslations } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
@@ -29,20 +30,45 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL, onLogout }) => {
+const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation, projectURL, onLogout }) => {
+  const { formPath, languageCode } = useParams();
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
+  const [form, setForm] = useState();
+  const [status, setStatus] = useState("LOADING");
 
   const history = useHistory();
+  const { translations, setTranslations } = useTranslations();
+  useRedirectIfNoLanguageCode(languageCode, translations);
+
+  useEffect(() => {
+    loadForm(formPath)
+      .then((form) => {
+        setForm(form);
+        setStatus("FINISHED LOADING");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [loadForm, formPath]);
+
+  const flattenedComponents = getFormTexts(form, true);
+  const translationId = (translations[languageCode] || {}).id;
+  const styles = useStyles();
+
+  if (status === "LOADING") {
+    return <LoadingComponent />;
+  }
+
+  if (!form) {
+    return <h1>Vi fant ikke dette skjemaet...</h1>;
+  }
+
   const {
     title,
     path,
     properties: { skjemanummer },
   } = form;
-  const { translations, setTranslations } = useTranslations();
-  useRedirectIfNoLanguageCode(languageCode, translations);
-  const flattenedComponents = getFormTexts(form, true);
-  const translationId = (translations[languageCode] || {}).id;
-  const styles = useStyles();
+
   return (
     <>
       <AppLayoutWithContext

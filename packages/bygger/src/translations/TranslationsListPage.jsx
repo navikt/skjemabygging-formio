@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Innholdstittel } from "nav-frontend-typografi";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormsList, simplifiedForms } from "../Forms/FormsListPage";
@@ -32,8 +33,22 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-export function TranslationsListPage({ onLogout, forms }) {
+export function TranslationsListPage({ onLogout, loadFormsList }) {
   const classes = useTranslationsListStyles();
+  const [forms, setForms] = useState();
+  const [status, setStatus] = useState("LOADING");
+
+  useEffect(() => {
+    loadFormsList().then((forms) => {
+      setForms(forms);
+      setStatus("FINISHED LOADING");
+    });
+  }, [loadFormsList]);
+
+  if (status === "LOADING") {
+    return <LoadingComponent />;
+  }
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -54,7 +69,9 @@ export function TranslationsListPage({ onLogout, forms }) {
         </nav>
         <nav className="margin-bottom-large">
           <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
-          {forms && (
+          {!forms ? (
+            <p>Finner ingen skjemaer...</p>
+          ) : (
             <FormsList className={classes.list} forms={simplifiedForms(forms)}>
               {(form) => (
                 <li className={classes.listItem} key={form.path}>

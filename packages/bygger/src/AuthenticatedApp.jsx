@@ -11,7 +11,7 @@ import { UserAlerterContext } from "./userAlerting";
 
 function AuthenticatedApp({ serverURL, formio }) {
   const userAlerter = useContext(UserAlerterContext);
-  const { forms, loadForm, loadFormsList, onSave, onDelete, onPublish } = useFormioForms(formio, userAlerter);
+  const { loadForm, loadFormsList, onSave, onDelete, onPublish } = useFormioForms(formio, userAlerter);
   const {
     loadGlobalTranslations,
     publishGlobalTranslations,
@@ -29,7 +29,6 @@ function AuthenticatedApp({ serverURL, formio }) {
         <Route path="/forms">
           <FormsRouter
             formio={formio}
-            forms={forms}
             onSave={onSave}
             onDelete={onDelete}
             onPublish={onPublish}
@@ -42,8 +41,9 @@ function AuthenticatedApp({ serverURL, formio }) {
         </Route>
         <Route path="/translations">
           <TranslationsRouter
-            forms={forms}
             projectURL={formio.projectUrl}
+            loadForm={loadForm}
+            loadFormsList={loadFormsList}
             loadGlobalTranslations={loadGlobalTranslations}
             publishGlobalTranslations={publishGlobalTranslations}
             loadTranslationsForEditPage={loadTranslationsForEditPage}
