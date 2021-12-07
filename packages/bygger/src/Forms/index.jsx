@@ -9,7 +9,7 @@ import { FormPage } from "./FormPage";
 import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
-export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadTranslations }) => {
+export const FormsRouter = ({ forms, onChange, onSave, onCreate, onDelete, onPublish, loadTranslations }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   if (!forms) {
@@ -32,7 +32,7 @@ export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete
         }}
       />
       <Route path={path}>
-        <FormsListPage forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
+        <FormsListPage forms={forms} url={url} onDelete={onDelete} />
       </Route>
     </Switch>
   );

@@ -41,7 +41,6 @@ function AuthenticatedApp({ serverURL, formio }) {
             onCreate={wrappedCreate}
             onDelete={onDelete}
             onPublish={onPublish}
-            onNew={() => history.push("/forms/new")}
             loadTranslations={loadTranslationsForEditPage}
           />
         </Route>
