@@ -15,3 +15,9 @@ secrets:
 azure:
   application:
     tenant: nav.no
+accessPolicy:
+  outbound:
+    rules:
+      - application: skjemabygging-proxy
+        namespace: skjemadigitalisering
+        cluster: prod-fss
