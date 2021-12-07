@@ -16,3 +16,9 @@ secrets:
 azure:
   application:
     tenant: trygdeetaten.no
+accessPolicy:
+  outbound:
+    rules:
+      - application: skjemabygging-proxy
+        namespace: skjemadigitalisering
+        cluster: dev-fss
