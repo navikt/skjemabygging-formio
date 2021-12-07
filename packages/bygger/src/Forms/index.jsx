@@ -9,17 +9,7 @@ import { FormPage } from "./FormPage";
 import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
-export const FormsRouter = ({
-  forms,
-  onChange,
-  onSave,
-  onNew,
-  onCreate,
-  onDelete,
-  onPublish,
-  loadTranslations,
-  onLogout,
-}) => {
+export const FormsRouter = ({ forms, onChange, onSave, onNew, onCreate, onDelete, onPublish, loadTranslations }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   if (!forms) {
@@ -28,7 +18,7 @@ export const FormsRouter = ({
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage onCreate={onCreate} onLogout={onLogout} />
+        <NewFormPage onCreate={onCreate} />
       </Route>
       <Route
         path={`${path}/:formPath`}
@@ -36,20 +26,13 @@ export const FormsRouter = ({
           const form = getFormFromPath(forms, match.params.formPath);
           return (
             <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
-              <FormPage
-                {...match.params}
-                form={form}
-                onChange={onChange}
-                onSave={onSave}
-                onPublish={onPublish}
-                onLogout={onLogout}
-              />
+              <FormPage {...match.params} form={form} onChange={onChange} onSave={onSave} onPublish={onPublish} />
             </I18nProvider>
           );
         }}
       />
       <Route path={path}>
-        <FormsListPage onLogout={onLogout} forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
+        <FormsListPage forms={forms} url={url} onDelete={onDelete} onNew={onNew} />
       </Route>
     </Switch>
   );

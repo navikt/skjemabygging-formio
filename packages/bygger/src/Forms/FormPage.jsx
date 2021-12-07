@@ -1,17 +1,16 @@
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import React from "react";
+import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { EditFormPage } from "./EditFormPage";
-import { TestFormPage } from "./TestFormPage";
 import { FormSettingsPage } from "./FormSettingsPage";
+import { TestFormPage } from "./TestFormPage";
 
-export const FormPage = ({ form, onChange, onSave, onPublish, onLogout }) => {
+export const FormPage = ({ form, onChange, onSave, onPublish }) => {
   let { url } = useRouteMatch();
 
   return (
     <Switch>
       <Route path={`${url}/edit`}>
         <EditFormPage
-          onLogout={onLogout}
           form={form}
           testFormUrl={`${url}/view`}
           formSettingsUrl={`${url}/settings`}
@@ -22,7 +21,6 @@ export const FormPage = ({ form, onChange, onSave, onPublish, onLogout }) => {
       </Route>
       <Route path={`${url}/view`}>
         <TestFormPage
-          onLogout={onLogout}
           form={form}
           editFormUrl={`${url}/edit`}
           formSettingsUrl={`${url}/settings`}
@@ -32,7 +30,6 @@ export const FormPage = ({ form, onChange, onSave, onPublish, onLogout }) => {
       </Route>
       <Route path={`${url}/settings`}>
         <FormSettingsPage
-          onLogout={onLogout}
           form={form}
           editFormUrl={`${url}/edit`}
           testFormUrl={`${url}/view`}
