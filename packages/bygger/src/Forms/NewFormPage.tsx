@@ -2,7 +2,6 @@ import { makeStyles } from "@material-ui/styles";
 import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 import { Hovedknapp } from "nav-frontend-knapper";
-import PropTypes from "prop-types";
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
@@ -20,14 +19,13 @@ const useStyles = makeStyles({
 
 interface Props {
   formio: any;
-  onLogout: Function;
 }
 
 interface State {
   form: NavFormType;
 }
 
-const NewFormPage: React.FC<Props> = ({ formio, onLogout }): React.ReactElement => {
+const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const userAlerter = useContext(UserAlerterContext);
   const history = useHistory();
   const styles = useStyles();
@@ -69,17 +67,13 @@ const NewFormPage: React.FC<Props> = ({ formio, onLogout }): React.ReactElement 
   };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true, logout: onLogout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true }}>
       <main className={styles.root}>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} />
         <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
       </main>
     </AppLayoutWithContext>
   );
-};
-
-NewFormPage.propTypes = {
-  onLogout: PropTypes.func.isRequired,
 };
 
 export default NewFormPage;

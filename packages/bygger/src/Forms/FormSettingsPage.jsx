@@ -21,13 +21,13 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onLogout, onPublish }) {
+export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onPublish }) {
   const title = `${form.title}`;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true, logout: onLogout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true }}>
       <ActionRow>
         <Link className="knapp" to={editFormUrl}>
           Rediger skjema

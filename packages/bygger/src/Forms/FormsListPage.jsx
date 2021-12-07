@@ -4,7 +4,7 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import { SlettKnapp } from "./components";
@@ -131,7 +131,8 @@ function simplifiedForms(forms) {
   }));
 }
 
-function FormsListPage({ url, loadFormsList, deleteForm, onNew, onLogout }) {
+function FormsListPage({ url, loadFormsList, deleteForm }) {
+  const history = useHistory();
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState();
@@ -157,14 +158,13 @@ function FormsListPage({ url, loadFormsList, deleteForm, onNew, onLogout }) {
     });
   };
 
+  const onNew = () => history.push("/forms/new");
   return (
     <AppLayoutWithContext
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
         visOversettelseliste: true,
-        logout: onLogout,
-        onNew: onNew,
       }}
     >
       <ActionRow>

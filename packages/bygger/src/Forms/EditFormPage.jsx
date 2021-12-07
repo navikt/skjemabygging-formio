@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onChange, onPublish, onLogout }) {
+export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onChange, onPublish }) {
   const { featureToggles } = useAppConfig();
   const {
     title,
@@ -37,7 +37,6 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
         navBarProps={{
           title: "Rediger skjema",
           visSkjemaliste: true,
-          logout: onLogout,
         }}
       >
         <ActionRow>

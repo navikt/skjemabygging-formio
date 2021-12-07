@@ -6,7 +6,7 @@ import { EditFormPage } from "./EditFormPage";
 import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
-export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogout }) => {
+export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   let { url } = useRouteMatch();
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
@@ -36,7 +36,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogo
       <Switch>
         <Route path={`${url}/edit`}>
           <EditFormPage
-            onLogout={onLogout}
             form={form}
             testFormUrl={`${url}/view`}
             formSettingsUrl={`${url}/settings`}
@@ -46,16 +45,10 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onLogo
           />
         </Route>
         <Route path={`${url}/view`}>
-          <TestFormPage
-            onLogout={onLogout}
-            form={form}
-            editFormUrl={`${url}/edit`}
-            formSettingsUrl={`${url}/settings`}
-          />
+          <TestFormPage form={form} editFormUrl={`${url}/edit`} formSettingsUrl={`${url}/settings`} />
         </Route>
         <Route path={`${url}/settings`}>
           <FormSettingsPage
-            onLogout={onLogout}
             form={form}
             editFormUrl={`${url}/edit`}
             testFormUrl={`${url}/view`}

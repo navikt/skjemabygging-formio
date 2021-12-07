@@ -1,27 +1,19 @@
 import PropTypes from "prop-types";
 import React from "react";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
-import { useAuth } from "./context/auth-context";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
 import TranslationsRouter from "./translations/TranslationsRouter";
 
 function AuthenticatedApp({ serverURL, formio }) {
-  const history = useHistory();
-  const { logout } = useAuth();
   return (
     <>
       <Switch>
         <Route path="/forms">
-          <FormsRouter
-            formio={formio}
-            onNew={() => history.push("/forms/new")}
-            onLogout={logout}
-            serverURL={serverURL}
-          />
+          <FormsRouter formio={formio} serverURL={serverURL} />
         </Route>
         <Route path="/translations">
-          <TranslationsRouter formio={formio} onLogout={logout} serverURL={serverURL} />
+          <TranslationsRouter formio={formio} serverURL={serverURL} />
         </Route>
         <Route path="/mottaksadresser">
           <MottaksadresserPage />

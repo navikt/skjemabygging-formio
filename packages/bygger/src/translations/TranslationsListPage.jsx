@@ -33,7 +33,7 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-export function TranslationsListPage({ onLogout, loadFormsList }) {
+export function TranslationsListPage({ loadFormsList }) {
   const classes = useTranslationsListStyles();
   const [forms, setForms] = useState();
   const [status, setStatus] = useState("LOADING");
@@ -55,7 +55,6 @@ export function TranslationsListPage({ onLogout, loadFormsList }) {
         title: "Oversettelser",
         visSkjemaliste: true,
         visLagNyttSkjema: false,
-        logout: onLogout,
       }}
     >
       <main className={classes.root}>

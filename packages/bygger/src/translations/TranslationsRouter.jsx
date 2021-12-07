@@ -9,7 +9,7 @@ import NewTranslation from "./NewTranslation";
 import TranslationsByFormPage from "./TranslationsByFormPage";
 import { TranslationsListPage } from "./TranslationsListPage";
 
-const TranslationsRouter = ({ formio, serverURL, onLogout }) => {
+const TranslationsRouter = ({ formio, serverURL }) => {
   let { path } = useRouteMatch();
   const userAlerter = useContext(UserAlerterContext);
   const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
@@ -25,10 +25,10 @@ const TranslationsRouter = ({ formio, serverURL, onLogout }) => {
   return (
     <Switch>
       <Route exact path={`${path}/`}>
-        <TranslationsListPage loadFormsList={loadFormsList} onLogout={onLogout} />
+        <TranslationsListPage loadFormsList={loadFormsList} />
       </Route>
       <Route path={`${path}/new`}>
-        <NewTranslation projectURL={formio.projectURL} onLogout={onLogout} />
+        <NewTranslation projectURL={formio.projectURL} />
       </Route>
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
@@ -40,7 +40,6 @@ const TranslationsRouter = ({ formio, serverURL, onLogout }) => {
               publishGlobalTranslations={publishGlobalTranslations}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveGlobalTranslation}
-              onLogout={onLogout}
             />
           </I18nProvider>
         )}
@@ -53,7 +52,6 @@ const TranslationsRouter = ({ formio, serverURL, onLogout }) => {
               loadForm={loadForm}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveLocalTranslation}
-              onLogout={onLogout}
             />
           </I18nProvider>
         )}

@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation, onLogout }) => {
+const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }) => {
   const { formPath, languageCode } = useParams();
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
   const [form, setForm] = useState();
@@ -77,7 +77,6 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation, 
           visSkjemaliste: false,
           visLagNyttSkjema: false,
           visOversettelseliste: true,
-          logout: onLogout,
         }}
       >
         <ActionRow>

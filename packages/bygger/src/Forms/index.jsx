@@ -10,7 +10,7 @@ import { FormPage } from "./FormPage";
 import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
-export const FormsRouter = ({ formio, onNew, onLogout, serverURL }) => {
+export const FormsRouter = ({ formio, serverURL }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const userAlerter = useContext(UserAlerterContext);
@@ -19,7 +19,7 @@ export const FormsRouter = ({ formio, onNew, onLogout, serverURL }) => {
   return (
     <Switch>
       <Route path={`${path}/new`}>
-        <NewFormPage formio={formio} onLogout={onLogout} />
+        <NewFormPage formio={formio} />
       </Route>
       <Route path={`${path}/:formPath`}>
         <FormPage
@@ -27,17 +27,10 @@ export const FormsRouter = ({ formio, onNew, onLogout, serverURL }) => {
           loadTranslations={loadTranslationsForEditPage}
           onSave={onSave}
           onPublish={onPublish}
-          onLogout={onLogout}
         />
       </Route>
       <Route path={path}>
-        <FormsListPage
-          loadFormsList={loadFormsList}
-          onLogout={onLogout}
-          url={url}
-          deleteForm={deleteForm}
-          onNew={onNew}
-        />
+        <FormsListPage loadFormsList={loadFormsList} url={url} deleteForm={deleteForm} />
       </Route>
     </Switch>
   );
