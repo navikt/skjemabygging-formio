@@ -16,6 +16,11 @@ interface Props {
 
 type BasicFormProps = Props & { usageContext: UsageContext };
 
+export const COMPONENT_TEXTS = {
+  BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir"
+}
+
+
 const BasicFormMetadataEditor = ({form, onChange, usageContext}: BasicFormProps) => {
   const {mottaksadresser, ready, errorMessage: mottaksadresseError} = useMottaksadresser();
 
@@ -32,6 +37,7 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}: BasicFormProps)
       innsending: innsendingFraProps,
       hasPapirInnsendingOnly,
       mottaksadresseId,
+      enhetMaVelgesVedPapirInnsending,
       hasLabeledSignatures,
       signatures,
     },
@@ -176,7 +182,11 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}: BasicFormProps)
             onChange={(event) =>
               onChange({
                 ...form,
-                properties: {...form.properties, mottaksadresseId: event.target.value || undefined},
+                properties: {
+                  ...form.properties,
+                  mottaksadresseId: event.target.value || undefined,
+                  enhetMaVelgesVedPapirInnsending: false
+                }
               })
             }
           >
@@ -195,6 +205,25 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}: BasicFormProps)
       <div className="margin-bottom-default">
         <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
       </div>
+      {
+        (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
+          <div className="margin-bottom-default">
+            {
+              !mottaksadresseId &&
+              <Checkbox
+                label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
+                checked={enhetMaVelgesVedPapirInnsending}
+                onChange={(event) => {
+                  onChange({
+                    ...form,
+                    properties: {...form.properties, enhetMaVelgesVedPapirInnsending: event.target.checked}
+                  })
+                }}
+              />
+            }
+          </div>
+        )
+      }
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
         checked={!!hasLabeledSignatures}
