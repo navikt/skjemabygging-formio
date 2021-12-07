@@ -166,18 +166,20 @@ export class Pdfgen {
     return [...this.generateHeader(), ...this.generateBody()];
   }
 
-  generateFooter() {
+  generateFooter(currentPage, pageCount) {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
     return {
       columns: [
         {
+          width: "80%",
           text: `${this.translate("Skjemaet ble opprettet")} ${datoTid} \n ${this.translate("Skjemaversjon")}: ${
             this.gitVersion
           }`,
+          alignment: "left",
         },
+        { text: currentPage.toString() + " / " + pageCount, alignment: "right" },
       ],
-      alignment: "left",
-      margin: [40, 0, 0, 0],
+      margin: [40, 10, 40, 0],
     };
   }
 
@@ -194,9 +196,11 @@ export class Pdfgen {
   generateDocDefinition() {
     return {
       pageSize: "A4",
-      pageMargins: [40, 80, 40, 40],
+      pageMargins: [40, 80, 40, 80],
       content: this.generateContentFromSubmission(),
-      footer: this.generateFooter(),
+      footer: (currentPage, pageCount) => {
+        return this.generateFooter(currentPage, pageCount);
+      },
       styles: this.docStyles(),
     };
   }
