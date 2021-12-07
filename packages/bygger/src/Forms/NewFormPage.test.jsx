@@ -1,17 +1,31 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import featureToggles from "../featureToggles";
+import mockMottaksadresser from "../mottaksadresser/testdata/mottaksadresser";
 import { UserAlerterContext } from "../userAlerting";
 import NewFormPage from "./NewFormPage";
+
+const RESPONSE_HEADERS = {
+  headers: {
+    "content-type": "application/json",
+  },
+};
 
 describe("NewFormPage", () => {
   it("should create a new form with correct path, title and name", async () => {
     const userAlerter = { flashSuccessMessage: jest.fn(), alertComponent: jest.fn() };
     const saveForm = jest.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
     const onLogout = jest.fn();
+    fetchMock.mockImplementation((url) => {
+      if (url.endsWith("/mottaksadresse/submission")) {
+        return Promise.resolve(new Response(JSON.stringify(mockMottaksadresser), RESPONSE_HEADERS));
+      }
+      fail(`Manglende testoppsett: Ukjent url ${url}`);
+    });
     render(
       <MemoryRouter>
         <UserAlerterContext.Provider value={userAlerter}>
