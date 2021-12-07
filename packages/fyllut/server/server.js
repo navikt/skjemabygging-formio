@@ -201,8 +201,9 @@ const toJsonOrThrowError = (errorMessage) => async (response) => {
   if (response.ok) {
     return response.json();
   }
-  console.log(errorMessage, await response.json());
-  throw new Error(errorMessage);
+  const error = new Error(errorMessage);
+  error.jsonResponse = JSON.stringify(await response.json());
+  throw error;
 };
 
 skjemaApp.get("/enhetsliste", (req, res) => {
@@ -221,6 +222,7 @@ skjemaApp.get("/enhetsliste", (req, res) => {
     .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
     .then((enhetsliste) => res.send(enhetsliste))
     .catch((err) => {
+      console.error(err.message, JSON.stringify(err, Object.getOwnPropertyNames(err)));
       res.status(500).send(err.message);
     });
 });
