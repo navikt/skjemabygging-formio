@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Hovedknapp } from "nav-frontend-knapper";
-import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
-import cloneDeep from "lodash.clonedeep";
-import { AppLayoutWithContext } from "../components/AppLayout";
-import { defaultFormFields } from "./DefaultForm";
-import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { makeStyles } from "@material-ui/styles";
+import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import cloneDeep from "lodash.clonedeep";
+import { Hovedknapp } from "nav-frontend-knapper";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { AppLayoutWithContext } from "../components/AppLayout";
+import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
+import { defaultFormFields } from "./DefaultForm";
 import { NavFormType } from "./navForm";
 
 const useStyles = makeStyles({
@@ -18,14 +18,13 @@ const useStyles = makeStyles({
 
 interface Props {
   onCreate: Function;
-  onLogout: Function;
 }
 
 interface State {
   form: NavFormType;
 }
 
-const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElement => {
+const NewFormPage: React.FC<Props> = ({ onCreate }): React.ReactElement => {
   const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
@@ -58,7 +57,7 @@ const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElemen
   };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true, logout: onLogout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true }}>
       <main className={styles.root}>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} />
         <Hovedknapp onClick={() => onCreate(state.form)}>Opprett</Hovedknapp>
@@ -69,7 +68,6 @@ const NewFormPage: React.FC<Props> = ({ onCreate, onLogout }): React.ReactElemen
 
 NewFormPage.propTypes = {
   onCreate: PropTypes.func.isRequired,
-  onLogout: PropTypes.func.isRequired,
 };
 
 export default NewFormPage;

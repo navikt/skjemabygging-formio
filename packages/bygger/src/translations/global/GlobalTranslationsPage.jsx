@@ -70,7 +70,6 @@ const GlobalTranslationsPage = ({
   publishGlobalTranslations,
   projectURL,
   saveTranslation,
-  onLogout,
 }) => {
   const params = useParams();
   const selectedTag = params.tag || tags.SKJEMATEKSTER;
@@ -204,7 +203,6 @@ const GlobalTranslationsPage = ({
           title: "Globale oversettelser",
           visOversettelseliste: true,
           visLagNyttSkjema: false,
-          logout: onLogout,
         }}
       >
         <ToggleGruppe

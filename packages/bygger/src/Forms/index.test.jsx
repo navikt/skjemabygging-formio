@@ -1,20 +1,19 @@
-import React from "react";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock from "jest-fetch-mock";
-import { MemoryRouter } from "react-router-dom";
-import { AuthContext } from "../context/auth-context";
-import AuthenticatedApp from "../AuthenticatedApp";
 import { Formio } from "formiojs";
-import { UserAlerterContext } from "../userAlerting";
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import fetchMock from "jest-fetch-mock";
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
+import AuthenticatedApp from "../AuthenticatedApp";
+import { AuthContext } from "../context/auth-context";
+import { FakeBackend } from "../fakeBackend/FakeBackend";
+import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
+import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import featureToggles from "../featureToggles.js";
-import {FakeBackend} from "../fakeBackend/FakeBackend";
-import {InprocessQuipApp} from "../fakeBackend/InprocessQuipApp";
-import {dispatcherWithBackend} from "../fakeBackend/fakeWebApp";
+import { UserAlerterContext } from "../userAlerting";
 
 describe("FormsRouter", () => {
-
   beforeEach(() => {
     const mockBackend = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
     fetchMock.mockImplementation(mockBackend.fetchImpl);
@@ -35,7 +34,6 @@ describe("FormsRouter", () => {
           value={{
             userData: "fakeUser",
             login: () => {},
-            logout: () => {},
           }}
         >
           <UserAlerterContext.Provider value={userAlerter}>
@@ -53,22 +51,22 @@ describe("FormsRouter", () => {
 
   it("lets you navigate to new form page from the list of all forms", async () => {
     renderApp("/forms");
-    const knapp = await screen.findByRole("button", {name: "Lag nytt skjema"});
+    const knapp = await screen.findByRole("button", { name: "Lag nytt skjema" });
     await userEvent.click(knapp);
-    expect(await screen.findByRole("heading", {name: "Opprett nytt skjema"})).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Opprett nytt skjema" })).toBeInTheDocument();
   });
 
   it("can edit a form", async () => {
     renderApp("/forms/debugskjema/edit");
-    expect(await screen.findByRole("heading", {name: "debug skjema"})).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "debug skjema" })).toBeInTheDocument();
     expect(await screen.findByLabelText("Text Area")).toBeInTheDocument();
   });
 
   it("navigates from the list to the editor", async () => {
     renderApp("/forms");
-    const link = await screen.findByRole("link", {name: "debug skjema"});
+    const link = await screen.findByRole("link", { name: "debug skjema" });
     await userEvent.click(link);
-    expect(await screen.findByRole("heading", {name: "debug skjema"}));
+    expect(await screen.findByRole("heading", { name: "debug skjema" }));
     expect(await screen.findByLabelText("Text Area")).toBeInTheDocument();
   });
 
@@ -76,9 +74,6 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     const editLinks = await screen.findAllByTestId("editLink");
     expect(editLinks).toHaveLength(4);
-    editLinks.forEach(
-      link => expect(link.href).toMatch(/http:\/\/localhost\/forms\/(columns|debugskjema)\/edit/)
-    );
+    editLinks.forEach((link) => expect(link.href).toMatch(/http:\/\/localhost\/forms\/(columns|debugskjema)\/edit/));
   });
-
 });

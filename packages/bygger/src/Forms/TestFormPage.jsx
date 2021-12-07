@@ -1,21 +1,17 @@
+import { FyllUtRouter, useAppConfig, useLanguageCodeFromURL } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import {
-  FyllUtRouter,
-  useAppConfig,
-  useLanguageCodeFromURL,
-} from "@navikt/skjemadigitalisering-shared-components";
-import { useTranslations } from "../context/i18n";
 import ActionRow from "../components/layout/ActionRow";
+import { useTranslations } from "../context/i18n";
 
-export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
+export function TestFormPage({ editFormUrl, form, formSettingsUrl }) {
   const { featureToggles } = useAppConfig();
   const currentLanguage = useLanguageCodeFromURL();
   const { translationsForNavForm } = useTranslations();
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true, logout: onLogout }}>
+    <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true }}>
       <ActionRow>
         {formSettingsUrl && (
           <Link className="knapp" to={formSettingsUrl}>
@@ -31,10 +27,7 @@ export function TestFormPage({ editFormUrl, form, formSettingsUrl, onLogout }) {
           </Link>
         )}
       </ActionRow>
-      <FyllUtRouter
-        form={form}
-        translations={featureToggles.enableTranslations && translationsForNavForm}
-      />
+      <FyllUtRouter form={form} translations={featureToggles.enableTranslations && translationsForNavForm} />
     </AppLayoutWithContext>
   );
 }
