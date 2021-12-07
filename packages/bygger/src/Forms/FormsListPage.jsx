@@ -3,7 +3,7 @@ import { CollapseFilled, ExpandFilled } from "@navikt/ds-icons";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import { SlettKnapp } from "./components";
@@ -130,15 +130,16 @@ function simplifiedForms(forms) {
   }));
 }
 
-function FormsListPage({ forms, url, onDelete, onNew }) {
+function FormsListPage({ forms, url, onDelete }) {
+  const history = useHistory();
   const classes = useFormsListPageStyles();
+  const onNew = () => history.push("/forms/new");
   return (
     <AppLayoutWithContext
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
         visOversettelseliste: true,
-        onNew: onNew,
       }}
     >
       <ActionRow>
