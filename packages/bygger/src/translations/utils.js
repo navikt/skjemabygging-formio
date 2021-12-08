@@ -76,7 +76,7 @@ const textObject = (withInputType, value, removeLineBreak = false) => {
     };
   else {
     return removeLineBreak
-      ? { text: value.replace(/(\r\n|\n|\r)/gm, "") }
+      ? { text: value.replace(/(\r\n|\n|\r)/gm, " ") }
       : {
           text: value,
         };

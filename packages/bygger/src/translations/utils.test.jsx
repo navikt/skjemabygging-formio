@@ -430,7 +430,7 @@ describe("testGetTextsAndTranslationsForForm", () => {
         [
           createDummyTextfield("Ja"),
           createDummyTextfield("Jeg"),
-          createDummyHTMLElement("HTML", "<p>Test linjeskift linux\n windows\r\n apple \r</p>"),
+          createDummyHTMLElement("HTML", "<p>Test linjeskift linux\nwindows\r\napple\r</p>"),
         ],
         "Introduksjon"
       ),
@@ -442,8 +442,8 @@ describe("testGetTextsAndTranslationsForForm", () => {
       id: "123",
       translations: {
         Ja: { value: "Yes", scope: "global" },
-        "<p>Test Line break\n windows\r\n apple \r</p>": {
-          value: "<p>Test Line break linux\n windows\r\n apple \r</p>",
+        "<p>Test Line break\nwindows\r\napple\r</p>": {
+          value: "<p>Test Line break linux\nwindows\r\napple\r</p>",
           scope: "local",
         },
       },
@@ -453,7 +453,6 @@ describe("testGetTextsAndTranslationsForForm", () => {
 
   it("Test form with translations", () => {
     const actual = getTextsAndTranslationsForForm(form, translations);
-    console.log(actual);
     expect(actual).toEqual([
       { text: "test" },
       { text: "Introduksjon" },
