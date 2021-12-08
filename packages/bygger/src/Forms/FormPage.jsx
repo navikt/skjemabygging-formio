@@ -32,8 +32,10 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
+  const loadTranslationsForFormPath = () => loadTranslations(form.path);
+
   return (
-    <I18nProvider loadTranslations={() => loadTranslations(form.path)} form={form}>
+    <I18nProvider loadTranslations={loadTranslationsForFormPath} form={form}>
       <Switch>
         <Route path={`${url}/edit`}>
           <EditFormPage
