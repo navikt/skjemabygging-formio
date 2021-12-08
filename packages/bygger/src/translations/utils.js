@@ -68,19 +68,22 @@ const getTranslatablePropertiesFromForm = (form) =>
 const withoutDuplicatedComponents = (component, index, currentComponents) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);
 
-const textObject = (withInputType, value) => {
+const textObject = (withInputType, value, removeLineBreak = false) => {
   if (withInputType)
     return {
       text: value,
       type: getInputType(value),
     };
-  else
-    return {
-      text: value,
-    };
+  else {
+    return removeLineBreak
+      ? { text: value.replace(/(\r\n|\n|\r)/gm, " ") }
+      : {
+          text: value,
+        };
+  }
 };
 
-const getFormTexts = (form, withInputType = false) => {
+const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
   const simplifiedComponentObject = getTranslatablePropertiesFromForm(form);
   simplifiedComponentObject.splice(0, 0, {
     title: form.title,
@@ -91,9 +94,11 @@ const getFormTexts = (form, withInputType = false) => {
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
           if (key === "values" || key === "data") {
-            return component[key].filter((value) => value !== "").map((value) => textObject(withInputType, value));
+            return component[key]
+              .filter((value) => value !== "")
+              .map((value) => textObject(withInputType, value, removeLineBreak));
           }
-          return textObject(withInputType, component[key]);
+          return textObject(withInputType, component[key], removeLineBreak);
         })
     )
     .concat(extractTextsFromProperties(form.properties))
@@ -101,7 +106,7 @@ const getFormTexts = (form, withInputType = false) => {
 };
 
 const getTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getFormTexts(form);
+  const textComponents = getFormTexts(form, false, true);
   let textsWithTranslations = [];
   Object.keys(translations).forEach((languageCode) => {
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
