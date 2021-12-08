@@ -2,7 +2,9 @@ import express from "express";
 import { Backend } from "./backend/index.js";
 import { dispatcherWithBackend } from "./backend/webApp.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
 
