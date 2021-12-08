@@ -221,9 +221,15 @@ describe("generating doc definition", () => {
       { text: " ", style: "ingress" },
       [],
     ]);
-    expect(docDefinitionContent.footer.columns).toEqual([
+    expect(docDefinitionContent.footer(1, 1).columns).toEqual([
       {
+        width: "80%",
         text: "Skjemaet ble opprettet 19. oktober 1992, 00:00 CET \n Skjemaversjon: deadbeef-dirty",
+        alignment: "left",
+      },
+      {
+        alignment: "right",
+        text: "1 / 1",
       },
     ]);
   });
