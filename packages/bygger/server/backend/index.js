@@ -1,6 +1,7 @@
-import { fetchWithErrorHandling } from "./fetchUtils.js";
+import qs from "qs";
 import { promisify } from "util";
-import { gzip, gunzip } from "zlib";
+import { gunzip, gzip } from "zlib";
+import { fetchWithErrorHandling } from "./fetchUtils.js";
 const promisifiedGzip = promisify(gzip);
 const promisifiedGunzip = promisify(gunzip);
 
@@ -93,6 +94,30 @@ export class Backend {
         Authorization: `token ${this.githubAppConfig.workflowDispatchToken}`,
       },
       body: JSON.stringify(payload),
+    });
+  }
+
+  async authenticateWithAzure() {
+    const postData = {
+      grant_type: "client_credentials",
+      scope: `openid api://${process.env.SKJEMABYGGING_PROXY_CLIENT_ID}/.default`,
+      client_id: process.env.AZURE_APP_CLIENT_ID,
+      client_secret: process.env.AZURE_APP_CLIENT_SECRET,
+      client_auth_method: "client_secret_basic",
+    };
+    const body = qs.stringify(postData);
+    return fetchWithErrorHandling(process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      method: "POST",
+      body: body,
+    });
+  }
+
+  async fetchEnhetsliste() {
+    return this.authenticateWithAzure().then(({ data }) => {
+      return fetchWithErrorHandling(`${process.env.SKJEMABYGGING_PROXY_URL}/norg2/api/v1/enhet`, {
+        headers: { Authorization: `Bearer ${data?.access_token}` },
+      }).then((response) => response.data);
     });
   }
 }
