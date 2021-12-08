@@ -48,6 +48,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
       })
       .catch((e) => {
         console.log(e);
+        setStatus("FORM NOT FOUND");
       });
   }, [loadForm, formPath]);
 
@@ -59,7 +60,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
     return <LoadingComponent />;
   }
 
-  if (!form) {
+  if (status === "FORM NOT FOUND" || !form) {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 

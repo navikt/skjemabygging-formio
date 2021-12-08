@@ -138,17 +138,22 @@ function FormsListPage({ url, loadFormsList, deleteForm }) {
   const [forms, setForms] = useState();
 
   useEffect(() => {
-    loadFormsList().then((forms) => {
-      setForms(forms);
-      setStatus("FINISHED LOADING");
-    });
+    loadFormsList()
+      .then((forms) => {
+        setForms(forms);
+        setStatus("FINISHED LOADING");
+      })
+      .catch((e) => {
+        console.log(e);
+        setStatus("FORMS NOT FOUND");
+      });
   }, [loadFormsList]);
 
   if (status === "LOADING") {
     return <LoadingComponent />;
   }
 
-  if (!forms) {
+  if (status === "FORMS NOT FOUND" || !forms) {
     return <h1>Finner ingen skjemaer...</h1>;
   }
 

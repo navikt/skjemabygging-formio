@@ -20,6 +20,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
       })
       .catch((e) => {
         console.log(e);
+        setStatus("FORM NOT FOUND");
       });
   }, [loadForm, formPath]);
 
@@ -27,7 +28,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     return <LoadingComponent />;
   }
 
-  if (!form) {
+  if (status === "FORM NOT FOUND" || !form) {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
