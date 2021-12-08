@@ -303,13 +303,15 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
-        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        text:
+          'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
         type: "textarea",
       },
       { text: "Alertstrip with content", type: "text" },
       { text: "show content in Pdf", type: "text" },
       {
-        text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
+        text:
+          '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
         type: "textarea",
       },
       { text: "<h3>Eventuell utbetaling av AAP</h3>", type: "text" },
@@ -422,17 +424,43 @@ describe("test get all texts", () => {
 });
 describe("testGetTextsAndTranslationsForForm", () => {
   const form = createFormObject(
-    [createPanelObject("Introduksjon", [createDummyTextfield("Ja")], [createDummyTextfield("Jeg")], "Introduksjon")],
+    [
+      createPanelObject(
+        "Introduksjon",
+        [
+          createDummyTextfield("Ja"),
+          createDummyTextfield("Jeg"),
+          createDummyHTMLElement("HTML", "<p>Test linjeskift linux\n windows\r\n apple \r</p>"),
+        ],
+        "Introduksjon"
+      ),
+    ],
     "test"
   );
   const translations = {
-    en: { id: "123", translations: { Ja: { value: "Yes", scope: "global" } } },
+    en: {
+      id: "123",
+      translations: {
+        Ja: { value: "Yes", scope: "global" },
+        "<p>Test Line break\n windows\r\n apple \r</p>": {
+          value: "<p>Test Line break linux\n windows\r\n apple \r</p>",
+          scope: "local",
+        },
+      },
+    },
     "nn-NO": { id: "2345", translations: { Jeg: { value: "Eg", scope: "local" } } },
   };
 
   it("Test form with translations", () => {
     const actual = getTextsAndTranslationsForForm(form, translations);
-    expect(actual).toEqual([{ text: "test" }, { text: "Introduksjon" }, { text: "Ja", en: "Yes (Global Tekst)" }]);
+    console.log(actual);
+    expect(actual).toEqual([
+      { text: "test" },
+      { text: "Introduksjon" },
+      { text: "Ja", en: "Yes (Global Tekst)" },
+      { text: "Jeg", "nn-NO": "Eg" },
+      { text: "<p>Test linjeskift linux windows apple </p>" },
+    ]);
   });
 });
 describe("testGetCSVfileHeaders", () => {
