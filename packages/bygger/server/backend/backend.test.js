@@ -1,7 +1,6 @@
-import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
-import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
-
 import fetch from "node-fetch";
+import TestUserResponse from "../testTools/backend/json/TestUserResponse.json";
+import { createBackendForTest, jsonToPromise } from "../testTools/backend/testUtils.js";
 import { HttpError } from "./fetchUtils";
 
 jest.mock("node-fetch");
@@ -68,7 +67,7 @@ describe("Backend", () => {
           formJsonFileTitle: formPath,
           encodedTranslationJson: await backend.toBase64GzipAndJson(translation),
           encodedFormJson: await backend.toBase64GzipAndJson(form),
-          monorepoGitHash: "cafebabe",
+          monorepoGitHash: "gitSha",
         },
       });
       expect(calls[1][0]).toEqual("https://api.github.com/navikt/repo/workflow_dispatch");

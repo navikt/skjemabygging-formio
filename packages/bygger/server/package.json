@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf coverage",
-    "start": "cross-env PORT=8080 GIT_SHA=dev nodemon index.mjs",
+    "start": "cross-env PORT=8080 NODE_ENV=development nodemon index.mjs",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },

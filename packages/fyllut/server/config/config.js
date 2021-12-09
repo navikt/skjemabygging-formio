@@ -3,7 +3,7 @@ import { NaisCluster } from "./nais-cluster.js";
 
 dotenv.config();
 
-const devConfig = {
+const localDevelopmentConfig = {
   gitVersion: "local",
   useFormioApi: true,
   formioProjectUrl: "https://protected-island-44773.herokuapp.com",
@@ -15,7 +15,7 @@ const devConfig = {
   clientId: "599b3553-24b0-416f-9a91-3866d1197e90",
 };
 
-const prodConfig = {
+const defaultConfig = {
   sentryDsn: process.env.REACT_APP_SENTRY_DSN,
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   gitVersion: process.env.GIT_SHA,
@@ -33,7 +33,7 @@ const prodConfig = {
 };
 
 const config = {
-  ...(process.env.NODE_ENV === "development" ? devConfig : prodConfig),
+  ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
 };
 
