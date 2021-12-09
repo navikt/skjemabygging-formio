@@ -1549,6 +1549,13 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
+correlation-id@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/correlation-id/-/correlation-id-4.0.0.tgz#c1d3038e5f30d7bfeae5728ff96f27a7506bc2c0"
+  integrity sha512-WvXtJBlovvOBKqTz/YwWP2gm6CXJZJArfGimp9s/ehmhJMPFbmnPMQe3K60Q9idGNixMvKojMjleyDhZEFdHfg==
+  dependencies:
+    uuid "^8.3.1"
+
 cors@^2.8.5:
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
@@ -2141,6 +2148,13 @@ expect@^27.0.6:
     jest-matcher-utils "^27.0.6"
     jest-message-util "^27.0.6"
     jest-regex-util "^27.0.6"
+
+express-correlation-id@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/express-correlation-id/-/express-correlation-id-2.0.1.tgz#f7f66af3dd7daf76e3ab3a67d7148784e9fe56bd"
+  integrity sha512-jUxALLTg01TxUffi2jQ3IYO8WTxZL+oJUefLeGQ3XLBwpKZck6+aGvM25akrmQ1Kewhv5bfLgeqcHPrtT6YOxw==
+  dependencies:
+    correlation-id "^4.0.0"
 
 express@^4.17.1:
   version "4.17.1"
@@ -5032,7 +5046,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^8.3.2:
+uuid@^8.3.1, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
