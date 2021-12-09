@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
+import {featureUtils} from "@navikt/skjemadigitalisering-shared-domain";
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ const defaultConfig = {
 const config = {
   ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
+  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
 };
 
 const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {

@@ -10,6 +10,7 @@ skjemabygging-proxy-host: skjemabygging-proxy.prod-fss-pub.nais.io
 skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
 forms-source: "formioapi"
+enabled-features: ""
 secrets:
   - formio
 azure:
