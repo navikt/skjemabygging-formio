@@ -4,6 +4,8 @@ import express from "express";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
+import morgan from "morgan";
+import ecsFormat from '@elastic/ecs-morgan-format';
 import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
@@ -44,6 +46,14 @@ checkConfigConsistency(config);
 const Registry = client.Registry;
 const register = new Registry();
 client.collectDefaultMetrics({ register });
+
+// Logging http traffic
+app.use(morgan((token, req, res) => {
+  const logEntry = JSON.parse(ecsFormat({apmIntegration: false})(token, req, res));
+  return JSON.stringify(logEntry);
+}, {
+  skip: (req, res) => res.statusCode < 400
+}));
 
 const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
@@ -88,8 +98,7 @@ skjemaApp.post("/foersteside", async (req, res) => {
     res.contentType("application/json");
     res.send(body);
   } else {
-    logger.error("Failed to retrieve foersteside from soknadsveiviser " + response.status);
-    return response;
+    res.status(response.status).send("Failed to retrieve foersteside from soknadsveiviser");
   }
 });
 
@@ -206,7 +215,7 @@ const toJsonOrThrowError = (errorMessage) => async (response) => {
   throw error;
 };
 
-skjemaApp.get("/enhetsliste", (req, res) => {
+skjemaApp.get("/api/enhetsliste", (req, res) => {
   const body = qs.stringify(postData);
   fetch(azureOpenidTokenEndpoint, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -222,7 +231,7 @@ skjemaApp.get("/enhetsliste", (req, res) => {
     .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
     .then((enhetsliste) => res.send(enhetsliste))
     .catch((err) => {
-      console.error(err.message, JSON.stringify(err, Object.getOwnPropertyNames(err)));
+      console.error(JSON.stringify(err, Object.getOwnPropertyNames(err)));
       res.status(500).send(err.message);
     });
 });
