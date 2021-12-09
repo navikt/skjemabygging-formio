@@ -30,6 +30,7 @@ const {
   useFormioApi,
   skjemaDir,
   formioProjectUrl,
+  forstesideUrl,
   resourcesDir,
   translationDir,
   gitVersion,
@@ -78,7 +79,7 @@ skjemaApp.post("/pdf-json-papir", pdfGenHandler(PdfgenPapir, jsonRequestHandler)
 
 skjemaApp.post("/foersteside", async (req, res) => {
   const foerstesideData = JSON.stringify(req.body);
-  const response = await fetch(process.env.FOERSTESIDE_URL, {
+  const response = await fetch(forstesideUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: foerstesideData,
