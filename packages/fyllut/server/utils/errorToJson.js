@@ -12,4 +12,4 @@ if (!('toJSON' in Error.prototype)) {
     configurable: true,
     writable: true
   });
-}''
+}
