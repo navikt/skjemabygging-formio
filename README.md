@@ -18,6 +18,11 @@ og disse dataene vil så deployes sammen med fyllut.
 | yarn clean  | sletter node_modules / dist / build / coverage for alle pakker i monorepoet |
 | yarn lint  | se etter problemer i koden |
 
+## Fagsystemsonen
+Vi kommuniserer med fagsystemsonen blant annet for å hente enheter. For å få til dette lokalt trenger du å kjøre naisdevice. I tillegg trenger fyllut/server og bygger/server tilgang til sin client secret som miljøvariabel. Variablene kan f.eks legges til i en `.env`-fil i fyllut/server og bygger/server, med innhold `AZURE_APP_CLIENT_SECRET=<den-respektive-appen-sin-client-secret>`. Client secret til fyllut og bygger i dev-gcp finner du ved å gå inn i dev-gcp clusteret med kubectl (krever naisdevice og tilgang til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
+
+`kubectl exec <pod-name> -c [skjemabygging-formio|skjemautfylling] -- env`
+
 ## Bygge docker-image for testing av produksjonsbygg lokalt
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man følge stegene i github-workflow
