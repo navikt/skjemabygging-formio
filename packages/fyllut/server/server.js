@@ -44,6 +44,7 @@ const {
   azureOpenidTokenEndpoint,
   clientId,
   clientSecret,
+  featureToggles,
 } = config;
 checkConfigConsistency(config);
 
@@ -179,6 +180,7 @@ skjemaApp.get("/config", async (req, res) => {
   return res.json({
     NAIS_CLUSTER_NAME: naisClusterName,
     REACT_APP_SENTRY_DSN: sentryDsn,
+    FEATURE_TOGGLES: featureToggles,
   });
 });
 

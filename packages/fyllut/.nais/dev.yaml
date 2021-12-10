@@ -10,6 +10,7 @@ skjemabygging-proxy-host: skjemabygging-proxy.dev-fss-pub.nais.io
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 forms-source: "static"
+enabled-features: ""
 secrets:
   - sentry-dsn
 azure:
