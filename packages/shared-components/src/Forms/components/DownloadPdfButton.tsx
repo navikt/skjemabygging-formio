@@ -1,5 +1,5 @@
 import React from "react";
-import { useLanguages } from "../context/languages";
+import { useLanguages } from "../../context/languages";
 
 interface Props {
   form: any;

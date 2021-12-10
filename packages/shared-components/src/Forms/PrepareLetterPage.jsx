@@ -1,16 +1,17 @@
+import { styled } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { styled } from "@material-ui/styles";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import { scrollToAndSetFocus } from "../util/focus-management";
-import PropTypes from "prop-types";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
+import { useLanguages } from "../context/languages";
+import { scrollToAndSetFocus } from "../util/focus-management";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
-import { useAppConfig } from "../configContext";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useLanguages } from "../context/languages";
-import DownloadPdfButton from "./DownloadPdfButton";
+import DownloadPdfButton from "./components/DownloadPdfButton";
+import EnhetSelector from "./components/EnhetSelector";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -35,18 +36,17 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
-  const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      return [];
-    });
+async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetId) {
+  const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    return [];
+  });
   return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(genererFoerstesideData(form, submission.data, language, mottaksadresser)),
+    body: JSON.stringify(genererFoerstesideData(form, submission.data, language, mottaksadresser, enhetId)),
   })
     .then((response) => {
       if (response.ok) {
@@ -64,6 +64,7 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
 }
 
 const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translate, translations }) => {
+  const [selectedEnhet, setSelectedEnhet] = useState(undefined);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
@@ -74,6 +75,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
       loggSkjemaFullfort("papirinnsending");
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
+
   return (
     <section
       className="wizard-page"
@@ -85,11 +87,12 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
       <Normaltekst className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
+      <EnhetSelector baseUrl={fyllutBaseURL} onChange={setSelectedEnhet} />
       <div className="margin-bottom-default">
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage)
+            lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
               .then(() => setHasDownloadedFoersteside(true))
               .catch(() => loggSkjemaInnsendingFeilet());
           }}

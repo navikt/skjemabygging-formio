@@ -207,7 +207,7 @@ const toJsonOrThrowError = (errorMessage) => async (response) => {
   throw error;
 };
 
-skjemaApp.get("/enhetsliste", (req, res) => {
+skjemaApp.get("/api/enhetsliste", (req, res) => {
   const body = qs.stringify(postData);
   fetch(azureOpenidTokenEndpoint, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
