@@ -53,10 +53,13 @@ const register = new Registry();
 client.collectDefaultMetrics({ register });
 
 // Logging http traffic
+const INTERNAL_PATHS = /.*\/internal\/(isAlive|isReady|metrics)/;
 app.use(morgan((token, req, res) => {
   const logEntry = JSON.parse(ecsFormat({apmIntegration: false})(token, req, res));
   logEntry.correlation_id = req.correlationId();
   return JSON.stringify(logEntry);
+}, {
+  skip: (req) => INTERNAL_PATHS.test(req.url)
 }));
 
 const formRequestHandler = (req) => {
