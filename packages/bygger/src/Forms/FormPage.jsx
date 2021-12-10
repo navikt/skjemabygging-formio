@@ -1,6 +1,6 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
-import { Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
+import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nProvider from "../context/i18n";
 import { EditFormPage } from "./EditFormPage";
 import { FormSettingsPage } from "./FormSettingsPage";
@@ -11,6 +11,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
+  const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
 
   useEffect(() => {
     loadForm(formPath)
@@ -24,6 +25,16 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
       });
   }, [loadForm, formPath]);
 
+  const onChange = (changedForm) => {
+    setHasUnsavedChanged(true);
+    setForm(changedForm);
+  };
+
+  const saveFormAndResetIsUnsavedChanges = (form) => {
+    setHasUnsavedChanged(false);
+    onSave(form);
+  };
+
   if (status === "LOADING") {
     return <LoadingComponent />;
   }
@@ -33,17 +44,24 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   }
 
   const loadTranslationsForFormPath = () => loadTranslations(form.path);
+  const onLeaveMessage =
+    "Hvis du går vekk fra denne siden uten å lagre, så mister du alle endringene." +
+    "Er du sikker på at du vil gå videre?";
 
   return (
     <I18nProvider loadTranslations={loadTranslationsForFormPath} form={form}>
       <Switch>
         <Route path={`${url}/edit`}>
+          <Prompt
+            when={hasUnsavedChanges}
+            message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
+          />
           <EditFormPage
             form={form}
             testFormUrl={`${url}/view`}
             formSettingsUrl={`${url}/settings`}
-            onSave={onSave}
-            onChange={setForm}
+            onSave={saveFormAndResetIsUnsavedChanges}
+            onChange={onChange}
             onPublish={onPublish}
           />
         </Route>
@@ -55,8 +73,8 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
             form={form}
             editFormUrl={`${url}/edit`}
             testFormUrl={`${url}/view`}
-            onSave={onSave}
-            onChange={setForm}
+            onSave={saveFormAndResetIsUnsavedChanges}
+            onChange={onChange}
             onPublish={onPublish}
           />
         </Route>
