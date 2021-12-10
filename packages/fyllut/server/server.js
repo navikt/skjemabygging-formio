@@ -57,7 +57,7 @@ app.use(morgan((token, req, res) => {
   logEntry.correlation_id = req.correlationId();
   return JSON.stringify(logEntry);
 }, {
-  skip: (req, res) => res.statusCode < 400
+  skip: (req, res) => naisClusterName !== "dev-gcp" && res.statusCode < 400
 }));
 
 const formRequestHandler = (req) => {
