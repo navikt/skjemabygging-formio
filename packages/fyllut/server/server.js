@@ -16,7 +16,6 @@ import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import "./utils/errorToJson.js";
-import {NaisCluster} from "./config/nais-cluster.js";
 
 const app = express();
 const skjemaApp = express();
@@ -57,8 +56,6 @@ app.use(morgan((token, req, res) => {
   const logEntry = JSON.parse(ecsFormat({apmIntegration: false})(token, req, res));
   logEntry.correlation_id = req.correlationId();
   return JSON.stringify(logEntry);
-}, {
-  skip: (req, res) => naisClusterName !== NaisCluster.DEV && res.statusCode < 400
 }));
 
 const formRequestHandler = (req) => {
