@@ -52,5 +52,15 @@ export function dispatcherWithBackend(backend) {
         }
       },
     },
+    "/enhetsliste": {
+      GET: async (req, res) => {
+        try {
+          const enhetsListe = await backend.fetchEnhetsliste();
+          res.send(enhetsListe);
+        } catch (error) {
+          handleError(error, res);
+        }
+      },
+    },
   });
 }

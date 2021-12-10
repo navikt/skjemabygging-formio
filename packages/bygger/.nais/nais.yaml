@@ -41,6 +41,10 @@ spec:
       value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish.yaml/dispatches"
     - name: PUBLISH_RESOURCE_URL
       value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish-resource.yaml/dispatches"
+    - name: SKJEMABYGGING_PROXY_URL
+      value: {{skjemabygging-proxy-url}}
+    - name: SKJEMABYGGING_PROXY_CLIENT_ID
+      value: {{skjemabygging-proxy-client-id}}
   envFrom:
     - secret: monorepo-poc-akg
   azure:
@@ -57,3 +61,4 @@ spec:
       external:
         - host: protected-island-44773.herokuapp.com
         - host: api.github.com
+        - host: {{skjemabygging-proxy-host}}

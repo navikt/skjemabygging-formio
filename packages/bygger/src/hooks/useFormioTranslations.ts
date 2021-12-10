@@ -209,7 +209,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       } else {
         response.json().then((r) => {
           const errorMessage = "Lagret oversettelser feilet: ";
-          userAlerter.setErrorMessage(errorMessage.concat(r && r.details && r.details[0] && r.details[0].message));
+          userAlerter.setErrorMessage(errorMessage.concat(r?.message));
         });
       }
     });

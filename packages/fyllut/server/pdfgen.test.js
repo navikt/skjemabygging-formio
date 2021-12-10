@@ -1,5 +1,5 @@
-import { Pdfgen, PdfgenPapir } from "./pdfgen";
 import luxon from "luxon";
+import { Pdfgen, PdfgenPapir } from "./pdfgen";
 
 const { DateTime } = luxon;
 
@@ -205,8 +205,7 @@ describe("generating doc definition", () => {
 
   function setupDocDefinitionContent(submission, form, version = "deadbeef", translations = {}) {
     const generator = new Pdfgen(submission, form, version, now(), translations);
-    const doc_definition = generator.generateDocDefinition();
-    return doc_definition.content;
+    return generator.generateDocDefinition();
   }
 
   it("generates the docDef for an empty submission", () => {
@@ -214,24 +213,30 @@ describe("generating doc definition", () => {
     const form = { title: "Smølfeskjema", components: [] };
     const version = "deadbeef-dirty";
     const docDefinitionContent = setupDocDefinitionContent(submission, form, version);
-    expect(docDefinitionContent).toEqual([
+    expect(docDefinitionContent.content).toEqual([
       {
         style: "header",
         text: "Smølfeskjema",
       },
       { text: " ", style: "ingress" },
       [],
-      " ",
-      " ",
-      " ",
-      { text: "Skjemaet ble opprettet 19. oktober 1992, 00:00 CET" },
-      { text: `Skjemaversjon: ${version}` },
+    ]);
+    expect(docDefinitionContent.footer(1, 1).columns).toEqual([
+      {
+        width: "80%",
+        text: "Skjemaet ble opprettet 19. oktober 1992, 00:00 CET \n Skjemaversjon: deadbeef-dirty",
+        alignment: "left",
+      },
+      {
+        alignment: "right",
+        text: "1 / 1",
+      },
     ]);
   });
 
   it("generates table from form and submission", () => {
     const submission = createSubmission();
-    const tableDef = setupDocDefinitionContent(submission, createForm())[2];
+    const tableDef = setupDocDefinitionContent(submission, createForm()).content[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
     expect(tableData).toEqual([
@@ -245,7 +250,7 @@ describe("generating doc definition", () => {
   it("does not render inputs with empty or undefined submission", () => {
     const submission = createSubmission();
     submission.data = { ...submission.data, tekstfelt: "", T: undefined };
-    const tableDef = setupDocDefinitionContent(submission, createForm())[2];
+    const tableDef = setupDocDefinitionContent(submission, createForm()).content[2];
 
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
@@ -254,9 +259,10 @@ describe("generating doc definition", () => {
   });
 
   it("generates a table for each panel in a complex form", () => {
-    const tableDefs = setupDocDefinitionContent(createComplexSubmission(), createComplexFormDefinition()).filter(
-      (paragraph) => paragraph.table
-    );
+    const tableDefs = setupDocDefinitionContent(
+      createComplexSubmission(),
+      createComplexFormDefinition()
+    ).content.filter((paragraph) => paragraph.table);
 
     expect(tableDefs).toHaveLength(2);
     expect(tableDefs[0].table.body).toEqual([
@@ -296,13 +302,13 @@ describe("generating doc definition", () => {
         },
       ],
     };
-    const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+    const tableDef = setupDocDefinitionContent(submission, formDefinition).content[2];
     const tableData = tableDef.table.body;
     expect(tableData).toEqual([["Child", "Seff"]]);
   });
 
   it("removes submit button from pdf content", () => {
-    const tableDef = setupDocDefinitionContent(createSubmission(), createForm())[2];
+    const tableDef = setupDocDefinitionContent(createSubmission(), createForm()).content[2];
     expect(tableDef.table).toBeDefined();
     const tableData = tableDef.table.body.slice(0);
     expect(tableData).not.toEqual(expect.arrayContaining([expect.arrayContaining(["Send inn", true])]));
@@ -344,7 +350,7 @@ describe("generating doc definition", () => {
           fieldOutsideNavSkjemaGruppe: "Value for field outside of skjemaGruppe",
         },
       };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {})[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {}).content[2];
       expect(tableDef.table.body).toEqual([
         [{ text: "navSkjemaGruppe-Legend", colSpan: 2, style: ["groupHeader"] }, ""],
         [{ text: "Textfield inside NavSkjemaGruppe", style: ["subComponent"] }, "Value for field inside skjemaGruppe"],
@@ -355,7 +361,7 @@ describe("generating doc definition", () => {
     it("does not display label for navSkjemaGruppe with empty submission", () => {
       const formDefinition = createFormDefinitionWithNavSkjemaGruppe();
       const submission = { data: { fieldOutsideNavSkjemaGruppe: "Value for field outside of skjemaGruppe" } };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition).content[2];
       expect(tableDef.table.body).toEqual([
         ["Textfield outside NavSkjemaGruppe", "Value for field outside of skjemaGruppe"],
       ]);
@@ -368,7 +374,7 @@ describe("generating doc definition", () => {
         "Value for field outside of skjemaGruppe": "Verdi for felt some utenfor skjemaGruppe",
         "Textfield outside NavSkjemaGruppe": "Textfelt utenfor skjemaGruppe",
       };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "version", translations)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "version", translations).content[2];
       expect(tableDef.table.body).toEqual([
         ["Textfelt utenfor skjemaGruppe", "Verdi for felt some utenfor skjemaGruppe"],
       ]);
@@ -410,14 +416,14 @@ describe("generating doc definition", () => {
     it("is not displayed when submission is empty", () => {
       const formDefinition = createFormDefinitionWithDatagrid();
       const submission = { data: { datagrid: [], fieldOutsideDataGrid: "ValueForFieldOutsideDataGrid" }, metadata: {} };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition).content[2];
       expect(tableDef.table.body).toEqual([["TextFieldOutsideOfDataGrid", "ValueForFieldOutsideDataGrid"]]);
     });
 
     it("displays all datagrid rows with row title with empty translation", () => {
       const formDefinition = createFormDefinitionWithDatagridHavingRowTitle();
       const submission = createSubmissionForDatagridRows();
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {})[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {}).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([
         [{ text: "DataGrid", style: ["groupHeader"], colSpan: 2 }, ""],
@@ -431,7 +437,7 @@ describe("generating doc definition", () => {
     it("displays all datagrid rows with empty row below it, when datagrid has no row title with empty translation", () => {
       const formDefinition = createFormDefinitionWithDatagrid();
       const submission = createSubmissionForDatagridRows();
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {})[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", {}).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([
         [{ text: "DataGrid", style: ["groupHeader"], colSpan: 2 }, ""],
@@ -450,7 +456,7 @@ describe("generating doc definition", () => {
         DatagridRowTitle: "DatagridRowTitle Translation",
         Tekstfelt: "Text field",
       };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([
         [{ text: "DataGrid Translation", style: ["groupHeader"], colSpan: 2 }, ""],
@@ -468,7 +474,7 @@ describe("generating doc definition", () => {
         DataGrid: "DataGrid Translation",
         DatagridRowTitle: "DatagridRowTitle Translation",
       };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([
         [{ text: "DataGrid Translation", style: ["groupHeader"], colSpan: 2 }, ""],
@@ -502,7 +508,7 @@ describe("generating doc definition", () => {
     it("adds a single list item if one option is selected", () => {
       const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
       const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: false });
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([["Flervalg", { ul: ["Sugar"] }]]);
     });
@@ -510,7 +516,7 @@ describe("generating doc definition", () => {
     it("adds multiple list items if more than one option is selected", () => {
       const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
       const submission = createSelectboxesSubmission({ sugar: true, salt: false, pepper: true });
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([["Flervalg", { ul: ["Sugar", "Pepper"] }]]);
     });
@@ -518,7 +524,7 @@ describe("generating doc definition", () => {
     it("does not add anything if no options are selected", () => {
       const formDefinition = createSelectboxesFormDefinition(["Sugar", "Salt", "Pepper"]);
       const submission = createSelectboxesSubmission({ sugar: false, salt: false, pepper: false });
-      const tableDef = setupDocDefinitionContent(submission, formDefinition)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition).content[2];
       expect(tableDef.table).toBeUndefined();
     });
 
@@ -531,7 +537,7 @@ describe("generating doc definition", () => {
         Pepper: "Pepper",
         Salt: "Salt",
       };
-      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations)[2];
+      const tableDef = setupDocDefinitionContent(submission, formDefinition, "", translations).content[2];
       const tableData = tableDef.table.body;
       expect(tableData).toEqual([["Selectboxes", { ul: ["Sukker", "Pepper"] }]]);
     });

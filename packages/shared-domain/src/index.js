@@ -5,6 +5,7 @@ import stringUtils from "./utils/stringUtils";
 import objectUtils from "./utils/objectUtils";
 import TEXTS from "./texts";
 import localizationUtils from "./utils/localization";
+import featureUtils from "./utils/featureUtils";
 import languagesUtil from "./languages/languagesUtil";
 
 export {
@@ -15,5 +16,6 @@ export {
   stringUtils,
   objectUtils,
   localizationUtils,
+  featureUtils,
   languagesUtil,
 };

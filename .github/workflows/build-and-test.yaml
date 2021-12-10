@@ -3,6 +3,9 @@ on:
   push
 env:
   IMAGE: "docker.pkg.github.com/${{ github.repository }}/bygger:${{github.sha }}"
+
+concurrency: deploy-${{ github.ref }}
+
 jobs:
   build-and-test:
     name: "Build and test packages"

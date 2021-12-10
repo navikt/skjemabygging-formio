@@ -60,6 +60,10 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    {{#if enabled-features}}
+    - name: ENABLED_FEATURES
+      value: {{enabled-features}}
+    {{/if}}
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}
