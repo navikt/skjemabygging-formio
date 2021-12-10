@@ -1,6 +1,7 @@
 import { Utils } from "formiojs";
 
 const originalEvaluate = Utils.evaluate;
+const reservedWords = ["instance", "util", "utils", "_"];
 
 function evaluateOverride(func, args, ret, tokenize) {
   return originalEvaluate(sanitizeJavaScriptCode(func), args, ret, tokenize);
@@ -8,6 +9,10 @@ function evaluateOverride(func, args, ret, tokenize) {
 
 function addNullChecksToChainedLookup(chainedLookup, originalString) {
   const chainedLookupParts = chainedLookup.split(".");
+  if (reservedWords.includes(chainedLookupParts[0])) {
+    return originalString;
+  }
+
   let safeChainedLookup = chainedLookupParts[0];
   for (let j = 1; j < chainedLookupParts.length; j++) {
     safeChainedLookup = safeChainedLookup + " && " + chainedLookupParts.slice(0, j + 1).join(".");
