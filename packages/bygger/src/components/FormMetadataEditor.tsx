@@ -206,21 +206,18 @@ const BasicFormMetadataEditor = ({form, onChange, usageContext}: BasicFormProps)
         <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
       </div>
       {
-        (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
+        ((innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && !mottaksadresseId) && (
           <div className="margin-bottom-default">
-            {
-              !mottaksadresseId &&
-              <Checkbox
-                label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
-                checked={enhetMaVelgesVedPapirInnsending}
-                onChange={(event) => {
-                  onChange({
-                    ...form,
-                    properties: {...form.properties, enhetMaVelgesVedPapirInnsending: event.target.checked}
-                  })
-                }}
-              />
-            }
+            <Checkbox
+              label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
+              checked={enhetMaVelgesVedPapirInnsending}
+              onChange={(event) => {
+                onChange({
+                  ...form,
+                  properties: {...form.properties, enhetMaVelgesVedPapirInnsending: event.target.checked}
+                })
+              }}
+            />
           </div>
         )
       }
