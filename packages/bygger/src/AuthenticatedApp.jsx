@@ -2,7 +2,6 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import PropTypes from "prop-types";
 import React, { useContext } from "react";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
-import { useAuth } from "./context/auth-context";
 import { FormsRouter } from "./Forms";
 import { useFormioForms } from "./hooks/useFormioForms";
 import { useFormioTranslations } from "./hooks/useFormioTranslations";
@@ -23,7 +22,6 @@ function AuthenticatedApp({ serverURL, formio }) {
   } = useFormioTranslations(serverURL, formio, userAlerter);
 
   const history = useHistory();
-  const { logout } = useAuth();
   const wrappedCreate = (newForm) => {
     onCreate(newForm).then((savedForm) => {
       history.push(`/forms/${savedForm.path}/edit`);
@@ -43,9 +41,7 @@ function AuthenticatedApp({ serverURL, formio }) {
             onCreate={wrappedCreate}
             onDelete={onDelete}
             onPublish={onPublish}
-            onNew={() => history.push("/forms/new")}
             loadTranslations={loadTranslationsForEditPage}
-            onLogout={logout}
           />
         </Route>
         <Route path="/translations">
@@ -58,7 +54,6 @@ function AuthenticatedApp({ serverURL, formio }) {
             saveGlobalTranslation={saveGlobalTranslation}
             saveLocalTranslation={saveLocalTranslation}
             deleteTranslation={deleteTranslation}
-            onLogout={logout}
           />
         </Route>
         <Route path="/mottaksadresser">

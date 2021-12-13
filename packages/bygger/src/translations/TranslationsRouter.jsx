@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { TranslationsListPage } from "./TranslationsListPage";
-import NewTranslation from "./NewTranslation";
-import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
-import TranslationsByFormPage from "./TranslationsByFormPage";
 import I18nProvider from "../context/i18n";
+import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
+import NewTranslation from "./NewTranslation";
+import TranslationsByFormPage from "./TranslationsByFormPage";
+import { TranslationsListPage } from "./TranslationsListPage";
 
 const TranslationsRouter = ({
   deleteTranslation,
@@ -15,17 +15,16 @@ const TranslationsRouter = ({
   projectURL,
   saveGlobalTranslation,
   saveLocalTranslation,
-  onLogout,
 }) => {
   let { path } = useRouteMatch();
 
   return (
     <Switch>
       <Route exact path={`${path}/`}>
-        <TranslationsListPage forms={forms} onLogout={onLogout} />
+        <TranslationsListPage forms={forms} />
       </Route>
       <Route path={`${path}/new`}>
-        <NewTranslation projectURL={projectURL} onLogout={onLogout} />
+        <NewTranslation projectURL={projectURL} />
       </Route>
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
@@ -38,7 +37,6 @@ const TranslationsRouter = ({
               projectURL={projectURL}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveGlobalTranslation}
-              onLogout={onLogout}
             />
           </I18nProvider>
         )}
@@ -55,7 +53,6 @@ const TranslationsRouter = ({
                 projectURL={projectURL}
                 deleteTranslation={deleteTranslation}
                 saveTranslation={saveLocalTranslation}
-                onLogout={onLogout}
               />
             </I18nProvider>
           );

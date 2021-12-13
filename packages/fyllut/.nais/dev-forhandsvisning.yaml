@@ -1,23 +1,25 @@
 app-name: skjemautfylling-forhandsvisning
 ingresses:
-  - "https://skjemaforhandsvisning.labs.nais.io/fyllut"
+  - "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut"
+  - "https://skjemaforhandsvisning.dev.nav.no/fyllut"
 image: {{image}}
 foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-host: www.nav.no
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
-skjemabygging-proxy-host: skjemabygging-proxy.prod-fss-pub.nais.io
-skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
-skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
+skjemabygging-proxy-host: skjemabygging-proxy.dev-fss-pub.nais.io
+skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
+skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 forms-source: "formioapi"
+enabled-features: "translations"
 secrets:
   - formio
 azure:
   application:
-    tenant: nav.no
+    tenant: trygdeetaten.no
 accessPolicy:
   outbound:
     rules:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
-        cluster: prod-fss
+        cluster: dev-fss

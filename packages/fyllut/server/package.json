@@ -6,13 +6,10 @@
   "type": "module",
   "private": true,
   "config": {
-    "icuDataDir": "./node_modules/full-icu",
-    "decoratorUrl": "https://www.nav.no/dekoratoren?simple=true",
-    "foersteSideUrl": "https://www.nav.no/soknader/api/forsteside",
-    "formioProjectUrl": "https://protected-island-44773.herokuapp.com"
+    "icuDataDir": "./node_modules/full-icu"
   },
   "scripts": {
-    "start": "cross-env-shell PORT=8081 NODE_ENV=development FORMS_SOURCE=formioapi FORMIO_PROJECT_URL=$npm_package_config_formioProjectUrl FOERSTESIDE_URL=$npm_package_config_foersteSideUrl DECORATOR_URL=$npm_package_config_decoratorUrl nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start": "cross-env-shell PORT=8081 NODE_ENV=development nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js",
     "check-env": "node -e 'console.log(process.env)' | grep npm"
@@ -24,21 +21,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@elastic/ecs-morgan-format": "^1.1.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-correlation-id": "^2.0.1",
     "formiojs": "4.14.0-rc.18",
     "full-icu": "^1.3.1",
     "glob": "^7.1.7",
     "i18n-iso-countries": "^6.8.0",
     "jsdom": "^16.4.0",
     "luxon": "^1.25.0",
+    "morgan": "^1.10.0",
     "mustache-express": "^1.3.0",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.0",
     "pdfmake": "^0.1.68",
     "prom-client": "^12.0.0",
+    "qs": "^6.10.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {

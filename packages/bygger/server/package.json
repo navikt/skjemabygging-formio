@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf coverage",
-    "start": "cross-env PORT=8080 GIT_SHA=dev nodemon index.mjs",
+    "start": "cross-env PORT=8080 NODE_ENV=development nodemon index.mjs",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -15,8 +15,10 @@
   "license": "ISC",
   "dependencies": {
     "dispatch": "^1.0.2",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "qs": "^6.10.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

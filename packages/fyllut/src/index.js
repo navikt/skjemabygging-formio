@@ -4,11 +4,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import featureToggles from "./featureToggles.js";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
 
 class HttpError extends Error {}
+
+let featureToggles = {};
 
 fetch("/fyllut/config", { headers: { accept: "application/json" } })
   .then((response) => {
@@ -20,6 +21,9 @@ fetch("/fyllut/config", { headers: { accept: "application/json" } })
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
+    }
+    if (json.FEATURE_TOGGLES) {
+      featureToggles = json.FEATURE_TOGGLES;
     }
     renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
   })

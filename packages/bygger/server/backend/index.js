@@ -1,14 +1,14 @@
-import { fetchWithErrorHandling } from "./fetchUtils.js";
+import qs from "qs";
 import { promisify } from "util";
-import { gzip, gunzip } from "zlib";
+import { gunzip, gzip } from "zlib";
+import { fetchWithErrorHandling } from "./fetchUtils.js";
 const promisifiedGzip = promisify(gzip);
 const promisifiedGunzip = promisify(gunzip);
 
 export class Backend {
-  constructor(projectURL, githubAppConfig, gitVersion) {
+  constructor(projectURL, config) {
     this.projectURL = projectURL;
-    this.githubAppConfig = githubAppConfig;
-    this.gitVersion = gitVersion;
+    this.config = config;
   }
 
   ho() {
@@ -20,7 +20,7 @@ export class Backend {
   }
 
   getGitURL() {
-    return this.githubAppConfig.workflowDispatchURL;
+    return this.config.workflowDispatchURL;
   }
 
   async toBase64GzipAndJson(data) {
@@ -39,13 +39,13 @@ export class Backend {
     const encodedForm = await this.toBase64GzipAndJson(form);
     const encodedTranslations = await this.toBase64GzipAndJson(translations);
     return {
-      ref: this.githubAppConfig.workflowDispatchRef,
+      ref: this.config.workflowDispatchRef,
       inputs: {
         formJsonFileTitle,
         formDescription: form.title,
         encodedTranslationJson: encodedTranslations,
         encodedFormJson: encodedForm,
-        monorepoGitHash: this.gitVersion,
+        monorepoGitHash: this.config.gitSha,
       },
     };
   }
@@ -64,12 +64,12 @@ export class Backend {
   async publishForm(userToken, form, translations, formPath) {
     await this.checkPublishingAccess(userToken);
     const payload = await this.payload(formPath, form, translations);
-    return await fetchWithErrorHandling(this.githubAppConfig.workflowDispatchURL, {
+    return await fetchWithErrorHandling(this.config.workflowDispatchURL, {
       method: "POST",
       headers: {
         Accept: "application/vnd.github.v3+json",
         "Content-Type": "Application/JSON",
-        Authorization: `token ${this.githubAppConfig.workflowDispatchToken}`,
+        Authorization: `token ${this.config.workflowDispatchToken}`,
       },
       body: JSON.stringify(payload),
     });
@@ -79,20 +79,44 @@ export class Backend {
     await this.checkPublishingAccess(userToken);
     const encodedResourceContent = await this.toBase64GzipAndJson(resourceContent);
     const payload = {
-      ref: this.githubAppConfig.workflowDispatchRef,
+      ref: this.config.workflowDispatchRef,
       inputs: {
         resourceName,
         encodedJson: encodedResourceContent,
       },
     };
-    return await fetchWithErrorHandling(this.githubAppConfig.publishResourceUrl, {
+    return await fetchWithErrorHandling(this.config.publishResourceUrl, {
       method: "POST",
       headers: {
         Accept: "application/vnd.github.v3+json",
         "Content-Type": "Application/JSON",
-        Authorization: `token ${this.githubAppConfig.workflowDispatchToken}`,
+        Authorization: `token ${this.config.workflowDispatchToken}`,
       },
       body: JSON.stringify(payload),
+    });
+  }
+
+  async authenticateWithAzure() {
+    const postData = {
+      grant_type: "client_credentials",
+      scope: `openid api://${this.config.skjemabyggingProxyClientId}/.default`,
+      client_id: this.config.clientId,
+      client_secret: this.config.clientSecret,
+      client_auth_method: "client_secret_basic",
+    };
+    const body = qs.stringify(postData);
+    return fetchWithErrorHandling(this.config.azureOpenidTokenEndpoint, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      method: "POST",
+      body: body,
+    });
+  }
+
+  async fetchEnhetsliste() {
+    return this.authenticateWithAzure().then(({ data }) => {
+      return fetchWithErrorHandling(`${this.config.skjemabyggingProxyUrl}/norg2/api/v1/enhet`, {
+        headers: { Authorization: `Bearer ${data?.access_token}` },
+      }).then((response) => response.data);
     });
   }
 }

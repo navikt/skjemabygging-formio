@@ -32,7 +32,7 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-export function TranslationsListPage({ onLogout, forms }) {
+export function TranslationsListPage({ forms }) {
   const classes = useTranslationsListStyles();
   return (
     <AppLayoutWithContext
@@ -40,7 +40,6 @@ export function TranslationsListPage({ onLogout, forms }) {
         title: "Oversettelser",
         visSkjemaliste: true,
         visLagNyttSkjema: false,
-        logout: onLogout,
       }}
     >
       <main className={classes.root}>

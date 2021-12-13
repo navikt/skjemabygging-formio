@@ -10,6 +10,10 @@ spec:
   image: {{image}}
   team: skjemadigitalisering
   port: 8080
+  azure:
+    application:
+      enabled: true
+      tenant: {{azure.application.tenant}}
   ingresses:
   {{#each ingresses as |url|}}
      - {{url}}
@@ -35,9 +39,16 @@ spec:
     path: /fyllut/internal/metrics # Path where prometheus metrics are served.
   accessPolicy:
     outbound:
+      rules:
+      {{#each accessPolicy.outbound.rules}}
+        - application: {{this.application}}
+          namespace: {{this.namespace}}
+          cluster: {{this.cluster}}
+      {{/each}}
       external:
         - host: {{dekorator-host}}
         - host: {{foersteside-host}}
+        - host: {{skjemabygging-proxy-host}}
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
@@ -45,6 +56,14 @@ spec:
       value: {{foersteside-url}}
     - name: FORMS_SOURCE
       value: {{forms-source}}
+    - name: SKJEMABYGGING_PROXY_URL
+      value: {{skjemabygging-proxy-url}}
+    - name: SKJEMABYGGING_PROXY_CLIENT_ID
+      value: {{skjemabygging-proxy-client-id}}
+    {{#if enabled-features}}
+    - name: ENABLED_FEATURES
+      value: {{enabled-features}}
+    {{/if}}
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}

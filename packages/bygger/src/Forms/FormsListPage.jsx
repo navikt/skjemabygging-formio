@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Undertittel } from "nav-frontend-typografi";
 import { makeStyles } from "@material-ui/styles";
-import { AppLayoutWithContext } from "../components/AppLayout";
-import { SlettKnapp } from "./components";
-import { ExpandFilled, CollapseFilled } from "@navikt/ds-icons";
+import { CollapseFilled, ExpandFilled } from "@navikt/ds-icons";
 import { Hovedknapp } from "nav-frontend-knapper";
+import { Undertittel } from "nav-frontend-typografi";
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
+import { SlettKnapp } from "./components";
 
 const useFormsListStyles = makeStyles({
   list: {
@@ -130,16 +130,16 @@ function simplifiedForms(forms) {
   }));
 }
 
-function FormsListPage({ forms, url, onDelete, onNew, onLogout }) {
+function FormsListPage({ forms, url, onDelete }) {
+  const history = useHistory();
   const classes = useFormsListPageStyles();
+  const onNew = () => history.push("/forms/new");
   return (
     <AppLayoutWithContext
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
         visOversettelseliste: true,
-        logout: onLogout,
-        onNew: onNew,
       }}
     >
       <ActionRow>

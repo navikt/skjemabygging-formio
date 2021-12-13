@@ -1,9 +1,10 @@
-import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Link } from "react-router-dom";
+import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import navCssVariables from "nav-frontend-core";
 import { Undertittel } from "nav-frontend-typografi";
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/auth-context";
 import Row from "./layout/Row";
 
 const useStyles = makeStyles({
@@ -18,7 +19,8 @@ const useStyles = makeStyles({
   },
 });
 
-export const NavBar = ({ title, logout, visSkjemaliste, visOversettelseliste }) => {
+export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
+  const { logout } = useAuth();
   const { featureToggles } = useAppConfig();
   const styles = useStyles();
   return (

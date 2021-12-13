@@ -1,6 +1,7 @@
 import jsdom from "jsdom";
 import NodeCache from "node-cache";
 import fetch from "node-fetch";
+import { config } from "./config/config.js";
 import { logger } from "./logger.js";
 
 const { JSDOM } = jsdom;
@@ -14,6 +15,8 @@ const cache = new NodeCache({
   checkperiod: SECONDS_PER_MINUTE,
 });
 
+const { decoratorUrl } = config;
+
 const getDecorator = async () =>
   new Promise(async (resolve, reject) => {
     const decorator = cache.get("main-cache");
@@ -21,7 +24,7 @@ const getDecorator = async () =>
       resolve(decorator);
     } else {
       try {
-        const res = await fetch(process.env.DECORATOR_URL);
+        const res = await fetch(decoratorUrl);
         if (res.ok) {
           const body = await res.text();
           const { document } = new JSDOM(body).window;

@@ -1,6 +1,6 @@
-import PdfPrinter from "pdfmake";
-import luxon from "luxon";
 import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
+import luxon from "luxon";
+import PdfPrinter from "pdfmake";
 
 const { DateTime } = luxon;
 
@@ -163,18 +163,24 @@ export class Pdfgen {
   }
 
   generateContentFromSubmission() {
-    return [...this.generateHeader(), ...this.generateBody(), ...this.generateFooter()];
+    return [...this.generateHeader(), ...this.generateBody()];
   }
 
-  generateFooter() {
+  generateFooter(currentPage, pageCount) {
     const datoTid = this.now.setLocale("nb-NO").toLocaleString(DateTime.DATETIME_FULL);
-    return [
-      " ",
-      " ",
-      " ",
-      { text: `${this.translate("Skjemaet ble opprettet")} ${datoTid}` },
-      { text: `${this.translate("Skjemaversjon")}: ${this.gitVersion}` },
-    ];
+    return {
+      columns: [
+        {
+          width: "80%",
+          text: `${this.translate("Skjemaet ble opprettet")} ${datoTid} \n ${this.translate("Skjemaversjon")}: ${
+            this.gitVersion
+          }`,
+          alignment: "left",
+        },
+        { text: currentPage.toString() + " / " + pageCount, alignment: "right" },
+      ],
+      margin: [40, 10, 40, 0],
+    };
   }
 
   generateBody() {
@@ -192,6 +198,9 @@ export class Pdfgen {
       pageSize: "A4",
       pageMargins: [40, 80, 40, 80],
       content: this.generateContentFromSubmission(),
+      footer: (currentPage, pageCount) => {
+        return this.generateFooter(currentPage, pageCount);
+      },
       styles: this.docStyles(),
     };
   }
@@ -235,6 +244,6 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateContentFromSubmission() {
-    return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures(), ...this.generateFooter()];
+    return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures()];
   }
 }

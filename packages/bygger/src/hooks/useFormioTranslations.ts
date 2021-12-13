@@ -126,15 +126,16 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
   const loadAndInsertCountryNames = async (translations: FormioTranslationMap): Promise<FormioTranslation | {}> => {
     const localesInTranslations = Object.keys(translations).filter((lang): lang is Language => !!(lang as Language));
-    const norwegianCountryNames = await loadCountryNames("nb-NO");
-    return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) =>
-      localesInTranslations.reduce(
+    localesInTranslations.unshift("nb-NO");
+    return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) => {
+      const norwegianCountryNames = loadedCountryNames[0];
+      return localesInTranslations.reduce(
         (accumulated, locale, index) => ({
           ...accumulated,
           [locale]: {
             ...translations[locale],
             translations: {
-              ...translations[locale].translations,
+              ...translations[locale]?.translations,
               ...zipCountryNames(norwegianCountryNames, loadedCountryNames[index], (countryName) => ({
                 value: countryName.label,
                 scope: "component-countryName",
@@ -143,8 +144,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           },
         }),
         {}
-      )
-    );
+      );
+    });
   };
 
   const loadTranslationsForEditPage = async (formPath: string): Promise<FormioTranslationMap> => {
@@ -209,7 +210,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       } else {
         response.json().then((r) => {
           const errorMessage = "Lagret oversettelser feilet: ";
-          userAlerter.setErrorMessage(errorMessage.concat(r && r.details && r.details[0] && r.details[0].message));
+          userAlerter.setErrorMessage(errorMessage.concat(r?.message));
         });
       }
     });
