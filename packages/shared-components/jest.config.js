@@ -17,7 +17,8 @@ const config = {
     "@navikt/ds-icons": "<rootDir>/__mocks__/dsIconsMock.js",
   },
   transform: {
-    "\\.[j|t]sx?$": "babel-jest"
+    "\\.ejs$": "<rootDir>/test/jest-ejs.transformer.js",
+    "\\.[j|t]sx?$": "babel-jest",
   }
 };
 
