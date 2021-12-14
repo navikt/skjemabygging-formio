@@ -12,7 +12,7 @@ const localDevelopmentConfig = {
   skjemabyggingProxyUrl: "https://skjemabygging-proxy.dev-fss-pub.nais.io",
   skjemabyggingProxyClientId: "95170319-b4d7-4190-8271-118ed19bafbf",
   azureOpenidTokenEndpoint: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token",
-  clientId: "599b3553-24b0-416f-9a91-3866d1197e90",
+  clientId: "a1eddc14-0e91-40bc-b910-a0cf39ac3223",
 };
 
 const defaultConfig = {
