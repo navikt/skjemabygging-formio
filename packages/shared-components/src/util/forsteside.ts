@@ -214,12 +214,26 @@ const parseLanguage = (language) => {
   }
 };
 
-function genererMottaksadresse(mottaksadresseId: string, mottaksadresser) {
+function genererMottaksadresse(mottaksadresseId: string, mottaksadresser, enhet) {
   if (mottaksadresseId) {
     const mottaksadresse = mottaksadresser.find((a) => a._id === mottaksadresseId);
     if (mottaksadresse) {
       return { adresse: { ...mottaksadresse.data } };
     }
+  }
+  if (enhet) {
+    const postadresse = enhet.kontaktInformasjon.postadresse;
+    return {
+      adresse: {
+        adresselinje1: enhet.enhet.navn,
+        adresselinje2:
+          postadresse.type === "postboksadresse"
+            ? "Postboks " + postadresse.postboksnummer
+            : `${postadresse.gatenavn || ""} ` + (postadresse.husnummer || "") + (postadresse.husbokstav || ""),
+        postnummer: postadresse.postnummer,
+        poststed: postadresse.poststed,
+      },
+    };
   }
   return { netsPostboks: "1400" };
 }
@@ -229,7 +243,7 @@ export function genererFoerstesideData(
   submission,
   language = "nb-NO",
   mottaksadresser = [],
-  enhetId
+  enhet
 ): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema, mottaksadresseId },
@@ -247,6 +261,6 @@ export function genererFoerstesideData(
     tema,
     vedleggsliste: genererVedleggsListe(form, submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
-    ...genererMottaksadresse(mottaksadresseId, mottaksadresser),
+    ...genererMottaksadresse(mottaksadresseId, mottaksadresser, enhet),
   };
 }

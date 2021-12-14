@@ -1,8 +1,87 @@
 import { Select } from "nav-frontend-skjema";
 import React, { useEffect, useState } from "react";
 
-async function fetchEnhetsListe(fyllutBaseURL) {
-  return fetch(`${fyllutBaseURL}/api/enhetsliste`).then((response) => {
+type Enhetstype =
+  | "AAREG"
+  | "ALS"
+  | "ARK"
+  | "DIR"
+  | "DOKSENTER"
+  | "EKSTERN"
+  | "FORVALTNING"
+  | "FPY"
+  | "FYLKE"
+  | "HELFO"
+  | "HMS"
+  | "INNKREV"
+  | "INTRO"
+  | "IT"
+  | "KLAGE"
+  | "KO"
+  | "KONTAKT"
+  | "KONTROLL"
+  | "LOKAL"
+  | "OKONOMI"
+  | "OPPFUTLAND"
+  | "OTENESTE"
+  | "RIKSREV"
+  | "ROBOT"
+  | "ROL"
+  | "TILLIT"
+  | "TILTAK"
+  | "UKJENT"
+  | "UTLAND"
+  | "YTA";
+
+const enhetsTypeWithKontaktInfo: Enhetstype[] = [
+  "AAREG",
+  "ALS",
+  "ARK",
+  "DIR",
+  "FPY",
+  "FYLKE",
+  "HMS",
+  "INNKREV",
+  "INTRO",
+  "KLAGE",
+  "KONTAKT",
+  "KONTROLL",
+  "LOKAL",
+  "OKONOMI",
+  "TILTAK",
+  "YTA",
+  "OPPFUTLAND",
+  "DOKSENTER",
+  "ROL",
+];
+
+const enhetstypeVisesPaaNav: Enhetstype[] = [
+  "ALS",
+  "ARK",
+  "FPY",
+  "FYLKE",
+  "HMS",
+  "INTRO",
+  "KLAGE",
+  "KO",
+  "KONTROLL",
+  "LOKAL",
+  "OKONOMI",
+  "TILTAK",
+  "YTA",
+  "OPPFUTLAND",
+];
+
+const skalHaKontaktInfo = (enhet) => {
+  return enhetsTypeWithKontaktInfo.includes(enhet.enhet.type);
+};
+
+const skalVisesPaaNav = (enhet) => {
+  return enhetstypeVisesPaaNav.includes(enhet.enhet.type);
+};
+
+async function fetchEnhetsListe(baseUrl = "") {
+  return fetch(`${baseUrl}/api/enhetsliste`).then((response) => {
     if (response.ok) {
       return response.json();
     }
@@ -14,14 +93,30 @@ const EnhetSelector = ({ baseUrl, onSelectEnhet }) => {
   const [enhetsListe, setEnhetsListe] = useState([]);
 
   useEffect(() => {
-    fetchEnhetsListe(baseUrl).then(setEnhetsListe);
-  }, []);
+    fetchEnhetsListe(baseUrl)
+      .then((enhetsListe) =>
+        enhetsListe
+          .filter(skalHaKontaktInfo)
+          .filter(skalVisesPaaNav)
+          .sort((enhetA, enhetB) => enhetA.enhet.navn.localeCompare(enhetB.enhet.navn, "nb"))
+      )
+      .then(setEnhetsListe);
+  }, [baseUrl]);
+
+  if (enhetsListe.length === 0) {
+    return <></>;
+  }
 
   return (
-    <Select label="Velg enhet" onChange={(event) => onSelectEnhet(event.target.value)}>
+    <Select
+      label="Velg enhet"
+      onChange={(event) => {
+        onSelectEnhet(enhetsListe.find((enhet) => `${enhet.enhet.enhetId}` === event.target.value));
+      }}
+    >
       {enhetsListe.map((enhet) => (
-        <option key={enhet.enhetId} value={enhet.enhetId}>
-          {enhet.navn}
+        <option key={enhet.enhet.enhetId} value={enhet.enhet.enhetId}>
+          {enhet.enhet.navn}
         </option>
       ))}
     </Select>

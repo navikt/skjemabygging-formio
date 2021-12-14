@@ -36,17 +36,18 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetId) {
+async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhet) {
   const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`).then((response) => {
     if (response.ok) {
       return response.json();
     }
     return [];
   });
-  return fetch(`${fyllutBaseURL}/foersteside`, {
+  const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhet);
+  return fetch(`/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(genererFoerstesideData(form, submission.data, language, mottaksadresser, enhetId)),
+    body: JSON.stringify(body),
   })
     .then((response) => {
       if (response.ok) {
@@ -87,7 +88,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
       <Normaltekst className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
-      <EnhetSelector baseUrl={fyllutBaseURL} onChange={setSelectedEnhet} />
+      <EnhetSelector onSelectEnhet={setSelectedEnhet} />
       <div className="margin-bottom-default">
         <button
           className="knapp knapp--fullbredde"
