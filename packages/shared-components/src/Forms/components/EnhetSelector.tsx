@@ -1,5 +1,7 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Select } from "nav-frontend-skjema";
 import React, { useEffect, useState } from "react";
+import { useLanguages } from "../../context/languages";
 
 type Enhetstype =
   | "AAREG"
@@ -90,6 +92,7 @@ async function fetchEnhetsListe(baseUrl = "") {
 }
 
 const EnhetSelector = ({ baseUrl, onSelectEnhet }) => {
+  const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState([]);
 
   useEffect(() => {
@@ -114,6 +117,7 @@ const EnhetSelector = ({ baseUrl, onSelectEnhet }) => {
         onSelectEnhet(enhetsListe.find((enhet) => `${enhet.enhet.enhetId}` === event.target.value));
       }}
     >
+      <option>{translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}</option>
       {enhetsListe.map((enhet) => (
         <option key={enhet.enhet.enhetId} value={enhet.enhet.enhetId}>
           {enhet.enhet.navn}
