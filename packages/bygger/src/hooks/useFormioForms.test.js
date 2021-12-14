@@ -1,3 +1,4 @@
+import { renderHook } from "@testing-library/react-hooks";
 import Formiojs from "formiojs/Formio";
 import fetchMock from "jest-fetch-mock";
 import { useFormioForms } from "./useFormioForms";
@@ -17,7 +18,6 @@ describe("useFormioForms", () => {
 
   const form = [{ title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" }];
   fetchMock.mockImplementation((url) => {
-    console.log("test", url);
     if (
       url.includes(
         "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id"
@@ -29,9 +29,10 @@ describe("useFormioForms", () => {
     }
     return Promise.reject(new Error(`ukjent url ${url}`));
   });
+
   it("loads form list in the hook", async () => {
-    const { loadFormsList } = useFormioForms(new Formiojs("http://myproject.example.org"));
-    const forms = await loadFormsList();
+    const { result } = renderHook(() => useFormioForms(new Formiojs("http://myproject.example.org")));
+    const forms = await result.current.loadFormsList();
     expect(forms.length).toBe(3);
     expect(forms[0].title).toBe("skjema1");
     expect(forms[1].title).toBe("skjema2");
@@ -39,8 +40,8 @@ describe("useFormioForms", () => {
   });
 
   it("loads one specific form in the hook", async () => {
-    const { loadForm } = useFormioForms(new Formiojs("http://myproject.example.org"));
-    const form = await loadForm("skjema3");
+    const { result } = renderHook(() => useFormioForms(new Formiojs("http://myproject.example.org")));
+    const form = await result.current.loadForm("skjema3");
     expect(form.title).toBe("skjema3");
   });
 });
