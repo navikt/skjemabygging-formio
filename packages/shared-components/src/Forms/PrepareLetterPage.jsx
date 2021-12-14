@@ -64,7 +64,7 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enh
     .catch((e) => console.log("Failed to download foersteside", e));
 }
 
-const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translate, translations }) => {
+const LastNedSoknadSection = ({ form, index, submission, baseUrl, fyllutBaseURL, translate, translations }) => {
   const [selectedEnhet, setSelectedEnhet] = useState(undefined);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
@@ -88,7 +88,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
       <Normaltekst className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
-      <EnhetSelector onSelectEnhet={setSelectedEnhet} />
+      <EnhetSelector baseUrl={baseUrl} onSelectEnhet={setSelectedEnhet} />
       <div className="margin-bottom-default">
         <button
           className="knapp knapp--fullbredde"
@@ -157,7 +157,7 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
 
 export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  const { fyllutBaseURL } = useAppConfig();
+  const { fyllutBaseURL, baseUrl } = useAppConfig();
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
@@ -174,6 +174,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       key="last-ned-soknad"
       form={form}
       submission={submission}
+      baseUrl={baseUrl}
       fyllutBaseURL={fyllutBaseURL}
       translate={translate}
       translations={translations}

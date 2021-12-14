@@ -82,7 +82,7 @@ const skalVisesPaaNav = (enhet) => {
   return enhetstypeVisesPaaNav.includes(enhet.enhet.type);
 };
 
-async function fetchEnhetsListe(baseUrl = "") {
+async function fetchEnhetsListe(baseUrl = "/fyllut") {
   return fetch(`${baseUrl}/api/enhetsliste`).then((response) => {
     if (response.ok) {
       return response.json();

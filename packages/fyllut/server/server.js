@@ -216,8 +216,8 @@ skjemaApp.get("/api/enhetsliste", (req, res) => {
   })
     .then(toJsonOrThrowError("Feil ved autentisering"))
     .then(({ access_token }) =>
-      fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet`, {
-        headers: { Authorization: `Bearer ${access_token}` },
+      fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet/kontaktinformasjon/organisering/AKTIV`, {
+        headers: { consumerId: "skjemadigitalisering", Authorization: `Bearer ${access_token}` },
       })
     )
     .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
