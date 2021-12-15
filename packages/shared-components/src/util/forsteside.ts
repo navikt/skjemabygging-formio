@@ -1,4 +1,5 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { EnhetInkludertKontaktinformasjon } from "../api/Enhet";
 
 type ForstesideType = "SKJEMA" | "ETTERSENDELSE";
 
@@ -214,7 +215,7 @@ const parseLanguage = (language) => {
   }
 };
 
-function genererMottaksadresse(mottaksadresseId: string, mottaksadresser, enhet) {
+function genererMottaksadresse(mottaksadresseId: string, mottaksadresser, enhet: EnhetInkludertKontaktinformasjon) {
   if (mottaksadresseId) {
     const mottaksadresse = mottaksadresser.find((a) => a._id === mottaksadresseId);
     if (mottaksadresse) {
@@ -222,7 +223,7 @@ function genererMottaksadresse(mottaksadresseId: string, mottaksadresser, enhet)
     }
   }
   if (enhet) {
-    const postadresse = enhet.kontaktInformasjon.postadresse;
+    const postadresse = enhet.kontaktinformasjon.postadresse;
     return {
       adresse: {
         adresselinje1: enhet.enhet.navn,

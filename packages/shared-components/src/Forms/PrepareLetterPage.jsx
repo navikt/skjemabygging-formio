@@ -40,14 +40,16 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
 };
 
 async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhet) {
-  const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`).then((response) => {
-    if (response.ok) {
-      return response.json();
-    }
-    return [];
-  });
+  const mottaksadresser = enhet
+    ? []
+    : await fetch(`${fyllutBaseURL}/mottaksadresser`).then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return [];
+      });
   const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhet);
-  return fetch(`/foersteside`, {
+  return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

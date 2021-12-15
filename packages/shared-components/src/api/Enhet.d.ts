@@ -55,11 +55,18 @@ interface Adresse {
   poststed: string;
 }
 
+interface PostboksAdresse extends Adresse {
+  postboksanlegg?: string;
+  postboksnummer: string;
+  type: "postboksadresse";
+}
+
 interface Stedsadresse extends Adresse {
-  adresseTilleggsnavn: string;
-  gatenavn: string;
-  husbokstav: string;
-  husnummer: string;
+  adresseTilleggsnavn?: string;
+  gatenavn?: string;
+  husbokstav?: string;
+  husnummer?: string;
+  type: "stedsadresse";
 }
 
 interface Aapningstid {
@@ -89,7 +96,7 @@ interface EnhetKontaktinformasjon {
   };
   faksnummer: string;
   id: number;
-  postadresse: Adresse;
+  postadresse: PostboksAdresse | Stedsadresse;
   publikumsmottak: Publikumsmottak[];
   spesielleOpplysninger: string;
   telefonnummer: string;
