@@ -82,19 +82,22 @@ export default class NavDatepicker extends FormioReactComponent {
 
   validateEarliestAndLatestDate(earliestFromToday = "", latestFromToday = "", inputDate) {
     const earliestAllowedDate = !!String(earliestFromToday) ? moment().add(String(earliestFromToday), "d") : undefined;
-    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
     const latestAllowedDate = !!String(latestFromToday) ? moment().add(String(latestFromToday), "d") : undefined;
-    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
+    return this.validateEarliestAndLatest(earliestAllowedDate, latestAllowedDate, inputDate);
+  }
 
+  validateEarliestAndLatest(earliestAllowedDate, latestAllowedDate, inputDate) {
+    const earliestAllowedDateAsString = earliestAllowedDate ? earliestAllowedDate.format("DD.MM.YYYY") : "";
+    const latestAllowedDateAsString = latestAllowedDate ? latestAllowedDate.format("DD.MM.YYYY") : "";
     if (earliestAllowedDate && latestAllowedDate) {
       if (!isCorrectOrder(earliestAllowedDate, latestAllowedDate, true)) {
         return true;
       }
       return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
         ? `${this.showNorwegianOrTranslation("dateInBetween", {
-            minDate: earliestAllowedDateAsString,
-            maxDate: latestAllowedDateAsString,
-          })}`
+          minDate: earliestAllowedDateAsString,
+          maxDate: latestAllowedDateAsString,
+        })}`
         : true;
     }
 
@@ -147,6 +150,38 @@ export default class NavDatepicker extends FormioReactComponent {
       return earliestAndLatestDateValidation;
     }
     return true;
+  }
+
+  validateDatePickerV2(
+    input,
+    submissionData,
+    component,
+    row,
+  ) {
+    if (!input) {
+      return true;
+    }
+
+    const result = this.validateDatePicker(
+      input,
+      submissionData,
+      component.beforeDateInputKey,
+      component.mayBeEqual,
+      component.earliestAllowedDate,
+      component.latestAllowedDate,
+      row
+    );
+    if (result === true) {
+      const {
+        earliestAllowedSpecificDate,
+        latestAllowedSpecificDate
+      } = component;
+
+      const earliest = earliestAllowedSpecificDate ? moment(earliestAllowedSpecificDate) : undefined;
+      const latest = latestAllowedSpecificDate ? moment(latestAllowedSpecificDate) : undefined;
+      return this.validateEarliestAndLatest(earliest, latest, moment(input));
+    }
+    return result;
   }
 
   static schema() {
@@ -248,6 +283,24 @@ export default class NavDatepicker extends FormioReactComponent {
                       content:
                         "<div><p>Oppgi antall dager for å sette tidligste og seneste tillatte dato. Begrensningen er relativ til datoen skjemaet fylles ut. Bruk positive tall for å oppgi dager fram i tid, negative tall for å sette tillatt dato bakover i tid, og 0 for å sette dagens dato som tidligst/senest tillatt.</p><p>Eksempel: hvis tidligst tillatt er satt til -5, vil datoer før 10. august 2022 gi feilmelding når skjemaet fylles ut 15. august 2022</p></div>",
                       alerttype: "info",
+                    },
+                  ],
+                },
+                {
+                  type: "panel",
+                  title: "Begrens dato til tidligst/senest en spesifikk dato",
+                  components: [
+                    {
+                      type: "navDatepicker",
+                      label: "Tidligst tillatt dato",
+                      key: "earliestAllowedSpecificDate",
+                      input: true,
+                    },
+                    {
+                      type: "navDatepicker",
+                      label: "Senest tillatt dato",
+                      key: "latestAllowedSpecificDate",
+                      input: true,
                     },
                   ],
                 },

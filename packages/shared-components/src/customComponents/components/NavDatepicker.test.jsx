@@ -1,4 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {TEXTS} from "@navikt/skjemadigitalisering-shared-domain";
 import moment from "moment";
 import {screen, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -253,40 +253,49 @@ describe("NavDatePicker", () => {
 
     beforeAll(setupNavFormio);
 
-    describe("Validation of latestAllowedDate", () => {
+    async function apneKalenderOgVelgDato(dato) {
+      const kalenderKnapp = await screen.findByTitle("Kalenderikon");
+      expect(kalenderKnapp).toBeInTheDocument();
+      userEvent.click(kalenderKnapp.closest("button"));
+      const andreMai = await screen.findByLabelText(dato);
+      userEvent.click(andreMai);
+    }
 
-      const form = {
-        title: "Testskjema",
-        display: "wizard",
-        components: [
-          {
+    const defaultPanelProps = label => ({
+      type: "panel",
+      label,
+      title: label,
+      key: label.replace(" ", "").toLowerCase(),
+      input: false,
+    });
 
-            title: "Panel 1",
-            key: "panel1",
-            type: "panel",
-            label: "Panel 1",
-            input: false,
-            components: [
-              {
-                id: "oppgiDato",
-                key: "oppgiDatoKey",
-                type: "navDatepicker",
-                label: "Oppgi dato",
-                dataGridLabel: true,
-                validateOn: "blur",
-                latestAllowedDate: "-14",
-                validate: {
-                  custom:
-                    "valid = instance.validateDatePicker(input, data," +
-                    "component.beforeDateInputKey, component.mayBeEqual, " +
-                    "component.earliestAllowedDate, component.latestAllowedDate, row);",
-                  required: true,
-                },
-              },
-            ],
-          },
-        ],
-      };
+    const CUSTOM_VALIDATE_DATE_PICKER_V1 = "valid = instance.validateDatePicker(input, data," +
+      "component.beforeDateInputKey, component.mayBeEqual, " +
+      "component.earliestAllowedDate, component.latestAllowedDate, row);";
+    const CUSTOM_VALIDATE_DATE_PICKER_V2 = "valid = instance.validateDatePickerV2(input, data, component, row);";
+
+    const createForm = (datepickerProps = {}) => ({
+      title: "Testskjema",
+      display: "wizard",
+      components: [
+        {
+          ...defaultPanelProps("Panel 1"),
+          components: [
+            {
+              id: "oppgiDato",
+              key: "oppgiDatoKey",
+              type: "navDatepicker",
+              label: "Oppgi dato",
+              dataGridLabel: true,
+              validateOn: "blur",
+              ...datepickerProps,
+            },
+          ],
+        },
+      ],
+    });
+
+    describe("Validation of releative latestAllowedDate/earliestAllowedDate", () => {
 
       let submission = null;
       let onSubmit;
@@ -296,36 +305,143 @@ describe("NavDatePicker", () => {
         onSubmit = (arg) => submission = arg;
       });
 
-      it("fails when given date is later than the latestAllowedDate", async () => {
-        await renderNavForm({form, onSubmit});
-        const kalenderKnapp = await screen.findByTitle("Kalenderikon");
-        expect(kalenderKnapp).toBeInTheDocument();
-        userEvent.click(kalenderKnapp.closest("button"));
+      const validationFunctions = [
+        {
+          nameOfValidationFunction: "validateDatePicker",
+          customValidation:
+          CUSTOM_VALIDATE_DATE_PICKER_V1,
+        },
+        {
+          nameOfValidationFunction: "validateDatePickerV2",
+          customValidation: CUSTOM_VALIDATE_DATE_PICKER_V2,
+        },
+      ];
 
-        const andreMai = await screen.findByLabelText("02.05.2030, torsdag");
-        userEvent.click(andreMai);
+      it.each(validationFunctions)
+      (
+        "[$nameOfValidationFunction] considers latestAllowedDate during validation",
+        async ({customValidation}) => {
+          const form = createForm({
+            latestAllowedDate: "-14",
+            validate: {
+              custom: customValidation,
+              required: true,
+            }
+          });
+          await renderNavForm({form, onSubmit});
+
+          await apneKalenderOgVelgDato("02.05.2030, torsdag");
+          userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+          const errorDiv = await screen.findByText("Datoen kan ikke være senere enn 01.05.2030");
+          expect(errorDiv).toBeInTheDocument();
+          expect(errorDiv).toHaveClass("error");
+
+          expect(submission).toBeNull();
+
+          await apneKalenderOgVelgDato("01.05.2030, onsdag");
+          userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+          await waitFor(() => expect(submission).not.toBeNull());
+          expect(submission.data.oppgiDatoKey).toEqual("2030-05-01");
+        }
+      , 10000);
+
+    });
+
+    describe("Validation of a specific earliest and/or latest date", () => {
+
+      let submission = null;
+      let onSubmit;
+
+      beforeEach(() => {
+        submission = null;
+        onSubmit = (arg) => submission = arg;
+      });
+
+      it("considers earliestAllowedSpecificDate during validation",async () => {
+        const form = createForm({
+          earliestAllowedSpecificDate: "2030-05-03",
+          validate: {
+            custom: CUSTOM_VALIDATE_DATE_PICKER_V2,
+            required: true,
+          }
+        });
+        await renderNavForm({form, onSubmit});
+
+        await apneKalenderOgVelgDato("02.05.2030, torsdag");
         userEvent.click(await screen.findByRole("button", {name: "Neste"}));
 
-        const errorDiv = await screen.findByText("Datoen kan ikke være senere enn 01.05.2030");
+        const errorDiv = await screen.findByText("Datoen kan ikke være tidligere enn 03.05.2030");
         expect(errorDiv).toBeInTheDocument();
         expect(errorDiv).toHaveClass("error");
 
         expect(submission).toBeNull();
-      });
 
-      it("passes when given date is same as latestAllowedDate", async () => {
-        await renderNavForm({form, onSubmit});
-        const kalenderKnapp = await screen.findByTitle("Kalenderikon");
-        expect(kalenderKnapp).toBeInTheDocument();
-        userEvent.click(kalenderKnapp.closest("button"));
-
-        const andreMai = await screen.findByLabelText("01.05.2030, onsdag");
-        userEvent.click(andreMai);
+        await apneKalenderOgVelgDato("03.05.2030, fredag");
         userEvent.click(await screen.findByRole("button", {name: "Neste"}));
 
         await waitFor(() => expect(submission).not.toBeNull());
-        expect(submission.data.oppgiDatoKey).toEqual("2030-05-01");
-      });
+        expect(submission.data.oppgiDatoKey).toEqual("2030-05-03");
+      }, 10000);
+
+      it("considers latestAllowedSpecificDate during validation",async () => {
+        const form = createForm({
+          latestAllowedSpecificDate: "2030-05-02",
+          validate: {
+            custom: CUSTOM_VALIDATE_DATE_PICKER_V2,
+            required: true,
+          }
+        });
+        await renderNavForm({form, onSubmit});
+
+        await apneKalenderOgVelgDato("03.05.2030, fredag");
+        userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+        const errorDiv = await screen.findByText("Datoen kan ikke være senere enn 02.05.2030");
+        expect(errorDiv).toBeInTheDocument();
+        expect(errorDiv).toHaveClass("error");
+
+        expect(submission).toBeNull();
+
+        await apneKalenderOgVelgDato("02.05.2030, torsdag");
+        userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+        await waitFor(() => expect(submission).not.toBeNull());
+        expect(submission.data.oppgiDatoKey).toEqual("2030-05-02");
+      }, 10000);
+
+      it("considers both earliestAllowedSpecificDate and latestAllowedSpecificDate during validation",async () => {
+        const form = createForm({
+          earliestAllowedSpecificDate: "2030-05-02",
+          latestAllowedSpecificDate: "2030-05-03",
+          validate: {
+            custom: CUSTOM_VALIDATE_DATE_PICKER_V2,
+            required: true,
+          }
+        });
+        await renderNavForm({form, onSubmit});
+
+        await apneKalenderOgVelgDato("04.05.2030, lørdag");
+        userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+        const errorDiv = await screen.findByText("Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030");
+        expect(errorDiv).toBeInTheDocument();
+        expect(errorDiv).toHaveClass("error");
+
+        expect(submission).toBeNull();
+
+        await apneKalenderOgVelgDato("01.05.2030, onsdag");
+        userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+        expect(submission).toBeNull();
+
+        await apneKalenderOgVelgDato("02.05.2030, torsdag");
+        userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+        await waitFor(() => expect(submission).not.toBeNull());
+        expect(submission.data.oppgiDatoKey).toEqual("2030-05-02");
+      }, 10000);
 
     });
 
