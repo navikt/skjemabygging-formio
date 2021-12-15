@@ -1,6 +1,9 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import moment from "moment";
+import {screen, waitFor} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import NavDatePicker from "./NavDatepicker";
+import {renderNavForm, setupNavFormio} from "../../../test/navform-render";
 
 Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
 describe("NavDatePicker", () => {
@@ -243,4 +246,84 @@ describe("NavDatePicker", () => {
       });
     });
   });
+
+  describe("Validation of latestAllowedDate", () => {
+
+    beforeAll(setupNavFormio);
+
+    const form = {
+      title: "Testskjema",
+      display: "wizard",
+      components: [
+        {
+
+          title: "Panel 1",
+          key: "panel1",
+          type: "panel",
+          label: "Panel 1",
+          input: false,
+          components: [
+            {
+              id: "oppgiDato",
+              key: "oppgiDatoKey",
+              type: "navDatepicker",
+              label: "Oppgi dato",
+              dataGridLabel: true,
+              validateOn: "blur",
+              latestAllowedDate: "-14",
+              validate: {
+                custom:
+                  "valid = instance.validateDatePicker(input, data," +
+                  "component.beforeDateInputKey, component.mayBeEqual, " +
+                  "component.earliestAllowedDate, component.latestAllowedDate, row);",
+                required: true,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    let submission = null;
+    let onSubmit;
+
+    beforeEach(() => {
+      submission = null;
+      onSubmit = (arg) => submission = arg;
+    });
+
+    it("fails when given date is later than the latestAllowedDate", async () => {
+      await renderNavForm({form, onSubmit});
+      const kalenderKnapp = await screen.findByTitle("Kalenderikon");
+      expect(kalenderKnapp).toBeInTheDocument();
+      userEvent.click(kalenderKnapp.closest("button"));
+
+      const andreMai = await screen.findByLabelText("02.05.2030, torsdag");
+      userEvent.click(andreMai);
+      userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+      const errorDiv = await screen.findByText("Datoen kan ikke være senere enn 01.05.2030");
+      expect(errorDiv).toBeInTheDocument();
+      expect(errorDiv).toHaveClass("error");
+
+      expect(submission).toBeNull();
+    });
+
+    it("passes when given date is same as latestAllowedDate", async () => {
+      await renderNavForm({form, onSubmit});
+      const kalenderKnapp = await screen.findByTitle("Kalenderikon");
+      expect(kalenderKnapp).toBeInTheDocument();
+      userEvent.click(kalenderKnapp.closest("button"));
+
+      const andreMai = await screen.findByLabelText("01.05.2030, onsdag");
+      userEvent.click(andreMai);
+      userEvent.click(await screen.findByRole("button", {name: "Neste"}));
+
+      await waitFor(() => expect(submission).not.toBeNull());
+      expect(submission.data.oppgiDatoKey).toEqual("2030-05-01");
+    });
+
+
+  });
+
 });

@@ -1,6 +1,7 @@
 import React from "react";
 import {render, screen, waitFor} from "@testing-library/react";
 import NavForm from "./NavForm";
+import {setupNavFormio} from "../../test/navform-render";
 
 const testskjemaForOversettelser = {
   title: "Testskjema",
@@ -10,12 +11,17 @@ const testskjemaForOversettelser = {
       type: "textfield",
       key: "textfield",
       inputType: "text",
-      input: true
+      input: true,
+      validate: {
+        required: true,
+      }
     }
   ],
 };
 
 describe("NavForm", () => {
+
+  beforeAll(setupNavFormio);
 
   const renderNavForm = async (props) => {
     const formReady = jest.fn();
