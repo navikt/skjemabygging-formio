@@ -91,7 +91,7 @@ async function fetchEnhetsListe(baseUrl = "/fyllut") {
   });
 }
 
-const EnhetSelector = ({ baseUrl, onSelectEnhet }) => {
+const EnhetSelector = ({ baseUrl, onSelectEnhet, error }) => {
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState([]);
 
@@ -112,12 +112,16 @@ const EnhetSelector = ({ baseUrl, onSelectEnhet }) => {
 
   return (
     <Select
-      label="Velg enhet"
+      className="margin-bottom-default"
+      bredde="l"
+      label={translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
+      description={translate(TEXTS.statiske.prepareLetterPage.chooseEntityDescription)}
+      feil={error}
       onChange={(event) => {
         onSelectEnhet(enhetsListe.find((enhet) => `${enhet.enhet.enhetId}` === event.target.value));
       }}
     >
-      <option>{translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}</option>
+      <option>{translate(TEXTS.statiske.prepareLetterPage.selectEntityDefault)}</option>
       {enhetsListe.map((enhet) => (
         <option key={enhet.enhet.enhetId} value={enhet.enhet.enhetId}>
           {enhet.enhet.navn}

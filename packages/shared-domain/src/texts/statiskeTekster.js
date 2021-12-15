@@ -6,7 +6,10 @@ export const statiske = {
       "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle svarene er riktige går du videre til steg 2.",
   },
   prepareLetterPage: {
-    chooseEntity: "Velg en enhet",
+    chooseEntity: "Velg enhet som skal behandle søknaden",
+    chooseEntityDescription: "Du må velge enheten som skal behandle søknaden for å generere søknadens førsteside",
+    selectEntityDefault: "Velg enhet",
+    entityNotSelectedError: "Førsteside kan ikke genereres før du har valgt enhet",
     firstSectionTitle: "Last ned og skriv ut dokumentene til saken din",
     firstDescription:
       "Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.",

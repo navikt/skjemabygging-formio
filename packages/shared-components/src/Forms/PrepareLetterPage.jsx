@@ -66,10 +66,14 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enh
 
 const LastNedSoknadSection = ({ form, index, submission, baseUrl, fyllutBaseURL, translate, translations }) => {
   const [selectedEnhet, setSelectedEnhet] = useState(undefined);
+  const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { currentLanguage } = useLanguages();
+
+  // TODO: get from form.properties
+  const mustSelectEnhet = true;
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -88,14 +92,25 @@ const LastNedSoknadSection = ({ form, index, submission, baseUrl, fyllutBaseURL,
       <Normaltekst className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
-      <EnhetSelector baseUrl={baseUrl} onSelectEnhet={setSelectedEnhet} />
+      <EnhetSelector
+        baseUrl={baseUrl}
+        onSelectEnhet={(enhet) => {
+          setSelectedEnhet(enhet);
+          setIsRequiredEnhetMissing(false);
+        }}
+        error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
+      />
       <div className="margin-bottom-default">
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
-              .then(() => setHasDownloadedFoersteside(true))
-              .catch(() => loggSkjemaInnsendingFeilet());
+            if (mustSelectEnhet && !selectedEnhet) {
+              setIsRequiredEnhetMissing(true);
+            } else {
+              lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
+                .then(() => setHasDownloadedFoersteside(true))
+                .catch(() => loggSkjemaInnsendingFeilet());
+            }
           }}
           type="button"
         >
