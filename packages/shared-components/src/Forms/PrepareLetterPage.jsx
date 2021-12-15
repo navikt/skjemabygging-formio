@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { fetchEnhetsListe, skalHaKontaktInfo, skalVisesPaaNav } from "../api/fetchEnhetsliste";
+import ErrorPage from "../components/ErrorPage";
 import LoadingComponent from "../components/LoadingComponent";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -175,7 +176,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
-  const [enhetsListe, setEnhetsListe] = useState([]);
+  const [enhetsListe, setEnhetsListe] = useState(undefined);
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -196,8 +197,12 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
     }
   }, [baseUrl, enhetMaVelgesVedPapirInnsending]);
 
-  if (enhetMaVelgesVedPapirInnsending && enhetsListe.length === 0) {
+  if (enhetMaVelgesVedPapirInnsending && enhetsListe === undefined) {
     return <LoadingComponent />;
+  }
+
+  if (enhetMaVelgesVedPapirInnsending && enhetsListe.length === 0) {
+    return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityFetchError)} />;
   }
 
   const sections = [];

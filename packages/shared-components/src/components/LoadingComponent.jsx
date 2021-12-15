@@ -1,5 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React from "react";
+import { useLanguages } from "../context/languages";
 
 const useLoadingStyles = makeStyles({
   root: {
@@ -15,10 +17,11 @@ const useLoadingStyles = makeStyles({
 });
 
 const LoadingComponent = () => {
+  const { translate } = useLanguages();
   const classes = useLoadingStyles();
   return (
     <div className={classes.root}>
-      <h1>Laster...</h1>
+      <h1>{translate ? translate(TEXTS.statiske.loading) : TEXTS.statiske.loading}</h1>
     </div>
   );
 };
