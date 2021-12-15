@@ -4,6 +4,8 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { fetchEnhetsListe, skalHaKontaktInfo, skalVisesPaaNav } from "../api/fetchEnhetsliste";
+import LoadingComponent from "../components/LoadingComponent";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
@@ -64,16 +66,13 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enh
     .catch((e) => console.log("Failed to download foersteside", e));
 }
 
-const LastNedSoknadSection = ({ form, index, submission, baseUrl, fyllutBaseURL, translate, translations }) => {
+const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBaseURL, translate, translations }) => {
   const [selectedEnhet, setSelectedEnhet] = useState(undefined);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { currentLanguage } = useLanguages();
-
-  // TODO: get from form.properties
-  const mustSelectEnhet = true;
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -93,7 +92,7 @@ const LastNedSoknadSection = ({ form, index, submission, baseUrl, fyllutBaseURL,
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
       <EnhetSelector
-        baseUrl={baseUrl}
+        enhetsListe={enhetsListe}
         onSelectEnhet={(enhet) => {
           setSelectedEnhet(enhet);
           setIsRequiredEnhetMissing(false);
@@ -104,7 +103,7 @@ const LastNedSoknadSection = ({ form, index, submission, baseUrl, fyllutBaseURL,
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            if (mustSelectEnhet && !selectedEnhet) {
+            if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhet) {
               setIsRequiredEnhetMissing(true);
             } else {
               lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
@@ -176,11 +175,30 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
+  const [enhetsListe, setEnhetsListe] = useState([]);
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
     else setGoBackURL(state.previousPage);
   }, [state, formUrl]);
+
+  const { enhetMaVelgesVedPapirInnsending } = form.properties;
+  useEffect(() => {
+    if (enhetMaVelgesVedPapirInnsending) {
+      fetchEnhetsListe(baseUrl)
+        .then((enhetsListe) =>
+          enhetsListe
+            .filter(skalHaKontaktInfo)
+            .filter(skalVisesPaaNav)
+            .sort((enhetA, enhetB) => enhetA.enhet.navn.localeCompare(enhetB.enhet.navn, "nb"))
+        )
+        .then(setEnhetsListe);
+    }
+  }, [baseUrl, enhetMaVelgesVedPapirInnsending]);
+
+  if (enhetMaVelgesVedPapirInnsending && enhetsListe.length === 0) {
+    return <LoadingComponent />;
+  }
 
   const sections = [];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
@@ -189,7 +207,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       key="last-ned-soknad"
       form={form}
       submission={submission}
-      baseUrl={baseUrl}
+      enhetsListe={enhetsListe}
       fyllutBaseURL={fyllutBaseURL}
       translate={translate}
       translations={translations}
