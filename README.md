@@ -23,6 +23,25 @@ Vi kommuniserer med fagsystemsonen blant annet for å hente enheter. For å få 
 
 `kubectl exec <pod-name> -c [skjemabygging-formio|skjemautfylling] -- env`
 
+## Feature toggles
+
+### Bygger
+Byggeren har en fil i frontend (`featureToggles.js`) som inneholder hardkodede feature toggles.
+
+### Fyllut
+I fyllut styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en kommaseparert
+liste med navn på features. Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
+i miljøets nais-config. Lokalt kan man f.eks. gjøre det ved å legge inn følgende i `.env`-filen under `fyllut/server`:
+
+    ENABLED_FEATURES="translations,digitalInnsending"
+
+Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
+
+    {
+      enableTranslations: true,
+      enableDigitalInnsending: true
+    }
+
 ## Bygge docker-image for testing av produksjonsbygg lokalt
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man følge stegene i github-workflow

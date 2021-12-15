@@ -1,9 +1,12 @@
 import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import cors from "cors";
 import express from "express";
+import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
+import morgan from "morgan";
+import ecsFormat from '@elastic/ecs-morgan-format';
 import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
@@ -12,6 +15,7 @@ import { logger } from "./logger.js";
 import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
+import "./utils/errorToJson.js";
 
 const app = express();
 const skjemaApp = express();
@@ -20,6 +24,7 @@ skjemaApp.use(cors());
 // Parse application/json
 skjemaApp.use(express.json({ limit: "50mb" }));
 skjemaApp.use(express.urlencoded({ extended: true, limit: "50mb" }));
+skjemaApp.use(correlator());
 skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
@@ -39,12 +44,23 @@ const {
   azureOpenidTokenEndpoint,
   clientId,
   clientSecret,
+  featureToggles,
 } = config;
 checkConfigConsistency(config);
 
 const Registry = client.Registry;
 const register = new Registry();
 client.collectDefaultMetrics({ register });
+
+// Logging http traffic
+const INTERNAL_PATHS = /.*\/internal\/(isAlive|isReady|metrics)/;
+app.use(morgan((token, req, res) => {
+  const logEntry = JSON.parse(ecsFormat({apmIntegration: false})(token, req, res));
+  logEntry.correlation_id = req.correlationId();
+  return JSON.stringify(logEntry);
+}, {
+  skip: (req) => INTERNAL_PATHS.test(req.url)
+}));
 
 const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
@@ -89,8 +105,13 @@ skjemaApp.post("/foersteside", async (req, res) => {
     res.contentType("application/json");
     res.send(body);
   } else {
-    logger.error("Failed to retrieve foersteside from soknadsveiviser " + response.status);
-    return response;
+    res
+      .contentType("application/json")
+      .status(response.status)
+      .send({
+        message: "Feil ved generering av førsteside",
+        correlation_id: req.correlationId(),
+      });
   }
 });
 
@@ -162,6 +183,7 @@ skjemaApp.get("/config", async (req, res) => {
   return res.json({
     NAIS_CLUSTER_NAME: naisClusterName,
     REACT_APP_SENTRY_DSN: sentryDsn,
+    FEATURE_TOGGLES: featureToggles,
   });
 });
 
@@ -202,8 +224,12 @@ const toJsonOrThrowError = (errorMessage) => async (response) => {
   if (response.ok) {
     return response.json();
   }
+  const contentType = response.headers.get("content-type");
   const error = new Error(errorMessage);
-  error.jsonResponse = JSON.stringify(await response.json());
+  error.http_response_body = contentType?.includes("application/json") ? await response.json() : await response.text();
+  error.http_url = response.url;
+  error.http_status = response.status;
+  error.correlation_id = correlator.getId();
   throw error;
 };
 
@@ -223,8 +249,8 @@ skjemaApp.get("/api/enhetsliste", (req, res) => {
     .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
     .then((enhetsliste) => res.send(enhetsliste))
     .catch((err) => {
-      console.error(err.message, JSON.stringify(err, Object.getOwnPropertyNames(err)));
-      res.status(500).send(err.message);
+      console.error(JSON.stringify(err));
+      res.status(500).send({message: err.message, correlation_id: req.correlationId()});
     });
 });
 
@@ -253,13 +279,13 @@ skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
 });
 
 function logErrors(err, req, res, next) {
-  logger.error({ message: err.message, stack: err.stack });
+  logger.error({ message: err.message, stack: err.stack, correlation_id: req.correlationId() });
   next(err);
 }
 
 function errorHandler(err, req, res, next) {
   res.status(500);
-  res.send({ error: "something failed" });
+  res.send({ error: "something failed", correlation_id: req.correlationId() });
 }
 
 skjemaApp.use(logErrors);

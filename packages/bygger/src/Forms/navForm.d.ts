@@ -21,6 +21,7 @@ export interface FormPropertiesType {
    */
   hasPapirInnsendingOnly?: boolean;
   mottaksadresseId?: string;
+  enhetMaVelgesVedPapirInnsending?: boolean;
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
 }
