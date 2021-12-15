@@ -53,7 +53,7 @@ describe("Templates", () => {
 
     describe("som er required", () => {
 
-      it("rendres med 'valgfritt' bak label på norsk", async () => {
+      it("rendres ikke med 'valgfritt' bak label på norsk", async () => {
         await renderNavForm({
           form: formWithTextfield({validate: {required: true}}),
           language: "nb-NO",
@@ -63,7 +63,7 @@ describe("Templates", () => {
         expect(fornavnInput).toBeInTheDocument();
       });
 
-      it("rendres med 'optional' bak label på engelsk", async () => {
+      it("rendres ikke med 'optional' bak label på engelsk", async () => {
         await renderNavForm({
           form: formWithTextfield({validate: {required: true}}),
           language: "en",
