@@ -1,5 +1,5 @@
-if (!('toJSON' in Error.prototype)) {
-  Object.defineProperty(Error.prototype, 'toJSON', {
+if (!("toJSON" in Error.prototype)) {
+  Object.defineProperty(Error.prototype, "toJSON", {
     value: function () {
       var alt = {};
 
@@ -10,6 +10,6 @@ if (!('toJSON' in Error.prototype)) {
       return alt;
     },
     configurable: true,
-    writable: true
+    writable: true,
   });
 }

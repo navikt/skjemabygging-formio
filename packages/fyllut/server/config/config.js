@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
-import {featureUtils} from "@navikt/skjemadigitalisering-shared-domain";
+import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 dotenv.config();
 

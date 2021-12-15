@@ -1,8 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
 import { CollapseFilled, ExpandFilled } from "@navikt/ds-icons";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
@@ -130,9 +131,38 @@ function simplifiedForms(forms) {
   }));
 }
 
-function FormsListPage({ forms, url, onDelete }) {
+function FormsListPage({ url, loadFormsList, deleteForm }) {
   const history = useHistory();
   const classes = useFormsListPageStyles();
+  const [status, setStatus] = useState("LOADING");
+  const [forms, setForms] = useState();
+
+  useEffect(() => {
+    loadFormsList()
+      .then((forms) => {
+        setForms(forms);
+        setStatus("FINISHED LOADING");
+      })
+      .catch((e) => {
+        console.log(e);
+        setStatus("FORMS NOT FOUND");
+      });
+  }, [loadFormsList]);
+
+  if (status === "LOADING") {
+    return <LoadingComponent />;
+  }
+
+  if (status === "FORMS NOT FOUND" || !forms) {
+    return <h1>Finner ingen skjemaer...</h1>;
+  }
+
+  const onDelete = (formId, tags, title) => {
+    deleteForm(formId, tags, title).then(() => {
+      setForms(forms.filter((form) => form._id !== formId));
+    });
+  };
+
   const onNew = () => history.push("/forms/new");
   return (
     <AppLayoutWithContext
@@ -158,7 +188,7 @@ function FormsListPage({ forms, url, onDelete }) {
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
-              <SlettKnapp className="lenke" onClick={() => onDelete(form)}>
+              <SlettKnapp className="lenke" onClick={() => onDelete(form._id, form.tags, form.title)}>
                 Slett skjema
               </SlettKnapp>
             </li>

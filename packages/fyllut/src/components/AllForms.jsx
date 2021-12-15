@@ -20,6 +20,10 @@ export const AllForms = () => {
       .then((forms) => {
         setForms(forms);
         setStatus("FINISHED LOADING");
+      })
+      .catch((e) => {
+        console.log(e);
+        setStatus("FORMS NOT FOUND");
       });
   }, []);
 
@@ -27,7 +31,7 @@ export const AllForms = () => {
     return <LoadingComponent />;
   }
 
-  if (forms.length === 0) {
+  if (status === "FORMS NOT FOUND" || forms.length === 0) {
     return <h1>Finner ingen skjemaer</h1>;
   }
 

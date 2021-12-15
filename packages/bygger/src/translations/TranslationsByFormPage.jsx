@@ -1,8 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
@@ -29,20 +30,46 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, languageCode, projectURL }) => {
+const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }) => {
+  const { formPath, languageCode } = useParams();
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
+  const [form, setForm] = useState();
+  const [status, setStatus] = useState("LOADING");
 
   const history = useHistory();
+  const { translations, setTranslations } = useTranslations();
+  useRedirectIfNoLanguageCode(languageCode, translations);
+
+  useEffect(() => {
+    loadForm(formPath)
+      .then((form) => {
+        setForm(form);
+        setStatus("FINISHED LOADING");
+      })
+      .catch((e) => {
+        console.log(e);
+        setStatus("FORM NOT FOUND");
+      });
+  }, [loadForm, formPath]);
+
+  const flattenedComponents = getFormTexts(form, true);
+  const translationId = (translations[languageCode] || {}).id;
+  const styles = useStyles();
+
+  if (status === "LOADING") {
+    return <LoadingComponent />;
+  }
+
+  if (status === "FORM NOT FOUND" || !form) {
+    return <h1>Vi fant ikke dette skjemaet...</h1>;
+  }
+
   const {
     title,
     path,
     properties: { skjemanummer },
   } = form;
-  const { translations, setTranslations } = useTranslations();
-  useRedirectIfNoLanguageCode(languageCode, translations);
-  const flattenedComponents = getFormTexts(form, true);
-  const translationId = (translations[languageCode] || {}).id;
-  const styles = useStyles();
+
   return (
     <>
       <AppLayoutWithContext
@@ -78,14 +105,7 @@ const TranslationsByFormPage = ({ deleteTranslation, saveTranslation, form, lang
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <Hovedknapp
                 onClick={() => {
-                  saveTranslation(
-                    projectURL,
-                    translationId,
-                    languageCode,
-                    translations[languageCode]?.translations,
-                    path,
-                    title
-                  );
+                  saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title);
                 }}
               >
                 Lagre
