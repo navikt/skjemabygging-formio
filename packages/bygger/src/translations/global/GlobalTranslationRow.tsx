@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Input } from "nav-frontend-skjema";
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
+import { Textarea } from "nav-frontend-skjema";
+import React, { useState } from "react";
 
 const useTranslationRowStyles = makeStyles({
   root: {
@@ -18,7 +18,7 @@ const useTranslationRowStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "1fr 1fr auto",
     gap: "2rem",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
 });
 
@@ -48,10 +48,10 @@ const GlobalTranslationRow = ({
   return (
     <div className={classes.root}>
       <div className={classes.row}>
-        <Input
-          type="text"
+        <Textarea
           value={originalText}
           data-testid="originalText"
+          maxLength={0}
           onChange={(event) => {
             updateOriginalText(id, event.target.value, originalText);
             setDuplicatedWarning(false);
@@ -73,11 +73,11 @@ const GlobalTranslationRow = ({
             }
           }}
         />
-        <Input
-          type="text"
+        <Textarea
           value={translatedText}
           data-testid="translation"
           disabled={duplicatedWarning}
+          maxLength={0}
           onChange={(event) => {
             updateTranslation(id, originalText, event.target.value);
           }}
