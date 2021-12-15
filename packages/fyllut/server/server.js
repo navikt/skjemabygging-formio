@@ -1,12 +1,12 @@
+import ecsFormat from "@elastic/ecs-morgan-format";
 import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import cors from "cors";
 import express from "express";
 import correlator from "express-correlation-id";
+import morgan from "morgan";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
-import morgan from "morgan";
-import ecsFormat from "@elastic/ecs-morgan-format";
 import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
@@ -14,8 +14,8 @@ import getDecorator from "./dekorator.js";
 import { logger } from "./logger.js";
 import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
-import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import "./utils/errorToJson.js";
+import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 
 const app = express();
 const skjemaApp = express();
@@ -53,12 +53,18 @@ const register = new Registry();
 client.collectDefaultMetrics({ register });
 
 // Logging http traffic
+const INTERNAL_PATHS = /.*\/internal\/(isAlive|isReady|metrics)/;
 app.use(
-  morgan((token, req, res) => {
-    const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
-    logEntry.correlation_id = req.correlationId();
-    return JSON.stringify(logEntry);
-  })
+  morgan(
+    (token, req, res) => {
+      const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
+      logEntry.correlation_id = req.correlationId();
+      return JSON.stringify(logEntry);
+    },
+    {
+      skip: (req) => INTERNAL_PATHS.test(req.url),
+    }
+  )
 );
 
 const formRequestHandler = (req) => {

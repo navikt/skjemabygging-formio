@@ -40,4 +40,32 @@ describe("sanitizeJavaScriptCode", () => {
     expect(sanitizeJavaScriptCode(inputWithMultipleEqualChainedLookups)).toEqual("show = (a1 && a1.b2) === 'c'");
   });
 
+  describe("When the code includes function calls", () => {
+    it("does not add null checks for functions on instance", () => {
+      const inputWithInstanceFunctionCall = "valid = instance.validate(input)";
+      expect(sanitizeJavaScriptCode(inputWithInstanceFunctionCall)).toEqual("valid = instance.validate(input)");
+    });
+
+    it("does not add null checks for functions on util", () => {
+      const inputWithUtilFunctionCall = "valid = util.fun(input)";
+      expect(sanitizeJavaScriptCode(inputWithUtilFunctionCall)).toEqual("valid = util.fun(input)");
+    });
+
+    it("does not add null checks for functions on utils", () => {
+      const inputWithUtilsFunctionCall = "valid = utils.fun(input)";
+      expect(sanitizeJavaScriptCode(inputWithUtilsFunctionCall)).toEqual("valid = utils.fun(input)");
+    });
+
+    it("does not add null checks for functions on lodash", () => {
+      const inputWithLodashFunctionCall = "valid = _.fun(input)";
+      expect(sanitizeJavaScriptCode(inputWithLodashFunctionCall)).toEqual("valid = _.fun(input)");
+    });
+
+    it("does not add null checks for nested functions on a reserved word", () => {
+      const inputWithNestedFunctionCalls = "valid = instance.fun1(_.some(data, (a) => util.fun2(a.b.c)))";
+      expect(sanitizeJavaScriptCode(inputWithNestedFunctionCalls)).toEqual(
+        "valid = instance.fun1(_.some(data, (a) => util.fun2((a && a.b && a.b.c))))"
+      );
+    });
+  });
 });
