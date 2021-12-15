@@ -16,9 +16,9 @@
     "build": "webpack --config webpack.config.cjs",
     "clean": "rimraf dist coverage",
     "watch": "webpack --watch --config webpack.config.cjs",
-    "test": "jest --env=jsdom",
+    "test": "jest",
     "prepare": "yarn build",
-    "test:coverage": "jest --env=jsdom --coverage"
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
