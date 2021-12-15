@@ -222,15 +222,15 @@ function genererMottaksadresse(mottaksadresseId: string, mottaksadresser, enhet:
       return { adresse: { ...mottaksadresse.data } };
     }
   }
-  if (enhet) {
+  if (enhet && enhet.kontaktinformasjon && enhet.kontaktinformasjon.postadresse) {
     const postadresse = enhet.kontaktinformasjon.postadresse;
     return {
       adresse: {
         adresselinje1: enhet.enhet.navn,
         adresselinje2:
           postadresse.type === "postboksadresse"
-            ? "Postboks " + postadresse.postboksnummer
-            : `${postadresse.gatenavn || ""} ` + (postadresse.husnummer || "") + (postadresse.husbokstav || ""),
+            ? `Postboks ${postadresse.postboksnummer} ${postadresse.postboksanlegg || ""}`
+            : `${postadresse.gatenavn || ""} ${postadresse.husnummer || ""} ${postadresse.husbokstav || ""}`,
         postnummer: postadresse.postnummer,
         poststed: postadresse.poststed,
       },
