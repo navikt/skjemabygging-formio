@@ -10,7 +10,7 @@ const plugins = [
 const env = {
   "test": {
     "presets": [["@babel/preset-env", {"modules": false}]],
-    "plugins": [ "@babel/plugin-transform-modules-commonjs" ]
+    "plugins": [ "@babel/plugin-transform-modules-commonjs", "@babel/transform-runtime" ]
   }
 }
 
