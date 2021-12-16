@@ -173,12 +173,12 @@ export default class NavDatepicker extends FormioReactComponent {
     );
     if (result === true) {
       const {
-        earliestAllowedSpecificDate,
-        latestAllowedSpecificDate
+        specificEarliestAllowedDate,
+        specificLatestAllowedDate
       } = component;
 
-      const earliest = earliestAllowedSpecificDate ? moment(earliestAllowedSpecificDate) : undefined;
-      const latest = latestAllowedSpecificDate ? moment(latestAllowedSpecificDate) : undefined;
+      const earliest = specificEarliestAllowedDate ? moment(specificEarliestAllowedDate) : undefined;
+      const latest = specificLatestAllowedDate ? moment(specificLatestAllowedDate) : undefined;
       return this.validateEarliestAndLatest(earliest, latest, moment(input));
     }
     return result;
@@ -293,13 +293,13 @@ export default class NavDatepicker extends FormioReactComponent {
                     {
                       type: "navDatepicker",
                       label: "Tidligst tillatt dato",
-                      key: "earliestAllowedSpecificDate",
+                      key: "specificEarliestAllowedDate",
                       input: true,
                     },
                     {
                       type: "navDatepicker",
                       label: "Senest tillatt dato",
-                      key: "latestAllowedSpecificDate",
+                      key: "specificLatestAllowedDate",
                       input: true,
                     },
                   ],

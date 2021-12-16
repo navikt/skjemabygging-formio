@@ -407,9 +407,9 @@ describe("NavDatePicker", () => {
         onSubmit = (arg) => submission = arg;
       });
 
-      it("considers earliestAllowedSpecificDate during validation",async () => {
+      it("considers specificEarliestAllowedDate during validation",async () => {
         const form = createForm({
-          earliestAllowedSpecificDate: "2030-05-03",
+          specificEarliestAllowedDate: "2030-05-03",
           validate: {
             custom: CUSTOM_VALIDATE_DATE_PICKER_V2,
             required: true,
@@ -433,9 +433,9 @@ describe("NavDatePicker", () => {
         expect(submission.data.oppgiDatoKey).toEqual("2030-05-03");
       }, 10000);
 
-      it("considers latestAllowedSpecificDate during validation",async () => {
+      it("considers specificLatestAllowedDate during validation",async () => {
         const form = createForm({
-          latestAllowedSpecificDate: "2030-05-02",
+          specificLatestAllowedDate: "2030-05-02",
           validate: {
             custom: CUSTOM_VALIDATE_DATE_PICKER_V2,
             required: true,
@@ -459,10 +459,10 @@ describe("NavDatePicker", () => {
         expect(submission.data.oppgiDatoKey).toEqual("2030-05-02");
       }, 10000);
 
-      it("considers both earliestAllowedSpecificDate and latestAllowedSpecificDate during validation",async () => {
+      it("considers both specificEarliestAllowedDate and specificLatestAllowedDate during validation",async () => {
         const form = createForm({
-          earliestAllowedSpecificDate: "2030-05-02",
-          latestAllowedSpecificDate: "2030-05-03",
+          specificEarliestAllowedDate: "2030-05-02",
+          specificLatestAllowedDate: "2030-05-03",
           validate: {
             custom: CUSTOM_VALIDATE_DATE_PICKER_V2,
             required: true,
