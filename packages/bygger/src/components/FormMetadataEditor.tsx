@@ -1,9 +1,9 @@
+import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
-import featureToggles from "../featureToggles";
 import { DisplayType, InnsendingType, NavFormType } from "../Forms/navForm";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 
@@ -22,6 +22,7 @@ export const COMPONENT_TEXTS = {
 };
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
+  const { featureToggles } = useAppConfig();
   const { mottaksadresser, ready, errorMessage: mottaksadresseError } = useMottaksadresser();
 
   const {
@@ -207,7 +208,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       </div>
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") &&
         !mottaksadresseId &&
-        featureToggles.enableEnhetsListe && (
+        featureToggles?.enableEnhetsListe && (
           <div className="margin-bottom-default">
             <Checkbox
               label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
