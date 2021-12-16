@@ -4,7 +4,7 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { fetchEnhetsListe } from "../api/fetchEnhetsliste";
+import { fetchEnhetsListe, skalHaKontaktInfo, skalVisesPaaNav } from "../api/fetchEnhetsliste";
 import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
 import ErrorPage from "../components/ErrorPage";
 import LoadingComponent from "../components/LoadingComponent";
@@ -185,6 +185,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       fetchEnhetsListe(baseUrl)
         .then((enhetsListe) =>
           enhetsListe
+            // TODO: filtrene skalHaKontaktInfo og skalVisesPaaNav er basert på appen oppdaterEnhetsinfo. Disse vil bli byttet ut når vi vet mer.
             .filter(skalHaKontaktInfo)
             .filter(skalVisesPaaNav)
             .sort((enhetA, enhetB) => enhetA.enhet.navn.localeCompare(enhetB.enhet.navn, "nb"))
