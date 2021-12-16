@@ -26,53 +26,101 @@ describe("NavDatePicker", () => {
         .mockImplementation((text, params) => mockedShowNorwegianOrTranslation(text, params));
     });
 
+    const createComponent = (beforeDateInputKey, mayBeEqual, earliestAllowedDate, latestAllowedDate) => ({
+      beforeDateInputKey,
+      mayBeEqual,
+      earliestAllowedDate,
+      latestAllowedDate,
+    })
+
     it("returns true when input is undefined", () => {
       expect(datePicker.validateDatePicker(undefined)).toBe(true);
+      expect(datePicker.validateDatePickerV2(undefined)).toBe(true);
     });
 
     it("returns error message for to and from date, when both validations fail", () => {
-      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-21" }, "fromDate", false, "10")).toBe(
-        "Datoen må være senere enn fra-dato (21.05.2030)"
+      const comp = createComponent("fromDate", false, "10", undefined);
+      const expectedValidationErrorMessage = "Datoen må være senere enn fra-dato (21.05.2030)";
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-21" }, comp.beforeDateInputKey, comp.mayBeEqual, comp.earliestAllowedDate)).toBe(
+        expectedValidationErrorMessage
+      );
+      expect(datePicker.validateDatePickerV2("2030-05-20", { fromDate: "2030-05-21" }, comp)).toBe(
+        expectedValidationErrorMessage
       );
     });
 
     it("returns error message for earliest/latest date when only earliest/latest validation fails", () => {
-      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, "fromDate", false, "10")).toBe(
-        "Datoen kan ikke være tidligere enn 25.05.2030"
+      const comp = createComponent("fromDate", false, "10");
+      const expectedValidationErrorMessage = "Datoen kan ikke være tidligere enn 25.05.2030";
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, comp.beforeDateInputKey, comp.mayBeEqual, comp.earliestAllowedDate)).toBe(
+        expectedValidationErrorMessage
+      );
+      expect(datePicker.validateDatePickerV2("2030-05-20", { fromDate: "2030-05-19" }, comp)).toBe(
+        expectedValidationErrorMessage
       );
     });
 
     it("returns error message when both earliest/latest is set to number 0", () => {
-      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, "fromDate", false, 0, 0)).toBe(
-        "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030"
+      const comp = createComponent("fromDate", false, 0, 0);
+      const expectedValidationErrorMessage = "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030";
+      expect(datePicker.validateDatePicker("2030-05-20", { fromDate: "2030-05-19" }, comp.beforeDateInputKey, comp.mayBeEqual, comp.earliestAllowedDate, comp.latestAllowedDate)).toBe(
+        expectedValidationErrorMessage
+      );
+      expect(datePicker.validateDatePickerV2("2030-05-20", { fromDate: "2030-05-19" }, comp)).toBe(
+        expectedValidationErrorMessage
       );
     });
 
     describe("Validation inside data grid", () => {
       it("fails validation for date inside data grid", () => {
+        const input = "2021-10-01";
+        const submissionData = { datagrid: [{ fraDato: "2021-10-02", tilDato: "2021-10-01" }] };
+        const expectedValidationErrorMessage = "Datoen kan ikke være tidligere enn fra-dato (02.10.2021)";
+        const comp = createComponent("datagrid.fraDato",true,undefined,undefined);
+        const row = { fraDato: "2021-10-02", tilDato: "2021-10-01" };
         expect(
           datePicker.validateDatePicker(
-            "2021-10-01",
-            { datagrid: [{ fraDato: "2021-10-02", tilDato: "2021-10-01" }] },
-            "datagrid.fraDato",
-            true,
-            undefined,
-            undefined,
-            { fraDato: "2021-10-02", tilDato: "2021-10-01" }
+            input,
+            submissionData,
+            comp.beforeDateInputKey,
+            comp.mayBeEqual,
+            comp.earliestAllowedDate,
+            comp.latestAllowedDate,
+            row
           )
-        ).toBe("Datoen kan ikke være tidligere enn fra-dato (02.10.2021)");
+        ).toBe(expectedValidationErrorMessage);
+        expect(
+          datePicker.validateDatePickerV2(
+            input,
+            submissionData,
+            comp,
+            row
+          )
+        ).toBe(expectedValidationErrorMessage);
       });
 
       it("validation ok when date is later than fromDate inside data grid", () => {
+        const input = "2021-10-03";
+        const submissionData = { datagrid: [{ fraDato: "2021-10-02", tilDato: "2021-10-03" }] };
+        const comp = createComponent("datagrid.fraDato",true,undefined,undefined);
+        const row = { fraDato: "2021-10-02", tilDato: "2021-10-03" };
         expect(
           datePicker.validateDatePicker(
-            "2021-10-03",
-            { datagrid: [{ fraDato: "2021-10-02", tilDato: "2021-10-03" }] },
-            "datagrid.fraDato",
-            true,
-            undefined,
-            undefined,
-            { fraDato: "2021-10-02", tilDato: "2021-10-03" }
+            input,
+            submissionData,
+            comp.beforeDateInputKey,
+            comp.mayBeEqual,
+            comp.earliestAllowedDate,
+            comp.latestAllowedDate,
+            row
+          )
+        ).toBe(true);
+        expect(
+          datePicker.validateDatePickerV2(
+            input,
+            submissionData,
+            comp,
+            row
           )
         ).toBe(true);
       });
@@ -295,7 +343,7 @@ describe("NavDatePicker", () => {
       ],
     });
 
-    describe("Validation of releative latestAllowedDate/earliestAllowedDate", () => {
+    describe("Validation of relative latestAllowedDate/earliestAllowedDate", () => {
 
       let submission = null;
       let onSubmit;
@@ -319,7 +367,7 @@ describe("NavDatePicker", () => {
 
       it.each(validationFunctions)
       (
-        "[$nameOfValidationFunction] considers latestAllowedDate during validation",
+        "[$nameOfValidationFunction considers latestAllowedDate during validation",
         async ({customValidation}) => {
           const form = createForm({
             latestAllowedDate: "-14",
