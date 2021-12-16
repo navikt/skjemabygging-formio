@@ -1,12 +1,12 @@
+import ecsFormat from "@elastic/ecs-morgan-format";
 import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import cors from "cors";
 import express from "express";
 import correlator from "express-correlation-id";
+import morgan from "morgan";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
-import morgan from "morgan";
-import ecsFormat from '@elastic/ecs-morgan-format';
 import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
@@ -14,8 +14,8 @@ import getDecorator from "./dekorator.js";
 import { logger } from "./logger.js";
 import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
 import { getCountries } from "./utils/countries.js";
-import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 import "./utils/errorToJson.js";
+import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
 
 const app = express();
 const skjemaApp = express();
@@ -54,13 +54,18 @@ client.collectDefaultMetrics({ register });
 
 // Logging http traffic
 const INTERNAL_PATHS = /.*\/internal\/(isAlive|isReady|metrics)/;
-app.use(morgan((token, req, res) => {
-  const logEntry = JSON.parse(ecsFormat({apmIntegration: false})(token, req, res));
-  logEntry.correlation_id = req.correlationId();
-  return JSON.stringify(logEntry);
-}, {
-  skip: (req) => INTERNAL_PATHS.test(req.url)
-}));
+app.use(
+  morgan(
+    (token, req, res) => {
+      const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
+      logEntry.correlation_id = req.correlationId();
+      return JSON.stringify(logEntry);
+    },
+    {
+      skip: (req) => INTERNAL_PATHS.test(req.url),
+    }
+  )
+);
 
 const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
@@ -105,13 +110,10 @@ skjemaApp.post("/foersteside", async (req, res) => {
     res.contentType("application/json");
     res.send(body);
   } else {
-    res
-      .contentType("application/json")
-      .status(response.status)
-      .send({
-        message: "Feil ved generering av førsteside",
-        correlation_id: req.correlationId(),
-      });
+    res.contentType("application/json").status(response.status).send({
+      message: "Feil ved generering av førsteside",
+      correlation_id: req.correlationId(),
+    });
   }
 });
 
@@ -250,7 +252,7 @@ skjemaApp.get("/api/enhetsliste", (req, res) => {
     .then((enhetsliste) => res.send(enhetsliste))
     .catch((err) => {
       console.error(JSON.stringify(err));
-      res.status(500).send({message: err.message, correlation_id: req.correlationId()});
+      res.status(500).send({ message: err.message, correlation_id: req.correlationId() });
     });
 });
 

@@ -16,23 +16,9 @@
     "build": "webpack --config webpack.config.cjs",
     "clean": "rimraf dist coverage",
     "watch": "webpack --watch --config webpack.config.cjs",
-    "test": "jest --env=jsdom",
+    "test": "jest",
     "prepare": "yarn build",
-    "test:coverage": "jest --env=jsdom --coverage"
-  },
-  "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/setupTests.js"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}"
-    ],
-    "moduleNameMapper": {
-      "nav-(.*)-style": "<rootDir>/__mocks__/styleMock.js",
-      "nav-frontend-core": "<rootDir>/__mocks__/styleMock.js",
-      "nav-datovelger": "<rootDir>/__mocks__/styleMock.js",
-      "@navikt/ds-icons": "<rootDir>/__mocks__/dsIconsMock.js"
-    }
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -41,18 +27,21 @@
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.14.0",
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.16.4",
     "@babel/preset-env": "^7.14.1",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.15.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "12.0.0",
     "@testing-library/user-event": "13.2.1",
+    "babel-jest": "^27.4.4",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.6",
     "ejs-loader": "^0.5.0",
     "i18next": "^20.3.5",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.0.4",
+    "jest-config": "^27.4.4",
     "less-loader": "^9.0.0",
     "lodash.merge": "^4.5.0",
     "power-assert": "^1.6.1",

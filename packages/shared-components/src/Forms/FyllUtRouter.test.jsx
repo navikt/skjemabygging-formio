@@ -6,6 +6,7 @@ import FyllUtRouter from "./FyllUtRouter";
 import { AppConfigProvider } from "../configContext";
 import { form, translationsForNavForm } from "./testdata/skjema-med-oversettelser";
 import { languagesInOriginalLanguage } from "../components/FyllUtLanguageSelector";
+import {setupNavFormio} from "../../test/navform-render";
 
 const mockFormPath = `/forms/${form.path}/view`;
 jest.mock("react-router-dom", () => ({
@@ -16,6 +17,9 @@ jest.mock("react-router-dom", () => ({
 const labelNorskBokmal = languagesInOriginalLanguage["nb-NO"];
 
 describe("FyllUtRouter", () => {
+
+  beforeAll(setupNavFormio);
+
   const renderFyllUtRouter = ({ form, translationsForNavForm }, enableTranslations = true) => {
     render(
       <AppConfigProvider featureToggles={{ enableTranslations }}>
@@ -46,9 +50,6 @@ describe("FyllUtRouter", () => {
 
       expect(screen.queryByRole("heading", { name: norskTittel })).toBeTruthy();
       expect(screen.queryByRole("heading", { name: engelskTittel })).toBeNull();
-
-      expect(screen.queryByText("Veiledning")).toBeTruthy();
-      expect(screen.queryByText("Guidance")).toBeNull();
 
       const velgSprakButton = screen.getByRole("button", { name: labelNorskBokmal });
       userEvent.click(velgSprakButton);

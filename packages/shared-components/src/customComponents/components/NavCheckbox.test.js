@@ -1,5 +1,6 @@
 import Harness from "../../../test/harness";
 import NavCheckbox from "./NavCheckbox";
+import {setupNavFormio} from "../../../test/navform-render";
 
 const compDef = {
   label: "Avkryssingsboks",
@@ -16,14 +17,16 @@ const compDef = {
 
 describe('NavCheckbox', () => {
 
+  beforeAll(setupNavFormio);
+
   it('Should build a checkbox component', () => {
     return Harness.testCreate(NavCheckbox, compDef).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="checkbox"]', 1);
       for (let i=0; i < inputs.length; i++) {
-        expect(inputs[i].getAttribute('class').indexOf('form-check-input') !== -1).toBeTruthy();
+        expect(inputs[i].getAttribute('class').indexOf('skjemaelement__input') !== -1).toBeTruthy();
         expect(inputs[i].name).toEqual(`data[${compDef.key}]`);
       }
-      Harness.testElements(component, 'span', 1);
+      Harness.testElements(component, 'label', 1);
     });
   });
 
