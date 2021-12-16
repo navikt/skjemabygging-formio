@@ -4,7 +4,8 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { fetchEnhetsListe, skalHaKontaktInfo, skalVisesPaaNav } from "../api/fetchEnhetsliste";
+import { fetchEnhetsListe } from "../api/fetchEnhetsliste";
+import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
 import ErrorPage from "../components/ErrorPage";
 import LoadingComponent from "../components/LoadingComponent";
 import { useAppConfig } from "../configContext";
@@ -40,14 +41,7 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
 };
 
 async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhet) {
-  const mottaksadresser = enhet
-    ? []
-    : await fetch(`${fyllutBaseURL}/mottaksadresser`).then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        return [];
-      });
+  const mottaksadresser = enhet ? [] : await fetchMottaksadresser(fyllutBaseURL);
   const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhet);
   return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",

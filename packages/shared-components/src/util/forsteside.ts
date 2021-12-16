@@ -1,5 +1,6 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { EnhetInkludertKontaktinformasjon } from "../api/Enhet";
+import { Mottaksadresse, MottaksadresseData } from "../api/Mottaksadresse";
 
 type ForstesideType = "SKJEMA" | "ETTERSENDELSE";
 
@@ -18,14 +19,6 @@ interface KjentBruker {
 
 type BrukerInfo = KjentBruker | UkjentBruker;
 
-interface MottaksAdresse {
-  adresselinje1: string;
-  adresselinje2?: string;
-  adresselinje3?: string;
-  postnummer: string;
-  poststed: string;
-}
-
 export interface ForstesideRequestBody {
   foerstesidetype: ForstesideType;
   navSkjemaId: string;
@@ -36,8 +29,7 @@ export interface ForstesideRequestBody {
   vedleggsliste: string[];
   dokumentlisteFoersteside: string[];
   netsPostboks?: string;
-  adresse?: MottaksAdresse;
-
+  adresse?: MottaksadresseData;
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;
 }
@@ -215,7 +207,11 @@ const parseLanguage = (language) => {
   }
 };
 
-function genererMottaksadresse(mottaksadresseId: string, mottaksadresser, enhet: EnhetInkludertKontaktinformasjon) {
+export function genererMottaksadresse(
+  mottaksadresseId: string | undefined,
+  mottaksadresser: Mottaksadresse[],
+  enhet?: EnhetInkludertKontaktinformasjon
+): { adresse: MottaksadresseData } | { netsPostboks: string } {
   if (mottaksadresseId) {
     const mottaksadresse = mottaksadresser.find((a) => a._id === mottaksadresseId);
     if (mottaksadresse) {
@@ -243,8 +239,8 @@ export function genererFoerstesideData(
   form,
   submission,
   language = "nb-NO",
-  mottaksadresser = [],
-  enhet
+  mottaksadresser: Mottaksadresse[] = [],
+  enhet?: EnhetInkludertKontaktinformasjon
 ): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema, mottaksadresseId },

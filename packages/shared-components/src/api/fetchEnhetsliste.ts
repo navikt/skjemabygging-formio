@@ -47,11 +47,11 @@ export const skalVisesPaaNav = (enhet: EnhetInkludertKontaktinformasjon) => {
   return enhetstypeVisesPaaNav.includes(enhet.enhet.type);
 };
 
-export async function fetchEnhetsListe(baseUrl = "") {
+export async function fetchEnhetsListe(baseUrl = ""): Promise<EnhetInkludertKontaktinformasjon[]> {
   return fetch(`${baseUrl}/api/enhetsliste`).then((response) => {
     if (response.ok) {
       return response.json();
     }
-    return Promise.resolve([]);
+    return [];
   });
 }
