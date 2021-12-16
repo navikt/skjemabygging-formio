@@ -14,9 +14,7 @@ const datoOgTidPalett = {
         validateOn: "blur",
         validate: {
           custom:
-            "valid = instance.validateDatePicker(input, data," +
-            "component.beforeDateInputKey, component.mayBeEqual, " +
-            "component.earliestAllowedDate, component.latestAllowedDate, row);",
+            "valid = instance.validateDatePickerV2(input, data, component, row);",
           required: true,
         },
       },
