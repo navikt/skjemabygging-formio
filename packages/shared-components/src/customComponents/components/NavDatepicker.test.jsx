@@ -3,7 +3,7 @@ import moment from "moment";
 import {screen, waitFor} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import NavDatePicker from "./NavDatepicker";
-import {renderNavForm, setupNavFormio} from "../../../test/navform-render";
+import {defaultPanelProps, renderNavForm, setupNavFormio} from "../../../test/navform-render";
 
 Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
 
@@ -308,14 +308,6 @@ describe("NavDatePicker", () => {
       const andreMai = await screen.findByLabelText(dato);
       userEvent.click(andreMai);
     }
-
-    const defaultPanelProps = label => ({
-      type: "panel",
-      label,
-      title: label,
-      key: label.replace(" ", "").toLowerCase(),
-      input: false,
-    });
 
     const CUSTOM_VALIDATE_DATE_PICKER_V1 = "valid = instance.validateDatePicker(input, data," +
       "component.beforeDateInputKey, component.mayBeEqual, " +

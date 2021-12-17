@@ -15,6 +15,7 @@ import component from "./component";
 import componentModal from "./componentModal";
 import components from "./components";
 import container from "./container";
+import cssClasses from "./cssClasses";
 import datagrid from "./datagrid";
 import day from "./day";
 import dialog from "./dialog";
@@ -34,7 +35,6 @@ import message from "./message";
 import multipleMasksInput from "./multipleMasksInput";
 import multiValueRow from "./multiValueRow";
 import multiValueTable from "./multiValueTable";
-import navCheckbox from "./navCheckbox";
 import navSkjemagruppe from "./navSkjemagruppe";
 import panel from "./panel";
 import pdf from "./pdf";
@@ -56,7 +56,6 @@ import well from "./well";
 import wizard from "./wizard";
 import wizardHeader from "./wizardHeader";
 import wizardNav from "./wizardNav";
-import cssClasses from "./cssClasses";
 
 export default {
   transform(type, text) {
@@ -84,7 +83,6 @@ export default {
   builderWizard,
   button,
   checkbox,
-  "checkbox-navCheckbox": navCheckbox,
   columns,
   component,
   componentModal,

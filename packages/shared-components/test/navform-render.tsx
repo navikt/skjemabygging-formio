@@ -19,7 +19,16 @@ const renderNavForm = async (props) => {
   return renderReturn;
 }
 
+const defaultPanelProps = label => ({
+  type: "panel",
+  label,
+  title: label,
+  key: label.replace(" ", "").toLowerCase(),
+  input: false,
+});
+
 export {
   setupNavFormio,
-  renderNavForm
+  renderNavForm,
+  defaultPanelProps
 }
