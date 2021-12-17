@@ -212,18 +212,32 @@ export class Pdfgen {
     ];
   }
 }
+const signatureLabelKeyRegexp = /^signature\d$/;
 
 export class PdfgenPapir extends Pdfgen {
-  newSignature(label) {
-    const signatureLabel = label ? [{ text: this.translate(label), style: "groupHeader" }, " ", " "] : [];
+
+  newSignature(signature, isFirstSignature) {
+    const signatureLines = [];
+    if (signature?.label) {
+      signatureLines.push({ text: this.translate(signature.label), style: "groupHeader" });
+      if (signature.description) {
+        signatureLines.push({ text: this.translate(signature.description) });
+      }
+      signatureLines.push(" ");
+      signatureLines.push(" ");
+    }
+    let descriptionOfSignatures;
+    if (isFirstSignature && this.form?.properties?.descriptionOfSignatures) {
+      descriptionOfSignatures = {text: this.form.properties.descriptionOfSignatures};
+    }
     return [
       " ",
-      " ",
+      descriptionOfSignatures || " ",
       " ",
       " ",
       {
         stack: [
-          ...signatureLabel,
+          ...signatureLines,
           "_____________________________________\t\t_____________________________________",
           `${this.translate("Sted og dato")}\t\t\t\t\t\t\t\t\t\t\t\t\t ${this.translate("Underskrift")}`,
         ],
@@ -232,13 +246,24 @@ export class PdfgenPapir extends Pdfgen {
     ];
   }
 
-  generateSignatures() {
-    const signatureLabels = this.form?.properties?.signatures
-      ? Object.values(this.form.properties.signatures).filter((label) => label !== "")
-      : [];
+  static extractSignatures(properties) {
+    if (properties?.signatures) {
+      const signatureLabels = Object
+        .keys(properties?.signatures)
+        .filter(key => signatureLabelKeyRegexp.test(key) && properties.signatures[key]);
+      return signatureLabels
+        .map(label => ({
+          label: properties.signatures[label],
+          description: properties.signatures[`${label}Description`],
+        }));
+    }
+    return [];
+  }
 
-    if (this.form?.properties?.hasLabeledSignatures && signatureLabels.length > 0) {
-      return signatureLabels.flatMap((label) => this.newSignature(label));
+  generateSignatures() {
+    const signatures = PdfgenPapir.extractSignatures(this.form?.properties);
+    if (this.form?.properties?.hasLabeledSignatures && signatures.length > 0) {
+      return signatures.flatMap((signature, index) => this.newSignature(signature, index === 0));
     }
     return this.newSignature();
   }
