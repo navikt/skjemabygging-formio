@@ -3,10 +3,15 @@ export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 
 
 export interface FormSignaturesType {
   signature1?: string;
+  signature1Description?: string;
   signature2?: string;
+  signature2Description?: string;
   signature3?: string;
+  signature3Description?: string;
   signature4?: string;
+  signature4Description?: string;
   signature5?: string;
+  signature5Description?: string;
 }
 
 export interface FormPropertiesType {
@@ -23,6 +28,7 @@ export interface FormPropertiesType {
   mottaksadresseId?: string;
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
+  descriptionOfSignatures?: string;
 }
 
 export interface NavFormType {
