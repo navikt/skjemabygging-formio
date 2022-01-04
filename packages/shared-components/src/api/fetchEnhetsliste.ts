@@ -1,50 +1,28 @@
 import { EnhetInkludertKontaktinformasjon, Enhetstype } from "./Enhet";
 
-const enhetsTypeWithKontaktInfo: Enhetstype[] = [
-  "AAREG",
+const enhetstypeCanBeSelectedByUser: Enhetstype[] = [
   "ALS",
   "ARK",
-  "DIR",
+  "FORVALTNING",
   "FPY",
-  "FYLKE",
   "HMS",
   "INNKREV",
-  "INTRO",
-  "KLAGE",
-  "KONTAKT",
-  "KONTROLL",
-  "LOKAL",
-  "OKONOMI",
-  "TILTAK",
-  "YTA",
-  "OPPFUTLAND",
-  "DOKSENTER",
-  "ROL",
-];
-
-const enhetstypeVisesPaaNav: Enhetstype[] = [
-  "ALS",
-  "ARK",
-  "FPY",
-  "FYLKE",
-  "HMS",
   "INTRO",
   "KLAGE",
   "KO",
   "KONTROLL",
   "LOKAL",
   "OKONOMI",
-  "TILTAK",
-  "YTA",
   "OPPFUTLAND",
+  "OTENESTE",
+  "ROL",
+  "TILTAK",
+  "UTLAND",
+  "YTA",
 ];
 
-export const skalHaKontaktInfo = (enhet: EnhetInkludertKontaktinformasjon) => {
-  return enhetsTypeWithKontaktInfo.includes(enhet.enhet.type);
-};
-
-export const skalVisesPaaNav = (enhet: EnhetInkludertKontaktinformasjon) => {
-  return enhetstypeVisesPaaNav.includes(enhet.enhet.type);
+export const canEnhetstypeBeSelected = (enhet: EnhetInkludertKontaktinformasjon) => {
+  return enhetstypeCanBeSelectedByUser.includes(enhet.enhet.type);
 };
 
 export async function fetchEnhetsListe(baseUrl = ""): Promise<EnhetInkludertKontaktinformasjon[]> {
