@@ -334,12 +334,12 @@ describe("genererMottaksAdresse", () => {
     });
   });
 
-  it("returns default netsPostboks if the provided enhet does not have postadresse", () => {
+  it("returns enhetsnummer and default netsPostboks if the provided enhet does not have postadresse", () => {
     expect(
       genererMottaksadresse(undefined, [], {
-        enhet: { navn: "NAV-enhet" },
+        enhet: { enhetNr: "123", navn: "NAV-enhet" },
       } as EnhetInkludertKontaktinformasjon)
-    ).toStrictEqual({ netsPostboks: "1400" });
+    ).toStrictEqual({ enhetsnummer: "123", netsPostboks: "1400" });
   });
 });
 

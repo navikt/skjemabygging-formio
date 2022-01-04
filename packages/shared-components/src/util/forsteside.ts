@@ -211,7 +211,7 @@ export function genererMottaksadresse(
   mottaksadresseId: string | undefined,
   mottaksadresser: Mottaksadresse[],
   enhet?: EnhetInkludertKontaktinformasjon
-): { adresse: MottaksadresseData } | { netsPostboks: string } {
+): { adresse: MottaksadresseData } | { enhetsnummer?: string; netsPostboks: string } {
   if (mottaksadresseId) {
     const mottaksadresse = mottaksadresser.find((a) => a._id === mottaksadresseId);
     if (mottaksadresse) {
@@ -230,6 +230,12 @@ export function genererMottaksadresse(
         postnummer: postadresse.postnummer,
         poststed: postadresse.poststed,
       },
+    };
+  }
+  if (enhet && enhet.enhet && enhet.enhet.enhetNr) {
+    return {
+      enhetsnummer: enhet.enhet.enhetNr,
+      netsPostboks: "1400",
     };
   }
   return { netsPostboks: "1400" };
