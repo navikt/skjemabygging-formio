@@ -17,7 +17,7 @@ const getCurrenttranslationsReducer = (state: Array<any>, action: ReducerActionT
       const newState = Object.keys(action.payload.translations).map((originalText) => ({
         id: guid(),
         originalText,
-        translatedText: action.payload.translations[originalText].value,
+        translatedText: action.payload.translations[originalText].value || "",
       }));
       if (newState.length > 0) {
         return newState;
