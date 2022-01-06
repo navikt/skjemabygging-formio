@@ -121,18 +121,18 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) =>
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
       {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
-      {vedleggSomSkalSendes.length > 0 &&
-        translate(
-          TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo
+      {vedleggSomSkalSendes.length > 0 && (
+        " ".concat(
+          translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo)
             .concat(" ")
             .concat(
               vedleggSomSkalSendes.length > 1
-                ? TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments
-                : TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment
+                ? translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments)
+                : translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment)
             )
             .concat(" ")
-            .concat(TEXTS.statiske.prepareLetterPage.sendInPapirSection)
-        )}
+            .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection))
+        ))}
     </Normaltekst>
   </section>
 );
