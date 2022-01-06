@@ -15,11 +15,11 @@
     {% for (var attr in ctx.input.attr) { %}
     {{attr}}="{{ctx.input.attr[attr]}}"
     {% } %}
-    id="{{ctx.component.key}}"
+    id="{{ctx.component.id}}-{{ctx.component.key}}"
     {% if (ctx.component.validate.required) { %}
     required="{{ctx.component.validate.required}}"
     {% } %}
-    aria-describedby="{{ ctx.component.description ? `${ctx.component.id}-${ctx.component.key}-description ` : '' }}{{ctx.component.key}}-error"
+    aria-describedby="{{ ctx.component.description ? `${ctx.component.id}-${ctx.component.key}-description ` : '' }}{{ctx.component.id}}-{{ctx.component.key}}-error"
     >{{ctx.input.content}}
 </{{ctx.input.type}}>
 {% } %}

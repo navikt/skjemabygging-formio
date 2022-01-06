@@ -22,7 +22,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
 
   return (
     <Datovelger
-      input={{ id: component.key, inputRef: inputRef }}
+      input={{ id: `${component.id}-${component.key}`, inputRef: inputRef }}
       id={component.id}
       valgtDato={dato}
       onChange={(d) => {
@@ -95,9 +95,9 @@ export default class NavDatepicker extends FormioReactComponent {
       }
       return inputDate.isBefore(earliestAllowedDate, "d") || inputDate.isAfter(latestAllowedDate, "d")
         ? `${this.showNorwegianOrTranslation("dateInBetween", {
-          minDate: earliestAllowedDateAsString,
-          maxDate: latestAllowedDateAsString,
-        })}`
+            minDate: earliestAllowedDateAsString,
+            maxDate: latestAllowedDateAsString,
+          })}`
         : true;
     }
 
@@ -152,12 +152,7 @@ export default class NavDatepicker extends FormioReactComponent {
     return true;
   }
 
-  validateDatePickerV2(
-    input,
-    submissionData,
-    component,
-    row,
-  ) {
+  validateDatePickerV2(input, submissionData, component, row) {
     if (!input) {
       return true;
     }
@@ -172,10 +167,7 @@ export default class NavDatepicker extends FormioReactComponent {
       row
     );
     if (result === true) {
-      const {
-        specificEarliestAllowedDate,
-        specificLatestAllowedDate
-      } = component;
+      const { specificEarliestAllowedDate, specificLatestAllowedDate } = component;
 
       const earliest = specificEarliestAllowedDate ? moment(specificEarliestAllowedDate) : undefined;
       const latest = specificLatestAllowedDate ? moment(specificLatestAllowedDate) : undefined;
