@@ -1,4 +1,4 @@
-<label class="skjemaelement__label {{ctx.label.className}}" for="{{ctx.component.key}}" id="{{ctx.component.key}}-label">
+<label class="skjemaelement__label {{ctx.label.className}}" for="{{ctx.component.id}}-{{ctx.component.key}}" id="{{ctx.component.id}}-{{ctx.component.key}}-label">
   {{ ctx.t(ctx.component.label) }}
   {% if(ctx.component.validate.required === false) { %}
     ({{ctx.t("valgfritt")}})

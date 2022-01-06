@@ -1,4 +1,4 @@
-<fieldset class="skjemagruppe radiogruppe" aria-labelledby="{{ctx.component.key}}-label" aria-describedby="{{ctx.component.key}}-error {% if (ctx.component.description) { %}{{ctx.component.id}}-{{ctx.component.key}}-description{% } %}">
+<fieldset class="skjemagruppe radiogruppe" aria-labelledby="{{ctx.component.id}}-{{ctx.component.key}}-label" aria-describedby="{{ctx.component.id}}-{{ctx.component.key}}-error {% if (ctx.component.description) { %}{{ctx.component.id}}-{{ctx.component.key}}-description{% } %}">
   <legend class="skjemagruppe__legend">
     {{ctx.t(ctx.component.label)}}
     {% if(ctx.component.validate.required === false) { %}
