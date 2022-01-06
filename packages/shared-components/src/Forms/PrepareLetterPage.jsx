@@ -14,18 +14,17 @@ import DownloadPdfButton from "./DownloadPdfButton";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
-  const attachmentSectionTitle = translate(
-    TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo
+  const attachmentSectionTitle =
+    translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
       .concat(" ")
       .concat(
         skalSendeFlereVedlegg
-          ? TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments
-          : TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment
-      )
-  );
+          ? translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments)
+          : translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment)
+      );
   return (
-    <section className="wizard-page" aria-label={`${index}.${attachmentSectionTitle}`}>
-      <Systemtittel className="margin-bottom-default">{`${index}.${attachmentSectionTitle}`}</Systemtittel>
+    <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>
+      <Systemtittel className="margin-bottom-default">{`${index}. ${attachmentSectionTitle}`}</Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
           <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
