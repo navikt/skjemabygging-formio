@@ -14,18 +14,17 @@ import DownloadPdfButton from "./DownloadPdfButton";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
-  const attachmentSectionTitle = translate(
-    TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo
+  const attachmentSectionTitle =
+    translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
       .concat(" ")
       .concat(
         skalSendeFlereVedlegg
-          ? TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments
-          : TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment
-      )
-  );
+          ? translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments)
+          : translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment)
+      );
   return (
-    <section className="wizard-page" aria-label={`${index}.${attachmentSectionTitle}`}>
-      <Systemtittel className="margin-bottom-default">{`${index}.${attachmentSectionTitle}`}</Systemtittel>
+    <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>
+      <Systemtittel className="margin-bottom-default">{`${index}. ${attachmentSectionTitle}`}</Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
           <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
@@ -121,18 +120,18 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) =>
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
       {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
-      {vedleggSomSkalSendes.length > 0 &&
-        translate(
-          TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo
+      {vedleggSomSkalSendes.length > 0 && (
+        " ".concat(
+          translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo)
             .concat(" ")
             .concat(
               vedleggSomSkalSendes.length > 1
-                ? TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments
-                : TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment
+                ? translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments)
+                : translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment)
             )
             .concat(" ")
-            .concat(TEXTS.statiske.prepareLetterPage.sendInPapirSection)
-        )}
+            .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection))
+        ))}
     </Normaltekst>
   </section>
 );
