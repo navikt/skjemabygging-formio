@@ -616,7 +616,6 @@ describe("generating doc definition", () => {
     });
 
     describe("Form with signature description", () => {
-
       const submission = { data: {}, metadata: {} };
       const form = {
         title: "Labeled signatures with description",
@@ -651,11 +650,9 @@ describe("generating doc definition", () => {
         const descriptionOfSignatures = doc_definition.content[4];
         expect(descriptionOfSignatures.text).toEqual("Her står det litt om hvorfor man signerer");
       });
-
-    })
+    });
 
     describe("static extractSignatureLabels", () => {
-
       it("group signature labels and descriptions correctly", () => {
         const props = {
           signatures: {
@@ -665,18 +662,17 @@ describe("generating doc definition", () => {
             signature3: "Mor",
             signature4: "Bror",
             signature5: "Bestemor",
-          }
-        }
+          },
+        };
         const signatureLabels = PdfgenPapir.extractSignatures(props);
         expect(signatureLabels).toEqual([
-          {label: "Søker"},
-          {label: "Lege", description: "Her står det hvorfor legen skal signere"},
-          {label: "Mor"},
-          {label: "Bror"},
-          {label: "Bestemor"},
+          { label: "Søker" },
+          { label: "Lege", description: "Her står det hvorfor legen skal signere" },
+          { label: "Mor" },
+          { label: "Bror" },
+          { label: "Bestemor" },
         ]);
       });
-
     });
   });
 });

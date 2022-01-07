@@ -1,8 +1,11 @@
+import { EnhetInkludertKontaktinformasjon } from "../api/Enhet";
+import { Mottaksadresse } from "../api/Mottaksadresse";
 import {
   ForstesideRequestBody,
   genererAdresse,
   genererDokumentlisteFoersteside,
   genererFoerstesideData,
+  genererMottaksadresse,
   genererPersonalia,
   genererSkjemaTittel,
   genererVedleggKeysSomSkalSendes,
@@ -55,7 +58,9 @@ describe("genererPersonalia", () => {
   });
 
   it("throws error is both fodselsNummer and address is missing", () => {
-    expect(() => genererPersonalia(undefined,undefined)).toThrowError("User needs to submit either fodselsNummer or address");
+    expect(() => genererPersonalia(undefined, undefined)).toThrowError(
+      "User needs to submit either fodselsNummer or address"
+    );
   });
 });
 
@@ -245,16 +250,108 @@ describe("genererAdresse", () => {
   });
 });
 
-describe("genererFoerstesideData", () => {
+describe("genererMottaksAdresse", () => {
+  it("returns default netsPostboks if neither mottaksadresseId or enhet is provided", () => {
+    expect(genererMottaksadresse(undefined, [])).toStrictEqual({ netsPostboks: "1400" });
+  });
 
+  it("finds and returns the correct mottaksadresse when mottaksadresseId and mottaksadresser is provided", () => {
+    expect(
+      genererMottaksadresse("002", [
+        { _id: "001", data: { adresselinje1: "Gate 1", postnummer: "0001", poststed: "By" } },
+        {
+          _id: "002",
+          data: {
+            adresselinje1: "Gate 2",
+            adresselinje2: "postboks 2",
+            adresselinje3: "c/o",
+            postnummer: "0002",
+            poststed: "By",
+          },
+        },
+        { _id: "003", data: { adresselinje1: "Gate 3", postnummer: "0003", poststed: "By" } },
+      ] as Mottaksadresse[])
+    ).toStrictEqual({
+      adresse: {
+        adresselinje1: "Gate 2",
+        adresselinje2: "postboks 2",
+        adresselinje3: "c/o",
+        postnummer: "0002",
+        poststed: "By",
+      },
+    });
+  });
+
+  it("returns default netsPostboks if mottaksadresseId doesn't match any of the provided mottaksadresse", () => {
+    expect(
+      genererMottaksadresse("123", [
+        { _id: "001", data: { adresselinje1: "Gate 1", postnummer: "0001", poststed: "By" } },
+      ] as Mottaksadresse[])
+    ).toStrictEqual({ netsPostboks: "1400" });
+  });
+
+  it("returns postboksadresse for the provided enhet", () => {
+    expect(
+      genererMottaksadresse(undefined, [], {
+        enhet: { navn: "NAV-enhet" },
+        kontaktinformasjon: {
+          postadresse: {
+            postboksanlegg: "anlegg 1",
+            postboksnummer: "99",
+            postnummer: "0001",
+            poststed: "By",
+            type: "postboksadresse",
+          },
+        },
+      } as EnhetInkludertKontaktinformasjon)
+    ).toStrictEqual({
+      adresse: {
+        adresselinje1: "NAV-enhet",
+        adresselinje2: "Postboks 99 anlegg 1",
+        postnummer: "0001",
+        poststed: "By",
+      },
+    });
+  });
+
+  it("returns stedsadresse for the provided enhet", () => {
+    expect(
+      genererMottaksadresse(undefined, [], {
+        enhet: { navn: "NAV-enhet" },
+        kontaktinformasjon: {
+          postadresse: {
+            gatenavn: "Kirkegateveien",
+            husnummer: "33",
+            husbokstav: "H",
+            postnummer: "0001",
+            poststed: "By",
+            type: "stedsadresse",
+          },
+        },
+      } as EnhetInkludertKontaktinformasjon)
+    ).toStrictEqual({
+      adresse: { adresselinje1: "NAV-enhet", adresselinje2: "Kirkegateveien 33 H", postnummer: "0001", poststed: "By" },
+    });
+  });
+
+  it("returns enhetsnummer and default netsPostboks if the provided enhet does not have postadresse", () => {
+    expect(
+      genererMottaksadresse(undefined, [], {
+        enhet: { enhetNr: "123", navn: "NAV-enhet" },
+      } as EnhetInkludertKontaktinformasjon)
+    ).toStrictEqual({ enhetsnummer: "123", netsPostboks: "1400" });
+  });
+});
+
+describe("genererFoerstesideData", () => {
   const defaultForm = {
     title: "Testskjema",
     properties: {
       skjemanummer: "WIP 12.34-56",
-      tema: "BIL"
+      tema: "BIL",
     },
-    components: []
-  }
+    components: [],
+  };
 
   it("correctly generates foersteside data", () => {
     const actual = genererFoerstesideData(
@@ -297,8 +394,7 @@ describe("genererFoerstesideData", () => {
   });
 
   describe("Språkkode", () => {
-
-    const defaultForm = {properties: {skjemanummer: "TST 10.11-12"}, components: []};
+    const defaultForm = { properties: { skjemanummer: "TST 10.11-12" }, components: [] };
     const defaultSubmission = {};
 
     it("Bokmål brukes dersom språk ikke er valgt", () => {
@@ -325,13 +421,10 @@ describe("genererFoerstesideData", () => {
       const forstesideRequest = genererFoerstesideData(defaultForm, defaultSubmission, "pl");
       expect(forstesideRequest.spraakkode).toEqual("EN");
     });
-
   });
 
-  describe('Bruker uten fødselsnummer', () => {
-
-    describe('med norsk vegadresse', () => {
-
+  describe("Bruker uten fødselsnummer", () => {
+    describe("med norsk vegadresse", () => {
       const navnPostnrPoststed = {
         fornavnSoker: "Solan",
         etternavnSoker: "Gundersen",
@@ -344,11 +437,10 @@ describe("genererFoerstesideData", () => {
       it("henter gate og husnummer fra gateadresseSoker", () => {
         const submission = {
           ...navnPostnrPoststed,
-          gateadresseSoker: "Flåklypatoppen 1"
-        }
+          gateadresseSoker: "Flåklypatoppen 1",
+        };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.");
       });
 
       it("henter gate og husnummer fra vegadresseSoker", () => {
@@ -360,8 +452,7 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual("Solan Gundersen, Flåklypatoppen 1, 3520 Jevnaker, Norge.");
       });
 
       it("legger til c/o-adressering", () => {
@@ -374,14 +465,13 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+          "Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge."
+        );
       });
-
     });
 
-    describe('med norsk postboksadresse', () => {
-
+    describe("med norsk postboksadresse", () => {
       it("Tar med navn på eier av postboksen", () => {
         const submission = {
           fornavnSoker: "Solan",
@@ -391,11 +481,12 @@ describe("genererFoerstesideData", () => {
             postboksNrSoker: "55 Toppen",
             postnrSoker: "3520",
             poststedSoker: "Jevnaker",
-          }
+          },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+          "Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge."
+        );
       });
 
       it("Tar hensyn til at det er valgfritt å oppgi eier på postboks", () => {
@@ -410,20 +501,16 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, Postboks 55 Toppen, 3520 Jevnaker, Norge.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual("Solan Gundersen, Postboks 55 Toppen, 3520 Jevnaker, Norge.");
       });
-
     });
 
-    describe('med utenlandsk adresse', () => {
-
+    describe("med utenlandsk adresse", () => {
       it("Formatteres korrekt", () => {
         const submission = {
           fornavnSoker: "Solan",
           etternavnSoker: "Gundersen",
           utenlandskAdresse: {
-
             coSoker: undefined,
             postboksNrSoker: "12603 Denmark Drive",
             bygningSoker: "Apt.556",
@@ -431,11 +518,12 @@ describe("genererFoerstesideData", () => {
             poststedSoker: "Herndon",
             regionSoker: undefined,
             landSoker: "USA",
-          }
+          },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+          "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA."
+        );
       });
 
       it("Formatteres korrekt med c/o-adressering", () => {
@@ -453,8 +541,9 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+          "Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA."
+        );
       });
 
       it("Formatteres korrekt med region", () => {
@@ -472,12 +561,10 @@ describe("genererFoerstesideData", () => {
           },
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
-        expect(forsteside.ukjentBrukerPersoninfo)
-          .toEqual("Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA.")
+        expect(forsteside.ukjentBrukerPersoninfo).toEqual(
+          "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA."
+        );
       });
-
     });
-
   });
-
 });

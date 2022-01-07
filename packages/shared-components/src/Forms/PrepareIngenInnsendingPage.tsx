@@ -1,13 +1,13 @@
+import { styled } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { styled } from "@material-ui/styles";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import { scrollToAndSetFocus } from "../util/focus-management";
-import { useAmplitude } from "../context/amplitude";
 import { useAppConfig } from "../configContext";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import DownloadPdfButton from "./DownloadPdfButton";
+import { scrollToAndSetFocus } from "../util/focus-management";
+import DownloadPdfButton from "./components/DownloadPdfButton";
 
 export interface Props {
   form: any;

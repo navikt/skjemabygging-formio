@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import PropTypes from "prop-types";
 import { styled } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
 import { BekreftCheckboksPanel } from "nav-frontend-skjema";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import { scrollToAndSetFocus } from "../util/focus-management";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
-import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
-import DownloadPdfButton from "./DownloadPdfButton";
+import { scrollToAndSetFocus } from "../util/focus-management";
+import { genererVedleggKeysSomSkalSendes } from "../util/forsteside";
+import DownloadPdfButton from "./components/DownloadPdfButton";
 
 export const computeDokumentinnsendingURL = (dokumentinnsendingBaseURL, form, submissionData) => {
   let url = `${dokumentinnsendingBaseURL}/opprettSoknadResource?skjemanummer=${encodeURIComponent(

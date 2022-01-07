@@ -1,16 +1,21 @@
+import { styled } from "@material-ui/styles";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { styled } from "@material-ui/styles";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import { scrollToAndSetFocus } from "../util/focus-management";
-import PropTypes from "prop-types";
+import { canEnhetstypeBeSelected, fetchEnhetsListe } from "../api/fetchEnhetsliste";
+import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
+import ErrorPage from "../components/ErrorPage";
+import LoadingComponent from "../components/LoadingComponent";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
+import { useLanguages } from "../context/languages";
+import { scrollToAndSetFocus } from "../util/focus-management";
 import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/forsteside";
 import { lastNedFilBase64 } from "../util/pdf";
-import { useAppConfig } from "../configContext";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useLanguages } from "../context/languages";
-import DownloadPdfButton from "./DownloadPdfButton";
+import DownloadPdfButton from "./components/DownloadPdfButton";
+import EnhetSelector from "./components/EnhetSelector";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -34,18 +39,13 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
-  const mottaksadresser = await fetch(`${fyllutBaseURL}/mottaksadresser`)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      return [];
-    });
+async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhet) {
+  const mottaksadresser = enhet ? [] : await fetchMottaksadresser(fyllutBaseURL);
+  const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhet);
   return fetch(`${fyllutBaseURL}/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(genererFoerstesideData(form, submission.data, language, mottaksadresser)),
+    body: JSON.stringify(body),
   })
     .then((response) => {
       if (response.ok) {
@@ -62,7 +62,9 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language) {
     .catch((e) => console.log("Failed to download foersteside", e));
 }
 
-const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translate, translations }) => {
+const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBaseURL, translate, translations }) => {
+  const [selectedEnhet, setSelectedEnhet] = useState(undefined);
+  const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
@@ -73,6 +75,7 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
       loggSkjemaFullfort("papirinnsending");
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
+
   return (
     <section
       className="wizard-page"
@@ -84,13 +87,25 @@ const LastNedSoknadSection = ({ form, index, submission, fyllutBaseURL, translat
       <Normaltekst className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
+      <EnhetSelector
+        enhetsListe={enhetsListe}
+        onSelectEnhet={(enhet) => {
+          setSelectedEnhet(enhet);
+          setIsRequiredEnhetMissing(false);
+        }}
+        error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
+      />
       <div className="margin-bottom-default">
         <button
           className="knapp knapp--fullbredde"
           onClick={() => {
-            lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage)
-              .then(() => setHasDownloadedFoersteside(true))
-              .catch(() => loggSkjemaInnsendingFeilet());
+            if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhet) {
+              setIsRequiredEnhetMissing(true);
+            } else {
+              lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
+                .then(() => setHasDownloadedFoersteside(true))
+                .catch(() => loggSkjemaInnsendingFeilet());
+            }
           }}
           type="button"
         >
@@ -152,15 +167,37 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
 
 export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  const { fyllutBaseURL } = useAppConfig();
+  const { fyllutBaseURL, baseUrl } = useAppConfig();
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
+  const [enhetsListe, setEnhetsListe] = useState(undefined);
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
     else setGoBackURL(state.previousPage);
   }, [state, formUrl]);
+
+  const { enhetMaVelgesVedPapirInnsending } = form.properties;
+  useEffect(() => {
+    if (enhetMaVelgesVedPapirInnsending) {
+      fetchEnhetsListe(baseUrl)
+        .then((enhetsListe) =>
+          enhetsListe
+            .filter(canEnhetstypeBeSelected)
+            .sort((enhetA, enhetB) => enhetA.enhet.navn.localeCompare(enhetB.enhet.navn, "nb"))
+        )
+        .then(setEnhetsListe);
+    }
+  }, [baseUrl, enhetMaVelgesVedPapirInnsending]);
+
+  if (enhetMaVelgesVedPapirInnsending && enhetsListe === undefined) {
+    return <LoadingComponent />;
+  }
+
+  if (enhetMaVelgesVedPapirInnsending && enhetsListe.length === 0) {
+    return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityFetchError)} />;
+  }
 
   const sections = [];
   const vedleggSomSkalSendes = getVedleggsFelterSomSkalSendes(submission.data, form);
@@ -169,6 +206,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       key="last-ned-soknad"
       form={form}
       submission={submission}
+      enhetsListe={enhetsListe}
       fyllutBaseURL={fyllutBaseURL}
       translate={translate}
       translations={translations}

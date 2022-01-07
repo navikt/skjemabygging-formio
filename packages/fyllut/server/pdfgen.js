@@ -215,7 +215,6 @@ export class Pdfgen {
 const signatureLabelKeyRegexp = /^signature\d$/;
 
 export class PdfgenPapir extends Pdfgen {
-
   newSignature(signature, isFirstSignature) {
     const signatureLines = [];
     if (signature?.label) {
@@ -228,7 +227,7 @@ export class PdfgenPapir extends Pdfgen {
     }
     let descriptionOfSignatures;
     if (isFirstSignature && this.form?.properties?.descriptionOfSignatures) {
-      descriptionOfSignatures = {text: this.form.properties.descriptionOfSignatures};
+      descriptionOfSignatures = { text: this.form.properties.descriptionOfSignatures };
     }
     return [
       " ",
@@ -248,14 +247,13 @@ export class PdfgenPapir extends Pdfgen {
 
   static extractSignatures(properties) {
     if (properties?.signatures) {
-      const signatureLabels = Object
-        .keys(properties?.signatures)
-        .filter(key => signatureLabelKeyRegexp.test(key) && properties.signatures[key]);
-      return signatureLabels
-        .map(label => ({
-          label: properties.signatures[label],
-          description: properties.signatures[`${label}Description`],
-        }));
+      const signatureLabels = Object.keys(properties?.signatures).filter(
+        (key) => signatureLabelKeyRegexp.test(key) && properties.signatures[key]
+      );
+      return signatureLabels.map((label) => ({
+        label: properties.signatures[label],
+        description: properties.signatures[`${label}Description`],
+      }));
     }
     return [];
   }
