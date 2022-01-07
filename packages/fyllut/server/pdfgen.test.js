@@ -614,5 +614,65 @@ describe("generating doc definition", () => {
         });
       });
     });
+
+    describe("Form with signature description", () => {
+      const submission = { data: {}, metadata: {} };
+      const form = {
+        title: "Labeled signatures with description",
+        components: [],
+        properties: {
+          hasLabeledSignatures: true,
+          descriptionOfSignatures: "Her står det litt om hvorfor man signerer",
+          signatures: {
+            signature1: "Pensjonisten",
+            signature2: "Lege",
+            signature2Description: "Jeg bekrefter at personen er i live",
+          },
+        },
+      };
+
+      it("renders description below signature label", () => {
+        const generator = new PdfgenPapir(submission, form, "", now(), undefined);
+        const doc_definition = generator.generateDocDefinition();
+
+        const signature1 = doc_definition.content[7];
+        const signature2 = doc_definition.content[12];
+
+        expect(signature1.stack[0].text).toEqual("Pensjonisten");
+        expect(signature1.stack[1].text).toBeUndefined();
+        expect(signature2.stack[0].text).toEqual("Lege");
+        expect(signature2.stack[1].text).toEqual("Jeg bekrefter at personen er i live");
+      });
+
+      it("renders description for signatures above signatures section", () => {
+        const generator = new PdfgenPapir(submission, form, "", now(), undefined);
+        const doc_definition = generator.generateDocDefinition();
+        const descriptionOfSignatures = doc_definition.content[4];
+        expect(descriptionOfSignatures.text).toEqual("Her står det litt om hvorfor man signerer");
+      });
+    });
+
+    describe("static extractSignatureLabels", () => {
+      it("group signature labels and descriptions correctly", () => {
+        const props = {
+          signatures: {
+            signature1: "Søker",
+            signature2: "Lege",
+            signature2Description: "Her står det hvorfor legen skal signere",
+            signature3: "Mor",
+            signature4: "Bror",
+            signature5: "Bestemor",
+          },
+        };
+        const signatureLabels = PdfgenPapir.extractSignatures(props);
+        expect(signatureLabels).toEqual([
+          { label: "Søker" },
+          { label: "Lege", description: "Her står det hvorfor legen skal signere" },
+          { label: "Mor" },
+          { label: "Bror" },
+          { label: "Bestemor" },
+        ]);
+      });
+    });
   });
 });

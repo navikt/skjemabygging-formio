@@ -1,20 +1,20 @@
 <div class="skjemaelement form-check checkbox">
   <{{ctx.input.type}}
   ref="input"
-  id="{{ctx.component.key}}"
+  id="{{ctx.instance.id}}-{{ctx.component.key}}"
   class="skjemaelement__input checkboks"
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
-  {% if (ctx.checked) { %}checked=true{% } %}>
-  {{ctx.input.content}}
-</{{ctx.input.type}}>
-{% if (!ctx.self.labelIsHidden()) { %}
-<label class="skjemaelement__label" for="{{ctx.component.key}}">
-  {{ctx.input.label}}
-  {% if(ctx.component.validate.required === false) { %}
+  aria-describedby="{{ctx.component.id}}-{{ctx.component.key}}-error {{ctx.component.id}}-{{ctx.component.key}}-description"
+  {% if (ctx.checked) { %}checked=true{% } %}
+  />
+  {% if (!ctx.self.labelIsHidden()) { %}
+  <label class="skjemaelement__label" for="{{ctx.instance.id}}-{{ctx.component.key}}">
+    {{ctx.t(ctx.input.label)}}
+    {% if(ctx.component.validate.required === false) { %}
     ({{ctx.t("valgfritt")}})
+    {% } %}
+  </label>
   {% } %}
-</label>
-{% } %}
 </div>

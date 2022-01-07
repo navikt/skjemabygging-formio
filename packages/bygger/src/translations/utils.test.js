@@ -372,6 +372,33 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Last ned pdf", type: "text" },
     ]);
   });
+  it("Henter signatur-relaterte tekster fra form properties", () => {
+    const actual = getFormTexts(
+      {
+        components: [],
+        type: "form",
+        title: "Testskjema",
+        properties: {
+          skjemanummer: "TST 12.13-14",
+          innsending: "KUN_PAPIR",
+          descriptionOfSignatures: "En lengre beskrivelse av hva man signerer på",
+          signatures: {
+            signature1: "Arbeidstaker",
+            signature2: "Lege",
+            signature2Description: "Jeg bekrefter at arbeidstaker er syk"
+          },
+        },
+      },
+      true
+    );
+    expect(actual).toEqual([
+      { text: "Testskjema", type: "text" },
+      { text: "En lengre beskrivelse av hva man signerer på", type: "text" },
+      { text: "Arbeidstaker", type: "text" },
+      { text: "Lege", type: "text" },
+      { text: "Jeg bekrefter at arbeidstaker er syk", type: "text" },
+    ]);
+  });
 });
 
 describe("test get all texts", () => {

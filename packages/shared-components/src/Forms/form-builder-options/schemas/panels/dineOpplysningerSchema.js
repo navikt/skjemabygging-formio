@@ -61,7 +61,7 @@ const dineOpplysningerSchema = {
       validate: {
         required: true,
         custom:
-          "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+          "valid = instance.validateDatePickerV2(input, data, component, row);",
       },
       conditional: {
         show: true,
@@ -163,7 +163,7 @@ const dineOpplysningerSchema = {
           validate: {
             required: true,
             custom:
-              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+              "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
         {
@@ -182,7 +182,7 @@ const dineOpplysningerSchema = {
           validateOn: "blur",
           validate: {
             custom:
-              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+              "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
       ],
@@ -214,7 +214,7 @@ const dineOpplysningerSchema = {
           validate: {
             required: true,
             custom:
-              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+              "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
         {
@@ -226,7 +226,7 @@ const dineOpplysningerSchema = {
           mayBeEqual: false,
           validate: {
             custom:
-              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+              "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
           validateOn: "blur",
           key: "gyldigTilDatoDdMmAaaa2",
@@ -265,7 +265,7 @@ const dineOpplysningerSchema = {
           validate: {
             required: true,
             custom:
-              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+              "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
         {
@@ -284,7 +284,7 @@ const dineOpplysningerSchema = {
           validate: {
             required: true,
             custom:
-              "valid = instance.validateDatePicker(input, data,component.beforeDateInputKey, component.mayBeEqual, component.earliestAllowedDate, component.latestAllowedDate, row);",
+              "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
       ],

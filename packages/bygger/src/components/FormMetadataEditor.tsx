@@ -6,6 +6,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { DisplayType, InnsendingType, NavFormType } from "../Forms/navForm";
 import useMottaksadresser from "../hooks/useMottaksadresser";
+import {Undertittel} from "nav-frontend-typografi";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = "create" | "edit";
@@ -41,6 +42,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       enhetMaVelgesVedPapirInnsending,
       hasLabeledSignatures,
       signatures,
+      descriptionOfSignatures,
     },
   } = form;
   const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
@@ -224,7 +226,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         )}
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
-        checked={!!hasLabeledSignatures}
+        checked={hasLabeledSignatures}
         onChange={(event) => {
           if (event.target.checked) {
             onChange({ ...form, properties: { ...form.properties, hasLabeledSignatures: !hasLabeledSignatures } });
@@ -234,33 +236,58 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
               properties: {
                 ...form.properties,
                 hasLabeledSignatures: !hasLabeledSignatures,
-                signatures: {
-                  ...Object.keys(signatures || {}).reduce((emptySignatures: {}, signature: string) => {
-                    return { ...emptySignatures, [signature]: "" };
-                  }, {}),
-                },
+                descriptionOfSignatures: undefined,
+                signatures: undefined,
               },
             });
           }
         }}
       />
       {hasLabeledSignatures &&
-        ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
+        <Textarea
+          label="Beskrivelse for alle signaturer (valgfritt)"
+          value={descriptionOfSignatures || ""}
+          maxLength={0}
+          onChange={(event) =>
+            onChange({
+              ...form,
+              properties: {...form.properties, descriptionOfSignatures: event.target.value},
+            })
+          }
+        />
+      }
+      {hasLabeledSignatures &&
+      ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
+        <SkjemaGruppe key={signatureKey} legend={<Undertittel>Signeres av</Undertittel>}>
           <Input
-            label="Signeres av"
             type="text"
-            key={signatureKey}
-            id={signatureKey}
+            label="Hvem"
             placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
+            id={signatureKey}
             value={signatures ? signatures[signatureKey] : ""}
             onChange={(event) =>
               onChange({
                 ...form,
-                properties: { ...form.properties, signatures: { ...signatures, [signatureKey]: event.target.value } },
+                properties: {...form.properties, signatures: {...signatures, [signatureKey]: event.target.value}},
               })
             }
           />
-        ))}
+          <Input
+            label="Beskrivelse (valgfritt)"
+            placeholder="Beskrivelse av hvorfor man signerer"
+            type="text"
+            id={`${signatureKey}Description`}
+            data-testid={`${signatureKey}Description`}
+            value={signatures ? signatures[`${signatureKey}Description`] : ""}
+            onChange={(event) =>
+              onChange({
+                ...form,
+                properties: {...form.properties, signatures: {...signatures, [`${signatureKey}Description`]: event.target.value}},
+              })
+            }
+          />
+        </SkjemaGruppe>
+      ))}
     </SkjemaGruppe>
   );
 };
