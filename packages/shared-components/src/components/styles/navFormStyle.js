@@ -69,6 +69,10 @@ const styles = {
   "& .inputPanel__label": {
     display: "inline-block",
   },
+
+  "& textarea": {
+    minHeight: "5.5em",
+  },
 };
 
 const navFormStyle = merge(
@@ -77,6 +81,6 @@ const navFormStyle = merge(
   fieldsSideBySideStyles,
   allFieldsStyles,
   dataGridStyles,
-  errorValidationStyles,
+  errorValidationStyles
 );
 export default navFormStyle;
