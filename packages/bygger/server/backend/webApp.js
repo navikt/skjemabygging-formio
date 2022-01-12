@@ -65,9 +65,8 @@ export function dispatcherWithBackend(backend) {
     },
     "/migrate": {
       GET: async (req, res) => {
-        console.log(JSON.parse(req.query["searchFilters"]));
-        const searchFilters = JSON.parse(req.query["searchFilters"]);
-        const editOptions = JSON.parse(req.query["editOptions"]);
+        const searchFilters = JSON.parse(req.query["searchFilters"] || "{}");
+        const editOptions = JSON.parse(req.query["editOptions"] || "{}");
         try {
           migrateForms(searchFilters, editOptions).then((migratedForms) => res.send(migratedForms));
         } catch (error) {

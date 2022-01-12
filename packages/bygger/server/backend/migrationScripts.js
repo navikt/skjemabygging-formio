@@ -1,3 +1,4 @@
+import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "./fetchUtils.js";
 
 function componentMatchesSearchFilters(component, searchFilters) {
@@ -29,6 +30,19 @@ function migrateForm(form, searchFilters, script) {
   };
 }
 
+function getEditScript(editOptions) {
+  const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
+    editOptionKey.split(".").reduceRight((acc, currentValue) => {
+      return { [currentValue]: acc };
+    }, editOptionValue)
+  );
+  const mergedEditOptionObject = editOptionObjects.reduce(objectUtils.deepMerge, {});
+
+  return (comp) => {
+    return objectUtils.deepMerge(comp, mergedEditOptionObject);
+  };
+}
+
 async function fetchForms(url) {
   return await fetchWithErrorHandling(url, {
     method: "GET",
@@ -40,14 +54,9 @@ async function migrateForms(
   editOptions,
   url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=10&properties.tema__ne=xxx"
 ) {
-  return fetchForms(url).then((response) =>
-    response.data.map((form) =>
-      migrateForm(form, searchFilters, (comp) => ({
-        ...comp,
-        validate: { custom: "valid = instance.something(input)", required: true },
-      }))
-    )
-  );
+  return fetchForms(url).then((response) => {
+    return response.data.map((form) => migrateForm(form, searchFilters, getEditScript(editOptions)));
+  });
 }
 
-export { migrateForm, migrateForms };
+export { migrateForm, migrateForms, getEditScript };
