@@ -1,5 +1,6 @@
 import dispatch from "dispatch";
 import { HttpError } from "./fetchUtils.js";
+import { migrateForms } from "./migrationScripts.js";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];
 export const isValidResource = (resourceName) => {
@@ -57,6 +58,18 @@ export function dispatcherWithBackend(backend) {
         try {
           const enhetsListe = await backend.fetchEnhetsliste();
           res.send(enhetsListe);
+        } catch (error) {
+          handleError(error, res);
+        }
+      },
+    },
+    "/migrate": {
+      GET: async (req, res) => {
+        console.log(JSON.parse(req.query["searchFilters"]));
+        const searchFilters = JSON.parse(req.query["searchFilters"]);
+        const editOptions = JSON.parse(req.query["editOptions"]);
+        try {
+          migrateForms(searchFilters, editOptions).then((migratedForms) => res.send(migratedForms));
         } catch (error) {
           handleError(error, res);
         }
