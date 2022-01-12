@@ -30,7 +30,7 @@ function migrateForm(form, searchFilters, script) {
   };
 }
 
-function getEditScript(editOptions) {
+function getEditScript(editOptions, logger) {
   const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
     editOptionKey.split(".").reduceRight((acc, currentValue) => {
       return { [currentValue]: acc };
@@ -39,7 +39,10 @@ function getEditScript(editOptions) {
   const mergedEditOptionObject = editOptionObjects.reduce(objectUtils.deepMerge, {});
 
   return (comp) => {
-    return objectUtils.deepMerge(comp, mergedEditOptionObject);
+    const editedComp = objectUtils.deepMerge(comp, mergedEditOptionObject);
+    const changed = JSON.stringify(comp) !== JSON.stringify(editedComp);
+    logger.push({ key: comp.key, original: comp, new: editedComp, changed });
+    return editedComp;
   };
 }
 
@@ -52,10 +55,21 @@ async function fetchForms(url) {
 async function migrateForms(
   searchFilters,
   editOptions,
-  url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=10&properties.tema__ne=xxx"
+  url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=100&properties.tema__ne=xxx"
 ) {
   return fetchForms(url).then((response) => {
-    return response.data.map((form) => migrateForm(form, searchFilters, getEditScript(editOptions)));
+    let formsLogger = {};
+    response.data.map((form) => {
+      const affectedComponentsLogger = [];
+      const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
+      formsLogger[form.properties.skjemanummer] = {
+        found: affectedComponentsLogger.length,
+        changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
+      };
+      return result;
+    });
+
+    return formsLogger;
   });
 }
 
