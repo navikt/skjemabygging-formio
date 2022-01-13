@@ -41,7 +41,14 @@ function getEditScript(editOptions, logger) {
   return (comp) => {
     const editedComp = objectUtils.deepMerge(comp, mergedEditOptionObject);
     const changed = JSON.stringify(comp) !== JSON.stringify(editedComp);
-    logger.push({ key: comp.key, original: comp, new: editedComp, changed });
+    const diff =
+      changed &&
+      Object.keys(comp).reduce((acc, key) => {
+        if (key === "key" || key === "label") return { ...acc, [key]: comp[key] };
+        if (comp[key] !== editedComp[key]) return { ...acc, [key]: { _ORIGINAL: comp[key], _NEW: editedComp[key] } };
+        return acc;
+      }, {});
+    logger.push({ key: comp.key, original: comp, new: editedComp, changed, diff });
     return editedComp;
   };
 }
@@ -63,8 +70,12 @@ async function migrateForms(
       const affectedComponentsLogger = [];
       const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
       formsLogger[form.properties.skjemanummer] = {
+        name: form.name,
+        title: form.title,
+        path: form.path,
         found: affectedComponentsLogger.length,
         changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
+        diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
       };
       return result;
     });
