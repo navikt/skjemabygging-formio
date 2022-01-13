@@ -17,6 +17,7 @@ import { getCountries } from "./utils/countries.js";
 import { responseToError, toJsonOrThrowError } from "./utils/errorHandling.js";
 import "./utils/errorToJson.js";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
+import { clean } from "./utils/logCleaning.js";
 
 const app = express();
 const skjemaApp = express();
@@ -56,7 +57,7 @@ app.use(
     (token, req, res) => {
       const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
       logEntry.correlation_id = req.correlationId();
-      return JSON.stringify(logEntry);
+      return JSON.stringify(clean(logEntry));
     },
     {
       skip: (req) => INTERNAL_PATHS.test(req.url),
