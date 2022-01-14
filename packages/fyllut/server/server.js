@@ -218,7 +218,11 @@ skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaks
 
 skjemaApp.get("/api/enhetsliste", azureAccessTokenHandler, (req, res, next) => {
   fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet/kontaktinformasjon/organisering/AKTIV`, {
-    headers: { consumerId: "skjemadigitalisering", Authorization: `Bearer ${req.headers.AzureAccessToken}` },
+    headers: {
+      consumerId: "skjemadigitalisering",
+      Authorization: `Bearer ${req.headers.AzureAccessToken}`,
+      "x-correlation-id": correlator.getId(),
+    },
   })
     .then(toJsonOrThrowError("Feil ved henting av enhetsliste", true))
     .then((enhetsliste) => res.send(enhetsliste))
@@ -234,6 +238,7 @@ skjemaApp.post("/api/foersteside", azureAccessTokenHandler, (req, res, next) => 
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${req.headers.AzureAccessToken}`,
+      "x-correlation-id": correlator.getId(),
     },
     body: foerstesideData,
   })
