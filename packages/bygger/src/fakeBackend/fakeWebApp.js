@@ -51,6 +51,14 @@ export function dispatcherWithBackend(backend) {
         GET: (req, res) => {
           res.json(translations);
         },
+        POST: (req, res) => {
+          res.json({ _id: "_translationId" });
+        },
+      },
+      "/language/submission/:translationId": {
+        PUT: (req, res) => {
+          res.send(200);
+        },
       },
 
       "/countries": (req, res) => {

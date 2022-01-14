@@ -234,4 +234,58 @@ describe("useFormioTranslations", () => {
       });
     });
   });
+
+  describe("saveTranslation", () => {
+    it("updates the translationSubmission, when translationId is provided", async () => {
+      expect.assertions(4);
+      formioTranslations.saveLocalTranslation(
+        "translationId",
+        "en",
+        { tekst: { value: "text", scope: "local" } },
+        "formPath",
+        "formTitle"
+      );
+
+      await waitFor(() => expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled());
+
+      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/translationId`, {
+        body: JSON.stringify({
+          data: { language: "en", i18n: { tekst: "text" }, name: "global.formPath", scope: "local", form: "formPath" },
+        }),
+        headers: { "content-type": "application/json", "x-jwt-token": "" },
+        method: "PUT",
+      });
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("creates a translationSubmission, before update, when translationId is not provided", async () => {
+      expect.assertions(5);
+      formioTranslations.saveLocalTranslation(
+        undefined,
+        "en",
+        { tekst: { value: "text", scope: "local" } },
+        "formPath",
+        "formTitle"
+      );
+      await waitFor(() => expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled());
+
+      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission`, {
+        body: JSON.stringify({
+          data: { language: "en", name: "global.formPath", scope: "local", form: "formPath" },
+        }),
+        headers: { "content-type": "application/json", "x-jwt-token": "" },
+        method: "POST",
+      });
+
+      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/_translationId`, {
+        body: JSON.stringify({
+          data: { language: "en", i18n: { tekst: "text" }, name: "global.formPath", scope: "local", form: "formPath" },
+        }),
+        headers: { "content-type": "application/json", "x-jwt-token": "" },
+        method: "PUT",
+      });
+
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+    });
+  });
 });
