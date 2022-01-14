@@ -56,7 +56,7 @@ app.use(
   morgan(
     (token, req, res) => {
       const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
-      logEntry.correlation_id = req.correlationId();
+      logEntry.correlation_id = correlator.getId();
       return JSON.stringify(clean(logEntry));
     },
     {
@@ -114,7 +114,7 @@ skjemaApp.post("/foersteside", async (req, res) => {
   } else {
     res.contentType("application/json").status(response.status).send({
       message: "Feil ved generering av førsteside",
-      correlation_id: req.correlationId(),
+      correlation_id: correlator.getId(),
     });
   }
 });
@@ -286,7 +286,7 @@ function logErrors(err, req, res, next) {
 function errorHandler(err, req, res, next) {
   res.status(500);
   res.contentType("application/json");
-  res.send({ message: err.functional ? err.message : "Det oppstod en feil", correlation_id: req.correlationId() });
+  res.send({ message: err.functional ? err.message : "Det oppstod en feil", correlation_id: correlator.getId() });
 }
 
 skjemaApp.use(logErrors);
