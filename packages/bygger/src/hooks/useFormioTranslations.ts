@@ -174,7 +174,13 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     });
   };
 
-  const createTranslationSubmition = (data) =>
+  const createTranslationSubmition = (data: {
+    language: Language;
+    name: string;
+    scope: TranslationScope;
+    form?: string;
+    tag?: TranslationTag;
+  }) =>
     Formiojs.fetch(`${formio.projectUrl}/language/submission`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -186,7 +192,17 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       }),
     });
 
-  const updateTranslationSubmition = (translationId, data) =>
+  const updateTranslationSubmition = (
+    translationId: string,
+    data: {
+      language: Language;
+      i18n: I18nTranslationMap;
+      name: string;
+      scope: TranslationScope;
+      form?: string;
+      tag?: TranslationTag;
+    }
+  ) =>
     Formiojs.fetch(`${formio.projectUrl}/language/submission/${translationId}`, {
       headers: {
         "x-jwt-token": Formiojs.getToken(),
@@ -209,7 +225,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     formTitle?: string
   ) => {
     if (!translationId) {
-      translationId = await createTranslationSubmition({ form, name, language, scope, tag }).then((response) => {
+      translationId = await createTranslationSubmition({ language, name, scope, form, tag }).then((response) => {
         if (response.ok) {
           return response.json().then((json) => json._id);
         } else {
@@ -222,7 +238,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }
 
     if (translationId) {
-      updateTranslationSubmition(translationId, { form, name, language, scope, i18n, tag }).then((response) => {
+      updateTranslationSubmition(translationId, { language, i18n, name, scope, form, tag }).then((response) => {
         if (response.ok) {
           userAlerter.flashSuccessMessage(
             !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`

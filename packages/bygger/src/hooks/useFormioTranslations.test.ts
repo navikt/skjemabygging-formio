@@ -250,7 +250,7 @@ describe("useFormioTranslations", () => {
 
       expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/translationId`, {
         body: JSON.stringify({
-          data: { form: "formPath", name: "global.formPath", language: "en", scope: "local", i18n: { tekst: "text" } },
+          data: { language: "en", i18n: { tekst: "text" }, name: "global.formPath", scope: "local", form: "formPath" },
         }),
         headers: { "content-type": "application/json", "x-jwt-token": "" },
         method: "PUT",
@@ -271,7 +271,7 @@ describe("useFormioTranslations", () => {
 
       expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission`, {
         body: JSON.stringify({
-          data: { form: "formPath", name: "global.formPath", language: "en", scope: "local" },
+          data: { language: "en", name: "global.formPath", scope: "local", form: "formPath" },
         }),
         headers: { "content-type": "application/json", "x-jwt-token": "" },
         method: "POST",
@@ -279,7 +279,7 @@ describe("useFormioTranslations", () => {
 
       expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/_translationId`, {
         body: JSON.stringify({
-          data: { form: "formPath", name: "global.formPath", language: "en", scope: "local", i18n: { tekst: "text" } },
+          data: { language: "en", i18n: { tekst: "text" }, name: "global.formPath", scope: "local", form: "formPath" },
         }),
         headers: { "content-type": "application/json", "x-jwt-token": "" },
         method: "PUT",
