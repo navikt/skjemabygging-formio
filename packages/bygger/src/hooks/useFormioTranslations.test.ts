@@ -255,7 +255,7 @@ describe("useFormioTranslations", () => {
         headers: { "content-type": "application/json", "x-jwt-token": "" },
         method: "PUT",
       });
-      await expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
     });
 
     it("creates a translationSubmission, before update, when translationId is not provided", async () => {
