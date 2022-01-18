@@ -2,7 +2,7 @@ import { Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import EditOptionsForm from "./EditOptionsForm";
-import SearchFiltersForm from "./SearchFiltersForm";
+import KeyValuePairsForm from "./KeyValuePairsForm";
 
 const MigrationPage = () => {
   const [foundForms, setFoundForms] = useState(undefined);
@@ -38,7 +38,12 @@ const MigrationPage = () => {
       }}
     >
       <h1>Søk og migrer</h1>
-      <SearchFiltersForm onSubmit={onSearch} title="Søk og filtrer" />
+      <KeyValuePairsForm
+        onSubmit={onSearch}
+        title="Søk og filtrer"
+        addRowText="Legg til filteringsvalg"
+        submitText="Søk"
+      />
       {foundForms && (
         <>
           <p>

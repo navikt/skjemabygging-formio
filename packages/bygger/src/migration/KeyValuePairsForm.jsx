@@ -4,9 +4,9 @@ import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 
-const SearchFiltersForm = ({ onSubmit, title }) => {
+const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [searchFilters, setSearchFilters] = useState({
+  const [keyValuePairs, setKeyValuePairs] = useState({
     [guid()]: { key: "", value: "" },
   });
   return (
@@ -16,22 +16,22 @@ const SearchFiltersForm = ({ onSubmit, title }) => {
         onSubmit={(event) => {
           event.preventDefault();
           setIsLoading(true);
-          onSubmit(searchFilters).then((result) => {
+          onSubmit(keyValuePairs).then((result) => {
             setIsLoading(false);
             return result;
           });
         }}
       >
-        {Object.keys(searchFilters).map((id) => {
-          const { key, value } = searchFilters[id];
+        {Object.keys(keyValuePairs).map((id) => {
+          const { key, value } = keyValuePairs[id];
           return (
             <div key={id}>
               <Input
                 label="Felt id"
                 type="text"
                 onChange={(event) =>
-                  setSearchFilters({
-                    ...searchFilters,
+                  setKeyValuePairs({
+                    ...keyValuePairs,
                     [id]: {
                       key: event.target.value,
                       value,
@@ -44,8 +44,8 @@ const SearchFiltersForm = ({ onSubmit, title }) => {
                 type="text"
                 disabled={!key}
                 onChange={(event) =>
-                  setSearchFilters({
-                    ...searchFilters,
+                  setKeyValuePairs({
+                    ...keyValuePairs,
                     [id]: {
                       key,
                       value: event.target.value,
@@ -58,8 +58,8 @@ const SearchFiltersForm = ({ onSubmit, title }) => {
         })}
         <Knapp
           onClick={() => {
-            setSearchFilters({
-              ...searchFilters,
+            setKeyValuePairs({
+              ...keyValuePairs,
               [guid()]: {
                 key: "",
                 value: "",
@@ -68,14 +68,14 @@ const SearchFiltersForm = ({ onSubmit, title }) => {
           }}
           htmlType="button"
         >
-          Legg til filteringsvalg
+          {addRowText}
         </Knapp>
         <Knapp type="hoved" spinner={isLoading}>
-          Søk
+          {submitText}
         </Knapp>
       </form>
     </>
   );
 };
 
-export default SearchFiltersForm;
+export default KeyValuePairsForm;
