@@ -1,12 +1,15 @@
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import EditOptionsForm from "./EditOptionsForm";
-import KeyValuePairsForm from "./KeyValuePairsForm";
+import KeyValuePairsForm, { useKeyValuePairs } from "./KeyValuePairsForm";
 
 const MigrationPage = () => {
   const [foundForms, setFoundForms] = useState(undefined);
   const [numberOfComponentsFound, setNumberOfComponentsFound] = useState(undefined);
+
+  const [searchFilters, dispatchSearchFilters] = useKeyValuePairs();
+  const [editOptions, dispatchEditOptions] = useKeyValuePairs();
+
   const onSearch = async (searchFilters) => {
     const mappedSearchFilters = Object.values(searchFilters).reduce(
       (acc, curr) => ({
@@ -43,6 +46,8 @@ const MigrationPage = () => {
         title="Søk og filtrer"
         addRowText="Legg til filteringsvalg"
         submitText="Søk"
+        state={searchFilters}
+        dispatch={dispatchSearchFilters}
       />
       {foundForms && (
         <>
@@ -66,7 +71,14 @@ const MigrationPage = () => {
           )}
         </>
       )}
-      <EditOptionsForm />
+      <KeyValuePairsForm
+        title="Sett opp felter som skal migreres og ny verdi for feltene"
+        addRowText="Legg til felt som skal migreres"
+        submitText="Simuler og kontroller migrering"
+        state={editOptions}
+        dispatch={dispatchEditOptions}
+        onSubmit={() => {}}
+      />
     </AppLayoutWithContext>
   );
 };
