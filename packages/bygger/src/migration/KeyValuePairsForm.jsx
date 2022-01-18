@@ -3,9 +3,14 @@ import { guid } from "nav-frontend-js-utils";
 import { Knapp } from "nav-frontend-knapper";
 import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
-import React, { useReducer, useState } from "react";
+import React, { Fragment, useReducer, useState } from "react";
 
 const getStyles = makeStyles({
+  form: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "0.25rem 1rem",
+  },
   hasMarginBottom: {
     marginBottom: "1rem",
   },
@@ -48,6 +53,7 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title, state, dis
     <>
       <Innholdstittel>{title}</Innholdstittel>
       <form
+        className={styles.form}
         onSubmit={(event) => {
           event.preventDefault();
           setIsLoading(true);
@@ -60,7 +66,7 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title, state, dis
         {Object.keys(state).map((id) => {
           const { key } = state[id];
           return (
-            <div key={id}>
+            <Fragment key={id}>
               <Input
                 className={styles.hasMarginBottom}
                 label="Feltnavn"
@@ -90,7 +96,7 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title, state, dis
                   })
                 }
               />
-            </div>
+            </Fragment>
           );
         })}
         <div>

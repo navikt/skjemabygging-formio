@@ -1,9 +1,21 @@
-import { Undertittel } from "nav-frontend-typografi";
+import { makeStyles } from "@material-ui/styles";
+import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import KeyValuePairsForm, { useKeyValuePairs } from "./KeyValuePairsForm";
 
+const useStyles = makeStyles({
+  root: {
+    maxWidth: "60rem",
+    margin: "0 auto",
+  },
+  mainHeading: {
+    marginBottom: "4rem",
+  },
+});
+
 const MigrationPage = () => {
+  const styles = useStyles();
   const [foundForms, setFoundForms] = useState(undefined);
   const [numberOfComponentsFound, setNumberOfComponentsFound] = useState(undefined);
 
@@ -40,45 +52,47 @@ const MigrationPage = () => {
         visSkjemaliste: true,
       }}
     >
-      <h1>Søk og migrer</h1>
-      <KeyValuePairsForm
-        onSubmit={onSearch}
-        title="Søk og filtrer"
-        addRowText="Legg til filteringsvalg"
-        submitText="Søk"
-        state={searchFilters}
-        dispatch={dispatchSearchFilters}
-      />
-      {foundForms && (
-        <>
-          <p>
-            Fant {foundForms.length} skjemaer som matcher søkekriteriene.&nbsp;
-            {numberOfComponentsFound !== undefined && (
-              <span>Totalt {numberOfComponentsFound} komponenter vil bli påvirket av endringene.</span>
+      <main className={styles.root}>
+        <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
+        <KeyValuePairsForm
+          onSubmit={onSearch}
+          title="Søk og filtrer"
+          addRowText="Legg til filteringsvalg"
+          submitText="Søk"
+          state={searchFilters}
+          dispatch={dispatchSearchFilters}
+        />
+        {foundForms && (
+          <>
+            <p>
+              Fant {foundForms.length} skjemaer som matcher søkekriteriene.&nbsp;
+              {numberOfComponentsFound !== undefined && (
+                <span>Totalt {numberOfComponentsFound} komponenter vil bli påvirket av endringene.</span>
+              )}
+            </p>
+            {foundForms.length > 0 && (
+              <ul>
+                {foundForms.map((form) => (
+                  <li key={form.skjemanummer}>
+                    <Undertittel>
+                      {form.title} ({form.skjemanummer})
+                    </Undertittel>
+                    <p>Antall komponenter som matcher søket: {form.found}</p>
+                  </li>
+                ))}
+              </ul>
             )}
-          </p>
-          {foundForms.length > 0 && (
-            <ul>
-              {foundForms.map((form) => (
-                <li key={form.skjemanummer}>
-                  <Undertittel>
-                    {form.title} ({form.skjemanummer})
-                  </Undertittel>
-                  <p>Antall komponenter som matcher søket: {form.found}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
-      )}
-      <KeyValuePairsForm
-        title="Sett opp felter som skal migreres og ny verdi for feltene"
-        addRowText="Legg til felt som skal migreres"
-        submitText="Simuler og kontroller migrering"
-        state={editOptions}
-        dispatch={dispatchEditOptions}
-        onSubmit={() => {}}
-      />
+          </>
+        )}
+        <KeyValuePairsForm
+          title="Sett opp felter som skal migreres og ny verdi for feltene"
+          addRowText="Legg til felt som skal migreres"
+          submitText="Simuler og kontroller migrering"
+          state={editOptions}
+          dispatch={dispatchEditOptions}
+          onSubmit={() => {}}
+        />
+      </main>
     </AppLayoutWithContext>
   );
 };
