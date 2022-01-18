@@ -20,11 +20,10 @@ import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirector
 const app = express();
 const skjemaApp = express();
 
+skjemaApp.use(correlator());
 skjemaApp.use(cors());
-// Parse application/json
 skjemaApp.use(express.json({ limit: "50mb" }));
 skjemaApp.use(express.urlencoded({ extended: true, limit: "50mb" }));
-skjemaApp.use(correlator());
 skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
