@@ -1,14 +1,22 @@
+import { makeStyles } from "@material-ui/styles";
 import { guid } from "nav-frontend-js-utils";
 import { Knapp } from "nav-frontend-knapper";
 import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 
+const getStyles = makeStyles({
+  hasMarginBottom: {
+    marginBottom: "1rem",
+  },
+});
+
 const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [keyValuePairs, setKeyValuePairs] = useState({
     [guid()]: { key: "", value: "" },
   });
+  const styles = getStyles();
   return (
     <>
       <Innholdstittel>{title}</Innholdstittel>
@@ -27,6 +35,7 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title }) => {
           return (
             <div key={id}>
               <Input
+                className={styles.hasMarginBottom}
                 label="Felt id"
                 type="text"
                 onChange={(event) =>
@@ -40,6 +49,7 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title }) => {
                 }
               />
               <Input
+                className={styles.hasMarginBottom}
                 label="Ny verdi"
                 type="text"
                 disabled={!key}
@@ -56,23 +66,28 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title }) => {
             </div>
           );
         })}
-        <Knapp
-          onClick={() => {
-            setKeyValuePairs({
-              ...keyValuePairs,
-              [guid()]: {
-                key: "",
-                value: "",
-              },
-            });
-          }}
-          htmlType="button"
-        >
-          {addRowText}
-        </Knapp>
-        <Knapp type="hoved" spinner={isLoading}>
-          {submitText}
-        </Knapp>
+        <div>
+          <Knapp
+            className={styles.hasMarginBottom}
+            onClick={() => {
+              setKeyValuePairs({
+                ...keyValuePairs,
+                [guid()]: {
+                  key: "",
+                  value: "",
+                },
+              });
+            }}
+            htmlType="button"
+          >
+            {addRowText}
+          </Knapp>
+        </div>
+        <div>
+          <Knapp className={styles.hasMarginBottom} type="hoved" spinner={isLoading}>
+            {submitText}
+          </Knapp>
+        </div>
       </form>
     </>
   );
