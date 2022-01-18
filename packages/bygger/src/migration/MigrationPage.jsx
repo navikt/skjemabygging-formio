@@ -14,6 +14,33 @@ const useStyles = makeStyles({
   },
 });
 
+const encodeForUrl = (mapIndexedByUniqueIds) => {
+  if (Object.keys(mapIndexedByUniqueIds).length === 0) {
+    return "";
+  }
+  const keyValuePairs = Object.values(mapIndexedByUniqueIds).reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.key]: curr.value,
+    }),
+    {}
+  );
+  return JSON.stringify(keyValuePairs);
+};
+
+const getSearchUrl = (searchFilters, editOptions) => {
+  let url = "/api/migrate";
+  const encodedSearchFilters = encodeForUrl(searchFilters);
+  if (encodedSearchFilters) {
+    url += `?searchFilters=${encodedSearchFilters}`;
+    const encodedEditOption = encodeForUrl(editOptions);
+    if (encodedEditOption) {
+      url += `&editOptions=${encodedEditOption}`;
+    }
+  }
+  return url;
+};
+
 const MigrationPage = () => {
   const styles = useStyles();
   const [foundForms, setFoundForms] = useState(undefined);
@@ -22,15 +49,8 @@ const MigrationPage = () => {
   const [searchFilters, dispatchSearchFilters] = useKeyValuePairs();
   const [editOptions, dispatchEditOptions] = useKeyValuePairs();
 
-  const onSearch = async (searchFilters) => {
-    const mappedSearchFilters = Object.values(searchFilters).reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.key]: curr.value,
-      }),
-      {}
-    );
-    const results = await fetch(`/api/migrate?searchFilters=${JSON.stringify(mappedSearchFilters)}`, {
+  const onSearch = async () => {
+    const results = await fetch(getSearchUrl(searchFilters, editOptions), {
       method: "GET",
       headers: {
         "content-type": "application/json",
