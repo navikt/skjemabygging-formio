@@ -4,6 +4,7 @@ import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 
 const SearchFiltersForm = ({ onSubmit }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [searchFilters, setSearchFilters] = useState([{ key: "", value: "" }]);
   return (
     <>
@@ -11,7 +12,11 @@ const SearchFiltersForm = ({ onSubmit }) => {
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          onSubmit(searchFilters);
+          setIsLoading(true);
+          onSubmit(searchFilters).then((result) => {
+            setIsLoading(false);
+            return result;
+          });
         }}
       >
         {searchFilters.map(({ key, value }, index) => (
@@ -46,20 +51,22 @@ const SearchFiltersForm = ({ onSubmit }) => {
           </div>
         ))}
         <Knapp
-          onClick={() =>
+          onClick={() => {
             setSearchFilters([
               ...searchFilters,
               {
                 key: "",
                 value: "",
               },
-            ])
-          }
+            ]);
+          }}
           htmlType="button"
         >
           Legg til filteringsvalg
         </Knapp>
-        <Knapp>Søk</Knapp>
+        <Knapp type="hoved" spinner={isLoading}>
+          Søk
+        </Knapp>
       </form>
     </>
   );

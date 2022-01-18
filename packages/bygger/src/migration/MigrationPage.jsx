@@ -50,7 +50,7 @@ const MigrationPage = () => {
           {foundForms.length > 0 && (
             <ul>
               {foundForms.map((form) => (
-                <li>
+                <li key={form.skjemanummer}>
                   <Undertittel>
                     {form.title} ({form.skjemanummer})
                   </Undertittel>
