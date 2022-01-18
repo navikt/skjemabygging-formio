@@ -1,11 +1,13 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { canEnhetstypeBeSelected, fetchEnhetsListe } from "../api/fetchEnhetsliste";
 import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
+import AlertStripeHttpError from "../components/error/AlertStripeHttpError";
 import ErrorPage from "../components/ErrorPage";
 import LoadingComponent from "../components/LoadingComponent";
 import { useAppConfig } from "../configContext";
@@ -19,14 +21,13 @@ import EnhetSelector from "./components/EnhetSelector";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
-  const attachmentSectionTitle =
-    translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
-      .concat(" ")
-      .concat(
-        skalSendeFlereVedlegg
-          ? translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments)
-          : translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment)
-      );
+  const attachmentSectionTitle = translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleAttachTo)
+    .concat(" ")
+    .concat(
+      skalSendeFlereVedlegg
+        ? translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments)
+        : translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment)
+    );
   return (
     <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>
       <Systemtittel className="margin-bottom-default">{`${index}. ${attachmentSectionTitle}`}</Systemtittel>
@@ -42,30 +43,34 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
 async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhet) {
   const mottaksadresser = enhet ? [] : await fetchMottaksadresser(fyllutBaseURL);
   const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhet);
-  return fetch(`${fyllutBaseURL}/foersteside`, {
+  return fetch(`${fyllutBaseURL}/api/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response;
       } else {
-        throw new Error("Failed to retrieve foersteside from soknadsveiviser " + JSON.stringify(response.body));
+        const errorResponse = await response.json();
+        const error = new Error(errorResponse.message);
+        error.correlationId = errorResponse.correlation_id;
+        throw error;
       }
     })
     .then((response) => response.json())
     .then((json) => json.foersteside)
     .then((base64EncodedPdf) => {
       lastNedFilBase64(base64EncodedPdf, "Førstesideark", "pdf");
-    })
-    .catch((e) => console.log("Failed to download foersteside", e));
+    });
 }
 
 const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBaseURL, translate, translations }) => {
   const [selectedEnhet, setSelectedEnhet] = useState(undefined);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
+  const [foerstesideError, setFoerstesideError] = useState(undefined);
+  const [foerstesideLoading, setFoerstesideLoading] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { currentLanguage } = useLanguages();
@@ -96,22 +101,30 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
       <div className="margin-bottom-default">
-        <button
+        <Knapp
           className="knapp knapp--fullbredde"
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhet) {
               setIsRequiredEnhetMissing(true);
             } else {
+              setFoerstesideError(undefined);
+              setFoerstesideLoading(true);
               lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
                 .then(() => setHasDownloadedFoersteside(true))
-                .catch(() => loggSkjemaInnsendingFeilet());
+                .catch((error) => {
+                  loggSkjemaInnsendingFeilet();
+                  setFoerstesideError(error);
+                })
+                .finally(() => setFoerstesideLoading(false));
             }
           }}
-          type="button"
+          type="standard"
+          spinner={foerstesideLoading}
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        </button>
+        </Knapp>
       </div>
+      {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
       <DownloadPdfButton
         form={form}
         submission={submission}
@@ -135,7 +148,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) =>
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
       {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
-      {vedleggSomSkalSendes.length > 0 && (
+      {vedleggSomSkalSendes.length > 0 &&
         " ".concat(
           translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachTo)
             .concat(" ")
@@ -146,7 +159,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) =>
             )
             .concat(" ")
             .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection))
-        ))}
+        )}
     </Normaltekst>
   </section>
 );
