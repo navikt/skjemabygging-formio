@@ -1,8 +1,17 @@
 import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "./fetchUtils.js";
 
+function getPropertyFromComponentAsString(comp, properties) {
+  if (properties.length > 1) {
+    return getPropertyFromComponentAsString(comp[properties[0]], properties.slice(1));
+  }
+  return comp && `${comp[properties[0]]}`;
+}
+
 function componentMatchesSearchFilters(component, searchFilters) {
-  return Object.keys(searchFilters).every((property) => component[property] === searchFilters[property]);
+  return Object.keys(searchFilters).every(
+    (property) => getPropertyFromComponentAsString(component, property.split(".")) === searchFilters[property]
+  );
 }
 
 function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
