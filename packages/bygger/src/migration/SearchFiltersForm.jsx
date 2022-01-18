@@ -1,14 +1,17 @@
+import { guid } from "nav-frontend-js-utils";
 import { Knapp } from "nav-frontend-knapper";
 import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 
-const SearchFiltersForm = ({ onSubmit }) => {
+const SearchFiltersForm = ({ onSubmit, title }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [searchFilters, setSearchFilters] = useState([{ key: "", value: "" }]);
+  const [searchFilters, setSearchFilters] = useState({
+    [guid()]: { key: "", value: "" },
+  });
   return (
     <>
-      <Innholdstittel>Søk og filtrer</Innholdstittel>
+      <Innholdstittel>{title}</Innholdstittel>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -19,46 +22,49 @@ const SearchFiltersForm = ({ onSubmit }) => {
           });
         }}
       >
-        {searchFilters.map(({ key, value }, index) => (
-          <div key={index}>
-            <Input
-              label="Felt id"
-              type="text"
-              onChange={(event) =>
-                setSearchFilters([
-                  ...searchFilters.filter((editOptionsRow) => editOptionsRow.key !== key),
-                  {
-                    key: event.target.value,
-                    value,
-                  },
-                ])
-              }
-            />
-            <Input
-              label="Ny verdi"
-              type="text"
-              disabled={!key}
-              onChange={(event) =>
-                setSearchFilters([
-                  ...searchFilters.filter((editOptionsRow) => editOptionsRow.key !== key),
-                  {
-                    key,
-                    value: event.target.value,
-                  },
-                ])
-              }
-            />
-          </div>
-        ))}
+        {Object.keys(searchFilters).map((id) => {
+          const { key, value } = searchFilters[id];
+          return (
+            <div key={id}>
+              <Input
+                label="Felt id"
+                type="text"
+                onChange={(event) =>
+                  setSearchFilters({
+                    ...searchFilters,
+                    [id]: {
+                      key: event.target.value,
+                      value,
+                    },
+                  })
+                }
+              />
+              <Input
+                label="Ny verdi"
+                type="text"
+                disabled={!key}
+                onChange={(event) =>
+                  setSearchFilters({
+                    ...searchFilters,
+                    [id]: {
+                      key,
+                      value: event.target.value,
+                    },
+                  })
+                }
+              />
+            </div>
+          );
+        })}
         <Knapp
           onClick={() => {
-            setSearchFilters([
+            setSearchFilters({
               ...searchFilters,
-              {
+              [guid()]: {
                 key: "",
                 value: "",
               },
-            ]);
+            });
           }}
           htmlType="button"
         >

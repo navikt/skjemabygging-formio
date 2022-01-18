@@ -8,14 +8,14 @@ const MigrationPage = () => {
   const [foundForms, setFoundForms] = useState(undefined);
   const [numberOfComponentsFound, setNumberOfComponentsFound] = useState(undefined);
   const onSearch = async (searchFilters) => {
-    const searchFiltersMap = searchFilters.reduce(
+    const mappedSearchFilters = Object.values(searchFilters).reduce(
       (acc, curr) => ({
         ...acc,
         [curr.key]: curr.value,
       }),
       {}
     );
-    const results = await fetch(`/api/migrate?searchFilters=${JSON.stringify(searchFiltersMap)}`, {
+    const results = await fetch(`/api/migrate?searchFilters=${JSON.stringify(mappedSearchFilters)}`, {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -38,7 +38,7 @@ const MigrationPage = () => {
       }}
     >
       <h1>Søk og migrer</h1>
-      <SearchFiltersForm onSubmit={onSearch} />
+      <SearchFiltersForm onSubmit={onSearch} title="Søk og filtrer" />
       {foundForms && (
         <>
           <p>
