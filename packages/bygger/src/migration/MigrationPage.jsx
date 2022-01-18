@@ -62,6 +62,15 @@ const MigrationPage = () => {
           state={searchFilters}
           dispatch={dispatchSearchFilters}
         />
+        <KeyValuePairsForm
+          title="Sett opp felter som skal migreres og ny verdi for feltene"
+          addRowText="Legg til felt som skal migreres"
+          submitText="Simuler og kontroller migrering"
+          state={editOptions}
+          dispatch={dispatchEditOptions}
+          onSubmit={onSearch}
+        />
+
         {foundForms && (
           <>
             <p>
@@ -84,14 +93,6 @@ const MigrationPage = () => {
             )}
           </>
         )}
-        <KeyValuePairsForm
-          title="Sett opp felter som skal migreres og ny verdi for feltene"
-          addRowText="Legg til felt som skal migreres"
-          submitText="Simuler og kontroller migrering"
-          state={editOptions}
-          dispatch={dispatchEditOptions}
-          onSubmit={() => {}}
-        />
       </main>
     </AppLayoutWithContext>
   );
