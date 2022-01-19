@@ -42,10 +42,17 @@ const getSearchUrl = (searchFilters, editOptions) => {
   return url;
 };
 
+const getFormsThatMatchesSearchFilters = (mapOfForms) =>
+  Object.entries(mapOfForms)
+    .map(([key, value]) => ({
+      ...value,
+      skjemanummer: key,
+    }))
+    .filter(({ found }) => found !== 0);
+
 const MigrationPage = () => {
   const styles = useStyles();
-  const [foundForms, setFoundForms] = useState(undefined);
-  const [numberOfComponentsFound, setNumberOfComponentsFound] = useState(undefined);
+  const [{ foundForms, numberOfComponentsFound }, setFoundForms] = useState({});
 
   const [searchFilters, dispatchSearchFilters] = useKeyValuePairs();
   const [editOptions, dispatchEditOptions] = useKeyValuePairs();
@@ -57,14 +64,11 @@ const MigrationPage = () => {
         "content-type": "application/json",
       },
     }).then((results) => results.json());
-    const formsWithComponentsThatMatchSearchFilters = Object.entries(results)
-      .map(([key, value]) => ({
-        ...value,
-        skjemanummer: key,
-      }))
-      .filter(({ found }) => found !== 0);
-    setFoundForms(formsWithComponentsThatMatchSearchFilters);
-    setNumberOfComponentsFound(formsWithComponentsThatMatchSearchFilters.reduce((acc, curr) => acc + curr.found, 0));
+    const formsWithComponentsThatMatchSearchFilters = getFormsThatMatchesSearchFilters(results);
+    setFoundForms({
+      foundForms: formsWithComponentsThatMatchSearchFilters,
+      numberOfComponentsFound: formsWithComponentsThatMatchSearchFilters.reduce((acc, curr) => acc + curr.found, 0),
+    });
   };
   return (
     <AppLayoutWithContext
