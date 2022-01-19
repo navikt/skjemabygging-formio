@@ -18,13 +18,14 @@ const encodeForUrl = (mapIndexedByUniqueIds) => {
   if (Object.keys(mapIndexedByUniqueIds).length === 0) {
     return "";
   }
-  const keyValuePairs = Object.values(mapIndexedByUniqueIds).reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr.key]: curr.value,
-    }),
-    {}
-  );
+  const keyValuePairs = Object.values(mapIndexedByUniqueIds).reduce((acc, curr) => {
+    if (curr.key !== "" && curr.value !== "") {
+      return {
+        ...acc,
+        [curr.key]: curr.value,
+      };
+    }
+  }, {});
   return JSON.stringify(keyValuePairs);
 };
 
