@@ -48,7 +48,8 @@ const getFormsThatMatchesSearchFilters = (mapOfForms) =>
       ...value,
       skjemanummer: key,
     }))
-    .filter(({ found }) => found !== 0);
+    .filter(({ found }) => found !== 0)
+    .sort((a, b) => b.found - a.found);
 
 const MigrationPage = () => {
   const styles = useStyles();
