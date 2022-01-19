@@ -87,30 +87,16 @@ jobs:
           VARS: "./packages/bygger/.nais/dev.yaml"
         uses: "nais/deploy/actions/deploy@v1"
 
-  deploy-bygger-to-labs:
-    name: "Deploy bygger to labs"
-    needs: deploy-bygger-to-dev
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: "actions/checkout@v2"
-      - name: "Deploy to LABS"
-        env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "labs-gcp"
-          RESOURCE: "./packages/bygger/.nais/nais.yaml"
-          VARS: "./packages/bygger/.nais/labs.yaml"
-        uses: "nais/deploy/actions/deploy@v1"
-
-  trigger-deploy-fyllut-to-labs:
-    name: "Trigger deploy fyllut to labs"
+  trigger-deploy-fyllut-to-dev:
+    name: "Trigger deploy fyllut to dev"
     needs: deploy-bygger-to-dev
     runs-on: ubuntu-latest
     steps:
-      - name: "Trigger deploy fyllut to labs"
+      - name: "Trigger deploy fyllut to dev"
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: "Trigger labs deploy"
+          workflow: "Trigger dev deploy"
           repo: navikt/skjemautfylling-formio
-          ref: "labs-deploy"
+          ref: "dev-deploy"
           token: ${{ secrets.TEAM_ACCESS_TOKEN }}
           inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
