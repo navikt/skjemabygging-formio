@@ -48,8 +48,17 @@ const getFormsThatMatchesSearchFilters = (mapOfForms) =>
       ...value,
       skjemanummer: key,
     }))
-    .filter((form) => form.changed > 0)
+    .filter((form) => form.found > 0)
     .sort((a, b) => b.found - a.found);
+
+const getFormsThatWillBeChanged = (mapOfForms) =>
+  Object.entries(mapOfForms)
+    .map(([key, value]) => ({
+      ...value,
+      skjemanummer: key,
+    }))
+    .filter((form) => form.changed > 0)
+    .sort((a, b) => b.changed - a.changed);
 
 const MigrationPage = () => {
   const styles = useStyles();
@@ -66,8 +75,10 @@ const MigrationPage = () => {
       },
     }).then((results) => results.json());
     const formsWithComponentsThatMatchSearchFilters = getFormsThatMatchesSearchFilters(results);
+    const formsWithComponentsThatWillBeChanged = getFormsThatWillBeChanged(results);
     setFoundForms({
       foundForms: formsWithComponentsThatMatchSearchFilters,
+      changedForms: formsWithComponentsThatWillBeChanged,
       ...formsWithComponentsThatMatchSearchFilters.reduce(
         (acc, curr) => ({
           numberOfComponentsFound: acc.numberOfComponentsFound + curr.found,
@@ -119,19 +130,17 @@ const MigrationPage = () => {
             </p>
             {foundForms.length > 0 && (
               <ul>
-                {foundForms
-                  .filter((form) => form.changed > 0)
-                  .map((form) => (
-                    <li key={form.skjemanummer}>
-                      <Undertittel>
-                        {form.title} ({form.skjemanummer})
-                      </Undertittel>
-                      <p>
-                        Antall komponenter som matcher søket: {form.changed} av {form.found}
-                      </p>
-                      {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
-                    </li>
-                  ))}
+                {foundForms.map((form) => (
+                  <li key={form.skjemanummer}>
+                    <Undertittel>
+                      {form.title} ({form.skjemanummer})
+                    </Undertittel>
+                    <p>
+                      Antall komponenter som matcher søket: {form.changed} av {form.found}
+                    </p>
+                    {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
+                  </li>
+                ))}
               </ul>
             )}
           </>
