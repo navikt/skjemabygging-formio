@@ -2,7 +2,6 @@ import { makeStyles } from "@material-ui/styles";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { AppLayoutWithContext } from "../components/AppLayout";
 import KeyValuePairsForm, { useKeyValuePairs } from "./KeyValuePairsForm";
 
 const useStyles = makeStyles({
@@ -94,64 +93,57 @@ const MigrationPage = () => {
     });
   };
   return (
-    <AppLayoutWithContext
-      navBarProps={{
-        title: "Rediger skjema",
-        visSkjemaliste: true,
-      }}
-    >
-      <main className={styles.root}>
-        <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
-        <KeyValuePairsForm
-          onSubmit={onSearch}
-          title="Søk og filtrer"
-          addRowText="Legg til filteringsvalg"
-          submitText="Søk"
-          state={searchFilters}
-          dispatch={dispatchSearchFilters}
-        />
-        <KeyValuePairsForm
-          title="Sett opp felter som skal migreres og ny verdi for feltene"
-          addRowText="Legg til felt som skal migreres"
-          submitText="Simuler og kontroller migrering"
-          state={editOptions}
-          dispatch={dispatchEditOptions}
-          onSubmit={onSearch}
-        />
+    <main className={styles.root}>
+      <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
+      <KeyValuePairsForm
+        onSubmit={onSearch}
+        title="Søk og filtrer"
+        addRowText="Legg til filteringsvalg"
+        submitText="Søk"
+        state={searchFilters}
+        dispatch={dispatchSearchFilters}
+      />
+      <KeyValuePairsForm
+        title="Sett opp felter som skal migreres og ny verdi for feltene"
+        addRowText="Legg til felt som skal migreres"
+        submitText="Simuler og kontroller migrering"
+        state={editOptions}
+        dispatch={dispatchEditOptions}
+        onSubmit={onSearch}
+      />
 
-        {foundForms && (
-          <>
-            <p>
-              Fant {foundForms.length} skjemaer som matcher søkekriteriene.&nbsp;
-              {numberOfComponentsFound !== undefined && (
-                <span>
-                  Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
-                  endringene.
-                </span>
-              )}
-            </p>
-            {foundForms.length > 0 && (
-              <ul>
-                {foundForms.map((form) => (
-                  <li key={form.skjemanummer}>
-                    <Undertittel>
-                      {form.title} ({form.skjemanummer})
-                    </Undertittel>
-                    <p>
-                      Antall komponenter som matcher søket: {form.changed} av {form.found}
-                    </p>
-                    {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
-                    <Link className="knapp" to={`/migrering/forhandsvis/${form.path}`}>
-                      Forhåndsvis
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+      {foundForms && (
+        <>
+          <p>
+            Fant {foundForms.length} skjemaer som matcher søkekriteriene.&nbsp;
+            {numberOfComponentsFound !== undefined && (
+              <span>
+                Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
+                endringene.
+              </span>
             )}
-          </>
-        )}
-      </main>
-    </AppLayoutWithContext>
+          </p>
+          {foundForms.length > 0 && (
+            <ul>
+              {foundForms.map((form) => (
+                <li key={form.skjemanummer}>
+                  <Undertittel>
+                    {form.title} ({form.skjemanummer})
+                  </Undertittel>
+                  <p>
+                    Antall komponenter som matcher søket: {form.changed} av {form.found}
+                  </p>
+                  {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
+                  <Link className="knapp" to={`/migrering/forhandsvis/${form.path}`}>
+                    Forhåndsvis
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+    </main>
   );
 };
 
