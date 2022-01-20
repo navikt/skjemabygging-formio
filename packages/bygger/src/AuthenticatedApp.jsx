@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { FormsRouter } from "./Forms";
-import MigrationPage from "./migration/MigrationPage";
+import MigrationRouter from "./migration/MigrationRouter";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
 import TranslationsRouter from "./translations/TranslationsRouter";
 
@@ -20,7 +20,7 @@ function AuthenticatedApp({ serverURL, formio }) {
           <MottaksadresserPage />
         </Route>
         <Route path="/migrering">
-          <MigrationPage />
+          <MigrationRouter />
         </Route>
         <Route path="/">
           <Redirect to="/forms" />

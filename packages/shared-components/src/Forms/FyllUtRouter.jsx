@@ -1,16 +1,16 @@
+import { styled } from "@material-ui/styles";
 import React, { useEffect, useState } from "react";
-import { Route, Switch, useRouteMatch, Redirect } from "react-router-dom";
+import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
+import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { FillInFormPage } from "./FillInFormPage.jsx";
+import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
+import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.tsx";
-import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
-import { styled } from "@material-ui/styles";
-import { LanguagesProvider, LanguageSelector } from "../context/languages";
-import { useAppConfig } from "../configContext";
-import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
@@ -38,7 +38,7 @@ const FyllUtRouter = ({ form, translations }) => {
   }, [loggSkjemaApnet]);
 
   return (
-    <LanguagesProvider translations={translations}>
+    <LanguagesProvider translations={translations || {}}>
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>

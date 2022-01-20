@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import KeyValuePairsForm, { useKeyValuePairs } from "./KeyValuePairsForm";
 
@@ -25,6 +26,7 @@ const encodeForUrl = (mapIndexedByUniqueIds) => {
         [curr.key]: curr.value,
       };
     }
+    return acc;
   }, {});
   return JSON.stringify(keyValuePairs);
 };
@@ -139,6 +141,9 @@ const MigrationPage = () => {
                       Antall komponenter som matcher søket: {form.changed} av {form.found}
                     </p>
                     {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
+                    <Link className="knapp" to={`/migrering/forhandsvis/${form.path}`}>
+                      Forhåndsvis
+                    </Link>
                   </li>
                 ))}
               </ul>
