@@ -71,6 +71,8 @@ async function fetchForms(url) {
   });
 }
 
+let editedForms = [];
+
 async function migrateForms(
   searchFilters,
   editOptions,
@@ -78,7 +80,7 @@ async function migrateForms(
 ) {
   return fetchForms(url).then((response) => {
     let formsLogger = {};
-    response.data.map((form) => {
+    editedForms = response.data.map((form) => {
       const affectedComponentsLogger = [];
       const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
       formsLogger[form.properties.skjemanummer] = {
@@ -91,9 +93,12 @@ async function migrateForms(
       };
       return result;
     });
-
     return formsLogger;
   });
 }
 
-export { migrateForm, migrateForms, getEditScript };
+function getMigratedForm(formPath) {
+  return editedForms.find((form) => form.path === formPath);
+}
+
+export { migrateForm, migrateForms, getEditScript, getMigratedForm };
