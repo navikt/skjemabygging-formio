@@ -1,4 +1,4 @@
-import { getEditScript, migrateForm } from "./migrationScripts";
+import { componentMatchesSearchFilters, getEditScript, migrateForm } from "./migrationScripts";
 
 const originalPanelComponent = {
   title: "Veiledning",
@@ -228,6 +228,56 @@ describe("Migration scripts", () => {
           prop3_3: "newValue4",
         },
       });
+    });
+
+    describe("with logger", () => {
+      let logger;
+      beforeEach(() => {
+        logger = [];
+      });
+
+      it("adds log entry with changed being false if component wasn't edited", () => {
+        getEditScript({}, logger)(testComponent);
+        expect(logger.length).toBe(1);
+        expect(logger[0].changed).toEqual(false);
+      });
+
+      it("adds log entry with changed being true if component was edited", () => {
+        getEditScript({ prop1: "newValue" }, logger)(testComponent);
+        expect(logger.length).toBe(1);
+        expect(logger[0].changed).toEqual(true);
+      });
+
+      it("adds log entry for each tested component", () => {
+        const editScript = getEditScript({ prop1: "newValue" }, logger);
+        editScript(testComponent);
+        editScript(testComponent);
+        editScript(testComponent);
+        expect(logger.length).toBe(3);
+      });
+    });
+  });
+
+  describe("componentMatchesSearchFilters", () => {
+    it("returns true if all searchFilters matches the related properties in the component", () => {
+      expect(
+        componentMatchesSearchFilters(originalTextFieldComponent, { fieldSize: "input--xxl", validateOn: "blur" })
+      ).toBe(true);
+    });
+
+    it("returns false if one searchFilter does not match the related property in the component", () => {
+      expect(
+        componentMatchesSearchFilters(originalTextFieldComponent, { fieldSize: "input--s", validateOn: "blur" })
+      ).toBe(false);
+    });
+
+    it("matches on nested properties", () => {
+      expect(
+        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": "true", validateOn: "blur" })
+      ).toBe(true);
+      expect(
+        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": "false", validateOn: "blur" })
+      ).toBe(false);
     });
   });
 });

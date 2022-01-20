@@ -8,7 +8,7 @@ function getPropertyFromComponentAsString(comp, properties) {
   return comp && `${comp[properties[0]]}`;
 }
 
-function componentMatchesSearchFilters(component, searchFilters) {
+export function componentMatchesSearchFilters(component, searchFilters) {
   return Object.keys(searchFilters).every(
     (property) => getPropertyFromComponentAsString(component, property.split(".")) === searchFilters[property]
   );
@@ -39,7 +39,16 @@ function migrateForm(form, searchFilters, script) {
   };
 }
 
-function getEditScript(editOptions, logger) {
+function generateDiff(originalComponent, editedComponent) {
+  return Object.keys(originalComponent).reduce((acc, key) => {
+    if (key === "key" || key === "label") return { ...acc, [key]: originalComponent[key] };
+    if (originalComponent[key] !== editedComponent[key])
+      return { ...acc, [key]: { _ORIGINAL: originalComponent[key], _NEW: editedComponent[key] } };
+    return acc;
+  }, {});
+}
+
+function getEditScript(editOptions, logger = []) {
   const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
     editOptionKey.split(".").reduceRight((acc, currentValue) => {
       return { [currentValue]: acc };
@@ -50,13 +59,7 @@ function getEditScript(editOptions, logger) {
   return (comp) => {
     const editedComp = objectUtils.deepMerge(comp, mergedEditOptionObject);
     const changed = JSON.stringify(comp) !== JSON.stringify(editedComp);
-    const diff =
-      changed &&
-      Object.keys(comp).reduce((acc, key) => {
-        if (key === "key" || key === "label") return { ...acc, [key]: comp[key] };
-        if (comp[key] !== editedComp[key]) return { ...acc, [key]: { _ORIGINAL: comp[key], _NEW: editedComp[key] } };
-        return acc;
-      }, {});
+    const diff = changed && generateDiff(comp, editedComp);
     logger.push({ key: comp.key, original: comp, new: editedComp, changed, diff });
     return editedComp;
   };
