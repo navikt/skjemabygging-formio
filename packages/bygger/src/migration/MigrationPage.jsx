@@ -48,12 +48,12 @@ const getFormsThatMatchesSearchFilters = (mapOfForms) =>
       ...value,
       skjemanummer: key,
     }))
-    .filter(({ found }) => found !== 0)
+    .filter((form) => form.changed > 0)
     .sort((a, b) => b.found - a.found);
 
 const MigrationPage = () => {
   const styles = useStyles();
-  const [{ foundForms, numberOfComponentsFound }, setFoundForms] = useState({});
+  const [{ foundForms, numberOfComponentsFound, numberOfComponentsChanged }, setFoundForms] = useState({});
 
   const [searchFilters, dispatchSearchFilters] = useKeyValuePairs();
   const [editOptions, dispatchEditOptions] = useKeyValuePairs();
@@ -68,7 +68,16 @@ const MigrationPage = () => {
     const formsWithComponentsThatMatchSearchFilters = getFormsThatMatchesSearchFilters(results);
     setFoundForms({
       foundForms: formsWithComponentsThatMatchSearchFilters,
-      numberOfComponentsFound: formsWithComponentsThatMatchSearchFilters.reduce((acc, curr) => acc + curr.found, 0),
+      ...formsWithComponentsThatMatchSearchFilters.reduce(
+        (acc, curr) => ({
+          numberOfComponentsFound: acc.numberOfComponentsFound + curr.found,
+          numberOfComponentsChanged: acc.numberOfComponentsChanged + curr.changed,
+        }),
+        {
+          numberOfComponentsFound: 0,
+          numberOfComponentsChanged: 0,
+        }
+      ),
     });
   };
   return (
@@ -102,19 +111,27 @@ const MigrationPage = () => {
             <p>
               Fant {foundForms.length} skjemaer som matcher søkekriteriene.&nbsp;
               {numberOfComponentsFound !== undefined && (
-                <span>Totalt {numberOfComponentsFound} komponenter vil bli påvirket av endringene.</span>
+                <span>
+                  Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
+                  endringene.
+                </span>
               )}
             </p>
             {foundForms.length > 0 && (
               <ul>
-                {foundForms.map((form) => (
-                  <li key={form.skjemanummer}>
-                    <Undertittel>
-                      {form.title} ({form.skjemanummer})
-                    </Undertittel>
-                    <p>Antall komponenter som matcher søket: {form.found}</p>
-                  </li>
-                ))}
+                {foundForms
+                  .filter((form) => form.changed > 0)
+                  .map((form) => (
+                    <li key={form.skjemanummer}>
+                      <Undertittel>
+                        {form.title} ({form.skjemanummer})
+                      </Undertittel>
+                      <p>
+                        Antall komponenter som matcher søket: {form.changed} av {form.found}
+                      </p>
+                      {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
+                    </li>
+                  ))}
               </ul>
             )}
           </>

@@ -41,7 +41,7 @@ function migrateForm(form, searchFilters, script) {
 
 function generateDiff(originalComponent, editedComponent) {
   return Object.keys(originalComponent).reduce((acc, key) => {
-    if (key === "key" || key === "label") return { ...acc, [key]: originalComponent[key] };
+    if (key === "key" || key === "label" || key === "id") return { ...acc, [key]: originalComponent[key] };
     if (originalComponent[key] !== editedComponent[key])
       return { ...acc, [key]: { _ORIGINAL: originalComponent[key], _NEW: editedComponent[key] } };
     return acc;
