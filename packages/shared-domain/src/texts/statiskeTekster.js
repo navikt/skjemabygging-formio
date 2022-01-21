@@ -28,10 +28,10 @@ export const statiske = {
     lastSectionContent: "Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.",
   },
   prepareSubmitPage: {
-    firstSectionTitle: "1. Last ned den ferdig utfylte dokumentet til enheten din",
+    firstSectionTitle: "1. Last ned det ferdig utfylte dokumentet til enheten din",
     firstSectionInstruction1:
       "Klikk på «{{downloadApplication}}». Da åpnes det ferdig utfylte dokumentet i en ny fane i nettleseren. ",
-    firstSectionInstruction2: "Du må lagre dokumentet (PDF) på enheten din slik at du enkelt kan finne den igjen.",
+    firstSectionInstruction2: "Du må lagre dokumentet (PDF) på enheten din slik at du enkelt kan finne det igjen.",
     firstSectionInstruction3:
       "Etter at du har lastet ned og lagret dokumentet, må du laste det opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.",
     secondSectionTitle: "2. Last opp dokumentet til NAV",
