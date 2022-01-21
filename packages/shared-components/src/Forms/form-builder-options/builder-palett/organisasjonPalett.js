@@ -21,7 +21,7 @@ const organisasjonPalett = {
         validate: {
           required: true,
           max: 999999999,
-          min: 111111111,
+          min: 100000000,
           customMessage: "Organisasjonsnummeret må inneholde 9 siffer",
         },
       },
