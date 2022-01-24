@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import KeyValuePairsForm, { useKeyValuePairs } from "./KeyValuePairsForm";
+import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
 
 const useStyles = makeStyles({
   root: {
@@ -63,10 +63,13 @@ const getFormsThatWillBeChanged = (mapOfForms) =>
 
 const MigrationPage = () => {
   const styles = useStyles();
-  const [{ foundForms, numberOfComponentsFound, numberOfComponentsChanged }, setFoundForms] = useState({});
+  const [
+    { formMigrationResults, numberOfComponentsFound, numberOfComponentsChanged },
+    setFormMigrationResults,
+  ] = useState({});
 
-  const [searchFilters, dispatchSearchFilters] = useKeyValuePairs();
-  const [editOptions, dispatchEditOptions] = useKeyValuePairs();
+  const [searchFilters, dispatchSearchFilters] = useMigrationOptions();
+  const [editOptions, dispatchEditOptions] = useMigrationOptions();
 
   const onSearch = async () => {
     const results = await fetch(getSearchUrl(searchFilters, editOptions), {
@@ -77,8 +80,8 @@ const MigrationPage = () => {
     }).then((results) => results.json());
     const formsWithComponentsThatMatchSearchFilters = getFormsThatMatchesSearchFilters(results);
     const formsWithComponentsThatWillBeChanged = getFormsThatWillBeChanged(results);
-    setFoundForms({
-      foundForms: formsWithComponentsThatMatchSearchFilters,
+    setFormMigrationResults({
+      formMigrationResults: formsWithComponentsThatMatchSearchFilters,
       changedForms: formsWithComponentsThatWillBeChanged,
       ...formsWithComponentsThatMatchSearchFilters.reduce(
         (acc, curr) => ({
@@ -95,7 +98,7 @@ const MigrationPage = () => {
   return (
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
-      <KeyValuePairsForm
+      <MigrationOptionsForm
         onSubmit={onSearch}
         title="Søk og filtrer"
         addRowText="Legg til filteringsvalg"
@@ -103,7 +106,7 @@ const MigrationPage = () => {
         state={searchFilters}
         dispatch={dispatchSearchFilters}
       />
-      <KeyValuePairsForm
+      <MigrationOptionsForm
         title="Sett opp felter som skal migreres og ny verdi for feltene"
         addRowText="Legg til felt som skal migreres"
         submitText="Simuler og kontroller migrering"
@@ -112,10 +115,10 @@ const MigrationPage = () => {
         onSubmit={onSearch}
       />
 
-      {foundForms && (
+      {formMigrationResults && (
         <>
           <p>
-            Fant {foundForms.length} skjemaer som matcher søkekriteriene.&nbsp;
+            Fant {formMigrationResults.length} skjemaer som matcher søkekriteriene.&nbsp;
             {numberOfComponentsFound !== undefined && (
               <span>
                 Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
@@ -123,9 +126,9 @@ const MigrationPage = () => {
               </span>
             )}
           </p>
-          {foundForms.length > 0 && (
+          {formMigrationResults.length > 0 && (
             <ul>
-              {foundForms.map((form) => (
+              {formMigrationResults.map((form) => (
                 <li key={form.skjemanummer}>
                   <Undertittel>
                     {form.title} ({form.skjemanummer})
