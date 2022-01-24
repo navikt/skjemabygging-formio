@@ -1,11 +1,30 @@
-import { ErrorPage, FyllUtRouter, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles } from "@material-ui/styles";
+import {
+  CustomComponents,
+  ErrorPage,
+  FyllUtRouter,
+  globalStyles,
+  LoadingComponent,
+  Template,
+} from "@navikt/skjemadigitalisering-shared-components";
+import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
+import { Components, Formio } from "formiojs";
+import "nav-frontend-typografi-style";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  "@global": globalStyles,
+}));
+
+Components.setComponents(CustomComponents);
+Formio.use(Template);
 
 const MigrationFormPreview = () => {
   const [form, setForm] = useState();
   const [error, setError] = useState<string>();
   const { formPath } = useParams();
+  useStyles();
   useEffect(() => {
     try {
       fetch(`/api/migrate/preview/${formPath}`, {
