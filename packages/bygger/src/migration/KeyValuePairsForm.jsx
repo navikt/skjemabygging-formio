@@ -44,6 +44,15 @@ const reducer = (state = {}, action) => {
   }
 };
 
+const isJSON = (value) => {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (_e) {
+    return false;
+  }
+};
+
 export const useKeyValuePairs = () => useReducer(reducer, createKeyValuePair(), () => createKeyValuePair());
 
 const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title, state, dispatch }) => {
@@ -91,7 +100,7 @@ const KeyValuePairsForm = ({ addRowText, onSubmit, submitText, title, state, dis
                     type: "edit",
                     payload: {
                       id,
-                      value: event.target.value,
+                      value: isJSON(event.target.value) ? JSON.parse(event.target.value) : event.target.value,
                     },
                   })
                 }
