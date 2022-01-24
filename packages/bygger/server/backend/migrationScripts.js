@@ -84,6 +84,7 @@ async function migrateForms(
       const affectedComponentsLogger = [];
       const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
       formsLogger[form.properties.skjemanummer] = {
+        skjemanummer: form.properties.skjemanummer,
         name: form.name,
         title: form.title,
         path: form.path,

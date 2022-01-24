@@ -2,6 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FormMigrationResult, FormMigrationResults, MigrationOptions } from "../../types/migration";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
 
 const useStyles = makeStyles({
@@ -14,11 +15,11 @@ const useStyles = makeStyles({
   },
 });
 
-const encodeForUrl = (mapIndexedByUniqueIds) => {
-  if (Object.keys(mapIndexedByUniqueIds).length === 0) {
+const encodeForUrl = (migrationOptions: MigrationOptions) => {
+  if (Object.keys(migrationOptions).length === 0) {
     return "";
   }
-  const keyValuePairs = Object.values(mapIndexedByUniqueIds).reduce((acc, curr) => {
+  const keyValuePairs = Object.values(migrationOptions).reduce((acc, curr) => {
     if (curr.key !== "" && curr.value !== "") {
       return {
         ...acc,
@@ -30,7 +31,7 @@ const encodeForUrl = (mapIndexedByUniqueIds) => {
   return JSON.stringify(keyValuePairs);
 };
 
-const getSearchUrl = (searchFilters, editOptions) => {
+const getSearchUrl = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
   let url = "/api/migrate";
   const encodedSearchFilters = encodeForUrl(searchFilters);
   if (encodedSearchFilters) {
@@ -43,30 +44,28 @@ const getSearchUrl = (searchFilters, editOptions) => {
   return url;
 };
 
-const getFormsThatMatchesSearchFilters = (mapOfForms) =>
-  Object.entries(mapOfForms)
-    .map(([key, value]) => ({
-      ...value,
-      skjemanummer: key,
-    }))
-    .filter((form) => form.found > 0)
+const getMigrationResultsMatchingSearchFilters = (mapOfForms: FormMigrationResults) =>
+  Object.values(mapOfForms)
+    .filter((migrationResult) => migrationResult.found > 0)
     .sort((a, b) => b.found - a.found);
 
-const getFormsThatWillBeChanged = (mapOfForms) =>
-  Object.entries(mapOfForms)
-    .map(([key, value]) => ({
-      ...value,
-      skjemanummer: key,
-    }))
-    .filter((form) => form.changed > 0)
+const getFormsThatWillBeChanged = (mapOfForms: FormMigrationResults) =>
+  Object.values(mapOfForms)
+    .filter((migrationResult) => migrationResult.changed > 0)
     .sort((a, b) => b.changed - a.changed);
 
 const MigrationPage = () => {
   const styles = useStyles();
   const [
-    { formMigrationResults, numberOfComponentsFound, numberOfComponentsChanged },
+    // eslint-disable-next-line no-unused-vars
+    { searchResults, migrationResults, numberOfComponentsFound, numberOfComponentsChanged },
     setFormMigrationResults,
-  ] = useState({});
+  ] = useState<{
+    searchResults?: FormMigrationResult[];
+    migrationResults?: FormMigrationResult[];
+    numberOfComponentsFound?: number;
+    numberOfComponentsChanged?: number;
+  }>({});
 
   const [searchFilters, dispatchSearchFilters] = useMigrationOptions();
   const [editOptions, dispatchEditOptions] = useMigrationOptions();
@@ -77,12 +76,12 @@ const MigrationPage = () => {
       headers: {
         "content-type": "application/json",
       },
-    }).then((results) => results.json());
-    const formsWithComponentsThatMatchSearchFilters = getFormsThatMatchesSearchFilters(results);
+    }).then((response) => response.json());
+    const formsWithComponentsThatMatchSearchFilters = getMigrationResultsMatchingSearchFilters(results);
     const formsWithComponentsThatWillBeChanged = getFormsThatWillBeChanged(results);
     setFormMigrationResults({
-      formMigrationResults: formsWithComponentsThatMatchSearchFilters,
-      changedForms: formsWithComponentsThatWillBeChanged,
+      searchResults: formsWithComponentsThatMatchSearchFilters,
+      migrationResults: formsWithComponentsThatWillBeChanged,
       ...formsWithComponentsThatMatchSearchFilters.reduce(
         (acc, curr) => ({
           numberOfComponentsFound: acc.numberOfComponentsFound + curr.found,
@@ -115,10 +114,10 @@ const MigrationPage = () => {
         onSubmit={onSearch}
       />
 
-      {formMigrationResults && (
+      {searchResults && (
         <>
           <p>
-            Fant {formMigrationResults.length} skjemaer som matcher søkekriteriene.&nbsp;
+            Fant {searchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
             {numberOfComponentsFound !== undefined && (
               <span>
                 Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
@@ -126,18 +125,18 @@ const MigrationPage = () => {
               </span>
             )}
           </p>
-          {formMigrationResults.length > 0 && (
+          {searchResults.length > 0 && (
             <ul>
-              {formMigrationResults.map((form) => (
-                <li key={form.skjemanummer}>
+              {searchResults.map((searchResult) => (
+                <li key={searchResult.skjemanummer}>
                   <Undertittel>
-                    {form.title} ({form.skjemanummer})
+                    {searchResult.title} ({searchResult.skjemanummer})
                   </Undertittel>
                   <p>
-                    Antall komponenter som matcher søket: {form.changed} av {form.found}
+                    Antall komponenter som matcher søket: {searchResult.changed} av {searchResult.found}
                   </p>
-                  {form.diff.length > 0 && <pre>{JSON.stringify(form.diff, null, 2)}</pre>}
-                  <Link className="knapp" to={`/migrering/forhandsvis/${form.path}`}>
+                  {searchResult.diff.length > 0 && <pre>{JSON.stringify(searchResult.diff, null, 2)}</pre>}
+                  <Link className="knapp" to={`/migrering/forhandsvis/${searchResult.path}`}>
                     Forhåndsvis
                   </Link>
                 </li>
