@@ -11,7 +11,7 @@ import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.
 import { Components, Formio } from "formiojs";
 import "nav-frontend-typografi-style";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   "@global": globalStyles,
@@ -24,10 +24,12 @@ const MigrationFormPreview = () => {
   const [form, setForm] = useState();
   const [error, setError] = useState<string>();
   const { formPath } = useParams();
+  const { search } = useLocation();
+
   useStyles();
   useEffect(() => {
     try {
-      fetch(`/api/migrate/preview/${formPath}`, {
+      fetch(`/api/migrate/preview/${formPath}${search}`, {
         method: "GET",
         headers: {
           "content-type": "application/json",
@@ -36,7 +38,7 @@ const MigrationFormPreview = () => {
     } catch (err: any) {
       setError(err instanceof Error ? (err as Error).message : "Noe galt skjedde da vi prøvde å laste skjemaet");
     }
-  }, [formPath]);
+  }, [formPath, search]);
 
   if (!form && !error) {
     return <LoadingComponent />;

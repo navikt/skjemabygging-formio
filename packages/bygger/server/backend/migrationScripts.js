@@ -71,8 +71,6 @@ async function fetchForms(url) {
   });
 }
 
-let editedForms = [];
-
 async function migrateForms(
   searchFilters,
   editOptions,
@@ -80,7 +78,7 @@ async function migrateForms(
 ) {
   return fetchForms(url).then((response) => {
     let formsLogger = {};
-    editedForms = response.data.map((form) => {
+    response.data.map((form) => {
       const affectedComponentsLogger = [];
       const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
       formsLogger[form.properties.skjemanummer] = {
@@ -98,8 +96,14 @@ async function migrateForms(
   });
 }
 
-function getMigratedForm(formPath) {
-  return editedForms.find((form) => form.path === formPath);
+async function previewForm(
+  searchFilters,
+  editOptions,
+  formPath,
+  baseUrl = "https://protected-island-44773.herokuapp.com"
+) {
+  const url = `${baseUrl}/form?type=form&tags=nav-skjema&path=${formPath}&limit=1`;
+  return fetchForms(url).then((response) => migrateForm(response.data[0], searchFilters, getEditScript(editOptions)));
 }
 
-export { migrateForm, migrateForms, getEditScript, getMigratedForm };
+export { migrateForm, migrateForms, getEditScript, previewForm };

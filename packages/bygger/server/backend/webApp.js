@@ -1,6 +1,6 @@
 import dispatch from "dispatch";
 import { HttpError } from "./fetchUtils.js";
-import { getMigratedForm, migrateForms } from "./migrationScripts.js";
+import { migrateForms, previewForm } from "./migrationScripts.js";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];
 export const isValidResource = (resourceName) => {
@@ -76,11 +76,12 @@ export function dispatcherWithBackend(backend) {
     },
     "/migrate/preview/:formPath": {
       GET: async (req, res, next, formPath) => {
-        const form = getMigratedForm(formPath);
-        if (form) {
-          res.send(form);
-        } else {
-          handleError({ message: "Skjemaet finnes ikke blant berørte skjemaer" }, res);
+        const searchFilters = JSON.parse(req.query["searchFilters"] || "{}");
+        const editOptions = JSON.parse(req.query["editOptions"] || "{}");
+        try {
+          previewForm(searchFilters, editOptions, formPath).then((formForPreview) => res.send(formForPreview));
+        } catch (error) {
+          handleError(error, res);
         }
       },
     },

@@ -31,17 +31,22 @@ const encodeForUrl = (migrationOptions: MigrationOptions) => {
   return JSON.stringify(keyValuePairs);
 };
 
-const getSearchUrl = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
-  let url = "/api/migrate";
+const getUrlWithMigrateSearchParams = (
+  searchFilters: MigrationOptions,
+  editOptions: MigrationOptions,
+  basePath: string = "/api/migrate"
+) => {
+  let searchFilterParameters = "";
+  let editOptionsParameters = "";
   const encodedSearchFilters = encodeForUrl(searchFilters);
   if (encodedSearchFilters) {
-    url += `?searchFilters=${encodedSearchFilters}`;
+    searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
     const encodedEditOption = encodeForUrl(editOptions);
     if (encodedEditOption) {
-      url += `&editOptions=${encodedEditOption}`;
+      editOptionsParameters = `&editOptions=${encodedEditOption}`;
     }
   }
-  return url;
+  return `${basePath}${searchFilterParameters}${editOptionsParameters}`;
 };
 
 const getMigrationResultsMatchingSearchFilters = (mapOfForms: FormMigrationResults) =>
@@ -71,7 +76,7 @@ const MigrationPage = () => {
   const [editOptions, dispatchEditOptions] = useMigrationOptions();
 
   const onSearch = async () => {
-    const results = await fetch(getSearchUrl(searchFilters, editOptions), {
+    const results = await fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions), {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -136,7 +141,14 @@ const MigrationPage = () => {
                     Antall komponenter som matcher søket: {searchResult.changed} av {searchResult.found}
                   </p>
                   {searchResult.diff.length > 0 && <pre>{JSON.stringify(searchResult.diff, null, 2)}</pre>}
-                  <Link className="knapp" to={`/migrering/forhandsvis/${searchResult.path}`}>
+                  <Link
+                    className="knapp"
+                    to={getUrlWithMigrateSearchParams(
+                      searchFilters,
+                      editOptions,
+                      `/migrering/forhandsvis/${searchResult.path}`
+                    )}
+                  >
                     Forhåndsvis
                   </Link>
                 </li>
