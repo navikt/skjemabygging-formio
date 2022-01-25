@@ -8,3 +8,7 @@ export const lastNedFilBase64 = (base64, tittel, filtype) => {
     console.error(e, `Klarte ikke å laste ned førstesideark.`);
   }
 };
+
+export default {
+  lastNedFilBase64,
+};

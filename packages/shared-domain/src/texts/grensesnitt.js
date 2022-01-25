@@ -19,7 +19,7 @@ export const grensesnitt = {
   },
 
   summaryPage: {
-    editAnswers: "Rediger søknaden",
+    editAnswers: "Rediger opplysningene",
     continueToPostalSubmission: "Send i posten",
     continueToDigitalSubmission: "Til digital innsending",
   },

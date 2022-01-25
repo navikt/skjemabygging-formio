@@ -1,6 +1,6 @@
+import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
-import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 dotenv.config();
 
@@ -10,10 +10,10 @@ const localDevelopmentConfig = {
   formioProjectUrl: "https://protected-island-44773.herokuapp.com",
   forstesideUrl: "https://www.nav.no/soknader/api/forsteside",
   decoratorUrl: "https://www.nav.no/dekoratoren?simple=true",
-  skjemabyggingProxyUrl: "https://skjemabygging-proxy.dev-fss-pub.nais.io",
+  skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || "https://skjemabygging-proxy.dev-fss-pub.nais.io",
   skjemabyggingProxyClientId: "95170319-b4d7-4190-8271-118ed19bafbf",
   azureOpenidTokenEndpoint: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token",
-  clientId: "a1eddc14-0e91-40bc-b910-a0cf39ac3223",
+  clientId: process.env.AZURE_APP_CLIENT_ID || "a1eddc14-0e91-40bc-b910-a0cf39ac3223", // <-- fyllut i dev-gcp
 };
 
 const defaultConfig = {

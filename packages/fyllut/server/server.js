@@ -7,24 +7,25 @@ import morgan from "morgan";
 import mustacheExpress from "mustache-express";
 import fetch from "node-fetch";
 import client from "prom-client";
-import qs from "qs";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
 import getDecorator from "./dekorator.js";
 import { logger } from "./logger.js";
 import { Pdfgen, PdfgenPapir } from "./pdfgen.js";
+import azureAccessTokenHandler from "./security/azureAccessTokenHandler.js";
 import { getCountries } from "./utils/countries.js";
+import { responseToError, toJsonOrThrowError } from "./utils/errorHandling.js";
 import "./utils/errorToJson.js";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "./utils/forms.js";
+import { clean } from "./utils/logCleaning.js";
 
 const app = express();
 const skjemaApp = express();
 
-skjemaApp.use(cors());
-// Parse application/json
 skjemaApp.use(express.json({ limit: "50mb" }));
 skjemaApp.use(express.urlencoded({ extended: true, limit: "50mb" }));
 skjemaApp.use(correlator());
+skjemaApp.use(cors());
 skjemaApp.set("views", buildDirectory);
 skjemaApp.set("view engine", "mustache");
 skjemaApp.engine("html", mustacheExpress());
@@ -40,10 +41,6 @@ const {
   translationDir,
   gitVersion,
   skjemabyggingProxyUrl,
-  skjemabyggingProxyClientId,
-  azureOpenidTokenEndpoint,
-  clientId,
-  clientSecret,
   featureToggles,
 } = config;
 checkConfigConsistency(config);
@@ -58,8 +55,8 @@ app.use(
   morgan(
     (token, req, res) => {
       const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
-      logEntry.correlation_id = req.correlationId();
-      return JSON.stringify(logEntry);
+      logEntry.correlation_id = correlator.getId();
+      return JSON.stringify(clean(logEntry));
     },
     {
       skip: (req) => INTERNAL_PATHS.test(req.url),
@@ -98,6 +95,10 @@ skjemaApp.post("/pdf-form-papir", pdfGenHandler(PdfgenPapir, formRequestHandler)
 skjemaApp.post("/pdf-json", pdfGenHandler(Pdfgen, jsonRequestHandler));
 skjemaApp.post("/pdf-json-papir", pdfGenHandler(PdfgenPapir, jsonRequestHandler));
 
+/**
+ * Henter førsteside via søknadsveiviseren.
+ * @deprecated Use /api/foersteside
+ */
 skjemaApp.post("/foersteside", async (req, res) => {
   const foerstesideData = JSON.stringify(req.body);
   const response = await fetch(forstesideUrl, {
@@ -112,7 +113,7 @@ skjemaApp.post("/foersteside", async (req, res) => {
   } else {
     res.contentType("application/json").status(response.status).send({
       message: "Feil ved generering av førsteside",
-      correlation_id: req.correlationId(),
+      correlation_id: correlator.getId(),
     });
   }
 });
@@ -214,45 +215,43 @@ skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang))
 
 skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaksadresser()));
 
-const postData = {
-  grant_type: "client_credentials",
-  scope: `openid api://${skjemabyggingProxyClientId}/.default`,
-  client_id: clientId,
-  client_secret: clientSecret,
-  client_auth_method: "client_secret_basic",
-};
-
-const toJsonOrThrowError = (errorMessage) => async (response) => {
-  if (response.ok) {
-    return response.json();
-  }
-  const contentType = response.headers.get("content-type");
-  const error = new Error(errorMessage);
-  error.http_response_body = contentType?.includes("application/json") ? await response.json() : await response.text();
-  error.http_url = response.url;
-  error.http_status = response.status;
-  error.correlation_id = correlator.getId();
-  throw error;
-};
-
-skjemaApp.get("/api/enhetsliste", (req, res) => {
-  const body = qs.stringify(postData);
-  fetch(azureOpenidTokenEndpoint, {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    method: "POST",
-    body: body,
+skjemaApp.get("/api/enhetsliste", azureAccessTokenHandler, (req, res, next) => {
+  fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet/kontaktinformasjon/organisering/AKTIV`, {
+    headers: {
+      consumerId: "skjemadigitalisering",
+      Authorization: `Bearer ${req.headers.AzureAccessToken}`,
+      "x-correlation-id": correlator.getId(),
+    },
   })
-    .then(toJsonOrThrowError("Feil ved autentisering"))
-    .then(({ access_token }) =>
-      fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet/kontaktinformasjon/organisering/AKTIV`, {
-        headers: { consumerId: "skjemadigitalisering", Authorization: `Bearer ${access_token}` },
-      })
-    )
-    .then(toJsonOrThrowError("Feil ved henting av enhetsliste"))
+    .then(toJsonOrThrowError("Feil ved henting av enhetsliste", true))
     .then((enhetsliste) => res.send(enhetsliste))
-    .catch((err) => {
-      console.error(JSON.stringify(err));
-      res.status(500).send({ message: err.message, correlation_id: req.correlationId() });
+    .catch((error) => {
+      next(error);
+    });
+});
+
+skjemaApp.post("/api/foersteside", azureAccessTokenHandler, (req, res, next) => {
+  const foerstesideData = JSON.stringify(req.body);
+  fetch(`${skjemabyggingProxyUrl}/foersteside`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${req.headers.AzureAccessToken}`,
+      "x-correlation-id": correlator.getId(),
+    },
+    body: foerstesideData,
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        const body = await response.text();
+        res.contentType("application/json");
+        res.send(body);
+      } else {
+        next(await responseToError(response, "Feil ved generering av førsteside", true));
+      }
+    })
+    .catch((error) => {
+      next(error);
     });
 });
 
@@ -281,13 +280,17 @@ skjemaApp.use(/^(?!.*\/(internal|static)\/).*$/, (req, res) => {
 });
 
 function logErrors(err, req, res, next) {
-  logger.error({ message: err.message, stack: err.stack, correlation_id: req.correlationId() });
+  if (!err.correlation_id) {
+    err.correlation_id = correlator.getId();
+  }
+  console.error(JSON.stringify(err));
   next(err);
 }
 
 function errorHandler(err, req, res, next) {
   res.status(500);
-  res.send({ error: "something failed", correlation_id: req.correlationId() });
+  res.contentType("application/json");
+  res.send({ message: err.functional ? err.message : "Det oppstod en feil", correlation_id: correlator.getId() });
 }
 
 skjemaApp.use(logErrors);

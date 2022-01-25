@@ -1,21 +1,22 @@
+import { AppConfigProvider, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
+import { Formio } from "formiojs";
+import Pusher from "pusher-js";
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import { AuthProvider } from "./context/auth-context";
+import featureToggles from "./featureToggles.js";
 import "./index.less";
 import * as serviceWorker from "./serviceWorker";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import Pusher from "pusher-js";
-import { Formio } from "formiojs";
-import featureToggles from "./featureToggles.js";
-import { AppConfigProvider, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
-import { AuthProvider } from "./context/auth-context";
 
 Formio.use(navdesign);
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://protected-island-44773.herokuapp.com";
-const serverURL = "https://skjemautfylling-formio.labs.nais.io/fyllut";
+const serverURL = "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut";
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
-const fyllutBaseURL = process.env.REACT_APP_FYLLUT_BASE_URL || "https://www.nav.no/fyllut";
+const fyllutBaseURL =
+  process.env.REACT_APP_FYLLUT_BASE_URL || "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut";
 
 Pusher.logToConsole = true;
 

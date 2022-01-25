@@ -27,7 +27,6 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log("Response: ", response);
         return response;
       });
   };
@@ -175,7 +174,47 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     });
   };
 
-  const saveTranslation = (
+  const createTranslationSubmition = (data: {
+    language: Language;
+    name: string;
+    scope: TranslationScope;
+    form?: string;
+    tag?: TranslationTag;
+  }) =>
+    Formiojs.fetch(`${formio.projectUrl}/language/submission`, {
+      headers: {
+        "x-jwt-token": Formiojs.getToken(),
+        "content-type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        data,
+      }),
+    });
+
+  const updateTranslationSubmition = (
+    translationId: string,
+    data: {
+      language: Language;
+      i18n: I18nTranslationMap;
+      name: string;
+      scope: TranslationScope;
+      form?: string;
+      tag?: TranslationTag;
+    }
+  ) =>
+    Formiojs.fetch(`${formio.projectUrl}/language/submission/${translationId}`, {
+      headers: {
+        "x-jwt-token": Formiojs.getToken(),
+        "content-type": "application/json",
+      },
+      method: "PUT",
+      body: JSON.stringify({
+        data,
+      }),
+    });
+
+  const saveTranslation = async (
     translationId,
     language: Language,
     i18n: I18nTranslationMap,
@@ -185,38 +224,37 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     tag?: TranslationTag,
     formTitle?: string
   ) => {
-    Formiojs.fetch(`${formio.projectUrl}/language/submission${translationId ? `/${translationId}` : ""}`, {
-      headers: {
-        "x-jwt-token": Formiojs.getToken(),
-        "content-type": "application/json",
-      },
-      method: translationId ? "PUT" : "POST",
-      body: JSON.stringify({
-        data: {
-          form,
-          name,
-          language,
-          scope,
-          i18n,
-          tag,
-        },
-      }),
-    }).then((response) => {
-      if (response.ok) {
-        userAlerter.flashSuccessMessage(
-          !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
-        );
-      } else {
-        response.json().then((r) => {
-          const errorMessage = "Lagret oversettelser feilet: ";
-          userAlerter.setErrorMessage(errorMessage.concat(r?.message));
-        });
-      }
-    });
+    if (!translationId) {
+      translationId = await createTranslationSubmition({ language, name, scope, form, tag }).then((response) => {
+        if (response.ok) {
+          return response.json().then((json) => json._id);
+        } else {
+          response.json().then((error) => {
+            const errorMessage = "Oversettelsen kunne ikke opprettes: ";
+            userAlerter.setErrorMessage(errorMessage.concat(error?.message));
+          });
+        }
+      });
+    }
+
+    if (translationId) {
+      updateTranslationSubmition(translationId, { language, i18n, name, scope, form, tag }).then((response) => {
+        if (response.ok) {
+          userAlerter.flashSuccessMessage(
+            !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
+          );
+        } else {
+          response.json().then((r) => {
+            const errorMessage = "Lagret oversettelser feilet: ";
+            userAlerter.setErrorMessage(errorMessage.concat(r?.message));
+          });
+        }
+      });
+    }
   };
 
   const saveLocalTranslation = (
-    translationId: string,
+    translationId: string | undefined,
     languageCode: Language,
     translations: ScopedTranslationMap,
     formPath: string,
@@ -239,7 +277,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }
   };
   const saveGlobalTranslation = (
-    translationId: string,
+    translationId: string | undefined,
     languageCode: Language,
     translations: ScopedTranslationMap,
     tag: TranslationTag

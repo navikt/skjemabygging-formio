@@ -2,12 +2,13 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom/extend-expect';
-import 'regenerator-runtime/runtime'
+import "@testing-library/jest-dom/extend-expect";
+import fetchMock from "jest-fetch-mock";
+import "regenerator-runtime/runtime";
 
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -20,3 +21,5 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+fetchMock.enableMocks();
