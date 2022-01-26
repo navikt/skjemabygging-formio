@@ -18,6 +18,7 @@ import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 import i18nData from "./i18nData";
 import Template from "./template";
 import { guid } from "./util/guid";
+import { navCssVariables } from "./util/navCssVariables";
 
 export {
   NavForm,
@@ -43,4 +44,5 @@ export {
   useCurrentLanguage,
   useLanguageCodeFromURL,
   mapTranslationsToFormioI18nObject,
+  navCssVariables,
 };

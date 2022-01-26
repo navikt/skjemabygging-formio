@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import classNames from "classnames";
-import navCssVariabler from "nav-frontend-core";
 import React from "react";
+import { navCssVariables } from "../util/navCssVariables";
 import Select from "./Select";
 
 const useLanguageSelectorStyling = makeStyles({
@@ -58,7 +58,7 @@ const useLanguageSelectorStyling = makeStyles({
       display: "block",
       padding: "0.5rem 1rem",
       "&:hover, &:focus": {
-        backgroundColor: navCssVariabler.navBla,
+        backgroundColor: navCssVariables.navBla,
         color: "white",
         width: "100%",
         height: "100%",

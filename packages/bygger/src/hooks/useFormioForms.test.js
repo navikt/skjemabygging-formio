@@ -9,7 +9,7 @@ const RESPONSE_HEADERS = {
   },
 };
 
-describe("useFormioForms", () => {
+describe.skip("useFormioForms", () => {
   const forms = [
     { title: "skjema1", path: "skjema1", tags: "nav-skjema", properties: {}, modified: "", _id: "000" },
     { title: "skjema2", path: "skjema2", tags: "nav-skjema", properties: {}, modified: "", _id: "012" },

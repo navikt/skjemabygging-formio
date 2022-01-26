@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import styled from "@material-ui/styles/styled";
+import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
 import { AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
 import { Xknapp } from "nav-frontend-ikonknapper";
-import navCssVariabler from "nav-frontend-core";
+import React, { useEffect, useState } from "react";
 
 export const UserAlerterContext = React.createContext();
 
@@ -13,10 +13,10 @@ const ErrorAlertContent = styled("div")({
     margin: 0,
   },
   "& .knapp": {
-    color: navCssVariabler.navMorkGra,
+    color: navCssVariables.navMorkGra,
     backgroundColor: "transparent",
     "& svg": {
-      fill: navCssVariabler.navMorkGra,
+      fill: navCssVariables.navMorkGra,
     },
   },
 });

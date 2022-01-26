@@ -1,13 +1,13 @@
-import React, { useEffect, FunctionComponent } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { styled } from "@material-ui/styles";
+import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import { scrollToAndSetFocus } from "../util/focus-management";
+import React, { FunctionComponent, useEffect } from "react";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAmplitude } from "../context/amplitude";
-import { getPanels } from "../util/form";
-import navCssVariabler from "nav-frontend-core";
-import { TEXTS, createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
+import { scrollToAndSetFocus } from "../util/focus-management";
+import { getPanels } from "../util/form";
+import { navCssVariables } from "../util/navCssVariables";
 
 // duplisert fra bygger
 type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
@@ -189,7 +189,7 @@ const SummaryContent = styled("div")({
   flexDirection: "column",
 
   "& .data-grid__row": {
-    border: `1px solid ${navCssVariabler.navGra60}`,
+    border: `1px solid ${navCssVariables.navGra60}`,
     borderRadius: "7px",
     marginBottom: "1rem",
     padding: "1.5rem 2rem 0",
