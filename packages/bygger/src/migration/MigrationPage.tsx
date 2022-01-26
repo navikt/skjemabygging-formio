@@ -61,11 +61,7 @@ const getFormsThatWillBeChanged = (mapOfForms: FormMigrationResults) =>
 
 const MigrationPage = () => {
   const styles = useStyles();
-  const [
-    // eslint-disable-next-line no-unused-vars
-    { searchResults, migrationResults, numberOfComponentsFound, numberOfComponentsChanged },
-    setFormMigrationResults,
-  ] = useState<{
+  const [{ searchResults, numberOfComponentsFound, numberOfComponentsChanged }, setFormMigrationResults] = useState<{
     searchResults?: FormMigrationResult[];
     migrationResults?: FormMigrationResult[];
     numberOfComponentsFound?: number;
