@@ -27,8 +27,10 @@ const TestComponent = ({ formio, formPath }) => {
   }, [formio, formPath, loadForm, loadFormsList]);
   return (
     <div>
-      {forms.map((form) => (
-        <div data-testid="form">{form.title}</div>
+      {forms.map((form, index) => (
+        <div key={index} data-testid="form">
+          {form.title}
+        </div>
       ))}
     </div>
   );
