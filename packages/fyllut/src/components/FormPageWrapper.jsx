@@ -1,6 +1,7 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ErrorComponent from "./ErrorComponent";
 import FormPage from "./FormPage";
 
 class HttpError extends Error {}
@@ -38,11 +39,7 @@ export const FormPageWrapper = () => {
   }
 
   if (status === "FORM NOT FOUND" || !form) {
-    return (
-      <h1>
-        Finner ikke skjemaet <em>{formPath}</em>
-      </h1>
-    );
+    return <ErrorComponent />;
   }
 
   return <FormPage form={form} />;
