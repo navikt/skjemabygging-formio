@@ -24,7 +24,7 @@ describe("NewFormPage", () => {
       if (url.endsWith("/mottaksadresse/submission")) {
         return Promise.resolve(new Response(JSON.stringify(mockMottaksadresser), RESPONSE_HEADERS));
       }
-      fail(`Manglende testoppsett: Ukjent url ${url}`);
+      throw new Error(`Manglende testoppsett: Ukjent url ${url}`);
     });
     render(
       <MemoryRouter>

@@ -1,7 +1,7 @@
 export const globalEntitiesToI18nGroupedByTag = (entities) => {
   return entities.reduce((globalTranslations, translation) => {
-    const {data, _id: id} = translation;
-    const {i18n, scope, name, tag} = data;
+    const { data, _id: id } = translation;
+    const { i18n, scope, name, tag } = data;
     if (!globalTranslations[data.language]) {
       globalTranslations[data.language] = [];
     }
@@ -30,26 +30,31 @@ const flattenTranslationObject = (translationsObject) => {
   return Object.keys(translationsObject).reduce((translations, key) => {
     return {
       ...translations,
-      [key]: translationsObject[key].value
-    }
+      [key]: translationsObject[key].value,
+    };
   }, {});
 };
 
 export const flattenGlobalI18nGroupedByTag = (globalI18nGroupedByTag) => {
-  return Object.keys(globalI18nGroupedByTag).reduce((i18n, languageCode) => ({
-    ...i18n,
-    [languageCode]: {
-      ...globalI18nGroupedByTag[languageCode].reduce((i18nLanguage, translationsForTag) => {
-        return {
-          ...i18nLanguage,
-          ...flattenTranslationObject(translationsForTag.translations),
-        }
-      }, {}),
-    },
-  }), {});
+  return Object.keys(globalI18nGroupedByTag).reduce(
+    (i18n, languageCode) => ({
+      ...i18n,
+      [languageCode]: {
+        ...globalI18nGroupedByTag[languageCode].reduce((i18nLanguage, translationsForTag) => {
+          return {
+            ...i18nLanguage,
+            ...flattenTranslationObject(translationsForTag.translations),
+          };
+        }, {}),
+      },
+    }),
+    {}
+  );
 };
 
-export default {
+const util = {
   globalEntitiesToI18nGroupedByTag,
   flattenGlobalI18nGroupedByTag,
 };
+
+export default util;

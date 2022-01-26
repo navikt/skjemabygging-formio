@@ -1,4 +1,4 @@
-export default {
+const log = {
   "@timestamp": "2022-01-13T13:58:37.067Z",
   "log.level": "info",
   message:
@@ -57,3 +57,5 @@ export default {
   },
   correlation_id: "906d2273-8292-4665-9895-5cf6220dc6a6",
 };
+
+export default log;

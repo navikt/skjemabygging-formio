@@ -1,21 +1,23 @@
-import typescript from '@rollup/plugin-typescript';
-import shebang from 'rollup-plugin-preserve-shebang';
+import typescript from "@rollup/plugin-typescript";
+import shebang from "rollup-plugin-preserve-shebang";
 
-export default [
+const config = [
   {
-    input: 'src/pusher-message/trigger-workflow-message.ts',
+    input: "src/pusher-message/trigger-workflow-message.ts",
     output: {
-      dir: 'dist',
-      format: 'es',
+      dir: "dist",
+      format: "es",
       sourcemap: true,
-      entryFileNames: '[name].mjs'
+      entryFileNames: "[name].mjs",
     },
-    external: ['fs', 'pusher'],
+    external: ["fs", "pusher"],
     plugins: [
       typescript({
-        exclude: ["**/*.test.ts", "**/__mocks__/**"]
+        exclude: ["**/*.test.ts", "**/__mocks__/**"],
       }),
-      shebang()
-    ]
-  }
+      shebang(),
+    ],
+  },
 ];
+
+export default config;
