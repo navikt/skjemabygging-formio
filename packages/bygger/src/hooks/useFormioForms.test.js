@@ -1,6 +1,7 @@
-import { renderHook } from "@testing-library/react-hooks";
-import Formiojs from "formiojs/Formio";
+import { getNodeText, render, screen } from "@testing-library/react";
+import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
+import React, { useEffect, useState } from "react";
 import { useFormioForms } from "./useFormioForms";
 
 const RESPONSE_HEADERS = {
@@ -9,39 +10,66 @@ const RESPONSE_HEADERS = {
   },
 };
 
-describe.skip("useFormioForms", () => {
-  const forms = [
-    { title: "skjema1", path: "skjema1", tags: "nav-skjema", properties: {}, modified: "", _id: "000" },
-    { title: "skjema2", path: "skjema2", tags: "nav-skjema", properties: {}, modified: "", _id: "012" },
-    { title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" },
-  ];
+const userAlerter = {
+  flashSuccessMessage: jest.fn(),
+  alertComponent: jest.fn(),
+};
 
-  const form = [{ title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" }];
-  fetchMock.mockImplementation((url) => {
-    if (
-      url.includes(
-        "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id"
-      )
-    ) {
-      return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS));
-    } else if (url.includes("/form?type=form&tags=nav-skjema&path=skjema3&limit=1")) {
-      return Promise.resolve(new Response(JSON.stringify(form), RESPONSE_HEADERS));
+const TestComponent = ({ formio, formPath }) => {
+  const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
+  const [forms, setForms] = useState([]);
+  useEffect(() => {
+    if (formPath) {
+      loadForm(formPath).then((form) => setForms([form]));
+    } else {
+      loadFormsList().then((forms) => setForms(forms));
     }
-    return Promise.reject(new Error(`ukjent url ${url}`));
+  }, [formio, formPath, loadForm, loadFormsList]);
+  return (
+    <div>
+      {forms.map((form) => (
+        <div data-testid="form">{form.title}</div>
+      ))}
+    </div>
+  );
+};
+
+describe("useFormioForms", () => {
+  beforeEach(() => {
+    const forms = [
+      { title: "skjema1", path: "skjema1", tags: "nav-skjema", properties: {}, modified: "", _id: "000" },
+      { title: "skjema2", path: "skjema2", tags: "nav-skjema", properties: {}, modified: "", _id: "012" },
+      { title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" },
+    ];
+
+    const form = [{ title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" }];
+    fetchMock.mockImplementation((url) => {
+      if (
+        url.includes(
+          "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id"
+        )
+      ) {
+        return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS));
+      } else if (url.includes("/form?type=form&tags=nav-skjema&path=skjema3&limit=1")) {
+        return Promise.resolve(new Response(JSON.stringify(form), RESPONSE_HEADERS));
+      }
+      return Promise.reject(new Error(`ukjent url ${url}`));
+    });
   });
 
   it("loads form list in the hook", async () => {
-    const { result } = renderHook(() => useFormioForms(new Formiojs("http://myproject.example.org")));
-    const forms = await result.current.loadFormsList();
-    expect(forms.length).toBe(3);
-    expect(forms[0].title).toBe("skjema1");
-    expect(forms[1].title).toBe("skjema2");
-    expect(forms[2].title).toBe("skjema3");
+    render(<TestComponent formio={new Formio("http://myproject.example.org")} />);
+    const formDivs = await screen.findAllByTestId("form");
+    expect(formDivs).toHaveLength(3);
+    expect(getNodeText(formDivs[0])).toEqual("skjema1");
+    expect(getNodeText(formDivs[1])).toEqual("skjema2");
+    expect(getNodeText(formDivs[2])).toEqual("skjema3");
   });
 
   it("loads one specific form in the hook", async () => {
-    const { result } = renderHook(() => useFormioForms(new Formiojs("http://myproject.example.org")));
-    const form = await result.current.loadForm("skjema3");
-    expect(form.title).toBe("skjema3");
+    render(<TestComponent formio={new Formio("http://myproject.example.org")} formPath="skjema3" />);
+    const formDivs = await screen.findAllByTestId("form");
+    expect(formDivs).toHaveLength(1);
+    expect(getNodeText(formDivs[0])).toEqual("skjema3");
   });
 });
