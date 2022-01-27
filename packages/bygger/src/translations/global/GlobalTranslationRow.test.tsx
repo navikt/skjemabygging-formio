@@ -1,18 +1,21 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
-import GlobalTranslationRow from "./GlobalTranslationRow";
 import userEvent from "@testing-library/user-event";
+import React from "react";
+import GlobalTranslationRow from "./GlobalTranslationRow";
 
 describe("GlobalTranslationRow", () => {
-  const mockedUpdateTranslation = jest.fn();
-  const mockedUpdateOriginalText = jest.fn();
-  const mockedDeleteOneRow = jest.fn();
+  let mockedUpdateTranslation = jest.fn();
+  let mockedUpdateOriginalText = jest.fn();
+  let mockedDeleteOneRow = jest.fn();
 
   const renderGlobalTranslationRow = (
     mockedOriginalText: string,
     mockedTranslation: string,
     mockedCurrentOriginalTextList: string[]
   ) => {
+    mockedUpdateTranslation = jest.fn();
+    mockedUpdateOriginalText = jest.fn();
+    mockedDeleteOneRow = jest.fn();
     render(
       <GlobalTranslationRow
         id={"123"}
@@ -25,13 +28,13 @@ describe("GlobalTranslationRow", () => {
         predefinedGlobalOriginalTexts={["FORRIGE", "NESTE", "FJERN"]}
       />
     );
-
-    afterEach(() => {
-      mockedUpdateTranslation.mockClear();
-      mockedUpdateOriginalText.mockClear();
-      mockedDeleteOneRow.mockClear();
-    });
   };
+
+  afterEach(() => {
+    mockedUpdateTranslation.mockClear();
+    mockedUpdateOriginalText.mockClear();
+    mockedDeleteOneRow.mockClear();
+  });
 
   it("renders one globalTranslation row with empty originalText and translation", () => {
     renderGlobalTranslationRow("", "", []);

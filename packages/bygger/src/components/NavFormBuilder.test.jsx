@@ -65,7 +65,7 @@ describe("NavFormBuilder", () => {
       userEvent.click(leggTilNyttStegKnapp);
       expect(await screen.findByRole("link", { name: "Page 2" })).toBeTruthy();
       await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
-    });
+    }, 10000);
 
     describe("remove button", () => {
       it("removes a component which no other component depends on", async () => {

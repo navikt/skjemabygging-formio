@@ -13,8 +13,8 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "proxy": "http://localhost:8080",
   "dependencies": {
-    "@craco/craco": "^5.6.4",
-    "@material-ui/styles": "^4.10.0",
+    "@craco/craco": "^6.0.0",
+    "@material-ui/styles": "4.10.0",
     "@navikt/ds-icons": "^0.2.0",
     "@navikt/fnrvalidator": "^1.1.3",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
@@ -25,7 +25,6 @@
     "craco-less": "^1.17.0",
     "ejs-loader": "^0.5.0",
     "formiojs": "4.14.0-rc.18",
-    "jest-environment-jsdom-sixteen": "^2.0.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",
     "lodash.merge": "^4.5.0",
@@ -33,7 +32,6 @@
     "nav-frontend-alertstriper-style": "^2.0.17",
     "nav-frontend-chevron": "^1.0.13",
     "nav-frontend-chevron-style": "^0.3.5",
-    "nav-frontend-core": "^5.0.11",
     "nav-frontend-ikoner-assets": "^2.0.3",
     "nav-frontend-ikonknapper": "^1.0.9",
     "nav-frontend-js-utils": "^1.0.16",
@@ -55,20 +53,20 @@
     "prop-types": "^15.7.2",
     "pusher": "^3.0.1",
     "pusher-js": "^7.0.0",
-    "react": "^16.13.1",
+    "react": "16.14.0",
     "react-csv": "^2.0.3",
-    "react-dom": "^16.13.1",
+    "react-dom": "16.14.0",
     "react-modal": "^3.12.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^4.0.3",
     "wait-for-expect": "^3.0.2"
   },
   "scripts": {
-    "start": "cross-env-shell PORT=3000 EXTEND_ESLINT=true craco start",
-    "build": "cross-env-shell EXTEND_ESLINT=true craco build",
+    "start": "cross-env-shell PORT=3000 craco start",
+    "build": "cross-env-shell craco build",
     "clean": "rimraf build coverage",
-    "test": "craco test --env=jest-environment-jsdom-sixteen --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
-    "test:coverage": "craco test --coverage --watchAll=false --env=jest-environment-jsdom-sixteen --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
+    "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
+    "test:coverage": "craco test --coverage --watchAll=false --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
     "eject": "craco eject"
   },
   "engines": {
@@ -103,5 +101,8 @@
     "nav-frontend-paneler": "^3.0.1",
     "prettier": "^2.0.5",
     "typescript": "^4.4.2"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   }
 }

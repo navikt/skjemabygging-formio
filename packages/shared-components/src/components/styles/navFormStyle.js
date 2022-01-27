@@ -1,5 +1,5 @@
 import merge from "lodash.merge";
-import navCssVariabler from "nav-frontend-core";
+import { navCssVariables } from "../../util/navCssVariables";
 
 const wizardSidevelgerStyles = {
   "& .pagination": {
@@ -37,7 +37,7 @@ const fieldsSideBySideStyles = {
 
 const dataGridStyles = {
   "& .data-grid__row": {
-    border: `1px solid ${navCssVariabler.navGra60}`,
+    border: `1px solid ${navCssVariables.navGra60}`,
     borderRadius: "7px",
     marginBottom: "1rem",
     padding: "1.5rem 2rem 0",
