@@ -38,7 +38,7 @@ const FyllUtRouter = ({ form, translations }) => {
   }, [loggSkjemaApnet]);
 
   return (
-    <LanguagesProvider translations={translations || {}}>
+    <LanguagesProvider translations={translations}>
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>

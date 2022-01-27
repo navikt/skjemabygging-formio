@@ -46,7 +46,7 @@ const MigrationFormPreview = () => {
     return <ErrorPage errorMessage={error} />;
   }
 
-  return <FyllUtRouter form={form} />;
+  return <FyllUtRouter form={form} translations={{}} />;
 };
 
 export default MigrationFormPreview;
