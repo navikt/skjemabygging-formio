@@ -5,7 +5,7 @@ import MigrationFormPreview from "./MigrationFormPreview";
 import MigrationPage from "./MigrationPage";
 
 const MigrationRouter = () => {
-  const { path } = useRouteMatch();
+  const { path } = useRouteMatch("/migrering");
   return (
     <AppLayoutWithContext
       navBarProps={{
