@@ -5,12 +5,21 @@ import React from "react";
 import { MemoryRouter, Route } from "react-router-dom";
 import { FormPageWrapper } from "./FormPageWrapper";
 
+const RESPONSE_HEADERS = {
+  headers: {
+    "content-type": "application/json",
+  },
+};
+
 describe("FormPageWrapper", () => {
   afterEach(() => fetchMock.resetMocks());
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response());
+      if (url === "/fyllut/forms/unknownForm") {
+        return Promise.resolve(new Response(undefined, { ...RESPONSE_HEADERS, status: 404 }));
+      }
+      throw new Error("Unknown URL: " + url);
     });
 
     render(
@@ -39,7 +48,10 @@ describe("FormPageWrapper", () => {
       components: [],
     };
     fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response(JSON.stringify(mockedForm)));
+      if (url === "fyllut/forms/knownForm") {
+        return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
+      }
+      throw new Error("Unknown URL: " + url);
     });
 
     render(
