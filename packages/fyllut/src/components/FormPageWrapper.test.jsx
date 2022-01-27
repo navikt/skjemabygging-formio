@@ -35,7 +35,7 @@ describe("FormPageWrapper", () => {
         name: "Laster...",
       })
     ).toBeInTheDocument();
-    expect(await screen.findByRole("heading", { name: "Finner ikke skjemaet newForm" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Fant ikke siden" })).toBeInTheDocument();
     await waitFor(() => expect(document.title).toEqual(""));
   });
 
