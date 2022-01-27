@@ -23,7 +23,7 @@ describe("FormPageWrapper", () => {
     });
 
     render(
-      <MemoryRouter initialEntries={["/fyllut/forms/newForm"]}>
+      <MemoryRouter initialEntries={["/fyllut/forms/unknownForm"]}>
         <Route path="/fyllut/forms/:formPath">
           <FormPageWrapper />
         </Route>
@@ -55,7 +55,7 @@ describe("FormPageWrapper", () => {
     });
 
     render(
-      <MemoryRouter initialEntries={["/fyllut/forms/newForm"]}>
+      <MemoryRouter initialEntries={["/fyllut/forms/knownForm"]}>
         <AppConfigProvider featureToggles={{}}>
           <Route path="/fyllut/forms/:formPath">
             <FormPageWrapper />
