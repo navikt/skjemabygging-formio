@@ -23,17 +23,17 @@ const useStyles = makeStyles({
   },
   statusCode: {
     fontSize: "1.25rem",
-    fontWeight: "400",
+    fontWeight: 400,
     letterSpacing: "-.001em",
     lineHeight: "1.75rem",
     margin: "0",
   },
   bodyText: {
     fontSize: "1.125rem",
-    fontWeight: "400",
-    letterSpacing: "0",
+    fontWeight: 400,
+    letterSpacing: 0,
     lineHeight: "1.75rem",
-    margin: "0",
+    margin: 0,
 
     "&:not(:last-child)": {
       marginBottom: "1rem",
@@ -51,8 +51,8 @@ const useStyles = makeStyles({
     fontSize: "1.75rem",
     letterSpacing: "-.004em",
     lineHeight: "2.25rem",
-    fontWeight: "600",
-    margin: "0",
+    fontWeight: 600,
+    margin: 0,
     wordBreak: "break-word",
     marginBottom: "0.5rem",
   },
@@ -75,7 +75,7 @@ const useStyles = makeStyles({
     },
   },
   searchFieldContainer: {
-    flexGrow: "1",
+    flexGrow: 1,
   },
   searchButton: {
     alignItems: "center",
@@ -92,11 +92,11 @@ const useStyles = makeStyles({
     gap: "0.5rem",
     gridGap: "0.5rem",
     height: "100%",
-    margin: "0",
+    margin: 0,
     minWidth: "48px",
     padding: "0.75rem",
     position: "absolute",
-    right: "0",
+    right: 0,
     textAlign: "center",
     textDecoration: "none",
     textTransform: "none",
@@ -130,7 +130,7 @@ const ErrorComponent = () => {
               </p>
               <p className={styles.bodyText}>
                 Bruk gjerne søket, menyen eller{" "}
-                <a href="/" className={styles.link}>
+                <a href="https://nav.no" className={styles.link}>
                   gå til forsiden
                 </a>
                 .
@@ -181,7 +181,7 @@ const ErrorComponent = () => {
               <p className={styles.bodyText}>The page you requested cannot be found.</p>
               <p className={styles.bodyText}>
                 Go to the{" "}
-                <a href="/" className={styles.link}>
+                <a href="https://nav.no" className={styles.link}>
                   front page
                 </a>
                 , or use one of the links in the menu.
