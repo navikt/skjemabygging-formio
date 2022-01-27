@@ -5,10 +5,9 @@ import {
   FyllUtRouter,
   globalStyles,
   LoadingComponent,
-  Template,
 } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
-import { Components, Formio } from "formiojs";
+import { Components } from "formiojs";
 import "nav-frontend-typografi-style";
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
@@ -18,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 Components.setComponents(CustomComponents);
-Formio.use(Template);
 
 const MigrationFormPreview = () => {
   const [form, setForm] = useState();
