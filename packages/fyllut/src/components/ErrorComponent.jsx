@@ -158,7 +158,6 @@ const ErrorComponent = () => {
                     aria-labelledby="search-header"
                     maxLength="200"
                     placeholder="Søk på nav.no"
-                    value=""
                     id="search-input"
                     aria-invalid="false"
                     className={styles.searchField}
