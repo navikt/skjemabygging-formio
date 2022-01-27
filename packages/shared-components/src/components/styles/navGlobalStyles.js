@@ -1,4 +1,4 @@
-import navCssVariables from "nav-frontend-core";
+import { navCssVariables } from "../../util/navCssVariables";
 
 export const globalStyles = {
   body: {

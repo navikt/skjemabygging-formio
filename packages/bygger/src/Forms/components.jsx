@@ -1,5 +1,5 @@
 import { styled } from "@material-ui/styles";
-import navCssVariables from "nav-frontend-core";
+import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
 
 export const Pagewrapper = styled("div")({
   margin: "0 auto",

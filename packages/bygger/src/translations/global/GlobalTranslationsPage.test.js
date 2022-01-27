@@ -1,10 +1,10 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import GlobalTranslationsPage from "./GlobalTranslationsPage";
-import { MemoryRouter } from "react-router-dom";
-import { UserAlerterContext } from "../../userAlerting";
-import I18nProvider from "../../context/i18n";
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { render, screen } from "@testing-library/react";
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
+import I18nProvider from "../../context/i18n";
+import { UserAlerterContext } from "../../userAlerting";
+import GlobalTranslationsPage from "./GlobalTranslationsPage";
 
 const globalEnglishTranslation = {
   en: [
@@ -25,9 +25,12 @@ const globalEnglishTranslation = {
 };
 
 describe("GlobalTranslationsPage", () => {
+  let mockedDeleteTranslation;
+  let mockedSaveTranslations;
+
   const renderGlobalTranslationsPage = (loadTranslation, languageCode = "") => {
-    const mockedDeleteTranslation = jest.fn();
-    const mockedSaveTranslations = jest.fn();
+    mockedDeleteTranslation = jest.fn();
+    mockedSaveTranslations = jest.fn();
     const userAlerter = {
       flashSuccessMessage: jest.fn(),
       alertComponent: jest.fn(),
@@ -49,12 +52,12 @@ describe("GlobalTranslationsPage", () => {
         </MemoryRouter>
       </AppConfigProvider>
     );
-
-    afterEach(() => {
-      mockedDeleteTranslation.mockClear();
-      mockedSaveTranslations.mockClear();
-    });
   };
+
+  afterEach(() => {
+    mockedDeleteTranslation.mockClear();
+    mockedSaveTranslations.mockClear();
+  });
 
   describe("Render global translation page without available languages", () => {
     beforeEach(() => {
@@ -75,9 +78,13 @@ describe("GlobalTranslationsPage", () => {
   });
 
   describe("Render global translation page with English translations", () => {
-    const mockedLoadTranslation = jest.fn(() => Promise.resolve(globalEnglishTranslation));
+    let mockedLoadTranslation;
     beforeEach(() => {
+      mockedLoadTranslation = jest.fn(() => Promise.resolve(globalEnglishTranslation));
       renderGlobalTranslationsPage(mockedLoadTranslation, "en");
+    });
+    afterEach(() => {
+      mockedLoadTranslation.mockClear();
     });
     it("renders header with English label", async () => {
       const addNewTranslationButton = screen.getByRole("button", { name: "Legg til ny tekst" });
@@ -89,10 +96,6 @@ describe("GlobalTranslationsPage", () => {
       expect(languageHeading).toBeInTheDocument();
       expect(originalTextField).toBeInTheDocument();
       expect(translationField).toBeInTheDocument();
-    });
-
-    afterEach(() => {
-      mockedLoadTranslation.mockClear();
     });
   });
 });
