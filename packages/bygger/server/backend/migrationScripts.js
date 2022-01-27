@@ -31,12 +31,7 @@ function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, s
 }
 
 function migrateForm(form, searchFilters, script) {
-  return {
-    ...form,
-    components: form.components.map((component) =>
-      recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script)
-    ),
-  };
+  return recursivelyMigrateComponentAndSubcomponents(form, searchFilters, script);
 }
 
 function generateDiff(originalComponent, editedComponent) {
