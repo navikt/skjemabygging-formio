@@ -148,7 +148,7 @@ const PageNotFound = () => {
               <h2 id="search-header" className={styles.searchHeader}>
                 Hva leter du etter?
               </h2>
-              <form className={styles.searchForm}>
+              <form className={styles.searchForm} action="https://www.nav.no/sok" method="GET">
                 <div className={styles.searchFieldContainer}>
                   <label htmlFor="search-input" className="sr-only">
                     Hva leter du etter?
@@ -159,6 +159,7 @@ const PageNotFound = () => {
                     maxLength="200"
                     placeholder="Søk på nav.no"
                     id="search-input"
+                    name="ord"
                     aria-invalid="false"
                     className={styles.searchField}
                   />
