@@ -113,7 +113,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ErrorComponent = () => {
+const PageNotFound = () => {
   const styles = useStyles();
   return (
     <div role="main" className="content-wrapper" id="maincontent" tabIndex="-1">
@@ -193,4 +193,4 @@ const ErrorComponent = () => {
   );
 };
 
-export default ErrorComponent;
+export default PageNotFound;
