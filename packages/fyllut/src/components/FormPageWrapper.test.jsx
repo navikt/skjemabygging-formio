@@ -48,7 +48,7 @@ describe("FormPageWrapper", () => {
       components: [],
     };
     fetchMock.mockImplementation((url) => {
-      if (url === "fyllut/forms/knownForm") {
+      if (url === "/fyllut/forms/knownForm") {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
       throw new Error("Unknown URL: " + url);
