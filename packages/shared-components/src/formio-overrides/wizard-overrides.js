@@ -8,6 +8,7 @@ const originalSubmit = Wizard.prototype.submit;
 
 WebForm.prototype.cancel = function (noconfirm) {
   const shouldReset = this.hook("beforeCancel", true);
+  // eslint-disable-next-line no-restricted-globals
   if (shouldReset && (noconfirm || confirm(this.t("Er du sikker på at du vil avbryte?")))) {
     this.resetValue();
     return true;

@@ -2,7 +2,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { validateIBAN, ValidationErrorsIBAN } from "ibantools";
 import IBAN from "./IBAN";
 
-const { noIBANProvided, wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
+const { wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
 
 const iban = new IBAN();
 

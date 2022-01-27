@@ -136,37 +136,37 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
-          {(innsending == "KUN_PAPIR" || innsending == "PAPIR_OG_DIGITAL") && (
+          {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
             <div className="list-inline-item">
               <Link
                 className={`btn ${
-                  innsending == "KUN_PAPIR"
+                  innsending === "KUN_PAPIR"
                     ? "btn-primary btn-wizard-nav-next"
                     : "btn-secondary btn-wizard-nav-previous"
                 }`}
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
               >
-                {innsending == "KUN_PAPIR"
+                {innsending === "KUN_PAPIR"
                   ? translate(TEXTS.grensesnitt.moveForward)
                   : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
               </Link>
             </div>
           )}
-          {(innsending == "KUN_DIGITAL" || innsending == "PAPIR_OG_DIGITAL") && (
+          {(innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next wizard-button"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/forbered-innsending`, search, state: { previousPage: url } }}
               >
-                {innsending == "KUN_DIGITAL"
+                {innsending === "KUN_DIGITAL"
                   ? translate(TEXTS.grensesnitt.moveForward)
                   : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
               </Link>
             </div>
           )}
-          {innsending == "INGEN" && (
+          {innsending === "INGEN" && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next"

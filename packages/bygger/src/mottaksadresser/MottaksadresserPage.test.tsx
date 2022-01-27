@@ -1,16 +1,15 @@
-import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import MottaksadresserPage from "./MottaksadresserPage";
+import { render, screen } from "@testing-library/react";
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import featureToggles from "../featureToggles";
-import {MemoryRouter} from "react-router-dom";
+import MottaksadresserPage from "./MottaksadresserPage";
 
 jest.mock("./MottaksadresserListe", () => () => {
   return <div>mottaksadresserliste</div>;
 });
 
 describe("MottaksadressePage", () => {
-
   it("rendrer siden med overskrift", async () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
@@ -19,7 +18,6 @@ describe("MottaksadressePage", () => {
         </AppConfigProvider>
       </MemoryRouter>
     );
-    expect(await screen.findByRole("heading", {name: "Mottaksadresser"})).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: "Mottaksadresser" })).toBeTruthy();
   });
-
 });

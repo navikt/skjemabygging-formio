@@ -9,6 +9,8 @@ export const lastNedFilBase64 = (base64, tittel, filtype) => {
   }
 };
 
-export default {
+const pdf = {
   lastNedFilBase64,
 };
+
+export default pdf;
