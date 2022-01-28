@@ -39,7 +39,6 @@
     "nav-frontend-toggle-style": "0.0.35",
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
-    "pusher": "^3.0.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-router-dom": "^5.2.0",
