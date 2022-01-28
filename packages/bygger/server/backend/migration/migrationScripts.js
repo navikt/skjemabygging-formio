@@ -1,6 +1,6 @@
 import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { fetchWithErrorHandling } from "../fetchUtils.js";
 import { generateDiff } from "./diffingTool";
-import { fetchWithErrorHandling } from "./fetchUtils.js";
 
 function getPropertyFromComponent(comp, properties) {
   if (properties.length > 1) {
