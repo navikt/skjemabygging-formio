@@ -1,19 +1,7 @@
 import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils.js";
 import { generateDiff } from "./diffingTool";
-
-function getPropertyFromComponent(comp, properties) {
-  if (properties.length > 1) {
-    return getPropertyFromComponent(comp[properties[0]], properties.slice(1));
-  }
-  return comp && comp[properties[0]];
-}
-
-export function componentMatchesSearchFilters(component, searchFilters) {
-  return Object.keys(searchFilters).every(
-    (property) => getPropertyFromComponent(component, property.split(".")) === searchFilters[property]
-  );
-}
+import { componentMatchesSearchFilters } from "./searchFilter";
 
 function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
   let modifiedComponent = component;
