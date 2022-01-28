@@ -51,7 +51,7 @@
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
     "prop-types": "^15.7.2",
-    "pusher": "^3.0.1",
+    "pusher": "^5.0.1",
     "pusher-js": "^7.0.0",
     "react": "16.14.0",
     "react-csv": "^2.0.3",
