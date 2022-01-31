@@ -82,12 +82,14 @@ const textObject = (withInputType, value, removeLineBreak = false) => {
     };
   else {
     return removeLineBreak
-      ? { text: value.replace(/(\r\n|\n|\r)/gm, " ") }
+      ? { text: removeLineBreaks(value) }
       : {
           text: value,
         };
   }
 };
+
+const removeLineBreaks = (text) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
 
 const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
   if (!form) {
@@ -114,18 +116,38 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
+/**
+ * @param translations translations object for a given language
+ * @returns translations object for the language without line breaks
+ */
+const removeLineBreaksFromTranslations = (translations) => {
+  return Object.keys(translations).reduce((previousTranslations, originalText) => {
+    const originalTextWithoutLineBreaks = removeLineBreaks(originalText);
+    const translationObject = translations[originalText];
+    return {
+      ...previousTranslations,
+      [originalTextWithoutLineBreaks]: {
+        ...translationObject,
+        value: removeLineBreaks(translationObject.value),
+      },
+    };
+  }, {});
+};
+
 const getTextsAndTranslationsForForm = (form, translations) => {
   const textComponents = getFormTexts(form, false, true);
   let textsWithTranslations = [];
   Object.keys(translations).forEach((languageCode) => {
+    const translationsForLanguage = removeLineBreaksFromTranslations(translations[languageCode].translations);
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
-      if (Object.keys(translations[languageCode].translations).indexOf(textComponent.text) < 0) {
+      if (Object.keys(translationsForLanguage).indexOf(textComponent.text) < 0) {
         return [...newTextComponent, textComponent];
       } else {
+        const translationObject = translationsForLanguage[textComponent.text];
         const translation =
-          translations[languageCode].translations[textComponent.text].scope === "global"
-            ? translations[languageCode].translations[textComponent.text].value.concat(" (Global Tekst)")
-            : translations[languageCode].translations[textComponent.text].value;
+          translationObject.scope === "global"
+            ? translationObject.value.concat(" (Global Tekst)")
+            : translationObject.value;
         return [
           ...newTextComponent,
           Object.assign(textComponent, {
@@ -159,4 +181,5 @@ export {
   getInputType,
   withoutDuplicatedComponents,
   getFormTexts,
+  removeLineBreaksFromTranslations,
 };
