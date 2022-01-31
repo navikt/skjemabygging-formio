@@ -75,25 +75,28 @@ async function fetchForms(url) {
 async function migrateForms(
   searchFilters,
   editOptions,
-  url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=100&properties.tema__ne=xxx"
+  formPaths = [],
+  url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=100&properties.tema=xxx-migrering"
 ) {
   return fetchForms(url).then((response) => {
-    let formsLogger = {};
-    response.data.map((form) => {
-      const affectedComponentsLogger = [];
-      const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
-      formsLogger[form.properties.skjemanummer] = {
-        skjemanummer: form.properties.skjemanummer,
-        name: form.name,
-        title: form.title,
-        path: form.path,
-        found: affectedComponentsLogger.length,
-        changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
-        diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
-      };
-      return result;
-    });
-    return formsLogger;
+    let log = {};
+    const migratedForms = response.data
+      .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
+      .map((form) => {
+        const affectedComponentsLogger = [];
+        const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
+        log[form.properties.skjemanummer] = {
+          skjemanummer: form.properties.skjemanummer,
+          name: form.name,
+          title: form.title,
+          path: form.path,
+          found: affectedComponentsLogger.length,
+          changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
+          diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
+        };
+        return result;
+      });
+    return { log, migratedForms };
   });
 }
 

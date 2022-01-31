@@ -1,4 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import Formiojs from "formiojs/Formio";
+import { Knapp } from "nav-frontend-knapper";
 import { Sidetittel, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -15,11 +17,11 @@ const useStyles = makeStyles({
   },
 });
 
-const encodeForUrl = (migrationOptions: MigrationOptions) => {
+const migrationOptionsAsMap = (migrationOptions: MigrationOptions) => {
   if (Object.keys(migrationOptions).length === 0) {
     return "";
   }
-  const keyValuePairs = Object.values(migrationOptions).reduce((acc, curr) => {
+  return Object.values(migrationOptions).reduce((acc, curr) => {
     if (curr.key !== "" && curr.value !== "") {
       return {
         ...acc,
@@ -28,7 +30,6 @@ const encodeForUrl = (migrationOptions: MigrationOptions) => {
     }
     return acc;
   }, {});
-  return JSON.stringify(keyValuePairs);
 };
 
 const getUrlWithMigrateSearchParams = (
@@ -38,10 +39,10 @@ const getUrlWithMigrateSearchParams = (
 ) => {
   let searchFilterParameters = "";
   let editOptionsParameters = "";
-  const encodedSearchFilters = encodeForUrl(searchFilters);
+  const encodedSearchFilters = JSON.stringify(migrationOptionsAsMap(searchFilters));
   if (encodedSearchFilters) {
     searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
-    const encodedEditOption = encodeForUrl(editOptions);
+    const encodedEditOption = JSON.stringify(migrationOptionsAsMap(editOptions));
     if (encodedEditOption) {
       editOptionsParameters = `&editOptions=${encodedEditOption}`;
     }
@@ -127,29 +128,52 @@ const MigrationPage = () => {
             )}
           </p>
           {searchResults.length > 0 && (
-            <ul>
-              {searchResults.map((searchResult) => (
-                <li key={searchResult.skjemanummer}>
-                  <Undertittel>
-                    {searchResult.title} ({searchResult.skjemanummer})
-                  </Undertittel>
-                  <p>
-                    Antall komponenter som matcher søket: {searchResult.changed} av {searchResult.found}
-                  </p>
-                  {searchResult.diff.length > 0 && <pre>{JSON.stringify(searchResult.diff, null, 2)}</pre>}
-                  <Link
-                    className="knapp"
-                    to={getUrlWithMigrateSearchParams(
-                      searchFilters,
-                      editOptions,
-                      `/migrering/forhandsvis/${searchResult.path}`
-                    )}
-                  >
-                    Forhåndsvis
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <>
+              <Knapp
+                onClick={() => {
+                  fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions, "/api/migrate/update"), {
+                    method: "POST",
+                    headers: {
+                      "content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      token: Formiojs.getToken(),
+                      payload: {
+                        searchFilters: migrationOptionsAsMap(searchFilters),
+                        editOptions: migrationOptionsAsMap(editOptions),
+                        include: searchResults.map((result) => result.path),
+                      },
+                    }),
+                  }).then((resp) => resp.json().then(console.log));
+                }}
+                htmlType="button"
+              >
+                Migrer
+              </Knapp>
+              <ul>
+                {searchResults.map((searchResult) => (
+                  <li key={searchResult.skjemanummer}>
+                    <Undertittel>
+                      {searchResult.title} ({searchResult.skjemanummer})
+                    </Undertittel>
+                    <p>
+                      Antall komponenter som matcher søket: {searchResult.changed} av {searchResult.found}
+                    </p>
+                    {searchResult.diff.length > 0 && <pre>{JSON.stringify(searchResult.diff, null, 2)}</pre>}
+                    <Link
+                      className="knapp"
+                      to={getUrlWithMigrateSearchParams(
+                        searchFilters,
+                        editOptions,
+                        `/migrering/forhandsvis/${searchResult.path}`
+                      )}
+                    >
+                      Forhåndsvis
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </>
       )}
