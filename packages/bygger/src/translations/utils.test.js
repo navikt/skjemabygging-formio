@@ -1,5 +1,10 @@
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
-import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
+import {
+  getFormTexts,
+  getTextsAndTranslationsForForm,
+  getTextsAndTranslationsHeaders,
+  removeLineBreaksFromTranslations,
+} from "./utils";
 
 const {
   createDummyCheckbox,
@@ -303,15 +308,13 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
-        text:
-          'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
         type: "textarea",
       },
       { text: "Alertstrip with content", type: "text" },
       { text: "show content in Pdf", type: "text" },
       {
-        text:
-          '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
+        text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
         type: "textarea",
       },
       { text: "<h3>Eventuell utbetaling av AAP</h3>", type: "text" },
@@ -385,7 +388,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
           signatures: {
             signature1: "Arbeidstaker",
             signature2: "Lege",
-            signature2Description: "Jeg bekrefter at arbeidstaker er syk"
+            signature2Description: "Jeg bekrefter at arbeidstaker er syk",
           },
         },
       },
@@ -469,7 +472,7 @@ describe("testGetTextsAndTranslationsForForm", () => {
       id: "123",
       translations: {
         Ja: { value: "Yes", scope: "global" },
-        "<p>Test Line break\nwindows\r\napple\r</p>": {
+        "<p>Test linjeskift linux\nwindows\r\napple\r</p>": {
           value: "<p>Test Line break linux\nwindows\r\napple\r</p>",
           scope: "local",
         },
@@ -485,8 +488,76 @@ describe("testGetTextsAndTranslationsForForm", () => {
       { text: "Introduksjon" },
       { text: "Ja", en: "Yes (Global Tekst)" },
       { text: "Jeg", "nn-NO": "Eg" },
-      { text: "<p>Test linjeskift linux windows apple </p>" },
+      { text: "<p>Test linjeskift linux windows apple </p>", en: "<p>Test Line break linux windows apple </p>" },
     ]);
+  });
+});
+describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
+  const form = {
+    components: [
+      {
+        title: "Veiledning",
+        type: "panel",
+        components: [
+          {
+            label: "Alertstripe",
+            type: "alertstripe",
+            content: 'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.',
+          },
+        ],
+      },
+    ],
+  };
+  const translations = {
+    "nb-NO": {
+      translations: {},
+    },
+    en: {
+      translations: {
+        Veiledning: { value: "Guidance", scope: "global" },
+        'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
+          value: 'NAV sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.',
+          scope: "global",
+        },
+      },
+    },
+    "nn-NO": {
+      translations: {
+        Veiledning: { value: "Rettleiing", scope: "global" },
+        'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
+          value: 'NAV sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.',
+          scope: "global",
+        },
+      },
+    },
+  };
+  it("fjerner linjeskift fra translations", () => {
+    const translationsWithoutLineBreaks = removeLineBreaksFromTranslations(translations["en"].translations);
+    expect(translationsWithoutLineBreaks).toEqual({
+      Veiledning: { value: "Guidance", scope: "global" },
+      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
+        value: 'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>.',
+        scope: "global",
+      },
+    });
+  });
+  it("fjerner linjeskift i tekster som skal eksporteres", () => {
+    const eksport = getTextsAndTranslationsForForm(form, translations);
+    expect(eksport).toHaveLength(2);
+
+    expect(eksport[0].text).toEqual("Veiledning");
+    expect(eksport[0].en).toEqual("Guidance (Global Tekst)");
+    expect(eksport[0]["nn-NO"]).toEqual("Rettleiing (Global Tekst)");
+
+    expect(eksport[1].text).toEqual(
+      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.'
+    );
+    expect(eksport[1].en).toEqual(
+      'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>. (Global Tekst)'
+    );
+    expect(eksport[1]["nn-NO"]).toEqual(
+      'NAV sender svar. <br> Sjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>. (Global Tekst)'
+    );
   });
 });
 describe("testGetCSVfileHeaders", () => {
