@@ -1,4 +1,6 @@
+import { SANITIZE_CONFIG } from "@navikt/skjemadigitalisering-shared-components/src/template/sanitizeConfig.js";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import FormioUtils from "formiojs/utils";
 
 const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
@@ -62,7 +64,9 @@ const getTranslatablePropertiesFromForm = (form) =>
           : undefined,
       html,
       values: values ? values.map((value) => value.label) : undefined,
-      content: getTextFromComponentProperty(content),
+      content: content
+        ? FormioUtils.sanitize(getTextFromComponentProperty(content), { sanitizeConfig: SANITIZE_CONFIG })
+        : undefined,
       legend,
       description: getTextFromComponentProperty(description),
       suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),

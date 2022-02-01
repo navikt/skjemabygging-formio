@@ -283,12 +283,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyAlertstripe("Alertstripe without content"),
               createDummyAlertstripe(
                 "Alertstripe with a long content",
-                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.'
+                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.'
               ),
               createDummyAlertstripe("Alertstripe", "Alertstrip with content", "show content in Pdf"),
               createDummyHTMLElement(
                 "HTML element",
-                '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>'
+                '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a target="_blank" href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>'
               ),
               createDummyHTMLElement(
                 "HTML element",
@@ -308,13 +308,13 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
-        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a target="_blank" href="https://www.brreg.no/bedrift/underenhet/">Underenhet (åpnes i ny fane)</a>.',
         type: "textarea",
       },
       { text: "Alertstrip with content", type: "text" },
       { text: "show content in Pdf", type: "text" },
       {
-        text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
+        text: '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br>',
         type: "textarea",
       },
       { text: "<h3>Eventuell utbetaling av AAP</h3>", type: "text" },
@@ -400,6 +400,36 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Arbeidstaker", type: "text" },
       { text: "Lege", type: "text" },
       { text: "Jeg bekrefter at arbeidstaker er syk", type: "text" },
+    ]);
+  });
+});
+describe("Sanitization of HTML element content when extracting translatable texts", () => {
+  it("Removes space after href= in link", () => {
+    const actual = getFormTexts(
+      createFormObject(
+        [
+          createPanelObject(
+            "Introduksjon",
+            [
+              createDummyAlertstripe(
+                "Alertstripe",
+                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.'
+              ),
+            ],
+            "Introduksjon"
+          ),
+        ],
+        "title"
+      ),
+      true
+    );
+    expect(actual).toEqual([
+      { text: "title", type: "text" },
+      { text: "Introduksjon", type: "text" },
+      {
+        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a target="_blank" href="https://www.brreg.no/bedrift/underenhet/">Underenhet (åpnes i ny fane)</a>.',
+        type: "textarea",
+      },
     ]);
   });
 });
@@ -515,7 +545,7 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     en: {
       translations: {
         Veiledning: { value: "Guidance", scope: "global" },
-        'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
+        'NAV sender svar.\n<br>\nSe <a target="_blank" href="https://www.nav.no/person/">link</a>.': {
           value: 'NAV sends answers.\n<br>\nSee <a href="https://www.nav.no/person/" target="_blank">link</a>.',
           scope: "global",
         },
@@ -524,7 +554,7 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     "nn-NO": {
       translations: {
         Veiledning: { value: "Rettleiing", scope: "global" },
-        'NAV sender svar.\n<br>\nSe <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
+        'NAV sender svar.\n<br>\nSe <a target="_blank" href="https://www.nav.no/person/">link</a>.': {
           value: 'NAV sender svar.\n<br>\nSjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>.',
           scope: "global",
         },
@@ -535,7 +565,7 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     const translationsWithoutLineBreaks = removeLineBreaksFromTranslations(translations["en"].translations);
     expect(translationsWithoutLineBreaks).toEqual({
       Veiledning: { value: "Guidance", scope: "global" },
-      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
+      'NAV sender svar. <br> Se <a target="_blank" href="https://www.nav.no/person/">link</a>.': {
         value: 'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>.',
         scope: "global",
       },
@@ -550,7 +580,7 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     expect(eksport[0]["nn-NO"]).toEqual("Rettleiing (Global Tekst)");
 
     expect(eksport[1].text).toEqual(
-      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.'
+      'NAV sender svar. <br> Se <a target="_blank" href="https://www.nav.no/person/">link</a>.'
     );
     expect(eksport[1].en).toEqual(
       'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>. (Global Tekst)'
