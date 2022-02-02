@@ -1,10 +1,10 @@
 import { makeStyles } from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
-import { Sidetittel, Undertittel } from "nav-frontend-typografi";
+import { Sidetittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FormMigrationResult, FormMigrationResults, MigrationOptions } from "../../types/migration";
+import { DryRunResult, DryRunResults, MigrationOptions } from "../../types/migration";
+import MigrationDryRunResults from "./MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
 
 const useStyles = makeStyles({
@@ -32,7 +32,7 @@ const migrationOptionsAsMap = (migrationOptions: MigrationOptions) => {
   }, {});
 };
 
-const getUrlWithMigrateSearchParams = (
+export const getUrlWithMigrateSearchParams = (
   searchFilters: MigrationOptions,
   editOptions: MigrationOptions,
   basePath: string = "/api/migrate"
@@ -50,24 +50,20 @@ const getUrlWithMigrateSearchParams = (
   return `${basePath}${searchFilterParameters}${editOptionsParameters}`;
 };
 
-const getMigrationResultsMatchingSearchFilters = (mapOfForms: FormMigrationResults) =>
-  Object.values(mapOfForms)
-    .filter((migrationResult) => migrationResult.found > 0)
+const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) =>
+  Object.values(dryRunResults)
+    .filter((results) => results.found > 0)
     .sort((a, b) => b.found - a.found);
-
-const getFormsThatWillBeChanged = (mapOfForms: FormMigrationResults) =>
-  Object.values(mapOfForms)
-    .filter((migrationResult) => migrationResult.changed > 0)
-    .sort((a, b) => b.changed - a.changed);
 
 const MigrationPage = () => {
   const styles = useStyles();
-  const [{ searchResults, numberOfComponentsFound, numberOfComponentsChanged }, setFormMigrationResults] = useState<{
-    searchResults?: FormMigrationResult[];
-    migrationResults?: FormMigrationResult[];
-    numberOfComponentsFound?: number;
-    numberOfComponentsChanged?: number;
-  }>({});
+  const [{ dryRunSearchResults, numberOfComponentsFound, numberOfComponentsChanged }, setFormMigrationResults] =
+    useState<{
+      dryRunSearchResults?: DryRunResult[];
+      numberOfComponentsFound?: number;
+      numberOfComponentsChanged?: number;
+    }>({});
+  const [selectedToMigrate, setSelectedToMigrate] = useState<string[]>([]);
 
   const [searchFilters, dispatchSearchFilters] = useMigrationOptions();
   const [editOptions, dispatchEditOptions] = useMigrationOptions();
@@ -79,12 +75,10 @@ const MigrationPage = () => {
         "content-type": "application/json",
       },
     }).then((response) => response.json());
-    const formsWithComponentsThatMatchSearchFilters = getMigrationResultsMatchingSearchFilters(results);
-    const formsWithComponentsThatWillBeChanged = getFormsThatWillBeChanged(results);
+    const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
     setFormMigrationResults({
-      searchResults: formsWithComponentsThatMatchSearchFilters,
-      migrationResults: formsWithComponentsThatWillBeChanged,
-      ...formsWithComponentsThatMatchSearchFilters.reduce(
+      dryRunSearchResults,
+      ...dryRunSearchResults.reduce(
         (acc, curr) => ({
           numberOfComponentsFound: acc.numberOfComponentsFound + curr.found,
           numberOfComponentsChanged: acc.numberOfComponentsChanged + curr.changed,
@@ -95,6 +89,7 @@ const MigrationPage = () => {
         }
       ),
     });
+    setSelectedToMigrate(dryRunSearchResults.filter(({ changed }) => changed > 0).map(({ path }) => path));
   };
   return (
     <main className={styles.root}>
@@ -116,10 +111,10 @@ const MigrationPage = () => {
         onSubmit={onSearch}
       />
 
-      {searchResults && (
+      {dryRunSearchResults && (
         <>
           <p>
-            Fant {searchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
+            Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
             {numberOfComponentsFound !== undefined && (
               <span>
                 Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
@@ -127,7 +122,7 @@ const MigrationPage = () => {
               </span>
             )}
           </p>
-          {searchResults.length > 0 && (
+          {dryRunSearchResults.length > 0 && (
             <>
               <Knapp
                 onClick={() => {
@@ -141,7 +136,7 @@ const MigrationPage = () => {
                       payload: {
                         searchFilters: migrationOptionsAsMap(searchFilters),
                         editOptions: migrationOptionsAsMap(editOptions),
-                        include: searchResults.map((result) => result.path),
+                        include: selectedToMigrate,
                       },
                     }),
                   }).then((resp) => resp.json().then(console.log));
@@ -150,29 +145,14 @@ const MigrationPage = () => {
               >
                 Migrer
               </Knapp>
-              <ul>
-                {searchResults.map((searchResult) => (
-                  <li key={searchResult.skjemanummer}>
-                    <Undertittel>
-                      {searchResult.title} ({searchResult.skjemanummer})
-                    </Undertittel>
-                    <p>
-                      Antall komponenter som matcher søket: {searchResult.changed} av {searchResult.found}
-                    </p>
-                    {searchResult.diff.length > 0 && <pre>{JSON.stringify(searchResult.diff, null, 2)}</pre>}
-                    <Link
-                      className="knapp"
-                      to={getUrlWithMigrateSearchParams(
-                        searchFilters,
-                        editOptions,
-                        `/migrering/forhandsvis/${searchResult.path}`
-                      )}
-                    >
-                      Forhåndsvis
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <MigrationDryRunResults
+                onChange={setSelectedToMigrate}
+                dryRunResults={dryRunSearchResults}
+                selectedPaths={selectedToMigrate}
+                getPreviewUrl={(formPath) =>
+                  getUrlWithMigrateSearchParams(searchFilters, editOptions, `/migrering/forhandsvis/${formPath}`)
+                }
+              />
             </>
           )}
         </>
