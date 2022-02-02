@@ -1,9 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
-import { Knapp } from "nav-frontend-knapper";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { DryRunResult, DryRunResults, MigrationOptions } from "../../types/migration";
+import ConfirmMigration from "./ConfirmMigration";
 import MigrationDryRunResults from "./MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
 
@@ -124,9 +124,11 @@ const MigrationPage = () => {
           </p>
           {dryRunSearchResults.length > 0 && (
             <>
-              <Knapp
-                onClick={() => {
-                  fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions, "/api/migrate/update"), {
+              <ConfirmMigration
+                selectedFormPaths={selectedToMigrate}
+                dryRunResults={dryRunSearchResults}
+                onConfirm={async () => {
+                  return await fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions, "/api/migrate/update"), {
                     method: "POST",
                     headers: {
                       "content-type": "application/json",
@@ -139,12 +141,12 @@ const MigrationPage = () => {
                         include: selectedToMigrate,
                       },
                     }),
-                  }).then((resp) => resp.json().then(console.log));
+                  }).then((updatedForms) => {
+                    onSearch();
+                    return updatedForms;
+                  });
                 }}
-                htmlType="button"
-              >
-                Migrer
-              </Knapp>
+              />
               <MigrationDryRunResults
                 onChange={setSelectedToMigrate}
                 dryRunResults={dryRunSearchResults}

@@ -54,7 +54,7 @@ const MigrationDryRunResults = ({
             )}
           </div>
           <p>
-            Antall komponenter som matcher søket: {result.changed} av {result.found}
+            Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
           </p>
           {result.diff.length > 0 && <pre>{JSON.stringify(result.diff, null, 2)}</pre>}
           <Link className="knapp margin-bottom-default" to={getPreviewUrl(result.path)}>
