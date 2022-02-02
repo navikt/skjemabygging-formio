@@ -64,17 +64,18 @@ export class Backend {
   async updateForms(userToken, forms) {
     const updateFormUrl = "https://protected-island-44773.herokuapp.com/form";
     await this.checkUpdateAndPublishingAccess(userToken);
-    return forms.map((form) => {
-      console.log("UpdateForms", form.path);
-      return fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-jwt-token": userToken,
-        },
-        body: JSON.stringify(form),
-      }).then((migratedForm) => migratedForm);
-    });
+    return await Promise.all(
+      forms.map((form) => {
+        return fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-jwt-token": userToken,
+          },
+          body: JSON.stringify(form),
+        }).then((migratedForm) => migratedForm.data);
+      })
+    );
   }
 
   async publishForm(userToken, form, translations, formPath) {

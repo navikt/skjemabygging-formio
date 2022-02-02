@@ -93,9 +93,9 @@ export function dispatcherWithBackend(backend) {
         }
         const { searchFilters, editOptions, include } = req.body.payload;
         try {
-          migrateForms(searchFilters, editOptions, include).then(({ migratedForms }) => {
-            const updatedForms = backend.updateForms(req.body.token, migratedForms);
-            res.send(updatedForms);
+          migrateForms(searchFilters, editOptions, include).then(async ({ migratedForms }) => {
+            const updatedForms = await backend.updateForms(req.body.token, migratedForms);
+            res.json(updatedForms);
           });
         } catch (error) {
           handleError(error, res);
