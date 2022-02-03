@@ -1,4 +1,5 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import FormioUtils from "formiojs/utils";
 
 const getInputType = (value) => {
   return value.length < 80 ? "text" : "textarea";
@@ -49,6 +50,15 @@ const extractTextsFromProperties = (props) => {
   return array;
 };
 
+const getContent = (content) => {
+  if (content) {
+    // Formio.js runs code that changes the original text before translating,
+    // and to avoid mismatch in translation object keys we need to do the same.
+    return FormioUtils.translateHTMLTemplate(content, (text) => text);
+  }
+  return content;
+};
+
 const getTranslatablePropertiesFromForm = (form) =>
   navFormUtils
     .flattenComponents(form.components)
@@ -62,7 +72,7 @@ const getTranslatablePropertiesFromForm = (form) =>
           : undefined,
       html,
       values: values ? values.map((value) => value.label) : undefined,
-      content: getTextFromComponentProperty(content),
+      content: getContent(content),
       legend,
       description: getTextFromComponentProperty(description),
       suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
