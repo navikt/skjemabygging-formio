@@ -1,7 +1,7 @@
 import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils.js";
-import { generateDiff } from "./diffingTool";
-import { componentMatchesSearchFilters } from "./searchFilter";
+import { generateDiff } from "./diffingTool.js";
+import { componentMatchesSearchFilters } from "./searchFilter.js";
 
 function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
   let modifiedComponent = component;
