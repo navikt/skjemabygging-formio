@@ -74,7 +74,9 @@ const MigrationPage = () => {
       headers: {
         "content-type": "application/json",
       },
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .catch((err) => console.error(err));
     const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
     setFormMigrationResults({
       dryRunSearchResults,
@@ -91,20 +93,21 @@ const MigrationPage = () => {
     });
     setSelectedToMigrate(dryRunSearchResults.filter(({ changed }) => changed > 0).map(({ path }) => path));
   };
+
   return (
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
       <MigrationOptionsForm
         onSubmit={onSearch}
         title="Søk og filtrer"
-        addRowText="Legg til filteringsvalg"
+        addRowText="Legg til filtreringsvalg"
         submitText="Søk"
         state={searchFilters}
         dispatch={dispatchSearchFilters}
       />
       <MigrationOptionsForm
         title="Sett opp felter som skal migreres og ny verdi for feltene"
-        addRowText="Legg til felt som skal migreres"
+        addRowText="Legg til felt som skal endres"
         submitText="Simuler og kontroller migrering"
         state={editOptions}
         dispatch={dispatchEditOptions}
@@ -128,7 +131,7 @@ const MigrationPage = () => {
                 selectedFormPaths={selectedToMigrate}
                 dryRunResults={dryRunSearchResults}
                 onConfirm={async () => {
-                  return await fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions, "/api/migrate/update"), {
+                  return await fetch("/api/migrate/update", {
                     method: "POST",
                     headers: {
                       "content-type": "application/json",
@@ -141,10 +144,12 @@ const MigrationPage = () => {
                         include: selectedToMigrate,
                       },
                     }),
-                  }).then((updatedForms) => {
-                    onSearch();
-                    return updatedForms;
-                  });
+                  })
+                    .then((updatedForms) => {
+                      onSearch();
+                      return updatedForms;
+                    })
+                    .catch((error) => console.error(error));
                 }}
               />
               <MigrationDryRunResults

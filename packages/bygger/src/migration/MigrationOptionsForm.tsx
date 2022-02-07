@@ -84,7 +84,7 @@ const MigrationOptionsForm = ({
   const styles = getStyles();
   return (
     <>
-      <Innholdstittel>{title}</Innholdstittel>
+      <Innholdstittel tag="h2">{title}</Innholdstittel>
       <form
         className={styles.form}
         onSubmit={(event) => {

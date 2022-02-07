@@ -27,9 +27,15 @@ const FormList = ({ heading, listElements }: { heading: string; listElements: Dr
       <Undertittel className="margin-bottom-default">{heading}</Undertittel>
       <ul>
         {listElements.length > 0 ? (
-          listElements.map(({ name }) => <li className="list-inline-item">{name}</li>)
+          listElements.map(({ name, skjemanummer }) => (
+            <li key={skjemanummer} className="list-inline-item">
+              {name}
+            </li>
+          ))
         ) : (
-          <li className="list-inline-item">N/A</li>
+          <li key="NA" className="list-inline-item">
+            N/A
+          </li>
         )}
       </ul>
     </>
