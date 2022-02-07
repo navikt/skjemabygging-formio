@@ -1,16 +1,16 @@
 import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "./fetchUtils.js";
 
-function getPropertyFromComponentAsString(comp, properties) {
+function getPropertyFromComponent(comp, properties) {
   if (properties.length > 1) {
-    return getPropertyFromComponentAsString(comp[properties[0]], properties.slice(1));
+    return getPropertyFromComponent(comp[properties[0]], properties.slice(1));
   }
-  return comp && `${comp[properties[0]]}`;
+  return comp && comp[properties[0]];
 }
 
 export function componentMatchesSearchFilters(component, searchFilters) {
   return Object.keys(searchFilters).every(
-    (property) => getPropertyFromComponentAsString(component, property.split(".")) === searchFilters[property]
+    (property) => getPropertyFromComponent(component, property.split(".")) === searchFilters[property]
   );
 }
 

@@ -1,6 +1,6 @@
-import form from "../testTools/frontend/json/Form.json";
 import columnForm from "../../example_data/columnsForm.json";
-import loginform from "../testTools/frontend/json/LoginForm";
+import form from "../../example_data/Form.json";
+import loginform from "../../example_data/LoginForm";
 
 export class FakeBackend {
   constructor() {

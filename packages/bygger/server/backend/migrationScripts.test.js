@@ -1,4 +1,6 @@
-import { componentMatchesSearchFilters, getEditScript, migrateForm } from "./migrationScripts";
+import nock from "nock";
+import mockedForm from "../../example_data/Form.json";
+import { componentMatchesSearchFilters, getEditScript, migrateForm, migrateForms } from "./migrationScripts";
 
 const originalPanelComponent = {
   title: "Veiledning",
@@ -171,6 +173,35 @@ describe("Migration scripts", () => {
     });
   });
 
+  describe("migrateForms", () => {
+    const fetchFormsUrl = "https://api.no";
+    beforeEach(() => {
+      nock(fetchFormsUrl)
+        .get("/")
+        .reply(200, [
+          { ...mockedForm, path: "form1", properties: { skjemanummer: "form1" } },
+          { ...mockedForm, path: "form2", properties: { skjemanummer: "form2" } },
+          { ...mockedForm, path: "form3", properties: { skjemanummer: "form3" } },
+        ]);
+    });
+
+    it("generates log only for included form paths", async () => {
+      const { log } = await migrateForms({ disabled: false }, { disabled: true }, ["form1", "form3"], fetchFormsUrl);
+      expect(Object.keys(log)).toEqual(["form1", "form3"]);
+    });
+    it("only migrates forms included by the provided formPaths", async () => {
+      const { migratedForms } = await migrateForms(
+        { disabled: false },
+        { disabled: true },
+        ["form2", "form3"],
+        fetchFormsUrl
+      );
+      expect(migratedForms).toHaveLength(2);
+      expect(migratedForms[0].path).toBe("form2");
+      expect(migratedForms[1].path).toBe("form3");
+    });
+  });
+
   describe("getEditScript", () => {
     let testComponent;
     beforeEach(() => {
@@ -273,10 +304,10 @@ describe("Migration scripts", () => {
 
     it("matches on nested properties", () => {
       expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": "true", validateOn: "blur" })
+        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": true, validateOn: "blur" })
       ).toBe(true);
       expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": "false", validateOn: "blur" })
+        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": false, validateOn: "blur" })
       ).toBe(false);
     });
   });
