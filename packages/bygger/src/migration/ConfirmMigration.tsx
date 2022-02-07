@@ -33,9 +33,7 @@ const FormList = ({ heading, listElements }: { heading: string; listElements: Dr
             </li>
           ))
         ) : (
-          <li key="NA" className="list-inline-item">
-            N/A
-          </li>
+          <li className="list-inline-item">N/A</li>
         )}
       </ul>
     </>

@@ -94,6 +94,28 @@ const MigrationPage = () => {
     setSelectedToMigrate(dryRunSearchResults.filter(({ changed }) => changed > 0).map(({ path }) => path));
   };
 
+  const onConfirm = async () => {
+    try {
+      await fetch("/api/migrate/update", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          token: Formiojs.getToken(),
+          payload: {
+            searchFilters: migrationOptionsAsMap(searchFilters),
+            editOptions: migrationOptionsAsMap(editOptions),
+            include: selectedToMigrate,
+          },
+        }),
+      });
+      await onSearch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
@@ -130,27 +152,7 @@ const MigrationPage = () => {
               <ConfirmMigration
                 selectedFormPaths={selectedToMigrate}
                 dryRunResults={dryRunSearchResults}
-                onConfirm={async () => {
-                  return await fetch("/api/migrate/update", {
-                    method: "POST",
-                    headers: {
-                      "content-type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      token: Formiojs.getToken(),
-                      payload: {
-                        searchFilters: migrationOptionsAsMap(searchFilters),
-                        editOptions: migrationOptionsAsMap(editOptions),
-                        include: selectedToMigrate,
-                      },
-                    }),
-                  })
-                    .then((updatedForms) => {
-                      onSearch();
-                      return updatedForms;
-                    })
-                    .catch((error) => console.error(error));
-                }}
+                onConfirm={onConfirm}
               />
               <MigrationDryRunResults
                 onChange={setSelectedToMigrate}
