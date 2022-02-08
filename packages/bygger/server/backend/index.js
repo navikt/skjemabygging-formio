@@ -50,7 +50,7 @@ export class Backend {
     };
   }
 
-  async checkPublishingAccess(userToken) {
+  async checkUpdateAndPublishingAccess(userToken) {
     //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
     const currentUserUrl = `${this.projectURL}/current`;
     return fetchWithErrorHandling(currentUserUrl, {
@@ -61,8 +61,25 @@ export class Backend {
     });
   }
 
+  async updateForms(userToken, forms) {
+    const updateFormUrl = "https://protected-island-44773.herokuapp.com/form";
+    await this.checkUpdateAndPublishingAccess(userToken);
+    return await Promise.all(
+      forms.map((form) => {
+        return fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-jwt-token": userToken,
+          },
+          body: JSON.stringify(form),
+        }).then((migratedForm) => migratedForm.data);
+      })
+    );
+  }
+
   async publishForm(userToken, form, translations, formPath) {
-    await this.checkPublishingAccess(userToken);
+    await this.checkUpdateAndPublishingAccess(userToken);
     const payload = await this.payload(formPath, form, translations);
     return await fetchWithErrorHandling(this.config.workflowDispatchURL, {
       method: "POST",
@@ -76,7 +93,7 @@ export class Backend {
   }
 
   async publishResource(userToken, resourceName, resourceContent) {
-    await this.checkPublishingAccess(userToken);
+    await this.checkUpdateAndPublishingAccess(userToken);
     const encodedResourceContent = await this.toBase64GzipAndJson(resourceContent);
     const payload = {
       ref: this.config.workflowDispatchRef,
