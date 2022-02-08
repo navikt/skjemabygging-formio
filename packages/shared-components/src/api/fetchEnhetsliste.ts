@@ -22,7 +22,7 @@ const enhetstypeCanBeSelectedByUser: Enhetstype[] = [
 ];
 
 export const canEnhetstypeBeSelected = (enhet: EnhetInkludertKontaktinformasjon) => {
-  return enhetstypeCanBeSelectedByUser.includes(enhet.enhet.type);
+  return enhetstypeCanBeSelectedByUser.includes(enhet.enhet.type) && enhet.enhet.enhetNr !== "0000";
 };
 
 export async function fetchEnhetsListe(baseUrl = ""): Promise<EnhetInkludertKontaktinformasjon[]> {
