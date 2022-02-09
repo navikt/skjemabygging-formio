@@ -76,7 +76,7 @@ async function migrateForms(
   searchFilters,
   editOptions,
   formPaths = [],
-  url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=100&properties.tema=xxx-migrering"
+  url = "https://protected-island-44773.herokuapp.com/form?type=form&tags=nav-skjema&limit=100"
 ) {
   return fetchForms(url).then((response) => {
     let log = {};
