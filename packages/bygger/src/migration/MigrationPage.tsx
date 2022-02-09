@@ -22,7 +22,7 @@ const migrationOptionsAsMap = (migrationOptions: MigrationOptions) => {
     return "";
   }
   return Object.values(migrationOptions).reduce((acc, curr) => {
-    if (curr.key !== "" && curr.value !== "") {
+    if (curr.key !== "") {
       return {
         ...acc,
         [curr.key]: curr.value,

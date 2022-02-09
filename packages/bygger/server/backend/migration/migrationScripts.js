@@ -1,18 +1,7 @@
 import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { fetchWithErrorHandling } from "./fetchUtils.js";
-
-function getPropertyFromComponent(comp, properties) {
-  if (properties.length > 1) {
-    return getPropertyFromComponent(comp[properties[0]], properties.slice(1));
-  }
-  return comp && comp[properties[0]];
-}
-
-export function componentMatchesSearchFilters(component, searchFilters) {
-  return Object.keys(searchFilters).every(
-    (property) => getPropertyFromComponent(component, property.split(".")) === searchFilters[property]
-  );
-}
+import { fetchWithErrorHandling } from "../fetchUtils.js";
+import { generateDiff } from "./diffingTool.js";
+import { componentMatchesSearchFilters } from "./searchFilter.js";
 
 function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
   let modifiedComponent = component;
@@ -31,22 +20,7 @@ function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, s
 }
 
 function migrateForm(form, searchFilters, script) {
-  return {
-    ...form,
-    components: form.components.map((component) =>
-      recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script)
-    ),
-  };
-}
-
-function generateDiff(originalComponent, editedComponent) {
-  return Object.keys(originalComponent).reduce((acc, key) => {
-    if (key === "id") return { ...acc, [key]: originalComponent[key] };
-    if (originalComponent[key] !== editedComponent[key])
-      return { ...acc, [key]: { _ORIGINAL: originalComponent[key], _NEW: editedComponent[key] } };
-    if (key === "key" || key === "label") return { ...acc, [key]: originalComponent[key] };
-    return acc;
-  }, {});
+  return recursivelyMigrateComponentAndSubcomponents(form, searchFilters, script);
 }
 
 function getEditScript(editOptions, logger = []) {

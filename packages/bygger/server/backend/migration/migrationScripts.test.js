@@ -1,72 +1,13 @@
 import nock from "nock";
-import mockedForm from "../../example_data/Form.json";
-import { componentMatchesSearchFilters, getEditScript, migrateForm, migrateForms } from "./migrationScripts";
-
-const originalPanelComponent = {
-  title: "Veiledning",
-  breadcrumbClickable: true,
-  buttonSettings: {
-    previous: true,
-    cancel: true,
-    next: true,
-  },
-  navigateOnEnter: false,
-  saveOnEnter: false,
-  scrollToTop: false,
-  collapsible: false,
-  key: "veiledning",
-  type: "panel",
-  label: "Veiledning",
-  input: false,
-  components: [],
-  tableView: false,
-};
-
-const originalSkjemaGruppeComponent = {
-  legend: "Skjemagruppe",
-  key: "navSkjemagruppe",
-  type: "navSkjemagruppe",
-  label: "Skjemagruppe",
-  input: false,
-  tableView: false,
-  components: [],
-};
-
-const originalTextFieldComponent = {
-  label: "Fornavn",
-  fieldSize: "input--xxl",
-  autocomplete: "given-name",
-  validateOn: "blur",
-  validate: {
-    required: true,
-  },
-  key: "nyttFornavn",
-  type: "textfield",
-  input: true,
-  dataGridLabel: true,
-  tableView: true,
-};
-
-const originalFodselsnummerComponent = {
-  label: "Fødselsnummer / D-nummer",
-  key: "fodselsnummerDNummer",
-  type: "fnrfield",
-  fieldSize: "input--s",
-  input: true,
-  spellcheck: false,
-  dataGridLabel: true,
-  validateOn: "blur",
-  validate: {
-    custom: "valid = instance.originalValidateFnr(input)",
-    required: true,
-  },
-  tableView: true,
-};
-
-const originalForm = {
-  path: "test-form",
-  components: [originalFodselsnummerComponent, originalTextFieldComponent],
-};
+import mockedForm from "../../../example_data/Form";
+import { getEditScript, migrateForm, migrateForms } from "./migrationScripts";
+import {
+  originalFodselsnummerComponent,
+  originalForm,
+  originalPanelComponent,
+  originalSkjemaGruppeComponent,
+  originalTextFieldComponent,
+} from "./testData";
 
 const migrateFnrFieldFunction = (component) => ({
   ...component,
@@ -286,29 +227,6 @@ describe("Migration scripts", () => {
         editScript(testComponent);
         expect(logger.length).toBe(3);
       });
-    });
-  });
-
-  describe("componentMatchesSearchFilters", () => {
-    it("returns true if all searchFilters matches the related properties in the component", () => {
-      expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, { fieldSize: "input--xxl", validateOn: "blur" })
-      ).toBe(true);
-    });
-
-    it("returns false if one searchFilter does not match the related property in the component", () => {
-      expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, { fieldSize: "input--s", validateOn: "blur" })
-      ).toBe(false);
-    });
-
-    it("matches on nested properties", () => {
-      expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": true, validateOn: "blur" })
-      ).toBe(true);
-      expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, { "validate.required": false, validateOn: "blur" })
-      ).toBe(false);
     });
   });
 });
