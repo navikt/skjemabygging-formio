@@ -115,4 +115,27 @@ describe("diffingTool", () => {
       },
     });
   });
+
+  it("will show diff for changes to key or label, but not id", () => {
+    const actual = generateDiff(
+      {
+        id: "original id",
+        key: "original key",
+        label: "original label",
+      },
+      {
+        id: "new ID",
+        key: "new key",
+        label: "new label",
+      }
+    );
+
+    expect(actual).toEqual({
+      id: "original id",
+      key_NEW: "new key",
+      key_ORIGINAL: "original key",
+      label_NEW: "new label",
+      label_ORIGINAL: "original label",
+    });
+  });
 });
