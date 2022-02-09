@@ -4,6 +4,7 @@ import React from "react";
 import ReactSelect from "react-select";
 import { EnhetInkludertKontaktinformasjon } from "../../api/Enhet";
 import { useLanguages } from "../../context/languages";
+import { navCssVariables } from "../../util/navCssVariables";
 
 const useStyles = makeStyles({
   enhetsListe: {
@@ -31,6 +32,14 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
       <ReactSelect
         className={styles.enhetsListe}
         options={options}
+        styles={{
+          control: (base) => ({
+            ...base,
+            ...(error
+              ? { borderColor: navCssVariables.navError, boxShadow: `0 0 0 1px ${navCssVariables.navError}` }
+              : {}),
+          }),
+        }}
         placeholder={translate(TEXTS.statiske.prepareLetterPage.selectEntityDefault)}
         aria-errormessage="enhetSelectError"
         aria-labelledby="enhetSelectLabel"
