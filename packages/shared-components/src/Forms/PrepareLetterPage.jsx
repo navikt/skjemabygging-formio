@@ -198,7 +198,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
         .then((enhetsListe) =>
           enhetsListe
             .filter(canEnhetstypeBeSelected)
-            .sort((enhetA, enhetB) => enhetA.enhet.navn.localeCompare(enhetB.enhet.navn, "nb"))
+            .sort((enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb"))
         )
         .then(setEnhetsListe);
     }

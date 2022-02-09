@@ -1,4 +1,4 @@
-import { EnhetInkludertKontaktinformasjon, Enhetstype } from "./Enhet";
+import { Enhet, Enhetstype } from "./Enhet";
 
 const enhetstypeCanBeSelectedByUser: Enhetstype[] = [
   "ALS",
@@ -21,11 +21,11 @@ const enhetstypeCanBeSelectedByUser: Enhetstype[] = [
   "YTA",
 ];
 
-export const canEnhetstypeBeSelected = (enhet: EnhetInkludertKontaktinformasjon) => {
-  return enhetstypeCanBeSelectedByUser.includes(enhet.enhet.type) && enhet.enhet.enhetNr !== "0000";
+export const canEnhetstypeBeSelected = (enhet: Enhet) => {
+  return enhetstypeCanBeSelectedByUser.includes(enhet.type) && enhet.enhetNr !== "0000";
 };
 
-export async function fetchEnhetsListe(baseUrl = ""): Promise<EnhetInkludertKontaktinformasjon[]> {
+export async function fetchEnhetsListe(baseUrl = ""): Promise<Enhet[]> {
   return fetch(`${baseUrl}/api/enhetsliste`).then((response) => {
     if (response.ok) {
       return response.json();

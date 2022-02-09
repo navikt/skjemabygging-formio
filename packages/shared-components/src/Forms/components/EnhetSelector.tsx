@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React from "react";
 import ReactSelect from "react-select";
-import { EnhetInkludertKontaktinformasjon } from "../../api/Enhet";
+import { Enhet } from "../../api/Enhet";
 import { useLanguages } from "../../context/languages";
 import { navCssVariables } from "../../util/navCssVariables";
 
@@ -20,7 +20,7 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
     return <></>;
   }
 
-  const options = enhetsListe.map((enhet) => ({ label: enhet.enhet.navn, value: enhet.enhet.enhetNr }));
+  const options = enhetsListe.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
     <div className="skjemaelement margin-bottom-default">
       <label id="enhetSelectLabel" className="skjemaelement__label">
@@ -57,7 +57,7 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
 };
 
 interface EnhetSelectorProps {
-  enhetsListe: EnhetInkludertKontaktinformasjon[];
+  enhetsListe: Enhet[];
   onSelectEnhet: (enhetNummer: string | null) => void;
   error?: string;
 }

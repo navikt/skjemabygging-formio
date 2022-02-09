@@ -1,4 +1,3 @@
-import { EnhetInkludertKontaktinformasjon } from "../api/Enhet";
 import { Mottaksadresse } from "../api/Mottaksadresse";
 import {
   ForstesideRequestBody,
@@ -290,56 +289,8 @@ describe("genererMottaksAdresse", () => {
     ).toStrictEqual({ netsPostboks: "1400" });
   });
 
-  it("returns postboksadresse for the provided enhet", () => {
-    expect(
-      genererMottaksadresse(undefined, [], {
-        enhet: { navn: "NAV-enhet" },
-        kontaktinformasjon: {
-          postadresse: {
-            postboksanlegg: "anlegg 1",
-            postboksnummer: "99",
-            postnummer: "0001",
-            poststed: "By",
-            type: "postboksadresse",
-          },
-        },
-      } as EnhetInkludertKontaktinformasjon)
-    ).toStrictEqual({
-      adresse: {
-        adresselinje1: "NAV-enhet",
-        adresselinje2: "Postboks 99 anlegg 1",
-        postnummer: "0001",
-        poststed: "By",
-      },
-    });
-  });
-
-  it("returns stedsadresse for the provided enhet", () => {
-    expect(
-      genererMottaksadresse(undefined, [], {
-        enhet: { navn: "NAV-enhet" },
-        kontaktinformasjon: {
-          postadresse: {
-            gatenavn: "Kirkegateveien",
-            husnummer: "33",
-            husbokstav: "H",
-            postnummer: "0001",
-            poststed: "By",
-            type: "stedsadresse",
-          },
-        },
-      } as EnhetInkludertKontaktinformasjon)
-    ).toStrictEqual({
-      adresse: { adresselinje1: "NAV-enhet", adresselinje2: "Kirkegateveien 33 H", postnummer: "0001", poststed: "By" },
-    });
-  });
-
-  it("returns enhetsnummer and default netsPostboks if the provided enhet does not have postadresse", () => {
-    expect(
-      genererMottaksadresse(undefined, [], {
-        enhet: { enhetNr: "123", navn: "NAV-enhet" },
-      } as EnhetInkludertKontaktinformasjon)
-    ).toStrictEqual({ enhetsnummer: "123", netsPostboks: "1400" });
+  it("returns enhetsnummer and default netsPostboks if mottaksadresseId is undefined and enhetsnummer is provided", () => {
+    expect(genererMottaksadresse(undefined, [], "123")).toStrictEqual({ enhetsnummer: "123", netsPostboks: "1400" });
   });
 });
 
