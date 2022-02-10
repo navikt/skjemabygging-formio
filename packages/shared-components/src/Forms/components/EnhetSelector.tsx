@@ -15,6 +15,12 @@ const useStyles = makeStyles({
 const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelectorProps) => {
   const { translate } = useLanguages();
   const styles = useStyles();
+  const reactSelectCustomStyles = {
+    control: (base) => ({
+      ...base,
+      ...(error ? { borderColor: navCssVariables.navError, boxShadow: `0 0 0 1px ${navCssVariables.navError}` } : {}),
+    }),
+  };
 
   if (enhetsListe.length === 0) {
     return <></>;
@@ -23,26 +29,19 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
   const options = enhetsListe.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
     <div className="skjemaelement margin-bottom-default">
-      <label id="enhetSelectLabel" className="skjemaelement__label">
+      <label htmlFor="enhetSelect" className="skjemaelement__label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>
       <div className="skjemaelement__description">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntityDescription)}
       </div>
       <ReactSelect
+        id="enhetSelect"
         className={styles.enhetsListe}
         options={options}
-        styles={{
-          control: (base) => ({
-            ...base,
-            ...(error
-              ? { borderColor: navCssVariables.navError, boxShadow: `0 0 0 1px ${navCssVariables.navError}` }
-              : {}),
-          }),
-        }}
+        styles={reactSelectCustomStyles}
         placeholder={translate(TEXTS.statiske.prepareLetterPage.selectEntityDefault)}
-        aria-errormessage="enhetSelectError"
-        aria-labelledby="enhetSelectLabel"
+        aria-describedby="enhetSelectError"
         onChange={(event) => {
           onSelectEnhet(event && event.value);
         }}
