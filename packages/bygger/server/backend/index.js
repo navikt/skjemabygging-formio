@@ -62,7 +62,7 @@ export class Backend {
   }
 
   async updateForms(userToken, forms) {
-    const updateFormUrl = "https://protected-island-44773.herokuapp.com/form";
+    const updateFormUrl = "https://formio-api-server.dev.nav.no";
     await this.checkUpdateAndPublishingAccess(userToken);
     return await Promise.all(
       forms.map((form) => {

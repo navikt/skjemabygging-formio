@@ -7,7 +7,7 @@ dotenv.config();
 const localDevelopmentConfig = {
   gitVersion: "local",
   useFormioApi: true,
-  formioProjectUrl: "https://protected-island-44773.herokuapp.com",
+  formioProjectUrl: "https://formio-api-server.dev.nav.no",
   forstesideUrl: "https://www.nav.no/soknader/api/forsteside",
   decoratorUrl: "https://www.nav.no/dekoratoren?simple=true",
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || "https://skjemabygging-proxy.dev-fss-pub.nais.io",
