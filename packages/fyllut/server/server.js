@@ -216,9 +216,8 @@ skjemaApp.get("/countries", (req, res) => res.json(getCountries(req.query.lang))
 skjemaApp.get("/mottaksadresser", async (req, res) => res.json(await loadMottaksadresser()));
 
 skjemaApp.get("/api/enhetsliste", azureAccessTokenHandler, (req, res, next) => {
-  fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet/kontaktinformasjon/organisering/AKTIV`, {
+  fetch(`${skjemabyggingProxyUrl}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`, {
     headers: {
-      consumerId: "skjemadigitalisering",
       Authorization: `Bearer ${req.headers.AzureAccessToken}`,
       "x-correlation-id": correlator.getId(),
     },

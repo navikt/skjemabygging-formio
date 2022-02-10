@@ -131,12 +131,9 @@ export class Backend {
 
   async fetchEnhetsliste() {
     return this.authenticateWithAzure().then(({ data }) => {
-      return fetchWithErrorHandling(
-        `${this.config.skjemabyggingProxyUrl}/norg2/api/v1/enhet/kontaktinformasjon/organisering/AKTIV`,
-        {
-          headers: { consumerId: "skjemadigitalisering", Authorization: `Bearer ${data?.access_token}` },
-        }
-      ).then((response) => response.data);
+      return fetchWithErrorHandling(`${this.config.skjemabyggingProxyUrl}/norg2/api/v1/enhet?enhetStatusListe=AKTIV`, {
+        headers: { Authorization: `Bearer ${data?.access_token}` },
+      }).then((response) => response.data);
     });
   }
 }
