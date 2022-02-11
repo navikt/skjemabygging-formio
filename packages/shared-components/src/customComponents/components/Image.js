@@ -26,6 +26,7 @@ export default class Image extends Component {
               components: [
                 {
                   type: "file",
+                  fileMaxSize: "5MB",
                   label: "Last opp fil",
                   key: "image",
                   storage: "base64",
@@ -37,10 +38,33 @@ export default class Image extends Component {
                 },
                 {
                   type: "textfield",
-                  label: "Row title",
-                  key: "rowTitle",
+                  label: "Bilde Beskrivelse",
+                  key: "altText",
                   weight: 2,
                   input: true,
+                  validate: {
+                    required: true,
+                  },
+                },
+                {
+                  label: "Bilde Størrelse",
+                  fieldSize: "input--xs",
+                  suffix: "%",
+                  delimiter: false,
+                  requireDecimal: false,
+                  truncateMultipleSpaces: false,
+                  validateOn: "blur",
+                  validate: {
+                    required: true,
+                    min: 20,
+                    max: 100,
+                  },
+                  defaultValue: 100,
+                  key: "size",
+                  type: "number",
+                  input: true,
+                  spellcheck: false,
+                  tableView: false,
                 },
               ],
             },
@@ -49,6 +73,14 @@ export default class Image extends Component {
       ],
     };
   }
+
+  handleWidth = (imgSize) => {
+    if (imgSize > 100) {
+      return "100%";
+    }
+    return imgSize + "%";
+  };
+
   render() {
     return super.render(
       this.renderTemplate("image", {

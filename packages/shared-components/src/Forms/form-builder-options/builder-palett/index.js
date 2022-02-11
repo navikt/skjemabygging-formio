@@ -9,7 +9,7 @@ import personPalett from "./personPalett";
 
 const builderPalett = {
   advanced: null,
-  //premium: null,
+  premium: null,
   person: personPalett,
   pengerOgKonto: pengerOgKontoPalett,
   organisasjon: organisasjonPalett,
