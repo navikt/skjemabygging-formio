@@ -62,7 +62,7 @@ export class Backend {
   }
 
   async updateForms(userToken, forms) {
-    const updateFormUrl = "https://formio-api-server.dev.nav.no";
+    const updateFormUrl = "https://formio-api-server.ekstern.dev.nav.no";
     await this.checkUpdateAndPublishingAccess(userToken);
     return await Promise.all(
       forms.map((form) => {

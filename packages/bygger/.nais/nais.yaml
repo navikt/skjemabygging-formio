@@ -59,6 +59,6 @@ spec:
           cluster: {{this.cluster}}
       {{/each}}
       external:
-        - host: formio-api-server.dev.nav.no
+        - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
         - host: {{skjemabygging-proxy-host}}

@@ -57,7 +57,7 @@ jobs:
       - name: "Bygger (Frontend): install dependencies and build"
         working-directory: ./packages/bygger
         env:
-          REACT_APP_FORMIO_PROJECT_URL: "https://formio-api-server.dev.nav.no"
+          REACT_APP_FORMIO_PROJECT_URL: "https://formio-api-server.ekstern.dev.nav.no"
           REACT_APP_PUSHER_CLUSTER: "mt1"
           REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
           REACT_APP_GIT_VERSION: ${{ github.sha }}

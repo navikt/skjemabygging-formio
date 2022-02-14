@@ -18,7 +18,7 @@ async function loginUser(email, password) {
       password: password,
     },
   };
-  const loginResponse = await fetch("https://formio-api-server.dev.nav.no/user/login", {
+  const loginResponse = await fetch("https://formio-api-server.ekstern.dev.nav.no/user/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(loginBody),
@@ -29,7 +29,7 @@ async function loginUser(email, password) {
 
 async function getForm() {
   const token = await loginUser(args[0], args[1]);
-  const response = await fetch("https://formio-api-server.dev.nav.no/form/" + args[3], {
+  const response = await fetch("https://formio-api-server.ekstern.dev.nav.no/form/" + args[3], {
     method: "GET",
     headers: { "x-jwt-token": token },
   });
@@ -46,7 +46,7 @@ async function putForm() {
   const inputData = await read(process.stdin);
   const inputForm = JSON.parse(inputData);
 
-  const response = await fetch("https://formio-api-server.dev.nav.no/form/" + args[3], {
+  const response = await fetch("https://formio-api-server.ekstern.dev.nav.no/form/" + args[3], {
     method: "PUT",
     headers: { "x-jwt-token": token, "content-type": "application/json" },
     body: JSON.stringify(inputForm),

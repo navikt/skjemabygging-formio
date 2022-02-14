@@ -50,7 +50,7 @@ async function migrateForms(
   searchFilters,
   editOptions,
   formPaths = [],
-  url = "https://formio-api-server.dev.nav.no/form?type=form&tags=nav-skjema&limit=100&properties.tema=xxx-migrering"
+  url = "https://formio-api-server.ekstern.dev.nav.no/form?type=form&tags=nav-skjema&limit=100&properties.tema=xxx-migrering"
 ) {
   return fetchForms(url).then((response) => {
     let log = {};
@@ -74,7 +74,12 @@ async function migrateForms(
   });
 }
 
-async function previewForm(searchFilters, editOptions, formPath, baseUrl = "https://formio-api-server.dev.nav.no") {
+async function previewForm(
+  searchFilters,
+  editOptions,
+  formPath,
+  baseUrl = "https://formio-api-server.ekstern.dev.nav.no"
+) {
   const url = `${baseUrl}/form?type=form&tags=nav-skjema&path=${formPath}&limit=1`;
   return fetchForms(url).then((response) => migrateForm(response.data[0], searchFilters, getEditScript(editOptions)));
 }

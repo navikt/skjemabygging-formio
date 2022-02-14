@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const app = express();
-const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://formio-api-server.dev.nav.no";
+const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://formio-api-server.ekstern.dev.nav.no";
 
 function gitVersion() {
   const GIT_SHA = process.env.GIT_SHA;
