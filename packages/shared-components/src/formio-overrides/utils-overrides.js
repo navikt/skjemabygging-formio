@@ -22,7 +22,7 @@ function addNullChecksToChainedLookup(chainedLookup, originalString) {
 
 function mapChainedLookups(text) {
   let mappedString = text;
-  const arrayOfChainedLookups = text.match(/((\w+\.)+\w+)/g) || [];
+  const arrayOfChainedLookups = text.match(/((\w+\.)+\w+\b)(?!\()/g) || [];
   [...new Set(arrayOfChainedLookups)].forEach(
     (chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString))
   );
