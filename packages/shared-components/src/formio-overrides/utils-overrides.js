@@ -22,7 +22,29 @@ function addNullChecksToChainedLookup(chainedLookup, originalString) {
 
 function mapChainedLookups(text) {
   let mappedString = text;
-  const arrayOfChainedLookups = text.match(/((\w+\.)+\w+)/g) || [];
+  /**
+   * Matcher uttrykk:
+   * - som starter med en eller flere grupper ((\w+\.)+) av
+   *   - en eller flere [a-zA-Z0-9] (\w+)
+   *   - etterfulgt av punktum (\.).
+   * - som avsluttes med et eller flere [a-zA-Z0-9] (\w+)
+   * - etterfulgt av en word boundary = noe som IKKE er [a-zA-Z0-9] (\b) (tas ikke med i strengen som matches)
+   *   - Eksempler på word boundaries er mellomrom, likhetstegn, eller lignende
+   * - og IKKE etterfølges av en parantes eller punktum (?![(.]) (tas ikke med i strengen som matches)
+   *
+   * De to siste punktene (word boundary + negativ lookahead etter parantes) er lagt til for å ikke matche funksjonskall.
+   * Punktumet i siste punkt er der for å forhindre at matchingen deler opp et funksjonskall på en nestet objekt.
+   *
+   * Skal matche:
+   * - obj.myVar
+   * - obj.myVar1
+   * - parentObj.childObj.myVar
+   *
+   * Skal IKKE matche:
+   * - obj.myFunction()
+   * - parentObj.childObj.myFunction()
+   */
+  const arrayOfChainedLookups = text.match(/((\w+\.)+\w+\b)(?![(.])/g) || [];
   [...new Set(arrayOfChainedLookups)].forEach(
     (chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString))
   );

@@ -81,5 +81,23 @@ describe("sanitizeJavaScriptCode", () => {
         "valid = instance.fun1(_.some(data, (a) => util.fun2((a && a.b && a.b.c))))"
       );
     });
+
+    it("does not add null checks for function calls", () => {
+      const inputWithFunctionCall = "valid = obj.myFunction()";
+      expect(sanitizeJavaScriptCode(inputWithFunctionCall)).toEqual("valid = obj.myFunction()");
+
+      const inputWithFunctionThatTakesParams = "valid = obj.myFunction(someInput)";
+      expect(sanitizeJavaScriptCode(inputWithFunctionThatTakesParams)).toEqual("valid = obj.myFunction(someInput)");
+
+      const inputWithNestedFunctionCall = "valid = parentObject.childObject.nestedFunction()";
+      expect(sanitizeJavaScriptCode(inputWithNestedFunctionCall)).toEqual(
+        "valid = parentObject.childObject.nestedFunction()"
+      );
+
+      const inputWithNestedObjectReferenceAndFunctionCall = "valid = obj.someVar || obj.someFunction()";
+      expect(sanitizeJavaScriptCode(inputWithNestedObjectReferenceAndFunctionCall)).toEqual(
+        "valid = (obj && obj.someVar) || obj.someFunction()"
+      );
+    });
   });
 });
