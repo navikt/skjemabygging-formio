@@ -440,5 +440,9 @@ describe("navFormUtils", () => {
       });
       expect(actualForm.components).toHaveLength(0);
     });
+
+    describe("A form with a component that calculates value based on another", () => {});
+
+    describe("A form with a component that validates based on another", () => {});
   });
 });

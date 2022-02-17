@@ -21,6 +21,20 @@ export function flattenComponents(components) {
   }, []);
 }
 
+function calculatesBasedOn(paths, component) {
+  return (
+    component.calculateValue && paths.some((key) => component.calculateValue.search(`data.${key}[^a-zA-z0-9_-]`) > -1)
+  );
+}
+
+function validatesBasedOn(paths, component) {
+  return (
+    component.validate &&
+    component.validate.custom &&
+    paths.some((key) => component.validate.custom.search(`data.${key}[^a-zA-z0-9_-]`) > -1)
+  );
+}
+
 function hasConditionalOn(paths, component) {
   return (
     (component.conditional &&
@@ -36,7 +50,11 @@ const recursivelyFindDependentComponents = (mainId, downstreamPaths, comps) => {
   const dependentKeys = [];
   comps.forEach((comp) => {
     if (comp.id !== mainId) {
-      if (hasConditionalOn(downstreamPaths, comp)) {
+      if (
+        hasConditionalOn(downstreamPaths, comp) ||
+        validatesBasedOn(downstreamPaths, comp) ||
+        calculatesBasedOn(downstreamPaths, comp)
+      ) {
         dependentKeys.push({ key: comp.key, label: comp.label });
       }
       if (comp.components?.length > 0) {
