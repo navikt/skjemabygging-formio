@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
-import { Sidetittel } from "nav-frontend-typografi";
+import Panel from "nav-frontend-paneler";
+import { Innholdstittel, Sidetittel, Undertekst, Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { DryRunResult, DryRunResults, MigrationOptions } from "../../types/migration";
 import ConfirmMigration from "./ConfirmMigration";
@@ -57,13 +58,14 @@ const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) 
 
 const MigrationPage = () => {
   const styles = useStyles();
-  const [{ dryRunSearchResults, numberOfComponentsFound, numberOfComponentsChanged }, setFormMigrationResults] =
+  const [{ dryRunSearchResults, numberOfComponentsFound, numberOfComponentsChanged }, setDryRunSearchResults] =
     useState<{
       dryRunSearchResults?: DryRunResult[];
       numberOfComponentsFound?: number;
       numberOfComponentsChanged?: number;
     }>({});
   const [selectedToMigrate, setSelectedToMigrate] = useState<string[]>([]);
+  const [migratedForms, setMigratedForms] = useState<any[]>([]);
 
   const [searchFilters, dispatchSearchFilters] = useMigrationOptions();
   const [editOptions, dispatchEditOptions] = useMigrationOptions();
@@ -78,7 +80,7 @@ const MigrationPage = () => {
       .then((response) => response.json())
       .catch((err) => console.error(err));
     const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
-    setFormMigrationResults({
+    setDryRunSearchResults({
       dryRunSearchResults,
       ...dryRunSearchResults.reduce(
         (acc, curr) => ({
@@ -96,7 +98,7 @@ const MigrationPage = () => {
 
   const onConfirm = async () => {
     try {
-      await fetch("/api/migrate/update", {
+      const updatedFormsResponse = await fetch("/api/migrate/update", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -110,7 +112,9 @@ const MigrationPage = () => {
           },
         }),
       });
-      await onSearch();
+      const updatedForms = await updatedFormsResponse.json();
+      setMigratedForms(updatedForms);
+      setDryRunSearchResults({});
     } catch (error) {
       console.error(error);
     }
@@ -136,8 +140,23 @@ const MigrationPage = () => {
         onSubmit={onSearch}
       />
 
+      {migratedForms.length > 0 && (
+        <Panel className="margin-bottom-double">
+          <Undertittel tag="h3">Disse skjemaene ble migrert, og må publiseres manuelt</Undertittel>
+          <Undertekst>
+            Pass på å kopiere denne listen før du laster siden på nytt eller utfører en ny migrering
+          </Undertekst>
+          <ul>
+            {migratedForms.map((form) => (
+              <li>{`${form.properties.skjemanummer} - ${form.name} (${form.path})`}</li>
+            ))}
+          </ul>
+        </Panel>
+      )}
+
       {dryRunSearchResults && (
         <>
+          <Innholdstittel tag="h2">Resultater av simulert migrering</Innholdstittel>
           <p>
             Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
             {numberOfComponentsFound !== undefined && (

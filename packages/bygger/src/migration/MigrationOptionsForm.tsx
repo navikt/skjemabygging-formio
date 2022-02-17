@@ -11,6 +11,7 @@ const getStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gap: "0.25rem 1rem",
+    marginBottom: "2rem",
   },
   hasMarginBottom: {
     marginBottom: "1rem",

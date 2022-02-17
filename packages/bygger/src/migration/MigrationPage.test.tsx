@@ -175,7 +175,7 @@ describe("MigrationPage", () => {
         const confirmMigrationButton = within(modal).getByRole("button", { name: "Bekreft migrering" });
         fireEvent.click(confirmMigrationButton);
         await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-        expect(fetchSpy).toHaveBeenCalledTimes(3);
+        expect(fetchSpy).toHaveBeenCalledTimes(2);
         expect(fetchSpy).toHaveBeenCalledWith("/api/migrate/update", {
           body: JSON.stringify({
             token: "",

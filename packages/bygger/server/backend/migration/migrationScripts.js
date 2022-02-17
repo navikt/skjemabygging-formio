@@ -50,7 +50,7 @@ async function migrateForms(
   searchFilters,
   editOptions,
   formPaths = [],
-  url = "https://formio-api-server.ekstern.dev.nav.no/form?type=form&tags=nav-skjema&limit=100&properties.tema=xxx-migrering"
+  url = "https://formio-api-server.ekstern.dev.nav.no/form?type=form&tags=nav-skjema&limit=1000"
 ) {
   return fetchForms(url).then((response) => {
     let log = {};
