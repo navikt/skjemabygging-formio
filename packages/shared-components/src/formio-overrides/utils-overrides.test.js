@@ -40,6 +40,20 @@ describe("sanitizeJavaScriptCode", () => {
     expect(sanitizeJavaScriptCode(inputWithMultipleEqualChainedLookups)).toEqual("show = (a1 && a1.b2) === 'c'");
   });
 
+  it("will not change a partial expression", () => {
+    const inputWithTwoChainedWhereOneIsAPartialOfTheOther =
+      "show = anObject.aString === 'c' || anObject.aString1 === 'd'";
+    const actual = sanitizeJavaScriptCode(inputWithTwoChainedWhereOneIsAPartialOfTheOther);
+    expect(actual).toEqual("show = (anObject && anObject.aString) === 'c' || (anObject && anObject.aString1) === 'd'");
+  });
+
+  it("will not change a partial expression that ends in an equal expression to another complete expression", () => {
+    const inputWithOneChainedExpressionEndingInAnotherExpression =
+      "show = anObject.aString === 'c' || Object.aString === 'd'";
+    const actual = sanitizeJavaScriptCode(inputWithOneChainedExpressionEndingInAnotherExpression);
+    expect(actual).toEqual("show = (anObject && anObject.aString) === 'c' || (Object && Object.aString) === 'd'");
+  });
+
   describe("When the code includes function calls", () => {
     it("does not add null checks for functions on instance", () => {
       const inputWithInstanceFunctionCall = "valid = instance.validate(input)";
