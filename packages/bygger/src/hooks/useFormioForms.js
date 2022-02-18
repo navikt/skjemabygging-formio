@@ -1,3 +1,4 @@
+import { getIso8601String } from "@navikt/skjemadigitalisering-shared-components/src/util/date";
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 
@@ -30,9 +31,14 @@ export const useFormioForms = (formio, userAlerter) => {
   );
 
   const onSave = useCallback(
-    (callbackForm) => {
-      formio.saveForm({ ...callbackForm, display: "wizard" }).then((form) => {
-        userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
+    (callbackForm, silent = false, modified = undefined) => {
+      if (!modified) {
+        modified = getIso8601String();
+      }
+      formio.saveForm({ ...updateModified(callbackForm, modified), display: "wizard" }).then((form) => {
+        if (!silent) {
+          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
+        }
         return form;
       });
     },
@@ -50,6 +56,10 @@ export const useFormioForms = (formio, userAlerter) => {
 
   const onPublish = useCallback(
     async (form, translations) => {
+      const previousPublished = form.properties?.published;
+      const now = getIso8601String();
+      onSave(updatePublished(form, now), true, now);
+
       const payload = JSON.stringify({
         form: form,
         translations: translations,
@@ -60,15 +70,44 @@ export const useFormioForms = (formio, userAlerter) => {
         headers: { "content-type": "application/json" },
         body: payload,
       });
-      if (response.ok) {
+
+      if (response?.ok) {
         userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
       } else {
-        userAlerter.setErrorMessage("Publisering feilet " + response.status);
-        console.error("Publisering feilet " + response.status);
+        userAlerter.setErrorMessage("Publisering feilet " + response?.status);
+        onSave(updatePublished(form, previousPublished), true, previousPublished);
       }
     },
-    [userAlerter]
+    [userAlerter, onSave]
   );
+
+  const updatePublished = (form, published) => {
+    if (!published) return form;
+
+    return {
+      ...form,
+      properties: {
+        ...form.properties,
+        published: published,
+      },
+    };
+  };
+
+  /**
+   * Formio sets a modified date, but we set our own modified in properties,
+   * so we can compare it against the published value.
+   */
+  const updateModified = (form, modified) => {
+    if (!modified) return form;
+
+    return {
+      ...form,
+      properties: {
+        ...form.properties,
+        modified: modified,
+      },
+    };
+  };
 
   return {
     deleteForm,
