@@ -130,7 +130,7 @@ export default class FormioReactComponent extends Field {
    */
   updateValue = (value, flags) => {
     flags = flags || {};
-    const newValue = value === undefined || value === null ? this.getValue() : value;
+    const newValue = value === undefined || value === null ? undefined : value;
     const changed = newValue !== undefined ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
 
