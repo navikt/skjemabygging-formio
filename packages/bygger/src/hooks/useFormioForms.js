@@ -57,6 +57,7 @@ export const useFormioForms = (formio, userAlerter) => {
   const onPublish = useCallback(
     async (form, translations) => {
       const previousPublished = form.properties?.published;
+      const previousModified = form.properties?.modified;
       const now = getIso8601String();
       onSave(updatePublished(form, now), true, now);
 
@@ -75,7 +76,7 @@ export const useFormioForms = (formio, userAlerter) => {
         userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
       } else {
         userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-        onSave(updatePublished(form, previousPublished), true, previousPublished);
+        onSave(updatePublished(form, previousPublished), true, previousModified);
       }
     },
     [userAlerter, onSave]
