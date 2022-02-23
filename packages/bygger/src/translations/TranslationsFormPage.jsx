@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
+import { useI18nDispatch } from "../context/i18n/I18nContext";
 import TranslationTextInput from "./TranslationTextInput";
 
 const useTranslationsListStyles = makeStyles({
@@ -10,11 +11,13 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-const FormItem = ({ currentTranslation, setTranslations, text, type, languageCode, translations }) => {
+const FormItem = ({ currentTranslation, text, type, languageCode, translations }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [globalTranslation, setGlobalTranslation] = useState("");
   const [tempGlobalTranslation, setTempGlobalTranslation] = useState("");
+
+  const dispatch = useI18nDispatch();
 
   useEffect(() => {
     if (currentTranslation && currentTranslation[text]) {
@@ -29,18 +32,12 @@ const FormItem = ({ currentTranslation, setTranslations, text, type, languageCod
       setHasGlobalTranslation(false);
       setShowGlobalTranslation(false);
     }
-  }, [currentTranslation, setTranslations, text]);
+  }, [currentTranslation, text]);
 
   const updateTranslations = (targetValue) => {
-    setTranslations({
-      ...translations,
-      [languageCode]: {
-        ...translations[languageCode],
-        translations: {
-          ...currentTranslation,
-          [text]: { value: targetValue, scope: "local" },
-        },
-      },
+    dispatch({
+      type: "add",
+      payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: "local" } } },
     });
     setGlobalTranslation(targetValue);
   };

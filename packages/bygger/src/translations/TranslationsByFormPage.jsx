@@ -9,7 +9,7 @@ import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import UserFeedback from "../components/UserFeedback";
-import { languagesInNorwegian, useTranslations } from "../context/i18n";
+import { languagesInNorwegian, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import { useModal } from "../util/useModal";
@@ -37,7 +37,8 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
   const [status, setStatus] = useState("LOADING");
 
   const history = useHistory();
-  const { translations, setTranslations } = useTranslations();
+  const { translations } = useI18nState();
+
   useRedirectIfNoLanguageCode(languageCode, translations);
 
   useEffect(() => {
@@ -96,7 +97,6 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
               languageCode={languageCode}
               title={title}
               flattenedComponents={flattenedComponents}
-              setTranslations={setTranslations}
             />
           </Column>
           <div className={styles.sideBarContainer}>

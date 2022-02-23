@@ -1,75 +1,11 @@
-import { i18nData, mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import {getFormTexts} from "../../translations/utils";
+import I18nStateProvider, { getAvailableLanguages, useI18nDispatch, useI18nState } from "./I18nContext";
 
-export const languagesInNorwegian = {
+const languagesInNorwegian = {
   "nn-NO": "Norsk nynorsk",
   en: "Engelsk",
   pl: "Polsk",
 };
 
-const I18nContext = createContext({});
+export { useI18nState, useI18nDispatch, getAvailableLanguages, languagesInNorwegian };
 
-const extractDefaultI18nNbNoFormTexts = form => {
-  // i18n for nb-NO texts as a workaround to bug https://github.com/formio/formio.js/issues/4465
-  return form
-    ? getFormTexts(form).reduce((i18n, formText) => ({...i18n, [formText.text]: formText.text}), {})
-    : {}
-};
-
-function I18nProvider({ children, loadTranslations, forGlobal = false, form }) {
-  const [translations, setTranslations] = useState({});
-  const [translationsLoaded, setTranslationsLoaded] = useState(false);
-  const [availableLanguages, setAvailableLanguages] = useState([]);
-  const [translationsForNavForm, setTranslationsForNavForm] = useState({});
-  const [localTranslationsForNavForm, setLocalTranslationsForNavForm] = useState({});
-
-  useEffect(() => {
-    if (!translationsLoaded) {
-      setTranslationsLoaded(true);
-      loadTranslations().then((loadedTranslations) => {
-        setAvailableLanguages(Object.keys(loadedTranslations));
-        if (!forGlobal) {
-          setTranslations(loadedTranslations);
-        }
-      });
-    }
-  }, [loadTranslations, translationsLoaded, forGlobal]);
-
-  useEffect(() => {
-    const i18n = mapTranslationsToFormioI18nObject(translations);
-    let nbNoI18nFormTexts = extractDefaultI18nNbNoFormTexts(form);
-    setTranslationsForNavForm({
-      ...i18n,
-      "nb-NO": {
-        ...i18n["nb-NO"],
-        ...i18nData["nb-NO"],
-        ...nbNoI18nFormTexts
-      },
-    });
-  }, [translations, form]);
-
-  useEffect(() => {
-    const withoutCountryNames = (translation) =>
-      translation.scope !== "component-countryName" && translation.scope !== "global";
-    setLocalTranslationsForNavForm(mapTranslationsToFormioI18nObject(translations, withoutCountryNames));
-  }, [translations]);
-
-  return (
-    <I18nContext.Provider
-      value={{
-        translations,
-        translationsForNavForm,
-        setTranslations,
-        availableLanguages,
-        localTranslationsForNavForm,
-      }}
-    >
-      {children}
-    </I18nContext.Provider>
-  );
-}
-
-export const useTranslations = () => useContext(I18nContext);
-
-export default I18nProvider;
+export default I18nStateProvider;

@@ -5,8 +5,8 @@ import {
   useCurrentLanguage,
   useLanguageCodeFromURL,
 } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
-import { languagesInNorwegian, useTranslations } from "./index";
+import React, { useMemo } from "react";
+import { getAvailableLanguages, languagesInNorwegian, useI18nState } from "./index";
 
 const useStyles = makeStyles({
   sideBarLanguageSelector: {
@@ -17,8 +17,9 @@ const useStyles = makeStyles({
 const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) => {
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
   const supportedLanguageLists = Object.keys(i18nData).filter((languageCode) => languageCode !== "nb-NO");
-  const { availableLanguages } = useTranslations();
 
+  const i18nState = useI18nState();
+  const availableLanguages = useMemo(() => getAvailableLanguages(i18nState), [i18nState]);
   const styles = useStyles();
 
   const options = supportedLanguageLists
