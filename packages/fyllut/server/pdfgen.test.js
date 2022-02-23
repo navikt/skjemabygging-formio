@@ -543,6 +543,97 @@ describe("generating doc definition", () => {
     });
   });
 
+  describe.only("Image", () => {
+    const createImageFormDefinition = () => ({
+      name: "testImage",
+      components: [
+        {
+          label: "Image panel",
+          type: "panel",
+          components: [
+            {
+              image: [
+                {
+                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                },
+              ],
+              label: "Bilde",
+              key: "bilde",
+              altText: "Bilde beskrivelse",
+              type: "image",
+            },
+          ],
+        },
+      ],
+    });
+
+    const createImageFormDefinitionWithMultiComponents = () => ({
+      name: "testImage",
+      components: [
+        {
+          label: "Image panel",
+          type: "panel",
+          components: [
+            {
+              label: "Tekstfelt",
+              key: "tekstfelt1",
+              type: "textfield",
+              input: true,
+            },
+            {
+              image: [
+                {
+                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                },
+              ],
+              label: "Bilde",
+              key: "bilde",
+              altText: "Bilde beskrivelse",
+              type: "image",
+            },
+            {
+              label: "Tekstfelt",
+              key: "tekstfelt2",
+              type: "textfield",
+              input: true,
+            },
+          ],
+        },
+      ],
+    });
+
+    it("adds a single image component", () => {
+      const formDefinition = createImageFormDefinition();
+      const imageDef = setupDocDefinitionContent({}, formDefinition).content[4];
+      expect(imageDef).toEqual([
+        { text: "Bilde", style: "subHeader" },
+        {
+          image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+          width: 500,
+        },
+        { text: "Bilde beskrivelse", style: "cursive" },
+      ]);
+    });
+
+    it("adds table with other components and image outside the table", () => {
+      const formDefinition = createImageFormDefinitionWithMultiComponents();
+      const pdfContent = setupDocDefinitionContent(
+        { data: { tekstfelt1: "inputdata1", tekstfelt2: "inputdata2" } },
+        formDefinition
+      ).content;
+      expect(pdfContent[4]).toEqual([
+        { text: "Bilde", style: "subHeader" },
+        {
+          image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+          width: 500,
+        },
+        { text: "Bilde beskrivelse", style: "cursive" },
+      ]);
+
+      expect(pdfContent[5].table.body).toHaveLength(2);
+    });
+  });
+
   describe("PdfgenPapir", () => {
     it("generates document with signature field", () => {
       const submission = { data: {}, metadata: {} };
