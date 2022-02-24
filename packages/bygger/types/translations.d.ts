@@ -14,7 +14,7 @@ export interface FormioTranslation {
 }
 
 export interface FormioTranslationMap {
-  [key: Language]: FormioTranslation[];
+  [key: Language]: FormioTranslation;
 }
 
 export type TranslationResource = {

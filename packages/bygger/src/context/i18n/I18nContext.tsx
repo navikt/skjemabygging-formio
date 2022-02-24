@@ -13,7 +13,8 @@ type I18nAction =
   | { type: "init"; payload: FormioTranslationMap }
   | { type: "updateTranslationsForNavForm"; payload: I18nTranslations }
   | { type: "updateLocalTranslationsForNavForm"; payload: I18nTranslations }
-  | { type: "update"; payload: { lang: string; translation: ScopedTranslationMap } };
+  | { type: "update"; payload: { lang: string; translation: ScopedTranslationMap } }
+  | { type: "remove"; payload: { lang: string; key: string } };
 
 function reducer(state: I18nState, action: I18nAction) {
   switch (action.type) {
@@ -37,11 +38,27 @@ function reducer(state: I18nState, action: I18nAction) {
         ...state,
         translations: {
           ...state.translations,
-          [action.payload["lang"]]: {
+          [action.payload.lang]: {
+            ...state.translations[action.payload.lang],
             translations: {
-              ...state.translations[action.payload["lang"]].translations,
+              ...state.translations[action.payload.lang].translations,
               ...action.payload.translation,
             },
+          },
+        },
+      };
+    case "remove":
+      return {
+        ...state,
+        translations: {
+          ...state.translations,
+          [action.payload.lang]: {
+            ...state.translations[action.payload.lang],
+            translations: Object.fromEntries(
+              Object.entries(state.translations[action.payload.lang].translations).filter(
+                ([key]) => key !== action.payload.key
+              )
+            ),
           },
         },
       };
@@ -58,7 +75,10 @@ const initialState: I18nState = {
   localTranslationsForNavForm: {},
 };
 
-const loadTranslationsAndInitState = async (loadTranslations, dispatch) => {
+const loadTranslationsAndInitState = async (
+  loadTranslations: () => Promise<FormioTranslationMap>,
+  dispatch: React.Dispatch<I18nAction>
+) => {
   const translations = await loadTranslations();
   dispatch({ type: "init", payload: translations });
 };
