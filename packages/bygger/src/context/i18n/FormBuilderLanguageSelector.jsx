@@ -18,8 +18,8 @@ const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) =
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
   const supportedLanguageLists = Object.keys(i18nData).filter((languageCode) => languageCode !== "nb-NO");
 
-  const i18nState = useI18nState();
-  const availableLanguages = useMemo(() => getAvailableLanguages(i18nState), [i18nState]);
+  const { translations } = useI18nState();
+  const availableLanguages = useMemo(() => getAvailableLanguages(translations), [translations]);
   const styles = useStyles();
 
   const options = supportedLanguageLists
