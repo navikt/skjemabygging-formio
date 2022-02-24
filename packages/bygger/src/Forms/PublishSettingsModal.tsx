@@ -4,7 +4,7 @@ import Modal from "nav-frontend-modal";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { I18nTranslationMap } from "../../types/translations";
+import { I18nTranslations } from "../../types/translations";
 import { languagesInNorwegian } from "../context/i18n";
 import { useI18nState } from "../context/i18n/I18nContext";
 import { getFormTexts } from "../translations/utils";
@@ -32,7 +32,7 @@ interface Props {
 
 export const getCompleteTranslationLanguageCodeList = (
   allFormOriginalTexts: string[],
-  translationsForNavForm: Record<string, I18nTranslationMap>
+  translationsForNavForm: I18nTranslations
 ): string[] => {
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {

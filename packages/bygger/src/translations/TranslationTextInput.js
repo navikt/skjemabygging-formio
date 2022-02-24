@@ -1,7 +1,8 @@
-import { Input, Textarea } from "nav-frontend-skjema";
-import { Locked, Unlocked } from "@navikt/ds-icons";
-import React from "react";
 import { makeStyles } from "@material-ui/styles";
+import { Locked, Unlocked } from "@navikt/ds-icons";
+import { Input, Textarea } from "nav-frontend-skjema";
+import React from "react";
+import { DebounceInput } from "react-debounce-input";
 
 const padLockIconStyle = {
   marginLeft: "-20px",
@@ -52,7 +53,9 @@ const TranslationTextInput = ({
   return (
     <div className={classes.list}>
       {type === "textarea" ? (
-        <Textarea
+        <DebounceInput
+          element={Textarea}
+          debounceTimeout={500}
           className="margin-bottom-default"
           label={text}
           value={value}
@@ -63,7 +66,9 @@ const TranslationTextInput = ({
           readOnly={hasGlobalTranslation}
         />
       ) : (
-        <Input
+        <DebounceInput
+          element={Input}
+          debounceTimeout={500}
           className="margin-bottom-default"
           label={text}
           type={type}

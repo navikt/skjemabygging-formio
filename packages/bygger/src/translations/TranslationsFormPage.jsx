@@ -36,7 +36,7 @@ const FormItem = ({ currentTranslation, text, type, languageCode }) => {
 
   const updateTranslations = (targetValue) => {
     dispatch({
-      type: "add",
+      type: "update",
       payload: { lang: languageCode, translation: { [text]: { value: targetValue, scope: "local" } } },
     });
     setGlobalTranslation(targetValue);

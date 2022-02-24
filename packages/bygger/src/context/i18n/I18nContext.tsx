@@ -11,7 +11,7 @@ interface I18nState {
 
 type I18nAction =
   | { type: "init"; payload: I18nState }
-  | { type: "add"; payload: { lang: string; translation: ScopedTranslationMap } };
+  | { type: "update"; payload: { lang: string; translation: ScopedTranslationMap } };
 
 function reducer(state: I18nState, action: I18nAction) {
   switch (action.type) {
@@ -19,7 +19,7 @@ function reducer(state: I18nState, action: I18nAction) {
       return {
         ...action.payload,
       };
-    case "add":
+    case "update":
       return {
         ...state,
         translations: {
