@@ -45,6 +45,24 @@ const initialState: I18nState = {
   localTranslationsForNavForm: {},
 };
 
+const loadTranslationsAndInitState = async (loadTranslations, formTextsForNbNOAsI18n, dispatch) => {
+  const translations = await loadTranslations();
+  const translationsAsI18n = mapTranslationsToFormioI18nObject(translations);
+  const translationsForNavForm = {
+    ...translationsAsI18n,
+    "nb-NO": {
+      ...translationsAsI18n["nb-NO"],
+      ...i18nData["nb-NO"],
+      ...formTextsForNbNOAsI18n,
+    },
+  };
+  const localTranslationsForNavForm = mapTranslationsToFormioI18nObject(
+    translations,
+    (translation) => translation.scope !== "component-countryName" && translation.scope !== "global"
+  );
+  dispatch({ type: "init", payload: { translations, translationsForNavForm, localTranslationsForNavForm } });
+};
+
 const I18nDispatchContext = createContext<React.Dispatch<I18nAction>>(() => {});
 const I18nStateContext = createContext(initialState);
 
@@ -56,33 +74,10 @@ const extractDefaultI18nNbNoFormTexts = (form) => {
 function I18nStateProvider({ children, loadTranslations, form, forGlobal = false }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // todo: Clean up
   useEffect(() => {
-    loadTranslations()
-      .then((translations) => {
-        const translationsAsI18n = mapTranslationsToFormioI18nObject(translations);
-        const formTextsOnNbNOAsI18n = extractDefaultI18nNbNoFormTexts(form);
-        dispatch({
-          type: "init",
-          payload: {
-            translations,
-            translationsForNavForm: {
-              ...translationsAsI18n,
-              "nb-NO": {
-                ...translationsAsI18n["nb-NO"],
-                ...i18nData["nb-NO"],
-                ...formTextsOnNbNOAsI18n,
-              },
-            },
-            localTranslationsForNavForm: mapTranslationsToFormioI18nObject(
-              translations,
-              (translation) => translation.scope !== "component-countryName" && translation.scope !== "global"
-            ),
-          },
-        });
-      })
-      .catch((e) => {});
-  }, [loadTranslations, form, forGlobal]);
+    const formTextsForNbNOAsI18n = extractDefaultI18nNbNoFormTexts(form);
+    loadTranslationsAndInitState(loadTranslations, formTextsForNbNOAsI18n, dispatch);
+  }, [loadTranslations, form, dispatch]);
 
   return (
     <I18nDispatchContext.Provider value={dispatch}>
