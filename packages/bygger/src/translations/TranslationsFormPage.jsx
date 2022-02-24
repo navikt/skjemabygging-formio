@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { useI18nDispatch } from "../context/i18n/I18nContext";
+import { useI18nDispatch } from "../context/i18n";
 import TranslationTextInput from "./TranslationTextInput";
 
 const useTranslationsListStyles = makeStyles({
@@ -11,7 +11,7 @@ const useTranslationsListStyles = makeStyles({
   },
 });
 
-const FormItem = ({ currentTranslation, text, type, languageCode, translations }) => {
+const FormItem = ({ currentTranslation, text, type, languageCode }) => {
   const [showGlobalTranslation, setShowGlobalTranslation] = useState(false);
   const [hasGlobalTranslation, setHasGlobalTranslation] = useState(false);
   const [globalTranslation, setGlobalTranslation] = useState("");
@@ -57,14 +57,7 @@ const FormItem = ({ currentTranslation, text, type, languageCode, translations }
     />
   );
 };
-const TranslationsFormPage = ({
-  skjemanummer,
-  translations,
-  title,
-  flattenedComponents,
-  setTranslations,
-  languageCode,
-}) => {
+const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComponents, languageCode }) => {
   const classes = useTranslationsListStyles();
   const [currentTranslation, setCurrentTranslation] = useState({});
 
@@ -82,8 +75,6 @@ const TranslationsFormPage = ({
           return (
             <FormItem
               currentTranslation={currentTranslation}
-              translations={translations}
-              setTranslations={setTranslations}
               text={text}
               type={type}
               key={`translation-${skjemanummer}-${text}-${languageCode}`}
