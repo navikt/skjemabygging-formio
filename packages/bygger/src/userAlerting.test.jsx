@@ -1,6 +1,6 @@
-import { renderHook, act } from "@testing-library/react-hooks";
-import { useUserAlerting } from "./userAlerting";
+import { act, renderHook } from "@testing-library/react-hooks";
 import React from "react";
+import { useUserAlerting } from "./userAlerting";
 
 describe("userAlerting", () => {
   let hookResult;
@@ -85,13 +85,13 @@ describe("userAlerting", () => {
 
     it("renders pusher message skjemaufyller-deployed", () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
-      channelSubscriptions["skjemautfyller-deployed"]["publication"](pusherMessage);
+      act(() => channelSubscriptions["skjemautfyller-deployed"]["publication"](pusherMessage));
       expect(hookResult.result.current.alertComponent()).not.toBeNull();
     });
 
     it("renders pusher message build-aborted", () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
-      channelSubscriptions["build-aborted"]["publication"](pusherMessage);
+      act(() => channelSubscriptions["build-aborted"]["publication"](pusherMessage));
       expect(hookResult.result.current.alertComponent()).not.toBeNull();
     });
   });
