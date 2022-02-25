@@ -13,8 +13,7 @@ const datoOgTidPalett = {
         dataGridLabel: true,
         validateOn: "blur",
         validate: {
-          custom:
-            "valid = instance.validateDatePickerV2(input, data, component, row);",
+          custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           required: true,
         },
       },
@@ -25,10 +24,10 @@ const datoOgTidPalett = {
       icon: "clock-o",
       weight: 20,
       schema: {
-        label: "Tid",
-        type: "time",
+        label: "Klokkeslett (tt:mm)",
+        type: "textfield",
         key: "tid",
-        fieldSize: "input--s",
+        fieldSize: "input--xs",
         input: true,
         dataGridLabel: true,
         spellcheck: false,
@@ -36,6 +35,8 @@ const datoOgTidPalett = {
         validateOn: "blur",
         validate: {
           required: true,
+          pattern: "([0-1][0-9]|2[0-3]):[0-5][0-9]",
+          customMessage: "Klokkeslett må være på formatet tt:mm, f.eks. 12:30.",
         },
       },
     },
