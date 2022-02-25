@@ -25,6 +25,10 @@ describe("MottaksadresseListe", () => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   let savedMottaksadresseRequests: MottaksadresseEntity[] = [];
   let deletedMottaksadresseIds: string[] = [];
 
@@ -137,6 +141,8 @@ describe("MottaksadresseListe", () => {
     userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
     userEvent.type(screen.getByLabelText("Postnummer"), "1500");
 
+    // Ignore console.log from formio that logs the components when error.
+    jest.spyOn(console, 'log').mockImplementation(() => {});
     userEvent.click(await within(panel).findByRole("button", {name: "Lagre"}));
     expect(await screen.findByText("Du må fylle ut: Poststed")).toBeTruthy();
 
