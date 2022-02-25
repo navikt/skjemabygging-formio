@@ -25,10 +25,6 @@ describe("MottaksadresseListe", () => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   let savedMottaksadresseRequests: MottaksadresseEntity[] = [];
   let deletedMottaksadresseIds: string[] = [];
 
@@ -145,6 +141,7 @@ describe("MottaksadresseListe", () => {
     jest.spyOn(console, 'log').mockImplementation(() => {});
     userEvent.click(await within(panel).findByRole("button", {name: "Lagre"}));
     expect(await screen.findByText("Du må fylle ut: Poststed")).toBeTruthy();
+    jest.restoreAllMocks();
 
     expect(savedMottaksadresseRequests).toHaveLength(0);
   });
