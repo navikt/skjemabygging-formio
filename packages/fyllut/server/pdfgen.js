@@ -154,7 +154,7 @@ export class Pdfgen {
             this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
           ];
         case "image":
-          return [];
+          return [this.createImageWithAlt(component)];
         default:
           return [
             this.createRow(this.translate(component.label), this.translate(component.value), false, areSubComponents),
@@ -165,23 +165,22 @@ export class Pdfgen {
 
   createImageWithAlt(img) {
     return [
-      { text: this.translate(img.label), style: "imageLabel" },
-      { image: img.value, maxWidth: 500, maxHeight: 400, alt: img.alt },
-      { text: img.alt, style: "cursive" },
+      {
+        stack: [
+          { text: this.translate(img.label), style: "imageLabel" },
+          { image: img.value, maxWidth: 500, maxHeight: 400, alt: img.alt },
+          { text: img.alt, style: "cursive" },
+        ],
+        colSpan: 2,
+      },
+      "",
     ];
   }
 
   mapFormSummaryObjectToTables(formSummaryObject) {
-    console.log("Formsum", formSummaryObject);
     return formSummaryObject.flatMap((panel) => {
-      const img = panel.components && panel.components.find((comp) => comp.type === "image");
-      const imgWithAlt = img && this.createImageWithAlt(img);
       const header = { text: this.translate(panel.label), style: "subHeader" };
       const tableWithBody = this.createTableWithBody(this.componentsToBody(panel.components));
-
-      if (imgWithAlt) {
-        return [header, imgWithAlt, tableWithBody];
-      }
       return [header, tableWithBody];
     });
   }
