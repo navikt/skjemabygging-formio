@@ -53,6 +53,10 @@ export class Pdfgen {
         bold: true,
         margin: [0, 10, 0, 5],
       },
+      imageLabel: {
+        bold: true,
+        margin: [0, 10, 0, 5],
+      },
       groupHeader: {
         bold: true,
       },
@@ -161,8 +165,8 @@ export class Pdfgen {
 
   createImageWithAlt(img) {
     return [
-      { text: this.translate(img.label), style: "subHeader" },
-      { image: img.value, width: 500 },
+      { text: this.translate(img.label), style: "imageLabel" },
+      { image: img.value, maxWidth: 500, maxHeight: 400, alt: img.alt },
       { text: img.alt, style: "cursive" },
     ];
   }

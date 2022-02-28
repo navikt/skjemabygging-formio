@@ -38,8 +38,18 @@ export default class Image extends Component {
                 },
                 {
                   type: "textfield",
-                  label: "Bilde Beskrivelse",
+                  label: "Alt Text",
                   key: "altText",
+                  weight: 2,
+                  input: true,
+                  validate: {
+                    required: true,
+                  },
+                },
+                {
+                  type: "textfield",
+                  label: "Bilde Beskrivelse",
+                  key: "description",
                   weight: 2,
                   input: true,
                   validate: {

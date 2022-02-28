@@ -63,6 +63,16 @@ const DataGridRow: FunctionComponent = ({ label, components }) => (
   </div>
 );
 
+
+const ImageSummary: FunctionComponent = ({ label, values, alt}) => (
+  <>
+    <dt>{label}</dt>
+    <dd>
+      <img src={values} alt={alt} width="600"></img>
+    </dd>
+  </>
+);
+
 const PanelSummary: FunctionComponent = ({ label, components }) => (
   <section className="margin-bottom-default wizard-page">
     <Systemtittel tag="h3" className="margin-bottom-default">
@@ -75,17 +85,21 @@ const PanelSummary: FunctionComponent = ({ label, components }) => (
 );
 
 const ComponentSummary = ({ components }) => {
-  return components.map(({ type, key, label, components, value }) => {
-    if (type === "panel") {
-      return <PanelSummary key={key} label={label} components={components} />;
-    } else if (type === "fieldset" || type === "navSkjemagruppe") {
-      return <FormSummaryFieldset key={key} label={label} components={components} />;
-    } else if (type === "datagrid") {
-      return <DataGridSummary key={key} label={label} components={components} />;
-    } else if (type === "selectboxes") {
-      return <SelectboxesSummary key={key} label={label} values={value} />;
-    } else {
-      return <FormSummaryField key={key} label={label} value={value} />;
+  return components.map(({ type, key, label, ...comp }) => {
+    switch (type) {
+      case "panel":
+        return <PanelSummary key={key} label={label} components={comp.components} />;
+      case "fieldset":
+      case "navSkjemagruppe":
+        return <FormSummaryFieldset key={key} label={label} components={comp.components} />;
+      case "datagrid":
+        return <DataGridSummary key={key} label={label} components={comp.components} />;
+      case "selectboxes":
+        return <SelectboxesSummary key={key} label={label} values={comp.value} />;
+      case "image":
+        return <ImageSummary key={key} label={label} values={comp.value} alt={comp.alt}/>;
+      default:
+        return <FormSummaryField key={key} label={label} value={comp.value} />;
     }
   });
 };

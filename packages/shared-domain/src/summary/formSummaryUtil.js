@@ -220,6 +220,23 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
   ];
 }
 
+function handleImage(component, formSummaryObject, parentContainerKey, translate) {
+  const { key, label, type, image, altText, size } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key: componentKey,
+      type,
+      value: image[0].url,
+      alt: translate(altText),
+      size,
+    },
+  ];
+}
+
 export function handleComponent(
   component,
   submission = { data: {} },
@@ -260,6 +277,8 @@ export function handleComponent(
         translate,
         evaluatedConditionals
       );
+    case "image":
+      return handleImage(component, formSummaryObject, parentContainerKey, translate);
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
   }

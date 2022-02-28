@@ -54,22 +54,40 @@ const getTranslatablePropertiesFromForm = (form) =>
     .flattenComponents(form.components)
     .filter((component) => !component.hideLabel)
     .filter((component) => component.type !== "hidden")
-    .map(({ content, title, label, html, type, values, legend, description, suffix, prefix, data, contentForPdf }) => ({
-      title,
-      label:
-        ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe", "alertstripe"].indexOf(type) === -1
-          ? label
-          : undefined,
-      html,
-      values: values ? values.map((value) => value.label) : undefined,
-      content: getTextFromComponentProperty(content),
-      legend,
-      description: getTextFromComponentProperty(description),
-      suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
-      prefix: getTextFromComponentProperty(prefix),
-      data: data ? data.values.map((value) => value.label) : undefined,
-      contentForPdf: getTextFromComponentProperty(contentForPdf),
-    }));
+    .map(
+      ({
+        content,
+        title,
+        label,
+        html,
+        type,
+        values,
+        legend,
+        description,
+        suffix,
+        prefix,
+        data,
+        contentForPdf,
+        altText,
+      }) => ({
+        title,
+        label:
+          ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe", "alertstripe", "image"].indexOf(type) ===
+          -1
+            ? label
+            : undefined,
+        html,
+        values: values ? values.map((value) => value.label) : undefined,
+        content: getTextFromComponentProperty(content),
+        legend,
+        description: getTextFromComponentProperty(description),
+        suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
+        prefix: getTextFromComponentProperty(prefix),
+        data: data ? data.values.map((value) => value.label) : undefined,
+        contentForPdf: getTextFromComponentProperty(contentForPdf),
+        altText,
+      })
+    );
 
 const withoutDuplicatedComponents = (component, index, currentComponents) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);

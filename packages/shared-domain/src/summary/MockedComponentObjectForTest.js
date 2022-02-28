@@ -12,6 +12,18 @@ const createDummyTextfield = (label = "Tekstfelt") => ({
   type: "textfield",
 });
 
+const createDummyImage = (label = "Bilde") => ({
+  image: [
+    {
+      url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+    },
+  ],
+  label,
+  key: keyFromLabel(label),
+  altText: "Bilde beskrivelse",
+  type: "image",
+});
+
 const createDummyEmail = (label = "Email") => ({
   label,
   key: keyFromLabel(label),
@@ -162,6 +174,7 @@ const mockedComponentObjectForTest = {
   createDummyRadioPanel,
   createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
+  createDummyImage,
   createDummyContentElement,
   createDummyHTMLElement,
   createDummyAlertstripe,
