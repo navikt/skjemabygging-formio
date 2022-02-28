@@ -1,4 +1,4 @@
-import { getIso8601String } from "@navikt/skjemadigitalisering-shared-components/src/util/date";
+import { getIso8601String } from "@navikt/skjemadigitalisering-shared-components";
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 
