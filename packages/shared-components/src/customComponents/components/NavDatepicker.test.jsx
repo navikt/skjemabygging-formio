@@ -1,5 +1,10 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import moment from "moment";
+import React from "react";
+import { setupNavFormio } from "../../../test/navform-render";
+import NavForm from "../../components/NavForm";
 import NavDatePicker from "./NavDatepicker";
 
 Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
@@ -485,6 +490,86 @@ describe("NavDatePicker", () => {
           expect(validationResultV2).toBe(true);
         });
       });
+    });
+  });
+
+  describe("when rendered with Form.io", () => {
+    beforeAll(setupNavFormio);
+
+    const testForm = {
+      title: "Testskjema",
+      type: "form",
+      display: "wizard",
+      components: [
+        {
+          title: "Panel",
+          type: "panel",
+          components: [
+            {
+              visArvelger: true,
+              label: "Dato (dd.mm.åååå)",
+              mayBeEqual: false,
+              validate: {
+                required: true,
+                custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
+              },
+              validateOn: "blur",
+              key: "datoDdMmAaaa",
+              type: "navDatepicker",
+              dataGridLabel: true,
+              input: true,
+              tableView: false,
+            },
+          ],
+        },
+        {
+          title: "Panel",
+          type: "panel",
+          components: [
+            {
+              label: "Fornavn",
+              type: "textfield",
+              key: "textfield",
+              inputType: "text",
+              input: true,
+              validate: {
+                required: true,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const renderNavForm = async (props) => {
+      const formReady = jest.fn();
+      const renderReturn = render(<NavForm {...props} formReady={formReady} />);
+      await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
+      return renderReturn;
+    };
+
+    it("sets value to empty string when clearing value", async () => {
+      await renderNavForm({
+        form: testForm,
+      });
+      const form = await screen.findByRole("form");
+      expect(form).toBeInTheDocument();
+      const datepickerInput = screen.getByLabelText("Dato (dd.mm.åååå)");
+      expect(datepickerInput).toBeInTheDocument();
+
+      datepickerInput.focus();
+      userEvent.type(datepickerInput, "01.01.2020");
+      expect(datepickerInput.value).toBe("01.01.2020");
+
+      userEvent.type(datepickerInput, "{selectall}{backspace}");
+      expect(datepickerInput.value).toBe("");
+
+      const nextButton = screen.getByRole("button", { name: "Neste" });
+      expect(nextButton).toBeInTheDocument();
+      nextButton.click();
+
+      const errorMessage = await screen.findByText("Du må fylle ut: Dato (dd.mm.åååå)");
+      expect(errorMessage).toBeInTheDocument();
     });
   });
 });
