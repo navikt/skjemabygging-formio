@@ -441,8 +441,134 @@ describe("navFormUtils", () => {
       expect(actualForm.components).toHaveLength(0);
     });
 
-    describe("A form with a component that calculates value based on another", () => {});
+    describe("A form with a component that calculates value based on another", () => {
+      const formWithComponentsThatCalulateValueBasedOnAnother = {
+        id: "myForm",
+        title: "Form with components that calculate value based on another",
+        components: [
+          {
+            id: "panel1",
+            title: "Panel 1",
+            type: "panel",
+            components: [
+              {
+                key: "someCheckbox",
+                label: "Some checkbox",
+                type: "navCheckbox",
+                id: "navCheckbox1",
+              },
+            ],
+          },
+          {
+            id: "panel2",
+            title: "Panel 2",
+            type: "panel",
+            components: [
+              {
+                id: "number1",
+                key: "aComponentThatCalculatesValueBasedOnSomeCheckbox",
+                label: "A component that calculates value based on someCheckbox",
+                type: "number",
+                calculateValue: "value = data.someCheckbox === true ? 1000 : 0",
+                readOnly: true,
+              },
+            ],
+          },
+        ],
+      };
+      const actual = findDependentComponents("navCheckbox1", formWithComponentsThatCalulateValueBasedOnAnother);
+      expect(actual).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            key: "aComponentThatCalculatesValueBasedOnSomeCheckbox",
+          }),
+        ])
+      );
+    });
 
-    describe("A form with a component that validates based on another", () => {});
+    describe("A form with a component that validates based on another", () => {
+      const formWithComponentsThatValidatesBasedOnAnother = {
+        id: "myForm",
+        title: "Form with components that calculate value based on another",
+        components: [
+          {
+            id: "panel1",
+            title: "Panel 1",
+            type: "panel",
+            components: [
+              {
+                key: "someCheckbox",
+                label: "Some checkbox",
+                type: "navCheckbox",
+                id: "navCheckbox1",
+              },
+            ],
+          },
+          {
+            id: "panel2",
+            title: "Panel 2",
+            type: "panel",
+            components: [
+              {
+                id: "radio1",
+                key: "aComponentThatValidatesBasedOnSomeCheckbox",
+                label: "A component that validates based on someCheckbox",
+                type: "radio",
+                validate: {
+                  custom:
+                    "valid = data.someCheckbox === true ? input.a : 'You have to choose A if Some Checkbox is checked",
+                },
+                readOnly: true,
+              },
+              {
+                id: "radio2",
+                key: "aComponentThatHasJSONLogicValidationBasedOnSomeCheckbox",
+                label: "A component that validates based on someCheckbox",
+                type: "radio",
+                validate: {
+                  json: {
+                    if: [
+                      {
+                        "===": [
+                          {
+                            var: "data.someCheckbox",
+                          },
+                          true,
+                        ],
+                        if: [
+                          {
+                            "===": [
+                              {
+                                var: "input",
+                              },
+                              "B",
+                            ],
+                          },
+                        ],
+                      },
+                      true,
+                      "You have to choose A if Some Checkbox is checked",
+                    ],
+                  },
+                },
+                readOnly: true,
+              },
+            ],
+          },
+        ],
+      };
+
+      const actual = findDependentComponents("navCheckbox1", formWithComponentsThatValidatesBasedOnAnother);
+      expect(actual).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            key: "aComponentThatValidatesBasedOnSomeCheckbox",
+          }),
+          expect.objectContaining({
+            key: "aComponentThatHasJSONLogicValidationBasedOnSomeCheckbox",
+          }),
+        ])
+      );
+    });
   });
 });

@@ -21,17 +21,23 @@ export function flattenComponents(components) {
   }, []);
 }
 
-function calculatesBasedOn(paths, component) {
-  return (
-    component.calculateValue && paths.some((key) => component.calculateValue.search(`data.${key}[^a-zA-z0-9_-]`) > -1)
-  );
+function isKeyInText(key, text) {
+  return text && text.search(`data.${key}[^a-zA-z0-9_-]`) > -1;
+}
+
+function areAnyPathsInText(paths, text) {
+  return text && paths.some((key) => isKeyInText(key, text));
+}
+
+function calculatesValueBasedOn(paths, component) {
+  return areAnyPathsInText(paths, component.calculateValue);
 }
 
 function validatesBasedOn(paths, component) {
   return (
     component.validate &&
-    component.validate.custom &&
-    paths.some((key) => component.validate.custom.search(`data.${key}[^a-zA-z0-9_-]`) > -1)
+    (areAnyPathsInText(paths, component.validate.custom) ||
+      areAnyPathsInText(paths, JSON.stringify(component.validate.json)))
   );
 }
 
@@ -39,10 +45,8 @@ function hasConditionalOn(paths, component) {
   return (
     (component.conditional &&
       (paths.includes(component.conditional.when) ||
-        (component.conditional.json &&
-          paths.some((key) => JSON.stringify(component.conditional.json).search(`data.${key}[^a-zA-z0-9_-]`) > -1)))) ||
-    (component.customConditional &&
-      paths.some((key) => component.customConditional.search(`data.${key}[^a-zA-z0-9_-]`) > -1))
+        areAnyPathsInText(paths, JSON.stringify(component.conditional.json)))) ||
+    areAnyPathsInText(paths, component.customConditional)
   );
 }
 
@@ -53,7 +57,7 @@ const recursivelyFindDependentComponents = (mainId, downstreamPaths, comps) => {
       if (
         hasConditionalOn(downstreamPaths, comp) ||
         validatesBasedOn(downstreamPaths, comp) ||
-        calculatesBasedOn(downstreamPaths, comp)
+        calculatesValueBasedOn(downstreamPaths, comp)
       ) {
         dependentKeys.push({ key: comp.key, label: comp.label });
       }
