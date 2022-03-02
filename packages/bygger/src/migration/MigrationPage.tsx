@@ -165,7 +165,7 @@ const MigrationPage = () => {
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
       <MigrationOptionsForm
-        title="Søk og filtrer"
+        title="Filtrer"
         addRowText="Legg til filtreringsvalg"
         state={searchFilters}
         dispatch={dispatchSearchFilters}
