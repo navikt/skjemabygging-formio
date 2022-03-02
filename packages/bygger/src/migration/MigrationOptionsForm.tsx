@@ -99,7 +99,7 @@ const MigrationOptionsForm = ({
   return (
     <>
       <Innholdstittel tag="h2" className={styles.hasMarginBottom}>{title}</Innholdstittel>
-      <form className={styles.form}>
+      <div className={styles.form}>
         {Object.keys(state).map((id) => {
           const { key, value } = state[id];
 
@@ -150,7 +150,7 @@ const MigrationOptionsForm = ({
             {addRowText}
           </Knapp>
         </div>
-      </form>
+      </div>
     </>
   );
 };

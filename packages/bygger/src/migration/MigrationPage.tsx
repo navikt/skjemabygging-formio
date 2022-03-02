@@ -164,31 +164,36 @@ const MigrationPage = () => {
   return (
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
-      <MigrationOptionsForm
-        title="Filtrer"
-        addRowText="Legg til filtreringsvalg"
-        state={searchFilters}
-        dispatch={dispatchSearchFilters}
-      />
-      <MigrationOptionsForm
-        title="Sett opp felter som skal migreres og ny verdi for feltene"
-        addRowText="Legg til felt som skal endres"
-        state={editOptions}
-        dispatch={dispatchEditOptions}
-      />
+      <form onSubmit={async (event) => {
+        event.preventDefault();
+        await onSearch();
+      }}>
+        <MigrationOptionsForm
+          title="Filtrer"
+          addRowText="Legg til filtreringsvalg"
+          state={searchFilters}
+          dispatch={dispatchSearchFilters}
+        />
+        <MigrationOptionsForm
+          title="Sett opp felter som skal migreres og ny verdi for feltene"
+          addRowText="Legg til felt som skal endres"
+          state={editOptions}
+          dispatch={dispatchEditOptions}
+        />
 
-      <div className={styles.hasMarginBottom}>
-        <Knapp type="hoved" spinner={isLoading} onClick={onSearch}>
-          Simuler og kontroller migrering
-        </Knapp>
+        <div className={styles.hasMarginBottom}>
+          <Knapp type="hoved" spinner={isLoading}>
+            Simuler og kontroller migrering
+          </Knapp>
 
-        <Knapp type="flat" onClick={() => {
-          history.push();
-          history.go();
-        }} className={styles.hasMarginLeft}>
-          Nullstill skjema
-        </Knapp>
-      </div>
+          <Knapp type="flat" onClick={() => {
+            history.push();
+            history.go();
+          }} className={styles.hasMarginLeft}>
+            Nullstill skjema
+          </Knapp>
+        </div>
+      </form>
 
       {migratedForms.length > 0 && (
         <Panel className="margin-bottom-double">
