@@ -8,6 +8,7 @@ import ConfirmMigration from "./ConfirmMigration";
 import MigrationDryRunResults from "./MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
 import { useHistory } from "react-router-dom";
+import { Knapp } from "nav-frontend-knapper";
 
 const useStyles = makeStyles({
   root: {
@@ -16,6 +17,12 @@ const useStyles = makeStyles({
   },
   mainHeading: {
     marginBottom: "4rem",
+  },
+  hasMarginBottom: {
+    marginBottom: "2rem",
+  },
+  hasMarginLeft: {
+    marginLeft: "1rem",
   },
 });
 
@@ -75,6 +82,7 @@ const getUrlParamMap = (params, name) => {
 
 const MigrationPage = () => {
   const styles = useStyles();
+  const [isLoading, setIsLoading] = useState(false);
   const [{ dryRunSearchResults, numberOfComponentsFound, numberOfComponentsChanged }, setDryRunSearchResults] =
     useState<{
       dryRunSearchResults?: DryRunResult[];
@@ -91,6 +99,7 @@ const MigrationPage = () => {
   const [editOptions, dispatchEditOptions] = useMigrationOptions(getUrlParamMap(params, 'editOptions'));
 
   const onSearch = async () => {
+    setIsLoading(true);
     const results = await fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions), {
       method: "GET",
       headers: {
@@ -115,6 +124,7 @@ const MigrationPage = () => {
     });
     setSelectedToMigrate(dryRunSearchResults.filter(({ changed }) => changed > 0).map(({ path }) => path));
 
+    setIsLoading(false);
     history.push(createUrlParams(searchFilters, editOptions));
   };
 
@@ -144,7 +154,9 @@ const MigrationPage = () => {
 
   useEffect(() => {
     (async () => {
-      await onSearch();
+      if (params.get("searchFilters") || params.get("editOptions")) {
+        await onSearch();
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -153,21 +165,30 @@ const MigrationPage = () => {
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
       <MigrationOptionsForm
-        onSubmit={onSearch}
         title="Søk og filtrer"
         addRowText="Legg til filtreringsvalg"
-        submitText="Søk"
         state={searchFilters}
         dispatch={dispatchSearchFilters}
       />
       <MigrationOptionsForm
         title="Sett opp felter som skal migreres og ny verdi for feltene"
         addRowText="Legg til felt som skal endres"
-        submitText="Simuler og kontroller migrering"
         state={editOptions}
         dispatch={dispatchEditOptions}
-        onSubmit={onSearch}
       />
+
+      <div className={styles.hasMarginBottom}>
+        <Knapp type="hoved" spinner={isLoading} onClick={onSearch}>
+          Simuler og kontroller migrering
+        </Knapp>
+
+        <Knapp type="flat" onClick={() => {
+          history.push();
+          history.go();
+        }} className={styles.hasMarginLeft}>
+          Nullstill skjema
+        </Knapp>
+      </div>
 
       {migratedForms.length > 0 && (
         <Panel className="margin-bottom-double">

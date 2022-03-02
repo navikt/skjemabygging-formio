@@ -3,7 +3,7 @@ import { guid } from "nav-frontend-js-utils";
 import { Knapp } from "nav-frontend-knapper";
 import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
-import React, { Dispatch, Fragment, useReducer, useState } from "react";
+import React, { Dispatch, Fragment, useReducer } from "react";
 import { MigrationOption, MigrationOptions } from "../../types/migration";
 
 const getStyles = makeStyles({
@@ -84,37 +84,22 @@ export const useMigrationOptions = (options: MigrationMap) =>
 
 interface MigrationOptionsFormProps {
   title: string;
-  submitText: string;
   addRowText: string;
-  onSubmit: () => Promise<void>;
   state: MigrationOptions;
   dispatch: Dispatch<Action>;
 }
 
 const MigrationOptionsForm = ({
   addRowText,
-  onSubmit,
-  submitText,
   title,
   state,
   dispatch,
 }: MigrationOptionsFormProps) => {
-  const [isLoading, setIsLoading] = useState(false);
   const styles = getStyles();
   return (
     <>
-      <Innholdstittel tag="h2">{title}</Innholdstittel>
-      <form
-        className={styles.form}
-        onSubmit={(event) => {
-          event.preventDefault();
-          setIsLoading(true);
-          onSubmit().then((result) => {
-            setIsLoading(false);
-            return result;
-          });
-        }}
-      >
+      <Innholdstittel tag="h2" className={styles.hasMarginBottom}>{title}</Innholdstittel>
+      <form className={styles.form}>
         {Object.keys(state).map((id) => {
           const { key, value } = state[id];
 
@@ -163,11 +148,6 @@ const MigrationOptionsForm = ({
             htmlType="button"
           >
             {addRowText}
-          </Knapp>
-        </div>
-        <div>
-          <Knapp className={styles.hasMarginBottom} type="hoved" spinner={isLoading}>
-            {submitText}
           </Knapp>
         </div>
       </form>

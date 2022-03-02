@@ -65,9 +65,9 @@ describe("MigrationPage", () => {
   describe("Migration dry run", () => {
     it("performs a search with the provided search filters", async () => {
       setMigrateOptionInput(0, "searchFilter1", true);
-      fireEvent.click(screen.getByRole("button", { name: "Søk" }));
+      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"searchFilter1":true}&editOptions={}',
         expectedGetOptions
@@ -80,9 +80,9 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(1, "prop2", 99);
       fireEvent.click(screen.getByRole("button", { name: "Legg til filtreringsvalg" }));
       setMigrateOptionInput(2, "prop3", false);
-      fireEvent.click(screen.getByRole("button", { name: "Søk" }));
+      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}&editOptions={}',
         expectedGetOptions
@@ -97,7 +97,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(3, "prop3", false);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
         expectedGetOptions
@@ -111,7 +111,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(2, "prop2", "new value");
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true}&editOptions={"prop1":false,"prop2":"new value"}',
         expectedGetOptions
@@ -177,7 +177,7 @@ describe("MigrationPage", () => {
         const confirmMigrationButton = within(modal).getByRole("button", { name: "Bekreft migrering" });
         fireEvent.click(confirmMigrationButton);
         await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-        expect(fetchSpy).toHaveBeenCalledTimes(3);
+        expect(fetchSpy).toHaveBeenCalledTimes(2);
         expect(fetchSpy).toHaveBeenCalledWith("/api/migrate/update", {
           body: JSON.stringify({
             token: "",
