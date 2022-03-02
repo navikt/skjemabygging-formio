@@ -18,10 +18,27 @@ const getStyles = makeStyles({
   },
 });
 
-const createMigrationOption = (): { [key: string]: MigrationOption } => ({
+interface MigrationMap {
+  [key: string]: string;
+}
+
+const createMigrationOptions = (options: MigrationMap = {}): MigrationOptions => {
+  const migrationOptions: MigrationOptions = {};
+  if (Object.keys(options).length > 0) {
+    for (const [key, value] of Object.entries(options)) {
+      Object.assign(migrationOptions, createMigrationOption(key, value));
+    }
+  } else {
+    Object.assign(migrationOptions, createMigrationOption());
+  }
+
+  return migrationOptions;
+};
+
+const createMigrationOption = (key = "", value = ""): MigrationOptions => ({
   [guid()]: {
-    key: "",
-    value: "",
+    key: key,
+    value: value,
   },
 });
 
@@ -62,7 +79,8 @@ const isJSON = (value: string): boolean => {
   }
 };
 
-export const useMigrationOptions = () => useReducer(reducer, createMigrationOption(), () => createMigrationOption());
+export const useMigrationOptions = (options: MigrationMap) =>
+  useReducer(reducer, {}, () => createMigrationOptions(options));
 
 interface MigrationOptionsFormProps {
   title: string;
@@ -98,13 +116,15 @@ const MigrationOptionsForm = ({
         }}
       >
         {Object.keys(state).map((id) => {
-          const { key } = state[id];
+          const { key, value } = state[id];
+
           return (
             <Fragment key={id}>
               <Input
                 className={styles.hasMarginBottom}
                 label="Feltnavn"
                 type="text"
+                value={key}
                 onChange={(event) =>
                   dispatch({
                     type: "edit",
@@ -119,6 +139,7 @@ const MigrationOptionsForm = ({
                 className={styles.hasMarginBottom}
                 label="Verdi"
                 type="text"
+                value={value}
                 disabled={!key}
                 onChange={(event) =>
                   dispatch({

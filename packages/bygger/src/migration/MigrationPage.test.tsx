@@ -1,8 +1,8 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
-import MigrationPage from "./MigrationPage";
+import MigrationPage, { migrationOptionsAsMap } from "./MigrationPage";
 
 describe("MigrationPage", () => {
   let fetchSpy;
@@ -27,7 +27,7 @@ describe("MigrationPage", () => {
     form3: { ...defaultdryRunResponse, skjemanummer: "form3", path: "form3", name: "Skjema 3", found: 3, changed: 2 },
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fetchSpy = jest.spyOn(global, "fetch").mockImplementation((url) =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
@@ -37,7 +37,9 @@ describe("MigrationPage", () => {
         })
       )
     );
-    render(<MigrationPage />, { wrapper: MemoryRouter });
+    await act(async () => {
+      render(<MigrationPage />, { wrapper: MemoryRouter });
+    });
   });
 
   afterEach(() => {
@@ -65,7 +67,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(0, "searchFilter1", true);
       fireEvent.click(screen.getByRole("button", { name: "Søk" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"searchFilter1":true}&editOptions={}',
         expectedGetOptions
@@ -80,7 +82,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(2, "prop3", false);
       fireEvent.click(screen.getByRole("button", { name: "Søk" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}&editOptions={}',
         expectedGetOptions
@@ -95,7 +97,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(3, "prop3", false);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
         expectedGetOptions
@@ -109,7 +111,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(2, "prop2", "new value");
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true}&editOptions={"prop1":false,"prop2":"new value"}',
         expectedGetOptions
@@ -175,7 +177,7 @@ describe("MigrationPage", () => {
         const confirmMigrationButton = within(modal).getByRole("button", { name: "Bekreft migrering" });
         fireEvent.click(confirmMigrationButton);
         await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-        expect(fetchSpy).toHaveBeenCalledTimes(2);
+        expect(fetchSpy).toHaveBeenCalledTimes(3);
         expect(fetchSpy).toHaveBeenCalledWith("/api/migrate/update", {
           body: JSON.stringify({
             token: "",
@@ -185,6 +187,36 @@ describe("MigrationPage", () => {
           method: "POST",
         });
       });
+    });
+  });
+
+  describe("migrationOptionsAsMap", () => {
+    it("standard mapping", () => {
+      const map = migrationOptionsAsMap({
+        "1": {
+          key: 'k1',
+          value: 'v1'
+        },
+        "2": {
+          key: 'k2',
+          value: 'v2'
+        }
+      });
+      expect(Object.keys(map).length).toBe(2);
+    });
+
+    it("duplicate key ignored", () => {
+      const map = migrationOptionsAsMap({
+        "1": {
+          key: 'k1',
+          value: 'v1'
+        },
+        "2": {
+          key: 'k1',
+          value: 'v1'
+        }
+      });
+      expect(Object.keys(map).length).toBe(1);
     });
   });
 });
