@@ -22,6 +22,7 @@ const createDummyImage = (label = "Bilde") => ({
   key: keyFromLabel(label),
   altText: "Bilde beskrivelse",
   type: "image",
+  widthPercent: 100,
 });
 
 const createDummyEmail = (label = "Email") => ({

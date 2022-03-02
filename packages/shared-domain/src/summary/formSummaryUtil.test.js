@@ -137,6 +137,7 @@ describe("When handling component", () => {
           type: "image",
           value: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
           alt: "Bilde beskrivelse",
+          widthPercent: 100,
         },
       ]);
     });
@@ -567,6 +568,7 @@ describe("When creating form summary object", () => {
             type: "image",
             value: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
             alt: "Image description",
+            widthPercent: 100,
           },
         ],
       },

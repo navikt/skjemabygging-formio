@@ -1,8 +1,8 @@
-import { styled } from "@material-ui/styles";
-import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import React, { FunctionComponent, useEffect } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { makeStyles,styled } from "@material-ui/styles";
+import { createFormSummaryObject,TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Innholdstittel,Normaltekst,Sidetittel,Systemtittel } from "nav-frontend-typografi";
+import React,{ FunctionComponent,useEffect } from "react";
+import { Link,useLocation,useRouteMatch } from "react-router-dom";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
@@ -64,14 +64,22 @@ const DataGridRow: FunctionComponent = ({ label, components }) => (
 );
 
 
-const ImageSummary: FunctionComponent = ({ label, values, alt}) => (
-  <>
-    <dt>{label}</dt>
-    <dd>
-      <img src={values} alt={alt} width="600"></img>
-    </dd>
-  </>
-);
+const useImgSummaryStyles = (size) =>
+  makeStyles({
+    description: { width: size + "%", maxHeight: 500, maxWidth: 800 },
+  })();
+
+const ImageSummary: FunctionComponent = ({ label, values, alt, size }) => {
+  const { description } = useImgSummaryStyles(size);
+  return (
+    <>
+      <dt>{label}</dt>
+      <dd>
+        <img className={description} src={values} alt={alt}></img>
+      </dd>
+    </>
+  );
+};
 
 const PanelSummary: FunctionComponent = ({ label, components }) => (
   <section className="margin-bottom-default wizard-page">
@@ -97,7 +105,7 @@ const ComponentSummary = ({ components }) => {
       case "selectboxes":
         return <SelectboxesSummary key={key} label={label} values={comp.value} />;
       case "image":
-        return <ImageSummary key={key} label={label} values={comp.value} alt={comp.alt}/>;
+        return <ImageSummary key={key} label={label} values={comp.value} alt={comp.alt} widthPercent={comp.widthPercent}/>;
       default:
         return <FormSummaryField key={key} label={label} value={comp.value} />;
     }

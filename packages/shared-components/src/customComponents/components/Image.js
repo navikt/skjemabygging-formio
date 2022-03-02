@@ -70,7 +70,7 @@ export default class Image extends Component {
                     max: 100,
                   },
                   defaultValue: 100,
-                  key: "size",
+                  key: "widthPercent",
                   type: "number",
                   input: true,
                   spellcheck: false,

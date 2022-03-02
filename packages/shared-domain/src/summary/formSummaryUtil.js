@@ -221,7 +221,7 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
 }
 
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
-  const { key, label, type, image, altText, size } = component;
+  const { key, label, type, image, altText, widthPercent } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
 
   return [
@@ -232,7 +232,7 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
       type,
       value: image[0].url,
       alt: translate(altText),
-      size,
+      widthPercent,
     },
   ];
 }
