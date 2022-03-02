@@ -56,7 +56,7 @@ describe("MigrationPage", () => {
   });
 
   it("renders options form for search filters and edit options", () => {
-    expect(screen.getByRole("heading", { level: 2, name: "Søk og filtrer" }));
+    expect(screen.getByRole("heading", { level: 2, name: "Filtrer" }));
     expect(
       screen.getByRole("heading", { level: 2, name: "Sett opp felter som skal migreres og ny verdi for feltene" })
     );
