@@ -11,6 +11,7 @@ const getStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     gap: "0.25rem 1rem",
+    marginBottom: "2rem",
   },
   hasMarginBottom: {
     marginBottom: "1rem",
@@ -84,7 +85,7 @@ const MigrationOptionsForm = ({
   const styles = getStyles();
   return (
     <>
-      <Innholdstittel>{title}</Innholdstittel>
+      <Innholdstittel tag="h2">{title}</Innholdstittel>
       <form
         className={styles.form}
         onSubmit={(event) => {

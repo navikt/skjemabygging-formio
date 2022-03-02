@@ -7,14 +7,15 @@ export interface MigrationOptions {
   [key: string]: MigrationOption;
 }
 
-export interface FormMigrationDiff {
-  key: string;
-  label: string;
-  id: string;
-  [property: string]: { _ORIGINAL: any; _NEW: any };
-}
+export type FormMigrationDiff =
+  | {
+      key: string;
+      label: string;
+      id: string;
+    }
+  | { [property: string]: { _ORIGINAL: any; _NEW: any } };
 
-export interface FormMigrationResult {
+export interface DryRunResult {
   skjemanummer: string;
   name: string;
   title: string;
@@ -24,6 +25,6 @@ export interface FormMigrationResult {
   diff: FormMigrationDiff[];
 }
 
-export interface FormMigrationResults {
-  [skjemanummer: string]: FormMigrationResult;
+export interface DryRunResults {
+  [skjemanummer: string]: DryRunResult;
 }

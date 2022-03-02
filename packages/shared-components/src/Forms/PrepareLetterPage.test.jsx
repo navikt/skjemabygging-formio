@@ -21,10 +21,10 @@ const RESPONSE_HEADERS = {
   },
 };
 const mockEnhetsListe = [
-  { enhet: { enhetId: 1, navn: "NAV abc", type: "ARK" } },
-  { enhet: { enhetId: 2, navn: "NAV def", type: "ARK" } },
-  { enhet: { enhetId: 3, navn: "NAV ghi", type: "ARK" } },
-  { enhet: { enhetId: 4, navn: "NAV jkl", type: "ARK" } },
+  { enhetId: 1, navn: "NAV abc", type: "ARK" },
+  { enhetId: 2, navn: "NAV def", type: "ARK" },
+  { enhetId: 3, navn: "NAV ghi", type: "ARK" },
+  { enhetId: 4, navn: "NAV jkl", type: "ARK" },
 ];
 
 const defaultForm = {

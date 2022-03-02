@@ -283,7 +283,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyAlertstripe("Alertstripe without content"),
               createDummyAlertstripe(
                 "Alertstripe with a long content",
-                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.'
+                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.'
               ),
               createDummyAlertstripe("Alertstripe", "Alertstrip with content", "show content in Pdf"),
               createDummyHTMLElement(
@@ -308,7 +308,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Introduksjon", type: "text" },
       { text: "Test Alertstripe", type: "text" },
       {
-        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)<a>.',
+        text: 'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.',
         type: "textarea",
       },
       { text: "Alertstrip with content", type: "text" },

@@ -26,8 +26,9 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
       id={component.id}
       valgtDato={dato}
       onChange={(d) => {
-        setDato(d);
-        onChange(d);
+        const newValue = d === undefined || d === null ? "" : d;
+        setDato(newValue);
+        onChange(newValue);
       }}
       datoErGyldig={isValid}
       visÅrVelger={component.visArvelger}

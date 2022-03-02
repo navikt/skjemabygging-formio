@@ -65,8 +65,8 @@
     "start": "cross-env-shell PORT=3000 craco start",
     "build": "cross-env-shell craco build",
     "clean": "rimraf build coverage",
-    "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
-    "test:coverage": "craco test --coverage --watchAll=false --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
+    "test": "craco test",
+    "test:coverage": "craco test --coverage --watchAll=false",
     "eject": "craco eject"
   },
   "engines": {
@@ -103,5 +103,10 @@
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger))"
+    ]
   }
 }

@@ -1,5 +1,4 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { EnhetInkludertKontaktinformasjon } from "../api/Enhet";
 import { Mottaksadresse, MottaksadresseData } from "../api/Mottaksadresse";
 
 type ForstesideType = "SKJEMA" | "ETTERSENDELSE";
@@ -210,7 +209,7 @@ const parseLanguage = (language) => {
 export function genererMottaksadresse(
   mottaksadresseId: string | undefined,
   mottaksadresser: Mottaksadresse[],
-  enhet?: EnhetInkludertKontaktinformasjon
+  enhetNummer?: string
 ): { adresse: MottaksadresseData } | { enhetsnummer?: string; netsPostboks: string } {
   if (mottaksadresseId) {
     const mottaksadresse = mottaksadresser.find((a) => a._id === mottaksadresseId);
@@ -218,23 +217,9 @@ export function genererMottaksadresse(
       return { adresse: { ...mottaksadresse.data } };
     }
   }
-  if (enhet && enhet.kontaktinformasjon && enhet.kontaktinformasjon.postadresse) {
-    const postadresse = enhet.kontaktinformasjon.postadresse;
+  if (enhetNummer) {
     return {
-      adresse: {
-        adresselinje1: enhet.enhet.navn,
-        adresselinje2:
-          postadresse.type === "postboksadresse"
-            ? `Postboks ${postadresse.postboksnummer} ${postadresse.postboksanlegg || ""}`
-            : `${postadresse.gatenavn || ""} ${postadresse.husnummer || ""} ${postadresse.husbokstav || ""}`,
-        postnummer: postadresse.postnummer,
-        poststed: postadresse.poststed,
-      },
-    };
-  }
-  if (enhet && enhet.enhet && enhet.enhet.enhetNr) {
-    return {
-      enhetsnummer: enhet.enhet.enhetNr,
+      enhetsnummer: enhetNummer,
       netsPostboks: "1400",
     };
   }
@@ -246,7 +231,7 @@ export function genererFoerstesideData(
   submission,
   language = "nb-NO",
   mottaksadresser: Mottaksadresse[] = [],
-  enhet?: EnhetInkludertKontaktinformasjon
+  enhetNummer?: string
 ): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema, mottaksadresseId },
@@ -264,6 +249,6 @@ export function genererFoerstesideData(
     tema,
     vedleggsliste: genererVedleggsListe(form, submission),
     dokumentlisteFoersteside: genererDokumentlisteFoersteside(title, skjemanummer, form, submission),
-    ...genererMottaksadresse(mottaksadresseId, mottaksadresser, enhet),
+    ...genererMottaksadresse(mottaksadresseId, mottaksadresser, enhetNummer),
   };
 }

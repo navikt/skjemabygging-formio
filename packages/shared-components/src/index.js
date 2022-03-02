@@ -17,6 +17,7 @@ import FyllUtRouter from "./Forms/FyllUtRouter";
 import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 import i18nData from "./i18nData";
 import Template from "./template";
+import { getIso8601String } from "./util/date";
 import { guid } from "./util/guid";
 import { navCssVariables } from "./util/navCssVariables";
 
@@ -45,4 +46,5 @@ export {
   useLanguageCodeFromURL,
   mapTranslationsToFormioI18nObject,
   navCssVariables,
+  getIso8601String,
 };

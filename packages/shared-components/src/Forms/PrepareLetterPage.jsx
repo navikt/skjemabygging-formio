@@ -40,9 +40,9 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   );
 };
 
-async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhet) {
-  const mottaksadresser = enhet ? [] : await fetchMottaksadresser(fyllutBaseURL);
-  const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhet);
+async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enhetNummer) {
+  const mottaksadresser = enhetNummer ? [] : await fetchMottaksadresser(fyllutBaseURL);
+  const body = genererFoerstesideData(form, submission.data, language, mottaksadresser, enhetNummer);
   return fetch(`${fyllutBaseURL}/api/foersteside`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -66,7 +66,7 @@ async function lastNedFoersteside(form, submission, fyllutBaseURL, language, enh
 }
 
 const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBaseURL, translate, translations }) => {
-  const [selectedEnhet, setSelectedEnhet] = useState(undefined);
+  const [selectedEnhetNummer, setSelectedEnhetNummer] = useState(undefined);
   const [isRequiredEnhetMissing, setIsRequiredEnhetMissing] = useState(false);
   const [hasDownloadedFoersteside, setHasDownloadedFoersteside] = useState(false);
   const [foerstesideError, setFoerstesideError] = useState(undefined);
@@ -94,8 +94,8 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
       </Normaltekst>
       <EnhetSelector
         enhetsListe={enhetsListe}
-        onSelectEnhet={(enhet) => {
-          setSelectedEnhet(enhet);
+        onSelectEnhet={(enhetNummer) => {
+          setSelectedEnhetNummer(enhetNummer);
           setIsRequiredEnhetMissing(false);
         }}
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
@@ -104,12 +104,12 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         <Knapp
           className="knapp knapp--fullbredde"
           onClick={() => {
-            if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhet) {
+            if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
               setIsRequiredEnhetMissing(true);
             } else {
               setFoerstesideError(undefined);
               setFoerstesideLoading(true);
-              lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhet)
+              lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhetNummer)
                 .then(() => setHasDownloadedFoersteside(true))
                 .catch((error) => {
                   loggSkjemaInnsendingFeilet();
@@ -198,7 +198,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
         .then((enhetsListe) =>
           enhetsListe
             .filter(canEnhetstypeBeSelected)
-            .sort((enhetA, enhetB) => enhetA.enhet.navn.localeCompare(enhetB.enhet.navn, "nb"))
+            .sort((enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb"))
         )
         .then(setEnhetsListe);
     }

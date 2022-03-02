@@ -40,6 +40,20 @@ describe("sanitizeJavaScriptCode", () => {
     expect(sanitizeJavaScriptCode(inputWithMultipleEqualChainedLookups)).toEqual("show = (a1 && a1.b2) === 'c'");
   });
 
+  it("will not change a partial expression", () => {
+    const inputWithTwoChainedWhereOneIsAPartialOfTheOther =
+      "show = anObject.aString === 'c' || anObject.aString1 === 'd'";
+    const actual = sanitizeJavaScriptCode(inputWithTwoChainedWhereOneIsAPartialOfTheOther);
+    expect(actual).toEqual("show = (anObject && anObject.aString) === 'c' || (anObject && anObject.aString1) === 'd'");
+  });
+
+  it("will not change a partial expression that ends in an equal expression to another complete expression", () => {
+    const inputWithOneChainedExpressionEndingInAnotherExpression =
+      "show = anObject.aString === 'c' || Object.aString === 'd'";
+    const actual = sanitizeJavaScriptCode(inputWithOneChainedExpressionEndingInAnotherExpression);
+    expect(actual).toEqual("show = (anObject && anObject.aString) === 'c' || (Object && Object.aString) === 'd'");
+  });
+
   describe("When the code includes function calls", () => {
     it("does not add null checks for functions on instance", () => {
       const inputWithInstanceFunctionCall = "valid = instance.validate(input)";
@@ -65,6 +79,24 @@ describe("sanitizeJavaScriptCode", () => {
       const inputWithNestedFunctionCalls = "valid = instance.fun1(_.some(data, (a) => util.fun2(a.b.c)))";
       expect(sanitizeJavaScriptCode(inputWithNestedFunctionCalls)).toEqual(
         "valid = instance.fun1(_.some(data, (a) => util.fun2((a && a.b && a.b.c))))"
+      );
+    });
+
+    it("does not add null checks for function calls", () => {
+      const inputWithFunctionCall = "valid = obj.myFunction()";
+      expect(sanitizeJavaScriptCode(inputWithFunctionCall)).toEqual("valid = obj.myFunction()");
+
+      const inputWithFunctionThatTakesParams = "valid = obj.myFunction(someInput)";
+      expect(sanitizeJavaScriptCode(inputWithFunctionThatTakesParams)).toEqual("valid = obj.myFunction(someInput)");
+
+      const inputWithNestedFunctionCall = "valid = parentObject.childObject.nestedFunction()";
+      expect(sanitizeJavaScriptCode(inputWithNestedFunctionCall)).toEqual(
+        "valid = parentObject.childObject.nestedFunction()"
+      );
+
+      const inputWithNestedObjectReferenceAndFunctionCall = "valid = obj.someVar || obj.someFunction()";
+      expect(sanitizeJavaScriptCode(inputWithNestedObjectReferenceAndFunctionCall)).toEqual(
+        "valid = (obj && obj.someVar) || obj.someFunction()"
       );
     });
   });

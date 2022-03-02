@@ -1,6 +1,6 @@
 import dispatch from "dispatch";
 import { HttpError } from "./fetchUtils.js";
-import { migrateForms, previewForm } from "./migrationScripts.js";
+import { migrateForms, previewForm } from "./migration/migrationScripts.js";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];
 export const isValidResource = (resourceName) => {
@@ -68,7 +68,7 @@ export function dispatcherWithBackend(backend) {
         const searchFilters = JSON.parse(req.query["searchFilters"] || "{}");
         const editOptions = JSON.parse(req.query["editOptions"] || "{}");
         try {
-          migrateForms(searchFilters, editOptions).then((migratedForms) => res.send(migratedForms));
+          migrateForms(searchFilters, editOptions).then(({ log }) => res.send(log));
         } catch (error) {
           handleError(error, res);
         }
@@ -80,6 +80,22 @@ export function dispatcherWithBackend(backend) {
         const editOptions = JSON.parse(req.query["editOptions"] || "{}");
         try {
           previewForm(searchFilters, editOptions, formPath).then((formForPreview) => res.send(formForPreview));
+        } catch (error) {
+          handleError(error, res);
+        }
+      },
+    },
+    "/migrate/update": {
+      POST: async (req, res) => {
+        if (!req.body.token) {
+          res.status(401).send("Unauthorized");
+          return;
+        }
+        const { searchFilters, editOptions, include } = req.body.payload;
+        try {
+          const { migratedForms } = await migrateForms(searchFilters, editOptions, include);
+          const migratedFormsData = await backend.updateForms(req.body.token, migratedForms);
+          res.send(migratedFormsData);
         } catch (error) {
           handleError(error, res);
         }

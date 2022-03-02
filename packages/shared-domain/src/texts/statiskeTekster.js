@@ -4,7 +4,7 @@ export const statiske = {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis du finner noe som må korrigeres " +
-      "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle opplysningene er riktige går du videre til steg 2.",
+      "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle opplysningene er riktige går du videre til neste steg.",
   },
   prepareLetterPage: {
     chooseEntity: "Velg enhet som skal behandle saken din",
