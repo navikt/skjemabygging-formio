@@ -543,7 +543,7 @@ describe("generating doc definition", () => {
     });
   });
 
-  describe.only("Image", () => {
+  describe("Image", () => {
     const createImageFormDefinition = () => ({
       name: "testImage",
       components: [
@@ -561,6 +561,7 @@ describe("generating doc definition", () => {
               key: "bilde",
               altText: "Bilde beskrivelse",
               type: "image",
+              widthPercent: 100,
             },
           ],
         },
@@ -590,6 +591,7 @@ describe("generating doc definition", () => {
               key: "bilde",
               altText: "Bilde beskrivelse",
               type: "image",
+              widthPercent: 100,
             },
             {
               label: "Tekstfelt",
@@ -604,33 +606,57 @@ describe("generating doc definition", () => {
 
     it("adds a single image component", () => {
       const formDefinition = createImageFormDefinition();
-      const imageDef = setupDocDefinitionContent({}, formDefinition).content[4];
+      const imageDef = setupDocDefinitionContent({}, formDefinition).content[4].table.body;
       expect(imageDef).toEqual([
-        { text: "Bilde", style: "subHeader" },
-        {
-          image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
-          width: 500,
-        },
-        { text: "Bilde beskrivelse", style: "cursive" },
+        [
+          {
+            colSpan: 2,
+            stack: [
+              { style: "imageLabel", text: "Bilde" },
+              {
+                alt: "Bilde beskrivelse",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                maxHeight: 400,
+                maxWidth: 500,
+                width: 500,
+              },
+              { style: "cursive", text: "Bilde beskrivelse" },
+            ],
+          },
+          "",
+        ],
       ]);
     });
 
     it("adds table with other components and image outside the table", () => {
       const formDefinition = createImageFormDefinitionWithMultiComponents();
       const pdfContent = setupDocDefinitionContent(
-        { data: { tekstfelt1: "inputdata1", tekstfelt2: "inputdata2" } },
+        { data: { tekstfelt1: "inputdata1 value", tekstfelt2: "inputdata2 value" } },
         formDefinition
-      ).content;
-      expect(pdfContent[4]).toEqual([
-        { text: "Bilde", style: "subHeader" },
-        {
-          image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
-          width: 500,
-        },
-        { text: "Bilde beskrivelse", style: "cursive" },
+      ).content[4].table.body;
+      expect(pdfContent).toEqual([
+        ["Tekstfelt", "inputdata1 value"],
+        [
+          {
+            colSpan: 2,
+            stack: [
+              { style: "imageLabel", text: "Bilde" },
+              {
+                alt: "Bilde beskrivelse",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                maxHeight: 400,
+                maxWidth: 500,
+                width: 500,
+              },
+              { style: "cursive", text: "Bilde beskrivelse" },
+            ],
+          },
+          "",
+        ],
+        ["Tekstfelt", "inputdata2 value"],
       ]);
 
-      expect(pdfContent[5].table.body).toHaveLength(2);
+      expect(pdfContent).toHaveLength(3);
     });
   });
 

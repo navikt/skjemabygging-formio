@@ -164,11 +164,18 @@ export class Pdfgen {
   }
 
   createImageWithAlt(img) {
+    const maxWidth = 500;
     return [
       {
         stack: [
           { text: this.translate(img.label), style: "imageLabel" },
-          { image: img.value, maxWidth: 500, maxHeight: 400, alt: img.alt },
+          {
+            image: img.value,
+            width: (maxWidth * img.widthPercent) / 100,
+            maxWidth: maxWidth,
+            maxHeight: 400,
+            alt: img.alt,
+          },
           { text: img.alt, style: "cursive" },
         ],
         colSpan: 2,
