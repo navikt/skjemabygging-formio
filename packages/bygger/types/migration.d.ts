@@ -7,6 +7,10 @@ export interface MigrationOptions {
   [key: string]: MigrationOption;
 }
 
+interface MigrationMap {
+  [key: string]: string;
+}
+
 export type FormMigrationDiff =
   | {
       key: string;

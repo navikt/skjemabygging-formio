@@ -4,7 +4,7 @@ import { Knapp } from "nav-frontend-knapper";
 import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { Dispatch, Fragment, useReducer } from "react";
-import { MigrationOption, MigrationOptions } from "../../types/migration";
+import { MigrationMap, MigrationOption, MigrationOptions } from "../../types/migration";
 
 const getStyles = makeStyles({
   form: {
@@ -17,10 +17,6 @@ const getStyles = makeStyles({
     marginBottom: "1rem",
   },
 });
-
-interface MigrationMap {
-  [key: string]: string;
-}
 
 const createMigrationOptions = (options: MigrationMap = {}): MigrationOptions => {
   const migrationOptions: MigrationOptions = {};
