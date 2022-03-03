@@ -67,9 +67,11 @@ export const getUrlWithMigrateSearchParams = (
 };
 
 const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) =>
-  Object.values(dryRunResults)
-    .filter((results) => results.found > 0)
-    .sort((a, b) => b.found - a.found);
+  dryRunResults
+    ? Object.values(dryRunResults)
+        .filter((results) => results.found > 0)
+        .sort((a, b) => b.found - a.found)
+    : [];
 
 const getUrlParamMap = (params, name) => {
   const param = params.get(name);
