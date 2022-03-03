@@ -7,7 +7,7 @@ metadata:
   labels:
     team: skjemadigitalisering
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "256M"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50M"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
