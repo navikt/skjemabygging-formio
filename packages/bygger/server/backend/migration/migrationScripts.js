@@ -1,4 +1,4 @@
-import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { findDependentComponents, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils.js";
 import { generateDiff } from "./diffingTool.js";
 import { componentMatchesSearchFilters } from "./searchFilter.js";
@@ -59,6 +59,29 @@ async function migrateForms(
       .map((form) => {
         const affectedComponentsLogger = [];
         const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
+        const breakingChanges = affectedComponentsLogger
+          .map((affected) => affected.diff)
+          .filter((diff) => diff)
+          .reduce((diffsWithBreakingChanges, currentDiff) => {
+            const dependentComponents = findDependentComponents(currentDiff.id, form);
+            if (dependentComponents.length > 0) {
+              return [
+                ...diffsWithBreakingChanges,
+                {
+                  componentWithDependencies: currentDiff,
+                  dependentComponents,
+                },
+              ];
+            } else {
+              return [
+                ...diffsWithBreakingChanges,
+                {
+                  currentDiff,
+                  form,
+                },
+              ];
+            }
+          }, []);
         log[form.properties.skjemanummer] = {
           skjemanummer: form.properties.skjemanummer,
           name: form.name,
@@ -67,6 +90,7 @@ async function migrateForms(
           found: affectedComponentsLogger.length,
           changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
           diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
+          breakingChanges: breakingChanges,
         };
         return result;
       });

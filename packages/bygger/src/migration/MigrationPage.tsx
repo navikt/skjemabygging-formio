@@ -1,14 +1,14 @@
 import { makeStyles } from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
+import { Knapp } from "nav-frontend-knapper";
 import Panel from "nav-frontend-paneler";
 import { Innholdstittel, Sidetittel, Undertekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { DryRunResult, DryRunResults, MigrationOptions } from "../../types/migration";
 import ConfirmMigration from "./ConfirmMigration";
 import MigrationDryRunResults from "./MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
-import { useHistory } from "react-router-dom";
-import { Knapp } from "nav-frontend-knapper";
 
 const useStyles = makeStyles({
   root: {
@@ -41,10 +41,7 @@ export const migrationOptionsAsMap = (migrationOptions: MigrationOptions) => {
   }, {});
 };
 
-export const createUrlParams = (
-  searchFilters: MigrationOptions,
-  editOptions: MigrationOptions,
-) => {
+export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
   let searchFilterParameters = "";
   let editOptionsParameters = "";
   const encodedSearchFilters = JSON.stringify(migrationOptionsAsMap(searchFilters));
@@ -80,7 +77,7 @@ const getUrlParamMap = (params, name) => {
   } else {
     return {};
   }
-}
+};
 
 const MigrationPage = () => {
   const styles = useStyles();
@@ -97,8 +94,8 @@ const MigrationPage = () => {
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
 
-  const [searchFilters, dispatchSearchFilters] = useMigrationOptions(getUrlParamMap(params, 'searchFilters'));
-  const [editOptions, dispatchEditOptions] = useMigrationOptions(getUrlParamMap(params, 'editOptions'));
+  const [searchFilters, dispatchSearchFilters] = useMigrationOptions(getUrlParamMap(params, "searchFilters"));
+  const [editOptions, dispatchEditOptions] = useMigrationOptions(getUrlParamMap(params, "editOptions"));
 
   const onSearch = async () => {
     setIsLoading(true);
@@ -124,7 +121,16 @@ const MigrationPage = () => {
         }
       ),
     });
-    setSelectedToMigrate(dryRunSearchResults.filter(({ changed }) => changed > 0).map(({ path }) => path));
+    setSelectedToMigrate(
+      dryRunSearchResults
+        .filter(({ changed }) => changed > 0)
+        .map(({ path }) => path)
+        .filter((path) => {
+          const dryRunResultForForm = dryRunSearchResults.find((form) => form.path === path);
+          const numberOfBreakingChanges = dryRunResultForForm?.breakingChanges?.length || 0;
+          return numberOfBreakingChanges === 0;
+        })
+    );
 
     setIsLoading(false);
     history.push(createUrlParams(searchFilters, editOptions));
@@ -161,15 +167,17 @@ const MigrationPage = () => {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   return (
     <main className={styles.root}>
       <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
-      <form onSubmit={async (event) => {
-        event.preventDefault();
-        await onSearch();
-      }}>
+      <form
+        onSubmit={async (event) => {
+          event.preventDefault();
+          await onSearch();
+        }}
+      >
         <MigrationOptionsForm
           title="Filtrer"
           addRowText="Legg til filtreringsvalg"
@@ -188,10 +196,14 @@ const MigrationPage = () => {
             Simuler og kontroller migrering
           </Knapp>
 
-          <Knapp type="flat" onClick={() => {
-            history.push();
-            history.go();
-          }} className={styles.hasMarginLeft}>
+          <Knapp
+            type="flat"
+            onClick={() => {
+              history.push();
+              history.go();
+            }}
+            className={styles.hasMarginLeft}
+          >
             Nullstill skjema
           </Knapp>
         </div>

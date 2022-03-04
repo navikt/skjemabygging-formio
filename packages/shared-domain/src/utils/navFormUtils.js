@@ -1,4 +1,3 @@
-import FormioUtils from "formiojs/utils";
 import { camelCase } from "./stringUtils";
 
 export const toFormPath = (text) => camelCase(text).toLowerCase();
@@ -22,11 +21,12 @@ export function flattenComponents(components) {
 }
 
 function isKeyInText(key, text) {
-  return text && text.search(`data.${key}[^a-zA-z0-9_-]`) > -1;
+  console.log(`Is ${key} in '${text}': ${text && text.search(`\\w+.${key}[^a-zA-z0-9_-]`) > -1}`);
+  return text && text.search(`\\w+.${key}[^a-zA-z0-9_-]`) > -1;
 }
 
 function areAnyPathsInText(paths, text) {
-  return text && paths.some((key) => isKeyInText(key, text));
+  return text && text !== "" && paths.some((key) => isKeyInText(key, text));
 }
 
 function calculatesValueBasedOn(paths, component) {
@@ -85,15 +85,22 @@ const findById = (id, components) => {
 };
 
 export const findDependentComponents = (id, form) => {
-  const idToPathMapping = {};
+  console.log("Find dependent components");
+  /*const idToPathMapping = {};
   FormioUtils.eachComponent(form.components, (component, path) => {
+    console.log("Path", path);
+    console.log("Component", JSON.stringify(component, null, 2));
     idToPathMapping[component.id] = path;
-  });
+  });*/
 
   const component = findById(id, form.components);
   if (component) {
-    const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id]);
+    //const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id]);
+    const downstreamPaths = flattenComponents([component]).map((comp) => comp.key);
+    console.log("Recursively find dependent components for", id, downstreamPaths);
     return recursivelyFindDependentComponents(id, downstreamPaths, form.components);
+  } else {
+    console.log("Did not find component", id);
   }
   return [];
 };
