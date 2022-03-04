@@ -104,7 +104,7 @@ jobs:
   trigger-deploy-fyllut-experimental-to-dev:
     name: "Trigger deploy fyllut experimental to dev"
     needs: build-and-test
-    if: github.ref == 'refs/heads/experimental/*'
+    if: startsWith(github.ref, 'refs/heads/experimental/')
     runs-on: ubuntu-latest
     steps:
       - name: "Trigger deploy fyllut experimental to dev"
