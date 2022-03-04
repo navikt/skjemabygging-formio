@@ -15,8 +15,9 @@ describe("NavDatePicker", () => {
   const mockedShowNorwegianOrTranslation = (text, params) => {
     if (params)
       return TEXTS.validering[text]
-        .replace(/{{2}([^{}]*)}{2}/, params.minDate)
-        .replace(/{{2}([^{}]*)}{2}/, params.maxDate);
+        .replace(/{{2}([^{}]*minDate)}{2}/, params.minDate)
+        .replace(/{{2}([^{}]*maxDate)}{2}/, params.maxDate)
+        .replace(/{{2}([^{}]*fromDate)}{2}/, params.fromDate);
     else return TEXTS.validering[text];
   };
 
@@ -42,7 +43,7 @@ describe("NavDatePicker", () => {
 
     it("returns error message for to and from date, when both validations fail", () => {
       const comp = createComponent("fromDate", false, "10", undefined);
-      const expectedValidationErrorMessage = "Datoen må være senere enn fra-dato (21.05.2030)";
+      const expectedValidationErrorMessage = "Datoen må være senere enn 21.05.2030";
       expect(
         datePicker.validateDatePicker(
           "2030-05-20",
@@ -97,7 +98,7 @@ describe("NavDatePicker", () => {
       it("fails validation for date inside data grid", () => {
         const input = "2021-10-01";
         const submissionData = { datagrid: [{ fraDato: "2021-10-02", tilDato: "2021-10-01" }] };
-        const expectedValidationErrorMessage = "Datoen kan ikke være tidligere enn fra-dato (02.10.2021)";
+        const expectedValidationErrorMessage = "Datoen kan ikke være tidligere enn 02.10.2021";
         const comp = createComponent("datagrid.fraDato", true, undefined, undefined);
         const row = { fraDato: "2021-10-02", tilDato: "2021-10-01" };
         expect(
@@ -150,7 +151,7 @@ describe("NavDatePicker", () => {
       describe("When mayBeEqual is true", () => {
         it("Fails with appropriate message when inputDate is earlier than from-date", () => {
           expect(datePicker.validateToAndFromDate(fromDate, earlierThanFromDate, true)).toBe(
-            "Datoen kan ikke være tidligere enn fra-dato (31.12.2030)"
+            "Datoen kan ikke være tidligere enn 31.12.2030"
           );
         });
 
@@ -166,13 +167,13 @@ describe("NavDatePicker", () => {
       describe("When mayBeEqual is false", () => {
         it("fails with appropriate message when input is earlier than from-date", () => {
           expect(datePicker.validateToAndFromDate(fromDate, earlierThanFromDate, false)).toBe(
-            "Datoen må være senere enn fra-dato (31.12.2030)"
+            "Datoen må være senere enn 31.12.2030"
           );
         });
 
         it("fails with appropriate message when input is same as from-date", () => {
           expect(datePicker.validateToAndFromDate(fromDate, earlierThanFromDate, false)).toBe(
-            "Datoen må være senere enn fra-dato (31.12.2030)"
+            "Datoen må være senere enn 31.12.2030"
           );
         });
 
