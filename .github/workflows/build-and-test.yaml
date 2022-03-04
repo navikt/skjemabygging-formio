@@ -100,3 +100,18 @@ jobs:
           ref: "dev-deploy"
           token: ${{ secrets.TEAM_ACCESS_TOKEN }}
           inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
+
+  trigger-deploy-fyllut-experimental-to-dev:
+    name: "Trigger deploy fyllut experimental to dev"
+    needs: build-and-test
+    if: github.ref == 'refs/heads/experimental/*'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Trigger deploy fyllut experimental to dev"
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: "Trigger dev deploy"
+          repo: navikt/skjemautfylling-formio
+          ref: "experimental-deploy"
+          token: ${{ secrets.TEAM_ACCESS_TOKEN }}
+          inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
