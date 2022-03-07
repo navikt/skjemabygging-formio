@@ -227,7 +227,7 @@ export class PdfgenPapir extends Pdfgen {
     }
     let descriptionOfSignatures;
     if (isFirstSignature && this.form?.properties?.descriptionOfSignatures) {
-      descriptionOfSignatures = { text: this.form.properties.descriptionOfSignatures };
+      descriptionOfSignatures = { text: this.translate(this.form.properties.descriptionOfSignatures) };
     }
     return [
       " ",
