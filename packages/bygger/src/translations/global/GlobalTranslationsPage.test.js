@@ -1,6 +1,7 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import React from "react";
+import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router-dom";
 import I18nProvider from "../../context/i18n";
 import { UserAlerterContext } from "../../userAlerting";
@@ -28,30 +29,32 @@ describe("GlobalTranslationsPage", () => {
   let mockedDeleteTranslation;
   let mockedSaveTranslations;
 
-  const renderGlobalTranslationsPage = (loadTranslation, languageCode = "") => {
+  const renderGlobalTranslationsPage = async (loadTranslation, languageCode = "") => {
     mockedDeleteTranslation = jest.fn();
     mockedSaveTranslations = jest.fn();
     const userAlerter = {
       flashSuccessMessage: jest.fn(),
       alertComponent: jest.fn(),
     };
-    render(
-      <AppConfigProvider featureToggles={{ enableTranslations: true }}>
-        <MemoryRouter initialEntries={[`/translations/global/${languageCode}/skjematekster`]}>
-          <UserAlerterContext.Provider value={userAlerter}>
-            <I18nProvider loadTranslations={loadTranslation} forGlobal>
-              <GlobalTranslationsPage
-                loadGlobalTranslations={loadTranslation}
-                projectURL={""}
-                deleteTranslation={mockedDeleteTranslation}
-                saveTranslation={mockedSaveTranslations}
-                languageCode={languageCode}
-              />
-            </I18nProvider>
-          </UserAlerterContext.Provider>
-        </MemoryRouter>
-      </AppConfigProvider>
-    );
+    await act(async () => {
+      render(
+        <AppConfigProvider featureToggles={{ enableTranslations: true }}>
+          <MemoryRouter initialEntries={[`/translations/global/${languageCode}/skjematekster`]}>
+            <UserAlerterContext.Provider value={userAlerter}>
+              <I18nProvider loadTranslations={loadTranslation} forGlobal>
+                <GlobalTranslationsPage
+                  loadGlobalTranslations={loadTranslation}
+                  projectURL={""}
+                  deleteTranslation={mockedDeleteTranslation}
+                  saveTranslation={mockedSaveTranslations}
+                  languageCode={languageCode}
+                />
+              </I18nProvider>
+            </UserAlerterContext.Provider>
+          </MemoryRouter>
+        </AppConfigProvider>
+      );
+    });
   };
 
   afterEach(() => {
@@ -60,8 +63,8 @@ describe("GlobalTranslationsPage", () => {
   });
 
   describe("Render global translation page without available languages", () => {
-    beforeEach(() => {
-      renderGlobalTranslationsPage(
+    beforeEach(async () => {
+      await renderGlobalTranslationsPage(
         jest.fn(() => Promise.resolve({})),
         ""
       );

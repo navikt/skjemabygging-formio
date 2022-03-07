@@ -8,9 +8,12 @@ describe("Formio.js replica", () => {
   let spy;
 
   beforeEach(() => {
+    // Ignore formio console log when we create without project id. https://github.com/formio/formio.js/pull/4227
+    jest.spyOn(console, "warn").mockImplementation(() => {});
     jest.useFakeTimers();
     builderElement = document.createElement("div");
     document.body.appendChild(builderElement);
+
     builder = new formiojs.FormBuilder(builderElement, {}, {});
     spy = jest.fn();
     builder.ready.then(spy);
