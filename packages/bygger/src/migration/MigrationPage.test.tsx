@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
@@ -27,7 +27,7 @@ describe("MigrationPage", () => {
     form3: { ...defaultdryRunResponse, skjemanummer: "form3", path: "form3", name: "Skjema 3", found: 3, changed: 2 },
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fetchSpy = jest.spyOn(global, "fetch").mockImplementation((url) =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
@@ -37,9 +37,7 @@ describe("MigrationPage", () => {
         })
       )
     );
-    await act(async () => {
-      render(<MigrationPage />, { wrapper: MemoryRouter });
-    });
+    render(<MigrationPage />, { wrapper: MemoryRouter });
   });
 
   afterEach(() => {

@@ -9,9 +9,7 @@ describe("MigrationOptionsForm", () => {
     render(
       <MigrationOptionsForm
         title={"title"}
-        submitText={"submitText"}
         addRowText={"addRowText"}
-        onSubmit={onSubmitMock}
         state={{ a: { key: "", value: "" } }}
         dispatch={dispatchMock}
       />
