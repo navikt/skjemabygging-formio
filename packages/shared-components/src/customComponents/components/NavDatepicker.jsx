@@ -77,8 +77,8 @@ export default class NavDatepicker extends FormioReactComponent {
     }
     const beforeDateAsString = beforeDate.format("DD.MM.YYYY");
     return mayBeEqual
-      ? `${this.showNorwegianOrTranslation("dateNotBeforeFromDate")} (${beforeDateAsString})`
-      : `${this.showNorwegianOrTranslation("dateAfterFromDate")} (${beforeDateAsString})`;
+      ? this.showNorwegianOrTranslation("dateNotBeforeFromDate", { fromDate: beforeDateAsString })
+      : this.showNorwegianOrTranslation("dateAfterFromDate", { fromDate: beforeDateAsString });
   }
 
   validateEarliestAndLatestDate(earliestFromToday = "", latestFromToday = "", inputDate) {
