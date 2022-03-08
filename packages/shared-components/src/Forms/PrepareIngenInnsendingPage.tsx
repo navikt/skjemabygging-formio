@@ -22,7 +22,9 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
+  const [clickedDownloadPdf, setClickedDownloadPdf] = useState(false);
   const { loggSkjemaFullfort } = useAmplitude();
+  const navUrl = "https://www.nav.no/no/person";
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -43,7 +45,8 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
             label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-            onClick={() => loggSkjemaFullfort("ingeninnsending")}
+            onClick={() => (
+              loggSkjemaFullfort("ingeninnsending"))}
             classNames="knapp knapp--fullbredde"
             translations={translations}
           />
@@ -51,6 +54,9 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
         <div>
           <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
             {translate(TEXTS.grensesnitt.goBack)}
+          </Link>
+          <Link className="knapp knapp--fullbredde" to={navUrl}>
+            {translate(TEXTS.grensesnitt.cancel)}
           </Link>
         </div>
       </main>

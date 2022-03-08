@@ -80,6 +80,8 @@
     "nav-frontend-tabs-style": "^2.0.1",
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
+    "nav-frontend-modal": "^1.0.63",
+    "nav-frontend-modal-style": "^1.0.2",
     "react-day-picker": "^7.4.8",
     "react-select": "^5.2.2"
   },
