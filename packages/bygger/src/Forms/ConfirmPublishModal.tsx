@@ -39,7 +39,7 @@ const getCompleteLocalTranslationsForNavForm = (
 const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeList, onPublish }: Props) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
-  const { localTranslationsForNavForm }: any = useI18nState();
+  const { localTranslationsForNavForm } = useI18nState();
   const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
@@ -9,7 +9,7 @@ import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import UserFeedback from "../components/UserFeedback";
-import { languagesInNorwegian, useI18nState } from "../context/i18n";
+import { getAvailableLanguages, languagesInNorwegian, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import { useModal } from "../util/useModal";
@@ -38,6 +38,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
 
   const history = useHistory();
   const { translations } = useI18nState();
+  const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
 
   useRedirectIfNoLanguageCode(languageCode, translations);
 
@@ -101,7 +102,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           </Column>
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
-              <FormBuilderLanguageSelector formPath={path} label={""} />
+              <FormBuilderLanguageSelector languages={languages} formPath={path} label={""} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <Hovedknapp
                 onClick={() => {

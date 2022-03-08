@@ -33,15 +33,13 @@ const TranslationsRouter = ({ formio, serverURL }) => {
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
         render={({ match }) => (
-          <I18nStateProvider loadTranslations={loadGlobalTranslations} forGlobal>
-            <GlobalTranslationsPage
-              {...match.params}
-              loadGlobalTranslations={loadGlobalTranslations}
-              publishGlobalTranslations={publishGlobalTranslations}
-              deleteTranslation={deleteTranslation}
-              saveTranslation={saveGlobalTranslation}
-            />
-          </I18nStateProvider>
+          <GlobalTranslationsPage
+            {...match.params}
+            loadGlobalTranslations={loadGlobalTranslations}
+            publishGlobalTranslations={publishGlobalTranslations}
+            deleteTranslation={deleteTranslation}
+            saveTranslation={saveGlobalTranslation}
+          />
         )}
       />
       <Route

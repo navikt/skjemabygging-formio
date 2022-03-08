@@ -5,8 +5,8 @@ import {
   useCurrentLanguage,
   useLanguageCodeFromURL,
 } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useMemo } from "react";
-import { getAvailableLanguages, languagesInNorwegian, useI18nState } from "./index";
+import React from "react";
+import { languagesInNorwegian } from "./index";
 
 const useStyles = makeStyles({
   sideBarLanguageSelector: {
@@ -14,20 +14,16 @@ const useStyles = makeStyles({
   },
 });
 
-const FormBuilderLanguageSelector = ({ formPath, languageSelectorLabel, tag }) => {
+const FormBuilderLanguageSelector = ({ languages = [], formPath, languageSelectorLabel, tag }) => {
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
   const supportedLanguageLists = Object.keys(i18nData).filter((languageCode) => languageCode !== "nb-NO");
 
-  const { translations } = useI18nState();
-  const availableLanguages = useMemo(() => getAvailableLanguages(translations), [translations]);
   const styles = useStyles();
 
   const options = supportedLanguageLists
     .map((languageCode) => ({
       languageCode,
-      optionLabel: `${availableLanguages.indexOf(languageCode) < 0 ? `Legg til ` : ""}${
-        languagesInNorwegian[languageCode]
-      }`,
+      optionLabel: `${languages.indexOf(languageCode) < 0 ? `Legg til ` : ""}${languagesInNorwegian[languageCode]}`,
       href: `/translations/${formPath}/${languageCode}${tag ? `/${tag}` : ""}`,
     }))
     .sort((lang1, lang2) =>
