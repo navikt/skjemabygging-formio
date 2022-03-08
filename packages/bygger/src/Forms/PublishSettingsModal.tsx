@@ -5,8 +5,7 @@ import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { I18nTranslations } from "../../types/translations";
-import { languagesInNorwegian } from "../context/i18n";
-import { useI18nState } from "../context/i18n/I18nContext";
+import { languagesInNorwegian, useI18nState } from "../context/i18n";
 import { getFormTexts } from "../translations/utils";
 import { NavFormType } from "./navForm";
 

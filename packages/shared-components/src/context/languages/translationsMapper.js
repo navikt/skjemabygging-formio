@@ -10,7 +10,7 @@ const flattenTranslationObject = (translationObject) => {
 
 const mapTranslationsToFormioI18nObject = (translations, filterPredicate) => {
   const getTranslationsForLanguageCode = (languageCode) => {
-    const translationsForLanguage = translations[languageCode].translations;
+    const translationsForLanguage = translations[languageCode].translations || {};
     return filterPredicate
       ? Object.fromEntries(Object.entries(translationsForLanguage).filter(([_, value]) => filterPredicate(value)))
       : translationsForLanguage;
