@@ -8,8 +8,8 @@ type BreakingChangesWarningProps = {
 
 const BreakingChangesWarning = ({ breakingChanges }: BreakingChangesWarningProps) => (
   <AlertStripe type="feil">
-    Andre komponenter har avhengigheter til denne komponenten som kan brekkes av migreringen. Vennligst se over følgende
-    avhengigheter:
+    Migreringen vil gjøre endringer på komponenter som kan brekke avhengigheter i andre komponenter. Normalt vil dette
+    skyldes endringer på key, samt verdier i radio eller nedtrekkslister. Vennligst se over følgende avhengigheter:
     <ul>
       {breakingChanges.map(({ componentWithDependencies, dependentComponents }) => {
         const componentLabel = componentWithDependencies.label || componentWithDependencies.label_ORIGINAL;
