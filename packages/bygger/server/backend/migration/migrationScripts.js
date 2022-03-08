@@ -46,6 +46,26 @@ async function fetchForms(url) {
   });
 }
 
+function getBreakingChanges(form, changes) {
+  return changes
+    .filter((affected) => affected.diff)
+    .map((affected) => affected.diff)
+    .reduce((diffsWithBreakingChanges, currentDiff) => {
+      const dependentComponents = findDependentComponents(currentDiff.id, form);
+      if (dependentComponents.length > 0) {
+        return [
+          ...diffsWithBreakingChanges,
+          {
+            componentWithDependencies: currentDiff,
+            dependentComponents,
+          },
+        ];
+      } else {
+        return diffsWithBreakingChanges;
+      }
+    }, []);
+}
+
 async function migrateForms(
   searchFilters,
   editOptions,
@@ -59,29 +79,7 @@ async function migrateForms(
       .map((form) => {
         const affectedComponentsLogger = [];
         const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
-        const breakingChanges = affectedComponentsLogger
-          .map((affected) => affected.diff)
-          .filter((diff) => diff)
-          .reduce((diffsWithBreakingChanges, currentDiff) => {
-            const dependentComponents = findDependentComponents(currentDiff.id, form);
-            if (dependentComponents.length > 0) {
-              return [
-                ...diffsWithBreakingChanges,
-                {
-                  componentWithDependencies: currentDiff,
-                  dependentComponents,
-                },
-              ];
-            } else {
-              return [
-                ...diffsWithBreakingChanges,
-                {
-                  currentDiff,
-                  form,
-                },
-              ];
-            }
-          }, []);
+        const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
         log[form.properties.skjemanummer] = {
           skjemanummer: form.properties.skjemanummer,
           name: form.name,
