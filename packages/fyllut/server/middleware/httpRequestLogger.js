@@ -3,7 +3,7 @@ import correlator from "express-correlation-id";
 import morgan from "morgan";
 import { clean } from "../utils/logCleaning.js";
 
-const INTERNAL_PATHS = /.*\/internal\/.*/i;
+const INTERNAL_PATHS = /.*\/(internal|static)\/.*/i;
 const httpRequestLogger = morgan(
   (token, req, res) => {
     const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
