@@ -286,6 +286,7 @@ function logErrors(err, req, res, next) {
   next(err);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function errorHandler(err, req, res, next) {
   res.status(500);
   res.contentType("application/json");

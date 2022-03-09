@@ -1,14 +1,14 @@
+import makeStyles from "@material-ui/styles/makeStyles";
+import { appStyles, globalStyles } from "@navikt/skjemadigitalisering-shared-components";
+import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
+import Formiojs from "formiojs/Formio";
 import React, { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
-import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
-import Formiojs from "formiojs/Formio";
+import UnauthenticatedApp from "./UnauthenticatedApp";
 import { UserAlerterContext, useUserAlerting } from "./userAlerting";
-import makeStyles from "@material-ui/styles/makeStyles";
-import { globalStyles, appStyles } from "@navikt/skjemadigitalisering-shared-components";
-import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   "@global": {
     ".list-inline": {
       listStyle: "none",
