@@ -1,14 +1,14 @@
 import correlator from "express-correlation-id";
 import { config } from "../config/config.js";
 
-const { skipLogging } = config;
+const { isTest } = config;
 
 const globalErrorHandler = (err, req, res, next) => {
   if (!err.correlation_id) {
     err.correlation_id = correlator.getId();
   }
 
-  if (!skipLogging) {
+  if (!isTest) {
     console.error(JSON.stringify(err));
   }
 

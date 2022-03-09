@@ -1,5 +1,10 @@
 import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
+
+if (process.env.NODE_ENV !== "test") {
+  dotenv.config();
+}
 
 const localDevelopmentConfig = {
   gitVersion: "local",
@@ -34,7 +39,7 @@ const config = {
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
-  skipLogging: process.env.SKIP_LOGGING === "true",
+  isTest: process.env.NODE_ENV === "test",
 };
 
 const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {

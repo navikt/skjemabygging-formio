@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
+import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
 import getDecorator from "./dekorator.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";
@@ -10,6 +11,8 @@ import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
+
+checkConfigConsistency(config);
 
 const app = express();
 app.use(httpRequestLogger);

@@ -4,7 +4,7 @@ import morgan from "morgan";
 import { config } from "../config/config.js";
 import { clean } from "../utils/logCleaning.js";
 
-const { skipLogging } = config;
+const { isTest } = config;
 
 const INTERNAL_PATHS = /.*\/(internal|static)\/.*/i;
 const httpRequestLogger = morgan(
@@ -14,7 +14,7 @@ const httpRequestLogger = morgan(
     return JSON.stringify(clean(logEntry));
   },
   {
-    skip: (req) => skipLogging || INTERNAL_PATHS.test(req.originalUrl),
+    skip: (req) => isTest || INTERNAL_PATHS.test(req.originalUrl),
   }
 );
 
