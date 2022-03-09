@@ -1,8 +1,8 @@
-import app from "./app.js";
-import "./config/verifyConfig.js";
-import { logger } from "./logger.js";
-import "./utils/errorToJson.js";
 import "./utils/initDotenv.js";
+import "./config/verifyConfig.js";
+import "./utils/errorToJson.js";
+import app from "./app.js";
+import { logger } from "./logger.js";
 
 const port = parseInt(process.env.PORT || "8080");
 
