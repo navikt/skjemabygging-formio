@@ -1,7 +1,10 @@
 import ecsFormat from "@elastic/ecs-morgan-format";
 import correlator from "express-correlation-id";
 import morgan from "morgan";
+import { config } from "../config/config.js";
 import { clean } from "../utils/logCleaning.js";
+
+const { isTest } = config;
 
 const INTERNAL_PATHS = /.*\/(internal|static)\/.*/i;
 const httpRequestLogger = morgan(
@@ -11,9 +14,7 @@ const httpRequestLogger = morgan(
     return JSON.stringify(clean(logEntry));
   },
   {
-    skip: (req) => {
-      return INTERNAL_PATHS.test(req.originalUrl);
-    },
+    skip: (req) => isTest || INTERNAL_PATHS.test(req.originalUrl),
   }
 );
 
