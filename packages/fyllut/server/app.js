@@ -32,6 +32,7 @@ export const createApp = () => {
 
   setupDeprecatedEndpoints(fyllutRouter);
   fyllutRouter.use("/api", apiRouter);
+  // path /internal is not publicly exposed, see https://doc.nais.io/clusters/gcp/#prod-gcp-ingresses
   fyllutRouter.use("/internal", internalRouter);
 
   // Match everything except internal, static and api
