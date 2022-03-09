@@ -40,6 +40,15 @@ function getEditScript(editOptions, logger = []) {
   };
 }
 
+function hasChangesToPropertiesWhichCanBreakDependencies(diff) {
+  return (
+    diff.key_NEW || // Keys are used to look up submissions for components, and is the most common dependency
+    diff.values_NEW || // Changes to values for Radiopanel or Flervalg components can break references that are depending on a specific value
+    diff.data_NEW ||
+    (diff.data && diff.data.values_NEW) // Values for Nedtrekksliste are stored in data.values, so changes to data or data.values can be breaking
+  );
+}
+
 async function fetchForms(url) {
   return await fetchWithErrorHandling(url, {
     method: "GET",
@@ -50,6 +59,7 @@ function getBreakingChanges(form, changes) {
   return changes
     .filter((affected) => affected.diff)
     .map((affected) => affected.diff)
+    .filter((diff) => hasChangesToPropertiesWhichCanBreakDependencies(diff))
     .reduce((diffsWithBreakingChanges, currentDiff) => {
       const dependentComponents = findDependentComponents(currentDiff.id, form);
       if (dependentComponents.length > 0) {
@@ -106,4 +116,4 @@ async function previewForm(
   return fetchForms(url).then((response) => migrateForm(response.data[0], searchFilters, getEditScript(editOptions)));
 }
 
-export { migrateForm, migrateForms, getEditScript, previewForm };
+export { migrateForm, migrateForms, getEditScript, previewForm, getBreakingChanges };

@@ -1,6 +1,6 @@
 import nock from "nock";
 import mockedForm from "../../../example_data/Form";
-import { getEditScript, migrateForm, migrateForms } from "./migrationScripts";
+import { getBreakingChanges, getEditScript, migrateForm, migrateForms } from "./migrationScripts";
 import {
   originalFodselsnummerComponent,
   originalForm,
@@ -16,6 +16,17 @@ const migrateFnrFieldFunction = (component) => ({
     custom: "valid = instance.newValidateFnr(input)",
   },
 });
+
+function createTestForm(...components) {
+  return {
+    path: "testForm",
+    title: "Test form",
+    properties: {
+      skjemanummer: "TEST-form",
+    },
+    components: [...components],
+  };
+}
 
 describe("Migration scripts", () => {
   describe("migrateForm", () => {
@@ -227,6 +238,119 @@ describe("Migration scripts", () => {
         editScript(testComponent);
         expect(logger.length).toBe(3);
       });
+    });
+  });
+
+  describe("getBreakingChanges", () => {
+    const componentThatIsChanged = {
+      key: "comp-that-is-changed",
+      id: "comp-that-is-changed",
+      label: "Component that is changed",
+      values: [
+        {
+          value: "ja",
+          label: "Ja",
+        },
+        {
+          value: "nei",
+          label: "Nei",
+        },
+      ],
+    };
+
+    const componentWithSimpleConditional = {
+      key: "comp-with-simple-conditional",
+      id: "comp-with-simple-conditional",
+      label: "Component with simple conditional",
+      conditional: {
+        show: true,
+        when: "comp-that-is-changed",
+        eq: "ja",
+      },
+    };
+
+    /*const componentWithConditionalOnValues = {
+      key: "comp-with-conditional-on-values",
+      id: "comp-with-conditional-on-values",
+      label: "Component with conditional on values",
+    };*/
+
+    function createAffectedComponent(...diffs) {
+      return diffs.map((diff) => ({ diff }));
+    }
+
+    it("lists components with dependencies when changing key", () => {
+      const testForm = createTestForm(componentThatIsChanged, componentWithSimpleConditional);
+      const affectedComponents = createAffectedComponent({
+        id: "comp-that-is-changed",
+        key_NEW: "changed-key",
+        key_ORIGINAL: "comp-that-is-changed",
+        label: "Component that is changed",
+      });
+      //expect(testForm).toEqual([]);
+      const actual = getBreakingChanges(testForm, affectedComponents);
+      expect(actual).toEqual([
+        {
+          componentWithDependencies: {
+            id: "comp-that-is-changed",
+            key_NEW: "changed-key",
+            key_ORIGINAL: "comp-that-is-changed",
+            label: "Component that is changed",
+          },
+          dependentComponents: [
+            {
+              key: "comp-with-simple-conditional",
+              label: "Component with simple conditional",
+            },
+          ],
+        },
+      ]);
+    });
+    it("lists components with dependencies when changing values", () => {
+      const testForm = createTestForm(componentThatIsChanged, componentWithSimpleConditional);
+      const { id, key, label, values } = componentThatIsChanged;
+      const affectedComponents = createAffectedComponent({
+        id,
+        key,
+        label,
+        values_NEW: [
+          ...values,
+          {
+            value: "kanskje",
+            label: "Kanskje",
+          },
+        ],
+        values_ORIGINAL: values,
+      });
+
+      const actual = getBreakingChanges(testForm, affectedComponents);
+      expect(actual).toEqual([
+        {
+          componentWithDependencies: expect.objectContaining({
+            id: "comp-that-is-changed",
+          }),
+          dependentComponents: [
+            {
+              key: "comp-with-simple-conditional",
+              label: "Component with simple conditional",
+            },
+          ],
+        },
+      ]);
+    });
+    it("does not list components with dependencies when changing other properties, as they are not breaking changes", () => {
+      const testForm = createTestForm(
+        { ...componentThatIsChanged, oldProperty: "old value" },
+        componentWithSimpleConditional
+      );
+      const affectedComponents = createAffectedComponent({
+        ...componentThatIsChanged,
+        oldProperty: "changed value",
+        newProperty: "new value",
+      });
+
+      const actual = getBreakingChanges(testForm, affectedComponents);
+      expect(actual).toEqual([]);
     });
   });
 });
