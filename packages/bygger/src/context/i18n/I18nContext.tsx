@@ -78,7 +78,7 @@ const initialState: I18nState = {
 const loadTranslationsAndInitState = async (
   loadTranslations: () => Promise<FormioTranslationMap>,
   dispatch: React.Dispatch<I18nAction>
-) => {
+): Promise<void> => {
   const translations = await loadTranslations();
   dispatch({ type: "init", payload: translations });
 };
@@ -95,7 +95,7 @@ function I18nStateProvider({ children, loadTranslations, form }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    loadTranslationsAndInitState(loadTranslations, dispatch);
+    loadTranslationsAndInitState(loadTranslations, dispatch).then();
   }, [loadTranslations, dispatch]);
 
   useEffect(() => {
