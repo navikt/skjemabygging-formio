@@ -1,9 +1,10 @@
-import app from "./app.js";
+import { createApp } from "./app.js";
 import { logger } from "./logger.js";
 import "./utils/errorToJson.js";
 
 const port = parseInt(process.env.PORT || "8080");
 
+const app = createApp();
 logger.info(`serving on ${port}`);
 app.listen(port);
 
