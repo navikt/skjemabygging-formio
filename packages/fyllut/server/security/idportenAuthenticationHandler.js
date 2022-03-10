@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
+import { logger } from "../logger.js";
 
 const idportenAuthenticationHandler = (req, res, next) => {
   const innsendingHeader = req.header("Fyllut-Innsending");
@@ -8,16 +9,24 @@ const idportenAuthenticationHandler = (req, res, next) => {
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
+      logger.debug("Missing jwt token");
       return res.sendStatus(401);
     }
 
+    logger.debug("Validating jwt token...");
     const tokenContent = jwt.decode(token, {});
     const currentTime = new Date().getTime() / 1000;
     const expired = tokenContent.exp - 10 < currentTime;
-    if (expired || tokenContent.client_id !== config.idportenClientId || tokenContent.acr !== "Level4") {
+    const idportenClientIdMismatch = tokenContent.client_id !== config.idportenClientId;
+    const wrongSecurityLevel = tokenContent.acr !== "Level4";
+    if (expired || idportenClientIdMismatch || wrongSecurityLevel) {
+      logger.debug(
+        `Validation of jwt token failed (expired=${expired}, idportenClientIdMismatch=${idportenClientIdMismatch}, wrongSecurityLevel=${wrongSecurityLevel})`
+      );
       return res.sendStatus(401);
     }
 
+    logger.debug("Validation of jwt token succeeded");
     // TODO set res.locals.user?
   }
   next();
