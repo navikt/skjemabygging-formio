@@ -83,8 +83,10 @@ describe("I18nStateProvider", () => {
 
   it("adds translations to localTranslationsForNavForm in i18n format", () => {
     const { localTranslationsForNavForm } = onStateUpdated.mock.calls[onStateUpdated.mock.calls.length - 1][0];
-    expect(localTranslationsForNavForm["en"].Testskjema).toEqual(mockedTranslations.en.translations.Testskjema.value);
-    expect(localTranslationsForNavForm["en"].Fornavn).toEqual(mockedTranslations.en.translations.Fornavn.value);
+    expect(localTranslationsForNavForm["en"].Testskjema).toEqual(
+      mockedTranslations["en"].translations.Testskjema.value
+    );
+    expect(localTranslationsForNavForm["en"].Fornavn).toEqual(mockedTranslations["en"].translations.Fornavn.value);
     expect(localTranslationsForNavForm["nn-NO"].Testskjema).toEqual(
       mockedTranslations["nn-NO"].translations.Testskjema.value
     );
