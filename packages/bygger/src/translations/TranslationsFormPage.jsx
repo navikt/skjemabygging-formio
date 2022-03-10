@@ -1,9 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
-import AlertStripe from "nav-frontend-alertstriper";
 import Ekspanderbartpanel from "nav-frontend-ekspanderbartpanel";
 import { Knapp } from "nav-frontend-knapper";
 import { Input, Textarea } from "nav-frontend-skjema";
-import { Sidetittel } from "nav-frontend-typografi";
+import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
 import TranslationTextInput from "./TranslationTextInput";
@@ -67,19 +66,14 @@ const TranslationsToRemove = ({ translations, language, onDelete }) => {
   const unusedTranslationsText = translations.length === 1 ? "ubrukt oversettelse" : "ubrukte oversettelser";
   return (
     <div className="margin-bottom-double">
-      <AlertStripe
-        className="margin-bottom-default"
-        type="advarsel"
-      >{`Skjemaet har ${translations.length} ${unusedTranslationsText} på ${language}.`}</AlertStripe>
-      <Ekspanderbartpanel tittel="Ubrukte oversettelser">
+      <Ekspanderbartpanel tittel={`${translations.length} ${unusedTranslationsText} (${language})`}>
         {translations.map(([originalText, translated]) => (
           <div key={originalText}>
-            <p>{originalText}</p>
             <div className={"margin-bottom-default"}>
               {getInputType(translated.value) === "textarea" ? (
-                <Textarea disabled value={translated.value} maxLength={0} onChange={() => {}} />
+                <Textarea disabled label={originalText} value={translated.value} maxLength={0} onChange={() => {}} />
               ) : (
-                <Input disabled value={translated.value} />
+                <Input disabled label={originalText} value={translated.value} />
               )}
             </div>
             <Knapp className={"margin-bottom-default"} onClick={() => onDelete(originalText)}>
@@ -125,6 +119,9 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
           }}
         />
       )}
+      <Innholdstittel tag={"h2"} className="margin-bottom-default">
+        {`Oversettelser${languageCode ? " på " + languagesInNorwegian[languageCode] : ""}`}
+      </Innholdstittel>
       <form>
         {flattenedComponents.map(({ text, type }) => {
           return (
