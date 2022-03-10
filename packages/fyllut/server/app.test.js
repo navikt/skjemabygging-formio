@@ -9,15 +9,23 @@ const extractHost = (url) => HOST_REGEX.exec(url)[1];
 const extractPath = (url) => PATH_REGEX.exec(url)[1];
 
 describe("app", () => {
-  it("Henter config", async () => {
+  it("Fetches config", async () => {
     await request(createApp())
-      .get("/fyllut/config")
+      .get("/fyllut/api/config")
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(200);
   });
 
-  it("Returnerer feilmelding og legger på correlation_id", async () => {
+  it("Looks for Authorization header when Fyllut-Innsending=digital", async () => {
+    await request(createApp())
+      .get("/fyllut/api/config")
+      .set("Accept", "application/json")
+      .set("Fyllut-Innsending", "digital")
+      .expect(401);
+  });
+
+  it("Returns error message and a correlation_id", async () => {
     const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT;
     const azureOpenidScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))

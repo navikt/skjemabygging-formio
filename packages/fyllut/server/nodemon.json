@@ -1,3 +1,4 @@
 {
-  "ignoreRoot": [".git"]
+  "ignoreRoot": ["coverage"],
+  "ignore": ["*.test.[j|t]s"]
 }
