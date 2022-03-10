@@ -1,6 +1,7 @@
 enum MimeType {
   JSON = "application/json",
   TEXT = "text/plain",
+  PDF = "application/pdf",
 }
 
 interface FetchHeader {
@@ -67,9 +68,11 @@ const handleResponse = async (response: Response) => {
   }
 
   if (isResponseType(response, MimeType.JSON)) {
-    return await response.json();
-  } else if (isResponseType(response, MimeType.TEXT)){
+    return response.json();
+  } else if (isResponseType(response, MimeType.TEXT)) {
     return await response.text();
+  } else if (isResponseType(response, MimeType.PDF)){
+    return await response.blob();
   } else {
     return response;
   }

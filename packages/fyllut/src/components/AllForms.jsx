@@ -13,8 +13,7 @@ export const AllForms = () => {
         setForms(forms);
         setStatus("FINISHED LOADING");
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setStatus("FORMS NOT FOUND");
       });
   }, []);

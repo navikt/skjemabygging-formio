@@ -12,7 +12,7 @@ const loadGlobalTranslations = async (languageCode) => {
 };
 
 export const loadFormTranslations = async (formPath) => {
-  get(`/fyllut/translations/${formPath}`);
+  return get(`/fyllut/translations/${formPath}`);
 };
 
 export const loadCountryNamesForLanguages = async (languages) => {
