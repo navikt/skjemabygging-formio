@@ -5,6 +5,10 @@ import { MemoryRouter } from "react-router-dom";
 import { AllForms } from "./AllForms";
 
 describe("AllForms", () => {
+  beforeEach(() => {
+    fetchMock.doMock();
+  });
+
   it("Show loading when fetching forms from backend and show find no forms when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
       return Promise.resolve(new Response(JSON.stringify([])));

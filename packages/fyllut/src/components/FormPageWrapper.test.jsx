@@ -12,12 +12,16 @@ const RESPONSE_HEADERS = {
 };
 
 describe("FormPageWrapper", () => {
+  beforeEach(() => {
+    fetchMock.doMock();
+  });
+
   afterEach(() => fetchMock.resetMocks());
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
       if (url === "/fyllut/forms/unknownForm") {
-        return Promise.resolve(new Response(undefined, { ...RESPONSE_HEADERS, status: 404 }));
+        return Promise.resolve(new Response("{}", { ...RESPONSE_HEADERS, status: 404 }));
       }
       throw new Error("Unknown URL: " + url);
     });

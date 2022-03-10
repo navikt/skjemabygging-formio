@@ -1,22 +1,14 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { get, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-class HttpError extends Error {}
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    fetch(`/fyllut/forms`, { headers: { accept: "application/json" } })
-      .then((response) => {
-        if (!response.ok) {
-          throw new HttpError(response.statusText);
-        }
-        return response.json();
-      })
+    get(`/fyllut/forms`)
       .then((forms) => {
         setForms(forms);
         setStatus("FINISHED LOADING");
