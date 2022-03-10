@@ -62,11 +62,17 @@ const FormItem = ({ currentTranslation, text, type, languageCode }) => {
   );
 };
 
-const TranslationsToRemove = ({ translations, language, onDelete }) => {
+const TranslationsToRemove = ({ translations, languageCode }) => {
+  const dispatch = useI18nDispatch();
+  const onDelete = (key) => {
+    dispatch({ type: "remove", payload: { lang: languageCode, key } });
+  };
   const unusedTranslationsText = translations.length === 1 ? "ubrukt oversettelse" : "ubrukte oversettelser";
   return (
     <div className="margin-bottom-double">
-      <Ekspanderbartpanel tittel={`${translations.length} ${unusedTranslationsText} (${language})`}>
+      <Ekspanderbartpanel
+        tittel={`${translations.length} ${unusedTranslationsText} (${languagesInNorwegian[languageCode]})`}
+      >
         {translations.map(([originalText, translated]) => (
           <div key={originalText}>
             <div className={"margin-bottom-default"}>
@@ -90,7 +96,6 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
   const classes = useTranslationsListStyles();
   const [currentTranslation, setCurrentTranslation] = useState({});
   const [unusedTranslations, setUnusedTranslations] = useState([]);
-  const dispatch = useI18nDispatch();
 
   useEffect(
     () => setCurrentTranslation((translations[languageCode] && translations[languageCode].translations) || {}),
@@ -111,13 +116,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
       <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
       <p className="margin-bottom-large">{skjemanummer}</p>
       {unusedTranslations.length > 0 && (
-        <TranslationsToRemove
-          translations={unusedTranslations}
-          language={languagesInNorwegian[languageCode]}
-          onDelete={(key) => {
-            dispatch({ type: "remove", payload: { lang: languageCode, key } });
-          }}
-        />
+        <TranslationsToRemove translations={unusedTranslations} languageCode={languageCode} />
       )}
       <Innholdstittel tag={"h2"} className="margin-bottom-default">
         {`Oversettelser${languageCode ? " på " + languagesInNorwegian[languageCode] : ""}`}
