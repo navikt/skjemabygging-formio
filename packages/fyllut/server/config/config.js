@@ -2,7 +2,9 @@ import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
 
-dotenv.config();
+if (process.env.NODE_ENV !== "test") {
+  dotenv.config();
+}
 
 const localDevelopmentConfig = {
   gitVersion: "local",
@@ -18,7 +20,6 @@ const localDevelopmentConfig = {
 
 const defaultConfig = {
   sentryDsn: process.env.REACT_APP_SENTRY_DSN,
-  naisClusterName: process.env.NAIS_CLUSTER_NAME,
   gitVersion: process.env.GIT_SHA,
   useFormioApi: process.env.FORMS_SOURCE === "formioapi",
   formioProjectUrl: process.env.FORMIO_PROJECT_URL,
@@ -36,7 +37,9 @@ const defaultConfig = {
 const config = {
   ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
+  naisClusterName: process.env.NAIS_CLUSTER_NAME,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
+  isTest: process.env.NODE_ENV === "test",
 };
 
 const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {
