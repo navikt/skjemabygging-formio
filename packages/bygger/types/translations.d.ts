@@ -1,7 +1,8 @@
 export type Language = "nb-NO" | "nn-NO" | "en" | "pl";
 export type TranslationScope = "global" | "local" | "component-countryName";
 export type TranslationTag = "skjematekster" | "grensesnitt" | "statiske-tekster" | "validering";
-export type I18nTranslationMap = { [key: string]: string };
+export type I18nTranslationMap = Record<string, string>;
+export type I18nTranslations = Record<string, I18nTranslationMap>;
 
 export interface ScopedTranslationMap {
   [key: string]: { value: string; scope: TranslationScope };
@@ -13,7 +14,7 @@ export interface FormioTranslation {
 }
 
 export interface FormioTranslationMap {
-  [key: Language]: FormioTranslation[];
+  [key: Language]: FormioTranslation;
 }
 
 export type TranslationResource = {

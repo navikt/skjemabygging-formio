@@ -1,5 +1,5 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
 import TranslationTextInput from "./TranslationTextInput";
 
 describe("TranslationTextInput", () => {
@@ -51,10 +51,10 @@ describe("TranslationTextInput", () => {
       expect(screen.getByRole("textbox")).not.toHaveAttribute("readonly");
     });
 
-    it("calls onChange with value", () => {
+    it("calls onChange with value", async () => {
       const textArea = screen.getByRole("textbox");
       fireEvent.change(textArea, { target: { value: "new textArea translation" } });
-      expect(mockedOnChange).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockedOnChange).toHaveBeenCalledTimes(1));
       expect(mockedOnChange).toHaveBeenCalledWith("new textArea translation");
     });
   });
@@ -75,10 +75,10 @@ describe("TranslationTextInput", () => {
       expect(screen.getByRole("textbox")).not.toHaveAttribute("readonly");
     });
 
-    it("calls onChange with value", () => {
+    it("calls onChange with value", async () => {
       const input = screen.getByRole("textbox");
       fireEvent.change(input, { target: { value: "new input translation" } });
-      expect(mockedOnChange).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockedOnChange).toHaveBeenCalledTimes(1));
       expect(mockedOnChange).toHaveBeenCalledWith("new input translation");
     });
   });

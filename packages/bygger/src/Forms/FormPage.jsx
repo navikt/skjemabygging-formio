@@ -1,7 +1,7 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
-import I18nProvider from "../context/i18n";
+import I18nStateProvider from "../context/i18n/I18nContext";
 import { EditFormPage } from "./EditFormPage";
 import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
@@ -49,7 +49,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     "Er du sikker på at du vil gå videre?";
 
   return (
-    <I18nProvider loadTranslations={loadTranslationsForFormPath} form={form}>
+    <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={form}>
       <Switch>
         <Route path={`${url}/edit`}>
           <Prompt
@@ -82,6 +82,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           <Redirect to={`${url}/edit`} />
         </Route>
       </Switch>
-    </I18nProvider>
+    </I18nStateProvider>
   );
 };

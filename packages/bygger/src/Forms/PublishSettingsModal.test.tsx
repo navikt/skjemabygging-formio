@@ -24,11 +24,11 @@ jest.mock("../context/i18n/index", () => {
     },
     "nn-NO": { "YES-label": "yes" },
   };
-  const mockUseTranslation = () => ({
+  const mockUseI18nState = () => ({
     translationsForNavForm: mockTranslationsForNavForm,
   });
   return {
-    useTranslations: mockUseTranslation,
+    useI18nState: mockUseI18nState,
     languagesInNorwegian,
   };
 });

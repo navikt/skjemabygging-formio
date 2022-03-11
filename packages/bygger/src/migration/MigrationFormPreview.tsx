@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useParams, useHistory } from "react-router-dom";
 import { Tilbakeknapp } from "nav-frontend-ikonknapper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   "@global": globalStyles,
   backContainer: {
     maxWidth: "800px",

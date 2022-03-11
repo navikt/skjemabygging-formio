@@ -1,29 +1,21 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { http, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FormPage from "./FormPage";
 import PageNotFound from "./PageNotFound";
-
-class HttpError extends Error {}
 
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
   useEffect(() => {
-    fetch(`/fyllut/forms/${formPath}`, { headers: { accept: "application/json" } })
-      .then((response) => {
-        if (!response.ok) {
-          throw new HttpError(response.statusText);
-        }
-        return response.json();
-      })
+    http
+      .get(`/fyllut/forms/${formPath}`)
       .then((form) => {
         setForm(form);
         setStatus("FINISHED LOADING");
       })
       .catch((e) => {
-        console.debug(e);
         setStatus("FORM NOT FOUND");
       });
   }, [formPath]);

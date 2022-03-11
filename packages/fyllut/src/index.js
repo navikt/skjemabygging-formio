@@ -1,4 +1,4 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, http } from "@navikt/skjemadigitalisering-shared-components";
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -7,17 +7,10 @@ import App from "./App";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
 
-class HttpError extends Error {}
-
 let featureToggles = {};
 
-fetch("/fyllut/config", { headers: { accept: "application/json" } })
-  .then((response) => {
-    if (!response.ok) {
-      throw new HttpError(response.statusText);
-    }
-    return response.json();
-  })
+http
+  .get("/fyllut/config")
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });

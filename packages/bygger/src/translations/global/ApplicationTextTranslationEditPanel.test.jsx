@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import ApplicationTextTranslationEditPanel, {
   getTranslationByOriginalText,
@@ -55,16 +55,16 @@ describe("ApplicationTextTranslationEditPanel", () => {
     });
 
     describe("onChange", () => {
-      it("calls updateTranslation with existing id, text and new value, when text already has a translation", () => {
+      it("calls updateTranslation with existing id, text and new value, when text already has a translation", async () => {
         const text1 = screen.getByLabelText("Juli");
         fireEvent.change(text1, { target: { value: "new global translation" } });
-        expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1));
         expect(mockedUpdateTranslation).toHaveBeenCalledWith("id", "Juli", "new global translation");
       });
-      it("calls updateTranslation with empty string as id, text and new value, when text did not have a translation", () => {
+      it("calls updateTranslation with empty string as id, text and new value, when text did not have a translation", async () => {
         const text1 = screen.getByLabelText("Juni");
         fireEvent.change(text1, { target: { value: "new global translation" } });
-        expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockedUpdateTranslation).toHaveBeenCalledTimes(1));
         expect(mockedUpdateTranslation).toHaveBeenCalledWith("", "Juni", "new global translation");
       });
     });
