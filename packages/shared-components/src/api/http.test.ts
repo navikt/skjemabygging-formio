@@ -1,34 +1,63 @@
 import { get, HttpError, MimeType } from "./http";
 import nock from "nock";
 
+interface TestBody {
+  body: string;
+}
+const defaultBodyText = "This is the body";
+const setupDefaultGetMock = () => {
+  nock("https://www.nav.no")
+    .defaultReplyHeaders({
+      "Content-Type": MimeType.JSON,
+    })
+    .get("/ok")
+    .reply(200, {
+      body: defaultBodyText
+    });
+}
+
 describe("http requests", () => {
   describe("get", () => {
-    beforeEach(() => {
-      nock("http://localhost")
-        .defaultReplyHeaders({
-          "Content-Type": 'application/json',
-        })
-        .get("/ok")
-        .reply(200, {});
-    });
-
-    it("with custom headers", () => {
+    it("with custom headers", async () => {
+      setupDefaultGetMock();
       const headers = {
-        "Content-Type": MimeType.JSON,
-        Accept: MimeType.JSON,
+        "Content-Type": MimeType.TEXT,
       };
 
-      get("http://localhost/ok", headers);
+      const response = await get<TestBody>("https://www.nav.no/ok", headers);
+      expect(typeof response).toBe("object")
+      expect(response.body).toBe(defaultBodyText)
+      nock.isDone();
     });
 
-    it("without custom headers", () => {
-      get("http://localhost/ok");
+    it("without custom headers", async () => {
+      setupDefaultGetMock();
+      const response = await get<TestBody>("https://www.nav.no/ok");
+      expect(response.body).toBe(defaultBodyText)
+      nock.isDone();
+    });
+
+    it("with text response", async () => {
+      nock("https://www.nav.no")
+        .defaultReplyHeaders({
+          "Content-Type": MimeType.TEXT,
+        })
+        .get("/ok")
+        .reply(200, {
+          body: "This is the body"
+        });
+      const headers = {
+        "Content-Type": MimeType.TEXT,
+      };
+
+      const response = await get("https://www.nav.no/ok", headers);
+      expect(typeof response).toBe("string")
       nock.isDone();
     });
 
     it("error with json", async () => {
       const errorMessage = "Error message";
-      nock("http://localhost")
+      nock("https://www.nav.no")
         .defaultReplyHeaders({
           "Content-Type": MimeType.JSON,
         })
@@ -38,7 +67,7 @@ describe("http requests", () => {
       expect.assertions(1);
 
       try {
-        await get("http://localhost/error");
+        await get("https://www.nav.no/error");
       } catch (e) {
         if (e instanceof HttpError) {
           expect(e.message).toBe(errorMessage);
@@ -50,7 +79,7 @@ describe("http requests", () => {
 
     it("error", async () => {
       const errorMessage = "Error message";
-      nock("http://localhost")
+      nock("https://www.nav.no")
         .defaultReplyHeaders({
           "Content-Type": MimeType.TEXT,
         })
@@ -60,7 +89,7 @@ describe("http requests", () => {
       expect.assertions(1);
 
       try {
-        await get("http://localhost/error");
+        await get("https://www.nav.no/error");
       } catch (e) {
         if (e instanceof HttpError) {
           expect(e.message).toBe(errorMessage);
@@ -72,7 +101,7 @@ describe("http requests", () => {
 
     it("error with unsupported mimetype", async () => {
       // Should use default statusText as message
-      nock("http://localhost")
+      nock("https://www.nav.no")
         .defaultReplyHeaders({
           "Content-Type": "whatever",
         })
@@ -82,7 +111,7 @@ describe("http requests", () => {
       expect.assertions(1);
 
       try {
-        await get("http://localhost/error");
+        await get("https://www.nav.no/error");
       } catch (e) {
         if (e instanceof HttpError) {
           expect(e.message).toBe("Not Found");
