@@ -4,10 +4,20 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AllForms } from "./AllForms";
 
+const RESPONSE_HEADERS = {
+  headers: {
+    "content-type": "application/json",
+  },
+};
+
 describe("AllForms", () => {
+  beforeEach(() => {
+    fetchMock.doMock();
+  });
+
   it("Show loading when fetching forms from backend and show find no forms when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response(JSON.stringify([])));
+      return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
     });
 
     render(
@@ -26,7 +36,7 @@ describe("AllForms", () => {
       { _id: "111", path: "testnewform", title: "Test new form", modified: "2021-11-29T14:10:21.487Z" },
     ];
     fetchMock.mockImplementation((url) => {
-      return Promise.resolve(new Response(JSON.stringify(mockedForm)));
+      return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
     });
 
     render(

@@ -23,3 +23,4 @@ Object.defineProperty(window, "matchMedia", {
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 fetchMock.enableMocks();
+fetchMock.dontMock();
