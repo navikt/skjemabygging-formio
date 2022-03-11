@@ -3,7 +3,7 @@ import { config } from "../config/config.js";
 import { logger } from "../logger.js";
 
 const idportenAuthHandler = (req, res, next) => {
-  const innsendingHeader = req.header("Fyllut-Innsending");
+  const innsendingHeader = req.header("Fyllut-Submission-Type");
   if (innsendingHeader === "digital") {
     const authHeader = req.header("Authorization");
     const token = authHeader && authHeader.split(" ")[1];

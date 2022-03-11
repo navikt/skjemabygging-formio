@@ -29,17 +29,17 @@ const validTokenPayload = {
 function mockRequestWithAccessToken(accessToken) {
   return mockRequest({
     headers: {
-      "Fyllut-Innsending": "digital",
+      "Fyllut-Submission-Type": "digital",
       Authorization: `Bearer ${accessToken}`,
     },
   });
 }
 
 describe("idportenAuthHandler", () => {
-  describe("Header Fyllut-Innsending digital", () => {
+  describe("Header Fyllut-Submission-Type digital", () => {
     it("Returns 401 when authorization header is missing", () => {
       const req = mockRequest({
-        headers: { "Fyllut-Innsending": "digital" },
+        headers: { "Fyllut-Submission-Type": "digital" },
       });
       const res = mockResponse();
       const next = jest.fn();
@@ -105,7 +105,7 @@ describe("idportenAuthHandler", () => {
     });
   });
 
-  describe("Header Fyllut-Innsending missing", () => {
+  describe("Header Submission-Type-Innsending missing", () => {
     it("Skips authentication checks", () => {
       const req = mockRequest({
         headers: {},

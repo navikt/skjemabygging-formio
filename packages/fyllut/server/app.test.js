@@ -17,11 +17,11 @@ describe("app", () => {
       .expect(200);
   });
 
-  it("Looks for Authorization header when Fyllut-Innsending=digital", async () => {
+  it("Looks for Authorization header when Fyllut-Submission-Type=digital", async () => {
     await request(createApp())
       .get("/fyllut/api/config")
       .set("Accept", "application/json")
-      .set("Fyllut-Innsending", "digital")
+      .set("Fyllut-Submission-Type", "digital")
       .expect(401);
   });
 
