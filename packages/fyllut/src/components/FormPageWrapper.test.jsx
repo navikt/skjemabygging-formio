@@ -20,15 +20,15 @@ describe("FormPageWrapper", () => {
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
-      if (url === "/fyllut/forms/unknownForm") {
-        return Promise.resolve(new Response("", { ...RESPONSE_HEADERS, status: 404 }));
+      if (url === "/fyllut/api/forms/unknownForm") {
+        return Promise.resolve(new Response("", { status: 404 }));
       }
       throw new Error("Unknown URL: " + url);
     });
 
     render(
-      <MemoryRouter initialEntries={["/fyllut/forms/unknownForm"]}>
-        <Route path="/fyllut/forms/:formPath">
+      <MemoryRouter initialEntries={["/fyllut/unknownForm"]}>
+        <Route path="/fyllut/:formPath">
           <FormPageWrapper />
         </Route>
       </MemoryRouter>
@@ -43,7 +43,7 @@ describe("FormPageWrapper", () => {
     await waitFor(() => expect(document.title).toEqual(""));
   });
 
-  it.skip("Show target form when there is one", async () => {
+  it("Show target form when there is one", async () => {
     const mockedForm = {
       _id: "000",
       path: "newform",
@@ -52,16 +52,16 @@ describe("FormPageWrapper", () => {
       components: [],
     };
     fetchMock.mockImplementation((url) => {
-      if (url === "/fyllut/forms/knownForm") {
+      if (url === "/fyllut/api/forms/knownForm") {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
       throw new Error("Unknown URL: " + url);
     });
 
     render(
-      <MemoryRouter initialEntries={["/fyllut/forms/knownForm"]}>
+      <MemoryRouter initialEntries={["/fyllut/knownForm"]}>
         <AppConfigProvider featureToggles={{}}>
-          <Route path="/fyllut/forms/:formPath">
+          <Route path="/fyllut/:formPath">
             <FormPageWrapper />
           </Route>
         </AppConfigProvider>
