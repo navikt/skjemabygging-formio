@@ -1,3 +1,5 @@
+import {getSubmissionMethod} from "../util/submission";
+
 enum MimeType {
   JSON = "application/json",
   TEXT = "text/plain",
@@ -9,10 +11,15 @@ interface FetchHeader {
   Accept?: MimeType
 }
 
-class HttpError extends Error {}
+class HttpError extends Error {
+  status?: number;
+  unauthorized?: boolean;
+}
 
 const defaultHeaders = (headers?: FetchHeader) => {
+  const submissionMethod = getSubmissionMethod(window.location.search);
   return {
+    "Fyllut-Submission-Method": submissionMethod,
     "Content-Type": MimeType.JSON,
     Accept: MimeType.JSON,
     ...headers
@@ -51,7 +58,14 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader): Promise
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     if (response.status === 401) {
-      // TODO: Redirect to login if digital selected
+      const {pathname, search, origin} = window.location;
+      const loginUrl = `${origin}/fyllut/oauth2/login?redirect=${pathname}${search}`;
+      console.log(`Redirecting to ${loginUrl}`);
+      window.location.replace(loginUrl);
+      const err = new HttpError(response.statusText);
+      err.status = response.status;
+      err.unauthorized = true;
+      throw err;
     }
 
     let errorMessage;

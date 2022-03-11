@@ -10,13 +10,13 @@ export const FormPageWrapper = () => {
   const [form, setForm] = useState();
   useEffect(() => {
     http
-      .get(`/fyllut/forms/${formPath}`)
+      .get(`/fyllut/api/forms/${formPath}`)
       .then((form) => {
         setForm(form);
         setStatus("FINISHED LOADING");
       })
-      .catch((e) => {
-        setStatus("FORM NOT FOUND");
+      .catch((err) => {
+        setStatus(err.unauthorized ? "UNAUTHORIZED" : "FORM NOT FOUND");
       });
   }, [formPath]);
 
@@ -28,6 +28,10 @@ export const FormPageWrapper = () => {
 
   if (status === "LOADING") {
     return <LoadingComponent />;
+  }
+
+  if (status === "UNAUTHORIZED") {
+    return <div>Unauthorized</div>;
   }
 
   if (status === "FORM NOT FOUND" || !form) {

@@ -10,7 +10,7 @@ import * as serviceWorker from "./serviceWorker";
 let featureToggles = {};
 
 http
-  .get("/fyllut/config")
+  .get("/fyllut/api/config")
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
@@ -21,13 +21,7 @@ http
     renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
   })
   .catch((error) => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("config not loaded, using dummy config in development");
-      // TODO løse hvordan skjema lastes ved lokal utvikling
-      renderReact("https://example.org/dokumentinnsendingbaseurl");
-    } else {
-      console.error(`Could not fetch config from server: ${error}`);
-    }
+    console.error(`Could not fetch config from server: ${error}`);
   });
 
 function renderReact(dokumentInnsendingBaseURL) {
