@@ -20,9 +20,13 @@ const idportenAuthenticationHandler = (req, res, next) => {
     const idportenClientIdMismatch = tokenContent.client_id !== config.idportenClientId;
     const wrongSecurityLevel = tokenContent.acr !== "Level4";
     if (expired || idportenClientIdMismatch || wrongSecurityLevel) {
-      logger.debug(
-        `Validation of jwt token failed (expired=${expired}, idportenClientIdMismatch=${idportenClientIdMismatch}, wrongSecurityLevel=${wrongSecurityLevel})`
-      );
+      logger.debug("Validation of jwt token failed", {
+        jwtToken: {
+          expired,
+          idportenClientIdMismatch,
+          wrongSecurityLevel,
+        },
+      });
       return res.sendStatus(401);
     }
 
