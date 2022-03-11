@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 import jwt from "jsonwebtoken";
-import idportenAuthenticationHandler from "./idportenAuthenticationHandler.js";
+import idportenAuthHandler from "./idportenAuthHandler.js";
 
 const createAccessToken = (payload, expiresIn) => {
   return jwt.sign(payload, "secret", { expiresIn });
@@ -35,7 +35,7 @@ function mockRequestWithAccessToken(accessToken) {
   });
 }
 
-describe("idportenAuthenticationHandler", () => {
+describe("idportenAuthHandler", () => {
   describe("Header Fyllut-Innsending digital", () => {
     it("Returns 401 when authorization header is missing", () => {
       const req = mockRequest({
@@ -43,7 +43,7 @@ describe("idportenAuthenticationHandler", () => {
       });
       const res = mockResponse();
       const next = jest.fn();
-      idportenAuthenticationHandler(req, res, next);
+      idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
       expect(next).not.toHaveBeenCalled();
@@ -54,7 +54,7 @@ describe("idportenAuthenticationHandler", () => {
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
       const next = jest.fn();
-      idportenAuthenticationHandler(req, res, next);
+      idportenAuthHandler(req, res, next);
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
     });
@@ -70,7 +70,7 @@ describe("idportenAuthenticationHandler", () => {
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
       const next = jest.fn();
-      idportenAuthenticationHandler(req, res, next);
+      idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
       expect(next).not.toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe("idportenAuthenticationHandler", () => {
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
       const next = jest.fn();
-      idportenAuthenticationHandler(req, res, next);
+      idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
       expect(next).not.toHaveBeenCalled();
@@ -98,7 +98,7 @@ describe("idportenAuthenticationHandler", () => {
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
       const next = jest.fn();
-      idportenAuthenticationHandler(req, res, next);
+      idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
       expect(next).not.toHaveBeenCalled();
@@ -112,7 +112,7 @@ describe("idportenAuthenticationHandler", () => {
       });
       const res = mockResponse();
       const next = jest.fn();
-      idportenAuthenticationHandler(req, res, next);
+      idportenAuthHandler(req, res, next);
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
     });

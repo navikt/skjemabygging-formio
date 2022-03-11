@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
 import { logger } from "../logger.js";
 
-const idportenAuthenticationHandler = (req, res, next) => {
+const idportenAuthHandler = (req, res, next) => {
   const innsendingHeader = req.header("Fyllut-Innsending");
   if (innsendingHeader === "digital") {
     const authHeader = req.header("Authorization");
@@ -36,4 +36,4 @@ const idportenAuthenticationHandler = (req, res, next) => {
   next();
 };
 
-export default idportenAuthenticationHandler;
+export default idportenAuthHandler;
