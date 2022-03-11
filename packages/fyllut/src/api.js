@@ -1,18 +1,18 @@
-import { get } from "@navikt/skjemadigitalisering-shared-components";
+import { http } from "@navikt/skjemadigitalisering-shared-components";
 import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
 const loadCountryNames = async (locale) => {
-  return get(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
+  return http.get(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
 };
 
 const loadGlobalTranslations = async (languageCode) => {
-  return get(`/fyllut/global-translations/${languageCode}`);
+  return http.get(`/fyllut/global-translations/${languageCode}`);
 };
 
 export const loadFormTranslations = async (formPath) => {
-  return get(`/fyllut/translations/${formPath}`);
+  return http.get(`/fyllut/translations/${formPath}`);
 };
 
 export const loadCountryNamesForLanguages = async (languages) => {

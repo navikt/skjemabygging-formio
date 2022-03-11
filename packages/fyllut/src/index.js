@@ -1,4 +1,4 @@
-import { AppConfigProvider, get } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, http } from "@navikt/skjemadigitalisering-shared-components";
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -9,7 +9,8 @@ import * as serviceWorker from "./serviceWorker";
 
 let featureToggles = {};
 
-get("/fyllut/config")
+http
+  .get("/fyllut/config")
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });

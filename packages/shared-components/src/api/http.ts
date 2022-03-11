@@ -83,10 +83,12 @@ const isResponseType = (response: Response, mimeType: MimeType) => {
   return contentType && contentType.includes(mimeType);
 }
 
-export {
+const http = {
   get,
   post,
   put,
   MimeType,
   HttpError,
-};
+}
+
+export default http;

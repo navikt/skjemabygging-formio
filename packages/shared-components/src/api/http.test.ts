@@ -1,5 +1,5 @@
-import { get, HttpError, MimeType } from "./http";
 import nock from "nock";
+import http from "./http";
 
 interface TestBody {
   body: string;
@@ -8,7 +8,7 @@ const defaultBodyText = "This is the body";
 const setupDefaultGetMock = () => {
   nock("https://www.nav.no")
     .defaultReplyHeaders({
-      "Content-Type": MimeType.JSON,
+      "Content-Type": http.MimeType.JSON,
     })
     .get("/ok")
     .reply(200, {
@@ -21,10 +21,10 @@ describe("http requests", () => {
     it("with custom headers", async () => {
       setupDefaultGetMock();
       const headers = {
-        "Content-Type": MimeType.TEXT,
+        "Content-Type": http.MimeType.TEXT,
       };
 
-      const response = await get<TestBody>("https://www.nav.no/ok", headers);
+      const response = await http.get<TestBody>("https://www.nav.no/ok", headers);
       expect(typeof response).toBe("object")
       expect(response.body).toBe(defaultBodyText)
       nock.isDone();
@@ -32,7 +32,7 @@ describe("http requests", () => {
 
     it("without custom headers", async () => {
       setupDefaultGetMock();
-      const response = await get<TestBody>("https://www.nav.no/ok");
+      const response = await http.get<TestBody>("https://www.nav.no/ok");
       expect(response.body).toBe(defaultBodyText)
       nock.isDone();
     });
@@ -40,17 +40,14 @@ describe("http requests", () => {
     it("with text response", async () => {
       nock("https://www.nav.no")
         .defaultReplyHeaders({
-          "Content-Type": MimeType.TEXT,
+          "Content-Type": http.MimeType.TEXT,
         })
         .get("/ok")
         .reply(200, {
           body: "This is the body"
         });
-      const headers = {
-        "Content-Type": MimeType.TEXT,
-      };
 
-      const response = await get("https://www.nav.no/ok", headers);
+      const response = await http.get("https://www.nav.no/ok");
       expect(typeof response).toBe("string")
       nock.isDone();
     });
@@ -59,7 +56,7 @@ describe("http requests", () => {
       const errorMessage = "Error message";
       nock("https://www.nav.no")
         .defaultReplyHeaders({
-          "Content-Type": MimeType.JSON,
+          "Content-Type": http.MimeType.JSON,
         })
         .get("/error")
         .reply(404, {message: errorMessage});
@@ -67,9 +64,9 @@ describe("http requests", () => {
       expect.assertions(1);
 
       try {
-        await get("https://www.nav.no/error");
+        await http.get("https://www.nav.no/error");
       } catch (e) {
-        if (e instanceof HttpError) {
+        if (e instanceof http.HttpError) {
           expect(e.message).toBe(errorMessage);
         }
       }
@@ -81,7 +78,7 @@ describe("http requests", () => {
       const errorMessage = "Error message";
       nock("https://www.nav.no")
         .defaultReplyHeaders({
-          "Content-Type": MimeType.TEXT,
+          "Content-Type": http.MimeType.TEXT,
         })
         .get("/error")
         .reply(404, errorMessage);
@@ -89,9 +86,9 @@ describe("http requests", () => {
       expect.assertions(1);
 
       try {
-        await get("https://www.nav.no/error");
+        await http.get("https://www.nav.no/error");
       } catch (e) {
-        if (e instanceof HttpError) {
+        if (e instanceof http.HttpError) {
           expect(e.message).toBe(errorMessage);
         }
       }
@@ -111,9 +108,9 @@ describe("http requests", () => {
       expect.assertions(1);
 
       try {
-        await get("https://www.nav.no/error");
+        await http.get("https://www.nav.no/error");
       } catch (e) {
-        if (e instanceof HttpError) {
+        if (e instanceof http.HttpError) {
           expect(e.message).toBe("Not Found");
         }
       }

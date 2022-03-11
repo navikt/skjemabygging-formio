@@ -1,4 +1,4 @@
-import { get, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { http, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FormPage from "./FormPage";
@@ -9,7 +9,8 @@ export const FormPageWrapper = () => {
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
   useEffect(() => {
-    get(`/fyllut/forms/${formPath}`)
+    http
+      .get(`/fyllut/forms/${formPath}`)
       .then((form) => {
         setForm(form);
         setStatus("FINISHED LOADING");
