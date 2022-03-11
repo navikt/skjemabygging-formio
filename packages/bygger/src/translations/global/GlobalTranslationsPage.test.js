@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { MemoryRouter } from "react-router-dom";
-import I18nProvider from "../../context/i18n";
+import I18nStateProvider from "../../context/i18n";
 import { UserAlerterContext } from "../../userAlerting";
 import GlobalTranslationsPage from "./GlobalTranslationsPage";
 
@@ -41,7 +41,7 @@ describe("GlobalTranslationsPage", () => {
         <AppConfigProvider featureToggles={{ enableTranslations: true }}>
           <MemoryRouter initialEntries={[`/translations/global/${languageCode}/skjematekster`]}>
             <UserAlerterContext.Provider value={userAlerter}>
-              <I18nProvider loadTranslations={loadTranslation} forGlobal>
+              <I18nStateProvider loadTranslations={loadTranslation}>
                 <GlobalTranslationsPage
                   loadGlobalTranslations={loadTranslation}
                   projectURL={""}
@@ -49,7 +49,7 @@ describe("GlobalTranslationsPage", () => {
                   saveTranslation={mockedSaveTranslations}
                   languageCode={languageCode}
                 />
-              </I18nProvider>
+              </I18nStateProvider>
             </UserAlerterContext.Provider>
           </MemoryRouter>
         </AppConfigProvider>

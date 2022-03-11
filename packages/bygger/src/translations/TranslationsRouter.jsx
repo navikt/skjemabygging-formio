@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import I18nProvider from "../context/i18n";
+import I18nStateProvider from "../context/i18n";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
 import { UserAlerterContext } from "../userAlerting";
@@ -33,27 +33,25 @@ const TranslationsRouter = ({ formio, serverURL }) => {
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
         render={({ match }) => (
-          <I18nProvider loadTranslations={loadGlobalTranslations} forGlobal>
-            <GlobalTranslationsPage
-              {...match.params}
-              loadGlobalTranslations={loadGlobalTranslations}
-              publishGlobalTranslations={publishGlobalTranslations}
-              deleteTranslation={deleteTranslation}
-              saveTranslation={saveGlobalTranslation}
-            />
-          </I18nProvider>
+          <GlobalTranslationsPage
+            {...match.params}
+            loadGlobalTranslations={loadGlobalTranslations}
+            publishGlobalTranslations={publishGlobalTranslations}
+            deleteTranslation={deleteTranslation}
+            saveTranslation={saveGlobalTranslation}
+          />
         )}
       />
       <Route
         path={`${path}/:formPath/:languageCode?`}
         render={({ match }) => (
-          <I18nProvider loadTranslations={() => loadTranslationsForEditPage(match.params.formPath)}>
+          <I18nStateProvider loadTranslations={() => loadTranslationsForEditPage(match.params.formPath)}>
             <TranslationsByFormPage
               loadForm={loadForm}
               deleteTranslation={deleteTranslation}
               saveTranslation={saveLocalTranslation}
             />
-          </I18nProvider>
+          </I18nStateProvider>
         )}
       />
     </Switch>

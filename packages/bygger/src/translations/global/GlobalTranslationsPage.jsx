@@ -10,7 +10,7 @@ import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import UserFeedback from "../../components/UserFeedback";
-import { languagesInNorwegian } from "../../context/i18n";
+import { getAvailableLanguages, languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useModal } from "../../util/useModal";
@@ -115,6 +115,7 @@ const GlobalTranslationsPage = ({
     }
   }, [globalTranslationsWithLanguagecodeAndTag]);
 
+  const languages = useMemo(() => getAvailableLanguages(allGlobalTranslations), [allGlobalTranslations]);
   const predefinedOriginalTextList = useMemo(() => getAllPredefinedOriginalTexts(), []);
   if (Object.keys(currentTranslation).length === 0) {
     return <LoadingComponent />;
@@ -259,7 +260,7 @@ const GlobalTranslationsPage = ({
           </Column>
           <div className={classes.sideBarContainer}>
             <Column className={classes.stickySideBar}>
-              <FormBuilderLanguageSelector formPath="global" tag={selectedTag} />
+              <FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <PublishGlobalTranslationsButton
                 languageCode={languageCode}

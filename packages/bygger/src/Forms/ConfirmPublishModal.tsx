@@ -1,11 +1,11 @@
-import Modal from "nav-frontend-modal";
-import { Knapp } from "nav-frontend-knapper";
-import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { useTranslations } from "../context/i18n";
+import { Knapp } from "nav-frontend-knapper";
+import Modal from "nav-frontend-modal";
 import { Normaltekst } from "nav-frontend-typografi";
+import React, { useEffect, useState } from "react";
+import { I18nTranslations } from "../../types/translations";
+import { useI18nState } from "../context/i18n";
 import { NavFormType } from "./navForm";
-import { I18nTranslationMap } from "../../types/translations";
 
 const useModalStyles = makeStyles({
   modal: {
@@ -26,9 +26,9 @@ interface Props {
 }
 
 const getCompleteLocalTranslationsForNavForm = (
-  localTranslationsForNavForm: I18nTranslationMap,
+  localTranslationsForNavForm: I18nTranslations,
   publishLanguageCodeList: string[]
-): I18nTranslationMap => {
+): I18nTranslations => {
   return Object.keys(localTranslationsForNavForm).reduce((translations: {}, languageCode: string) => {
     if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
       return { ...translations, [languageCode]: localTranslationsForNavForm[languageCode] };
@@ -39,10 +39,8 @@ const getCompleteLocalTranslationsForNavForm = (
 const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeList, onPublish }: Props) => {
   const [publiserer, setPubliserer] = useState(false);
   const styles = useModalStyles();
-  const { localTranslationsForNavForm }: any = useTranslations();
-  const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslationMap>(
-    {}
-  );
+  const { localTranslationsForNavForm } = useI18nState();
+  const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
 
   useEffect(() => {
     setCompleteLocalTranslationsForNavForm(

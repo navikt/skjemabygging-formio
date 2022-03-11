@@ -3,12 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
-import { useTranslations } from "../context/i18n";
+import { useI18nState } from "../context/i18n/I18nContext";
 
 export function TestFormPage({ editFormUrl, form, formSettingsUrl }) {
   const { featureToggles } = useAppConfig();
   const currentLanguage = useLanguageCodeFromURL();
-  const { translationsForNavForm } = useTranslations();
+  const { translationsForNavForm } = useI18nState();
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true }}>
