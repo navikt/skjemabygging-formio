@@ -43,7 +43,7 @@ describe("FormPageWrapper", () => {
     await waitFor(() => expect(document.title).toEqual(""));
   });
 
-  it("Show target form when there is one", async () => {
+  it.skip("Show target form when there is one", async () => {
     const mockedForm = {
       _id: "000",
       path: "newform",
