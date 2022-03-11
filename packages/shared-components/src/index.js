@@ -1,3 +1,4 @@
+import http from "./api/http";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
 import NavForm from "./components/NavForm";
@@ -47,4 +48,5 @@ export {
   mapTranslationsToFormioI18nObject,
   navCssVariables,
   getIso8601String,
+  http,
 };
