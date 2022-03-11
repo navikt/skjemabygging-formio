@@ -11,7 +11,6 @@ import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
-import idportenAuthHandler from "./security/idportenAuthHandler.js";
 
 export const createApp = () => {
   checkConfigConsistency(config);
@@ -29,7 +28,6 @@ export const createApp = () => {
 
   const fyllutRouter = express.Router();
 
-  fyllutRouter.all("/api/*", idportenAuthHandler);
   fyllutRouter.use("/", express.static(buildDirectory, { index: false }));
 
   setupDeprecatedEndpoints(fyllutRouter);
