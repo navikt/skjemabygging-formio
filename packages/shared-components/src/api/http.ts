@@ -1,5 +1,3 @@
-import {getSubmissionMethod} from "../util/submission";
-
 enum MimeType {
   JSON = "application/json",
   TEXT = "text/plain",
@@ -23,9 +21,7 @@ class HttpError extends Error {
 }
 
 const defaultHeaders = (headers?: FetchHeader) => {
-  const submissionMethod = getSubmissionMethod(window.location.search);
   return {
-    "Fyllut-Submission-Method": submissionMethod || SubmissionType.PAPER,
     "Content-Type": MimeType.JSON,
     Accept: MimeType.JSON,
     ...headers

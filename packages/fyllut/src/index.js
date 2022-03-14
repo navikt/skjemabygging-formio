@@ -6,11 +6,12 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
+import { getDefaultHeaders } from "./util/httpUtils.js";
 
 let featureToggles = {};
 
 http
-  .get("/fyllut/api/config")
+  .get("/fyllut/api/config", getDefaultHeaders(window.location.search))
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });

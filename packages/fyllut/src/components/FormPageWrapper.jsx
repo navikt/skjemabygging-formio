@@ -1,6 +1,7 @@
 import { http, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getDefaultHeaders } from "../util/httpUtils.js";
 import FormPage from "./FormPage";
 import PageNotFound from "./PageNotFound";
 
@@ -10,7 +11,7 @@ export const FormPageWrapper = () => {
   const [form, setForm] = useState();
   useEffect(() => {
     http
-      .get(`/fyllut/api/forms/${formPath}`)
+      .get(`/fyllut/api/forms/${formPath}`, getDefaultHeaders(window.location.search))
       .then((form) => {
         setForm(form);
         setStatus("FINISHED LOADING");
