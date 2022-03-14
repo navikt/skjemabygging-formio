@@ -4,21 +4,19 @@ enum MimeType {
   PDF = "application/pdf",
 }
 
-enum SubmissionType {
-  DIGITAL = "DIGITAL",
-  PAPER = "PAPER",
+enum SubmissionMethodType {
+  DIGITAL = "digital",
+  PAPER = "paper",
 }
 
 interface FetchHeader {
   "Content-Type"?: MimeType;
   Accept?: MimeType;
-  "Fyllut-Submission-Method"?: SubmissionType;
+  "Fyllut-Submission-Method"?: SubmissionMethodType;
 }
 
-class HttpError extends Error {
-  status?: number;
-  unauthorized?: boolean;
-}
+class HttpError extends Error {}
+class UnauthenticatedError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
@@ -60,14 +58,7 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader): Promise
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     if (response.status === 401) {
-      const {pathname, search, origin} = window.location;
-      const loginUrl = `${origin}/fyllut/oauth2/login?redirect=${pathname}${search}`;
-      console.log(`Redirecting to ${loginUrl}`);
-      window.location.replace(loginUrl);
-      const err = new HttpError(response.statusText);
-      err.status = response.status;
-      err.unauthorized = true;
-      throw err;
+      throw new UnauthenticatedError(response.statusText);
     }
 
     let errorMessage;
@@ -105,7 +96,8 @@ const http = {
   put,
   MimeType,
   HttpError,
-  SubmissionType,
+  UnauthenticatedError,
+  SubmissionMethodType,
 }
 
 export default http;

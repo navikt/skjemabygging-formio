@@ -1,8 +1,9 @@
 import makeStyles from "@material-ui/styles/makeStyles";
-import { http, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import httpFyllut from "../util/httpFyllut.js";
 
 const useStyles = makeStyles({
   linkContainer: {
@@ -20,7 +21,7 @@ export const AllForms = () => {
   const styles = useStyles();
 
   useEffect(() => {
-    http
+    httpFyllut
       .get(`/fyllut/api/forms`)
       .then((forms) => {
         setForms(forms);

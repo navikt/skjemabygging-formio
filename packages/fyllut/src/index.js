@@ -1,4 +1,4 @@
-import { AppConfigProvider, http } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -6,12 +6,12 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
-import { getDefaultHeaders } from "./util/httpUtils.js";
+import httpFyllut from "./util/httpFyllut.ts";
 
 let featureToggles = {};
 
-http
-  .get("/fyllut/api/config", getDefaultHeaders(window.location.search))
+httpFyllut
+  .get("/fyllut/api/config")
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
