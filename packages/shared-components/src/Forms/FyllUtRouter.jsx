@@ -6,6 +6,7 @@ import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
+import ModalPrompt from "./ModalPrompt";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
@@ -23,22 +24,55 @@ const FyllUtRouter = ({ form, translations }) => {
   let { path, url } = useRouteMatch();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
+  const [openModal, setOpenModal] = useState(false);
 
-  function beforeUnload(e) {
-    e.preventDefault();
-    e.returnValue = "";
-  }
+  const beforeUnload = (event) => {
+    //top.window.onbeforeunload = null;
+    window.onbeforeunload = null;
+    setOpenModal(true);
+    //event.preventDefault()
+    //event.returnValue = msg
+
+    console.log("test onbeforeunload=null");
+  };
 
   useEffect(() => {
     loggSkjemaApnet();
     window.addEventListener("beforeunload", beforeUnload);
+    //window.addEventListener("unload", setOpenModal(true));
     return () => {
       window.removeEventListener("beforeunload", beforeUnload);
+      //window.addEventListener("unload", setOpenModal(true));
     };
-  }, [loggSkjemaApnet]);
+  }, [loggSkjemaApnet, openModal]);
+
+  function unloadTest(e) {
+    //top.window.onbeforeunload = null;
+    e.preventDefault();
+    e.returnValue = "";
+    console.log("test unload");
+    setOpenModal(true);
+    /* return <Prompt when={true} message="Are you sure you want to leave the page?" />; */
+  }
+
+  useEffect(() => {
+    window.addEventListener("unload", (e) => {
+      console.log("unloading...");
+    });
+    return () => {
+      window.addEventListener("unload", unloadTest);
+    };
+  }, [openModal]);
 
   return (
     <LanguagesProvider translations={translations}>
+      <ModalPrompt
+        openModal={openModal}
+        closeModal={() => setOpenModal(false)}
+        title={"Forlate siden?"}
+        promptText="Component unload"
+        contentLabel="Forlate siden?"
+      />
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>
