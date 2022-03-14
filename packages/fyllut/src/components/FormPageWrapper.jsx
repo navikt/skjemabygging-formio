@@ -26,12 +26,8 @@ export const FormPageWrapper = () => {
     }
   }, [form]);
 
-  if (status === "LOADING") {
+  if (status === "LOADING" || status === "UNAUTHORIZED") {
     return <LoadingComponent />;
-  }
-
-  if (status === "UNAUTHORIZED") {
-    return <div>Unauthorized</div>;
   }
 
   if (status === "FORM NOT FOUND" || !form) {

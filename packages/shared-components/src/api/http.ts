@@ -6,9 +6,15 @@ enum MimeType {
   PDF = "application/pdf",
 }
 
+enum SubmissionType {
+  DIGITAL = "DIGITAL",
+  PAPER = "PAPER",
+}
+
 interface FetchHeader {
-  "Content-Type"?: MimeType
-  Accept?: MimeType
+  "Content-Type"?: MimeType;
+  Accept?: MimeType;
+  "Fyllut-Submission-Method"?: SubmissionType;
 }
 
 class HttpError extends Error {
@@ -19,7 +25,7 @@ class HttpError extends Error {
 const defaultHeaders = (headers?: FetchHeader) => {
   const submissionMethod = getSubmissionMethod(window.location.search);
   return {
-    "Fyllut-Submission-Method": submissionMethod,
+    "Fyllut-Submission-Method": submissionMethod || SubmissionType.PAPER,
     "Content-Type": MimeType.JSON,
     Accept: MimeType.JSON,
     ...headers
@@ -103,6 +109,7 @@ const http = {
   put,
   MimeType,
   HttpError,
+  SubmissionType,
 }
 
 export default http;
