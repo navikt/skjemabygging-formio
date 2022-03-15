@@ -3,7 +3,7 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import httpFyllut from "../util/httpFyllut.js";
+import httpFyllut from "../util/httpFyllut";
 
 const useStyles = makeStyles({
   linkContainer: {

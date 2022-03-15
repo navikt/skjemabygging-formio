@@ -1,7 +1,7 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import httpFyllut from "../util/httpFyllut.ts";
+import httpFyllut from "../util/httpFyllut";
 import FormPage from "./FormPage";
 import PageNotFound from "./PageNotFound";
 

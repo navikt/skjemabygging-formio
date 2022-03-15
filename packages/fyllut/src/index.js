@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
-import httpFyllut from "./util/httpFyllut.ts";
+import httpFyllut from "./util/httpFyllut";
 
 let featureToggles = {};
 

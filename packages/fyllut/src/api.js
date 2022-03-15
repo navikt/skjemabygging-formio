@@ -1,5 +1,5 @@
 import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import httpFyllut from "./util/httpFyllut.js";
+import httpFyllut from "./util/httpFyllut";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
