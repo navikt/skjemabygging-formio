@@ -1,24 +1,12 @@
-import makeStyles from "@material-ui/styles/makeStyles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
 
-const useStyles = makeStyles({
-  linkContainer: {
-    display: "flex",
-    flexDirection: "row",
-  },
-  formLink: {
-    marginRight: "1em",
-  },
-});
-
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
-  const styles = useStyles();
 
   useEffect(() => {
     httpFyllut
@@ -49,11 +37,9 @@ export const AllForms = () => {
             .sort((a, b) => (a.modified < b.modified ? 1 : -1))
             .map((form) => (
               <li key={form._id}>
-                <div className={styles.linkContainer}>
-                  <Link className={styles.formLink} to={form.path}>
-                    <Normaltekst>{form.title}</Normaltekst>
-                  </Link>
-                </div>
+                <Link to={form.path}>
+                  <Normaltekst>{form.title}</Normaltekst>
+                </Link>
               </li>
             ))}
         </ul>
