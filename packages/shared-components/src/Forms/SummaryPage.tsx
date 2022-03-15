@@ -66,7 +66,7 @@ const DataGridRow: FunctionComponent = ({ label, components }) => (
 
 const useImgSummaryStyles = (size) =>
   makeStyles({
-    description: { width: size + "%", maxHeight: 500, maxWidth: 800 },
+    description: { width: size + "%", maxHeight: 500, minWidth: 100, maxWidth: 100 + "%" },
   })();
 
 const ImageSummary: FunctionComponent = ({ label, values, alt, size }) => {

@@ -26,7 +26,7 @@ export default class Image extends Component {
               components: [
                 {
                   type: "file",
-                  fileMaxSize: "5MB",
+                  fileMaxSize: "1MB",
                   label: "Last opp fil",
                   key: "image",
                   storage: "base64",
@@ -35,12 +35,15 @@ export default class Image extends Component {
                   webcam: false,
                   input: true,
                   multiple: false,
+                  validate: {
+                    required: true,
+                  },
                 },
                 {
                   type: "textfield",
                   label: "Alt Text",
                   key: "altText",
-                  weight: 2,
+                  weight: 1,
                   input: true,
                   validate: {
                     required: true,

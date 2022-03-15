@@ -224,17 +224,21 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
   const { key, label, type, image, altText, widthPercent } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
 
-  return [
-    ...formSummaryObject,
-    {
-      label: translate(label),
-      key: componentKey,
-      type,
-      value: image[0].url,
-      alt: translate(altText),
-      widthPercent,
-    },
-  ];
+  if (image.length > 0 && image[0].url) {
+    return [
+      ...formSummaryObject,
+      {
+        label: translate(label),
+        key: componentKey,
+        type,
+        value: image[0].url,
+        alt: translate(altText),
+        widthPercent,
+      },
+    ];
+  }
+
+  return [...formSummaryObject];
 }
 
 export function handleComponent(
