@@ -53,9 +53,6 @@ export const AllForms = () => {
                   <Link className={styles.formLink} to={form.path}>
                     <Normaltekst>{form.title}</Normaltekst>
                   </Link>
-                  <Link to={`${form.path}?sub=digital`}>
-                    <Normaltekst>[digital]</Normaltekst>
-                  </Link>
                 </div>
               </li>
             ))}
