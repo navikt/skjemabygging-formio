@@ -12,7 +12,7 @@ const getDefaultHeaders = () => {
 
 const get = async <T>(url: string, headers?: http.FetchHeader): Promise<T> => {
   try {
-    return http.get(url, {
+    return await http.get(url, {
       ...getDefaultHeaders(),
       ...headers,
     });
@@ -27,7 +27,7 @@ const get = async <T>(url: string, headers?: http.FetchHeader): Promise<T> => {
 
 const put = async <T>(url: string, body: object, headers?: http.FetchHeader): Promise<T> => {
   try {
-    return http.put(url, body, {
+    return await http.put(url, body, {
       ...getDefaultHeaders(),
       ...headers,
     });
@@ -42,7 +42,7 @@ const put = async <T>(url: string, body: object, headers?: http.FetchHeader): Pr
 
 const post = async <T>(url: string, body: object, headers?: http.FetchHeader): Promise<T> => {
   try {
-    return http.post(url, body, {
+    return await http.post(url, body, {
       ...getDefaultHeaders(),
       ...headers,
     });
@@ -56,10 +56,13 @@ const post = async <T>(url: string, body: object, headers?: http.FetchHeader): P
 };
 
 const redirectUnauthenticated = () => {
-  const {pathname, search, origin} = window.location;
-  const loginUrl = `${origin}/fyllut/oauth2/login?redirect=${pathname}${search}`;
+  if (process.env.NODE_ENV !== "development") {
+    const {pathname, search, origin} = window.location;
 
-  window.location.replace(loginUrl);
+    const loginUrl = `${origin}/fyllut/oauth2/login?redirect=${pathname}${search}`;
+
+    window.location.replace(loginUrl);
+  }
 };
 
 const httpFyllut = {
