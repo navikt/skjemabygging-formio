@@ -1,5 +1,6 @@
 import express from "express";
 import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
+import idportenAuthHandler from "../../security/idportenAuthHandler.js";
 import config from "./config.js";
 import countries from "./countries.js";
 import enhetsliste from "./enhetsliste.js";
@@ -13,6 +14,7 @@ import translations from "./translations.js";
 
 const apiRouter = express.Router();
 
+apiRouter.all("*", idportenAuthHandler);
 apiRouter.get("/config", config.get);
 apiRouter.get("/countries", countries.get);
 apiRouter.get("/enhetsliste", azureAccessTokenHandler, enhetsliste.get);

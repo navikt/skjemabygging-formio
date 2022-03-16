@@ -17,6 +17,14 @@ spec:
     application:
       enabled: true
       tenant: {{azure.application.tenant}}
+  idporten:
+    enabled: true
+    accessTokenLifetime: 3600
+    sessionLifetime: 7200
+    sidecar:
+      enabled: true
+      locale: nb
+      autoLogin: false
   ingresses:
   {{#each ingresses as |url|}}
      - {{url}}

@@ -1,9 +1,14 @@
-import winston from "winston";
-export const logger = winston.createLogger({
-  transports: [
-    new winston.transports.Console({
-      timestamp: true,
-      format: winston.format.json(),
-    }),
-  ],
+import ecsFormat from "@elastic/ecs-winston-format";
+import correlator from "express-correlation-id";
+import { createLogger, format, transports } from "winston";
+
+const correlationIdFormat = format((info) => {
+  info.correlation_id = correlator.getId();
+  return info;
+});
+
+export const logger = createLogger({
+  level: process.env.FYLLUT_BACKEND_LOGLEVEL || "info",
+  format: format.combine(correlationIdFormat(), ecsFormat({ apmIntegration: false })),
+  transports: [new transports.Console()],
 });

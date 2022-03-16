@@ -1,15 +1,16 @@
-import { http, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import httpFyllut from "../util/httpFyllut";
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    http
-      .get(`/fyllut/forms`)
+    httpFyllut
+      .get(`/fyllut/api/forms`)
       .then((forms) => {
         setForms(forms);
         setStatus("FINISHED LOADING");
