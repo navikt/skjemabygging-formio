@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
+import path from "path";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
 import getDecorator from "./dekorator.js";
@@ -11,6 +12,9 @@ import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
+
+const __dirname = path.resolve();
+const BUILD_PATH = path.resolve(__dirname, "../build");
 
 export const createApp = () => {
   checkConfigConsistency(config);
@@ -37,9 +41,9 @@ export const createApp = () => {
 
   // Match everything except internal, static and api
   fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, (req, res) => {
-    return getDecorator()
-      .then((fragments) => {
-        res.render("index.html", fragments);
+    return getDecorator(`${BUILD_PATH}/index.html`)
+      .then((html) => {
+        res.send(html);
       })
       .catch((err) => {
         const errorMessage = `Failed to get decorator: ${err.message}`;
