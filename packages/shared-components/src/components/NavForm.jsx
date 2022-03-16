@@ -141,13 +141,6 @@ const NavForm = (props) => {
     overrideFormioWizardNextPageAndSubmit(props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet);
   }, [props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet]);
 
-  useEffect(() => {
-    const { submission } = props;
-    if (formio && submission) {
-      formio.submission = submission;
-    }
-  }, [props.submission, formio]);
-
   return <div className={props.className} data-testid="formMountElement" ref={(el) => (element = el)} />;
 };
 
