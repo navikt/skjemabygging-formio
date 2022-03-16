@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { LanguagesProvider } from "../context/languages";
-import React from "react";
 import FyllUtLanguageSelector from "./FyllUtLanguageSelector";
-import userEvent from "@testing-library/user-event";
 
 const defaultTranslations = {};
 
@@ -60,5 +60,22 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
     userEvent.click(languageSelector);
     expect(screen.getByText("Norsk nynorsk")).toBeTruthy();
     expect(screen.queryByText("Chinese")).toBeNull();
+  });
+
+  it("Keep all search params in url when selecting other language", () => {
+    const originalWindowLocation = window.location;
+    delete window.location;
+    window.location = new URL("https://www.unittest.nav.no/fyllut/nav123456?sub=digital&foo=bar&lang=nn-NO");
+
+    renderFyllUtLanguageSelector(
+      { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
+      "/nav123456?sub=digital&lang=nn-NO"
+    );
+    const languageSelector = screen.getByRole("button", { name: "Norsk nynorsk" });
+    userEvent.click(languageSelector); // <-- open language selector
+    const bokmalLink = screen.getByRole("link", { name: "Norsk bokmål" });
+    expect(bokmalLink).toHaveAttribute("href", "/nav123456?sub=digital&foo=bar&lang=nb-NO");
+
+    window.location = originalWindowLocation;
   });
 });
