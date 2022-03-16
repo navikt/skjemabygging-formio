@@ -1,7 +1,8 @@
+import { Octokit } from "octokit";
 import qs from "qs";
 import { promisify } from "util";
 import { gunzip, gzip } from "zlib";
-import { fetchWithErrorHandling } from "./fetchUtils.js";
+import { fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
 const promisifiedGzip = promisify(gzip);
 const promisifiedGunzip = promisify(gunzip);
 
@@ -9,6 +10,7 @@ export class Backend {
   constructor(projectURL, config) {
     this.projectURL = projectURL;
     this.config = config;
+    this.octokit = new Octokit({ auth: config.workflowDispatchToken });
   }
 
   ho() {
@@ -78,39 +80,64 @@ export class Backend {
     );
   }
 
+  async getRemoteFileShaIfItExists(owner, repo, ref, path) {
+    let remoteFileContent;
+    try {
+      remoteFileContent = await this.octokit.rest.repos.getContent({ owner, repo, ref, path });
+    } catch (e) {}
+    if (remoteFileContent && remoteFileContent.data && remoteFileContent.data.sha) {
+      return remoteFileContent.data.sha;
+    }
+    return undefined;
+  }
+
+  async pushJsonFileToRepo(owner, repo, branch, path, message, file) {
+    const content = stringTobase64(JSON.stringify(file), "utf-8");
+    const sha = await this.getRemoteFileShaIfItExists(owner, repo, branch, path);
+    const params = {
+      owner,
+      repo,
+      branch,
+      path,
+      message,
+      content,
+    };
+    if (sha) {
+      return await this.octokit.rest.repos.createOrUpdateFileContents({ ...params, sha });
+    }
+    return await this.octokit.rest.repos.createOrUpdateFileContents(params);
+  }
+
   async publishForm(userToken, form, translations, formPath) {
     await this.checkUpdateAndPublishingAccess(userToken);
-    const payload = await this.payload(formPath, form, translations);
-    return await fetchWithErrorHandling(this.config.workflowDispatchURL, {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "Application/JSON",
-        Authorization: `token ${this.config.workflowDispatchToken}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    await this.pushJsonFileToRepo(
+      "navikt",
+      "skjemapublisering-monorepo-poc",
+      "test-publish",
+      `translations/${formPath}.json`,
+      `Publishing translations for ${formPath}`,
+      translations
+    );
+    return this.pushJsonFileToRepo(
+      "navikt",
+      "skjemapublisering-monorepo-poc",
+      "test-publish",
+      `forms/${formPath}.json`,
+      `Publishing form: ${form.properties.skjemanummer} - ${form.title}`,
+      form
+    );
   }
 
   async publishResource(userToken, resourceName, resourceContent) {
     await this.checkUpdateAndPublishingAccess(userToken);
-    const encodedResourceContent = await this.toBase64GzipAndJson(resourceContent);
-    const payload = {
-      ref: this.config.workflowDispatchRef,
-      inputs: {
-        resourceName,
-        encodedJson: encodedResourceContent,
-      },
-    };
-    return await fetchWithErrorHandling(this.config.publishResourceUrl, {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "Application/JSON",
-        Authorization: `token ${this.config.workflowDispatchToken}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    return this.pushJsonFileToRepo(
+      "navikt",
+      "skjemapublisering-monorepo-poc",
+      "test-publish",
+      `forms/${resourceName}.json`,
+      `Publishing resource: ${resourceName}`,
+      resourceContent
+    );
   }
 
   async authenticateWithAzure() {
