@@ -54,13 +54,19 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
           />
         </section>
         <div>
-          <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
-            {translate(TEXTS.grensesnitt.goBack)}
-          </Link>
-          <Lenke className="knapp" style={linkBtnStyle} href="https://www.nav.no">
-            {TEXTS.grensesnitt.navigation.cancel}
-          </Lenke>
-        </div>
+        <nav className="list-inline">
+            <div className="list-inline-item">
+              <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
+                {translate(TEXTS.grensesnitt.goBack)}
+              </Link>
+            </div>
+            <div className="list-inline-item">
+              <Lenke className="knapp" style={linkBtnStyle} href="https://www.nav.no">
+                {TEXTS.grensesnitt.navigation.cancel}
+              </Lenke>
+            </div>
+          </nav>
+          </div>
       </main>
     </ResultContent>
   );
