@@ -1,3 +1,4 @@
+import { guid } from "nav-frontend-js-utils";
 import { Octokit } from "octokit";
 import qs from "qs";
 import { promisify } from "util";
@@ -108,23 +109,65 @@ export class Backend {
     return await this.octokit.rest.repos.createOrUpdateFileContents(params);
   }
 
+  async performChangesOnSeparateBranch(owner, repo, base, branch, performChanges) {
+    const baseBranch = await this.octokit.rest.git.getRef({
+      owner,
+      repo,
+      ref: `heads/${base}`,
+    });
+
+    await this.octokit.rest.git.createRef({
+      owner,
+      repo,
+      ref: `refs/heads/${branch}`,
+      sha: baseBranch.data.object.sha,
+    });
+
+    await performChanges(owner, repo, branch);
+
+    const pullRequest = await this.octokit.rest.pulls.create({
+      owner,
+      repo,
+      title: "Automatic publishing job",
+      head: branch,
+      base,
+    });
+    return this.octokit.rest.pulls.merge({
+      owner,
+      repo,
+      pull_number: pullRequest.data.number,
+    });
+  }
+
+  pushFormAndTranslationsCallback(formPath, form, translations) {
+    return async (owner, repo, branch) => {
+      await this.pushJsonFileToRepo(
+        owner,
+        repo,
+        branch,
+        `translations/${formPath}.json`,
+        `Publishing translations for ${formPath}`,
+        translations
+      );
+      await this.pushJsonFileToRepo(
+        owner,
+        repo,
+        branch,
+        `forms/${formPath}.json`,
+        `Publishing form: ${form.properties.skjemanummer} - ${form.title}`,
+        form
+      );
+    };
+  }
+
   async publishForm(userToken, form, translations, formPath) {
     await this.checkUpdateAndPublishingAccess(userToken);
-    await this.pushJsonFileToRepo(
+    return this.performChangesOnSeparateBranch(
       "navikt",
       "skjemapublisering-monorepo-poc",
       "test-publish",
-      `translations/${formPath}.json`,
-      `Publishing translations for ${formPath}`,
-      translations
-    );
-    return this.pushJsonFileToRepo(
-      "navikt",
-      "skjemapublisering-monorepo-poc",
-      "test-publish",
-      `forms/${formPath}.json`,
-      `Publishing form: ${form.properties.skjemanummer} - ${form.title}`,
-      form
+      `publish-${formPath}--${guid()}`,
+      this.pushFormAndTranslationsCallback(formPath, form, translations)
     );
   }
 
