@@ -81,20 +81,22 @@ export class Backend {
     );
   }
 
-  async getRemoteFileShaIfItExists(owner, repo, ref, path) {
+  async getRemoteFileIfItExists(owner, repo, ref, path) {
     let remoteFileContent;
     try {
       remoteFileContent = await this.octokit.rest.repos.getContent({ owner, repo, ref, path });
     } catch (e) {}
-    if (remoteFileContent && remoteFileContent.data && remoteFileContent.data.sha) {
-      return remoteFileContent.data.sha;
-    }
-    return undefined;
+    return remoteFileContent;
+  }
+
+  areEqualWithoutWhiteSpaces(string1, string2) {
+    return string1.replace(/\s/g, "") === string2.replace(/\s/g, "");
   }
 
   async pushJsonFileToRepo(owner, repo, branch, path, message, file) {
     const content = stringTobase64(JSON.stringify(file), "utf-8");
-    const sha = await this.getRemoteFileShaIfItExists(owner, repo, branch, path);
+    const remoteFile = await this.getRemoteFileIfItExists(owner, repo, branch, path);
+    const sha = remoteFile && remoteFile.data && remoteFile.data.sha;
     const params = {
       owner,
       repo,
@@ -103,9 +105,23 @@ export class Backend {
       message,
       content,
     };
+
+    if (
+      remoteFile &&
+      remoteFile.data &&
+      remoteFile.data.content &&
+      this.areEqualWithoutWhiteSpaces(remoteFile.data.content, content)
+    ) {
+      // The file exists remotely, and is identical to the "local" file. Skip update.
+      return Promise.resolve();
+    }
+
     if (sha) {
+      // The file exists remotely. Update content.
       return await this.octokit.rest.repos.createOrUpdateFileContents({ ...params, sha });
     }
+
+    // The file doesn't exist remotely. Create new file.
     return await this.octokit.rest.repos.createOrUpdateFileContents(params);
   }
 
@@ -125,18 +141,25 @@ export class Backend {
 
     await performChanges(owner, repo, branch);
 
-    const pullRequest = await this.octokit.rest.pulls.create({
-      owner,
-      repo,
-      title: "Automatic publishing job",
-      head: branch,
-      base,
-    });
-    return this.octokit.rest.pulls.merge({
-      owner,
-      repo,
-      pull_number: pullRequest.data.number,
-    });
+    const currentRef = await this.octokit.rest.git.getRef({ owner, repo, ref: `heads/${branch}` });
+
+    if (baseBranch.data.object.sha !== currentRef.data.object.sha) {
+      // Only create and merge pull request if the branch contains changes, compared to the base branch
+      const pullRequest = await this.octokit.rest.pulls.create({
+        owner,
+        repo,
+        title: "Automatic publishing job",
+        head: branch,
+        base,
+      });
+      await this.octokit.rest.pulls.merge({
+        owner,
+        repo,
+        pull_number: pullRequest.data.number,
+      });
+    }
+
+    return this.octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${branch}` });
   }
 
   pushFormAndTranslationsCallback(formPath, form, translations) {
