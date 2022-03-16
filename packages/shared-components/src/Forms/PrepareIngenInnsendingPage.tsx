@@ -1,5 +1,6 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import Lenke from "nav-frontend-lenker";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -22,9 +23,11 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
-  const [clickedDownloadPdf, setClickedDownloadPdf] = useState(false);
   const { loggSkjemaFullfort } = useAmplitude();
-  const navUrl = "https://www.nav.no/no/person";
+
+  const linkBtnStyle = {
+    textDecoration: "none",
+  };
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -45,8 +48,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             submission={submission}
             actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
             label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-            onClick={() => (
-              loggSkjemaFullfort("ingeninnsending"))}
+            onClick={() => loggSkjemaFullfort("ingeninnsending")}
             classNames="knapp knapp--fullbredde"
             translations={translations}
           />
@@ -55,9 +57,9 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
           <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
             {translate(TEXTS.grensesnitt.goBack)}
           </Link>
-          <Link className="knapp knapp--fullbredde" to={navUrl}>
-            {translate(TEXTS.grensesnitt.cancel)}
-          </Link>
+          <Lenke className="knapp" style={linkBtnStyle} href="https://www.nav.no">
+            {TEXTS.grensesnitt.navigation.cancel}
+          </Lenke>
         </div>
       </main>
     </ResultContent>

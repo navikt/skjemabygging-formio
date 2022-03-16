@@ -1,6 +1,7 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
+import Lenke from "nav-frontend-lenker";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -18,7 +19,6 @@ import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/
 import { lastNedFilBase64 } from "../util/pdf";
 import DownloadPdfButton from "./components/DownloadPdfButton";
 import EnhetSelector from "./components/EnhetSelector";
-import ModalPrompt from "./ModalPrompt";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -185,8 +185,11 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   const { translate } = useLanguages();
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
-  const [openModal, setOpenModal] = useState(false);
   const [enhetsListe, setEnhetsListe] = useState(undefined);
+
+  const linkBtnStyle = {
+    textDecoration: "none",
+  };
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -257,16 +260,9 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
               </Link>
             </div>
             <div className="list-inline-item">
-              <Knapp className="knapp knapp--fullbredde" onClick={() => setOpenModal(true)}>
-                {translate(TEXTS.grensesnitt.navigation.cancel)}
-              </Knapp>
-              <ModalPrompt
-                openModal={openModal}
-                closeModal={() => setOpenModal(false)}
-                title={"Er du sikker?"}
-                promptText="Du mister økten om du avslutter, dermed anbefaler vi at du laster ned søknaden og første siden. Vil du avslutte?"
-                contentLabel="Forlate siden?"
-              />
+              <Lenke className="knapp" style={linkBtnStyle} href="https://www.nav.no">
+                {TEXTS.grensesnitt.navigation.cancel}
+              </Lenke>
             </div>
           </nav>
         </div>
