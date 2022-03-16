@@ -21,6 +21,7 @@ import Template from "./template";
 import { getIso8601String } from "./util/date";
 import { guid } from "./util/guid";
 import { navCssVariables } from "./util/navCssVariables";
+import url from "./util/url";
 
 export {
   NavForm,
@@ -49,4 +50,5 @@ export {
   navCssVariables,
   getIso8601String,
   http,
+  url,
 };

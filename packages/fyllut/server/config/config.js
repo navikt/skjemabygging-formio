@@ -40,6 +40,7 @@ const config = {
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
   isTest: process.env.NODE_ENV === "test",
+  idportenClientId: process.env.IDPORTEN_CLIENT_ID,
 };
 
 const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {
