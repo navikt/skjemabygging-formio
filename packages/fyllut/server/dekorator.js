@@ -10,7 +10,6 @@ const getDecorator = async (filePath) => {
    */
   return injectDecoratorServerSide({
     env: naisClusterName === NaisCluster.DEV ? "dev" : "prod",
-    redirectToApp: true,
     filePath,
     simple: true,
   });
