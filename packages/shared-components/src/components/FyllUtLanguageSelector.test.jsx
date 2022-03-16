@@ -65,16 +65,16 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
   it("Keep all search params in url when selecting other language", () => {
     const originalWindowLocation = window.location;
     delete window.location;
-    window.location = new URL("https://www.unittest.nav.no/fyllut/nav123456?sub=digital&foo=bar&lang=nn-NO");
+    window.location = new URL("https://www.unittest.nav.no/fyllut/nav123456?sub=digital&lang=nn-NO&foo=bar");
 
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
-      "/nav123456?sub=digital&lang=nn-NO"
+      "/nav123456?sub=digital&lang=nn-NO&foo=bar"
     );
     const languageSelector = screen.getByRole("button", { name: "Norsk nynorsk" });
     userEvent.click(languageSelector); // <-- open language selector
     const bokmalLink = screen.getByRole("link", { name: "Norsk bokmål" });
-    expect(bokmalLink).toHaveAttribute("href", "/nav123456?sub=digital&foo=bar&lang=nb-NO");
+    expect(bokmalLink).toHaveAttribute("href", "/nav123456?sub=digital&lang=nb-NO&foo=bar");
 
     window.location = originalWindowLocation;
   });
