@@ -16,6 +16,8 @@ const setupDefaultGetMock = () => {
     });
 }
 
+const originalWindowLocation = window.location;
+
 describe("http requests", () => {
   describe("get", () => {
     it("with custom headers", async () => {
@@ -118,4 +120,47 @@ describe("http requests", () => {
       nock.isDone();
     });
   });
+
+  describe("opts", () => {
+
+    describe("redirectToLocation", () => {
+
+      let windowLocation;
+
+      beforeEach(() => {
+        windowLocation = {href: ""};
+        // @ts-ignore
+        Object.defineProperty(window, "location", {
+          value: windowLocation,
+          writable: true
+        });
+        nock("https://www.unittest.nav.no")
+          .post("/fyllut/api/send-inn")
+          .reply(201, "CREATED", {
+            "Content-Type": http.MimeType.TEXT,
+            Location: "https://www.nav.no/sendInn/123",
+          });
+      });
+
+      afterEach(() => {
+        nock.isDone();
+        window.location = originalWindowLocation;
+      });
+
+      it("redirects to location", async () => {
+        const response = await http.post("https://www.unittest.nav.no/fyllut/api/send-inn", {}, {}, {redirectToLocation: true});
+        expect(windowLocation.href).toEqual("https://www.nav.no/sendInn/123");
+        expect(response).toEqual("CREATED");
+      });
+
+      it("does not redirect to location", async () => {
+        const response = await http.post("https://www.unittest.nav.no/fyllut/api/send-inn", {}, {});
+        expect(windowLocation.href).toEqual("");
+        expect(response).toEqual("CREATED");
+      });
+
+    });
+
+  });
+
 });

@@ -4,7 +4,7 @@ import { logger } from "../logger.js";
 
 const idportenAuthHandler = (req, res, next) => {
   const innsendingHeader = req.header("Fyllut-Submission-Method");
-  if (innsendingHeader === "digital") {
+  if (innsendingHeader === "digital" && process.env.NODE_ENV !== "development") {
     const authHeader = req.header("Authorization");
     const token = authHeader && authHeader.split(" ")[1];
 

@@ -15,6 +15,10 @@ interface FetchHeader {
   "Fyllut-Submission-Method"?: SubmissionMethodType;
 }
 
+interface FetchOptions {
+  redirectToLocation: boolean;
+}
+
 class HttpError extends Error {}
 class UnauthenticatedError extends Error {}
 
@@ -26,36 +30,36 @@ const defaultHeaders = (headers?: FetchHeader) => {
   }
 }
 
-const get = async <T>(url: string, headers?: FetchHeader): Promise<T> => {
+const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
     method: 'GET',
     headers: defaultHeaders(headers),
   });
 
-  return await handleResponse(response);
+  return await handleResponse(response, opts);
 };
 
-const post = async <T>(url: string, body: object, headers?: FetchHeader): Promise<T> => {
+const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
     method: 'POST',
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
 
-  return await handleResponse(response);
+  return await handleResponse(response, opts);
 };
 
-const put = async <T>(url: string, body: object, headers?: FetchHeader): Promise<T> => {
+const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
     method: 'POST',
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
 
-  return await handleResponse(response);
+  return await handleResponse(response, opts);
 };
 
-const handleResponse = async (response: Response) => {
+const handleResponse = async (response: Response, opts?: FetchOptions) => {
   if (!response.ok) {
     if (response.status === 401) {
       throw new UnauthenticatedError(response.statusText);
@@ -72,6 +76,14 @@ const handleResponse = async (response: Response) => {
     }
 
     throw new HttpError(errorMessage || response.statusText);
+  }
+
+  if (opts && opts.redirectToLocation) {
+    const location = response.headers.get("Location");
+    const { status } = response;
+    if (location && (status === 201 || (status >= 300 && status <= 399))) {
+      window.location.href = location;
+    }
   }
 
   if (isResponseType(response, MimeType.JSON)) {

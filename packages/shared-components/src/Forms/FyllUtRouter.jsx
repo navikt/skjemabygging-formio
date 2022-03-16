@@ -1,4 +1,5 @@
 import { styled } from "@material-ui/styles";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
@@ -18,11 +19,15 @@ const FyllUtContainer = styled("div")({
   ...bootstrapStyles,
 });
 
-const FyllUtRouter = ({ form, translations }) => {
-  const { featureToggles } = useAppConfig();
+const FyllUtRouter = ({ form: formProp, translations }) => {
+  const { featureToggles, submissionMethod } = useAppConfig();
   let { path, url } = useRouteMatch();
+  const [form, setForm] = useState();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
+  useEffect(() => {
+    setForm(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(formProp) : formProp);
+  }, [formProp, submissionMethod]);
 
   function beforeUnload(e) {
     e.preventDefault();
@@ -44,11 +49,13 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />
+            {form && <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />}
           </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={url}>
-              {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={url} />}
+              {(submissionObject) => (
+                <SummaryPage form={form} submission={submissionObject} translations={translations} formUrl={url} />
+              )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/send-i-posten`}>
