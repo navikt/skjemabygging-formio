@@ -129,7 +129,6 @@ describe("http requests", () => {
 
       beforeEach(() => {
         windowLocation = {href: ""};
-        // @ts-ignore
         Object.defineProperty(window, "location", {
           value: windowLocation,
           writable: true

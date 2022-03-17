@@ -1,31 +1,24 @@
-import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import FormioUtils from "formiojs/utils";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import http from "../../api/http";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
-import { sanitizeJavaScriptCode } from "../../formio-overrides";
+import { getRelevantAttachments } from "./attachmentsUtil";
 
-interface Props {
+export interface Props {
   form: object;
   submission: object;
   translations: object;
   onError: Function;
+  onSuccess?: Function;
 }
 
-const postToSendInn = async (baseUrl, form, submission, translations, currentLanguage) => {
-  const translationsForPDF = currentLanguage !== "nb-NO" ? translations[currentLanguage] : {};
-  const vedleggComponents = navFormUtils
-    .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .map((component) => {
-      const clone = JSON.parse(JSON.stringify(component));
-      clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
-      return clone;
-    });
+const noop = () => {};
 
-  const attachments = vedleggComponents.filter((comp) => FormioUtils.checkCondition(comp, undefined, submission, form));
+const postToSendInn = async (baseUrl, form, submission, translations, currentLanguage) => {
+  const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
+  const attachments = getRelevantAttachments(form, submission);
   return http.post(
     `${baseUrl}/api/send-inn`,
     {
@@ -33,21 +26,14 @@ const postToSendInn = async (baseUrl, form, submission, translations, currentLan
       submission,
       translations: translationsForPDF,
       language: currentLanguage,
-      attachments: attachments.map((comp) => ({
-        vedleggsnr: comp.properties.vedleggskode,
-        tittel: comp.properties.vedleggstittel,
-        label: comp.label,
-        mimetype: "application/pdf",
-        pakrevd: comp.properties.vedleggErValgfritt !== "ja",
-        document: [],
-      })),
+      attachments,
     },
     {},
     { redirectToLocation: true }
   );
 };
 
-const DigitalSubmissionButton = ({ form, submission, translations, onError }: Props) => {
+const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop }: Props) => {
   const { translate, currentLanguage } = useLanguages();
   const { baseUrl } = useAppConfig();
   const [loading, setLoading] = useState(false);
@@ -55,7 +41,8 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError }: Pr
   const sendInn = async () => {
     try {
       setLoading(true);
-      await postToSendInn(baseUrl, form, submission, translations, currentLanguage);
+      const response = await postToSendInn(baseUrl, form, submission, translations, currentLanguage);
+      onSuccess(response);
     } catch (err: any) {
       setLoading(false);
       onError(err);
