@@ -1,5 +1,6 @@
 import { styled } from "@material-ui/styles";
 import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import Alertstripe from "nav-frontend-alertstriper";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
@@ -130,6 +131,9 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           })}
         </Normaltekst>
         <FormSummary submission={submission} form={form} />
+        <Alertstripe type="advarsel">
+        Digital innsending fra mobil fungerer foreløpig ikke. Velg send i posten. 
+        </Alertstripe>
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: formUrl, search }}>
