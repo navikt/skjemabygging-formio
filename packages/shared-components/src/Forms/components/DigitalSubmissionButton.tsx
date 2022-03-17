@@ -1,7 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
-import http from "../../api/http";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import { getRelevantAttachments } from "./attachmentsUtil";
@@ -16,7 +15,7 @@ export interface Props {
 
 const noop = () => {};
 
-const postToSendInn = async (baseUrl, form, submission, translations, currentLanguage) => {
+const postToSendInn = async (http, baseUrl, form, submission, translations, currentLanguage) => {
   const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
   const attachments = getRelevantAttachments(form, submission);
   return http.post(
@@ -35,13 +34,13 @@ const postToSendInn = async (baseUrl, form, submission, translations, currentLan
 
 const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop }: Props) => {
   const { translate, currentLanguage } = useLanguages();
-  const { baseUrl } = useAppConfig();
+  const { baseUrl, http } = useAppConfig();
   const [loading, setLoading] = useState(false);
 
   const sendInn = async () => {
     try {
       setLoading(true);
-      const response = await postToSendInn(baseUrl, form, submission, translations, currentLanguage);
+      const response = await postToSendInn(http, baseUrl, form, submission, translations, currentLanguage);
       onSuccess(response);
     } catch (err: any) {
       onError(err);

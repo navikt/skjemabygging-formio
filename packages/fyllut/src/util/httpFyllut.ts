@@ -10,12 +10,12 @@ const getDefaultHeaders = () => {
   return {};
 }
 
-const get = async <T>(url: string, headers?: http.FetchHeader): Promise<T> => {
+const get = async <T>(url: string, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
   try {
     return await http.get(url, {
       ...getDefaultHeaders(),
       ...headers,
-    });
+    }, opts);
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
       redirectUnauthenticated();
@@ -25,12 +25,12 @@ const get = async <T>(url: string, headers?: http.FetchHeader): Promise<T> => {
   }
 };
 
-const put = async <T>(url: string, body: object, headers?: http.FetchHeader): Promise<T> => {
+const put = async <T>(url: string, body: object, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
   try {
     return await http.put(url, body, {
       ...getDefaultHeaders(),
       ...headers,
-    });
+    }, opts);
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
       redirectUnauthenticated();
@@ -40,12 +40,12 @@ const put = async <T>(url: string, body: object, headers?: http.FetchHeader): Pr
   }
 };
 
-const post = async <T>(url: string, body: object, headers?: http.FetchHeader): Promise<T> => {
+const post = async <T>(url: string, body: object, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
   try {
     return await http.post(url, body, {
       ...getDefaultHeaders(),
       ...headers,
-    });
+    }, opts);
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
       redirectUnauthenticated();

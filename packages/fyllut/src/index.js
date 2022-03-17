@@ -36,6 +36,7 @@ function renderReact(dokumentInnsendingBaseURL) {
         baseUrl={"/fyllut"}
         fyllutBaseURL={"/fyllut"}
         submissionMethod={subissionMethod}
+        http={httpFyllut}
       >
         <BrowserRouter basename="/fyllut">
           <App />
