@@ -1,4 +1,4 @@
-import { Octokit } from "octokit";
+import { Octokit } from "@octokit/rest";
 
 export class GitHubRepo {
   constructor(owner, repo, personalAccessToken) {
