@@ -15,13 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "@navikt/skjemadigitalisering-shared-domain": "^1.0.0",
+    "@octokit/rest": "^18.12.0",
     "dispatch": "^1.0.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "formiojs": "4.14.0-rc.18",
     "nock": "^13.2.4",
     "node-fetch": "^2.6.7",
-    "octokit": "^1.7.1",
     "qs": "^6.10.2"
   },
   "devDependencies": {
