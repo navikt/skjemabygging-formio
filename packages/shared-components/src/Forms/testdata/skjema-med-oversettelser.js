@@ -15,6 +15,48 @@ const panelVeiledning = {
   validateOn: "change",
   id: "jdh58d",
   breadcrumb: "default",
+  components: [
+    {
+      key: "annenDokumentasjon",
+      id: "eo3t76",
+      inputType: "radio",
+      type: "radiopanel",
+      label: "Annen dokumentasjon",
+      input: true,
+      descriptionPosition: "",
+      labelWidth: "",
+      labelMargin: "",
+      description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
+      values: [
+        {
+          value: "leggerVedNaa",
+          label: "Ja, jeg legger det ved denne søknaden.",
+          shortcut: "",
+        },
+        {
+          value: "ettersender",
+          label: "Jeg ettersender dokumentasjonen senere.",
+          shortcut: "",
+        },
+        {
+          value: "nei",
+          label: "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.",
+          shortcut: "",
+        },
+      ],
+    },
+  ],
+};
+
+const panelVedleggsliste = {
+  type: "panel",
+  key: "vedleggpanel",
+  title: "Vedleggsliste",
+  label: "Vedlegg",
+  labelPosition: "top",
+  validateOn: "change",
+  id: "jdh58e",
+  breadcrumb: "default",
   components: [htmlComponent],
 };
 
@@ -23,7 +65,7 @@ const form = {
   type: "form",
   tags: ["nav-skjema", ""],
   owner: "606ea4ab852cf50003ac20d3",
-  components: [panelVeiledning],
+  components: [panelVeiledning, panelVedleggsliste],
   display: "wizard",
   name: "wip123456",
   title: "Søknad om førerhund",

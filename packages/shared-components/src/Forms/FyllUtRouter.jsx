@@ -19,15 +19,15 @@ const FyllUtContainer = styled("div")({
   ...bootstrapStyles,
 });
 
-const FyllUtRouter = ({ form: formProp, translations }) => {
+const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod } = useAppConfig();
   let { path, url } = useRouteMatch();
-  const [form, setForm] = useState();
+  const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
   useEffect(() => {
-    setForm(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(formProp) : formProp);
-  }, [formProp, submissionMethod]);
+    setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
+  }, [form, submissionMethod]);
 
   function beforeUnload(e) {
     e.preventDefault();
@@ -49,7 +49,14 @@ const FyllUtRouter = ({ form: formProp, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            {form && <FillInFormPage form={form} submission={submission} setSubmission={setSubmission} formUrl={url} />}
+            {formForRendering && (
+              <FillInFormPage
+                form={formForRendering}
+                submission={submission}
+                setSubmission={setSubmission}
+                formUrl={url}
+              />
+            )}
           </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={url}>
