@@ -175,7 +175,7 @@ export class Backend {
         repo,
         branch,
         `translations/${formPath}.json`,
-        `Publishing translations for ${formPath}`,
+        `[Publisering] skjema "${form.title}", monorepo ref: ${this.config.gitSha}`,
         translations
       );
       await this.pushJsonFileToRepo(
@@ -183,7 +183,7 @@ export class Backend {
         repo,
         branch,
         `forms/${formPath}.json`,
-        `Publishing form: ${form.properties.skjemanummer} - ${form.title}`,
+        `[Publisering] oversettelse "${form.title}", monorepo ref: ${this.config.gitSha}`,
         form
       );
     };
@@ -207,7 +207,7 @@ export class Backend {
       "skjemapublisering-monorepo-poc",
       "test-publish",
       `resources/${resourceName}.json`,
-      `Publishing resource: ${resourceName}`,
+      `[Publisering] ressurs "${resourceName}", monorepo ref: ${this.config.gitSha}`,
       resourceContent
     );
   }
