@@ -44,8 +44,9 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
       const response = await postToSendInn(baseUrl, form, submission, translations, currentLanguage);
       onSuccess(response);
     } catch (err: any) {
-      setLoading(false);
       onError(err);
+    } finally {
+      setLoading(false);
     }
   };
 

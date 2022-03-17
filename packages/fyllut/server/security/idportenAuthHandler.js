@@ -31,7 +31,7 @@ const idportenAuthHandler = (req, res, next) => {
     }
 
     logger.debug("Validation of jwt token succeeded");
-    // TODO set res.locals.user?
+    req.getIdportenPid = () => tokenContent.pid;
   }
   next();
 };

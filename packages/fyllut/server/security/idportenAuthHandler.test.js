@@ -1,22 +1,11 @@
 import { jest } from "@jest/globals";
 import jwt from "jsonwebtoken";
+import { mockRequest, mockResponse } from "../test/testHelpers.js";
 import idportenAuthHandler from "./idportenAuthHandler.js";
 
 const createAccessToken = (payload, expiresIn) => {
   return jwt.sign(payload, "secret", { expiresIn });
 };
-
-function mockResponse() {
-  return {
-    sendStatus: jest.fn(),
-  };
-}
-
-function mockRequest({ headers = {} }) {
-  return {
-    header: (name) => headers[name],
-  };
-}
 
 const { IDPORTEN_CLIENT_ID } = process.env;
 
@@ -47,6 +36,7 @@ describe("idportenAuthHandler", () => {
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
       expect(next).not.toHaveBeenCalled();
+      expect(typeof req.getIdportenPid).toEqual("undefined");
     });
 
     it("Calls next when token is successfully validated", () => {
@@ -57,6 +47,7 @@ describe("idportenAuthHandler", () => {
       idportenAuthHandler(req, res, next);
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
+      expect(typeof req.getIdportenPid).toEqual("function");
     });
 
     it("Returns 401 when token acr is not Level4", () => {
