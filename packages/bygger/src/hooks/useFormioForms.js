@@ -72,7 +72,11 @@ export const useFormioForms = (formio, userAlerter) => {
         body: payload,
       });
 
-      if (response?.ok) {
+      if (response?.status === 204) {
+        userAlerter.flashWarningMessage(
+          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+        );
+      } else if (response?.ok) {
         userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
       } else {
         userAlerter.setErrorMessage("Publisering feilet " + response?.status);

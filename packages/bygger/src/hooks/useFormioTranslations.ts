@@ -92,7 +92,11 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       method: "PUT",
       body: JSON.stringify(payload),
     }).then((res) => {
-      if (res.ok) {
+      if (res.status === 204) {
+        userAlerter.flashWarningMessage(
+          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+        );
+      } else if (res.ok) {
         userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
       } else {
         userAlerter.setErrorMessage("Publisering feilet");

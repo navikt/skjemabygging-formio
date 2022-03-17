@@ -1,6 +1,6 @@
 import styled from "@material-ui/styles/styled";
 import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
+import { AlertStripeAdvarsel, AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
 import { Xknapp } from "nav-frontend-ikonknapper";
 import React, { useEffect, useState } from "react";
 
@@ -101,6 +101,11 @@ class UserAlerter {
   flashSuccessMessage(message) {
     const key = this.addAlertComponent(() => <AlertStripeSuksess>{message}</AlertStripeSuksess>);
     setTimeout(() => this.removeAlertComponent(key), 5000);
+  }
+
+  flashWarningMessage(message) {
+    const key = this.addAlertComponent(() => <AlertStripeAdvarsel>{message}</AlertStripeAdvarsel>);
+    setTimeout(() => this.removeAlertComponent(key), 8000);
   }
 
   setErrorMessage(errorString) {

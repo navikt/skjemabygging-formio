@@ -113,16 +113,18 @@ export class Backend {
       this.areEqualWithoutWhiteSpaces(remoteFile.data.content, content)
     ) {
       // The file exists remotely, and is identical to the "local" file. Skip update.
-      return Promise.resolve();
+      return Promise.resolve(undefined);
     }
 
     if (sha) {
       // The file exists remotely. Update content.
-      return await this.octokit.rest.repos.createOrUpdateFileContents({ ...params, sha });
+      const updateResult = await this.octokit.rest.repos.createOrUpdateFileContents({ ...params, sha });
+      return updateResult.data.commit.sha;
     }
 
     // The file doesn't exist remotely. Create new file.
-    return await this.octokit.rest.repos.createOrUpdateFileContents(params);
+    const createResult = await this.octokit.rest.repos.createOrUpdateFileContents(params);
+    return createResult.data.commit.sha;
   }
 
   async performChangesOnSeparateBranch(owner, repo, base, branch, performChanges) {
@@ -142,6 +144,7 @@ export class Backend {
     await performChanges(owner, repo, branch);
 
     const currentRef = await this.octokit.rest.git.getRef({ owner, repo, ref: `heads/${branch}` });
+    let updatedBaseSha;
 
     if (baseBranch.data.object.sha !== currentRef.data.object.sha) {
       // Only create and merge pull request if the branch contains changes, compared to the base branch
@@ -157,9 +160,12 @@ export class Backend {
         repo,
         pull_number: pullRequest.data.number,
       });
+      const updatedBase = await this.octokit.rest.git.getRef({ owner, repo, ref: `heads/${base}` });
+      updatedBaseSha = updatedBase.data.object.sha;
     }
 
-    return this.octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${branch}` });
+    await this.octokit.rest.git.deleteRef({ owner, repo, ref: `heads/${branch}` });
+    return updatedBaseSha;
   }
 
   pushFormAndTranslationsCallback(formPath, form, translations) {
@@ -200,7 +206,7 @@ export class Backend {
       "navikt",
       "skjemapublisering-monorepo-poc",
       "test-publish",
-      `forms/${resourceName}.json`,
+      `resources/${resourceName}.json`,
       `Publishing resource: ${resourceName}`,
       resourceContent
     );
