@@ -28,8 +28,9 @@ import { Form as FormioForm, Utils } from "formiojs";
 import "nav-frontend-skjema-style";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
-import { evaluateOverride, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
+import { evaluateOverride, overrideFormioTextField, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
 import i18nData from "../i18nData";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../util/focus-management";
@@ -50,16 +51,11 @@ const NavForm = (props) => {
   const [formio, setFormio] = useState(undefined);
   const mountedRef = useRef(true);
   useStyles();
+  const { featureToggles } = useAppConfig();
 
-  useEffect(
-    () => () => {
-      mountedRef.current = false;
-      if (formio) {
-        formio.destroy(true);
-      }
-    },
-    [formio]
-  );
+  useEffect(() => {
+    overrideFormioTextField(featureToggles.enableAutoComplete);
+  }, []);
 
   const createWebformInstance = (srcOrForm) => {
     const { formioform, formReady, language, i18n } = props;
