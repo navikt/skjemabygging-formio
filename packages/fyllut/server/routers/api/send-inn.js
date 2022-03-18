@@ -27,14 +27,12 @@ const sendInn = {
         tema: form.properties.tema,
         spraak: language || "nb-NO",
         hoveddokument: {
-          vedleggsnr: "string",
           tittel: form.title,
           mimetype: "application/pdf",
           pakrevd: true,
-          document: [pdfBase64],
+          document: [`data:application/pdf;base64,${pdfBase64}`],
         },
         hoveddokumentVariant: {
-          vedleggsnr: "string",
           tittel: form.title,
           mimetype: "application/json",
           pakrevd: false,
