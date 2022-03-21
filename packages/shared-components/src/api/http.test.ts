@@ -12,9 +12,9 @@ const setupDefaultGetMock = () => {
     })
     .get("/ok")
     .reply(200, {
-      body: defaultBodyText
+      body: defaultBodyText,
     });
-}
+};
 
 const originalWindowLocation = window.location;
 
@@ -27,15 +27,15 @@ describe("http requests", () => {
       };
 
       const response = await http.get<TestBody>("https://www.nav.no/ok", headers);
-      expect(typeof response).toBe("object")
-      expect(response.body).toBe(defaultBodyText)
+      expect(typeof response).toBe("object");
+      expect(response.body).toBe(defaultBodyText);
       nock.isDone();
     });
 
     it("without custom headers", async () => {
       setupDefaultGetMock();
       const response = await http.get<TestBody>("https://www.nav.no/ok");
-      expect(response.body).toBe(defaultBodyText)
+      expect(response.body).toBe(defaultBodyText);
       nock.isDone();
     });
 
@@ -46,11 +46,11 @@ describe("http requests", () => {
         })
         .get("/ok")
         .reply(200, {
-          body: "This is the body"
+          body: "This is the body",
         });
 
       const response = await http.get("https://www.nav.no/ok");
-      expect(typeof response).toBe("string")
+      expect(typeof response).toBe("string");
       nock.isDone();
     });
 
@@ -61,7 +61,7 @@ describe("http requests", () => {
           "Content-Type": http.MimeType.JSON,
         })
         .get("/error")
-        .reply(404, {message: errorMessage});
+        .reply(404, { message: errorMessage });
 
       expect.assertions(1);
 
@@ -122,23 +122,19 @@ describe("http requests", () => {
   });
 
   describe("opts", () => {
-
     describe("redirectToLocation", () => {
-
       let windowLocation;
 
       beforeEach(() => {
-        windowLocation = {href: ""};
+        windowLocation = { href: "" };
         Object.defineProperty(window, "location", {
           value: windowLocation,
-          writable: true
+          writable: true,
         });
-        nock("https://www.unittest.nav.no")
-          .post("/fyllut/api/send-inn")
-          .reply(201, "CREATED", {
-            "Content-Type": http.MimeType.TEXT,
-            Location: "https://www.nav.no/sendInn/123",
-          });
+        nock("https://www.unittest.nav.no").post("/fyllut/api/send-inn").reply(201, "CREATED", {
+          "Content-Type": http.MimeType.TEXT,
+          Location: "https://www.nav.no/sendInn/123",
+        });
       });
 
       afterEach(() => {
@@ -147,7 +143,12 @@ describe("http requests", () => {
       });
 
       it("redirects to location", async () => {
-        const response = await http.post("https://www.unittest.nav.no/fyllut/api/send-inn", {}, {}, {redirectToLocation: true});
+        const response = await http.post(
+          "https://www.unittest.nav.no/fyllut/api/send-inn",
+          {},
+          {},
+          { redirectToLocation: true }
+        );
         expect(windowLocation.href).toEqual("https://www.nav.no/sendInn/123");
         expect(response).toEqual("CREATED");
       });
@@ -157,9 +158,6 @@ describe("http requests", () => {
         expect(windowLocation.href).toEqual("");
         expect(response).toEqual("CREATED");
       });
-
     });
-
   });
-
 });

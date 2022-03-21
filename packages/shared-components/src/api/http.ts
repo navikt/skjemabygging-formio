@@ -26,13 +26,13 @@ const defaultHeaders = (headers?: FetchHeader) => {
   return {
     "Content-Type": MimeType.JSON,
     Accept: MimeType.JSON,
-    ...headers
-  }
-}
+    ...headers,
+  };
+};
 
 const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: 'GET',
+    method: "GET",
     headers: defaultHeaders(headers),
   });
 
@@ -41,7 +41,7 @@ const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): 
 
 const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
@@ -51,7 +51,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
 
 const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
@@ -90,7 +90,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
     return response.json();
   } else if (isResponseType(response, MimeType.TEXT)) {
     return await response.text();
-  } else if (isResponseType(response, MimeType.PDF)){
+  } else if (isResponseType(response, MimeType.PDF)) {
     return await response.blob();
   } else {
     return response;
@@ -100,7 +100,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
 const isResponseType = (response: Response, mimeType: MimeType) => {
   const contentType = response.headers.get("Content-Type");
   return contentType && contentType.includes(mimeType);
-}
+};
 
 const http = {
   get,
@@ -110,6 +110,6 @@ const http = {
   HttpError,
   UnauthenticatedError,
   SubmissionMethodType,
-}
+};
 
 export default http;

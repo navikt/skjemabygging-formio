@@ -55,7 +55,7 @@
     "node": ">=14.15.0 <=14.17.0"
   },
   "lint-staged": {
-    "*.{js,jsx,cjs,mjs}": [
+    "*.{js,jsx,ts,tsx,cjs,mjs}": [
       "eslint --fix",
       "prettier --write"
     ],
