@@ -1,11 +1,10 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
-import Lenke from "nav-frontend-lenker";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { canEnhetstypeBeSelected, fetchEnhetsListe } from "../api/fetchEnhetsliste";
 import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../components/error/AlertStripeHttpError";
@@ -19,6 +18,7 @@ import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/
 import { lastNedFilBase64 } from "../util/pdf";
 import DownloadPdfButton from "./components/DownloadPdfButton";
 import EnhetSelector from "./components/EnhetSelector";
+import NavigateButtonComponent from "./NavigateButtonComponent";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -183,13 +183,9 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL, baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { state, search } = useLocation();
+  const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const [enhetsListe, setEnhetsListe] = useState(undefined);
-
-  const linkBtnStyle = {
-    textDecoration: "none",
-  };
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -253,18 +249,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       <main id="maincontent" tabIndex={-1}>
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
-          <nav className="list-inline">
-            <div className="list-inline-item">
-              <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
-                {translate(TEXTS.grensesnitt.goBack)}
-              </Link>
-            </div>
-            <div className="list-inline-item">
-              <Lenke className="knapp" style={linkBtnStyle} href="https://www.nav.no">
-                {TEXTS.grensesnitt.navigation.cancel}
-              </Lenke>
-            </div>
-          </nav>
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
         </div>
       </main>
     </ResultContent>

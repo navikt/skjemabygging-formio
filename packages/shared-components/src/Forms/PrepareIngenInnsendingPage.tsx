@@ -1,14 +1,14 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import Lenke from "nav-frontend-lenker";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import DownloadPdfButton from "./components/DownloadPdfButton";
+import NavigateButtonComponent from "./NavigateButtonComponent";
 
 export interface Props {
   form: any;
@@ -24,10 +24,6 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   const { state, search } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
-
-  const linkBtnStyle = {
-    textDecoration: "none",
-  };
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -54,19 +50,8 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
           />
         </section>
         <div>
-        <nav className="list-inline">
-            <div className="list-inline-item">
-              <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
-                {translate(TEXTS.grensesnitt.goBack)}
-              </Link>
-            </div>
-            <div className="list-inline-item">
-              <Lenke className="knapp" style={linkBtnStyle} href="https://www.nav.no">
-                {TEXTS.grensesnitt.navigation.cancel}
-              </Lenke>
-            </div>
-          </nav>
-          </div>
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
+        </div>
       </main>
     </ResultContent>
   );
