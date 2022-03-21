@@ -57,6 +57,16 @@ const NavForm = (props) => {
     overrideFormioTextField(featureToggles.enableAutoComplete);
   }, []);
 
+  useEffect(
+    () => () => {
+      mountedRef.current = false;
+      if (formio) {
+        formio.destroy(true);
+      }
+    },
+    [formio]
+  );
+
   const createWebformInstance = (srcOrForm) => {
     const { formioform, formReady, language, i18n } = props;
     instance = new (formioform || FormioForm)(element, srcOrForm, {

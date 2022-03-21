@@ -2,7 +2,7 @@ const featureToggles = {
   enableTranslations: true,
   enableConditionalAlert: true,
   enableEnhetsListe: true,
-  enableAutoComplete: false,
+  enableAutoComplete: true,
 };
 
 export default featureToggles;
