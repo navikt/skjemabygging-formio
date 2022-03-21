@@ -5,7 +5,7 @@ import mustacheExpress from "mustache-express";
 import path from "path";
 import { checkConfigConsistency, config } from "./config/config.js";
 import { buildDirectory } from "./context.js";
-import getDecorator from "./dekorator.js";
+import { createRedirectUrl, getDecorator } from "./dekorator.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";
 import { logger } from "./logger.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
@@ -39,9 +39,15 @@ export const createApp = () => {
   // path /internal is not publicly exposed, see https://doc.nais.io/clusters/gcp/#prod-gcp-ingresses
   fyllutRouter.use("/internal", internalRouter);
 
+  // Get the form id
+  fyllutRouter.use("/:formId", (req, res, next) => {
+    res.locals.formId = req.params.formId;
+    next();
+  });
+
   // Match everything except internal, static and api
   fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, (req, res) => {
-    return getDecorator(`${BUILD_PATH}/index.html`)
+    return getDecorator(`${BUILD_PATH}/index.html`, createRedirectUrl(req, res))
       .then((html) => {
         res.send(html);
       })

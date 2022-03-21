@@ -4,16 +4,26 @@ import { NaisCluster } from "./config/nais-cluster.js";
 
 const { naisClusterName } = config;
 
-const getDecorator = async (filePath) => {
+const getDecorator = async (filePath, redirect) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
   return injectDecoratorServerSide({
-    env: naisClusterName === NaisCluster.DEV ? "dev" : "prod",
+    env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
     filePath,
+    redirectToUrl: redirect,
     level: "Level4",
     simple: true,
   });
 };
 
-export default getDecorator;
+const createRedirectUrl = (req, res) => {
+  const formId = res.locals.formId;
+  const baseUrl = `${req.protocol}://${req.get("host")}/fyllut`;
+  if (formId) {
+    return `${baseUrl}?form=${res.locals.formId}`;
+  }
+  return baseUrl;
+};
+
+export { getDecorator, createRedirectUrl };
