@@ -8,9 +8,9 @@ export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
   const history = useHistory();
-  const params = new URLSearchParams(history.location.search);
 
   useEffect(() => {
+    const params = new URLSearchParams(history.location.search);
     const formId = params.get("form");
     if (formId) {
       history.replace(`/${formId}`);
@@ -25,7 +25,7 @@ export const AllForms = () => {
           setStatus("FORMS NOT FOUND");
         });
     }
-  }, []);
+  }, [history]);
 
   if (status === "LOADING") {
     return <LoadingComponent />;
