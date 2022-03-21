@@ -51,7 +51,7 @@ export default class Image extends Component {
                 },
                 {
                   type: "textfield",
-                  label: "Bilde Beskrivelse",
+                  label: "Beskrivelse",
                   key: "description",
                   weight: 2,
                   input: true,
@@ -60,7 +60,7 @@ export default class Image extends Component {
                   },
                 },
                 {
-                  label: "Bilde Størrelse",
+                  label: "Størrelse",
                   fieldSize: "input--xs",
                   suffix: "%",
                   delimiter: false,

@@ -628,7 +628,7 @@ describe("generating doc definition", () => {
       ]);
     });
 
-    it("adds table with other components and image outside the table", () => {
+    it("adds image components and textfield components", () => {
       const formDefinition = createImageFormDefinitionWithMultiComponents();
       const pdfContent = setupDocDefinitionContent(
         { data: { tekstfelt1: "inputdata1 value", tekstfelt2: "inputdata2 value" } },

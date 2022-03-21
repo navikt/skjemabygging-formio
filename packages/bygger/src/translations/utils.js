@@ -95,7 +95,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         prefix: getTextFromComponentProperty(prefix),
         data: data ? data.values.map((value) => value.label) : undefined,
         contentForPdf: getTextFromComponentProperty(contentForPdf),
-        altText,
+        altText: getTextFromComponentProperty(altText),
       })
     );
 
