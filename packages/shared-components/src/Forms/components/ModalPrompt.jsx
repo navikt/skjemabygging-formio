@@ -10,7 +10,6 @@ const ModalPrompt = () => {
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    console.log("modal", openModal);
     setOpenModal(true);
   }, []);
 
