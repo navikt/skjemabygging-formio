@@ -9,10 +9,10 @@ export const grensesnitt = {
     "Legg til": "Legg til",
     Fjern: "Fjern",
   },
-
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
+  ok: "OK",
 
   formSummaryUtils: {
     payAttentionTo: "Vær oppmerksom på",

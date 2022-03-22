@@ -7,17 +7,11 @@ import {
 } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from "../api";
-import ModalPrompt from "./ModalPrompt";
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
   const [ready, setReady] = useState(false);
   const { featureToggles } = useAppConfig();
-  const [openModal, setOpenModal] = useState(false);
-
-  useEffect(() => {
-    setOpenModal(true);
-  }, []);
 
   useEffect(() => {
     async function fetchTranslations() {
@@ -57,13 +51,6 @@ function FormPage({ form }) {
 
   return (
     <AmplitudeProvider form={form} shouldUseAmplitude={true}>
-      <ModalPrompt
-        openModal={openModal}
-        closeModal={() => setOpenModal(false)}
-        title={"OBS!"}
-        content="Digital innsending fra mobil fungerer foreløpig ikke"
-        contentLabel="Vær obs på"
-      />
       <FyllUtRouter form={form} translations={translation} />
     </AmplitudeProvider>
   );

@@ -131,9 +131,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           })}
         </Normaltekst>
         <FormSummary submission={submission} form={form} />
-        <Alertstripe type="advarsel">
-        Digital innsending fra mobil fungerer foreløpig ikke. Velg send i posten. 
-        </Alertstripe>
+        <Alertstripe type="advarsel">{translate(TEXTS.statiske.FormPageFyllUt.alertInfo)}</Alertstripe>
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: formUrl, search }}>
