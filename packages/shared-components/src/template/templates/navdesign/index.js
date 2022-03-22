@@ -26,6 +26,7 @@ import file from "./file";
 import html from "./html";
 import icon from "./icon";
 import iconClass from "./iconClass";
+import image from "./image";
 import input from "./input";
 import label from "./label";
 import loader from "./loader";
@@ -98,6 +99,7 @@ export default {
   html,
   icon,
   input,
+  image,
   label,
   loader,
   loading,
