@@ -271,6 +271,17 @@ const basicPalett = {
       },
       ignore: true,
     },
+    image: {
+      title: "Bilde",
+      key: "image",
+      icon: "clipboard",
+      schema: {
+        label: "Bilde",
+        type: "image",
+        key: "image",
+        input: false,
+      },
+    },
   },
 };
 
