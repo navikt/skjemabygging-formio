@@ -20,7 +20,7 @@ const getDecorator = async (filePath, redirect) => {
 
 const createRedirectUrl = (req, res) => {
   const formId = res.locals.formId;
-  const baseUrl = `${req.protocol}://${req.get("host")}/fyllut`;
+  const baseUrl = `https://${req.get("host")}/fyllut`;
   if (formId) {
     return `${baseUrl}?form=${res.locals.formId}`;
   }
