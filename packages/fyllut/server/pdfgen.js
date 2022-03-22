@@ -74,6 +74,10 @@ export class Pdfgen {
         bold: true,
         margin: [0, 10, 0, 5],
       },
+      imageLabel: {
+        bold: true,
+        margin: [0, 10, 0, 5],
+      },
       groupHeader: {
         bold: true,
       },
@@ -89,6 +93,10 @@ export class Pdfgen {
       },
       ingress: {
         margin: [0, 5, 0, 5],
+      },
+      cursive: {
+        italics: true,
+        margin: 10,
       },
     };
   }
@@ -166,6 +174,8 @@ export class Pdfgen {
           return [
             this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
           ];
+        case "image":
+          return [this.createImageWithAlt(component)];
         default:
           return [
             this.createRow(this.translate(component.label), this.translate(component.value), false, areSubComponents),
@@ -174,12 +184,32 @@ export class Pdfgen {
     });
   }
 
+  createImageWithAlt(img) {
+    const maxWidth = 500;
+    return [
+      {
+        stack: [
+          { text: this.translate(img.label), style: "imageLabel" },
+          {
+            image: img.value,
+            width: (maxWidth * img.widthPercent) / 100,
+            maxWidth: maxWidth,
+            maxHeight: 400,
+            alt: img.alt,
+          },
+          { text: img.alt, style: "cursive" },
+        ],
+        colSpan: 2,
+      },
+      "",
+    ];
+  }
+
   mapFormSummaryObjectToTables(formSummaryObject) {
     return formSummaryObject.flatMap((panel) => {
-      return [
-        { text: this.translate(panel.label), style: "subHeader" },
-        this.createTableWithBody(this.componentsToBody(panel.components)),
-      ];
+      const header = { text: this.translate(panel.label), style: "subHeader" };
+      const tableWithBody = this.createTableWithBody(this.componentsToBody(panel.components));
+      return [header, tableWithBody];
     });
   }
 
@@ -206,11 +236,9 @@ export class Pdfgen {
 
   generateBody() {
     const formSummaryObject = createFormSummaryObject(this.form, this.submission);
-
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
     const homelessComponentsTable =
       homelessComponents.length > 0 ? this.createTableWithBody(this.componentsToBody(homelessComponents)) : [];
-
     return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
   }
 
@@ -276,6 +304,7 @@ export class PdfgenPapir extends Pdfgen {
         description: properties.signatures[`${label}Description`],
       }));
     }
+
     return [];
   }
 
