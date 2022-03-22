@@ -8,7 +8,6 @@ const getDecorator = async (filePath, redirect) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
-  console.log(redirect);
   return injectDecoratorServerSide({
     env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
     filePath,
@@ -21,7 +20,6 @@ const getDecorator = async (filePath, redirect) => {
 const createRedirectUrl = (req, res) => {
   const formId = res.locals.formId;
   const baseUrl = `https://${req.get("host")}/fyllut`;
-  console.log("Url: ", baseUrl, formId, req.protocol);
   if (formId) {
     return `${baseUrl}?form=${res.locals.formId}`;
   }
