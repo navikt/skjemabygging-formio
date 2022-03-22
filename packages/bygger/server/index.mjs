@@ -1,5 +1,5 @@
 import express from "express";
-import { Backend } from "./backend/index.js";
+import { Backend } from "./backend/Backend.js";
 import { dispatcherWithBackend } from "./backend/webApp.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import dotenv from "dotenv";
@@ -28,6 +28,8 @@ const localDevelopmentConfig = {
   clientId: "599b3553-24b0-416f-9a91-3866d1197e90",
   skjemabyggingProxyClientId: "95170319-b4d7-4190-8271-118ed19bafbf",
   skjemabyggingProxyUrl: "https://skjemabygging-proxy.dev-fss-pub.nais.io",
+  publishRepo: "skjemapublisering-monorepo-poc",
+  publishRepoBaseBranch: "test-publish",
 };
 
 const defaultConfig = {
@@ -36,9 +38,11 @@ const defaultConfig = {
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL,
   workflowDispatchRef: process.env.PUBLISERING_WORKFLOW_DISPATCH_REF,
-  workflowDispatchToken: process.env.akg_pat,
+  publishRepoToken: process.env.akg_pat,
   workflowDispatchURL: process.env.PUBLISERING_WORKFLOW_DISPATCH_URL,
   publishResourceUrl: process.env.PUBLISH_RESOURCE_URL,
+  publishRepo: process.env.PUBLISH_REPO,
+  publishRepoBaseBranch: process.env.PUBLISH_REPO_BRANCH_NAME,
 };
 
 const config = {

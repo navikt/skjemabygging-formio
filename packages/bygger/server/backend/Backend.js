@@ -1,17 +1,13 @@
 import { guid } from "nav-frontend-js-utils";
 import qs from "qs";
-// import { promisify } from "util";
-// import { gunzip, gzip } from "zlib";
 import { fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
 import { GitHubRepo } from "./GitHubRepo.js";
-// const promisifiedGzip = promisify(gzip);
-// const promisifiedGunzip = promisify(gunzip);
 
 export class Backend {
   constructor(projectURL, config) {
     this.projectURL = projectURL;
     this.config = config;
-    this.skjemaUtfylling = new GitHubRepo("navikt", "skjemapublisering-monorepo-poc", config.workflowDispatchToken);
+    this.skjemaUtfylling = new GitHubRepo("navikt", config.publishRepo, config.publishRepoToken);
   }
 
   ho() {
@@ -25,33 +21,6 @@ export class Backend {
   getGitURL() {
     return this.config.workflowDispatchURL;
   }
-
-  /*  async toBase64GzipAndJson(data) {
-    const buffer = Buffer.from(JSON.stringify(data), "utf-8");
-    const zippedBuffer = await promisifiedGzip(buffer);
-    return zippedBuffer.toString("base64");
-  }
-
-  async fromBase64GzipAndJson(string) {
-    const buffer = Buffer.from(string, "base64");
-    const inflated = await promisifiedGunzip(buffer);
-    return JSON.parse(inflated.toString());
-  }*/
-
-  /*  async payload(formJsonFileTitle, form, translations) {
-    const encodedForm = await this.toBase64GzipAndJson(form);
-    const encodedTranslations = await this.toBase64GzipAndJson(translations);
-    return {
-      ref: this.config.workflowDispatchRef,
-      inputs: {
-        formJsonFileTitle,
-        formDescription: form.title,
-        encodedTranslationJson: encodedTranslations,
-        encodedFormJson: encodedForm,
-        monorepoGitHash: this.config.gitSha,
-      },
-    };
-  }*/
 
   async checkUpdateAndPublishingAccess(userToken) {
     //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
@@ -112,7 +81,6 @@ export class Backend {
 
     const currentRef = await this.skjemaUtfylling.getRef(branch);
     let updatedBaseSha;
-
     if (baseBranch.data.object.sha !== currentRef.data.object.sha) {
       // Only create and merge pull request if the branch contains changes, compared to the base branch
       const pullRequest = await this.skjemaUtfylling.createPullRequest("Automatic publishing job", branch, base);
@@ -130,13 +98,13 @@ export class Backend {
       await this.pushJsonFileToRepo(
         branch,
         `translations/${formPath}.json`,
-        `[Publisering] skjema "${form.title}", monorepo ref: ${this.config.gitSha}`,
+        `[Publisering] oversettelse "${form.title}", monorepo ref: ${this.config.gitSha}`,
         translations
       );
       await this.pushJsonFileToRepo(
         branch,
         `forms/${formPath}.json`,
-        `[Publisering] oversettelse "${form.title}", monorepo ref: ${this.config.gitSha}`,
+        `[Publisering] skjema "${form.title}", monorepo ref: ${this.config.gitSha}`,
         form
       );
     };
@@ -145,7 +113,7 @@ export class Backend {
   async publishForm(userToken, form, translations, formPath) {
     await this.checkUpdateAndPublishingAccess(userToken);
     return this.performChangesOnSeparateBranch(
-      "test-publish",
+      this.config.publishRepoBaseBranch,
       `publish-${formPath}--${guid()}`,
       this.pushFormAndTranslationsCallback(formPath, form, translations)
     );
@@ -154,7 +122,7 @@ export class Backend {
   async publishResource(userToken, resourceName, resourceContent) {
     await this.checkUpdateAndPublishingAccess(userToken);
     return this.pushJsonFileToRepo(
-      "test-publish",
+      this.config.publishRepoBaseBranch,
       `resources/${resourceName}.json`,
       `[Publisering] ressurs "${resourceName}", monorepo ref: ${this.config.gitSha}`,
       resourceContent

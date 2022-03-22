@@ -1,4 +1,3 @@
-import { Octokit } from "@octokit/rest";
 import {
   mockCreateOrUpdateFileContents,
   mockCreatePullRequest,
@@ -7,8 +6,9 @@ import {
   mockGetContent,
   mockGetRef,
   mockMergePullRequest,
-} from "../__mocks__/@octokit/rest";
-import { GitHubRepo } from "./GitHubRepo";
+  Octokit,
+} from "@octokit/rest";
+import { GitHubRepo } from "./GitHubRepo.js";
 
 jest.mock("@octokit/rest");
 
