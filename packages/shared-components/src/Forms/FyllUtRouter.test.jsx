@@ -75,7 +75,6 @@ describe("FyllUtRouter", () => {
     it("Renders vedleggspanel when submission method is undefined", () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: undefined });
       expect(screen.queryByRole("heading", { name: form.title })).toBeInTheDocument();
-      screen.debug();
       expect(screen.queryByRole("button", { name: "Vedleggsliste" })).toBeInTheDocument();
     });
     it("Renders vedleggspanel when submission method is paper", () => {
