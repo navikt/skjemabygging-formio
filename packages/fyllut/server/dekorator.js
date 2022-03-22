@@ -8,10 +8,10 @@ const getDecorator = async (filePath, redirect) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
+  console.log(redirect);
   return injectDecoratorServerSide({
     env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
     filePath,
-    redirectToUrl: redirect,
     level: "Level4",
     simple: true,
   });
