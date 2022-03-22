@@ -204,6 +204,14 @@ describe("Backend", () => {
   });
 
   describe("Authorization and error handling", () => {
+    beforeAll(() => {
+      jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+
+    afterAll(() => {
+      jest.restoreAllMocks();
+    });
+
     describe("publishForm", () => {
       it("does not try to publish if authorization check to server fails", async () => {
         nock(projectUrl).get("/current").replyWithError("My error");
