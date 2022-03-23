@@ -29,7 +29,8 @@ const localDevelopmentConfig = {
   skjemabyggingProxyClientId: "95170319-b4d7-4190-8271-118ed19bafbf",
   skjemabyggingProxyUrl: "https://skjemabygging-proxy.dev-fss-pub.nais.io",
   publishRepo: "skjemapublisering-monorepo-poc",
-  publishRepoBaseBranch: "test-publish",
+  publishRepoOwner: "navikt",
+  publishRepoBase: "test-publish",
 };
 
 const defaultConfig = {
@@ -37,12 +38,10 @@ const defaultConfig = {
   clientId: process.env.AZURE_APP_CLIENT_ID,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL,
-  workflowDispatchRef: process.env.PUBLISERING_WORKFLOW_DISPATCH_REF,
   publishRepoToken: process.env.akg_pat,
-  workflowDispatchURL: process.env.PUBLISERING_WORKFLOW_DISPATCH_URL,
-  publishResourceUrl: process.env.PUBLISH_RESOURCE_URL,
   publishRepo: process.env.PUBLISH_REPO,
-  publishRepoBaseBranch: process.env.PUBLISH_REPO_BRANCH_NAME,
+  publishRepoOwner: process.env.PUBLISH_REPO_OWNER,
+  publishRepoBase: process.env.PUBLISH_REPO_BASE,
 };
 
 const config = {

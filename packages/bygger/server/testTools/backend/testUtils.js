@@ -6,7 +6,7 @@ export const createBackendForTest = () => {
   const projectURL = "https://projectApi.example.com";
   return new Backend(projectURL, {
     publishRepo: "publish-repo",
-    publishRepoBaseBranch: "publish-repo-main-branch",
+    publishRepoBase: "publish-repo-main-branch",
     publishRepoToken: "publishRepoToken",
     gitSha: "publish-repo-git-sha",
   });

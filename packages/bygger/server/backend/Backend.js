@@ -18,10 +18,6 @@ export class Backend {
     return this.projectURL;
   }
 
-  getGitURL() {
-    return this.config.workflowDispatchURL;
-  }
-
   async checkUpdateAndPublishingAccess(userToken) {
     //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
     const currentUserUrl = `${this.projectURL}/current`;
@@ -113,7 +109,7 @@ export class Backend {
   async publishForm(userToken, form, translations, formPath) {
     await this.checkUpdateAndPublishingAccess(userToken);
     return this.performChangesOnSeparateBranch(
-      this.config.publishRepoBaseBranch,
+      this.config.publishRepoBase,
       `publish-${formPath}--${guid()}`,
       this.pushFormAndTranslationsCallback(formPath, form, translations)
     );
@@ -122,7 +118,7 @@ export class Backend {
   async publishResource(userToken, resourceName, resourceContent) {
     await this.checkUpdateAndPublishingAccess(userToken);
     return this.pushJsonFileToRepo(
-      this.config.publishRepoBaseBranch,
+      this.config.publishRepoBase,
       `resources/${resourceName}.json`,
       `[Publisering] ressurs "${resourceName}", monorepo ref: ${this.config.gitSha}`,
       resourceContent
