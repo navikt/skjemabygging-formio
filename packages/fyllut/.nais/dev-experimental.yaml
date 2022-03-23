@@ -13,6 +13,7 @@ forms-source: "formioapi"
 enabled-features: "translations"
 secrets:
   - formio
+  - fyllut-experimental
 azure:
   application:
     tenant: trygdeetaten.no
