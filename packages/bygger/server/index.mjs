@@ -28,9 +28,6 @@ const localDevelopmentConfig = {
   clientId: "599b3553-24b0-416f-9a91-3866d1197e90",
   skjemabyggingProxyClientId: "95170319-b4d7-4190-8271-118ed19bafbf",
   skjemabyggingProxyUrl: "https://skjemabygging-proxy.dev-fss-pub.nais.io",
-  publishRepo: "skjemapublisering-monorepo-poc",
-  publishRepoOwner: "navikt",
-  publishRepoBase: "test-publish",
 };
 
 const defaultConfig = {
