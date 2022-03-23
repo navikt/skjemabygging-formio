@@ -1,30 +1,23 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import httpFyllut from "../util/httpFyllut";
 import FormPage from "./FormPage";
 import PageNotFound from "./PageNotFound";
-
-class HttpError extends Error {}
 
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
   useEffect(() => {
-    fetch(`/fyllut/forms/${formPath}`, { headers: { accept: "application/json" } })
-      .then((response) => {
-        if (!response.ok) {
-          throw new HttpError(response.statusText);
-        }
-        return response.json();
-      })
+    httpFyllut
+      .get(`/fyllut/api/forms/${formPath}`)
       .then((form) => {
         setForm(form);
         setStatus("FINISHED LOADING");
       })
-      .catch((e) => {
-        console.debug(e);
-        setStatus("FORM NOT FOUND");
+      .catch((err) => {
+        setStatus(err instanceof httpFyllut.UnauthenticatedError ? "UNAUTHENTICATED" : "FORM NOT FOUND");
       });
   }, [formPath]);
 
@@ -34,7 +27,7 @@ export const FormPageWrapper = () => {
     }
   }, [form]);
 
-  if (status === "LOADING") {
+  if (status === "LOADING" || status === "UNAUTHENTICATED") {
     return <LoadingComponent />;
   }
 

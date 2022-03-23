@@ -1,11 +1,11 @@
-import personPalett from "./personPalett";
-import pengerOgKontoPalett from "./pengerOgKontoPalett";
-import organisasjonPalett from "./organisasjonPalett";
-import datoOgTidPalett from "./datoOgTidPalett";
 import basicPalett from "./basicPalett";
-import layoutPalett from "./layoutPalett";
 import dataPalett from "./dataPalett";
+import datoOgTidPalett from "./datoOgTidPalett";
+import layoutPalett from "./layoutPalett";
+import organisasjonPalett from "./organisasjonPalett";
 import panelsPalett from "./panelsPalett";
+import pengerOgKontoPalett from "./pengerOgKontoPalett";
+import personPalett from "./personPalett";
 
 const builderPalett = {
   advanced: null,
@@ -18,7 +18,6 @@ const builderPalett = {
   layout: layoutPalett,
   data: dataPalett,
   panels: panelsPalett,
-
 };
 
 export default builderPalett;

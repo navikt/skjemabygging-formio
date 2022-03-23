@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
-import MigrationPage from "./MigrationPage";
+import MigrationPage, { migrationOptionsAsMap } from "./MigrationPage";
 
 describe("MigrationPage", () => {
   let fetchSpy;
@@ -28,7 +28,7 @@ describe("MigrationPage", () => {
   };
 
   beforeEach(() => {
-    fetchSpy = jest.spyOn(global, "fetch").mockImplementation((url) =>
+    fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
           headers: {
@@ -54,7 +54,7 @@ describe("MigrationPage", () => {
   });
 
   it("renders options form for search filters and edit options", () => {
-    expect(screen.getByRole("heading", { level: 2, name: "Søk og filtrer" }));
+    expect(screen.getByRole("heading", { level: 2, name: "Filtrer" }));
     expect(
       screen.getByRole("heading", { level: 2, name: "Sett opp felter som skal migreres og ny verdi for feltene" })
     );
@@ -63,7 +63,7 @@ describe("MigrationPage", () => {
   describe("Migration dry run", () => {
     it("performs a search with the provided search filters", async () => {
       setMigrateOptionInput(0, "searchFilter1", true);
-      fireEvent.click(screen.getByRole("button", { name: "Søk" }));
+      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -78,7 +78,7 @@ describe("MigrationPage", () => {
       setMigrateOptionInput(1, "prop2", 99);
       fireEvent.click(screen.getByRole("button", { name: "Legg til filtreringsvalg" }));
       setMigrateOptionInput(2, "prop3", false);
-      fireEvent.click(screen.getByRole("button", { name: "Søk" }));
+      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
@@ -185,6 +185,36 @@ describe("MigrationPage", () => {
           method: "POST",
         });
       });
+    });
+  });
+
+  describe("migrationOptionsAsMap", () => {
+    it("standard mapping", () => {
+      const map = migrationOptionsAsMap({
+        "1": {
+          key: 'k1',
+          value: 'v1'
+        },
+        "2": {
+          key: 'k2',
+          value: 'v2'
+        }
+      });
+      expect(Object.keys(map).length).toBe(2);
+    });
+
+    it("duplicate key ignored", () => {
+      const map = migrationOptionsAsMap({
+        "1": {
+          key: 'k1',
+          value: 'v1'
+        },
+        "2": {
+          key: 'k1',
+          value: 'v1'
+        }
+      });
+      expect(Object.keys(map).length).toBe(1);
     });
   });
 });

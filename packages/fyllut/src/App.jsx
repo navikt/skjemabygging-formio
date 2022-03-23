@@ -9,7 +9,7 @@ import { Route, Switch } from "react-router-dom";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   "@global": globalStyles,
 }));
 

@@ -4,8 +4,8 @@ import Modal from "nav-frontend-modal";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { I18nTranslationMap } from "../../types/translations";
-import { languagesInNorwegian, useTranslations } from "../context/i18n";
+import { I18nTranslations } from "../../types/translations";
+import { languagesInNorwegian, useI18nState } from "../context/i18n";
 import { getFormTexts } from "../translations/utils";
 import { NavFormType } from "./navForm";
 
@@ -31,26 +31,28 @@ interface Props {
 
 export const getCompleteTranslationLanguageCodeList = (
   allFormOriginalTexts: string[],
-  translationsForNavForm: Record<string, I18nTranslationMap>
+  translationsForNavForm: I18nTranslations
 ): string[] => {
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {
-    Object.keys(translationsForNavForm).filter(lang => lang !== "nb-NO").forEach((languageCode) => {
-      const incompleteTranslationList: string[] = allFormOriginalTexts.filter(
-        (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0
-      );
+    Object.keys(translationsForNavForm)
+      .filter((lang) => lang !== "nb-NO")
+      .forEach((languageCode) => {
+        const incompleteTranslationList: string[] = allFormOriginalTexts.filter(
+          (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0
+        );
 
-      if (incompleteTranslationList.length === 0) {
-        completeTranslationList.push(languageCode);
-      }
-    });
+        if (incompleteTranslationList.length === 0) {
+          completeTranslationList.push(languageCode);
+        }
+      });
   }
   return completeTranslationList;
 };
 
 const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Props) => {
   const styles = useModalStyles();
-  const { translationsForNavForm }: any = useTranslations();
+  const { translationsForNavForm } = useI18nState();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
   const [publishLanguageCodeList, setPublishLanguageCodeList] = useState<string[]>([]);

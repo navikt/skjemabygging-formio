@@ -10,10 +10,15 @@ import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.
 import { Components } from "formiojs";
 import "nav-frontend-typografi-style";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useHistory } from "react-router-dom";
+import { Tilbakeknapp } from "nav-frontend-ikonknapper";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   "@global": globalStyles,
+  backContainer: {
+    maxWidth: "800px",
+    margin: "0 auto 1rem auto",
+  },
 }));
 
 Components.setComponents(CustomComponents);
@@ -23,8 +28,9 @@ const MigrationFormPreview = () => {
   const [error, setError] = useState<string>();
   const { formPath } = useParams();
   const { search } = useLocation();
+  const history = useHistory();
 
-  useStyles();
+  const styles = useStyles();
   useEffect(() => {
     try {
       fetch(`/api/migrate/preview/${formPath}${search}`, {
@@ -46,7 +52,14 @@ const MigrationFormPreview = () => {
     return <ErrorPage errorMessage={error} />;
   }
 
-  return <FyllUtRouter form={form} translations={{}} />;
+  return (
+    <div>
+      <div className={styles.backContainer}>
+        <Tilbakeknapp onClick={history.goBack}>Tilbake</Tilbakeknapp>
+      </div>
+      <FyllUtRouter form={form} translations={{}} />
+    </div>
+  );
 };
 
 export default MigrationFormPreview;

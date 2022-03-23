@@ -1,21 +1,19 @@
 import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import httpFyllut from "./util/httpFyllut";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
 const loadCountryNames = async (locale) => {
-  return fetch(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) => response.json());
+  return httpFyllut.get(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
 };
 
 const loadGlobalTranslations = async (languageCode) => {
-  return fetch(`/fyllut/global-translations/${languageCode}`, {
-    headers: { accept: "application/json" },
-  }).then((response) => response.json());
+  return httpFyllut.get(`/fyllut/global-translations/${languageCode}`);
 };
 
-export const loadFormTranslations = async (formPath) =>
-  fetch(`/fyllut/translations/${formPath}`, { headers: { accept: "application/json" } }).then((response) =>
-    response.json()
-  );
+export const loadFormTranslations = async (formPath) => {
+  return httpFyllut.get(`/fyllut/translations/${formPath}`);
+};
 
 export const loadCountryNamesForLanguages = async (languages) => {
   if (languages.length === 0) {

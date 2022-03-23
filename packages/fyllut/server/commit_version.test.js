@@ -1,7 +1,6 @@
-import { gitVersionFromIndexHtml } from "./commit_version";
-import fs from "fs";
-
 import child_process from "child_process";
+import fs from "fs";
+import { gitVersionFromIndexHtml } from "./commit_version";
 import { buildDirectoryIndexHtml } from "./context";
 
 const htmlDocWithVersion = (version) => `
@@ -24,8 +23,8 @@ it("parses built index.html and extracts the git commit", () => {
 });
 
 async function getGitVersion() {
-  return new Promise((resolve, reject) => {
-    child_process.exec("git describe --always --match 'NOT A TAG' --abbrev=0 --dirty", (error, stdout, stderr) =>
+  return new Promise((resolve) => {
+    child_process.exec("git describe --always --match 'NOT A TAG' --abbrev=0 --dirty", (error, stdout) =>
       resolve(stdout.trim())
     );
   });

@@ -59,8 +59,8 @@
     "build": "cross-env-shell REACT_APP_GIT_VERSION=dev craco build",
     "build:prod": "craco build",
     "clean": "rimraf build coverage",
-    "test": "craco test --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
-    "test:coverage": "craco test --coverage --transformIgnorePatterns \"node_modules/(?!@navikt/ds-icons)/\"",
+    "test": "craco test",
+    "test:coverage": "craco test --coverage",
     "eject": "craco eject",
     "install-all": "npm install && cd server && npm install",
     "dev-server": "cross-env-shell cd server && npm start",
@@ -80,5 +80,10 @@
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger))"
+    ]
   }
 }

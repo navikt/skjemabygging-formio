@@ -2,27 +2,20 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-class HttpError extends Error {}
+import httpFyllut from "../util/httpFyllut";
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
-    fetch(`/fyllut/forms`, { headers: { accept: "application/json" } })
-      .then((response) => {
-        if (!response.ok) {
-          throw new HttpError(response.statusText);
-        }
-        return response.json();
-      })
+    httpFyllut
+      .get(`/fyllut/api/forms`)
       .then((forms) => {
         setForms(forms);
         setStatus("FINISHED LOADING");
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
         setStatus("FORMS NOT FOUND");
       });
   }, []);
