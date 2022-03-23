@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 
 export const UserAlerterContext = React.createContext();
 
-const ErrorAlertContent = styled("div")({
+const AlertContent = styled("div")({
   display: "flex",
   alignItems: "flex-start",
   "& p": {
@@ -20,18 +20,29 @@ const ErrorAlertContent = styled("div")({
     },
   },
 });
+
 const ErrorAlert = ({ exception, onClose }) => (
   <AlertStripeFeil>
-    <ErrorAlertContent>
+    <AlertContent>
       <p>{exception.message || exception}</p>
       <Xknapp onClick={onClose} />
-    </ErrorAlertContent>
+    </AlertContent>
   </AlertStripeFeil>
 );
+
+const WarningAlert = ({ message, onClose }) => (
+  <AlertStripeAdvarsel>
+    <AlertContent>
+      <p>{message}</p>
+      <Xknapp onClick={onClose} />
+    </AlertContent>
+  </AlertStripeAdvarsel>
+);
+
 const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeSuksess>
-      <ErrorAlertContent>
+      <AlertContent>
         <div>
           <h3>Manuell deploy av skjemautfylling</h3>
           <div>
@@ -40,7 +51,7 @@ const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
           </div>
         </div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeSuksess>
   );
 };
@@ -48,11 +59,11 @@ const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
 const PublishSuccessAlert = ({ message, onClose }) => {
   return (
     <AlertStripeSuksess>
-      <ErrorAlertContent>
+      <AlertContent>
         <h3>Publisering fullført</h3>
         <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} er nå publisert</div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeSuksess>
   );
 };
@@ -60,11 +71,11 @@ const PublishSuccessAlert = ({ message, onClose }) => {
 const PublishAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
-      <ErrorAlertContent>
+      <AlertContent>
         <h3>Publisering feilet</h3>
         <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} ble ikke publisert</div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeFeil>
   );
 };
@@ -72,7 +83,7 @@ const PublishAbortedAlert = ({ message, onClose }) => {
 const BuildAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
-      <ErrorAlertContent>
+      <AlertContent>
         <div>
           <h3>Byggefeil</h3>
           <p>
@@ -81,7 +92,7 @@ const BuildAbortedAlert = ({ message, onClose }) => {
           <p>Commit melding: {message.skjemautfyllerCommit.message}</p>
         </div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeFeil>
   );
 };
@@ -103,15 +114,17 @@ class UserAlerter {
     setTimeout(() => this.removeAlertComponent(key), 5000);
   }
 
-  flashWarningMessage(message) {
-    const key = this.addAlertComponent(() => <AlertStripeAdvarsel>{message}</AlertStripeAdvarsel>);
-    setTimeout(() => this.removeAlertComponent(key), 8000);
-  }
-
   setErrorMessage(errorString) {
     let key;
     key = this.addAlertComponent(() => (
       <ErrorAlert exception={errorString} onClose={() => this.removeAlertComponent(key)} />
+    ));
+  }
+
+  setWarningMessage(message) {
+    let key;
+    key = this.addAlertComponent(() => (
+      <WarningAlert message={message} onClose={() => this.removeAlertComponent(key)} />
     ));
   }
 
