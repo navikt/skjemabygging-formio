@@ -1,4 +1,4 @@
-import { AppConfigProvider, http } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -6,11 +6,12 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
+import httpFyllut from "./util/httpFyllut";
 
 let featureToggles = {};
 
-http
-  .get("/fyllut/config")
+httpFyllut
+  .get("/fyllut/api/config")
   .then((json) => {
     if (json.REACT_APP_SENTRY_DSN) {
       Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
@@ -21,13 +22,7 @@ http
     renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
   })
   .catch((error) => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("config not loaded, using dummy config in development");
-      // TODO løse hvordan skjema lastes ved lokal utvikling
-      renderReact("https://example.org/dokumentinnsendingbaseurl");
-    } else {
-      console.error(`Could not fetch config from server: ${error}`);
-    }
+    console.error(`Could not fetch config from server: ${error}`);
   });
 
 function renderReact(dokumentInnsendingBaseURL) {

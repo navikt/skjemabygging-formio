@@ -21,11 +21,15 @@ const FyllUtLanguageSelector = () => {
 
   const options = availableLanguages
     .filter((languageCode) => languageCode !== currentLanguage)
-    .map((languageCode) => ({
-      languageCode,
-      optionLabel: languagesInOriginalLanguage[languageCode],
-      href: `?lang=${languageCode}`,
-    }));
+    .map((languageCode) => {
+      const params = new URLSearchParams(window.location.search);
+      params.set("lang", languageCode);
+      return {
+        languageCode,
+        optionLabel: languagesInOriginalLanguage[languageCode],
+        href: `?${params.toString()}`,
+      };
+    });
 
   const label = languagesInOriginalLanguage[currentLanguage]
     ? languagesInOriginalLanguage[currentLanguage]

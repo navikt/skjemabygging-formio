@@ -1,7 +1,6 @@
 app-name: skjemautfylling-forhandsvisning
 ingresses:
   - "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut"
-  - "https://skjemaforhandsvisning.dev.nav.no/fyllut"
 image: {{image}}
 foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside

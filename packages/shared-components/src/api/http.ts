@@ -4,12 +4,19 @@ enum MimeType {
   PDF = "application/pdf",
 }
 
+enum SubmissionMethodType {
+  DIGITAL = "digital",
+  PAPER = "paper",
+}
+
 interface FetchHeader {
-  "Content-Type"?: MimeType
-  Accept?: MimeType
+  "Content-Type"?: MimeType;
+  Accept?: MimeType;
+  "Fyllut-Submission-Method"?: SubmissionMethodType;
 }
 
 class HttpError extends Error {}
+class UnauthenticatedError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
   return {
@@ -51,7 +58,7 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader): Promise
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     if (response.status === 401) {
-      // TODO: Redirect to login if digital selected
+      throw new UnauthenticatedError(response.statusText);
     }
 
     let errorMessage;
@@ -89,6 +96,8 @@ const http = {
   put,
   MimeType,
   HttpError,
+  UnauthenticatedError,
+  SubmissionMethodType,
 }
 
 export default http;
