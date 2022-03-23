@@ -3,21 +3,29 @@ import { config } from "../../config/config.js";
 import { Pdfgen } from "../../pdfgen.js";
 import { responseToError } from "../../utils/errorHandling.js";
 
-const { featureToggles, gitVersion, sendInnHost, mockIdportenPid } = config;
+const { featureToggles, gitVersion, sendInnHost } = config;
 
 const getIdportenPid = (req) => {
-  if (process.env.NODE_ENV === "development") {
-    return mockIdportenPid;
-  } else if (typeof req.getIdportenPid !== "function") {
+  const idportenPid = req.getIdportenPid ? req.getIdportenPid() : null;
+  if (!idportenPid) {
     throw new Error("Missing idporten pid");
   }
-  return req.getIdportenPid();
+  return idportenPid;
+};
+
+const getTokenxAccessToken = (req) => {
+  const tokenxAccessToken = req.getTokenxAccessToken ? req.getTokenxAccessToken() : null;
+  if (!tokenxAccessToken) {
+    throw new Error("Missing TokenX access token");
+  }
+  return tokenxAccessToken;
 };
 
 const sendInn = {
   post: async (req, res, next) => {
     try {
       const idportenPid = getIdportenPid(req);
+      const tokenxAccessToken = getTokenxAccessToken(req);
       const { form, submission, attachments, language, translations = {} } = req.body;
       const pdfBase64 = await Pdfgen.generatePdfBase64(submission, form, gitVersion, translations);
       const body = {
@@ -49,7 +57,7 @@ const sendInn = {
         redirect: "manual",
         headers: {
           "Content-Type": "application/json",
-          // TODO set Authorization header (TokenX access_token)
+          Authorization: `Bearer ${tokenxAccessToken}`,
         },
         body: JSON.stringify(body),
       });

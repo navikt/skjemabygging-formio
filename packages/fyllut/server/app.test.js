@@ -1,12 +1,7 @@
 import nock from "nock";
 import request from "supertest";
 import { createApp } from "./app.js";
-
-const HOST_REGEX = /(http:\/\/.*nav.no).*/;
-const PATH_REGEX = /http:\/\/.*nav.no(\/.*)/;
-
-const extractHost = (url) => HOST_REGEX.exec(url)[1];
-const extractPath = (url) => PATH_REGEX.exec(url)[1];
+import { extractHost, extractPath } from "./test/testHelpers.js";
 
 describe("app", () => {
   it("Fetches config", async () => {

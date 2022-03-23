@@ -1,4 +1,13 @@
 import { jest } from "@jest/globals";
+import jose from "node-jose";
+
+const HOST_REGEX = /(https?:\/\/.*nav.no).*/;
+const PATH_REGEX = /https?:\/\/.*nav.no(\/.*)/;
+
+const keystore = jose.JWK.createKeyStore();
+
+const extractHost = (url) => HOST_REGEX.exec(url)[1];
+const extractPath = (url) => PATH_REGEX.exec(url)[1];
 
 function mockResponse() {
   return {
@@ -15,4 +24,9 @@ function mockRequest({ headers = {}, body }) {
   };
 }
 
-export { mockRequest, mockResponse };
+const generateJwk = async (includePrivate) => {
+  const result = await keystore.generate("RSA", 1024);
+  return result.toJSON(includePrivate);
+};
+
+export { generateJwk, mockRequest, mockResponse, extractPath, extractHost };
