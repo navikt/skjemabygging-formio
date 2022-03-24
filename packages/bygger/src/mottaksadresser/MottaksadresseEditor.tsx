@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {makeStyles} from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
-import { NavForm } from "@navikt/skjemadigitalisering-shared-components";
+import { NavForm, AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { Fareknapp, Knapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import Panel from 'nav-frontend-paneler';
@@ -52,6 +52,8 @@ const MottaksadresseEditor = (
     }
   }
 
+  const featureToggles = { enableAutoComplete: true };
+
   return (
     <Panel border className={styles.panel} data-testid={`mottaksadressepanel-${mottaksadresse?._id || "new"}`}>
       <div className={styles.panelContentMain}>
@@ -59,12 +61,14 @@ const MottaksadresseEditor = (
           editMode && (
             <>
               {!mottaksadresse && <Undertittel>Ny mottaksadresse</Undertittel>}
+              <AppConfigProvider featureToggles={featureToggles}>
               <NavForm
                 src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
                 onSubmitDone={onSubmitDone}
                 formReady={onFormReady}
               />
+              </AppConfigProvider>
             </>
           )
         }

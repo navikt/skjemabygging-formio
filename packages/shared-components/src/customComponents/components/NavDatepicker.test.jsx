@@ -5,9 +5,11 @@ import moment from "moment";
 import React from "react";
 import { setupNavFormio } from "../../../test/navform-render";
 import NavForm from "../../components/NavForm";
+import { AppConfigProvider } from "../../configContext";
 import NavDatePicker from "./NavDatepicker";
 
 Date.now = jest.fn(() => new Date("2030-05-15T12:00:00.000Z").getTime());
+const featureToggles = { enableAutoComplete: true };
 
 describe("NavDatePicker", () => {
   let datePicker;
@@ -544,7 +546,15 @@ describe("NavDatePicker", () => {
 
     const renderNavForm = async (props) => {
       const formReady = jest.fn();
-      const renderReturn = render(<NavForm {...props} formReady={formReady} />);
+      const renderReturn = render(
+        <AppConfigProvider
+          featureToggles={featureToggles}
+          dokumentinnsendingBaseURL={undefined}
+          fyllutBaseURL={undefined}
+        >
+          <NavForm {...props} formReady={formReady} />
+        </AppConfigProvider>
+      );
       await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
       return renderReturn;
     };
