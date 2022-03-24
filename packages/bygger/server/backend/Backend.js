@@ -70,14 +70,13 @@ export class Backend {
   }
 
   async performChangesOnSeparateBranch(base, branch, performChanges) {
-    const baseBranch = await this.skjemaUtfylling.getRef(base);
-    await this.skjemaUtfylling.createRef(branch, baseBranch.data.object.sha);
+    const baseRef = await this.skjemaUtfylling.getRef(base);
+    await this.skjemaUtfylling.createRef(branch, baseRef.data.object.sha);
 
     await performChanges(branch);
 
-    const currentRef = await this.skjemaUtfylling.getRef(branch);
     let updatedBaseSha;
-    if (baseBranch.data.object.sha !== currentRef.data.object.sha) {
+    if (await this.skjemaUtfylling.hasBranchChanged(baseRef, branch)) {
       // Only create and merge pull request if the branch contains changes, compared to the base branch
       const pullRequest = await this.skjemaUtfylling.createPullRequest("Automatic publishing job", branch, base);
       await this.skjemaUtfylling.mergePullRequest(pullRequest.data.number);
@@ -89,39 +88,65 @@ export class Backend {
     return updatedBaseSha;
   }
 
-  pushFormAndTranslationsCallback(formPath, form, translations) {
+  pushFilesAndUpdateSubModuleCallback(files) {
     return async (branch) => {
-      await this.pushJsonFileToRepo(
-        branch,
-        `translations/${formPath}.json`,
-        `[Publisering] oversettelse "${form.title}", monorepo ref: ${this.config.gitSha}`,
-        translations
-      );
-      await this.pushJsonFileToRepo(
-        branch,
-        `forms/${formPath}.json`,
-        `[Publisering] skjema "${form.title}", monorepo ref: ${this.config.gitSha}`,
-        form
-      );
+      const initialRef = await this.skjemaUtfylling.getRef(branch);
+
+      for (const file of files) {
+        await this.pushJsonFileToRepo(
+          branch,
+          file.path,
+          `[Publisering] ${file.type} "${file.name}", monorepo ref: ${this.config.gitSha}`,
+          file.content
+        );
+      }
+
+      if (await this.skjemaUtfylling.hasBranchChanged(initialRef, branch)) {
+        await this.skjemaUtfylling.updateSubmodule(
+          branch,
+          this.config.gitSha,
+          this.config.submoduleRepo,
+          `[Publisering] oppdater monorepo ref: ${this.config.gitSha}`
+        );
+      }
     };
   }
 
-  async publishForm(userToken, form, translations, formPath) {
+  async publishForm(userToken, formContent, translationsContent, formPath) {
+    const form = {
+      name: formContent.title,
+      path: `forms/${formPath}.json`,
+      type: "skjema",
+      content: formContent,
+    };
+    const translations = {
+      name: formContent.title,
+      path: `translations/${formPath}.json`,
+      type: "oversettelse",
+      content: translationsContent,
+    };
+
     await this.checkUpdateAndPublishingAccess(userToken);
     return this.performChangesOnSeparateBranch(
       this.config.publishRepoBase,
       `publish-${formPath}--${guid()}`,
-      this.pushFormAndTranslationsCallback(formPath, form, translations)
+      this.pushFilesAndUpdateSubModuleCallback([translations, form])
     );
   }
 
   async publishResource(userToken, resourceName, resourceContent) {
+    const resource = {
+      name: resourceName,
+      path: `resources/${resourceName}.json`,
+      type: "ressurs",
+      content: resourceContent,
+    };
+
     await this.checkUpdateAndPublishingAccess(userToken);
-    return this.pushJsonFileToRepo(
+    return this.performChangesOnSeparateBranch(
       this.config.publishRepoBase,
-      `resources/${resourceName}.json`,
-      `[Publisering] ressurs "${resourceName}", monorepo ref: ${this.config.gitSha}`,
-      resourceContent
+      `publish-${resourceName}--${guid()}`,
+      this.pushFilesAndUpdateSubModuleCallback([resource])
     );
   }
 

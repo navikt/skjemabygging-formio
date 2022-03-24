@@ -15,6 +15,11 @@ export class GitHubRepo {
     });
   }
 
+  async hasBranchChanged(ref, branch) {
+    const currentRef = await this.getRef(branch);
+    return currentRef.data.object.sha !== ref.data.object.sha;
+  }
+
   createRef(branch, sha) {
     return this.octokit.rest.git.createRef({
       owner: this.owner,
@@ -49,6 +54,44 @@ export class GitHubRepo {
       parameters = { ...parameters, sha };
     }
     return this.octokit.rest.repos.createOrUpdateFileContents(parameters);
+  }
+
+  async updateSubmodule(branch, subModuleSha, subModulePath, commitMessage) {
+    const {
+      data: {
+        object: { sha: currentSha },
+      },
+    } = await this.getRef(branch);
+
+    // Create a new git tree with updated reference to the subModule. mode: "160000" means subModule
+    const tree = await this.octokit.rest.git.createTree({
+      owner: this.owner,
+      repo: this.repo,
+      base_tree: currentSha,
+      tree: [
+        {
+          path: subModulePath,
+          mode: "160000",
+          type: "commit",
+          sha: subModuleSha,
+        },
+      ],
+    });
+
+    const commit = await this.octokit.rest.git.createCommit({
+      owner: this.owner,
+      repo: this.repo,
+      message: commitMessage,
+      tree: tree.data.sha,
+      parents: [currentSha],
+    });
+
+    return this.octokit.rest.git.updateRef({
+      owner: this.owner,
+      repo: this.repo,
+      ref: `heads/${branch}`,
+      sha: commit.data.sha,
+    });
   }
 
   createPullRequest(title, head, base) {

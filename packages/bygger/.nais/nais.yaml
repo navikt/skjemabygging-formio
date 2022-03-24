@@ -37,6 +37,8 @@ spec:
   env:
     - name: PUBLISH_REPO
       value: {{publish-repo}}
+    - name: SUBMODULE_REPO
+      value: {{submodule-repo}}
     - name: PUBLISH_REPO_OWNER
       value: {{publish-repo-owner}}
     - name: PUBLISH_REPO_BASE
