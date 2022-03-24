@@ -6,6 +6,8 @@ import sendInn from "./send-inn.js";
 
 const SEND_LOCATION = "http://www.unittest.nav.no/sendInn/123";
 
+const { sendInnConfig } = config;
+
 describe("[endpoint] send-inn", () => {
   const defaultBody = {
     form: { components: [], properties: { skjemanummer: "NAV 12.34-56" } },
@@ -16,7 +18,7 @@ describe("[endpoint] send-inn", () => {
   };
 
   it("returns 201 and location header if success", async () => {
-    const sendInnNockScope = nock(config.sendInnHost)
+    const sendInnNockScope = nock(sendInnConfig.host)
       .post("/fyllUt/leggTilVedlegg")
       .reply(302, "FOUND", { Location: SEND_LOCATION });
     const req = mockRequest({ body: defaultBody });
@@ -36,7 +38,7 @@ describe("[endpoint] send-inn", () => {
   });
 
   it("calls next if SendInn returns error", async () => {
-    const sendInnNockScope = nock(config.sendInnHost).post("/fyllUt/leggTilVedlegg").reply(500, "error body");
+    const sendInnNockScope = nock(sendInnConfig.host).post("/fyllUt/leggTilVedlegg").reply(500, "error body");
     const req = mockRequest({ body: defaultBody });
     req.getIdportenPid = () => "12345678911";
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
@@ -54,7 +56,7 @@ describe("[endpoint] send-inn", () => {
   });
 
   it("calls next with error if idporten pid is missing", async () => {
-    const sendInnNockScope = nock(config.sendInnHost)
+    const sendInnNockScope = nock(sendInnConfig.host)
       .post("/fyllUt/leggTilVedlegg")
       .reply(302, "FOUND", { Location: SEND_LOCATION });
     const req = mockRequest({ body: defaultBody });
@@ -73,7 +75,7 @@ describe("[endpoint] send-inn", () => {
   });
 
   it("calls next with error if tokenx access token is missing", async () => {
-    const sendInnNockScope = nock(config.sendInnHost)
+    const sendInnNockScope = nock(sendInnConfig.host)
       .post("/fyllUt/leggTilVedlegg")
       .reply(302, "FOUND", { Location: SEND_LOCATION });
     const req = mockRequest({ body: defaultBody });

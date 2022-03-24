@@ -15,7 +15,7 @@ import pdf from "./pdf.js";
 import sendInn from "./send-inn.js";
 import translations from "./translations.js";
 
-const { tokenx } = appConfig;
+const { sendInnConfig } = appConfig;
 
 const apiRouter = express.Router();
 
@@ -29,7 +29,7 @@ apiRouter.post("/foersteside", azureAccessTokenHandler, foersteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
-apiRouter.post("/send-inn", tokenxHandler(tokenx.sendInnClientId), sendInn.post);
+apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 

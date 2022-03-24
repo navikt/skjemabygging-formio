@@ -3,7 +3,7 @@ import { config } from "../../config/config.js";
 import { Pdfgen } from "../../pdfgen.js";
 import { responseToError } from "../../utils/errorHandling.js";
 
-const { featureToggles, gitVersion, sendInnHost } = config;
+const { featureToggles, gitVersion, sendInnConfig } = config;
 
 const getIdportenPid = (req) => {
   const idportenPid = req.getIdportenPid ? req.getIdportenPid() : null;
@@ -52,7 +52,7 @@ const sendInn = {
         res.json(body);
         return;
       }
-      const sendInnResponse = await fetch(`${sendInnHost}/fyllUt/leggTilVedlegg`, {
+      const sendInnResponse = await fetch(`${sendInnConfig.host}/fyllUt/leggTilVedlegg`, {
         method: "POST",
         redirect: "manual",
         headers: {
