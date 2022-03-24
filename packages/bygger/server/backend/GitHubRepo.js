@@ -63,35 +63,47 @@ export class GitHubRepo {
       },
     } = await this.getRef(branch);
 
-    // Create a new git tree with updated reference to the subModule. mode: "160000" means subModule
-    const tree = await this.octokit.rest.git.createTree({
+    const currentTree = await this.octokit.rest.git.getTree({
       owner: this.owner,
       repo: this.repo,
-      base_tree: currentSha,
-      tree: [
-        {
-          path: submodulePath,
-          mode: "160000",
-          type: "commit",
-          sha: submoduleSha,
-        },
-      ],
+      tree_sha: currentSha,
     });
 
-    const commit = await this.octokit.rest.git.createCommit({
-      owner: this.owner,
-      repo: this.repo,
-      message: commitMessage,
-      tree: tree.data.sha,
-      parents: [currentSha],
-    });
+    const isCurrentSubmoduleUpToDate = currentTree.data.tree.some(
+      (node) => node.mode === "160000" && node.path === submodulePath && node.sha === submoduleSha
+    );
 
-    return this.octokit.rest.git.updateRef({
-      owner: this.owner,
-      repo: this.repo,
-      ref: `heads/${branch}`,
-      sha: commit.data.sha,
-    });
+    if (!isCurrentSubmoduleUpToDate) {
+      // Create a new git tree with updated reference to the submodule. mode: "160000" means submodule
+      const tree = await this.octokit.rest.git.createTree({
+        owner: this.owner,
+        repo: this.repo,
+        base_tree: currentSha,
+        tree: [
+          {
+            path: submodulePath,
+            mode: "160000",
+            type: "commit",
+            sha: submoduleSha,
+          },
+        ],
+      });
+
+      const commit = await this.octokit.rest.git.createCommit({
+        owner: this.owner,
+        repo: this.repo,
+        message: commitMessage,
+        tree: tree.data.sha,
+        parents: [currentSha],
+      });
+
+      return this.octokit.rest.git.updateRef({
+        owner: this.owner,
+        repo: this.repo,
+        ref: `heads/${branch}`,
+        sha: commit.data.sha,
+      });
+    }
   }
 
   createPullRequest(title, head, base) {
