@@ -543,6 +543,123 @@ describe("generating doc definition", () => {
     });
   });
 
+  describe("Image", () => {
+    const createImageFormDefinition = () => ({
+      name: "testImage",
+      components: [
+        {
+          label: "Image panel",
+          type: "panel",
+          components: [
+            {
+              image: [
+                {
+                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                },
+              ],
+              label: "Bilde",
+              key: "bilde",
+              altText: "Bilde beskrivelse",
+              type: "image",
+              widthPercent: 100,
+            },
+          ],
+        },
+      ],
+    });
+
+    const createImageFormDefinitionWithMultiComponents = () => ({
+      name: "testImage",
+      components: [
+        {
+          label: "Image panel",
+          type: "panel",
+          components: [
+            {
+              label: "Tekstfelt",
+              key: "tekstfelt1",
+              type: "textfield",
+              input: true,
+            },
+            {
+              image: [
+                {
+                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                },
+              ],
+              label: "Bilde",
+              key: "bilde",
+              altText: "Bilde beskrivelse",
+              type: "image",
+              widthPercent: 100,
+            },
+            {
+              label: "Tekstfelt",
+              key: "tekstfelt2",
+              type: "textfield",
+              input: true,
+            },
+          ],
+        },
+      ],
+    });
+
+    it("adds a single image component", () => {
+      const formDefinition = createImageFormDefinition();
+      const imageDef = setupDocDefinitionContent({}, formDefinition).content[4].table.body;
+      expect(imageDef).toEqual([
+        [
+          {
+            colSpan: 2,
+            stack: [
+              { style: "imageLabel", text: "Bilde" },
+              {
+                alt: "Bilde beskrivelse",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                maxHeight: 400,
+                maxWidth: 500,
+                width: 500,
+              },
+              { style: "cursive", text: "Bilde beskrivelse" },
+            ],
+          },
+          "",
+        ],
+      ]);
+    });
+
+    it("adds image components and textfield components", () => {
+      const formDefinition = createImageFormDefinitionWithMultiComponents();
+      const pdfContent = setupDocDefinitionContent(
+        { data: { tekstfelt1: "inputdata1 value", tekstfelt2: "inputdata2 value" } },
+        formDefinition
+      ).content[4].table.body;
+      expect(pdfContent).toEqual([
+        ["Tekstfelt", "inputdata1 value"],
+        [
+          {
+            colSpan: 2,
+            stack: [
+              { style: "imageLabel", text: "Bilde" },
+              {
+                alt: "Bilde beskrivelse",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                maxHeight: 400,
+                maxWidth: 500,
+                width: 500,
+              },
+              { style: "cursive", text: "Bilde beskrivelse" },
+            ],
+          },
+          "",
+        ],
+        ["Tekstfelt", "inputdata2 value"],
+      ]);
+
+      expect(pdfContent).toHaveLength(3);
+    });
+  });
+
   describe("PdfgenPapir", () => {
     it("generates document with signature field", () => {
       const submission = { data: {}, metadata: {} };

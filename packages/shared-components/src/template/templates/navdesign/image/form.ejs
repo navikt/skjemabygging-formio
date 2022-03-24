@@ -1,0 +1,4 @@
+{% if (ctx.component.image && ctx.component.image.length > 0) { %}
+<img class="img-component" ref="html" src="{{ctx.component.image[0].url}}" alt="{{ctx.component.altText}}" style="max-width:{{ctx.instance.handleWidth(ctx.component.widthPercent)}}" />
+<div class="img-description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+{% } %}

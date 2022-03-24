@@ -14,6 +14,7 @@ const {
   createDummyRadioPanel,
   createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
+  createDummyImage,
   createDummyTextfield,
   createFormObject,
   createPanelObject,
@@ -21,7 +22,16 @@ const {
   createDummyLandvelger,
 } = MockedComponentObjectForTest;
 
-const mockedTranslate = (value) => value;
+const mockedTranslate = (value) => {
+  switch (value) {
+    case "Bilde":
+      return "Image";
+    case "Bilde beskrivelse":
+      return "Image description";
+    default:
+      return value;
+  }
+};
 
 const dummySubmission = {
   data: {
@@ -114,6 +124,31 @@ describe("When handling component", () => {
         mockedTranslate
       );
       expect(actual.find((component) => component.type === "radiopanel").value).toBe("40-label");
+    });
+  });
+
+  describe("image", () => {
+    it("is correctly added with image url as value and altText", () => {
+      const actual = handleComponent(createDummyImage(), {}, [], "", (value) => value);
+      expect(actual).toEqual([
+        {
+          label: "Bilde",
+          key: "bilde",
+          type: "image",
+          value: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+          alt: "Bilde beskrivelse",
+          widthPercent: 100,
+        },
+      ]);
+    });
+
+    it("is translates label and img alt", () => {
+      const actual = handleComponent(createDummyImage(), {}, [], "", mockedTranslate);
+      const expectedResult = { label: actual[0].label, alt: actual[0].alt };
+      expect(expectedResult).toEqual({
+        label: "Image",
+        alt: "Image description",
+      });
     });
   });
 
@@ -428,6 +463,7 @@ describe("When creating form summary object", () => {
           createDummyTextfield("Simple Textfield"),
           createDummyEmail("Simple Email"),
         ]),
+        createPanelObject("Panel with image component", [createDummyImage("Simple Image")]),
         createPanelObject("Panel with container", [
           createDummyContainerElement("Container", [
             createDummyTextfield("Textfield in container"),
@@ -518,6 +554,21 @@ describe("When creating form summary object", () => {
             key: "simpleemail",
             type: "email",
             value: "simpleemail-value",
+          },
+        ],
+      },
+      {
+        label: "Panel with image component",
+        key: "panelwithimagecomponent",
+        type: "panel",
+        components: [
+          {
+            label: "Simple Image",
+            key: "simpleimage",
+            type: "image",
+            value: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+            alt: "Image description",
+            widthPercent: 100,
           },
         ],
       },

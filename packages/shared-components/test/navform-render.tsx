@@ -3,6 +3,7 @@ import { Formio } from "formiojs";
 import Components from "formiojs/components/Components";
 import {CustomComponents, NavForm, Template} from "../src/index.js";
 import {render, waitFor} from "@testing-library/react";
+import { AppConfigProvider } from "../src/configContext";
 
 const setupNavFormio = () => {
   Formio.use(Template);
@@ -10,10 +11,14 @@ const setupNavFormio = () => {
   new Formio("http://unittest.nav-formio-api.no");
 }
 
+const featureToggles = { enableAutoComplete: true };
+
 const renderNavForm = async (props) => {
   const formReady = jest.fn();
   const renderReturn = render(
+    <AppConfigProvider featureToggles={featureToggles} dokumentinnsendingBaseURL={undefined} fyllutBaseURL={undefined}>
     <NavForm {...props} formReady={formReady}/>
+    </AppConfigProvider>
 );
   await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
   return renderReturn;

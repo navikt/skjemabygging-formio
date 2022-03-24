@@ -4,6 +4,7 @@ export const grensesnitt = {
     previous: "Forrige",
     next: "Neste",
     cancel: "Avbryt",
+    exit: "Avslutt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
     submit: "Neste",
     "Legg til": "Legg til",

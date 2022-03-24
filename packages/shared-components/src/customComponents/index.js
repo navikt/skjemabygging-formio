@@ -5,6 +5,7 @@ import Day from "./components/Day";
 import Fodselsnummer from "./components/Fodselsnummer.jsx";
 import HTMLElement from "./components/HTMLElement";
 import IBAN from "./components/IBAN";
+import Image from "./components/Image";
 import NavCheckbox from "./components/NavCheckbox";
 import NavDatepicker from "./components/NavDatepicker.jsx";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
@@ -30,5 +31,6 @@ const customComponents = {
   selectboxes: SelectBoxes,
   day: Day,
   iban: IBAN,
+  image: Image,
 };
 export default customComponents;
