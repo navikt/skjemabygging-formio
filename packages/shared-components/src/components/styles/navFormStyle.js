@@ -77,8 +77,7 @@ const styles = {
     margin: "1rem 0",
   },
   "& .img-component": {
-    maxHeight: "500px",
-    maxWidth: "800px",
+    maxWidth: "100%",
   },
 };
 
