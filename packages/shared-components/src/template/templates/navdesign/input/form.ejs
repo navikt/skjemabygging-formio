@@ -12,6 +12,9 @@
     <{{ctx.input.type}}
     ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
     class="{{ctx.input.attr.class}} skjemaelement__input {{ctx.component.fieldSize}}{{!ctx.component.fieldSize ? 'input--xxl' : ''}}"
+    {% if (ctx.enableAutoComplete === false) { %}
+    autocomplete="off"
+    {% } %}
     {% for (var attr in ctx.input.attr) { %}
     {{attr}}="{{ctx.input.attr[attr]}}"
     {% } %}
