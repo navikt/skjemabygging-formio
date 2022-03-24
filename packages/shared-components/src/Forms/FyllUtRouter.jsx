@@ -24,10 +24,10 @@ const FyllUtRouter = ({ form, translations }) => {
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
 
-  function beforeUnload(e) {
+  const beforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = "";
-  }
+  };
 
   useEffect(() => {
     loggSkjemaApnet();
