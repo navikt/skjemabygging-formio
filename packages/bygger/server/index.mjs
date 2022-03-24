@@ -37,6 +37,7 @@ const defaultConfig = {
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL,
   publishRepoToken: process.env.akg_pat,
   publishRepo: process.env.PUBLISH_REPO,
+  submoduleRepo: process.env.SUBMODULE_REPO,
   publishRepoOwner: process.env.PUBLISH_REPO_OWNER,
   publishRepoBase: process.env.PUBLISH_REPO_BASE,
 };

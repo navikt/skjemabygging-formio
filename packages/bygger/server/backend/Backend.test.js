@@ -9,7 +9,9 @@ import {
   mockRepoDeleteRef,
   mockRepoGetFileIfItExists,
   mockRepoGetRef,
+  mockRepoHasBranchChanged,
   mockRepoMergePullRequest,
+  mockRepoUpdateSubmodule,
 } from "./__mocks__/GitHubRepo";
 
 jest.mock("nav-frontend-js-utils", () => {
@@ -28,8 +30,10 @@ describe("Backend", () => {
         getRef: mockRepoGetRef,
         createRef: mockRepoCreateRef,
         deleteRef: mockRepoDeleteRef,
+        hasBranchChanged: mockRepoHasBranchChanged,
         getFileIfItExists: mockRepoGetFileIfItExists,
         createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
+        updateSubmodule: mockRepoUpdateSubmodule,
         createPullRequest: mockRepoCreatePullRequest,
         mergePullRequest: mockRepoMergePullRequest,
       };
@@ -47,7 +51,9 @@ describe("Backend", () => {
     mockRepoGetRef.mockClear();
     mockRepoCreateRef.mockClear();
     mockRepoDeleteRef.mockClear();
+    mockRepoHasBranchChanged.mockClear();
     mockRepoGetFileIfItExists.mockClear();
+    mockRepoUpdateSubmodule.mockClear();
     mockRepoCreateOrUpdateFileContents.mockClear();
     mockRepoCreatePullRequest.mockClear();
     mockRepoMergePullRequest.mockClear();
@@ -72,7 +78,7 @@ describe("Backend", () => {
 
       it("creates a new branch in the target repo", () => {
         expect(mockRepoCreateRef).toHaveBeenCalledTimes(1);
-        expect(mockRepoCreateRef).toHaveBeenCalledWith("publish-skjema--1234", "sha");
+        expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, "sha");
       });
 
       it("pushes form and translations on a separate branch", () => {
@@ -95,7 +101,7 @@ describe("Backend", () => {
 
       it("deletes the branch", () => {
         expect(mockRepoDeleteRef).toHaveBeenCalledTimes(1);
-        expect(mockRepoDeleteRef).toHaveBeenCalledWith("publish-skjema--1234");
+        expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
       });
     });
 
@@ -117,7 +123,7 @@ describe("Backend", () => {
 
       it("deletes the branch", () => {
         expect(mockRepoDeleteRef).toHaveBeenCalledTimes(1);
-        expect(mockRepoDeleteRef).toHaveBeenCalledWith("publish-skjema--1234");
+        expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
       });
     });
 
@@ -125,8 +131,19 @@ describe("Backend", () => {
       beforeEach(async () => {
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "original-sha-for-base-branch" } } });
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-for-new-branch" } } });
+        mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-after-pushing-files" } } });
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "resulting-sha-after-merge" } } });
         await backend.publishForm(token, { title: "Form" }, { en: {} }, formPath);
+      });
+
+      it("updates submodule", () => {
+        expect(mockRepoUpdateSubmodule).toHaveBeenCalledTimes(1);
+        expect(mockRepoUpdateSubmodule).toHaveBeenCalledWith(
+          expectedBranchName,
+          "publish-repo-git-sha",
+          "submodule-repo",
+          "[Publisering] oppdater monorepo ref: publish-repo-git-sha"
+        );
       });
 
       it("creates a pull request", () => {
@@ -146,9 +163,11 @@ describe("Backend", () => {
 
     describe("when no changes are pushed", () => {
       beforeEach(async () => {
-        mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "original-sha-for-base-branch" } } });
-        mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "original-sha-for-base-branch" } } });
         await backend.publishForm(token, { title: "Form" }, { en: {} }, formPath);
+      });
+
+      it("does not update submodule", () => {
+        expect(mockRepoUpdateSubmodule).toHaveBeenCalledTimes(0);
       });
 
       it("does not merge the pull request", () => {
@@ -157,13 +176,19 @@ describe("Backend", () => {
 
       it("deletes the branch", () => {
         expect(mockRepoDeleteRef).toHaveBeenCalledTimes(1);
-        expect(mockRepoDeleteRef).toHaveBeenCalledWith("publish-skjema--1234");
+        expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
       });
     });
   });
 
   describe("publishResource", () => {
+    const expectedBranchName = "publish-settings--1234";
+
     beforeEach(() => {
+      mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "original-sha-for-base-branch" } } });
+      mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-for-new-branch" } } });
+      mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-after-pushing-file" } } });
+      mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "resulting-sha-after-merge" } } });
       nock(projectUrl).get("/current").reply(204);
     });
 
@@ -172,15 +197,35 @@ describe("Backend", () => {
         await backend.publishResource(token, "settings", { toggle: "on" });
       });
 
+      it("creates a new branch in the target repo", () => {
+        expect(mockRepoCreateRef).toHaveBeenCalledTimes(1);
+        expect(mockRepoCreateRef).toHaveBeenCalledWith(expectedBranchName, "original-sha-for-base-branch");
+      });
+
       it("sends the sha of the original file to createOrUpdateFile", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(1);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
-          "publish-repo-main-branch",
+          expectedBranchName,
           "resources/settings.json",
           '[Publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
           "existing-file-sha"
         );
+      });
+
+      it("updates submodule", () => {
+        expect(mockRepoUpdateSubmodule).toHaveBeenCalledTimes(1);
+        expect(mockRepoUpdateSubmodule).toHaveBeenCalledWith(
+          expectedBranchName,
+          "publish-repo-git-sha",
+          "submodule-repo",
+          "[Publisering] oppdater monorepo ref: publish-repo-git-sha"
+        );
+      });
+
+      it("deletes the branch", () => {
+        expect(mockRepoDeleteRef).toHaveBeenCalledTimes(1);
+        expect(mockRepoDeleteRef).toHaveBeenCalledWith(expectedBranchName);
       });
     });
 
@@ -193,7 +238,7 @@ describe("Backend", () => {
       it("calls createOrUpdateFile without a sha", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(1);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
-          "publish-repo-main-branch",
+          expectedBranchName,
           "resources/settings.json",
           '[Publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",

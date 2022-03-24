@@ -1,11 +1,14 @@
 import {
+  mockCreateCommit,
   mockCreateOrUpdateFileContents,
   mockCreatePullRequest,
   mockCreateRef,
+  mockCreateTree,
   mockDeleteRef,
   mockGetContent,
   mockGetRef,
   mockMergePullRequest,
+  mockUpdateRef,
   Octokit,
 } from "@octokit/rest";
 import { GitHubRepo } from "./GitHubRepo.js";
@@ -26,6 +29,9 @@ describe("GitHubRepo", () => {
     mockGetRef.mockClear();
     mockCreateRef.mockClear();
     mockDeleteRef.mockClear();
+    mockCreateTree.mockClear();
+    mockCreateCommit.mockClear();
+    mockUpdateRef.mockClear();
     mockGetContent.mockClear();
     mockCreateOrUpdateFileContents.mockClear();
     mockCreatePullRequest.mockClear();
@@ -42,6 +48,20 @@ describe("GitHubRepo", () => {
       repo.getRef("main");
       expect(mockGetRef).toHaveBeenCalledTimes(1);
       expect(mockGetRef).toHaveBeenCalledWith({ owner, repo: repoName, ref: "heads/main" });
+    });
+  });
+
+  describe("hasBranchChanged", () => {
+    it("returns false, if ref sha is the same as the branch sha", async () => {
+      const ref = { data: { object: { sha: "branch-sha" } } };
+      mockGetRef.mockReturnValueOnce({ data: { object: { sha: "branch-sha" } } });
+      expect(await repo.hasBranchChanged(ref, "branch")).toBe(false);
+    });
+
+    it("returns true, if ref sha is different from the branch sha", async () => {
+      const ref = { data: { object: { sha: "ref-sha" } } };
+      mockGetRef.mockReturnValueOnce({ data: { object: { sha: "branch-sha" } } });
+      expect(await repo.hasBranchChanged(ref, "branch")).toBe(true);
     });
   });
 
@@ -100,6 +120,46 @@ describe("GitHubRepo", () => {
         path: "files/newFile.json",
         message: "Create newFile.json",
         content: "base64-string",
+      });
+    });
+  });
+
+  describe("updateSubmodule", () => {
+    beforeEach(() => {
+      mockGetRef.mockReturnValueOnce({ data: { object: { sha: "new-branch-sha" } } });
+      mockCreateTree.mockReturnValueOnce({ data: { sha: "new-tree-sha" } });
+      mockCreateCommit.mockReturnValueOnce({ data: { sha: "new-commit-sha" } });
+      repo.updateSubmodule("new-branch", "submoduleSha", "submodulePath", "message");
+    });
+
+    it("creates a new git tree with an updated reference to the subModule", () => {
+      expect(mockCreateTree).toHaveBeenCalledTimes(1);
+      expect(mockCreateTree).toHaveBeenCalledWith({
+        owner,
+        repo: repoName,
+        base_tree: "new-branch-sha",
+        tree: [{ path: "submodulePath", mode: "160000", type: "commit", sha: "submoduleSha" }],
+      });
+    });
+
+    it("commits the new tree, with the initial branch sha as parent", () => {
+      expect(mockCreateCommit).toHaveBeenCalledTimes(1);
+      expect(mockCreateCommit).toHaveBeenLastCalledWith({
+        owner,
+        repo: repoName,
+        message: "message",
+        tree: "new-tree-sha",
+        parents: ["new-branch-sha"],
+      });
+    });
+
+    it("updates the branch ref to point at the new commit sha", () => {
+      expect(mockUpdateRef).toHaveBeenCalledTimes(1);
+      expect(mockUpdateRef).toHaveBeenCalledWith({
+        owner,
+        repo: repoName,
+        ref: "heads/new-branch",
+        sha: "new-commit-sha",
       });
     });
   });

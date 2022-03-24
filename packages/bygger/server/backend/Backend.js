@@ -88,7 +88,7 @@ export class Backend {
     return updatedBaseSha;
   }
 
-  pushFilesAndUpdateSubModuleCallback(files) {
+  pushFilesAndUpdateSubmoduleCallback(files) {
     return async (branch) => {
       const initialRef = await this.skjemaUtfylling.getRef(branch);
 
@@ -130,7 +130,7 @@ export class Backend {
     return this.performChangesOnSeparateBranch(
       this.config.publishRepoBase,
       `publish-${formPath}--${guid()}`,
-      this.pushFilesAndUpdateSubModuleCallback([translations, form])
+      this.pushFilesAndUpdateSubmoduleCallback([translations, form])
     );
   }
 
@@ -146,7 +146,7 @@ export class Backend {
     return this.performChangesOnSeparateBranch(
       this.config.publishRepoBase,
       `publish-${resourceName}--${guid()}`,
-      this.pushFilesAndUpdateSubModuleCallback([resource])
+      this.pushFilesAndUpdateSubmoduleCallback([resource])
     );
   }
 

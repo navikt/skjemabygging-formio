@@ -7,8 +7,12 @@ export const mockRepoGetFileIfItExists = jest
 export const mockRepoCreateOrUpdateFileContents = jest
   .fn()
   .mockReturnValue({ data: { commit: { sha: "new-commit-sha" } } });
+export const mockRepoUpdateSubmodule = jest.fn();
 export const mockRepoCreatePullRequest = jest.fn().mockReturnValue({ data: { number: 14 } });
 export const mockRepoMergePullRequest = jest.fn();
+export const mockRepoHasBranchChanged = jest
+  .fn()
+  .mockImplementation((ref, _branch) => mockRepoGetRef().data.object.sha !== ref.data.object.sha);
 
 export const GitHubRepo = jest.fn().mockImplementation(() => {
   return {
@@ -17,7 +21,9 @@ export const GitHubRepo = jest.fn().mockImplementation(() => {
     deleteRef: mockRepoDeleteRef,
     getFileIfItExists: mockRepoGetFileIfItExists,
     createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
+    updateSubmodule: mockRepoUpdateSubmodule,
     createPullRequest: mockRepoCreatePullRequest,
     mergePullRequest: mockRepoMergePullRequest,
+    hasBranchChanged: mockRepoHasBranchChanged,
   };
 });

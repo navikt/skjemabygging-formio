@@ -56,7 +56,7 @@ export class GitHubRepo {
     return this.octokit.rest.repos.createOrUpdateFileContents(parameters);
   }
 
-  async updateSubmodule(branch, subModuleSha, subModulePath, commitMessage) {
+  async updateSubmodule(branch, submoduleSha, submodulePath, commitMessage) {
     const {
       data: {
         object: { sha: currentSha },
@@ -70,10 +70,10 @@ export class GitHubRepo {
       base_tree: currentSha,
       tree: [
         {
-          path: subModulePath,
+          path: submodulePath,
           mode: "160000",
           type: "commit",
-          sha: subModuleSha,
+          sha: submoduleSha,
         },
       ],
     });
