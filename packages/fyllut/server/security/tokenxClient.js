@@ -30,7 +30,7 @@ class TokenXClient {
       subject_token: idportenToken,
       audience: targetClientId,
     };
-    // console.log("this.tokenEndpoint", tokenEndpoint);
+
     const response = await fetch(tokenEndpoint, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       method: "POST",

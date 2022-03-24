@@ -12,6 +12,7 @@
     "start": "cross-env-shell PORT=8081 NODE_ENV=development nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
     "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:coverage": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "check-env": "node -e 'console.log(process.env)' | grep npm"
   },
   "jest": {
