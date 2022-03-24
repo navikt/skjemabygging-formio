@@ -64,13 +64,13 @@ const DataGridRow: FunctionComponent = ({ label, components }) => (
 );
 
 
-const useImgSummaryStyles = (size) =>
+const useImgSummaryStyles = (widthPercent) =>
   makeStyles({
-    description: { width: size + "%", maxHeight: 500, minWidth: 100, maxWidth: "100%" },
+    description: { minWidth: 100, maxWidth: widthPercent + "%" },
   })();
 
-const ImageSummary: FunctionComponent = ({ label, values, alt, size }) => {
-  const { description } = useImgSummaryStyles(size);
+const ImageSummary: FunctionComponent = ({ label, values, alt, widthPercent }) => {
+  const { description } = useImgSummaryStyles(widthPercent);
   return (
     <>
       <dt>{label}</dt>
