@@ -78,7 +78,7 @@ const useMottaksadresser = (): Output => {
       body: JSON.stringify(payload),
     }).then((res) => {
       if (res.status === 204) {
-        userAlerter.flashWarningMessage(
+        userAlerter.setWarningMessage(
           "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
         );
       } else if (res.ok) {
