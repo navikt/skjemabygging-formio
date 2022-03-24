@@ -21,7 +21,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
-  const { state, search } = useLocation();
+  const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
 

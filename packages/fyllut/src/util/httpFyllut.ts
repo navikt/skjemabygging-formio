@@ -1,21 +1,25 @@
-import { url, http } from "@navikt/skjemadigitalisering-shared-components";
+import { http, url } from "@navikt/skjemadigitalisering-shared-components";
 
 const getDefaultHeaders = () => {
   const submissionMethod = url.getUrlParam(window.location.search, "sub");
   if (Object.values(http.SubmissionMethodType).includes(submissionMethod)) {
     return {
       "Fyllut-Submission-Method": submissionMethod,
-    }
+    };
   }
   return {};
-}
+};
 
-const get = async <T>(url: string, headers?: http.FetchHeader): Promise<T> => {
+const get = async <T>(url: string, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
   try {
-    return await http.get(url, {
-      ...getDefaultHeaders(),
-      ...headers,
-    });
+    return await http.get(
+      url,
+      {
+        ...getDefaultHeaders(),
+        ...headers,
+      },
+      opts
+    );
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
       redirectUnauthenticated();
@@ -25,12 +29,17 @@ const get = async <T>(url: string, headers?: http.FetchHeader): Promise<T> => {
   }
 };
 
-const put = async <T>(url: string, body: object, headers?: http.FetchHeader): Promise<T> => {
+const put = async <T>(url: string, body: object, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
   try {
-    return await http.put(url, body, {
-      ...getDefaultHeaders(),
-      ...headers,
-    });
+    return await http.put(
+      url,
+      body,
+      {
+        ...getDefaultHeaders(),
+        ...headers,
+      },
+      opts
+    );
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
       redirectUnauthenticated();
@@ -40,12 +49,17 @@ const put = async <T>(url: string, body: object, headers?: http.FetchHeader): Pr
   }
 };
 
-const post = async <T>(url: string, body: object, headers?: http.FetchHeader): Promise<T> => {
+const post = async <T>(url: string, body: object, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
   try {
-    return await http.post(url, body, {
-      ...getDefaultHeaders(),
-      ...headers,
-    });
+    return await http.post(
+      url,
+      body,
+      {
+        ...getDefaultHeaders(),
+        ...headers,
+      },
+      opts
+    );
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
       redirectUnauthenticated();
@@ -57,7 +71,7 @@ const post = async <T>(url: string, body: object, headers?: http.FetchHeader): P
 
 const redirectUnauthenticated = () => {
   if (process.env.NODE_ENV !== "development") {
-    const {pathname, search, origin} = window.location;
+    const { pathname, search, origin } = window.location;
 
     const loginUrl = `${origin}/fyllut/oauth2/login?redirect=${pathname}${search}`;
 
@@ -71,6 +85,6 @@ const httpFyllut = {
   get,
   post,
   put,
-}
+};
 
 export default httpFyllut;

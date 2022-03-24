@@ -10,6 +10,7 @@ import forms from "./forms.js";
 import globalTranslations from "./global-translations.js";
 import mottaksadresser from "./mottaksadresser.js";
 import pdf from "./pdf.js";
+import sendInn from "./send-inn.js";
 import translations from "./translations.js";
 
 const apiRouter = express.Router();
@@ -24,6 +25,7 @@ apiRouter.post("/foersteside", azureAccessTokenHandler, foersteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
+apiRouter.post("/send-inn", sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 

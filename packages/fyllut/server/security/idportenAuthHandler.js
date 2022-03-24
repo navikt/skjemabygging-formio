@@ -4,7 +4,7 @@ import { logger } from "../logger.js";
 
 const idportenAuthHandler = (req, res, next) => {
   const innsendingHeader = req.header("Fyllut-Submission-Method");
-  if (innsendingHeader === "digital") {
+  if (innsendingHeader === "digital" && process.env.NODE_ENV !== "development") {
     const authHeader = req.header("Authorization");
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -31,7 +31,7 @@ const idportenAuthHandler = (req, res, next) => {
     }
 
     logger.debug("Validation of jwt token succeeded");
-    // TODO set res.locals.user?
+    req.getIdportenPid = () => tokenContent.pid;
   }
   next();
 };

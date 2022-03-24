@@ -1,10 +1,14 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { SummaryPage, Props } from "./SummaryPage";
+import { AppConfigContextType, AppConfigProvider } from "../configContext";
+import nock from "nock";
+
+const originalWindowLocation = window.location;
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -47,7 +51,10 @@ type Buttons = {
   sendDigitaltKnapp: HTMLButtonElement;
 };
 
-const getButton = (label): HTMLButtonElement => screen.queryByRole("link", { name: label }) as HTMLButtonElement;
+const getButton = (label): HTMLButtonElement => (
+  screen.queryByRole("link", { name: label }) as HTMLButtonElement
+  || screen.queryByRole("button", { name: label }) as HTMLButtonElement
+);
 
 const getButtons = (): Buttons => {
   const redigerSvarKnapp = getButton(TEXTS.grensesnitt.summaryPage.editAnswers) as HTMLButtonElement;
@@ -57,18 +64,21 @@ const getButtons = (): Buttons => {
   return { redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp };
 };
 
-const renderSummaryPage = async (props: Partial<Props>): Promise<{ history: any; buttons: Buttons }> => {
+const renderSummaryPage = async (props: Partial<Props>, appConfigProps: AppConfigContextType = {}): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
     formUrl: "/testform",
     submission: {},
     form: {},
+    translations: {},
     ...props,
   };
   render(
-    <Router history={history}>
-      <SummaryPage {...summaryPageProps} />
-    </Router>
+    <AppConfigProvider {...appConfigProps}>
+      <Router history={history}>
+        <SummaryPage {...summaryPageProps} />
+      </Router>
+    </AppConfigProvider>
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { name: summaryPageProps.form.title });
@@ -76,14 +86,14 @@ const renderSummaryPage = async (props: Partial<Props>): Promise<{ history: any;
 };
 
 describe("SummaryPage", () => {
+  const expectKnapperForPapirOgDigitalInnsending = (buttons: Buttons) => {
+    const { redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp } = buttons;
+    expect(redigerSvarKnapp).toBeInTheDocument();
+    expect(sendIPostenKnapp).toBeInTheDocument();
+    expect(sendDigitaltKnapp).toBeInTheDocument();
+    expect(gaVidereKnapp).not.toBeInTheDocument();
+  };
   describe("Form med både papir- og digital innsending", () => {
-    const expectKnapperForPapirOgDigitalInnsending = (buttons: Buttons) => {
-      const { redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp } = buttons;
-      expect(redigerSvarKnapp).toBeInTheDocument();
-      expect(sendIPostenKnapp).toBeInTheDocument();
-      expect(sendDigitaltKnapp).toBeInTheDocument();
-      expect(gaVidereKnapp).not.toBeInTheDocument();
-    };
 
     it("Rendrer default form med riktige knapper", async () => {
       const form = formWithProperties({ hasPapirInnsendingOnly: undefined, innsending: undefined });
@@ -157,6 +167,45 @@ describe("SummaryPage", () => {
 
       userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/ingen-innsending");
+    });
+  });
+
+  describe("Submission method", () => {
+    it("renders next-button when method=digital", async () => {
+      const windowLocation = {href: ""};
+      // @ts-ignore
+      Object.defineProperty(window, "location", {
+        value: windowLocation,
+        writable: true
+      });
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      nock(basePath)
+        .defaultReplyHeaders({
+          Location: sendInnUrl,
+        })
+        .post("/api/send-inn")
+        .reply(201, {}, {Location: "https://www.unittest.nav.no/send-inn/123"});
+      const form = formWithProperties({ hasPapirInnsendingOnly: false, innsending: "PAPIR_OG_DIGITAL" });
+      const { buttons } = await renderSummaryPage({ form }, {
+        submissionMethod: "digital",
+        baseUrl: basePath,
+      });
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+
+      userEvent.click(buttons.gaVidereKnapp);
+      await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
+      nock.isDone()
+
+      window.location = originalWindowLocation;
+    });
+    it("renders next-button when method=paper", async () => {
+      const form = formWithProperties({ hasPapirInnsendingOnly: false, innsending: "PAPIR_OG_DIGITAL" });
+      const { history, buttons } = await renderSummaryPage({ form }, {submissionMethod: "paper"});
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
 });

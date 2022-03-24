@@ -28,6 +28,27 @@ export class Pdfgen {
     const docDefinition = generator.generateDocDefinition();
     generator.writeDocDefinitionToStream(docDefinition, stream);
   }
+  static generatePdfBase64(submission, form, gitVersion, translations) {
+    const now = DateTime.local().setZone("Europe/Oslo");
+    const generator = new this(submission, form, gitVersion, now, translations);
+    const docDefinition = generator.generateDocDefinition();
+    return new Promise((resolve, reject) => {
+      try {
+        const doc = printer.createPdfKitDocument(docDefinition);
+        const chunks = [];
+        doc.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+        doc.on("end", function () {
+          const result = Buffer.concat(chunks);
+          resolve(result.toString("base64"));
+        });
+        doc.end();
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
 
   constructor(submission, form, gitVersion, nowAsLuxonDateTime, translations) {
     this.gitVersion = gitVersion;

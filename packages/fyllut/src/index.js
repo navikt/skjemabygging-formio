@@ -1,4 +1,4 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, url } from "@navikt/skjemadigitalisering-shared-components";
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -9,6 +9,8 @@ import * as serviceWorker from "./serviceWorker";
 import httpFyllut from "./util/httpFyllut";
 
 let featureToggles = {};
+
+const subissionMethod = url.getUrlParam(window.location.search, "sub");
 
 httpFyllut
   .get("/fyllut/api/config")
@@ -33,6 +35,8 @@ function renderReact(dokumentInnsendingBaseURL) {
         featureToggles={featureToggles}
         baseUrl={"/fyllut"}
         fyllutBaseURL={"/fyllut"}
+        submissionMethod={subissionMethod}
+        http={httpFyllut}
       >
         <BrowserRouter basename="/fyllut">
           <App />
