@@ -29,10 +29,10 @@ const FyllUtRouter = ({ form, translations }) => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
-  function beforeUnload(e) {
+  const beforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = "";
-  }
+  };
 
   useEffect(() => {
     loggSkjemaApnet();
