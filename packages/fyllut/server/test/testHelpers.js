@@ -1,4 +1,5 @@
 import { jest } from "@jest/globals";
+import jwt from "jsonwebtoken";
 import jose from "node-jose";
 
 const HOST_REGEX = /(https?:\/\/.*nav.no).*/;
@@ -29,4 +30,19 @@ const generateJwk = async (includePrivate) => {
   return result.toJSON(includePrivate);
 };
 
-export { generateJwk, mockRequest, mockResponse, extractPath, extractHost };
+const createMockIdportenJwt = (pid, expiresIn = "5m") => {
+  const { IDPORTEN_CLIENT_ID } = process.env;
+  const payload = {
+    token_type: "Bearer",
+    client_id: IDPORTEN_CLIENT_ID,
+    acr: "Level4",
+    pid,
+  };
+  return createAccessToken(payload, expiresIn);
+};
+
+const createAccessToken = (payload, expiresIn) => {
+  return jwt.sign(payload, "secret", { expiresIn });
+};
+
+export { createAccessToken, createMockIdportenJwt, generateJwk, mockRequest, mockResponse, extractPath, extractHost };

@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { config } from "../../config/config.js";
+import { logger } from "../../logger.js";
 import { Pdfgen } from "../../pdfgen.js";
 import { responseToError } from "../../utils/errorHandling.js";
 
@@ -49,9 +50,11 @@ const sendInn = {
         vedleggsListe: attachments,
       };
       if (!featureToggles.enableSendInnIntegration) {
+        logger.debug("SendInn integration not enabled, returning data in body");
         res.json(body);
         return;
       }
+      logger.debug("Posting data to SendInn");
       const sendInnResponse = await fetch(`${sendInnConfig.host}/fyllUt/leggTilVedlegg`, {
         method: "POST",
         redirect: "manual",
@@ -62,12 +65,15 @@ const sendInn = {
         body: JSON.stringify(body),
       });
       if (sendInnResponse.ok || sendInnResponse.status === 302) {
+        const location = sendInnResponse.headers.get("location");
+        logger.debug(`Successfylly posted data to SendInn (location: ${location})`);
         res.header({
           "Access-Control-Expose-Headers": "Location",
-          Location: sendInnResponse.headers.get("location"),
+          Location: location,
         });
         res.sendStatus(201);
       } else {
+        logger.debug("Failed to post data to SendInn");
         next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
       }
     } catch (err) {

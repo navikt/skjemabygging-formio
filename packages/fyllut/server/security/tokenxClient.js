@@ -20,7 +20,7 @@ class TokenXClient {
 
   exchangeToken = async (idportenToken, targetClientId) => {
     const tokenEndpoint = await this.getTokenEndpoint();
-    logger.debug(`Exchanging token (target ${targetClientId})`);
+    logger.debug(`Exchanging token (audience ${targetClientId})`);
     const clientAssertion = await this.createClientAssertion(tokenEndpoint);
     const body = {
       grant_type,
