@@ -1,50 +1,29 @@
-import jsdom from "jsdom";
-import NodeCache from "node-cache";
-import fetch from "node-fetch";
+import { injectDecoratorServerSide } from "@navikt/nav-dekoratoren-moduler/ssr/index.js";
 import { config } from "./config/config.js";
-import { logger } from "./logger.js";
+import { NaisCluster } from "./config/nais-cluster.js";
 
-const { JSDOM } = jsdom;
+const { naisClusterName } = config;
 
-const SECONDS_PER_MINUTE = 60;
-const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * 60;
-
-// Refresh cache every hour
-const cache = new NodeCache({
-  stdTTL: SECONDS_PER_HOUR,
-  checkperiod: SECONDS_PER_MINUTE,
-});
-
-const { decoratorUrl } = config;
-
-const getDecorator = async () =>
-  new Promise(async (resolve, reject) => {
-    const decorator = cache.get("main-cache");
-    if (decorator) {
-      resolve(decorator);
-    } else {
-      try {
-        const res = await fetch(decoratorUrl);
-        if (res.ok) {
-          const body = await res.text();
-          const { document } = new JSDOM(body).window;
-          const prop = "innerHTML";
-          const data = {
-            HEADER: document.getElementById("header-withmenu")[prop],
-            STYLES: document.getElementById("styles")[prop],
-            FOOTER: document.getElementById("footer-withmenu")[prop],
-            SCRIPTS: document.getElementById("scripts")[prop],
-          };
-          cache.set("main-cache", data);
-          logger.info(`Creating cache`);
-          resolve(data);
-        } else {
-          reject(new Error(`Klarte ikke å hente dekoratør, ${res.status}`));
-        }
-      } catch (error) {
-        reject(new Error(`Klarte ikke å hente dekoratør, ${error}`));
-      }
-    }
+const getDecorator = async (filePath, redirect) => {
+  /**
+   * https://github.com/navikt/nav-dekoratoren
+   */
+  return injectDecoratorServerSide({
+    env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
+    filePath,
+    redirectToUrl: redirect,
+    level: "Level4",
+    simple: true,
   });
+};
 
-export default getDecorator;
+const createRedirectUrl = (req, res) => {
+  const formId = res.locals.formId;
+  const baseUrl = `https://${req.get("host")}/fyllut`;
+  if (formId) {
+    return `${baseUrl}?form=${res.locals.formId}`;
+  }
+  return baseUrl;
+};
+
+export { getDecorator, createRedirectUrl };
