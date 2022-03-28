@@ -22,13 +22,15 @@ const getTokenxAccessToken = (req) => {
   return tokenxAccessToken;
 };
 
+const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+
 const sendInn = {
   post: async (req, res, next) => {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const { form, submission, attachments, language, translations = {} } = req.body;
-      const pdfBase64 = await Pdfgen.generatePdfBase64(submission, form, gitVersion, translations);
+      const pdfByteArray = await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations);
       const body = {
         brukerId: idportenPid,
         skjemanr: form.properties.skjemanummer,
@@ -36,16 +38,20 @@ const sendInn = {
         tema: form.properties.tema,
         spraak: language || "nb-NO",
         hoveddokument: {
+          vedleggsnr: form.properties.skjemanummer,
+          label: form.title,
           tittel: form.title,
           mimetype: "application/pdf",
           pakrevd: true,
-          document: [`data:application/pdf;base64,${pdfBase64}`],
+          document: pdfByteArray,
         },
         hoveddokumentVariant: {
+          vedleggsnr: form.properties.skjemanummer,
+          label: form.title,
           tittel: form.title,
           mimetype: "application/json",
           pakrevd: false,
-          document: [submission],
+          document: objectToByteArray(submission),
         },
         vedleggsListe: attachments,
       };
