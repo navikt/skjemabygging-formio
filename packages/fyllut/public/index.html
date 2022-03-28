@@ -16,21 +16,12 @@
 
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"/>
-    <% if (process.env.NODE_ENV !== 'development') { %>
-    {{{STYLES}}}
-    <% } %>
     <title>Fyll ut skjema - www.nav.no</title>
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <div class="pagewrapper">
-    <% if (process.env.NODE_ENV !== 'development') { %>
-    {{{HEADER}}}
-    <% } %>
     <div id="root"></div>
 </div>
-<% if (process.env.NODE_ENV !== 'development') { %>
-{{{FOOTER}}} {{{SCRIPTS}}}
-<% } %>
 </body>
 </html>

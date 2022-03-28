@@ -28,7 +28,9 @@ describe("httpFyllut", () => {
     });
 
     jest.spyOn(http, "get").mockImplementation(() => {
-      throw new httpFyllut.UnauthenticatedError();
+      return new Promise((resolve, reject) => {
+        reject(new httpFyllut.UnauthenticatedError());
+      });
     });
 
     try {
