@@ -18,8 +18,7 @@ const ModalPrompt = () => {
       isOpen={openModal}
       onRequestClose={() => setOpenModal(false)}
       closeButton={true}
-      contentLabel={TEXTS.statiske.FormPageFyllUt.contentLabel}
-      ariaHideApp={false}
+      contentLabel={TEXTS.statiske.FormPageFyllUt.title}
     >
       <div>
         <Systemtittel className="margin-bottom-double">{translate(TEXTS.statiske.FormPageFyllUt.title)}</Systemtittel>
