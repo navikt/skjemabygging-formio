@@ -10,7 +10,6 @@ export const statiske = {
     title: "Bruk av mobil eller nettbrett!",
     content:
       "Dette er en tjeneste under utvikling. Hvis du vet hvordan du laster ned og laster opp filer, eller tar utskrift fra enheten din, så kan du fortsette. Ellers anbefaler vi at du bruker en datamaskin.",
-    contentLabel: "Mobil eller nettbrett",
     alertInfo:
       "Dette er en tjeneste under utvikling. Hvis du vet hvordan du laster ned og laster opp filer fra enheten din kan du velge digital innsending. Ellers anbefaler vi at du velger «send i posten».",
   },
