@@ -12,7 +12,7 @@ const MOCK_PREDEFINED_TEXTS_I18N_EN = {
   Neste: "Next",
 };
 jest.mock("../translations/global/utils", () => ({
-  getAllPredefinedOriginalTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
+  getTranslationKeysForAllPredefinedTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
   tags: { VALIDERING: "validering", GRENSESNITT: "grensesnitt" },
 }));
 
@@ -36,54 +36,133 @@ describe("useFormioTranslations", () => {
     fetchSpy.mockClear();
   });
 
-  describe("loadGlobalTranslations", () => {
-    it("fetches all global translations when no language or tag is provided", async () => {
-      const translations = formioTranslations.loadGlobalTranslations();
-      await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
-      expect(fetchSpy).toHaveBeenCalledWith(
-        `${projectUrl}/language/submission?data.name=global&limit=1000`,
-        expectedHeader
-      );
-    });
+  describe("Global translations", () => {
+    const valideringI18n = {
+      data: {
+        language: "en",
+        name: "global",
+        scope: "global",
+        tag: "validering",
+        i18n: {
+          minYear: "{{field}} cannot be before {{minYear}}",
+          maxYear: "{{field}} cannot be later than {{maxYear}}",
+        },
+      },
+    };
+    const grensesnittI18n = {
+      data: {
+        language: "en",
+        name: "global",
+        scope: "global",
+        tag: "grensesnitt",
+        i18n: {
+          Ja: "Yes",
+          Nei: "No",
+        },
+      },
+    };
 
-    it("fetches all global translations for the given language", async () => {
-      const translations = formioTranslations.loadGlobalTranslations("en");
-      await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
-      expect(fetchSpy).toHaveBeenCalledWith(
-        `${projectUrl}/language/submission?data.name=global&data.language=en&limit=1000`,
-        expectedHeader
-      );
-    });
+    describe("loadGlobalTranslations", () => {
+      it("fetches all global translations when no language or tag is provided", async () => {
+        const translations = formioTranslations.loadGlobalTranslations();
+        await waitFor(() => expect(translations).toBeDefined());
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(fetchSpy).toHaveBeenCalledWith(
+          `${projectUrl}/language/submission?data.name=global&limit=1000`,
+          expectedHeader
+        );
+      });
 
-    it("fetches English translations and check the response with validering tag", async () => {
-      const fetchMockImpl = (globalTranslations) => {
-        return () => {
-          return Promise.resolve(new Response(JSON.stringify(globalTranslations["en"])));
+      it("fetches all global translations for the given language", async () => {
+        const translations = formioTranslations.loadGlobalTranslations("en");
+        await waitFor(() => expect(translations).toBeDefined());
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(fetchSpy).toHaveBeenCalledWith(
+          `${projectUrl}/language/submission?data.name=global&data.language=en&limit=1000`,
+          expectedHeader
+        );
+      });
+
+      it("fetches English translations and does no mapping for text keys", async () => {
+        const fetchMockImpl = (globalTranslations) => {
+          return () => {
+            return Promise.resolve(new Response(JSON.stringify(globalTranslations["en"])));
+          };
         };
-      };
 
-      fetchSpy.mockImplementation(
-        fetchMockImpl({
+        fetchSpy.mockImplementation(
+          fetchMockImpl({
+            en: [valideringI18n, grensesnittI18n],
+          })
+        );
+
+        const globalTranslation = await waitFor(() => formioTranslations.loadGlobalTranslations("en"));
+        expect(globalTranslation).toEqual({
           en: [
             {
-              data: {
-                language: "en",
-                name: "global",
-                scope: "global",
-                tag: "validering",
-                i18n: {
-                  minYear: "{{field}} cannot be before {{minYear}}",
-                  maxYear: "{{field}} cannot be later than {{maxYear}}",
+              id: undefined,
+              name: "global",
+              scope: "global",
+              tag: "validering",
+              translations: {
+                minYear: {
+                  scope: "global",
+                  value: "{{field}} cannot be before {{minYear}}",
+                },
+                maxYear: {
+                  scope: "global",
+                  value: "{{field}} cannot be later than {{maxYear}}",
+                },
+              },
+            },
+            {
+              id: undefined,
+              name: "global",
+              scope: "global",
+              tag: "grensesnitt",
+              translations: {
+                Ja: {
+                  scope: "global",
+                  value: "Yes",
+                },
+                Nei: {
+                  scope: "global",
+                  value: "No",
                 },
               },
             },
           ],
-        })
-      );
+        });
+      });
+    });
 
-      formioTranslations.loadGlobalTranslations("en").then((globalTranslation) => {
+    describe("loadGlobalTranslationsForTranslationsPage", () => {
+      it("fetches all global translations when no language or tag is provided", async () => {
+        const translations = formioTranslations.loadGlobalTranslationsForTranslationsPage();
+        await waitFor(() => expect(translations).toBeDefined());
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(fetchSpy).toHaveBeenCalledWith(
+          `${projectUrl}/language/submission?data.name=global&limit=1000`,
+          expectedHeader
+        );
+      });
+
+      it("fetches English translations and maps original text value as key for texts with tag validering", async () => {
+        const fetchMockImpl = (globalTranslations) => {
+          return () => {
+            return Promise.resolve(new Response(JSON.stringify(globalTranslations["en"])));
+          };
+        };
+
+        fetchSpy.mockImplementation(
+          fetchMockImpl({
+            en: [valideringI18n, grensesnittI18n],
+          })
+        );
+
+        const globalTranslation = await waitFor(() =>
+          formioTranslations.loadGlobalTranslationsForTranslationsPage("en")
+        );
         expect(globalTranslation).toEqual({
           en: [
             {
@@ -102,82 +181,94 @@ describe("useFormioTranslations", () => {
                 },
               },
             },
+            {
+              id: undefined,
+              name: "global",
+              scope: "global",
+              tag: "grensesnitt",
+              translations: {
+                Ja: {
+                  scope: "global",
+                  value: "Yes",
+                },
+                Nei: {
+                  scope: "global",
+                  value: "No",
+                },
+              },
+            },
           ],
         });
       });
     });
-  });
 
-  describe("Publisering av globale oversettelser", () => {
-    const LOAD_GLOBAL_TRANSLATIONS_REGEX =
-      /\/language\/submission\?data\.name=global&data\.language=([a-z]{2}(-NO)?)&limit=1000$/;
+    describe("Publisering av globale oversettelser", () => {
+      const LOAD_GLOBAL_TRANSLATIONS_REGEX =
+        /\/language\/submission\?data\.name=global&data\.language=([a-z]{2}(-NO)?)&limit=1000$/;
 
-    const fetchMockImpl = (globalTranslations) => {
-      return (url, options) => {
-        if (LOAD_GLOBAL_TRANSLATIONS_REGEX.test(url)) {
-          const languageCode = LOAD_GLOBAL_TRANSLATIONS_REGEX.exec(url)?.[1];
-          return Promise.resolve(new Response(JSON.stringify(languageCode ? globalTranslations[languageCode] : {})));
-        }
-        if (url === "/api/published-resource/global-translations-en") {
-          return Promise.resolve(new Response("Ok"));
-        }
-        fail(`Manglende testoppsett: Ukjent url ${url}, options = ${JSON.stringify(options)}`);
+      const fetchMockImpl = (globalTranslations) => {
+        return (url, options) => {
+          if (LOAD_GLOBAL_TRANSLATIONS_REGEX.test(url)) {
+            const languageCode = LOAD_GLOBAL_TRANSLATIONS_REGEX.exec(url)?.[1];
+            return Promise.resolve(new Response(JSON.stringify(languageCode ? globalTranslations[languageCode] : {})));
+          }
+          if (url === "/api/published-resource/global-translations-en") {
+            return Promise.resolve(new Response("Ok"));
+          }
+          fail(`Manglende testoppsett: Ukjent url ${url}, options = ${JSON.stringify(options)}`);
+        };
       };
-    };
 
-    it("Publisering starter dersom alle predefinerte tekster er oversatt", (done) => {
-      fetchSpy.mockImplementation(
-        fetchMockImpl({
-          en: [
-            {
-              data: {
-                language: "en",
-                name: "global",
-                scope: "global",
-                tag: "validering",
-                i18n: MOCK_PREDEFINED_TEXTS_I18N_EN,
+      it("Publisering starter dersom alle predefinerte tekster er oversatt", async () => {
+        fetchSpy.mockImplementation(
+          fetchMockImpl({
+            en: [
+              {
+                data: {
+                  language: "en",
+                  name: "global",
+                  scope: "global",
+                  tag: "validering",
+                  i18n: MOCK_PREDEFINED_TEXTS_I18N_EN,
+                },
               },
-            },
-          ],
-        })
-      );
-      formioTranslations.publishGlobalTranslations("en").then(() => {
+            ],
+          })
+        );
+        await waitFor(() => formioTranslations.publishGlobalTranslations("en"));
         expect(mockUserAlerter.setErrorMessage).not.toHaveBeenCalled();
         expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled();
         const errorMessages = mockUserAlerter.flashSuccessMessage.mock.calls;
         expect(errorMessages).toHaveLength(1);
         expect(errorMessages[0][0]).toEqual("Publisering av Engelsk startet");
-        done();
       });
-    });
 
-    it("Feiler dersom det mangler oversettelser for noen av de predefinerte tekstene", (done) => {
-      fetchSpy.mockImplementation(
-        fetchMockImpl({
-          en: [
-            {
-              data: {
-                language: "en",
-                name: "global",
-                scope: "global",
-                tag: "validering",
-                i18n: {
-                  ...MOCK_PREDEFINED_TEXTS_I18N_EN,
-                  Forrige: undefined,
-                  Neste: undefined,
+      it("Feiler dersom det mangler oversettelser for noen av de predefinerte tekstene", async () => {
+        fetchSpy.mockImplementation(
+          fetchMockImpl({
+            en: [
+              {
+                data: {
+                  language: "en",
+                  name: "global",
+                  scope: "global",
+                  tag: "validering",
+                  i18n: {
+                    ...MOCK_PREDEFINED_TEXTS_I18N_EN,
+                    Forrige: undefined,
+                    Neste: undefined,
+                  },
                 },
               },
-            },
-          ],
-        })
-      );
-      formioTranslations.publishGlobalTranslations("en").then(() => {
+            ],
+          })
+        );
+        await waitFor(() => formioTranslations.publishGlobalTranslations("en"));
         expect(mockUserAlerter.flashSuccessMessage).not.toHaveBeenCalled();
         expect(mockUserAlerter.setErrorMessage).toHaveBeenCalled();
         const errorMessages = mockUserAlerter.setErrorMessage.mock.calls;
         expect(errorMessages).toHaveLength(1);
         expect(errorMessages[0][0]).toEqual("Det mangler oversettelser for følgende tekster: Forrige, Neste");
-        done();
       });
     });
   });
