@@ -1,11 +1,6 @@
 import { jest } from "@jest/globals";
-import jwt from "jsonwebtoken";
-import { mockRequest, mockResponse } from "../test/testHelpers.js";
+import { createAccessToken, mockRequest, mockResponse } from "../test/testHelpers.js";
 import idportenAuthHandler from "./idportenAuthHandler.js";
-
-const createAccessToken = (payload, expiresIn) => {
-  return jwt.sign(payload, "secret", { expiresIn });
-};
 
 const { IDPORTEN_CLIENT_ID } = process.env;
 

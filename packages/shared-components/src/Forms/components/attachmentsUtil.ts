@@ -18,9 +18,7 @@ const getRelevantAttachments = (form, submission) => {
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
       label: comp.label,
-      mimetype: "application/pdf",
       pakrevd: comp.properties.vedleggErValgfritt !== "ja",
-      document: [],
     }));
 };
 

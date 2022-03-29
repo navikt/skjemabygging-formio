@@ -28,7 +28,7 @@ export class Pdfgen {
     const docDefinition = generator.generateDocDefinition();
     generator.writeDocDefinitionToStream(docDefinition, stream);
   }
-  static generatePdfBase64(submission, form, gitVersion, translations) {
+  static generatePdfByteArray(submission, form, gitVersion, translations) {
     const now = DateTime.local().setZone("Europe/Oslo");
     const generator = new this(submission, form, gitVersion, now, translations);
     const docDefinition = generator.generateDocDefinition();
@@ -41,7 +41,7 @@ export class Pdfgen {
         });
         doc.on("end", function () {
           const result = Buffer.concat(chunks);
-          resolve(result.toString("base64"));
+          resolve(Array.from(result));
         });
         doc.end();
       } catch (err) {

@@ -1,12 +1,10 @@
 import nock from "nock";
 import request from "supertest";
 import { createApp } from "./app.js";
+import { config } from "./config/config.js";
+import { createMockIdportenJwt, extractHost, extractPath } from "./test/testHelpers.js";
 
-const HOST_REGEX = /(http:\/\/.*nav.no).*/;
-const PATH_REGEX = /http:\/\/.*nav.no(\/.*)/;
-
-const extractHost = (url) => HOST_REGEX.exec(url)[1];
-const extractPath = (url) => PATH_REGEX.exec(url)[1];
+const { sendInnConfig, tokenx: tokenxConfig } = config;
 
 describe("app", () => {
   it("Fetches config", async () => {
@@ -42,5 +40,39 @@ describe("app", () => {
 
     azureOpenidScope.done();
     skjemabyggingproxyScope.done();
+  });
+
+  it("Performs TokenX exchange before calling SendInn", async () => {
+    const sendInnLocation = "http://www.unittest.nav.no/sendInn/123";
+    const tokenEndpoint = "http://tokenx-unittest.nav.no/token";
+    const applicationData = {
+      form: { components: [], properties: { skjemanummer: "NAV 12.34-56" } },
+      submission: {},
+      attachments: [],
+      language: "nb-NO",
+      translations: {},
+    };
+
+    const tokenxWellKnownScope = nock(extractHost(tokenxConfig.wellKnownUrl))
+      .get(extractPath(tokenxConfig.wellKnownUrl))
+      .reply(200, { token_endpoint: tokenEndpoint });
+    const tokenEndpointNockScope = nock(extractHost(tokenEndpoint))
+      .post(extractPath(tokenEndpoint))
+      .reply(200, { access_token: "123456" }, { "Content-Type": "application/json" });
+    const sendInnNockScope = nock(sendInnConfig.host)
+      .post("/fyllUt/leggTilVedlegg")
+      .reply(302, "FOUND", { Location: sendInnLocation });
+
+    const res = await request(createApp())
+      .post("/fyllut/api/send-inn")
+      .send(applicationData)
+      .set("Fyllut-Submission-Method", "digital")
+      .set("Authorization", `Bearer ${createMockIdportenJwt("12345678911")}`); // <-- injected by idporten sidecar
+    expect(res.status).toEqual(201);
+    expect(res.headers["location"]).toMatch(sendInnLocation);
+
+    tokenxWellKnownScope.done();
+    tokenEndpointNockScope.done();
+    sendInnNockScope.done();
   });
 });

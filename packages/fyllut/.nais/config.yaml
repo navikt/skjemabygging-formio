@@ -25,6 +25,8 @@ spec:
       enabled: true
       locale: nb
       autoLogin: false
+  tokenx:
+    enabled: true
   ingresses:
   {{#each ingresses as |url|}}
      - {{url}}

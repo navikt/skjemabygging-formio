@@ -1,3 +1,4 @@
+import { guid } from "@navikt/skjemadigitalisering-shared-domain";
 import http from "./api/http";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
@@ -19,7 +20,6 @@ import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 import i18nData from "./i18nData";
 import Template from "./template";
 import { getIso8601String } from "./util/date";
-import { guid } from "./util/guid";
 import { navCssVariables } from "./util/navCssVariables";
 import url from "./util/url";
 
