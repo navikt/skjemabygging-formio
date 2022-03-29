@@ -8,9 +8,18 @@ import { useLanguages } from "../../context/languages/languages-context";
 const ModalPrompt = () => {
   const { translate } = useLanguages();
   const [openModal, setOpenModal] = useState(false);
+  const isiOS =
+    ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(navigator.platform) ||
+    // iPad on iOS 13 detection
+    (navigator.userAgent.includes("Mac") && "ontouchend" in document);
 
   useEffect(() => {
-    setOpenModal(true);
+    if (isiOS) {
+      setOpenModal(true);
+    }
+
+    console.log("userAgent", window.navigator.userAgent);
+    console.log("platform", window.navigator.platform);
   }, []);
 
   return (
@@ -19,6 +28,7 @@ const ModalPrompt = () => {
       onRequestClose={() => setOpenModal(false)}
       closeButton={true}
       contentLabel={TEXTS.statiske.FormPageFyllUt.title}
+      ariaHideApp={false}
     >
       <div>
         <Systemtittel className="margin-bottom-double">{translate(TEXTS.statiske.FormPageFyllUt.title)}</Systemtittel>
