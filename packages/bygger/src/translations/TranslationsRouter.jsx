@@ -14,7 +14,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
   const userAlerter = useContext(UserAlerterContext);
   const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
   const {
-    loadGlobalTranslations,
+    loadGlobalTranslationsForTranslationsPage,
     publishGlobalTranslations,
     loadTranslationsForEditPage,
     deleteTranslation,
@@ -35,7 +35,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
         render={({ match }) => (
           <GlobalTranslationsPage
             {...match.params}
-            loadGlobalTranslations={loadGlobalTranslations}
+            loadGlobalTranslations={loadGlobalTranslationsForTranslationsPage}
             publishGlobalTranslations={publishGlobalTranslations}
             deleteTranslation={deleteTranslation}
             saveTranslation={saveGlobalTranslation}
