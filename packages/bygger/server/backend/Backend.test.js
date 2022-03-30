@@ -259,32 +259,32 @@ describe("Backend", () => {
 
     describe("publishForm", () => {
       it("does not try to publish if authorization check to server fails", async () => {
-        nock(projectUrl).get("/current").replyWithError("My error");
+        const nockScope = nock(projectUrl).get("/current").replyWithError("My error");
         await expect(backend.publishForm(token, {}, {}, formPath)).rejects.toThrowError("My error");
-        nock.isDone();
+        expect(nockScope.isDone()).toBe(true);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
       });
 
       it("does not try to publish if authorization check to server returns unauthorized", async () => {
-        nock(projectUrl).get("/current").reply(401);
+        const nockScope = nock(projectUrl).get("/current").reply(401);
         await expect(backend.publishForm(token, {}, {}, formPath)).rejects.toThrowError("Unauthorized");
-        nock.isDone();
+        expect(nockScope.isDone()).toBe(true);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
       });
     });
 
     describe("publishResource", () => {
       it("does not try to publish if authorization check to server fails", async () => {
-        nock(projectUrl).get("/current").replyWithError("My error");
+        const nockScope = nock(projectUrl).get("/current").replyWithError("My error");
         await expect(backend.publishResource(token, "resourceName", {})).rejects.toThrowError("My error");
-        nock.isDone();
+        expect(nockScope.isDone()).toBe(true);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
       });
 
       it("does not try to publish if authorization check to server returns unauthorized", async () => {
-        nock(projectUrl).get("/current").reply(401);
+        const nockScope = nock(projectUrl).get("/current").reply(401);
         await expect(backend.publishResource(token, "resourceName", {})).rejects.toThrowError("Unauthorized");
-        nock.isDone();
+        expect(nockScope.isDone()).toBe(true);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
       });
     });
