@@ -21,7 +21,7 @@ export function flattenComponents(components) {
 }
 
 function isKeyInText(key, text) {
-  return text && text.search(`\\w+.${key}[^a-zA-z0-9_-]`) > -1;
+  return text && text.search(`\\w+\\.${key}[^a-zA-z0-9_-]`) > -1;
 }
 
 function areAnyPathsInText(paths, text) {
