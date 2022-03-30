@@ -1,24 +1,31 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
-    httpFyllut
-      .get(`/fyllut/api/forms`)
-      .then((forms) => {
-        setForms(forms);
-        setStatus("FINISHED LOADING");
-      })
-      .catch(() => {
-        setStatus("FORMS NOT FOUND");
-      });
-  }, []);
+    const params = new URLSearchParams(history.location.search);
+    const formId = params.get("form");
+    if (formId) {
+      history.replace(`/${formId}`);
+    } else {
+      httpFyllut
+        .get(`/fyllut/api/forms`)
+        .then((forms) => {
+          setForms(forms);
+          setStatus("FINISHED LOADING");
+        })
+        .catch(() => {
+          setStatus("FORMS NOT FOUND");
+        });
+    }
+  }, [history]);
 
   if (status === "LOADING") {
     return <LoadingComponent />;

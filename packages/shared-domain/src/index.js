@@ -1,12 +1,13 @@
+import languagesUtil from "./languages/languagesUtil";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
-import navFormUtils from "./utils/navFormUtils";
-import stringUtils from "./utils/stringUtils";
-import objectUtils from "./utils/objectUtils";
 import TEXTS from "./texts";
-import localizationUtils from "./utils/localization";
 import featureUtils from "./utils/featureUtils";
-import languagesUtil from "./languages/languagesUtil";
+import { guid } from "./utils/guid";
+import localizationUtils from "./utils/localization";
+import navFormUtils from "./utils/navFormUtils";
+import objectUtils from "./utils/objectUtils";
+import stringUtils from "./utils/stringUtils";
 
 export {
   createFormSummaryObject,
@@ -18,4 +19,5 @@ export {
   localizationUtils,
   featureUtils,
   languagesUtil,
+  guid,
 };

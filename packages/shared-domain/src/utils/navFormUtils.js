@@ -12,41 +12,40 @@ export const formMatcherPredicate = (pathFromUrl) => (form) => {
 };
 
 export function flattenComponents(components) {
-  return components.reduce(
-    (flattenedComponents, currentComponent) => {
-      return [
-        ...flattenedComponents,
-        currentComponent,
-        ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
-      ]
-    },
-    []
-  );
+  return components.reduce((flattenedComponents, currentComponent) => {
+    return [
+      ...flattenedComponents,
+      currentComponent,
+      ...(currentComponent.components ? flattenComponents(currentComponent.components) : []),
+    ];
+  }, []);
 }
 
 function hasConditionalOn(paths, component) {
-  return (component.conditional &&
-      (paths.includes(component.conditional.when)
-        || (component.conditional.json && paths.some(key => JSON.stringify(component.conditional.json).search(`data.${key}[^a-zA-z0-9_-]`) > -1))
-      )
-    )
-    || (component.customConditional && paths.some(key => component.customConditional.search(`data.${key}[^a-zA-z0-9_-]`) > -1));
+  return (
+    (component.conditional &&
+      (paths.includes(component.conditional.when) ||
+        (component.conditional.json &&
+          paths.some((key) => JSON.stringify(component.conditional.json).search(`data.${key}[^a-zA-z0-9_-]`) > -1)))) ||
+    (component.customConditional &&
+      paths.some((key) => component.customConditional.search(`data.${key}[^a-zA-z0-9_-]`) > -1))
+  );
 }
 
 const recursivelyFindDependentComponents = (mainId, downstreamPaths, comps) => {
   const dependentKeys = [];
-  comps.forEach(comp => {
+  comps.forEach((comp) => {
     if (comp.id !== mainId) {
       if (hasConditionalOn(downstreamPaths, comp)) {
-        dependentKeys.push({key: comp.key, label: comp.label});
+        dependentKeys.push({ key: comp.key, label: comp.label });
       }
       if (comp.components?.length > 0) {
         dependentKeys.push(...recursivelyFindDependentComponents(mainId, downstreamPaths, comp.components));
       }
     }
-  })
+  });
   return dependentKeys;
-}
+};
 
 const findById = (id, components) => {
   for (const component of components) {
@@ -61,7 +60,7 @@ const findById = (id, components) => {
     }
   }
   return undefined;
-}
+};
 
 export const findDependentComponents = (id, form) => {
   const idToPathMapping = {};
@@ -71,10 +70,31 @@ export const findDependentComponents = (id, form) => {
 
   const component = findById(id, form.components);
   if (component) {
-    const downstreamPaths = flattenComponents([component]).map(comp => idToPathMapping[comp.id]);
+    const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id]);
     return recursivelyFindDependentComponents(id, downstreamPaths, form.components);
   }
   return [];
+};
+
+const removeRecursively = (component, isTarget) => {
+  if (component.components?.length) {
+    component.components = component.components.filter((c) => !isTarget(c));
+    component.components.forEach((component) => {
+      removeRecursively(component, isTarget);
+    });
+  }
+};
+
+export const removeComponents = (form, isTarget) => {
+  const formCopy = JSON.parse(JSON.stringify(form));
+  removeRecursively(formCopy, isTarget);
+  return formCopy;
+};
+
+const VEDLEGGSPANEL_KEY = /^vedlegg(panel)?$/;
+export const removeVedleggspanel = (form) => {
+  const isVedleggspanel = (component) => component.type === "panel" && VEDLEGGSPANEL_KEY.test(component.key);
+  return removeComponents(form, isVedleggspanel);
 };
 
 const navFormUtils = {
@@ -82,5 +102,6 @@ const navFormUtils = {
   toFormPath,
   findDependentComponents,
   flattenComponents,
+  removeVedleggspanel,
 };
 export default navFormUtils;

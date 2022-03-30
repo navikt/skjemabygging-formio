@@ -1,5 +1,5 @@
-import httpFyllut from "./httpFyllut";
 import { http } from "@navikt/skjemadigitalisering-shared-components";
+import httpFyllut from "./httpFyllut";
 
 const originalWindowLocation = window.location;
 
@@ -7,13 +7,13 @@ describe("httpFyllut", () => {
   it("submission method header", () => {
     Object.defineProperty(window, "location", {
       value: {
-        search: "?sub=digital"
+        search: "?sub=digital",
       },
-      writable: true
+      writable: true,
     });
 
     const headers = httpFyllut.getDefaultHeaders();
-    expect(headers).toEqual({"Fyllut-Submission-Method": "digital"});
+    expect(headers).toEqual({ "Fyllut-Submission-Method": "digital" });
 
     window.location = originalWindowLocation;
   });
@@ -24,11 +24,13 @@ describe("httpFyllut", () => {
       value: {
         replace,
       },
-      writable: true
+      writable: true,
     });
 
     jest.spyOn(http, "get").mockImplementation(() => {
-      throw new httpFyllut.UnauthenticatedError();
+      return new Promise((resolve, reject) => {
+        reject(new httpFyllut.UnauthenticatedError());
+      });
     });
 
     try {

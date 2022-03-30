@@ -12,7 +12,7 @@ import {
 } from "../../types/translations";
 import { languagesInNorwegian } from "../context/i18n";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
-import { getAllPredefinedOriginalTexts, tags } from "../translations/global/utils";
+import { getTranslationKeysForAllPredefinedTexts, tags } from "../translations/global/utils";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -56,16 +56,22 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       },
     }));
 
-  const loadGlobalTranslations = async (language?: Language): Promise<FormioTranslationMap> => {
+  const loadGlobalTranslations = async (
+    language?: Language,
+    mapper = (response) => response
+  ): Promise<FormioTranslationMap> => {
     let filter = "";
     if (language) {
       filter += `&data.language=${language}`;
     }
 
     return fetchTranslations(`${formio.projectUrl}/language/submission?data.name=global${filter}&limit=1000`)
-      .then(mapFormioKeysToLabelsForValidering)
+      .then(mapper)
       .then(languagesUtil.globalEntitiesToI18nGroupedByTag);
   };
+
+  const loadGlobalTranslationsForTranslationsPage = async (language?: Language): Promise<FormioTranslationMap> =>
+    loadGlobalTranslations(language, mapFormioKeysToLabelsForValidering);
 
   const publishGlobalTranslations = async (languageCode) => {
     const globalTranslationsForCurrentLanguage = await loadGlobalTranslations(languageCode);
@@ -73,7 +79,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       (acc, cur) => ({ ...acc, ...cur.translations }),
       {}
     );
-    const originalTexts = getAllPredefinedOriginalTexts(true);
+    const originalTexts = getTranslationKeysForAllPredefinedTexts();
     const originalTextsWithNoTranslation = originalTexts.filter((text) => !i18n[text]);
     if (originalTextsWithNoTranslation.length > 0) {
       userAlerter.setErrorMessage(
@@ -174,7 +180,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     });
   };
 
-  const createTranslationSubmition = (data: {
+  const createTranslationSubmission = (data: {
     language: Language;
     name: string;
     scope: TranslationScope;
@@ -192,7 +198,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       }),
     });
 
-  const updateTranslationSubmition = (
+  const updateTranslationSubmission = (
     translationId: string,
     data: {
       language: Language;
@@ -225,7 +231,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     formTitle?: string
   ) => {
     if (!translationId) {
-      translationId = await createTranslationSubmition({ language, name, scope, form, tag }).then((response) => {
+      translationId = await createTranslationSubmission({ language, name, scope, form, tag }).then((response) => {
         if (response.ok) {
           return response.json().then((json) => json._id);
         } else {
@@ -238,7 +244,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     }
 
     if (translationId) {
-      updateTranslationSubmition(translationId, { language, i18n, name, scope, form, tag }).then((response) => {
+      updateTranslationSubmission(translationId, { language, i18n, name, scope, form, tag }).then((response) => {
         if (response.ok) {
           userAlerter.flashSuccessMessage(
             !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
@@ -301,6 +307,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
 
   return {
     loadGlobalTranslations,
+    loadGlobalTranslationsForTranslationsPage,
     publishGlobalTranslations,
     loadTranslationsForEditPage,
     deleteTranslation,

@@ -2,7 +2,7 @@
   "name": "@navikt/fyllut-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "type": "module",
   "private": true,
   "config": {
@@ -10,9 +10,9 @@
   },
   "scripts": {
     "start": "cross-env-shell PORT=8081 NODE_ENV=development nodemon --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
-    "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir $npm_package_main",
+    "start-prod": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir server.js",
     "test": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "check-env": "node -e 'console.log(process.env)' | grep npm"
+    "test:coverage": "cross-env node --icu-data-dir=$npm_package_config_icuDataDir --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "jest": {
     "testEnvironment": "jest-environment-node",
@@ -24,6 +24,7 @@
     "@elastic/ecs-morgan-format": "^1.1.0",
     "@elastic/ecs-winston-format": "^1.3.1",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/nav-dekoratoren-moduler": "^1.6.9",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "dotenv": "^10.0.0",
@@ -40,6 +41,7 @@
     "mustache-express": "^1.3.0",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.6.0",
+    "node-jose": "^2.1.0",
     "pdfmake": "^0.1.68",
     "prom-client": "^12.0.0",
     "qs": "^6.10.1",

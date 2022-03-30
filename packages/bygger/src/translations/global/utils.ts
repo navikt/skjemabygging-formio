@@ -26,6 +26,14 @@ const getAllPredefinedOriginalTexts = (skipUpperCasing = false): string[] => {
   });
 };
 
+const getTranslationKeysForAllPredefinedTexts = (): string[] => {
+  const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
+  return [
+    ...objectUtils.flattenToArray({ grensesnitt, statiske, common, pdfStatiske }, ([_key, value]) => value),
+    ...objectUtils.flattenToArray(validering, ([key]) => key),
+  ];
+};
+
 const getCurrentOriginalTextList = (currentTranslation: Array<any>): string[] => {
   return currentTranslation.reduce((originalTextList, translations) => {
     const { originalText } = translations;
@@ -83,5 +91,6 @@ export {
   flattenTextsForEditPanel,
   getGlobalTranslationsWithLanguageAndTag,
   getAllPredefinedOriginalTexts,
+  getTranslationKeysForAllPredefinedTexts,
   getCurrentOriginalTextList,
 };
