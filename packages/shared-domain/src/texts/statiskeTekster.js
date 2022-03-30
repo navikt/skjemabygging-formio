@@ -6,6 +6,13 @@ export const statiske = {
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis du finner noe som må korrigeres " +
       "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle opplysningene er riktige går du videre til neste steg.",
   },
+  FormPageFyllUt: {
+    title: "Bruk av mobil eller nettbrett!",
+    content:
+      "Dette er en tjeneste under utvikling. Hvis du vet hvordan du laster ned og laster opp filer, eller tar utskrift fra enheten din, så kan du fortsette. Ellers anbefaler vi at du bruker en datamaskin.",
+    alertInfo:
+      "Dette er en tjeneste under utvikling. Hvis du vet hvordan du laster ned og laster opp filer fra enheten din kan du velge digital innsending. Ellers anbefaler vi at du velger «send i posten».",
+  },
   prepareLetterPage: {
     chooseEntity: "Velg enhet som skal behandle saken din",
     chooseEntityDescription: "Du må velge enheten som skal behandle saken din",
