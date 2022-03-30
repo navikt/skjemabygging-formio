@@ -1,5 +1,5 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
 import React from "react";
@@ -55,10 +55,10 @@ describe("DigitalSubmissionButton", () => {
     let windowLocation;
 
     beforeEach(() => {
-      windowLocation = { href: "" };
+      windowLocation = {href: ""};
       Object.defineProperty(window, "location", {
         value: windowLocation,
-        writable: true,
+        writable: true
       });
       onError = jest.fn();
       onSuccess = jest.fn();
@@ -70,7 +70,9 @@ describe("DigitalSubmissionButton", () => {
     });
 
     it("calls onError when backend returns 500", async () => {
-      nock(BASE_URL).post("/api/send-inn").reply(500, { message: "Feil ved kall til SendInn" });
+      nock(BASE_URL)
+        .post("/api/send-inn")
+        .reply(500, { message: "Feil ved kall til SendInn" });
       renderButton({ onError, onSuccess });
       const button = screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward });
       expect(button).toBeInTheDocument();
@@ -80,7 +82,9 @@ describe("DigitalSubmissionButton", () => {
     });
 
     it("redirects when backend returns 201 and Location header", async () => {
-      nock(BASE_URL).post("/api/send-inn").reply(201, "CREATED", { Location: SEND_INN_URL });
+      nock(BASE_URL)
+        .post("/api/send-inn")
+        .reply(201, "CREATED", {Location: SEND_INN_URL});
       renderButton({ onError, onSuccess });
       const button = screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward });
       expect(button).toBeInTheDocument();

@@ -12,7 +12,6 @@
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@sentry/browser": "^5.27.0",
-    "@types/react-modal": "^3.12.0",
     "classnames": "^2.2.6",
     "craco-alias": "^3.0.1",
     "craco-less": "^1.16.0",
@@ -43,8 +42,7 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
-    "react-modal": "^3.12.1"
+    "react-scripts": "^4.0.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",

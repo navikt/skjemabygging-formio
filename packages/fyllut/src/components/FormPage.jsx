@@ -12,7 +12,6 @@ function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
   const [ready, setReady] = useState(false);
   const { featureToggles } = useAppConfig();
-
   useEffect(() => {
     async function fetchTranslations() {
       if (featureToggles.enableTranslations) {
