@@ -73,6 +73,12 @@ const styles = {
   "& textarea": {
     minHeight: "5.5em",
   },
+  "& .img-description": {
+    margin: "1rem 0",
+  },
+  "& .img-component": {
+    maxWidth: "100%",
+  },
 };
 
 const navFormStyle = merge(

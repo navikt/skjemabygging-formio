@@ -6,6 +6,17 @@ if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
 
+const tokenx = {
+  privateJwk: process.env.TOKEN_X_PRIVATE_JWK,
+  fyllutClientId: process.env.TOKEN_X_CLIENT_ID,
+  wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL,
+};
+
+const sendInnConfig = {
+  host: process.env.SEND_INN_HOST,
+  tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID,
+};
+
 const localDevelopmentConfig = {
   gitVersion: "local",
   useFormioApi: true,
@@ -16,6 +27,18 @@ const localDevelopmentConfig = {
   skjemabyggingProxyClientId: "95170319-b4d7-4190-8271-118ed19bafbf",
   azureOpenidTokenEndpoint: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token",
   clientId: process.env.AZURE_APP_CLIENT_ID || "a1eddc14-0e91-40bc-b910-a0cf39ac3223", // <-- fyllut i dev-gcp
+  mockIdportenPid: process.env.MOCK_IDPORTEN_PID || "12345678911",
+  mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || "IDPORTEN_JWT",
+  tokenx: {
+    ...tokenx,
+    wellKnownUrl: tokenx.wellKnownUrl || "https://tokendings.dev-gcp.nais.io/.well-known/oauth-authorization-server",
+    fyllutClientId: tokenx.fyllutClientId || "dev-gcp:skjemadigitalisering:fyllut",
+  },
+  sendInnConfig: {
+    ...sendInnConfig,
+    host: sendInnConfig.host || "https://innsending-api.dev.nav.no",
+    tokenxClientId: sendInnConfig.tokenxClientId || "dev-gcp:soknad:send-inn",
+  },
 };
 
 const defaultConfig = {
@@ -32,6 +55,8 @@ const defaultConfig = {
   skjemaDir: process.env.SKJEMA_DIR,
   resourcesDir: process.env.RESOURCES_DIR,
   translationDir: process.env.TRANSLATION_DIR,
+  tokenx,
+  sendInnConfig,
 };
 
 const config = {
@@ -39,6 +64,7 @@ const config = {
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
   naisClusterName: process.env.NAIS_CLUSTER_NAME,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
+  isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
   idportenClientId: process.env.IDPORTEN_CLIENT_ID,
 };

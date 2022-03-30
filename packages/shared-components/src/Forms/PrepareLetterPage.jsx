@@ -4,7 +4,7 @@ import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { canEnhetstypeBeSelected, fetchEnhetsListe } from "../api/fetchEnhetsliste";
 import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../components/error/AlertStripeHttpError";
@@ -18,6 +18,7 @@ import { genererFoerstesideData, getVedleggsFelterSomSkalSendes } from "../util/
 import { lastNedFilBase64 } from "../util/pdf";
 import DownloadPdfButton from "./components/DownloadPdfButton";
 import EnhetSelector from "./components/EnhetSelector";
+import NavigateButtonComponent from "./NavigateButtonComponent";
 
 const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
   const skalSendeFlereVedlegg = vedleggSomSkalSendes.length > 1;
@@ -182,7 +183,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL, baseUrl } = useAppConfig();
   const { translate } = useLanguages();
-  const { state, search } = useLocation();
+  const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const [enhetsListe, setEnhetsListe] = useState(undefined);
 
@@ -248,9 +249,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       <main id="maincontent" tabIndex={-1}>
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
-          <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
-            {translate(TEXTS.grensesnitt.goBack)}
-          </Link>
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
         </div>
       </main>
     </ResultContent>

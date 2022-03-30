@@ -1,13 +1,16 @@
-import { styled } from "@material-ui/styles";
+import { makeStyles, styled } from "@material-ui/styles";
 import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
-import React, { FunctionComponent, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import { navCssVariables } from "../util/navCssVariables";
+import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 
 // duplisert fra bygger
 type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
@@ -63,6 +66,23 @@ const DataGridRow: FunctionComponent = ({ label, components }) => (
   </div>
 );
 
+const useImgSummaryStyles = (widthPercent) =>
+  makeStyles({
+    description: { minWidth: 100, maxWidth: widthPercent + "%" },
+  })();
+
+const ImageSummary: FunctionComponent = ({ label, values, alt, widthPercent }) => {
+  const { description } = useImgSummaryStyles(widthPercent);
+  return (
+    <>
+      <dt>{label}</dt>
+      <dd>
+        <img className={description} src={values} alt={alt}></img>
+      </dd>
+    </>
+  );
+};
+
 const PanelSummary: FunctionComponent = ({ label, components }) => (
   <section className="margin-bottom-default wizard-page">
     <Systemtittel tag="h3" className="margin-bottom-default">
@@ -75,17 +95,23 @@ const PanelSummary: FunctionComponent = ({ label, components }) => (
 );
 
 const ComponentSummary = ({ components }) => {
-  return components.map(({ type, key, label, components, value }) => {
-    if (type === "panel") {
-      return <PanelSummary key={key} label={label} components={components} />;
-    } else if (type === "fieldset" || type === "navSkjemagruppe") {
-      return <FormSummaryFieldset key={key} label={label} components={components} />;
-    } else if (type === "datagrid") {
-      return <DataGridSummary key={key} label={label} components={components} />;
-    } else if (type === "selectboxes") {
-      return <SelectboxesSummary key={key} label={label} values={value} />;
-    } else {
-      return <FormSummaryField key={key} label={label} value={value} />;
+  return components.map(({ type, key, label, ...comp }) => {
+    switch (type) {
+      case "panel":
+        return <PanelSummary key={key} label={label} components={comp.components} />;
+      case "fieldset":
+      case "navSkjemagruppe":
+        return <FormSummaryFieldset key={key} label={label} components={comp.components} />;
+      case "datagrid":
+        return <DataGridSummary key={key} label={label} components={comp.components} />;
+      case "selectboxes":
+        return <SelectboxesSummary key={key} label={label} values={comp.value} />;
+      case "image":
+        return (
+          <ImageSummary key={key} label={label} values={comp.value} alt={comp.alt} widthPercent={comp.widthPercent} />
+        );
+      default:
+        return <FormSummaryField key={key} label={label} value={comp.value} />;
     }
   });
 };
@@ -100,16 +126,19 @@ const FormSummary = ({ form, submission }) => {
 };
 
 export interface Props {
-  form: any;
-  submission: any;
+  form: object;
+  submission: object;
+  translations: object;
   formUrl: string;
 }
 
-export function SummaryPage({ form, submission, formUrl }: Props) {
-  let { url } = useRouteMatch();
+export function SummaryPage({ form, submission, translations, formUrl }: Props) {
+  const { submissionMethod } = useAppConfig();
+  const { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
@@ -136,7 +165,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
-          {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
+          {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
             <div className="list-inline-item">
               <Link
                 className={`btn ${
@@ -147,23 +176,36 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
               >
-                {innsending === "KUN_PAPIR"
+                {innsending === "KUN_PAPIR" || submissionMethod === "paper"
                   ? translate(TEXTS.grensesnitt.moveForward)
                   : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
               </Link>
             </div>
           )}
-          {(innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
+          {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
             <div className="list-inline-item">
-              <Link
-                className="btn btn-primary btn-wizard-nav-next wizard-button"
-                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/forbered-innsending`, search, state: { previousPage: url } }}
-              >
-                {innsending === "KUN_DIGITAL"
-                  ? translate(TEXTS.grensesnitt.moveForward)
-                  : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
-              </Link>
+              {submissionMethod === "digital" ? (
+                <DigitalSubmissionButton
+                  form={form}
+                  submission={submission}
+                  translations={translations}
+                  onError={(err) => setErrorMessage(err.message)}
+                />
+              ) : (
+                <Link
+                  className="btn btn-primary btn-wizard-nav-next wizard-button"
+                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  to={{
+                    pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
+                    search,
+                    state: { previousPage: url },
+                  }}
+                >
+                  {innsending === "KUN_DIGITAL"
+                    ? translate(TEXTS.grensesnitt.moveForward)
+                    : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
+                </Link>
+              )}
             </div>
           )}
           {innsending === "INGEN" && (
@@ -178,6 +220,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             </div>
           )}
         </nav>
+        {errorMessage && <AlertStripeFeil>{errorMessage}</AlertStripeFeil>}
       </main>
     </SummaryContent>
   );

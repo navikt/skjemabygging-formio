@@ -1,6 +1,6 @@
-import { getCountries } from "./countries";
 import { jest } from "@jest/globals";
 import countries from "i18n-iso-countries";
+import { getCountries } from "./countries";
 
 describe("getCountries", () => {
   countries.getNames = jest.fn().mockReturnValue({});

@@ -1,5 +1,5 @@
 const config = {
-  setupFiles: ["<rootDir>/test/setupTests.js"],
+  setupFiles: ["<rootDir>/src/test/setupTests.js"],
 };
 
 export default config;
