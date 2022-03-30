@@ -1,13 +1,18 @@
 import { guid } from "nav-frontend-js-utils";
 import qs from "qs";
-import { fetchWithErrorHandling, stringTobase64 } from "./fetchUtils.js";
+import { fetchWithErrorHandling } from "./fetchUtils.js";
 import { GitHubRepo } from "./GitHubRepo.js";
+import {
+  createFileForPushingToRepo,
+  performChangesOnSeparateBranch,
+  pushFilesAndUpdateSubmoduleCallback,
+} from "./repoUtils";
 
 export class Backend {
   constructor(projectURL, config) {
     this.projectURL = projectURL;
     this.config = config;
-    this.skjemaUtfylling = new GitHubRepo("navikt", config.publishRepo, config.publishRepoToken);
+    this.skjemaUtfylling = new GitHubRepo(config.publishRepoOwner, config.publishRepo, config.publishRepoToken);
   }
 
   ho() {
@@ -46,107 +51,38 @@ export class Backend {
     );
   }
 
-  areEqualWithoutWhiteSpaces(string1, string2) {
-    return string1.replace(/\s/g, "") === string2.replace(/\s/g, "");
-  }
-
-  async pushJsonFileToRepo(branch, path, message, file) {
-    const content = stringTobase64(JSON.stringify(file), "utf-8");
-    const remoteFile = await this.skjemaUtfylling.getFileIfItExists(branch, path);
-    const sha = remoteFile && remoteFile.data && remoteFile.data.sha;
-
-    if (
-      remoteFile &&
-      remoteFile.data &&
-      remoteFile.data.content &&
-      this.areEqualWithoutWhiteSpaces(remoteFile.data.content, content)
-    ) {
-      // The file exists remotely, and is identical to the "local" file. Skip update.
-      return Promise.resolve(undefined);
-    }
-
-    const createResult = await this.skjemaUtfylling.createOrUpdateFileContents(branch, path, message, content, sha);
-    return createResult.data.commit.sha;
-  }
-
-  async performChangesOnSeparateBranch(base, branch, performChanges) {
-    const baseRef = await this.skjemaUtfylling.getRef(base);
-    await this.skjemaUtfylling.createRef(branch, baseRef.data.object.sha);
-
-    await performChanges(branch);
-
-    let updatedBaseSha;
-    if (await this.skjemaUtfylling.hasBranchChanged(baseRef, branch)) {
-      // Only create and merge pull request if the branch contains changes, compared to the base branch
-      const pullRequest = await this.skjemaUtfylling.createPullRequest("Automatic publishing job", branch, base);
-      await this.skjemaUtfylling.mergePullRequest(pullRequest.data.number);
-      const updatedBase = await this.skjemaUtfylling.getRef(base);
-      updatedBaseSha = updatedBase.data.object.sha;
-    }
-
-    await this.skjemaUtfylling.deleteRef(branch);
-    return updatedBaseSha;
-  }
-
-  pushFilesAndUpdateSubmoduleCallback(files) {
-    return async (branch) => {
-      const initialRef = await this.skjemaUtfylling.getRef(branch);
-
-      for (const file of files) {
-        await this.pushJsonFileToRepo(
-          branch,
-          file.path,
-          `[Publisering] ${file.type} "${file.name}", monorepo ref: ${this.config.gitSha}`,
-          file.content
-        );
-      }
-
-      if (await this.skjemaUtfylling.hasBranchChanged(initialRef, branch)) {
-        await this.skjemaUtfylling.updateSubmodule(
-          branch,
-          this.config.gitSha,
-          this.config.submoduleRepo,
-          `[Publisering] oppdater monorepo ref: ${this.config.gitSha}`
-        );
-      }
-    };
-  }
-
   async publishForm(userToken, formContent, translationsContent, formPath) {
-    const form = {
-      name: formContent.title,
-      path: `forms/${formPath}.json`,
-      type: "skjema",
-      content: formContent,
-    };
-    const translations = {
-      name: formContent.title,
-      path: `translations/${formPath}.json`,
-      type: "oversettelse",
-      content: translationsContent,
-    };
+    const formFile = createFileForPushingToRepo(formContent.title, `forms/${formPath}.json`, "skjema", formContent);
+    const translationsFile = createFileForPushingToRepo(
+      formContent.title,
+      `translations/${formPath}.json`,
+      "oversettelse",
+      translationsContent
+    );
 
     await this.checkUpdateAndPublishingAccess(userToken);
-    return this.performChangesOnSeparateBranch(
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
       this.config.publishRepoBase,
       `publish-${formPath}--${guid()}`,
-      this.pushFilesAndUpdateSubmoduleCallback([translations, form])
+      pushFilesAndUpdateSubmoduleCallback([translationsFile, formFile], this.config.gitSha, this.config.submoduleRepo)
     );
   }
 
   async publishResource(userToken, resourceName, resourceContent) {
-    const resource = {
-      name: resourceName,
-      path: `resources/${resourceName}.json`,
-      type: "ressurs",
-      content: resourceContent,
-    };
+    const resourceFile = createFileForPushingToRepo(
+      resourceName,
+      `resources/${resourceName}.json`,
+      "ressurs",
+      resourceContent
+    );
 
     await this.checkUpdateAndPublishingAccess(userToken);
-    return this.performChangesOnSeparateBranch(
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
       this.config.publishRepoBase,
       `publish-${resourceName}--${guid()}`,
-      this.pushFilesAndUpdateSubmoduleCallback([resource])
+      pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo)
     );
   }
 

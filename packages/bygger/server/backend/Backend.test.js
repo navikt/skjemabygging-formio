@@ -61,7 +61,7 @@ describe("Backend", () => {
 
   it("creates instance of GitHubRepo.js", () => {
     expect(GitHubRepo).toHaveBeenCalledTimes(1);
-    expect(GitHubRepo).toHaveBeenCalledWith("navikt", "publish-repo", "publishRepoToken");
+    expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", "publishRepoToken");
   });
 
   describe("publishForm", () => {
