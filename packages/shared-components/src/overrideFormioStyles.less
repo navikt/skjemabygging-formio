@@ -1,12 +1,12 @@
-@import "~nav-frontend-paneler-style";
-@import "~nav-frontend-skjema-style";
-@import "~nav-frontend-tabs-style";
-@import "~nav-frontend-typografi-style";
-@import "~nav-frontend-core";
-@import "~nav-frontend-chevron-style";
-@import "~nav-frontend-knapper-style";
-@import "~nav-frontend-lenker-style";
-@import "~nav-frontend-stegindikator-style";
+@import '~nav-frontend-paneler-style';
+@import '~nav-frontend-skjema-style';
+@import '~nav-frontend-tabs-style';
+@import '~nav-frontend-typografi-style';
+@import '~nav-frontend-core';
+@import '~nav-frontend-chevron-style';
+@import '~nav-frontend-knapper-style';
+@import '~nav-frontend-lenker-style';
+@import '~nav-frontend-stegindikator-style';
 
 //Stegindikator -- start
 .stegindikator__steg-inner--aktiv {
@@ -191,6 +191,37 @@
 .btn-wizard-nav-cancel {
   .lenke-mixin();
   border: none;
+}
+
+.accordion-link {
+  margin: 1rem 0;
+
+  &__link {
+    font-weight: bold;
+    background-image: url("data:image/svg+xml;utf8,<svg width='1rem' height='1rem' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' focusable='false' role='img'><path fill-rule='evenodd' clip-rule='evenodd' d='M12 17L3 8.429 4.5 7l7.5 7.143L19.5 7 21 8.429 12 17z' fill='%230067c5'></path></svg>");
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 1.5rem;
+    cursor: pointer;
+  }
+
+  &__text {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+
+  &--expand {
+    > .accordion-link {
+      &__link {
+        background-image: url("data:image/svg+xml;utf8,<svg width='1rem' height='1rem' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' focusable='false' role='img'><path fill-rule='evenodd' clip-rule='evenodd' d='M12 7l-9 8.571L4.5 17 12 9.857 19.5 17l1.5-1.429L12 7z' fill='%230067c5'></path></svg>");
+      }
+
+      &__text {
+        max-height: 6rem;
+      }
+    }
+  }
 }
 
 //NAV-knappestyling -- slutt

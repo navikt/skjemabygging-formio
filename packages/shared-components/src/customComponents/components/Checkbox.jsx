@@ -1,11 +1,10 @@
+import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
+import { Checkbox } from "nav-frontend-skjema";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { Checkbox } from "nav-frontend-skjema";
-import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
-
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
-import { descriptionPositionField } from "./fields/descriptionPositionField";
+import { advancedDescription } from "./fields/advancedDescription.js";
 
 /**
  * The wrapper for our custom React component
@@ -78,7 +77,7 @@ export default class CheckboxComponent extends FormioReactComponent {
         label: "Display",
         key: "display",
         components: [
-          descriptionPositionField,
+          ...advancedDescription,
           {
             key: "tooltip",
             ignore: true,

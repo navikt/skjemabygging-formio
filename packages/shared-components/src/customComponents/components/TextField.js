@@ -1,8 +1,8 @@
+import TextFieldDisplayEditForm from "formiojs/components/textfield/editForm/TextField.edit.display";
 import TextField from "formiojs/components/textfield/TextField";
 import TextFieldEditForm from "formiojs/components/textfield/TextField.form";
-import TextFieldDisplayEditForm from "formiojs/components/textfield/editForm/TextField.edit.display";
+import { advancedDescription } from "./fields/advancedDescription.js";
 import { fieldSizeField } from "./fields/fieldSize";
-import { descriptionPositionField } from "./fields/descriptionPositionField";
 
 TextField.editForm = () => {
   return TextFieldEditForm([
@@ -12,7 +12,7 @@ TextField.editForm = () => {
       components: [
         ...TextFieldDisplayEditForm,
         fieldSizeField,
-        descriptionPositionField,
+        ...advancedDescription,
         {
           key: "placeholder",
           ignore: true,

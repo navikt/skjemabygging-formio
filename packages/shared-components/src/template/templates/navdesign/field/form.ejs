@@ -1,5 +1,13 @@
 {% if (ctx.component.description && ctx.component.type !== "datagrid" && ctx.component.descriptionPosition === "above") { %}
-<div class="skjemagruppe__description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  <div class="skjemagruppe__description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  {% if (ctx.component.additionalDescription) { %}
+    <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
+      <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+        {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+      </a>
+      <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
+    </div>
+  {% } %}
 {% } %}
 
 {% if (!ctx.label.hidden && ctx.label.labelPosition !== 'bottom' && ctx.component.type !== "radio" && ctx.component.type !== "radiopanel" && ctx.component.type !== "selectboxes" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && ctx.component.type !== "navSkjemagruppe" && !ctx.component.isNavCheckboxPanel) { %}
@@ -7,13 +15,29 @@
 {% } %}
 
 {% if (ctx.component.description && ctx.component.type !== "radio" && ctx.component.type !== "radiopanel" && ctx.component.type !== "selectboxes" && ctx.component.type !== "datagrid" && !ctx.component.isNavCheckboxPanel && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
-<div class="skjemagruppe__description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  <div class="skjemagruppe__description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  {% if (ctx.component.additionalDescription) { %}
+    <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
+      <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+        {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+      </a>
+      <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
+    </div>
+  {% } %}
 {% } %}
 
 {{ctx.element}}
 
 {% if (ctx.component.description && ctx.component.type === "navCheckbox" && ctx.component.descriptionPosition === "below") { %}
-<div class="skjemagruppe__description skjemagruppe__checkbox-description--below">{{ctx.t(ctx.component.description)}}</div>
+  <div class="skjemagruppe__description skjemagruppe__checkbox-description--below">{{ctx.t(ctx.component.description)}}</div>
+  {% if (ctx.component.additionalDescription) { %}
+    <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
+      <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+        {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+      </a>
+      <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
+    </div>
+  {% } %}
 {% } %}
 
 {% if (!ctx.label.hidden && ctx.label.labelPosition === 'bottom' && ctx.component.type !== "radio" && ctx.component.type !== "radiopanel" && ctx.component.type !== "selectboxes" && ctx.component.type !== "navCheckbox" && ctx.component.type !== "datagrid" && !ctx.component.isNavCheckboxPanel) { %}

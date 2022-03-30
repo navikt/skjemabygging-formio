@@ -1,5 +1,13 @@
 {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
-<div class="skjemagruppe__description" id="{{ctx.id}}-{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  <div class="skjemagruppe__description" id="{{ctx.id}}-{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+  {% if (ctx.component.additionalDescription) { %}
+    <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
+      <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+        {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+      </a>
+      <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
+    </div>
+  {% } %}
 {% } %}
 <fieldset
     class="skjemagruppe"
@@ -14,6 +22,14 @@
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
         <div class="skjemagruppe__description" id="{{ctx.id}}-{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
+        {% if (ctx.component.additionalDescription) { %}
+          <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
+            <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+              {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+            </a>
+            <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
+          </div>
+        {% } %}
     {% } %}
     <div ref="{{ctx.nestedKey}}">
         {{ctx.children}}
