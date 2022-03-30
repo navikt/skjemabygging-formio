@@ -269,12 +269,6 @@ describe("Migration scripts", () => {
       },
     };
 
-    /*const componentWithConditionalOnValues = {
-      key: "comp-with-conditional-on-values",
-      id: "comp-with-conditional-on-values",
-      label: "Component with conditional on values",
-    };*/
-
     function createAffectedComponent(...diffs) {
       return diffs.map((diff) => ({ diff }));
     }
@@ -287,7 +281,6 @@ describe("Migration scripts", () => {
         key_ORIGINAL: "comp-that-is-changed",
         label: "Component that is changed",
       });
-      //expect(testForm).toEqual([]);
       const actual = getBreakingChanges(testForm, affectedComponents);
       expect(actual).toEqual([
         {
