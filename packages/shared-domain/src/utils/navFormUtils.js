@@ -1,3 +1,4 @@
+import FormioUtils from "formiojs/utils";
 import { camelCase } from "./stringUtils";
 
 export const toFormPath = (text) => camelCase(text).toLowerCase();
@@ -84,15 +85,14 @@ const findById = (id, components) => {
 };
 
 export const findDependentComponents = (id, form) => {
-  /*const idToPathMapping = {};
+  const idToPathMapping = {};
   FormioUtils.eachComponent(form.components, (component, path) => {
     idToPathMapping[component.id] = path;
-  });*/
+  });
 
   const component = findById(id, form.components);
   if (component) {
-    //const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id]);
-    const downstreamPaths = flattenComponents([component]).map((comp) => comp.key);
+    const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id]);
     return recursivelyFindDependentComponents(id, downstreamPaths, form.components);
   }
   return [];
