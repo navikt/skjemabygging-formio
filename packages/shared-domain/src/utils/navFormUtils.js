@@ -21,7 +21,6 @@ export function flattenComponents(components) {
 }
 
 function isKeyInText(key, text) {
-  console.log(`Is ${key} in '${text}': ${text && text.search(`\\w+.${key}[^a-zA-z0-9_-]`) > -1}`);
   return text && text.search(`\\w+.${key}[^a-zA-z0-9_-]`) > -1;
 }
 
@@ -85,11 +84,8 @@ const findById = (id, components) => {
 };
 
 export const findDependentComponents = (id, form) => {
-  console.log("Find dependent components");
   /*const idToPathMapping = {};
   FormioUtils.eachComponent(form.components, (component, path) => {
-    console.log("Path", path);
-    console.log("Component", JSON.stringify(component, null, 2));
     idToPathMapping[component.id] = path;
   });*/
 
@@ -97,10 +93,7 @@ export const findDependentComponents = (id, form) => {
   if (component) {
     //const downstreamPaths = flattenComponents([component]).map((comp) => idToPathMapping[comp.id]);
     const downstreamPaths = flattenComponents([component]).map((comp) => comp.key);
-    console.log("Recursively find dependent components for", id, downstreamPaths);
     return recursivelyFindDependentComponents(id, downstreamPaths, form.components);
-  } else {
-    console.log("Did not find component", id);
   }
   return [];
 };
