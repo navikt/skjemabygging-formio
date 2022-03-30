@@ -12,7 +12,7 @@ import {
   mockUpdateRef,
   Octokit,
 } from "@octokit/rest";
-import { GitHubRepo } from "./GitHubRepo.js";
+import { GitHubRepo, gitTreeMode } from "./GitHubRepo.js";
 
 jest.mock("@octokit/rest");
 
@@ -131,7 +131,9 @@ describe("GitHubRepo", () => {
       beforeEach(async () => {
         mockGetRef.mockReturnValueOnce({ data: { object: { sha: "new-branch-sha" } } });
         mockGetTree.mockReturnValueOnce({
-          data: { tree: [{ path: "mySubmodule", mode: "160000", sha: "my-submodule-sha", type: "commit" }] },
+          data: {
+            tree: [{ path: "mySubmodule", mode: gitTreeMode.SUBMODULE, sha: "my-submodule-sha", type: "commit" }],
+          },
         });
         await repo.updateSubmodule("branch", "my-submodule-sha", "mySubmodule", "message");
       });
@@ -147,7 +149,9 @@ describe("GitHubRepo", () => {
       beforeEach(async () => {
         mockGetRef.mockReturnValueOnce({ data: { object: { sha: "new-branch-sha" } } });
         mockGetTree.mockReturnValueOnce({
-          data: { tree: [{ path: "submodulePath", mode: "160000", sha: "old-submodule-sha", type: "commit" }] },
+          data: {
+            tree: [{ path: "submodulePath", mode: gitTreeMode.SUBMODULE, sha: "old-submodule-sha", type: "commit" }],
+          },
         });
         mockCreateTree.mockReturnValueOnce({ data: { sha: "new-tree-sha" } });
         mockCreateCommit.mockReturnValueOnce({ data: { sha: "new-commit-sha" } });
@@ -160,7 +164,7 @@ describe("GitHubRepo", () => {
           owner,
           repo: repoName,
           base_tree: "new-branch-sha",
-          tree: [{ path: "submodulePath", mode: "160000", type: "commit", sha: "submodule-sha" }],
+          tree: [{ path: "submodulePath", mode: gitTreeMode.SUBMODULE, type: "commit", sha: "submodule-sha" }],
         });
       });
 

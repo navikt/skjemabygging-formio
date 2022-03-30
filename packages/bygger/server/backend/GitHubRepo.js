@@ -1,5 +1,13 @@
 import { Octokit } from "@octokit/rest";
 
+// Not exhaustive
+export const gitTreeMode = {
+  BLOB: "100644",
+  EXECUTABLE: "100755",
+  DIRECTORY: "040000",
+  SUBMODULE: "160000",
+};
+
 export class GitHubRepo {
   constructor(owner, repo, personalAccessToken) {
     this.owner = owner;
@@ -70,11 +78,10 @@ export class GitHubRepo {
     });
 
     const isCurrentSubmoduleUpToDate = currentTree.data.tree.some(
-      (node) => node.mode === "160000" && node.path === submodulePath && node.sha === submoduleSha
+      (node) => node.mode === gitTreeMode.SUBMODULE && node.path === submodulePath && node.sha === submoduleSha
     );
 
     if (!isCurrentSubmoduleUpToDate) {
-      // Create a new git tree with updated reference to the submodule. mode: "160000" means submodule
       const tree = await this.octokit.rest.git.createTree({
         owner: this.owner,
         repo: this.repo,
@@ -82,7 +89,7 @@ export class GitHubRepo {
         tree: [
           {
             path: submodulePath,
-            mode: "160000",
+            mode: gitTreeMode.SUBMODULE,
             type: "commit",
             sha: submoduleSha,
           },
