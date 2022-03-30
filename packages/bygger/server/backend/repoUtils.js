@@ -35,7 +35,7 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         repo,
         branch,
         file.path,
-        `[Publisering] ${file.type} "${file.name}", monorepo ref: ${newSubmoduleGitSha}`,
+        `[publisering] ${file.type} "${file.name}", monorepo ref: ${newSubmoduleGitSha}`,
         file.contentAsBase64
       );
     }
@@ -45,7 +45,7 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         branch,
         newSubmoduleGitSha,
         submoduleRepo,
-        `[Publisering] oppdater monorepo ref: ${newSubmoduleGitSha}`
+        `[publisering] oppdater monorepo ref: ${newSubmoduleGitSha}`
       );
     }
   };

@@ -86,14 +86,14 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           `forms/${formPath}.json`,
-          '[Publisering] skjema "Form", monorepo ref: publish-repo-git-sha',
+          '[publisering] skjema "Form", monorepo ref: publish-repo-git-sha',
           "eyJ0aXRsZSI6IkZvcm0ifQ==",
           "existing-file-sha"
         );
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           `translations/${formPath}.json`,
-          '[Publisering] oversettelse "Form", monorepo ref: publish-repo-git-sha',
+          '[publisering] oversettelse "Form", monorepo ref: publish-repo-git-sha',
           "eyJlbiI6e319",
           "existing-file-sha"
         );
@@ -142,7 +142,7 @@ describe("Backend", () => {
           expectedBranchName,
           "publish-repo-git-sha",
           "submodule-repo",
-          "[Publisering] oppdater monorepo ref: publish-repo-git-sha"
+          "[publisering] oppdater monorepo ref: publish-repo-git-sha"
         );
       });
 
@@ -207,7 +207,7 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           "resources/settings.json",
-          '[Publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
+          '[publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
           "existing-file-sha"
         );
@@ -219,7 +219,7 @@ describe("Backend", () => {
           expectedBranchName,
           "publish-repo-git-sha",
           "submodule-repo",
-          "[Publisering] oppdater monorepo ref: publish-repo-git-sha"
+          "[publisering] oppdater monorepo ref: publish-repo-git-sha"
         );
       });
 
@@ -240,7 +240,7 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           "resources/settings.json",
-          '[Publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
+          '[publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
           undefined
         );
