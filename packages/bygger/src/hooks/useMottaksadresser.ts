@@ -65,28 +65,30 @@ const useMottaksadresser = (): Output => {
     }
   };
 
-  const publishMottaksadresser = () => {
+  const publishMottaksadresser = async () => {
     const payload = {
       token: Formiojs.getToken(),
       resource: mottaksadresseEntities,
     };
-    return fetch("/api/published-resource/mottaksadresser", {
+
+    const response = await fetch("/api/published-resource/mottaksadresser", {
       headers: {
         "content-type": "application/json",
       },
       method: "PUT",
       body: JSON.stringify(payload),
-    }).then((res) => {
-      if (res.status === 204) {
-        userAlerter.setWarningMessage(
-          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
-        );
-      } else if (res.ok) {
-        userAlerter.flashSuccessMessage("Publisering startet");
-      } else {
-        userAlerter.setErrorMessage(`Publisering feilet: ${res.status}`);
-      }
     });
+
+    const { changed } = await response.json();
+    if (response.ok && changed) {
+      userAlerter.flashSuccessMessage("Publisering startet");
+    } else if (response.ok && !changed) {
+      userAlerter.setWarningMessage(
+        "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+      );
+    } else {
+      userAlerter.setErrorMessage(`Publisering feilet: ${response.status}`);
+    }
   };
 
   const getFormsWithMottaksadresse = async (mottaksadresseId): Promise<NavFormType[]> => {

@@ -29,11 +29,7 @@ export function dispatcherWithBackend(backend) {
         }
         try {
           const result = await backend.publishForm(req.body.token, req.body.form, req.body.translations, formPath);
-          if (result === undefined) {
-            res.status(204).end();
-          } else {
-            res.send(`Publisering av skjema ${formPath} ok!`);
-          }
+          res.json({ changed: !!result, result });
         } catch (error) {
           handleError(error, res);
         }
@@ -51,11 +47,7 @@ export function dispatcherWithBackend(backend) {
         }
         try {
           const result = await backend.publishResource(req.body.token, resourceName, req.body.resource);
-          if (result === undefined) {
-            res.status(204).end();
-          } else {
-            res.send(`Publisering av ressurs ${resourceName} ok!`);
-          }
+          res.json({ changed: !!result, result });
         } catch (error) {
           handleError(error, res);
         }

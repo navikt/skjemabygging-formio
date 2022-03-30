@@ -1,4 +1,4 @@
-import { stringTobase64 } from "./fetchUtils";
+import { stringTobase64 } from "./fetchUtils.js";
 
 function areEqualWithoutWhiteSpaces(string1, string2) {
   return string1.replace(/\s/g, "") === string2.replace(/\s/g, "");

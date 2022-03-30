@@ -85,23 +85,25 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       token: Formiojs.getToken(),
       resource: globalTranslationsForCurrentLanguage,
     };
-    return fetch(`/api/published-resource/global-translations-${languageCode}`, {
+
+    const response = await fetch(`/api/published-resource/global-translations-${languageCode}`, {
       headers: {
         "content-type": "application/json",
       },
       method: "PUT",
       body: JSON.stringify(payload),
-    }).then((res) => {
-      if (res.status === 204) {
-        userAlerter.setWarningMessage(
-          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
-        );
-      } else if (res.ok) {
-        userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
-      } else {
-        userAlerter.setErrorMessage("Publisering feilet");
-      }
     });
+
+    const { changed } = await response.json();
+    if (response.ok && changed) {
+      userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
+    } else if (response.ok && !changed) {
+      userAlerter.setWarningMessage(
+        "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+      );
+    } else {
+      userAlerter.setErrorMessage("Publisering feilet");
+    }
   };
 
   const loadTranslationsForForm = async (formPath: string): Promise<FormioTranslationPayload[]> => {

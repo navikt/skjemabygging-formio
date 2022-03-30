@@ -6,7 +6,7 @@ import {
   createFileForPushingToRepo,
   performChangesOnSeparateBranch,
   pushFilesAndUpdateSubmoduleCallback,
-} from "./repoUtils";
+} from "./repoUtils.js";
 
 export class Backend {
   constructor(projectURL, config) {
