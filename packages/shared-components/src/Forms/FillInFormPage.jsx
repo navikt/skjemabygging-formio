@@ -1,16 +1,22 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
 import { Sidetittel } from "nav-frontend-typografi";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import LoadingComponent from "../components/LoadingComponent.jsx";
 import NavForm from "../components/NavForm.jsx";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import { useAppConfig } from "../configContext";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translate, translationsForNavForm } = useLanguages();
+  const [loading, setLoading] = useState(false);
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -28,6 +34,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
         onSubmit={(submission) => {
+          setLoading(true);
           setSubmission(submission);
           const urlSearchParams = new URLSearchParams(window.location.search).toString();
           history.push(`${formUrl}/oppsummering?${urlSearchParams}`);
