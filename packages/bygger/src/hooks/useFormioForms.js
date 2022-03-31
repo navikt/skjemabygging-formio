@@ -35,12 +35,19 @@ export const useFormioForms = (formio, userAlerter) => {
       if (!modified) {
         modified = getIso8601String();
       }
-      formio.saveForm({ ...updateModified(callbackForm, modified), display: "wizard" }).then((form) => {
-        if (!silent) {
-          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
-        }
-        return form;
-      });
+      formio
+        .saveForm({ ...updateModified(callbackForm, modified), display: "wizard" })
+        .then((form) => {
+          if (!silent) {
+            userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
+          }
+          return form;
+        })
+        .catch((e) => {
+          userAlerter.setErrorMessage(
+            "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
+          );
+        });
     },
     [formio, userAlerter]
   );
