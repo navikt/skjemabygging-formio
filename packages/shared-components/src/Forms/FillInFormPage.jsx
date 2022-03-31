@@ -12,9 +12,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translate, translationsForNavForm } = useLanguages();
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (loading) {
+  if (isSubmitting) {
     return <LoadingComponent />;
   }
 
@@ -34,7 +34,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
         onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
         onSubmit={(submission) => {
-          setLoading(true);
+          setIsSubmitting(true);
           setSubmission(submission);
           const urlSearchParams = new URLSearchParams(window.location.search).toString();
           history.push(`${formUrl}/oppsummering?${urlSearchParams}`);
