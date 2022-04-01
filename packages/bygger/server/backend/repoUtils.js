@@ -35,7 +35,7 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         repo,
         branch,
         file.path,
-        `[publisering] ${file.type} "${file.name}", monorepo ref: ${newSubmoduleGitSha}`,
+        `${file.type} "${file.name}", monorepo ref: ${newSubmoduleGitSha}`,
         file.contentAsBase64
       );
     }
@@ -45,13 +45,13 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         branch,
         newSubmoduleGitSha,
         submoduleRepo,
-        `[publisering] oppdater monorepo ref: ${newSubmoduleGitSha}`
+        `oppdater monorepo ref: ${newSubmoduleGitSha}`
       );
     }
   };
 }
 
-export async function performChangesOnSeparateBranch(repo, base, branch, performChanges) {
+export async function performChangesOnSeparateBranch(repo, base, branch, performChanges, mergeCommitMessage) {
   const baseRef = await repo.getRef(base);
   await repo.createRef(branch, baseRef.data.object.sha);
 
@@ -61,7 +61,7 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
   if (await repo.hasBranchChanged(baseRef, branch)) {
     // Only create and merge pull request if the branch contains changes, compared to the base branch
     const pullRequest = await repo.createPullRequest("Automatic publishing job", branch, base);
-    await repo.mergePullRequest(pullRequest.data.number);
+    await repo.mergePullRequest(pullRequest.data.number, mergeCommitMessage);
     const updatedBase = await repo.getRef(base);
     updatedBaseSha = updatedBase.data.object.sha;
   }

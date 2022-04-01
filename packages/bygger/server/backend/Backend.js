@@ -65,7 +65,8 @@ export class Backend {
       this.skjemaUtfylling,
       this.config.publishRepoBase,
       `publish-${formPath}--${guid()}`,
-      pushFilesAndUpdateSubmoduleCallback([translationsFile, formFile], this.config.gitSha, this.config.submoduleRepo)
+      pushFilesAndUpdateSubmoduleCallback([translationsFile, formFile], this.config.gitSha, this.config.submoduleRepo),
+      `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
     );
   }
 
@@ -82,7 +83,8 @@ export class Backend {
       this.skjemaUtfylling,
       this.config.publishRepoBase,
       `publish-${resourceName}--${guid()}`,
-      pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo)
+      pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo),
+      `[resources] publiserer ${resourceName}`
     );
   }
 

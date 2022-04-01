@@ -86,14 +86,14 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           `forms/${formPath}.json`,
-          '[publisering] skjema "Form", monorepo ref: publish-repo-git-sha',
+          'skjema "Form", monorepo ref: publish-repo-git-sha',
           "eyJ0aXRsZSI6IkZvcm0ifQ==",
           "existing-file-sha"
         );
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           `translations/${formPath}.json`,
-          '[publisering] oversettelse "Form", monorepo ref: publish-repo-git-sha',
+          'oversettelse "Form", monorepo ref: publish-repo-git-sha',
           "eyJlbiI6e319",
           "existing-file-sha"
         );
@@ -142,7 +142,7 @@ describe("Backend", () => {
           expectedBranchName,
           "publish-repo-git-sha",
           "submodule-repo",
-          "[publisering] oppdater monorepo ref: publish-repo-git-sha"
+          "oppdater monorepo ref: publish-repo-git-sha"
         );
       });
 
@@ -157,7 +157,10 @@ describe("Backend", () => {
 
       it("merges the the pull request", async () => {
         expect(mockRepoMergePullRequest).toHaveBeenCalledTimes(1);
-        expect(mockRepoMergePullRequest).toHaveBeenCalledWith(14);
+        expect(mockRepoMergePullRequest).toHaveBeenCalledWith(
+          14,
+          '[publisering] skjema "Form", monorepo ref: publish-repo-git-sha'
+        );
       });
     });
 
@@ -207,7 +210,7 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           "resources/settings.json",
-          '[publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
+          'ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
           "existing-file-sha"
         );
@@ -219,7 +222,7 @@ describe("Backend", () => {
           expectedBranchName,
           "publish-repo-git-sha",
           "submodule-repo",
-          "[publisering] oppdater monorepo ref: publish-repo-git-sha"
+          "oppdater monorepo ref: publish-repo-git-sha"
         );
       });
 
@@ -240,7 +243,7 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           "resources/settings.json",
-          '[publisering] ressurs "settings", monorepo ref: publish-repo-git-sha',
+          'ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
           undefined
         );

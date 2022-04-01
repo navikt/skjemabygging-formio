@@ -207,9 +207,14 @@ describe("GitHubRepo", () => {
 
   describe("mergePullRequest", () => {
     it("calls octokit.rest.pulls.merge", () => {
-      repo.mergePullRequest(14);
+      repo.mergePullRequest(14, "message");
       expect(mockMergePullRequest).toHaveBeenCalledTimes(1);
-      expect(mockMergePullRequest).toHaveBeenCalledWith({ owner, repo: repoName, pull_number: 14 });
+      expect(mockMergePullRequest).toHaveBeenCalledWith({
+        owner,
+        repo: repoName,
+        pull_number: 14,
+        commit_title: "message",
+      });
     });
   });
 });

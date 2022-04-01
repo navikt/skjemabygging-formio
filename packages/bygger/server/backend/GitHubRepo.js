@@ -123,11 +123,12 @@ export class GitHubRepo {
     });
   }
 
-  mergePullRequest(pull_number) {
+  mergePullRequest(pull_number, commit_title) {
     return this.octokit.rest.pulls.merge({
       owner: this.owner,
       repo: this.repo,
       pull_number,
+      commit_title,
     });
   }
 }
