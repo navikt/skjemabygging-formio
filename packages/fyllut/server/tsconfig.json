@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es5",
+    "module": "commonjs",
     "allowJs": true,
     "outDir": "./dist",
     "esModuleInterop": true,
@@ -9,6 +10,7 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "isolatedModules": true
   },
   "include": [
     "src/**/*"
