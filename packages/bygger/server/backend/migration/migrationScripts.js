@@ -60,20 +60,17 @@ function getBreakingChanges(form, changes) {
     .filter((affected) => affected.diff)
     .map((affected) => affected.diff)
     .filter((diff) => hasChangesToPropertiesWhichCanBreakDependencies(diff))
-    .reduce((diffsWithBreakingChanges, currentDiff) => {
-      const dependentComponents = findDependentComponents(currentDiff.id, form);
+    .flatMap((diff) => {
+      const dependentComponents = findDependentComponents(diff.id, form);
       if (dependentComponents.length > 0) {
         return [
-          ...diffsWithBreakingChanges,
           {
-            componentWithDependencies: currentDiff,
+            componentWithDependencies: diff,
             dependentComponents,
           },
         ];
-      } else {
-        return diffsWithBreakingChanges;
-      }
-    }, []);
+      } else return [];
+    });
 }
 
 async function migrateForms(
