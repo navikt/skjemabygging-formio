@@ -2,9 +2,11 @@
   <div class="skjemagruppe__description" id="{{ctx.id}}-{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
   {% if (ctx.component.additionalDescription) { %}
     <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-      <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-        {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-      </a>
+      {% if (ctx.component.additionalDescriptionLabel) { %}
+        <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+          {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+        </a>
+      {% } %}
       <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
     </div>
   {% } %}
@@ -24,9 +26,11 @@
         <div class="skjemagruppe__description" id="{{ctx.id}}-{{ctx.key}}-description">{{ctx.t(ctx.component.description)}}</div>
         {% if (ctx.component.additionalDescription) { %}
           <div class="accordion-link" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-            <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-              {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-            </a>
+            {% if (ctx.component.additionalDescriptionLabel) { %}
+              <a class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
+                {{ctx.t(ctx.component.additionalDescriptionLabel)}}
+              </a>
+            {% } %}
             <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
           </div>
         {% } %}

@@ -21,6 +21,22 @@ export const advancedDescription = [
     defaultValue: false,
   },
   {
+    type: "textfield",
+    key: "additionalDescriptionLabel",
+    label: "Lenketekst for utvidet beskrivelse",
+    input: true,
+    conditional: {
+      show: true,
+      when: "additionalDescription",
+      eq: "true",
+    },
+    validate: {
+      required: true,
+      custom:
+        "valid = data.additionalDescription && trim(data.additionalDescriptionLabel).length === 0  ? true : 'Lenketekst for utvidet beskrivelse må være satt';",
+    },
+  },
+  {
     type: "textarea",
     key: "additionalDescriptionText",
     label: "Utvidet beskrivelse",
@@ -42,22 +58,6 @@ export const advancedDescription = [
       required: true,
       custom:
         "valid = data.additionalDescription && trim(data.additionalDescriptionLabel).length === 0  ? true : 'Utvidet beskrivelse må være satt';",
-    },
-  },
-  {
-    type: "textfield",
-    key: "additionalDescriptionLabel",
-    label: "Lenketekst for utvidet beskrivelse",
-    input: true,
-    conditional: {
-      show: true,
-      when: "additionalDescription",
-      eq: "true",
-    },
-    validate: {
-      required: true,
-      custom:
-        "valid = data.additionalDescription && trim(data.additionalDescriptionLabel).length === 0  ? true : 'Lenketekst for utvidet beskrivelse må være satt';",
     },
   },
 ];
