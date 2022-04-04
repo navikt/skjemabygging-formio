@@ -5,7 +5,7 @@ import TEXTS from "./texts";
 import featureUtils from "./utils/featureUtils";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
-import navFormUtils, { findDependentComponents } from "./utils/navFormUtils";
+import navFormUtils from "./utils/navFormUtils";
 import objectUtils from "./utils/objectUtils";
 import stringUtils from "./utils/stringUtils";
 
@@ -20,5 +20,4 @@ export {
   featureUtils,
   languagesUtil,
   guid,
-  findDependentComponents,
 };

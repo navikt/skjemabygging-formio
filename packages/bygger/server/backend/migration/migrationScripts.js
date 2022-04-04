@@ -1,4 +1,4 @@
-import { findDependentComponents, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils.js";
 import { generateDiff } from "./diffingTool.js";
 import { componentMatchesSearchFilters } from "./searchFilter.js";
@@ -61,7 +61,7 @@ function getBreakingChanges(form, changes) {
     .map((affected) => affected.diff)
     .filter((diff) => hasChangesToPropertiesWhichCanBreakDependencies(diff))
     .flatMap((diff) => {
-      const dependentComponents = findDependentComponents(diff.id, form);
+      const dependentComponents = navFormUtils.findDependentComponents(diff.id, form);
       if (dependentComponents.length > 0) {
         return [
           {
