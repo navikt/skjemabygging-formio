@@ -4,6 +4,7 @@ import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
+import BreakingChangesWarning from "./BreakingChangesWarning";
 
 const useStyles = makeStyles({
   titleRow: {
@@ -33,35 +34,40 @@ const MigrationDryRunResults = ({
 
   return (
     <ul>
-      {dryRunResults.map((result) => (
-        <li key={result.skjemanummer}>
-          <div className={styles.titleRow}>
-            <Undertittel className={styles.title}>
-              {result.title} ({result.skjemanummer})
-            </Undertittel>
-            {result.changed > 0 && (
-              <Checkbox
-                label={"Inkluder i migrering"}
-                checked={selectedPaths.includes(result.path)}
-                onChange={(event) => {
-                  if (event.target.checked) {
-                    onChange([...selectedPaths, result.path]);
-                  } else {
-                    onChange(selectedPaths.filter((path) => path !== result.path));
-                  }
-                }}
-              />
-            )}
-          </div>
-          <p>
-            Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
-          </p>
-          {result.diff.length > 0 && <pre>{JSON.stringify(result.diff, null, 2)}</pre>}
-          <Link className="knapp margin-bottom-default" to={getPreviewUrl(result.path)}>
-            Forhåndsvis
-          </Link>
-        </li>
-      ))}
+      {dryRunResults.map((result) => {
+        const { breakingChanges } = result;
+        const hasBreakingChanges = breakingChanges && breakingChanges.length > 0;
+        return (
+          <li key={result.skjemanummer}>
+            <div className={styles.titleRow}>
+              <Undertittel className={styles.title}>
+                {result.title} ({result.skjemanummer})
+              </Undertittel>
+              {result.changed > 0 && (
+                <Checkbox
+                  label={"Inkluder i migrering"}
+                  checked={selectedPaths.includes(result.path)}
+                  onChange={(event) => {
+                    if (event.target.checked) {
+                      onChange([...selectedPaths, result.path]);
+                    } else {
+                      onChange(selectedPaths.filter((path) => path !== result.path));
+                    }
+                  }}
+                />
+              )}
+            </div>
+            <p>
+              Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
+            </p>
+            {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
+            {result.diff.length > 0 && <pre>{JSON.stringify(result.diff, null, 2)}</pre>}
+            <Link className="knapp margin-bottom-default" to={getPreviewUrl(result.path)}>
+              Forhåndsvis
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 };
