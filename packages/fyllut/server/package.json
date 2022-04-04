@@ -6,10 +6,10 @@
   "type": "commonjs",
   "private": true,
   "scripts": {
-    "build": "rimraf dist && babel src --out-dir dist --extensions \".ts,.js\" --ignore '**/*.test.js,**/*.test.ts'",
+    "build": "rimraf dist && babel src --out-dir dist --extensions '.ts,.js' --ignore '**/*.test.js,**/*.test.ts'",
     "check-types": "tsc",
     "clean": "rimraf dist coverage",
-    "start": "cross-env-shell PORT=8081 NODE_ENV=development babel-watch --extensions \".ts,.js\" src/server.js",
+    "start": "cross-env-shell PORT=8081 NODE_ENV=development babel-watch --extensions '.ts,.js' src/server.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -65,7 +65,6 @@
     "jest": "^27.0.4",
     "nock": "^13.2.4",
     "supertest": "^6.2.2",
-    "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
   }
 }
