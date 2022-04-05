@@ -23,6 +23,7 @@
     "nav-frontend-js-utils": "^1.0.20",
     "nock": "^13.2.4",
     "node-fetch": "^2.6.7",
+    "prop-types": "^15.8.1",
     "qs": "^6.10.2"
   },
   "devDependencies": {
