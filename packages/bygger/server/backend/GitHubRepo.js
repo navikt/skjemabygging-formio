@@ -129,6 +129,7 @@ export class GitHubRepo {
       repo: this.repo,
       pull_number,
       commit_title,
+      commit_message: "",
     });
   }
 }
