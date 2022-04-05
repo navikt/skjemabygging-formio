@@ -18,6 +18,8 @@ jobs:
           node-version: '14.17.0'
       - name: "Bootstrap"
         run: yarn bootstrap
+      - name: "Check types"
+        run: yarn check-types
       - name: "Build"
         run: yarn build
       - name: "Test"

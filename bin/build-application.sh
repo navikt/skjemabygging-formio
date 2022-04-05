@@ -69,5 +69,5 @@ fi
 
 if [ "$APP" == "fyllut" ]; then
     cd_package "fyllut" && install && build_prod
-    cd_package "fyllut/server" && install
+    cd_package "fyllut/server" && install && build
 fi

@@ -1,6 +1,6 @@
 import nock from "nock";
 import request from "supertest";
-import { createApp } from "./app.js";
+import { createApp } from "./app";
 import { config } from "./config/config.js";
 import { createMockIdportenJwt, extractHost, extractPath } from "./test/testHelpers.js";
 
@@ -29,7 +29,7 @@ describe("app", () => {
       .post(extractPath(tokenEndpoint))
       .reply(200, { access_token: "azure-access-token" });
 
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL)
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
       .post("/foersteside")
       .reply(400, "Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.");
 
@@ -59,7 +59,7 @@ describe("app", () => {
     const tokenEndpointNockScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
       .reply(200, { access_token: "123456" }, { "Content-Type": "application/json" });
-    const sendInnNockScope = nock(sendInnConfig.host)
+    const sendInnNockScope = nock(sendInnConfig.host as string)
       .post("/fyllUt/leggTilVedlegg")
       .reply(302, "FOUND", { Location: sendInnLocation });
 
