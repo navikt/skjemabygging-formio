@@ -8,6 +8,7 @@
   },
   "private": true,
   "scripts": {
+    "check-types": "lerna run check-types",
     "clean": "lerna run clean && lerna clean -y",
     "bootstrap": "yarn && lerna bootstrap",
     "watch": "lerna run --parallel watch",
