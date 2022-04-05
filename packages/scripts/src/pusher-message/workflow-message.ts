@@ -1,5 +1,5 @@
-import {PushEvent, Commit, WorkflowDispatchEvent} from "@octokit/webhooks-types";
-import Pusher, {Options} from "pusher";
+import { Commit, PushEvent, WorkflowDispatchEvent } from "@octokit/webhooks-types";
+import Pusher, { Options } from "pusher";
 import PusherFactory from "./pusher-factory";
 
 export interface Skjemapublisering {
@@ -28,21 +28,25 @@ export interface PublishResourceInputs {
   encodedJson: string;
 }
 
-export type PusherChannel = 'skjemautfyller-deployed' | 'build-aborted' | 'publish-aborted' | 'publish-resource-aborted';
-export type PusherEvent = 'publication' | 'other' | 'failure';
+export type PusherChannel =
+  | "skjemautfyller-deployed"
+  | "build-aborted"
+  | "publish-aborted"
+  | "publish-resource-aborted";
+export type PusherEvent = "publication" | "other" | "failure";
 
 const PUBLISH_COMMIT_REGEXP = /^\[publisering\].*/;
-const PUBLISH_REGEXP = /^\[publisering\] skjema (.*), monorepo ref: (.*)$/;
+const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
 
 const isPublication = (message: PushEvent) => {
   const thisCommit = message.head_commit;
-  const commitMessage = thisCommit?.message || '';
+  const commitMessage = thisCommit?.message || "";
   return commitMessage.match(PUBLISH_COMMIT_REGEXP);
-}
+};
 
 const buildTriggerMessage = (message: PushEvent): PusherMessage => {
   const thisCommit = message.head_commit;
-  const commitMessage = thisCommit?.message || '';
+  const commitMessage = thisCommit?.message || "";
   const myRegexp = new RegExp(PUBLISH_REGEXP, "g");
   const match = myRegexp.exec(commitMessage);
   return {
@@ -52,19 +56,19 @@ const buildTriggerMessage = (message: PushEvent): PusherMessage => {
       skjematittel: match ? match[1] : undefined,
     },
   };
-}
+};
 
 const sendMessage = (pusher: Pusher, channel: PusherChannel, event: PusherEvent, pusherMessage: PusherMessage) => {
   console.log("sending:", channel, event, pusherMessage);
   pusher.trigger(channel, event, pusherMessage);
-}
+};
 
 const run = (channel: PusherChannel, eventMessage: PushEvent, pusherApp: Options) => {
   const pusher = PusherFactory.createInstance(pusherApp);
   const pusherMessage = buildTriggerMessage(eventMessage);
   const event = isPublication(eventMessage) ? "publication" : "other";
   sendMessage(pusher, channel, event, pusherMessage);
-}
+};
 
 const buildPublishAbortedMessage = (message: WorkflowDispatchEvent): PusherMessage => {
   const inputs: PublishFormInputs = message.inputs as unknown as PublishFormInputs;
@@ -76,7 +80,7 @@ const buildPublishAbortedMessage = (message: WorkflowDispatchEvent): PusherMessa
     monorepoGitHash: inputs.monorepoGitHash,
     formJsonFileTitle: inputs.formJsonFileTitle,
   };
-}
+};
 const buildPublishResourceAbortedMessage = (message: WorkflowDispatchEvent): PusherMessage => {
   const inputs: PublishResourceInputs = message.inputs as unknown as PublishResourceInputs;
   return {
@@ -84,9 +88,13 @@ const buildPublishResourceAbortedMessage = (message: WorkflowDispatchEvent): Pus
       skjematittel: inputs.resourceName,
     },
   };
-}
+};
 
-export const execute = (channel: PusherChannel, pusherConfig: Options, githubEventMessage: PushEvent | WorkflowDispatchEvent) => {
+export const execute = (
+  channel: PusherChannel,
+  pusherConfig: Options,
+  githubEventMessage: PushEvent | WorkflowDispatchEvent
+) => {
   if (channel === "publish-aborted") {
     const pusher = PusherFactory.createInstance(pusherConfig);
     const pusherMessage = buildPublishAbortedMessage(githubEventMessage as WorkflowDispatchEvent);
@@ -100,4 +108,4 @@ export const execute = (channel: PusherChannel, pusherConfig: Options, githubEve
   } else {
     run(channel, githubEventMessage as PushEvent, pusherConfig);
   }
-}
+};
