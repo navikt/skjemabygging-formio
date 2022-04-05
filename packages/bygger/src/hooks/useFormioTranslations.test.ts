@@ -213,7 +213,7 @@ describe("useFormioTranslations", () => {
             return Promise.resolve(new Response(JSON.stringify(languageCode ? globalTranslations[languageCode] : {})));
           }
           if (url === "/api/published-resource/global-translations-en") {
-            return Promise.resolve(new Response("Ok"));
+            return Promise.resolve(new Response(JSON.stringify({ changed: true, result: "sha" })));
           }
           fail(`Manglende testoppsett: Ukjent url ${url}, options = ${JSON.stringify(options)}`);
         };
@@ -238,9 +238,9 @@ describe("useFormioTranslations", () => {
         await waitFor(() => formioTranslations.publishGlobalTranslations("en"));
         expect(mockUserAlerter.setErrorMessage).not.toHaveBeenCalled();
         expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled();
-        const errorMessages = mockUserAlerter.flashSuccessMessage.mock.calls;
-        expect(errorMessages).toHaveLength(1);
-        expect(errorMessages[0][0]).toEqual("Publisering av Engelsk startet");
+        const messages = mockUserAlerter.flashSuccessMessage.mock.calls;
+        expect(messages).toHaveLength(1);
+        expect(messages[0][0]).toEqual("Publisering av Engelsk startet");
       });
 
       it("Feiler dersom det mangler oversettelser for noen av de predefinerte tekstene", async () => {
