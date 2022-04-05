@@ -14,8 +14,8 @@ import {
   mockRepoUpdateSubmodule,
 } from "./__mocks__/GitHubRepo";
 
-jest.mock("nav-frontend-js-utils", () => {
-  return { guid: jest.fn().mockReturnValue("1234") };
+jest.mock("uuid", () => {
+  return { v4: jest.fn().mockReturnValue("1234") };
 });
 jest.mock("./GitHubRepo.js");
 

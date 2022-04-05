@@ -1,5 +1,5 @@
-import { guid } from "nav-frontend-js-utils";
 import qs from "qs";
+import { v4 as uuidv4 } from "uuid";
 import { fetchWithErrorHandling } from "./fetchUtils.js";
 import { GitHubRepo } from "./GitHubRepo.js";
 import {
@@ -64,7 +64,7 @@ export class Backend {
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepoBase,
-      `publish-${formPath}--${guid()}`,
+      `publish-${formPath}--${uuidv4()}`,
       pushFilesAndUpdateSubmoduleCallback([translationsFile, formFile], this.config.gitSha, this.config.submoduleRepo),
       `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
     );
@@ -82,7 +82,7 @@ export class Backend {
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepoBase,
-      `publish-${resourceName}--${guid()}`,
+      `publish-${resourceName}--${uuidv4()}`,
       pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo),
       `[resources] publiserer ${resourceName}`
     );
