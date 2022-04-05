@@ -214,6 +214,7 @@ describe("GitHubRepo", () => {
         repo: repoName,
         pull_number: 14,
         commit_title: "message",
+        commit_message: "",
       });
     });
   });
