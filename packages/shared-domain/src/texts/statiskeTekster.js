@@ -6,11 +6,13 @@ export const statiske = {
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis du finner noe som må korrigeres " +
       "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle opplysningene er riktige går du videre til neste steg.",
   },
-  FormPageFyllUt: {
-    title: "Dette er en tjeneste under utvikling",
-    content:
-      "Hvis du velger digital innsending må du laste ned søknaden og laste den opp igjen i neste steg. Digital innsending er vanskelig på iPad og iPhone.",
-    alertInfo:
+  warningAboutDifficultSubmission: {
+    modal: {
+      title: "Dette er en tjeneste under utvikling",
+      text1: "Hvis du velger digital innsending må du laste ned søknaden og laste den opp igjen i neste steg.",
+      text2: "Digital innsending er vanskelig på iPad og iPhone.",
+    },
+    alert:
       "Hvis du velger digital innsending må du laste ned søknaden i neste steg og laste den opp igjen etter innlogging.",
   },
   prepareLetterPage: {

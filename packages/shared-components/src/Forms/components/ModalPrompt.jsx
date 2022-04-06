@@ -3,23 +3,25 @@ import { Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
-import { useLanguages } from "../../context/languages/languages-context";
+import { useLanguages } from "../../context/languages";
 
 const ModalPrompt = () => {
   const { translate } = useLanguages();
   const [openModal, setOpenModal] = useState(true);
+  const { title, text1, text2 } = TEXTS.statiske.warningAboutDifficultSubmission.modal;
 
   return (
     <Modal
       isOpen={openModal}
       onRequestClose={() => setOpenModal(false)}
       closeButton={true}
-      contentLabel={TEXTS.statiske.FormPageFyllUt.title}
+      contentLabel={title}
       ariaHideApp={false}
     >
       <div>
-        <Systemtittel className="margin-bottom-double">{translate(TEXTS.statiske.FormPageFyllUt.title)}</Systemtittel>
-        <Normaltekst className="margin-bottom-double">{translate(TEXTS.statiske.FormPageFyllUt.content)}</Normaltekst>
+        <Systemtittel className="margin-bottom-double">{translate(title)}</Systemtittel>
+        <Normaltekst className="margin-bottom-default">{translate(text1)}</Normaltekst>
+        <Normaltekst className="margin-bottom-double">{translate(text2)}</Normaltekst>
         <nav className="list-inline">
           <div className="list-inline-item">
             <Knapp className="knapp" onClick={() => setOpenModal(false)}>
