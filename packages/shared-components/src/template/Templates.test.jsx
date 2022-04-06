@@ -69,19 +69,19 @@ describe("Templates", () => {
     });
   });
 
-  describe("Ekstra beskrivelse ", () => {
+  describe("Utvidet beskrivelse ", () => {
     const buttonLabel = "Read more";
     const testShowAndHideByType = async (type, descriptionPosition, options = {}) => {
       await renderNavForm({
         form: {
-          title: "Testskjema",
+          title: "Test",
           components: [
             {
               label: "Label",
               type,
               key: type,
               descriptionPosition,
-              description: "Decription",
+              description: "Description",
               additionalDescription: true,
               additionalDescriptionLabel: buttonLabel,
               additionalDescriptionText: "Expanded text",
@@ -156,11 +156,21 @@ describe("Templates", () => {
 
     describe("Datagrid", () => {
       it("Default description position", async () => {
-        await testShowAndHideByType("datagrid", "under", { isNavDataGrid: true });
+        await testShowAndHideByType("datagrid", "below", { isNavDataGrid: true });
       });
 
       it("Description position above", async () => {
         await testShowAndHideByType("datagrid", "above", { isNavDataGrid: true });
+      });
+    });
+
+    describe("Number", () => {
+      it("Default description position", async () => {
+        await testShowAndHideByType("number");
+      });
+
+      it("Description position above", async () => {
+        await testShowAndHideByType("number", "above");
       });
     });
   });
