@@ -32,8 +32,6 @@ export const advancedDescription = [
     },
     validate: {
       required: true,
-      custom:
-        "valid = data.additionalDescription && trim(data.additionalDescriptionLabel).length === 0  ? true : 'Lenketekst for utvidet beskrivelse må være satt';",
     },
   },
   {
@@ -56,8 +54,6 @@ export const advancedDescription = [
     },
     validate: {
       required: true,
-      custom:
-        "valid = data.additionalDescription && trim(data.additionalDescriptionLabel).length === 0  ? true : 'Utvidet beskrivelse må være satt';",
     },
   },
 ];
