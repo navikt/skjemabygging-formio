@@ -21,14 +21,32 @@ export function flattenComponents(components) {
   }, []);
 }
 
+function isKeyInText(key, text) {
+  return text && text.search(`\\w+\\.${key}[^a-zA-z0-9_-]`) > -1;
+}
+
+function areAnyPathsInText(paths, text) {
+  return text && text !== "" && paths.some((key) => isKeyInText(key, text));
+}
+
+function calculatesValueBasedOn(paths, component) {
+  return areAnyPathsInText(paths, component.calculateValue);
+}
+
+function validatesBasedOn(paths, component) {
+  return (
+    component.validate &&
+    (areAnyPathsInText(paths, component.validate.custom) ||
+      areAnyPathsInText(paths, JSON.stringify(component.validate.json)))
+  );
+}
+
 function hasConditionalOn(paths, component) {
   return (
     (component.conditional &&
       (paths.includes(component.conditional.when) ||
-        (component.conditional.json &&
-          paths.some((key) => JSON.stringify(component.conditional.json).search(`data.${key}[^a-zA-z0-9_-]`) > -1)))) ||
-    (component.customConditional &&
-      paths.some((key) => component.customConditional.search(`data.${key}[^a-zA-z0-9_-]`) > -1))
+        areAnyPathsInText(paths, JSON.stringify(component.conditional.json)))) ||
+    areAnyPathsInText(paths, component.customConditional)
   );
 }
 
@@ -36,7 +54,11 @@ const recursivelyFindDependentComponents = (mainId, downstreamPaths, comps) => {
   const dependentKeys = [];
   comps.forEach((comp) => {
     if (comp.id !== mainId) {
-      if (hasConditionalOn(downstreamPaths, comp)) {
+      if (
+        hasConditionalOn(downstreamPaths, comp) ||
+        validatesBasedOn(downstreamPaths, comp) ||
+        calculatesValueBasedOn(downstreamPaths, comp)
+      ) {
         dependentKeys.push({ key: comp.key, label: comp.label });
       }
       if (comp.components?.length > 0) {
