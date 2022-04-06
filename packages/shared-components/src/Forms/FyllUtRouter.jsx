@@ -51,16 +51,14 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            <>
-              {formForRendering && (
-                <FillInFormPage
-                  form={formForRendering}
-                  submission={submission}
-                  setSubmission={setSubmission}
-                  formUrl={url}
-                />
-              )}
-            </>
+            {formForRendering && (
+              <FillInFormPage
+                form={formForRendering}
+                submission={submission}
+                setSubmission={setSubmission}
+                formUrl={url}
+              />
+            )}
           </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={url}>

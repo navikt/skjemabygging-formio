@@ -1,14 +1,18 @@
 import qs from "qs";
-import { promisify } from "util";
-import { gunzip, gzip } from "zlib";
+import { v4 as uuidv4 } from "uuid";
 import { fetchWithErrorHandling } from "./fetchUtils.js";
-const promisifiedGzip = promisify(gzip);
-const promisifiedGunzip = promisify(gunzip);
+import { GitHubRepo } from "./GitHubRepo.js";
+import {
+  createFileForPushingToRepo,
+  performChangesOnSeparateBranch,
+  pushFilesAndUpdateSubmoduleCallback,
+} from "./repoUtils.js";
 
 export class Backend {
   constructor(projectURL, config) {
     this.projectURL = projectURL;
     this.config = config;
+    this.skjemaUtfylling = new GitHubRepo(config.publishRepoOwner, config.publishRepo, config.publishRepoToken);
   }
 
   ho() {
@@ -17,37 +21,6 @@ export class Backend {
 
   getProjectURL() {
     return this.projectURL;
-  }
-
-  getGitURL() {
-    return this.config.workflowDispatchURL;
-  }
-
-  async toBase64GzipAndJson(data) {
-    const buffer = Buffer.from(JSON.stringify(data), "utf-8");
-    const zippedBuffer = await promisifiedGzip(buffer);
-    return zippedBuffer.toString("base64");
-  }
-
-  async fromBase64GzipAndJson(string) {
-    const buffer = Buffer.from(string, "base64");
-    const inflated = await promisifiedGunzip(buffer);
-    return JSON.parse(inflated.toString());
-  }
-
-  async payload(formJsonFileTitle, form, translations) {
-    const encodedForm = await this.toBase64GzipAndJson(form);
-    const encodedTranslations = await this.toBase64GzipAndJson(translations);
-    return {
-      ref: this.config.workflowDispatchRef,
-      inputs: {
-        formJsonFileTitle,
-        formDescription: form.title,
-        encodedTranslationJson: encodedTranslations,
-        encodedFormJson: encodedForm,
-        monorepoGitHash: this.config.gitSha,
-      },
-    };
   }
 
   async checkUpdateAndPublishingAccess(userToken) {
@@ -78,39 +51,41 @@ export class Backend {
     );
   }
 
-  async publishForm(userToken, form, translations, formPath) {
+  async publishForm(userToken, formContent, translationsContent, formPath) {
+    const formFile = createFileForPushingToRepo(formContent.title, `forms/${formPath}.json`, "skjema", formContent);
+    const translationsFile = createFileForPushingToRepo(
+      formContent.title,
+      `translations/${formPath}.json`,
+      "oversettelse",
+      translationsContent
+    );
+
     await this.checkUpdateAndPublishingAccess(userToken);
-    const payload = await this.payload(formPath, form, translations);
-    return await fetchWithErrorHandling(this.config.workflowDispatchURL, {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "Application/JSON",
-        Authorization: `token ${this.config.workflowDispatchToken}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
+      this.config.publishRepoBase,
+      `publish-${formPath}--${uuidv4()}`,
+      pushFilesAndUpdateSubmoduleCallback([translationsFile, formFile], this.config.gitSha, this.config.submoduleRepo),
+      `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
+    );
   }
 
   async publishResource(userToken, resourceName, resourceContent) {
+    const resourceFile = createFileForPushingToRepo(
+      resourceName,
+      `resources/${resourceName}.json`,
+      "ressurs",
+      resourceContent
+    );
+
     await this.checkUpdateAndPublishingAccess(userToken);
-    const encodedResourceContent = await this.toBase64GzipAndJson(resourceContent);
-    const payload = {
-      ref: this.config.workflowDispatchRef,
-      inputs: {
-        resourceName,
-        encodedJson: encodedResourceContent,
-      },
-    };
-    return await fetchWithErrorHandling(this.config.publishResourceUrl, {
-      method: "POST",
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "Content-Type": "Application/JSON",
-        Authorization: `token ${this.config.workflowDispatchToken}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
+      this.config.publishRepoBase,
+      `publish-${resourceName}--${uuidv4()}`,
+      pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo),
+      `[resources] publiserer ${resourceName}`
+    );
   }
 
   async authenticateWithAzure() {

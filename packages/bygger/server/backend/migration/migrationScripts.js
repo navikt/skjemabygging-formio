@@ -1,4 +1,4 @@
-import { objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils.js";
 import { generateDiff } from "./diffingTool.js";
 import { componentMatchesSearchFilters } from "./searchFilter.js";
@@ -40,10 +40,37 @@ function getEditScript(editOptions, logger = []) {
   };
 }
 
+function hasChangesToPropertiesWhichCanBreakDependencies(diff) {
+  return (
+    diff.key_NEW || // Keys are used to look up submissions for components, and is the most common dependency
+    diff.values_NEW || // Changes to values for Radiopanel or Flervalg components can break references that are depending on a specific value
+    diff.data_NEW ||
+    (diff.data && diff.data.values_NEW) // Values for Nedtrekksliste are stored in data.values, so changes to data or data.values can be breaking
+  );
+}
+
 async function fetchForms(url) {
   return await fetchWithErrorHandling(url, {
     method: "GET",
   });
+}
+
+function getBreakingChanges(form, changes) {
+  return changes
+    .filter((affected) => affected.diff)
+    .map((affected) => affected.diff)
+    .filter((diff) => hasChangesToPropertiesWhichCanBreakDependencies(diff))
+    .flatMap((diff) => {
+      const dependentComponents = navFormUtils.findDependentComponents(diff.id, form);
+      if (dependentComponents.length > 0) {
+        return [
+          {
+            componentWithDependencies: diff,
+            dependentComponents,
+          },
+        ];
+      } else return [];
+    });
 }
 
 async function migrateForms(
@@ -59,6 +86,7 @@ async function migrateForms(
       .map((form) => {
         const affectedComponentsLogger = [];
         const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
+        const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
         log[form.properties.skjemanummer] = {
           skjemanummer: form.properties.skjemanummer,
           name: form.name,
@@ -67,6 +95,7 @@ async function migrateForms(
           found: affectedComponentsLogger.length,
           changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
           diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
+          breakingChanges: breakingChanges,
         };
         return result;
       });
@@ -84,4 +113,4 @@ async function previewForm(
   return fetchForms(url).then((response) => migrateForm(response.data[0], searchFilters, getEditScript(editOptions)));
 }
 
-export { migrateForm, migrateForms, getEditScript, previewForm };
+export { migrateForm, migrateForms, getEditScript, previewForm, getBreakingChanges };

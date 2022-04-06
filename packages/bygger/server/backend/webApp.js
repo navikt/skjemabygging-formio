@@ -28,8 +28,8 @@ export function dispatcherWithBackend(backend) {
           res.status(401).send("Unauthorized");
         }
         try {
-          await backend.publishForm(req.body.token, req.body.form, req.body.translations, formPath);
-          res.send(`Publisering av skjema ${formPath} ok!`);
+          const result = await backend.publishForm(req.body.token, req.body.form, req.body.translations, formPath);
+          res.json({ changed: !!result, result });
         } catch (error) {
           handleError(error, res);
         }
@@ -46,8 +46,8 @@ export function dispatcherWithBackend(backend) {
           return;
         }
         try {
-          await backend.publishResource(req.body.token, resourceName, req.body.resource);
-          res.send(`Publisering av ressurs ${resourceName} ok!`);
+          const result = await backend.publishResource(req.body.token, resourceName, req.body.resource);
+          res.json({ changed: !!result, result });
         } catch (error) {
           handleError(error, res);
         }

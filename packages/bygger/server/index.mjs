@@ -1,5 +1,5 @@
 import express from "express";
-import { Backend } from "./backend/index.js";
+import { Backend } from "./backend/Backend.js";
 import { dispatcherWithBackend } from "./backend/webApp.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import dotenv from "dotenv";
@@ -35,10 +35,11 @@ const defaultConfig = {
   clientId: process.env.AZURE_APP_CLIENT_ID,
   skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID,
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL,
-  workflowDispatchRef: process.env.PUBLISERING_WORKFLOW_DISPATCH_REF,
-  workflowDispatchToken: process.env.akg_pat,
-  workflowDispatchURL: process.env.PUBLISERING_WORKFLOW_DISPATCH_URL,
-  publishResourceUrl: process.env.PUBLISH_RESOURCE_URL,
+  publishRepoToken: process.env.akg_pat,
+  publishRepo: process.env.PUBLISH_REPO,
+  submoduleRepo: process.env.SUBMODULE_REPO,
+  publishRepoOwner: process.env.PUBLISH_REPO_OWNER,
+  publishRepoBase: process.env.PUBLISH_REPO_BASE,
 };
 
 const config = {
