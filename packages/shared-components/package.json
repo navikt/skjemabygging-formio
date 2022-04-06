@@ -83,6 +83,7 @@
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
     "react-day-picker": "^7.4.8",
+    "react-modal": "^3.12.1",
     "react-select": "^5.2.2"
   },
   "peerDependencies": {
