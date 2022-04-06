@@ -47,11 +47,11 @@ const FyllUtRouter = ({ form, translations }) => {
     <LanguagesProvider translations={translations}>
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
+        <ModalPrompt />
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
             <>
-              <ModalPrompt />
               {formForRendering && (
                 <FillInFormPage
                   form={formForRendering}
