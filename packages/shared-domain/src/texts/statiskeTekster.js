@@ -7,11 +7,11 @@ export const statiske = {
       "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle opplysningene er riktige går du videre til neste steg.",
   },
   FormPageFyllUt: {
-    title: "Bruk av mobil eller nettbrett!",
+    title: "Dette er en tjeneste under utvikling",
     content:
-      "Dette er en tjeneste under utvikling. Hvis du vet hvordan du laster ned og laster opp filer, eller tar utskrift fra enheten din, så kan du fortsette. Ellers anbefaler vi at du bruker en datamaskin.",
+      "Hvis du velger digital innsending må du laste ned søknaden og laste den opp igjen i neste steg. Digital innsending er vanskelig på iPad og iPhone.",
     alertInfo:
-      "Dette er en tjeneste under utvikling. Hvis du vet hvordan du laster ned og laster opp filer fra enheten din kan du velge digital innsending. Ellers anbefaler vi at du velger «send i posten».",
+      "Hvis du velger digital innsending må du laste ned søknaden i neste steg og laste den opp igjen etter innlogging.",
   },
   prepareLetterPage: {
     chooseEntity: "Velg enhet som skal behandle saken din",
