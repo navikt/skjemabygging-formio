@@ -217,7 +217,9 @@ const MigrationPage = () => {
           </Undertekst>
           <ul>
             {migratedForms.map((form) => (
-              <li>{`${form.properties.skjemanummer} - ${form.name} (${form.path})`}</li>
+              <li
+                key={form.properties.skjemanummer}
+              >{`${form.properties.skjemanummer} - ${form.name} (${form.path})`}</li>
             ))}
           </ul>
         </Panel>

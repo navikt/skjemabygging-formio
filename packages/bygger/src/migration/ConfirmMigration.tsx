@@ -73,12 +73,9 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Migra
           <li className="list-inline-item">
             <Knapp
               spinner={isMigrationInProgress}
-              onClick={() => {
+              onClick={async () => {
                 setIsMigrationInProgress(true);
-                onConfirm().then(() => {
-                  setIsMigrationInProgress(false);
-                  setModalIsOpen(false);
-                });
+                await onConfirm();
               }}
               htmlType="button"
             >
