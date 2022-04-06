@@ -1,4 +1,4 @@
-import { Backend } from "../../backend/Backend";
+import { Backend } from "../../src/Backend";
 
 const { Response } = jest.requireActual("node-fetch");
 

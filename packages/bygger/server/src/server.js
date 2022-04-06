@@ -1,8 +1,8 @@
-import express from "express";
-import { Backend } from "./backend/Backend.js";
-import { dispatcherWithBackend } from "./backend/webApp.js";
-import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import dotenv from "dotenv";
+import express from "express";
+import { buildDirectory, buildDirectoryIndexHtml } from "../context.js";
+import { Backend } from "./Backend.js";
+import { dispatcherWithBackend } from "./webApp.js";
 
 dotenv.config();
 const app = express();
