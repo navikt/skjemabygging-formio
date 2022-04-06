@@ -21,16 +21,16 @@ const vedleggPanelSchema = {
       },
       values: [
         {
+          value: "nei",
+          label: "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.",
+        },
+        {
           value: "leggerVedNaa",
           label: "Ja, jeg legger det ved denne søknaden.",
         },
         {
           value: "ettersender",
           label: "Jeg ettersender dokumentasjonen senere.",
-        },
-        {
-          value: "nei",
-          label: "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.",
         },
       ],
     },
