@@ -4,8 +4,9 @@ ARG git_sha
 
 WORKDIR /app
 COPY build build
-COPY server server
-ENV GIT_SHA=${git_sha}
+COPY server/dist server
+COPY server/node_modules server/node_modules
 
+ENV GIT_SHA=${git_sha}
 WORKDIR server
-CMD ["node", "index.mjs"]
+CMD ["node", "server.js"]
