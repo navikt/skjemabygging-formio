@@ -1,4 +1,8 @@
-import { Utils } from "formiojs";
+import { Formio, Utils } from "formiojs";
+
+Formio.Utils.toggleClass = (id, className) => {
+  return `document.getElementById('${id}').classList.toggle('${className}')`;
+};
 
 const originalEvaluate = Utils.evaluate;
 const reservedWords = ["instance", "util", "utils", "_"];
