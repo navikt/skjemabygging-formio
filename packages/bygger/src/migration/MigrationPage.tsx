@@ -6,9 +6,11 @@ import { Innholdstittel, Sidetittel, Undertekst, Undertittel } from "nav-fronten
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult, DryRunResults, MigrationOptions } from "../../types/migration";
+import { bulkPublish, runMigrationDryRun, runMigrationWithUpdate } from "./api";
 import ConfirmMigration from "./ConfirmMigration";
 import MigrationDryRunResults from "./MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
+import { createUrlParams } from "./utils";
 
 const useStyles = makeStyles({
   root: {
@@ -39,28 +41,6 @@ export const migrationOptionsAsMap = (migrationOptions: MigrationOptions) => {
     }
     return acc;
   }, {});
-};
-
-export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
-  let searchFilterParameters = "";
-  let editOptionsParameters = "";
-  const encodedSearchFilters = JSON.stringify(migrationOptionsAsMap(searchFilters));
-  if (encodedSearchFilters) {
-    searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
-    const encodedEditOption = JSON.stringify(migrationOptionsAsMap(editOptions));
-    if (encodedEditOption) {
-      editOptionsParameters = `&editOptions=${encodedEditOption}`;
-    }
-  }
-  return `${searchFilterParameters}${editOptionsParameters}`;
-};
-
-export const getUrlWithMigrateSearchParams = (
-  searchFilters: MigrationOptions,
-  editOptions: MigrationOptions,
-  basePath: string = "/api/migrate"
-) => {
-  return `${basePath}${createUrlParams(searchFilters, editOptions)}`;
 };
 
 const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) =>
@@ -99,14 +79,7 @@ const MigrationPage = () => {
 
   const onSearch = async () => {
     setIsLoading(true);
-    const results = await fetch(getUrlWithMigrateSearchParams(searchFilters, editOptions), {
-      method: "GET",
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .catch((err) => console.error(err));
+    const results = await runMigrationDryRun(searchFilters, editOptions);
     const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
     setDryRunSearchResults({
       dryRunSearchResults,
@@ -137,27 +110,18 @@ const MigrationPage = () => {
   };
 
   const onConfirm = async () => {
-    try {
-      const updatedFormsResponse = await fetch("/api/migrate/update", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          token: Formiojs.getToken(),
-          payload: {
-            searchFilters: migrationOptionsAsMap(searchFilters),
-            editOptions: migrationOptionsAsMap(editOptions),
-            include: selectedToMigrate,
-          },
-        }),
-      });
-      const updatedForms = await updatedFormsResponse.json();
-      setMigratedForms(updatedForms);
-      setDryRunSearchResults({});
-    } catch (error) {
-      console.error(error);
-    }
+    const updatedForms = await runMigrationWithUpdate(Formiojs.getToken(), {
+      searchFilters: migrationOptionsAsMap(searchFilters),
+      editOptions: migrationOptionsAsMap(editOptions),
+      include: selectedToMigrate,
+    });
+    setMigratedForms(updatedForms);
+    setDryRunSearchResults({});
+  };
+
+  const onBulkPublish = async (formPaths) => {
+    const bulkPublishResult = await bulkPublish(Formiojs.getToken(), { formPaths });
+    console.log("bulkPublishResult", bulkPublishResult);
   };
 
   useEffect(() => {
@@ -215,6 +179,7 @@ const MigrationPage = () => {
           <Undertekst>
             Pass på å kopiere denne listen før du laster siden på nytt eller utfører en ny migrering
           </Undertekst>
+          <Knapp onClick={() => onBulkPublish(migratedForms.map((form) => form.path))}>Publiser nå</Knapp>
           <ul>
             {migratedForms.map((form) => (
               <li
@@ -249,7 +214,7 @@ const MigrationPage = () => {
                 dryRunResults={dryRunSearchResults}
                 selectedPaths={selectedToMigrate}
                 getPreviewUrl={(formPath) =>
-                  getUrlWithMigrateSearchParams(searchFilters, editOptions, `/migrering/forhandsvis/${formPath}`)
+                  `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editOptions)}`
                 }
               />
             </>

@@ -36,7 +36,7 @@ export function dispatcherWithBackend(backend) {
       },
     },
     "/publish-bulk": {
-      PUT: async (req, res) => {
+      POST: async (req, res) => {
         if (!req.body.token) {
           res.status(401).send("Unauthorized");
           return;
