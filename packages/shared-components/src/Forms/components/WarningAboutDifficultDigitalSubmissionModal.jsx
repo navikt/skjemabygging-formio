@@ -5,7 +5,7 @@ import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { useLanguages } from "../../context/languages";
 
-const ModalPrompt = () => {
+const WarningAboutDifficultDigitalSubmissionModal = () => {
   const { translate } = useLanguages();
   const [openModal, setOpenModal] = useState(true);
   const { title, text1, text2 } = TEXTS.statiske.warningAboutDifficultSubmission.modal;
@@ -34,4 +34,4 @@ const ModalPrompt = () => {
   );
 };
 
-export default ModalPrompt;
+export default WarningAboutDifficultDigitalSubmissionModal;
