@@ -64,9 +64,9 @@ jobs:
           REACT_APP_PUSHER_KEY: "${{ secrets.REACT_APP_PUSHER_KEY }}"
           REACT_APP_GIT_VERSION: ${{ github.sha }}
         run: yarn install --frozen-lockfile && yarn build
-      - name: "Bygger (Backend): install dependencies"
+      - name: "Bygger (Backend): install dependencies and build"
         working-directory: ./packages/bygger/server
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile && yarn build
       - name: "Build and publish Docker image"
         working-directory: ./packages/bygger
         run: >
