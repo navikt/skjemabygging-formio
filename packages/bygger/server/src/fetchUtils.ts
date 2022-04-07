@@ -1,14 +1,16 @@
-import fetch from "node-fetch";
+import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 
 export class HttpError extends Error {
-  constructor(fetchResponse) {
+  private response: Response;
+
+  constructor(fetchResponse: Response) {
     super(`${fetchResponse.status} ${fetchResponse.statusText} fetching: ${fetchResponse.url}`);
     this.name = this.constructor.name;
     this.response = fetchResponse;
   }
 }
 
-export async function fetchWithErrorHandling(url, options) {
+export async function fetchWithErrorHandling(url: RequestInfo, options: RequestInit) {
   const res = await fetch(url, options);
   if (!res.ok) {
     console.error(`Fetch ${options.method || "GET"} ${url} failed with status: `, res.status);
@@ -27,10 +29,6 @@ export async function fetchWithErrorHandling(url, options) {
   };
 }
 
-export function stringTobase64(str) {
+export function stringTobase64(str: string) {
   return Buffer.from(str).toString("base64");
-}
-
-export function base64ToString(base64) {
-  return Buffer.from(base64, "base64").toString();
 }

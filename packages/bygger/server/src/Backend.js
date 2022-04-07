@@ -1,6 +1,6 @@
 import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
-import { fetchWithErrorHandling } from "./fetchUtils.js";
+import { fetchWithErrorHandling } from "./fetchUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 import {
   createFileForPushingToRepo,
