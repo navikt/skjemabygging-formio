@@ -1,6 +1,6 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import AlertStripe, { AlertStripeFeil } from "nav-frontend-alertstriper";
+import AlertStripe from "nav-frontend-alertstriper";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
@@ -221,7 +221,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             </div>
           )}
         </nav>
-        {errorMessage && <AlertStripeFeil>{errorMessage}</AlertStripeFeil>}
+        {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
       </main>
     </SummaryContent>
   );
