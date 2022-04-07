@@ -104,7 +104,23 @@ export class Backend {
       this.config.publishRepoBase,
       `publish-${resourceName}--${uuidv4()}`,
       pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo),
-      `[resources] publiserer ${resourceName}`
+      `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`
+    );
+  }
+
+  async bulkPublishForms(userToken, formPaths) {
+    await this.checkUpdateAndPublishingAccess(userToken);
+    const forms = await this.getForms(formPaths);
+    const formFiles = forms.map((formContent) =>
+      createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
+    );
+
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
+      this.config.publishRepoBase,
+      `bulkpublish--${uuidv4()}`,
+      pushFilesAndUpdateSubmoduleCallback(formFiles, this.config.gitSha, this.config.submoduleRepo),
+      `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
   }
 

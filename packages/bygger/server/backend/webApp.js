@@ -35,6 +35,23 @@ export function dispatcherWithBackend(backend) {
         }
       },
     },
+    "/publish-bulk": {
+      PUT: async (req, res) => {
+        if (!req.body.token) {
+          res.status(401).send("Unauthorized");
+          return;
+        }
+        if (!Array.isArray(req.body.payload.formPaths) || req.body.payload.formPaths.length === 0) {
+          res.status(400).send("Request is missing formPaths");
+        }
+        try {
+          const result = await backend.bulkPublishForms(req.body.token, req.body.payload.formPaths);
+          res.json({ changed: !!result, result });
+        } catch (error) {
+          handleError(error, res);
+        }
+      },
+    },
     "/published-resource/:resourceName": {
       PUT: async (req, res, next, resourceName) => {
         if (!req.body.token) {

@@ -56,7 +56,7 @@ app.use("/api", dispatcherWithBackend(new Backend(projectURL, config)));
 
 const nodeEnv = process.env.NODE_ENV;
 if (nodeEnv === "production") {
-  // serve built app in production (served by weback dev server in development)
+  // serve built app in production (served by webpack dev server in development)
   app.use(express.static(buildDirectory));
   app.get("/*", (req, res) => {
     res.sendFile(buildDirectoryIndexHtml);
