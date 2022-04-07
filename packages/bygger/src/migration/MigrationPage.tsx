@@ -1,16 +1,21 @@
 import { makeStyles } from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
-import Panel from "nav-frontend-paneler";
-import { Innholdstittel, Sidetittel, Undertekst, Undertittel } from "nav-frontend-typografi";
+import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { DryRunResult, DryRunResults, MigrationOptions } from "../../types/migration";
-import { bulkPublish, runMigrationDryRun, runMigrationWithUpdate } from "./api";
+import { DryRunResult } from "../../types/migration";
+import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
+import BulkPublishPanel from "./BulkPublishPanel";
 import ConfirmMigration from "./ConfirmMigration";
 import MigrationDryRunResults from "./MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
-import { createUrlParams } from "./utils";
+import {
+  createUrlParams,
+  getMigrationResultsMatchingSearchFilters,
+  getUrlParamMap,
+  migrationOptionsAsMap,
+} from "./utils";
 
 const useStyles = makeStyles({
   root: {
@@ -27,37 +32,6 @@ const useStyles = makeStyles({
     marginLeft: "1rem",
   },
 });
-
-export const migrationOptionsAsMap = (migrationOptions: MigrationOptions) => {
-  if (Object.keys(migrationOptions).length === 0) {
-    return "";
-  }
-  return Object.values(migrationOptions).reduce((acc, curr) => {
-    if (curr.key !== "") {
-      return {
-        ...acc,
-        [curr.key]: curr.value,
-      };
-    }
-    return acc;
-  }, {});
-};
-
-const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) =>
-  dryRunResults
-    ? Object.values(dryRunResults)
-        .filter((results) => results.found > 0)
-        .sort((a, b) => b.found - a.found)
-    : [];
-
-const getUrlParamMap = (params, name) => {
-  const param = params.get(name);
-  if (param) {
-    return JSON.parse(param);
-  } else {
-    return {};
-  }
-};
 
 const MigrationPage = () => {
   const styles = useStyles();
@@ -119,11 +93,6 @@ const MigrationPage = () => {
     setDryRunSearchResults({});
   };
 
-  const onBulkPublish = async (formPaths) => {
-    const bulkPublishResult = await bulkPublish(Formiojs.getToken(), { formPaths });
-    console.log("bulkPublishResult", bulkPublishResult);
-  };
-
   useEffect(() => {
     (async () => {
       if (params.get("searchFilters") || params.get("editOptions")) {
@@ -173,22 +142,7 @@ const MigrationPage = () => {
         </div>
       </form>
 
-      {migratedForms.length > 0 && (
-        <Panel className="margin-bottom-double">
-          <Undertittel tag="h3">Disse skjemaene ble migrert, og må publiseres manuelt</Undertittel>
-          <Undertekst>
-            Pass på å kopiere denne listen før du laster siden på nytt eller utfører en ny migrering
-          </Undertekst>
-          <Knapp onClick={() => onBulkPublish(migratedForms.map((form) => form.path))}>Publiser nå</Knapp>
-          <ul>
-            {migratedForms.map((form) => (
-              <li
-                key={form.properties.skjemanummer}
-              >{`${form.properties.skjemanummer} - ${form.name} (${form.path})`}</li>
-            ))}
-          </ul>
-        </Panel>
-      )}
+      <BulkPublishPanel forms={migratedForms} />
 
       {dryRunSearchResults && (
         <>
