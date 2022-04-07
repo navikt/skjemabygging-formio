@@ -11,7 +11,7 @@ export const advancedDescription = [
         { label: "Under label", value: "below" },
       ],
     },
-    weight: 2,
+    weight: 200,
   },
   {
     type: "checkbox",
@@ -19,6 +19,7 @@ export const advancedDescription = [
     label: "Utvidet beskrivelse",
     key: "additionalDescription",
     defaultValue: false,
+    weight: 201,
   },
   {
     type: "textfield",
@@ -33,6 +34,7 @@ export const advancedDescription = [
     validate: {
       required: true,
     },
+    weight: 202,
   },
   {
     type: "textarea",
@@ -55,5 +57,6 @@ export const advancedDescription = [
     validate: {
       required: true,
     },
+    weight: 203,
   },
 ];
