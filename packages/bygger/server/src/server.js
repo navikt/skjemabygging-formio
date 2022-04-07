@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
-import { buildDirectory, buildDirectoryIndexHtml } from "../context.js";
 import { Backend } from "./Backend.js";
+import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import { dispatcherWithBackend } from "./webApp.js";
 
 dotenv.config();
@@ -64,5 +64,5 @@ if (nodeEnv === "production") {
 }
 
 const port = parseInt(process.env.PORT || "8080");
-console.log("serving on ", port, nodeEnv);
+console.log(`serving on ${port} (${nodeEnv})`);
 app.listen(port);

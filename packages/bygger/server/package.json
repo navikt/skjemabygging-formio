@@ -9,7 +9,7 @@
     "build": "rimraf dist && babel src --out-dir dist --extensions '.ts,.js' --ignore '**/*.test.js,**/*.test.ts'",
     "check-types": "tsc",
     "clean": "rimraf coverage",
-    "start": "cross-env PORT=8080 NODE_ENV=development babel-watch --extensions '.ts,.js' src/server.js",
+    "start": "cross-env-shell PORT=8080 NODE_ENV=development babel-watch --extensions '.ts,.js' src/server.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -38,6 +38,7 @@
     "babel-jest": "^27.5.1",
     "babel-plugin-transform-import-meta": "^2.1.1",
     "babel-watch": "^7.7.0",
+    "cross-env": "^7.0.3",
     "jest": "^27.3.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.3"
