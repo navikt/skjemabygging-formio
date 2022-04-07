@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { Backend } from "./Backend.js";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
+import { fsAccessRateLimiter } from "./middleware/ratelimit";
 import { dispatcherWithBackend } from "./webApp.js";
 
 dotenv.config();
@@ -58,7 +59,7 @@ const nodeEnv = process.env.NODE_ENV;
 if (nodeEnv === "production") {
   // serve built app in production (served by weback dev server in development)
   app.use(express.static(buildDirectory));
-  app.get("/*", (req, res) => {
+  app.get("/*", fsAccessRateLimiter, (req, res) => {
     res.sendFile(buildDirectoryIndexHtml);
   });
 }

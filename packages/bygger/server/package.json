@@ -21,6 +21,7 @@
     "dispatch": "^1.0.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-rate-limit": "^6.3.0",
     "formiojs": "4.14.0-rc.18",
     "nock": "^13.2.4",
     "node-fetch": "^2.6.7",
