@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import baseHttp from "./api/http"
+import baseHttp from "./api/http";
 
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
@@ -14,9 +14,19 @@ type AppConfigProviderProps = { children: React.ReactNode } & AppConfigContextTy
 
 const AppConfigContext = React.createContext<AppConfigContextType>({});
 
-function AppConfigProvider({ children, dokumentinnsendingBaseURL, baseUrl = "", fyllutBaseURL, featureToggles, submissionMethod, http = baseHttp }: AppConfigProviderProps) {
+function AppConfigProvider({
+  children,
+  dokumentinnsendingBaseURL,
+  baseUrl = "",
+  fyllutBaseURL,
+  featureToggles,
+  submissionMethod,
+  http = baseHttp,
+}: AppConfigProviderProps) {
   return (
-    <AppConfigContext.Provider value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, http }}>
+    <AppConfigContext.Provider
+      value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, http }}
+    >
       {children}
     </AppConfigContext.Provider>
   );
@@ -24,6 +34,5 @@ function AppConfigProvider({ children, dokumentinnsendingBaseURL, baseUrl = "", 
 
 const useAppConfig = () => useContext(AppConfigContext);
 
-export { AppConfigProvider,useAppConfig };
+export { AppConfigProvider, useAppConfig };
 export type { AppConfigContextType };
-

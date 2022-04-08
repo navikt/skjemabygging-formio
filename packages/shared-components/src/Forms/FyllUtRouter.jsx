@@ -5,6 +5,7 @@ import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
+import WarningAboutDifficultDigitalSubmissionModal from "./components/WarningAboutDifficultDigitalSubmissionModal";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
@@ -46,6 +47,7 @@ const FyllUtRouter = ({ form, translations }) => {
     <LanguagesProvider translations={translations}>
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
+        <WarningAboutDifficultDigitalSubmissionModal />
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
