@@ -1,5 +1,5 @@
 import dispatch from "dispatch";
-import { HttpError } from "./fetchUtils.js";
+import { HttpError } from "./fetchUtils";
 import { migrateForms, previewForm } from "./migration/migrationScripts.js";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];

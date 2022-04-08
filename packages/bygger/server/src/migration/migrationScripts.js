@@ -1,5 +1,5 @@
 import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { fetchWithErrorHandling } from "../fetchUtils.js";
+import { fetchWithErrorHandling } from "../fetchUtils";
 import { generateDiff } from "./diffingTool.js";
 import { componentMatchesSearchFilters } from "./searchFilter.js";
 

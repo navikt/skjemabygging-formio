@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/server.js",
+  "type": "commonjs",
   "scripts": {
-    "clean": "rimraf coverage",
-    "start": "cross-env PORT=8080 NODE_ENV=development nodemon index.mjs",
+    "build": "rimraf dist && babel src --out-dir dist --extensions \".ts,.js\" --ignore \"**/*.test.js,**/*.test.ts\"",
+    "check-types": "tsc",
+    "clean": "rimraf coverage dist",
+    "start": "cross-env-shell PORT=8080 NODE_ENV=development babel-watch --extensions \".ts,.js\" src/server.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -19,6 +21,7 @@
     "dispatch": "^1.0.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-rate-limit": "^6.3.0",
     "formiojs": "4.14.0-rc.18",
     "nock": "^13.2.4",
     "node-fetch": "^2.6.7",
@@ -26,10 +29,20 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
     "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
-    "babel-jest": "^27.3.1",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.23",
+    "@types/node-fetch": "^2.6.1",
+    "babel-jest": "^27.5.1",
+    "babel-plugin-transform-import-meta": "^2.1.1",
+    "babel-watch": "^7.7.0",
+    "cross-env": "^7.0.3",
     "jest": "^27.3.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.3"
   }
 }

@@ -1,7 +1,5 @@
 import nock from "nock";
 import { createBackendForTest } from "../testTools/backend/testUtils.js";
-import { stringTobase64 } from "./fetchUtils";
-import { GitHubRepo } from "./GitHubRepo.js";
 import {
   mockRepoCreateOrUpdateFileContents,
   mockRepoCreatePullRequest,
@@ -12,7 +10,9 @@ import {
   mockRepoHasBranchChanged,
   mockRepoMergePullRequest,
   mockRepoUpdateSubmodule,
-} from "./__mocks__/GitHubRepo";
+} from "../__mocks__/GitHubRepo";
+import { stringTobase64 } from "./fetchUtils";
+import { GitHubRepo } from "./GitHubRepo.js";
 
 jest.mock("uuid", () => {
   return { v4: jest.fn().mockReturnValue("1234") };
