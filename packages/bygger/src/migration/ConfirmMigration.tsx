@@ -1,9 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
 import { Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
-import { Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { DryRunResult } from "../../types/migration";
+import FormList from "./components/FormList";
 
 const useModalStyles = makeStyles({
   modal: {
@@ -21,29 +21,17 @@ interface MigrateButtonProps {
   onConfirm: () => Promise<any>;
 }
 
-const FormList = ({ heading, listElements }: { heading: string; listElements: DryRunResult[] }) => {
-  return (
-    <>
-      <Undertittel className="margin-bottom-default">{heading}</Undertittel>
-      <ul>
-        {listElements.length > 0 ? (
-          listElements.map(({ name, skjemanummer }) => (
-            <li key={skjemanummer} className="list-inline-item">
-              {name}
-            </li>
-          ))
-        ) : (
-          <li className="list-inline-item">N/A</li>
-        )}
-      </ul>
-    </>
-  );
-};
-
 const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: MigrateButtonProps) => {
   const [isMigrationInProgress, setIsMigrationInProgress] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const styles = useModalStyles();
+
+  const willBeMigrated = dryRunResults.filter(({ path }) => selectedFormPaths.includes(path));
+  const willNotBeMigrated = dryRunResults
+    .filter(({ changed }) => changed > 0)
+    .filter(({ path }) => !selectedFormPaths.includes(path));
+  const ineligibleForMigration = dryRunResults.filter(({ changed }) => changed === 0);
+
   return (
     <>
       <Modal
@@ -55,19 +43,11 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Migra
         shouldCloseOnOverlayClick={false}
         ariaHideApp={false}
       >
-        <FormList
-          heading={"Skjemaer som vil bli migrert"}
-          listElements={dryRunResults.filter(({ path }) => selectedFormPaths.includes(path))}
-        />
-        <FormList
-          heading={"Skjemaer som ikke vil bli migrert"}
-          listElements={dryRunResults
-            .filter(({ changed }) => changed > 0)
-            .filter(({ path }) => !selectedFormPaths.includes(path))}
-        />
+        <FormList heading={"Skjemaer som vil bli migrert"} listElements={willBeMigrated} />
+        <FormList heading={"Skjemaer som ikke vil bli migrert"} listElements={willNotBeMigrated} />
         <FormList
           heading={"Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering"}
-          listElements={dryRunResults.filter(({ changed }) => changed === 0)}
+          listElements={ineligibleForMigration}
         />
         <ul className="list-inline">
           <li className="list-inline-item">

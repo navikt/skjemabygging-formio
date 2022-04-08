@@ -142,7 +142,7 @@ const MigrationPage = () => {
         </div>
       </form>
 
-      <BulkPublishPanel forms={migratedForms} />
+      {migratedForms.length > 0 && <BulkPublishPanel forms={migratedForms} />}
 
       {dryRunSearchResults && (
         <>
