@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { useLanguages } from "../../context/languages";
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   submission: any;
   actionUrl: string;
   label: string;
-  onClick: Function;
+  onClick: MouseEventHandler<HTMLInputElement>;
   classNames: string;
   translations: { [key: string]: string } | {};
 }

@@ -1,22 +1,22 @@
 import React, { createContext, useContext, useEffect } from "react";
 import {
-  loggSkjemaInnsendingFeilet,
-  loggSkjemaValideringFeilet,
   initAmplitude,
   loggSkjemaFullfort,
+  loggSkjemaInnsendingFeilet,
+  loggSkjemaValideringFeilet,
 } from "../../util/amplitude";
 import useHarApnetSkjema from "./harApnetSkjemaHook";
-import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
 import useSkjemaSporsmalEvent from "./skjemaEventHook";
+import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
 
 const defaultValues = {
   loggSkjemaApnet: () => {},
-  loggSkjemaSporsmalBesvart: () => {},
-  loggSkjemaSporsmalForSpesialTyper: () => {},
-  loggSkjemaStegFullfort: () => {},
+  loggSkjemaSporsmalBesvart: (event) => {},
+  loggSkjemaSporsmalForSpesialTyper: (event) => {},
+  loggSkjemaStegFullfort: (steg) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
-  loggSkjemaFullfort: () => {},
+  loggSkjemaFullfort: (innsendingsType) => {},
 };
 
 const AmplitudeContext = createContext(defaultValues);
