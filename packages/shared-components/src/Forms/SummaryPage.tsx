@@ -66,9 +66,10 @@ const DataGridSummary: FunctionComponent<LabelComponents> = ({ label, components
   <>
     <dt>{label}</dt>
     <dd>
-      {components?.map((component) => (
-        <DataGridRow key={component.key} label={component.label} components={component.components} />
-      ))}
+      {components &&
+        components.map((component) => (
+          <DataGridRow key={component.key} label={component.label} components={component.components} />
+        ))}
     </dd>
   </>
 );
@@ -134,6 +135,7 @@ const ComponentSummary = ({ components }) => {
 
 const FormSummary = ({ form, submission }) => {
   const { translate } = useLanguages();
+  // @ts-ignore
   const formSummaryObject = createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
