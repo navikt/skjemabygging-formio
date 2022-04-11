@@ -15,13 +15,13 @@ const useModalStyles = makeStyles({
   },
 });
 
-interface MigrateButtonProps {
+interface ConfirmMigrationProps {
   selectedFormPaths: string[];
   dryRunResults: DryRunResult[];
-  onConfirm: () => Promise<any>;
+  onConfirm: () => Promise<unknown>;
 }
 
-const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: MigrateButtonProps) => {
+const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: ConfirmMigrationProps) => {
   const [isMigrationInProgress, setIsMigrationInProgress] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const styles = useModalStyles();

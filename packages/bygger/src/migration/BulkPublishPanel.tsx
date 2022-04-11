@@ -6,10 +6,14 @@ import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Undertekst, Undertittel } from "nav-frontend-typografi";
 import React, { useReducer, useState } from "react";
+import { NavFormType } from "../Forms/navForm";
 import { bulkPublish } from "./api";
 import FormList from "./components/FormList";
 
-function reducer(state, action) {
+type State = Record<string, boolean>;
+type Action = { type: "check" | "uncheck"; payload: string };
+
+function reducer(state: State, action: Action) {
   switch (action.type) {
     case "check":
       return { ...state, [action.payload]: true };
@@ -20,7 +24,7 @@ function reducer(state, action) {
   }
 }
 
-function init(forms) {
+function init(forms: NavFormType[]): State {
   return forms.reduce((acc, form) => ({ ...acc, [form.path]: true }), {});
 }
 
@@ -40,7 +44,11 @@ const useStyles = makeStyles({
   },
 });
 
-const BulkPublishPanel = ({ forms }) => {
+interface Props {
+  forms: NavFormType[];
+}
+
+const BulkPublishPanel = ({ forms }: Props) => {
   const styles = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

@@ -5,6 +5,7 @@ import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
+import { NavFormType } from "../Forms/navForm";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
 import BulkPublishPanel from "./BulkPublishPanel";
 import ConfirmMigration from "./ConfirmMigration";
@@ -43,7 +44,7 @@ const MigrationPage = () => {
       numberOfComponentsChanged?: number;
     }>({});
   const [selectedToMigrate, setSelectedToMigrate] = useState<string[]>([]);
-  const [migratedForms, setMigratedForms] = useState<any[]>([]);
+  const [migratedForms, setMigratedForms] = useState<NavFormType[]>([]);
 
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
