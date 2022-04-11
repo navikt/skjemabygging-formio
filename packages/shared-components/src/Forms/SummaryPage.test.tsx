@@ -6,6 +6,7 @@ import nock from "nock";
 import React from "react";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../configContext";
+import { NavFormType } from "../types/types";
 import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;
@@ -36,13 +37,14 @@ const defaultForm = {
   components: [],
 };
 
-const formWithProperties = (props) => ({
-  ...defaultForm,
-  properties: {
-    ...defaultFormProperties,
-    ...props,
-  },
-});
+const formWithProperties = (props): NavFormType =>
+  ({
+    ...defaultForm,
+    properties: {
+      ...defaultFormProperties,
+      ...props,
+    },
+  } as unknown as NavFormType);
 
 type Buttons = {
   redigerSvarKnapp: HTMLButtonElement;
@@ -71,7 +73,7 @@ const renderSummaryPage = async (
   const summaryPageProps: Props = {
     formUrl: "/testform",
     submission: {},
-    form: {},
+    form: {} as NavFormType,
     translations: {},
     ...props,
   };

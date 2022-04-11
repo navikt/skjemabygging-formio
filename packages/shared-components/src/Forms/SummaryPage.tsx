@@ -7,22 +7,38 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
+import { Component, InnsendingType, NavFormType } from "../types/types";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import { navCssVariables } from "../util/navCssVariables";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 
-// duplisert fra bygger
-type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
+type LabelValue = {
+  label: string;
+  value: string;
+};
+type LabelValues = {
+  label: string;
+  values: string[];
+};
+type LabelComponents = {
+  label: string;
+  components?: Component[];
+};
 
-const FormSummaryField: FunctionComponent = ({ label, value }) => (
+type ImageComp = LabelValue & {
+  alt: string;
+  widthPercent: string;
+};
+
+const FormSummaryField: FunctionComponent<LabelValue> = ({ label, value }) => (
   <>
     <dt>{label}</dt>
     <dd>{value}</dd>
   </>
 );
 
-const SelectboxesSummary: FunctionComponent = ({ label, values }) => (
+const SelectboxesSummary: FunctionComponent<LabelValues> = ({ label, values }) => (
   <>
     <dt>{label}</dt>
     <dd>
@@ -35,7 +51,7 @@ const SelectboxesSummary: FunctionComponent = ({ label, values }) => (
   </>
 );
 
-const FormSummaryFieldset: FunctionComponent = ({ label, components }) => (
+const FormSummaryFieldset: FunctionComponent<LabelComponents> = ({ label, components }) => (
   <div>
     <dt>{label}</dt>
     <dd>
@@ -46,18 +62,19 @@ const FormSummaryFieldset: FunctionComponent = ({ label, components }) => (
   </div>
 );
 
-const DataGridSummary: FunctionComponent = ({ label, components }) => (
+const DataGridSummary: FunctionComponent<LabelComponents> = ({ label, components }) => (
   <>
     <dt>{label}</dt>
     <dd>
-      {components.map((component) => (
-        <DataGridRow key={component.key} label={component.label} components={component.components} />
-      ))}
+      {components &&
+        components.map((component) => (
+          <DataGridRow key={component.key} label={component.label} components={component.components} />
+        ))}
     </dd>
   </>
 );
 
-const DataGridRow: FunctionComponent = ({ label, components }) => (
+const DataGridRow: FunctionComponent<LabelComponents> = ({ label, components }) => (
   <div className="data-grid__row skjemagruppe">
     {label && <p className="skjemagruppe__legend">{label}</p>}
     <dl>
@@ -71,19 +88,19 @@ const useImgSummaryStyles = (widthPercent) =>
     description: { minWidth: 100, maxWidth: widthPercent + "%" },
   })();
 
-const ImageSummary: FunctionComponent = ({ label, values, alt, widthPercent }) => {
+const ImageSummary: FunctionComponent<ImageComp> = ({ label, value, alt, widthPercent }) => {
   const { description } = useImgSummaryStyles(widthPercent);
   return (
     <>
       <dt>{label}</dt>
       <dd>
-        <img className={description} src={values} alt={alt}></img>
+        <img className={description} src={value} alt={alt}></img>
       </dd>
     </>
   );
 };
 
-const PanelSummary: FunctionComponent = ({ label, components }) => (
+const PanelSummary: FunctionComponent<LabelComponents> = ({ label, components }) => (
   <section className="margin-bottom-default wizard-page">
     <Systemtittel tag="h3" className="margin-bottom-default">
       {label}
@@ -108,7 +125,7 @@ const ComponentSummary = ({ components }) => {
         return <SelectboxesSummary key={key} label={label} values={comp.value} />;
       case "image":
         return (
-          <ImageSummary key={key} label={label} values={comp.value} alt={comp.alt} widthPercent={comp.widthPercent} />
+          <ImageSummary key={key} label={label} value={comp.value} alt={comp.alt} widthPercent={comp.widthPercent} />
         );
       default:
         return <FormSummaryField key={key} label={label} value={comp.value} />;
@@ -126,7 +143,7 @@ const FormSummary = ({ form, submission }) => {
 };
 
 export interface Props {
-  form: object;
+  form: NavFormType;
   submission: object;
   translations: object;
   formUrl: string;

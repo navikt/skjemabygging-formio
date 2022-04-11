@@ -1,11 +1,14 @@
 import React, { useContext } from "react";
 import baseHttp from "./api/http";
 
+type FeatureTogglesMap = {
+  [key: string]: boolean;
+};
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
   fyllutBaseURL?: string;
-  featureToggles?: object;
+  featureToggles?: FeatureTogglesMap;
   submissionMethod?: string;
   http?: object;
 }

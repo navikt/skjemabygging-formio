@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "build": "webpack --config webpack.config.cjs",
+    "check-types": "tsc",
     "clean": "rimraf dist coverage",
     "watch": "webpack --watch --config webpack.config.cjs",
     "test": "jest",
@@ -48,6 +49,7 @@
     "nock": "^13.2.4",
     "power-assert": "^1.6.1",
     "style-loader": "^2.0.0",
+    "typescript": "^4.6.3",
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-node-externals": "2.5.2"

@@ -18,6 +18,8 @@ jobs:
           node-version: '14.17.0'
       - name: "Bootstrap"
         run: yarn bootstrap
+      - name: "No unstaged changes allowed (changes in yarn.lock?)"
+        run: git diff --quiet
       - name: "Check types"
         run: yarn check-types
       - name: "Build"
