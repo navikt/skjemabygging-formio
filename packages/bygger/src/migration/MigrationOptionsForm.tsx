@@ -85,16 +85,13 @@ interface MigrationOptionsFormProps {
   dispatch: Dispatch<Action>;
 }
 
-const MigrationOptionsForm = ({
-  addRowText,
-  title,
-  state,
-  dispatch,
-}: MigrationOptionsFormProps) => {
+const MigrationOptionsForm = ({ addRowText, title, state, dispatch }: MigrationOptionsFormProps) => {
   const styles = getStyles();
   return (
     <>
-      <Innholdstittel tag="h2" className={styles.hasMarginBottom}>{title}</Innholdstittel>
+      <Innholdstittel tag="h2" className={styles.hasMarginBottom}>
+        {title}
+      </Innholdstittel>
       <div className={styles.form}>
         {Object.keys(state).map((id) => {
           const { key, value } = state[id];
@@ -120,7 +117,7 @@ const MigrationOptionsForm = ({
                 className={styles.hasMarginBottom}
                 label="Verdi"
                 type="text"
-                value={value}
+                value={typeof value === "object" ? JSON.stringify(value) : value}
                 disabled={!key}
                 onChange={(event) =>
                   dispatch({
