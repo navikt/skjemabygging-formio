@@ -5,7 +5,10 @@ import React, { useState } from "react";
 import { DryRunResult } from "../../types/migration";
 import FormList from "./components/FormList";
 
-const useModalStyles = makeStyles({
+const useStyles = makeStyles({
+  button: {
+    width: "max-content",
+  },
   modal: {
     width: "50rem",
     minHeight: "13rem",
@@ -24,7 +27,7 @@ interface ConfirmMigrationProps {
 const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: ConfirmMigrationProps) => {
   const [isMigrationInProgress, setIsMigrationInProgress] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const styles = useModalStyles();
+  const styles = useStyles();
 
   const willBeMigrated = dryRunResults.filter(({ path }) => selectedFormPaths.includes(path));
   const willNotBeMigrated = dryRunResults
@@ -73,7 +76,7 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Confi
           </li>
         </ul>
       </Modal>
-      <Knapp onClick={() => setModalIsOpen(true)} htmlType="button">
+      <Knapp className={styles.button} onClick={() => setModalIsOpen(true)} htmlType="button">
         Migrer
       </Knapp>
     </>

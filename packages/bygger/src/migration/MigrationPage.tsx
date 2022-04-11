@@ -5,6 +5,8 @@ import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
+import Column from "../components/layout/Column";
+import UserFeedback from "../components/UserFeedback";
 import { NavFormType } from "../Forms/navForm";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
 import BulkPublishPanel from "./BulkPublishPanel";
@@ -20,8 +22,18 @@ import {
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: "60rem",
-    margin: "0 auto",
+    display: "flex",
+    maxWidth: "70rem",
+    margin: "0 auto 4rem auto",
+  },
+  mainContent: {
+    flexDirection: "column",
+    flex: "3",
+  },
+  sideColumn: {
+    flexDirection: "column",
+    flex: "1",
+    marginLeft: "2rem",
   },
   mainHeading: {
     marginBottom: "4rem",
@@ -105,77 +117,82 @@ const MigrationPage = () => {
 
   return (
     <main className={styles.root}>
-      <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
-      <form
-        onSubmit={async (event) => {
-          event.preventDefault();
-          await onSearch();
-        }}
-      >
-        <MigrationOptionsForm
-          title="Filtrer"
-          addRowText="Legg til filtreringsvalg"
-          state={searchFilters}
-          dispatch={dispatchSearchFilters}
-        />
-        <MigrationOptionsForm
-          title="Sett opp felter som skal migreres og ny verdi for feltene"
-          addRowText="Legg til felt som skal endres"
-          state={editOptions}
-          dispatch={dispatchEditOptions}
-        />
+      <Column className={styles.mainContent}>
+        <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
+        <form
+          onSubmit={async (event) => {
+            event.preventDefault();
+            await onSearch();
+          }}
+        >
+          <MigrationOptionsForm
+            title="Filtrer"
+            addRowText="Legg til filtreringsvalg"
+            state={searchFilters}
+            dispatch={dispatchSearchFilters}
+          />
+          <MigrationOptionsForm
+            title="Sett opp felter som skal migreres og ny verdi for feltene"
+            addRowText="Legg til felt som skal endres"
+            state={editOptions}
+            dispatch={dispatchEditOptions}
+          />
 
-        <div className={styles.hasMarginBottom}>
-          <Knapp type="hoved" spinner={isLoading}>
-            Simuler og kontroller migrering
-          </Knapp>
+          <div className={styles.hasMarginBottom}>
+            <Knapp type="hoved" spinner={isLoading}>
+              Simuler og kontroller migrering
+            </Knapp>
 
-          <Knapp
-            type="flat"
-            onClick={() => {
-              history.push();
-              history.go();
-            }}
-            className={styles.hasMarginLeft}
-          >
-            Nullstill skjema
-          </Knapp>
-        </div>
-      </form>
+            <Knapp
+              type="flat"
+              onClick={() => {
+                history.push();
+                history.go();
+              }}
+              className={styles.hasMarginLeft}
+            >
+              Nullstill skjema
+            </Knapp>
+          </div>
+        </form>
 
-      {migratedForms.length > 0 && <BulkPublishPanel forms={migratedForms} />}
+        {migratedForms.length > 0 && <BulkPublishPanel forms={migratedForms} />}
 
-      {dryRunSearchResults && (
-        <>
-          <Innholdstittel tag="h2">Resultater av simulert migrering</Innholdstittel>
-          <p>
-            Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
-            {numberOfComponentsFound !== undefined && (
-              <span>
-                Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
-                endringene.
-              </span>
+        {dryRunSearchResults && (
+          <>
+            <Innholdstittel tag="h2">Resultater av simulert migrering</Innholdstittel>
+            <p>
+              Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
+              {numberOfComponentsFound !== undefined && (
+                <span>
+                  Totalt vil {numberOfComponentsChanged} av {numberOfComponentsFound} komponenter bli påvirket av
+                  endringene.
+                </span>
+              )}
+            </p>
+            {dryRunSearchResults.length > 0 && (
+              <>
+                <ConfirmMigration
+                  selectedFormPaths={selectedToMigrate}
+                  dryRunResults={dryRunSearchResults}
+                  onConfirm={onConfirm}
+                />
+                <MigrationDryRunResults
+                  onChange={setSelectedToMigrate}
+                  dryRunResults={dryRunSearchResults}
+                  selectedPaths={selectedToMigrate}
+                  getPreviewUrl={(formPath) =>
+                    `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editOptions)}`
+                  }
+                />
+              </>
             )}
-          </p>
-          {dryRunSearchResults.length > 0 && (
-            <>
-              <ConfirmMigration
-                selectedFormPaths={selectedToMigrate}
-                dryRunResults={dryRunSearchResults}
-                onConfirm={onConfirm}
-              />
-              <MigrationDryRunResults
-                onChange={setSelectedToMigrate}
-                dryRunResults={dryRunSearchResults}
-                selectedPaths={selectedToMigrate}
-                getPreviewUrl={(formPath) =>
-                  `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editOptions)}`
-                }
-              />
-            </>
-          )}
-        </>
-      )}
+          </>
+        )}
+      </Column>
+      <Column className={styles.sideColumn}>
+        <UserFeedback />
+      </Column>
     </main>
   );
 };
