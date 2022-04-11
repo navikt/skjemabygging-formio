@@ -63,13 +63,13 @@ const vedleggBekreftelseBostedsadresse = {
     vedleggstittel: "Bekreftelse på utenlandsk bostedsadresse",
     vedleggskode: "U1",
   },
-  "conditional": {
-    "json": "",
-    "show": null,
-    "when": null,
-    "eq": ""
+  conditional: {
+    json: "",
+    show: null,
+    when: null,
+    eq: "",
   },
-  "customConditional": "",
+  customConditional: "",
 };
 
 export {

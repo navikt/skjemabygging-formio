@@ -1,6 +1,6 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { AlertStripeFeil } from "nav-frontend-alertstriper";
+import AlertStripe from "nav-frontend-alertstriper";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
@@ -177,6 +177,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           })}
         </Normaltekst>
         <FormSummary submission={submission} form={form} />
+        {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: formUrl, search }}>
@@ -238,7 +239,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             </div>
           )}
         </nav>
-        {errorMessage && <AlertStripeFeil>{errorMessage}</AlertStripeFeil>}
+        {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
       </main>
     </SummaryContent>
   );
