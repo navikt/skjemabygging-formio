@@ -14,6 +14,7 @@ export const grensesnitt = {
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
+  ok: "OK",
 
   formSummaryUtils: {
     payAttentionTo: "Vær oppmerksom på",

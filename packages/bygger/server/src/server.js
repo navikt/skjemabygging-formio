@@ -1,8 +1,9 @@
-import express from "express";
-import { Backend } from "./backend/Backend.js";
-import { dispatcherWithBackend } from "./backend/webApp.js";
-import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import dotenv from "dotenv";
+import express from "express";
+import { Backend } from "./Backend.js";
+import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
+import { fsAccessRateLimiter } from "./middleware/ratelimit";
+import { dispatcherWithBackend } from "./webApp.js";
 
 dotenv.config();
 const app = express();
@@ -58,11 +59,11 @@ const nodeEnv = process.env.NODE_ENV;
 if (nodeEnv === "production") {
   // serve built app in production (served by webpack dev server in development)
   app.use(express.static(buildDirectory));
-  app.get("/*", (req, res) => {
+  app.get("/*", fsAccessRateLimiter, (req, res) => {
     res.sendFile(buildDirectoryIndexHtml);
   });
 }
 
 const port = parseInt(process.env.PORT || "8080");
-console.log("serving on ", port, nodeEnv);
+console.log(`serving on ${port} (${nodeEnv})`);
 app.listen(port);

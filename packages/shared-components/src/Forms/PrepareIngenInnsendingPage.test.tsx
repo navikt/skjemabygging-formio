@@ -1,8 +1,8 @@
-import React from "react";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 
 jest.mock("../context/languages", () => ({
@@ -60,9 +60,11 @@ describe("PrepareIngenInnsendingPage", () => {
     userEvent.click(lastNedSoknadKnapp);
     expect(submitCalls).toHaveLength(1);
 
+    // @ts-ignore
     const submissionInput = submitCalls[0].target.children[0] as HTMLInputElement;
     expect(submissionInput.name).toEqual("submission");
 
+    // @ts-ignore
     const formInput = submitCalls[0].target.children[1] as HTMLInputElement;
     expect(formInput.name).toEqual("form");
     const formInputValueJson = JSON.parse(formInput.value);
