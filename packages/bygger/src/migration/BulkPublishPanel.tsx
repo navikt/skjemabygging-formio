@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import Formiojs from "formiojs/Formio";
+import AlertStripe from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import Panel from "nav-frontend-paneler";
@@ -66,10 +67,20 @@ const BulkPublishPanel = ({ forms }: Props) => {
   return (
     <>
       <Panel className="margin-bottom-double">
-        <Undertittel tag="h3">Disse skjemaene ble migrert, og må publiseres manuelt</Undertittel>
-        <Undertekst>
-          Pass på å kopiere denne listen før du laster siden på nytt eller utfører en ny migrering
+        <Undertittel tag="h3">Disse skjemaene ble migrert</Undertittel>
+        <Undertekst className={"margin-bottom-default"}>
+          Her kan du velge skjemaer du ønsker å publisere samlet
         </Undertekst>
+        <AlertStripe type={"advarsel"}>
+          <p>
+            Merk at oversettelser ikke migreres, eller publiseres. Hvis du har gjort endringer som vil påvirke
+            oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser og migrere manuelt.
+          </p>
+          <p>
+            Skjemaer listet opp her, er ikke nødvendigvis publisert til nav.no per i dag. Du må selv kontrollere om et
+            gitt skjema faktisk skal publiseres.
+          </p>
+        </AlertStripe>
         <form
           onSubmit={(event) => {
             event.preventDefault();
