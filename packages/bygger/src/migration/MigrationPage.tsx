@@ -9,10 +9,10 @@ import Column from "../components/layout/Column";
 import UserFeedback from "../components/UserFeedback";
 import { NavFormType } from "../Forms/navForm";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
-import BulkPublishPanel from "./BulkPublishPanel";
-import ConfirmMigration from "./ConfirmMigration";
-import MigrationDryRunResults from "./MigrationDryRunResults";
-import MigrationOptionsForm, { useMigrationOptions } from "./MigrationOptionsForm";
+import BulkPublishPanel from "./components/BulkPublishPanel";
+import ConfirmMigration from "./components/ConfirmMigration";
+import MigrationDryRunResults from "./components/MigrationDryRunResults";
+import MigrationOptionsForm, { useMigrationOptions } from "./components/MigrationOptionsForm";
 import {
   createUrlParams,
   getMigrationResultsMatchingSearchFilters,

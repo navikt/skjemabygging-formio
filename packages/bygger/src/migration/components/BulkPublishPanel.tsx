@@ -7,9 +7,9 @@ import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Undertekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useReducer, useState } from "react";
-import { NavFormType } from "../Forms/navForm";
-import { bulkPublish } from "./api";
-import FormList from "./components/FormList";
+import { NavFormType } from "../../Forms/navForm";
+import { bulkPublish } from "../api";
+import FormList from "./FormList";
 
 type State = Record<string, boolean>;
 type Action = { type: "check" | "uncheck"; payload: string } | { type: "init"; payload: NavFormType[] };

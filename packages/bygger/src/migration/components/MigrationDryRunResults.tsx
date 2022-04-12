@@ -3,7 +3,7 @@ import { Checkbox } from "nav-frontend-skjema";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
-import { DryRunResult } from "../../types/migration";
+import { DryRunResult } from "../../../types/migration";
 import BreakingChangesWarning from "./BreakingChangesWarning";
 
 const useStyles = makeStyles({

@@ -2,8 +2,8 @@ import { makeStyles } from "@material-ui/styles";
 import { Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import React, { useState } from "react";
-import { DryRunResult } from "../../types/migration";
-import FormList from "./components/FormList";
+import { DryRunResult } from "../../../types/migration";
+import FormList from "./FormList";
 
 const useStyles = makeStyles({
   button: {
