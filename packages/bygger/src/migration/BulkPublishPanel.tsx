@@ -6,16 +6,22 @@ import Modal from "nav-frontend-modal";
 import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Undertekst, Undertittel } from "nav-frontend-typografi";
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { NavFormType } from "../Forms/navForm";
 import { bulkPublish } from "./api";
 import FormList from "./components/FormList";
 
 type State = Record<string, boolean>;
-type Action = { type: "check" | "uncheck"; payload: string };
+type Action = { type: "check" | "uncheck"; payload: string } | { type: "init"; payload: NavFormType[] };
+
+function init(forms: NavFormType[]): State {
+  return forms.reduce((acc, form) => ({ ...acc, [form.path]: true }), {});
+}
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
+    case "init":
+      return init(action.payload);
     case "check":
       return { ...state, [action.payload]: true };
     case "uncheck":
@@ -23,10 +29,6 @@ function reducer(state: State, action: Action) {
     default:
       throw new Error();
   }
-}
-
-function init(forms: NavFormType[]): State {
-  return forms.reduce((acc, form) => ({ ...acc, [form.path]: true }), {});
 }
 
 const useStyles = makeStyles({
@@ -53,7 +55,11 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const styles = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [state, dispatch] = useReducer(reducer, forms, init);
+  const [state, dispatch] = useReducer(reducer, {});
+
+  useEffect(() => {
+    dispatch({ type: "init", payload: forms });
+  }, [forms]);
 
   const onBulkPublish = async (formPaths) => {
     setIsLoading(true);
@@ -92,7 +98,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
               <li className={styles.listElement} key={form.properties.skjemanummer}>
                 <Checkbox
                   label={`${form.properties.skjemanummer} - ${form.name} (${form.path})`}
-                  checked={state[form.path]}
+                  checked={state[form.path] || false}
                   onChange={(event) => {
                     if (event.target.checked) {
                       dispatch({ type: "check", payload: form.path });
