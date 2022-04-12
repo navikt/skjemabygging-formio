@@ -37,7 +37,7 @@ export type PusherChannel =
 export type PusherEvent = "publication" | "bulk-publication" | "other" | "failure";
 
 const BULK_PUBLISH_COMMIT_REGEXP = /^\[bulk-publisering\].*/;
-const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjema[er] publisert, monorepo ref: (.*)$/;
+const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
 const PUBLISH_COMMIT_REGEXP = /^\[publisering\].*/;
 const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
 

@@ -45,6 +45,33 @@ describe("workflow-message", () => {
     });
   });
 
+  describe("bulk-publication event", () => {
+    it("should trigger bulk-publication event with correct event type", () => {
+      const githubEvent = pushEventWithCommitMessage("[bulk-publisering] blablabla");
+      execute("skjemautfyller-deployed", mockPusherOptions, githubEvent);
+      expect(pusherTrigger).toBeCalledTimes(1);
+
+      const triggerArgs = extractTriggerArgs(pusherTrigger.mock.calls[0]);
+      expect(triggerArgs.channel).toEqual("skjemautfyller-deployed");
+      expect(triggerArgs.event).toEqual("bulk-publication");
+      expect(triggerArgs.data.skjemapublisering.commitUrl).toEqual(defaultGithubPushEvent.head_commit?.url);
+      expect(triggerArgs.data.skjemapublisering.skjematittel).toBeUndefined();
+      expect(triggerArgs.data.skjemapublisering.antall).toBeUndefined();
+    });
+
+    it("should trigger bulk-publication event with antall", () => {
+      const githubEvent = pushEventWithCommitMessage(
+        "[bulk-publisering] 16 skjemaer publisert, monorepo ref: abcdef123456"
+      );
+      execute("skjemautfyller-deployed", mockPusherOptions, githubEvent);
+      expect(pusherTrigger).toBeCalledTimes(1);
+
+      const triggerArgs = extractTriggerArgs(pusherTrigger.mock.calls[0]);
+      expect(triggerArgs.event).toEqual("bulk-publication");
+      expect(triggerArgs.data.skjemapublisering.antall).toEqual(16);
+    });
+  });
+
   describe("publication event", () => {
     it("should trigger publication event with correct event type and include commit url", () => {
       const githubEvent = pushEventWithCommitMessage("[publisering] endring i et skjema");
