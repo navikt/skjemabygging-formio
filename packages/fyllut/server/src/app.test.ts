@@ -1,7 +1,7 @@
 import nock from "nock";
 import request from "supertest";
 import { createApp } from "./app";
-import { config } from "./config/config.js";
+import { config } from "./config/config";
 import { createMockIdportenJwt, extractHost, extractPath } from "./test/testHelpers.js";
 
 const { sendInnConfig, tokenx: tokenxConfig } = config;
@@ -53,13 +53,13 @@ describe("app", () => {
       translations: {},
     };
 
-    const tokenxWellKnownScope = nock(extractHost(tokenxConfig.wellKnownUrl))
-      .get(extractPath(tokenxConfig.wellKnownUrl))
+    const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
+      .get(extractPath(tokenxConfig?.wellKnownUrl))
       .reply(200, { token_endpoint: tokenEndpoint });
     const tokenEndpointNockScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
       .reply(200, { access_token: "123456" }, { "Content-Type": "application/json" });
-    const sendInnNockScope = nock(sendInnConfig.host as string)
+    const sendInnNockScope = nock(sendInnConfig?.host as string)
       .post("/fyllUt/leggTilVedlegg")
       .reply(302, "FOUND", { Location: sendInnLocation });
 

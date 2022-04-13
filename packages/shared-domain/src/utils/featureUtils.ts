@@ -1,7 +1,11 @@
-const capitalize = (str) => str[0].toUpperCase() + str.slice(1);
+const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1);
 
-const toFeatureToggles = (commaSeparatedFeatureNames) => {
-  const featureToggles = {};
+export type FeatureTogglesMap = {
+  [key: string]: boolean;
+};
+
+const toFeatureToggles = (commaSeparatedFeatureNames: string | undefined | null): FeatureTogglesMap => {
+  const featureToggles: FeatureTogglesMap = {};
   if (commaSeparatedFeatureNames) {
     const featureNames = commaSeparatedFeatureNames.split(",");
     featureNames.forEach((featureName) => {

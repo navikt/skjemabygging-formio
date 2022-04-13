@@ -3,7 +3,7 @@ import express from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
 import path from "path";
-import { checkConfigConsistency, config } from "./config/config.js";
+import { checkConfigConsistency, config } from "./config/config";
 import { buildDirectory } from "./context.js";
 import { createRedirectUrl, getDecorator } from "./dekorator.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";

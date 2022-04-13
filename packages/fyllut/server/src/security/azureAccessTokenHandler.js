@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import qs from "qs";
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 import { toJsonOrThrowError } from "../utils/errorHandling.js";
 
 const { skjemabyggingProxyClientId, clientId, clientSecret, azureOpenidTokenEndpoint } = config;

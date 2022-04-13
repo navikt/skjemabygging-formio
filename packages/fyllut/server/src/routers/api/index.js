@@ -1,5 +1,5 @@
 import express from "express";
-import { config as appConfig } from "../../config/config.js";
+import { config as appConfig } from "../../config/config";
 import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
 import idportenAuthHandler from "../../security/idportenAuthHandler.js";
 import tokenxHandler from "../../security/tokenxHandler.js";

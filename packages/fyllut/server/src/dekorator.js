@@ -1,5 +1,5 @@
 import { injectDecoratorServerSide } from "@navikt/nav-dekoratoren-moduler/ssr/index.js";
-import { config } from "./config/config.js";
+import { config } from "./config/config";
 import { NaisCluster } from "./config/nais-cluster.js";
 
 const { naisClusterName } = config;

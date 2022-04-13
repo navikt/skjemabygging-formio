@@ -1,23 +1,24 @@
 import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
+import { ConfigType, SendInnConfig, TokenxConfig } from "./types";
 
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
 
-const tokenx = {
-  privateJwk: process.env.TOKEN_X_PRIVATE_JWK,
-  fyllutClientId: process.env.TOKEN_X_CLIENT_ID,
-  wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL,
+const tokenx: TokenxConfig = {
+  privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
+  fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
+  wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL!,
 };
 
-const sendInnConfig = {
-  host: process.env.SEND_INN_HOST,
-  tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID,
+const sendInnConfig: SendInnConfig = {
+  host: process.env.SEND_INN_HOST!,
+  tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID!,
 };
 
-const localDevelopmentConfig = {
+const localDevelopmentConfig: Partial<ConfigType> = {
   gitVersion: "local",
   useFormioApi: true,
   formioProjectUrl: "https://formio-api-server.ekstern.dev.nav.no",
@@ -41,35 +42,34 @@ const localDevelopmentConfig = {
   },
 };
 
-const defaultConfig = {
-  sentryDsn: process.env.REACT_APP_SENTRY_DSN,
-  gitVersion: process.env.GIT_SHA,
+const defaultConfig: Partial<ConfigType> = {
+  sentryDsn: process.env.REACT_APP_SENTRY_DSN!,
+  gitVersion: process.env.GIT_SHA!,
   useFormioApi: process.env.FORMS_SOURCE === "formioapi",
-  formioProjectUrl: process.env.FORMIO_PROJECT_URL,
-  forstesideUrl: process.env.FOERSTESIDE_URL,
-  decoratorUrl: process.env.DECORATOR_URL,
-  skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL,
-  skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID,
-  azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT,
-  clientId: process.env.AZURE_APP_CLIENT_ID,
-  skjemaDir: process.env.SKJEMA_DIR,
-  resourcesDir: process.env.RESOURCES_DIR,
-  translationDir: process.env.TRANSLATION_DIR,
+  formioProjectUrl: process.env.FORMIO_PROJECT_URL!,
+  forstesideUrl: process.env.FOERSTESIDE_URL!,
+  decoratorUrl: process.env.DECORATOR_URL!,
+  skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL!,
+  skjemabyggingProxyClientId: process.env.SKJEMABYGGING_PROXY_CLIENT_ID!,
+  azureOpenidTokenEndpoint: process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!,
+  clientId: process.env.AZURE_APP_CLIENT_ID!,
+  skjemaDir: process.env.SKJEMA_DIR!,
+  resourcesDir: process.env.RESOURCES_DIR!,
+  translationDir: process.env.TRANSLATION_DIR!,
   tokenx,
   sendInnConfig,
 };
-
-const config = {
+const config: ConfigType = {
   ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
-  clientSecret: process.env.AZURE_APP_CLIENT_SECRET,
-  naisClusterName: process.env.NAIS_CLUSTER_NAME,
+  clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
+  naisClusterName: process.env.NAIS_CLUSTER_NAME!,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
-  idportenClientId: process.env.IDPORTEN_CLIENT_ID,
+  idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
 };
 
-const checkConfigConsistency = (config, logError = console.error, exit = process.exit) => {
+const checkConfigConsistency = (config: ConfigType, logError = console.error, exit = process.exit) => {
   const { useFormioApi, naisClusterName, formioProjectUrl } = config;
   if (useFormioApi) {
     if (naisClusterName === NaisCluster.PROD) {

@@ -1,4 +1,4 @@
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 import { logger } from "../logger.js";
 import TokenXClient from "./tokenxClient.js";
 
