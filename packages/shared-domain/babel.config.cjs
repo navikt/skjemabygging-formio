@@ -1,8 +1,3 @@
-const presets = [["@babel/preset-env", { modules: false }], "@babel/preset-typescript"];
-const env = {
-  test: {
-    plugins: ["@babel/plugin-transform-modules-commonjs"],
-  },
-};
+const presets = ["@babel/preset-env", "@babel/preset-typescript"];
 
-module.exports = { presets, env };
+module.exports = { presets };
