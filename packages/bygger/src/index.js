@@ -13,10 +13,9 @@ import * as serviceWorker from "./serviceWorker";
 Formio.use(navdesign);
 
 const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://formio-api-server.ekstern.dev.nav.no";
-const serverURL = "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut";
+const serverURL = "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut";
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
-const fyllutBaseURL =
-  process.env.REACT_APP_FYLLUT_BASE_URL || "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut";
+const fyllutBaseURL = process.env.REACT_APP_FYLLUT_BASE_URL || "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut";
 
 Pusher.logToConsole = true;
 
