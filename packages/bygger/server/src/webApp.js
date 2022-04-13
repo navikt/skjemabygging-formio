@@ -35,6 +35,23 @@ export function dispatcherWithBackend(backend) {
         }
       },
     },
+    "/publish-bulk": {
+      POST: async (req, res) => {
+        if (!req.body.token) {
+          res.status(401).send("Unauthorized");
+          return;
+        }
+        if (!Array.isArray(req.body.payload.formPaths) || req.body.payload.formPaths.length === 0) {
+          res.status(400).send("Request is missing formPaths");
+        }
+        try {
+          const result = await backend.bulkPublishForms(req.body.token, req.body.payload.formPaths);
+          res.json({ changed: !!result, result });
+        } catch (error) {
+          handleError(error, res);
+        }
+      },
+    },
     "/published-resource/:resourceName": {
       PUT: async (req, res, next, resourceName) => {
         if (!req.body.token) {
@@ -68,7 +85,9 @@ export function dispatcherWithBackend(backend) {
         const searchFilters = JSON.parse(req.query["searchFilters"] || "{}");
         const editOptions = JSON.parse(req.query["editOptions"] || "{}");
         try {
-          migrateForms(searchFilters, editOptions).then(({ log }) => res.send(log));
+          const allForms = await backend.getAllForms();
+          const { log } = await migrateForms(searchFilters, editOptions, allForms);
+          res.send(log);
         } catch (error) {
           handleError(error, res);
         }
@@ -79,7 +98,9 @@ export function dispatcherWithBackend(backend) {
         const searchFilters = JSON.parse(req.query["searchFilters"] || "{}");
         const editOptions = JSON.parse(req.query["editOptions"] || "{}");
         try {
-          previewForm(searchFilters, editOptions, formPath).then((formForPreview) => res.send(formForPreview));
+          const form = await backend.getForm(formPath);
+          const formForPreview = await previewForm(searchFilters, editOptions, form);
+          res.json(formForPreview);
         } catch (error) {
           handleError(error, res);
         }
@@ -93,7 +114,8 @@ export function dispatcherWithBackend(backend) {
         }
         const { searchFilters, editOptions, include } = req.body.payload;
         try {
-          const { migratedForms } = await migrateForms(searchFilters, editOptions, include);
+          const allForms = await backend.getAllForms();
+          const { migratedForms } = await migrateForms(searchFilters, editOptions, allForms, include);
           const migratedFormsData = await backend.updateForms(req.body.token, migratedForms);
           res.send(migratedFormsData);
         } catch (error) {

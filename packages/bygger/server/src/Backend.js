@@ -34,6 +34,26 @@ export class Backend {
     });
   }
 
+  async fetchFromProjectApi(path) {
+    const response = await fetchWithErrorHandling(`${this.projectURL}${path}`, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  }
+
+  async getForm(formPath) {
+    const formData = await this.fetchFromProjectApi(`/form?type=form&path=${formPath}&limit=1`);
+    return formData[0];
+  }
+
+  async getForms(formPaths, limit = 1000) {
+    return this.fetchFromProjectApi(`/form?type=form&path__in=${formPaths.toString()}&limit=${limit}`);
+  }
+
+  async getAllForms(limit = 1000, excludeDeleted = true) {
+    return this.fetchFromProjectApi(`/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&limit=${limit}`);
+  }
+
   async updateForms(userToken, forms) {
     const updateFormUrl = "https://formio-api-server.ekstern.dev.nav.no/form";
     await this.checkUpdateAndPublishingAccess(userToken);
@@ -84,7 +104,23 @@ export class Backend {
       this.config.publishRepoBase,
       `publish-${resourceName}--${uuidv4()}`,
       pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.submoduleRepo),
-      `[resources] publiserer ${resourceName}`
+      `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`
+    );
+  }
+
+  async bulkPublishForms(userToken, formPaths) {
+    await this.checkUpdateAndPublishingAccess(userToken);
+    const forms = await this.getForms(formPaths);
+    const formFiles = forms.map((formContent) =>
+      createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
+    );
+
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
+      this.config.publishRepoBase,
+      `bulkpublish--${uuidv4()}`,
+      pushFilesAndUpdateSubmoduleCallback(formFiles, this.config.gitSha, this.config.submoduleRepo),
+      `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
   }
 

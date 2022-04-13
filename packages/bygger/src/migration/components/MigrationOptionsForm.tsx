@@ -4,7 +4,7 @@ import { Knapp } from "nav-frontend-knapper";
 import { Input } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { Dispatch, Fragment, useReducer } from "react";
-import { MigrationMap, MigrationOption, MigrationOptions } from "../../types/migration";
+import { MigrationMap, MigrationOption, MigrationOptions } from "../../../types/migration";
 
 const getStyles = makeStyles({
   form: {
@@ -85,16 +85,13 @@ interface MigrationOptionsFormProps {
   dispatch: Dispatch<Action>;
 }
 
-const MigrationOptionsForm = ({
-  addRowText,
-  title,
-  state,
-  dispatch,
-}: MigrationOptionsFormProps) => {
+const MigrationOptionsForm = ({ addRowText, title, state, dispatch }: MigrationOptionsFormProps) => {
   const styles = getStyles();
   return (
     <>
-      <Innholdstittel tag="h2" className={styles.hasMarginBottom}>{title}</Innholdstittel>
+      <Innholdstittel tag="h2" className={styles.hasMarginBottom}>
+        {title}
+      </Innholdstittel>
       <div className={styles.form}>
         {Object.keys(state).map((id) => {
           const { key, value } = state[id];
@@ -120,7 +117,7 @@ const MigrationOptionsForm = ({
                 className={styles.hasMarginBottom}
                 label="Verdi"
                 type="text"
-                value={value}
+                value={typeof value === "object" ? JSON.stringify(value) : value}
                 disabled={!key}
                 onChange={(event) =>
                   dispatch({

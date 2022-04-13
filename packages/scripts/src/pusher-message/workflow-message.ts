@@ -5,6 +5,7 @@ import PusherFactory from "./pusher-factory";
 export interface Skjemapublisering {
   commitUrl?: string;
   skjematittel?: string;
+  antall?: number;
 }
 
 export interface PusherMessage {
@@ -33,27 +34,34 @@ export type PusherChannel =
   | "build-aborted"
   | "publish-aborted"
   | "publish-resource-aborted";
-export type PusherEvent = "publication" | "other" | "failure";
+export type PusherEvent = "publication" | "bulk-publication" | "other" | "failure";
 
+const BULK_PUBLISH_COMMIT_REGEXP = /^\[bulk-publisering\].*/;
+const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
 const PUBLISH_COMMIT_REGEXP = /^\[publisering\].*/;
 const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
 
-const isPublication = (message: PushEvent) => {
+const getEventType = (message: PushEvent): PusherEvent => {
   const thisCommit = message.head_commit;
   const commitMessage = thisCommit?.message || "";
-  return commitMessage.match(PUBLISH_COMMIT_REGEXP);
+  if (commitMessage.match(PUBLISH_COMMIT_REGEXP)) return "publication";
+  if (commitMessage.match(BULK_PUBLISH_COMMIT_REGEXP)) return "bulk-publication";
+  return "other";
 };
 
 const buildTriggerMessage = (message: PushEvent): PusherMessage => {
   const thisCommit = message.head_commit;
   const commitMessage = thisCommit?.message || "";
-  const myRegexp = new RegExp(PUBLISH_REGEXP, "g");
-  const match = myRegexp.exec(commitMessage);
+  const titleRegexp = new RegExp(PUBLISH_REGEXP, "g");
+  const titleMatch = titleRegexp.exec(commitMessage);
+  const amountRegexp = new RegExp(BULK_PUBLISH_REGEXP, "g");
+  const amountMatch = amountRegexp.exec(commitMessage);
   return {
     skjemautfyllerCommit: thisCommit,
     skjemapublisering: {
       commitUrl: thisCommit?.url,
-      skjematittel: match ? match[1] : undefined,
+      skjematittel: titleMatch ? titleMatch[1] : undefined,
+      antall: amountMatch ? parseInt(amountMatch[1]) : undefined,
     },
   };
 };
@@ -66,7 +74,7 @@ const sendMessage = (pusher: Pusher, channel: PusherChannel, event: PusherEvent,
 const run = (channel: PusherChannel, eventMessage: PushEvent, pusherApp: Options) => {
   const pusher = PusherFactory.createInstance(pusherApp);
   const pusherMessage = buildTriggerMessage(eventMessage);
-  const event = isPublication(eventMessage) ? "publication" : "other";
+  const event = getEventType(eventMessage);
   sendMessage(pusher, channel, event, pusherMessage);
 };
 

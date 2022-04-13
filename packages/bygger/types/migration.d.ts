@@ -1,6 +1,8 @@
+export type ParsedInput = number | string | boolean | null | object | Array;
+
 export interface MigrationOption {
   key: string;
-  value: any;
+  value: ParsedInput;
 }
 
 export interface MigrationOptions {

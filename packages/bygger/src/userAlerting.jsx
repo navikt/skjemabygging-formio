@@ -80,6 +80,42 @@ const PublishAbortedAlert = ({ message, onClose }) => {
   );
 };
 
+export const BulkPublishSuccessAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeSuksess>
+      <AlertContent>
+        <h3>Bulk-publisering fullført</h3>
+        <div>
+          {message.skjemapublisering.antall || "Ukjent antall"} skjemaer ble bulk-publisert. Se&nbsp;
+          <a
+            target="_blank"
+            rel="noreferrer noopener"
+            href="https://github.com/navikt/skjemautfylling-formio/commits/master"
+          >
+            GitHub
+          </a>
+          &nbsp; for mer informasjon
+        </div>
+        <Xknapp type="flat" onClick={onClose} />
+      </AlertContent>
+    </AlertStripeSuksess>
+  );
+};
+
+export const BulkPublishAbortedAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeFeil>
+      <AlertContent>
+        <h3>Bulk-publisering feilet</h3>
+        <div>
+          Publisering av {message.skjemapublisering.antall || "ukjent antall"} skjemaer ble avbrutt på grunn av en feil
+        </div>
+        <Xknapp type="flat" onClick={onClose} />
+      </AlertContent>
+    </AlertStripeFeil>
+  );
+};
+
 const BuildAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
@@ -175,6 +211,12 @@ export function useUserAlerting(pusher) {
         <PublishSuccessAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
       ));
     });
+    deploymentChannel.bind("bulk-publication", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <BulkPublishSuccessAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
     deploymentChannel.bind("other", (data) => {
       let key;
       key = userAlerter.addAlertComponent(() => (
@@ -183,6 +225,7 @@ export function useUserAlerting(pusher) {
     });
     return () => {
       deploymentChannel.unbind("other");
+      deploymentChannel.unbind("bulk-publication");
       deploymentChannel.unbind("publication");
     };
   }, [pusher, userAlerter]);
@@ -194,6 +237,12 @@ export function useUserAlerting(pusher) {
         <PublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
       ));
     });
+    buildAbortedChannel.bind("bulk-publication", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <BulkPublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
     buildAbortedChannel.bind("other", (data) => {
       let key;
       key = userAlerter.addAlertComponent(() => (
@@ -202,6 +251,7 @@ export function useUserAlerting(pusher) {
     });
     return () => {
       buildAbortedChannel.unbind("publication");
+      buildAbortedChannel.unbind("bulk-publication");
       buildAbortedChannel.unbind("other");
     };
   }, [pusher, userAlerter]);

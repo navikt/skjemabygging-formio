@@ -1,6 +1,6 @@
 import AlertStripe from "nav-frontend-alertstriper";
 import React from "react";
-import { BreakingChanges } from "../../types/migration";
+import { BreakingChanges } from "../../../types/migration";
 
 type BreakingChangesWarningProps = {
   breakingChanges: BreakingChanges[];
