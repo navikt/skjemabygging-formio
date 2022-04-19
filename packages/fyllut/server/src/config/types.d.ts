@@ -1,21 +1,21 @@
 import { FeatureTogglesMap } from "@navikt/skjemadigitalisering-shared-domain/types/utils/featureUtils";
 
 export type TokenxConfig = {
-  privateJwk?: string;
-  fyllutClientId?: string;
-  wellKnownUrl?: string;
+  privateJwk: string;
+  fyllutClientId: string;
+  wellKnownUrl: string;
 };
 
 export type SendInnConfig = {
-  host?: string;
-  tokenxClientId?: string;
+  host: string;
+  tokenxClientId: string;
 };
 
 export type ConfigType = {
   featureToggles: FeatureTogglesMap;
   tokenx?: TokenxConfig;
   sendInnConfig?: SendInnConfig;
-  clientSecret?: string;
+  clientSecret: string;
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;
