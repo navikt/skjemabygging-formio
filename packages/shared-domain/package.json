@@ -16,7 +16,7 @@
   "scripts": {
     "build": "babel src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
     "check-types": "tsc",
-    "clean": "rimraf dist coverage",
+    "clean": "rimraf dist coverage types",
     "watch": "babel -w src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
     "prepare": "yarn build && tsc",
     "test": "jest",
