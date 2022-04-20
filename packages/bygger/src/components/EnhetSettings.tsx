@@ -1,37 +1,17 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { supportedEnhetsType } from "@navikt/skjemadigitalisering-shared-components";
+import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
 import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Ingress } from "nav-frontend-typografi";
 import React from "react";
 import { COMPONENT_TEXTS } from "./FormMetadataEditor";
 
-// TODO: Enhetstype
-const supportedEnhetsType: any[] = [
-  "ALS",
-  "ARK",
-  "FORVALTNING",
-  "FPY",
-  "HMS",
-  "INNKREV",
-  "INTRO",
-  "KLAGE",
-  "KO",
-  "KONTROLL",
-  "LOKAL",
-  "OKONOMI",
-  "OPPFUTLAND",
-  "OTENESTE",
-  "ROL",
-  "TILTAK",
-  "UTLAND",
-  "YTA",
-];
-
 interface EnhetSettingsProps {
   enhetMaVelges: boolean;
-  selectedEnhetsTyper: any[]; // TODO: Enhetstype
+  selectedEnhetsTyper: Enhetstype[];
   onChangeEnhetMaVelges: (value: boolean) => void;
-  onChangeEnhetsTyper: (enhetsTyper: any[]) => void; // TODO: Enhetstype
+  onChangeEnhetsTyper: (enhetsTyper: Enhetstype[]) => void;
 }
 
 const useStyles = makeStyles({

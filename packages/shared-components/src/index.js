@@ -1,4 +1,5 @@
 import { guid } from "@navikt/skjemadigitalisering-shared-domain";
+import { supportedEnhetsType } from "./api/fetchEnhetsliste";
 import http from "./api/http";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
@@ -51,4 +52,5 @@ export {
   getIso8601String,
   http,
   url,
+  supportedEnhetsType,
 };

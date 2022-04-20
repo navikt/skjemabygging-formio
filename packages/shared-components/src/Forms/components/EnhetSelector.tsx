@@ -1,8 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Enhet } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
 import React from "react";
 import ReactSelect from "react-select";
-import { Enhet } from "../../api/Enhet";
 import { useLanguages } from "../../context/languages";
 import { navCssVariables } from "../../util/navCssVariables";
 
