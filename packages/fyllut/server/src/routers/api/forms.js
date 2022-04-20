@@ -1,4 +1,4 @@
-import { config } from "../../config/config.js";
+import { config } from "../../config/config";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory } from "../../utils/forms.js";
 
 const { useFormioApi, skjemaDir, formioProjectUrl } = config;

@@ -1,10 +1,8 @@
-import featureUtils from "./featureUtils.js";
-const {toFeatureToggles} = featureUtils;
+import featureUtils from "./featureUtils";
+const { toFeatureToggles } = featureUtils;
 
 describe("features", () => {
-
   describe("toFeatureToggles", () => {
-
     it("returns empty object when undefined", () => {
       const featureToggles = toFeatureToggles(undefined);
       expect(featureToggles).toEqual({});
@@ -22,19 +20,17 @@ describe("features", () => {
 
     it("enables translations", () => {
       const featureToggles = toFeatureToggles("translations");
-      expect(featureToggles).toEqual({enableTranslations: true});
+      expect(featureToggles).toEqual({ enableTranslations: true });
     });
 
     it("enables translations, foo and bar", () => {
       const featureToggles = toFeatureToggles("translations,foo,bar");
-      expect(featureToggles).toEqual({enableTranslations: true, enableFoo: true, enableBar: true});
+      expect(featureToggles).toEqual({ enableTranslations: true, enableFoo: true, enableBar: true });
     });
 
     it("trims and enables translations, foo and bar", () => {
       const featureToggles = toFeatureToggles(" translations  , foo,   bar ");
-      expect(featureToggles).toEqual({enableTranslations: true, enableFoo: true, enableBar: true});
+      expect(featureToggles).toEqual({ enableTranslations: true, enableFoo: true, enableBar: true });
     });
-
   });
-
 });

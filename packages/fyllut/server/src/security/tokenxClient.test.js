@@ -1,5 +1,5 @@
 import nock from "nock";
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 import { extractHost, extractPath } from "../test/testHelpers.js";
 import TokenXClient from "./tokenxClient.js";
 

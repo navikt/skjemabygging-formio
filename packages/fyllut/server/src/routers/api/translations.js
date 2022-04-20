@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { config } from "../../config/config.js";
+import { config } from "../../config/config";
 import { loadFileFromDirectory } from "../../utils/forms.js";
 
 const { useFormioApi, formioProjectUrl, translationDir } = config;

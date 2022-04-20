@@ -1,6 +1,6 @@
 import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import fetch from "node-fetch";
-import { config } from "../../config/config.js";
+import { config } from "../../config/config";
 import { loadFileFromDirectory } from "../../utils/forms.js";
 
 const { useFormioApi, resourcesDir, formioProjectUrl } = config;
