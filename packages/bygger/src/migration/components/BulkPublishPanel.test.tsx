@@ -1,6 +1,6 @@
+import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
-import { FormPropertiesType, NavFormType } from "../../Forms/navForm";
 import * as api from "../api";
 import BulkPublishPanel from "./BulkPublishPanel";
 

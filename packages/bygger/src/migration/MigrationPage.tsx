@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
@@ -7,7 +8,6 @@ import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
 import Column from "../components/layout/Column";
 import UserFeedback from "../components/UserFeedback";
-import { NavFormType } from "../Forms/navForm";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
 import BulkPublishPanel from "./components/BulkPublishPanel";
 import ConfirmMigration from "./components/ConfirmMigration";

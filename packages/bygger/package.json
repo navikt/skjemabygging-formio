@@ -68,6 +68,7 @@
   "scripts": {
     "start": "cross-env-shell PORT=3000 craco start",
     "build": "cross-env-shell craco build",
+    "check-types": "tsc",
     "clean": "rimraf build coverage",
     "test": "craco test",
     "test:coverage": "craco test --coverage --watchAll=false",

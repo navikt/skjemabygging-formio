@@ -1,5 +1,6 @@
-export type DisplayType = 'wizard' | 'form';
-export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+// duplisert fra bygger
+export type DisplayType = "wizard" | "form";
+export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
 
 export interface FormSignaturesType {
   signature1?: string;
@@ -32,6 +33,13 @@ export interface FormPropertiesType {
   descriptionOfSignatures?: string;
 }
 
+export interface Component {
+  key: string;
+  label: string;
+  type: string;
+  components?: Component[];
+}
+
 export interface NavFormType {
   tags: string[];
   type: string;
@@ -40,5 +48,5 @@ export interface NavFormType {
   title: string;
   path: string;
   properties: FormPropertiesType;
-  components: any[];
+  components: Component[];
 }

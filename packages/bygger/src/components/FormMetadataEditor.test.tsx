@@ -1,4 +1,5 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -6,7 +7,6 @@ import waitForExpect from "wait-for-expect";
 import { FakeBackend } from "../fakeBackend/FakeBackend";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
 import featureToggles from "../featureToggles.js";
-import { FormPropertiesType, NavFormType } from "../Forms/navForm";
 import { fromEntity } from "../hooks/mottaksadresser";
 import {
   COMPONENT_TEXTS,

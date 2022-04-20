@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
 import Formiojs from "formiojs/Formio";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
@@ -7,7 +8,6 @@ import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Undertekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useReducer, useState } from "react";
-import { NavFormType } from "../../Forms/navForm";
 import { bulkPublish } from "../api";
 import FormList from "./FormList";
 
