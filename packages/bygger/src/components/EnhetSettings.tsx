@@ -61,7 +61,7 @@ const EnhetSettings = ({
                   onChange={(event) => {
                     const updatedSelectedEnhetsTyper = event.target.checked
                       ? [...selectedEnhetsTyper, enhetsType]
-                      : selectedEnhetsTyper.filter((type) => type === enhetsType);
+                      : selectedEnhetsTyper.filter((type) => type !== enhetsType);
                     onChangeEnhetsTyper(updatedSelectedEnhetsTyper);
                   }}
                 />
