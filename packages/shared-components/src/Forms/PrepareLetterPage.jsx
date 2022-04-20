@@ -192,18 +192,19 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
     else setGoBackURL(state.previousPage);
   }, [state, formUrl]);
 
-  const { enhetMaVelgesVedPapirInnsending } = form.properties;
+  const { enhetMaVelgesVedPapirInnsending, enhetsTyper } = form.properties;
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
       fetchEnhetsListe(baseUrl)
         .then((enhetsListe) =>
           enhetsListe
             .filter(canEnhetstypeBeSelected)
+            .filter((enhet) => enhetsTyper && enhetsTyper.includes(enhet.type))
             .sort((enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb"))
         )
         .then(setEnhetsListe);
     }
-  }, [baseUrl, enhetMaVelgesVedPapirInnsending]);
+  }, [baseUrl, enhetMaVelgesVedPapirInnsending, enhetsTyper]);
 
   if (enhetMaVelgesVedPapirInnsending && enhetsListe === undefined) {
     return <LoadingComponent />;
