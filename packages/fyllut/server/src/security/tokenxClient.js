@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
 import jose from "node-jose";
 import qs from "qs";
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 import { logger } from "../logger.js";
 import { toJsonOrThrowError } from "../utils/errorHandling.js";
 

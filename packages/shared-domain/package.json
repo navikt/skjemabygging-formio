@@ -8,21 +8,19 @@
     "directory": "packages/shared-domain"
   },
   "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "scripts": {
-    "build": "babel src --out-dir dist --ignore '**/*.test.js'",
-    "clean": "rimraf dist coverage",
-    "watch": "babel -w src --out-dir dist --ignore '**/*.test.js'",
-    "prepare": "yarn build",
+    "build": "babel src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
+    "check-types": "tsc",
+    "clean": "rimraf dist coverage types",
+    "watch": "babel -w src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
+    "prepare": "yarn build && tsc",
     "test": "jest",
     "test:coverage": "jest --coverage"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
   },
   "keywords": [],
   "author": "",
@@ -31,7 +29,10 @@
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.14.0",
     "@babel/preset-env": "^7.14.1",
-    "jest": "^27.0.4"
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/jest": "^27.4.1",
+    "jest": "^27.0.4",
+    "typescript": "^4.6.3"
   },
   "peerDependencies": {
     "formiojs": "4.14.0-rc.18"

@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 import nock from "nock";
-import { config } from "../../config/config.js";
+import { config } from "../../config/config";
 import { mockRequest, mockResponse } from "../../test/testHelpers.js";
 import sendInn from "./send-inn.js";
 

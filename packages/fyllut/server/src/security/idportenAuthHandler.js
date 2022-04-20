@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 import { logger } from "../logger.js";
 
 const { isDevelopment, mockIdportenJwt, mockIdportenPid } = config;
