@@ -35,7 +35,7 @@ export const useFormioForms = (formio, userAlerter) => {
       if (!modified) {
         modified = getIso8601String();
       }
-      formio
+      return formio
         .saveForm({ ...updateModified(callbackForm, modified), display: "wizard" })
         .then((form) => {
           if (!silent) {
@@ -47,6 +47,7 @@ export const useFormioForms = (formio, userAlerter) => {
           userAlerter.setErrorMessage(
             "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
           );
+          return { error: true };
         });
     },
     [formio, userAlerter]
@@ -66,30 +67,32 @@ export const useFormioForms = (formio, userAlerter) => {
       const previousPublished = form.properties?.published;
       const previousModified = form.properties?.modified;
       const now = getIso8601String();
-      onSave(updatePublished(form, now), true, now);
+      const formWithPublishedTrue = updatePublished(form, now);
+      const result = onSave(formWithPublishedTrue, true, now);
+      if (!result.error) {
+        const payload = JSON.stringify({
+          form: form,
+          translations: translations,
+          token: Formiojs.getToken(),
+        });
+        const response = await fetch(`/api/publish/${form.path}`, {
+          method: "PUT",
+          headers: { "content-type": "application/json" },
+          body: payload,
+        });
 
-      const payload = JSON.stringify({
-        form: form,
-        translations: translations,
-        token: Formiojs.getToken(),
-      });
-      const response = await fetch(`/api/publish/${form.path}`, {
-        method: "PUT",
-        headers: { "content-type": "application/json" },
-        body: payload,
-      });
-
-      if (response?.ok) {
-        userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
-      } else {
-        userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-        onSave(updatePublished(form, previousPublished), true, previousModified);
+        if (response?.ok) {
+          userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
+        } else {
+          userAlerter.setErrorMessage("Publisering feilet " + response?.status);
+          onSave(updatePublished(form, previousPublished), true, previousModified);
+        }
       }
     },
     [userAlerter, onSave]
   );
 
-  const updatePublished = (form, published) => {
+  const updatePublished = (form, published, errorCaught) => {
     if (!published) return form;
 
     return {
