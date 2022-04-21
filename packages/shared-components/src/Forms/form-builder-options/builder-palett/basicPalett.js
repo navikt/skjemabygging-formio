@@ -97,6 +97,7 @@ const basicPalett = {
         input: true,
         hideLabel: false,
         clearOnHide: true,
+        dataGridLabel: true,
         validateOn: "blur",
         validate: {
           required: true,
@@ -115,6 +116,7 @@ const basicPalett = {
         input: true,
         isNavCheckboxPanel: true,
         clearOnHide: true,
+        dataGridLabel: true,
         validateOn: "blur",
         validate: {
           required: true,
@@ -131,6 +133,7 @@ const basicPalett = {
         key: "select",
         input: true,
         clearOnHide: true,
+        dataGridLabel: true,
         validateOn: "blur",
         validate: {
           required: true,
@@ -150,6 +153,7 @@ const basicPalett = {
         input: true,
         hideLabel: false,
         clearOnHide: true,
+        dataGridLabel: true,
         validateOn: "blur",
         validate: {
           required: true,

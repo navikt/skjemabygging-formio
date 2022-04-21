@@ -1,8 +1,6 @@
 import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
-import luxon from "luxon";
+import { DateTime } from "luxon";
 import PdfPrinter from "pdfmake";
-
-const { DateTime } = luxon;
 
 const fonts = {
   Roboto: {

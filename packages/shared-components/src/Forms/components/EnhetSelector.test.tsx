@@ -17,7 +17,7 @@ const mockEnhetsListe = [
 describe("EnhetSelector", () => {
   const renderEnhetSelector = (enhetsListe = mockEnhetsListe) => {
     render(
-      <LanguagesProvider translations={{}} children={undefined}>
+      <LanguagesProvider translations={{}}>
         <EnhetSelector enhetsListe={enhetsListe as Enhet[]} onSelectEnhet={mockOnSelectEnhet} />,
       </LanguagesProvider>
     );

@@ -1,4 +1,4 @@
-import { createApp } from "./app.js";
+import { createApp } from "./app";
 import { logger } from "./logger.js";
 import "./utils/errorToJson.js";
 

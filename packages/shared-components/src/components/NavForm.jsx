@@ -27,7 +27,7 @@ import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
 import "nav-frontend-skjema-style";
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { evaluateOverride, overrideFormioTextField, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
@@ -49,7 +49,6 @@ const NavForm = (props) => {
   let createPromise;
   let element;
   const [formio, setFormio] = useState(undefined);
-  const mountedRef = useRef(true);
   useStyles();
   const { featureToggles } = useAppConfig();
 
@@ -59,7 +58,6 @@ const NavForm = (props) => {
 
   useEffect(
     () => () => {
-      mountedRef.current = false;
       if (formio) {
         formio.destroy(true);
       }
@@ -76,11 +74,12 @@ const NavForm = (props) => {
       events: NavForm.getDefaultEmitter(),
     });
     createPromise = instance.ready.then((formioInstance) => {
-      if (mountedRef.current) {
-        setFormio(formioInstance);
-        if (formReady) {
-          formReady(formioInstance);
-        }
+      if (formio) {
+        formio.destroy(true);
+      }
+      setFormio(formioInstance);
+      if (formReady) {
+        formReady(formioInstance);
       }
     });
 
@@ -103,7 +102,7 @@ const NavForm = (props) => {
       instance.onAny(onAnyEvent);
       createPromise.then(() => {
         if (formio && submission) {
-          formio.submission = submission;
+          formio.submission = JSON.parse(JSON.stringify(submission));
         }
       });
     }
@@ -150,7 +149,7 @@ const NavForm = (props) => {
   useEffect(() => {
     const { submission } = props;
     if (formio && submission) {
-      formio.submission = submission;
+      formio.submission = JSON.parse(JSON.stringify(submission));
     }
   }, [props.submission, formio]);
 

@@ -64,10 +64,10 @@ cd_package "shared-components" && install && build
 
 if [ "$APP" == "bygger" ]; then
     cd_package "bygger" && install && build
-    cd_package "bygger/server" && install
+    cd_package "bygger/server" && install && build
 fi
 
 if [ "$APP" == "fyllut" ]; then
     cd_package "fyllut" && install && build_prod
-    cd_package "fyllut/server" && install
+    cd_package "fyllut/server" && install && build
 fi

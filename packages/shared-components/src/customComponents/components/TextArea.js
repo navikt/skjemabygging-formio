@@ -1,7 +1,7 @@
+import TextAreaDisplayEditForm from "formiojs/components/textarea/editForm/TextArea.edit.display";
 import TextArea from "formiojs/components/textarea/TextArea";
 import TextAreaEditForm from "formiojs/components/textarea/TextArea.form";
-import TextAreaDisplayEditForm from "formiojs/components/textarea/editForm/TextArea.edit.display";
-import { descriptionPositionField } from "./fields/descriptionPositionField";
+import { advancedDescription } from "./fields/advancedDescription.js";
 
 TextArea.editForm = () => {
   return TextAreaEditForm([
@@ -10,7 +10,7 @@ TextArea.editForm = () => {
       key: "display",
       components: [
         ...TextAreaDisplayEditForm,
-        descriptionPositionField,
+        ...advancedDescription,
         {
           key: "placeholder",
           ignore: true,

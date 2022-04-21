@@ -1,7 +1,7 @@
 import ecsFormat from "@elastic/ecs-morgan-format";
 import correlator from "express-correlation-id";
 import morgan from "morgan";
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 import { clean } from "../utils/logCleaning.js";
 
 const { isTest } = config;

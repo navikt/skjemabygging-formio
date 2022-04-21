@@ -1,9 +1,8 @@
 import FormioCheckbox from "formiojs/components/checkbox/Checkbox";
 import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
-import { descriptionPositionField } from "./fields/descriptionPositionField";
+import { advancedDescription } from "./fields/advancedDescription.js";
 
 export default class NavCheckbox extends FormioCheckbox {
-
   static editForm(...extend) {
     return CheckboxEditForm([
       ...extend,
@@ -11,7 +10,7 @@ export default class NavCheckbox extends FormioCheckbox {
         label: "Display",
         key: "display",
         components: [
-          descriptionPositionField,
+          ...advancedDescription,
           {
             key: "tooltip",
             ignore: true,
@@ -122,22 +121,17 @@ export default class NavCheckbox extends FormioCheckbox {
   }
 
   updateValue(value, flags) {
-    const changed = super.updateValue(
-      value || (this.input && this.input.checked ? "ja" : null),
-      flags
-    );
+    const changed = super.updateValue(value || (this.input && this.input.checked ? "ja" : null), flags);
 
     // Update attributes of the input element
     if (changed && this.input) {
       if (this.input.checked) {
-        this.input.setAttribute('checked', 'true');
-      }
-      else {
-        this.input.removeAttribute('checked');
+        this.input.setAttribute("checked", "true");
+      } else {
+        this.input.removeAttribute("checked");
       }
     }
 
     return changed;
   }
-
 }

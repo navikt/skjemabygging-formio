@@ -1,12 +1,16 @@
-import { Backend } from "../../backend";
+import { Backend } from "../../src/Backend";
 
 const { Response } = jest.requireActual("node-fetch");
 
 export const createBackendForTest = () => {
   const projectURL = "https://projectApi.example.com";
   return new Backend(projectURL, {
-    workflowDispatchURL: "https://api.github.com/navikt/repo/workflow_dispatch",
-    gitSha: "gitSha",
+    publishRepoOwner: "publish-repo-owner",
+    publishRepo: "publish-repo",
+    submoduleRepo: "submodule-repo",
+    publishRepoBase: "publish-repo-main-branch",
+    publishRepoToken: "publishRepoToken",
+    gitSha: "publish-repo-git-sha",
   });
 };
 

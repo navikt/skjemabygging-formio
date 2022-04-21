@@ -2,7 +2,9 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
-import MigrationPage, { migrationOptionsAsMap } from "./MigrationPage";
+import { UserAlerterContext } from "../userAlerting";
+import MigrationPage from "./MigrationPage";
+import { migrationOptionsAsMap } from "./utils";
 
 describe("MigrationPage", () => {
   let fetchSpy;
@@ -27,6 +29,18 @@ describe("MigrationPage", () => {
     form3: { ...defaultdryRunResponse, skjemanummer: "form3", path: "form3", name: "Skjema 3", found: 3, changed: 2 },
   };
 
+  const userAlerter = {
+    flashSuccessMessage: jest.fn(),
+    alertComponent: jest.fn(),
+    setErrorMessage: jest.fn(),
+  };
+
+  const wrapper = ({ children }) => (
+    <UserAlerterContext.Provider value={userAlerter}>
+      <MemoryRouter>{children}</MemoryRouter>
+    </UserAlerterContext.Provider>
+  );
+
   beforeEach(() => {
     fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
       Promise.resolve(
@@ -37,7 +51,7 @@ describe("MigrationPage", () => {
         })
       )
     );
-    render(<MigrationPage />, { wrapper: MemoryRouter });
+    render(<MigrationPage />, { wrapper });
   });
 
   afterEach(() => {
@@ -192,13 +206,13 @@ describe("MigrationPage", () => {
     it("standard mapping", () => {
       const map = migrationOptionsAsMap({
         "1": {
-          key: 'k1',
-          value: 'v1'
+          key: "k1",
+          value: "v1",
         },
         "2": {
-          key: 'k2',
-          value: 'v2'
-        }
+          key: "k2",
+          value: "v2",
+        },
       });
       expect(Object.keys(map).length).toBe(2);
     });
@@ -206,13 +220,13 @@ describe("MigrationPage", () => {
     it("duplicate key ignored", () => {
       const map = migrationOptionsAsMap({
         "1": {
-          key: 'k1',
-          value: 'v1'
+          key: "k1",
+          value: "v1",
         },
         "2": {
-          key: 'k1',
-          value: 'v1'
-        }
+          key: "k1",
+          value: "v1",
+        },
       });
       expect(Object.keys(map).length).toBe(1);
     });

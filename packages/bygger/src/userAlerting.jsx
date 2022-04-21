@@ -1,12 +1,12 @@
 import styled from "@material-ui/styles/styled";
 import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
+import { AlertStripeAdvarsel, AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
 import { Xknapp } from "nav-frontend-ikonknapper";
 import React, { useEffect, useState } from "react";
 
 export const UserAlerterContext = React.createContext();
 
-const ErrorAlertContent = styled("div")({
+const AlertContent = styled("div")({
   display: "flex",
   alignItems: "flex-start",
   "& p": {
@@ -20,18 +20,29 @@ const ErrorAlertContent = styled("div")({
     },
   },
 });
+
 const ErrorAlert = ({ exception, onClose }) => (
   <AlertStripeFeil>
-    <ErrorAlertContent>
+    <AlertContent>
       <p>{exception.message || exception}</p>
       <Xknapp onClick={onClose} />
-    </ErrorAlertContent>
+    </AlertContent>
   </AlertStripeFeil>
 );
+
+const WarningAlert = ({ message, onClose }) => (
+  <AlertStripeAdvarsel>
+    <AlertContent>
+      <p>{message}</p>
+      <Xknapp onClick={onClose} />
+    </AlertContent>
+  </AlertStripeAdvarsel>
+);
+
 const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeSuksess>
-      <ErrorAlertContent>
+      <AlertContent>
         <div>
           <h3>Manuell deploy av skjemautfylling</h3>
           <div>
@@ -40,7 +51,7 @@ const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
           </div>
         </div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeSuksess>
   );
 };
@@ -48,11 +59,11 @@ const SkjemautfyllingDeployedAlert = ({ message, onClose }) => {
 const PublishSuccessAlert = ({ message, onClose }) => {
   return (
     <AlertStripeSuksess>
-      <ErrorAlertContent>
+      <AlertContent>
         <h3>Publisering fullført</h3>
         <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} er nå publisert</div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeSuksess>
   );
 };
@@ -60,11 +71,47 @@ const PublishSuccessAlert = ({ message, onClose }) => {
 const PublishAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
-      <ErrorAlertContent>
+      <AlertContent>
         <h3>Publisering feilet</h3>
         <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} ble ikke publisert</div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
+    </AlertStripeFeil>
+  );
+};
+
+export const BulkPublishSuccessAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeSuksess>
+      <AlertContent>
+        <h3>Bulk-publisering fullført</h3>
+        <div>
+          {message.skjemapublisering.antall || "Ukjent antall"} skjemaer ble bulk-publisert. Se&nbsp;
+          <a
+            target="_blank"
+            rel="noreferrer noopener"
+            href="https://github.com/navikt/skjemautfylling-formio/commits/master"
+          >
+            GitHub
+          </a>
+          &nbsp; for mer informasjon
+        </div>
+        <Xknapp type="flat" onClick={onClose} />
+      </AlertContent>
+    </AlertStripeSuksess>
+  );
+};
+
+export const BulkPublishAbortedAlert = ({ message, onClose }) => {
+  return (
+    <AlertStripeFeil>
+      <AlertContent>
+        <h3>Bulk-publisering feilet</h3>
+        <div>
+          Publisering av {message.skjemapublisering.antall || "ukjent antall"} skjemaer ble avbrutt på grunn av en feil
+        </div>
+        <Xknapp type="flat" onClick={onClose} />
+      </AlertContent>
     </AlertStripeFeil>
   );
 };
@@ -72,7 +119,7 @@ const PublishAbortedAlert = ({ message, onClose }) => {
 const BuildAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
-      <ErrorAlertContent>
+      <AlertContent>
         <div>
           <h3>Byggefeil</h3>
           <p>
@@ -81,7 +128,7 @@ const BuildAbortedAlert = ({ message, onClose }) => {
           <p>Commit melding: {message.skjemautfyllerCommit.message}</p>
         </div>
         <Xknapp type="flat" onClick={onClose} />
-      </ErrorAlertContent>
+      </AlertContent>
     </AlertStripeFeil>
   );
 };
@@ -107,6 +154,13 @@ class UserAlerter {
     let key;
     key = this.addAlertComponent(() => (
       <ErrorAlert exception={errorString} onClose={() => this.removeAlertComponent(key)} />
+    ));
+  }
+
+  setWarningMessage(message) {
+    let key;
+    key = this.addAlertComponent(() => (
+      <WarningAlert message={message} onClose={() => this.removeAlertComponent(key)} />
     ));
   }
 
@@ -157,6 +211,12 @@ export function useUserAlerting(pusher) {
         <PublishSuccessAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
       ));
     });
+    deploymentChannel.bind("bulk-publication", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <BulkPublishSuccessAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
     deploymentChannel.bind("other", (data) => {
       let key;
       key = userAlerter.addAlertComponent(() => (
@@ -165,6 +225,7 @@ export function useUserAlerting(pusher) {
     });
     return () => {
       deploymentChannel.unbind("other");
+      deploymentChannel.unbind("bulk-publication");
       deploymentChannel.unbind("publication");
     };
   }, [pusher, userAlerter]);
@@ -176,6 +237,12 @@ export function useUserAlerting(pusher) {
         <PublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
       ));
     });
+    buildAbortedChannel.bind("bulk-publication", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <BulkPublishAbortedAlert message={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
     buildAbortedChannel.bind("other", (data) => {
       let key;
       key = userAlerter.addAlertComponent(() => (
@@ -184,6 +251,7 @@ export function useUserAlerting(pusher) {
     });
     return () => {
       buildAbortedChannel.unbind("publication");
+      buildAbortedChannel.unbind("bulk-publication");
       buildAbortedChannel.unbind("other");
     };
   }, [pusher, userAlerter]);

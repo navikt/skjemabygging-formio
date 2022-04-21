@@ -1,8 +1,8 @@
+import NumberDisplayEditForm from "formiojs/components/number/editForm/Number.edit.display";
 import Number from "formiojs/components/number/Number";
 import NumberEditForm from "formiojs/components/number/Number.form";
-import NumberDisplayEditForm from "formiojs/components/number/editForm/Number.edit.display";
+import { advancedDescription } from "./fields/advancedDescription.js";
 import { fieldSizeField } from "./fields/fieldSize";
-import { descriptionPositionField } from "./fields/descriptionPositionField";
 
 Number.editForm = () => {
   return NumberEditForm([
@@ -12,7 +12,7 @@ Number.editForm = () => {
       components: [
         ...NumberDisplayEditForm,
         fieldSizeField,
-        descriptionPositionField,
+        ...advancedDescription,
         {
           key: "placeholder",
           ignore: true,

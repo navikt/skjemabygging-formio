@@ -35,12 +35,14 @@ spec:
       - {{url}}
     {{/each}}
   env:
-    - name: PUBLISERING_WORKFLOW_DISPATCH_REF
-      value: "{{publiseringWorkflowDispatchRef}}"
-    - name: PUBLISERING_WORKFLOW_DISPATCH_URL
-      value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish.yaml/dispatches"
-    - name: PUBLISH_RESOURCE_URL
-      value: "https://api.github.com/repos/navikt/skjemautfylling-formio/actions/workflows/publish-resource.yaml/dispatches"
+    - name: PUBLISH_REPO
+      value: {{publish-repo}}
+    - name: SUBMODULE_REPO
+      value: {{submodule-repo}}
+    - name: PUBLISH_REPO_OWNER
+      value: {{publish-repo-owner}}
+    - name: PUBLISH_REPO_BASE
+      value: {{publish-repo-base}}
     - name: SKJEMABYGGING_PROXY_URL
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID

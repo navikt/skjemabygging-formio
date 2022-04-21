@@ -75,14 +75,21 @@ export const useFormioForms = (formio, userAlerter) => {
           translations: translations,
           token: Formiojs.getToken(),
         });
+
         const response = await fetch(`/api/publish/${form.path}`, {
           method: "PUT",
           headers: { "content-type": "application/json" },
           body: payload,
         });
 
-        if (response?.ok) {
+        const { changed } = await response.json();
+
+        if (response?.ok && changed) {
           userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
+        } else if (response?.ok && !changed) {
+          userAlerter.setWarningMessage(
+            "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+          );
         } else {
           userAlerter.setErrorMessage("Publisering feilet " + response?.status);
           onSave(updatePublished(form, previousPublished), true, previousModified);
@@ -92,7 +99,7 @@ export const useFormioForms = (formio, userAlerter) => {
     [userAlerter, onSave]
   );
 
-  const updatePublished = (form, published, errorCaught) => {
+  const updatePublished = (form, published) => {
     if (!published) return form;
 
     return {

@@ -1,5 +1,5 @@
 import correlator from "express-correlation-id";
-import { config } from "../config/config.js";
+import { config } from "../config/config";
 
 const { isTest } = config;
 
