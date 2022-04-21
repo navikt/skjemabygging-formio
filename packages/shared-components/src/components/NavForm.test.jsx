@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { setupNavFormio } from "../../test/navform-render";
 import { AppConfigProvider } from "../configContext";
@@ -6,43 +7,52 @@ import NavForm from "./NavForm";
 
 const testFormWithStandardAndReactComponents = {
   title: "Testskjema med vanilla og React componenter",
+  display: "wizard",
+  type: "form",
   components: [
     {
-      label: "Fornavn",
-      type: "textfield",
-      key: "textfield",
-      inputType: "text",
-      input: true,
-      validate: {
-        required: true,
-      },
-    },
-    {
-      label: "Dato (dd.mm.åååå)",
-      type: "navDatepicker",
-      key: "datepicker",
-      input: true,
-      dataGridLabel: true,
-      validateOn: "blur",
-      validate: {
-        custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
-        required: true,
-      },
-    },
-    {
-      label: "IBAN",
-      type: "iban",
-      key: `iban`,
-      fieldSize: "input--l",
-      input: true,
-      spellcheck: false,
-      dataGridLabel: true,
-      validateOn: "blur",
-      clearOnHide: true,
-      validate: {
-        custom: "valid = instance.validateIban(input);",
-        required: true,
-      },
+      type: "panel",
+      key: "panel1",
+      label: "Panel 1",
+      components: [
+        {
+          label: "Fornavn",
+          type: "textfield",
+          key: "textfield",
+          inputType: "text",
+          input: true,
+          validate: {
+            required: true,
+          },
+        },
+        {
+          label: "Dato (dd.mm.åååå)",
+          type: "navDatepicker",
+          key: "datepicker",
+          input: true,
+          dataGridLabel: true,
+          validateOn: "blur",
+          validate: {
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
+            required: true,
+          },
+        },
+        {
+          label: "IBAN",
+          type: "iban",
+          key: `iban`,
+          fieldSize: "input--l",
+          input: true,
+          spellcheck: false,
+          dataGridLabel: true,
+          validateOn: "blur",
+          clearOnHide: true,
+          validate: {
+            custom: "valid = instance.validateIban(input);",
+            required: true,
+          },
+        },
+      ],
     },
   ],
 };
@@ -122,6 +132,7 @@ describe("NavForm", () => {
 
   describe("re-initializing with submission", () => {
     it("should load all values", async () => {
+      const mockedOnSubmit = jest.fn();
       await renderNavForm({
         form: testFormWithStandardAndReactComponents,
         language: "nb-NO",
@@ -132,6 +143,7 @@ describe("NavForm", () => {
             iban: "GB33BUKB20201555555555",
           },
         },
+        onSubmit: mockedOnSubmit,
       });
       const textField = await screen.findByLabelText("Fornavn");
       expect(textField).toBeInTheDocument();
@@ -144,6 +156,10 @@ describe("NavForm", () => {
       const ibanField = await screen.findByLabelText("IBAN");
       expect(ibanField).toBeInTheDocument();
       expect(ibanField).toHaveValue("GB33BUKB20201555555555");
+
+      const nextLink = await screen.findByRole("button", { name: "Neste" });
+      await userEvent.click(nextLink);
+      await waitFor(() => expect(mockedOnSubmit).toHaveBeenCalled());
     });
   });
 });
