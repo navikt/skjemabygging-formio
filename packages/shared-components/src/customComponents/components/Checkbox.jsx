@@ -1,6 +1,6 @@
 import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
 import { Checkbox } from "nav-frontend-skjema";
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
@@ -14,7 +14,29 @@ import { advancedDescription } from "./fields/advancedDescription.js";
  * 2. When the value changes, call props.onChange(null, newValue);
  *
  */
-const CheckboxWrapper = class extends Component {
+const CheckboxWrapper = ({ component, checkboxRef, translate, onChange, value }) => {
+  const [isChecked, setIsChecked] = useState();
+
+  useEffect(() => {
+    setIsChecked(value);
+  }, [value]);
+
+  return (
+    <Checkbox
+      checkboxRef={checkboxRef}
+      aria-describedby={`${component.key}-error`}
+      label={translate(component.label)}
+      onChange={() => {
+        setIsChecked(!!isChecked ? null : "ja");
+        onChange(!!isChecked ? null : "ja");
+      }}
+      required={component.validate.required}
+      checked={isChecked === "ja"}
+    />
+  );
+};
+
+/*const CheckboxWrapper = class extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,7 +61,7 @@ const CheckboxWrapper = class extends Component {
       />
     );
   }
-};
+};*/
 
 export default class CheckboxComponent extends FormioReactComponent {
   input = null;
@@ -191,6 +213,19 @@ export default class CheckboxComponent extends FormioReactComponent {
     if (this.input) this.input.focus();
   }
 
+  renderReact(element) {
+    return ReactDOM.render(
+      <CheckboxWrapper
+        component={this.component} // These are the component settings if you want to use them to render the component.
+        value={this.dataForSetting || this.dataValue} // The starting value of the component.
+        onChange={this.updateValue} // The onChange event to call when the value changes.
+        checkboxRef={(r) => (this.input = r)}
+        translate={(text) => this.t(text)}
+      />,
+      element
+    );
+  }
+
   /**
    * This function is called when the DIV has been rendered and added to the DOM. You can now instantiate the react component.
    *
@@ -198,16 +233,9 @@ export default class CheckboxComponent extends FormioReactComponent {
    * #returns ReactInstance
    */
   attachReact(element) {
-    return ReactDOM.render(
-      <CheckboxWrapper
-        component={this.component} // These are the component settings if you want to use them to render the component.
-        value={this.dataValue} // The starting value of the component.
-        onChange={this.updateValue} // The onChange event to call when the value changes.
-        checkboxRef={(r) => (this.input = r)}
-        translate={(text) => this.t(text)}
-      />,
-      element
-    );
+    this.reactElement = element;
+    this.renderReact(element);
+    return this.reactElement;
   }
 
   /**
@@ -219,5 +247,24 @@ export default class CheckboxComponent extends FormioReactComponent {
     if (element) {
       ReactDOM.unmountComponentAtNode(element);
     }
+  }
+
+  getValue() {
+    return this.dataValue;
+  }
+
+  setValue(value, flags = {}) {
+    this.dataForSetting = value;
+    if (this.reactElement) {
+      this.renderReact(this.reactElement);
+      this.shouldSetValue = false;
+    } else {
+      this.shouldSetValue = true;
+    }
+    return super.setValue(value, flags);
+  }
+
+  checkValidity(data, dirty, rowData) {
+    return super.checkValidity(data, dirty, rowData);
   }
 }
