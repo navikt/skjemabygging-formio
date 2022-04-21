@@ -29,6 +29,21 @@ const testFormWithStandardAndReactComponents = {
         required: true,
       },
     },
+    {
+      label: "IBAN",
+      type: "iban",
+      key: `iban`,
+      fieldSize: "input--l",
+      input: true,
+      spellcheck: false,
+      dataGridLabel: true,
+      validateOn: "blur",
+      clearOnHide: true,
+      validate: {
+        custom: "valid = instance.validateIban(input);",
+        required: true,
+      },
+    },
   ],
 };
 
@@ -114,6 +129,7 @@ describe("NavForm", () => {
           data: {
             textfield: "Donald",
             datepicker: "2000-01-01",
+            iban: "GB33BUKB20201555555555",
           },
         },
       });
@@ -124,6 +140,10 @@ describe("NavForm", () => {
       const datepicker = await screen.findByLabelText("Dato (dd.mm.åååå)");
       expect(datepicker).toBeInTheDocument();
       expect(datepicker).toHaveValue("01.01.2000");
+
+      const ibanField = await screen.findByLabelText("IBAN");
+      expect(ibanField).toBeInTheDocument();
+      expect(ibanField).toHaveValue("GB33BUKB20201555555555");
     });
   });
 });
