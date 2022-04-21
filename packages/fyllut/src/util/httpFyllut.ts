@@ -1,7 +1,11 @@
 import { FetchHeader, FetchOptions, http, url } from "@navikt/skjemadigitalisering-shared-components";
 
 const getDefaultHeaders = () => {
-  const submissionMethod = url.getUrlParam(window.location.search, "sub");
+  let submissionMethod = url.getUrlParam(window.location.search, "sub");
+
+  if (submissionMethod) {
+    submissionMethod = submissionMethod.toUpperCase();
+  }
 
   if (submissionMethod in http.SubmissionMethodType) {
     return {
