@@ -12,10 +12,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "./types",
+    "noEmit": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": [
