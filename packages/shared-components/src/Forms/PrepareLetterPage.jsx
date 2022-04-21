@@ -5,7 +5,7 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { canEnhetstypeBeSelected, fetchEnhetsListe } from "../api/fetchEnhetsliste";
+import { fetchEnhetsListe, isEnhetSupported } from "../api/fetchEnhetsliste";
 import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../components/error/AlertStripeHttpError";
 import ErrorPage from "../components/ErrorPage";
@@ -193,13 +193,13 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   }, [state, formUrl]);
 
   const { enhetMaVelgesVedPapirInnsending, enhetsTyper } = form.properties;
+
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
       fetchEnhetsListe(baseUrl)
         .then((enhetsListe) =>
           enhetsListe
-            .filter(canEnhetstypeBeSelected)
-            .filter((enhet) => enhetsTyper && enhetsTyper.includes(enhet.type))
+            .filter(isEnhetSupported(enhetsTyper))
             .sort((enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb"))
         )
         .then(setEnhetsListe);

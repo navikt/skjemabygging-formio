@@ -215,11 +215,11 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         featureToggles?.enableEnhetsListe && (
           <EnhetSettings
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
-            selectedEnhetsTyper={enhetsTyper || []}
+            selectedEnhetstyper={enhetsTyper}
             onChangeEnhetMaVelges={(selected) =>
               onChange({ ...form, properties: { ...form.properties, enhetMaVelgesVedPapirInnsending: selected } })
             }
-            onChangeEnhetsTyper={(enhetsTyper) =>
+            onChangeEnhetstyper={(enhetsTyper) =>
               onChange({ ...form, properties: { ...form.properties, enhetsTyper } })
             }
           />

@@ -1,6 +1,6 @@
 import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
 
-export const supportedEnhetsType: Enhetstype[] = [
+export const supportedEnhetstyper: Enhetstype[] = [
   "ALS",
   "ARK",
   "FORVALTNING",
@@ -21,8 +21,11 @@ export const supportedEnhetsType: Enhetstype[] = [
   "YTA",
 ];
 
-export const canEnhetstypeBeSelected = (enhet: Enhet) => {
-  return supportedEnhetsType.includes(enhet.type) && enhet.enhetNr !== "0000";
+export const isEnhetSupported = (selectedEnhetstyper?: Enhetstype[]) => {
+  const enhetsTyperToInclude =
+    Array.isArray(selectedEnhetstyper) && selectedEnhetstyper.length > 0 ? selectedEnhetstyper : supportedEnhetstyper;
+
+  return (enhet: Enhet) => enhetsTyperToInclude.includes(enhet.type) && enhet.enhetNr !== "0000";
 };
 
 export async function fetchEnhetsListe(baseUrl = ""): Promise<Enhet[]> {

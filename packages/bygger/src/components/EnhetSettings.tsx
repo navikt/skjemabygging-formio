@@ -1,17 +1,17 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import { supportedEnhetsType } from "@navikt/skjemadigitalisering-shared-components";
+import { supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-components";
 import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
 import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Ingress } from "nav-frontend-typografi";
-import React from "react";
+import React, { useEffect } from "react";
 import { COMPONENT_TEXTS } from "./FormMetadataEditor";
 
 interface EnhetSettingsProps {
   enhetMaVelges: boolean;
-  selectedEnhetsTyper: Enhetstype[];
+  selectedEnhetstyper?: Enhetstype[];
   onChangeEnhetMaVelges: (value: boolean) => void;
-  onChangeEnhetsTyper: (enhetsTyper: Enhetstype[]) => void;
+  onChangeEnhetstyper: (enhetsTyper: Enhetstype[]) => void;
 }
 
 const useStyles = makeStyles({
@@ -35,11 +35,18 @@ const useStyles = makeStyles({
 
 const EnhetSettings = ({
   enhetMaVelges,
-  selectedEnhetsTyper,
+  selectedEnhetstyper,
   onChangeEnhetMaVelges,
-  onChangeEnhetsTyper,
+  onChangeEnhetstyper,
 }: EnhetSettingsProps) => {
   const styles = useStyles();
+
+  useEffect(() => {
+    if (selectedEnhetstyper === undefined) {
+      onChangeEnhetstyper(supportedEnhetstyper);
+    }
+  }, [onChangeEnhetstyper, selectedEnhetstyper]);
+
   return (
     <>
       <div className="margin-bottom-default">
@@ -49,20 +56,20 @@ const EnhetSettings = ({
           onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}
         />
       </div>
-      {enhetMaVelges && (
+      {enhetMaVelges && selectedEnhetstyper && (
         <Panel className="margin-bottom-default">
-          <Ingress>Enhetskategorier</Ingress>
+          <Ingress>Enhetstyper</Ingress>
           <ul className={styles.list}>
-            {supportedEnhetsType.map((enhetsType) => (
+            {supportedEnhetstyper.map((enhetsType: Enhetstype) => (
               <li key={enhetsType}>
                 <Checkbox
                   label={enhetsType}
-                  checked={selectedEnhetsTyper.includes(enhetsType)}
+                  checked={selectedEnhetstyper.includes(enhetsType)}
                   onChange={(event) => {
-                    const updatedSelectedEnhetsTyper = event.target.checked
-                      ? [...selectedEnhetsTyper, enhetsType]
-                      : selectedEnhetsTyper.filter((type) => type !== enhetsType);
-                    onChangeEnhetsTyper(updatedSelectedEnhetsTyper);
+                    const updatedSelectedEnhetstyper = event.target.checked
+                      ? [...selectedEnhetstyper, enhetsType]
+                      : selectedEnhetstyper.filter((selected) => selected !== enhetsType);
+                    onChangeEnhetstyper(updatedSelectedEnhetstyper);
                   }}
                 />
               </li>
