@@ -1,5 +1,6 @@
 import { guid } from "@navikt/skjemadigitalisering-shared-domain";
-import http from "./api/http";
+import http, { FetchHeader, FetchOptions } from "./api/http";
+import ErrorPage from "./components/ErrorPage";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
 import NavForm from "./components/NavForm";
@@ -51,4 +52,6 @@ export {
   getIso8601String,
   http,
   url,
+  ErrorPage,
 };
+export type { FetchHeader, FetchOptions };

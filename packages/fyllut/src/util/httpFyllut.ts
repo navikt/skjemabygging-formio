@@ -1,16 +1,17 @@
-import { http, url } from "@navikt/skjemadigitalisering-shared-components";
+import { FetchHeader, FetchOptions, http, url } from "@navikt/skjemadigitalisering-shared-components";
 
 const getDefaultHeaders = () => {
   const submissionMethod = url.getUrlParam(window.location.search, "sub");
-  if (Object.values(http.SubmissionMethodType).includes(submissionMethod)) {
+
+  if (submissionMethod in http.SubmissionMethodType) {
     return {
-      "Fyllut-Submission-Method": submissionMethod,
+      "Fyllut-Submission-Method": http.SubmissionMethodType[submissionMethod],
     };
   }
   return {};
 };
 
-const get = async <T>(url: string, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
+const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   try {
     return await http.get(
       url,
@@ -29,7 +30,7 @@ const get = async <T>(url: string, headers?: http.FetchHeader, opts?: http.Fetch
   }
 };
 
-const put = async <T>(url: string, body: object, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
+const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   try {
     return await http.put(
       url,
@@ -49,7 +50,7 @@ const put = async <T>(url: string, body: object, headers?: http.FetchHeader, opt
   }
 };
 
-const post = async <T>(url: string, body: object, headers?: http.FetchHeader, opts?: http.FetchOptions): Promise<T> => {
+const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   try {
     return await http.post(
       url,
