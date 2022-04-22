@@ -130,8 +130,8 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
   };
 
   const loadCountryNames = async (locale: Language): Promise<Country[]> => {
-    return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`, { cache: "force-cache" }).then(
-      (response) => response.json()
+    return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
+      response.json()
     );
   };
 
