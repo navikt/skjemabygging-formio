@@ -29,7 +29,7 @@ export interface FormPropertiesType {
   hasPapirInnsendingOnly?: boolean;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
-  enhetsTyper?: Enhetstype[];
+  enhetstyper?: Enhetstype[];
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
   descriptionOfSignatures?: string;

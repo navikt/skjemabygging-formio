@@ -5,7 +5,7 @@ import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { fetchEnhetsListe, isEnhetSupported } from "../api/fetchEnhetsliste";
+import { fetchEnhetsliste, isEnhetSupported } from "../api/fetchEnhetsliste";
 import { fetchMottaksadresser } from "../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../components/error/AlertStripeHttpError";
 import ErrorPage from "../components/ErrorPage";
@@ -94,7 +94,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
       </Normaltekst>
       <EnhetSelector
-        enhetsListe={enhetsListe}
+        enhetsliste={enhetsListe}
         onSelectEnhet={(enhetNummer) => {
           setSelectedEnhetNummer(enhetNummer);
           setIsRequiredEnhetMissing(false);
@@ -192,19 +192,19 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
     else setGoBackURL(state.previousPage);
   }, [state, formUrl]);
 
-  const { enhetMaVelgesVedPapirInnsending, enhetsTyper } = form.properties;
+  const { enhetMaVelgesVedPapirInnsending, enhetstyper } = form.properties;
 
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
-      fetchEnhetsListe(baseUrl)
-        .then((enhetsListe) =>
-          enhetsListe
-            .filter(isEnhetSupported(enhetsTyper))
+      fetchEnhetsliste(baseUrl)
+        .then((enhetsliste) =>
+          enhetsliste
+            .filter(isEnhetSupported(enhetstyper))
             .sort((enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb"))
         )
         .then(setEnhetsListe);
     }
-  }, [baseUrl, enhetMaVelgesVedPapirInnsending, enhetsTyper]);
+  }, [baseUrl, enhetMaVelgesVedPapirInnsending, enhetstyper]);
 
   if (enhetMaVelgesVedPapirInnsending && enhetsListe === undefined) {
     return <LoadingComponent />;

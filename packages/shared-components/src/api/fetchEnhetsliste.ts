@@ -22,13 +22,13 @@ export const supportedEnhetstyper: Enhetstype[] = [
 ];
 
 export const isEnhetSupported = (selectedEnhetstyper?: Enhetstype[]) => {
-  const enhetsTyperToInclude =
+  const enhetstyperToInclude =
     Array.isArray(selectedEnhetstyper) && selectedEnhetstyper.length > 0 ? selectedEnhetstyper : supportedEnhetstyper;
 
-  return (enhet: Enhet) => enhetsTyperToInclude.includes(enhet.type) && enhet.enhetNr !== "0000";
+  return (enhet: Enhet) => enhetstyperToInclude.includes(enhet.type) && enhet.enhetNr !== "0000";
 };
 
-export async function fetchEnhetsListe(baseUrl = ""): Promise<Enhet[]> {
+export async function fetchEnhetsliste(baseUrl = ""): Promise<Enhet[]> {
   return fetch(`${baseUrl}/api/enhetsliste`).then((response) => {
     if (response.ok) {
       return response.json();

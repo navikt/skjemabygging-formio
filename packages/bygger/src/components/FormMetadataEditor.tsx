@@ -41,7 +41,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       hasPapirInnsendingOnly,
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
-      enhetsTyper,
+      enhetstyper,
       hasLabeledSignatures,
       signatures,
       descriptionOfSignatures,
@@ -215,12 +215,12 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         featureToggles?.enableEnhetsListe && (
           <EnhetSettings
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
-            selectedEnhetstyper={enhetsTyper}
+            selectedEnhetstyper={enhetstyper}
             onChangeEnhetMaVelges={(selected) =>
               onChange({ ...form, properties: { ...form.properties, enhetMaVelgesVedPapirInnsending: selected } })
             }
-            onChangeEnhetstyper={(enhetsTyper) =>
-              onChange({ ...form, properties: { ...form.properties, enhetsTyper } })
+            onChangeEnhetstyper={(enhetstyper) =>
+              onChange({ ...form, properties: { ...form.properties, enhetstyper } })
             }
           />
         )}

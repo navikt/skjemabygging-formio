@@ -11,7 +11,7 @@ interface EnhetSettingsProps {
   enhetMaVelges: boolean;
   selectedEnhetstyper?: Enhetstype[];
   onChangeEnhetMaVelges: (value: boolean) => void;
-  onChangeEnhetstyper: (enhetsTyper: Enhetstype[]) => void;
+  onChangeEnhetstyper: (enhetstyper: Enhetstype[]) => void;
 }
 
 const useStyles = makeStyles({
