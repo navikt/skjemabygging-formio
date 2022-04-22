@@ -1,4 +1,4 @@
-import { config as configObject } from "../../config/config.js";
+import { config as configObject } from "../../config/config";
 
 const { sentryDsn, naisClusterName, featureToggles } = configObject;
 

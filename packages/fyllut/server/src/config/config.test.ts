@@ -1,10 +1,11 @@
 import { jest } from "@jest/globals";
-import { checkConfigConsistency } from "./config.js";
+import { checkConfigConsistency } from "./config";
 import { NaisCluster } from "./nais-cluster.js";
+import { ConfigType } from "./types";
 
 describe("config", () => {
-  let logError;
-  let exit;
+  let logError: jest.MockedFunction<any>;
+  let exit: jest.MockedFunction<any>;
 
   beforeEach(() => {
     logError = jest.fn();
@@ -15,7 +16,7 @@ describe("config", () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.PROD,
-    };
+    } as ConfigType;
     checkConfigConsistency(config, logError, exit);
     expect(logError).toBeCalledWith("FormioApi is not allowed in prod-gcp");
     expect(exit).toBeCalledWith(1);
@@ -25,7 +26,7 @@ describe("config", () => {
     const config = {
       useFormioApi: true,
       naisClusterName: NaisCluster.DEV,
-    };
+    } as ConfigType;
     checkConfigConsistency(config, logError, exit);
     expect(logError).toBeCalledWith("FORMIO_PROJECT_URL is required when using FormioApi");
     expect(exit).toBeCalledWith(1);
@@ -36,7 +37,7 @@ describe("config", () => {
       useFormioApi: true,
       naisClusterName: NaisCluster.DEV,
       formioProjectUrl: "https://form.io",
-    };
+    } as ConfigType;
     checkConfigConsistency(config, logError, exit);
     expect(logError).not.toBeCalled();
     expect(exit).not.toBeCalled();

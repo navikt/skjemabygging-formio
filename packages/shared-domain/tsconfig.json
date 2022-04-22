@@ -1,20 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "jsx": "react-jsx",
     "module": "esnext",
     "allowJs": true,
     "checkJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitAny": false,
     "skipLibCheck": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,

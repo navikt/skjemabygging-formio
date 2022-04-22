@@ -135,6 +135,7 @@ const ComponentSummary = ({ components }) => {
 
 const FormSummary = ({ form, submission }) => {
   const { translate } = useLanguages();
+  // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
   const formSummaryObject = createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;

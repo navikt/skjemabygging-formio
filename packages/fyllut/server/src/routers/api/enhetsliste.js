@@ -1,6 +1,6 @@
 import correlator from "express-correlation-id";
 import fetch from "node-fetch";
-import { config } from "../../config/config.js";
+import { config } from "../../config/config";
 import { toJsonOrThrowError } from "../../utils/errorHandling.js";
 
 const { skjemabyggingProxyUrl } = config;
