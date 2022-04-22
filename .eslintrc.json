@@ -4,6 +4,11 @@
     "no-unused-labels": "error",
     "no-unused-vars": "off",
     "no-duplicate-imports": "error",
-    "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }]
+    "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
+    "import/no-internal-modules": ["error", {
+      "forbid": [
+        "@navikt/skjemadigitalisering-shared-@(components|domain)/**/!(*.less)"
+      ]
+    }]
   }
 }
