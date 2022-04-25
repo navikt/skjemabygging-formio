@@ -1,4 +1,4 @@
-import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
+import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 
 export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";

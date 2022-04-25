@@ -1,5 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Enhet } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
+import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { LanguagesProvider } from "../../context/languages";

@@ -1,4 +1,4 @@
-import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
+import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 
 export const supportedEnhetstyper: Enhetstype[] = [
   "ALS",

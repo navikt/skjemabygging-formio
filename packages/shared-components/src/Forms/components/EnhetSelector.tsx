@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Enhet } from "@navikt/skjemadigitalisering-shared-domain/types/enhet";
+import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React from "react";
 import ReactSelect from "react-select";
 import { useLanguages } from "../../context/languages";
