@@ -1,4 +1,4 @@
-name: Build and test monorepo - deploy bygger if master
+name: Build and test monorepo, and deploy bygger
 on:
   push
 env:
@@ -93,7 +93,7 @@ jobs:
         uses: "nais/deploy/actions/deploy@v1"
 
   deploy-bygger-experimental-to-dev:
-    name: "Deploy bygger to dev"
+    name: "Deploy bygger experimental to dev"
     if: startsWith(github.ref, 'refs/heads/experimental/')
     needs: package-and-push-bygger
     runs-on: ubuntu-18.04
