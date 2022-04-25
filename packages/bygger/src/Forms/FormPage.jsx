@@ -1,5 +1,5 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
 import { EditFormPage } from "./EditFormPage";
@@ -13,6 +13,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   const [form, setForm] = useState();
   const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
 
+  const loadTranslationsForFormPath = useCallback(() => loadTranslations(form?.path), [loadTranslations, form?.path]);
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
@@ -43,7 +44,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
-  const loadTranslationsForFormPath = () => loadTranslations(form.path);
   const onLeaveMessage =
     "Hvis du går vekk fra denne siden uten å lagre, så mister du alle endringene." +
     "Er du sikker på at du vil gå videre?";

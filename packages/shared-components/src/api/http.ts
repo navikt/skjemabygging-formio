@@ -113,3 +113,5 @@ const http = {
 };
 
 export default http;
+
+export type { FetchHeader, FetchOptions };
