@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import { Normaltekst } from "nav-frontend-typografi";

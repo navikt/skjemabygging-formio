@@ -1,4 +1,4 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useContext, useEffect, useState } from "react";
 import { UserAlerterContext } from "../userAlerting";

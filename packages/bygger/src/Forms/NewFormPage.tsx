@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useContext, useState } from "react";
@@ -44,7 +43,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         hasLabeledSignatures: false,
         signatures: { signature1: "", signature2: "", signature3: "", signature4: "", signature5: "" },
       },
-      components: defaultFormFields(),
+      components: defaultFormFields() as unknown as Component[],
     },
   });
 

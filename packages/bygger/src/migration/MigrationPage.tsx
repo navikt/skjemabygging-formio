@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";

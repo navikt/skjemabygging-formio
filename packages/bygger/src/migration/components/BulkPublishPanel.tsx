@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";

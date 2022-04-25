@@ -1,3 +1,11 @@
+import type {
+  Component,
+  DisplayType,
+  FormPropertiesType,
+  FormSignaturesType,
+  InnsendingType,
+  NavFormType,
+} from "./form";
 import languagesUtil from "./languages/languagesUtil";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
@@ -21,4 +29,12 @@ export {
   languagesUtil,
   guid,
 };
-export type { FeatureTogglesMap };
+export type {
+  FeatureTogglesMap,
+  DisplayType,
+  InnsendingType,
+  FormSignaturesType,
+  FormPropertiesType,
+  NavFormType,
+  Component,
+};

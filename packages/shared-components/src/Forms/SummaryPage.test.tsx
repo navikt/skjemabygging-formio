@@ -1,5 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";

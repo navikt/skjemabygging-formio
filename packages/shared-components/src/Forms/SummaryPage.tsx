@@ -1,6 +1,11 @@
 import { makeStyles, styled } from "@material-ui/styles";
-import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Component, InnsendingType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain/types/form";
+import {
+  Component,
+  createFormSummaryObject,
+  InnsendingType,
+  NavFormType,
+  TEXTS,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
