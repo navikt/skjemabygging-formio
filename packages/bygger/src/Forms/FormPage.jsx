@@ -13,7 +13,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   const [form, setForm] = useState();
   const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
 
-  const loadTranslationsForFormPath = useCallback(() => loadTranslations(formPath), [loadTranslations, formPath]);
+  const loadTranslationsForFormPath = useCallback(() => loadTranslations(form?.path), [loadTranslations, form?.path]);
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
