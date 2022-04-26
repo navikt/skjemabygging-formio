@@ -1,8 +1,8 @@
-name: Build and test monorepo - deploy bygger if master
+name: Build and test monorepo, and deploy bygger
 on:
   push
 env:
-  IMAGE: "docker.pkg.github.com/${{ github.repository }}/bygger:${{github.sha }}"
+  IMAGE: "docker.pkg.github.com/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
 
 concurrency: deploy-${{ github.ref }}
 
@@ -39,7 +39,7 @@ jobs:
         run: yarn build:scripts
 
   package-and-push-bygger:
-    if: github.ref == 'refs/heads/master' # only create new release on the master branch
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
     needs: [build-and-test, verify-scripts]
     name: "Package bygger"
     runs-on: ubuntu-latest
@@ -79,6 +79,7 @@ jobs:
 
   deploy-bygger-to-dev:
     name: "Deploy bygger to dev"
+    if: github.ref == 'refs/heads/master'
     needs: package-and-push-bygger
     runs-on: ubuntu-18.04
     steps:
@@ -89,6 +90,21 @@ jobs:
           CLUSTER: "dev-gcp"
           RESOURCE: "./packages/bygger/.nais/nais.yaml"
           VARS: "./packages/bygger/.nais/dev.yaml"
+        uses: "nais/deploy/actions/deploy@v1"
+
+  deploy-bygger-experimental-to-dev:
+    name: "Deploy bygger experimental to dev"
+    if: startsWith(github.ref, 'refs/heads/experimental/')
+    needs: package-and-push-bygger
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy experimental to DEV"
+        env:
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "dev-gcp"
+          RESOURCE: "./packages/bygger/.nais/nais.yaml"
+          VARS: "./packages/bygger/.nais/dev-experimental.yaml"
         uses: "nais/deploy/actions/deploy@v1"
 
   trigger-deploy-fyllut-to-dev:
@@ -107,8 +123,7 @@ jobs:
 
   trigger-deploy-fyllut-experimental-to-dev:
     name: "Trigger deploy fyllut experimental to dev"
-    needs: build-and-test
-    if: startsWith(github.ref, 'refs/heads/experimental/')
+    needs: deploy-bygger-experimental-to-dev
     runs-on: ubuntu-latest
     steps:
       - name: "Trigger deploy fyllut experimental to dev"
