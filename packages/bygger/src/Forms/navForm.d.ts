@@ -1,5 +1,7 @@
-export type DisplayType = 'wizard' | 'form';
-export type InnsendingType = 'PAPIR_OG_DIGITAL' | 'KUN_PAPIR' | 'KUN_DIGITAL' | 'INGEN';
+import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
+
+export type DisplayType = "wizard" | "form";
+export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
 
 export interface FormSignaturesType {
   signature1?: string;
@@ -27,6 +29,7 @@ export interface FormPropertiesType {
   hasPapirInnsendingOnly?: boolean;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
+  enhetstyper?: Enhetstype[];
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
   descriptionOfSignatures?: string;

@@ -1,3 +1,4 @@
+import { Enhet, Enhetstype } from "./enhet";
 import languagesUtil from "./languages/languagesUtil";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
@@ -21,4 +22,4 @@ export {
   languagesUtil,
   guid,
 };
-export type { FeatureTogglesMap };
+export type { FeatureTogglesMap, Enhet, Enhetstype };
