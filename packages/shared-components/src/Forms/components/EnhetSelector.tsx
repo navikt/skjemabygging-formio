@@ -1,18 +1,17 @@
 import { makeStyles } from "@material-ui/styles";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React from "react";
 import ReactSelect from "react-select";
-import { Enhet } from "../../api/Enhet";
 import { useLanguages } from "../../context/languages";
 import { navCssVariables } from "../../util/navCssVariables";
 
 const useStyles = makeStyles({
-  enhetsListe: {
+  enhetsliste: {
     maxWidth: "20rem",
   },
 });
 
-const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelectorProps) => {
+const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelectorProps) => {
   const { translate } = useLanguages();
   const styles = useStyles();
   const reactSelectCustomStyles = {
@@ -22,11 +21,11 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
     }),
   };
 
-  if (enhetsListe.length === 0) {
+  if (enhetsliste.length === 0) {
     return <></>;
   }
 
-  const options = enhetsListe.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
+  const options = enhetsliste.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
     <div className="skjemaelement margin-bottom-default">
       <label htmlFor="enhetSelect" className="skjemaelement__label">
@@ -37,7 +36,7 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
       </div>
       <ReactSelect
         id="enhetSelect"
-        className={styles.enhetsListe}
+        className={styles.enhetsliste}
         options={options}
         styles={reactSelectCustomStyles}
         placeholder={translate(TEXTS.statiske.prepareLetterPage.selectEntityDefault)}
@@ -56,7 +55,7 @@ const EnhetSelector = ({ enhetsListe = [], onSelectEnhet, error }: EnhetSelector
 };
 
 interface EnhetSelectorProps {
-  enhetsListe: Enhet[];
+  enhetsliste: Enhet[];
   onSelectEnhet: (enhetNummer: string | null) => void;
   error?: string;
 }

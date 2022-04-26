@@ -1,3 +1,4 @@
+import { Enhet, Enhetstype } from "./enhet";
 import type {
   Component,
   DisplayType,
@@ -37,4 +38,6 @@ export type {
   FormPropertiesType,
   NavFormType,
   Component,
+  Enhet,
+  Enhetstype,
 };

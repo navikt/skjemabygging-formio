@@ -6,6 +6,7 @@ import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import useMottaksadresser from "../hooks/useMottaksadresser";
+import EnhetSettings from "./EnhetSettings";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = "create" | "edit";
@@ -39,6 +40,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       hasPapirInnsendingOnly,
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
+      enhetstyper,
       hasLabeledSignatures,
       signatures,
       descriptionOfSignatures,
@@ -210,18 +212,23 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") &&
         !mottaksadresseId &&
         featureToggles?.enableEnhetsListe && (
-          <div className="margin-bottom-default">
-            <Checkbox
-              label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
-              checked={enhetMaVelgesVedPapirInnsending}
-              onChange={(event) => {
-                onChange({
-                  ...form,
-                  properties: { ...form.properties, enhetMaVelgesVedPapirInnsending: event.target.checked },
-                });
-              }}
-            />
-          </div>
+          <EnhetSettings
+            enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
+            selectedEnhetstyper={enhetstyper}
+            onChangeEnhetMaVelges={(selected) =>
+              onChange({
+                ...form,
+                properties: {
+                  ...form.properties,
+                  enhetMaVelgesVedPapirInnsending: selected,
+                  enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                },
+              })
+            }
+            onChangeEnhetstyper={(enhetstyper) =>
+              onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+            }
+          />
         )}
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"

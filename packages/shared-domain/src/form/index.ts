@@ -1,4 +1,5 @@
-// duplisert fra bygger
+import { Enhetstype } from "../enhet";
+
 export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
 
@@ -28,6 +29,7 @@ export interface FormPropertiesType {
   hasPapirInnsendingOnly?: boolean;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
+  enhetstyper?: Enhetstype[];
   hasLabeledSignatures: boolean;
   signatures?: FormSignaturesType;
   descriptionOfSignatures?: string;

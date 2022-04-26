@@ -1,7 +1,6 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import React from "react";
-import { Enhet } from "../../api/Enhet";
 import { LanguagesProvider } from "../../context/languages";
 import EnhetSelector from "./EnhetSelector";
 
@@ -18,7 +17,7 @@ describe("EnhetSelector", () => {
   const renderEnhetSelector = (enhetsListe = mockEnhetsListe) => {
     render(
       <LanguagesProvider translations={{}}>
-        <EnhetSelector enhetsListe={enhetsListe as Enhet[]} onSelectEnhet={mockOnSelectEnhet} />,
+        <EnhetSelector enhetsliste={enhetsListe as Enhet[]} onSelectEnhet={mockOnSelectEnhet} />,
       </LanguagesProvider>
     );
   };
