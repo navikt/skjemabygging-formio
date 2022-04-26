@@ -31,13 +31,13 @@ const config: ConfigType = {
   },
   publishRepo: {
     name: env("PUBLISH_REPO"),
-    token: env("akg_pat"),
+    token: env("GITHUB_TEAM_TOKEN"),
     submoduleName: env("SUBMODULE_REPO"),
     owner: env("PUBLISH_REPO_OWNER"),
     base: env("PUBLISH_REPO_BASE"),
   },
   formio: {
-    projectUrl: env("REACT_APP_FORMIO_PROJECT_URL"),
+    projectUrl: env("FORMIO_PROJECT_URL"),
   },
   nodeEnv,
   port: parseInt(process.env.PORT || "8080"),
