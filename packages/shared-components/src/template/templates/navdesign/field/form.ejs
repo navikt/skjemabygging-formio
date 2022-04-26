@@ -16,6 +16,7 @@
   {{ ctx.labelMarkup }}
 {% } %}
 
+
 {% if (ctx.component.description && ctx.component.type !== "radio" && ctx.component.type !== "radiopanel" && ctx.component.type !== "selectboxes" && ctx.component.type !== "datagrid" && !ctx.component.isNavCheckboxPanel && ctx.component.descriptionPosition !== "above" && (ctx.component.type !== "navCheckbox" || !ctx.component.descriptionPosition)) { %}
   <div class="skjemagruppe__description" id="{{ctx.component.id}}-{{ctx.component.key}}-description">{{ctx.t(ctx.component.description)}}</div>
   {% if (ctx.component.additionalDescription) { %}
