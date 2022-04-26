@@ -44,8 +44,6 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
 
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
-  reactElement = undefined;
-  input = null;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -177,8 +175,11 @@ export default class NavDatepicker extends FormioReactComponent {
     return result;
   }
 
-  static schema() {
-    return FormioReactComponent.schema(FormBuilderOptions.builder.datoOgTid.components.datoVelger.schema);
+  static schema(...extend) {
+    return FormioReactComponent.schema({
+      ...FormBuilderOptions.builder.datoOgTid.components.datoVelger.schema,
+      ...extend,
+    });
   }
 
   /*
@@ -333,54 +334,4 @@ export default class NavDatepicker extends FormioReactComponent {
       element
     );
   }
-
-  focus() {
-    if (this.input) {
-      this.input.focus();
-    }
-  }
-
-  attachReact(element) {
-    this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
-  }
-
-  detachReact(element) {
-    if (element) {
-      ReactDOM.unmountComponentAtNode(element);
-    }
-  }
-
-  getValue() {
-    return this.dataValue;
-  }
-
-  setValue(value, flag = {}) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-    return super.setValue(value, flag);
-  }
-
-  checkValidity(data, dirty, rowData) {
-    const isValid = super.checkValidity(data, dirty, rowData);
-    this.componentIsValid(isValid);
-
-    if (!isValid) {
-      return false;
-    }
-    return this.validate(data, dirty, rowData);
-  }
-
-  componentIsValid = (isValid) => {
-    if (isValid !== this.isValid) {
-      this.isValid = !this.isValid;
-      this.renderReact(this.reactElement);
-    }
-  };
 }

@@ -23,8 +23,12 @@
  * */
 
 import Field from "formiojs/components/_classes/field/Field";
+import ReactDOM from "react-dom";
 
 export default class FormioReactComponent extends Field {
+  reactElement = undefined;
+  input = null;
+
   /**
    * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
    * components using the this.on() function.
@@ -91,19 +95,26 @@ export default class FormioReactComponent extends Field {
   }
 
   /**
-   * Override this function to insert your custom component.
+   * This function is called when the DIV has been rendered and added to the DOM. You can now instantiate the react component.
    *
-   * @param element
+   * @param DOMElement
+   * #returns ReactInstance
    */
   attachReact(element) {
-    return;
+    this.reactElement = element;
+    this.renderReact(element);
+    return this.reactElement;
   }
 
   /**
-   * Override this function.
+   * Automatically detach any react components.
+   *
+   * @param element
    */
   detachReact(element) {
-    return;
+    if (element) {
+      ReactDOM.unmountComponentAtNode(element);
+    }
   }
 
   /**
@@ -112,6 +123,13 @@ export default class FormioReactComponent extends Field {
    * @param value
    */
   setValue(value, flags = {}) {
+    this.dataForSetting = value;
+    if (this.reactElement) {
+      this.renderReact(this.reactElement);
+      this.shouldSetValue = false;
+    } else {
+      this.shouldSetValue = true;
+    }
     return this.updateValue(value, flags);
   }
 
@@ -120,8 +138,7 @@ export default class FormioReactComponent extends Field {
    *
    * @param value
    */
-  updateValue = (value, flags) => {
-    flags = flags || {};
+  updateValue = (value, flags = {}) => {
     const newValue = value === undefined || value === null ? this.getValue() : value;
     const changed = newValue !== undefined ? this.hasChanged(newValue, this.dataValue) : false;
     this.dataValue = Array.isArray(newValue) ? [...newValue] : newValue;
@@ -136,10 +153,7 @@ export default class FormioReactComponent extends Field {
    * @returns {*}
    */
   getValue() {
-    if (this.reactInstance) {
-      return this.reactInstance.state.value;
-    }
-    return this.defaultValue;
+    return this.dataValue;
   }
 
   /**
@@ -168,12 +182,21 @@ export default class FormioReactComponent extends Field {
    * @returns {boolean}
    */
   checkValidity(data, dirty, rowData) {
-    const valid = super.checkValidity(data, dirty, rowData);
-    if (!valid) {
+    const isValid = super.checkValidity(data, dirty, rowData);
+    this.componentIsValid(isValid);
+
+    if (!isValid) {
       return false;
     }
     return this.validate(data, dirty, rowData);
   }
+
+  componentIsValid = (isValid) => {
+    if (isValid !== this.isValid) {
+      this.isValid = !this.isValid;
+      this.renderReact(this.reactElement);
+    }
+  };
 
   /**
    * Do custom validation.
@@ -185,5 +208,9 @@ export default class FormioReactComponent extends Field {
    */
   validate(data, dirty, rowData) {
     return true;
+  }
+
+  focus() {
+    if (this.input) this.input.focus();
   }
 }

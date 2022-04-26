@@ -37,8 +37,6 @@ const CheckboxWrapper = ({ component, checkboxRef, translate, onChange, value })
 };
 
 export default class CheckboxComponent extends FormioReactComponent {
-  input = null;
-
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
    *
@@ -197,47 +195,5 @@ export default class CheckboxComponent extends FormioReactComponent {
       />,
       element
     );
-  }
-
-  /**
-   * This function is called when the DIV has been rendered and added to the DOM. You can now instantiate the react component.
-   *
-   * @param DOMElement
-   * #returns ReactInstance
-   */
-  attachReact(element) {
-    this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
-  }
-
-  /**
-   * Automatically detach any react components.
-   *
-   * @param element
-   */
-  detachReact(element) {
-    if (element) {
-      ReactDOM.unmountComponentAtNode(element);
-    }
-  }
-
-  getValue() {
-    return this.dataValue;
-  }
-
-  setValue(value, flags = {}) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-    return super.setValue(value, flags);
-  }
-
-  checkValidity(data, dirty, rowData) {
-    return super.checkValidity(data, dirty, rowData);
   }
 }
