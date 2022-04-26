@@ -2,7 +2,7 @@ import { AzureConfig, SkjemabyggingProxyConfig } from "./types";
 
 export const devAzure: Partial<AzureConfig> = {
   openidTokenEndpoint: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token",
-  cliendId: "599b3553-24b0-416f-9a91-3866d1197e90",
+  clientId: "599b3553-24b0-416f-9a91-3866d1197e90",
 };
 
 export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {

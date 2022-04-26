@@ -127,7 +127,7 @@ export class Backend {
     const postData = {
       grant_type: "client_credentials",
       scope: `openid api://${this.config.skjemabyggingProxy.clientId}/.default`,
-      client_id: this.config.azure.cliendId,
+      client_id: this.config.azure.clientId,
       client_secret: this.config.azure.clientSecret,
       client_auth_method: "client_secret_basic",
     };
