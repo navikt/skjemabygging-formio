@@ -18,10 +18,6 @@ export class Backend {
     this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.publishRepo.token);
   }
 
-  ho() {
-    return "flups";
-  }
-
   async checkUpdateAndPublishingAccess(userToken: string) {
     //Her kan vi vurdere nærmere sjekk, men man når ikke denne siden uten å være pålogget.
     const currentUserUrl = `${this.config.formio.projectUrl}/current`;

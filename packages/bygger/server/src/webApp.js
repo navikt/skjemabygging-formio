@@ -19,9 +19,6 @@ export function dispatcherWithBackend(backend) {
   }
 
   return dispatch({
-    "/hey": {
-      GET: (req, res) => res.json(backend.ho()),
-    },
     "/publish/:formPath": {
       PUT: async (req, res, next, formPath) => {
         if (!req.body.token) {
