@@ -217,7 +217,14 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
             selectedEnhetstyper={enhetstyper}
             onChangeEnhetMaVelges={(selected) =>
-              onChange({ ...form, properties: { ...form.properties, enhetMaVelgesVedPapirInnsending: selected } })
+              onChange({
+                ...form,
+                properties: {
+                  ...form.properties,
+                  enhetMaVelgesVedPapirInnsending: selected,
+                  enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                },
+              })
             }
             onChangeEnhetstyper={(enhetstyper) =>
               onChange({ ...form, properties: { ...form.properties, enhetstyper } })

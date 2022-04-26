@@ -42,10 +42,10 @@ const EnhetSettings = ({
   const styles = useStyles();
 
   useEffect(() => {
-    if (selectedEnhetstyper === undefined) {
+    if (enhetMaVelges && selectedEnhetstyper === undefined) {
       onChangeEnhetstyper(supportedEnhetstyper);
     }
-  }, [onChangeEnhetstyper, selectedEnhetstyper]);
+  }, [onChangeEnhetstyper, enhetMaVelges, selectedEnhetstyper]);
 
   return (
     <>
