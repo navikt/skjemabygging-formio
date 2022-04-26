@@ -3,13 +3,17 @@ import { Backend } from "../../src/Backend";
 const { Response } = jest.requireActual("node-fetch");
 
 export const createBackendForTest = () => {
-  const projectURL = "https://projectApi.example.com";
-  return new Backend(projectURL, {
-    publishRepoOwner: "publish-repo-owner",
-    publishRepo: "publish-repo",
-    submoduleRepo: "submodule-repo",
-    publishRepoBase: "publish-repo-main-branch",
-    publishRepoToken: "publishRepoToken",
+  return new Backend({
+    formio: {
+      projectUrl: "https://projectApi.example.com",
+    },
+    publishRepo: {
+      owner: "publish-repo-owner",
+      name: "publish-repo",
+      submoduleName: "submodule-repo",
+      base: "publish-repo-main-branch",
+      token: "publishRepoToken",
+    },
     gitSha: "publish-repo-git-sha",
   });
 };

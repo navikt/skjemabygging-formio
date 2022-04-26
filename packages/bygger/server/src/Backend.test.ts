@@ -25,6 +25,7 @@ describe("Backend", () => {
   const formPath = "skjema";
 
   beforeEach(() => {
+    // @ts-ignore
     GitHubRepo.mockImplementation(() => {
       return {
         getRef: mockRepoGetRef,
@@ -40,13 +41,14 @@ describe("Backend", () => {
     });
   });
 
-  let backend;
+  let backend: any;
   beforeEach(() => {
     backend = createBackendForTest();
   });
 
   afterEach(() => {
     nock.cleanAll();
+    // @ts-ignore
     GitHubRepo.mockClear();
     mockRepoGetRef.mockClear();
     mockRepoCreateRef.mockClear();
@@ -109,10 +111,10 @@ describe("Backend", () => {
       beforeEach(async () => {
         const fileContent = { title: "Form" };
         mockRepoGetFileIfItExists.mockReturnValueOnce({
-          data: { content: stringTobase64(JSON.stringify({}), "utf-8"), sha: "sha" },
+          data: { content: stringTobase64(JSON.stringify({})), sha: "sha" },
         });
         mockRepoGetFileIfItExists.mockReturnValueOnce({
-          data: { content: stringTobase64(JSON.stringify(fileContent), "utf-8"), sha: "sha" },
+          data: { content: stringTobase64(JSON.stringify(fileContent)), sha: "sha" },
         });
         await backend.publishForm(token, fileContent, {}, formPath);
       });
