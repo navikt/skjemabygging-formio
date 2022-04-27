@@ -63,7 +63,7 @@
     "clean": "rimraf build coverage",
     "test": "craco test",
     "test:coverage": "craco test --coverage",
-    "e2e": "cypress run",
+    "test:e2e": "cypress run",
     "eject": "craco eject",
     "install-all": "npm install && cd server && npm install",
     "dev-server": "cross-env-shell cd server && npm start",

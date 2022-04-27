@@ -20,6 +20,7 @@
     "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start --stream",
     "test": "cross-env-shell CI=true lerna run --stream test",
     "test:coverage": "cross-env-shell CI=true lerna run --stream test:coverage",
+    "test:e2e": "lerna run --stream test:e2e",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs",
     "lint:staged": "lint-staged"
   },

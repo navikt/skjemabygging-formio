@@ -6,18 +6,20 @@ og disse dataene vil så deployes sammen med fyllut.
 
 # Utvikling
 
-| Kommando          | Beskrivelse                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------- |
-| yarn bootstrap    | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
-| yarn watch        | transpilerer felleskoden når den endres                                               |
-| yarn start        | starter både bygger og fyllut, inkludert backend                                      |
-| yarn start:bygger | starter bygger, inkludert backend                                                     |
-| yarn start:fyllut | starter fyllut, inkludert backend                                                     |
-| yarn build        | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
-| yarn test         | kjører alle tester                                                                    |
-| yarn check-types  | sjekker at typene er korrekte                                                         |
-| yarn clean        | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
-| yarn lint         | se etter problemer i koden                                                            |
+| Kommando           | Beskrivelse                                                                           |
+| ------------------ | ------------------------------------------------------------------------------------- |
+| yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
+| yarn watch         | transpilerer felleskoden når den endres                                               |
+| yarn start         | starter både bygger og fyllut, inkludert backend                                      |
+| yarn start:bygger  | starter bygger, inkludert backend                                                     |
+| yarn start:fyllut  | starter fyllut, inkludert backend                                                     |
+| yarn build         | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
+| yarn test          | kjører alle tester                                                                    |
+| yarn test:coverage | kjører alle tester med rapportering av dekningsgrad                                   |
+| yarn test:e2e      | kjører ende-til-ende-tester (Cypress)                                                 |
+| yarn check-types   | sjekker at typene er korrekte                                                         |
+| yarn clean         | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
+| yarn lint          | se etter problemer i koden                                                            |
 
 ## Fagsystemsonen
 
