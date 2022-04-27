@@ -5,8 +5,12 @@ const bootstrapFormInputStyles = {
   "& [hidden]": {
     display: "none !important",
   },
-  "& .form-group.formio-component": {
-    marginBottom: "1rem",
+  "& .form-group.formio-component, .formio-component-htmlelement": {
+    marginBottom: "2rem",
+  },
+
+  "& .form-group.formio-component.formio-component-navSkjemagruppe": {
+    marginBottom: "0",
   },
 
   "& fieldset": {
