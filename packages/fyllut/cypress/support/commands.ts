@@ -9,6 +9,7 @@
 // ***********************************************
 
 import "@testing-library/cypress/add-commands";
+import "cypress-wait-until";
 
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
@@ -24,3 +25,19 @@ import "@testing-library/cypress/add-commands";
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// Inspired by https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
+Cypress.Commands.add("findByRoleWhenAttached", (role, options) => {
+  return cy
+    .waitUntil(
+      () =>
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy
+          .findByRole(role, options)
+          .as("elementWhenAttached")
+          .wait(10) // for some reason this is needed, otherwise next line returns `true` even if click() fails due to detached element in the next step
+          .then(($el) => Cypress.dom.isAttached($el)),
+      { timeout: 1000, interval: 10 }
+    )
+    .get("@elementWhenAttached");
+});

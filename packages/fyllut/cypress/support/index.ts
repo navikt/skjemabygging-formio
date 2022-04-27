@@ -14,7 +14,22 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+import { ByRoleOptions } from "@testing-library/cypress";
+import { ByRoleMatcher } from "@testing-library/dom";
 import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      /**
+       * Can be used if the regular approach
+       * Custom command to find element by role, waiting for it to be attached to the DOM.
+       * @example cy.findByRoleWhenAttached('button', { name: "Submit" })
+       */
+      findByRoleWhenAttached(role: ByRoleMatcher, options?: ByRoleOptions): Chainable<JQuery<HTMLElement>>;
+    }
+  }
+}
