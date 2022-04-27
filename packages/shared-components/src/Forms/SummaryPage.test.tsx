@@ -1,4 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
@@ -6,7 +6,6 @@ import nock from "nock";
 import React from "react";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../configContext";
-import { NavFormType } from "../types/types";
 import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;

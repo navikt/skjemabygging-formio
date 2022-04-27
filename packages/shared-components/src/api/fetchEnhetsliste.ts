@@ -1,6 +1,6 @@
-import { Enhet, Enhetstype } from "./Enhet";
+import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 
-const enhetstypeCanBeSelectedByUser: Enhetstype[] = [
+export const supportedEnhetstyper: Enhetstype[] = [
   "ALS",
   "ARK",
   "FORVALTNING",
@@ -21,11 +21,14 @@ const enhetstypeCanBeSelectedByUser: Enhetstype[] = [
   "YTA",
 ];
 
-export const canEnhetstypeBeSelected = (enhet: Enhet) => {
-  return enhetstypeCanBeSelectedByUser.includes(enhet.type) && enhet.enhetNr !== "0000";
+export const isEnhetSupported = (selectedEnhetstyper?: Enhetstype[]) => {
+  const enhetstyperToInclude =
+    Array.isArray(selectedEnhetstyper) && selectedEnhetstyper.length > 0 ? selectedEnhetstyper : supportedEnhetstyper;
+
+  return (enhet: Enhet) => enhetstyperToInclude.includes(enhet.type) && enhet.enhetNr !== "0000";
 };
 
-export async function fetchEnhetsListe(baseUrl = ""): Promise<Enhet[]> {
+export async function fetchEnhetsliste(baseUrl = ""): Promise<Enhet[]> {
   return fetch(`${baseUrl}/api/enhetsliste`).then((response) => {
     if (response.ok) {
       return response.json();

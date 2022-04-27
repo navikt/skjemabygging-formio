@@ -1,4 +1,5 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-components";
+import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
@@ -6,7 +7,6 @@ import waitForExpect from "wait-for-expect";
 import { FakeBackend } from "../fakeBackend/FakeBackend";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
 import featureToggles from "../featureToggles.js";
-import { FormPropertiesType, NavFormType } from "../Forms/navForm";
 import { fromEntity } from "../hooks/mottaksadresser";
 import {
   COMPONENT_TEXTS,
@@ -130,6 +130,8 @@ describe("FormMetadataEditor", () => {
         innsending: undefined,
         tema: "BIL",
         hasLabeledSignatures: false,
+        enhetMaVelgesVedPapirInnsending: false,
+        enhetstyper: [],
       },
       display: "wizard",
     };
@@ -371,6 +373,55 @@ describe("FormMetadataEditor", () => {
           name: COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR,
         });
         expect(checkbox).not.toBeChecked();
+      });
+
+      it("huker av checkboxer for valgte enhetstyper", () => {
+        const form: NavFormType = formMedProps({
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: ["ALS", "KO", "LOKAL"],
+        });
+        render(creationFormMetadataEditor(form, mockOnChange));
+        const checkboxes = screen.getAllByRole("checkbox", { checked: true });
+        expect(checkboxes).toHaveLength(4);
+      });
+
+      it("fjerner valgt enhet ved klikk", () => {
+        const form: NavFormType = formMedProps({
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: ["ALS", "KO", "LOKAL"],
+        });
+        render(creationFormMetadataEditor(form, mockOnChange));
+        userEvent.click(screen.getByRole("checkbox", { name: "LOKAL" }));
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.enhetstyper).toEqual(["ALS", "KO"]);
+      });
+
+      it("legger til ny valgt enhet ved klikk", () => {
+        const form: NavFormType = formMedProps({
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: ["ALS", "KO", "LOKAL"],
+        });
+        render(creationFormMetadataEditor(form, mockOnChange));
+        userEvent.click(screen.getByRole("checkbox", { name: "ARK" }));
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.enhetstyper).toEqual(["ALS", "KO", "LOKAL", "ARK"]);
+      });
+
+      it("oppdaterer skjemaet med alle støttede enheter hvis enhetstyper er undefined", () => {
+        const props = {
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: undefined,
+        };
+        const form: NavFormType = formMedProps(props);
+        render(creationFormMetadataEditor(form, mockOnChange));
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        expect(mockOnChange).toHaveBeenCalledWith(formMedProps({ ...props, enhetstyper: supportedEnhetstyper }));
       });
 
       it("Nullstilles og skjules når mottaksadresse velges", () => {

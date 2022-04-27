@@ -1,12 +1,12 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { DisplayType, InnsendingType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
+import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
-import { DisplayType, InnsendingType, NavFormType } from "../Forms/navForm";
 import useMottaksadresser from "../hooks/useMottaksadresser";
-import {Undertittel} from "nav-frontend-typografi";
+import EnhetSettings from "./EnhetSettings";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = "create" | "edit";
@@ -40,6 +40,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       hasPapirInnsendingOnly,
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
+      enhetstyper,
       hasLabeledSignatures,
       signatures,
       descriptionOfSignatures,
@@ -211,18 +212,23 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") &&
         !mottaksadresseId &&
         featureToggles?.enableEnhetsListe && (
-          <div className="margin-bottom-default">
-            <Checkbox
-              label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
-              checked={enhetMaVelgesVedPapirInnsending}
-              onChange={(event) => {
-                onChange({
-                  ...form,
-                  properties: { ...form.properties, enhetMaVelgesVedPapirInnsending: event.target.checked },
-                });
-              }}
-            />
-          </div>
+          <EnhetSettings
+            enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
+            selectedEnhetstyper={enhetstyper}
+            onChangeEnhetMaVelges={(selected) =>
+              onChange({
+                ...form,
+                properties: {
+                  ...form.properties,
+                  enhetMaVelgesVedPapirInnsending: selected,
+                  enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                },
+              })
+            }
+            onChangeEnhetstyper={(enhetstyper) =>
+              onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+            }
+          />
         )}
       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
@@ -243,7 +249,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
           }
         }}
       />
-      {hasLabeledSignatures &&
+      {hasLabeledSignatures && (
         <Textarea
           label="Beskrivelse for alle signaturer (valgfritt)"
           value={descriptionOfSignatures || ""}
@@ -251,43 +257,46 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
           onChange={(event) =>
             onChange({
               ...form,
-              properties: {...form.properties, descriptionOfSignatures: event.target.value},
+              properties: { ...form.properties, descriptionOfSignatures: event.target.value },
             })
           }
         />
-      }
+      )}
       {hasLabeledSignatures &&
-      ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
-        <SkjemaGruppe key={signatureKey} legend={<Undertittel>Signeres av</Undertittel>}>
-          <Input
-            type="text"
-            label="Hvem"
-            placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
-            id={signatureKey}
-            value={signatures ? signatures[signatureKey] : ""}
-            onChange={(event) =>
-              onChange({
-                ...form,
-                properties: {...form.properties, signatures: {...signatures, [signatureKey]: event.target.value}},
-              })
-            }
-          />
-          <Input
-            label="Beskrivelse (valgfritt)"
-            placeholder="Beskrivelse av hvorfor man signerer"
-            type="text"
-            id={`${signatureKey}Description`}
-            data-testid={`${signatureKey}Description`}
-            value={signatures ? signatures[`${signatureKey}Description`] : ""}
-            onChange={(event) =>
-              onChange({
-                ...form,
-                properties: {...form.properties, signatures: {...signatures, [`${signatureKey}Description`]: event.target.value}},
-              })
-            }
-          />
-        </SkjemaGruppe>
-      ))}
+        ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
+          <SkjemaGruppe key={signatureKey} legend={<Undertittel>Signeres av</Undertittel>}>
+            <Input
+              type="text"
+              label="Hvem"
+              placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
+              id={signatureKey}
+              value={signatures ? signatures[signatureKey] : ""}
+              onChange={(event) =>
+                onChange({
+                  ...form,
+                  properties: { ...form.properties, signatures: { ...signatures, [signatureKey]: event.target.value } },
+                })
+              }
+            />
+            <Input
+              label="Beskrivelse (valgfritt)"
+              placeholder="Beskrivelse av hvorfor man signerer"
+              type="text"
+              id={`${signatureKey}Description`}
+              data-testid={`${signatureKey}Description`}
+              value={signatures ? signatures[`${signatureKey}Description`] : ""}
+              onChange={(event) =>
+                onChange({
+                  ...form,
+                  properties: {
+                    ...form.properties,
+                    signatures: { ...signatures, [`${signatureKey}Description`]: event.target.value },
+                  },
+                })
+              }
+            />
+          </SkjemaGruppe>
+        ))}
     </SkjemaGruppe>
   );
 };

@@ -1,4 +1,5 @@
 import { guid } from "@navikt/skjemadigitalisering-shared-domain";
+import { supportedEnhetstyper } from "./api/fetchEnhetsliste";
 import http, { FetchHeader, FetchOptions } from "./api/http";
 import ErrorPage from "./components/ErrorPage";
 import LanguageSelector from "./components/LanguageSelector";
@@ -53,5 +54,6 @@ export {
   http,
   url,
   ErrorPage,
+  supportedEnhetstyper,
 };
 export type { FetchHeader, FetchOptions };
