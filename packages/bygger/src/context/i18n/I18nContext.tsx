@@ -1,6 +1,6 @@
 import { i18nData, mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
+import { FormioTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import { FormioTranslationMap } from "../../../types/translations";
 import { getFormTexts } from "../../translations/utils";
 import i18nReducer, { I18nAction, I18nState } from "./i18nReducer";
 

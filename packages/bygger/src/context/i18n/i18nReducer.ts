@@ -1,4 +1,8 @@
-import { FormioTranslationMap, I18nTranslations, ScopedTranslationMap } from "../../../types/translations";
+import {
+  FormioTranslationMap,
+  I18nTranslations,
+  ScopedTranslationMap,
+} from "@navikt/skjemadigitalisering-shared-domain";
 
 export interface I18nState {
   translations: FormioTranslationMap;

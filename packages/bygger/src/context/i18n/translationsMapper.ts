@@ -3,7 +3,7 @@ import {
   FormioTranslationData,
   FormioTranslationMap,
   ScopedTranslationMap,
-} from "../../../types/translations";
+} from "@navikt/skjemadigitalisering-shared-domain";
 
 export interface TranslationResource extends FormioTranslationData {
   id: string;

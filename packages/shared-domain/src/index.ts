@@ -8,6 +8,19 @@ import type {
   NavFormType,
 } from "./form";
 import languagesUtil from "./languages/languagesUtil";
+import type {
+  FormioTranslation,
+  FormioTranslationData,
+  FormioTranslationMap,
+  FormioTranslationPayload,
+  I18nTranslationMap,
+  I18nTranslations,
+  Language,
+  ScopedTranslationMap,
+  TranslationResource,
+  TranslationScope,
+  TranslationTag,
+} from "./languages/types";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
@@ -40,4 +53,15 @@ export type {
   Component,
   Enhet,
   Enhetstype,
+  FormioTranslationPayload,
+  TranslationResource,
+  FormioTranslationMap,
+  I18nTranslations,
+  ScopedTranslationMap,
+  FormioTranslation,
+  FormioTranslationData,
+  I18nTranslationMap,
+  Language,
+  TranslationScope,
+  TranslationTag,
 };
