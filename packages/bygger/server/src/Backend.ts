@@ -1,4 +1,4 @@
-import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslations, NavFormType, ResourceContent } from "@navikt/skjemadigitalisering-shared-domain";
 import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigType } from "./config/types";
@@ -95,7 +95,7 @@ export class Backend {
     );
   }
 
-  async publishResource(userToken: string, resourceName: string, resourceContent: any) {
+  async publishResource(userToken: string, resourceName: string, resourceContent: ResourceContent) {
     const resourceFile = createFileForPushingToRepo(
       resourceName,
       `resources/${resourceName}.json`,

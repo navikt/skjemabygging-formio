@@ -1,15 +1,4 @@
-export interface MottaksadresseData {
-  adresselinje1: string;
-  adresselinje2?: string;
-  adresselinje3?: string;
-  postnummer: string;
-  poststed: string;
-}
-
-export interface MottaksadresseEntity {
-  _id: string;
-  data: MottaksadresseData;
-}
+import { MottaksadresseData, MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
 
 export class Mottaksadresse implements MottaksadresseData {
   id: string;
@@ -28,7 +17,7 @@ export class Mottaksadresse implements MottaksadresseData {
     this.poststed = data.poststed;
   }
 
-  public toString = () : string => {
+  public toString = (): string => {
     const linjer = [this.adresselinje1];
     if (this.adresselinje2) {
       linjer.push(this.adresselinje2);
@@ -37,8 +26,7 @@ export class Mottaksadresse implements MottaksadresseData {
       linjer.push(this.adresselinje3);
     }
     return `${linjer.join(", ")}, ${this.postnummer} ${this.poststed}`;
-  }
-
+  };
 }
 
 export const fromEntity = (entity: MottaksadresseEntity) => new Mottaksadresse(entity._id, entity.data);

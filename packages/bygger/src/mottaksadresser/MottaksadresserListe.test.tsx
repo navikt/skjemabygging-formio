@@ -1,26 +1,25 @@
-import React from "react";
-import {render, screen, waitFor, waitForElementToBeRemoved, within} from "@testing-library/react";
+import { MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
+import { render, screen, waitFor, waitForElementToBeRemoved, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import MottaksadresserListe from "./MottaksadresserListe";
-import fetchMock from "jest-fetch-mock";
 import Formiojs from "formiojs/Formio";
-import mockMottaksadresser from "./testdata/mottaksadresser";
+import fetchMock from "jest-fetch-mock";
+import React from "react";
+import { UserAlerterContext } from "../userAlerting";
+import MottaksadresserListe from "./MottaksadresserListe";
 import mockMottaksadresseForm from "./testdata/mottaksadresse-form";
-import {MottaksadresseEntity} from "../hooks/mottaksadresser";
-import {UserAlerterContext} from "../userAlerting";
+import mockMottaksadresser from "./testdata/mottaksadresser";
 
 const FORMIO_PROJECT_URL = "http://unittest.nav.no/formio";
 
 const RESPONSE_HEADERS = {
   headers: {
-    "content-type": "application/json"
-  }
+    "content-type": "application/json",
+  },
 };
 
 const SUBMISSION_PUT_REGEX = /http:\/\/.*\/mottaksadresse\/submission\/(.*)$/;
 
 describe("MottaksadresseListe", () => {
-
   beforeAll(() => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);
   });
@@ -67,19 +66,19 @@ describe("MottaksadresseListe", () => {
   });
 
   const renderMottaksadresseListe = async () => {
-    const userAlerter = {flashSuccessMessage: jest.fn(), setErrorMessage: jest.fn(), alertComponent: jest.fn()};
+    const userAlerter = { flashSuccessMessage: jest.fn(), setErrorMessage: jest.fn(), alertComponent: jest.fn() };
     render(
       <UserAlerterContext.Provider value={userAlerter}>
         <MottaksadresserListe />
       </UserAlerterContext.Provider>
     );
     await waitForElementToBeRemoved(() => screen.queryByText("Laster mottaksadresser..."));
-  }
+  };
 
   it("Rendrer alle mottaksadresser", async () => {
     await renderMottaksadresseListe();
-    mockMottaksadresser.forEach(adresse => {
-      expect(screen.queryByRole("heading", {name: adresse.data.adresselinje1})).toBeTruthy();
+    mockMottaksadresser.forEach((adresse) => {
+      expect(screen.queryByRole("heading", { name: adresse.data.adresselinje1 })).toBeTruthy();
     });
   });
 
@@ -87,7 +86,7 @@ describe("MottaksadresseListe", () => {
     await renderMottaksadresseListe();
     const adresse = mockMottaksadresser[1];
     const panel = screen.getByTestId(`mottaksadressepanel-${adresse._id}`);
-    const endreKnapp = await within(panel).getByRole("button", {name: "Endre"});
+    const endreKnapp = await within(panel).getByRole("button", { name: "Endre" });
     expect(endreKnapp).toBeTruthy();
     userEvent.click(endreKnapp);
 
@@ -96,18 +95,18 @@ describe("MottaksadresseListe", () => {
     userEvent.clear(postnummerInput);
     userEvent.type(postnummerInput, "1234");
 
-    userEvent.click(await within(panel).findByRole("button", {name: "Lagre"}));
+    userEvent.click(await within(panel).findByRole("button", { name: "Lagre" }));
 
     await waitFor(() => expect(savedMottaksadresseRequests).toHaveLength(1));
 
     expect(savedMottaksadresseRequests).toHaveLength(1);
     expect(savedMottaksadresseRequests[0].data.postnummer).toEqual("1234");
-    expect(await within(panel).findByRole("button", {name: "Endre"})).toBeTruthy();
+    expect(await within(panel).findByRole("button", { name: "Endre" })).toBeTruthy();
   });
 
   it("Lagrer ny mottaksadresse", async () => {
     await renderMottaksadresseListe();
-    const leggTilNyKnapp = screen.getByRole("button", {name: "Legg til ny"});
+    const leggTilNyKnapp = screen.getByRole("button", { name: "Legg til ny" });
     expect(leggTilNyKnapp).toBeTruthy();
     userEvent.click(leggTilNyKnapp);
 
@@ -118,7 +117,7 @@ describe("MottaksadresseListe", () => {
     userEvent.type(screen.getByLabelText("Postnummer"), "1500");
     userEvent.type(screen.getByLabelText("Poststed"), "Dalen");
 
-    userEvent.click(await within(panel).findByRole("button", {name: "Lagre"}));
+    userEvent.click(await within(panel).findByRole("button", { name: "Lagre" }));
 
     await waitFor(() => expect(savedMottaksadresseRequests).toHaveLength(1));
     expect(savedMottaksadresseRequests[0].data.adresselinje1).toEqual("TEST skanning");
@@ -129,7 +128,7 @@ describe("MottaksadresseListe", () => {
 
   it("Lagrer ikke ny mottaksadresse når poststed ikke er oppgitt", async () => {
     await renderMottaksadresseListe();
-    userEvent.click(screen.getByRole("button", {name: "Legg til ny"}));
+    userEvent.click(screen.getByRole("button", { name: "Legg til ny" }));
 
     const panel = await screen.findByTestId("mottaksadressepanel-new");
 
@@ -138,8 +137,8 @@ describe("MottaksadresseListe", () => {
     userEvent.type(screen.getByLabelText("Postnummer"), "1500");
 
     // Ignore console.log from formio that logs the components when error.
-    jest.spyOn(console, 'log').mockImplementation(() => {});
-    userEvent.click(await within(panel).findByRole("button", {name: "Lagre"}));
+    jest.spyOn(console, "log").mockImplementation(() => {});
+    userEvent.click(await within(panel).findByRole("button", { name: "Lagre" }));
     expect(await screen.findByText("Du må fylle ut: Poststed")).toBeTruthy();
     jest.restoreAllMocks();
 
@@ -150,16 +149,16 @@ describe("MottaksadresseListe", () => {
     await renderMottaksadresseListe();
     const adresse = mockMottaksadresser[1];
     const panel = screen.getByTestId(`mottaksadressepanel-${adresse._id}`);
-    userEvent.click(await within(panel).getByRole("button", {name: "Endre"}));
+    userEvent.click(await within(panel).getByRole("button", { name: "Endre" }));
 
     const adresselinje1Input = await screen.findByLabelText("Adresselinje1");
     expect(adresselinje1Input).toBeTruthy();
     userEvent.clear(adresselinje1Input);
     userEvent.type(adresselinje1Input, "Skogen");
-    userEvent.click(await within(panel).findByRole("button", {name: "Avbryt"}));
+    userEvent.click(await within(panel).findByRole("button", { name: "Avbryt" }));
 
-    expect(await within(panel).findByRole("button", {name: "Endre"})).toBeTruthy();
-    expect(await within(panel).findByRole("heading", {name: adresse.data.adresselinje1})).toBeTruthy();
+    expect(await within(panel).findByRole("button", { name: "Endre" })).toBeTruthy();
+    expect(await within(panel).findByRole("heading", { name: adresse.data.adresselinje1 })).toBeTruthy();
     expect(savedMottaksadresseRequests).toHaveLength(0);
   });
 
@@ -167,13 +166,12 @@ describe("MottaksadresseListe", () => {
     await renderMottaksadresseListe();
     const adresse = mockMottaksadresser[0];
     const panel = screen.getByTestId(`mottaksadressepanel-${adresse._id}`);
-    userEvent.click(await within(panel).findByRole("button", {name: "Endre"}));
+    userEvent.click(await within(panel).findByRole("button", { name: "Endre" }));
 
-    const slettKnapp = await within(panel).findByRole("button", {name: "Slett"})
+    const slettKnapp = await within(panel).findByRole("button", { name: "Slett" });
     userEvent.click(slettKnapp);
 
     await waitFor(() => expect(deletedMottaksadresseIds).toHaveLength(1));
     expect(deletedMottaksadresseIds.includes(adresse._id)).toBe(true);
   });
-
 });
