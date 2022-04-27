@@ -356,7 +356,7 @@ export default class NavDatepicker extends FormioReactComponent {
     return this.dataValue;
   }
 
-  setValue(value) {
+  setValue(value, flag = {}) {
     this.dataForSetting = value;
     if (this.reactElement) {
       this.renderReact(this.reactElement);
@@ -364,6 +364,7 @@ export default class NavDatepicker extends FormioReactComponent {
     } else {
       this.shouldSetValue = true;
     }
+    return super.setValue(value, flag);
   }
 
   checkValidity(data, dirty, rowData) {

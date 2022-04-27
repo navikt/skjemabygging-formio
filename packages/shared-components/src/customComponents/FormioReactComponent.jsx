@@ -111,16 +111,8 @@ export default class FormioReactComponent extends Field {
    *
    * @param value
    */
-  setValue(value) {
-    if (this.reactInstance) {
-      this.reactInstance.setState({
-        value: value,
-      });
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-      this.dataForSetting = value;
-    }
+  setValue(value, flags = {}) {
+    return this.updateValue(value, flags);
   }
 
   /**
