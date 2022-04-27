@@ -1,10 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { I18nTranslations } from "../../types/translations";
 import { useI18nState } from "../context/i18n";
 
 const useModalStyles = makeStyles({

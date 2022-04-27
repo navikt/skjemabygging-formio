@@ -1,5 +1,4 @@
-import { objectUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { TranslationResource } from "../../../types/translations";
+import { objectUtils, TEXTS, TranslationResource } from "@navikt/skjemadigitalisering-shared-domain";
 import { getInputType, withoutDuplicatedComponents } from "../utils";
 
 const tags = {

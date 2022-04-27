@@ -43,6 +43,7 @@ export interface Component {
 }
 
 export interface NavFormType {
+  _id?: string;
   tags: string[];
   type: string;
   display: DisplayType;

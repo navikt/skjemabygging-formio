@@ -1,15 +1,17 @@
-import { languagesUtil, localizationUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import {
   FormioTranslation,
   FormioTranslationMap,
   FormioTranslationPayload,
   I18nTranslationMap,
   Language,
+  languagesUtil,
+  localizationUtils,
   ScopedTranslationMap,
+  TEXTS,
   TranslationScope,
   TranslationTag,
-} from "../../types/translations";
+} from "@navikt/skjemadigitalisering-shared-domain";
+import Formiojs from "formiojs/Formio";
 import { languagesInNorwegian } from "../context/i18n";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import { getTranslationKeysForAllPredefinedTexts, tags } from "../translations/global/utils";

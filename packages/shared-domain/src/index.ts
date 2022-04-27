@@ -8,6 +8,21 @@ import type {
   NavFormType,
 } from "./form";
 import languagesUtil from "./languages/languagesUtil";
+import type {
+  FormioTranslation,
+  FormioTranslationData,
+  FormioTranslationMap,
+  FormioTranslationPayload,
+  I18nTranslationMap,
+  I18nTranslations,
+  Language,
+  ScopedTranslationMap,
+  TranslationResource,
+  TranslationScope,
+  TranslationTag,
+} from "./languages/types";
+import type { MottaksadresseData, MottaksadresseEntity } from "./mottaksadresse";
+import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
@@ -40,4 +55,20 @@ export type {
   Component,
   Enhet,
   Enhetstype,
+  FormioTranslationPayload,
+  TranslationResource,
+  FormioTranslationMap,
+  I18nTranslations,
+  ScopedTranslationMap,
+  FormioTranslation,
+  FormioTranslationData,
+  I18nTranslationMap,
+  Language,
+  TranslationScope,
+  TranslationTag,
+  MottaksadresseData,
+  MottaksadresseEntity,
+  ResourceContent,
+  MottaksadresserResourceContent,
+  GlobalTranslationsResourceContent,
 };

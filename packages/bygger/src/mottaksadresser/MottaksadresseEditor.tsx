@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { AppConfigProvider, NavForm } from "@navikt/skjemadigitalisering-shared-components";
+import { MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
 import { Fareknapp, Knapp } from "nav-frontend-knapper";
@@ -7,7 +8,6 @@ import Panel from "nav-frontend-paneler";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import Column from "../components/layout/Column";
-import { MottaksadresseEntity } from "../hooks/mottaksadresser";
 
 const useStyles = makeStyles({
   panel: {

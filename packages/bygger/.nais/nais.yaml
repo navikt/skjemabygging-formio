@@ -48,7 +48,9 @@ spec:
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
   envFrom:
-    - secret: monorepo-poc-akg
+  {{#each secrets as |secret|}}
+    - secret: {{secret}}
+  {{/each}}
   azure:
     application:
       enabled: true
