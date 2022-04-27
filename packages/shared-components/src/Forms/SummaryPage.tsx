@@ -1,5 +1,11 @@
 import { makeStyles, styled } from "@material-ui/styles";
-import { createFormSummaryObject, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  Component,
+  createFormSummaryObject,
+  InnsendingType,
+  NavFormType,
+  TEXTS,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -7,7 +13,6 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import { Component, InnsendingType, NavFormType } from "../types/types";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import { navCssVariables } from "../util/navCssVariables";
