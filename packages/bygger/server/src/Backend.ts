@@ -1,4 +1,4 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigType } from "./config/types";
@@ -67,7 +67,12 @@ export class Backend {
     );
   }
 
-  async publishForm(userToken: string, formContent: NavFormType, translationsContent: any, formPath: string) {
+  async publishForm(
+    userToken: string,
+    formContent: NavFormType,
+    translationsContent: I18nTranslations,
+    formPath: string
+  ) {
     const formFile = createFileForPushingToRepo(formContent.title, `forms/${formPath}.json`, "skjema", formContent);
     const translationsFile = createFileForPushingToRepo(
       formContent.title,
