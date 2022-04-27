@@ -1,3 +1,4 @@
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigType } from "./config/types";
@@ -49,7 +50,7 @@ export class Backend {
     return this.fetchFromProjectApi(`/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&limit=${limit}`);
   }
 
-  async updateForms(userToken: string, forms: any[]) {
+  async updateForms(userToken: string, forms: NavFormType[]) {
     const updateFormUrl = `${this.config.formio.projectUrl}/form`;
     await this.checkUpdateAndPublishingAccess(userToken);
     return await Promise.all(
@@ -66,7 +67,7 @@ export class Backend {
     );
   }
 
-  async publishForm(userToken: string, formContent: any, translationsContent: any, formPath: string) {
+  async publishForm(userToken: string, formContent: NavFormType, translationsContent: any, formPath: string) {
     const formFile = createFileForPushingToRepo(formContent.title, `forms/${formPath}.json`, "skjema", formContent);
     const translationsFile = createFileForPushingToRepo(
       formContent.title,
@@ -110,7 +111,7 @@ export class Backend {
   async bulkPublishForms(userToken: string, formPaths: string[]) {
     await this.checkUpdateAndPublishingAccess(userToken);
     const forms = await this.getForms(formPaths);
-    const formFiles = forms.map((formContent: any) =>
+    const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
     );
 
