@@ -112,7 +112,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger))"
+      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger|@navikt/ds-css))"
     ]
   }
 }
