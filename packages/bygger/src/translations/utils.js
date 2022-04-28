@@ -168,10 +168,7 @@ const removeLineBreaksFromTranslations = (translations) => {
 
 const escapeQuote = (text) => {
   if (typeof text === "string" && text.includes("'")) {
-    console.log("Found: ", text);
-    let testTextReplace = text.replace(/'/g, '"');
-    console.log("Replaced to: ", testTextReplace);
-    return testTextReplace;
+    return text.replaceAll(/'/g, '"');
   }
   return text;
 };
