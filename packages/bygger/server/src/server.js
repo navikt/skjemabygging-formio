@@ -1,10 +1,8 @@
 import express from "express";
-// import { Backend } from "./Backend";
 import config from "./config";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import { fsAccessRateLimiter } from "./middleware/ratelimit";
 import apiRouter from "./routers/api";
-// import { dispatcherWithBackend } from "./webApp.js";
 import internalRouter from "./routers/internal";
 
 const app = express();
