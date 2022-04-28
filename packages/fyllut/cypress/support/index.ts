@@ -30,6 +30,10 @@ declare global {
        * @example cy.findByRoleWhenAttached('button', { name: "Submit" })
        */
       findByRoleWhenAttached(role: ByRoleMatcher, options?: ByRoleOptions): Chainable<JQuery<HTMLElement>>;
+      /**
+       * Provided you are in the form wizard. Use this to click on the "Neste"-button.
+       */
+      clickNext(): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
