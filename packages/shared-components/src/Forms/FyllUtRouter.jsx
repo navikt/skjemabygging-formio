@@ -54,7 +54,7 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route exact path={path}>
             <IntroPage form={form} formUrl={url} />
           </Route>
-          <Route path={`${path}/data`}>
+          <Route path={`${path}/skjema`}>
             {formForRendering && (
               <FillInFormPage
                 form={formForRendering}
