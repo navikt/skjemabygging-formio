@@ -7,7 +7,7 @@ metadata:
     "team": "skjemadigitalisering"
 spec:
   image: {{image}}
-    port: 8080
+  port: 8080
   liveness:
     path: "/internal/isAlive"
     initialDelay: 20
