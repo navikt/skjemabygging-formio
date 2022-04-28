@@ -166,6 +166,16 @@ const removeLineBreaksFromTranslations = (translations) => {
   }, {});
 };
 
+const escapeQuote = (text) => {
+  if (typeof text === "string" && text.includes("'")) {
+    console.log("Found: ", text);
+    let testTextReplace = text.replace(/'/g, '"');
+    console.log("Replaced to: ", testTextReplace);
+    return testTextReplace;
+  }
+  return text;
+};
+
 const getTextsAndTranslationsForForm = (form, translations) => {
   const textComponents = getFormTexts(form, false, true);
   let textsWithTranslations = [];
@@ -173,6 +183,7 @@ const getTextsAndTranslationsForForm = (form, translations) => {
     const translationsForLanguage = removeLineBreaksFromTranslations(translations[languageCode].translations);
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
       if (Object.keys(translationsForLanguage).indexOf(textComponent.text) < 0) {
+        textComponent.text = escapeQuote(textComponent.text);
         return [...newTextComponent, textComponent];
       } else {
         const translationObject = translationsForLanguage[textComponent.text];

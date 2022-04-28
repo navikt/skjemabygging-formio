@@ -118,6 +118,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
                 className="knapp knapp--standard"
                 separator={";"}
                 headers={getTextsAndTranslationsHeaders(translations)}
+                enclosingCharacter={'"'}
               >
                 Eksporter
               </CSVLink>
