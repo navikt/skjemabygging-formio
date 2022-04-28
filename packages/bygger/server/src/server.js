@@ -1,17 +1,18 @@
 import express from "express";
-import { Backend } from "./Backend";
+// import { Backend } from "./Backend";
 import config from "./config";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import { fsAccessRateLimiter } from "./middleware/ratelimit";
-import { dispatcherWithBackend } from "./webApp.js";
+import apiRouter from "./routers/api";
+// import { dispatcherWithBackend } from "./webApp.js";
+import internalRouter from "./routers/internal";
 
 const app = express();
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.get("/isAlive", (req, res) => res.send("Alive"));
-app.get("/isReady", (req, res) => res.send("Ready"));
-app.use("/api", dispatcherWithBackend(new Backend(config)));
+app.use("/internal", internalRouter);
+app.use("/api", apiRouter);
 
 if (config.isProduction) {
   // serve built app in production (served by webpack dev server in development)

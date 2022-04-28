@@ -1,7 +1,7 @@
 import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 
 export class HttpError extends Error {
-  private response: Response;
+  readonly response: Response;
 
   constructor(fetchResponse: Response) {
     super(`${fetchResponse.status} ${fetchResponse.statusText} fetching: ${fetchResponse.url}`);
