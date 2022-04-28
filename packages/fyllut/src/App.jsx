@@ -1,5 +1,6 @@
 import { styled } from "@material-ui/styles";
 import makeStyles from "@material-ui/styles/makeStyles";
+import "@navikt/ds-css";
 import { appStyles, CustomComponents, globalStyles, Template } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import { Components, Formio } from "formiojs";

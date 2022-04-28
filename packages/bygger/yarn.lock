@@ -9795,15 +9795,15 @@ nav-frontend-js-utils@^1.0.16:
   dependencies:
     lodash.throttle "^4.1.1"
 
-nav-frontend-knapper-style@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/nav-frontend-knapper-style/-/nav-frontend-knapper-style-1.0.1.tgz#5add853d28a5c5f9848aebdb2abefc99fe20e396"
-  integrity sha512-J8HO93X/jiS9Jbvmr/byTjdgA69PLUYE/OF5Plc67/ZBDuJOoMhxnShr+EgFA6EXRrdq+D9SSfceFX1bRx9dWw==
+nav-frontend-knapper-style@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/nav-frontend-knapper-style/-/nav-frontend-knapper-style-2.1.1.tgz#ab55c1915651ab3a656d40b88e001e02d368a1ed"
+  integrity sha512-JP0ktCIGYNlDLdvsOlAphACa8v5/ITIW9hFsTFFvaSo3RHCrAKu7/uYu+Lad1mNaZyr4xb3AbcgFBQfERxfL6g==
 
-nav-frontend-knapper@^2.0.9:
-  version "2.0.9"
-  resolved "https://registry.yarnpkg.com/nav-frontend-knapper/-/nav-frontend-knapper-2.0.9.tgz#7098a32942d08ed8b29188e21f5b5dcb4999f71d"
-  integrity sha512-QwzFn/qkCQ5tNof2lUaLbGANXMFBNKCnEgO3TXR4/GIbo2FXNPiTYgGsDp8WogCUIfmZyHgo5hwRgcdft7ri+g==
+nav-frontend-knapper@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/nav-frontend-knapper/-/nav-frontend-knapper-3.1.2.tgz#18f4ed49f778d8cc55d44a4086b54e7087b07af4"
+  integrity sha512-IR+0lz1ir14FnLx6rZNA3DH6DUAUlN1MK/cwg7syDx1v0qh1wMHjv9GI85ciP0WW65W2zBo2fDjRMA7IlHB2wA==
 
 nav-frontend-lenker-style@^1.0.0:
   version "1.0.2"
