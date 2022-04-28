@@ -3,11 +3,9 @@ import { render, screen } from "@testing-library/react";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
+import createMockImplementation from "../test/backendMockImplementation";
 import App from "./App";
 import { AuthContext } from "./context/auth-context";
-import { FakeBackend } from "./fakeBackend/FakeBackend";
-import { dispatcherWithBackend } from "./fakeBackend/fakeWebApp";
-import { InprocessQuipApp } from "./fakeBackend/InprocessQuipApp";
 import featureToggles from "./featureToggles";
 
 const createFakeChannel = () => ({
@@ -17,8 +15,7 @@ const createFakeChannel = () => ({
 
 describe("App", () => {
   beforeEach(() => {
-    const mockBackend = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
-    fetchMock.mockImplementation(mockBackend.fetchImpl);
+    fetchMock.mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
