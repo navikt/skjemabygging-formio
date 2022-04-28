@@ -7,7 +7,7 @@ import {
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
-import { Innholdstittel, Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
@@ -17,6 +17,7 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import { navCssVariables } from "../util/navCssVariables";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
+import { FormTitle } from "./components/FormTitle";
 
 type LabelValue = {
   label: string;
@@ -171,7 +172,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
 
   return (
     <SummaryContent>
-      <Sidetittel className="margin-bottom-large">{form.title}</Sidetittel>
+      <FormTitle form={form} className="margin-bottom-double" />
       <main id="maincontent" tabIndex={-1}>
         <Innholdstittel tag="h2" className="margin-bottom-default">
           {translate(TEXTS.statiske.summaryPage.title)}

@@ -2665,6 +2665,11 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
+"@navikt/ds-css@^0.16.20":
+  version "0.16.21"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-0.16.21.tgz#b793f900f3148a048180423052480c04be239e68"
+  integrity sha512-kV9fLtnZoOIectWGZFg/aLzgp4gRi2sBjgq5VzoprNQlzSOnSxwR0QVLClpmjJe+oKZYUc5RndqDc0QAMawqkA==
+
 "@navikt/ds-icons@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-0.2.0.tgz#5ea53007f5b2b76a1f00030dc50e679284ee85da"

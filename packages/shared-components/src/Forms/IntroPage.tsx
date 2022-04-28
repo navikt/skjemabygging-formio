@@ -30,10 +30,10 @@ export function IntroPage({ form, formUrl }: Props) {
       }
       // No description when submissionMethodType === http.SubmissionMethodType.DIGITAL
     } else {
-      if (form.properties.innsending === "KUN_PAPIR" || form.properties.innsending === "INGEN") {
+      if (form.properties?.innsending === "KUN_PAPIR" || form.properties?.innsending === "INGEN") {
         setDescriptionBold(translate(TEXTS.statiske.introPage.paperDescriptionBold));
         setDescription(translate(TEXTS.statiske.introPage.paperDescription));
-      } else if (form.properties.innsending === "PAPIR_OG_DIGITAL") {
+      } else if (form.properties?.innsending === "PAPIR_OG_DIGITAL") {
         setDescriptionBold(translate(TEXTS.statiske.introPage.paperAndDigitalDescriptionBold));
         setDescription(translate(TEXTS.statiske.introPage.paperAndDigitalDescription));
       }
