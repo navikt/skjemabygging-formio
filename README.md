@@ -16,7 +16,7 @@ og disse dataene vil så deployes sammen med fyllut.
 | yarn build         | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
 | yarn test          | kjører alle tester                                                                    |
 | yarn test:coverage | kjører alle tester med rapportering av dekningsgrad                                   |
-| yarn test:e2e      | kjører ende-til-ende-tester (Cypress)                                                 |
+| yarn cypress       | kjører Cypress-tester                                                                 |
 | yarn check-types   | sjekker at typene er korrekte                                                         |
 | yarn clean         | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
 | yarn lint          | se etter problemer i koden                                                            |

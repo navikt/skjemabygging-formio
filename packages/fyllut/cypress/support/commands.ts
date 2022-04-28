@@ -26,7 +26,7 @@ import "cypress-wait-until";
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-// Inspired by https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
+// Based on https://github.com/cypress-io/cypress/issues/7306#issuecomment-636009167
 Cypress.Commands.add("findByRoleWhenAttached", (role, options) => {
   return cy
     .waitUntil(

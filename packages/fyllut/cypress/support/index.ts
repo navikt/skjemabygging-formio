@@ -25,8 +25,8 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
-       * Can be used if the regular approach
-       * Custom command to find element by role, waiting for it to be attached to the DOM.
+       * This is a custom command to find element by role, and waiting for it to be attached to the DOM.
+       * Can be used if you get issues with detached DOM element when you want to interact with an element retrieved by findByRole
        * @example cy.findByRoleWhenAttached('button', { name: "Submit" })
        */
       findByRoleWhenAttached(role: ByRoleMatcher, options?: ByRoleOptions): Chainable<JQuery<HTMLElement>>;
