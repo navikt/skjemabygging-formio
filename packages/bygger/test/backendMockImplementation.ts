@@ -73,7 +73,6 @@ const createMockImplementation =
       }
     }
 
-    console.log("url", url, JSON.stringify(options));
     return Promise.reject(new Error(`Missing test implementation: ${url} (${JSON.stringify(options)})`));
   };
 
