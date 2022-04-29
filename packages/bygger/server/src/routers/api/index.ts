@@ -1,4 +1,5 @@
 import express from "express";
+import config from "./config";
 import enhetsliste from "./enhetsliste";
 import apiErrorHandler from "./helpers/apiErrorHandler";
 import authorizedPublisher from "./helpers/authorizedPublisher";
@@ -11,6 +12,7 @@ import publishResource from "./publish-resource";
 
 const apiRouter = express.Router();
 
+apiRouter.get("/config", config);
 apiRouter.put("/publish/:formPath", authorizedPublisher, publishForm);
 apiRouter.post("/publish-bulk", authorizedPublisher, publishBulk);
 apiRouter.put("/published-resource/:resourceName", authorizedPublisher, publishResource);

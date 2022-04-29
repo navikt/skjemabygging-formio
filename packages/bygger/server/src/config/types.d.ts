@@ -21,6 +21,10 @@ export type FormioConfig = {
   projectUrl: string;
 };
 
+export type FyllutConfig = {
+  baseUrl: string;
+};
+
 export type NodeEnv = "production" | "development" | "test";
 
 export type ConfigType = {
@@ -28,6 +32,7 @@ export type ConfigType = {
   skjemabyggingProxy: SkjemabyggingProxyConfig;
   publishRepo: PublishRepoConfig;
   formio: FormioConfig;
+  fyllut: FyllutConfig;
   gitSha: string;
   nodeEnv: NodeEnv;
   port: number;

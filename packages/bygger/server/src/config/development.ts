@@ -1,4 +1,4 @@
-import { AzureConfig, SkjemabyggingProxyConfig } from "./types";
+import { AzureConfig, FormioConfig, FyllutConfig, SkjemabyggingProxyConfig } from "./types";
 
 export const devAzure: Partial<AzureConfig> = {
   openidTokenEndpoint: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token",
@@ -8,4 +8,12 @@ export const devAzure: Partial<AzureConfig> = {
 export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
   url: "https://skjemabygging-proxy.dev-fss-pub.nais.io",
   clientId: "95170319-b4d7-4190-8271-118ed19bafbf",
+};
+
+export const devFormio: FormioConfig = {
+  projectUrl: "https://formio-api-server.ekstern.dev.nav.no",
+};
+
+export const devFyllut: FyllutConfig = {
+  baseUrl: "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut",
 };

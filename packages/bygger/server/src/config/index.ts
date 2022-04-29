@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { devAzure, devSkjemabyggingProxy } from "./development";
+import { devAzure, devFormio, devFyllut, devSkjemabyggingProxy } from "./development";
 import { ConfigType, NodeEnv } from "./types";
 
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
@@ -39,7 +39,10 @@ const config: ConfigType = {
     base: env("PUBLISH_REPO_BASE"),
   },
   formio: {
-    projectUrl: env("FORMIO_PROJECT_URL"),
+    projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),
+  },
+  fyllut: {
+    baseUrl: env("FYLLUT_BASE_URL", devFyllut.baseUrl),
   },
   nodeEnv,
   port: parseInt(process.env.PORT || "8080"),
