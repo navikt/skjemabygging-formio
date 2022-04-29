@@ -4,7 +4,9 @@ import { ConfigType, NodeEnv } from "./types";
 
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
 
-dotenv.config();
+if (nodeEnv !== "test") {
+  dotenv.config();
+}
 
 const env = (name: string, devValue?: string): string => {
   const value = process.env[name];
