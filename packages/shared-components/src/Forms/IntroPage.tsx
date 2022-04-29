@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
-import { url } from "../index";
+import { useAppConfig } from "../index";
 import { FormTitle } from "./components/FormTitle";
 
 export interface Props {
@@ -20,11 +20,11 @@ export function IntroPage({ form, formUrl }: Props) {
   const history = useHistory();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
+  const { submissionMethod } = useAppConfig();
 
   useEffect(() => {
-    const submissionMethodType = url.getUrlParam(search, "sub");
-    if (submissionMethodType) {
-      if (submissionMethodType === http.SubmissionMethodType.PAPER) {
+    if (submissionMethod) {
+      if (submissionMethod === http.SubmissionMethodType.PAPER) {
         setDescriptionBold(`${translate(TEXTS.statiske.introPage.paperDescriptionBold)}`);
         setDescription(`${translate(TEXTS.statiske.introPage.paperDescription)}`);
       }
