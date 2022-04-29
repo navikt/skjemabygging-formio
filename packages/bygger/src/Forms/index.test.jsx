@@ -5,18 +5,15 @@ import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
+import createMockImplementation from "../../test/backendMockImplementation";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { AuthContext } from "../context/auth-context";
-import { FakeBackend } from "../fakeBackend/FakeBackend";
-import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
-import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
 import featureToggles from "../featureToggles.js";
 import { UserAlerterContext } from "../userAlerting";
 
 describe("FormsRouter", () => {
   beforeEach(() => {
-    const mockBackend = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
-    fetchMock.mockImplementation(mockBackend.fetchImpl);
+    fetchMock.mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
@@ -73,7 +70,7 @@ describe("FormsRouter", () => {
   it("displays all the forms with an edit link", async () => {
     renderApp("/forms");
     const editLinks = await screen.findAllByTestId("editLink");
-    expect(editLinks).toHaveLength(4);
+    expect(editLinks).toHaveLength(2);
     editLinks.forEach((link) => expect(link.href).toMatch(/http:\/\/localhost\/forms\/(columns|debugskjema)\/edit/));
   });
 });

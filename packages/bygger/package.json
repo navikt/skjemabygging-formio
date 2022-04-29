@@ -100,7 +100,6 @@
     "@testing-library/user-event": "^13.2.1",
     "craco-alias": "^3.0.1",
     "cross-env": "^7.0.2",
-    "dispatch": "^1.0.2",
     "jest-fetch-mock": "^3.0.3",
     "lint-staged": "^10.4.0",
     "nav-frontend-paneler": "^3.0.1",

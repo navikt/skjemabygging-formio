@@ -5,9 +5,7 @@ import { Formio } from "formiojs";
 import Components from "formiojs/components/Components";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
-import { FakeBackend } from "../fakeBackend/FakeBackend";
-import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
-import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
+import createMockImplementation from "../../test/backendMockImplementation";
 import NavFormBuilder from "./NavFormBuilder";
 import testform from "./testdata/conditional-multiple-dependencies";
 
@@ -35,8 +33,7 @@ describe("NavFormBuilder", () => {
   });
 
   beforeEach(() => {
-    const mockBackend = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
-    fetchMock.mockImplementation(mockBackend.fetchImpl);
+    fetchMock.mockImplementation(createMockImplementation({ projectUrl: "http://unittest.nav-formio-api.no" }));
   });
 
   afterEach(() => {

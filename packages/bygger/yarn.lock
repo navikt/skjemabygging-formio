@@ -5785,11 +5785,6 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-dispatch@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/dispatch/-/dispatch-1.0.2.tgz#f7748589e1641a1d721770e51970c1c09324e59a"
-  integrity sha512-008aTiwlAjue6/g8oS7jpe3YR9DVibAly6JJ3SGsKzK4wsY0qrCkDNMEf+rqTteOQvF/51+P+79EX+RsBDxPZA==
-
 dns-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/dns-equal/-/dns-equal-1.0.0.tgz#b39e7f1da6eb0a75ba9c17324b34753c47e0654d"
