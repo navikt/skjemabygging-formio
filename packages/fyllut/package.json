@@ -9,6 +9,7 @@
   "dependencies": {
     "@craco/craco": "^6.0.0",
     "@material-ui/styles": "4.10.0",
+    "@navikt/ds-css": "^0.16.20",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@sentry/browser": "^5.27.0",
@@ -24,8 +25,8 @@
     "nav-frontend-ikoner-assets": "^2.0.3",
     "nav-frontend-ikonknapper": "^1.0.9",
     "nav-frontend-js-utils": "^1.0.16",
-    "nav-frontend-knapper": "^2.0.9",
-    "nav-frontend-knapper-style": "^1.0.1",
+    "nav-frontend-knapper": "^3.1.2",
+    "nav-frontend-knapper-style": "^2.1.1",
     "nav-frontend-lenker": "^1.0.58",
     "nav-frontend-lenker-style": "^1.0.0",
     "nav-frontend-lukknapp": "^1.0.50",
@@ -82,7 +83,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger))"
+      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger|@navikt/ds-css))"
     ]
   }
 }

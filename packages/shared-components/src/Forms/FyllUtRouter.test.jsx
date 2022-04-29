@@ -26,7 +26,7 @@ describe("FyllUtRouter", () => {
     };
     render(
       <AppConfigProvider {...config}>
-        <MemoryRouter initialEntries={[{ pathname: mockFormPath }]}>
+        <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/skjema` }]}>
           <FyllUtRouter form={form} translations={translationsForNavForm} />
         </MemoryRouter>
       </AppConfigProvider>
