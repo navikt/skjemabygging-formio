@@ -180,8 +180,7 @@ const getTextsAndTranslationsForForm = (form, translations) => {
     const translationsForLanguage = removeLineBreaksFromTranslations(translations[languageCode].translations);
     textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
       if (Object.keys(translationsForLanguage).indexOf(textComponent.text) < 0) {
-        textComponent.text = escapeQuote(textComponent.text);
-        return [...newTextComponent, textComponent];
+        return [...newTextComponent, { ...textComponent, text: escapeQuote(textComponent.text) }];
       } else {
         const translationObject = translationsForLanguage[textComponent.text];
         const translation =
