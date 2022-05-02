@@ -1,7 +1,7 @@
 import fetch, { RequestInfo, RequestInit, Response } from "node-fetch";
 
 export class HttpError extends Error {
-  private response: Response;
+  readonly response: Response;
 
   constructor(fetchResponse: Response) {
     super(`${fetchResponse.status} ${fetchResponse.statusText} fetching: ${fetchResponse.url}`);
@@ -13,8 +13,8 @@ export class HttpError extends Error {
 export async function fetchWithErrorHandling(url: RequestInfo, options: RequestInit) {
   const res = await fetch(url, options);
   if (!res.ok) {
-    console.error(`Fetch ${options.method || "GET"} ${url} failed with status: `, res.status);
-    console.error(`${options.method} body`, options.body);
+    console.error(`Fetch ${options.method || "GET"} ${url} failed with status: ${res.status}`);
+    console.error(`${options.method} body: ${options.body}`);
     throw new HttpError(res);
   }
   if (res.status === 204) {

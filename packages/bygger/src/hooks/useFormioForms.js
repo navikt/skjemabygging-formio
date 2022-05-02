@@ -35,12 +35,20 @@ export const useFormioForms = (formio, userAlerter) => {
       if (!modified) {
         modified = getIso8601String();
       }
-      formio.saveForm({ ...updateModified(callbackForm, modified), display: "wizard" }).then((form) => {
-        if (!silent) {
-          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
-        }
-        return form;
-      });
+      return formio
+        .saveForm({ ...updateModified(callbackForm, modified), display: "wizard" })
+        .then((form) => {
+          if (!silent) {
+            userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
+          }
+          return form;
+        })
+        .catch((e) => {
+          userAlerter.setErrorMessage(
+            "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
+          );
+          return { error: true };
+        });
     },
     [formio, userAlerter]
   );
@@ -59,29 +67,33 @@ export const useFormioForms = (formio, userAlerter) => {
       const previousPublished = form.properties?.published;
       const previousModified = form.properties?.modified;
       const now = getIso8601String();
-      onSave(updatePublished(form, now), true, now);
+      const formWithPublishedTrue = updatePublished(form, now);
+      const result = onSave(formWithPublishedTrue, true, now);
+      if (!result.error) {
+        const payload = JSON.stringify({
+          form: form,
+          translations: translations,
+          token: Formiojs.getToken(),
+        });
 
-      const payload = JSON.stringify({
-        form: form,
-        translations: translations,
-        token: Formiojs.getToken(),
-      });
-      const response = await fetch(`/api/publish/${form.path}`, {
-        method: "PUT",
-        headers: { "content-type": "application/json" },
-        body: payload,
-      });
+        const response = await fetch(`/api/publish/${form.path}`, {
+          method: "PUT",
+          headers: { "content-type": "application/json" },
+          body: payload,
+        });
 
-      const { changed } = await response.json();
-      if (response?.ok && changed) {
-        userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
-      } else if (response?.ok && !changed) {
-        userAlerter.setWarningMessage(
-          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
-        );
-      } else {
-        userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-        onSave(updatePublished(form, previousPublished), true, previousModified);
+        const { changed } = await response.json();
+
+        if (response?.ok && changed) {
+          userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
+        } else if (response?.ok && !changed) {
+          userAlerter.setWarningMessage(
+            "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+          );
+        } else {
+          userAlerter.setErrorMessage("Publisering feilet " + response?.status);
+          onSave(updatePublished(form, previousPublished), true, previousModified);
+        }
       }
     },
     [userAlerter, onSave]

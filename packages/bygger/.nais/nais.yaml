@@ -7,14 +7,13 @@ metadata:
     "team": "skjemadigitalisering"
 spec:
   image: {{image}}
+  port: 8080
   liveness:
-    path: "/isalive"
-    port: 8080
+    path: "/internal/isAlive"
     initialDelay: 20
     timeout: 60
   readiness:
-    path: "/isready"
-    port: 8080
+    path: "/internal/isReady"
     initialDelay: 20
     timeout: 60
   replicas:
@@ -48,7 +47,9 @@ spec:
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
   envFrom:
-    - secret: monorepo-poc-akg
+  {{#each secrets as |secret|}}
+    - secret: {{secret}}
+  {{/each}}
   azure:
     application:
       enabled: true

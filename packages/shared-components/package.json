@@ -56,6 +56,7 @@
   },
   "dependencies": {
     "@navikt/ds-icons": "^0.2.0",
+    "@navikt/ds-react": "^0.17.27",
     "@navikt/fnrvalidator": "^1.1.4",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "@types/react-modal": "^3.12.0",
@@ -73,8 +74,8 @@
     "nav-frontend-chevron-style": "^0.3.5",
     "nav-frontend-ikoner-assets": "^2.0.3",
     "nav-frontend-js-utils": "^1.0.16",
-    "nav-frontend-knapper": "^2.0.9",
-    "nav-frontend-knapper-style": "^1.0.1",
+    "nav-frontend-knapper": "^3.1.2",
+    "nav-frontend-knapper-style": "^2.1.1",
     "nav-frontend-lenker": "^1.0.58",
     "nav-frontend-lenker-style": "^1.0.2",
     "nav-frontend-lukknapp": "^1.0.50",

@@ -51,6 +51,7 @@ describe("MigrationPage", () => {
         })
       )
     );
+    // @ts-ignore
     render(<MigrationPage />, { wrapper });
   });
 

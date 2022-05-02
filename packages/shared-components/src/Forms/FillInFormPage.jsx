@@ -1,16 +1,16 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { Sidetittel } from "nav-frontend-typografi";
 import NavForm from "../components/NavForm.jsx";
+import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import { useAppConfig } from "../configContext";
+import { FormTitle } from "./components/FormTitle";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
-  const { currentLanguage, translate, translationsForNavForm } = useLanguages();
+  const { currentLanguage, translationsForNavForm } = useLanguages();
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -18,8 +18,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   return (
     <div>
-      <Sidetittel>{translate(form.title)}</Sidetittel>
-      {form.properties && form.properties.skjemanummer && <p>{form.properties.skjemanummer}</p>}
+      <FormTitle form={form} />
       <NavForm
         form={form}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}

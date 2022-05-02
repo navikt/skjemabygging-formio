@@ -56,9 +56,5 @@ export const appStyles = {
     borderRadius: "0.25rem",
     background: "#fff",
     padding: "1rem",
-    marginBottom: "1rem",
-    "& > .formio-component:last-of-type": {
-      marginBottom: "4rem",
-    },
   },
 };

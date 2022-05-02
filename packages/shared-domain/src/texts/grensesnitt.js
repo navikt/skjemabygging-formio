@@ -19,7 +19,9 @@ export const grensesnitt = {
   formSummaryUtils: {
     payAttentionTo: "Vær oppmerksom på",
   },
-
+  introPage: {
+    start: "Start",
+  },
   summaryPage: {
     editAnswers: "Rediger opplysningene",
     continueToPostalSubmission: "Send i posten",

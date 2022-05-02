@@ -1,6 +1,6 @@
+import { FormioTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { FormioTranslationMap } from "../../../types/translations";
 import I18nStateProvider, { useI18nState } from "./I18nContext";
 
 const mockedTranslations: FormioTranslationMap = {

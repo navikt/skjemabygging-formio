@@ -12,11 +12,7 @@ import * as serviceWorker from "./serviceWorker";
 
 Formio.use(navdesign);
 
-const projectURL = process.env.REACT_APP_FORMIO_PROJECT_URL || "https://formio-api-server.ekstern.dev.nav.no";
-const serverURL = "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut";
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
-const fyllutBaseURL =
-  process.env.REACT_APP_FYLLUT_BASE_URL || "https://skjemaforhandsvisning.ekstern.dev.nav.no/fyllut";
 
 Pusher.logToConsole = true;
 
@@ -27,22 +23,28 @@ const pusher = new Pusher(pusherAppKey, {
   cluster: pusherAppCluster,
 });
 
-ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AppConfigProvider
-        dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
-        fyllutBaseURL={fyllutBaseURL}
-        featureToggles={featureToggles}
-      >
-        <AuthProvider>
-          <App projectURL={projectURL} serverURL={serverURL} pusher={pusher} />
-        </AuthProvider>
-      </AppConfigProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+fetch("/api/config")
+  .then((res) => res.json())
+  .then((config) => renderReact(config));
+
+const renderReact = (config) => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <AppConfigProvider
+          dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
+          fyllutBaseURL={config.fyllutBaseUrl}
+          featureToggles={featureToggles}
+        >
+          <AuthProvider>
+            <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} pusher={pusher} />
+          </AuthProvider>
+        </AppConfigProvider>
+      </BrowserRouter>
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+};
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

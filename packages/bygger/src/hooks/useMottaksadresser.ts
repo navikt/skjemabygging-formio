@@ -1,8 +1,8 @@
+import { MottaksadresseEntity, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useContext, useEffect, useState } from "react";
-import { NavFormType } from "../Forms/navForm";
 import { UserAlerterContext } from "../userAlerting";
-import { fromEntity, Mottaksadresse, MottaksadresseEntity } from "./mottaksadresser";
+import { fromEntity, Mottaksadresse } from "./mottaksadresser";
 
 interface Output {
   mottaksadresser: Mottaksadresse[];

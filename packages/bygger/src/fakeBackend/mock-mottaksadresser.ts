@@ -1,4 +1,4 @@
-import {MottaksadresseEntity} from "../hooks/mottaksadresser";
+import { MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
 
 const mottaksadresser: MottaksadresseEntity[] = [
   {
@@ -18,6 +18,6 @@ const mottaksadresser: MottaksadresseEntity[] = [
       postnummer: "6400",
       poststed: "Molde",
     },
-  }
+  },
 ];
 export default mottaksadresser;

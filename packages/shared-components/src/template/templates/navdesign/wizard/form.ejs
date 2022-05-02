@@ -3,9 +3,13 @@
     {{ ctx.wizardHeader }}
     <main id="maincontent" tabIndex="-1">
       <h2 id="form-id" class="margin-bottom-default typo-innholdstittel">{{ctx.t(ctx.panels[ctx.currentPage].title)}}</h2>
-      <form aria-labelledby="form-id" class="wizard-page" ref="{{ctx.wizardKey}}">
-        {{ ctx.components }}
-        {{ ctx.wizardNav }}
+      <form aria-labelledby="form-id">
+        <div class="wizard-page margin-bottom-double" ref="{{ctx.wizardKey}}">
+          {{ ctx.components }}
+        </div>
+        <div class="margin-bottom-default">
+          {{ ctx.wizardNav }}
+        </div>
       </form>
     </main>
   </div>

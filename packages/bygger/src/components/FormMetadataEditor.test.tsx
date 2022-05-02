@@ -1,12 +1,12 @@
 import { AppConfigProvider, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-components";
+import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import waitForExpect from "wait-for-expect";
-import { FakeBackend } from "../fakeBackend/FakeBackend";
+import form from "../../example_data/Form.json";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
 import featureToggles from "../featureToggles.js";
-import { FormPropertiesType, NavFormType } from "../Forms/navForm";
 import { fromEntity } from "../hooks/mottaksadresser";
 import {
   COMPONENT_TEXTS,
@@ -14,6 +14,8 @@ import {
   FormMetadataEditor,
   UpdateFormFunction,
 } from "./FormMetadataEditor";
+
+const testform = form as unknown as NavFormType;
 
 const MOCK_DEFAULT_MOTTAKSADRESSER = mockMottaksadresser.map(fromEntity);
 jest.mock("../hooks/useMottaksadresser", () => () => {
@@ -38,11 +40,8 @@ describe("FormMetadataEditor", () => {
   });
 
   describe("Usage context: EDIT", () => {
-    let fakeBackend;
-
     beforeEach(() => {
       jest.useFakeTimers();
-      fakeBackend = new FakeBackend();
     });
 
     afterEach(() => {
@@ -52,12 +51,12 @@ describe("FormMetadataEditor", () => {
     it("should update form when title is changed", async () => {
       const { rerender } = render(
         <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />
+          <FormMetadataEditor form={testform} onChange={mockOnChange} />
         </AppConfigProvider>
       );
 
       await userEvent.clear(screen.getByRole("textbox", { name: /Tittel/i }));
-      const clearedForm: NavFormType = { ...fakeBackend.form(), title: "" };
+      const clearedForm: NavFormType = { ...testform, title: "" };
       await waitFor(() => expect(mockOnChange).toHaveBeenCalledWith(clearedForm));
 
       rerender(
@@ -66,7 +65,7 @@ describe("FormMetadataEditor", () => {
         </AppConfigProvider>
       );
       await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
-      const updatedForm: NavFormType = { ...fakeBackend.form(), title: "Søknad om førerhund" };
+      const updatedForm: NavFormType = { ...testform, title: "Søknad om førerhund" };
 
       rerender(
         <AppConfigProvider featureToggles={featureToggles}>
@@ -79,7 +78,7 @@ describe("FormMetadataEditor", () => {
     it("should display form name", async () => {
       render(
         <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />
+          <FormMetadataEditor form={testform} onChange={mockOnChange} />
         </AppConfigProvider>
       );
       const navnInput = screen.getByRole("textbox", { name: /Navn/i }) as HTMLInputElement;
@@ -90,14 +89,14 @@ describe("FormMetadataEditor", () => {
     it("should update form when display is changed", async () => {
       const { rerender } = render(
         <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />
+          <FormMetadataEditor form={testform} onChange={mockOnChange} />
         </AppConfigProvider>
       );
       expect(screen.getByLabelText(/Vis som/i)).toHaveValue("form");
 
       await userEvent.selectOptions(screen.getByLabelText(/Vis som/i), "wizard");
 
-      const updatedForm = { ...fakeBackend.form(), display: "wizard" };
+      const updatedForm = { ...testform, display: "wizard" } as unknown as NavFormType;
       await waitForExpect(() => expect(mockOnChange).toHaveBeenCalledWith(updatedForm));
 
       rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
@@ -107,7 +106,7 @@ describe("FormMetadataEditor", () => {
     it("should display form path", async () => {
       render(
         <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={fakeBackend.form()} onChange={mockOnChange} />
+          <FormMetadataEditor form={testform} onChange={mockOnChange} />
         </AppConfigProvider>
       );
       const pathInput = screen.getByRole("textbox", { name: /Path/i }) as HTMLInputElement;

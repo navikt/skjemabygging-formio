@@ -1,13 +1,12 @@
 import { makeStyles } from "@material-ui/styles";
+import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
 import Modal from "nav-frontend-modal";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { I18nTranslations } from "../../types/translations";
 import { languagesInNorwegian, useI18nState } from "../context/i18n";
 import { getFormTexts } from "../translations/utils";
-import { NavFormType } from "./navForm";
 
 const useModalStyles = makeStyles({
   modal: {

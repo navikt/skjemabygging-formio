@@ -8,6 +8,7 @@ import { LanguageSelector, LanguagesProvider } from "../context/languages";
 // import WarningAboutDifficultDigitalSubmissionModal from "./components/WarningAboutDifficultDigitalSubmissionModal";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
+import { IntroPage } from "./IntroPage.tsx";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
@@ -51,6 +52,9 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
+            <IntroPage form={form} formUrl={url} />
+          </Route>
+          <Route path={`${path}/skjema`}>
             {formForRendering && (
               <FillInFormPage
                 form={formForRendering}

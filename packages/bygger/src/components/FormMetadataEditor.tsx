@@ -1,11 +1,10 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { DisplayType, InnsendingType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
-import { DisplayType, InnsendingType, NavFormType } from "../Forms/navForm";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import EnhetSettings from "./EnhetSettings";
 

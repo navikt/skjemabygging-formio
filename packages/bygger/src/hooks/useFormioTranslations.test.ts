@@ -1,8 +1,6 @@
 import { waitFor } from "@testing-library/react";
 import { Formio } from "formiojs";
-import { FakeBackend } from "../fakeBackend/FakeBackend";
-import { dispatcherWithBackend } from "../fakeBackend/fakeWebApp";
-import { InprocessQuipApp } from "../fakeBackend/InprocessQuipApp";
+import createMockImplementation from "../../test/backendMockImplementation";
 import { useFormioTranslations } from "./useFormioTranslations";
 
 const MOCK_PREDEFINED_TEXTS_I18N_EN = {
@@ -25,8 +23,7 @@ describe("useFormioTranslations", () => {
 
   beforeEach(() => {
     fetchSpy = jest.spyOn(global, "fetch");
-    const fetchAppGlue = new InprocessQuipApp(dispatcherWithBackend(new FakeBackend()));
-    fetchSpy.mockImplementation(fetchAppGlue.fetchImpl);
+    fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
     mockUserAlerter = { setErrorMessage: jest.fn(), flashSuccessMessage: jest.fn() };
 
     formioTranslations = useFormioTranslations(projectUrl, new Formio(projectUrl), mockUserAlerter);
