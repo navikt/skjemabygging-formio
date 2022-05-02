@@ -1,6 +1,8 @@
 describe("Basic form", () => {
   beforeEach(() => {
+    cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
     cy.visit("/fyllut/cypress101");
+    cy.wait("@getCypress101");
   });
 
   it("visits the correct form", () => {
