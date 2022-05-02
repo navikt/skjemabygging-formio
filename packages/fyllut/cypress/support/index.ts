@@ -13,13 +13,9 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
 import { ByRoleOptions } from "@testing-library/cypress";
 import { ByRoleMatcher } from "@testing-library/dom";
 import "./commands";
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
 
 declare global {
   namespace Cypress {
