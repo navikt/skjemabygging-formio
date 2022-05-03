@@ -35,9 +35,9 @@ Cypress.Commands.add("findByRoleWhenAttached", (role, options) => {
         cy
           .findByRole(role, options)
           .as("elementWhenAttached")
-          .wait(10) // for some reason this is needed, otherwise next line returns `true` even if click() fails due to detached element in the next step
+          .wait(10) // for some reason this is needed, otherwise isAttached returns `true` regardless
           .then(($el) => Cypress.dom.isAttached($el)),
-      { timeout: 1000, interval: 10 }
+      { timeout: 2000, interval: 10 }
     )
     .get("@elementWhenAttached");
 });
