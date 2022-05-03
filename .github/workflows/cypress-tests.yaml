@@ -17,10 +17,11 @@ jobs:
       # and run all Cypress tests
       - name: "Bootstrap"
         run: yarn bootstrap
-      - name: "Cypress run"
+      - name: "Cypress tests (fyllut)"
         uses: cypress-io/github-action@v2
         with:
           install: false
           working-directory: ./packages/fyllut
           start: yarn --cwd ./server run start, yarn run start
           wait-on: 'http://localhost:3001'
+          config: video=false,screenshotOnRunFailure=false
