@@ -13,9 +13,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
-      - name: deploy to prod
+      - name: deploy to dev
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
+          CLUSTER: dev-gcp
           RESOURCE: "./packages/bygger/.nais/alerts-prod-gcp.yaml"
