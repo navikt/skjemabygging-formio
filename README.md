@@ -89,6 +89,14 @@ til local dependencies i `package.json`, og de legges til nederst i `yarn.lock`.
 Dette er nødvendig ved produksjonsbygg siden vi aldri releaser `shared-domain` og `shared-components`,
 men det er viktig at disse endringene ikke sjekkes inn i repoet.
 
+# Pusher.com
+
+Pusher brukes til å varsle innloggede brukere i byggeren når det har blitt deployet en ny versjon av FyllUt,
+f.eks. når en skjemadefinisjon har blitt publisert.
+
+Kontoen på [pusher.com](https://pusher.com/) er opprettet med skjemadigitalisering@nav.no (gruppe), og passordet for å
+logge på ligger i Google Secret Manager.
+
 # Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.

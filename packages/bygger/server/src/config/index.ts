@@ -44,6 +44,10 @@ const config: ConfigType = {
   fyllut: {
     baseUrl: env("FYLLUT_BASE_URL", devFyllut.baseUrl),
   },
+  pusher: {
+    cluster: env("PUSHER_CLUSTER"),
+    key: env("PUSHER_KEY"),
+  },
   nodeEnv,
   port: parseInt(process.env.PORT || "8080"),
   isProduction: nodeEnv === "production",

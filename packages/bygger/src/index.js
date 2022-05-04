@@ -16,18 +16,14 @@ const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending
 
 Pusher.logToConsole = true;
 
-const pusherAppKey = process.env.REACT_APP_PUSHER_KEY;
-const pusherAppCluster = process.env.REACT_APP_PUSHER_CLUSTER;
-
-const pusher = new Pusher(pusherAppKey, {
-  cluster: pusherAppCluster,
-});
-
 fetch("/api/config")
   .then((res) => res.json())
   .then((config) => renderReact(config));
 
 const renderReact = (config) => {
+  const pusher = new Pusher(config.pusherKey, {
+    cluster: config.pusherCluster,
+  });
   ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter>
