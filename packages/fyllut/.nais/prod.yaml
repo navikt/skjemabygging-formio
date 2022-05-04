@@ -13,6 +13,7 @@ forms-source: "static"
 enabled-features: "translations"
 secrets:
   - sentry-dsn
+  - digital-innsending
 azure:
   application:
     tenant: nav.no
@@ -22,3 +23,6 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: prod-fss
+      - application: innsending-api
+        namespace: team-soknad
+        cluster: prod-gcp

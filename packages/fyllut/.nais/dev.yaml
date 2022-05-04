@@ -13,6 +13,7 @@ forms-source: "static"
 enabled-features: "translations, autoComplete"
 secrets:
   - sentry-dsn
+  - digital-innsending
 azure:
   application:
     tenant: trygdeetaten.no
@@ -22,3 +23,6 @@ accessPolicy:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
+      - application: innsending-api
+        namespace: team-soknad
+        cluster: dev-gcp
