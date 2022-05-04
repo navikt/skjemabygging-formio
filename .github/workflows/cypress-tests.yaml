@@ -24,3 +24,4 @@ jobs:
           working-directory: ./packages/fyllut
           start: yarn --cwd ./server run start, yarn run start
           wait-on: 'http://localhost:3001'
+          config: video=false
