@@ -21,17 +21,21 @@ const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
   static generatePdf(submission, form, gitVersion, stream, translations) {
-    const now = DateTime.local().setZone("Europe/Oslo");
-    const generator = new this(submission, form, gitVersion, now, translations);
-    const docDefinition = generator.generateDocDefinition();
-    generator.writeDocDefinitionToStream(docDefinition, stream);
+    try {
+      const now = DateTime.local().setZone("Europe/Oslo");
+      const generator = new this(submission, form, gitVersion, now, translations);
+      const docDefinition = generator.generateDocDefinition();
+      generator.writeDocDefinitionToStream(docDefinition, stream);
+    } catch (err) {
+      throw new Error(err);
+    }
   }
   static generatePdfByteArray(submission, form, gitVersion, translations) {
-    const now = DateTime.local().setZone("Europe/Oslo");
-    const generator = new this(submission, form, gitVersion, now, translations);
-    const docDefinition = generator.generateDocDefinition();
     return new Promise((resolve, reject) => {
       try {
+        const now = DateTime.local().setZone("Europe/Oslo");
+        const generator = new this(submission, form, gitVersion, now, translations);
+        const docDefinition = generator.generateDocDefinition();
         const doc = printer.createPdfKitDocument(docDefinition);
         const chunks = [];
         doc.on("data", function (chunk) {
@@ -43,7 +47,7 @@ export class Pdfgen {
         });
         doc.end();
       } catch (err) {
-        reject(err);
+        reject(new Error(err));
       }
     });
   }
@@ -100,9 +104,13 @@ export class Pdfgen {
   }
 
   writeDocDefinitionToStream(docDefinition, writeStream) {
-    const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    pdfDoc.pipe(writeStream);
-    pdfDoc.end();
+    try {
+      const pdfDoc = printer.createPdfKitDocument(docDefinition);
+      pdfDoc.pipe(writeStream);
+      pdfDoc.end();
+    } catch (err) {
+      console.log("writeDocDefinitionToStreamErr", err);
+    }
   }
 
   //Laget for å debugge, ikke tar i bruk i produksjon
@@ -173,7 +181,10 @@ export class Pdfgen {
             this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
           ];
         case "image":
-          return [this.createImageWithAlt(component)];
+          if (component.picInPDF !== false) {
+            return [this.createImageWithAlt(component)];
+          }
+          return [];
         default:
           return [
             this.createRow(this.translate(component.label), this.translate(component.value), false, areSubComponents),

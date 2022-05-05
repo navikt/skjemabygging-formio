@@ -542,28 +542,41 @@ describe("generating doc definition", () => {
   });
 
   describe("Image", () => {
-    const createImageFormDefinition = () => ({
-      name: "testImage",
-      components: [
+    const createSingleImageComponent = (imgName, picInPDF) => ({
+      name: "singleImageComponent",
+      components: [createImageComponent(imgName, picInPDF)],
+    });
+
+    // const createMultipleImageComponents = (numberofImages, imgName) => {
+    //   let multipleImgComponents = []
+    //   for (let i = 0; i < numberofImages; i++) {
+    //     multipleImgComponents.push(createImageComponent(imgName + i.toString(), false));
+    //   }
+
+    //   return {
+    //     name: "multipleImageComponents",
+    //     components: [multipleImgComponents],
+    //   }
+    // };
+
+    const createImageComponent = (imgName, picInPDF) => ({
+      image: [
         {
-          label: "Image panel",
-          type: "panel",
-          components: [
-            {
-              image: [
-                {
-                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
-                },
-              ],
-              label: "Bilde",
-              key: "bilde",
-              altText: "Bilde beskrivelse",
-              type: "image",
-              widthPercent: 100,
-            },
-          ],
+          storage: "base64",
+          name: imgName + ".jpeg",
+          url: "data:image/jpeg;base64,/" + imgName,
+          size: 31172,
+          type: "image/jpeg",
+          originalName: imgName + ".jpeg",
         },
       ],
+      altText: "img altText",
+      description: "img description",
+      picInPDF: picInPDF,
+      widthPercent: 100,
+      label: "Bilde",
+      type: "image",
+      key: "bilde",
     });
 
     const createImageFormDefinitionWithMultiComponents = () => ({
@@ -602,9 +615,17 @@ describe("generating doc definition", () => {
       ],
     });
 
+    it("adds a single image component but image in pdf is unchecked", () => {
+      const formDefinition = createSingleImageComponent("testImg", false);
+      console.log("Data", JSON.stringify(setupDocDefinitionContent({}, formDefinition).content, null, 2));
+      const tableImgContent = setupDocDefinitionContent({}, formDefinition).content[4].table;
+      expect(tableImgContent).toEqual({ body: [], headerRows: 0, widths: ["*", "*"] });
+    });
+
     it("adds a single image component", () => {
-      const formDefinition = createImageFormDefinition();
-      const imageDef = setupDocDefinitionContent({}, formDefinition).content[4].table.body;
+      const formDefinition = createSingleImageComponent("img", true);
+      const imageDef = setupDocDefinitionContent({}, formDefinition).content[2].table.body;
+
       expect(imageDef).toEqual([
         [
           {
@@ -612,13 +633,13 @@ describe("generating doc definition", () => {
             stack: [
               { style: "imageLabel", text: "Bilde" },
               {
-                alt: "Bilde beskrivelse",
-                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                alt: "img altText",
+                image: "data:image/jpeg;base64,/img",
                 maxHeight: 400,
                 maxWidth: 500,
                 width: 500,
               },
-              { style: "cursive", text: "Bilde beskrivelse" },
+              { style: "cursive", text: "img altText" },
             ],
           },
           "",
