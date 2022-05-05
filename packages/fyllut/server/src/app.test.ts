@@ -60,7 +60,7 @@ describe("app", () => {
       .post(extractPath(tokenEndpoint))
       .reply(200, { access_token: "123456" }, { "Content-Type": "application/json" });
     const sendInnNockScope = nock(sendInnConfig?.host as string)
-      .post("/fyllUt/v1/leggTilVedlegg")
+      .post(sendInnConfig?.paths.leggTilVedlegg as string)
       .reply(302, "FOUND", { Location: sendInnLocation });
 
     const res = await request(createApp())
