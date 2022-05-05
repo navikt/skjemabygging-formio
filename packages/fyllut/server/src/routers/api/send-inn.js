@@ -61,7 +61,7 @@ const sendInn = {
         return;
       }
       logger.debug("Posting data to SendInn");
-      const sendInnResponse = await fetch(`${sendInnConfig.host}/fyllUt/leggTilVedlegg`, {
+      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.leggTilVedlegg}`, {
         method: "POST",
         redirect: "manual",
         headers: {
