@@ -21,6 +21,22 @@ og disse dataene vil så deployes sammen med fyllut.
 | yarn clean         | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
 | yarn lint          | se etter problemer i koden                                                            |
 
+## Lokal konfigurasjon med dotenv
+
+Vi bruker hovedsaklig [dotenv](https://www.npmjs.com/package/dotenv) for å konfigurere applikasjonene ved kjøring
+lokalt, og det er to steder det kan være interessant å opprette .env-filer:
+
+### 1) `packages/bygger/server/.env`
+
+For å kjøre opp byggeren lokalt er det én miljøvariabel som _må_ settes, og det er `PUSHER_KEY`. Denne finner man ved
+å logge på pusher.com (se [avsnitt nedenfor](#pushercom) for instruksjoner), gå til Channel `skjemabyggeren-dev`, og
+App Keys i venstremenyen. Eventuelt kan man opprette sin egen Pusher-applikasjon.
+
+### 2) `packages/fyllut/server/.env`
+
+FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man legge
+inn konfigurasjon i denne filen.
+
 ## Fagsystemsonen
 
 Vi kommuniserer med fagsystemsonen blant annet for å hente enheter og generere førsteside, og det skjer ved kall

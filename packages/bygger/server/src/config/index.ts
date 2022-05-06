@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { devAzure, devFormio, devFyllut, devSkjemabyggingProxy } from "./development";
+import { devAzure, devFormio, devFyllut, devPusher, devSkjemabyggingProxy } from "./development";
 import { ConfigType, NodeEnv } from "./types";
 
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
@@ -45,7 +45,7 @@ const config: ConfigType = {
     baseUrl: env("FYLLUT_BASE_URL", devFyllut.baseUrl),
   },
   pusher: {
-    cluster: env("PUSHER_CLUSTER"),
+    cluster: env("PUSHER_CLUSTER", devPusher.cluster),
     key: env("PUSHER_KEY"),
   },
   nodeEnv,
