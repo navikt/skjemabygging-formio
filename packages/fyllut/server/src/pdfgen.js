@@ -104,13 +104,9 @@ export class Pdfgen {
   }
 
   writeDocDefinitionToStream(docDefinition, writeStream) {
-    try {
-      const pdfDoc = printer.createPdfKitDocument(docDefinition);
-      pdfDoc.pipe(writeStream);
-      pdfDoc.end();
-    } catch (err) {
-      console.log("writeDocDefinitionToStreamErr", err);
-    }
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    pdfDoc.pipe(writeStream);
+    pdfDoc.end();
   }
 
   //Laget for å debugge, ikke tar i bruk i produksjon
@@ -126,6 +122,9 @@ export class Pdfgen {
   }
 
   createTableWithBody(body = []) {
+    if (body.length === 0) {
+      return [];
+    }
     return {
       table: {
         headerRows: 0,
@@ -217,7 +216,11 @@ export class Pdfgen {
   mapFormSummaryObjectToTables(formSummaryObject) {
     return formSummaryObject.flatMap((panel) => {
       const header = { text: this.translate(panel.label), style: "subHeader" };
-      const tableWithBody = this.createTableWithBody(this.componentsToBody(panel.components));
+      const body = this.componentsToBody(panel.components);
+      if (body.length === 0) {
+        return [];
+      }
+      const tableWithBody = this.createTableWithBody(body);
       return [header, tableWithBody];
     });
   }
@@ -245,10 +248,10 @@ export class Pdfgen {
 
   generateBody() {
     const formSummaryObject = createFormSummaryObject(this.form, this.submission);
+    const panels = formSummaryObject.filter((component) => component.type === "panel");
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
-    const homelessComponentsTable =
-      homelessComponents.length > 0 ? this.createTableWithBody(this.componentsToBody(homelessComponents)) : [];
-    return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
+    const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));
+    return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(panels)];
   }
 
   generateDocDefinition() {

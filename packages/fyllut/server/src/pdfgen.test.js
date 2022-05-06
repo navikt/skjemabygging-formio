@@ -618,8 +618,8 @@ describe("generating doc definition", () => {
     it("adds a single image component but image in pdf is unchecked", () => {
       const formDefinition = createSingleImageComponent("testImg", false);
       console.log("Data", JSON.stringify(setupDocDefinitionContent({}, formDefinition).content, null, 2));
-      const tableImgContent = setupDocDefinitionContent({}, formDefinition).content[4].table;
-      expect(tableImgContent).toEqual({ body: [], headerRows: 0, widths: ["*", "*"] });
+      const pdfContent = setupDocDefinitionContent({}, formDefinition).content;
+      expect(pdfContent.length).toEqual(3);
     });
 
     it("adds a single image component", () => {
