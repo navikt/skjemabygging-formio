@@ -27,7 +27,10 @@ export class Pdfgen {
       const docDefinition = generator.generateDocDefinition();
       generator.writeDocDefinitionToStream(docDefinition, stream);
     } catch (err) {
-      throw new Error(err);
+      if (typeof err === "string" || err instanceof String) {
+        throw new Error(err);
+      }
+      throw err;
     }
   }
   static generatePdfByteArray(submission, form, gitVersion, translations) {
@@ -47,7 +50,11 @@ export class Pdfgen {
         });
         doc.end();
       } catch (err) {
-        reject(new Error(err));
+        if (typeof err === "string" || err instanceof String) {
+          reject(new Error(err));
+        } else {
+          reject(err);
+        }
       }
     });
   }
@@ -180,7 +187,7 @@ export class Pdfgen {
             this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
           ];
         case "image":
-          if (component.picInPDF !== false) {
+          if (component.showInPdf !== false) {
             return [this.createImageWithAlt(component)];
           }
           return [];
