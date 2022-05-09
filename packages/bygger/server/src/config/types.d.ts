@@ -25,6 +25,11 @@ export type FyllutConfig = {
   baseUrl: string;
 };
 
+export type PusherConfig = {
+  cluster: string;
+  key: string;
+};
+
 export type NodeEnv = "production" | "development" | "test";
 
 export type ConfigType = {
@@ -33,6 +38,7 @@ export type ConfigType = {
   publishRepo: PublishRepoConfig;
   formio: FormioConfig;
   fyllut: FyllutConfig;
+  pusher: PusherConfig;
   gitSha: string;
   nodeEnv: NodeEnv;
   port: number;

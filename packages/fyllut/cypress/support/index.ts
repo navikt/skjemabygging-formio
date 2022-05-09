@@ -30,6 +30,7 @@ declare global {
        * Provided you are in the form wizard. Use this to click on the "Neste"-button.
        */
       clickNext(): Chainable<JQuery<HTMLElement>>;
+      clickStart(): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
