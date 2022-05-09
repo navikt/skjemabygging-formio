@@ -4,7 +4,7 @@ on:
     branches:
       - master
     paths:
-      - "./packages/bygger/.nais/alerts-prod-gcp.yaml"
+      - "./packages/bygger/.nais/alerts-dev-gcp.yaml"
       - ".github/workflows/alert-deploy.yaml"
 jobs:
   apply-alerts:
@@ -18,4 +18,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: "./packages/bygger/.nais/alerts-prod-gcp.yaml"
+          RESOURCE: "./packages/bygger/.nais/alerts-dev-gcp.yaml"
