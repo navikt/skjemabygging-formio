@@ -1,7 +1,7 @@
 import { styled } from "@material-ui/styles";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
@@ -21,8 +21,11 @@ const FyllUtContainer = styled("div")({
   ...bootstrapStyles,
 });
 
+const ALERT_MESSAGE_BACK_BUTTON =
+  "Hvis du går vekk fra denne siden kan du miste dataene du har fylt ut. Er du sikker på at du vil gå tilbake?";
+
 const FyllUtRouter = ({ form, translations }) => {
-  const { featureToggles, submissionMethod } = useAppConfig();
+  const { featureToggles, submissionMethod, app } = useAppConfig();
   let { path, url } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
@@ -56,12 +59,19 @@ const FyllUtRouter = ({ form, translations }) => {
           </Route>
           <Route path={`${path}/skjema`}>
             {formForRendering && (
-              <FillInFormPage
-                form={formForRendering}
-                submission={submission}
-                setSubmission={setSubmission}
-                formUrl={url}
-              />
+              <>
+                <Prompt
+                  message={(location) =>
+                    location.pathname === url && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
+                  }
+                />
+                <FillInFormPage
+                  form={formForRendering}
+                  submission={submission}
+                  setSubmission={setSubmission}
+                  formUrl={url}
+                />
+              </>
             )}
           </Route>
           <Route path={`${path}/oppsummering`}>

@@ -4,12 +4,14 @@ import baseHttp from "./api/http";
 type FeatureTogglesMap = {
   [key: string]: boolean;
 };
+type ApplicationName = "bygger" | "fyllut";
 interface AppConfigContextType {
   dokumentinnsendingBaseURL?: string;
   baseUrl?: string;
   fyllutBaseURL?: string;
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: string;
+  app?: ApplicationName;
   http?: object;
 }
 
@@ -24,11 +26,12 @@ function AppConfigProvider({
   fyllutBaseURL,
   featureToggles,
   submissionMethod,
+  app,
   http = baseHttp,
 }: AppConfigProviderProps) {
   return (
     <AppConfigContext.Provider
-      value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, http }}
+      value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, app, http }}
     >
       {children}
     </AppConfigContext.Provider>
