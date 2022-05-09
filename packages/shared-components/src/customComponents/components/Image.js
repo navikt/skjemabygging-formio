@@ -60,6 +60,13 @@ export default class Image extends Component {
                   },
                 },
                 {
+                  type: "navCheckbox",
+                  label: "Inkludere bilde i pdf?",
+                  key: "picInPDF",
+                  customDefaultValue: "value=true",
+                  input: true,
+                },
+                {
                   label: "Størrelse",
                   fieldSize: "input--xs",
                   suffix: "%",

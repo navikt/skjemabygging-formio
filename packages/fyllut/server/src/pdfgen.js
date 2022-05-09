@@ -21,17 +21,24 @@ const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
   static generatePdf(submission, form, gitVersion, stream, translations) {
-    const now = DateTime.local().setZone("Europe/Oslo");
-    const generator = new this(submission, form, gitVersion, now, translations);
-    const docDefinition = generator.generateDocDefinition();
-    generator.writeDocDefinitionToStream(docDefinition, stream);
+    try {
+      const now = DateTime.local().setZone("Europe/Oslo");
+      const generator = new this(submission, form, gitVersion, now, translations);
+      const docDefinition = generator.generateDocDefinition();
+      generator.writeDocDefinitionToStream(docDefinition, stream);
+    } catch (err) {
+      if (typeof err === "string" || err instanceof String) {
+        throw new Error(err);
+      }
+      throw err;
+    }
   }
   static generatePdfByteArray(submission, form, gitVersion, translations) {
-    const now = DateTime.local().setZone("Europe/Oslo");
-    const generator = new this(submission, form, gitVersion, now, translations);
-    const docDefinition = generator.generateDocDefinition();
     return new Promise((resolve, reject) => {
       try {
+        const now = DateTime.local().setZone("Europe/Oslo");
+        const generator = new this(submission, form, gitVersion, now, translations);
+        const docDefinition = generator.generateDocDefinition();
         const doc = printer.createPdfKitDocument(docDefinition);
         const chunks = [];
         doc.on("data", function (chunk) {
@@ -43,7 +50,11 @@ export class Pdfgen {
         });
         doc.end();
       } catch (err) {
-        reject(err);
+        if (typeof err === "string" || err instanceof String) {
+          reject(new Error(err));
+        } else {
+          reject(err);
+        }
       }
     });
   }
@@ -118,6 +129,9 @@ export class Pdfgen {
   }
 
   createTableWithBody(body = []) {
+    if (body.length === 0) {
+      return [];
+    }
     return {
       table: {
         headerRows: 0,
@@ -173,7 +187,10 @@ export class Pdfgen {
             this.createRow(this.translate(component.label), this.createList(component.value), false, areSubComponents),
           ];
         case "image":
-          return [this.createImageWithAlt(component)];
+          if (component.showInPdf !== false) {
+            return [this.createImageWithAlt(component)];
+          }
+          return [];
         default:
           return [
             this.createRow(this.translate(component.label), this.translate(component.value), false, areSubComponents),
@@ -206,7 +223,11 @@ export class Pdfgen {
   mapFormSummaryObjectToTables(formSummaryObject) {
     return formSummaryObject.flatMap((panel) => {
       const header = { text: this.translate(panel.label), style: "subHeader" };
-      const tableWithBody = this.createTableWithBody(this.componentsToBody(panel.components));
+      const body = this.componentsToBody(panel.components);
+      if (body.length === 0) {
+        return [];
+      }
+      const tableWithBody = this.createTableWithBody(body);
       return [header, tableWithBody];
     });
   }
@@ -234,10 +255,10 @@ export class Pdfgen {
 
   generateBody() {
     const formSummaryObject = createFormSummaryObject(this.form, this.submission);
+    const panels = formSummaryObject.filter((component) => component.type === "panel");
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
-    const homelessComponentsTable =
-      homelessComponents.length > 0 ? this.createTableWithBody(this.componentsToBody(homelessComponents)) : [];
-    return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(formSummaryObject)];
+    const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));
+    return [homelessComponentsTable, ...this.mapFormSummaryObjectToTables(panels)];
   }
 
   generateDocDefinition() {

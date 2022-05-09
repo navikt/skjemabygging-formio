@@ -542,28 +542,41 @@ describe("generating doc definition", () => {
   });
 
   describe("Image", () => {
-    const createImageFormDefinition = () => ({
-      name: "testImage",
-      components: [
+    const createSingleImageComponent = (imgName, showInPdf) => ({
+      name: "singleImageComponent",
+      components: [createImageComponent(imgName, showInPdf)],
+    });
+
+    const createMultipleImageComponents = (numberofImages, imgName, showInPdf) => {
+      let multipleImgComponents = [];
+      for (let i = 0; i < numberofImages; i++) {
+        multipleImgComponents.push(createImageComponent(imgName + i.toString(), showInPdf));
+      }
+
+      return {
+        name: "multipleImageComponents",
+        components: multipleImgComponents,
+      };
+    };
+
+    const createImageComponent = (imgName, showInPdf) => ({
+      image: [
         {
-          label: "Image panel",
-          type: "panel",
-          components: [
-            {
-              image: [
-                {
-                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
-                },
-              ],
-              label: "Bilde",
-              key: "bilde",
-              altText: "Bilde beskrivelse",
-              type: "image",
-              widthPercent: 100,
-            },
-          ],
+          storage: "base64",
+          name: imgName + ".jpeg",
+          url: "data:image/jpeg;base64,/" + imgName,
+          size: 31172,
+          type: "image/jpeg",
+          originalName: imgName + ".jpeg",
         },
       ],
+      altText: "img altText",
+      description: "img description",
+      showInPdf,
+      widthPercent: 100,
+      label: "Bilde",
+      type: "image",
+      key: "bilde",
     });
 
     const createImageFormDefinitionWithMultiComponents = () => ({
@@ -579,18 +592,7 @@ describe("generating doc definition", () => {
               type: "textfield",
               input: true,
             },
-            {
-              image: [
-                {
-                  url: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
-                },
-              ],
-              label: "Bilde",
-              key: "bilde",
-              altText: "Bilde beskrivelse",
-              type: "image",
-              widthPercent: 100,
-            },
+            createImageComponent("testImg", true),
             {
               label: "Tekstfelt",
               key: "tekstfelt2",
@@ -602,9 +604,22 @@ describe("generating doc definition", () => {
       ],
     });
 
+    it("adds a single image component but showInPdf is unchecked", () => {
+      const formDefinition = createSingleImageComponent("testImg", false);
+      const pdfContent = setupDocDefinitionContent({}, formDefinition).content;
+      expect(pdfContent.length).toEqual(3);
+    });
+
+    it("adds a multiple image components but showInPdf unchecked", () => {
+      const formDefinition = createMultipleImageComponents(3, "testImg", false);
+      const pdfContent = setupDocDefinitionContent({}, formDefinition).content;
+      expect(pdfContent.length).toEqual(3);
+    });
+
     it("adds a single image component", () => {
-      const formDefinition = createImageFormDefinition();
-      const imageDef = setupDocDefinitionContent({}, formDefinition).content[4].table.body;
+      const formDefinition = createSingleImageComponent("img", true);
+      const imageDef = setupDocDefinitionContent({}, formDefinition).content[2].table.body;
+
       expect(imageDef).toEqual([
         [
           {
@@ -612,13 +627,13 @@ describe("generating doc definition", () => {
             stack: [
               { style: "imageLabel", text: "Bilde" },
               {
-                alt: "Bilde beskrivelse",
-                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                alt: "img altText",
+                image: "data:image/jpeg;base64,/img",
                 maxHeight: 400,
                 maxWidth: 500,
                 width: 500,
               },
-              { style: "cursive", text: "Bilde beskrivelse" },
+              { style: "cursive", text: "img altText" },
             ],
           },
           "",
@@ -640,20 +655,19 @@ describe("generating doc definition", () => {
             stack: [
               { style: "imageLabel", text: "Bilde" },
               {
-                alt: "Bilde beskrivelse",
-                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/4QBGRXhpZ...",
+                alt: "img altText",
+                image: "data:image/jpeg;base64,/testImg",
                 maxHeight: 400,
                 maxWidth: 500,
                 width: 500,
               },
-              { style: "cursive", text: "Bilde beskrivelse" },
+              { style: "cursive", text: "img altText" },
             ],
           },
           "",
         ],
         ["Tekstfelt", "inputdata2 value"],
       ]);
-
       expect(pdfContent).toHaveLength(3);
     });
   });

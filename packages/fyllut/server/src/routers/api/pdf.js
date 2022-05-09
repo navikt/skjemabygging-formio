@@ -11,10 +11,14 @@ const formRequestHandler = (req) => {
 };
 
 const pdfGenHandler = (pdfGenClass, requestHandler) => {
-  return (req, res) => {
+  return (req, res, next) => {
     const [form, submission, translations] = requestHandler(req);
     res.contentType("application/pdf");
-    pdfGenClass.generatePdf(submission, form, gitVersion, res, translations);
+    try {
+      pdfGenClass.generatePdf(submission, form, gitVersion, res, translations);
+    } catch (err) {
+      next(err);
+    }
   };
 };
 
