@@ -18,3 +18,4 @@ accessPolicy:
         cluster: dev-fss
 secrets:
   - bygger-dev
+  - bygger-pusher
