@@ -1,0 +1,21 @@
+name: Deploy alerts to NAIS
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "./packages/bygger/.nais/alerts-dev-gcp.yaml"
+      - ".github/workflows/alert-deploy.yaml"
+jobs:
+  apply-alerts:
+    name: Apply alerts to cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: deploy to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: "./packages/bygger/.nais/alerts-dev-gcp.yaml"
