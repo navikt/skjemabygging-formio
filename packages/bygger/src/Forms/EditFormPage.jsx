@@ -1,10 +1,11 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { FormBuilderOptions, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
+import AsyncButton from "../components/AsyncButton";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
@@ -70,7 +71,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+            <AsyncButton onClick={async () => onSave(form)} />
             <UserFeedback />
           </Column>
         </Row>

@@ -33,7 +33,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
 
   const saveFormAndResetIsUnsavedChanges = (form) => {
     setHasUnsavedChanged(false);
-    onSave(form);
+    return onSave(form);
   };
 
   if (status === "LOADING") {
