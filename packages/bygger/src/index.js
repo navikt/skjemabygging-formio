@@ -31,6 +31,7 @@ const renderReact = (config) => {
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
           featureToggles={featureToggles}
+          app="bygger"
         >
           <AuthProvider>
             <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} pusher={pusher} />
