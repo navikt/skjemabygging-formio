@@ -30,7 +30,7 @@ export interface FormPropertiesType {
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
-  hasLabeledSignatures: boolean;
+  hasLabeledSignatures?: boolean;
   signatures?: FormSignaturesType;
   descriptionOfSignatures?: string;
 }
