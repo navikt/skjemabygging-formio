@@ -66,13 +66,58 @@ function getBreakingChanges(form, changes) {
     });
 }
 
+function createNewSignatures(form) {
+  const { hasLabeledSignatures, signatures } = form.properties;
+  if (hasLabeledSignatures && signatures.signature1 !== "") {
+    return Object.keys(signatures)
+      .filter((key) => key.match(/^signature\d$/))
+      .sort()
+      .flatMap((signature) => {
+        if (signatures[signature]) {
+          return [
+            {
+              label: signatures[signature],
+              description: signatures[`${signature}Description`],
+            },
+          ];
+        } else {
+          return [];
+        }
+      });
+  } else {
+    return [
+      {
+        label: "",
+        description: "",
+      },
+    ];
+  }
+}
+
+const migrateSignatures =
+  (editOptions, affectedComponentsLogger = []) =>
+  (comp) => {
+    const editedComp = {
+      ...comp,
+      properties: {
+        ...comp.properties,
+        signatures: createNewSignatures(comp),
+      },
+    };
+    const changed = true;
+    const diff = changed && generateDiff(comp, editedComp);
+    affectedComponentsLogger.push({ key: comp.key, original: comp, new: editedComp, changed, diff });
+    return editedComp;
+  };
+
 async function migrateForms(searchFilters, editOptions, allForms, formPaths = []) {
   let log = {};
   const migratedForms = allForms
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
     .map((form) => {
       const affectedComponentsLogger = [];
-      const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
+      //const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
+      const result = migrateForm(form, searchFilters, migrateSignatures(editOptions, affectedComponentsLogger));
       const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
       log[form.properties.skjemanummer] = {
         skjemanummer: form.properties.skjemanummer,
@@ -90,7 +135,8 @@ async function migrateForms(searchFilters, editOptions, allForms, formPaths = []
 }
 
 async function previewForm(searchFilters, editOptions, form) {
-  return migrateForm(form, searchFilters, getEditScript(editOptions));
+  //return migrateForm(form, searchFilters, getEditScript(editOptions));
+  return migrateForm(form, searchFilters, migrateSignatures(editOptions));
 }
 
 export { migrateForm, migrateForms, getEditScript, previewForm, getBreakingChanges };
