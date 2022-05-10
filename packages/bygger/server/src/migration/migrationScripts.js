@@ -1,5 +1,6 @@
 import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { generateDiff } from "./diffingTool.js";
+import migrateSignatures from "./scripts/migrateSignatures";
 import { componentMatchesSearchFilters } from "./searchFilter.js";
 
 function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
@@ -65,50 +66,6 @@ function getBreakingChanges(form, changes) {
       } else return [];
     });
 }
-
-function createNewSignatures(form) {
-  const { hasLabeledSignatures, signatures } = form.properties;
-  if (hasLabeledSignatures && signatures.signature1 !== "") {
-    return Object.keys(signatures)
-      .filter((key) => key.match(/^signature\d$/))
-      .sort()
-      .flatMap((signature) => {
-        if (signatures[signature]) {
-          return [
-            {
-              label: signatures[signature],
-              description: signatures[`${signature}Description`],
-            },
-          ];
-        } else {
-          return [];
-        }
-      });
-  } else {
-    return [
-      {
-        label: "",
-        description: "",
-      },
-    ];
-  }
-}
-
-const migrateSignatures =
-  (editOptions, affectedComponentsLogger = []) =>
-  (comp) => {
-    const editedComp = {
-      ...comp,
-      properties: {
-        ...comp.properties,
-        signatures: createNewSignatures(comp),
-      },
-    };
-    const changed = true;
-    const diff = changed && generateDiff(comp, editedComp);
-    affectedComponentsLogger.push({ key: comp.key, original: comp, new: editedComp, changed, diff });
-    return editedComp;
-  };
 
 async function migrateForms(searchFilters, editOptions, allForms, formPaths = []) {
   let log = {};
