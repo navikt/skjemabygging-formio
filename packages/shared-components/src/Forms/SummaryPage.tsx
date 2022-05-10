@@ -186,7 +186,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="list-inline">
           <div className="list-inline-item">
-            <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: formUrl, search }}>
+            <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: `${formUrl}/skjema`, search }}>
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>

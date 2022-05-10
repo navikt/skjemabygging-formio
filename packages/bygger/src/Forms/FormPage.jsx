@@ -58,7 +58,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           />
           <EditFormPage
             form={form}
-            testFormUrl={`${url}/view`}
+            testFormUrl={`${url}/view/skjema`}
             formSettingsUrl={`${url}/settings`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
@@ -72,7 +72,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           <FormSettingsPage
             form={form}
             editFormUrl={`${url}/edit`}
-            testFormUrl={`${url}/view`}
+            testFormUrl={`${url}/view/skjema`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={onPublish}
