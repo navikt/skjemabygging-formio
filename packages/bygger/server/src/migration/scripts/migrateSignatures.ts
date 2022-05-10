@@ -52,7 +52,7 @@ function createNewSignatures(form: NavFormType): Signature[] {
 }
 
 const migrateSignatures =
-  (editOptions: Map<String, String>, affectedComponentsLogger: AffectedComponentsLog[] = []) =>
+  (editOptions: Object, affectedComponentsLogger: AffectedComponentsLog[] = []) =>
   (comp: NavFormType) => {
     const propertiesWithoutHasLabeledSignatures = Object.keys(comp.properties)
       .filter((key) => key !== "hasLabeledSignatures")
