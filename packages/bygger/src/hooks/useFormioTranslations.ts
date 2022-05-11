@@ -188,7 +188,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     });
   };
 
-  const createTranslationSubmission = (data: {
+  const createTranslationSubmission = async (data: {
     language: Language;
     name: string;
     scope: TranslationScope;
@@ -239,35 +239,39 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     formTitle?: string
   ) => {
     if (!translationId) {
-      translationId = await createTranslationSubmission({ language, name, scope, form, tag }).then((response) => {
-        if (response.ok) {
-          return response.json().then((json) => json._id);
-        } else {
-          response.json().then((error) => {
-            const errorMessage = "Oversettelsen kunne ikke opprettes: ";
-            userAlerter.setErrorMessage(errorMessage.concat(error?.message));
-          });
-        }
+      const response = await createTranslationSubmission({ language, name, scope, form, tag });
+      if (response.ok) {
+        return response.json().then((json) => json._id);
+      } else {
+        const error = await response.json();
+        const errorMessage = "Oversettelsen kunne ikke opprettes: ".concat(error?.message);
+        userAlerter.setErrorMessage(errorMessage);
+        return error;
+      }
+    } else {
+      const response = updateTranslationSubmission(translationId, {
+        language,
+        i18n,
+        name,
+        scope,
+        form,
+        tag,
       });
-    }
-
-    if (translationId) {
-      updateTranslationSubmission(translationId, { language, i18n, name, scope, form, tag }).then((response) => {
-        if (response.ok) {
-          userAlerter.flashSuccessMessage(
-            !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
-          );
-        } else {
-          response.json().then((r) => {
-            const errorMessage = "Lagret oversettelser feilet: ";
-            userAlerter.setErrorMessage(errorMessage.concat(r?.message));
-          });
-        }
-      });
+      if (response.ok) {
+        userAlerter.flashSuccessMessage(
+          !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
+        );
+        return response;
+      } else {
+        const error = response.json();
+        const errorMessage = "Lagret oversettelser feilet: ".concat(error?.message);
+        userAlerter.setErrorMessage(errorMessage);
+        return error;
+      }
     }
   };
 
-  const saveLocalTranslation = (
+  const saveLocalTranslation = async (
     translationId: string | undefined,
     languageCode: Language,
     translations: ScopedTranslationMap,
@@ -285,7 +289,16 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           return translationsToSave;
         }
       }, {});
-      saveTranslation(translationId, languageCode, i18n, `global.${formPath}`, "local", formPath, undefined, formTitle);
+      return saveTranslation(
+        translationId,
+        languageCode,
+        i18n,
+        `global.${formPath}`,
+        "local",
+        formPath,
+        undefined,
+        formTitle
+      );
     } else {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
