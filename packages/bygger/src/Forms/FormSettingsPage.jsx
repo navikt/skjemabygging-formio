@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import { FormMetadataEditor } from "../components/FormMetadataEditor";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
+import SaveButton from "../components/SaveButton";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./PublishModalComponents";
@@ -47,7 +48,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
         </Column>
         <Column>
           <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-          <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+          <SaveButton onClick={() => onSave(form)} />
           <UserFeedback />
         </Column>
       </Row>
