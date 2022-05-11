@@ -5,12 +5,12 @@ import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import AsyncButton from "../components/AsyncButton";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import NavFormBuilder from "../components/NavFormBuilder";
+import SaveButton from "../components/SaveButton";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./PublishModalComponents";
@@ -71,7 +71,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-            <AsyncButton onClick={async () => onSave(form)} />
+            <SaveButton onClick={() => onSave(form)} />
             <UserFeedback />
           </Column>
         </Row>
