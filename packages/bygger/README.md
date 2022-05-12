@@ -14,7 +14,7 @@ så under følger dokumentasjonen derfra
 
 In the project directory, you can run:
 
-### `REACT_APP_PUSHER_CLUSTER=<mt1|or other> REACT_APP_PUSHER_KEY=<secret-app-key> npm start`
+### `npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3002](http://localhost:3002) to view it in the browser.

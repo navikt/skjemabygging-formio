@@ -1,7 +1,7 @@
 import { styled } from "@material-ui/styles";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
-import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
@@ -21,9 +21,12 @@ const FyllUtContainer = styled("div")({
   ...bootstrapStyles,
 });
 
+const ALERT_MESSAGE_BACK_BUTTON =
+  "Hvis du går vekk fra denne siden kan du miste dataene du har fylt ut. Er du sikker på at du vil gå tilbake?";
+
 const FyllUtRouter = ({ form, translations }) => {
-  const { featureToggles, submissionMethod } = useAppConfig();
-  let { path, url } = useRouteMatch();
+  const { featureToggles, submissionMethod, app } = useAppConfig();
+  const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -52,56 +55,68 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            <IntroPage form={form} formUrl={url} />
+            <IntroPage form={form} formUrl={formBaseUrl} />
           </Route>
           <Route path={`${path}/skjema`}>
             {formForRendering && (
-              <FillInFormPage
-                form={formForRendering}
-                submission={submission}
-                setSubmission={setSubmission}
-                formUrl={url}
-              />
+              <>
+                <Prompt
+                  message={(location) =>
+                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
+                  }
+                />
+                <FillInFormPage
+                  form={formForRendering}
+                  submission={submission}
+                  setSubmission={setSubmission}
+                  formUrl={formBaseUrl}
+                />
+              </>
             )}
           </Route>
           <Route path={`${path}/oppsummering`}>
-            <SubmissionWrapper submission={submission} url={url}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
-                <SummaryPage form={form} submission={submissionObject} translations={translations} formUrl={url} />
+                <SummaryPage
+                  form={form}
+                  submission={submissionObject}
+                  translations={translations}
+                  formUrl={formBaseUrl}
+                />
               )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/send-i-posten`}>
-            <SubmissionWrapper submission={submission} url={url}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareLetterPage
                   form={form}
                   submission={submissionObject}
-                  formUrl={url}
+                  formUrl={formBaseUrl}
                   translations={translations}
                 />
               )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/forbered-innsending`}>
-            <SubmissionWrapper submission={submission} url={url}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareSubmitPage
                   form={form}
                   submission={submissionObject}
-                  formUrl={url}
+                  formUrl={formBaseUrl}
                   translations={translations}
                 />
               )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/ingen-innsending`}>
-            <SubmissionWrapper submission={submission} url={url}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareIngenInnsendingPage
                   form={form}
                   submission={submissionObject}
-                  formUrl={url}
+                  formUrl={formBaseUrl}
                   translations={translations}
                 />
               )}

@@ -16,6 +16,9 @@ const tokenx: TokenxConfig = {
 const sendInnConfig: SendInnConfig = {
   host: process.env.SEND_INN_HOST!,
   tokenxClientId: process.env.SEND_INN_TOKEN_X_CLIENT_ID!,
+  paths: {
+    leggTilVedlegg: "/fyllUt/v1/leggTilVedlegg",
+  },
 };
 
 const localDevelopmentConfig: Partial<ConfigType> = {

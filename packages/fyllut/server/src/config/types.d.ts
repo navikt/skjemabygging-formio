@@ -9,6 +9,9 @@ export type TokenxConfig = {
 export type SendInnConfig = {
   host: string;
   tokenxClientId: string;
+  paths: {
+    leggTilVedlegg: string;
+  };
 };
 
 export type ConfigType = {

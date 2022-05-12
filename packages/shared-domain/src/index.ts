@@ -32,6 +32,7 @@ import localizationUtils from "./utils/localization";
 import navFormUtils from "./utils/navFormUtils";
 import objectUtils from "./utils/objectUtils";
 import stringUtils from "./utils/stringUtils";
+import validatorUtils from "./utils/validatorUtils";
 
 export {
   createFormSummaryObject,
@@ -44,6 +45,7 @@ export {
   featureUtils,
   languagesUtil,
   guid,
+  validatorUtils,
 };
 export type {
   FeatureTogglesMap,

@@ -10,6 +10,7 @@ import NavCheckbox from "./components/NavCheckbox";
 import NavDatepicker from "./components/NavDatepicker.jsx";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import Number from "./components/Number";
+import OrganizationNumber from "./components/OrganizationNumber";
 import Radio from "./components/Radio";
 import SelectBoxes from "./components/SelectBoxes";
 import Textarea from "./components/TextArea";
@@ -18,6 +19,7 @@ import TextField from "./components/TextField";
 const customComponents = {
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
+  orgNr: OrganizationNumber,
   htmlelement: HTMLElement,
   landvelger: CountrySelect,
   navDatepicker: NavDatepicker,
