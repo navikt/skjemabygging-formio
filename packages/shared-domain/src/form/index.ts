@@ -16,6 +16,11 @@ export interface FormSignaturesType {
   signature5Description?: string;
 }
 
+interface NewFormSignatureType {
+  label: string;
+  description: string;
+}
+
 export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
@@ -31,7 +36,7 @@ export interface FormPropertiesType {
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
   hasLabeledSignatures: boolean;
-  signatures?: FormSignaturesType;
+  signatures?: NewFormSignatureType[];
   descriptionOfSignatures?: string;
 }
 

@@ -1,12 +1,13 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { DisplayType, InnsendingType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
-import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
-import { Undertittel } from "nav-frontend-typografi";
+import { Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
+//import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import EnhetSettings from "./EnhetSettings";
+import SignatureComponent from "./layout/SignatureComponent";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = "create" | "edit";
@@ -41,9 +42,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
-      hasLabeledSignatures,
-      signatures,
-      descriptionOfSignatures,
+      //hasLabeledSignatures,
+      //signatures,
+      //descriptionOfSignatures,
     },
   } = form;
   const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
@@ -230,7 +231,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             }
           />
         )}
-      <Checkbox
+      {/*       <Checkbox
         label="Skjemaet skal ha mer enn ett signaturfelt"
         checked={hasLabeledSignatures}
         onChange={(event) => {
@@ -248,8 +249,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             });
           }
         }}
-      />
-      {hasLabeledSignatures && (
+      /> */}
+      {/*       {hasLabeledSignatures && (
         <Textarea
           label="Beskrivelse for alle signaturer (valgfritt)"
           value={descriptionOfSignatures || ""}
@@ -261,8 +262,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             })
           }
         />
-      )}
-      {hasLabeledSignatures &&
+      )} */}
+      {/*       {hasLabeledSignatures &&
         ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
           <SkjemaGruppe key={signatureKey} legend={<Undertittel>Signeres av</Undertittel>}>
             <Input
@@ -296,7 +297,27 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
               }
             />
           </SkjemaGruppe>
-        ))}
+        ))} */}
+      {form?.properties?.signatures?.map((signature, index) => (
+        <SignatureComponent
+          signature={signature}
+          onChange={(newSignature) =>
+            onChange({
+              ...form,
+              properties: {
+                ...form.properties,
+                signatures: form?.properties?.signatures?.map((signatureObject, i) => {
+                  if (index === i) {
+                    return newSignature;
+                  } else {
+                    return signatureObject;
+                  }
+                }),
+              },
+            })
+          }
+        />
+      ))}
     </SkjemaGruppe>
   );
 };

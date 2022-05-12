@@ -41,7 +41,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         tema: "",
         innsending: "PAPIR_OG_DIGITAL",
         hasLabeledSignatures: false,
-        signatures: { signature1: "", signature2: "", signature3: "", signature4: "", signature5: "" },
+        signatures: [{ label: "", description: "" }],
       },
       components: defaultFormFields() as unknown as Component[],
     },
