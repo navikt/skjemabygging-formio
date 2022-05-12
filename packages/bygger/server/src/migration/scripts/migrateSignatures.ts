@@ -13,7 +13,7 @@ type Signature = {
   description?: string;
 };
 
-interface NewFormPropertiesType extends Omit<FormPropertiesType, "signatures"> {
+interface NewFormPropertiesType extends Omit<FormPropertiesType, "signatures" | "hasLabeledSignatures"> {
   signatures: Signature[];
 }
 
@@ -52,12 +52,15 @@ function createNewSignatures(form: NavFormType): Signature[] {
 }
 
 const migrateSignatures =
-  (editOptions: Map<String, String>, affectedComponentsLogger: AffectedComponentsLog[] = []) =>
+  (editOptions: Object, affectedComponentsLogger: AffectedComponentsLog[] = []) =>
   (comp: NavFormType) => {
+    const propertiesWithoutHasLabeledSignatures = Object.keys(comp.properties)
+      .filter((key) => key !== "hasLabeledSignatures")
+      .flatMap((key) => ({ [key]: comp.properties[key as keyof FormPropertiesType] }));
     const editedComp: NewNavFormType = {
       ...comp,
       properties: {
-        ...comp.properties,
+        ...propertiesWithoutHasLabeledSignatures,
         signatures: createNewSignatures(comp),
       },
     };
