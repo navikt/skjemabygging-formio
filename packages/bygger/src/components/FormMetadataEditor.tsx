@@ -1,8 +1,8 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { DisplayType, InnsendingType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
+import { Knapp } from "nav-frontend-knapper";
 import { Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
-//import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import useMottaksadresser from "../hooks/useMottaksadresser";
@@ -42,11 +42,54 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
-      //hasLabeledSignatures,
-      //signatures,
-      //descriptionOfSignatures,
+      descriptionOfSignatures,
     },
   } = form;
+
+  const addNewSignature = () =>
+    onChange({
+      ...form,
+      properties: {
+        ...form.properties,
+        signatures: [
+          ...(form?.properties?.signatures || []),
+          {
+            label: "",
+            description: "",
+          },
+        ],
+      },
+    });
+
+  const addExistingSignature = (newSignature, index) =>
+    onChange({
+      ...form,
+      properties: {
+        ...form.properties,
+        signatures: form?.properties?.signatures?.map((signatureObject, i) => {
+          if (index === i) {
+            return newSignature;
+          } else {
+            return signatureObject;
+          }
+        }),
+      },
+    });
+
+  const removeSignature = (indexToDelete) => {
+    if (form && form.properties && form.properties.signatures && form.properties.signatures.length > 0) {
+      form?.properties?.signatures.splice(indexToDelete, 1);
+
+      onChange({
+        ...form,
+        properties: {
+          ...form.properties,
+          signatures: form.properties.signatures,
+        },
+      });
+    }
+  };
+
   const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
   return (
     <SkjemaGruppe>
@@ -231,93 +274,28 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             }
           />
         )}
-      {/*       <Checkbox
-        label="Skjemaet skal ha mer enn ett signaturfelt"
-        checked={hasLabeledSignatures}
-        onChange={(event) => {
-          if (event.target.checked) {
-            onChange({ ...form, properties: { ...form.properties, hasLabeledSignatures: !hasLabeledSignatures } });
-          } else {
-            onChange({
-              ...form,
-              properties: {
-                ...form.properties,
-                hasLabeledSignatures: !hasLabeledSignatures,
-                descriptionOfSignatures: undefined,
-                signatures: undefined,
-              },
-            });
-          }
-        }}
-      /> */}
-      {/*       {hasLabeledSignatures && (
-        <Textarea
-          label="Beskrivelse for alle signaturer (valgfritt)"
-          value={descriptionOfSignatures || ""}
-          maxLength={0}
-          onChange={(event) =>
-            onChange({
-              ...form,
-              properties: { ...form.properties, descriptionOfSignatures: event.target.value },
-            })
-          }
-        />
-      )} */}
-      {/*       {hasLabeledSignatures &&
-        ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
-          <SkjemaGruppe key={signatureKey} legend={<Undertittel>Signeres av</Undertittel>}>
-            <Input
-              type="text"
-              label="Hvem"
-              placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
-              id={signatureKey}
-              value={signatures ? signatures[signatureKey] : ""}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  properties: { ...form.properties, signatures: { ...signatures, [signatureKey]: event.target.value } },
-                })
-              }
-            />
-            <Input
-              label="Beskrivelse (valgfritt)"
-              placeholder="Beskrivelse av hvorfor man signerer"
-              type="text"
-              id={`${signatureKey}Description`}
-              data-testid={`${signatureKey}Description`}
-              value={signatures ? signatures[`${signatureKey}Description`] : ""}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  properties: {
-                    ...form.properties,
-                    signatures: { ...signatures, [`${signatureKey}Description`]: event.target.value },
-                  },
-                })
-              }
-            />
-          </SkjemaGruppe>
-        ))} */}
+      <Textarea
+        label="Beskrivelse for alle signaturer (valgfritt)"
+        value={descriptionOfSignatures || ""}
+        maxLength={0}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, descriptionOfSignatures: event.target.value },
+          })
+        }
+      />
+
       {form?.properties?.signatures?.map((signature, index) => (
         <SignatureComponent
           signature={signature}
-          onChange={(newSignature) =>
-            onChange({
-              ...form,
-              properties: {
-                ...form.properties,
-                signatures: form?.properties?.signatures?.map((signatureObject, i) => {
-                  if (index === i) {
-                    return newSignature;
-                  } else {
-                    return signatureObject;
-                  }
-                }),
-              },
-            })
-          }
+          index={index + 1}
+          onChange={(newSignature) => addExistingSignature(newSignature, index)}
+          onClick={() => removeSignature(index)}
         />
       ))}
+
+      <Knapp onClick={addNewSignature}>Legg til signatur</Knapp>
     </SkjemaGruppe>
   );
 };

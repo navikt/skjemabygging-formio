@@ -1,42 +1,27 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import { Knapp } from "nav-frontend-knapper";
 import Lukknapp from "nav-frontend-lukknapp";
+import Panel from "nav-frontend-paneler";
 import { Input, SkjemaGruppe } from "nav-frontend-skjema";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 
 const useStyles = makeStyles({
   closeBtn: {
-    marginLeft: "auto",
-    marginRight: 0,
+    float: "right",
   },
 });
 
-const SignatureComponent = ({ signature, onChange }) => {
-  //const [signatureData, setSignatureData] = useState({label: "", description: ""});
-
-  // const handleSignatureOnChange = (signatureInput) => {
-  //   setSignatureData({label: signatureInput, description: signatureData.description})
-  //   console.log(signatureData)
-  // }
-
-  // const handleInstructionOnChange = (instructionInput) => {
-  //   setSignatureData({label: signatureData.label, description: instructionInput})
-  //   console.log(signatureData)
-  // }
-
+const SignatureComponent = ({ signature, index, onChange, onClick }) => {
   const styles = useStyles();
   return (
-    <div className="wrapper">
-      <Lukknapp className={styles.closeBtn} bla={true}>
-        Lukk
-      </Lukknapp>
-      <SkjemaGruppe legend={<Undertittel>Signering</Undertittel>}>
+    <Panel className="margin-bottom-default" border>
+      <Lukknapp className={styles.closeBtn} bla={true} onClick={() => onClick(index)} />
+      <SkjemaGruppe legend={<Undertittel>{"Signatur " + index}</Undertittel>}>
         <Input
           label="Hvem skal signere?"
           type="text"
           id="signatur"
-          placeholder="Signatur"
+          placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
           value={signature.label}
           onChange={(e) =>
             onChange({
@@ -49,7 +34,7 @@ const SignatureComponent = ({ signature, onChange }) => {
           label="Instruksjoner til den som signerer"
           type="text"
           id="Instruksjon"
-          placeholder="Instruksjon"
+          placeholder="Beskrivelse av hvorfor man signerer"
           value={signature.description}
           onChange={(e) =>
             onChange({
@@ -58,9 +43,8 @@ const SignatureComponent = ({ signature, onChange }) => {
             })
           }
         />
-        <Knapp onClick={() => console.log()}>Legg til signatur</Knapp>
       </SkjemaGruppe>
-    </div>
+    </Panel>
   );
 };
 

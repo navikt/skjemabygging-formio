@@ -280,7 +280,6 @@ export class Pdfgen {
     ];
   }
 }
-const signatureLabelKeyRegexp = /^signature\d$/;
 
 export class PdfgenPapir extends Pdfgen {
   newSignature(signature, isFirstSignature) {
@@ -313,23 +312,10 @@ export class PdfgenPapir extends Pdfgen {
     ];
   }
 
-  static extractSignatures(properties) {
-    if (properties?.signatures) {
-      const signatureLabels = Object.keys(properties?.signatures).filter(
-        (key) => signatureLabelKeyRegexp.test(key) && properties.signatures[key]
-      );
-      return signatureLabels.map((label) => ({
-        label: properties.signatures[label],
-        description: properties.signatures[`${label}Description`],
-      }));
-    }
-
-    return [];
-  }
-
   generateSignatures() {
-    const signatures = PdfgenPapir.extractSignatures(this.form?.properties);
-    if (this.form?.properties?.hasLabeledSignatures && signatures.length > 0) {
+    const { signatures } = this.form?.properties;
+
+    if (signatures && signatures.length > 0) {
       return signatures.flatMap((signature, index) => this.newSignature(signature, index === 0));
     }
     return this.newSignature();
