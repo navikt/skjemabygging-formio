@@ -1,10 +1,10 @@
-import React, { useState } from "react";
 import Formiojs from "formiojs/Formio";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 const AuthContext = React.createContext({});
 function AuthProvider(props) {
-  const [userData, setUserData] = useState(Formiojs.getUser());
+  const [userData, setUserData] = useState(props.user || Formiojs.getUser());
   const history = useHistory();
 
   const login = (user) => {

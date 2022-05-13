@@ -40,6 +40,14 @@ const config: ConfigType = {
   },
   formio: {
     projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),
+    projectId: env("FORMIO_PROJECT_ID"),
+    roleIds: {
+      administrator: env("FORMIO_ROLE_ID_ADMINISTRATOR"),
+    },
+    formIds: {
+      userResource: env("FORMIO_FORM_ID_USER"),
+    },
+    jwtSecret: env("FORMIO_JWT_SECRET"),
   },
   fyllut: {
     baseUrl: env("FYLLUT_BASE_URL", devFyllut.baseUrl),
@@ -51,6 +59,7 @@ const config: ConfigType = {
   nodeEnv,
   port: parseInt(process.env.PORT || "8080"),
   isProduction: nodeEnv === "production",
+  isDevelopment: nodeEnv === "development",
 };
 
 export default config;
