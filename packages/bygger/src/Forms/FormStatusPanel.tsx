@@ -6,28 +6,16 @@ import { Element } from "nav-frontend-typografi";
 import React from "react";
 
 type Status = "PENDING" | "DRAFT" | "PUBLISHED" | "UNKNOWN";
-
-function determineStatus(modified, published): Status {
-  if (modified && published) {
-    if (moment(modified).isAfter(moment(published))) {
-      return "PENDING";
-    }
-    return "PUBLISHED";
-  }
-  if (modified) {
-    return "DRAFT";
-  }
-  return "UNKNOWN";
-}
+type StreetLightSize = "small" | "large";
 
 const useFormStatusIndicatorStyles = makeStyles({
-  streetLight: {
-    maxWidth: "1.5rem",
-    height: "1.5rem",
+  streetLight: (props: { size: StreetLightSize }) => ({
+    maxWidth: props.size === "small" ? "1rem" : "1.5rem",
+    height: props.size === "small" ? "1rem" : "1.5rem",
     borderRadius: "50%",
-    marginRight: "1rem",
+    marginRight: "0.75rem",
     flex: "1",
-  },
+  }),
   published: {
     backgroundColor: "#219653",
   },
@@ -38,21 +26,6 @@ const useFormStatusIndicatorStyles = makeStyles({
     backgroundColor: "#2D9CDB",
   },
 });
-
-const FormStatusIndicator = ({ status }: { status: Status }) => {
-  const styles = useFormStatusIndicatorStyles();
-  switch (status) {
-    case "PUBLISHED":
-      return <div className={`${styles.streetLight} ${styles.published}`} />;
-    case "PENDING":
-      return <div className={`${styles.streetLight} ${styles.pending}`} />;
-    case "DRAFT":
-      return <div className={`${styles.streetLight} ${styles.draft}`} />;
-    case "UNKNOWN":
-    default:
-      return <></>;
-  }
-};
 
 const useStatusStyles = makeStyles({
   container: {
@@ -75,6 +48,57 @@ const useStatusStyles = makeStyles({
   },
 });
 
+function determineStatus(modified, published): Status {
+  if (modified && published) {
+    if (moment(modified).isAfter(moment(published))) {
+      return "PENDING";
+    }
+    return "PUBLISHED";
+  }
+  if (modified) {
+    return "DRAFT";
+  }
+  return "UNKNOWN";
+}
+
+export const FormStatusIndicator = ({ status, size }: { status: Status; size: StreetLightSize }) => {
+  const styles = useFormStatusIndicatorStyles({ size });
+  switch (status) {
+    case "PUBLISHED":
+      return <div className={`${styles.streetLight} ${styles.published}`} />;
+    case "PENDING":
+      return <div className={`${styles.streetLight} ${styles.pending}`} />;
+    case "DRAFT":
+      return <div className={`${styles.streetLight} ${styles.draft}`} />;
+    case "UNKNOWN":
+    default:
+      return <></>;
+  }
+};
+
+export const FormStatus = ({
+  formProperties,
+  size,
+}: {
+  formProperties: FormPropertiesType;
+  size?: StreetLightSize;
+}) => {
+  const styles = useStatusStyles();
+  const status = determineStatus(formProperties.modified, formProperties.published);
+  const statusTexts: Record<Status, string> = {
+    PUBLISHED: "Publisert",
+    PENDING: "Upubliserte endringer",
+    DRAFT: "Utkast",
+    UNKNOWN: "Ukjent status",
+  };
+  return (
+    <div className={styles.row}>
+      <FormStatusIndicator status={status} size={size || "large"} />
+      <p className={styles.rowText}>{statusTexts[status]}</p>
+    </div>
+  );
+};
+
 const Timestamp = ({ label, timestamp }: { label: string; timestamp?: string }) => {
   const styles = useStatusStyles();
   if (!timestamp) {
@@ -90,13 +114,6 @@ const Timestamp = ({ label, timestamp }: { label: string; timestamp?: string }) 
   );
 };
 
-const statusTexts: Record<Status, string> = {
-  PUBLISHED: "Publisert",
-  PENDING: "Upubliserte endringer",
-  DRAFT: "Utkast",
-  UNKNOWN: "Ukjent status",
-};
-
 interface Props {
   formProperties: FormPropertiesType;
 }
@@ -104,16 +121,12 @@ interface Props {
 const FormStatusPanel = ({ formProperties }: Props) => {
   const styles = useStatusStyles();
   const { modified, published } = formProperties;
-  const status = determineStatus(modified, published);
 
   return (
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
         <Element>Status:</Element>
-        <div className={styles.row}>
-          <FormStatusIndicator status={status} />
-          <p className={styles.rowText}>{statusTexts[status]}</p>
-        </div>
+        <FormStatus formProperties={formProperties} />
       </div>
       <Timestamp label={"Sist lagret:"} timestamp={modified} />
       <Timestamp label={"Sist publisert:"} timestamp={published} />
