@@ -10,7 +10,7 @@ export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
   clientId: "95170319-b4d7-4190-8271-118ed19bafbf",
 };
 
-export const devFormio: FormioConfig = {
+export const devFormio: Partial<FormioConfig> = {
   projectUrl: "https://formio-api-server.ekstern.dev.nav.no",
 };
 
