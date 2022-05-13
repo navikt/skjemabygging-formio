@@ -14,7 +14,7 @@ accessPolicy:
     rules:
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
-        cluster: dev-fss
+        cluster: prod-fss
 secrets:
   - bygger-experimental
   - bygger-pusher
