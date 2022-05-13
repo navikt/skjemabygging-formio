@@ -238,18 +238,21 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
     tag?: TranslationTag,
     formTitle?: string
   ) => {
-    if (!translationId) {
+    let newOrExistingTranslationId = translationId;
+    if (!newOrExistingTranslationId) {
       const response = await createTranslationSubmission({ language, name, scope, form, tag });
       if (response.ok) {
-        return response.json().then((json) => json._id);
+        const submission = await response.json();
+        newOrExistingTranslationId = submission._id;
       } else {
         const error = await response.json();
         const errorMessage = "Oversettelsen kunne ikke opprettes: ".concat(error?.message);
         userAlerter.setErrorMessage(errorMessage);
         return error;
       }
-    } else {
-      const response = updateTranslationSubmission(translationId, {
+    }
+    if (newOrExistingTranslationId) {
+      const response = await updateTranslationSubmission(newOrExistingTranslationId, {
         language,
         i18n,
         name,
@@ -263,7 +266,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         );
         return response;
       } else {
-        const error = response.json();
+        const error = await response.json();
         const errorMessage = "Lagret oversettelser feilet: ".concat(error?.message);
         userAlerter.setErrorMessage(errorMessage);
         return error;
