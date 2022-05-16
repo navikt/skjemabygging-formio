@@ -57,7 +57,7 @@ spec:
       allowAllUsers: false
       claims:
         groups:
-          - id: Skjemabygging
+          - id: 1d12af59-d953-4f85-9f65-d8cbf6672deb
         extra:
           - NAVident
     sidecar:
