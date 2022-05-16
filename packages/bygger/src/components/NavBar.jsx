@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 });
 
 export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
-  const { logout } = useAuth();
+  const { logout, userData } = useAuth();
   const { featureToggles } = useAppConfig();
   const styles = useStyles();
   return (
@@ -48,9 +48,11 @@ export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
         </Undertittel>
         <div className={styles.userInfo}>
           <UserInfo />
-          <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
-            Logg ut
-          </Link>
+          {!!userData && (
+            <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
+              Logg ut
+            </Link>
+          )}
         </div>
       </Row>
     </section>

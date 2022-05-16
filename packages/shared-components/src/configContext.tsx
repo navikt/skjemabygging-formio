@@ -12,7 +12,7 @@ interface AppConfigContextType {
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: string;
   app?: ApplicationName;
-  http?: object;
+  http?: typeof baseHttp;
 }
 
 type AppConfigProviderProps = { children: React.ReactNode } & AppConfigContextType;
