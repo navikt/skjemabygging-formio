@@ -32,18 +32,19 @@ const useStatusStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
-  row: {
+  statusRow: (props: { size?: StreetLightSize }) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-  },
+    marginTop: props?.size === "large" ? "0.5rem" : 0,
+  }),
   rowText: {
     flex: "1",
     margin: "0",
   },
   panelItem: {
     "&:not(:last-child)": {
-      marginBottom: "3rem",
+      marginBottom: "2.5rem",
     },
   },
 });
@@ -76,14 +77,8 @@ export const FormStatusIndicator = ({ status, size }: { status: Status; size: St
   }
 };
 
-export const FormStatus = ({
-  formProperties,
-  size,
-}: {
-  formProperties: FormPropertiesType;
-  size?: StreetLightSize;
-}) => {
-  const styles = useStatusStyles();
+export const FormStatus = ({ formProperties, size }: { formProperties: FormPropertiesType; size: StreetLightSize }) => {
+  const styles = useStatusStyles({ size });
   const status = determineStatus(formProperties.modified, formProperties.published);
   const statusTexts: Record<Status, string> = {
     PUBLISHED: "Publisert",
@@ -92,8 +87,8 @@ export const FormStatus = ({
     UNKNOWN: "Ukjent status",
   };
   return (
-    <div className={styles.row}>
-      <FormStatusIndicator status={status} size={size || "large"} />
+    <div className={styles.statusRow}>
+      <FormStatusIndicator status={status} size={size} />
       <p className={styles.rowText}>{statusTexts[status]}</p>
     </div>
   );
@@ -126,7 +121,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
         <Element>Status:</Element>
-        <FormStatus formProperties={formProperties} />
+        <FormStatus formProperties={formProperties} size={"large"} />
       </div>
       <Timestamp label={"Sist lagret:"} timestamp={modified} />
       <Timestamp label={"Sist publisert:"} timestamp={published} />
