@@ -54,7 +54,10 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+      allowAllUsers: false
       claims:
+        groups:
+          - id: Skjemabygging
         extra:
           - NAVident
     sidecar:
