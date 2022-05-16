@@ -50,7 +50,7 @@ export function IntroPage({ form, formUrl }: Props) {
         <ul>
           {description && (
             <li className="margin-bottom-default">
-              <b>{descriptionBold} </b>
+              <b>{translate(descriptionBold)} </b>
               {translate(description)}
             </li>
           )}
