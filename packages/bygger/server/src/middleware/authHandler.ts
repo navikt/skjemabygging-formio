@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
-import { ByggerRequest } from "../types";
+import { ByggerRequest, User } from "../types";
 
 const authHandler = (req: ByggerRequest, res: Response, next: NextFunction) => {
   if (!config.isDevelopment) {
@@ -35,6 +35,27 @@ const authHandler = (req: ByggerRequest, res: Response, next: NextFunction) => {
     });
   }
   next();
+};
+
+export const createFormioJwt = (user: User) => {
+  const { formio } = config;
+  const tokenPayload = {
+    external: true,
+    form: {
+      _id: formio.formIds.userResource,
+    },
+    project: {
+      _id: formio.projectId,
+    },
+    user: {
+      _id: user.NAVident,
+      data: {
+        name: user.name,
+      },
+      roles: [formio.roleIds.administrator],
+    },
+  };
+  return jwt.sign(tokenPayload, formio.jwtSecret, { expiresIn: "8h" });
 };
 
 export default authHandler;
