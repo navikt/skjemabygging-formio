@@ -25,17 +25,17 @@ export function IntroPage({ form, formUrl }: Props) {
   useEffect(() => {
     if (submissionMethod) {
       if (submissionMethod === http.SubmissionMethodType.PAPER) {
-        setDescriptionBold(`${translate(TEXTS.statiske.introPage.paperDescriptionBold)}`);
-        setDescription(`${translate(TEXTS.statiske.introPage.paperDescription)}`);
+        setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
+        setDescription(TEXTS.statiske.introPage.paperDescription);
       }
       // No description when submissionMethodType === http.SubmissionMethodType.DIGITAL
     } else {
       if (form.properties?.innsending === "KUN_PAPIR" || form.properties?.innsending === "INGEN") {
-        setDescriptionBold(translate(TEXTS.statiske.introPage.paperDescriptionBold));
-        setDescription(translate(TEXTS.statiske.introPage.paperDescription));
+        setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
+        setDescription(TEXTS.statiske.introPage.paperDescription);
       } else if (form.properties?.innsending === "PAPIR_OG_DIGITAL") {
-        setDescriptionBold(translate(TEXTS.statiske.introPage.paperAndDigitalDescriptionBold));
-        setDescription(translate(TEXTS.statiske.introPage.paperAndDigitalDescription));
+        setDescriptionBold(TEXTS.statiske.introPage.paperAndDigitalDescriptionBold);
+        setDescription(TEXTS.statiske.introPage.paperAndDigitalDescription);
       }
       // No description when form.properties.innsending === "KUN_DIGITAL"
     }
@@ -46,14 +46,12 @@ export function IntroPage({ form, formUrl }: Props) {
       <FormTitle form={form} className="margin-bottom-double" />
 
       <GuidePanel className="margin-bottom-double">
-        <Undertittel className="margin-bottom-default">
-          Vær oppmerksom på dette før du begynner å fylle ut søknaden
-        </Undertittel>
+        <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
         <ul>
           {description && (
             <li className="margin-bottom-default">
               <b>{descriptionBold} </b>
-              {description}
+              {translate(description)}
             </li>
           )}
           <li className="margin-bottom-default">
