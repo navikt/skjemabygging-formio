@@ -5,6 +5,7 @@ export const supportedEnhetstyper: Enhetstype[] = [
   "ARK",
   "FORVALTNING",
   "FPY",
+  "FYLKE",
   "HMS",
   "INNKREV",
   "INTRO",

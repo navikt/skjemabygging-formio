@@ -13,6 +13,7 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import SaveButton from "../components/SaveButton";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
+import FormStatusPanel from "./FormStatusPanel";
 import PublishModalComponents from "./PublishModalComponents";
 
 const useStyles = makeStyles({
@@ -72,6 +73,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
             <SaveButton onClick={() => onSave(form)} />
+            <FormStatusPanel formProperties={form.properties} />
             <UserFeedback />
           </Column>
         </Row>
