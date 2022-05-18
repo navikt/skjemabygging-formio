@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
-import { SlettKnapp } from "./components";
+import { FormStatus } from "./FormStatusPanel";
 
 const useFormsListStyles = makeStyles({
   list: {
@@ -17,15 +17,15 @@ const useFormsListStyles = makeStyles({
   listTitles: {
     padding: "0.3rem 0.5rem",
     display: "grid",
-    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
+    gridTemplateColumns: "minmax(5rem,10rem) auto 8rem",
     backgroundColor: "#c1c1c1",
   },
   listTitleItems: {
     display: "flex",
     alignItems: "center",
   },
-  listTitleLastItem: {
-    justifySelf: "center",
+  statusListTitle: {
+    paddingLeft: "2rem",
   },
   listTitle: {
     marginRight: "0.5rem",
@@ -90,7 +90,9 @@ const FormsList = ({ forms, children }) => {
           <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
           {toggleFormTitle === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
-        <Undertittel className={classes.listTitleLastItem}>Action</Undertittel>
+        <div className={classes.listTitleItems}>
+          <Undertittel className={classes.statusListTitle}>Status</Undertittel>
+        </div>
       </li>
       {toggleFormNumber === "" && toggleFormTitle === ""
         ? forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))
@@ -107,7 +109,7 @@ const useFormsListPageStyles = makeStyles({
   listItem: {
     padding: "0.3rem 0.5rem",
     display: "grid",
-    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
+    gridTemplateColumns: "minmax(5rem,10rem) auto 8rem",
     width: "auto",
     "&:nth-child(odd)": {
       backgroundColor: "#ddd",
@@ -128,10 +130,11 @@ function simplifiedForms(forms) {
     tags: form.tags,
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
+    properties: form.properties,
   }));
 }
 
-function FormsListPage({ url, loadFormsList, deleteForm }) {
+function FormsListPage({ url, loadFormsList }) {
   const history = useHistory();
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
@@ -157,13 +160,8 @@ function FormsListPage({ url, loadFormsList, deleteForm }) {
     return <h1>Finner ingen skjemaer...</h1>;
   }
 
-  const onDelete = (formId, tags, title) => {
-    deleteForm(formId, tags, title).then(() => {
-      setForms(forms.filter((form) => form._id !== formId));
-    });
-  };
-
   const onNew = () => history.push("/forms/new");
+
   return (
     <AppLayoutWithContext
       navBarProps={{
@@ -188,9 +186,7 @@ function FormsListPage({ url, loadFormsList, deleteForm }) {
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
                 {form.title}
               </Link>
-              <SlettKnapp className="lenke" onClick={() => onDelete(form._id, form.tags, form.title)}>
-                Slett skjema
-              </SlettKnapp>
+              <FormStatus formProperties={form.properties} size={"small"} />
             </li>
           )}
         </FormsList>

@@ -68,7 +68,7 @@ export const useFormioForms = (formio, userAlerter) => {
       const previousModified = form.properties?.modified;
       const now = getIso8601String();
       const formWithPublishedTrue = updatePublished(form, now);
-      const result = onSave(formWithPublishedTrue, true, now);
+      const result = await onSave(formWithPublishedTrue, true, now);
       if (!result.error) {
         const payload = JSON.stringify({
           form: form,
@@ -82,17 +82,17 @@ export const useFormioForms = (formio, userAlerter) => {
           body: payload,
         });
 
-        const { changed } = await response.json();
+        if (response?.ok) {
+          const success = "Satt i gang publisering, dette kan ta noen minutter.";
+          const warning =
+            "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
 
-        if (response?.ok && changed) {
-          userAlerter.flashSuccessMessage("Satt i gang publisering, dette kan ta noen minutter.");
-        } else if (response?.ok && !changed) {
-          userAlerter.setWarningMessage(
-            "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
-          );
+          const { changed } = await response.json();
+          changed ? userAlerter.flashSuccessMessage(success) : userAlerter.setWarningMessage(warning);
+          return result;
         } else {
           userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-          onSave(updatePublished(form, previousPublished), true, previousModified);
+          return await onSave(updatePublished(form, previousPublished), true, previousModified);
         }
       }
     },
