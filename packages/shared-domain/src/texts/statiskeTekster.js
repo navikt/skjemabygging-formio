@@ -1,6 +1,7 @@
 export const statiske = {
   loading: "Laster...",
   introPage: {
+    title: "Vær oppmerksom på dette før du begynner å fylle ut søknaden",
     paperDescriptionBold: "Skjemaet fylles ut digitalt, men skal sendes i posten.",
     paperDescription:
       "Etter utfylling må du laste ned det ferdig utfylte skjemaet som en pdf-fil, skrive det ut og sende i posten.",
