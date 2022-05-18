@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormsList } from "../Forms/FormsListPage";
 import { simplifiedForms } from "../Forms/formsListUtils";
+import { FormStatus } from "../Forms/FormStatusPanel";
 
 const useTranslationsListStyles = makeStyles({
   root: {
@@ -19,7 +20,7 @@ const useTranslationsListStyles = makeStyles({
   listItem: {
     padding: "0.3rem 0.5rem",
     display: "grid",
-    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
+    gridTemplateColumns: "minmax(5rem,10rem) auto 8rem",
     width: "auto",
     "&:nth-child(odd)": {
       backgroundColor: "#ddd",
@@ -81,6 +82,7 @@ export function TranslationsListPage({ loadFormsList }) {
                   <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
                     {form.title}
                   </Link>
+                  <FormStatus formProperties={form.properties} size={"small"} />
                 </li>
               )}
             </FormsList>
