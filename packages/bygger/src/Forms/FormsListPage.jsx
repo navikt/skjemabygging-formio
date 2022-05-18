@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
+import { simplifiedForms, sortFormsByStatus } from "./formsListUtils";
 import { FormStatus } from "./FormStatusPanel";
 
 const useFormsListStyles = makeStyles({
@@ -34,9 +35,10 @@ const useFormsListStyles = makeStyles({
 
 const FormsList = ({ forms, children }) => {
   const classes = useFormsListStyles();
-  const [sortedForms, setSortedForms] = useState();
+  const [sortedForms, setSortedForms] = useState([]);
   const [toggleFormNumber, setToggleFormNumber] = useState("");
   const [toggleFormTitle, setToggleFormTitle] = useState("");
+  const [toggleFormStatus, setToggleFormStatus] = useState("");
 
   function sortFormByFormNumber(forms) {
     const filteredInResult = [];
@@ -90,11 +92,18 @@ const FormsList = ({ forms, children }) => {
           <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
           {toggleFormTitle === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
         </div>
-        <div className={classes.listTitleItems}>
+        <div
+          className={classes.listTitleItems}
+          onClick={() => {
+            setToggleFormStatus(toggleFormStatus === "ascending" ? "descending" : "ascending");
+            setSortedForms(sortFormsByStatus(forms, toggleFormStatus === "ascending"));
+          }}
+        >
           <Undertittel className={classes.statusListTitle}>Status</Undertittel>
+          {toggleFormStatus ? <CollapseFilled /> : <ExpandFilled />}
         </div>
       </li>
-      {toggleFormNumber === "" && toggleFormTitle === ""
+      {toggleFormNumber === "" && toggleFormTitle === "" && toggleFormStatus === ""
         ? forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))
         : sortedForms.map((form) => children(form))}
     </ul>
@@ -120,19 +129,6 @@ const useFormsListPageStyles = makeStyles({
     width: "max-content",
   },
 });
-
-function simplifiedForms(forms) {
-  return forms.map((form) => ({
-    _id: form._id,
-    modified: form.modified,
-    title: form.title.trim(),
-    path: form.path,
-    tags: form.tags,
-    skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
-    tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
-    properties: form.properties,
-  }));
-}
 
 function FormsListPage({ url, loadFormsList }) {
   const history = useHistory();
@@ -195,4 +191,4 @@ function FormsListPage({ url, loadFormsList }) {
   );
 }
 
-export { FormsListPage, FormsList, simplifiedForms };
+export { FormsListPage, FormsList };

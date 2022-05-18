@@ -4,7 +4,8 @@ import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { FormsList, simplifiedForms } from "../Forms/FormsListPage";
+import { FormsList } from "../Forms/FormsListPage";
+import { simplifiedForms } from "../Forms/formsListUtils";
 
 const useTranslationsListStyles = makeStyles({
   root: {
