@@ -8,7 +8,7 @@ import { FormMetadataEditor } from "../components/FormMetadataEditor";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
-import SaveButton from "../components/SaveButton";
+import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
 import FormStatusPanel from "./FormStatusPanel";
@@ -49,7 +49,7 @@ export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onCha
         </Column>
         <Column>
           <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-          <SaveButton onClick={() => onSave(form)} />
+          <PrimaryButtonWithSpinner onClick={() => onSave(form)} />
           <FormStatusPanel formProperties={form.properties} />
           <UserFeedback />
         </Column>

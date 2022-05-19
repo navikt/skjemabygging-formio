@@ -1,7 +1,7 @@
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 
-const SaveButton = ({ onClick }) => {
+const PrimaryButtonWithSpinner = ({ onClick }) => {
   const [isSaving, setIsSaving] = useState(false);
   async function onClickWithSpinner() {
     setIsSaving(true);
@@ -15,4 +15,4 @@ const SaveButton = ({ onClick }) => {
   );
 };
 
-export default SaveButton;
+export default PrimaryButtonWithSpinner;

@@ -8,7 +8,7 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
-import SaveButton from "../components/SaveButton";
+import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { getAvailableLanguages, languagesInNorwegian, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
@@ -105,7 +105,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
             <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath={path} label={""} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
-              <SaveButton
+              <PrimaryButtonWithSpinner
                 onClick={() =>
                   saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title)
                 }

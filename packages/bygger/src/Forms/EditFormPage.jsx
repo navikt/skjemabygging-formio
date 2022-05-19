@@ -10,7 +10,7 @@ import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import NavFormBuilder from "../components/NavFormBuilder";
-import SaveButton from "../components/SaveButton";
+import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
 import FormStatusPanel from "./FormStatusPanel";
@@ -72,7 +72,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-            <SaveButton onClick={() => onSave(form)} />
+            <PrimaryButtonWithSpinner onClick={() => onSave(form)} />
             <FormStatusPanel formProperties={form.properties} />
             <UserFeedback />
           </Column>
