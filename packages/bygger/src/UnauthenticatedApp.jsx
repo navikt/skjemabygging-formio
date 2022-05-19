@@ -17,7 +17,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
     <>
       <NavBar title={"Skjemabygger"} />
       <Pagewrapper>
-        {config.isDevelopment ? (
+        {config?.isDevelopment ? (
           <StyledNavForm src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
         ) : (
           <div>Du er logget ut</div>

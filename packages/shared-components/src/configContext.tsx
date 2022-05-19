@@ -12,7 +12,7 @@ interface AppConfigContextType {
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: string;
   app?: ApplicationName;
-  config?: Record<string, string>;
+  config?: Record<string, string | boolean | object>;
   http?: typeof baseHttp;
 }
 
