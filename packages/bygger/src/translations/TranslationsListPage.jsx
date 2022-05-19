@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormsList } from "../Forms/FormsListPage";
-import { simplifiedForms } from "../Forms/formsListUtils";
+import { asFormMetadata } from "../Forms/formsListUtils";
 import { FormStatus } from "../Forms/FormStatusPanel";
 
 const useTranslationsListStyles = makeStyles({
@@ -73,7 +73,7 @@ export function TranslationsListPage({ loadFormsList }) {
           {!forms ? (
             <p>Finner ingen skjemaer...</p>
           ) : (
-            <FormsList className={classes.list} forms={simplifiedForms(forms)}>
+            <FormsList className={classes.list} formMetadataList={forms?.map(asFormMetadata)}>
               {(form) => (
                 <li className={classes.listItem} key={form.path}>
                   <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>

@@ -2,15 +2,15 @@ import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-sh
 import { determineStatus, Status } from "./FormStatusPanel";
 
 export type SortDirection = "ascending" | "descending";
-export type SimpleNavFormType = Pick<NavFormType, "_id" | "modified" | "title" | "path" | "tags" | "properties"> &
+export type FormMetadata = Pick<NavFormType, "_id" | "modified" | "title" | "path" | "tags" | "properties"> &
   Pick<FormPropertiesType, "skjemanummer" | "tema">;
 
 export function sortFormsByProperty(
-  forms: SimpleNavFormType[],
-  sortingKey: keyof SimpleNavFormType,
+  formMetadataList: FormMetadata[],
+  sortingKey: keyof FormMetadata,
   sortingOrder?: SortDirection
 ) {
-  return forms.sort((a, b) => {
+  return formMetadataList.sort((a, b) => {
     const valueA = a[sortingKey] || "";
     const valueB = b[sortingKey] || "";
     if (sortingOrder === "ascending") {
@@ -22,16 +22,16 @@ export function sortFormsByProperty(
   });
 }
 
-export function sortByFormNumber(forms: SimpleNavFormType[], sortDirection?: SortDirection) {
-  const matchesNavSkjemanummer = (formMetaData: SimpleNavFormType) => {
+export function sortByFormNumber(formMetaDataList: FormMetadata[], sortDirection?: SortDirection) {
+  const matchesNavSkjemanummer = (formMetaData: FormMetadata) => {
     return formMetaData.skjemanummer.match(/^(NAV)\s\d\d-\d\d.\d\d/);
   };
 
   if (sortDirection === "ascending") {
     return [
-      ...sortFormsByProperty(forms.filter(matchesNavSkjemanummer), "skjemanummer", "ascending"),
+      ...sortFormsByProperty(formMetaDataList.filter(matchesNavSkjemanummer), "skjemanummer", "ascending"),
       ...sortFormsByProperty(
-        forms.filter((data) => !matchesNavSkjemanummer(data)),
+        formMetaDataList.filter((data) => !matchesNavSkjemanummer(data)),
         "skjemanummer",
         "descending"
       ),
@@ -40,17 +40,17 @@ export function sortByFormNumber(forms: SimpleNavFormType[], sortDirection?: Sor
   if (sortDirection === "descending") {
     return [
       ...sortFormsByProperty(
-        forms.filter((data) => !matchesNavSkjemanummer(data)),
+        formMetaDataList.filter((data) => !matchesNavSkjemanummer(data)),
         "skjemanummer",
         "ascending"
       ),
-      ...sortFormsByProperty(forms.filter(matchesNavSkjemanummer), "skjemanummer", "descending"),
+      ...sortFormsByProperty(formMetaDataList.filter(matchesNavSkjemanummer), "skjemanummer", "descending"),
     ];
   }
-  return forms;
+  return formMetaDataList;
 }
 
-export function sortByStatus(forms: SimpleNavFormType[], sortOrder?: SortDirection) {
+export function sortByStatus(formMetadataList: FormMetadata[], sortOrder?: SortDirection) {
   const statusOrder: Record<Status, number> = {
     UNKNOWN: 99,
     PUBLISHED: 1,
@@ -65,11 +65,11 @@ export function sortByStatus(forms: SimpleNavFormType[], sortOrder?: SortDirecti
     if (sortOrder === "descending") return statusOrder[thatStatus] - statusOrder[thisStatus];
     return 0;
   };
-  return forms.sort((a, b) => compareStatus(determineStatus(a.properties), determineStatus(b.properties)));
+  return formMetadataList.sort((a, b) => compareStatus(determineStatus(a.properties), determineStatus(b.properties)));
 }
 
-export function simplifiedForms(forms: NavFormType[]): SimpleNavFormType[] {
-  return forms.map((form) => ({
+export function asFormMetadata(form: NavFormType): FormMetadata {
+  return {
     _id: form._id,
     modified: form.modified,
     title: form.title.trim(),
@@ -78,5 +78,5 @@ export function simplifiedForms(forms: NavFormType[]): SimpleNavFormType[] {
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
     properties: form.properties,
-  }));
+  };
 }

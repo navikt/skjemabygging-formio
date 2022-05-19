@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { Down, Up, UpDown } from "@navikt/ds-icons";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useState } from "react";
@@ -8,8 +9,8 @@ import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import {
-  SimpleNavFormType,
-  simplifiedForms,
+  asFormMetadata,
+  FormMetadata,
   sortByFormNumber,
   sortByStatus,
   SortDirection,
@@ -51,17 +52,17 @@ const SortIcon = ({ direction }: { direction?: SortDirection }) => {
 };
 
 interface FormsListProps {
-  forms: SimpleNavFormType[];
-  children: React.FC<SimpleNavFormType>;
+  formMetadataList: FormMetadata[];
+  children: React.FC<FormMetadata>;
 }
 
-const FormsList = ({ forms, children }: FormsListProps) => {
+const FormsList = ({ formMetadataList, children }: FormsListProps) => {
   const classes = useFormsListStyles();
-  const [sortDirection, setSortDirection] = useState<SortDirection | undefined>();
-  const [sortBy, setSortBy] = useState<SortByProperty | undefined>();
+  const [sortDirection, setSortDirection] = useState<SortDirection>();
+  const [sortBy, setSortBy] = useState<SortByProperty>();
 
   const sortedFormsList = useMemo(() => {
-    const sortedByModified = sortFormsByProperty(forms, "modified", "descending");
+    const sortedByModified = sortFormsByProperty(formMetadataList, "modified", "descending");
     switch (sortBy) {
       case "formTitle":
         return sortFormsByProperty(sortedByModified, "title", sortDirection);
@@ -72,7 +73,7 @@ const FormsList = ({ forms, children }: FormsListProps) => {
       default:
         return sortedByModified;
     }
-  }, [forms, sortBy, sortDirection]);
+  }, [formMetadataList, sortBy, sortDirection]);
 
   function nextSortDirection(currentSortDirection?: SortDirection): SortDirection | undefined {
     if (!currentSortDirection) return "ascending";
@@ -132,11 +133,16 @@ const useFormsListPageStyles = makeStyles({
   },
 });
 
-function FormsListPage({ url, loadFormsList }) {
+interface FormsListPageProps {
+  url: string;
+  loadFormsList: () => Promise<NavFormType[]>;
+}
+
+function FormsListPage({ url, loadFormsList }: FormsListPageProps) {
   const history = useHistory();
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
-  const [forms, setForms] = useState();
+  const [forms, setForms] = useState<NavFormType[]>();
 
   useEffect(() => {
     loadFormsList()
@@ -175,7 +181,7 @@ function FormsListPage({ url, loadFormsList }) {
       </ActionRow>
       <nav className={classes.root}>
         <Undertittel className="margin-bottom-default">Velg skjema:</Undertittel>
-        <FormsList forms={simplifiedForms(forms)}>
+        <FormsList formMetadataList={forms.map(asFormMetadata)}>
           {(form) => (
             <li className={classes.listItem} key={form.path}>
               <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
