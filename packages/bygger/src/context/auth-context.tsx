@@ -33,7 +33,7 @@ function AuthProvider(props) {
       setUserData(null);
       await Formiojs.logout();
     } finally {
-      http?.get("/oauth2/logout", {}, { redirectToLocation: true });
+      http?.get("/oauth2/logout", {}, { redirectToLocation: true, useReplaceOnRedirect: true });
     }
   };
   return <AuthContext.Provider value={{ userData, login, logout }} {...props} />;
