@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
@@ -9,6 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import SaveButton from "../../components/SaveButton";
 import UserFeedback from "../../components/UserFeedback";
 import { getAvailableLanguages, languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
@@ -266,8 +267,8 @@ const GlobalTranslationsPage = ({
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <Hovedknapp
-                onClick={() => {
+              <SaveButton
+                onClick={async () => {
                   if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
                     const duplicatedOriginalText = hasDuplicatedOriginalText();
                     alert(
@@ -278,7 +279,7 @@ const GlobalTranslationsPage = ({
                       } (${duplicatedOriginalText})`
                     );
                   } else {
-                    saveTranslation(
+                    return saveTranslation(
                       globalTranslationsWithLanguagecodeAndTag?.id,
                       languageCode,
                       globalTranslationsToSave(selectedTag),
@@ -286,9 +287,7 @@ const GlobalTranslationsPage = ({
                     );
                   }
                 }}
-              >
-                Lagre
-              </Hovedknapp>
+              />
               <UserFeedback />
             </Column>
           </div>

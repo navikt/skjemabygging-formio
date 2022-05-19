@@ -306,7 +306,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
   };
-  const saveGlobalTranslation = (
+  const saveGlobalTranslation = async (
     translationId: string | undefined,
     languageCode: Language,
     translations: ScopedTranslationMap,
@@ -323,7 +323,7 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
           return translationsToSave;
         }
       }, {});
-      saveTranslation(translationId, languageCode, i18n, "global", "global", undefined, tag);
+      return saveTranslation(translationId, languageCode, i18n, "global", "global", undefined, tag);
     } else {
       userAlerter.setErrorMessage("Skjemaet ble ikke lagret. Du har ikke gjort noen endringer.");
     }
