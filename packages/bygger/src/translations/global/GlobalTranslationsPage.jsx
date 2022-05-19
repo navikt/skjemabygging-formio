@@ -197,6 +197,24 @@ const GlobalTranslationsPage = ({
     });
   };
 
+  const onSaveGlobalTranslations = async () => {
+    if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+      const duplicatedOriginalText = hasDuplicatedOriginalText();
+      alert(
+        `Du har fortsatt ${
+          duplicatedOriginalText.length > 1 ? "flere dupliserte original tekster" : "en duplisert original tekst"
+        } (${duplicatedOriginalText})`
+      );
+    } else {
+      return saveTranslation(
+        globalTranslationsWithLanguagecodeAndTag?.id,
+        languageCode,
+        globalTranslationsToSave(selectedTag),
+        selectedTag
+      );
+    }
+  };
+
   return (
     <>
       <AppLayoutWithContext
@@ -267,27 +285,7 @@ const GlobalTranslationsPage = ({
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <SaveButton
-                onClick={async () => {
-                  if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
-                    const duplicatedOriginalText = hasDuplicatedOriginalText();
-                    alert(
-                      `Du har fortsatt ${
-                        duplicatedOriginalText.length > 1
-                          ? "flere dupliserte original tekster"
-                          : "en duplisert original tekst"
-                      } (${duplicatedOriginalText})`
-                    );
-                  } else {
-                    return saveTranslation(
-                      globalTranslationsWithLanguagecodeAndTag?.id,
-                      languageCode,
-                      globalTranslationsToSave(selectedTag),
-                      selectedTag
-                    );
-                  }
-                }}
-              />
+              <SaveButton onClick={onSaveGlobalTranslations} />
               <UserFeedback />
             </Column>
           </div>
