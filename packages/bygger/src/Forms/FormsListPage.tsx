@@ -3,11 +3,11 @@ import { Down, Up, UpDown } from "@navikt/ds-icons";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
-import { SimpleNavFormType, simplifiedForms, sortFormsByStatus } from "./formsListUtils";
+import { SimpleNavFormType, simplifiedForms, sortByStatus, SortDirection } from "./formsListUtils";
 import { FormStatus } from "./FormStatusPanel";
 
 const useFormsListStyles = makeStyles({
@@ -35,22 +35,11 @@ const useFormsListStyles = makeStyles({
   },
 });
 
-const SortByProperty = {
-  formNumber: "formNumber",
-  formTitle: "formTitle",
-  formStatus: "formStatus",
-  none: "none",
-};
+type SortByProperty = "formNumber" | "formTitle" | "formStatus" | "none";
 
-const SortDirection = {
-  ascending: "ascending",
-  descending: "descending",
-  none: "none",
-};
-
-const SortIcon = ({ direction }) => {
-  if (direction === SortDirection.ascending) return <Up />;
-  if (direction === SortDirection.descending) return <Down />;
+const SortIcon = ({ direction }: { direction?: SortDirection }) => {
+  if (direction === "ascending") return <Up />;
+  if (direction === "descending") return <Down />;
   return <UpDown />;
 };
 
@@ -61,108 +50,100 @@ interface FormsListProps {
 
 const FormsList = ({ forms, children }: FormsListProps) => {
   const classes = useFormsListStyles();
-  const [sortedForms, setSortedForms] = useState<SimpleNavFormType[]>([]);
-  const [toggleFormNumber, setToggleFormNumber] = useState("");
-  const [toggleFormTitle, setToggleFormTitle] = useState("");
-  const [toggleFormStatus, setToggleFormStatus] = useState("");
-  const [sortDirection, setSortDirection] = useState(SortDirection.none);
-  const [sortBy, setSortBy] = useState(SortByProperty.none);
+  const [sortDirection, setSortDirection] = useState<SortDirection | undefined>();
+  const [sortBy, setSortBy] = useState<SortByProperty | undefined>();
 
-  function sortFormByFormNumber(forms: SimpleNavFormType[]) {
-    const filteredInResult: SimpleNavFormType[] = [];
-    const filteredOutResult: SimpleNavFormType[] = [];
-    for (const form of forms) {
-      (form["skjemanummer"].match(/(NAV)\s\d\d-\d\d.\d\d/) ? filteredInResult : filteredOutResult).push(form);
-    }
+  function sortByFormNumber(forms: SimpleNavFormType[], sortDirection?: SortDirection) {
+    const matchesNavSkjemanummer = (formMetaData: SimpleNavFormType) => {
+      return formMetaData.skjemanummer.match(/^(NAV)\s\d\d-\d\d.\d\d/);
+    };
 
-    if (toggleFormNumber === "ascending") {
-      setToggleFormNumber("decending");
-      setSortedForms([
-        ...sortForm(filteredOutResult, "skjemanummer", "ascending"),
-        ...sortForm(filteredInResult, "skjemanummer", "decending"),
-      ]);
-    } else {
-      setToggleFormNumber("ascending");
-      setSortedForms([
-        ...sortForm(filteredInResult, "skjemanummer", "ascending"),
-        ...sortForm(filteredOutResult, "skjemanummer", "decending"),
-      ]);
+    if (sortDirection === "ascending") {
+      return [
+        ...sortFormsByProperty(forms.filter(matchesNavSkjemanummer), "skjemanummer", "ascending"),
+        ...sortFormsByProperty(
+          forms.filter((data) => !matchesNavSkjemanummer(data)),
+          "skjemanummer",
+          "descending"
+        ),
+      ];
     }
+    if (sortDirection === "descending") {
+      return [
+        ...sortFormsByProperty(
+          forms.filter((data) => !matchesNavSkjemanummer(data)),
+          "skjemanummer",
+          "ascending"
+        ),
+        ...sortFormsByProperty(forms.filter(matchesNavSkjemanummer), "skjemanummer", "descending"),
+      ];
+    }
+    return forms;
   }
 
-  function sortFormByFormTitle(forms) {
-    if (toggleFormTitle === "ascending") {
-      setToggleFormTitle("decending");
-      setSortedForms(sortForm(forms, "title", "decending"));
-    } else {
-      setToggleFormTitle("ascending");
-      setSortedForms(sortForm(forms, "title", "ascending"));
-    }
-  }
-
-  const sortForm = (forms, sortingKey, sortingOrder) =>
+  const sortFormsByProperty = (
+    forms: SimpleNavFormType[],
+    sortingKey: keyof SimpleNavFormType,
+    sortingOrder?: SortDirection
+  ) =>
     forms.sort((a, b) => {
+      const valueA = a[sortingKey] || "";
+      const valueB = b[sortingKey] || "";
       if (sortingOrder === "ascending") {
-        return a[sortingKey] < b[sortingKey] ? -1 : 1;
-      } else {
-        return a[sortingKey] < b[sortingKey] ? 1 : -1;
+        return valueA < valueB ? -1 : 1;
+      } else if (sortingOrder === "descending") {
+        return valueA < valueB ? 1 : -1;
       }
+      return 0;
     });
 
-  function nextSortDirection(currentSortDirection) {
-    if (currentSortDirection === SortDirection.none) return SortDirection.ascending;
-    if (currentSortDirection === SortDirection.ascending) return SortDirection.descending;
-    return SortDirection.none;
+  function nextSortDirection(currentSortDirection?: SortDirection): SortDirection | undefined {
+    if (!currentSortDirection) return "ascending";
+    if (currentSortDirection === "ascending") return "descending";
+    return undefined;
   }
 
-  function toggleSortState(selectedProperty) {
+  function toggleSortState(selectedProperty: SortByProperty) {
     if (sortBy !== selectedProperty) {
       setSortBy(selectedProperty);
-      setSortDirection(SortDirection.ascending);
+      setSortDirection("ascending");
     } else {
       setSortDirection(nextSortDirection(sortDirection));
-      if (sortDirection === SortDirection.none) setSortBy(SortByProperty.none);
+      if (!sortDirection) setSortBy(undefined);
     }
   }
+
+  const sortedFormsList = useMemo(() => {
+    const sortedByModified = sortFormsByProperty(forms, "modified", "descending");
+    switch (sortBy) {
+      case "formTitle":
+        return sortFormsByProperty(sortedByModified, "title", sortDirection);
+      case "formNumber":
+        return sortByFormNumber(sortedByModified, sortDirection);
+      case "formStatus":
+        return sortByStatus(sortedByModified, sortDirection);
+      default:
+        return sortedByModified;
+    }
+  }, [forms, sortBy, sortDirection]);
 
   return (
     <ul className={classes.list} data-testid="forms-list">
       <li className={classes.listTitles}>
-        <div
-          className={classes.listTitleItems}
-          onClick={() => {
-            toggleSortState(SortByProperty.formTitle);
-            sortFormByFormNumber(forms); // TODO: calculate on render instead of storing as state
-          }}
-        >
+        <div className={classes.listTitleItems} onClick={() => toggleSortState("formNumber")}>
           <Undertittel className={classes.listTitle}>Skjemanr.</Undertittel>
-          <SortIcon direction={sortBy === SortByProperty.formTitle ? sortDirection : SortDirection.none} />
+          <SortIcon direction={sortBy === "formNumber" ? sortDirection : undefined} />
         </div>
-        <div
-          className={classes.listTitleItems}
-          onClick={() => {
-            toggleSortState(SortByProperty.formNumber);
-            sortFormByFormTitle(forms); // TODO: calculate on render instead of storing as state
-          }}
-        >
+        <div className={classes.listTitleItems} onClick={() => toggleSortState("formTitle")}>
           <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
-          <SortIcon direction={sortBy === SortByProperty.formNumber ? sortDirection : SortDirection.none} />
+          <SortIcon direction={sortBy === "formTitle" ? sortDirection : undefined} />
         </div>
-        <div
-          className={classes.listTitleItems}
-          onClick={() => {
-            toggleSortState(SortByProperty.formStatus);
-            setToggleFormStatus(toggleFormStatus === "ascending" ? "descending" : "ascending");
-            setSortedForms(sortFormsByStatus(forms, toggleFormStatus === "ascending")); // TODO: calculate on render instead of storing as state
-          }}
-        >
+        <div className={classes.listTitleItems} onClick={() => toggleSortState("formStatus")}>
           <Undertittel className={classes.statusListTitle}>Status</Undertittel>
-          <SortIcon direction={sortBy === SortByProperty.formStatus ? sortDirection : SortDirection.none} />
+          <SortIcon direction={sortBy === "formStatus" ? sortDirection : undefined} />
         </div>
       </li>
-      {toggleFormNumber === "" && toggleFormTitle === "" && toggleFormStatus === ""
-        ? forms.sort((a, b) => ((a.modified || 0) < (b.modified || 0) ? 1 : -1)).map((form) => children(form))
-        : sortedForms.map((form) => children(form))}
+      {sortedFormsList.map(children)}
     </ul>
   );
 };
