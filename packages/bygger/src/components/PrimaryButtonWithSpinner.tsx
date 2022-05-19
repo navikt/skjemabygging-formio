@@ -1,7 +1,7 @@
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 
-const PrimaryButtonWithSpinner = ({ onClick }) => {
+const PrimaryButtonWithSpinner = ({ children, onClick }) => {
   const [isSaving, setIsSaving] = useState(false);
   async function onClickWithSpinner() {
     setIsSaving(true);
@@ -10,7 +10,7 @@ const PrimaryButtonWithSpinner = ({ onClick }) => {
   }
   return (
     <Hovedknapp onClick={onClickWithSpinner} spinner={isSaving}>
-      Lagre
+      {children}
     </Hovedknapp>
   );
 };

@@ -285,7 +285,7 @@ const GlobalTranslationsPage = ({
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <PrimaryButtonWithSpinner onClick={onSaveGlobalTranslations} />
+              <PrimaryButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</PrimaryButtonWithSpinner>
               <UserFeedback />
             </Column>
           </div>

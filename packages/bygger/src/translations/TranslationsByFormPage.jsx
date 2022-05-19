@@ -109,7 +109,9 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
                 onClick={() =>
                   saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title)
                 }
-              />
+              >
+                Lagre
+              </PrimaryButtonWithSpinner>
               <UserFeedback />
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}

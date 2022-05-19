@@ -72,7 +72,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-            <PrimaryButtonWithSpinner onClick={() => onSave(form)} />
+            <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
             <FormStatusPanel formProperties={form.properties} />
             <UserFeedback />
           </Column>
