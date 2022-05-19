@@ -35,6 +35,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     setHasUnsavedChanged(false);
     const savedForm = await onSave(form);
     setForm(savedForm);
+    return savedForm;
   };
 
   const publishForm = async (form) => {
