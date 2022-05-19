@@ -54,8 +54,8 @@ export function sortByStatus(forms: SimpleNavFormType[], sortOrder?: SortDirecti
   const statusOrder: Record<Status, number> = {
     UNKNOWN: 99,
     PUBLISHED: 1,
-    DRAFT: 2,
-    PENDING: 3,
+    PENDING: 2,
+    DRAFT: 3,
   };
   const compareStatus = (thisStatus, thatStatus) => {
     if (thisStatus === thatStatus) return 0;

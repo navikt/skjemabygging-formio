@@ -85,8 +85,9 @@ const FormsList = ({ forms, children }: FormsListProps) => {
       setSortBy(selectedProperty);
       setSortDirection("ascending");
     } else {
-      setSortDirection(nextSortDirection(sortDirection));
-      if (!sortDirection) setSortBy(undefined);
+      const newSortDirection = nextSortDirection(sortDirection);
+      setSortDirection(newSortDirection);
+      if (!newSortDirection) setSortBy(undefined);
     }
   }
 
