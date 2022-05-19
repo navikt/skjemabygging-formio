@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { CollapseFilled, ExpandFilled } from "@navikt/ds-icons";
+import { Down, Up, UpDown } from "@navikt/ds-icons";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
-import { simplifiedForms, sortFormsByStatus } from "./formsListUtils";
+import { SimpleNavFormType, simplifiedForms, sortFormsByStatus } from "./formsListUtils";
 import { FormStatus } from "./FormStatusPanel";
 
 const useFormsListStyles = makeStyles({
@@ -24,25 +24,53 @@ const useFormsListStyles = makeStyles({
   listTitleItems: {
     display: "flex",
     alignItems: "center",
+    cursor: "pointer",
   },
   statusListTitle: {
     paddingLeft: "2rem",
+    marginRight: "0.5rem",
   },
   listTitle: {
     marginRight: "0.5rem",
   },
 });
 
-const FormsList = ({ forms, children }) => {
+const SortByProperty = {
+  formNumber: "formNumber",
+  formTitle: "formTitle",
+  formStatus: "formStatus",
+  none: "none",
+};
+
+const SortDirection = {
+  ascending: "ascending",
+  descending: "descending",
+  none: "none",
+};
+
+const SortIcon = ({ direction }) => {
+  if (direction === SortDirection.ascending) return <Up />;
+  if (direction === SortDirection.descending) return <Down />;
+  return <UpDown />;
+};
+
+interface FormsListProps {
+  forms: SimpleNavFormType[];
+  children: React.FC<SimpleNavFormType>;
+}
+
+const FormsList = ({ forms, children }: FormsListProps) => {
   const classes = useFormsListStyles();
-  const [sortedForms, setSortedForms] = useState([]);
+  const [sortedForms, setSortedForms] = useState<SimpleNavFormType[]>([]);
   const [toggleFormNumber, setToggleFormNumber] = useState("");
   const [toggleFormTitle, setToggleFormTitle] = useState("");
   const [toggleFormStatus, setToggleFormStatus] = useState("");
+  const [sortDirection, setSortDirection] = useState(SortDirection.none);
+  const [sortBy, setSortBy] = useState(SortByProperty.none);
 
-  function sortFormByFormNumber(forms) {
-    const filteredInResult = [];
-    const filteredOutResult = [];
+  function sortFormByFormNumber(forms: SimpleNavFormType[]) {
+    const filteredInResult: SimpleNavFormType[] = [];
+    const filteredOutResult: SimpleNavFormType[] = [];
     for (const form of forms) {
       (form["skjemanummer"].match(/(NAV)\s\d\d-\d\d.\d\d/) ? filteredInResult : filteredOutResult).push(form);
     }
@@ -81,30 +109,59 @@ const FormsList = ({ forms, children }) => {
       }
     });
 
+  function nextSortDirection(currentSortDirection) {
+    if (currentSortDirection === SortDirection.none) return SortDirection.ascending;
+    if (currentSortDirection === SortDirection.ascending) return SortDirection.descending;
+    return SortDirection.none;
+  }
+
+  function toggleSortState(selectedProperty) {
+    if (sortBy !== selectedProperty) {
+      setSortBy(selectedProperty);
+      setSortDirection(SortDirection.ascending);
+    } else {
+      setSortDirection(nextSortDirection(sortDirection));
+      if (sortDirection === SortDirection.none) setSortBy(SortByProperty.none);
+    }
+  }
+
   return (
     <ul className={classes.list} data-testid="forms-list">
       <li className={classes.listTitles}>
-        <div className={classes.listTitleItems} onClick={() => sortFormByFormNumber(forms)}>
+        <div
+          className={classes.listTitleItems}
+          onClick={() => {
+            toggleSortState(SortByProperty.formTitle);
+            sortFormByFormNumber(forms); // TODO: calculate on render instead of storing as state
+          }}
+        >
           <Undertittel className={classes.listTitle}>Skjemanr.</Undertittel>
-          {toggleFormNumber === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
-        </div>
-        <div className={classes.listTitleItems} onClick={() => sortFormByFormTitle(forms)}>
-          <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
-          {toggleFormTitle === "ascending" ? <CollapseFilled /> : <ExpandFilled />}
+          <SortIcon direction={sortBy === SortByProperty.formTitle ? sortDirection : SortDirection.none} />
         </div>
         <div
           className={classes.listTitleItems}
           onClick={() => {
+            toggleSortState(SortByProperty.formNumber);
+            sortFormByFormTitle(forms); // TODO: calculate on render instead of storing as state
+          }}
+        >
+          <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
+          <SortIcon direction={sortBy === SortByProperty.formNumber ? sortDirection : SortDirection.none} />
+        </div>
+        <div
+          className={classes.listTitleItems}
+          onClick={() => {
+            toggleSortState(SortByProperty.formStatus);
             setToggleFormStatus(toggleFormStatus === "ascending" ? "descending" : "ascending");
-            setSortedForms(sortFormsByStatus(forms, toggleFormStatus === "ascending"));
+            setSortedForms(sortFormsByStatus(forms, toggleFormStatus === "ascending")); // TODO: calculate on render instead of storing as state
           }}
         >
           <Undertittel className={classes.statusListTitle}>Status</Undertittel>
-          {toggleFormStatus ? <CollapseFilled /> : <ExpandFilled />}
+          <SortIcon direction={sortBy === SortByProperty.formStatus ? sortDirection : SortDirection.none} />
         </div>
       </li>
       {toggleFormNumber === "" && toggleFormTitle === "" && toggleFormStatus === ""
-        ? forms.sort((a, b) => (a.modified < b.modified ? 1 : -1)).map((form) => children(form))
+        ? forms.sort((a, b) => ((a.modified || 0) < (b.modified || 0) ? 1 : -1)).map((form) => children(form))
         : sortedForms.map((form) => children(form))}
     </ul>
   );
