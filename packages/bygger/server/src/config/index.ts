@@ -23,6 +23,8 @@ const env = (name: string, devValue?: string): string => {
 const config: ConfigType = {
   azure: {
     openidTokenEndpoint: env("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", devAzure.openidTokenEndpoint),
+    openidConfigJwksUri: env("AZURE_OPENID_CONFIG_JWKS_URI", devAzure.openidConfigJwksUri),
+    openidConfigIssuer: env("AZURE_OPENID_CONFIG_ISSUER"),
     clientId: env("AZURE_APP_CLIENT_ID", devAzure.clientId),
     clientSecret: env("AZURE_APP_CLIENT_SECRET"),
   },

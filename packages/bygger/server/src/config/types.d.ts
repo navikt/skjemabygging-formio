@@ -1,5 +1,7 @@
 export type AzureConfig = {
   openidTokenEndpoint: string;
+  openidConfigJwksUri: string;
+  openidConfigIssuer: string;
   clientId: string;
   clientSecret: string;
 };
