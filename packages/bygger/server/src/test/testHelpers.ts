@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.TEST_JWT_SECRET!;
 
 export function mockResponse(): Response {
   return {
@@ -20,3 +23,15 @@ export function mockRequest({ headers = {}, params = {}, body }: MockRequestData
     body,
   } as unknown as Request;
 }
+
+export const createMockJwt = (payload: object, expiresIn = "5m") => {
+  const obj = {
+    token_type: "Bearer",
+    ...payload,
+  };
+  return createAccessToken(obj, expiresIn);
+};
+
+const createAccessToken = (payload: object, expiresIn: string) => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
+};
