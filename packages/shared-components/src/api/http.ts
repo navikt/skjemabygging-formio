@@ -17,7 +17,6 @@ interface FetchHeader {
 
 interface FetchOptions {
   redirectToLocation?: boolean;
-  useReplaceOnRedirect?: boolean;
 }
 
 class HttpError extends Error {}
@@ -83,11 +82,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
     const location = response.headers.get("Location");
     const { status } = response;
     if (location && (status === 201 || (status >= 300 && status <= 399))) {
-      if (opts.useReplaceOnRedirect) {
-        window.location.replace(location);
-      } else {
-        window.location.href = location;
-      }
+      window.location.href = location;
     }
   }
 

@@ -13,18 +13,6 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use("/internal", internalRouter);
 app.use("/api", authHandler, apiRouter);
 
-if (config.isDevelopment) {
-  // simulate logout on local machine
-  const HOST_REGEX = /(http:\/\/localhost:\d.*\/).*/;
-  app.get("/oauth2/logout", (req, res) => {
-    res.header({
-      "Access-Control-Expose-Headers": "Location",
-      Location: HOST_REGEX.exec(req.get("referer"))[1],
-    });
-    res.sendStatus(307);
-  });
-}
-
 if (config.isProduction) {
   // serve built app in production (served by webpack dev server in development)
   app.use(express.static(buildDirectory));

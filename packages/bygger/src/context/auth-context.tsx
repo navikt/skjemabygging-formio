@@ -1,4 +1,3 @@
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import Formiojs from "formiojs/Formio";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -22,7 +21,6 @@ const AuthContext = React.createContext<ContextProps>({});
 function AuthProvider(props) {
   const [userData, setUserData] = useState(props.user || Formiojs.getUser());
   const history = useHistory();
-  const { http } = useAppConfig();
 
   const login = (user) => {
     setUserData(user);
@@ -33,7 +31,8 @@ function AuthProvider(props) {
       setUserData(null);
       await Formiojs.logout();
     } finally {
-      http?.get("/oauth2/logout", {}, { redirectToLocation: true, useReplaceOnRedirect: true });
+      const { origin } = window.location;
+      window.location.replace(`${origin}/oauth2/logout`);
     }
   };
   return <AuthContext.Provider value={{ userData, login, logout }} {...props} />;
