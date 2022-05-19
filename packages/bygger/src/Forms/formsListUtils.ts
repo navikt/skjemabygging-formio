@@ -4,7 +4,7 @@ import { determineStatus, Status } from "./FormStatusPanel";
 export type SimpleNavFormType = Pick<NavFormType, "_id" | "modified" | "title" | "path" | "tags" | "properties"> &
   Pick<FormPropertiesType, "skjemanummer" | "tema">;
 
-export function sortFormsByStatus(forms: NavFormType[], ascending = true) {
+export function sortFormsByStatus(forms: SimpleNavFormType[], ascending = true) {
   const statusOrder: Record<Status, number> = {
     UNKNOWN: 99,
     PUBLISHED: 1,
