@@ -3,6 +3,15 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { ByggerRequest, User } from "../types";
 
+function toExpiredDateString(exp?: number) {
+  if (exp) {
+    const expDate = new Date(0);
+    expDate.setUTCSeconds(exp);
+    return expDate.toLocaleString();
+  }
+  return undefined;
+}
+
 const authHandler = (req: ByggerRequest, res: Response, next: NextFunction) => {
   if (!config.isDevelopment) {
     const authHeader = req.header("Authorization");
@@ -27,7 +36,7 @@ const authHandler = (req: ByggerRequest, res: Response, next: NextFunction) => {
       return res.sendStatus(401);
     }
 
-    console.log("Validation of jwt token succeeded");
+    console.log(`Validation of jwt token succeeded (expires ${toExpiredDateString(tokenContent.exp)})`);
     req.getUser = () => ({
       name: tokenContent.name,
       preferredUsername: tokenContent.preferred_username,
