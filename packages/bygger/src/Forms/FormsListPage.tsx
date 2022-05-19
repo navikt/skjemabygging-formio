@@ -7,7 +7,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
-import { SimpleNavFormType, simplifiedForms, sortByStatus, SortDirection } from "./formsListUtils";
+import {
+  SimpleNavFormType,
+  simplifiedForms,
+  sortByFormNumber,
+  sortByStatus,
+  SortDirection,
+  sortFormsByProperty,
+} from "./formsListUtils";
 import { FormStatus } from "./FormStatusPanel";
 
 const useFormsListStyles = makeStyles({
@@ -53,49 +60,19 @@ const FormsList = ({ forms, children }: FormsListProps) => {
   const [sortDirection, setSortDirection] = useState<SortDirection | undefined>();
   const [sortBy, setSortBy] = useState<SortByProperty | undefined>();
 
-  function sortByFormNumber(forms: SimpleNavFormType[], sortDirection?: SortDirection) {
-    const matchesNavSkjemanummer = (formMetaData: SimpleNavFormType) => {
-      return formMetaData.skjemanummer.match(/^(NAV)\s\d\d-\d\d.\d\d/);
-    };
-
-    if (sortDirection === "ascending") {
-      return [
-        ...sortFormsByProperty(forms.filter(matchesNavSkjemanummer), "skjemanummer", "ascending"),
-        ...sortFormsByProperty(
-          forms.filter((data) => !matchesNavSkjemanummer(data)),
-          "skjemanummer",
-          "descending"
-        ),
-      ];
+  const sortedFormsList = useMemo(() => {
+    const sortedByModified = sortFormsByProperty(forms, "modified", "descending");
+    switch (sortBy) {
+      case "formTitle":
+        return sortFormsByProperty(sortedByModified, "title", sortDirection);
+      case "formNumber":
+        return sortByFormNumber(sortedByModified, sortDirection);
+      case "formStatus":
+        return sortByStatus(sortedByModified, sortDirection);
+      default:
+        return sortedByModified;
     }
-    if (sortDirection === "descending") {
-      return [
-        ...sortFormsByProperty(
-          forms.filter((data) => !matchesNavSkjemanummer(data)),
-          "skjemanummer",
-          "ascending"
-        ),
-        ...sortFormsByProperty(forms.filter(matchesNavSkjemanummer), "skjemanummer", "descending"),
-      ];
-    }
-    return forms;
-  }
-
-  const sortFormsByProperty = (
-    forms: SimpleNavFormType[],
-    sortingKey: keyof SimpleNavFormType,
-    sortingOrder?: SortDirection
-  ) =>
-    forms.sort((a, b) => {
-      const valueA = a[sortingKey] || "";
-      const valueB = b[sortingKey] || "";
-      if (sortingOrder === "ascending") {
-        return valueA < valueB ? -1 : 1;
-      } else if (sortingOrder === "descending") {
-        return valueA < valueB ? 1 : -1;
-      }
-      return 0;
-    });
+  }, [forms, sortBy, sortDirection]);
 
   function nextSortDirection(currentSortDirection?: SortDirection): SortDirection | undefined {
     if (!currentSortDirection) return "ascending";
@@ -112,20 +89,6 @@ const FormsList = ({ forms, children }: FormsListProps) => {
       if (!sortDirection) setSortBy(undefined);
     }
   }
-
-  const sortedFormsList = useMemo(() => {
-    const sortedByModified = sortFormsByProperty(forms, "modified", "descending");
-    switch (sortBy) {
-      case "formTitle":
-        return sortFormsByProperty(sortedByModified, "title", sortDirection);
-      case "formNumber":
-        return sortByFormNumber(sortedByModified, sortDirection);
-      case "formStatus":
-        return sortByStatus(sortedByModified, sortDirection);
-      default:
-        return sortedByModified;
-    }
-  }, [forms, sortBy, sortDirection]);
 
   return (
     <ul className={classes.list} data-testid="forms-list">
