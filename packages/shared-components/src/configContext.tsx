@@ -12,6 +12,7 @@ interface AppConfigContextType {
   featureToggles?: FeatureTogglesMap;
   submissionMethod?: string;
   app?: ApplicationName;
+  config?: Record<string, string>;
   http?: typeof baseHttp;
 }
 
@@ -27,11 +28,12 @@ function AppConfigProvider({
   featureToggles,
   submissionMethod,
   app,
+  config,
   http = baseHttp,
 }: AppConfigProviderProps) {
   return (
     <AppConfigContext.Provider
-      value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, app, http }}
+      value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, app, config, http }}
     >
       {children}
     </AppConfigContext.Provider>

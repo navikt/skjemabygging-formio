@@ -37,6 +37,7 @@ const renderReact = (config) => {
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
           featureToggles={featureToggles}
+          config={config}
           app="bygger"
         >
           <AuthProvider user={config.user}>

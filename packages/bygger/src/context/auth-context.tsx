@@ -30,8 +30,8 @@ function AuthProvider(props) {
   };
   const logout = async () => {
     try {
-      await Formiojs.logout();
       setUserData(null);
+      await Formiojs.logout();
     } finally {
       http?.get("/oauth2/logout", {}, { redirectToLocation: true });
     }

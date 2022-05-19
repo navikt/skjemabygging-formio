@@ -13,6 +13,7 @@ const config = (req: ByggerRequest, res: Response) => {
     fyllutBaseUrl: appConfig.fyllut.baseUrl,
     pusherCluster: appConfig.pusher.cluster,
     pusherKey: appConfig.pusher.key,
+    isDevelopment: appConfig.isDevelopment,
     user,
   });
 };
