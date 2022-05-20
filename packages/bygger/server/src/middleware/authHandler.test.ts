@@ -31,9 +31,21 @@ describe("authHandler", () => {
     expect(res.sendStatus).toHaveBeenCalledWith(401);
   });
 
-  it("reject request when jwt is (soon) expired", async () => {
+  it("rejects request when jwt is (soon) expired", async () => {
     const req = mockRequest({
       headers: { Authorization: `Bearer ${await createMockJwt(defaultPayload, key, "5s")}` },
+    }) as ByggerRequest;
+    const res = mockResponse();
+    const next = jest.fn();
+    await authHandler(req, res, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res.sendStatus).toHaveBeenCalledWith(401);
+  });
+
+  it("rejects request when audience is wrong", async () => {
+    const token = await createMockJwt({ ...defaultPayload, aud: "random" }, key, "5s");
+    const req = mockRequest({
+      headers: { Authorization: `Bearer ${token}` },
     }) as ByggerRequest;
     const res = mockResponse();
     const next = jest.fn();
