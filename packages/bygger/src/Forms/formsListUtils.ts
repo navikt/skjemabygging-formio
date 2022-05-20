@@ -2,8 +2,8 @@ import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-sh
 import { determineStatus, Status } from "./FormStatusPanel";
 
 export type SortDirection = "ascending" | "descending";
-export type FormMetadata = Pick<NavFormType, "_id" | "modified" | "title" | "path" | "tags" | "properties"> &
-  Pick<FormPropertiesType, "skjemanummer" | "tema">;
+export type FormMetadata = Pick<NavFormType, "_id" | "title" | "path" | "tags"> &
+  Pick<FormPropertiesType, "skjemanummer" | "modified" | "published" | "tema"> & { status: Status };
 
 export function sortFormsByProperty(
   formMetadataList: FormMetadata[],
@@ -65,18 +65,19 @@ export function sortByStatus(formMetadataList: FormMetadata[], sortOrder?: SortD
     if (sortOrder === "descending") return statusOrder[thatStatus] - statusOrder[thisStatus];
     return 0;
   };
-  return formMetadataList.sort((a, b) => compareStatus(determineStatus(a.properties), determineStatus(b.properties)));
+  return formMetadataList.sort((a, b) => compareStatus(a.status, b.status));
 }
 
 export function asFormMetadata(form: NavFormType): FormMetadata {
   return {
     _id: form._id,
-    modified: form.modified,
+    modified: form.properties.modified || form.modified,
+    published: form.properties.published,
     title: form.title.trim(),
     path: form.path,
     tags: form.tags,
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
-    properties: form.properties,
+    status: determineStatus(form.properties),
   };
 }

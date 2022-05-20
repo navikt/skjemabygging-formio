@@ -182,15 +182,15 @@ function FormsListPage({ url, loadFormsList }: FormsListPageProps) {
       <nav className={classes.root}>
         <Undertittel className="margin-bottom-default">Velg skjema:</Undertittel>
         <FormsList formMetadataList={forms.map(asFormMetadata)}>
-          {(form) => (
-            <li className={classes.listItem} key={form.path}>
-              <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
-                {form.skjemanummer}
+          {(formMetadata) => (
+            <li className={classes.listItem} key={formMetadata.path}>
+              <Link className="lenke" data-testid="editLink" to={`${url}/${formMetadata.path}/edit`}>
+                {formMetadata.skjemanummer}
               </Link>
-              <Link className="lenke" data-testid="editLink" to={`${url}/${form.path}/edit`}>
-                {form.title}
+              <Link className="lenke" data-testid="editLink" to={`${url}/${formMetadata.path}/edit`}>
+                {formMetadata.title}
               </Link>
-              <FormStatus formProperties={form.properties} size={"small"} />
+              <FormStatus status={formMetadata.status} size={"small"} />
             </li>
           )}
         </FormsList>

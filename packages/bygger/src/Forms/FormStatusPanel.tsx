@@ -78,9 +78,8 @@ export const FormStatusIndicator = ({ status, size }: { status: Status; size: St
   }
 };
 
-export const FormStatus = ({ formProperties, size }: { formProperties: FormPropertiesType; size: StreetLightSize }) => {
+export const FormStatus = ({ status, size }: { status: Status; size: StreetLightSize }) => {
   const styles = useStatusStyles({ size });
-  const status = determineStatus(formProperties);
   const statusTexts: Record<Status, string> = {
     PUBLISHED: "Publisert",
     PENDING: "Upubliserte endringer",
@@ -122,7 +121,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
         <Element>Status:</Element>
-        <FormStatus formProperties={formProperties} size={"large"} />
+        <FormStatus status={determineStatus(formProperties)} size={"large"} />
       </div>
       <Timestamp label={"Sist lagret:"} timestamp={modified} />
       <Timestamp label={"Sist publisert:"} timestamp={published} />

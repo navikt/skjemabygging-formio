@@ -74,15 +74,15 @@ export function TranslationsListPage({ loadFormsList }) {
             <p>Finner ingen skjemaer...</p>
           ) : (
             <FormsList className={classes.list} formMetadataList={forms?.map(asFormMetadata)}>
-              {(form) => (
-                <li className={classes.listItem} key={form.path}>
-                  <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
-                    {form.skjemanummer}
+              {(formMetadata) => (
+                <li className={classes.listItem} key={formMetadata.path}>
+                  <Link className="lenke" data-testid="editLink" to={`/translations/${formMetadata.path}`}>
+                    {formMetadata.skjemanummer}
                   </Link>
-                  <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
-                    {form.title}
+                  <Link className="lenke" data-testid="editLink" to={`/translations/${formMetadata.path}`}>
+                    {formMetadata.title}
                   </Link>
-                  <FormStatus formProperties={form.properties} size={"small"} />
+                  <FormStatus status={formMetadata.status} size={"small"} />
                 </li>
               )}
             </FormsList>
