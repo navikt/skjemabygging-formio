@@ -20,7 +20,7 @@ const UnauthenticatedApp = ({ projectURL }) => {
         {config?.isDevelopment ? (
           <StyledNavForm src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
         ) : (
-          <div>Du er logget ut</div>
+          <div>Vennligst vent, du logges ut...</div>
         )}
       </Pagewrapper>
     </>

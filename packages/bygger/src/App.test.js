@@ -47,7 +47,7 @@ describe("App", () => {
 
   test("Do not show login form when not development", async () => {
     renderApp({ config: { isDevelopment: false } });
-    expect(await screen.findByText("Du er logget ut")).toBeTruthy();
+    expect(await screen.findByText("Vennligst vent, du logges ut...")).toBeTruthy();
     expect(screen.queryByLabelText("Email")).toBeNull();
     expect(screen.queryByLabelText("Password")).toBeNull();
   });
