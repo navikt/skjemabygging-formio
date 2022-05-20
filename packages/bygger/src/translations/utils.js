@@ -59,16 +59,30 @@ const getContent = (content) => {
   return content;
 };
 
+const getLabel = (label, type, hideLabel) => {
+  const excludeLabelForType = [
+    "panel",
+    "htmlelement",
+    "content",
+    "fieldset",
+    "navSkjemagruppe",
+    "alertstripe",
+    "image",
+  ].includes(type);
+  if (hideLabel || excludeLabelForType) return undefined;
+  return label;
+};
+
 const getTranslatablePropertiesFromForm = (form) =>
   navFormUtils
     .flattenComponents(form.components)
-    .filter((component) => !component.hideLabel)
     .filter((component) => component.type !== "hidden")
     .map(
       ({
         content,
         title,
         label,
+        hideLabel,
         html,
         type,
         values,
@@ -83,11 +97,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         altText,
       }) => ({
         title,
-        label:
-          ["panel", "htmlelement", "content", "fieldset", "navSkjemagruppe", "alertstripe", "image"].indexOf(type) ===
-          -1
-            ? label
-            : undefined,
+        label: getLabel(label, type, hideLabel),
         html,
         values: values ? values.map((value) => value.label) : undefined,
         content: getContent(content),
