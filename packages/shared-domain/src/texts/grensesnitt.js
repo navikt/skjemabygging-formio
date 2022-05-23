@@ -23,6 +23,7 @@ export const grensesnitt = {
     start: "Start",
   },
   summaryPage: {
+    edit: "Rediger",
     editAnswers: "Rediger opplysningene",
     continueToPostalSubmission: "Send i posten",
     continueToDigitalSubmission: "Til digital innsending",

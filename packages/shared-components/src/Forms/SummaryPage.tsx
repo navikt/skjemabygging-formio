@@ -32,6 +32,13 @@ type LabelComponents = {
   components?: Component[];
 };
 
+type PanelComponents = {
+  label: string;
+  components?: Component[];
+  formUrl: string;
+  path: string;
+};
+
 type ImageComp = LabelValue & {
   alt: string;
   widthPercent: string;
@@ -106,22 +113,54 @@ const ImageSummary: FunctionComponent<ImageComp> = ({ label, value, alt, widthPe
   );
 };
 
-const PanelSummary: FunctionComponent<LabelComponents> = ({ label, components }) => (
-  <section className="margin-bottom-default wizard-page">
-    <Systemtittel tag="h3" className="margin-bottom-default">
-      {label}
-    </Systemtittel>
-    <dl>
-      <ComponentSummary components={components} />
-    </dl>
-  </section>
-);
+const panelStyles = makeStyles({
+  header: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(21rem, 1fr))",
+    justifyContent: "space-between",
 
-const ComponentSummary = ({ components }) => {
+    "& > .knapp": {
+      justifySelf: "flex-start",
+      marginLeft: "-0.75rem",
+      marginBottom: "1rem",
+
+      "@media screen and (min-width: 48em)": {
+        justifySelf: "flex-end",
+        marginLeft: 0,
+        marginBottom: 0,
+      },
+    },
+  },
+});
+
+const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, formUrl, path }) => {
+  const { translate } = useLanguages();
+  const { search } = useLocation();
+  const { header } = panelStyles();
+  return (
+    <section className="margin-bottom-default wizard-page">
+      <div className={header}>
+        <Systemtittel tag="h3" className="margin-bottom-default">
+          {label}
+        </Systemtittel>
+        <Link to={{ pathname: `${formUrl}/skjema/${path}`, search }} className="knapp knapp--flat knapp--kompakt">
+          <span>
+            {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
+          </span>
+        </Link>
+      </div>
+      <dl>
+        <ComponentSummary components={components} formUrl={formUrl} />
+      </dl>
+    </section>
+  );
+};
+
+const ComponentSummary = ({ components, formUrl }) => {
   return components.map(({ type, key, label, ...comp }) => {
     switch (type) {
       case "panel":
-        return <PanelSummary key={key} label={label} components={comp.components} />;
+        return <PanelSummary key={key} label={label} components={comp.components} formUrl={formUrl} path={key} />;
       case "fieldset":
       case "navSkjemagruppe":
         return <FormSummaryFieldset key={key} label={label} components={comp.components} />;
@@ -139,14 +178,14 @@ const ComponentSummary = ({ components }) => {
   });
 };
 
-const FormSummary = ({ form, submission }) => {
+const FormSummary = ({ form, formUrl, submission }) => {
   const { translate } = useLanguages();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
   const formSummaryObject = createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
   }
-  return <ComponentSummary components={formSummaryObject} />;
+  return <ComponentSummary components={formSummaryObject} formUrl={formUrl} />;
 };
 
 export interface Props {
@@ -182,7 +221,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
           })}
         </Normaltekst>
-        <FormSummary submission={submission} form={form} />
+        <FormSummary submission={submission} form={form} formUrl={formUrl} />
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="list-inline">
           <div className="list-inline-item">
