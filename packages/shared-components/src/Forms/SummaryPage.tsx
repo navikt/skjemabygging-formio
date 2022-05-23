@@ -156,7 +156,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
   );
 };
 
-const ComponentSummary = ({ components, formUrl }) => {
+const ComponentSummary = ({ components, formUrl = "" }) => {
   return components.map(({ type, key, label, ...comp }) => {
     switch (type) {
       case "panel":
