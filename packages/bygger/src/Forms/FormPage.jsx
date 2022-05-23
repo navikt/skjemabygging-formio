@@ -38,8 +38,8 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     return savedForm;
   };
 
-  const publishForm = async (form) => {
-    const publishedForm = await onPublish(form);
+  const publishForm = async (form, translations) => {
+    const publishedForm = await onPublish(form, translations);
     setForm(publishedForm);
   };
 
