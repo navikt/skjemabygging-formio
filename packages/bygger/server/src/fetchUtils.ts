@@ -32,3 +32,7 @@ export async function fetchWithErrorHandling(url: RequestInfo, options: RequestI
 export function stringTobase64(str: string) {
   return Buffer.from(str).toString("base64");
 }
+
+export function base64ToString(str: string) {
+  return Buffer.from(str, "base64").toString();
+}
