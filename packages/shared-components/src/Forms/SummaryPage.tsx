@@ -195,6 +195,13 @@ export interface Props {
   formUrl: string;
 }
 
+function getUrlToLastPanel(form, formUrl, submission) {
+  const formSummary = createFormSummaryObject(form, submission);
+  const lastPanel = formSummary[formSummary.length - 1];
+  const lastPanelSlug = lastPanel.key;
+  return `${formUrl}/skjema/${lastPanelSlug}`;
+}
+
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
   const { submissionMethod } = useAppConfig();
   const { url } = useRouteMatch();
@@ -225,7 +232,10 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="list-inline">
           <div className="list-inline-item">
-            <Link className="btn btn-secondary btn-wizard-nav-previous" to={{ pathname: `${formUrl}/skjema`, search }}>
+            <Link
+              className="btn btn-secondary btn-wizard-nav-previous"
+              to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+            >
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
