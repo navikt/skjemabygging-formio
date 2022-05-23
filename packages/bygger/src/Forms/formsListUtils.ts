@@ -33,7 +33,7 @@ export function sortByFormNumber(formMetaDataList: FormMetadata[], sortDirection
       ...sortFormsByProperty(
         formMetaDataList.filter((data) => !matchesNavSkjemanummer(data)),
         "skjemanummer",
-        "descending"
+        "ascending"
       ),
     ];
   }
@@ -42,7 +42,7 @@ export function sortByFormNumber(formMetaDataList: FormMetadata[], sortDirection
       ...sortFormsByProperty(
         formMetaDataList.filter((data) => !matchesNavSkjemanummer(data)),
         "skjemanummer",
-        "ascending"
+        "descending"
       ),
       ...sortFormsByProperty(formMetaDataList.filter(matchesNavSkjemanummer), "skjemanummer", "descending"),
     ];
