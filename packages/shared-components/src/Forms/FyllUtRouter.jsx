@@ -57,7 +57,7 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route exact path={path}>
             <IntroPage form={form} formUrl={formBaseUrl} />
           </Route>
-          <Route path={`${path}/skjema`}>
+          <Route path={`${path}/skjema/:panelSlug?`}>
             {formForRendering && (
               <>
                 <Prompt
