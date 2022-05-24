@@ -33,20 +33,20 @@ const authHandler = async (req: ByggerRequest, res: Response, next: NextFunction
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-      console.log("Missing jwt token");
+      console.error("Missing jwt token");
       return res.sendStatus(401);
     }
 
-    console.log("Verifying jwt token signature...", token);
+    console.log("Verifying jwt token signature...");
     let tokenPayload: JWTPayload;
     try {
       tokenPayload = await verifyToken(token);
     } catch (err) {
-      console.log("Failed to verify jwt token signature", err);
+      console.error("Failed to verify jwt token signature", err);
       return res.sendStatus(401);
     }
     if (!tokenPayload) {
-      console.log("Error decoding jwt token");
+      console.error("Error decoding jwt token");
       return res.sendStatus(401);
     }
     const currentTime = new Date().getTime() / 1000;
@@ -81,10 +81,10 @@ export const createFormioJwt = (user: User) => {
       data: {
         name: user.name,
       },
-      roles: [formio.roleIds.administrator],
+      roles: [formio.roleIds.authenticated],
     },
   };
-  return jwt.sign(tokenPayload, formio.jwtSecret, { expiresIn: "8h" });
+  return jwt.sign(tokenPayload, formio.jwtSecret, { expiresIn: "9h" });
 };
 
 export default authHandler;

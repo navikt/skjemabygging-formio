@@ -45,6 +45,7 @@ const config: ConfigType = {
     projectId: env("FORMIO_PROJECT_ID"),
     roleIds: {
       administrator: env("FORMIO_ROLE_ID_ADMINISTRATOR"),
+      authenticated: env("FORMIO_ROLE_ID_AUTHENTICATED"),
     },
     formIds: {
       userResource: env("FORMIO_FORM_ID_USER"),
