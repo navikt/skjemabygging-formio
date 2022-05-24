@@ -24,7 +24,7 @@ const sendInnConfig: SendInnConfig = {
 const localDevelopmentConfig: Partial<ConfigType> = {
   gitVersion: "local",
   useFormioApi: true,
-  formioProjectUrl: "https://formio-api-server.ekstern.dev.nav.no",
+  formioProjectUrl: "https://formio-api-server.ekstern.dev.nav.no/jvcemxwcpghcqjn",
   forstesideUrl: "https://www.nav.no/soknader/api/forsteside",
   decoratorUrl: "https://www.nav.no/dekoratoren?simple=true",
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || "https://skjemabygging-proxy.dev-fss-pub.nais.io",
