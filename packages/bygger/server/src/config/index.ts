@@ -23,6 +23,8 @@ const env = (name: string, devValue?: string): string => {
 const config: ConfigType = {
   azure: {
     openidTokenEndpoint: env("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", devAzure.openidTokenEndpoint),
+    openidConfigJwksUri: env("AZURE_OPENID_CONFIG_JWKS_URI", devAzure.openidConfigJwksUri),
+    openidConfigIssuer: env("AZURE_OPENID_CONFIG_ISSUER"),
     clientId: env("AZURE_APP_CLIENT_ID", devAzure.clientId),
     clientSecret: env("AZURE_APP_CLIENT_SECRET"),
   },
@@ -40,6 +42,15 @@ const config: ConfigType = {
   },
   formio: {
     projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),
+    projectId: env("FORMIO_PROJECT_ID"),
+    roleIds: {
+      administrator: env("FORMIO_ROLE_ID_ADMINISTRATOR"),
+      authenticated: env("FORMIO_ROLE_ID_AUTHENTICATED"),
+    },
+    formIds: {
+      userResource: env("FORMIO_FORM_ID_USER"),
+    },
+    jwtSecret: env("FORMIO_JWT_SECRET"),
   },
   fyllut: {
     baseUrl: env("FYLLUT_BASE_URL", devFyllut.baseUrl),
@@ -51,6 +62,7 @@ const config: ConfigType = {
   nodeEnv,
   port: parseInt(process.env.PORT || "8080"),
   isProduction: nodeEnv === "production",
+  isDevelopment: nodeEnv === "development",
 };
 
 export default config;
