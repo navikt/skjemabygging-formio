@@ -138,7 +138,7 @@ interface FormsListPageProps {
   loadFormsList: () => Promise<NavFormType[]>;
 }
 
-function FormsListPage({ url, loadFormsList }: FormsListPageProps) {
+const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
   const history = useHistory();
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
@@ -197,6 +197,6 @@ function FormsListPage({ url, loadFormsList }: FormsListPageProps) {
       </nav>
     </AppLayoutWithContext>
   );
-}
+};
 
 export { FormsListPage, FormsList };
