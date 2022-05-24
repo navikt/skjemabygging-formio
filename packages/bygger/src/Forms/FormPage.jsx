@@ -13,19 +13,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   const [form, setForm] = useState();
   const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
 
-  useEffect(() => {
-    try {
-      fetch(`/api/form/diff/${formPath}`, {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-        },
-      }).then((response) => console.log(response.json()));
-    } catch (e) {
-      console.log(e);
-    }
-  }, [formPath]);
-
   const loadTranslationsForFormPath = useCallback(() => loadTranslations(form?.path), [loadTranslations, form?.path]);
   useEffect(() => {
     loadForm(formPath)
