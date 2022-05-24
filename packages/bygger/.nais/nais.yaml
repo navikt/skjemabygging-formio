@@ -53,6 +53,16 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: 1d12af59-d953-4f85-9f65-d8cbf6672deb
+        extra:
+          - NAVident
+    sidecar:
+      enabled: true
+      autoLogin: true
   accessPolicy:
     outbound:
       rules:

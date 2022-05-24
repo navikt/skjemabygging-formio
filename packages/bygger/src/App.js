@@ -21,6 +21,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function App({ projectURL, serverURL, pusher }) {
+  Formiojs.setBaseUrl(projectURL);
   const styles = useStyles();
   const userAlerter = useUserAlerting(pusher);
   const { userData } = useAuth();
