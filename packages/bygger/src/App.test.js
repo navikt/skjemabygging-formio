@@ -22,7 +22,7 @@ describe("App", () => {
     fetchMock.resetMocks();
   });
 
-  test("Redirect til login form", async () => {
+  const renderApp = (appConfigProps = {}) => {
     render(
       <MemoryRouter initialEntries={["/"]}>
         <AuthContext.Provider
@@ -31,14 +31,24 @@ describe("App", () => {
             login: () => {},
           }}
         >
-          <AppConfigProvider featureToggles={featureToggles}>
+          <AppConfigProvider featureToggles={featureToggles} {...appConfigProps}>
             <App projectURL="http://myproject.example.org" pusher={{ subscribe: () => createFakeChannel() }} />
           </AppConfigProvider>
         </AuthContext.Provider>
       </MemoryRouter>
     );
+  };
 
+  test("Show login form in development", async () => {
+    renderApp({ config: { isDevelopment: true } });
     expect(await screen.findByLabelText("Email")).toBeTruthy();
     expect(await screen.findByLabelText("Password")).toBeTruthy();
+  });
+
+  test("Do not show login form when not development", async () => {
+    renderApp({ config: { isDevelopment: false } });
+    expect(await screen.findByText("Vennligst vent, du logges ut...")).toBeTruthy();
+    expect(screen.queryByLabelText("Email")).toBeNull();
+    expect(screen.queryByLabelText("Password")).toBeNull();
   });
 });

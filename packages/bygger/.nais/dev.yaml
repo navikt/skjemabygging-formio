@@ -1,6 +1,5 @@
 app-name: skjemabygging-formio
 ingresses:
-- "https://skjemabygging-formio.dev.nav.no"
 - "https://skjemabygging-formio.ekstern.dev.nav.no"
 image: {{image}}
 publish-repo: skjemautfylling-formio

@@ -5,6 +5,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/auth-context";
 import Row from "./layout/Row";
+import UserInfo from "./UserInfo";
 
 const useStyles = makeStyles({
   navBar: {
@@ -16,10 +17,17 @@ const useStyles = makeStyles({
     textAlign: "center",
     gridColumn: "2 / 3",
   },
+  userInfo: {
+    display: "grid",
+    gridGap: "1em",
+    alignItems: "center",
+    justifyContent: "center",
+    gridAutoFlow: "column",
+  },
 });
 
 export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
-  const { logout } = useAuth();
+  const { logout, userData } = useAuth();
   const { featureToggles } = useAppConfig();
   const styles = useStyles();
   return (
@@ -38,9 +46,14 @@ export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
         <Undertittel className={styles.title} tag="h1">
           {title}
         </Undertittel>
-        <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
-          Logg ut
-        </Link>
+        <div className={styles.userInfo}>
+          <UserInfo />
+          {!!userData && (
+            <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
+              Logg ut
+            </Link>
+          )}
+        </div>
       </Row>
     </section>
   );

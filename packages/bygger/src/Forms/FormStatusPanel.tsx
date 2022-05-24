@@ -67,11 +67,11 @@ export const FormStatusIndicator = ({ status, size }: { status: Status; size: St
   const styles = useFormStatusIndicatorStyles({ size });
   switch (status) {
     case "PUBLISHED":
-      return <div className={`${styles.streetLight} ${styles.published}`} />;
+      return <span className={`${styles.streetLight} ${styles.published}`} />;
     case "PENDING":
-      return <div className={`${styles.streetLight} ${styles.pending}`} />;
+      return <span className={`${styles.streetLight} ${styles.pending}`} />;
     case "DRAFT":
-      return <div className={`${styles.streetLight} ${styles.draft}`} />;
+      return <span className={`${styles.streetLight} ${styles.draft}`} />;
     case "UNKNOWN":
     default:
       return <></>;

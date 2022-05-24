@@ -16,7 +16,7 @@ interface FetchHeader {
 }
 
 interface FetchOptions {
-  redirectToLocation: boolean;
+  redirectToLocation?: boolean;
 }
 
 class HttpError extends Error {}

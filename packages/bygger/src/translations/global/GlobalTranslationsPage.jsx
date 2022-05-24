@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
@@ -9,6 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
+import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../../components/UserFeedback";
 import { getAvailableLanguages, languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
@@ -196,6 +197,24 @@ const GlobalTranslationsPage = ({
     });
   };
 
+  const onSaveGlobalTranslations = async () => {
+    if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
+      const duplicatedOriginalText = hasDuplicatedOriginalText();
+      alert(
+        `Du har fortsatt ${
+          duplicatedOriginalText.length > 1 ? "flere dupliserte original tekster" : "en duplisert original tekst"
+        } (${duplicatedOriginalText})`
+      );
+    } else {
+      return saveTranslation(
+        globalTranslationsWithLanguagecodeAndTag?.id,
+        languageCode,
+        globalTranslationsToSave(selectedTag),
+        selectedTag
+      );
+    }
+  };
+
   return (
     <>
       <AppLayoutWithContext
@@ -266,29 +285,7 @@ const GlobalTranslationsPage = ({
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
               />
-              <Hovedknapp
-                onClick={() => {
-                  if (selectedTag === tags.SKJEMATEKSTER && hasDuplicatedOriginalText().length > 0) {
-                    const duplicatedOriginalText = hasDuplicatedOriginalText();
-                    alert(
-                      `Du har fortsatt ${
-                        duplicatedOriginalText.length > 1
-                          ? "flere dupliserte original tekster"
-                          : "en duplisert original tekst"
-                      } (${duplicatedOriginalText})`
-                    );
-                  } else {
-                    saveTranslation(
-                      globalTranslationsWithLanguagecodeAndTag?.id,
-                      languageCode,
-                      globalTranslationsToSave(selectedTag),
-                      selectedTag
-                    );
-                  }
-                }}
-              >
-                Lagre
-              </Hovedknapp>
+              <PrimaryButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</PrimaryButtonWithSpinner>
               <UserFeedback />
             </Column>
           </div>
