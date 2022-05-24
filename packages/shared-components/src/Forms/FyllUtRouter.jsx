@@ -26,7 +26,7 @@ const ALERT_MESSAGE_BACK_BUTTON =
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
-  let { path, url: infoPageUrl } = useRouteMatch();
+  const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
   const { loggSkjemaApnet } = useAmplitude();
@@ -55,68 +55,68 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            <IntroPage form={form} formUrl={infoPageUrl} />
+            <IntroPage form={form} formUrl={formBaseUrl} />
           </Route>
           <Route path={`${path}/skjema`}>
             {formForRendering && (
               <>
                 <Prompt
                   message={(location) =>
-                    location.pathname === infoPageUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
+                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
                   }
                 />
                 <FillInFormPage
                   form={formForRendering}
                   submission={submission}
                   setSubmission={setSubmission}
-                  formUrl={infoPageUrl}
+                  formUrl={formBaseUrl}
                 />
               </>
             )}
           </Route>
           <Route path={`${path}/oppsummering`}>
-            <SubmissionWrapper submission={submission} url={infoPageUrl}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <SummaryPage
                   form={form}
                   submission={submissionObject}
                   translations={translations}
-                  formUrl={infoPageUrl}
+                  formUrl={formBaseUrl}
                 />
               )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/send-i-posten`}>
-            <SubmissionWrapper submission={submission} url={infoPageUrl}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareLetterPage
                   form={form}
                   submission={submissionObject}
-                  formUrl={infoPageUrl}
+                  formUrl={formBaseUrl}
                   translations={translations}
                 />
               )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/forbered-innsending`}>
-            <SubmissionWrapper submission={submission} url={infoPageUrl}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareSubmitPage
                   form={form}
                   submission={submissionObject}
-                  formUrl={infoPageUrl}
+                  formUrl={formBaseUrl}
                   translations={translations}
                 />
               )}
             </SubmissionWrapper>
           </Route>
           <Route path={`${path}/ingen-innsending`}>
-            <SubmissionWrapper submission={submission} url={infoPageUrl}>
+            <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareIngenInnsendingPage
                   form={form}
                   submission={submissionObject}
-                  formUrl={infoPageUrl}
+                  formUrl={formBaseUrl}
                   translations={translations}
                 />
               )}

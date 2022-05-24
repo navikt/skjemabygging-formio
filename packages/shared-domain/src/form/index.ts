@@ -24,6 +24,8 @@ interface NewFormSignatureType {
 export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
+  modified?: string;
+  published?: string;
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
   innsendingForklaring?: string;

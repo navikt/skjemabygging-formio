@@ -1,5 +1,7 @@
 export type AzureConfig = {
   openidTokenEndpoint: string;
+  openidConfigJwksUri: string;
+  openidConfigIssuer: string;
   clientId: string;
   clientSecret: string;
 };
@@ -19,6 +21,10 @@ export type PublishRepoConfig = {
 
 export type FormioConfig = {
   projectUrl: string;
+  projectId: string;
+  roleIds: Record<string, string>;
+  formIds: Record<string, string>;
+  jwtSecret: string;
 };
 
 export type FyllutConfig = {
@@ -43,4 +49,5 @@ export type ConfigType = {
   nodeEnv: NodeEnv;
   port: number;
   isProduction: boolean;
+  isDevelopment: boolean;
 };

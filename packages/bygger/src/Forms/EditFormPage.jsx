@@ -1,6 +1,6 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { FormBuilderOptions, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -10,8 +10,10 @@ import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import NavFormBuilder from "../components/NavFormBuilder";
+import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
+import FormStatusPanel from "./FormStatusPanel";
 import PublishModalComponents from "./PublishModalComponents";
 
 const useStyles = makeStyles({
@@ -70,7 +72,8 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
-            <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+            <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
+            <FormStatusPanel formProperties={form.properties} />
             <UserFeedback />
           </Column>
         </Row>

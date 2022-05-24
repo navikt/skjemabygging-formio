@@ -221,7 +221,7 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
 }
 
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
-  const { key, label, type, image, altText, widthPercent, picInPDF } = component;
+  const { key, label, type, image, altText, widthPercent, showInPdf } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
 
   if (image.length > 0 && image[0].url) {
@@ -234,7 +234,7 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
         value: image[0].url,
         alt: translate(altText),
         widthPercent,
-        picInPDF,
+        showInPdf,
       },
     ];
   }

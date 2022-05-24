@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import { Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { Link, useHistory, useParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
+import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { getAvailableLanguages, languagesInNorwegian, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
@@ -86,7 +87,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           <Link className="knapp" to={`/forms/${path}/edit`}>
             Rediger skjema
           </Link>
-          <Link className="knapp" to={`/forms/${path}/view${languageCode ? `?lang=${languageCode}` : ""}`}>
+          <Link className="knapp" to={`/forms/${path}/view/skjema${languageCode ? `?lang=${languageCode}` : ""}`}>
             Forhåndsvis
           </Link>
         </ActionRow>
@@ -104,13 +105,13 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
             <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath={path} label={""} />
               <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
-              <Hovedknapp
-                onClick={() => {
-                  saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title);
-                }}
+              <PrimaryButtonWithSpinner
+                onClick={() =>
+                  saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title)
+                }
               >
                 Lagre
-              </Hovedknapp>
+              </PrimaryButtonWithSpinner>
               <UserFeedback />
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}

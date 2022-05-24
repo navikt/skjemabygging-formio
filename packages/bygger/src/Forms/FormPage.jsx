@@ -31,9 +31,16 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     setForm(changedForm);
   };
 
-  const saveFormAndResetIsUnsavedChanges = (form) => {
+  const saveFormAndResetIsUnsavedChanges = async (form) => {
     setHasUnsavedChanged(false);
-    onSave(form);
+    const savedForm = await onSave(form);
+    setForm(savedForm);
+    return savedForm;
+  };
+
+  const publishForm = async (form, translations) => {
+    const publishedForm = await onPublish(form, translations);
+    setForm(publishedForm);
   };
 
   if (status === "LOADING") {
@@ -58,11 +65,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           />
           <EditFormPage
             form={form}
-            testFormUrl={`${url}/view`}
+            testFormUrl={`${url}/view/skjema`}
             formSettingsUrl={`${url}/settings`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
-            onPublish={onPublish}
+            onPublish={publishForm}
           />
         </Route>
         <Route path={`${url}/view`}>
@@ -72,10 +79,10 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           <FormSettingsPage
             form={form}
             editFormUrl={`${url}/edit`}
-            testFormUrl={`${url}/view`}
+            testFormUrl={`${url}/view/skjema`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
-            onPublish={onPublish}
+            onPublish={publishForm}
           />
         </Route>
         <Route path={url}>

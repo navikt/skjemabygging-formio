@@ -17,7 +17,13 @@ const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending
 Pusher.logToConsole = true;
 
 fetch("/api/config")
-  .then((res) => res.json())
+  .then((res) => {
+    const token = res.headers.get("Bygger-Formio-Token");
+    if (token) {
+      localStorage.setItem("formioToken", token);
+    }
+    return res.json();
+  })
   .then((config) => renderReact(config));
 
 const renderReact = (config) => {
@@ -31,9 +37,10 @@ const renderReact = (config) => {
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
           featureToggles={featureToggles}
+          config={config}
           app="bygger"
         >
-          <AuthProvider>
+          <AuthProvider user={config.user}>
             <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} pusher={pusher} />
           </AuthProvider>
         </AppConfigProvider>
