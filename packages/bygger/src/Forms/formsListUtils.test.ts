@@ -16,24 +16,49 @@ const createFormMetadata = (properties: Partial<FormMetadata>): FormMetadata =>
 
 describe("formsListUtils", () => {
   describe("sortFormsByProperty", () => {
-    const earliest = createFormMetadata({ title: "Earliest", modified: earlier(baseMoment, "4") });
-    const early = createFormMetadata({ title: "Early", modified: earlier(baseMoment, "2") });
-    const middle = createFormMetadata({ title: "Middle", modified: baseMoment });
-    const late = createFormMetadata({ title: "Late", modified: later(baseMoment, "2") });
-    const latest = createFormMetadata({ title: "Latest", modified: later(baseMoment, "4") });
-    const noDate = createFormMetadata({ title: "No modified", modified: undefined });
-    const list = [early, noDate, latest, late, earliest, middle];
+    describe("title (string)", () => {
+      const abc = createFormMetadata({ title: "abc" });
+      const ABC = createFormMetadata({ title: "ABC" });
+      const number123 = createFormMetadata({ title: "123" });
+      const A1 = createFormMetadata({ title: "A1" });
+      const AAsta = createFormMetadata({ title: "Åsta" });
+      const aBC = createFormMetadata({ title: "aBC" });
+      const emptyString = createFormMetadata({ title: "" });
+      const list = [aBC, ABC, AAsta, number123, emptyString, abc, A1];
 
-    it("sorts modified (date) in ascending order", () => {
-      const sorted = sortFormsByProperty(list, "modified", "ascending");
-      expect(sorted).toHaveLength(6);
-      expect(sorted).toStrictEqual([noDate, earliest, early, middle, late, latest]);
+      it("sorts in ascending order", () => {
+        const sorted = sortFormsByProperty(list, "title", "ascending");
+        expect(sorted).toHaveLength(7);
+        expect(sorted).toStrictEqual([emptyString, number123, A1, ABC, aBC, abc, AAsta]);
+      });
+
+      it("sorts modified (date) in descending order", () => {
+        const sorted = sortFormsByProperty(list, "modified", "descending");
+        expect(sorted).toHaveLength(7);
+        expect(sorted).toStrictEqual([AAsta, abc, aBC, ABC, A1, number123, emptyString]);
+      });
     });
 
-    it("sorts modified (date) in descending order", () => {
-      const sorted = sortFormsByProperty(list, "modified", "descending");
-      expect(sorted).toHaveLength(6);
-      expect(sorted).toStrictEqual([latest, late, middle, early, earliest, noDate]);
+    describe("modified (date)", () => {
+      const earliest = createFormMetadata({ title: "Earliest", modified: earlier(baseMoment, "4") });
+      const early = createFormMetadata({ title: "Early", modified: earlier(baseMoment, "2") });
+      const middle = createFormMetadata({ title: "Middle", modified: baseMoment });
+      const late = createFormMetadata({ title: "Late", modified: later(baseMoment, "2") });
+      const latest = createFormMetadata({ title: "Latest", modified: later(baseMoment, "4") });
+      const noDate = createFormMetadata({ title: "No modified", modified: undefined });
+      const list = [early, noDate, latest, late, earliest, middle];
+
+      it("sorts in ascending order", () => {
+        const sorted = sortFormsByProperty(list, "modified", "ascending");
+        expect(sorted).toHaveLength(6);
+        expect(sorted).toStrictEqual([noDate, earliest, early, middle, late, latest]);
+      });
+
+      it("sorts modified (date) in descending order", () => {
+        const sorted = sortFormsByProperty(list, "modified", "descending");
+        expect(sorted).toHaveLength(6);
+        expect(sorted).toStrictEqual([latest, late, middle, early, earliest, noDate]);
+      });
     });
   });
 
