@@ -5,7 +5,7 @@ import Panel from "nav-frontend-paneler";
 import { Element } from "nav-frontend-typografi";
 import React from "react";
 
-type Status = "PENDING" | "DRAFT" | "PUBLISHED" | "UNKNOWN";
+export type Status = "PENDING" | "DRAFT" | "PUBLISHED" | "UNKNOWN";
 type StreetLightSize = "small" | "large";
 
 const useFormStatusIndicatorStyles = makeStyles({
@@ -49,7 +49,8 @@ const useStatusStyles = makeStyles({
   },
 });
 
-function determineStatus(modified, published): Status {
+export function determineStatus(formProperties: FormPropertiesType): Status {
+  const { modified, published } = formProperties;
   if (modified && published) {
     if (moment(modified).isAfter(moment(published))) {
       return "PENDING";
@@ -77,9 +78,8 @@ export const FormStatusIndicator = ({ status, size }: { status: Status; size: St
   }
 };
 
-export const FormStatus = ({ formProperties, size }: { formProperties: FormPropertiesType; size: StreetLightSize }) => {
+export const FormStatus = ({ status, size }: { status: Status; size: StreetLightSize }) => {
   const styles = useStatusStyles({ size });
-  const status = determineStatus(formProperties.modified, formProperties.published);
   const statusTexts: Record<Status, string> = {
     PUBLISHED: "Publisert",
     PENDING: "Upubliserte endringer",
@@ -121,7 +121,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
         <Element>Status:</Element>
-        <FormStatus formProperties={formProperties} size={"large"} />
+        <FormStatus status={determineStatus(formProperties)} size={"large"} />
       </div>
       <Timestamp label={"Sist lagret:"} timestamp={modified} />
       <Timestamp label={"Sist publisert:"} timestamp={published} />
