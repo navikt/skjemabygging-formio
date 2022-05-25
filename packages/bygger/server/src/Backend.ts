@@ -2,7 +2,7 @@ import { I18nTranslations, NavFormType, ResourceContent } from "@navikt/skjemadi
 import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigType } from "./config/types";
-import { fetchWithErrorHandling } from "./fetchUtils";
+import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 import {
   createFileForPushingToRepo,
@@ -149,5 +149,14 @@ export class Backend {
     return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/enhetsliste`, {
       method: "GET",
     }).then((response) => response.data);
+  }
+
+  async fetchPublishedForm(formPath: string) {
+    const filePath = `forms/${formPath}.json`;
+    const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
+    if (response && "content" in response.data) {
+      const content = base64ToString(response.data.content);
+      return JSON.parse(content);
+    }
   }
 }
