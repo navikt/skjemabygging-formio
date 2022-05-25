@@ -153,8 +153,10 @@ export class Backend {
 
   async fetchPublishedForm(formPath: string) {
     const filePath = `forms/${formPath}.json`;
-    const file = await this.skjemaUtfylling.getFileIfItExists("master", filePath);
-    const content = base64ToString((<any>file?.data).content);
-    return JSON.parse(content);
+    const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
+    if (response && "content" in response.data) {
+      const content = base64ToString(response.data.content);
+      return JSON.parse(content);
+    }
   }
 }

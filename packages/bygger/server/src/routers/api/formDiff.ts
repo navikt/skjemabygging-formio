@@ -6,12 +6,15 @@ import { NotFoundError } from "./helpers/errors";
 const formDiff = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { formPath } = req.params;
-
     let publishedForm;
     try {
       publishedForm = await backendInstance.fetchPublishedForm(formPath);
+
+      if (!publishedForm) {
+        return notFound(next);
+      }
     } catch (e) {
-      return next(new NotFoundError("Published form not found"));
+      return notFound(next);
     }
 
     const form = await backendInstance.getForm(formPath);
@@ -20,6 +23,10 @@ const formDiff = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error);
   }
+};
+
+const notFound = (next: NextFunction) => {
+  return next(new NotFoundError("Published form not found"));
 };
 
 export default formDiff;
