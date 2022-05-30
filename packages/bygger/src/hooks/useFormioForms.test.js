@@ -152,12 +152,17 @@ describe("useFormioForms", () => {
       });
 
       it("adds properties modified and published", async () => {
-        renderHook(() => formioForms.onPublish({ path: "testform" }));
+        renderHook(() => formioForms.onPublish({ path: "testform", properties: {} }));
         await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
 
         expect(formioMock.saveForm).toHaveBeenCalledTimes(1);
         expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("modified");
         expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("published");
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const publishedForm = JSON.parse(fetchMock.mock.calls[0][1].body).form;
+        expect(publishedForm.properties.modified).toBeDefined();
+        expect(publishedForm.properties.published).toBeDefined();
       });
     });
 
