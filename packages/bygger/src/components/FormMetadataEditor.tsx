@@ -1,10 +1,17 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { DisplayType, InnsendingType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  DisplayType,
+  InnsendingType,
+  NavFormType,
+  signatureUtils,
+  TEXTS,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
 import { Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import EnhetSettings from "./EnhetSettings";
 import SignatureComponent from "./layout/SignatureComponent";
@@ -43,6 +50,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
       descriptionOfSignatures,
+      signatures,
     },
   } = form;
 
@@ -52,10 +60,11 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       properties: {
         ...form.properties,
         signatures: [
-          ...(form?.properties?.signatures || []),
+          ...signatureUtils.mapBackwardCompatibleSignatures(signatures),
           {
             label: "",
             description: "",
+            key: uuidv4(),
           },
         ],
       },
@@ -66,7 +75,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       ...form,
       properties: {
         ...form.properties,
-        signatures: form?.properties?.signatures?.map((signatureObject, i) => {
+        signatures: signatureUtils.mapBackwardCompatibleSignatures(signatures).map((signatureObject, i) => {
           if (index === i) {
             return newSignature;
           } else {
@@ -77,14 +86,14 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     });
 
   const removeSignature = (indexToDelete) => {
-    if (form && form.properties && form.properties.signatures && form.properties.signatures.length > 0) {
-      form?.properties?.signatures.splice(indexToDelete, 1);
+    if (signatureUtils.mapBackwardCompatibleSignatures(signatures).length > 0) {
+      signatureUtils.mapBackwardCompatibleSignatures(signatures).splice(indexToDelete, 1);
 
       onChange({
         ...form,
         properties: {
           ...form.properties,
-          signatures: form.properties.signatures,
+          signatures: signatureUtils.mapBackwardCompatibleSignatures(signatures),
         },
       });
     }
@@ -286,13 +295,18 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         }
       />
 
-      {form?.properties?.signatures?.map((signature, index) => (
-        <SignatureComponent
-          signature={signature}
-          index={index + 1}
-          onChange={(newSignature) => addExistingSignature(newSignature, index)}
-          onClick={() => removeSignature(index)}
-        />
+      {console.log("Form prop", JSON.stringify(form, null, 2))}
+      {console.log("Test")}
+
+      {signatureUtils.mapBackwardCompatibleSignatures(signatures)?.map((signature, index) => (
+        <div key={signature.key}>
+          <SignatureComponent
+            signature={signature}
+            index={index + 1}
+            onChange={(newSignature) => addExistingSignature(newSignature, index)}
+            onClick={() => removeSignature(index)}
+          />
+        </div>
       ))}
 
       <Knapp onClick={addNewSignature}>Legg til signatur</Knapp>

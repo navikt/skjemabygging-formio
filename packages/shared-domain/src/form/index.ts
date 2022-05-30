@@ -4,6 +4,7 @@ export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
 
 export interface FormSignaturesType {
+  [key: string]: any;
   signature1?: string;
   signature1Description?: string;
   signature2?: string;
@@ -16,9 +17,11 @@ export interface FormSignaturesType {
   signature5Description?: string;
 }
 
-interface NewFormSignatureType {
+export interface NewFormSignatureType {
+  [key: string]: any;
   label: string;
   description: string;
+  key: string;
 }
 
 export interface FormPropertiesType {
@@ -38,7 +41,7 @@ export interface FormPropertiesType {
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
   hasLabeledSignatures: boolean;
-  signatures?: NewFormSignatureType[];
+  signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
 }
 

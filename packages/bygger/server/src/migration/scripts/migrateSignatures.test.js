@@ -1,7 +1,6 @@
-import { FormSignaturesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import migrateSignatures from "./migrateSignatures";
 
-const createMockForm = (signatures?: FormSignaturesType, hasLabeledSignatures?: boolean): NavFormType => ({
+const createMockForm = (signatures, hasLabeledSignatures) => ({
   components: [],
   display: "wizard",
   name: "mockForm",
@@ -18,7 +17,7 @@ const createMockForm = (signatures?: FormSignaturesType, hasLabeledSignatures?: 
 });
 
 describe("Migration of signatures", () => {
-  let migrationScript: Function;
+  let migrationScript;
 
   beforeAll(() => {
     migrationScript = migrateSignatures({}, []);

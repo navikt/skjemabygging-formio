@@ -1,6 +1,7 @@
-import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
+import { createFormSummaryObject, signatureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { DateTime } from "luxon";
 import PdfPrinter from "pdfmake";
+import { logger } from "./logger.js";
 
 const fonts = {
   Roboto: {
@@ -285,8 +286,10 @@ export class PdfgenPapir extends Pdfgen {
   newSignature(signature, isFirstSignature) {
     const signatureLines = [];
     if (signature?.label) {
+      console.log("Found Label: ", signature.label);
       signatureLines.push({ text: this.translate(signature.label), style: "groupHeader" });
       if (signature.description) {
+        console.log("found description: ", signature.description);
         signatureLines.push({ text: this.translate(signature.description) });
       }
       signatureLines.push(" ");
@@ -313,7 +316,10 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateSignatures() {
-    const { signatures } = this.form?.properties;
+    //const { signatures } = this.form?.properties;
+    logger.log("generateSignatures");
+    const signatures = signatureUtils.mapBackwardCompatibleSignatures(this.form?.properties?.signatures);
+    console.error("SigFOund", signatures);
 
     if (signatures && signatures.length > 0) {
       return signatures.flatMap((signature, index) => this.newSignature(signature, index === 0));
@@ -322,6 +328,7 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateContentFromSubmission() {
+    console.log("TEST");
     return [...this.generateHeader(), ...this.generateBody(), ...this.generateSignatures()];
   }
 }

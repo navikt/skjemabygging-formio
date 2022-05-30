@@ -20,25 +20,27 @@ const SignatureComponent = ({ signature, index, onChange, onClick }) => {
         <Input
           label="Hvem skal signere?"
           type="text"
-          id="signatur"
+          id={`signature${index}`}
+          name={`signature${index}`}
           placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
           value={signature.label}
           onChange={(e) =>
             onChange({
+              ...signature,
               label: e.target.value,
-              description: signature.description,
             })
           }
         />
         <Input
           label="Instruksjoner til den som signerer"
           type="text"
-          id="Instruksjon"
+          id={`signatureInstruction${index}`}
+          name={`signatureInstruction${index}`}
           placeholder="Beskrivelse av hvorfor man signerer"
           value={signature.description}
           onChange={(e) =>
             onChange({
-              label: signature.label,
+              ...signature,
               description: e.target.value,
             })
           }
