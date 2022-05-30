@@ -2,6 +2,7 @@ import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import moment from "moment";
 import React from "react";
+import { languagesInNorwegian } from "../context/i18n";
 import FormStatusPanel from "./FormStatusPanel";
 
 type PartialFormProperties = Pick<FormPropertiesType, "modified" | "published">;
@@ -85,6 +86,43 @@ describe("FormStatusPanel", () => {
 
     it("displays 'Sist publisert'", () => {
       expect(screen.queryByText("Sist publisert:")).toBeNull();
+    });
+  });
+
+  describe("Prop publishedLanguages (array)", () => {
+    it("displays nothing if form is not publised", () => {
+      render(<FormStatusPanel formProperties={{} as FormPropertiesType} />);
+      expect(screen.queryByText("Publiserte språk:")).not.toBeInTheDocument();
+    });
+
+    it("displays nothing if publishedLanguages is undefined", () => {
+      const formProps = { published: now, publishedLanguages: undefined } as FormPropertiesType;
+      render(<FormStatusPanel formProperties={formProps} />);
+      expect(screen.queryByText("Publiserte språk:")).not.toBeInTheDocument();
+    });
+
+    it("displays bokmål if publishedLanguages is empty", () => {
+      const formProps = {
+        published: now,
+        publishedLanguages: [] as string[],
+      } as FormPropertiesType;
+      render(<FormStatusPanel formProperties={formProps} />);
+      expect(screen.queryByText("Publiserte språk:")).toBeInTheDocument();
+      expect(screen.queryByText(languagesInNorwegian["nb-NO"])).toBeInTheDocument();
+    });
+
+    it("displays all published languages + bokmål", () => {
+      const publishedLanguages = ["en", "nn-NO"];
+      const formProps = {
+        published: now,
+        publishedLanguages,
+      } as FormPropertiesType;
+      render(<FormStatusPanel formProperties={formProps} />);
+      expect(screen.queryByText("Publiserte språk:")).toBeInTheDocument();
+      expect(screen.queryByText(languagesInNorwegian["nb-NO"])).toBeInTheDocument();
+      publishedLanguages.forEach((langCode) => {
+        expect(screen.queryByText(languagesInNorwegian[langCode])).toBeInTheDocument();
+      });
     });
   });
 });

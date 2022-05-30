@@ -1,9 +1,10 @@
-import { makeStyles } from "@material-ui/styles";
+import { ClassNameMap, makeStyles } from "@material-ui/styles";
 import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import moment from "moment";
 import Panel from "nav-frontend-paneler";
 import { Element } from "nav-frontend-typografi";
 import React from "react";
+import { languagesInNorwegian } from "../context/i18n";
 
 type Status = "PENDING" | "DRAFT" | "PUBLISHED" | "UNKNOWN";
 type StreetLightSize = "small" | "large";
@@ -109,12 +110,35 @@ const Timestamp = ({ label, timestamp }: { label: string; timestamp?: string }) 
   );
 };
 
+interface PublishedLanguagesProps {
+  formProperties: FormPropertiesType;
+}
+const PublishedLanguages = ({ formProperties }: PublishedLanguagesProps) => {
+  const styles = useStatusStyles();
+  if (formProperties.published && formProperties.publishedLanguages) {
+    const sortedLanguageCodes = [...formProperties.publishedLanguages, "nb-NO"].sort();
+    return (
+      <div className={styles.panelItem}>
+        <Element>Publiserte språk:</Element>
+        {sortedLanguageCodes.map((langCode) => {
+          return (
+            <p key={langCode} className={styles.rowText}>
+              {languagesInNorwegian[langCode]}
+            </p>
+          );
+        })}
+      </div>
+    );
+  }
+  return null;
+};
+
 interface Props {
   formProperties: FormPropertiesType;
 }
 
 const FormStatusPanel = ({ formProperties }: Props) => {
-  const styles = useStatusStyles();
+  const styles: ClassNameMap = useStatusStyles();
   const { modified, published } = formProperties;
 
   return (
@@ -125,6 +149,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
       </div>
       <Timestamp label={"Sist lagret:"} timestamp={modified} />
       <Timestamp label={"Sist publisert:"} timestamp={published} />
+      <PublishedLanguages formProperties={formProperties} />
     </Panel>
   );
 };
