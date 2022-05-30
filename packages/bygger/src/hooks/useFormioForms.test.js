@@ -164,6 +164,23 @@ describe("useFormioForms", () => {
         expect(publishedForm.properties.modified).toBeDefined();
         expect(publishedForm.properties.published).toBeDefined();
       });
+
+      it("adds publishedLanguages to properties", async () => {
+        const form = { path: "testform", properties: {} };
+        const translations = { "no-NN": {}, en: {} };
+        renderHook(() => formioForms.onPublish(form, translations));
+        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+
+        expect(formioMock.saveForm).toHaveBeenCalledTimes(1);
+        const savedFormioForm = formioMock.saveForm.mock.calls[0][0];
+        expect(savedFormioForm["properties"]).toHaveProperty("publishedLanguages");
+        expect(savedFormioForm["properties"]["publishedLanguages"]).toEqual(["no-NN", "en"]);
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const publishRequestBody = JSON.parse(fetchMock.mock.calls[0][1].body);
+        const publishedForm = publishRequestBody.form;
+        expect(publishedForm.properties.publishedLanguages).toEqual(["no-NN", "en"]);
+      });
     });
 
     describe("when publishing fails", () => {
@@ -176,7 +193,7 @@ describe("useFormioForms", () => {
         });
       });
 
-      it("removes the published timestamp and uses previous modified timestamp", async () => {
+      it("removes the published props and uses previous modified timestamp", async () => {
         const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
         const form = {
           path: "testform",
@@ -184,7 +201,8 @@ describe("useFormioForms", () => {
             modified: originalModifiedTimestamp,
           },
         };
-        renderHook(() => formioForms.onPublish(form));
+        const translations = { "no-NN": {}, en: {} };
+        renderHook(() => formioForms.onPublish(form, translations));
         await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
 
         await waitFor(() => expect(formioMock.saveForm).toHaveBeenCalledTimes(2));
@@ -193,11 +211,37 @@ describe("useFormioForms", () => {
         expect(formBeforePublish["properties"]).toHaveProperty("modified");
         expect(formBeforePublish["properties"]["modified"]).not.toEqual(originalModifiedTimestamp);
         expect(formBeforePublish["properties"]).toHaveProperty("published");
+        expect(formBeforePublish["properties"]).toHaveProperty("publishedLanguages");
 
         const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
         expect(formAfterPublishFailure["properties"]).toHaveProperty("modified");
         expect(formAfterPublishFailure["properties"]["modified"]).toEqual(originalModifiedTimestamp);
         expect(formAfterPublishFailure["properties"]).not.toHaveProperty("published");
+        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("publishedLanguages");
+      });
+
+      it("rollbacks to previous published languages array", async () => {
+        const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
+        const form = {
+          path: "testform",
+          properties: {
+            modified: originalModifiedTimestamp,
+            publishedLanguages: ["en"],
+          },
+        };
+        const translations = { "no-NN": {}, en: {} };
+        renderHook(() => formioForms.onPublish(form, translations));
+        await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
+
+        await waitFor(() => expect(formioMock.saveForm).toHaveBeenCalledTimes(2));
+
+        const formBeforePublish = formioMock.saveForm.mock.calls[0][0];
+        expect(formBeforePublish["properties"]).toHaveProperty("publishedLanguages");
+        expect(formBeforePublish["properties"]["publishedLanguages"]).toEqual(["no-NN", "en"]);
+
+        const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
+        expect(formAfterPublishFailure["properties"]).toHaveProperty("publishedLanguages");
+        expect(formAfterPublishFailure["properties"]["publishedLanguages"]).toEqual(["en"]);
       });
     });
   });

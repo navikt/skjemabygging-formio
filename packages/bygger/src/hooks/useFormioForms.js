@@ -36,14 +36,14 @@ export const useFormioForms = (formio, userAlerter) => {
         modified = getIso8601String();
       }
       return formio
-        .saveForm({ ...updateModified(callbackForm, modified), display: "wizard" })
+        .saveForm({ ...updateProps(callbackForm, { modified }), display: "wizard" })
         .then((form) => {
           if (!silent) {
             userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
           }
           return form;
         })
-        .catch((e) => {
+        .catch(() => {
           userAlerter.setErrorMessage(
             "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
           );
@@ -64,11 +64,14 @@ export const useFormioForms = (formio, userAlerter) => {
 
   const onPublish = useCallback(
     async (form, translations) => {
-      const previousPublished = form.properties?.published;
       const previousModified = form.properties?.modified;
+      const publishedLanguages = translations ? Object.keys(translations) : [];
       const now = getIso8601String();
-      const formWithPublishedTrue = updatePublished(form, now);
-      const result = await onSave(formWithPublishedTrue, true, now);
+      const formWithPublishProps = updateProps(form, {
+        published: now,
+        publishedLanguages,
+      });
+      const result = await onSave(formWithPublishProps, true, now);
       if (!result.error) {
         const payload = JSON.stringify({
           form: result,
@@ -92,39 +95,23 @@ export const useFormioForms = (formio, userAlerter) => {
           return result;
         } else {
           userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-          return await onSave(updatePublished(form, previousPublished), true, previousModified);
+          return await onSave(form, true, previousModified);
         }
       }
     },
     [userAlerter, onSave]
   );
 
-  const updatePublished = (form, published) => {
-    if (!published) return form;
-
-    return {
-      ...form,
-      properties: {
-        ...form.properties,
-        published: published,
-      },
-    };
-  };
-
-  /**
-   * Formio sets a modified date, but we set our own modified in properties,
-   * so we can compare it against the published value.
-   */
-  const updateModified = (form, modified) => {
-    if (!modified) return form;
-
-    return {
-      ...form,
-      properties: {
-        ...form.properties,
-        modified: modified,
-      },
-    };
+  const updateProps = (form, props) => {
+    return JSON.parse(
+      JSON.stringify({
+        ...form,
+        properties: {
+          ...form.properties,
+          ...props,
+        },
+      })
+    );
   };
 
   return {
