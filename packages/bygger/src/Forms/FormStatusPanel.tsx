@@ -9,6 +9,12 @@ import { languagesInNorwegian } from "../context/i18n";
 type Status = "PENDING" | "DRAFT" | "PUBLISHED" | "UNKNOWN";
 type StreetLightSize = "small" | "large";
 
+const langCodeBokmal = "nb-NO";
+export const allLanguagesInNorwegian = {
+  ...languagesInNorwegian,
+  [langCodeBokmal]: "Norsk bokmål",
+};
+
 const useFormStatusIndicatorStyles = makeStyles({
   streetLight: (props: { size: StreetLightSize }) => ({
     maxWidth: props.size === "small" ? "1rem" : "1.5rem",
@@ -116,14 +122,14 @@ interface PublishedLanguagesProps {
 const PublishedLanguages = ({ formProperties }: PublishedLanguagesProps) => {
   const styles = useStatusStyles();
   if (formProperties.published && formProperties.publishedLanguages) {
-    const sortedLanguageCodes = [...formProperties.publishedLanguages, "nb-NO"].sort();
+    const sortedLanguageCodes = [...formProperties.publishedLanguages, langCodeBokmal].sort();
     return (
       <div className={styles.panelItem}>
         <Element>Publiserte språk:</Element>
         {sortedLanguageCodes.map((langCode) => {
           return (
             <p key={langCode} className={styles.rowText}>
-              {languagesInNorwegian[langCode]}
+              {allLanguagesInNorwegian[langCode]}
             </p>
           );
         })}

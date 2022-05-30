@@ -2,8 +2,7 @@ import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import moment from "moment";
 import React from "react";
-import { languagesInNorwegian } from "../context/i18n";
-import FormStatusPanel from "./FormStatusPanel";
+import FormStatusPanel, { allLanguagesInNorwegian } from "./FormStatusPanel";
 
 type PartialFormProperties = Pick<FormPropertiesType, "modified" | "published">;
 
@@ -108,7 +107,7 @@ describe("FormStatusPanel", () => {
       } as FormPropertiesType;
       render(<FormStatusPanel formProperties={formProps} />);
       expect(screen.queryByText("Publiserte språk:")).toBeInTheDocument();
-      expect(screen.queryByText(languagesInNorwegian["nb-NO"])).toBeInTheDocument();
+      expect(screen.queryByText(allLanguagesInNorwegian["nb-NO"])).toBeInTheDocument();
     });
 
     it("displays all published languages + bokmål", () => {
@@ -119,9 +118,9 @@ describe("FormStatusPanel", () => {
       } as FormPropertiesType;
       render(<FormStatusPanel formProperties={formProps} />);
       expect(screen.queryByText("Publiserte språk:")).toBeInTheDocument();
-      expect(screen.queryByText(languagesInNorwegian["nb-NO"])).toBeInTheDocument();
+      expect(screen.queryByText(allLanguagesInNorwegian["nb-NO"])).toBeInTheDocument();
       publishedLanguages.forEach((langCode) => {
-        expect(screen.queryByText(languagesInNorwegian[langCode])).toBeInTheDocument();
+        expect(screen.queryByText(allLanguagesInNorwegian[langCode])).toBeInTheDocument();
       });
     });
   });
