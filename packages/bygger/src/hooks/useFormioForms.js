@@ -64,7 +64,6 @@ export const useFormioForms = (formio, userAlerter) => {
 
   const onPublish = useCallback(
     async (form, translations) => {
-      const previousModified = form.properties?.modified;
       const publishedLanguages = translations ? Object.keys(translations) : [];
       const now = getIso8601String();
       const formWithPublishProps = updateProps(form, {
@@ -95,7 +94,15 @@ export const useFormioForms = (formio, userAlerter) => {
           return result;
         } else {
           userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-          return await onSave(form, true, previousModified);
+          const rollbackForm = updateProps(result, {
+            published: form.properties?.published,
+            publishedLanguages: form.properties?.publishedLanguages,
+          });
+          const rollbackResult = await onSave(rollbackForm, true, form.properties?.modified);
+          if (rollbackResult.error) {
+            return result;
+          }
+          return rollbackResult;
         }
       }
     },
@@ -103,16 +110,16 @@ export const useFormioForms = (formio, userAlerter) => {
   );
 
   const updateProps = (form, props) => {
-    return JSON.parse(
-      JSON.stringify({
-        ...form,
-        properties: {
-          ...form.properties,
-          ...props,
-        },
-      })
-    );
+    return clone({
+      ...form,
+      properties: {
+        ...form.properties,
+        ...props,
+      },
+    });
   };
+
+  const clone = (obj) => JSON.parse(JSON.stringify(obj));
 
   return {
     deleteForm,

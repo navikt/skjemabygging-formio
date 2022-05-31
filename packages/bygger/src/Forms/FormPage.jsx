@@ -32,10 +32,13 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   };
 
   const saveFormAndResetIsUnsavedChanges = async (form) => {
-    setHasUnsavedChanged(false);
     const savedForm = await onSave(form);
-    setForm(savedForm);
-    return savedForm;
+    if (!savedForm.error) {
+      setHasUnsavedChanged(false);
+      setForm(savedForm);
+      return savedForm;
+    }
+    return form;
   };
 
   const publishForm = async (form, translations) => {

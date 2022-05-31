@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { devAzure, devFormio, devFyllut, devPusher, devSkjemabyggingProxy } from "./development";
+import { devAzure, devFormio, devFyllut, devGithub, devPusher, devSkjemabyggingProxy } from "./development";
 import { ConfigType, NodeEnv } from "./types";
 
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
@@ -34,11 +34,11 @@ const config: ConfigType = {
     clientId: env("SKJEMABYGGING_PROXY_CLIENT_ID", devSkjemabyggingProxy.clientId),
   },
   publishRepo: {
-    name: env("PUBLISH_REPO"),
+    name: env("PUBLISH_REPO", devGithub.name),
     token: env("GITHUB_TEAM_TOKEN"),
-    submoduleName: env("SUBMODULE_REPO"),
-    owner: env("PUBLISH_REPO_OWNER"),
-    base: env("PUBLISH_REPO_BASE"),
+    submoduleName: env("SUBMODULE_REPO", devGithub.submoduleName),
+    owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
+    base: env("PUBLISH_REPO_BASE", devGithub.base),
   },
   formio: {
     projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),

@@ -133,7 +133,7 @@ describe("useFormioForms", () => {
 
     beforeEach(() => {
       formioMock = {
-        saveForm: jest.fn().mockImplementation((form) => Promise.resolve(form)),
+        saveForm: jest.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: Date.now() })),
       };
 
       ({
@@ -222,12 +222,14 @@ describe("useFormioForms", () => {
 
       it("rollbacks to previous published languages array", async () => {
         const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
+        const originalModifiedDate = Date.now();
         const form = {
           path: "testform",
           properties: {
             modified: originalModifiedTimestamp,
             publishedLanguages: ["en"],
           },
+          modified: originalModifiedDate,
         };
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
@@ -240,6 +242,7 @@ describe("useFormioForms", () => {
         expect(formBeforePublish["properties"]["publishedLanguages"]).toEqual(["no-NN", "en"]);
 
         const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
+        expect(formAfterPublishFailure.modified.toString()).not.toEqual(originalModifiedDate.toString());
         expect(formAfterPublishFailure["properties"]).toHaveProperty("publishedLanguages");
         expect(formAfterPublishFailure["properties"]["publishedLanguages"]).toEqual(["en"]);
       });
