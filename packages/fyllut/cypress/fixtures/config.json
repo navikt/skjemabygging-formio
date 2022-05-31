@@ -1,0 +1,5 @@
+{
+  "FEATURE_TOGGLES": {
+    "enableTranslations": true
+  }
+}
