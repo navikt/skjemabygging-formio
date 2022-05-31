@@ -1,4 +1,5 @@
-const INFORMATION_PAGE_HEADER = "Vær oppmerksom på dette før du begynner å fylle ut søknaden";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+
 const BACK_BUTTON_CONFIRMATION_TEXT =
   "Hvis du går vekk fra denne siden kan du miste dataene du har fylt ut. Er du sikker på at du vil gå tilbake?";
 
@@ -10,13 +11,13 @@ describe("Form navigation", () => {
   });
 
   it("Renders the information page", () => {
-    cy.findByRole("heading", { name: INFORMATION_PAGE_HEADER }).should("exist");
+    cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("exist");
   });
 
   describe("Navigation away from the form to the information page", () => {
     beforeEach(() => {
       cy.clickStart(); // <-- navigate from information page to the form
-      cy.findByRole("heading", { name: INFORMATION_PAGE_HEADER }).should("not.exist");
+      cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("not.exist");
     });
 
     describe("Click on browser back button", () => {
@@ -26,7 +27,7 @@ describe("Form navigation", () => {
           expect(text).to.contains(BACK_BUTTON_CONFIRMATION_TEXT);
           return true; // <-- confirms
         });
-        cy.findByRole("heading", { name: INFORMATION_PAGE_HEADER }).should("exist");
+        cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("exist");
         cy.findByRole("heading", { level: 2, name: "Veiledning" }).should("not.exist");
       });
 
@@ -36,7 +37,7 @@ describe("Form navigation", () => {
           expect(text).to.contains(BACK_BUTTON_CONFIRMATION_TEXT);
           return false; // <-- declines
         });
-        cy.findByRole("heading", { name: INFORMATION_PAGE_HEADER }).should("not.exist");
+        cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("not.exist");
         cy.findByRole("heading", { level: 2, name: "Veiledning" }).should("exist");
       });
     });
