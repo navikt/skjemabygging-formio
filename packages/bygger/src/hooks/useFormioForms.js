@@ -71,7 +71,7 @@ export const useFormioForms = (formio, userAlerter) => {
       const result = await onSave(formWithPublishedTrue, true, now);
       if (!result.error) {
         const payload = JSON.stringify({
-          form: form,
+          form: result,
           translations: translations,
           token: Formiojs.getToken(),
         });

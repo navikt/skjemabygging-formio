@@ -1,44 +1,56 @@
-import { getNodeText, render, screen } from "@testing-library/react";
+import { getNodeText, render, screen, waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
 import React, { useEffect, useState } from "react";
 import { useFormioForms } from "./useFormioForms";
 
-const RESPONSE_HEADERS = {
+const RESPONSE_HEADERS_OK = {
   headers: {
     "content-type": "application/json",
   },
+  status: 200,
 };
 
-const userAlerter = {
-  flashSuccessMessage: jest.fn(),
-  alertComponent: jest.fn(),
-  setErrorMessage: jest.fn(),
-};
-
-const TestComponent = ({ formio, formPath }) => {
-  const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
-  const [forms, setForms] = useState([]);
-  useEffect(() => {
-    if (formPath) {
-      loadForm(formPath).then((form) => setForms([form]));
-    } else {
-      loadFormsList().then((forms) => setForms(forms));
-    }
-  }, [formio, formPath, loadForm, loadFormsList]);
-  return (
-    <div>
-      {forms.map((form, index) => (
-        <div key={index} data-testid="form">
-          {form.title}
-        </div>
-      ))}
-    </div>
-  );
+const RESPONSE_HEADERS_ERROR = {
+  headers: {
+    "content-type": "text/plain",
+  },
+  status: 500,
 };
 
 describe("useFormioForms", () => {
+  let userAlerter;
+
+  beforeEach(() => {
+    userAlerter = {
+      flashSuccessMessage: jest.fn(),
+      alertComponent: jest.fn(),
+      setErrorMessage: jest.fn(),
+    };
+  });
+
+  const TestComponent = ({ formio, formPath }) => {
+    const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
+    const [forms, setForms] = useState([]);
+    useEffect(() => {
+      if (formPath) {
+        loadForm(formPath).then((form) => setForms([form]));
+      } else {
+        loadFormsList().then((forms) => setForms(forms));
+      }
+    }, [formio, formPath, loadForm, loadFormsList]);
+    return (
+      <div>
+        {forms.map((form, index) => (
+          <div key={index} data-testid="form">
+            {form.title}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   describe("Test form", () => {
     beforeEach(() => {
       const forms = [
@@ -56,9 +68,9 @@ describe("useFormioForms", () => {
             "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id"
           )
         ) {
-          return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS));
+          return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS_OK));
         } else if (url.includes("/form?type=form&tags=nav-skjema&path=skjema3&limit=1")) {
-          return Promise.resolve(new Response(JSON.stringify(form), RESPONSE_HEADERS));
+          return Promise.resolve(new Response(JSON.stringify(form), RESPONSE_HEADERS_OK));
         }
         return Promise.reject(new Error(`ukjent url ${url}`));
       });
@@ -118,6 +130,7 @@ describe("useFormioForms", () => {
 
   describe("Test onPublish", () => {
     let formioMock, formioForms;
+
     beforeEach(() => {
       formioMock = {
         saveForm: jest.fn().mockImplementation((form) => Promise.resolve(form)),
@@ -128,12 +141,64 @@ describe("useFormioForms", () => {
       } = renderHook(() => useFormioForms(formioMock, userAlerter)));
     });
 
-    it("add modified property onPublish", async () => {
-      renderHook(() => formioForms.onPublish({}));
+    describe("when publishing succeeds", () => {
+      beforeEach(() => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/publish/testform")) {
+            return Promise.resolve(new Response(JSON.stringify({ changed: true }), RESPONSE_HEADERS_OK));
+          }
+          return Promise.reject(new Error(`ukjent url ${url}`));
+        });
+      });
 
-      expect(formioMock.saveForm).toHaveBeenCalled();
-      expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("modified");
-      expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("published");
+      it("adds properties modified and published", async () => {
+        renderHook(() => formioForms.onPublish({ path: "testform", properties: {} }));
+        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+
+        expect(formioMock.saveForm).toHaveBeenCalledTimes(1);
+        expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("modified");
+        expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("published");
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        const publishedForm = JSON.parse(fetchMock.mock.calls[0][1].body).form;
+        expect(publishedForm.properties.modified).toBeDefined();
+        expect(publishedForm.properties.published).toBeDefined();
+      });
+    });
+
+    describe("when publishing fails", () => {
+      beforeEach(() => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/publish/testform")) {
+            return Promise.resolve(new Response("500 Internal Server Error", RESPONSE_HEADERS_ERROR));
+          }
+          return Promise.reject(new Error(`ukjent url ${url}`));
+        });
+      });
+
+      it("removes the published timestamp and uses previous modified timestamp", async () => {
+        const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
+        const form = {
+          path: "testform",
+          properties: {
+            modified: originalModifiedTimestamp,
+          },
+        };
+        renderHook(() => formioForms.onPublish(form));
+        await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
+
+        await waitFor(() => expect(formioMock.saveForm).toHaveBeenCalledTimes(2));
+
+        const formBeforePublish = formioMock.saveForm.mock.calls[0][0];
+        expect(formBeforePublish["properties"]).toHaveProperty("modified");
+        expect(formBeforePublish["properties"]["modified"]).not.toEqual(originalModifiedTimestamp);
+        expect(formBeforePublish["properties"]).toHaveProperty("published");
+
+        const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
+        expect(formAfterPublishFailure["properties"]).toHaveProperty("modified");
+        expect(formAfterPublishFailure["properties"]["modified"]).toEqual(originalModifiedTimestamp);
+        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("published");
+      });
     });
   });
 });
