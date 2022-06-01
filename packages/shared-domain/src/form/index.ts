@@ -21,6 +21,7 @@ export interface FormPropertiesType {
   tema: string;
   modified?: string;
   published?: string;
+  publishedLanguages?: string[];
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
   innsendingForklaring?: string;

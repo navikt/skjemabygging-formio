@@ -37,6 +37,26 @@ App Keys i venstremenyen. Eventuelt kan man opprette sin egen Pusher-applikasjon
 FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man legge
 inn konfigurasjon i denne filen.
 
+## Teste publisering av skjema på lokal maskin
+
+Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
+test-branch i repo'et skjemaufylling-formio. Hvilken branch som benyttes defineres av `PUBLISH_REPO_BASE`, og
+default-verdi kan overstyres i `packages/bygger/server/.env`, men ikke test mot `master` siden det starter
+en deploy til produksjon :nerd_face:
+
+I `packages/bygger/server/.env` må man legge inn følgende miljøvariabler:
+
+| Miljøvariabel     | Beskrivelse                                                                            |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| GITHUB_TEAM_TOKEN | GitHub personal access token (se framgangsmåte i neste avsnitt)                        |
+| GIT_SHA           | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master` |
+
+### Hvordan opprette et personal access token på GitHub
+
+Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
+
 ## Fagsystemsonen
 
 Vi kommuniserer med fagsystemsonen blant annet for å hente enheter og generere førsteside, og det skjer ved kall

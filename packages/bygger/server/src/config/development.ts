@@ -1,4 +1,11 @@
-import { AzureConfig, FormioConfig, FyllutConfig, PusherConfig, SkjemabyggingProxyConfig } from "./types";
+import {
+  AzureConfig,
+  FormioConfig,
+  FyllutConfig,
+  PublishRepoConfig,
+  PusherConfig,
+  SkjemabyggingProxyConfig,
+} from "./types";
 
 export const devAzure: Partial<AzureConfig> = {
   openidTokenEndpoint: "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token",
@@ -21,4 +28,11 @@ export const devFyllut: FyllutConfig = {
 
 export const devPusher: Partial<PusherConfig> = {
   cluster: "eu",
+};
+
+export const devGithub: Partial<PublishRepoConfig> = {
+  name: "skjemautfylling-formio",
+  submoduleName: "skjemabygging-formio",
+  owner: "navikt",
+  base: "test-publishing",
 };

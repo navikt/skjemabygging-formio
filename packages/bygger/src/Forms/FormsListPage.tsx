@@ -16,7 +16,7 @@ import {
   SortDirection,
   sortFormsByProperty,
 } from "./formsListUtils";
-import { FormStatus } from "./FormStatusPanel";
+import FormStatus from "./status/FormStatus";
 
 const useFormsListStyles = makeStyles({
   list: {

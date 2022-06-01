@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormsList } from "../Forms/FormsListPage";
 import { asFormMetadata } from "../Forms/formsListUtils";
-import { FormStatus } from "../Forms/FormStatusPanel";
+import FormStatus from "../Forms/status/FormStatus";
 
 const useTranslationsListStyles = makeStyles({
   root: {
