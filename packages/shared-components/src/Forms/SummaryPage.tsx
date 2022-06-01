@@ -198,7 +198,10 @@ export interface Props {
 function getUrlToLastPanel(form, formUrl, submission) {
   const formSummary = createFormSummaryObject(form, submission);
   const lastPanel = formSummary[formSummary.length - 1];
-  const lastPanelSlug = lastPanel.key;
+  const lastPanelSlug = lastPanel?.key;
+  if (!lastPanelSlug) {
+    return `${formUrl}/skjema`;
+  }
   return `${formUrl}/skjema/${lastPanelSlug}`;
 }
 
