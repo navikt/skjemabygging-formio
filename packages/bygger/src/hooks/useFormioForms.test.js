@@ -131,9 +131,15 @@ describe("useFormioForms", () => {
   describe("Test onPublish", () => {
     let formioMock, formioForms;
 
+    const createDate = (dateDiff = 0) => {
+      const date = new Date();
+      date.setDate(date.getDate() + dateDiff);
+      return date;
+    };
+
     beforeEach(() => {
       formioMock = {
-        saveForm: jest.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: Date.now() })),
+        saveForm: jest.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: createDate() })),
       };
 
       ({
@@ -222,7 +228,7 @@ describe("useFormioForms", () => {
 
       it("rollbacks to previous published languages array", async () => {
         const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
-        const originalModifiedDate = Date.now();
+        const originalModifiedDate = createDate(-1);
         const form = {
           path: "testform",
           properties: {
@@ -238,11 +244,14 @@ describe("useFormioForms", () => {
         await waitFor(() => expect(formioMock.saveForm).toHaveBeenCalledTimes(2));
 
         const formBeforePublish = formioMock.saveForm.mock.calls[0][0];
+        expect(typeof formBeforePublish.modified).toEqual("string");
+        expect(formBeforePublish.modified).toEqual(JSON.parse(JSON.stringify(originalModifiedDate)));
         expect(formBeforePublish["properties"]).toHaveProperty("publishedLanguages");
         expect(formBeforePublish["properties"]["publishedLanguages"]).toEqual(["no-NN", "en"]);
 
         const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
-        expect(formAfterPublishFailure.modified.toString()).not.toEqual(originalModifiedDate.toString());
+        expect(typeof formAfterPublishFailure.modified).toEqual("string");
+        expect(formAfterPublishFailure.modified).not.toEqual(JSON.parse(JSON.stringify(originalModifiedDate)));
         expect(formAfterPublishFailure["properties"]).toHaveProperty("publishedLanguages");
         expect(formAfterPublishFailure["properties"]["publishedLanguages"]).toEqual(["en"]);
       });
