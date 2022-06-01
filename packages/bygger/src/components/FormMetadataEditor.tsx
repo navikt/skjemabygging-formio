@@ -295,9 +295,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         }
       />
 
-      {console.log("Form prop", JSON.stringify(form, null, 2))}
-      {console.log("Test")}
-
       {signatureUtils.mapBackwardCompatibleSignatures(signatures)?.map((signature, index) => (
         <div key={signature.key}>
           <SignatureComponent

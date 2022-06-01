@@ -41,7 +41,6 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         skjemanummer: "",
         tema: "",
         innsending: "PAPIR_OG_DIGITAL",
-        hasLabeledSignatures: false,
         signatures: [{ label: "", description: "", key: uuidv4() }],
       },
       components: defaultFormFields() as unknown as Component[],
