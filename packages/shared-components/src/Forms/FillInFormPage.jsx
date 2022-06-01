@@ -18,6 +18,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     return null;
   }
 
+  function getSearchString(search) {
+    if (search) {
+      return `${search}`;
+    } else {
+      return "";
+    }
+  }
+
   function getPanelSlug(pageIndex) {
     const panels = form?.components.filter((component) => component.type === "panel") || [];
     const panelAtPageIndex = panels[pageIndex];
@@ -25,7 +33,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
-    const newPath = `${formUrl}/skjema/${panelPath}${search ? `?${search}` : ""}`;
+    const newPath = `${formUrl}/skjema/${panelPath}${getSearchString(search)}`;
     history.push(newPath);
   }
 
@@ -56,6 +64,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
+  const onSubmit = (submission) => {
+    setSubmission(submission);
+    history.push(`${formUrl}/oppsummering${getSearchString(search)}`);
+  };
+
   return (
     <div>
       <FormTitle form={form} />
@@ -64,13 +77,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
-        onBlur={(event) => loggSkjemaSporsmalBesvart(event)}
-        onChange={(event) => loggSkjemaSporsmalForSpesialTyper(event)}
-        onSubmit={(submission) => {
-          setSubmission(submission);
-          const urlSearchParams = new URLSearchParams(window.location.search).toString();
-          history.push(`${formUrl}/oppsummering?${urlSearchParams}`);
-        }}
+        onBlur={loggSkjemaSporsmalBesvart}
+        onChange={loggSkjemaSporsmalForSpesialTyper}
+        onSubmit={onSubmit}
         onNextPage={onNextOrPreviousPage}
         onPrevPage={onNextOrPreviousPage}
         formReady={onFormReady}
