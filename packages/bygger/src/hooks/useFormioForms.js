@@ -110,16 +110,16 @@ export const useFormioForms = (formio, userAlerter) => {
   );
 
   const updateProps = (form, props) => {
-    return clone({
-      ...form,
-      properties: {
-        ...form.properties,
-        ...props,
-      },
-    });
+    return JSON.parse(
+      JSON.stringify({
+        ...form,
+        properties: {
+          ...form.properties,
+          ...props,
+        },
+      })
+    );
   };
-
-  const clone = (obj) => JSON.parse(JSON.stringify(obj));
 
   return {
     deleteForm,
