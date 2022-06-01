@@ -53,6 +53,7 @@ export interface NavFormType {
   name: string;
   title: string;
   path: string;
+  modified?: string;
   properties: FormPropertiesType;
   components: Component[];
 }

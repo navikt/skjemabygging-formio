@@ -26,6 +26,7 @@ const GET_LANGUAGES_REGEX = /http.*\/language\/submission(\?.*)?$/;
 const GET_LANGUAGE_REGEX = /http.*\/language\/submission\/(.*)$/;
 const GET_COUNTRIES_REGEX = /http.*\/countries\??lang=(.*)$/;
 const GET_MOTTAKSADRESSER_REGEX = /http.*\/mottaksadresse\/submission/;
+const GET_FORM_DIFF = /http.*\/form\/.*\/diff/;
 
 const DEFAULT_PROJECT_URL = "http://myproject.example.org";
 
@@ -71,6 +72,9 @@ const createMockImplementation =
         const lang = matches[1];
         return Promise.resolve(new Response(JSON.stringify(countriesWithLocale[lang]), RESPONSE_HEADERS));
       }
+    }
+    if (GET_FORM_DIFF.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
     }
 
     return Promise.reject(new Error(`Missing test implementation: ${url} (${JSON.stringify(options)})`));

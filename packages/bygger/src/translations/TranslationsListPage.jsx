@@ -4,7 +4,9 @@ import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { FormsList, simplifiedForms } from "../Forms/FormsListPage";
+import { FormsList } from "../Forms/FormsListPage";
+import { asFormMetadata } from "../Forms/formsListUtils";
+import FormStatus from "../Forms/status/FormStatus";
 
 const useTranslationsListStyles = makeStyles({
   root: {
@@ -18,7 +20,7 @@ const useTranslationsListStyles = makeStyles({
   listItem: {
     padding: "0.3rem 0.5rem",
     display: "grid",
-    gridTemplateColumns: "minmax(5rem,10rem) auto minmax(5rem,10rem)",
+    gridTemplateColumns: "minmax(5rem,10rem) auto 8rem",
     width: "auto",
     "&:nth-child(odd)": {
       backgroundColor: "#ddd",
@@ -71,15 +73,16 @@ export function TranslationsListPage({ loadFormsList }) {
           {!forms ? (
             <p>Finner ingen skjemaer...</p>
           ) : (
-            <FormsList className={classes.list} forms={simplifiedForms(forms)}>
-              {(form) => (
-                <li className={classes.listItem} key={form.path}>
-                  <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
-                    {form.skjemanummer}
+            <FormsList className={classes.list} formMetadataList={forms?.map(asFormMetadata)}>
+              {(formMetadata) => (
+                <li className={classes.listItem} key={formMetadata.path}>
+                  <Link className="lenke" data-testid="editLink" to={`/translations/${formMetadata.path}`}>
+                    {formMetadata.skjemanummer}
                   </Link>
-                  <Link className="lenke" data-testid="editLink" to={`/translations/${form.path}`}>
-                    {form.title}
+                  <Link className="lenke" data-testid="editLink" to={`/translations/${formMetadata.path}`}>
+                    {formMetadata.title}
                   </Link>
+                  <FormStatus status={formMetadata.status} size={"small"} />
                 </li>
               )}
             </FormsList>
