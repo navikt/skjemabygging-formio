@@ -13,8 +13,8 @@ import NavFormBuilder from "../components/NavFormBuilder";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
-import FormStatusPanel from "./FormStatusPanel";
 import PublishModalComponents from "./PublishModalComponents";
+import FormStatusPanel from "./status/FormStatusPanel";
 
 const useStyles = makeStyles({
   formBuilder: {

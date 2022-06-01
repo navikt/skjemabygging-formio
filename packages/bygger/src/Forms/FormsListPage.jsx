@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
-import { FormStatus } from "./FormStatusPanel";
+import FormStatus from "./status/FormStatus";
 
 const useFormsListStyles = makeStyles({
   list: {

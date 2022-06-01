@@ -2,7 +2,8 @@ import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import moment from "moment";
 import React from "react";
-import FormStatusPanel, { allLanguagesInNorwegian } from "./FormStatusPanel";
+import FormStatusPanel from "./FormStatusPanel";
+import { allLanguagesInNorwegian } from "./PublishedLanguages";
 
 type PartialFormProperties = Pick<FormPropertiesType, "modified" | "published">;
 
