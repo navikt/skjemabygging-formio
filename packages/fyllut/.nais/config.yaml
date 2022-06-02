@@ -51,6 +51,9 @@ spec:
     enabled: true  # default: false. Pod will now be scraped for metrics by Prometheus.
     path: /fyllut/internal/metrics # Path where prometheus metrics are served.
   accessPolicy:
+    inbound:
+      rules:
+        - application: fyllut-ettersending
     outbound:
       rules:
       {{#each accessPolicy.outbound.rules}}
