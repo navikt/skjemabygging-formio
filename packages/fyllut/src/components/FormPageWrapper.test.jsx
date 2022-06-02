@@ -13,10 +13,14 @@ const RESPONSE_HEADERS = {
 
 describe("FormPageWrapper", () => {
   beforeEach(() => {
+    console.log = jest.fn();
     fetchMock.doMock();
   });
 
-  afterEach(() => fetchMock.resetMocks());
+  afterEach(() => {
+    fetchMock.resetMocks();
+    jest.restoreAllMocks();
+  });
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
     fetchMock.mockImplementation((url) => {
