@@ -107,13 +107,15 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         body: JSON.stringify(payload),
       });
 
-      const { changed } = await response.json();
-      if (response.ok && changed) {
-        userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
-      } else if (response.ok && !changed) {
-        userAlerter.setWarningMessage(
-          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
-        );
+      if (response.ok) {
+        const { changed } = await response.json();
+        if (changed) {
+          userAlerter.flashSuccessMessage(`Publisering av ${languagesInNorwegian[languageCode]} startet`);
+        } else {
+          userAlerter.setWarningMessage(
+            "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+          );
+        }
       } else {
         userAlerter.setErrorMessage("Publisering feilet");
       }

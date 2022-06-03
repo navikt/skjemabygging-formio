@@ -10,10 +10,30 @@ const MOCK_PREDEFINED_TEXTS_I18N_EN = {
   Forrige: "Previous",
   Neste: "Next",
 };
+const MOCK_PREDEFINED_TEXTS_I18N_PL = {
+  Ja: "Tak",
+  Nei: "Nie",
+  Forrige: "Poprzedni",
+  Neste: "Następny",
+};
 jest.mock("../translations/global/utils", () => ({
   getTranslationKeysForAllPredefinedTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
   tags: { VALIDERING: "validering", GRENSESNITT: "grensesnitt" },
 }));
+
+const RESPONSE_HEADERS_OK = {
+  headers: {
+    "content-type": "application/json",
+  },
+  status: 200,
+};
+
+const RESPONSE_HEADERS_ERROR = {
+  headers: {
+    "content-type": "text/plain",
+  },
+  status: 500,
+};
 
 describe("useFormioTranslations", () => {
   const projectUrl = "http://myProject.example.org";
@@ -209,10 +229,15 @@ describe("useFormioTranslations", () => {
         return (url, options) => {
           if (LOAD_GLOBAL_TRANSLATIONS_REGEX.test(url)) {
             const languageCode = LOAD_GLOBAL_TRANSLATIONS_REGEX.exec(url)?.[1];
-            return Promise.resolve(new Response(JSON.stringify(languageCode ? globalTranslations[languageCode] : {})));
+            return Promise.resolve(
+              new Response(JSON.stringify(languageCode ? globalTranslations[languageCode] : {}), RESPONSE_HEADERS_OK)
+            );
           }
           if (url === "/api/published-resource/global-translations-en") {
-            return Promise.resolve(new Response(JSON.stringify({ changed: true, result: "sha" })));
+            return Promise.resolve(new Response(JSON.stringify({ changed: true, result: "sha" }), RESPONSE_HEADERS_OK));
+          }
+          if (url === "/api/published-resource/global-translations-pl") {
+            return Promise.resolve(new Response("500 Internal Server Error", RESPONSE_HEADERS_ERROR));
           }
           fail(`Manglende testoppsett: Ukjent url ${url}, options = ${JSON.stringify(options)}`);
         };
@@ -268,6 +293,30 @@ describe("useFormioTranslations", () => {
         const errorMessages = mockUserAlerter.setErrorMessage.mock.calls;
         expect(errorMessages).toHaveLength(1);
         expect(errorMessages[0][0]).toEqual("Det mangler oversettelser for følgende tekster: Forrige, Neste");
+      });
+
+      it("Viser feilmelding dersom kall til backend feiler", async () => {
+        fetchSpy.mockImplementation(
+          fetchMockImpl({
+            pl: [
+              {
+                data: {
+                  language: "pl",
+                  name: "global",
+                  scope: "global",
+                  tag: "validering",
+                  i18n: MOCK_PREDEFINED_TEXTS_I18N_PL,
+                },
+              },
+            ],
+          })
+        );
+        await waitFor(() => formioTranslations.publishGlobalTranslations("pl"));
+        expect(mockUserAlerter.flashSuccessMessage).not.toHaveBeenCalled();
+        expect(mockUserAlerter.setErrorMessage).toHaveBeenCalled();
+        const errorMessages = mockUserAlerter.setErrorMessage.mock.calls;
+        expect(errorMessages).toHaveLength(1);
+        expect(errorMessages[0][0]).toEqual("Publisering feilet");
       });
     });
   });
