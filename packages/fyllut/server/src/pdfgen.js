@@ -314,8 +314,6 @@ export class PdfgenPapir extends Pdfgen {
 
   generateSignatures() {
     const signatures = signatureUtils.mapBackwardCompatibleSignatures(this.form?.properties?.signatures);
-    console.log("signatures", this.form?.properties?.signatures);
-    console.log("signaturesPDF", signatures);
 
     if (signatureUtils.hasOnlyDefaultSignaturesValues(signatures)) {
       return this.newSignature();

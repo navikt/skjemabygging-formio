@@ -88,16 +88,13 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
   const removeSignature = (signatureKey) => {
     const mappedSignatures = signatureUtils.mapBackwardCompatibleSignatures(signatures);
     if (mappedSignatures.length > 0) {
-      mappedSignatures.splice(
-        mappedSignatures.findIndex((s) => s.key === signatureKey),
-        1
-      );
+      const updatedSignatures = mappedSignatures.filter((s) => s.key !== signatureKey);
 
       onChange({
         ...form,
         properties: {
           ...form.properties,
-          signatures: mappedSignatures,
+          signatures: updatedSignatures,
         },
       });
     }

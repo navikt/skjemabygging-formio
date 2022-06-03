@@ -5,15 +5,12 @@ const defaultSignature = [{ label: "", description: "", key: uuidv4() }];
 
 export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[] | FormSignaturesType) => {
   if (signature) {
-    const mappedSignature = mapBackwardCompatibleSignatures(signature);
-    if (
-      mappedSignature?.length === 1 &&
-      mappedSignature[0].label === defaultSignature[0].label &&
-      mappedSignature[0].description === defaultSignature[0].description
-    ) {
-      return true;
-    }
-    return false;
+    const mappedSignatures = mapBackwardCompatibleSignatures(signature);
+    return (
+      mappedSignatures?.length === 1 &&
+      mappedSignatures[0].label === defaultSignature[0].label &&
+      mappedSignatures[0].description === defaultSignature[0].description
+    );
   }
   return true;
 };

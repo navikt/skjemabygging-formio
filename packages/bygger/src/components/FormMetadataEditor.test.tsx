@@ -504,7 +504,6 @@ describe("FormMetadataEditor", () => {
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
-        console.log(signaturFieldsets);
         expect(signaturFieldsets).toHaveLength(3);
 
         const lukkKnapp = screen.queryAllByRole("button", { name: "Lukk" })[1];
