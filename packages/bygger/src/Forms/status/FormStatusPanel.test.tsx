@@ -5,14 +5,14 @@ import React from "react";
 import FormStatusPanel from "./FormStatusPanel";
 import { allLanguagesInNorwegian } from "./PublishedLanguages";
 
-type PartialFormProperties = Pick<FormPropertiesType, "modified" | "published">;
+type PartialFormProperties = Pick<FormPropertiesType, "modified" | "modifiedBy" | "published" | "publishedBy">;
 
 describe("FormStatusPanel", () => {
   const now = moment().toISOString();
   const earlier = moment(now).subtract("1", "day").toISOString();
 
   describe("When form has modified date and no publish date", () => {
-    const properties: PartialFormProperties = { modified: now };
+    const properties: PartialFormProperties = { modified: now, modifiedBy: "Jenny" };
 
     beforeEach(() => {
       render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
@@ -26,13 +26,17 @@ describe("FormStatusPanel", () => {
       expect(screen.getByText("Sist lagret:")).toBeInTheDocument();
     });
 
+    it("displays name of modifier", () => {
+      expect(screen.getByText("Jenny")).toBeInTheDocument();
+    });
+
     it("does not display 'Sist publisert'", () => {
       expect(screen.queryByText("Sist publisert:")).toBeNull();
     });
   });
 
   describe("When form has published date that is the same as modified date", () => {
-    const properties: PartialFormProperties = { modified: now, published: now };
+    const properties: PartialFormProperties = { modified: now, published: now, publishedBy: "Jonny" };
 
     beforeEach(() => {
       render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
@@ -48,6 +52,10 @@ describe("FormStatusPanel", () => {
 
     it("displays 'Sist publisert'", () => {
       expect(screen.getByText("Sist publisert:")).toBeInTheDocument();
+    });
+
+    it("displays name of publisher", () => {
+      expect(screen.getByText("Jonny")).toBeInTheDocument();
     });
   });
 

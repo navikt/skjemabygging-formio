@@ -20,7 +20,9 @@ export interface FormPropertiesType {
   skjemanummer: string;
   tema: string;
   modified?: string;
+  modifiedBy?: string;
   published?: string;
+  publishedBy?: string;
   publishedLanguages?: string[];
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
