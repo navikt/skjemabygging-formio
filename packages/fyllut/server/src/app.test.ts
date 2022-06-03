@@ -4,6 +4,8 @@ import { createApp } from "./app";
 import { config } from "./config/config";
 import { createMockIdportenJwt, extractHost, extractPath } from "./test/testHelpers.js";
 
+jest.mock("./logger.js");
+
 const { sendInnConfig, tokenx: tokenxConfig } = config;
 
 describe("app", () => {

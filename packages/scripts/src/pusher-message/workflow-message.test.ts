@@ -31,6 +31,11 @@ describe("workflow-message", () => {
     pusherTrigger = jest.fn();
     PusherInstanceMock.mockClear();
     PusherInstanceMock.createInstance = () => ({ trigger: pusherTrigger } as Pusher);
+    console.log = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe("general push event", () => {

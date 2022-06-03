@@ -14,6 +14,7 @@ describe("get forms", () => {
   afterEach(() => {
     fs.readdirSync.mockClear();
     fsOpenMock.mockClear();
+    jest.restoreAllMocks();
   });
 
   describe("loadFileFromDirectory", () => {
@@ -30,6 +31,7 @@ describe("get forms", () => {
     });
 
     it("returns empty object if file doesn't exist", async () => {
+      console.warn = jest.fn();
       await loadFileFromDirectory("dir", "missingFile.json").then((data) => expect(data).toEqual({}));
     });
 

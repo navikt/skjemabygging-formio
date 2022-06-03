@@ -22,7 +22,13 @@ describe("authHandler", () => {
       .reply(200, { keys: [key.toJSON(false)] });
   });
 
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
   it("rejects request when authorization header is missing", async () => {
+    console.error = jest.fn();
+    console.log = jest.fn();
     const req = mockRequest({}) as ByggerRequest;
     const res = mockResponse();
     const next = jest.fn();
