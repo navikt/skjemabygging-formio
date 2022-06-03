@@ -1,4 +1,5 @@
 import { waitFor } from "@testing-library/react";
+import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
 import createMockImplementation from "../../test/backendMockImplementation";
 import { useFormioTranslations } from "./useFormioTranslations";
@@ -26,7 +27,8 @@ describe("useFormioTranslations", () => {
     fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
     mockUserAlerter = { setErrorMessage: jest.fn(), flashSuccessMessage: jest.fn() };
 
-    formioTranslations = useFormioTranslations(projectUrl, new Formio(projectUrl), mockUserAlerter);
+    const { result } = renderHook(() => useFormioTranslations(projectUrl, new Formio(projectUrl), mockUserAlerter));
+    formioTranslations = result.current;
   });
 
   afterEach(() => {
