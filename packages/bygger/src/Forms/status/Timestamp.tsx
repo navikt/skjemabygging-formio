@@ -3,7 +3,7 @@ import { Element } from "nav-frontend-typografi";
 import React from "react";
 import { useStatusStyles } from "./styles";
 
-const Timestamp = ({ label, timestamp }: { label: string; timestamp?: string }) => {
+const Timestamp = ({ label, timestamp, userName }: { label: string; timestamp?: string; userName?: string }) => {
   const styles = useStatusStyles();
   if (!timestamp) {
     return <></>;
@@ -14,6 +14,7 @@ const Timestamp = ({ label, timestamp }: { label: string; timestamp?: string }) 
     <div className={styles.panelItem}>
       <Element>{label}</Element>
       <p className={styles.rowText}>{dateAndTime}</p>
+      {userName && <p className={styles.rowText}>{userName}</p>}
     </div>
   );
 };

@@ -1,8 +1,11 @@
 import { getIso8601String } from "@navikt/skjemadigitalisering-shared-components";
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
+import { useAuth } from "../context/auth-context";
 
 export const useFormioForms = (formio, userAlerter) => {
+  const { userData } = useAuth();
+
   const loadFormsList = useCallback(() => {
     return formio.loadForms({
       params: {
@@ -31,12 +34,14 @@ export const useFormioForms = (formio, userAlerter) => {
   );
 
   const onSave = useCallback(
-    (callbackForm, silent = false, modified = undefined) => {
-      if (!modified) {
-        modified = getIso8601String();
+    (callbackForm, silent = false, formProps = undefined) => {
+      const props = { ...formProps };
+      if (!props.modified) {
+        props.modified = getIso8601String();
+        props.modifiedBy = userData.name;
       }
       return formio
-        .saveForm({ ...updateProps(callbackForm, { modified }), display: "wizard" })
+        .saveForm({ ...updateProps(callbackForm, props), display: "wizard" })
         .then((form) => {
           if (!silent) {
             userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
@@ -50,7 +55,7 @@ export const useFormioForms = (formio, userAlerter) => {
           return { error: true };
         });
     },
-    [formio, userAlerter]
+    [formio, userAlerter, userData]
   );
 
   const deleteForm = useCallback(
@@ -68,9 +73,13 @@ export const useFormioForms = (formio, userAlerter) => {
       const now = getIso8601String();
       const formWithPublishProps = updateProps(form, {
         published: now,
+        publishedBy: userData.name,
         publishedLanguages,
       });
-      const result = await onSave(formWithPublishProps, true, now);
+      const result = await onSave(formWithPublishProps, true, {
+        modified: now,
+        modifiedBy: userData.name,
+      });
       if (!result.error) {
         const payload = JSON.stringify({
           form: result,
@@ -96,9 +105,13 @@ export const useFormioForms = (formio, userAlerter) => {
           userAlerter.setErrorMessage("Publisering feilet " + response?.status);
           const rollbackForm = updateProps(result, {
             published: form.properties?.published,
+            publishedBy: form.properties?.publishedBy,
             publishedLanguages: form.properties?.publishedLanguages,
           });
-          const rollbackResult = await onSave(rollbackForm, true, form.properties?.modified);
+          const rollbackResult = await onSave(rollbackForm, true, {
+            modified: form.properties?.modified,
+            modifiedBy: form.properties?.modifiedBy,
+          });
           if (rollbackResult.error) {
             return result;
           }
@@ -106,7 +119,7 @@ export const useFormioForms = (formio, userAlerter) => {
         }
       }
     },
-    [userAlerter, onSave]
+    [userAlerter, onSave, userData]
   );
 
   const updateProps = (form, props) => {

@@ -3,6 +3,7 @@ import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
 import React, { useEffect, useState } from "react";
+import { AuthProvider } from "../context/auth-context";
 import { useFormioForms } from "./useFormioForms";
 
 const RESPONSE_HEADERS_OK = {
@@ -19,6 +20,7 @@ const RESPONSE_HEADERS_ERROR = {
   status: 500,
 };
 
+const USER_NAME = "Bond, James";
 describe("useFormioForms", () => {
   let userAlerter;
 
@@ -41,13 +43,13 @@ describe("useFormioForms", () => {
       }
     }, [formio, formPath, loadForm, loadFormsList]);
     return (
-      <div>
+      <AuthProvider user={{ name: USER_NAME }}>
         {forms.map((form, index) => (
           <div key={index} data-testid="form">
             {form.title}
           </div>
         ))}
-      </div>
+      </AuthProvider>
     );
   };
 
@@ -102,6 +104,9 @@ describe("useFormioForms", () => {
 
   describe("Test onSave", () => {
     let formioMock, formioForms;
+
+    const wrapper = ({ children }) => <AuthProvider user={{ name: USER_NAME }}>{children}</AuthProvider>;
+
     beforeEach(() => {
       formioMock = {
         saveForm: jest.fn().mockImplementation((form) => Promise.resolve(form)),
@@ -109,7 +114,7 @@ describe("useFormioForms", () => {
 
       ({
         result: { current: formioForms },
-      } = renderHook(() => useFormioForms(formioMock, userAlerter)));
+      } = renderHook(() => useFormioForms(formioMock, userAlerter), { wrapper }));
     });
 
     it("add modified property onSave", async () => {
@@ -137,6 +142,8 @@ describe("useFormioForms", () => {
       return date;
     };
 
+    const wrapper = ({ children }) => <AuthProvider user={{ name: USER_NAME }}>{children}</AuthProvider>;
+
     beforeEach(() => {
       formioMock = {
         saveForm: jest.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: createDate() })),
@@ -144,7 +151,7 @@ describe("useFormioForms", () => {
 
       ({
         result: { current: formioForms },
-      } = renderHook(() => useFormioForms(formioMock, userAlerter)));
+      } = renderHook(() => useFormioForms(formioMock, userAlerter), { wrapper }));
     });
 
     describe("when publishing succeeds", () => {
@@ -216,13 +223,19 @@ describe("useFormioForms", () => {
         const formBeforePublish = formioMock.saveForm.mock.calls[0][0];
         expect(formBeforePublish["properties"]).toHaveProperty("modified");
         expect(formBeforePublish["properties"]["modified"]).not.toEqual(originalModifiedTimestamp);
+        expect(formBeforePublish["properties"]).toHaveProperty("modifiedBy");
+        expect(formBeforePublish["properties"]["modifiedBy"]).toEqual(USER_NAME);
         expect(formBeforePublish["properties"]).toHaveProperty("published");
+        expect(formBeforePublish["properties"]).toHaveProperty("publishedBy");
+        expect(formBeforePublish["properties"]["publishedBy"]).toEqual(USER_NAME);
         expect(formBeforePublish["properties"]).toHaveProperty("publishedLanguages");
 
         const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
         expect(formAfterPublishFailure["properties"]).toHaveProperty("modified");
         expect(formAfterPublishFailure["properties"]["modified"]).toEqual(originalModifiedTimestamp);
+        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("modifiedBy");
         expect(formAfterPublishFailure["properties"]).not.toHaveProperty("published");
+        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("publishedBy");
         expect(formAfterPublishFailure["properties"]).not.toHaveProperty("publishedLanguages");
       });
 

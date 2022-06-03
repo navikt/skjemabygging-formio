@@ -17,13 +17,23 @@ interface ContextProps {
   logout?: Function;
 }
 
+const enforceUserName = (formioUser) => {
+  if (formioUser && !formioUser.name) {
+    return {
+      ...formioUser,
+      name: formioUser.data?.email,
+    };
+  }
+  return formioUser;
+};
+
 const AuthContext = React.createContext<ContextProps>({});
 function AuthProvider(props) {
-  const [userData, setUserData] = useState(props.user || Formiojs.getUser());
+  const [userData, setUserData] = useState(props.user || enforceUserName(Formiojs.getUser()));
   const history = useHistory();
 
   const login = (user) => {
-    setUserData(user);
+    setUserData(enforceUserName(user));
     history.push("/forms");
   };
   const logout = async () => {

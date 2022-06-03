@@ -10,16 +10,16 @@ import { Props } from "./types";
 
 const FormStatusPanel = ({ formProperties }: Props) => {
   const styles: ClassNameMap = useStatusStyles();
-  const { modified, published } = formProperties;
+  const { modified, modifiedBy, published, publishedBy } = formProperties;
 
   return (
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
         <Element>Status:</Element>
-        <FormStatus status={determineStatus(formProperties)} size={"large"} />
+        <FormStatus status={determineStatus(formProperties)} size="large" />
       </div>
-      <Timestamp label={"Sist lagret:"} timestamp={modified} />
-      <Timestamp label={"Sist publisert:"} timestamp={published} />
+      <Timestamp label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
+      <Timestamp label="Sist publisert:" timestamp={published} userName={publishedBy} />
       <PublishedLanguages formProperties={formProperties} />
     </Panel>
   );
