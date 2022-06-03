@@ -73,7 +73,6 @@ async function migrateForms(searchFilters, editOptions, allForms, formPaths = []
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
     .map((form) => {
       const affectedComponentsLogger = [];
-      //const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
       const result = migrateForm(form, searchFilters, migrateSignatures(editOptions, affectedComponentsLogger));
       const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
       log[form.properties.skjemanummer] = {
@@ -92,7 +91,6 @@ async function migrateForms(searchFilters, editOptions, allForms, formPaths = []
 }
 
 async function previewForm(searchFilters, editOptions, form) {
-  //return migrateForm(form, searchFilters, getEditScript(editOptions));
   return migrateForm(form, searchFilters, migrateSignatures(editOptions));
 }
 

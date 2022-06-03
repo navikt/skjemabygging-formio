@@ -49,7 +49,7 @@ describe("signatureUtils.ts", () => {
     expect(signatureUtils.mapBackwardCompatibleSignatures(newMultipleSignatures)).toEqual(newMultipleSignatures);
   });
 
-  it("returns default signature when defined is passed as param", () => {
+  it("returns default signature when undefined is passed as param", () => {
     const newSignature = signatureUtils.mapBackwardCompatibleSignatures(undefined);
     expect(newSignature?.[0].label).toEqual("");
     expect(newSignature?.[0].description).toEqual("");

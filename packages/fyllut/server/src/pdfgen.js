@@ -313,13 +313,19 @@ export class PdfgenPapir extends Pdfgen {
   }
 
   generateSignatures() {
-    //const { signatures } = this.form?.properties;
     const signatures = signatureUtils.mapBackwardCompatibleSignatures(this.form?.properties?.signatures);
+    console.log("signatures", this.form?.properties?.signatures);
+    console.log("signaturesPDF", signatures);
 
-    if (signatures && signatures.length > 0) {
+    if (signatureUtils.hasOnlyDefaultSignaturesValues(signatures)) {
+      return this.newSignature();
+    }
+
+    if (signatures?.length > 0) {
       return signatures.flatMap((signature, index) => this.newSignature(signature, index === 0));
     }
-    return this.newSignature();
+
+    return [];
   }
 
   generateContentFromSubmission() {

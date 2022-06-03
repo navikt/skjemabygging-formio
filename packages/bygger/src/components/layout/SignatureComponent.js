@@ -11,16 +11,16 @@ const useStyles = makeStyles({
   },
 });
 
-const SignatureComponent = ({ signature, index, onChange, onClick }) => {
+const SignatureComponent = ({ signature, index, onChange, onDelete }) => {
   const styles = useStyles();
   return (
     <Panel className="margin-bottom-default" border>
-      <Lukknapp className={styles.closeBtn} bla={true} onClick={() => onClick(index)} />
-      <SkjemaGruppe legend={<Undertittel>{"Signatur " + index}</Undertittel>}>
+      <Lukknapp className={styles.closeBtn} bla={true} onClick={() => onDelete(signature.key)} />
+      <SkjemaGruppe legend={<Undertittel>{"Signatur " + parseInt(index + 1)}</Undertittel>}>
         <Input
           label="Hvem skal signere?"
           type="text"
-          name={`signature${index}`}
+          name={`signature${index + 1}`}
           placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
           value={signature.label}
           onChange={(e) =>

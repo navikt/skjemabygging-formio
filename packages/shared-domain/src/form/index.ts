@@ -18,7 +18,7 @@ export interface FormSignaturesType {
 }
 
 export interface NewFormSignatureType {
-  [key: string]: any;
+  [key: string]: string;
   label: string;
   description: string;
   key: string;
@@ -40,6 +40,10 @@ export interface FormPropertiesType {
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
+  /**
+   * @deprecated hasLabeledSignatures blir ikke brukt etter migrering
+   */
+  hasLabeledSignatures?: boolean;
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
 }

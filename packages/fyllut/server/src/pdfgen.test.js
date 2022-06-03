@@ -673,21 +673,6 @@ describe("generating doc definition", () => {
   });
 
   describe("PdfgenPapir", () => {
-    it("generates document with signature field", () => {
-      const submission = { data: {}, metadata: {} };
-      const form = { title: "Smølfeskjema", components: [], properties: { signatures: [] } };
-      const generator = new PdfgenPapir(submission, form, "", now());
-      const doc_definition = generator.generateDocDefinition();
-
-      expect(doc_definition.content[7]).toEqual({
-        stack: [
-          "_____________________________________\t\t_____________________________________",
-          "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
-        ],
-        unbreakable: true,
-      });
-    });
-
     describe("Form with labeled signature fields in properties", () => {
       const submission = { data: {}, metadata: {} };
       const form = {
@@ -765,6 +750,26 @@ describe("generating doc definition", () => {
       });
     });
 
+    describe("Form with no signature", () => {
+      const submission = { data: {}, metadata: {} };
+      const form = {
+        title: "Labeled signatures with description",
+        components: [],
+        properties: {
+          hasLabeledSignatures: true,
+          descriptionOfSignatures: "Her står det litt om hvorfor man signerer",
+          signatures: [],
+        },
+      };
+
+      it("renders no signature label and description", () => {
+        const generator = new PdfgenPapir(submission, form, "", now(), undefined);
+        const doc_definition = generator.generateDocDefinition();
+        const signature1 = doc_definition.content[7];
+        expect(signature1).toBeUndefined();
+      });
+    });
+
     describe("Form with empty signature label and description", () => {
       const submission = { data: {}, metadata: {} };
       const form = {
@@ -787,9 +792,14 @@ describe("generating doc definition", () => {
         const doc_definition = generator.generateDocDefinition();
 
         const signature1 = doc_definition.content[7];
-        const hasSignature = signature1.stack[1].includes("Underskrift");
 
-        expect(hasSignature).toBe(true);
+        expect(signature1).toEqual({
+          stack: [
+            "_____________________________________\t\t_____________________________________",
+            "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
+          ],
+          unbreakable: true,
+        });
       });
     });
   });

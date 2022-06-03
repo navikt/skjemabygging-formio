@@ -3,9 +3,21 @@ import { FormSignaturesType, NewFormSignatureType } from "../form";
 
 const defaultSignature = [{ label: "", description: "", key: uuidv4() }];
 
-/*
--add maping to pdfgen also and change 
-  */
+export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[] | FormSignaturesType) => {
+  if (signature) {
+    const mappedSignature = mapBackwardCompatibleSignatures(signature);
+    if (
+      mappedSignature?.length === 1 &&
+      mappedSignature[0].label === defaultSignature[0].label &&
+      mappedSignature[0].description === defaultSignature[0].description
+    ) {
+      return true;
+    }
+    return false;
+  }
+  return true;
+};
+
 export const mapBackwardCompatibleSignatures = (
   signatures?: NewFormSignatureType[] | FormSignaturesType
 ): NewFormSignatureType[] => {
@@ -31,6 +43,7 @@ export const mapBackwardCompatibleSignatures = (
 
 const signatureUtils = {
   mapBackwardCompatibleSignatures,
+  hasOnlyDefaultSignaturesValues,
 };
 
 export default signatureUtils;

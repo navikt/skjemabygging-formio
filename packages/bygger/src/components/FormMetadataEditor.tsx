@@ -85,15 +85,19 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       },
     });
 
-  const removeSignature = (indexToDelete) => {
-    if (signatureUtils.mapBackwardCompatibleSignatures(signatures).length > 0) {
-      signatureUtils.mapBackwardCompatibleSignatures(signatures).splice(indexToDelete, 1);
+  const removeSignature = (signatureKey) => {
+    const mappedSignatures = signatureUtils.mapBackwardCompatibleSignatures(signatures);
+    if (mappedSignatures.length > 0) {
+      mappedSignatures.splice(
+        mappedSignatures.findIndex((s) => s.key === signatureKey),
+        1
+      );
 
       onChange({
         ...form,
         properties: {
           ...form.properties,
-          signatures: signatureUtils.mapBackwardCompatibleSignatures(signatures),
+          signatures: mappedSignatures,
         },
       });
     }
@@ -283,8 +287,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             }
           />
         )}
+
       <Textarea
-        label="Beskrivelse for alle signaturer (valgfritt)"
+        label="Generelle instruksjoner (valgfritt)"
         value={descriptionOfSignatures || ""}
         maxLength={0}
         onChange={(event) =>
@@ -299,9 +304,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         <div key={signature.key}>
           <SignatureComponent
             signature={signature}
-            index={index + 1}
+            index={index}
             onChange={(newSignature) => addExistingSignature(newSignature, index)}
-            onClick={() => removeSignature(index)}
+            onDelete={() => removeSignature(signature.key)}
           />
         </div>
       ))}
