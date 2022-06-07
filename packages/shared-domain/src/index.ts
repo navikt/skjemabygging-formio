@@ -6,6 +6,7 @@ import type {
   FormSignaturesType,
   InnsendingType,
   NavFormType,
+  NewFormSignatureType,
 } from "./form";
 import languagesUtil from "./languages/languagesUtil";
 import type {
@@ -31,6 +32,7 @@ import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
 import navFormUtils from "./utils/navFormUtils";
 import objectUtils from "./utils/objectUtils";
+import signatureUtils from "./utils/signatureUtils";
 import stringUtils from "./utils/stringUtils";
 import validatorUtils from "./utils/validatorUtils";
 
@@ -41,6 +43,7 @@ export {
   navFormUtils,
   stringUtils,
   objectUtils,
+  signatureUtils,
   localizationUtils,
   featureUtils,
   languagesUtil,
@@ -52,6 +55,7 @@ export type {
   DisplayType,
   InnsendingType,
   FormSignaturesType,
+  NewFormSignatureType,
   FormPropertiesType,
   NavFormType,
   Component,

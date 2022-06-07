@@ -673,21 +673,6 @@ describe("generating doc definition", () => {
   });
 
   describe("PdfgenPapir", () => {
-    it("generates document with signature field", () => {
-      const submission = { data: {}, metadata: {} };
-      const form = { title: "Smølfeskjema", components: [] };
-      const generator = new PdfgenPapir(submission, form, "", now());
-      const doc_definition = generator.generateDocDefinition();
-
-      expect(doc_definition.content[7]).toEqual({
-        stack: [
-          "_____________________________________\t\t_____________________________________",
-          "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
-        ],
-        unbreakable: true,
-      });
-    });
-
     describe("Form with labeled signature fields in properties", () => {
       const submission = { data: {}, metadata: {} };
       const form = {
@@ -695,7 +680,7 @@ describe("generating doc definition", () => {
         components: [],
         properties: {
           hasLabeledSignatures: true,
-          signatures: { signature1: "Signature 1", signature2: "Signature 2", signature3: "" },
+          signatures: [{ label: "Label 1" }, { label: "Label 2" }, { label: "" }],
         },
       };
       const generator = new PdfgenPapir(submission, form, "", now());
@@ -705,42 +690,22 @@ describe("generating doc definition", () => {
       const signature2 = doc_definition.content[12];
 
       it("generates document with signature 1 from properties", () => {
-        expect(signature1.stack[0].text).toEqual("Signature 1");
+        expect(signature1.stack[0].text).toEqual("Label 1");
       });
 
       it("generates document with signature 2 from properties", () => {
-        expect(signature2.stack[0].text).toEqual("Signature 2");
+        expect(signature2.stack[0].text).toEqual("Label 2");
       });
 
-      it("does not generate signature when label is an empty string", () => {
+      it("generates signature even when label has an empty string", () => {
         const restOfDocument = doc_definition.content.slice(13);
+
         const hasSignature3 = restOfDocument.some(
           (line) =>
             line.hasOwnProperty("stack") &&
             line.stack.some((partOfSignature) => partOfSignature.includes("Underskrift"))
         );
-        expect(hasSignature3).toBe(false);
-      });
-
-      describe("When hasLabeledSignature is false", () => {
-        const submission = { data: {}, metadata: {} };
-        const form = {
-          title: "With labeled signatures",
-          components: [],
-          properties: {
-            hasLabeledSignatures: false,
-            signatures: { signature1: "Signature label", signature2: "Signature label" },
-          },
-        };
-        const generator = new PdfgenPapir(submission, form, "", now());
-        const doc_definition = generator.generateDocDefinition();
-
-        it("doesn't generate signatures with labels", () => {
-          const hasSignatureLabel = doc_definition.content.some(
-            (line) => line.hasOwnProperty("stack") && line.stack[0].text === "Signature label"
-          );
-          expect(hasSignatureLabel).toBe(false);
-        });
+        expect(hasSignature3).toBe(true);
       });
     });
 
@@ -752,11 +717,15 @@ describe("generating doc definition", () => {
         properties: {
           hasLabeledSignatures: true,
           descriptionOfSignatures: "Her står det litt om hvorfor man signerer",
-          signatures: {
-            signature1: "Pensjonisten",
-            signature2: "Lege",
-            signature2Description: "Jeg bekrefter at personen er i live",
-          },
+          signatures: [
+            {
+              label: "Pensjonisten",
+            },
+            {
+              label: "Lege",
+              description: "Jeg bekrefter at personen er i live",
+            },
+          ],
         },
       };
 
@@ -781,26 +750,56 @@ describe("generating doc definition", () => {
       });
     });
 
-    describe("static extractSignatureLabels", () => {
-      it("group signature labels and descriptions correctly", () => {
-        const props = {
-          signatures: {
-            signature1: "Søker",
-            signature2: "Lege",
-            signature2Description: "Her står det hvorfor legen skal signere",
-            signature3: "Mor",
-            signature4: "Bror",
-            signature5: "Bestemor",
-          },
-        };
-        const signatureLabels = PdfgenPapir.extractSignatures(props);
-        expect(signatureLabels).toEqual([
-          { label: "Søker" },
-          { label: "Lege", description: "Her står det hvorfor legen skal signere" },
-          { label: "Mor" },
-          { label: "Bror" },
-          { label: "Bestemor" },
-        ]);
+    describe("Form with no signature", () => {
+      const submission = { data: {}, metadata: {} };
+      const form = {
+        title: "Labeled signatures with description",
+        components: [],
+        properties: {
+          hasLabeledSignatures: true,
+          descriptionOfSignatures: "Her står det litt om hvorfor man signerer",
+          signatures: [],
+        },
+      };
+
+      it("renders no signature label and description", () => {
+        const generator = new PdfgenPapir(submission, form, "", now(), undefined);
+        const doc_definition = generator.generateDocDefinition();
+        const signature1 = doc_definition.content[7];
+        expect(signature1).toBeUndefined();
+      });
+    });
+
+    describe("Form with empty signature label and description", () => {
+      const submission = { data: {}, metadata: {} };
+      const form = {
+        title: "Labeled signatures with description",
+        components: [],
+        properties: {
+          hasLabeledSignatures: true,
+          descriptionOfSignatures: "Her står det litt om hvorfor man signerer",
+          signatures: [
+            {
+              label: "",
+              description: "",
+            },
+          ],
+        },
+      };
+
+      it("renders empty signature label and description", () => {
+        const generator = new PdfgenPapir(submission, form, "", now(), undefined);
+        const doc_definition = generator.generateDocDefinition();
+
+        const signature1 = doc_definition.content[7];
+
+        expect(signature1).toEqual({
+          stack: [
+            "_____________________________________\t\t_____________________________________",
+            "Sted og dato\t\t\t\t\t\t\t\t\t\t\t\t\t Underskrift",
+          ],
+          unbreakable: true,
+        });
       });
     });
   });

@@ -1,4 +1,4 @@
-import { createFormSummaryObject } from "@navikt/skjemadigitalisering-shared-domain";
+import { createFormSummaryObject, signatureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { DateTime } from "luxon";
 import PdfPrinter from "pdfmake";
 
@@ -280,7 +280,6 @@ export class Pdfgen {
     ];
   }
 }
-const signatureLabelKeyRegexp = /^signature\d$/;
 
 export class PdfgenPapir extends Pdfgen {
   newSignature(signature, isFirstSignature) {
@@ -313,26 +312,18 @@ export class PdfgenPapir extends Pdfgen {
     ];
   }
 
-  static extractSignatures(properties) {
-    if (properties?.signatures) {
-      const signatureLabels = Object.keys(properties?.signatures).filter(
-        (key) => signatureLabelKeyRegexp.test(key) && properties.signatures[key]
-      );
-      return signatureLabels.map((label) => ({
-        label: properties.signatures[label],
-        description: properties.signatures[`${label}Description`],
-      }));
+  generateSignatures() {
+    const signatures = signatureUtils.mapBackwardCompatibleSignatures(this.form?.properties?.signatures);
+
+    if (signatureUtils.hasOnlyDefaultSignaturesValues(signatures)) {
+      return this.newSignature();
+    }
+
+    if (signatures?.length > 0) {
+      return signatures.flatMap((signature, index) => this.newSignature(signature, index === 0));
     }
 
     return [];
-  }
-
-  generateSignatures() {
-    const signatures = PdfgenPapir.extractSignatures(this.form?.properties);
-    if (this.form?.properties?.hasLabeledSignatures && signatures.length > 0) {
-      return signatures.flatMap((signature, index) => this.newSignature(signature, index === 0));
-    }
-    return this.newSignature();
   }
 
   generateContentFromSubmission() {

@@ -4,6 +4,7 @@ export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
 
 export interface FormSignaturesType {
+  [key: string]: any;
   signature1?: string;
   signature1Description?: string;
   signature2?: string;
@@ -14,6 +15,13 @@ export interface FormSignaturesType {
   signature4Description?: string;
   signature5?: string;
   signature5Description?: string;
+}
+
+export interface NewFormSignatureType {
+  [key: string]: string;
+  label: string;
+  description: string;
+  key: string;
 }
 
 export interface FormPropertiesType {
@@ -35,8 +43,11 @@ export interface FormPropertiesType {
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
-  hasLabeledSignatures: boolean;
-  signatures?: FormSignaturesType;
+  /**
+   * @deprecated hasLabeledSignatures blir ikke brukt etter migrering
+   */
+  hasLabeledSignatures?: boolean;
+  signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
 }
 

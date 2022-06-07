@@ -4,6 +4,7 @@ import cloneDeep from "lodash.clonedeep";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
 import { UserAlerterContext } from "../userAlerting";
@@ -40,8 +41,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         skjemanummer: "",
         tema: "",
         innsending: "PAPIR_OG_DIGITAL",
-        hasLabeledSignatures: false,
-        signatures: { signature1: "", signature2: "", signature3: "", signature4: "", signature5: "" },
+        signatures: [{ label: "", description: "", key: uuidv4() }],
       },
       components: defaultFormFields() as unknown as Component[],
     },

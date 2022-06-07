@@ -1,12 +1,20 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { DisplayType, InnsendingType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  DisplayType,
+  InnsendingType,
+  NavFormType,
+  signatureUtils,
+  TEXTS,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
-import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
-import { Undertittel } from "nav-frontend-typografi";
+import { Knapp } from "nav-frontend-knapper";
+import { Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import EnhetSettings from "./EnhetSettings";
+import SignatureComponent from "./layout/SignatureComponent";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = "create" | "edit";
@@ -41,11 +49,57 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
-      hasLabeledSignatures,
-      signatures,
       descriptionOfSignatures,
+      signatures,
     },
   } = form;
+
+  const addNewSignature = () =>
+    onChange({
+      ...form,
+      properties: {
+        ...form.properties,
+        signatures: [
+          ...signatureUtils.mapBackwardCompatibleSignatures(signatures),
+          {
+            label: "",
+            description: "",
+            key: uuidv4(),
+          },
+        ],
+      },
+    });
+
+  const addExistingSignature = (newSignature, index) =>
+    onChange({
+      ...form,
+      properties: {
+        ...form.properties,
+        signatures: signatureUtils.mapBackwardCompatibleSignatures(signatures).map((signatureObject, i) => {
+          if (index === i) {
+            return newSignature;
+          } else {
+            return signatureObject;
+          }
+        }),
+      },
+    });
+
+  const removeSignature = (signatureKey) => {
+    const mappedSignatures = signatureUtils.mapBackwardCompatibleSignatures(signatures);
+    if (mappedSignatures.length > 0) {
+      const updatedSignatures = mappedSignatures.filter((s) => s.key !== signatureKey);
+
+      onChange({
+        ...form,
+        properties: {
+          ...form.properties,
+          signatures: updatedSignatures,
+        },
+      });
+    }
+  };
+
   const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
   return (
     <SkjemaGruppe>
@@ -230,73 +284,31 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
             }
           />
         )}
-      <Checkbox
-        label="Skjemaet skal ha mer enn ett signaturfelt"
-        checked={hasLabeledSignatures}
-        onChange={(event) => {
-          if (event.target.checked) {
-            onChange({ ...form, properties: { ...form.properties, hasLabeledSignatures: !hasLabeledSignatures } });
-          } else {
-            onChange({
-              ...form,
-              properties: {
-                ...form.properties,
-                hasLabeledSignatures: !hasLabeledSignatures,
-                descriptionOfSignatures: undefined,
-                signatures: undefined,
-              },
-            });
-          }
-        }}
+
+      <Textarea
+        label="Generelle instruksjoner (valgfritt)"
+        value={descriptionOfSignatures || ""}
+        maxLength={0}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, descriptionOfSignatures: event.target.value },
+          })
+        }
       />
-      {hasLabeledSignatures && (
-        <Textarea
-          label="Beskrivelse for alle signaturer (valgfritt)"
-          value={descriptionOfSignatures || ""}
-          maxLength={0}
-          onChange={(event) =>
-            onChange({
-              ...form,
-              properties: { ...form.properties, descriptionOfSignatures: event.target.value },
-            })
-          }
-        />
-      )}
-      {hasLabeledSignatures &&
-        ["signature1", "signature2", "signature3", "signature4", "signature5"].map((signatureKey) => (
-          <SkjemaGruppe key={signatureKey} legend={<Undertittel>Signeres av</Undertittel>}>
-            <Input
-              type="text"
-              label="Hvem"
-              placeholder='F.eks: "Søker", "Lege", "Evt. mor"'
-              id={signatureKey}
-              value={signatures ? signatures[signatureKey] : ""}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  properties: { ...form.properties, signatures: { ...signatures, [signatureKey]: event.target.value } },
-                })
-              }
-            />
-            <Input
-              label="Beskrivelse (valgfritt)"
-              placeholder="Beskrivelse av hvorfor man signerer"
-              type="text"
-              id={`${signatureKey}Description`}
-              data-testid={`${signatureKey}Description`}
-              value={signatures ? signatures[`${signatureKey}Description`] : ""}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  properties: {
-                    ...form.properties,
-                    signatures: { ...signatures, [`${signatureKey}Description`]: event.target.value },
-                  },
-                })
-              }
-            />
-          </SkjemaGruppe>
-        ))}
+
+      {signatureUtils.mapBackwardCompatibleSignatures(signatures)?.map((signature, index) => (
+        <div key={signature.key}>
+          <SignatureComponent
+            signature={signature}
+            index={index}
+            onChange={(newSignature) => addExistingSignature(newSignature, index)}
+            onDelete={() => removeSignature(signature.key)}
+          />
+        </div>
+      ))}
+
+      <Knapp onClick={addNewSignature}>Legg til signatur</Knapp>
     </SkjemaGruppe>
   );
 };
