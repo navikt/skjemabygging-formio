@@ -12,9 +12,9 @@ export function FormTitle({ form, className }: Props) {
   const { translate } = useLanguages();
 
   return (
-    <div className={className}>
+    <header className={className}>
       <Sidetittel>{translate(form.title)}</Sidetittel>
       {form.properties && form.properties.skjemanummer && <p>{form.properties.skjemanummer}</p>}
-    </div>
+    </header>
   );
 }

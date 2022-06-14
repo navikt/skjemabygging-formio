@@ -42,7 +42,7 @@ export function IntroPage({ form, formUrl }: Props) {
   }, [search]);
 
   return (
-    <>
+    <main>
       <FormTitle form={form} className="margin-bottom-double" />
 
       <GuidePanel className="margin-bottom-double">
@@ -85,6 +85,6 @@ export function IntroPage({ form, formUrl }: Props) {
           </div>
         </div>
       </nav>
-    </>
+    </main>
   );
 }
