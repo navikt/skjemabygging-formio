@@ -143,7 +143,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
         <Systemtittel tag="h3" className="margin-bottom-default">
           {label}
         </Systemtittel>
-        <Link to={{ pathname: `${formUrl}/skjema/${path}`, search }} className="knapp knapp--flat knapp--kompakt">
+        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="knapp knapp--flat knapp--kompakt">
           <span>
             {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
           </span>
@@ -200,9 +200,9 @@ function getUrlToLastPanel(form, formUrl, submission) {
   const lastPanel = formSummary[formSummary.length - 1];
   const lastPanelSlug = lastPanel?.key;
   if (!lastPanelSlug) {
-    return `${formUrl}/skjema`;
+    return formUrl;
   }
-  return `${formUrl}/skjema/${lastPanelSlug}`;
+  return `${formUrl}/${lastPanelSlug}`;
 }
 
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {

@@ -74,7 +74,7 @@ export function IntroPage({ form, formUrl }: Props) {
       <nav>
         <div className="list-inline">
           <div className="list-inline-item">
-            <Link to={{ pathname: `${formUrl}/skjema/${firstPanelSlug}`, search }}>
+            <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
               <Hovedknapp className="btn-wizard-nav-next">{translate(TEXTS.grensesnitt.introPage.start)}</Hovedknapp>
             </Link>
           </div>

@@ -57,23 +57,6 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route exact path={path}>
             <IntroPage form={form} formUrl={formBaseUrl} />
           </Route>
-          <Route path={`${path}/skjema/:panelSlug?`}>
-            {formForRendering && (
-              <>
-                <Prompt
-                  message={(location) =>
-                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
-                  }
-                />
-                <FillInFormPage
-                  form={formForRendering}
-                  submission={submission}
-                  setSubmission={setSubmission}
-                  formUrl={formBaseUrl}
-                />
-              </>
-            )}
-          </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
@@ -121,6 +104,23 @@ const FyllUtRouter = ({ form, translations }) => {
                 />
               )}
             </SubmissionWrapper>
+          </Route>
+          <Route path={`${path}/:panelSlug`}>
+            {formForRendering && (
+              <>
+                <Prompt
+                  message={(location) =>
+                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
+                  }
+                />
+                <FillInFormPage
+                  form={formForRendering}
+                  submission={submission}
+                  setSubmission={setSubmission}
+                  formUrl={formBaseUrl}
+                />
+              </>
+            )}
           </Route>
         </Switch>
       </FyllUtContainer>

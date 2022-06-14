@@ -12,17 +12,17 @@ describe("Translations", () => {
 
   describe("Change translations based on url params", () => {
     it("get default bokmål", () => {
-      cy.visit("/fyllut/cypress101/skjema");
+      cy.visit("/fyllut/cypress101/veiledning");
       cy.findByRole("button", { name: "Norsk bokmål" }).should("exist");
     });
 
     it("get bokmål with lang param", () => {
-      cy.visit("/fyllut/cypress101/skjema?lang=nb-NO");
+      cy.visit("/fyllut/cypress101/veiledning?lang=nb-NO");
       cy.findByRole("button", { name: "Norsk bokmål" }).should("exist");
     });
 
     it("get nynorsk with lang param", () => {
-      cy.visit("/fyllut/cypress101/skjema?lang=nn-NO");
+      cy.visit("/fyllut/cypress101/veiledning?lang=nn-NO");
       cy.findByRole("button", { name: "Norsk nynorsk" }).should("exist");
     });
 

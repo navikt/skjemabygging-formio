@@ -28,7 +28,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
-    const newPath = `${formUrl}/skjema/${panelPath}${getSearchString(search)}`;
+    const newPath = `${formUrl}/${panelPath}${getSearchString(search)}`;
     history.push(newPath);
   }
 
