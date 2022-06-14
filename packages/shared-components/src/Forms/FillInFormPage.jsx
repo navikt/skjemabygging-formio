@@ -4,6 +4,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
+import { getPanelSlug } from "../util/form";
 import { FormTitle } from "./components/FormTitle";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
@@ -26,19 +27,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function getPanelSlug(pageIndex) {
-    const panels = form?.components.filter((component) => component.type === "panel") || [];
-    const panelAtPageIndex = panels[pageIndex];
-    return panelAtPageIndex?.key;
-  }
-
   function updatePanelUrl(panelPath) {
     const newPath = `${formUrl}/skjema/${panelPath}${getSearchString(search)}`;
     history.push(newPath);
   }
 
   function onNextOrPreviousPage({ page }) {
-    const pathOfPanel = getPanelSlug(page);
+    const pathOfPanel = getPanelSlug(form, page);
     if (pathOfPanel) {
       updatePanelUrl(pathOfPanel);
     }
@@ -50,7 +45,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onFormReady(formioInstance) {
     if (!panelSlug) {
-      const pathOfPanel = getPanelSlug(0);
+      const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
     } else {
       if (formioInstance && typeof formioInstance?.setPage === "function") {

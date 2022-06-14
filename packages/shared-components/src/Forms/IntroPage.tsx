@@ -7,6 +7,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
+import { getPanelSlug } from "../util/form";
 import { FormTitle } from "./components/FormTitle";
 
 export interface Props {
@@ -21,6 +22,7 @@ export function IntroPage({ form, formUrl }: Props) {
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
+  const firstPanelSlug = getPanelSlug(form, 0);
 
   useEffect(() => {
     if (submissionMethod) {
@@ -72,7 +74,7 @@ export function IntroPage({ form, formUrl }: Props) {
       <nav>
         <div className="list-inline">
           <div className="list-inline-item">
-            <Link to={{ pathname: `${formUrl}/skjema`, search }}>
+            <Link to={{ pathname: `${formUrl}/skjema/${firstPanelSlug}`, search }}>
               <Hovedknapp className="btn-wizard-nav-next">{translate(TEXTS.grensesnitt.introPage.start)}</Hovedknapp>
             </Link>
           </div>
