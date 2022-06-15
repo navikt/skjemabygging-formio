@@ -2,7 +2,7 @@ name: Build and test monorepo, and deploy bygger
 on:
   push
 env:
-  IMAGE: "docker.pkg.github.com/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
+  IMAGE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
 
 concurrency: deploy-${{ github.ref }}
 
@@ -71,7 +71,7 @@ jobs:
         run: >
           docker build --pull --tag ${IMAGE} --build-arg git_sha=${{ github.sha }} .
           && echo ${{ secrets.GITHUB_TOKEN }} | docker login
-          --username ${{ github.repository }} --password-stdin https://docker.pkg.github.com
+          --username ${{ github.repository }} --password-stdin https://ghcr.io
           && docker push ${IMAGE}
 
   deploy-bygger-to-dev:
