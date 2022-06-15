@@ -1,4 +1,4 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { navFormUtils, signatureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import FormioUtils from "formiojs/utils";
 
 const getInputType = (value) => {
@@ -39,15 +39,23 @@ const extractTextsFromProperties = (props) => {
     });
   }
   if (props?.signatures) {
-    Object.values(props.signatures).forEach((signature) => {
-      if (signature !== "")
+    signatureUtils.mapBackwardCompatibleSignatures(props.signatures).forEach((signature) => {
+      if (signature.label !== "") {
         array.push({
-          text: signature,
-          type: getInputType(signature),
+          text: signature.label,
+          type: getInputType(signature.label),
         });
+      }
+
+      if (signature.description !== "") {
+        array.push({
+          text: signature.description,
+          type: getInputType(signature.description),
+        });
+      }
     });
+    return array;
   }
-  return array;
 };
 
 const getContent = (content) => {
