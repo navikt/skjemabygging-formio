@@ -2,14 +2,14 @@ export const statiske = {
   loading: "Laster...",
   introPage: {
     title: "Vær oppmerksom på dette før du begynner å fylle ut skjemaet",
-    paperDescriptionBold: "Skjemaet fylles ut digitalt, men skal sendes i posten.",
+    paperDescriptionBold: "Du må fylle ut skjemaet digitalt, og deretter sende det i posten.",
     paperDescription:
       "Etter utfylling må du laste ned det ferdig utfylte skjemaet som en pdf-fil, skrive det ut og sende i posten.",
-    paperAndDigitalDescriptionBold: "Skjemaet er tilrettelagt for elektronisk utfylling.",
+    paperAndDigitalDescriptionBold: "Du må fylle ut skjemaet digitalt.",
     paperAndDigitalDescription:
       "Etter utfylling kan du velge mellom digital innsending (krever innlogging) eller sende det i posten. I begge tilfeller må du laste ned det ferdig utfylte skjemaet som en pdf-fil, som du så enten kan laste opp eller skrive ut og sende i posten.",
-    requiredFieldsBold: "De fleste feltene i skjemaet er påkrevd.",
-    requiredFields: "Alle felter som ikke er påkrevd er merket med: (valgfritt).",
+    requiredFieldsBold: "Du må fylle ut de fleste feltene i skjemaet.",
+    requiredFields: "Felt som ikke er nødvendige er merket med: (valgfritt).",
     notSaveBold: "Du kan ikke lagre skjemaet underveis.",
     notSave:
       "Informasjonen du fyller inn i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet / nettleseren vil all informasjon du har fylt ut forsvinne.",
