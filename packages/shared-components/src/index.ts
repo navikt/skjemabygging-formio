@@ -22,6 +22,7 @@ import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 import i18nData from "./i18nData";
 import Template from "./template";
 import { getIso8601String } from "./util/date";
+import * as formUtils from "./util/form.js";
 import { navCssVariables } from "./util/navCssVariables";
 import url from "./util/url";
 
@@ -53,6 +54,7 @@ export {
   getIso8601String,
   http,
   url,
+  formUtils,
   ErrorPage,
   supportedEnhetstyper,
 };
