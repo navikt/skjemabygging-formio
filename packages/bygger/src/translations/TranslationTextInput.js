@@ -50,7 +50,6 @@ const TranslationTextInput = ({
   setGlobalTranslation,
 }) => {
   const classes = useStyles();
-  console.log("TEXT", text);
   return (
     <div className={classes.list}>
       {type === "textarea" ? (

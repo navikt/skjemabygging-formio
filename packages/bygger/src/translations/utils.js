@@ -54,8 +54,8 @@ const extractTextsFromProperties = (props) => {
         });
       }
     });
-    return array;
   }
+  return array;
 };
 
 const getContent = (content) => {
