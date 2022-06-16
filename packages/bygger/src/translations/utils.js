@@ -149,8 +149,7 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
   simplifiedComponentObject.splice(0, 0, {
     title: form.title,
   });
-  console.log("simplifiedComponentObjectB4", JSON.stringify(simplifiedComponentObject, null, 2));
-  const sp = simplifiedComponentObject
+  return simplifiedComponentObject
     .flatMap((component) =>
       Object.keys(component)
         .filter((key) => component[key] !== undefined && component[key] !== "")
@@ -165,9 +164,6 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
-
-  console.log("simplifiedComponentObjectAfter", JSON.stringify(sp, null, 2));
-  return sp;
 };
 
 /**
