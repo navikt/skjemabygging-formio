@@ -2,7 +2,7 @@ import { navFormUtils, signatureUtils } from "@navikt/skjemadigitalisering-share
 import FormioUtils from "formiojs/utils";
 
 const getInputType = (value) => {
-  return value.length < 80 ? "text" : "textarea";
+  return value?.length < 80 ? "text" : "textarea";
 };
 
 const filterSpecialSuffix = (suffix) => {
@@ -40,14 +40,14 @@ const extractTextsFromProperties = (props) => {
   }
   if (props?.signatures) {
     signatureUtils.mapBackwardCompatibleSignatures(props.signatures).forEach((signature) => {
-      if (signature.label !== "") {
+      if (signature.label) {
         array.push({
           text: signature.label,
           type: getInputType(signature.label),
         });
       }
 
-      if (signature.description !== "") {
+      if (signature.description) {
         array.push({
           text: signature.description,
           type: getInputType(signature.description),
@@ -149,10 +149,11 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
   simplifiedComponentObject.splice(0, 0, {
     title: form.title,
   });
-  return simplifiedComponentObject
+  console.log("simplifiedComponentObjectB4", JSON.stringify(simplifiedComponentObject, null, 2));
+  const sp = simplifiedComponentObject
     .flatMap((component) =>
       Object.keys(component)
-        .filter((key) => component[key] !== undefined)
+        .filter((key) => component[key] !== undefined && component[key] !== "")
         .flatMap((key) => {
           if (key === "values" || key === "data") {
             return component[key]
@@ -164,6 +165,9 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
+
+  console.log("simplifiedComponentObjectAfter", JSON.stringify(sp, null, 2));
+  return sp;
 };
 
 /**
