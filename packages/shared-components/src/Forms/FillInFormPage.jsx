@@ -19,17 +19,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     return null;
   }
 
-  function getSearchString(search) {
-    if (search) {
-      return `${search}`;
-    } else {
-      return "";
-    }
-  }
-
   function updatePanelUrl(panelPath) {
-    const newPath = `${formUrl}/${panelPath}${getSearchString(search)}`;
-    history.push(newPath);
+    history.push({ pathname: `${formUrl}/${panelPath}`, search });
   }
 
   function onNextOrPreviousPage({ page }) {
@@ -48,7 +39,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
     } else {
-      if (formioInstance && typeof formioInstance?.setPage === "function") {
+      if (typeof formioInstance?.setPage === "function") {
         const panelIndex = formioInstance.currentPanels.indexOf(panelSlug);
         if (panelIndex >= 0) {
           formioInstance.setPage(panelIndex);
@@ -61,7 +52,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
-    history.push(`${formUrl}/oppsummering${getSearchString(search)}`);
+    history.push({ pathname: `${formUrl}/oppsummering`, search });
   };
 
   return (
