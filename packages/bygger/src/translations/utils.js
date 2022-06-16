@@ -152,7 +152,7 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
   return simplifiedComponentObject
     .flatMap((component) =>
       Object.keys(component)
-        .filter((key) => component[key] !== undefined && component[key] !== "")
+        .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
           if (key === "values" || key === "data") {
             return component[key]
