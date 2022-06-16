@@ -5,10 +5,12 @@ import { MemoryRouter } from "react-router-dom";
 import { setupNavFormio } from "../../test/navform-render";
 import { languagesInOriginalLanguage } from "../components/FyllUtLanguageSelector";
 import { AppConfigProvider } from "../configContext";
+import { getPanelSlug } from "../util/form";
 import FyllUtRouter from "./FyllUtRouter";
 import { form, translationsForNavForm } from "./testdata/skjema-med-oversettelser";
 
 const mockFormPath = `/${form.path}`;
+const firstPanelSlug = getPanelSlug(form, 0);
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useRouteMatch: () => ({ path: mockFormPath }),
@@ -26,7 +28,7 @@ describe("FyllUtRouter", () => {
     };
     render(
       <AppConfigProvider {...config}>
-        <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/skjema` }]}>
+        <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/${firstPanelSlug}` }]}>
           <FyllUtRouter form={form} translations={translationsForNavForm} />
         </MemoryRouter>
       </AppConfigProvider>

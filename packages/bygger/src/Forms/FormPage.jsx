@@ -1,4 +1,4 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { formUtils, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useCallback, useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
@@ -14,6 +14,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
   const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
 
   const loadTranslationsForFormPath = useCallback(() => loadTranslations(form?.path), [loadTranslations, form?.path]);
+  const firstPanelSlug = formUtils.getPanelSlug(form, 0);
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
@@ -68,7 +69,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           />
           <EditFormPage
             form={form}
-            testFormUrl={`${url}/view/skjema`}
+            testFormUrl={`${url}/view/${firstPanelSlug}`}
             formSettingsUrl={`${url}/settings`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
@@ -82,7 +83,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
           <FormSettingsPage
             form={form}
             editFormUrl={`${url}/edit`}
-            testFormUrl={`${url}/view/skjema`}
+            testFormUrl={`${url}/view/${firstPanelSlug}`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}

@@ -20,6 +20,7 @@ const RESPONSE_HEADERS = {
 const form = {
   title: "Testskjema",
   path: "testskjema",
+  components: [{ type: "panel", key: "veiledning" }],
 };
 
 const translations = {
