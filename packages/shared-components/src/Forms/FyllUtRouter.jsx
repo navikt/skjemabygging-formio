@@ -55,7 +55,9 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            <IntroPage form={form} formUrl={formBaseUrl} />
+            <>
+              <IntroPage form={form} formUrl={formBaseUrl} />
+            </>
           </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={formBaseUrl}>
