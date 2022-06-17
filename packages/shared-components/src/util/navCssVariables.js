@@ -5,4 +5,5 @@ export const navCssVariables = {
   navBla: "#0067c5",
   navGra60: "#6a6a6a",
   navError: "#ba3a26",
+  navOrange: "#eab265",
 };

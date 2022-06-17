@@ -13,6 +13,11 @@ const useStyles = makeStyles({
     color: "#fff",
     padding: "1.5rem 2rem",
   },
+  navBarLocal: {
+    backgroundColor: navCssVariables.navOrange,
+    color: "#fff",
+    padding: "1.5rem 2rem",
+  },
   title: {
     textAlign: "center",
     gridColumn: "2 / 3",
@@ -28,10 +33,10 @@ const useStyles = makeStyles({
 
 export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
   const { logout, userData } = useAuth();
-  const { featureToggles } = useAppConfig();
+  const { featureToggles, config } = useAppConfig();
   const styles = useStyles();
   return (
-    <section className={styles.navBar}>
+    <section className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
       <Row>
         {visSkjemaliste && (
           <Link className="knapp knapp--standard knapp--mini" to="/forms">
