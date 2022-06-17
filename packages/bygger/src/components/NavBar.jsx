@@ -36,7 +36,7 @@ export const NavBar = ({ title, visSkjemaliste, visOversettelseliste }) => {
   const { featureToggles, config } = useAppConfig();
   const styles = useStyles();
   return (
-    <section className={config.isDevelopment ? styles.navBarLocal : styles.navBar}>
+    <section className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
       <Row>
         {visSkjemaliste && (
           <Link className="knapp knapp--standard knapp--mini" to="/forms">
