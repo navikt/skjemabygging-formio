@@ -15,6 +15,7 @@
 
 import { ByRoleOptions } from "@testing-library/cypress";
 import { ByRoleMatcher } from "@testing-library/dom";
+import "cypress-axe";
 import "./commands";
 
 declare global {
@@ -30,6 +31,7 @@ declare global {
        * Provided you are in the form wizard. Use this to click on the "Neste"-button.
        */
       clickNext(): Chainable<JQuery<HTMLElement>>;
+      clickNextStep(): Chainable<JQuery<HTMLElement>>;
       clickStart(): Chainable<JQuery<HTMLElement>>;
     }
   }

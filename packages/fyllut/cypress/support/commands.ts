@@ -46,6 +46,10 @@ Cypress.Commands.add("clickNext", () => {
   return cy.findByRoleWhenAttached("button", { name: "Neste" }).click();
 });
 
+Cypress.Commands.add("clickNextStep", () => {
+  return cy.findByRoleWhenAttached("button", { name: "Neste steg" }).click();
+});
+
 Cypress.Commands.add("clickStart", () => {
   return cy.findByRoleWhenAttached("button", { name: "Start" }).click();
 });

@@ -76,8 +76,6 @@ describe("Basic form", () => {
       cy.findByRoleWhenAttached("link", { name: "Rediger opplysningene" }).should("exist").click();
       cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("not.exist");
       cy.clickNext();
-      cy.clickNext();
-      cy.clickNext();
 
       // Oppsummering
       cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");

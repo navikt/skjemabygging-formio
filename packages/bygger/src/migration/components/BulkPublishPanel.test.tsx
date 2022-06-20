@@ -8,7 +8,6 @@ const properties: FormPropertiesType = {
   skjemanummer: "skjemanummer",
   tema: "tema",
   innsending: "PAPIR_OG_DIGITAL",
-  hasLabeledSignatures: false,
   signatures: {
     signature1: "",
     signature2: "",

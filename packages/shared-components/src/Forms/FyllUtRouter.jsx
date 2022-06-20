@@ -55,24 +55,9 @@ const FyllUtRouter = ({ form, translations }) => {
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
-            <IntroPage form={form} formUrl={formBaseUrl} />
-          </Route>
-          <Route path={`${path}/skjema`}>
-            {formForRendering && (
-              <>
-                <Prompt
-                  message={(location) =>
-                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
-                  }
-                />
-                <FillInFormPage
-                  form={formForRendering}
-                  submission={submission}
-                  setSubmission={setSubmission}
-                  formUrl={formBaseUrl}
-                />
-              </>
-            )}
+            <>
+              <IntroPage form={form} formUrl={formBaseUrl} />
+            </>
           </Route>
           <Route path={`${path}/oppsummering`}>
             <SubmissionWrapper submission={submission} url={formBaseUrl}>
@@ -121,6 +106,23 @@ const FyllUtRouter = ({ form, translations }) => {
                 />
               )}
             </SubmissionWrapper>
+          </Route>
+          <Route path={`${path}/:panelSlug`}>
+            {formForRendering && (
+              <>
+                <Prompt
+                  message={(location) =>
+                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
+                  }
+                />
+                <FillInFormPage
+                  form={formForRendering}
+                  submission={submission}
+                  setSubmission={setSubmission}
+                  formUrl={formBaseUrl}
+                />
+              </>
+            )}
           </Route>
         </Switch>
       </FyllUtContainer>

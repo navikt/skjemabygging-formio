@@ -3,6 +3,7 @@ import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-sh
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
+import { v4 as uuidv4 } from "uuid";
 import waitForExpect from "wait-for-expect";
 import form from "../../example_data/Form.json";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
@@ -128,7 +129,6 @@ describe("FormMetadataEditor", () => {
         skjemanummer: "TST 12.34-56",
         innsending: undefined,
         tema: "BIL",
-        hasLabeledSignatures: false,
         enhetMaVelgesVedPapirInnsending: false,
         enhetstyper: [],
       },
@@ -222,7 +222,7 @@ describe("FormMetadataEditor", () => {
       });
     });
 
-    const formMedProps = (props: Partial<FormPropertiesType>) => ({
+    const formMedProps = (props: Partial<FormPropertiesType>): NavFormType => ({
       ...defaultForm,
       properties: {
         ...defaultForm.properties,
@@ -449,91 +449,100 @@ describe("FormMetadataEditor", () => {
     });
 
     describe("Signaturer", () => {
-      it("Viser felter for å legge inn signaturer når checkbox velges", () => {
-        const form: NavFormType = formMedProps({ hasLabeledSignatures: false });
-        const { rerender } = render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        expect(screen.queryAllByRole("group", { name: "Signeres av" })).toHaveLength(0);
-        userEvent.click(screen.getByRole("checkbox", { name: "Skjemaet skal ha mer enn ett signaturfelt" }));
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.hasLabeledSignatures).toBe(true);
-
-        rerender(<CreationFormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
-        expect(screen.queryAllByRole("group", { name: "Signeres av" })).toHaveLength(5);
+      let form: NavFormType;
+      beforeEach(() => {
+        form = formMedProps({});
       });
 
       it("Legger til signatur", () => {
-        const form: NavFormType = formMedProps({ hasLabeledSignatures: true, signatures: {} });
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-        const signaturFieldsets = screen.queryAllByRole("group", { name: "Signeres av" });
-        expect(signaturFieldsets).toHaveLength(5);
 
-        const input = within(signaturFieldsets[0]).getByLabelText("Hvem");
+        const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
+        expect(signaturFieldsets).toHaveLength(1);
+
+        const input = within(signaturFieldsets[0]).getByLabelText("Hvem skal signere?");
         userEvent.paste(input, "Lege");
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.hasLabeledSignatures).toBe(true);
-        expect(updatedForm.properties.signatures?.signature1).toEqual("Lege");
+
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
+      });
+
+      it("legger til ny signatur ved klikk på 'legg til signatur' knapp", () => {
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const knapp = screen.getByRole("button", { name: "Legg til signatur" });
+        userEvent.click(knapp);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("");
+        expect(updatedForm.properties.signatures?.[0].description).toEqual("");
+      });
+
+      it("Slett en signatur", () => {
+        const multipleSignatures = [
+          {
+            label: "Doctor",
+            description: "Doctor Description",
+            key: "0",
+          },
+          {
+            label: "Test",
+            description: "Test Description",
+            key: "1",
+          },
+          {
+            label: "Applicant",
+            description: "Applicant Description",
+            key: "2",
+          },
+        ];
+
+        form = formMedProps({ signatures: multipleSignatures });
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
+        expect(signaturFieldsets).toHaveLength(3);
+
+        const lukkKnapp = screen.queryAllByRole("button", { name: "Lukk" })[1];
+        userEvent.click(lukkKnapp);
+
+        expect(mockOnChange).toHaveBeenCalled();
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("Doctor");
+        expect(updatedForm.properties.signatures?.[0].description).toEqual("Doctor Description");
+        expect(updatedForm.properties.signatures?.[1].label).toEqual("Applicant");
+        expect(updatedForm.properties.signatures?.[1].description).toEqual("Applicant Description");
       });
 
       it("Legger til beskrivelse for en signatur", () => {
-        const form: NavFormType = formMedProps({ hasLabeledSignatures: true, signatures: { signature1: "Lege" } });
+        form = formMedProps({ signatures: [{ label: "Lege", key: "0000" }] });
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
-        const signature1Description = screen.getByTestId("signature1Description");
-        userEvent.paste(signature1Description, "Jeg bekrefter at personen er i live");
+        const signature1Description = screen.getAllByRole("textbox", { name: "Instruksjoner til den som signerer" })[0];
+        userEvent.paste(signature1Description, "Jeg bekrefter at personen er syk");
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.hasLabeledSignatures).toBe(true);
-        expect(updatedForm.properties.signatures?.signature1).toEqual("Lege");
-        expect(updatedForm.properties.signatures?.signature1Description).toEqual("Jeg bekrefter at personen er i live");
+        expect(updatedForm.properties.signatures?.[0].description).toEqual("Jeg bekrefter at personen er syk");
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
       });
+    });
 
-      it("Nullstiller alle felter relatert til signaturer når man velger at skjemaet ikke skal ha mer enn ett signaturfelt", () => {
-        const form: NavFormType = formMedProps({
-          hasLabeledSignatures: true,
-          descriptionOfSignatures: "Lang beskrivelse",
-          signatures: {
-            signature1: "Lege",
-            signature1Description: "Jeg bekrefter at personen er syk",
-          },
-        });
+    describe("Beskrivelse av alle signaturene", () => {
+      it("settes i properties når tekst legges inn i tekstfelt", () => {
+        const form: NavFormType = formMedProps({ signatures: [{ label: "Lege", key: uuidv4() }] });
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
-        const checkbox = screen.getByLabelText("Skjemaet skal ha mer enn ett signaturfelt");
-        userEvent.click(checkbox);
+        const input = screen.getByLabelText("Generelle instruksjoner (valgfritt)");
+        userEvent.paste(input, "Lang beskrivelse av hvorfor man signerer");
 
         expect(mockOnChange).toHaveBeenCalled();
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.hasLabeledSignatures).toBe(false);
-        expect(updatedForm.properties.descriptionOfSignatures).toBeUndefined();
-        expect(updatedForm.properties.signatures).toBeUndefined();
-      });
-
-      describe("Beskrivelse av alle signaturene", () => {
-        it("tekstfelt vises ikke dersom checkbox ikke er valgt", () => {
-          const form: NavFormType = formMedProps({ hasLabeledSignatures: false });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-          const input = screen.queryByLabelText("Beskrivelse for alle signaturer (valgfritt)");
-          expect(input).not.toBeInTheDocument();
-        });
-
-        it("settes i properties når tekst legges inn i tekstfelt", () => {
-          const form: NavFormType = formMedProps({ hasLabeledSignatures: true, signatures: { signature1: "Lege" } });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-          const input = screen.getByLabelText("Beskrivelse for alle signaturer (valgfritt)");
-          userEvent.paste(input, "Lang beskrivelse av hvorfor man signerer");
-
-          expect(mockOnChange).toHaveBeenCalled();
-          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-          expect(updatedForm.properties.descriptionOfSignatures).toEqual("Lang beskrivelse av hvorfor man signerer");
-        });
+        expect(updatedForm.properties.descriptionOfSignatures).toEqual("Lang beskrivelse av hvorfor man signerer");
       });
     });
   });
