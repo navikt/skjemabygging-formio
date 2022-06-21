@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import backendInstance from "./helpers/backend-instance";
-import { BadRequest } from "./helpers/errors";
+import { ApiError, BadRequest } from "./helpers/errors";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];
 export const isValidResource = (resourceName: string) => {
@@ -17,7 +17,7 @@ const publishResource = async (req: Request, res: Response, next: NextFunction) 
     const result = await backendInstance.publishResource(req.body.token, resourceName, req.body.resource);
     res.json({ changed: !!result, result });
   } catch (error) {
-    next(error);
+    next(new ApiError("Publisering feilet", true, error as Error));
   }
 };
 

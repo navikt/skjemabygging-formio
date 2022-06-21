@@ -5,6 +5,7 @@ import authHandler from "./middleware/authHandler";
 import { fsAccessRateLimiter } from "./middleware/ratelimit";
 import apiRouter from "./routers/api";
 import internalRouter from "./routers/internal";
+import "./util/errorToJson";
 
 const app = express();
 
