@@ -99,7 +99,7 @@ describe("formsListUtils", () => {
 
     it("sorts the list by status in fixed descending order", () => {
       const sorted = sortByStatus(list, "descending");
-      expect(sorted).toStrictEqual([draft, pending, published, testform]);
+      expect(sorted).toStrictEqual([testform, draft, pending, published]);
     });
 
     it("adds items with status UNKNOWN to the end of list when sorting in ascending order", () => {
