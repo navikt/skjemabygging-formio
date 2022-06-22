@@ -6,7 +6,11 @@ import { useStatusStyles } from "./styles";
 import { Status, StreetLightSize } from "./types";
 
 export function determineStatus(formProperties: FormPropertiesType): Status {
-  const { modified, published } = formProperties;
+  const { modified, published, isTestForm } = formProperties;
+
+  if (isTestForm) {
+    return "TESTFORM";
+  }
   if (modified && published) {
     if (moment(modified).isAfter(moment(published))) {
       return "PENDING";
@@ -28,6 +32,7 @@ const FormStatus = ({ status, size }: FormStatusProps) => {
     PENDING: "Upubliserte endringer",
     DRAFT: "Utkast",
     UNKNOWN: "Ukjent status",
+    TESTFORM: "Testskjema",
   };
   return (
     <div className={styles.statusRow}>

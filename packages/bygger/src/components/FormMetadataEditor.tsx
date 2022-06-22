@@ -8,7 +8,7 @@ import {
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
-import { Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
+import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -41,6 +41,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     name,
     type,
     properties: {
+      isTestForm,
       skjemanummer,
       tema,
       downloadPdfButtonText,
@@ -103,6 +104,14 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
   const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
   return (
     <SkjemaGruppe>
+      <Checkbox
+        label="Dette er et testskjema"
+        id="teststatus"
+        checked={!!isTestForm}
+        onChange={(event) =>
+          onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
+        }
+      />
       <Input
         label="Skjemanummer"
         type="text"

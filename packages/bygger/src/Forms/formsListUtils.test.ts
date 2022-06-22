@@ -88,29 +88,30 @@ describe("formsListUtils", () => {
     const published = createFormMetadata({ status: "PUBLISHED" });
     const pending = createFormMetadata({ status: "PENDING" });
     const unknown = createFormMetadata({ status: "UNKNOWN" });
-    const list = [draft, published, pending];
-    const listWithUnknown = [pending, unknown, published, draft];
+    const testform = createFormMetadata({ status: "TESTFORM" });
+    const list = [draft, published, pending, testform];
+    const listWithUnknown = [pending, unknown, published, draft, testform];
 
     it("sorts the list by status in fixed ascending order", () => {
       const sorted = sortByStatus(list, "ascending");
-      expect(sorted).toStrictEqual([published, pending, draft]);
+      expect(sorted).toStrictEqual([published, pending, draft, testform]);
     });
 
     it("sorts the list by status in fixed descending order", () => {
       const sorted = sortByStatus(list, "descending");
-      expect(sorted).toStrictEqual([draft, pending, published]);
+      expect(sorted).toStrictEqual([testform, draft, pending, published]);
     });
 
     it("adds items with status UNKNOWN to the end of list when sorting in ascending order", () => {
       const sorted = sortByStatus(listWithUnknown, "ascending");
-      expect(sorted).toHaveLength(4);
-      expect(sorted[3].status).toBe("UNKNOWN");
+      expect(sorted).toHaveLength(5);
+      expect(sorted[4].status).toBe("UNKNOWN");
     });
 
     it("adds items with status UNKNOWN to the end of list when sorting in descending order", () => {
       const sorted = sortByStatus(listWithUnknown, "descending");
-      expect(sorted).toHaveLength(4);
-      expect(sorted[3].status).toBe("UNKNOWN");
+      expect(sorted).toHaveLength(5);
+      expect(sorted[4].status).toBe("UNKNOWN");
     });
   });
 });

@@ -57,6 +57,7 @@ export function sortByStatus(formMetadataList: FormMetadata[], sortOrder?: SortD
     PUBLISHED: 1,
     PENDING: 2,
     DRAFT: 3,
+    TESTFORM: 4,
   };
   const compareStatus = (thisStatus, thatStatus) => {
     if (thisStatus === thatStatus) return 0;
