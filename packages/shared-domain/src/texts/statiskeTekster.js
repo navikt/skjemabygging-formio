@@ -8,6 +8,8 @@ export const statiske = {
     paperAndDigitalDescriptionBold: "Du må fylle ut skjemaet digitalt.",
     paperAndDigitalDescription:
       "Etter utfylling kan du velge mellom digital innsending (krever innlogging) eller sende det i posten. I begge tilfeller må du laste ned det ferdig utfylte skjemaet som en pdf-fil, som du så enten kan laste opp eller skrive ut og sende i posten.",
+    noSubmissionDescriptionBold: "Du må fylle ut skjemaet digitalt.",
+    noSubmissionDescription: "Etter utfylling må du laste ned det ferdig utfylte skjemaet som en pdf-fil.",
     requiredFieldsBold: "Du må fylle ut de fleste feltene i skjemaet.",
     requiredFields: "Felt som ikke er nødvendige er merket med: (valgfritt).",
     notSaveBold: "Du kan ikke lagre skjemaet underveis.",
