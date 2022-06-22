@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  formio-api-server:
+    container_name: formio-api-server
+    image: ghcr.io/navikt/formio-enterprise-deployment/formio-enterprise-nav:${FORMIO_IMAGE_VERSION:-7.3.2}
+    ports:
+      - "4000:4000"
+    environment:
+      - PORTAL_ENABLED=false
+      - PORT=4000
+      - DEBUG=.*
+      - LICENSE_KEY
+      - MONGO
+      - MONGO_CONFIG

@@ -1,4 +1,10 @@
-import { objectUtils, TEXTS, TranslationResource } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  FormioTranslationMap,
+  objectUtils,
+  ScopedTranslationMap,
+  TEXTS,
+  TranslationResource,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { getInputType, withoutDuplicatedComponents } from "../utils";
 
 const tags = {
@@ -52,7 +58,7 @@ const getGlobalTranslationsWithLanguageAndTag = (
   selectedTag: string
 ): TranslationResource => {
   const globalTranslationsResourcesForSelectedLanguage = allGlobalTranslations[languageCode];
-  const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage.find(
+  const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage?.find(
     isTranslationResourceForSelectedTag(selectedTag)
   ) || { translations: {} };
   if (selectedTag === "skjematekster") {
@@ -85,6 +91,28 @@ const getGlobalTranslationsWithLanguageAndTag = (
   return translationsResourceWithSelectedLanguageAndTag;
 };
 
+const transformGlobalTranslationsToCsvData = (
+  allGlobalTranslations: FormioTranslationMap,
+  allPredefinedOriginalTexts,
+  languageCode: string
+) => {
+  const translations: ScopedTranslationMap = Object.values(tags)
+    .map((tag) => getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, tag))
+    .reduce((previous, current) => ({ ...previous, ...current.translations }), {} as ScopedTranslationMap);
+  allPredefinedOriginalTexts.forEach((predefinedText) => {
+    if (!translations[predefinedText]) {
+      translations[predefinedText] = { value: undefined, scope: "global" };
+    }
+  });
+
+  const data = Object.keys(translations).map((text) => ({ text, [languageCode]: translations[text].value }));
+  const headers = [
+    { label: "Globale tekster", key: "text" },
+    { label: languageCode?.toUpperCase(), key: languageCode },
+  ];
+  return { data, headers };
+};
+
 export {
   tags,
   flattenTextsForEditPanel,
@@ -92,4 +120,5 @@ export {
   getAllPredefinedOriginalTexts,
   getTranslationKeysForAllPredefinedTexts,
   getCurrentOriginalTextList,
+  transformGlobalTranslationsToCsvData,
 };
