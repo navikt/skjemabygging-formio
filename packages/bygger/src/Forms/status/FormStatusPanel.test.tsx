@@ -5,7 +5,10 @@ import React from "react";
 import FormStatusPanel from "./FormStatusPanel";
 import { allLanguagesInNorwegian } from "./PublishedLanguages";
 
-type PartialFormProperties = Pick<FormPropertiesType, "modified" | "modifiedBy" | "published" | "publishedBy">;
+type PartialFormProperties = Pick<
+  FormPropertiesType,
+  "modified" | "modifiedBy" | "published" | "publishedBy" | "isTestForm"
+>;
 
 describe("FormStatusPanel", () => {
   const now = moment().toISOString();
@@ -131,6 +134,18 @@ describe("FormStatusPanel", () => {
       publishedLanguages.forEach((langCode) => {
         expect(screen.queryByText(allLanguagesInNorwegian[langCode])).toBeInTheDocument();
       });
+    });
+  });
+
+  describe("When form has status test", () => {
+    const properties: PartialFormProperties = { modified: now, published: earlier, isTestForm: true };
+
+    beforeEach(() => {
+      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+    });
+
+    it("displays the 'Testskjema' status even if published and modified is set", () => {
+      expect(screen.getByText("Testskjema")).toBeInTheDocument();
     });
   });
 });

@@ -11,6 +11,8 @@ const FormStatusIndicator = ({ status, size }: { status: Status; size: StreetLig
       return <span className={`${styles.streetLight} ${styles.pending}`} />;
     case "DRAFT":
       return <span className={`${styles.streetLight} ${styles.draft}`} />;
+    case "TESTFORM":
+      return <span className={`${styles.streetLight} ${styles.testform}`} />;
     case "UNKNOWN":
     default:
       return <></>;

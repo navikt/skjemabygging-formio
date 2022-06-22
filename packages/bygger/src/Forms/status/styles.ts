@@ -40,6 +40,9 @@ const useFormStatusIndicatorStyles = makeStyles({
   draft: {
     backgroundColor: "#2D9CDB",
   },
+  testform: {
+    backgroundColor: "#EB5757",
+  },
 });
 
 export { useStatusStyles, useFormStatusIndicatorStyles };
