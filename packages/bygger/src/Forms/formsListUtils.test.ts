@@ -104,13 +104,13 @@ describe("formsListUtils", () => {
 
     it("adds items with status UNKNOWN to the end of list when sorting in ascending order", () => {
       const sorted = sortByStatus(listWithUnknown, "ascending");
-      expect(sorted).toHaveLength(4);
+      expect(sorted).toHaveLength(5);
       expect(sorted[3].status).toBe("UNKNOWN");
     });
 
     it("adds items with status UNKNOWN to the end of list when sorting in descending order", () => {
       const sorted = sortByStatus(listWithUnknown, "descending");
-      expect(sorted).toHaveLength(4);
+      expect(sorted).toHaveLength(5);
       expect(sorted[3].status).toBe("UNKNOWN");
     });
   });
