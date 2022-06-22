@@ -100,16 +100,13 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       });
     }
   };
-  // default false, gets true when checked
-  //let isTestForm: boolean = false;
+
   const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
   return (
     <SkjemaGruppe>
       <Checkbox
         label="Dette er et testskjema"
         id="teststatus"
-        //value={isTestForm}
-        //test:
         checked={!!isTestForm}
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
