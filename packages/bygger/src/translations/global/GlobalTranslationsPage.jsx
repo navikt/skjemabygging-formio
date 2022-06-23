@@ -214,7 +214,8 @@ const GlobalTranslationsPage = ({
         selectedTag
       );
       if (response.ok) {
-        loadGlobalTranslations().then((translations) => setAllGlobalTranslations(translations));
+        const translations = await loadGlobalTranslations();
+        setAllGlobalTranslations(translations);
       }
       return response;
     }
