@@ -5,7 +5,7 @@ export type I18nTranslationMap = Record<string, string>;
 export type I18nTranslations = Record<string, I18nTranslationMap>;
 
 export interface ScopedTranslationMap {
-  [key: string]: { value: string; scope: TranslationScope };
+  [key: string]: { value?: string; scope: TranslationScope };
 }
 
 export interface FormioTranslation {

@@ -18,6 +18,7 @@ import { useModal } from "../../util/useModal";
 import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
 import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
+import GlobalCsvLink from "./GlobalCsvLink";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 import PublishGlobalTranslationsButton from "./PublishGlobalTranslationsButton";
 import {
@@ -206,12 +207,17 @@ const GlobalTranslationsPage = ({
         } (${duplicatedOriginalText})`
       );
     } else {
-      return saveTranslation(
+      const response = await saveTranslation(
         globalTranslationsWithLanguagecodeAndTag?.id,
         languageCode,
         globalTranslationsToSave(selectedTag),
         selectedTag
       );
+      if (response.ok) {
+        const translations = await loadGlobalTranslations();
+        setAllGlobalTranslations(translations);
+      }
+      return response;
     }
   };
 
@@ -287,6 +293,7 @@ const GlobalTranslationsPage = ({
               />
               <PrimaryButtonWithSpinner onClick={onSaveGlobalTranslations}>Lagre</PrimaryButtonWithSpinner>
               <UserFeedback />
+              <GlobalCsvLink allGlobalTranslations={allGlobalTranslations} languageCode={languageCode} />
             </Column>
           </div>
         </Row>
