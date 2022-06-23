@@ -41,7 +41,6 @@ export function IntroPage({ form, formUrl }: Props) {
       } else if (form.properties?.innsending === "INGEN") {
         setDescriptionBold(TEXTS.statiske.introPage.noSubmissionDescriptionBold);
         setDescription(TEXTS.statiske.introPage.noSubmissionDescription);
-        console.log("ingen innsending!");
       }
       // No description when form.properties.innsending === "KUN_DIGITAL"
     }
