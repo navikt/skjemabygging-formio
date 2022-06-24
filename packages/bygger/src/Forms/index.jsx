@@ -14,7 +14,7 @@ export const FormsRouter = ({ formio, serverURL }) => {
   Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const userAlerter = useContext(UserAlerterContext);
-  const { loadForm, loadFormsList, onSave, onPublish } = useFormioForms(formio, userAlerter);
+  const { loadForm, loadFormsList, onSave, onPublish, onUnpublish } = useFormioForms(formio, userAlerter);
   const { loadTranslationsForEditPage } = useFormioTranslations(serverURL, formio, userAlerter);
   return (
     <Switch>
@@ -27,6 +27,7 @@ export const FormsRouter = ({ formio, serverURL }) => {
           loadTranslations={loadTranslationsForEditPage}
           onSave={onSave}
           onPublish={onPublish}
+          onUnpublish={onUnpublish}
         />
       </Route>
       <Route path={path}>

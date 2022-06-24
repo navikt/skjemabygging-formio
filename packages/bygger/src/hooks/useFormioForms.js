@@ -72,6 +72,8 @@ export const useFormioForms = (formio, userAlerter) => {
       const publishedLanguages = translations ? Object.keys(translations) : [];
       const now = getIso8601String();
       const formWithPublishProps = updateProps(form, {
+        unpublished: undefined,
+        unpublishedBy: undefined,
         published: now,
         publishedBy: userData.name,
         publishedLanguages,
@@ -104,6 +106,7 @@ export const useFormioForms = (formio, userAlerter) => {
         } else {
           userAlerter.setErrorMessage("Publisering feilet " + response?.status);
           const rollbackForm = updateProps(result, {
+            ...form.properties,
             published: form.properties?.published,
             publishedBy: form.properties?.publishedBy,
             publishedLanguages: form.properties?.publishedLanguages,
@@ -112,6 +115,52 @@ export const useFormioForms = (formio, userAlerter) => {
             modified: form.properties?.modified,
             modifiedBy: form.properties?.modifiedBy,
           });
+          if (rollbackResult.error) {
+            return result;
+          }
+          return rollbackResult;
+        }
+      }
+    },
+    [userAlerter, onSave, userData]
+  );
+
+  const onUnpublish = useCallback(
+    async (form) => {
+      const now = getIso8601String();
+      const formWithPublishProps = updateProps(form, {
+        published: undefined,
+        publishedBy: undefined,
+        publishedLanguages: [],
+        unpublished: now,
+        unpublishedBy: userData.name,
+      });
+
+      const result = await onSave(formWithPublishProps, true, {
+        modified: now,
+        modifiedBy: userData.name,
+      });
+
+      if (!result.error) {
+        const response = await fetch(`/api/publish/${form.path}`, {
+          method: "DELETE",
+          headers: { "formio-token": Formiojs.getToken() },
+        });
+
+        if (response?.ok) {
+          return result;
+        } else {
+          userAlerter.setErrorMessage("Avpublisering feilet " + response?.status);
+          const rollbackForm = updateProps(result, {
+            ...form.properties,
+            unpublished: undefined,
+            unpublishedBy: undefined,
+          });
+          const rollbackResult = await onSave(rollbackForm, true, {
+            modified: form.properties?.modified,
+            modifiedBy: form.properties?.modifiedBy,
+          });
+
           if (rollbackResult.error) {
             return result;
           }
@@ -140,5 +189,6 @@ export const useFormioForms = (formio, userAlerter) => {
     loadFormsList,
     onSave,
     onPublish,
+    onUnpublish,
   };
 };
