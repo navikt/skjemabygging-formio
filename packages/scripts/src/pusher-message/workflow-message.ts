@@ -39,12 +39,13 @@ export type PusherEvent = "publication" | "bulk-publication" | "other" | "failur
 const BULK_PUBLISH_COMMIT_REGEXP = /^\[bulk-publisering\].*/;
 const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
 const PUBLISH_COMMIT_REGEXP = /^\[publisering\].*/;
+const UN_PUBLISH_COMMIT_REGEXP = /^\[avpublisering\].*/;
 const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
 
 const getEventType = (message: PushEvent): PusherEvent => {
   const thisCommit = message.head_commit;
   const commitMessage = thisCommit?.message || "";
-  if (commitMessage.match(PUBLISH_COMMIT_REGEXP)) return "publication";
+  if (commitMessage.match(PUBLISH_COMMIT_REGEXP) || commitMessage.match(UN_PUBLISH_COMMIT_REGEXP)) return "publication";
   if (commitMessage.match(BULK_PUBLISH_COMMIT_REGEXP)) return "bulk-publication";
   return "other";
 };

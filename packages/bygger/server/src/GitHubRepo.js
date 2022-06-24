@@ -142,9 +142,6 @@ export class GitHubRepo {
       message,
       sha,
     };
-    if (sha) {
-      parameters = { ...parameters, sha };
-    }
     return this.octokit.rest.repos.deleteFile(parameters);
   }
 }

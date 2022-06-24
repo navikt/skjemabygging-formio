@@ -144,7 +144,7 @@ export const useFormioForms = (formio, userAlerter) => {
       if (!result.error) {
         const response = await fetch(`/api/publish/${form.path}`, {
           method: "DELETE",
-          headers: { "formio-token": Formiojs.getToken() },
+          headers: { "Bygger-Formio-Token": Formiojs.getToken() },
         });
 
         if (response?.ok) {
