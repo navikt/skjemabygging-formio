@@ -186,7 +186,7 @@ const removeLineBreaksFromTranslations = (translations) => {
 
 const escapeQuote = (text) => {
   if (typeof text === "string" && text.includes("'")) {
-    return text.replaceAll(/'/g, '"');
+    return text.replace(/'/g, '"');
   }
   return text;
 };
@@ -233,10 +233,12 @@ const getTextsAndTranslationsHeaders = (translations) => {
 };
 
 export {
+  escapeQuote,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
   getInputType,
   withoutDuplicatedComponents,
   getFormTexts,
+  removeLineBreaks,
   removeLineBreaksFromTranslations,
 };
