@@ -6,7 +6,7 @@ const publishBulk = async (req: Request, res: Response, next: NextFunction) => {
     res.status(400).send("Request is missing formPaths");
   }
   try {
-    const result = await backendInstance.bulkPublishForms(req.body.token, req.body.payload.formPaths);
+    const result = await backendInstance.bulkPublishForms(req.body.payload.formPaths);
     res.json({ changed: !!result, result });
   } catch (error) {
     next(error);

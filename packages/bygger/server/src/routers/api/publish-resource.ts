@@ -14,7 +14,7 @@ const publishResource = async (req: Request, res: Response, next: NextFunction) 
     return;
   }
   try {
-    const result = await backendInstance.publishResource(req.body.token, resourceName, req.body.resource);
+    const result = await backendInstance.publishResource(resourceName, req.body.resource);
     res.json({ changed: !!result, result });
   } catch (error) {
     next(new ApiError("Publisering feilet", true, error as Error));

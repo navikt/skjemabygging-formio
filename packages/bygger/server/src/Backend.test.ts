@@ -1,4 +1,3 @@
-import nock from "nock";
 import { createBackendForTest } from "../testTools/backend/testUtils.js";
 import {
   mockRepoCreateOrUpdateFileContents,
@@ -20,8 +19,6 @@ jest.mock("uuid", () => {
 jest.mock("./GitHubRepo.js");
 
 describe("Backend", () => {
-  const projectUrl = "https://projectApi.example.com";
-  const token = "userToken";
   const formPath = "skjema";
 
   beforeEach(() => {
@@ -47,7 +44,6 @@ describe("Backend", () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
     // @ts-ignore
     GitHubRepo.mockClear();
     mockRepoGetRef.mockClear();
@@ -69,13 +65,9 @@ describe("Backend", () => {
   describe("publishForm", () => {
     const expectedBranchName = "publish-skjema--1234";
 
-    beforeEach(() => {
-      nock(projectUrl).get("/current").reply(204);
-    });
-
     describe("When file content is different from the corresponding file in the repo", () => {
       beforeEach(async () => {
-        await backend.publishForm(token, { title: "Form" }, { en: {} }, formPath);
+        await backend.publishForm({ title: "Form" }, { en: {} }, formPath);
       });
 
       it("creates a new branch in the target repo", () => {
@@ -116,7 +108,7 @@ describe("Backend", () => {
         mockRepoGetFileIfItExists.mockReturnValueOnce({
           data: { content: stringTobase64(JSON.stringify(fileContent)), sha: "sha" },
         });
-        await backend.publishForm(token, fileContent, {}, formPath);
+        await backend.publishForm(fileContent, {}, formPath);
       });
 
       it("does not push the file", () => {
@@ -135,7 +127,7 @@ describe("Backend", () => {
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-for-new-branch" } } });
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-after-pushing-files" } } });
         mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "resulting-sha-after-merge" } } });
-        await backend.publishForm(token, { title: "Form" }, { en: {} }, formPath);
+        await backend.publishForm({ title: "Form" }, { en: {} }, formPath);
       });
 
       it("updates submodule", () => {
@@ -168,7 +160,7 @@ describe("Backend", () => {
 
     describe("when no changes are pushed", () => {
       beforeEach(async () => {
-        await backend.publishForm(token, { title: "Form" }, { en: {} }, formPath);
+        await backend.publishForm({ title: "Form" }, { en: {} }, formPath);
       });
 
       it("does not update submodule", () => {
@@ -194,12 +186,11 @@ describe("Backend", () => {
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-for-new-branch" } } });
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "different-sha-after-pushing-file" } } });
       mockRepoGetRef.mockReturnValueOnce({ data: { object: { sha: "resulting-sha-after-merge" } } });
-      nock(projectUrl).get("/current").reply(204);
     });
 
     describe("When file already exists", () => {
       beforeEach(async () => {
-        await backend.publishResource(token, "settings", { toggle: "on" });
+        await backend.publishResource("settings", { toggle: "on" });
       });
 
       it("creates a new branch in the target repo", () => {
@@ -237,7 +228,7 @@ describe("Backend", () => {
     describe("When the file doesn't exist in the repo", () => {
       beforeEach(async () => {
         mockRepoGetFileIfItExists.mockReturnValue(undefined);
-        await backend.publishResource(token, "settings", { toggle: "on" });
+        await backend.publishResource("settings", { toggle: "on" });
       });
 
       it("calls createOrUpdateFile without a sha", () => {
@@ -249,48 +240,6 @@ describe("Backend", () => {
           "eyJ0b2dnbGUiOiJvbiJ9",
           undefined
         );
-      });
-    });
-  });
-
-  describe("Authorization and error handling", () => {
-    beforeAll(() => {
-      jest.spyOn(console, "error").mockImplementation(() => {});
-    });
-
-    afterAll(() => {
-      jest.restoreAllMocks();
-    });
-
-    describe("publishForm", () => {
-      it("does not try to publish if authorization check to server fails", async () => {
-        const nockScope = nock(projectUrl).get("/current").replyWithError("My error");
-        await expect(backend.publishForm(token, {}, {}, formPath)).rejects.toThrowError("My error");
-        expect(nockScope.isDone()).toBe(true);
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
-      });
-
-      it("does not try to publish if authorization check to server returns unauthorized", async () => {
-        const nockScope = nock(projectUrl).get("/current").reply(401);
-        await expect(backend.publishForm(token, {}, {}, formPath)).rejects.toThrowError("Unauthorized");
-        expect(nockScope.isDone()).toBe(true);
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
-      });
-    });
-
-    describe("publishResource", () => {
-      it("does not try to publish if authorization check to server fails", async () => {
-        const nockScope = nock(projectUrl).get("/current").replyWithError("My error");
-        await expect(backend.publishResource(token, "resourceName", {})).rejects.toThrowError("My error");
-        expect(nockScope.isDone()).toBe(true);
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
-      });
-
-      it("does not try to publish if authorization check to server returns unauthorized", async () => {
-        const nockScope = nock(projectUrl).get("/current").reply(401);
-        await expect(backend.publishResource(token, "resourceName", {})).rejects.toThrowError("Unauthorized");
-        expect(nockScope.isDone()).toBe(true);
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(0);
       });
     });
   });

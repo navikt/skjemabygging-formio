@@ -1,5 +1,4 @@
 import { I18nTranslations, NavFormType, ResourceContent } from "@navikt/skjemadigitalisering-shared-domain";
-import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigType } from "./config/types";
 import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
@@ -20,12 +19,7 @@ export class Backend {
     this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.publishRepo.token);
   }
 
-  async publishForm(
-    userToken: string,
-    formContent: NavFormType,
-    translationsContent: I18nTranslations,
-    formPath: string
-  ) {
+  async publishForm(formContent: NavFormType, translationsContent: I18nTranslations, formPath: string) {
     const formFile = createFileForPushingToRepo(formContent.title, `forms/${formPath}.json`, "skjema", formContent);
     const translationsFile = createFileForPushingToRepo(
       formContent.title,
@@ -47,7 +41,7 @@ export class Backend {
     );
   }
 
-  async publishResource(userToken: string, resourceName: string, resourceContent: ResourceContent) {
+  async publishResource(resourceName: string, resourceContent: ResourceContent) {
     const resourceFile = createFileForPushingToRepo(
       resourceName,
       `resources/${resourceName}.json`,
@@ -64,7 +58,7 @@ export class Backend {
     );
   }
 
-  async bulkPublishForms(userToken: string, formPaths: string[]) {
+  async bulkPublishForms(formPaths: string[]) {
     const forms = await formio.getForms(formPaths);
     const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
@@ -77,22 +71,6 @@ export class Backend {
       pushFilesAndUpdateSubmoduleCallback(formFiles, this.config.gitSha, this.config.publishRepo.submoduleName),
       `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
-  }
-
-  async authenticateWithAzure() {
-    const postData = {
-      grant_type: "client_credentials",
-      scope: `openid api://${this.config.skjemabyggingProxy.clientId}/.default`,
-      client_id: this.config.azure.clientId,
-      client_secret: this.config.azure.clientSecret,
-      client_auth_method: "client_secret_basic",
-    };
-    const body = qs.stringify(postData);
-    return fetchWithErrorHandling(this.config.azure.openidTokenEndpoint, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      method: "POST",
-      body: body,
-    });
   }
 
   async fetchEnhetsliste() {
