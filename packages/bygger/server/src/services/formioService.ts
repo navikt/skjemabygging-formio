@@ -56,6 +56,6 @@ class FormioService {
   }
 }
 
-const formio = new FormioService(config.formio.projectUrl);
+const formioService = new FormioService(config.formio.projectUrl);
 
-export default formio;
+export default formioService;

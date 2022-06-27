@@ -11,7 +11,7 @@ import {
   performChangesOnSeparateBranch,
   pushFilesAndUpdateSubmoduleCallback,
 } from "./repoUtils.js";
-import formio from "./services/formio";
+import formioService from "./services/formioService";
 
 export class Backend {
   private readonly skjemaUtfylling: GitHubRepo;
@@ -72,7 +72,7 @@ export class Backend {
   }
 
   async bulkPublishForms(formPaths: string[]) {
-    const forms = await formio.getForms(formPaths);
+    const forms = await formioService.getForms(formPaths);
     const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
     );

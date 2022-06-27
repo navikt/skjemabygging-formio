@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import formio from "../../../services/formio";
+import formioService from "../../../services/formioService";
 import { ByggerRequest } from "../../../types";
 import { getFormioToken } from "../../../util/requestTool";
 import { UnauthorizedError } from "./errors";
@@ -11,7 +11,7 @@ const authorizedPublisher = async (req: ByggerRequest, res: Response, next: Next
     return;
   }
   try {
-    await formio.getFormioUser(formioToken);
+    await formioService.getFormioUser(formioToken);
   } catch (e) {
     next(new UnauthorizedError("Invalid formio token"));
     return;

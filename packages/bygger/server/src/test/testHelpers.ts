@@ -24,7 +24,7 @@ export function mockRequest({ headers = {}, params = {}, body }: MockRequestData
     header: (name: string): string => headers[name] as string,
     params,
     body,
-    get: jest.fn(),
+    get: (name) => headers[name],
   } as unknown as Request;
 }
 

@@ -14,11 +14,28 @@ describe("authorizedPublisher", () => {
     jest.restoreAllMocks();
   });
 
-  it("Accepts formio token", async () => {
+  it("Accepts formio token in body", async () => {
     nock(projectUrl).get("/current").reply(204);
     const req = mockRequest({
       body: {
         token: "valid-formio-token",
+      },
+    });
+    const res = mockResponse();
+    const next = jest.fn();
+    await authorizedPublisher(req, res, next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(next.mock.calls[0][0]).toBeUndefined();
+  });
+
+  it("Accepts formio token in header", async () => {
+    nock(projectUrl).get("/current").reply(204);
+    const req = mockRequest({
+      headers: {
+        "Bygger-Formio-Token": "valid-formio-token",
+      },
+      body: {
+        foo: "bar",
       },
     });
     const res = mockResponse();
