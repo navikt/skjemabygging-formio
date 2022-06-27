@@ -32,6 +32,8 @@ export interface FormPropertiesType {
   published?: string;
   publishedBy?: string;
   publishedLanguages?: string[];
+  unpublished?: string;
+  unpublishedBy?: string;
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
   innsendingForklaring?: string;

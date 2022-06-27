@@ -5,6 +5,9 @@ import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 import {
   createFileForPushingToRepo,
+  deleteFilesAndUpdateSubmoduleCallback,
+  getFormFilePath,
+  getTranslationFilePath,
   performChangesOnSeparateBranch,
   pushFilesAndUpdateSubmoduleCallback,
 } from "./repoUtils.js";
@@ -20,10 +23,10 @@ export class Backend {
   }
 
   async publishForm(formContent: NavFormType, translationsContent: I18nTranslations, formPath: string) {
-    const formFile = createFileForPushingToRepo(formContent.title, `forms/${formPath}.json`, "skjema", formContent);
+    const formFile = createFileForPushingToRepo(formContent.title, getFormFilePath(formPath), "skjema", formContent);
     const translationsFile = createFileForPushingToRepo(
       formContent.title,
-      `translations/${formPath}.json`,
+      getTranslationFilePath(formPath),
       "oversettelse",
       translationsContent
     );
@@ -38,6 +41,16 @@ export class Backend {
         this.config.publishRepo.submoduleName
       ),
       `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
+    );
+  }
+
+  async unpublishForm(userToken: string, formPath: string) {
+    return performChangesOnSeparateBranch(
+      this.skjemaUtfylling,
+      this.config.publishRepo.base,
+      `unpublish-${formPath}--${uuidv4()}`,
+      deleteFilesAndUpdateSubmoduleCallback([getFormFilePath(formPath), getTranslationFilePath(formPath)]),
+      `[avpublisering] skjema ${formPath}, monorepo ref: ${this.config.gitSha}`
     );
   }
 
@@ -80,7 +93,7 @@ export class Backend {
   }
 
   async fetchPublishedForm(formPath: string) {
-    const filePath = `forms/${formPath}.json`;
+    const filePath = getTranslationFilePath(formPath);
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
     if (response && "content" in response.data) {
       const content = base64ToString(response.data.content);

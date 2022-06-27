@@ -6,7 +6,7 @@ import { EditFormPage } from "./EditFormPage";
 import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
-export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
+export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
   let { url } = useRouteMatch();
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
@@ -47,6 +47,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
     setForm(publishedForm);
   };
 
+  const unpublishForm = async (form) => {
+    const unpublishForm = await onUnpublish(form);
+    setForm(unpublishForm);
+  };
+
   if (status === "LOADING") {
     return <LoadingComponent />;
   }
@@ -74,6 +79,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
+            onUnpublish={unpublishForm}
           />
         </Route>
         <Route path={`${url}/view`}>
@@ -87,6 +93,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish }) => {
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
+            onUnpublish={unpublishForm}
           />
         </Route>
         <Route path={url}>

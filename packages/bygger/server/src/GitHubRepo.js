@@ -132,4 +132,16 @@ export class GitHubRepo {
       commit_message: "",
     });
   }
+
+  deleteFile(branch, path, message, sha) {
+    let parameters = {
+      owner: this.owner,
+      repo: this.repo,
+      branch,
+      path,
+      message,
+      sha,
+    };
+    return this.octokit.rest.repos.deleteFile(parameters);
+  }
 }
