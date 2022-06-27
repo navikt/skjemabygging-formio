@@ -10,7 +10,7 @@ import { Props } from "./types";
 
 const FormStatusPanel = ({ formProperties }: Props) => {
   const styles: ClassNameMap = useStatusStyles();
-  const { modified, modifiedBy, published, publishedBy } = formProperties;
+  const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = formProperties;
 
   return (
     <Panel className={styles.container}>
@@ -20,6 +20,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
       </div>
       <Timestamp label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <Timestamp label="Sist publisert:" timestamp={published} userName={publishedBy} />
+      <Timestamp label="Apublisert:" timestamp={unpublished} userName={unpublishedBy} />
       <PublishedLanguages formProperties={formProperties} />
     </Panel>
   );

@@ -15,6 +15,7 @@ import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./PublishModalComponents";
 import FormStatusPanel from "./status/FormStatusPanel";
+import UnpublishButton from "./unpublish/UnpublishButton";
 
 const useStyles = makeStyles({
   formBuilder: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onChange, onPublish }) {
+export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onChange, onPublish, onUnpublish }) {
   const { featureToggles } = useAppConfig();
   const {
     title,
@@ -72,6 +73,7 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
+            <UnpublishButton onUnpublish={onUnpublish} form={form} />
             <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
             <FormStatusPanel formProperties={form.properties} />
             <UserFeedback />

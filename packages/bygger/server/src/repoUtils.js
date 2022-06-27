@@ -51,6 +51,22 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
   };
 }
 
+async function deleteFile(repo, branch, path, message) {
+  const remoteFile = await repo.getFileIfItExists(branch, path);
+  const sha = remoteFile?.data?.sha;
+  if (sha) {
+    await repo.deleteFile(branch, path, message, sha);
+  }
+}
+
+export function deleteFilesAndUpdateSubmoduleCallback(paths) {
+  return async (repo, branch) => {
+    for (const path of paths) {
+      await deleteFile(repo, branch, path, `Delete "${path}"`);
+    }
+  };
+}
+
 export async function performChangesOnSeparateBranch(repo, base, branch, performChanges, mergeCommitMessage) {
   const baseRef = await repo.getRef(base);
   await repo.createRef(branch, baseRef.data.object.sha);
@@ -68,4 +84,12 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
 
   await repo.deleteRef(branch);
   return updatedBaseSha;
+}
+
+export function getFormFilePath(formPath) {
+  return `forms/${formPath}.json`;
+}
+
+export function getTranslationFilePath(formPath) {
+  return `translations/${formPath}.json`;
 }
