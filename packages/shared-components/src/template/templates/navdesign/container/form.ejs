@@ -1,11 +1,11 @@
-{% if (ctx.component.hideLabel || !ctx.component.label) { %}
+{% if (!ctx.builder && ctx.component.hideLabel || !ctx.component.label) { %}
 <div ref="{{ctx.nestedKey}}">
   {{ctx.children}}
 </div>
 {% } else { %}
 <fieldset ref="{{ctx.nestedKey}}"
  class="skjemagruppe">
-  
+
   <legend class="skjemagruppe__legend">
     {{ctx.component.label}}
   </legend>
