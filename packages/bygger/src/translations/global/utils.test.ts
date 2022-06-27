@@ -271,5 +271,56 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
         { key: "se", label: "SE" },
       ]);
     });
+
+    it("removes linebreaks before export", () => {
+      const globalTranslationLineBreaks = {
+        en: [
+          {
+            tag: "skjematekster",
+            translations: {
+              "<p>Test linjeskift linux\nwindows\r\napple\r</p>": {
+                value: "<p>Test Line break linux\nwindows\r\napple\r</p>",
+                scope: "global",
+              },
+            },
+          },
+        ],
+      };
+      const { data, headers } = transformGlobalTranslationsToCsvData(globalTranslationLineBreaks, [], "en");
+      expect(data).toEqual([
+        { text: "<p>Test linjeskift linux windows apple </p>", en: "<p>Test Line break linux windows apple </p>" },
+      ]);
+      expect(headers).toEqual([
+        { key: "text", label: "Globale tekster" },
+        { key: "en", label: "EN" },
+      ]);
+    });
+
+    it("escapes quotes", () => {
+      const globalTranslationLineBreaks = {
+        en: [
+          {
+            tag: "skjematekster",
+            translations: {
+              "<p>Lenke til <a href='https://www.nav.no/fyllut'>FyllUt</a></p>": {
+                value: '<p>Link to <a href="https://www.nav.no/fyllut">FyllUt</a></p>',
+                scope: "global",
+              },
+            },
+          },
+        ],
+      };
+      const { data, headers } = transformGlobalTranslationsToCsvData(globalTranslationLineBreaks, [], "en");
+      expect(data).toEqual([
+        {
+          text: '<p>Lenke til <a href="https://www.nav.no/fyllut">FyllUt</a></p>',
+          en: '<p>Link to <a href="https://www.nav.no/fyllut">FyllUt</a></p>',
+        },
+      ]);
+      expect(headers).toEqual([
+        { key: "text", label: "Globale tekster" },
+        { key: "en", label: "EN" },
+      ]);
+    });
   });
 });
