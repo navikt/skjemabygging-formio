@@ -123,7 +123,9 @@ const panelStyles = makeStyles({
       justifySelf: "flex-start",
       marginLeft: "-0.75rem",
       marginBottom: "1rem",
-
+      "& > span": {
+        whiteSpace: "normal",
+      },
       "@media screen and (min-width: 48em)": {
         justifySelf: "flex-end",
         marginLeft: 0,
@@ -143,7 +145,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
         <Systemtittel tag="h3" className="margin-bottom-default">
           {label}
         </Systemtittel>
-        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="knapp knapp--flat knapp--kompakt">
+        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="knapp test knapp--flat knapp--kompakt">
           <span>
             {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
           </span>
