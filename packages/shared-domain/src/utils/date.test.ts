@@ -1,4 +1,4 @@
-import {getIso8601String} from "./date";
+import { getIso8601String } from "./date";
 
 describe("date.ts", () => {
   describe("getIso8601String", () => {
@@ -9,4 +9,3 @@ describe("date.ts", () => {
     });
   });
 });
-

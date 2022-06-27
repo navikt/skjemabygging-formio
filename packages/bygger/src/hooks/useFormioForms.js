@@ -1,7 +1,9 @@
-import { getIso8601String } from "@navikt/skjemadigitalisering-shared-components";
+import { dateUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
+
+const { getIso8601String } = dateUtils;
 
 export const useFormioForms = (formio, userAlerter) => {
   const { userData } = useAuth();
