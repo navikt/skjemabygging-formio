@@ -7,5 +7,6 @@ interface User {
 }
 
 export type ByggerRequest = Request & {
-  getUser?: () => User;
+  getUser: () => User;
+  getFormioToken: () => string;
 };

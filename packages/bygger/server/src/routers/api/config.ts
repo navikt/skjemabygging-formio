@@ -4,7 +4,7 @@ import { createFormioJwt } from "../../middleware/authHandler";
 import { ByggerRequest } from "../../types";
 
 const config = (req: ByggerRequest, res: Response) => {
-  const user = req.getUser?.();
+  const user = !appConfig.isDevelopment ? req.getUser() : undefined;
   if (user) {
     res.header("Bygger-Formio-Token", createFormioJwt(user));
   }
