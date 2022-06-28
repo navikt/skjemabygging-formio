@@ -1,4 +1,5 @@
 import AlertStripe from "./components/AlertStripe";
+import Container from "./components/Container";
 import CountrySelect from "./components/CountrySelect";
 import DataGrid from "./components/DataGrid";
 import Day from "./components/Day";
@@ -17,6 +18,7 @@ import Textarea from "./components/TextArea";
 import TextField from "./components/TextField";
 
 const customComponents = {
+  container: Container,
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
   orgNr: OrganizationNumber,
