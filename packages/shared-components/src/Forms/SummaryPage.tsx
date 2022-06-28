@@ -65,14 +65,14 @@ const SelectboxesSummary: FunctionComponent<LabelValues> = ({ label, values }) =
 );
 
 const FormSummaryFieldset: FunctionComponent<LabelComponents> = ({ label, components }) => (
-  <div>
+  <>
     <dt>{label}</dt>
     <dd>
       <dl className="margin-left-default">
         <ComponentSummary components={components} />
       </dl>
     </dd>
-  </div>
+  </>
 );
 
 const DataGridSummary: FunctionComponent<LabelComponents> = ({ label, components }) => (
@@ -116,22 +116,6 @@ const ImageSummary: FunctionComponent<ImageComp> = ({ label, value, alt, widthPe
 const panelStyles = makeStyles({
   header: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(21rem, 1fr))",
-    justifyContent: "space-between",
-
-    "& > .knapp": {
-      justifySelf: "flex-start",
-      marginLeft: "-0.75rem",
-      marginBottom: "1rem",
-      "& > span": {
-        whiteSpace: "normal",
-      },
-      "@media screen and (min-width: 48em)": {
-        justifySelf: "flex-end",
-        marginLeft: 0,
-        marginBottom: 0,
-      },
-    },
   },
 });
 
@@ -145,7 +129,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
         <Systemtittel tag="h3" className="margin-bottom-default">
           {label}
         </Systemtittel>
-        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="knapp knapp--flat knapp--kompakt">
+        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="lenke margin-bottom-default">
           <span>
             {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
           </span>
