@@ -1,10 +1,20 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
+import formioService from "../../../services/formioService";
+import { ByggerRequest } from "../../../types";
 import { getFormioToken } from "../../../util/requestTool";
 import { UnauthorizedError } from "./errors";
 
-const authorizedPublisher = (req: Request, res: Response, next: NextFunction) => {
-  if (!getFormioToken(req)) {
+const authorizedPublisher = async (req: ByggerRequest, res: Response, next: NextFunction) => {
+  const formioToken = getFormioToken(req);
+  if (!formioToken) {
     next(new UnauthorizedError("Missing formio token"));
+    return;
+  }
+  try {
+    await formioService.getFormioUser(formioToken);
+  } catch (e) {
+    next(new UnauthorizedError("Invalid formio token"));
+    return;
   }
   next();
 };
