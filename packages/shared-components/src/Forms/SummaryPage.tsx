@@ -123,7 +123,9 @@ const panelStyles = makeStyles({
       justifySelf: "flex-start",
       marginLeft: "-0.75rem",
       marginBottom: "1rem",
-
+      "& > span": {
+        whiteSpace: "normal",
+      },
       "@media screen and (min-width: 48em)": {
         justifySelf: "flex-end",
         marginLeft: 0,
