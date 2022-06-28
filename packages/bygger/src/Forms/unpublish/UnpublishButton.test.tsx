@@ -1,5 +1,4 @@
-import { getIso8601String } from "@navikt/skjemadigitalisering-shared-components";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { dateUtils, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import UnpublishButton from "./UnpublishButton";
@@ -9,7 +8,7 @@ describe("UnpublishButton", () => {
   const renderButton = (form?: NavFormType) => {
     if (!form) {
       form = {
-        properties: { published: getIso8601String() },
+        properties: { published: dateUtils.getIso8601String() },
       } as NavFormType;
     }
     render(<UnpublishButton onUnpublish={onUnpublish} form={form} />);

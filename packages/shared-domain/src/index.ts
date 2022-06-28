@@ -27,6 +27,7 @@ import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent,
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
+import dateUtils from "./utils/date";
 import featureUtils, { FeatureTogglesMap } from "./utils/featureUtils";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
@@ -49,6 +50,7 @@ export {
   languagesUtil,
   guid,
   validatorUtils,
+  dateUtils,
 };
 export type {
   FeatureTogglesMap,
