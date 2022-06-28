@@ -5,8 +5,8 @@ import { ByggerRequest } from "../../types";
 
 const migrateUpdate = async (req: ByggerRequest, res: Response, next: NextFunction) => {
   const { searchFilters, editOptions, include } = req.body.payload;
-  const formioToken = req.getFormioToken();
-  const userName = req.getUser().name;
+  const formioToken = req.getFormioToken?.()!;
+  const userName = req.getUser?.().name!;
   try {
     const allForms = await formioService.getAllForms();
     const { migratedForms } = await migrateForms(searchFilters, editOptions, allForms, include);
