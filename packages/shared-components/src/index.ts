@@ -4,6 +4,7 @@ import http, { FetchHeader, FetchOptions } from "./api/http";
 import ErrorPage from "./components/ErrorPage";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
+import Modal from "./components/nav/Modal";
 import NavForm from "./components/NavForm";
 import formioFormStyles from "./components/styles/formioFormStyles";
 import navFormStyle from "./components/styles/navFormStyle";
@@ -57,5 +58,6 @@ export {
   formUtils,
   ErrorPage,
   supportedEnhetstyper,
+  Modal,
 };
 export type { FetchHeader, FetchOptions };
