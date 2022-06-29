@@ -3,12 +3,10 @@
   {{ctx.children}}
 </div>
 {% } else { %}
-<fieldset ref="{{ctx.nestedKey}}"
- class="skjemagruppe">
-
-  <legend class="skjemagruppe__legend">
-    {{ctx.component.label}}
-  </legend>
-  {{ctx.children}}
+<fieldset class="skjemagruppe">
+ <legend class="skjemagruppe__legend">
+   {{ctx.component.label}}
+ </legend>
+  <div ref="{{ctx.nestedKey}}">{{ctx.children}}</div>
 </fieldset>
 {% } %}
