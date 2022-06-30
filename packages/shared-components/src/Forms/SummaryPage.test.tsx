@@ -98,8 +98,11 @@ describe("SummaryPage", () => {
 
   describe("Form med både papir- og digital innsending", () => {
     it("Rendrer default form med riktige knapper", async () => {
-      const form = formWithProperties({ innsending: undefined || null });
+      // hvis bare innsending: undefined så blir den null
+      // hvs bare null så finner frn ikke "sendIPostenKnapp"
+      const form = formWithProperties({ innsending: undefined });
       //const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
+
       const { buttons } = await renderSummaryPage({ form });
       expectKnapperForPapirOgDigitalInnsending(buttons);
     });
