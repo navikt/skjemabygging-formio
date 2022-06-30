@@ -112,7 +112,6 @@ const formAreaStyles = {
 
     // Start drag-container
     "& .drag-container": {
-      padding: "10px",
       padding: "0",
       border: "2px dotted #e8e8e8",
       "&:hover": {
