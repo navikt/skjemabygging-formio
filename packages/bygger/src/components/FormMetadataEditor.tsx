@@ -46,7 +46,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       tema,
       downloadPdfButtonText,
       innsending: innsendingFraProps,
-      hasPapirInnsendingOnly,
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
@@ -101,7 +100,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     }
   };
 
-  const innsending = innsendingFraProps || (hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
+  const innsending = innsendingFraProps;
   return (
     <SkjemaGruppe>
       <Checkbox

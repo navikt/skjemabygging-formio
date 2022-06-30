@@ -218,8 +218,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
-  const innsending: InnsendingType =
-    form.properties.innsending || (form.properties.hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
+  const innsending: InnsendingType = form.properties.innsending;
 
   return (
     <SummaryContent>
