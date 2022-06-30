@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import PublishSettingsModal from "./PublishSettingsModal";
+import { useModal } from "../../util/useModal";
 import ConfirmPublishModal from "./ConfirmPublishModal";
-import { useModal } from "../util/useModal";
+import PublishSettingsModal from "./PublishSettingsModal";
 
 const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {
   const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal(false);
