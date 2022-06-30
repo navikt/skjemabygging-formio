@@ -102,13 +102,13 @@ describe("SummaryPage", () => {
       expectKnapperForPapirOgDigitalInnsending(buttons);
     });
 
-    /*it("Rendrer form med innsending=false", async () => {
+    it("Rendrer form med innsending=undefined", async () => {
       const form = formWithProperties({ innsending: undefined });
       const { history, buttons } = await renderSummaryPage({ form });
       expectKnapperForPapirOgDigitalInnsending(buttons);
       userEvent.click(buttons.sendDigitaltKnapp);
       expect(history.location.pathname).toBe("/testform/forbered-innsending");
-    });*/
+    });
 
     it("Rendrer form med innsending=PAPIR_OG_DIGITAL", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
@@ -127,6 +127,17 @@ describe("SummaryPage", () => {
     expect(sendIPostenKnapp).not.toBeInTheDocument();
     expect(sendDigitaltKnapp).not.toBeInTheDocument();
   };
+
+  describe("Form med kun papir-innsending", () => {
+    it("Rendrer form med innsending=KUN_PAPIR", async () => {
+      const form = formWithProperties({ innsending: "KUN_PAPIR" });
+      const { buttons, history } = await renderSummaryPage({ form });
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+  });
 
   describe("Form med kun digital innsending", () => {
     it("Rendrer form med innsending=KUN_DIGITAL", async () => {
