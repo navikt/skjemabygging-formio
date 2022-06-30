@@ -95,20 +95,13 @@ describe("SummaryPage", () => {
     expect(sendDigitaltKnapp).toBeInTheDocument();
     expect(gaVidereKnapp).not.toBeInTheDocument();
   };
+
   describe("Form med både papir- og digital innsending", () => {
     it("Rendrer default form med riktige knapper", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
       const { buttons } = await renderSummaryPage({ form });
       expectKnapperForPapirOgDigitalInnsending(buttons);
     });
-
-    /*it("Rendrer form med innsending=undefined", async () => {
-      const form = formWithProperties({ innsending: undefined });
-      const { history, buttons } = await renderSummaryPage({ form });
-      expectKnapperForPapirOgDigitalInnsending(buttons);
-      userEvent.click(buttons.sendDigitaltKnapp);
-      expect(history.location.pathname).toBe("/testform/forbered-innsending");
-    });*/
 
     it("Rendrer form med innsending=PAPIR_OG_DIGITAL", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
