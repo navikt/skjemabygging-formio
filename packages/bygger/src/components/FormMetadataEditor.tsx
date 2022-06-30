@@ -99,8 +99,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       });
     }
   };
+  const innsending = innsendingFraProps || "PAPIR_OG_DIGITAL";
 
-  const innsending = innsendingFraProps || (undefined ?? "PAPIR_OG_DIGITAL");
   return (
     <SkjemaGruppe>
       <Checkbox
