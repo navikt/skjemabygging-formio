@@ -100,7 +100,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     }
   };
 
-  const innsending = innsendingFraProps;
+  const innsending = innsendingFraProps || "PAPIR_OG_DIGITAL";
+
   return (
     <SkjemaGruppe>
       <Checkbox
