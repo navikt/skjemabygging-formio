@@ -213,7 +213,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [errorMessage, setErrorMessage] = useState<string>(undefined);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
