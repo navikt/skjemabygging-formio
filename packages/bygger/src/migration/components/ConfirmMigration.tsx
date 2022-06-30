@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Knapp } from "nav-frontend-knapper";
+import Modal from "nav-frontend-modal";
 import React, { useState } from "react";
 import { DryRunResult } from "../../../types/migration";
 import FormList from "./FormList";
@@ -8,6 +8,13 @@ import FormList from "./FormList";
 const useStyles = makeStyles({
   button: {
     width: "max-content",
+  },
+  modal: {
+    width: "50rem",
+    minHeight: "13rem",
+    height: "auto",
+    maxWidth: "90%",
+    padding: "2rem 2.5rem",
   },
 });
 
@@ -30,7 +37,15 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Confi
 
   return (
     <>
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} contentLabel="Bekreft migrering">
+      <Modal
+        className={styles.modal}
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        closeButton={true}
+        contentLabel="Bekreft migrering"
+        shouldCloseOnOverlayClick={false}
+        ariaHideApp={false}
+      >
         <FormList heading={"Skjemaer som vil bli migrert"} listElements={willBeMigrated} />
         <FormList heading={"Skjemaer som ikke vil bli migrert"} listElements={willNotBeMigrated} />
         <FormList

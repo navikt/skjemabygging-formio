@@ -1,8 +1,8 @@
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useState } from "react";
+import Modal from "../../components/nav/Modal";
 
 interface Props {
   openModal: boolean;
