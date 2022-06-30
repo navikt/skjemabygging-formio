@@ -102,14 +102,13 @@ describe("SummaryPage", () => {
       expectKnapperForPapirOgDigitalInnsending(buttons);
     });
 
-    it("Rendrer form med innsending=false", async () => {
+    /*it("Rendrer form med innsending=false", async () => {
       const form = formWithProperties({ innsending: undefined });
       const { history, buttons } = await renderSummaryPage({ form });
       expectKnapperForPapirOgDigitalInnsending(buttons);
-
       userEvent.click(buttons.sendDigitaltKnapp);
       expect(history.location.pathname).toBe("/testform/forbered-innsending");
-    });
+    });*/
 
     it("Rendrer form med innsending=PAPIR_OG_DIGITAL", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
