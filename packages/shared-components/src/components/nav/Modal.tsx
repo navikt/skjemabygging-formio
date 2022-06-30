@@ -24,17 +24,19 @@ const Modal = ({ isOpen = false, contentLabel, onRequestClose, className, childr
   const styles = useModalStyles();
 
   return (
-    <NavModal
-      isOpen={isOpen}
-      contentLabel={contentLabel}
-      onRequestClose={onRequestClose}
-      className={className ?? styles.modal}
-      closeButton={true}
-      shouldCloseOnOverlayClick={false}
-      ariaHideApp={false}
-    >
-      {children}
-    </NavModal>
+    <>
+      <NavModal
+        isOpen={isOpen}
+        contentLabel={contentLabel}
+        onRequestClose={onRequestClose}
+        className={className ?? styles.modal}
+        closeButton={true}
+        shouldCloseOnOverlayClick={false}
+        ariaHideApp={false}
+      >
+        {children}
+      </NavModal>
+    </>
   );
 };
 
