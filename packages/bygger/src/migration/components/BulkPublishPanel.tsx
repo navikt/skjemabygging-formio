@@ -1,9 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
-import Modal from "nav-frontend-modal";
 import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Undertekst, Undertittel } from "nav-frontend-typografi";
@@ -37,13 +37,6 @@ const useStyles = makeStyles({
   },
   listElement: {
     marginBottom: "1rem",
-  },
-  modal: {
-    width: "50rem",
-    minHeight: "13rem",
-    height: "auto",
-    maxWidth: "90%",
-    padding: "2rem 2.5rem",
   },
 });
 
@@ -113,15 +106,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
           <Knapp type="hoved">Publiser nå</Knapp>
         </form>
       </Panel>
-      <Modal
-        className={styles.modal}
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        closeButton={true}
-        contentLabel="Bekreft publisering"
-        shouldCloseOnOverlayClick={false}
-        ariaHideApp={false}
-      >
+      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} ariaLabel="Bekreft publisering">
         <FormList heading={"Skjemaer som vil bli publisert"} listElements={willBePublished} />
         <FormList heading={"Skjemaer som ikke vil bli publisert"} listElements={willNotBePublished} />
         <ul className="list-inline">

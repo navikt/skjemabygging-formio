@@ -3,10 +3,10 @@ import React from "react";
 import Modal from "./Modal";
 
 describe("Modal", () => {
-  let onRequestClose = jest.fn();
+  let onClose = jest.fn();
   beforeAll(() => {
     render(
-      <Modal onRequestClose={onRequestClose} contentLabel="New modal" isOpen={true}>
+      <Modal onClose={onClose} title="New modal" open={true}>
         <div>Content</div>
       </Modal>
     );
@@ -15,6 +15,6 @@ describe("Modal", () => {
   it("renders modal and check that it work", async () => {
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
     fireEvent.click(await screen.findByRole("button", { name: "Lukk" }));
-    expect(onRequestClose).toBeCalled();
+    expect(onClose).toBeCalled();
   });
 });

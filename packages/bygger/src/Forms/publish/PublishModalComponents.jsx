@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useModal } from "../util/useModal";
+import { useModal } from "../../util/useModal";
 import ConfirmPublishModal from "./ConfirmPublishModal";
 import PublishSettingsModal from "./PublishSettingsModal";
 

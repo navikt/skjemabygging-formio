@@ -11,7 +11,7 @@ import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import { useModal } from "../util/useModal";
-import PublishModalComponents from "./PublishModalComponents";
+import PublishModalComponents from "./publish/PublishModalComponents";
 import FormStatusPanel from "./status/FormStatusPanel";
 import UnpublishButton from "./unpublish/UnpublishButton";
 
