@@ -71,9 +71,12 @@ const formAreaStyles = {
         display: "none",
       },
       "& .builder-component": {
-        padding: "10px",
+        padding: "0.6rem",
         "&:not(.gu-transit):hover": {
           outline: "2px dotted #ccc",
+        },
+        "& .form-group": {
+          marginBottom: "1.4rem",
         },
       },
       "& .gu-transit:not(.drag-copy)": {
