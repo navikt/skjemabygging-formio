@@ -220,7 +220,8 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
   //const innsending: InnsendingType = form.properties.innsending || undefined:
-  const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  //const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const innsending: InnsendingType | undefined = form.properties.innsending || "PAPIR_OG_DIGITAL";
 
   return (
     <SummaryContent>
