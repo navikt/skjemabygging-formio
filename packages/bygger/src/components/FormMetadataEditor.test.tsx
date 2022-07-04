@@ -125,7 +125,6 @@ describe("FormMetadataEditor", () => {
       type: "form",
       components: [],
       properties: {
-        hasPapirInnsendingOnly: undefined,
         skjemanummer: "TST 12.34-56",
         innsending: undefined,
         tema: "BIL",

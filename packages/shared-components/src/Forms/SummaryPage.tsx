@@ -197,13 +197,13 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
+
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
-  const innsending: InnsendingType =
-    form.properties.innsending || (form.properties.hasPapirInnsendingOnly ? "KUN_PAPIR" : "PAPIR_OG_DIGITAL");
+  const innsending: InnsendingType | undefined = form.properties.innsending || "PAPIR_OG_DIGITAL";
 
   return (
     <SummaryContent>
