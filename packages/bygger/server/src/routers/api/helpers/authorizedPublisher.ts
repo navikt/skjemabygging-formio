@@ -16,6 +16,7 @@ const authorizedPublisher = async (req: ByggerRequest, res: Response, next: Next
     next(new UnauthorizedError("Invalid formio token"));
     return;
   }
+  req.getFormioToken = () => formioToken;
   next();
 };
 
