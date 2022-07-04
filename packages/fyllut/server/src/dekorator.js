@@ -14,6 +14,7 @@ const getDecorator = async (filePath, redirect) => {
     redirectToUrl: redirect,
     level: "Level4",
     simple: true,
+    urlLookupTable: false,
   });
 };
 

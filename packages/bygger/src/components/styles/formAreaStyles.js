@@ -64,44 +64,61 @@ const formAreaStyles = {
       },
     },
     // End form panel list
-
     //Start builder-component
     "& .builder-component": {
       position: "relative",
-
       "&:not(:hover) .component-btn-group": {
         display: "none",
       },
-      "& .component-btn-group": {
-        display: "flex",
-        flexDirection: "row",
+      "& .builder-component": {
+        padding: "0.6rem",
+        "&:not(.gu-transit):hover": {
+          outline: "2px dotted #ccc",
+        },
+        "& .form-group": {
+          marginBottom: "1.4rem",
+        },
+      },
+      "& .gu-transit:not(.drag-copy)": {
+        backgroundColor: "#dedede",
+        outline: "none",
+        borderRadius: "0.3em",
+        margin: "3px",
+        "& .component-btn-group": {
+          display: "none",
+        },
+      },
+      "& > .component-btn-group": {
+        display: "grid",
+        gridTemplateColumns: "repeat(6, 1fr)",
+        gridTemplateRows: "1fr",
+        gridColumnGap: "5px",
         position: "absolute",
         top: "0.5rem",
-        right: "0",
+        right: "0.5rem",
         zIndex: "1001",
-
         "& .component-settings-button": {
           "&:not(:last-child)": {
-            marginRight: "0.5rem",
+            marginRight: "0",
           },
         },
-
         "& svg": {
           fontSize: "1rem",
           verticalAlign: "initial",
         },
+      },
+      "& div:not(.card-header) > .component-btn-group": {
+        backgroundColor: "#ffffff",
       },
     },
     // End builder-component
 
     // Start drag-container
     "& .drag-container": {
-      padding: "10px",
+      padding: "0",
       border: "2px dotted #e8e8e8",
-
       "&:hover": {
         cursor: "move",
-        border: "2px dotted #ccc",
       },
 
       "&.formio-builder-form": {

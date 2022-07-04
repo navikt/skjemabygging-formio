@@ -11,6 +11,7 @@
 **/coverage
 **/cypress/videos
 **/cypress/screenshots
+/.vscode
 
 
 # production

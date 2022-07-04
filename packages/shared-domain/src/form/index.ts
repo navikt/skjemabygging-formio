@@ -39,10 +39,6 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
-  /**
-   * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
-   */
-  hasPapirInnsendingOnly?: boolean;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];

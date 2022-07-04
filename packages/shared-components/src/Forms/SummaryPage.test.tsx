@@ -23,7 +23,6 @@ const defaultFormProperties = {
   skjemanummer: "NAV 10-11.13",
   tema: "BIL",
   innsending: undefined,
-  hasPapirInnsendingOnly: undefined,
   hasLabeledSignatures: false,
   signatures: undefined,
 };
@@ -96,27 +95,18 @@ describe("SummaryPage", () => {
     expect(sendDigitaltKnapp).toBeInTheDocument();
     expect(gaVidereKnapp).not.toBeInTheDocument();
   };
+
   describe("Form med både papir- og digital innsending", () => {
     it("Rendrer default form med riktige knapper", async () => {
-      const form = formWithProperties({ hasPapirInnsendingOnly: undefined, innsending: undefined });
+      const form = formWithProperties({ innsending: undefined });
       const { buttons } = await renderSummaryPage({ form });
       expectKnapperForPapirOgDigitalInnsending(buttons);
     });
 
-    it("Rendrer form med hasPapirInnsendingOnly=false", async () => {
-      const form = formWithProperties({ hasPapirInnsendingOnly: false, innsending: undefined });
-      const { history, buttons } = await renderSummaryPage({ form });
-      expectKnapperForPapirOgDigitalInnsending(buttons);
-
-      userEvent.click(buttons.sendDigitaltKnapp);
-      expect(history.location.pathname).toBe("/testform/forbered-innsending");
-    });
-
     it("Rendrer form med innsending=PAPIR_OG_DIGITAL", async () => {
-      const form = formWithProperties({ hasPapirInnsendingOnly: false, innsending: "PAPIR_OG_DIGITAL" });
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
       const { history, buttons } = await renderSummaryPage({ form });
       expectKnapperForPapirOgDigitalInnsending(buttons);
-
       userEvent.click(buttons.sendIPostenKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
@@ -131,20 +121,10 @@ describe("SummaryPage", () => {
   };
 
   describe("Form med kun papir-innsending", () => {
-    it("Rendrer form med hasPapirInnsendingOnly=true", async () => {
-      const form = formWithProperties({ hasPapirInnsendingOnly: true });
-      const { buttons, history } = await renderSummaryPage({ form });
-      expectKnapperForRedigerSvarEllerGaVidere(buttons);
-
-      userEvent.click(buttons.gaVidereKnapp);
-      expect(history.location.pathname).toBe("/testform/send-i-posten");
-    });
-
     it("Rendrer form med innsending=KUN_PAPIR", async () => {
       const form = formWithProperties({ innsending: "KUN_PAPIR" });
       const { buttons, history } = await renderSummaryPage({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-
       userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
@@ -155,7 +135,6 @@ describe("SummaryPage", () => {
       const form = formWithProperties({ innsending: "KUN_DIGITAL" });
       const { history, buttons } = await renderSummaryPage({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-
       userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/forbered-innsending");
     });
@@ -188,7 +167,7 @@ describe("SummaryPage", () => {
         })
         .post("/api/send-inn")
         .reply(201, {}, { Location: "https://www.unittest.nav.no/send-inn/123" });
-      const form = formWithProperties({ hasPapirInnsendingOnly: false, innsending: "PAPIR_OG_DIGITAL" });
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
       const { buttons } = await renderSummaryPage(
         { form },
         {
@@ -205,7 +184,7 @@ describe("SummaryPage", () => {
       window.location = originalWindowLocation;
     });
     it("renders next-button when method=paper", async () => {
-      const form = formWithProperties({ hasPapirInnsendingOnly: false, innsending: "PAPIR_OG_DIGITAL" });
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
       const { history, buttons } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 

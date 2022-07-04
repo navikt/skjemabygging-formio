@@ -5,7 +5,7 @@ import {
   TEXTS,
   TranslationResource,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import { getInputType, withoutDuplicatedComponents } from "../utils";
+import { escapeQuote, getInputType, removeLineBreaks, withoutDuplicatedComponents } from "../utils";
 
 const tags = {
   SKJEMATEKSTER: "skjematekster",
@@ -91,6 +91,8 @@ const getGlobalTranslationsWithLanguageAndTag = (
   return translationsResourceWithSelectedLanguageAndTag;
 };
 
+const sanitize = (text?) => escapeQuote(removeLineBreaks(text));
+
 const transformGlobalTranslationsToCsvData = (
   allGlobalTranslations: FormioTranslationMap,
   allPredefinedOriginalTexts,
@@ -105,7 +107,10 @@ const transformGlobalTranslationsToCsvData = (
     }
   });
 
-  const data = Object.keys(translations).map((text) => ({ text, [languageCode]: translations[text].value }));
+  const data = Object.keys(translations).map((text) => ({
+    text: sanitize(text),
+    [languageCode]: sanitize(translations[text].value),
+  }));
   const headers = [
     { label: "Globale tekster", key: "text" },
     { label: languageCode?.toUpperCase(), key: languageCode },
