@@ -73,7 +73,6 @@ const form = {
   properties: {
     skjemanummer: "WIP 12.34-56",
     tema: "VEN",
-    hasPapirInnsendingOnly: true,
     hasLabeledSignatures: false,
   },
   machineName: "wip123456",

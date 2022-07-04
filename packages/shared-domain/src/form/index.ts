@@ -39,10 +39,6 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
-  /**
-   * @deprecated hasPapirInnsendingOnly blir erstattet av innsending
-   */
-  hasPapirInnsendingOnly?: boolean;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
@@ -53,6 +49,11 @@ export interface FormPropertiesType {
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
 }
+
+export type FormPropertiesPublishing = Pick<
+  FormPropertiesType,
+  "modified" | "modifiedBy" | "published" | "publishedBy" | "publishedLanguages" | "unpublished" | "unpublishedBy"
+>;
 
 export interface Component {
   key: string;
