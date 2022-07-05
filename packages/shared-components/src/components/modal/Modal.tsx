@@ -12,6 +12,7 @@ const useModalStyles = makeStyles({
 
 interface Props {
   onClose: () => void;
+  appElement?: string | HTMLElement;
   title?: string;
   open?: boolean;
   ariaLabel?: string;
@@ -19,8 +20,10 @@ interface Props {
   children: React.ReactNode;
 }
 
-const Modal = ({ onClose, open = false, title, ariaLabel, className, children }: Props) => {
+const Modal = ({ onClose, appElement = "#root", open = false, title, ariaLabel, className, children }: Props) => {
   const styles = useModalStyles();
+
+  NavModal?.setAppElement?.(appElement);
 
   return (
     <NavModal
