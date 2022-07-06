@@ -182,6 +182,7 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
   const { key, contentForPdf, type } = component;
+
   if (shouldShowInSummary(key, evaluatedConditionals) && contentForPdf) {
     const componentKey = createComponentKey(parentContainerKey, key);
     return [
@@ -223,7 +224,6 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, image, altText, widthPercent, showInPdf } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
-
   if (image.length > 0 && image[0].url) {
     return [
       ...formSummaryObject,
@@ -250,6 +250,9 @@ export function handleComponent(
   translate,
   evaluatedConditionals = {}
 ) {
+  if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
+    return formSummaryObject;
+  }
   switch (component.type) {
     case "panel":
       return handlePanel(
@@ -294,6 +297,9 @@ const shouldShowInSummary = (componentKey, evaluatedConditionals) =>
 
 function evaluateConditionals(components = [], form, data, row = []) {
   return components.flatMap((component) => {
+    if (!FormioUtils.checkCondition(component, row, data, form)) {
+      return [{ key: component.key, value: false }];
+    }
     switch (component.type) {
       case "container":
         return evaluateConditionals(component.components, form, data, data[component.key]);
@@ -302,6 +308,7 @@ function evaluateConditionals(components = [], form, data, row = []) {
       case "navSkjemagruppe":
         return evaluateConditionals(component.components, form, data);
       case "htmlelement":
+      case "image":
       case "alertstripe":
         return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
       default:
