@@ -5,7 +5,7 @@ describe("Modal", () => {
   let onClose = jest.fn();
   beforeAll(() => {
     render(
-      <Modal onClose={onClose} open={true}>
+      <Modal onClose={onClose} open={true} appElement={document.createElement("div")}>
         Test
       </Modal>
     );

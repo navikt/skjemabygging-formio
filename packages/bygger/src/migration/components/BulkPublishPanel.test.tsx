@@ -36,7 +36,7 @@ describe("BulkPublishPanel", () => {
 
   beforeEach(() => {
     jest.spyOn(api, "bulkPublish").mockImplementation(bulkPublish);
-    render(<BulkPublishPanel forms={[testForm1, testForm2, testForm3]} />);
+    render(<BulkPublishPanel forms={[testForm1, testForm2, testForm3]} appElement={document.createElement("div")} />);
   });
 
   afterEach(() => {

@@ -45,6 +45,7 @@ describe("PublishSettingsModal", () => {
         closeModal={mockedCloseModal}
         publishModal={mockedPublishModal}
         form={form}
+        appElement={document.createElement("div")}
       />
     );
   };

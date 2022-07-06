@@ -9,9 +9,10 @@ interface Props {
   closeModal: () => void;
   onUnpublish: (form) => void;
   form: NavFormType;
+  appElement?: string | HTMLElement;
 }
 
-const ConfirmUnpublishModal = ({ openModal, closeModal, onUnpublish, form }: Props) => {
+const ConfirmUnpublishModal = ({ openModal, closeModal, onUnpublish, form, appElement }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const unpublish = async () => {
@@ -21,7 +22,7 @@ const ConfirmUnpublishModal = ({ openModal, closeModal, onUnpublish, form }: Pro
   };
 
   return (
-    <Modal open={openModal} onClose={closeModal} ariaLabel="Avpubliseringsadvarsel">
+    <Modal open={openModal} onClose={closeModal} ariaLabel="Avpubliseringsadvarsel" appElement={appElement}>
       <Normaltekst className="margin-bottom-double">Er du sikker på at dette skjemaet skal avpubliseres?</Normaltekst>
       <ul className="list-inline">
         <li className="list-inline-item">

@@ -42,13 +42,15 @@ describe("GlobalTranslationsPage", () => {
           <MemoryRouter initialEntries={[`/translations/global/${languageCode}/skjematekster`]}>
             <UserAlerterContext.Provider value={userAlerter}>
               <I18nStateProvider loadTranslations={loadTranslation}>
-                <GlobalTranslationsPage
-                  loadGlobalTranslations={loadTranslation}
-                  projectURL={""}
-                  deleteTranslation={mockedDeleteTranslation}
-                  saveTranslation={mockedSaveTranslations}
-                  languageCode={languageCode}
-                />
+                <div id="root">
+                  <GlobalTranslationsPage
+                    loadGlobalTranslations={loadTranslation}
+                    projectURL={""}
+                    deleteTranslation={mockedDeleteTranslation}
+                    saveTranslation={mockedSaveTranslations}
+                    languageCode={languageCode}
+                  />
+                </div>
               </I18nStateProvider>
             </UserAlerterContext.Provider>
           </MemoryRouter>

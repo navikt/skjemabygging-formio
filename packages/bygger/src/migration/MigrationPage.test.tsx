@@ -37,7 +37,9 @@ describe("MigrationPage", () => {
 
   const wrapper = ({ children }) => (
     <UserAlerterContext.Provider value={userAlerter}>
-      <MemoryRouter>{children}</MemoryRouter>
+      <MemoryRouter>
+        <div id="root">{children}</div>
+      </MemoryRouter>
     </UserAlerterContext.Provider>
   );
 

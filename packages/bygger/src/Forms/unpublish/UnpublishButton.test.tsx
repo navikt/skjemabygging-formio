@@ -11,11 +11,7 @@ describe("UnpublishButton", () => {
         properties: { published: dateUtils.getIso8601String() },
       } as NavFormType;
     }
-    render(
-      <div id="root">
-        <UnpublishButton onUnpublish={onUnpublish} form={form} />
-      </div>
-    );
+    render(<UnpublishButton onUnpublish={onUnpublish} form={form} appElement={document.createElement("div")} />);
   };
 
   it("do not render button if not published", () => {

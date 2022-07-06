@@ -42,9 +42,10 @@ const useStyles = makeStyles({
 
 interface Props {
   forms: NavFormType[];
+  appElement?: string | HTMLElement;
 }
 
-const BulkPublishPanel = ({ forms }: Props) => {
+const BulkPublishPanel = ({ forms, appElement }: Props) => {
   const styles = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -106,7 +107,12 @@ const BulkPublishPanel = ({ forms }: Props) => {
           <Knapp type="hoved">Publiser nå</Knapp>
         </form>
       </Panel>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} ariaLabel="Bekreft publisering">
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ariaLabel="Bekreft publisering"
+        appElement={appElement}
+      >
         <FormList heading={"Skjemaer som vil bli publisert"} listElements={willBePublished} />
         <FormList heading={"Skjemaer som ikke vil bli publisert"} listElements={willNotBePublished} />
         <ul className="list-inline">

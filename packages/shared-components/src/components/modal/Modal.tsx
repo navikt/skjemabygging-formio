@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
-import { BodyLong, Heading, Modal as NavModal } from "@navikt/ds-react";
-import React, { useEffect } from "react";
+import { Heading, Modal as NavModal } from "@navikt/ds-react";
+import React from "react";
 
 const useModalStyles = makeStyles({
   modal: {
@@ -23,13 +23,7 @@ interface Props {
 const Modal = ({ onClose, appElement = "#root", open = false, title, ariaLabel, className, children }: Props) => {
   const styles = useModalStyles();
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === "test") {
-      NavModal.setAppElement?.(document.createElement("div"));
-    } else {
-      NavModal.setAppElement?.(appElement);
-    }
-  }, []);
+  NavModal.setAppElement?.(appElement);
 
   return (
     <NavModal
@@ -46,7 +40,7 @@ const Modal = ({ onClose, appElement = "#root", open = false, title, ariaLabel, 
             {title}
           </Heading>
         )}
-        <BodyLong>{children}</BodyLong>
+        {children}
       </NavModal.Content>
     </NavModal>
   );
