@@ -35,10 +35,12 @@ describe("FormsRouter", () => {
         >
           <UserAlerterContext.Provider value={userAlerter}>
             <AppConfigProvider featureToggles={featureToggles}>
-              <AuthenticatedApp
-                formio={new Formio("http://myproject.example.org")}
-                serverURL={"http://myproject.example.org"}
-              />
+              <div id="root">
+                <AuthenticatedApp
+                  formio={new Formio("http://myproject.example.org")}
+                  serverURL={"http://myproject.example.org"}
+                />
+              </div>
             </AppConfigProvider>
           </UserAlerterContext.Provider>
         </AuthContext.Provider>
@@ -53,13 +55,13 @@ describe("FormsRouter", () => {
     expect(await screen.findByRole("heading", { name: "Opprett nytt skjema" })).toBeInTheDocument();
   });
 
-  it.skip("can edit a form", async () => {
+  it("can edit a form", async () => {
     renderApp("/forms/debugskjema/edit");
     expect(await screen.findByRole("heading", { name: "debug skjema" })).toBeInTheDocument();
     expect(await screen.findByLabelText("Text Area")).toBeInTheDocument();
   });
 
-  it.skip("navigates from the list to the editor", async () => {
+  it("navigates from the list to the editor", async () => {
     renderApp("/forms");
     const link = await screen.findByRole("link", { name: "debug skjema" });
     await userEvent.click(link);
