@@ -4,7 +4,6 @@ import {
   FormPropertiesType,
   NavFormType,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import config from "../config";
 import { fetchWithErrorHandling } from "../fetchUtils";
 
 export class FormioService {
@@ -92,7 +91,3 @@ const updateProps = (form: NavFormType, props: Partial<FormPropertiesType>): Nav
     })
   );
 };
-
-const formioService = new FormioService(config.formio.projectUrl);
-
-export default formioService;

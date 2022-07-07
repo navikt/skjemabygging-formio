@@ -11,7 +11,7 @@ import {
   performChangesOnSeparateBranch,
   pushFilesAndUpdateSubmoduleCallback,
 } from "./repoUtils.js";
-import formioService from "./services/formioService";
+import { formioService } from "./services";
 
 export class Backend {
   private readonly skjemaUtfylling: GitHubRepo;
@@ -22,24 +22,25 @@ export class Backend {
     this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.publishRepo.token);
   }
 
-  async publishForm(formContent: NavFormType, translationsContent: I18nTranslations, formPath: string) {
+  async publishForm(formContent: NavFormType, translationsContent: I18nTranslations | undefined, formPath: string) {
     const formFile = createFileForPushingToRepo(formContent.title, getFormFilePath(formPath), "skjema", formContent);
-    const translationsFile = createFileForPushingToRepo(
-      formContent.title,
-      getTranslationFilePath(formPath),
-      "oversettelse",
-      translationsContent
-    );
+    const files = [formFile];
+
+    if (translationsContent) {
+      const translationsFile = createFileForPushingToRepo(
+        formContent.title,
+        getTranslationFilePath(formPath),
+        "oversettelse",
+        translationsContent
+      );
+      files.push(translationsFile);
+    }
 
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepo.base,
       `publish-${formPath}--${uuidv4()}`,
-      pushFilesAndUpdateSubmoduleCallback(
-        [translationsFile, formFile],
-        this.config.gitSha,
-        this.config.publishRepo.submoduleName
-      ),
+      pushFilesAndUpdateSubmoduleCallback(files, this.config.gitSha, this.config.publishRepo.submoduleName),
       `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
     );
   }

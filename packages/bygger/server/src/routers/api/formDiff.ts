@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import formioService from "../../services/formioService";
+import { formioService } from "../../services";
 import { generateNavFormDiff } from "../../util/formDiffingTool";
 import backendInstance from "./helpers/backend-instance";
 import { NotFoundError } from "./helpers/errors";

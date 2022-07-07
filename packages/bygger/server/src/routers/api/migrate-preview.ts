@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { previewForm } from "../../migration/migrationScripts";
-import formioService from "../../services/formioService";
+import { formioService } from "../../services";
 
 const migratePreview = async (req: Request, res: Response, next: NextFunction) => {
   const searchFilters = JSON.parse((req.query["searchFilters"] as string) || "{}");
