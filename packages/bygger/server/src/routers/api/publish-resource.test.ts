@@ -1,8 +1,8 @@
 import { mockRequest, mockResponse } from "../../test/testHelpers";
 import publishResource, { isValidResource } from "./publish-resource";
 
-jest.mock("./helpers/backend-instance", () => {
-  return { publishResource: jest.fn() };
+jest.mock("../../services/index.ts", () => {
+  return { backendInstance: { publishResource: jest.fn() } };
 });
 
 describe("publish-resource", () => {
