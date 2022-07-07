@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import backendInstance from "./helpers/backend-instance";
+import { backendInstance } from "../../services";
 
 const publishBulk = async (req: Request, res: Response, next: NextFunction) => {
   if (!Array.isArray(req.body.payload.formPaths) || req.body.payload.formPaths.length === 0) {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { backendInstance } from "../../services";
 import { getFormioToken } from "../../util/requestTool";
-import backendInstance from "./helpers/backend-instance";
 
 const unpublishForm = async (req: Request, res: Response, next: NextFunction) => {
   try {

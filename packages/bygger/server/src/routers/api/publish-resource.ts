@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import backendInstance from "./helpers/backend-instance";
+import { backendInstance } from "../../services";
 import { ApiError, BadRequest } from "./helpers/errors";
 
 const ALLOWED_RESOURCES = [/^mottaksadresser$/, /^global-translations-([a-z]{2}(-NO)?)$/];

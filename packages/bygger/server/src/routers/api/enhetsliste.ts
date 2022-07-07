@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import backendInstance from "./helpers/backend-instance";
+import { backendInstance } from "../../services";
 
 const enhetsliste = async (req: Request, res: Response, next: NextFunction) => {
   try {

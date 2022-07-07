@@ -11,14 +11,16 @@ import {
   performChangesOnSeparateBranch,
   pushFilesAndUpdateSubmoduleCallback,
 } from "./repoUtils.js";
-import { formioService } from "./services";
+import { FormioService } from "./services/formioService";
 
 export class Backend {
   private readonly skjemaUtfylling: GitHubRepo;
   private readonly config: ConfigType;
+  private readonly formioService: FormioService;
 
-  constructor(config: ConfigType) {
+  constructor(config: ConfigType, formioService: FormioService) {
     this.config = config;
+    this.formioService = formioService;
     this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.publishRepo.token);
   }
 
@@ -73,7 +75,7 @@ export class Backend {
   }
 
   async bulkPublishForms(formPaths: string[]) {
-    const forms = await formioService.getForms(formPaths);
+    const forms = await this.formioService.getForms(formPaths);
     const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
     );
