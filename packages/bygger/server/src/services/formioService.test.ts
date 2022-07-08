@@ -1,7 +1,7 @@
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import nock from "nock";
 import config from "../config";
-import formioService from "./formioService";
+import { formioService } from "./index";
 
 describe("FormioService", () => {
   describe("saveForm", () => {

@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import formioService from "../../../services/formioService";
+import { formioService } from "../../../services";
 import { ByggerRequest } from "../../../types";
 import { getFormioToken } from "../../../util/requestTool";
 import { UnauthorizedError } from "./errors";

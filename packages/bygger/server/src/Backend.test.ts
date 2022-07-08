@@ -103,10 +103,10 @@ describe("Backend", () => {
       beforeEach(async () => {
         const fileContent = { title: "Form" };
         mockRepoGetFileIfItExists.mockReturnValueOnce({
-          data: { content: stringTobase64(JSON.stringify({})), sha: "sha" },
+          data: { content: stringTobase64(JSON.stringify(fileContent)), sha: "sha" },
         });
         mockRepoGetFileIfItExists.mockReturnValueOnce({
-          data: { content: stringTobase64(JSON.stringify(fileContent)), sha: "sha" },
+          data: { content: stringTobase64(JSON.stringify({})), sha: "sha" },
         });
         await backend.publishForm(fileContent, {}, formPath);
       });

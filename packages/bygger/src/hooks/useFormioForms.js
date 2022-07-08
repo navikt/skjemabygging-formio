@@ -71,60 +71,31 @@ export const useFormioForms = (formio, userAlerter) => {
 
   const onPublish = useCallback(
     async (form, translations) => {
-      const publishedLanguages = translations ? Object.keys(translations) : [];
-      const now = getIso8601String();
-      const formWithPublishProps = updateProps(form, {
-        unpublished: undefined,
-        unpublishedBy: undefined,
-        published: now,
-        publishedBy: userData.name,
-        publishedLanguages,
+      const payload = JSON.stringify({ form, translations });
+      const response = await fetch(`/api/published-forms/${form.path}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+          "Bygger-Formio-Token": Formiojs.getToken(),
+        },
+        body: payload,
       });
-      const result = await onSave(formWithPublishProps, true, {
-        modified: now,
-        modifiedBy: userData.name,
-      });
-      if (!result.error) {
-        const payload = JSON.stringify({
-          form: result,
-          translations: translations,
-          token: Formiojs.getToken(),
-        });
 
-        const response = await fetch(`/api/publish/${form.path}`, {
-          method: "PUT",
-          headers: { "content-type": "application/json" },
-          body: payload,
-        });
+      if (response?.ok) {
+        const success = "Satt i gang publisering, dette kan ta noen minutter.";
+        const warning =
+          "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
 
-        if (response?.ok) {
-          const success = "Satt i gang publisering, dette kan ta noen minutter.";
-          const warning =
-            "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
-
-          const { changed } = await response.json();
-          changed ? userAlerter.flashSuccessMessage(success) : userAlerter.setWarningMessage(warning);
-          return result;
-        } else {
-          userAlerter.setErrorMessage("Publisering feilet " + response?.status);
-          const rollbackForm = updateProps(result, {
-            ...form.properties,
-            published: form.properties?.published,
-            publishedBy: form.properties?.publishedBy,
-            publishedLanguages: form.properties?.publishedLanguages,
-          });
-          const rollbackResult = await onSave(rollbackForm, true, {
-            modified: form.properties?.modified,
-            modifiedBy: form.properties?.modifiedBy,
-          });
-          if (rollbackResult.error) {
-            return result;
-          }
-          return rollbackResult;
-        }
+        const { changed, form } = await response.json();
+        changed ? userAlerter.flashSuccessMessage(success) : userAlerter.setWarningMessage(warning);
+        return form;
+      } else {
+        const { message } = await response.json();
+        userAlerter.setErrorMessage(message);
+        return await loadForm(form.path);
       }
     },
-    [userAlerter, onSave, userData]
+    [userAlerter, loadForm]
   );
 
   const onUnpublish = useCallback(

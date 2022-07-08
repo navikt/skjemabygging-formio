@@ -1,5 +1,6 @@
 import express from "express";
 import config from "./config";
+import deprecatedPublishForm from "./deprecated-publish-form";
 import enhetsliste from "./enhetsliste";
 import formDiff from "./formDiff";
 import apiErrorHandler from "./helpers/apiErrorHandler";
@@ -15,8 +16,9 @@ import unpublishForm from "./unpublish-form";
 const apiRouter = express.Router();
 
 apiRouter.get("/config", config);
-apiRouter.put("/publish/:formPath", authorizedPublisher, publishForm);
+apiRouter.put("/publish/:formPath", authorizedPublisher, deprecatedPublishForm);
 apiRouter.delete("/publish/:formPath", authorizedPublisher, unpublishForm);
+apiRouter.put("/published-forms/:formPath", authorizedPublisher, publishForm);
 apiRouter.post("/publish-bulk", authorizedPublisher, publishBulk);
 apiRouter.put("/published-resource/:resourceName", authorizedPublisher, publishResource);
 apiRouter.get("/enhetsliste", enhetsliste);

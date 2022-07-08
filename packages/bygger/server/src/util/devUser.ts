@@ -1,5 +1,5 @@
 import { Request } from "express";
-import formioService from "../services/formioService";
+import { formioService } from "../services";
 import { User } from "../types";
 import { getFormioToken } from "./requestTool";
 

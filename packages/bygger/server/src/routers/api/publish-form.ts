@@ -1,11 +1,22 @@
-import { NextFunction, Request, Response } from "express";
-import backendInstance from "./helpers/backend-instance";
+import { NextFunction, Response } from "express";
+import { publisherService } from "../../services";
+import { ByggerRequest } from "../../types";
+import { BadRequest } from "./helpers/errors";
 
-const publishForm = async (req: Request, res: Response, next: NextFunction) => {
+const publishForm = async (req: ByggerRequest, res: Response, next: NextFunction) => {
+  const formioToken = req.getFormioToken?.()!;
+  const userName = req.getUser?.().name!;
+  const { formPath } = req.params;
+  const { form, translations } = req.body;
+
+  if (formPath !== form.path) {
+    next(new BadRequest("Path mismatch attempting to publish form"));
+    return;
+  }
+
   try {
-    const { formPath } = req.params;
-    const result = await backendInstance.publishForm(req.body.form, req.body.translations, formPath);
-    res.json({ changed: !!result, result });
+    const result = await publisherService.publishForm(form, translations, { formioToken, userName });
+    res.json(result);
   } catch (error) {
     next(error);
   }

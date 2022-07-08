@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { migrateForms } from "../../migration/migrationScripts";
-import formioService from "../../services/formioService";
+import { formioService } from "../../services";
 import { ByggerRequest } from "../../types";
 
 const migrateUpdate = async (req: ByggerRequest, res: Response, next: NextFunction) => {
