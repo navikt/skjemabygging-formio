@@ -12,17 +12,28 @@ describe("PublisherService", () => {
 
   let backendMock: Backend;
 
-  describe("publishForm", () => {
-    beforeEach(() => {
-      backendMock = { publishForm: () => "git-commit-hash" } as unknown as Backend;
-      publisherService = new PublisherService(formioService, backendMock);
-      nock(config.formio.projectUrl)
-        .put(/\/form\/(\d*)$/)
-        .reply((uri, requestBody) => [200, requestBody]);
-    });
+  afterEach(() => {
+    nock.abortPendingRequests();
+    nock.cleanAll();
+  });
 
+  describe("publishForm", () => {
     describe("when publishing succeeds", () => {
       const testForm = { _id: "1", properties: {} } as NavFormType;
+      let nockScope: nock.Scope;
+
+      beforeEach(() => {
+        backendMock = { publishForm: () => "git-commit-hash" } as unknown as Backend;
+        publisherService = new PublisherService(formioService, backendMock);
+        nockScope = nock(config.formio.projectUrl)
+          .put(/\/form\/(\d*)$/)
+          .times(1)
+          .reply((uri, requestBody) => [200, requestBody]);
+      });
+
+      afterEach(() => {
+        expect(nockScope.isDone()).toBe(true);
+      });
 
       it("adds properties modified and published", async () => {
         const translations = {};
@@ -79,7 +90,11 @@ describe("PublisherService", () => {
         [form: NavFormType, formioToken: string, userName: string, formProps?: Partial<FormPropertiesType> | undefined]
       >;
 
+      let nockScope: nock.Scope;
+      let formioApiRequestBodies: NavFormType[];
+
       beforeEach(() => {
+        formioApiRequestBodies = [];
         backendMock = {
           publishForm: () => {
             throw new Error("Commit failed");
@@ -87,13 +102,18 @@ describe("PublisherService", () => {
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
         formioServiceSpy = jest.spyOn(formioService, "saveForm");
-        nock(config.formio.projectUrl)
+        nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
-          .reply((uri, requestBody) => [200, requestBody]);
+          .times(2)
+          .reply((uri, requestBody) => {
+            formioApiRequestBodies.push(requestBody as NavFormType);
+            return [200, requestBody];
+          });
       });
 
       afterEach(() => {
         formioServiceSpy.mockClear();
+        expect(nockScope.isDone()).toBe(true);
       });
 
       it("form properties are reverted when publish fails", async () => {
@@ -109,19 +129,28 @@ describe("PublisherService", () => {
         expect(errorThrown).toBe(true);
         expect(formioServiceSpy).toHaveBeenCalledTimes(2);
 
-        const formPropsBeforePublish = formioServiceSpy.mock.calls[0][3];
-        expect(formPropsBeforePublish?.published).toBeDefined();
-        expect(formPropsBeforePublish?.publishedBy).toEqual(opts.userName);
-        expect(formPropsBeforePublish?.modified).toBeDefined();
-        expect(formPropsBeforePublish?.modifiedBy).toEqual(opts.userName);
-        expect(formPropsBeforePublish?.publishedLanguages).toEqual(["en"]);
+        expect(formioApiRequestBodies).toHaveLength(2);
 
-        const formPropsRollback = formioServiceSpy.mock.calls[1][3];
-        expect(formPropsRollback?.published).toBeUndefined();
-        expect(formPropsRollback?.publishedBy).toBeUndefined();
-        expect(formPropsRollback?.modified).toBeUndefined();
-        expect(formPropsRollback?.modifiedBy).toBeUndefined();
-        expect(formPropsRollback?.publishedLanguages).toBeUndefined();
+        const formPropsBeforePublish = formioApiRequestBodies[0].properties;
+        const modifiedAtPublish = formPropsBeforePublish.modified;
+        const modifiedByAtPublish = formPropsBeforePublish.modifiedBy;
+
+        expect(formPropsBeforePublish.published).toBeDefined();
+        expect(formPropsBeforePublish.publishedBy).toEqual(opts.userName);
+        expect(modifiedAtPublish).toBeDefined();
+        expect(modifiedByAtPublish).toEqual(opts.userName);
+        expect(formPropsBeforePublish.publishedLanguages).toEqual(["en"]);
+
+        const formPropsRollback = formioApiRequestBodies[1].properties;
+        const modifiedAtRollback = formPropsRollback.modified;
+        const modifiedByAtRollback = formPropsRollback.modifiedBy;
+
+        expect(formPropsRollback.published).toBeUndefined();
+        expect(formPropsRollback.publishedBy).toBeUndefined();
+        expect(modifiedAtRollback).toBeDefined();
+        expect(modifiedAtRollback).not.toEqual(modifiedAtPublish);
+        expect(modifiedByAtRollback).toBeDefined();
+        expect(formPropsRollback.publishedLanguages).toBeUndefined();
       });
     });
   });
