@@ -10,7 +10,6 @@ type ConfirmDeleteLanguageModalProps = {
   onConfirm: () => void;
   language: string;
   isGlobal: boolean;
-  appElement?: string | HTMLElement;
 };
 
 const useStyles = makeStyles({
@@ -30,7 +29,6 @@ const ConfirmDeleteLanguageModal = ({
   onConfirm,
   language,
   isGlobal = false,
-  appElement,
 }: ConfirmDeleteLanguageModalProps) => {
   const modalTextForGlobalTranslations = `Ved å klikke på "slett språk" fjerner du alle globale oversettelser til ${language?.toLowerCase()}, for godt.
         Denne handlingen kan ikke angres.`;
@@ -44,7 +42,6 @@ const ConfirmDeleteLanguageModal = ({
       open={isOpen}
       ariaLabel="Bekreft sletting av språk"
       title="Er du sikker på at du ønsker å slette språket?"
-      appElement={appElement}
     >
       <Normaltekst className="margin-bottom-default">
         {isGlobal ? modalTextForGlobalTranslations : modalTextForFormTranslations}

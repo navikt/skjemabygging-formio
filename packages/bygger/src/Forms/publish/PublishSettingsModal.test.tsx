@@ -1,3 +1,4 @@
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -33,6 +34,8 @@ jest.mock("../../context/i18n/index", () => {
   };
 });
 
+Modal.setAppElement(document.createElement("div"));
+
 describe("PublishSettingsModal", () => {
   let mockedCloseModal;
   let mockedPublishModal;
@@ -45,7 +48,6 @@ describe("PublishSettingsModal", () => {
         closeModal={mockedCloseModal}
         publishModal={mockedPublishModal}
         form={form}
-        appElement={document.createElement("div")}
       />
     );
   };
