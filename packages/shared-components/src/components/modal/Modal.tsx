@@ -20,10 +20,8 @@ interface Props {
   children: React.ReactNode;
 }
 
-const Modal = ({ onClose, appElement = "#root", open = false, title, ariaLabel, className, children }: Props) => {
+const Modal = ({ onClose, open = false, title, ariaLabel, className, children }: Props) => {
   const styles = useModalStyles();
-
-  NavModal.setAppElement?.(appElement);
 
   return (
     <NavModal
@@ -44,6 +42,10 @@ const Modal = ({ onClose, appElement = "#root", open = false, title, ariaLabel, 
       </NavModal.Content>
     </NavModal>
   );
+};
+
+Modal.setAppElement = (appElement?: string | HTMLElement) => {
+  NavModal.setAppElement?.(appElement);
 };
 
 export default Modal;

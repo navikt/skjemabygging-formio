@@ -7,10 +7,9 @@ import ConfirmUnpublishModal from "./ConfirmUnpublishModal";
 interface UnpublishButtonProps {
   onUnpublish: (form) => void;
   form: NavFormType;
-  appElement?: string | HTMLElement;
 }
 
-const UnpublishButton = ({ onUnpublish, form, appElement }: UnpublishButtonProps) => {
+const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
   const [openConfirmModal, setOpenConfirmModal] = useModal(false);
 
   return (
@@ -24,7 +23,6 @@ const UnpublishButton = ({ onUnpublish, form, appElement }: UnpublishButtonProps
             closeModal={() => setOpenConfirmModal(false)}
             onUnpublish={onUnpublish}
             form={form}
-            appElement={appElement}
           />
         </>
       )}

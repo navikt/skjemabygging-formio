@@ -1,6 +1,9 @@
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import ConfirmDeleteLanguageModal from "./ConfirmDeleteLanguageModal";
+
+Modal.setAppElement(document.createElement("div"));
 
 describe("ConfirmDeleteLanguageModal", () => {
   const mockedCloseModal = jest.fn();
@@ -14,7 +17,6 @@ describe("ConfirmDeleteLanguageModal", () => {
         onConfirm={mockedOnConfirm}
         language={language}
         isGlobal={isGlobal}
-        appElement={document.createElement("div")}
       />
     );
   };

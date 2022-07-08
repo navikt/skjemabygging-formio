@@ -4,6 +4,7 @@ import Modal from "./Modal";
 describe("Modal", () => {
   let onClose = jest.fn();
   beforeAll(() => {
+    Modal.setAppElement(document.createElement("div"));
     render(
       <Modal onClose={onClose} open={true} appElement={document.createElement("div")}>
         Test

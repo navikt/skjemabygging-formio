@@ -29,6 +29,7 @@ function App({ projectURL, serverURL, pusher }) {
   const contentFunc = userData
     ? () => <AuthenticatedApp serverURL={serverURL} formio={formio} />
     : () => <UnauthenticatedApp projectURL={projectURL} />;
+
   return (
     <UserAlerterContext.Provider value={userAlerter}>
       <section className={styles.app}>{contentFunc()}</section>

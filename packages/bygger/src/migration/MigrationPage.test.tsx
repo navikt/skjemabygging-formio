@@ -1,3 +1,4 @@
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -5,6 +6,8 @@ import { DryRunResult, DryRunResults } from "../../types/migration";
 import { UserAlerterContext } from "../userAlerting";
 import MigrationPage from "./MigrationPage";
 import { migrationOptionsAsMap } from "./utils";
+
+Modal.setAppElement(document.createElement("div"));
 
 describe("MigrationPage", () => {
   let fetchSpy;
@@ -37,9 +40,7 @@ describe("MigrationPage", () => {
 
   const wrapper = ({ children }) => (
     <UserAlerterContext.Provider value={userAlerter}>
-      <MemoryRouter>
-        <div id="root">{children}</div>
-      </MemoryRouter>
+      <MemoryRouter>{children}</MemoryRouter>
     </UserAlerterContext.Provider>
   );
 

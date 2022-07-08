@@ -20,7 +20,6 @@ interface Props {
   openModal: boolean;
   closeModal: () => void;
   publishModal: (string) => void;
-  appElement?: string | HTMLElement;
 }
 
 export const getCompleteTranslationLanguageCodeList = (
@@ -44,7 +43,7 @@ export const getCompleteTranslationLanguageCodeList = (
   return completeTranslationList;
 };
 
-const PublishSettingsModal = ({ openModal, closeModal, publishModal, form, appElement }: Props) => {
+const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Props) => {
   const styles = useModalStyles();
   const { translationsForNavForm } = useI18nState();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
@@ -67,7 +66,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form, appEl
   }, [allFormOriginalTexts, translationsForNavForm]);
 
   return (
-    <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger" appElement={appElement}>
+    <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger">
       <Normaltekst className="margin-bottom-default">
         Følgende språkversjoner er tilgjengelige for dette skjemaet. Velg hvilke språkversjoner som skal publiseres.
         Språkversjoner som ikke publiseres blir utilgjengelige for brukerne.
