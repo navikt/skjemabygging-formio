@@ -1,6 +1,6 @@
 import makeStyles from "@material-ui/styles/makeStyles";
 import "@navikt/ds-css";
-import { appStyles, globalStyles, Modal } from "@navikt/skjemadigitalisering-shared-components";
+import { appStyles, globalStyles } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import Formiojs from "formiojs/Formio";
 import React, { useMemo } from "react";
@@ -29,8 +29,6 @@ function App({ projectURL, serverURL, pusher }) {
   const contentFunc = userData
     ? () => <AuthenticatedApp serverURL={serverURL} formio={formio} />
     : () => <UnauthenticatedApp projectURL={projectURL} />;
-
-  if (process.env.NODE_ENV !== "test") Modal.setAppElement("#root");
 
   return (
     <UserAlerterContext.Provider value={userAlerter}>
