@@ -1,20 +1,19 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import React from "react";
 import Modal from "./Modal";
 
 describe("Modal", () => {
-  let onRequestClose = jest.fn();
+  let onClose = jest.fn();
   beforeAll(() => {
     render(
-      <Modal onRequestClose={onRequestClose} contentLabel="New modal" isOpen={true}>
-        <div>Content</div>
+      <Modal onClose={onClose} open={true} appElement={document.createElement("div")}>
+        Test
       </Modal>
     );
   });
 
   it("renders modal and check that it work", async () => {
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
-    fireEvent.click(await screen.findByRole("button", { name: "Lukk" }));
-    expect(onRequestClose).toBeCalled();
+    fireEvent.click(await screen.findByRole("button", { name: "Lukk modalvindu" }));
+    expect(onClose).toBeCalled();
   });
 });

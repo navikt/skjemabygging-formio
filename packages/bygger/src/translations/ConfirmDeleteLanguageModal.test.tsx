@@ -14,6 +14,7 @@ describe("ConfirmDeleteLanguageModal", () => {
         onConfirm={mockedOnConfirm}
         language={language}
         isGlobal={isGlobal}
+        appElement={document.createElement("div")}
       />
     );
   };

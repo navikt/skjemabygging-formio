@@ -6,7 +6,7 @@ import PublishSettingsModal, { getCompleteTranslationLanguageCodeList } from "./
 
 const { createDummyRadioPanel, createFormObject, createPanelObject } = MockedComponentObjectForTest;
 
-jest.mock("../context/i18n/index", () => {
+jest.mock("../../context/i18n/index", () => {
   const languagesInNorwegian = {
     "nn-NO": "Norsk nynorsk",
     en: "Engelsk",
@@ -45,6 +45,7 @@ describe("PublishSettingsModal", () => {
         closeModal={mockedCloseModal}
         publishModal={mockedPublishModal}
         form={form}
+        appElement={document.createElement("div")}
       />
     );
   };
