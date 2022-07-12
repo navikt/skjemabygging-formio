@@ -17,8 +17,39 @@ const form = {
     if (!form) {
       return res.sendStatus(404);
     }
+    if (req.query.type === "limited") {
+      return res.json(mapLimitedForm(form));
+    }
     return res.json(form);
   },
+};
+
+const mapLimitedForm = (form) => {
+  return {
+    title: form.title,
+    path: form.path,
+    properties: {
+      skjemanummer: form.properties.skjemanummer,
+      tema: form.properties.tema,
+      innsending: form.properties.innsending,
+      enhetstyper: form.properties.enhetstyper,
+    },
+    attachments: getAttachments(form),
+  };
+};
+
+const getAttachments = (form) => {
+  return form.components
+    .filter((component) => component.type === "panel")
+    .map((attachment) => {
+      return {
+        label: attachment.label,
+        key: attachment.key,
+        description: attachment.description,
+        attachmentTitle: attachment.vedleggstittel,
+        attachmentCode: attachment.vedleggskode,
+      };
+    });
 };
 
 export default form;
