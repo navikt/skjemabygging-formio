@@ -26,7 +26,7 @@ const form = {
 
 const mapLimitedForm = (form) => {
   return {
-    _id: form.id,
+    _id: form._id,
     title: form.title,
     path: form.path,
     modified: form.modified,
