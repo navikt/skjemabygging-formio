@@ -26,8 +26,10 @@ const form = {
 
 const mapLimitedForm = (form) => {
   return {
+    _id: form.id,
     title: form.title,
     path: form.path,
+    modified: form.modified,
     properties: {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
