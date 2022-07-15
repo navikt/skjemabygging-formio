@@ -8,10 +8,12 @@ const { clientId } = config;
 
 const commonCodes = {
   getArchiveSubjects: async (req: Request, res: Response, next: NextFunction) => {
-    const languageCode: string = req.query.languageCode ? (req.query.languageCode as string) : "nb";
+    // As of 15.07.2022. Different languageCode like nn or en just results in same term,
+    // so no need to support req.query.languageCode
+    const languageCode = "nb";
 
     try {
-      const response = await fetchCommonCodes("Arkivtemaer", languageCode);
+      const response = await fetchCommonCodeDescriptions("Arkivtemaer", languageCode);
       const archiveSubjects: { [key: string]: string } = {};
       for (const [key, values] of Object.entries(response.betydninger)) {
         const term = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
@@ -24,7 +26,11 @@ const commonCodes = {
   },
 };
 
-const fetchCommonCodes = async (commonCode: commonCodeType, languageCode: string) => {
+/**
+ * Doc: https://navikt.github.io/felleskodeverk/
+ * Swagger: https://kodeverk.dev.intern.nav.no/swagger-ui.html
+ */
+const fetchCommonCodeDescriptions = async (commonCode: commonCodeType, languageCode: string) => {
   const commonCodesUrl = "https://kodeverk.dev.intern.nav.no/api/v1/kodeverk"; // TODO: Change this to config
   const languageParam = languageCode ? `&spraak=${languageCode}` : "";
 
@@ -43,7 +49,7 @@ const fetchCommonCodes = async (commonCode: commonCodeType, languageCode: string
     return response.json();
   }
 
-  throw await responseToError(response, "Feil ved henting av enhetsliste", true);
+  throw await responseToError(response, "Feil ved henting fra felles kodeverk", true);
 };
 
 type commonCodeType =
