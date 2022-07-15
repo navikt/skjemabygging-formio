@@ -2,29 +2,48 @@ import { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import fetch, { HeadersInit } from "node-fetch";
 import { config } from "../../config/config";
-import { toJsonOrThrowError } from "../../utils/errorHandling.js";
+import { responseToError } from "../../utils/errorHandling.js";
 
 const { clientId } = config;
 
 const commonCodes = {
-  getArchiveSubjects: (req: Request, res: Response, next: NextFunction) => {
-    return fetchCommonCodes("Arkivtemaer")
-      .then(toJsonOrThrowError("Feil ved henting av enhetsliste", true))
-      .then((response) => res.send((<any>response).koder))
-      .catch((error) => {
-        next(error);
-      });
+  getArchiveSubjects: async (req: Request, res: Response, next: NextFunction) => {
+    const languageCode: string = req.query.languageCode ? (req.query.languageCode as string) : "nb";
+
+    try {
+      const response = await fetchCommonCodes("Arkivtemaer", languageCode);
+      const archiveSubjects: { [key: string]: string } = {};
+      for (const [key, values] of Object.entries(response.betydninger)) {
+        const term = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
+        archiveSubjects[key] = term ?? key;
+      }
+      res.send(archiveSubjects);
+    } catch (e) {
+      next(e);
+    }
   },
 };
 
-const fetchCommonCodes = (commonCode: commonCodeType) => {
-  return fetch(`https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/${commonCode}/koder`, {
-    method: "GET",
-    headers: {
-      "Nav-Call-Id": correlator.getId(),
-      "Nav-Consumer-Id": clientId,
-    } as HeadersInit,
-  });
+const fetchCommonCodes = async (commonCode: commonCodeType, languageCode: string) => {
+  const commonCodesUrl = "https://kodeverk.dev.intern.nav.no/api/v1/kodeverk"; // TODO: Change this to config
+  const languageParam = languageCode ? `&spraak=${languageCode}` : "";
+
+  const response = await fetch(
+    `${commonCodesUrl}/${commonCode}/koder/betydninger?ekskluderUgyldige=true${languageParam}`,
+    {
+      method: "GET",
+      headers: {
+        "Nav-Call-Id": correlator.getId(),
+        "Nav-Consumer-Id": clientId,
+      } as HeadersInit,
+    }
+  );
+
+  if (response.ok) {
+    return response.json();
+  }
+
+  throw await responseToError(response, "Feil ved henting av enhetsliste", true);
 };
 
 type commonCodeType =
