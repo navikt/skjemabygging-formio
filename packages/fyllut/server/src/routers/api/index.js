@@ -3,6 +3,7 @@ import { config as appConfig } from "../../config/config";
 import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
 import idportenAuthHandler from "../../security/idportenAuthHandler.js";
 import tokenxHandler from "../../security/tokenxHandler.js";
+import commonCodes from "./common-codes";
 import config from "./config.js";
 import countries from "./countries.js";
 import enhetsliste from "./enhetsliste.js";
@@ -32,5 +33,6 @@ apiRouter.get("/mottaksadresser", mottaksadresser.get);
 apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
+apiRouter.get("/commonCodes/archive-subjects", commonCodes.getArchiveSubjects);
 
 export default apiRouter;
