@@ -33,6 +33,6 @@ apiRouter.get("/mottaksadresser", mottaksadresser.get);
 apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
-apiRouter.get("/commonCodes/archive-subjects", commonCodes.getArchiveSubjects);
+apiRouter.get("/common-codes/archive-subjects", commonCodes.getArchiveSubjects);
 
 export default apiRouter;
