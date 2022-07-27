@@ -20,7 +20,7 @@ const mapForm = (form) => ({
   path: form.path,
   modified: form.modified,
   properties: {
-    properties: form.properties.skjemanummer,
+    skjemanummer: form.properties.skjemanummer,
   },
 });
 
