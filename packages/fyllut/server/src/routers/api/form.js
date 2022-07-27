@@ -4,11 +4,12 @@ import { fetchFromFormioApi, loadFileFromDirectory } from "../../utils/forms.js"
 const { useFormioApi, skjemaDir, formioProjectUrl } = config;
 
 const loadForm = async (formPath) => {
-  return useFormioApi
-    ? await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`).then((results) =>
-        results.length > 0 ? results[0] : null
-      )
-    : await loadFileFromDirectory(skjemaDir, formPath, null);
+  if (useFormioApi) {
+    const forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
+    return forms.length > 0 ? forms[0] : null;
+  } else {
+    return await loadFileFromDirectory(skjemaDir, formPath, null);
+  }
 };
 
 const form = {
