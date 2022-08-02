@@ -1,3 +1,4 @@
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { config } from "../../config/config";
 import { fetchFromFormioApi, loadFileFromDirectory } from "../../utils/forms.js";
 
@@ -42,15 +43,16 @@ const mapLimitedForm = (form) => {
 };
 
 const getAttachments = (form) => {
-  return form.components
-    .filter((component) => component.type === "panel")
-    .map((attachment) => {
+  return navFormUtils
+    .flattenComponents(form.components)
+    .filter((component) => !!component.properties?.vedleggskode)
+    .map((component) => {
       return {
-        label: attachment.label,
-        key: attachment.key,
-        description: attachment.description,
-        attachmentTitle: attachment.vedleggstittel,
-        attachmentCode: attachment.vedleggskode,
+        label: component.label,
+        key: component.key,
+        description: component.description,
+        attachmentTitle: component.properties.vedleggstittel,
+        attachmentCode: component.properties.vedleggskode,
       };
     });
 };
