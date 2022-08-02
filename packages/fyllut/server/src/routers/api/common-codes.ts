@@ -4,7 +4,7 @@ import fetch, { HeadersInit } from "node-fetch";
 import { config } from "../../config/config";
 import { responseToError } from "../../utils/errorHandling.js";
 
-const { clientId } = config;
+const { clientId, skjemabyggingProxyUrl } = config;
 
 const commonCodes = {
   getArchiveSubjects: async (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +13,7 @@ const commonCodes = {
     const languageCode = "nb";
 
     try {
-      const response = await fetchCommonCodeDescriptions("Arkivtemaer", languageCode);
+      const response = await fetchCommonCodeDescriptions(req, "Arkivtemaer", languageCode);
       const archiveSubjects: { [key: string]: string } = {};
       for (const [key, values] of Object.entries(response.betydninger)) {
         const term = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
@@ -30,20 +30,23 @@ const commonCodes = {
  * Doc: https://navikt.github.io/felleskodeverk/
  * Swagger: https://kodeverk.dev.intern.nav.no/swagger-ui.html
  */
-const fetchCommonCodeDescriptions = async (commonCode: commonCodeType, languageCode: string) => {
-  const commonCodesUrl = "https://kodeverk.dev.intern.nav.no/api/v1/kodeverk"; // TODO: Change this to config
+const fetchCommonCodeDescriptions = async (req: Request, commonCode: commonCodeType, languageCode: string) => {
   const languageParam = languageCode ? `&spraak=${languageCode}` : "";
 
   const response = await fetch(
-    `${commonCodesUrl}/${commonCode}/koder/betydninger?ekskluderUgyldige=true${languageParam}`,
+    `${skjemabyggingProxyUrl}/kodeverk/${commonCode}/koder/betydninger?ekskluderUgyldige=true${languageParam}`,
     {
       method: "GET",
       headers: {
+        Authorization: `Bearer ${req.headers.AzureAccessToken}`,
+        "x-correlation-id": correlator.getId(),
         "Nav-Call-Id": correlator.getId(),
         "Nav-Consumer-Id": clientId,
       } as HeadersInit,
     }
   );
+
+  console.log(response);
 
   if (response.ok) {
     return response.json();
