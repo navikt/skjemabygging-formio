@@ -46,8 +46,6 @@ const fetchCommonCodeDescriptions = async (req: Request, commonCode: commonCodeT
     }
   );
 
-  console.log(response);
-
   if (response.ok) {
     return response.json();
   }
