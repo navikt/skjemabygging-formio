@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { backendInstance } from "../../services";
 
-const publishBulk = async (req: Request, res: Response, next: NextFunction) => {
+const deprecatedPublishBulk = async (req: Request, res: Response, next: NextFunction) => {
   if (!Array.isArray(req.body.payload.formPaths) || req.body.payload.formPaths.length === 0) {
     res.status(400).send("Request is missing formPaths");
   }
@@ -13,4 +13,4 @@ const publishBulk = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default publishBulk;
+export default deprecatedPublishBulk;

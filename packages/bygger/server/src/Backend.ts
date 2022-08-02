@@ -76,6 +76,10 @@ export class Backend {
 
   async bulkPublishForms(formPaths: string[]) {
     const forms = await this.formioService.getForms(formPaths);
+    return this.publishForms(forms);
+  }
+
+  async publishForms(forms: NavFormType[]) {
     const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
     );
