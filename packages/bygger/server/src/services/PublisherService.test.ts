@@ -28,7 +28,7 @@ describe("PublisherService", () => {
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .times(1)
-          .reply((uri: string, requestBody: Body) => [200, requestBody]);
+          .reply((uri, requestBody) => [200, requestBody]);
       });
 
       afterEach(() => {
@@ -105,7 +105,7 @@ describe("PublisherService", () => {
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .times(2)
-          .reply((uri: string, requestBody: Body) => {
+          .reply((uri, requestBody) => {
             formioApiRequestBodies.push(requestBody as NavFormType);
             return [200, requestBody];
           });
@@ -156,12 +156,12 @@ describe("PublisherService", () => {
   });
 
   describe("publishForms (bulk)", () => {
-    const testForms = [
-      { _id: "1", properties: { publishedLanguages: ["en"] } } as NavFormType,
+    const testForms: NavFormType[] = [
+      { _id: "1", properties: { publishedLanguages: ["en"] } } as unknown as NavFormType,
       {
         _id: "2",
         properties: { publishedLanguages: [], published: "2022-07-28T10:00:10.325Z", publishedBy: "ernie" },
-      } as NavFormType,
+      } as unknown as NavFormType,
       {
         _id: "3",
         properties: {
@@ -171,7 +171,7 @@ describe("PublisherService", () => {
           unpublished: "2022-06-28T10:02:15.634Z",
           unpublishedBy: "bert",
         },
-      } as NavFormType,
+      } as unknown as NavFormType,
     ];
 
     describe("when bulk publishing succeeds", () => {
@@ -186,7 +186,7 @@ describe("PublisherService", () => {
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .times(3)
-          .reply((uri: string, requestBody: Body) => {
+          .reply((uri, requestBody) => {
             formioApiRequestBodies.push(requestBody as NavFormType);
             return [200, requestBody];
           });
@@ -258,7 +258,7 @@ describe("PublisherService", () => {
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .times(6) // 3 before publish, and 3 after publish fails
-          .reply((uri: string, requestBody: Body) => {
+          .reply((uri, requestBody) => {
             formioApiRequestBodies.push(requestBody as NavFormType);
             return [200, requestBody];
           });
