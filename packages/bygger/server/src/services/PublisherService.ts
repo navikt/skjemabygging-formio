@@ -45,6 +45,25 @@ class PublisherService {
     }
   }
 
+  async unpublishForm(form: NavFormType, opts: Opts) {
+    const { userName, formioToken } = opts || {};
+    const now = dateUtils.getIso8601String();
+
+    let formWithUnpublishProps;
+    try {
+      const formProps = createUnpublishProps(now, userName);
+      formWithUnpublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
+      const gitSha = await this.backend.unpublishForm(form.path);
+      return { changed: !!gitSha, form: formWithUnpublishProps };
+    } catch (error) {
+      if (formWithUnpublishProps) {
+        const rollbackFormProps = createRollbackProps(form);
+        await this.formioService.saveForm(formWithUnpublishProps, formioToken, userName, rollbackFormProps);
+      }
+      throw new ApiError("Avpublisering feilet", true, error as Error);
+    }
+  }
+
   async publishForms(forms: NavFormType[], opts: Opts) {
     const now = dateUtils.getIso8601String();
     const { userName, formioToken } = opts || {};
@@ -98,12 +117,24 @@ const createPublishProps = (
   ...(publishedLanguages && { publishedLanguages }),
 });
 
+const createUnpublishProps = (now: string, userName: string): FormPropertiesPublishing => ({
+  modified: now,
+  modifiedBy: userName,
+  published: undefined,
+  publishedBy: undefined,
+  unpublished: now,
+  unpublishedBy: userName,
+  publishedLanguages: [],
+});
+
 const createRollbackProps = (originalForm: NavFormType): FormPropertiesPublishing => ({
   ...originalForm.properties,
   modified: originalForm.properties?.modified,
   modifiedBy: originalForm.properties?.modifiedBy,
   published: originalForm.properties?.published,
   publishedBy: originalForm.properties?.publishedBy,
+  unpublished: originalForm.properties?.unpublished,
+  unpublishedBy: originalForm.properties?.unpublishedBy,
   publishedLanguages: originalForm.properties?.publishedLanguages,
 });
 

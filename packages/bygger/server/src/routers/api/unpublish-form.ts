@@ -1,15 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import { backendInstance } from "../../services";
-import { getFormioToken } from "../../util/requestTool";
+import { NextFunction, Response } from "express";
+import { formioService, publisherService } from "../../services";
+import { ByggerRequest } from "../../types";
 
-const unpublishForm = async (req: Request, res: Response, next: NextFunction) => {
+const deprecatedUnpublishForm = async (req: ByggerRequest, res: Response, next: NextFunction) => {
+  const formioToken = req.getFormioToken?.()!;
+  const userName = req.getUser?.().name!;
+  const { formPath } = req.params;
+
   try {
-    const { formPath } = req.params;
-    const result = await backendInstance.unpublishForm(getFormioToken(req), formPath);
-    res.json({ changed: !!result, result });
+    const form = await formioService.getForm(formPath);
+    const result = await publisherService.unpublishForm(form, { formioToken, userName });
+    res.json(result);
   } catch (error) {
     next(error);
   }
 };
 
-export default unpublishForm;
+export default deprecatedUnpublishForm;

@@ -155,6 +155,90 @@ describe("PublisherService", () => {
     });
   });
 
+  describe("unpublishForm", () => {
+    describe("when unpublish succeeds", () => {
+      const testGitSha = "123456789A987654321";
+      let nockScope: nock.Scope;
+
+      beforeEach(() => {
+        backendMock = { unpublishForm: () => testGitSha } as unknown as Backend;
+        publisherService = new PublisherService(formioService, backendMock);
+        nockScope = nock(config.formio.projectUrl)
+          .put(/\/form\/(\d*)$/)
+          .times(1)
+          .reply((uri, requestBody) => [200, requestBody]);
+      });
+
+      afterEach(() => {
+        expect(nockScope.isDone()).toBe(true);
+      });
+
+      it("sets unpublish props and unsets published props", async () => {
+        const testForm = {
+          _id: "1",
+          properties: { published: "2022-07-28T10:00:10.325Z", publishedBy: "ernie" },
+        } as NavFormType;
+        const { changed, form } = await publisherService.unpublishForm(testForm, opts);
+        expect(changed).toBe(true);
+        const { properties } = form;
+        expect(properties.published).toBeUndefined();
+        expect(properties.publishedBy).toBeUndefined();
+        expect(properties.unpublished).toBeDefined();
+        expect(properties.unpublishedBy).toEqual(opts.userName);
+      });
+    });
+
+    describe("when unpublish fails", () => {
+      let nockScope: nock.Scope;
+      let formioApiRequestBodies: NavFormType[];
+
+      beforeEach(() => {
+        formioApiRequestBodies = [];
+        backendMock = {
+          unpublishForm: () => {
+            throw new Error("Commit failed");
+          },
+        } as unknown as Backend;
+        publisherService = new PublisherService(formioService, backendMock);
+        nockScope = nock(config.formio.projectUrl)
+          .put(/\/form\/(\d*)$/)
+          .times(2)
+          .reply((uri, requestBody) => {
+            formioApiRequestBodies.push(requestBody as NavFormType);
+            return [200, requestBody];
+          });
+      });
+
+      afterEach(() => {
+        expect(nockScope.isDone()).toBe(true);
+      });
+
+      it("properties are rolled back", async () => {
+        const testForm = {
+          _id: "1",
+          properties: { published: "2022-07-28T10:00:10.325Z", publishedBy: "ernie" },
+        } as NavFormType;
+        let errorThrown;
+
+        try {
+          await publisherService.unpublishForm(testForm, opts);
+        } catch (error: any) {
+          errorThrown = true;
+          expect(error.message).toEqual("Avpublisering feilet");
+        }
+
+        expect(errorThrown).toBe(true);
+        expect(formioApiRequestBodies).toHaveLength(2);
+
+        const { properties } = formioApiRequestBodies[1];
+        expect(properties.published).toEqual(testForm.properties.published);
+        expect(properties.publishedBy).toEqual(testForm.properties.publishedBy);
+        expect(properties.unpublished).toBeUndefined();
+        expect(properties.unpublishedBy).toBeUndefined();
+      });
+    });
+  });
+
   describe("publishForms (bulk)", () => {
     const testForms: NavFormType[] = [
       { _id: "1", properties: { publishedLanguages: ["en"] } } as unknown as NavFormType,
