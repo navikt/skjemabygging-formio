@@ -36,18 +36,19 @@ export const useFormioForms = (formio, userAlerter) => {
   );
 
   const onSave = useCallback(
-    (callbackForm, silent = false, formProps = undefined) => {
-      const props = { ...formProps };
-      if (!props.modified) {
-        props.modified = getIso8601String();
-        props.modifiedBy = userData.name;
-      }
+    (callbackForm) => {
       return formio
-        .saveForm({ ...updateProps(callbackForm, props), display: "wizard" })
+        .saveForm({
+          ...callbackForm,
+          display: "wizard",
+          properties: {
+            ...callbackForm.properties,
+            modified: getIso8601String(),
+            modifiedBy: userData.name,
+          },
+        })
         .then((form) => {
-          if (!silent) {
-            userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
-          }
+          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
           return form;
         })
         .catch(() => {
@@ -116,18 +117,6 @@ export const useFormioForms = (formio, userAlerter) => {
     },
     [userAlerter, loadForm]
   );
-
-  const updateProps = (form, props) => {
-    return JSON.parse(
-      JSON.stringify({
-        ...form,
-        properties: {
-          ...form.properties,
-          ...props,
-        },
-      })
-    );
-  };
 
   return {
     deleteForm,
