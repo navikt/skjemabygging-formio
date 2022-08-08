@@ -133,7 +133,7 @@ describe("useFormioForms", () => {
     });
   });
 
-  describe("Test onPublish", () => {
+  describe("Test onPublish and onUnpublish", () => {
     let formioMock, formioForms;
 
     const createDate = (dateDiff = 0) => {
@@ -165,13 +165,13 @@ describe("useFormioForms", () => {
         });
       });
 
-      it("adds properties modified and published", async () => {
+      it("flashes success message", async () => {
         renderHook(() => formioForms.onPublish({ path: "testform", properties: {} }));
         await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
         expect(fetchMock).toHaveBeenCalledTimes(1);
       });
 
-      it("adds publishedLanguages to properties", async () => {
+      it("sends form content and published languages array in request", async () => {
         const form = { path: "testform", properties: {} };
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
@@ -198,7 +198,7 @@ describe("useFormioForms", () => {
         });
       });
 
-      it("flashed error message and loads form from formio-api", async () => {
+      it("flashes error message and loads form from formio-api", async () => {
         const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
         const form = {
           path: "testform",
@@ -208,6 +208,49 @@ describe("useFormioForms", () => {
         };
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
+        await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
+        await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
+      });
+    });
+
+    describe("when unpublishing succeeds", () => {
+      beforeEach(() => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/published-forms/testform")) {
+            return Promise.resolve(new Response(JSON.stringify({ changed: true, form: {} }), RESPONSE_HEADERS_OK));
+          }
+          return Promise.reject(new Error(`ukjent url ${url}`));
+        });
+      });
+
+      it("flashes success message", async () => {
+        renderHook(() => formioForms.onUnpublish({ path: "testform", properties: {} }));
+        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("when unpublishing fails", () => {
+      beforeEach(() => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/published-forms/testform")) {
+            return Promise.resolve(
+              new Response(JSON.stringify({ message: "Avpublisering feilet" }), RESPONSE_HEADERS_ERROR)
+            );
+          }
+          return Promise.reject(new Error(`ukjent url ${url}`));
+        });
+      });
+
+      it("flashes error message and loads form from formio-api", async () => {
+        const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
+        const form = {
+          path: "testform",
+          properties: {
+            modified: originalModifiedTimestamp,
+          },
+        };
+        renderHook(() => formioForms.onUnpublish(form));
         await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
         await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
       });

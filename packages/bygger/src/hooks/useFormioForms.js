@@ -36,18 +36,19 @@ export const useFormioForms = (formio, userAlerter) => {
   );
 
   const onSave = useCallback(
-    (callbackForm, silent = false, formProps = undefined) => {
-      const props = { ...formProps };
-      if (!props.modified) {
-        props.modified = getIso8601String();
-        props.modifiedBy = userData.name;
-      }
+    (callbackForm) => {
       return formio
-        .saveForm({ ...updateProps(callbackForm, props), display: "wizard" })
+        .saveForm({
+          ...callbackForm,
+          display: "wizard",
+          properties: {
+            ...callbackForm.properties,
+            modified: getIso8601String(),
+            modifiedBy: userData.name,
+          },
+        })
         .then((form) => {
-          if (!silent) {
-            userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
-          }
+          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
           return form;
         })
         .catch(() => {
@@ -100,61 +101,22 @@ export const useFormioForms = (formio, userAlerter) => {
 
   const onUnpublish = useCallback(
     async (form) => {
-      const now = getIso8601String();
-      const formWithPublishProps = updateProps(form, {
-        published: undefined,
-        publishedBy: undefined,
-        publishedLanguages: [],
-        unpublished: now,
-        unpublishedBy: userData.name,
+      const response = await fetch(`/api/published-forms/${form.path}`, {
+        method: "DELETE",
+        headers: { "Bygger-Formio-Token": Formiojs.getToken() },
       });
-
-      const result = await onSave(formWithPublishProps, true, {
-        modified: now,
-        modifiedBy: userData.name,
-      });
-
-      if (!result.error) {
-        const response = await fetch(`/api/publish/${form.path}`, {
-          method: "DELETE",
-          headers: { "Bygger-Formio-Token": Formiojs.getToken() },
-        });
-
-        if (response?.ok) {
-          return result;
-        } else {
-          userAlerter.setErrorMessage("Avpublisering feilet " + response?.status);
-          const rollbackForm = updateProps(result, {
-            ...form.properties,
-            unpublished: undefined,
-            unpublishedBy: undefined,
-          });
-          const rollbackResult = await onSave(rollbackForm, true, {
-            modified: form.properties?.modified,
-            modifiedBy: form.properties?.modifiedBy,
-          });
-
-          if (rollbackResult.error) {
-            return result;
-          }
-          return rollbackResult;
-        }
+      if (response.ok) {
+        const { form } = await response.json();
+        userAlerter.flashSuccessMessage("Satt i gang avpublisering, dette kan ta noen minutter.");
+        return form;
+      } else {
+        const { message } = await response.json();
+        userAlerter.setErrorMessage(message);
+        return await loadForm(form.path);
       }
     },
-    [userAlerter, onSave, userData]
+    [userAlerter, loadForm]
   );
-
-  const updateProps = (form, props) => {
-    return JSON.parse(
-      JSON.stringify({
-        ...form,
-        properties: {
-          ...form.properties,
-          ...props,
-        },
-      })
-    );
-  };
 
   return {
     deleteForm,

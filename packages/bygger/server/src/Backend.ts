@@ -47,7 +47,7 @@ export class Backend {
     );
   }
 
-  async unpublishForm(userToken: string, formPath: string) {
+  async unpublishForm(formPath: string) {
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepo.base,
