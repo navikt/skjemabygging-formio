@@ -68,7 +68,7 @@ class PublisherService {
     const now = dateUtils.getIso8601String();
     const { userName, formioToken } = opts || {};
 
-    let publications: Publication[] | undefined = undefined;
+    let publications: Publication[] | undefined;
     let gitSha;
     try {
       publications = await Promise.all(
@@ -86,7 +86,7 @@ class PublisherService {
           };
         })
       );
-      gitSha = await this.backend.publishForms(publications!.map((pub) => pub.formWithPublishProps));
+      gitSha = await this.backend.publishForms(publications.map((pub) => pub.formWithPublishProps));
     } catch (error) {
       if (publications) {
         await Promise.all(

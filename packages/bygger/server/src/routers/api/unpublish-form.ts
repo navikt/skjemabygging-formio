@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { formioService, publisherService } from "../../services";
 import { ByggerRequest } from "../../types";
 
-const deprecatedUnpublishForm = async (req: ByggerRequest, res: Response, next: NextFunction) => {
+const unpublishForm = async (req: ByggerRequest, res: Response, next: NextFunction) => {
   const formioToken = req.getFormioToken?.()!;
   const userName = req.getUser?.().name!;
   const { formPath } = req.params;
@@ -16,4 +16,4 @@ const deprecatedUnpublishForm = async (req: ByggerRequest, res: Response, next: 
   }
 };
 
-export default deprecatedUnpublishForm;
+export default unpublishForm;
