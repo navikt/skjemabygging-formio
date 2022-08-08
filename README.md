@@ -6,8 +6,6 @@ og disse dataene vil så deployes sammen med fyllut.
 
 # Utvikling
 
-Oppdaterer readme for å teste ci skip
-
 | Kommando           | Beskrivelse                                                                           |
 | ------------------ | ------------------------------------------------------------------------------------- |
 | yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
