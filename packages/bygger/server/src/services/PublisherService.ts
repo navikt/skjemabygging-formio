@@ -28,28 +28,13 @@ class PublisherService {
     try {
       const publishedLanguages = translations ? Object.keys(translations) : undefined;
       const now = dateUtils.getIso8601String();
-      const formProps: FormPropertiesPublishing = {
-        modified: now,
-        modifiedBy: userName,
-        published: now,
-        publishedBy: userName,
-        unpublished: undefined,
-        unpublishedBy: undefined,
-        ...(publishedLanguages && { publishedLanguages }),
-      };
+      const formProps = createPublishProps(now, userName, publishedLanguages);
       formWithPublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
       const publishResult = await this.backend.publishForm(formWithPublishProps, translations, form.path);
       return { changed: !!publishResult, form: formWithPublishProps };
     } catch (error) {
       if (formWithPublishProps) {
-        const rollbackFormProps: FormPropertiesPublishing = {
-          ...form.properties,
-          modified: form.properties?.modified,
-          modifiedBy: form.properties?.modifiedBy,
-          published: form.properties?.published,
-          publishedBy: form.properties?.publishedBy,
-          publishedLanguages: form.properties?.publishedLanguages,
-        };
+        const rollbackFormProps = createRollbackProps(form);
         try {
           await this.formioService.saveForm(formWithPublishProps, formioToken, userName, rollbackFormProps);
         } catch (innerError: any) {
@@ -59,6 +44,72 @@ class PublisherService {
       throw new ApiError("Publisering feilet", true, error as Error);
     }
   }
+
+  async publishForms(forms: NavFormType[], opts: Opts) {
+    const now = dateUtils.getIso8601String();
+    const { userName, formioToken } = opts || {};
+
+    let publications: Publication[] | undefined = undefined;
+    let gitSha;
+    try {
+      publications = await Promise.all(
+        forms.map(async (originalForm) => {
+          const formProps = createPublishProps(now, userName);
+          const formWithPublishProps = await this.formioService.saveForm(
+            originalForm,
+            formioToken,
+            userName,
+            formProps
+          );
+          return {
+            originalForm,
+            formWithPublishProps,
+          };
+        })
+      );
+      gitSha = await this.backend.publishForms(publications!.map((pub) => pub.formWithPublishProps));
+    } catch (error) {
+      if (publications) {
+        await Promise.all(
+          publications.map((pub) => {
+            const { originalForm, formWithPublishProps } = pub;
+            const rollbackFormProps = createRollbackProps(originalForm);
+            return this.formioService.saveForm(formWithPublishProps, formioToken, userName, rollbackFormProps);
+          })
+        );
+      }
+      throw new ApiError("Bulk-publisering feilet", true, error as Error);
+    }
+    return gitSha;
+  }
+}
+
+const createPublishProps = (
+  now: string,
+  userName: string,
+  publishedLanguages?: string[] | undefined
+): FormPropertiesPublishing => ({
+  modified: now,
+  modifiedBy: userName,
+  published: now,
+  publishedBy: userName,
+  unpublished: undefined,
+  unpublishedBy: undefined,
+  ...(publishedLanguages && { publishedLanguages }),
+});
+
+const createRollbackProps = (originalForm: NavFormType): FormPropertiesPublishing => ({
+  ...originalForm.properties,
+  modified: originalForm.properties?.modified,
+  modifiedBy: originalForm.properties?.modifiedBy,
+  published: originalForm.properties?.published,
+  publishedBy: originalForm.properties?.publishedBy,
+  publishedLanguages: originalForm.properties?.publishedLanguages,
+});
+
+interface Publication {
+  originalForm: NavFormType;
+  formWithPublishProps: NavFormType;
 }
 
 export default PublisherService;

@@ -196,10 +196,9 @@ describe("MigrationPage", () => {
         expect(fetchSpy).toHaveBeenCalledTimes(2);
         expect(fetchSpy).toHaveBeenCalledWith("/api/migrate/update", {
           body: JSON.stringify({
-            token: "",
             payload: { searchFilters: { prop1: true }, editOptions: { prop1: false }, include: ["form3"] },
           }),
-          headers: { "content-type": "application/json" },
+          headers: { "Bygger-Formio-Token": "", "content-type": "application/json" },
           method: "POST",
         });
       });
