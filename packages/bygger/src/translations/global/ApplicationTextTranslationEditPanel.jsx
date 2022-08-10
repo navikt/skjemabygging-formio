@@ -1,16 +1,20 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import Ekspanderbartpanel from "nav-frontend-ekspanderbartpanel";
+import { Knapp } from "nav-frontend-knapper";
+import { Input } from "nav-frontend-skjema";
+import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import TranslationTextInput from "../TranslationTextInput";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { flattenTextsForEditPanel, tags } from "./utils";
-import { Undertittel } from "nav-frontend-typografi";
 
 export const getTranslationByOriginalText = (originalText, translations) =>
   translations.find((translation) => translation.originalText === originalText);
 
 const TranslationEditPanelComponent = ({ components, languageCode, updateTranslation, translations }) => {
   return components.map(({ key, type, text }) => {
-    const id = getTranslationByOriginalText(text, translations)?.id || "";
-    const value = getTranslationByOriginalText(text, translations)?.translatedText || "";
+    const translationByOriginalText = getTranslationByOriginalText(text, translations);
+    const id = translationByOriginalText?.id || "";
+    const value = translationByOriginalText?.translatedText || "";
     return (
       <TranslationTextInput
         text={text}
@@ -25,46 +29,74 @@ const TranslationEditPanelComponent = ({ components, languageCode, updateTransla
   });
 };
 
-const ApplicationTextTranslationEditPanel = ({ selectedTag, translations, languageCode, updateTranslation }) => {
-  const [showPdfStatiske, setShowPdfStatiske] = useState(false);
-  const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
+const ApplicationTextTranslationEditPanel = ({
+  selectedTag,
+  translations,
+  languageCode,
+  updateTranslation,
+  deleteOneRow,
+}) => {
+  const [applicationTexts, setApplicationTexts] = useState([]);
+  const [pdfStaticTexts, setPdfStaticTexts] = useState([]);
+  const [obsoleteTranslations, setObsoleteTranslations] = useState([]);
 
   useEffect(() => {
-    if (selectedTag === tags.STATISKE_TEKSTER) setShowPdfStatiske(true);
-    else setShowPdfStatiske(false);
+    const { grensesnitt, statiske, validering, common, pdfStatiske } = TEXTS;
+
+    if (selectedTag === tags.STATISKE_TEKSTER) setPdfStaticTexts(flattenTextsForEditPanel(pdfStatiske));
+    else setPdfStaticTexts([]);
+
+    switch (selectedTag) {
+      case tags.GRENSESNITT:
+        setApplicationTexts(flattenTextsForEditPanel({ ...grensesnitt, ...common }));
+        break;
+      case tags.STATISKE_TEKSTER:
+        setApplicationTexts(flattenTextsForEditPanel(statiske));
+        break;
+      case tags.VALIDERING:
+        setApplicationTexts(flattenTextsForEditPanel(validering));
+        break;
+      default:
+        setApplicationTexts([]);
+    }
   }, [selectedTag]);
 
-  function getApplicationTexts(tag) {
-    switch (tag) {
-      case tags.GRENSESNITT:
-        return flattenTextsForEditPanel({ ...grensesnitt, ...common });
-      case tags.STATISKE_TEKSTER:
-        return flattenTextsForEditPanel(statiske);
-      case tags.VALIDERING:
-        return flattenTextsForEditPanel(validering);
-      default:
-        return [];
-    }
-  }
+  useEffect(() => {
+    const originalTexts = [...applicationTexts.map((at) => at.text), ...pdfStaticTexts.map((pst) => pst.text)];
+    const obsolete = translations.filter((t) => t.originalText && !originalTexts.includes(t.originalText));
+    setObsoleteTranslations(obsolete);
+  }, [applicationTexts, pdfStaticTexts, translations]);
 
   return (
     <form>
+      {obsoleteTranslations.length > 0 && (
+        <div className="margin-bottom-double">
+          <Ekspanderbartpanel tittel={`Antall ubrukte oversettelser: ${obsoleteTranslations.length}`}>
+            {obsoleteTranslations.map((t) => (
+              <div key={t.id} className="margin-bottom-default">
+                <Input className="margin-bottom-default" disabled label={t.originalText} value={t.translatedText} />
+                <Knapp onClick={() => deleteOneRow(t.id)}>Slett</Knapp>
+              </div>
+            ))}
+          </Ekspanderbartpanel>
+        </div>
+      )}
       <TranslationEditPanelComponent
-        components={getApplicationTexts(selectedTag)}
+        components={applicationTexts}
         languageCode={languageCode}
         translations={translations}
         updateTranslation={updateTranslation}
       />
-      {showPdfStatiske && (
-        <Undertittel className={"margin-bottom-default"}>Tekster som brukes ved generering av PDF</Undertittel>
-      )}
-      {showPdfStatiske && (
-        <TranslationEditPanelComponent
-          components={flattenTextsForEditPanel(pdfStatiske)}
-          languageCode={languageCode}
-          translations={translations}
-          updateTranslation={updateTranslation}
-        />
+      {pdfStaticTexts.length > 0 && (
+        <>
+          <Undertittel className={"margin-bottom-default"}>Tekster som brukes ved generering av PDF</Undertittel>
+          <TranslationEditPanelComponent
+            components={pdfStaticTexts}
+            languageCode={languageCode}
+            translations={translations}
+            updateTranslation={updateTranslation}
+          />
+        </>
       )}
     </form>
   );
