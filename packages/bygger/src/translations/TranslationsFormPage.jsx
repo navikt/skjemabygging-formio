@@ -1,12 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
-import Ekspanderbartpanel from "nav-frontend-ekspanderbartpanel";
-import { Knapp } from "nav-frontend-knapper";
-import { Input, Textarea } from "nav-frontend-skjema";
 import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
+import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
 import TranslationTextInput from "./TranslationTextInput";
-import { getInputType } from "./utils";
 
 const useTranslationsListStyles = makeStyles({
   root: {
@@ -67,28 +64,17 @@ const TranslationsToRemove = ({ translations, languageCode }) => {
   const onDelete = (key) => {
     dispatch({ type: "remove", payload: { lang: languageCode, key } });
   };
-  const unusedTranslationsText = translations.length === 1 ? "ubrukt oversettelse" : "ubrukte oversettelser";
+  const obsoleteTranslations = translations.map(([originalText, translated]) => ({
+    id: originalText,
+    originalText,
+    translatedText: translated.value,
+  }));
   return (
-    <div className="margin-bottom-double">
-      <Ekspanderbartpanel
-        tittel={`${translations.length} ${unusedTranslationsText} (${languagesInNorwegian[languageCode]})`}
-      >
-        {translations.map(([originalText, translated]) => (
-          <div key={originalText}>
-            <div className={"margin-bottom-default"}>
-              {getInputType(translated.value) === "textarea" ? (
-                <Textarea disabled label={originalText} value={translated.value} maxLength={0} onChange={() => {}} />
-              ) : (
-                <Input disabled label={originalText} value={translated.value} />
-              )}
-            </div>
-            <Knapp className={"margin-bottom-default"} onClick={() => onDelete(originalText)}>
-              Slett
-            </Knapp>
-          </div>
-        ))}
-      </Ekspanderbartpanel>
-    </div>
+    <ObsoleteTranslationsPanel
+      translations={obsoleteTranslations}
+      onDelete={(t) => onDelete(t.originalText)}
+      className="margin-bottom-double"
+    />
   );
 };
 

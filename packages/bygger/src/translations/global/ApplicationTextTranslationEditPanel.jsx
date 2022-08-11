@@ -1,9 +1,7 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import Ekspanderbartpanel from "nav-frontend-ekspanderbartpanel";
-import { Knapp } from "nav-frontend-knapper";
-import { Input } from "nav-frontend-skjema";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
+import ObsoleteTranslationsPanel from "../ObsoleteTranslationsPanel";
 import TranslationTextInput from "../TranslationTextInput";
 import { flattenTextsForEditPanel, tags } from "./utils";
 
@@ -70,16 +68,11 @@ const ApplicationTextTranslationEditPanel = ({
   return (
     <form>
       {obsoleteTranslations.length > 0 && (
-        <div className="margin-bottom-double">
-          <Ekspanderbartpanel tittel={`Antall ubrukte oversettelser: ${obsoleteTranslations.length}`}>
-            {obsoleteTranslations.map((t) => (
-              <div key={t.id} className="margin-bottom-default">
-                <Input className="margin-bottom-default" disabled label={t.originalText} value={t.translatedText} />
-                <Knapp onClick={() => deleteOneRow(t.id)}>Slett</Knapp>
-              </div>
-            ))}
-          </Ekspanderbartpanel>
-        </div>
+        <ObsoleteTranslationsPanel
+          translations={obsoleteTranslations}
+          onDelete={(t) => deleteOneRow(t.id)}
+          className="margin-bottom-double"
+        />
       )}
       <TranslationEditPanelComponent
         components={applicationTexts}
