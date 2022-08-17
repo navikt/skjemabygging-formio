@@ -4,18 +4,25 @@ import { fetchFromFormioApi, loadAllJsonFilesFromDirectory } from "../../utils/f
 const { useFormioApi, skjemaDir, formioProjectUrl } = config;
 
 const loadForms = async () => {
-  return useFormioApi
-    ? await fetchFromFormioApi(
-        `${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=title,path,modified`
-      )
-    : await loadAllJsonFilesFromDirectory(skjemaDir).then((forms) =>
-        forms.map((form) => ({
-          title: form.title,
-          path: form.path,
-          modified: form.modified,
-        }))
-      );
+  let forms;
+  if (useFormioApi) {
+    const select = "title,path,modified,properties.skjemanummer";
+    forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`);
+  } else {
+    forms = await loadAllJsonFilesFromDirectory(skjemaDir);
+  }
+
+  return forms.map(mapForm);
 };
+
+const mapForm = (form) => ({
+  title: form.title,
+  path: form.path,
+  modified: form.modified,
+  properties: {
+    skjemanummer: form.properties.skjemanummer,
+  },
+});
 
 const forms = {
   get: async (req, res) => {

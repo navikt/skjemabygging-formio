@@ -1,4 +1,4 @@
-import { AppConfigProvider, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, Modal, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
 import { Formio } from "formiojs";
 import Pusher from "pusher-js";
 import React from "react";
@@ -15,6 +15,8 @@ Formio.use(navdesign);
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 
 Pusher.logToConsole = true;
+
+if (process.env.NODE_ENV !== "test") Modal.setAppElement("#root");
 
 fetch("/api/config")
   .then((res) => {

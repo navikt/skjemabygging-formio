@@ -1,20 +1,9 @@
-import { makeStyles } from "@material-ui/styles";
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
-import Modal from "nav-frontend-modal";
 import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { useI18nState } from "../context/i18n";
-
-const useModalStyles = makeStyles({
-  modal: {
-    width: "50rem",
-    minHeight: "13rem",
-    height: "auto",
-    maxWidth: "90%",
-    padding: "2rem 2.5rem",
-  },
-});
+import { useI18nState } from "../../context/i18n";
 
 interface Props {
   form: NavFormType;
@@ -37,7 +26,6 @@ const getCompleteLocalTranslationsForNavForm = (
 
 const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeList, onPublish }: Props) => {
   const [publiserer, setPubliserer] = useState(false);
-  const styles = useModalStyles();
   const { localTranslationsForNavForm } = useI18nState();
   const [completeLocalTranslationsForNavForm, setCompleteLocalTranslationsForNavForm] = useState<I18nTranslations>({});
 
@@ -57,15 +45,7 @@ const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeL
     }
   };
   return (
-    <Modal
-      className={styles.modal}
-      isOpen={openModal}
-      onRequestClose={closeModal}
-      closeButton={true}
-      contentLabel="Publiseringsadvarsel"
-      shouldCloseOnOverlayClick={false}
-      ariaHideApp={false}
-    >
+    <Modal open={openModal} onClose={closeModal} ariaLabel="Publiseringsadvarsel">
       <Normaltekst className="margin-bottom-double">Er du sikker på at dette skjemaet skal publiseres?</Normaltekst>
       <ul className="list-inline">
         <li className="list-inline-item">

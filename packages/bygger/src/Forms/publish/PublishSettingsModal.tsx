@@ -1,23 +1,17 @@
 import { makeStyles } from "@material-ui/styles";
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
-import Modal from "nav-frontend-modal";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
-import { Normaltekst, Undertittel } from "nav-frontend-typografi";
+import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { languagesInNorwegian, useI18nState } from "../context/i18n";
-import { getFormTexts } from "../translations/utils";
+import { languagesInNorwegian, useI18nState } from "../../context/i18n";
+import { getFormTexts } from "../../translations/utils";
 
 const useModalStyles = makeStyles({
-  modal: {
-    width: "50rem",
-    minHeight: "13rem",
-    height: "auto",
-    maxWidth: "90%",
-    padding: "2rem 2.5rem",
-  },
   modal_button: {
     float: "right",
+    margin: "1rem",
   },
 });
 
@@ -72,16 +66,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
   }, [allFormOriginalTexts, translationsForNavForm]);
 
   return (
-    <Modal
-      className={styles.modal}
-      isOpen={openModal}
-      onRequestClose={closeModal}
-      closeButton={true}
-      contentLabel="Publiseringsinnstillingsadvarsel"
-      shouldCloseOnOverlayClick={false}
-      ariaHideApp={false}
-    >
-      <Undertittel className="margin-bottom-double">Publiseringsinnstillinger</Undertittel>
+    <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger">
       <Normaltekst className="margin-bottom-default">
         Følgende språkversjoner er tilgjengelige for dette skjemaet. Velg hvilke språkversjoner som skal publiseres.
         Språkversjoner som ikke publiseres blir utilgjengelige for brukerne.
