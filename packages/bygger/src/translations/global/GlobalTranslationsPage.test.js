@@ -1,35 +1,20 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route } from "react-router-dom";
 import I18nStateProvider from "../../context/i18n";
 import { UserAlerterContext } from "../../userAlerting";
 import GlobalTranslationsPage from "./GlobalTranslationsPage";
-
-const globalEnglishTranslation = {
-  en: [
-    {
-      id: "123",
-      tag: "skjematekster",
-      translations: { "Bor du i Norge?": { value: "Do you live in Norway?", scope: "global" } },
-    },
-    {
-      id: "345",
-      tag: "validering",
-      translations: {
-        "Du må fylle ut:{{field}}": { value: "You have to fill out: {{field}}", scope: "global" },
-      },
-    },
-    { id: "456", tag: "grensesnitt", translations: { Ja: { value: "Yes", scope: "global" } } },
-  ],
-};
+import globalTranslations from "./testdata/global-translations.js";
+import { tags } from "./utils";
 
 describe("GlobalTranslationsPage", () => {
   let mockedDeleteTranslation;
   let mockedSaveTranslations;
 
-  const renderGlobalTranslationsPage = async (loadTranslation, languageCode = "") => {
+  const renderGlobalTranslationsPage = async (loadTranslation, languageCode = "", tag = "skjematekster") => {
     mockedDeleteTranslation = jest.fn();
     mockedSaveTranslations = jest.fn();
     const userAlerter = {
@@ -39,16 +24,18 @@ describe("GlobalTranslationsPage", () => {
     await act(async () => {
       render(
         <AppConfigProvider featureToggles={{ enableTranslations: true }}>
-          <MemoryRouter initialEntries={[`/translations/global/${languageCode}/skjematekster`]}>
+          <MemoryRouter initialEntries={[`/translations/global/${languageCode}/${tag}`]}>
             <UserAlerterContext.Provider value={userAlerter}>
               <I18nStateProvider loadTranslations={loadTranslation}>
-                <GlobalTranslationsPage
-                  loadGlobalTranslations={loadTranslation}
-                  projectURL={""}
-                  deleteTranslation={mockedDeleteTranslation}
-                  saveTranslation={mockedSaveTranslations}
-                  languageCode={languageCode}
-                />
+                <Route path="/translations/global/:languageCode?/:tag?">
+                  <GlobalTranslationsPage
+                    loadGlobalTranslations={loadTranslation}
+                    projectURL={""}
+                    deleteTranslation={mockedDeleteTranslation}
+                    saveTranslation={mockedSaveTranslations}
+                    languageCode={languageCode}
+                  />
+                </Route>
               </I18nStateProvider>
             </UserAlerterContext.Provider>
           </MemoryRouter>
@@ -83,7 +70,7 @@ describe("GlobalTranslationsPage", () => {
   describe("Render global translation page with English translations", () => {
     let mockedLoadTranslation;
     beforeEach(() => {
-      mockedLoadTranslation = jest.fn(() => Promise.resolve(globalEnglishTranslation));
+      mockedLoadTranslation = jest.fn(() => Promise.resolve(globalTranslations));
       renderGlobalTranslationsPage(mockedLoadTranslation, "en");
     });
     afterEach(() => {
@@ -92,13 +79,54 @@ describe("GlobalTranslationsPage", () => {
     it("renders header with English label", async () => {
       const addNewTranslationButton = screen.getByRole("button", { name: "Legg til ny tekst" });
       const languageHeading = screen.getByRole("heading", { level: 1, name: "Engelsk" });
-      const originalTextField = await screen.findByDisplayValue("Bor du i Norge?");
-      const translationField = screen.getByDisplayValue("Do you live in Norway?");
+      const originalTextField = await screen.findByDisplayValue("Fornavn");
+      const translationField = screen.getByDisplayValue("First name");
 
       expect(addNewTranslationButton).toBeDefined();
       expect(languageHeading).toBeInTheDocument();
       expect(originalTextField).toBeInTheDocument();
       expect(translationField).toBeInTheDocument();
+    });
+  });
+
+  describe("Navigation between tags", () => {
+    beforeEach(async () => {
+      const loadGlobalTranslations = jest.fn(() => Promise.resolve(globalTranslations));
+      await renderGlobalTranslationsPage(loadGlobalTranslations, "en", tags.SKJEMATEKSTER);
+    });
+
+    it("renders tag 'skjematekster' default", async () => {
+      const inputFieldWithSkjematekster = await screen.findByDisplayValue("First name");
+      expect(inputFieldWithSkjematekster).toBeInTheDocument();
+
+      const inputFieldWithValidering = screen.queryByDisplayValue("No IBAN was provided");
+      expect(inputFieldWithValidering).not.toBeInTheDocument();
+    });
+
+    it("navigates to tag 'validering'", async () => {
+      const valideringButton = await screen.findByRole("button", { name: "Validering" });
+      expect(valideringButton).toBeInTheDocument();
+      userEvent.click(valideringButton);
+
+      const inputFieldWithValidering = await screen.findByDisplayValue("No IBAN was provided");
+      expect(inputFieldWithValidering).toBeInTheDocument();
+
+      const inputFieldWithSkjematekster = screen.queryByDisplayValue("First name");
+      expect(inputFieldWithSkjematekster).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Obsolete translations", () => {
+    describe("tag: validering", () => {
+      beforeEach(async () => {
+        const loadGlobalTranslations = jest.fn(() => Promise.resolve(globalTranslations));
+        await renderGlobalTranslationsPage(loadGlobalTranslations, "en", tags.VALIDERING);
+      });
+
+      it("Shows number of obsolete translations", async () => {
+        const obsoleteTranslationsTitle = await screen.findByText(/Antall ubrukte oversettelser: \d{1,2}/);
+        expect(obsoleteTranslationsTitle).toBeInTheDocument();
+      });
     });
   });
 });
