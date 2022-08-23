@@ -87,6 +87,21 @@ jobs:
           VARS: "./packages/bygger/.nais/dev.yaml"
         uses: "nais/deploy/actions/deploy@v1"
 
+  deploy-bygger-to-prod:
+    name: "Deploy bygger to prod"
+    if: github.ref == 'refs/heads/master'
+    needs: deploy-bygger-to-dev
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to PROD"
+        env:
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "prod-gcp"
+          RESOURCE: "./packages/bygger/.nais/nais.yaml"
+          VARS: "./packages/bygger/.nais/prod.yaml"
+        uses: "nais/deploy/actions/deploy@v1"
+
   deploy-bygger-experimental-to-dev:
     name: "Deploy bygger experimental to dev"
     if: startsWith(github.ref, 'refs/heads/experimental/')
