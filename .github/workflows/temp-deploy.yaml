@@ -1,16 +1,20 @@
 name: testdeploy prod-gcp
 on:
   workflow_dispatch:
+    inputs:
+      imageVersion:
+        description: docker image version
+        required: true
+        default: 'c9ee5aead371b709010e7795ca83f03b570fde19'
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}/bygger:c9ee5aead371b709010e7795ca83f03b570fde19
+  IMAGE: ghcr.io/${{ github.repository }}/bygger:${{ inputs.imageVersion }}
 
 jobs:
 
   deploy-bygger-to-prod:
     name: "Deploy bygger to prod"
     if: github.ref == 'refs/heads/master'
-    needs: deploy-bygger-to-dev
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v2"
