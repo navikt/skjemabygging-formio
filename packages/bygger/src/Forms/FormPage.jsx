@@ -28,10 +28,24 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   }, [loadForm, formPath]);
 
   const onChange = (changedForm) => {
-    if (JSON.stringify(changedForm) !== JSON.stringify(form)) {
+    if (formHasChanged(form, changedForm)) {
       setHasUnsavedChanged(true);
       setForm(changedForm);
     }
+  };
+
+  const formHasChanged = (form, changedForm) => {
+    return JSON.stringify(removeIds(form.components)) !== JSON.stringify(removeIds(changedForm.components));
+  };
+
+  const removeIds = (components) => {
+    return components.map((component) => {
+      return {
+        ...component,
+        id: undefined,
+        components: component.components && removeIds(component.components),
+      };
+    });
   };
 
   const saveFormAndResetIsUnsavedChanges = async (form) => {
