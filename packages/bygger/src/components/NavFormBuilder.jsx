@@ -56,12 +56,15 @@ class NavFormBuilder extends Component {
     this.props.onChange(cloneDeep(this.builder.instance.form));
   };
 
-  createBuilder = () => {
+  createBuilder = (page) => {
     this.builder = new formiojs.FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
       this.props.formBuilderOptions
     );
+    if (page) {
+      this.builder.instance.setPage(page);
+    }
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
       this.builder.instance.on("change", this.handleChange);
@@ -81,8 +84,9 @@ class NavFormBuilder extends Component {
   };
 
   updateFormBuilder() {
+    const page = this.builder.instance.page;
     this.destroyBuilder();
-    this.createBuilder();
+    this.createBuilder(page);
   }
 
   componentDidMount = () => {
