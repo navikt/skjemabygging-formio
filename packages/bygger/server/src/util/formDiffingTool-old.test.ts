@@ -23,6 +23,7 @@ describe("formDiffingTool", () => {
       expect(changes.diff.modified.originalValue).toBe(form.modified);
       expect(changes.diff.modified.value).toBe(modified);
       expect(changes.diff.modified.status).toBe(DiffStatus.CHANGED);
+      console.log("changes", JSON.stringify(changes, null, 2));
     });
 
     it("Diff component change", () => {
