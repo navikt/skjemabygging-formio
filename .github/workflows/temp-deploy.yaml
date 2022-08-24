@@ -15,7 +15,6 @@ jobs:
   deploy-bygger-to-prod:
     name: "Deploy bygger to prod"
     if: github.ref == 'refs/heads/master'
-    needs: deploy-bygger-to-dev
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v2"
