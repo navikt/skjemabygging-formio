@@ -22,6 +22,7 @@ function mockRequest({ headers = {}, body }) {
   return {
     header: (name) => headers[name],
     body,
+    get: () => "",
   };
 }
 
