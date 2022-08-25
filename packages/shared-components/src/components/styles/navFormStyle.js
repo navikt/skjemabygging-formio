@@ -82,7 +82,7 @@ const styles = {
   "& .components-row .builder-components, .components-row": {
     display: "flex",
     flexWrap: "wrap",
-    gap: "20px",
+    gap: "24px",
   },
   "& .formio-component-valutavelger .formio-choices": {
     width: "224px",
