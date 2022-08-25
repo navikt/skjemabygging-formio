@@ -7,7 +7,7 @@ const formRequestHandler = (req) => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
   const translations = JSON.parse(req.body.translations);
-  const isTest = JSON.parse(req.body.isTest);
+  const isTest = req.body.isTest && JSON.parse(req.body.isTest);
   return [form, submission, translations, isTest];
 };
 
