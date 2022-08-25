@@ -63,7 +63,7 @@ class NavFormBuilder extends Component {
       this.props.formBuilderOptions
     );
     if (page) {
-      this.builder.instance.setPage(page);
+      this.builder.instance?.setPage?.(page);
     }
     this.builderReady = this.builder.ready;
     this.builderReady.then(() => {
