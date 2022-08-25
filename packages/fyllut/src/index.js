@@ -24,13 +24,13 @@ httpFyllut
     if (json.FEATURE_TOGGLES) {
       featureToggles = json.FEATURE_TOGGLES;
     }
-    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME), json.IS_DELINGSLENKE);
+    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME), json);
   })
   .catch((error) => {
     console.error(`Could not fetch config from server: ${error}`);
   });
 
-function renderReact(dokumentInnsendingBaseURL, isDelingslenke) {
+function renderReact(dokumentInnsendingBaseURL, config) {
   ReactDOM.render(
     <React.StrictMode>
       <AppConfigProvider
@@ -40,10 +40,11 @@ function renderReact(dokumentInnsendingBaseURL, isDelingslenke) {
         fyllutBaseURL={"/fyllut"}
         submissionMethod={subissionMethod}
         app="fyllut"
+        config={config}
         http={httpFyllut}
       >
         <BrowserRouter basename="/fyllut">
-          {isDelingslenke && <ConfirmDelingslenkeModal />}
+          {config.isDelingslenke && <ConfirmDelingslenkeModal />}
           <App />
         </BrowserRouter>
       </AppConfigProvider>

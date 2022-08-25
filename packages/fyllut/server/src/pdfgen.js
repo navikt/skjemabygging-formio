@@ -20,10 +20,10 @@ const fonts = {
 const printer = new PdfPrinter(fonts);
 
 export class Pdfgen {
-  static generatePdf(submission, form, gitVersion, stream, translations) {
+  static generatePdf(submission, form, gitVersion, stream, translations, isTest) {
     try {
       const now = DateTime.local().setZone("Europe/Oslo");
-      const generator = new this(submission, form, gitVersion, now, translations);
+      const generator = new this(submission, form, gitVersion, now, translations, isTest);
       const docDefinition = generator.generateDocDefinition();
       generator.writeDocDefinitionToStream(docDefinition, stream);
     } catch (err) {
@@ -33,11 +33,11 @@ export class Pdfgen {
       throw err;
     }
   }
-  static generatePdfByteArray(submission, form, gitVersion, translations) {
+  static generatePdfByteArray(submission, form, gitVersion, translations, isTest) {
     return new Promise((resolve, reject) => {
       try {
         const now = DateTime.local().setZone("Europe/Oslo");
-        const generator = new this(submission, form, gitVersion, now, translations);
+        const generator = new this(submission, form, gitVersion, now, translations, isTest);
         const docDefinition = generator.generateDocDefinition();
         const doc = printer.createPdfKitDocument(docDefinition);
         const chunks = [];
@@ -59,12 +59,13 @@ export class Pdfgen {
     });
   }
 
-  constructor(submission, form, gitVersion, nowAsLuxonDateTime, translations) {
+  constructor(submission, form, gitVersion, nowAsLuxonDateTime, translations, isTest) {
     this.gitVersion = gitVersion;
     this.submission = submission;
     this.form = form;
     this.now = nowAsLuxonDateTime;
     this.translations = translations;
+    this.isTest = isTest;
   }
 
   translate(originalText) {
@@ -262,9 +263,20 @@ export class Pdfgen {
   }
 
   generateDocDefinition() {
+    const watermark = this.isTest
+      ? {
+          text: "Testskjema - Skal ikke sendes til NAV",
+          color: "red",
+          opacity: 0.5,
+          bold: true,
+          italics: false,
+          angle: 305,
+        }
+      : undefined;
     return {
       pageSize: "A4",
       pageMargins: [40, 80, 40, 80],
+      watermark,
       content: this.generateContentFromSubmission(),
       footer: (currentPage, pageCount) => {
         return this.generateFooter(currentPage, pageCount);

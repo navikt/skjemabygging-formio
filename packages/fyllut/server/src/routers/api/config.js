@@ -8,7 +8,7 @@ const config = {
       NAIS_CLUSTER_NAME: naisClusterName,
       REACT_APP_SENTRY_DSN: sentryDsn,
       FEATURE_TOGGLES: featureToggles,
-      IS_DELINGSLENKE: isDelingslenke,
+      isDelingslenke,
     });
   },
 };
