@@ -35,17 +35,23 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   };
 
   const formHasChanged = (form, changedForm) => {
-    return JSON.stringify(removeIds(form.components)) !== JSON.stringify(removeIds(changedForm.components));
+    return JSON.stringify(removeIds(form)) !== JSON.stringify(removeIds(changedForm));
   };
 
-  const removeIds = (components) => {
-    return components.map((component) => {
-      return {
-        ...component,
-        id: undefined,
-        components: component.components && removeIds(component.components),
-      };
-    });
+  const removeIds = (object) => {
+    const clonedObject = {
+      ...object,
+    };
+
+    if (clonedObject.id) {
+      delete clonedObject.id;
+    }
+
+    if (clonedObject.components && clonedObject.components.length > 0) {
+      clonedObject.components = clonedObject.components.map((component) => removeIds(component));
+    }
+
+    return clonedObject;
   };
 
   const saveFormAndResetIsUnsavedChanges = async (form) => {
