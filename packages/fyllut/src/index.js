@@ -1,12 +1,15 @@
-import { AppConfigProvider, url } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, Modal, url } from "@navikt/skjemadigitalisering-shared-components";
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import ConfirmDelingslenkeModal from "./components/ConfirmDelingslenkeModal";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import * as serviceWorker from "./serviceWorker";
 import httpFyllut from "./util/httpFyllut";
+
+if (process.env.NODE_ENV !== "test") Modal.setAppElement("#root");
 
 let featureToggles = {};
 
@@ -21,13 +24,13 @@ httpFyllut
     if (json.FEATURE_TOGGLES) {
       featureToggles = json.FEATURE_TOGGLES;
     }
-    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME));
+    renderReact(getDokumentinnsendingBaseURL(json.NAIS_CLUSTER_NAME), json.IS_DELINGSLENKE);
   })
   .catch((error) => {
     console.error(`Could not fetch config from server: ${error}`);
   });
 
-function renderReact(dokumentInnsendingBaseURL) {
+function renderReact(dokumentInnsendingBaseURL, isDelingslenke) {
   ReactDOM.render(
     <React.StrictMode>
       <AppConfigProvider
@@ -40,6 +43,7 @@ function renderReact(dokumentInnsendingBaseURL) {
         http={httpFyllut}
       >
         <BrowserRouter basename="/fyllut">
+          {isDelingslenke && <ConfirmDelingslenkeModal />}
           <App />
         </BrowserRouter>
       </AppConfigProvider>
