@@ -69,7 +69,7 @@ const config: ConfigType = {
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
-  isDelingslenke: process.env.FYLLUT_IS_DELINGSLENKE === "true",
+  isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
   idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
 };
 
