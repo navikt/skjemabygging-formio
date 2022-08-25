@@ -79,6 +79,21 @@ const styles = {
   "& .img-component": {
     maxWidth: "100%",
   },
+  "& .components-row .builder-components, .components-row": {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+  },
+  "& .formio-component-valutavelger .formio-choices": {
+    width: "224px",
+  },
+  "& .formio-component-valutavelger .formio-form .choices__list--dropdown .choices__input, .choices__list--single .choices__item":
+    {
+      maxWidth: "90%",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+    },
 };
 
 const navFormStyle = merge(

@@ -48,6 +48,19 @@ const layoutPalett = {
         persistent: false,
       },
     },
+
+    row: {
+      label: "Rad",
+      key: "row",
+      title: "Rad",
+      icon: "th-large",
+      schema: {
+        title: "Rad",
+        key: "rad",
+        type: "row",
+        components: [],
+      },
+    },
   },
 };
 

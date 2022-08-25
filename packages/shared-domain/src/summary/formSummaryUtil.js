@@ -42,6 +42,12 @@ function formatValue(component, value, translate) {
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
+    case "valuta":
+      // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
+      return translate(typeof value === "string" ? value : value?.label);
+    case "select": {
+      return translate((component.data.values.find((option) => option.value === value) || {}).label);
+    }
     case "day": {
       if (value.match("00/00/")) {
         return value.slice(6);
@@ -205,7 +211,8 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
     submissionValue === null ||
     submissionValue === undefined ||
     submissionValue === "" ||
-    (type === "landvelger" && Object.keys(submissionValue).length === 0)
+    (type === "landvelger" && Object.keys(submissionValue).length === 0) ||
+    (type === "valutavelger" && Object.keys(submissionValue).length === 0)
   ) {
     return formSummaryObject;
   }
@@ -240,6 +247,21 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
   }
 
   return [...formSummaryObject];
+}
+
+function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key,
+      type: "currency",
+      value: `${submissionValue.belop} ${submissionValue.valutavelger.value}`,
+    },
+  ];
 }
 
 export function handleComponent(
@@ -284,6 +306,18 @@ export function handleComponent(
       );
     case "image":
       return handleImage(component, formSummaryObject, parentContainerKey, translate);
+    case "row":
+      if (component.isAmountWithCurrencySelector) {
+        return handleAmountWithCurrencySelector(
+          component,
+          submission,
+          formSummaryObject,
+          parentContainerKey,
+          translate
+        );
+      } else {
+        return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
+      }
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
   }
