@@ -30,8 +30,9 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   const onChange = (changedForm) => {
     if (formHasChanged(form, changedForm)) {
       setHasUnsavedChanged(true);
-      setForm(changedForm);
     }
+
+    setForm(changedForm);
   };
 
   const formHasChanged = (form, changedForm) => {
