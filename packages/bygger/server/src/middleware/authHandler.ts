@@ -4,6 +4,7 @@ import { GetKeyFunction } from "jose/dist/types/types";
 import jwt from "jsonwebtoken";
 import config from "../config";
 import { ByggerRequest, User } from "../types";
+import { getDevUser } from "../util/devUser";
 
 function toExpiredDateString(exp?: number) {
   if (exp) {
@@ -28,7 +29,10 @@ const verifyToken = async (token: string) => {
 };
 
 const authHandler = async (req: ByggerRequest, res: Response, next: NextFunction) => {
-  if (!config.isDevelopment) {
+  if (config.isDevelopment) {
+    const user: User = await getDevUser(req);
+    req.getUser = () => user;
+  } else {
     const authHeader = req.header("Authorization");
     const token = authHeader && authHeader.split(" ")[1];
 

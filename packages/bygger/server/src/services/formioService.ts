@@ -1,8 +1,12 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import config from "../config";
+import {
+  dateUtils,
+  FormPropertiesPublishing,
+  FormPropertiesType,
+  NavFormType,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils";
 
-class FormioService {
+export class FormioService {
   private readonly projectUrl: string;
 
   constructor(projectUrl: string) {
@@ -31,31 +35,59 @@ class FormioService {
 
   async getFormioUser(userToken: string) {
     const currentUserUrl = `${this.projectUrl}/current`;
-    return fetchWithErrorHandling(currentUserUrl, {
+    const response = await fetchWithErrorHandling(currentUserUrl, {
       headers: {
         "Content-Type": "application/json",
         "x-jwt-token": userToken,
       },
     });
+    return response.data;
   }
 
-  async updateForms(userToken: string, forms: NavFormType[]) {
+  async saveForm(
+    form: NavFormType,
+    formioToken: string,
+    userName: string,
+    formProps: Partial<FormPropertiesType> = {}
+  ): Promise<NavFormType> {
     const updateFormUrl = `${this.projectUrl}/form`;
-    return await Promise.all(
-      forms.map((form) => {
-        return fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-jwt-token": userToken,
-          },
-          body: JSON.stringify(form),
-        }).then((migratedForm) => migratedForm.data);
-      })
-    );
+    const props = { ...formProps };
+    if (!props.modified) {
+      props.modified = dateUtils.getIso8601String();
+    }
+    if (!props.modifiedBy) {
+      props.modifiedBy = userName;
+    }
+    const formWithProps = updateProps(form, props);
+    const response = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-jwt-token": formioToken,
+      },
+      body: JSON.stringify(formWithProps),
+    });
+    return response.data;
+  }
+
+  async saveForms(forms: NavFormType[], formioToken: string, userName: string): Promise<NavFormType[]> {
+    const now = dateUtils.getIso8601String();
+    const formProps: FormPropertiesPublishing = {
+      modified: now,
+      modifiedBy: userName,
+    };
+    return await Promise.all(forms.map((form) => this.saveForm(form, formioToken, userName, formProps)));
   }
 }
 
-const formioService = new FormioService(config.formio.projectUrl);
-
-export default formioService;
+const updateProps = (form: NavFormType, props: Partial<FormPropertiesType>): NavFormType => {
+  return JSON.parse(
+    JSON.stringify({
+      ...form,
+      properties: {
+        ...form.properties,
+        ...props,
+      },
+    })
+  );
+};

@@ -133,7 +133,7 @@ describe("useFormioForms", () => {
     });
   });
 
-  describe("Test onPublish", () => {
+  describe("Test onPublish and onUnpublish", () => {
     let formioMock, formioForms;
 
     const createDate = (dateDiff = 0) => {
@@ -147,6 +147,7 @@ describe("useFormioForms", () => {
     beforeEach(() => {
       formioMock = {
         saveForm: jest.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: createDate() })),
+        loadForms: jest.fn().mockImplementation((path) => Promise.resolve([{ path, modified: createDate() }])),
       };
 
       ({
@@ -157,56 +158,47 @@ describe("useFormioForms", () => {
     describe("when publishing succeeds", () => {
       beforeEach(() => {
         fetchMock.mockImplementation((url) => {
-          if (url.endsWith("/api/publish/testform")) {
-            return Promise.resolve(new Response(JSON.stringify({ changed: true }), RESPONSE_HEADERS_OK));
+          if (url.endsWith("/api/published-forms/testform")) {
+            return Promise.resolve(new Response(JSON.stringify({ changed: true, form: {} }), RESPONSE_HEADERS_OK));
           }
           return Promise.reject(new Error(`ukjent url ${url}`));
         });
       });
 
-      it("adds properties modified and published", async () => {
+      it("flashes success message", async () => {
         renderHook(() => formioForms.onPublish({ path: "testform", properties: {} }));
         await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
-
-        expect(formioMock.saveForm).toHaveBeenCalledTimes(1);
-        expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("modified");
-        expect(formioMock.saveForm.mock.calls[0][0]["properties"]).toHaveProperty("published");
-
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        const publishedForm = JSON.parse(fetchMock.mock.calls[0][1].body).form;
-        expect(publishedForm.properties.modified).toBeDefined();
-        expect(publishedForm.properties.published).toBeDefined();
       });
 
-      it("adds publishedLanguages to properties", async () => {
+      it("sends form content and published languages array in request", async () => {
         const form = { path: "testform", properties: {} };
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
         await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
 
-        expect(formioMock.saveForm).toHaveBeenCalledTimes(1);
-        const savedFormioForm = formioMock.saveForm.mock.calls[0][0];
-        expect(savedFormioForm["properties"]).toHaveProperty("publishedLanguages");
-        expect(savedFormioForm["properties"]["publishedLanguages"]).toEqual(["no-NN", "en"]);
-
         expect(fetchMock).toHaveBeenCalledTimes(1);
         const publishRequestBody = JSON.parse(fetchMock.mock.calls[0][1].body);
         const publishedForm = publishRequestBody.form;
-        expect(publishedForm.properties.publishedLanguages).toEqual(["no-NN", "en"]);
+        const publishedTranslations = publishRequestBody.translations;
+        expect(publishedForm).toEqual(form);
+        expect(publishedTranslations).toEqual(translations);
       });
     });
 
     describe("when publishing fails", () => {
       beforeEach(() => {
         fetchMock.mockImplementation((url) => {
-          if (url.endsWith("/api/publish/testform")) {
-            return Promise.resolve(new Response("500 Internal Server Error", RESPONSE_HEADERS_ERROR));
+          if (url.endsWith("/api/published-forms/testform")) {
+            return Promise.resolve(
+              new Response(JSON.stringify({ message: "Publisering feilet" }), RESPONSE_HEADERS_ERROR)
+            );
           }
           return Promise.reject(new Error(`ukjent url ${url}`));
         });
       });
 
-      it("removes the published props and uses previous modified timestamp", async () => {
+      it("flashes error message and loads form from formio-api", async () => {
         const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
         const form = {
           path: "testform",
@@ -217,56 +209,50 @@ describe("useFormioForms", () => {
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
         await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
+        await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
+      });
+    });
 
-        await waitFor(() => expect(formioMock.saveForm).toHaveBeenCalledTimes(2));
-
-        const formBeforePublish = formioMock.saveForm.mock.calls[0][0];
-        expect(formBeforePublish["properties"]).toHaveProperty("modified");
-        expect(formBeforePublish["properties"]["modified"]).not.toEqual(originalModifiedTimestamp);
-        expect(formBeforePublish["properties"]).toHaveProperty("modifiedBy");
-        expect(formBeforePublish["properties"]["modifiedBy"]).toEqual(USER_NAME);
-        expect(formBeforePublish["properties"]).toHaveProperty("published");
-        expect(formBeforePublish["properties"]).toHaveProperty("publishedBy");
-        expect(formBeforePublish["properties"]["publishedBy"]).toEqual(USER_NAME);
-        expect(formBeforePublish["properties"]).toHaveProperty("publishedLanguages");
-
-        const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
-        expect(formAfterPublishFailure["properties"]).toHaveProperty("modified");
-        expect(formAfterPublishFailure["properties"]["modified"]).toEqual(originalModifiedTimestamp);
-        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("modifiedBy");
-        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("published");
-        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("publishedBy");
-        expect(formAfterPublishFailure["properties"]).not.toHaveProperty("publishedLanguages");
+    describe("when unpublishing succeeds", () => {
+      beforeEach(() => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/published-forms/testform")) {
+            return Promise.resolve(new Response(JSON.stringify({ changed: true, form: {} }), RESPONSE_HEADERS_OK));
+          }
+          return Promise.reject(new Error(`ukjent url ${url}`));
+        });
       });
 
-      it("rollbacks to previous published languages array", async () => {
+      it("flashes success message", async () => {
+        renderHook(() => formioForms.onUnpublish({ path: "testform", properties: {} }));
+        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("when unpublishing fails", () => {
+      beforeEach(() => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/published-forms/testform")) {
+            return Promise.resolve(
+              new Response(JSON.stringify({ message: "Avpublisering feilet" }), RESPONSE_HEADERS_ERROR)
+            );
+          }
+          return Promise.reject(new Error(`ukjent url ${url}`));
+        });
+      });
+
+      it("flashes error message and loads form from formio-api", async () => {
         const originalModifiedTimestamp = "2022-05-30T07:58:40.929Z";
-        const originalModifiedDate = createDate(-1);
         const form = {
           path: "testform",
           properties: {
             modified: originalModifiedTimestamp,
-            publishedLanguages: ["en"],
           },
-          modified: originalModifiedDate,
         };
-        const translations = { "no-NN": {}, en: {} };
-        renderHook(() => formioForms.onPublish(form, translations));
+        renderHook(() => formioForms.onUnpublish(form));
         await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
-
-        await waitFor(() => expect(formioMock.saveForm).toHaveBeenCalledTimes(2));
-
-        const formBeforePublish = formioMock.saveForm.mock.calls[0][0];
-        expect(typeof formBeforePublish.modified).toEqual("string");
-        expect(formBeforePublish.modified).toEqual(JSON.parse(JSON.stringify(originalModifiedDate)));
-        expect(formBeforePublish["properties"]).toHaveProperty("publishedLanguages");
-        expect(formBeforePublish["properties"]["publishedLanguages"]).toEqual(["no-NN", "en"]);
-
-        const formAfterPublishFailure = formioMock.saveForm.mock.calls[1][0];
-        expect(typeof formAfterPublishFailure.modified).toEqual("string");
-        expect(formAfterPublishFailure.modified).not.toEqual(JSON.parse(JSON.stringify(originalModifiedDate)));
-        expect(formAfterPublishFailure["properties"]).toHaveProperty("publishedLanguages");
-        expect(formAfterPublishFailure["properties"]["publishedLanguages"]).toEqual(["en"]);
+        await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
       });
     });
   });

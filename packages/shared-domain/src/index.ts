@@ -2,6 +2,7 @@ import { Enhet, Enhetstype } from "./enhet";
 import type {
   Component,
   DisplayType,
+  FormPropertiesPublishing,
   FormPropertiesType,
   FormSignaturesType,
   InnsendingType,
@@ -59,6 +60,7 @@ export type {
   FormSignaturesType,
   NewFormSignatureType,
   FormPropertiesType,
+  FormPropertiesPublishing,
   NavFormType,
   Component,
   Enhet,

@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import formioService from "../../services/formioService";
+import { backendInstance, formioService } from "../../services";
 import { generateNavFormDiff } from "../../util/formDiffingTool";
-import backendInstance from "./helpers/backend-instance";
 import { NotFoundError } from "./helpers/errors";
 
 const formDiff = async (req: Request, res: Response, next: NextFunction) => {

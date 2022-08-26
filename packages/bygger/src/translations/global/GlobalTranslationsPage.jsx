@@ -280,6 +280,7 @@ const GlobalTranslationsPage = ({
                 translations={currentTranslation}
                 languageCode={languageCode}
                 updateTranslation={updateTranslation}
+                deleteOneRow={deleteOneRow}
               />
             )}
           </Column>

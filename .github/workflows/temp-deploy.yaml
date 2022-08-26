@@ -1,0 +1,27 @@
+name: testdeploy prod-gcp
+on:
+  workflow_dispatch:
+    inputs:
+      imageVersion:
+        description: docker image version
+        required: true
+        default: 'c9ee5aead371b709010e7795ca83f03b570fde19'
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}/bygger:${{ inputs.imageVersion }}
+
+jobs:
+
+  deploy-bygger-to-prod:
+    name: "Deploy bygger to prod"
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to PROD"
+        env:
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "prod-gcp"
+          RESOURCE: "./packages/bygger/.nais/nais.yaml"
+          VARS: "./packages/bygger/.nais/prod.yaml"
+        uses: "nais/deploy/actions/deploy@v1"

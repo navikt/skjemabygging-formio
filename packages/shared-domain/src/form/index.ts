@@ -50,6 +50,11 @@ export interface FormPropertiesType {
   descriptionOfSignatures?: string;
 }
 
+export type FormPropertiesPublishing = Pick<
+  FormPropertiesType,
+  "modified" | "modifiedBy" | "published" | "publishedBy" | "publishedLanguages" | "unpublished" | "unpublishedBy"
+>;
+
 export interface Component {
   key: string;
   label: string;
