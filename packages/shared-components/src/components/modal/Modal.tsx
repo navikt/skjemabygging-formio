@@ -15,12 +15,21 @@ interface Props {
   appElement?: string | HTMLElement;
   title?: string;
   open?: boolean;
+  shouldCloseOnOverlayClick?: boolean;
   ariaLabel?: string;
   className?: string;
   children: React.ReactNode;
 }
 
-const Modal = ({ onClose, open = false, title, ariaLabel, className, children }: Props) => {
+const Modal = ({
+  onClose,
+  open = false,
+  shouldCloseOnOverlayClick = true,
+  title,
+  ariaLabel,
+  className,
+  children,
+}: Props) => {
   const styles = useModalStyles();
 
   return (
@@ -30,7 +39,7 @@ const Modal = ({ onClose, open = false, title, ariaLabel, className, children }:
       onClose={onClose}
       className={className ?? styles.modal}
       closeButton={true}
-      shouldCloseOnOverlayClick={true}
+      shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
     >
       <NavModal.Content>
         {title && (

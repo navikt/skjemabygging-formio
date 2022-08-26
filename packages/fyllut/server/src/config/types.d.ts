@@ -22,6 +22,7 @@ export type ConfigType = {
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;
+  isDelingslenke: boolean;
   idportenClientId: string;
   formioProjectUrl?: string;
   useFormioApi?: boolean;

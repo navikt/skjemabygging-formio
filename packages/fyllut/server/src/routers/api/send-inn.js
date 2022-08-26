@@ -29,8 +29,9 @@ const sendInn = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
+      const isTest = req.get("Fyllut-Is-Test") === "true";
       const { form, submission, attachments, language, translations = {} } = req.body;
-      const pdfByteArray = await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations);
+      const pdfByteArray = await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations, isTest);
       const body = {
         brukerId: idportenPid,
         skjemanr: form.properties.skjemanummer,

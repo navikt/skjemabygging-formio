@@ -15,7 +15,7 @@ export interface Props {
 
 const noop = () => {};
 
-const postToSendInn = async (http, baseUrl, form, submission, translations, currentLanguage) => {
+const postToSendInn = async (http, baseUrl, form, submission, translations, currentLanguage, isTest) => {
   const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
   const attachments = getRelevantAttachments(form, submission);
   return http.post(
@@ -27,20 +27,30 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       language: currentLanguage,
       attachments,
     },
-    {},
+    {
+      "Fyllut-Is-Test": isTest,
+    },
     { redirectToLocation: true }
   );
 };
 
 const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop }: Props) => {
   const { translate, currentLanguage } = useLanguages();
-  const { baseUrl, http } = useAppConfig();
+  const { baseUrl, http, config = {} } = useAppConfig();
   const [loading, setLoading] = useState(false);
 
   const sendInn = async () => {
     try {
       setLoading(true);
-      const response = await postToSendInn(http, baseUrl, form, submission, translations, currentLanguage);
+      const response = await postToSendInn(
+        http,
+        baseUrl,
+        form,
+        submission,
+        translations,
+        currentLanguage,
+        config.isDelingslenke
+      );
       onSuccess(response);
     } catch (err: any) {
       onError(err);
