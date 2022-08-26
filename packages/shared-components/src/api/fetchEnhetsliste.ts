@@ -3,7 +3,6 @@ import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 export const supportedEnhetstyper: Enhetstype[] = [
   "ALS",
   "ARK",
-  "FORVALTNING",
   "FPY",
   "FYLKE",
   "HMS",
@@ -15,7 +14,6 @@ export const supportedEnhetstyper: Enhetstype[] = [
   "LOKAL",
   "OKONOMI",
   "OPPFUTLAND",
-  "OTENESTE",
   "ROL",
   "TILTAK",
   "UTLAND",
