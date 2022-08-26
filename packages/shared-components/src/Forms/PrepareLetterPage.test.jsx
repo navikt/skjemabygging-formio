@@ -185,7 +185,7 @@ describe("PrepareLetterPage", () => {
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
 
         const enhetSelectList = screen.getAllByText(/^NAV-ENHET/);
-        expect(enhetSelectList).toHaveLength(7);
+        expect(enhetSelectList).toHaveLength(6);
         expect(screen.queryByText(enhetWithUnsupportedEnhetNr.navn)).toBeNull();
         expect(screen.queryByText(enhetWithUnsupportedEnhetstype.navn)).toBeNull();
       }
