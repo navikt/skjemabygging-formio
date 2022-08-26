@@ -6,7 +6,7 @@ const { useFormioApi, skjemaDir, formioProjectUrl } = config;
 const loadForms = async () => {
   let forms;
   if (useFormioApi) {
-    const select = "title,path,modified,properties.skjemanummer";
+    const select = "_id,title,path,modified,properties.skjemanummer";
     forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`);
   } else {
     forms = await loadAllJsonFilesFromDirectory(skjemaDir);
@@ -16,6 +16,7 @@ const loadForms = async () => {
 };
 
 const mapForm = (form) => ({
+  _id: form._id,
   title: form.title,
   path: form.path,
   modified: form.modified,
