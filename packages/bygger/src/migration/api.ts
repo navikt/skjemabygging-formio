@@ -1,11 +1,12 @@
 import { MigrationOptions } from "../../types/migration";
 import { createUrlParams } from "./utils";
 
-async function postJson(url, bodyAsJSON) {
+async function postJson(url, bodyAsJSON, token) {
   const result = await fetch(url, {
     method: "POST",
     headers: {
       "content-type": "application/json",
+      "Bygger-Formio-Token": token,
     },
     body: JSON.stringify(bodyAsJSON),
   });
@@ -29,7 +30,7 @@ export async function runMigrationDryRun(searchFilters: MigrationOptions, editOp
 
 export async function runMigrationWithUpdate(token, payload) {
   try {
-    return postJson("/api/migrate/update", { token, payload });
+    return postJson("/api/migrate/update", { payload }, token);
   } catch (error) {
     console.error(error);
     return [];
@@ -38,7 +39,7 @@ export async function runMigrationWithUpdate(token, payload) {
 
 export async function bulkPublish(token, payload) {
   try {
-    return postJson("/api/publish-bulk", { token, payload });
+    return postJson("/api/published-forms", { payload }, token);
   } catch (error) {
     console.error(error);
     throw error;

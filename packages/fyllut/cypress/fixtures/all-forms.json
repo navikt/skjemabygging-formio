@@ -1,0 +1,20 @@
+[
+  {
+    "_id": "60794139f8171a0000123456",
+    "title": "Testskjema 1",
+    "path": "nav123456",
+    "modified": "2022-05-24T08:37:29.071Z"
+  },
+  {
+    "_id": "61235506ffccaa0003123457",
+    "title": "Testskjema 2",
+    "path": "nav123457",
+    "modified": "2022-05-24T08:42:35.964Z"
+  },
+  {
+    "_id": "6128a04377cec70003123458",
+    "title": "Testskjema 3",
+    "path": "nav123458",
+    "modified": "2022-02-10T11:54:01.365Z"
+  }
+]

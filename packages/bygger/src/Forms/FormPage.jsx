@@ -28,10 +28,31 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   }, [loadForm, formPath]);
 
   const onChange = (changedForm) => {
-    if (JSON.stringify(changedForm) !== JSON.stringify(form)) {
+    if (formHasChanged(form, changedForm)) {
       setHasUnsavedChanged(true);
-      setForm(changedForm);
     }
+
+    setForm(changedForm);
+  };
+
+  const formHasChanged = (form, changedForm) => {
+    return JSON.stringify(removeIds(form)) !== JSON.stringify(removeIds(changedForm));
+  };
+
+  const removeIds = (object) => {
+    const clonedObject = {
+      ...object,
+    };
+
+    if (clonedObject.id) {
+      delete clonedObject.id;
+    }
+
+    if (clonedObject.components && clonedObject.components.length > 0) {
+      clonedObject.components = clonedObject.components.map((component) => removeIds(component));
+    }
+
+    return clonedObject;
   };
 
   const saveFormAndResetIsUnsavedChanges = async (form) => {

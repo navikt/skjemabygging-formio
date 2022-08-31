@@ -1,8 +1,11 @@
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import * as api from "../api";
 import BulkPublishPanel from "./BulkPublishPanel";
+
+Modal.setAppElement(document.createElement("div"));
 
 const properties: FormPropertiesType = {
   skjemanummer: "skjemanummer",

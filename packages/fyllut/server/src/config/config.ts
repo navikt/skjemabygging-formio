@@ -24,7 +24,7 @@ const sendInnConfig: SendInnConfig = {
 const localDevelopmentConfig: Partial<ConfigType> = {
   gitVersion: "local",
   useFormioApi: true,
-  formioProjectUrl: "https://formio-api-server.ekstern.dev.nav.no/jvcemxwcpghcqjn",
+  formioProjectUrl: "https://formio-api.dev.nav.no/jvcemxwcpghcqjn",
   forstesideUrl: "https://www.nav.no/soknader/api/forsteside",
   decoratorUrl: "https://www.nav.no/dekoratoren?simple=true",
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || "https://skjemabygging-proxy.dev-fss-pub.nais.io",
@@ -69,6 +69,7 @@ const config: ConfigType = {
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
+  isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
   idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
 };
 
