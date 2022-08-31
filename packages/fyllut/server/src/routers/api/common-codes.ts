@@ -24,6 +24,40 @@ const commonCodes = {
       next(e);
     }
   },
+
+  getCurrencies: async (req: Request, res: Response, next: NextFunction) => {
+    // As of 15.07.2022. Different languageCode like nn or en just results in same term,
+    // so no need to support req.query.languageCode
+    const languageCode = "nb";
+    const mostUsedCurr = [];
+    const currencyList = [];
+    const compareAscending = (a, b, locale) => a.localeCompare(b, locale);
+
+    try {
+      const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
+      for (const [key, values] of Object.entries(response.betydninger)) {
+        const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.tekst;
+        let newObj = { label: currencyName + " (" + key + ")", value: key };
+        if (key === "NOK" || key === "EUR" || key === "SEK") {
+          mostUsedCurr.push(newObj);
+        } else {
+          currencyList.push(newObj);
+        }
+      }
+      sortAsc(currencyList);
+      sortAsc(mostUsedCurr);
+      function sortAsc(arr) {
+        let sortedarr = arr.sort((a, b) =>
+          compareAscending(a.label.toUpperCase(), b.label.toUpperCase(), languageCode)
+        );
+        return sortedarr;
+      }
+      const options = mostUsedCurr.concat(currencyList);
+      res.send(options);
+    } catch (e) {
+      next(e);
+    }
+  },
 };
 
 /**

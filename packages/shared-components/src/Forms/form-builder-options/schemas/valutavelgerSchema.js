@@ -7,7 +7,7 @@ const valutavelgerSchema = () => ({
   clearOnHide: true,
   validateOn: "blur",
   data: {
-    url: "http://localhost:8081/fyllut/api/currencies?lang=nb",
+    url: "https://www.nav.no/fyllut/api/common-codes/currencies?lang=nb",
   },
   dataSrc: "url",
   disableLimit: true,

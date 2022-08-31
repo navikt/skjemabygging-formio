@@ -97,6 +97,30 @@ function handleContainer(component, submission, formSummaryObject, translate, ev
   }
 }
 
+function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  if (
+    submissionValue === null ||
+    submissionValue === undefined ||
+    submissionValue === "" ||
+    (type === "landvelger" && Object.keys(submissionValue).length === 0) ||
+    (type === "valutavelger" && Object.keys(submissionValue).length === 0)
+  ) {
+    return formSummaryObject;
+  }
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key: componentKey,
+      type,
+      value: formatValue(component, submissionValue, translate),
+    },
+  ];
+}
+
 function handleDataGridRows(component, submission, translate) {
   const { key, rowTitle, components } = component;
   const dataGridSubmission = FormioUtils.getValue(submission, key) || [];
@@ -203,30 +227,6 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey, tra
   return formSummaryObject;
 }
 
-function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
-  const { key, label, type } = component;
-  const componentKey = createComponentKey(parentContainerKey, key);
-  const submissionValue = FormioUtils.getValue(submission, componentKey);
-  if (
-    submissionValue === null ||
-    submissionValue === undefined ||
-    submissionValue === "" ||
-    (type === "landvelger" && Object.keys(submissionValue).length === 0) ||
-    (type === "valutavelger" && Object.keys(submissionValue).length === 0)
-  ) {
-    return formSummaryObject;
-  }
-  return [
-    ...formSummaryObject,
-    {
-      label: translate(label),
-      key: componentKey,
-      type,
-      value: formatValue(component, submissionValue, translate),
-    },
-  ];
-}
-
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, image, altText, widthPercent, showInPdf } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -316,7 +316,7 @@ export function handleComponent(
           translate
         );
       } else {
-        return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
+        return handleContainer(component, submission, formSummaryObject, translate);
       }
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate);

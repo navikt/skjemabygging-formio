@@ -6,7 +6,6 @@ import tokenxHandler from "../../security/tokenxHandler.js";
 import commonCodes from "./common-codes";
 import config from "./config.js";
 import countries from "./countries.js";
-import currencies from "./currencies.js";
 import enhetsliste from "./enhetsliste.js";
 import foersteside from "./foersteside.js";
 import form from "./form.js";
@@ -24,7 +23,6 @@ const apiRouter = express.Router();
 apiRouter.all("*", idportenAuthHandler);
 apiRouter.get("/config", config.get);
 apiRouter.get("/countries", countries.get);
-apiRouter.get("/currencies", currencies.get);
 apiRouter.get("/enhetsliste", azureAccessTokenHandler, enhetsliste.get);
 apiRouter.get("/forms", forms.get);
 apiRouter.get("/forms/:formPath", form.get);
@@ -36,5 +34,6 @@ apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
+apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
 
 export default apiRouter;
