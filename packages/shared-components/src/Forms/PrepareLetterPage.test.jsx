@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
+import { AppConfigProvider } from "../configContext";
 import pdf from "../util/pdf";
 import { PrepareLetterPage } from "./PrepareLetterPage";
 import forstesideMock from "./testdata/forsteside-mock";
@@ -19,6 +20,19 @@ const RESPONSE_HEADERS = {
   headers: {
     "content-type": "application/json",
   },
+  status: 200,
+};
+const RESPONSE_HEADERS_PLAIN_TEXT = {
+  headers: {
+    "content-type": "text/plain",
+  },
+  status: 200,
+};
+const RESPONSE_HEADERS_ERROR = {
+  headers: {
+    "content-type": "application/json",
+  },
+  status: 500,
 };
 
 const enhetWithUnsupportedEnhetNr = {
@@ -87,7 +101,9 @@ function renderPrepareLetterPage(
 ) {
   render(
     <MemoryRouter>
-      <PrepareLetterPage form={form} submission={submission} translations={translations} />
+      <AppConfigProvider enableFrontendLogger>
+        <PrepareLetterPage form={form} submission={submission} translations={translations} />
+      </AppConfigProvider>
     </MemoryRouter>
   );
 }
@@ -171,6 +187,80 @@ describe("PrepareLetterPage", () => {
 
         const options = screen.getAllByText(/^NAV-ENHET/).map((element) => element.textContent);
         expect(options).toEqual(["NAV-ENHET ALS", "NAV-ENHET ARK", "NAV-ENHET LOKAL"]);
+      });
+    });
+
+    describe("When fetched enhetstype-list does not include any matching form property 'enhetstyper'", () => {
+      const SKJEMANUMMER = "NAV 12.34-56";
+
+      beforeEach(async () => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/enhetsliste")) {
+            return Promise.resolve(new Response(JSON.stringify(mockEnhetsListe), RESPONSE_HEADERS));
+          }
+          if (url.endsWith("/api/log/error")) {
+            return Promise.resolve(new Response("OK", RESPONSE_HEADERS_PLAIN_TEXT));
+          }
+          console.error(`Manglende testoppsett: Ukjent url ${url}`);
+        });
+        renderPrepareLetterPage(
+          formWithProperties({
+            enhetMaVelgesVedPapirInnsending: true,
+            enhetstyper: ["GAMMEL_TYPE"],
+            skjemanummer: SKJEMANUMMER,
+          })
+        );
+        await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+      });
+
+      it("select list is not renderes", () => {
+        const enhetSelectList = screen.queryAllByText(/^NAV-ENHET/);
+        expect(enhetSelectList).toHaveLength(0);
+      });
+
+      it("fetch error message is not rendered", () => {
+        const errorMessage = screen.queryByText(TEXTS.statiske.prepareLetterPage.entityFetchError);
+        expect(errorMessage).not.toBeInTheDocument();
+      });
+
+      it("renders message explaining that no match is found", () => {
+        const errorMessage = screen.queryByText(TEXTS.statiske.prepareLetterPage.entityNoMatchError);
+        expect(errorMessage).toBeInTheDocument();
+      });
+
+      it("reports error to backend", async () => {
+        await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+        expect(fetchMock.mock.calls[1][0]).toEqual("/api/log/error");
+        const request = {
+          path: fetchMock.mock.calls[1][0],
+          body: JSON.parse(fetchMock.mock.calls[1][1].body),
+        };
+        expect(request.path).toEqual("/api/log/error");
+        expect(request.body.message).toEqual("Ingen relevante enheter funnet");
+        expect(request.body.metadata.skjemanummer).toEqual(SKJEMANUMMER);
+      });
+    });
+
+    describe("When fetching of enhetsliste fails", () => {
+      beforeEach(async () => {
+        fetchMock.mockImplementation((url) => {
+          if (url.endsWith("/api/enhetsliste")) {
+            return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS_ERROR));
+          }
+          console.error(`Manglende testoppsett: Ukjent url ${url}`);
+        });
+        renderPrepareLetterPage(formWithProperties({ enhetMaVelgesVedPapirInnsending: true, enhetstyper }));
+        await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+      });
+
+      it("select list is not renderes", () => {
+        const enhetSelectList = screen.queryAllByText(/^NAV-ENHET/);
+        expect(enhetSelectList).toHaveLength(0);
+      });
+
+      it("fetch error message is rendered", () => {
+        const errorMessage = screen.getByText(TEXTS.statiske.prepareLetterPage.entityFetchError);
+        expect(errorMessage).toBeInTheDocument();
       });
     });
 

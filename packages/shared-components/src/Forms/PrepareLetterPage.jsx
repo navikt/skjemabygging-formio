@@ -181,18 +181,19 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
 
 export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  const { fyllutBaseURL, baseUrl } = useAppConfig();
+  const { fyllutBaseURL, baseUrl, logger } = useAppConfig();
   const { translate } = useLanguages();
   const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const [enhetsListe, setEnhetsListe] = useState(undefined);
+  const [enhetsListeError, setEnhetsListeError] = useState(false);
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
     else setGoBackURL(state.previousPage);
   }, [state, formUrl]);
 
-  const { enhetMaVelgesVedPapirInnsending, enhetstyper } = form.properties;
+  const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer } = form.properties;
 
   useEffect(() => {
     if (enhetMaVelgesVedPapirInnsending) {
@@ -202,16 +203,27 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
             .filter(isEnhetSupported(enhetstyper))
             .sort((enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb"))
         )
-        .then(setEnhetsListe);
+        .then(setEnhetsListe)
+        .catch(() => setEnhetsListeError(true));
     }
   }, [baseUrl, enhetMaVelgesVedPapirInnsending, enhetstyper]);
+
+  useEffect(() => {
+    if (logger && enhetsListe && enhetsListe.length === 0) {
+      logger.error("Ingen relevante enheter funnet", { skjemanummer, enhetstyper });
+    }
+  }, [enhetsListe, enhetstyper, logger, skjemanummer]);
+
+  if (enhetMaVelgesVedPapirInnsending && enhetsListeError) {
+    return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityFetchError)} />;
+  }
 
   if (enhetMaVelgesVedPapirInnsending && enhetsListe === undefined) {
     return <LoadingComponent />;
   }
 
   if (enhetMaVelgesVedPapirInnsending && enhetsListe.length === 0) {
-    return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityFetchError)} />;
+    return <ErrorPage errorMessage={translate(TEXTS.statiske.prepareLetterPage.entityNoMatchError)} />;
   }
 
   const sections = [];

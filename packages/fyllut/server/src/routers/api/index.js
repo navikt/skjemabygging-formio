@@ -1,5 +1,6 @@
 import express from "express";
 import { config as appConfig } from "../../config/config";
+import { rateLimiter } from "../../middleware/ratelimit";
 import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
 import idportenAuthHandler from "../../security/idportenAuthHandler.js";
 import tokenxHandler from "../../security/tokenxHandler.js";
@@ -11,6 +12,7 @@ import foersteside from "./foersteside.js";
 import form from "./form.js";
 import forms from "./forms.js";
 import globalTranslations from "./global-translations.js";
+import log from "./log";
 import mottaksadresser from "./mottaksadresser.js";
 import pdf from "./pdf.js";
 import sendInn from "./send-inn.js";
@@ -34,5 +36,6 @@ apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
+apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
 export default apiRouter;

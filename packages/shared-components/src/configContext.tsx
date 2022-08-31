@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import FrontendLogger from "./api/FrontendLogger";
 import baseHttp from "./api/http";
 
 type FeatureTogglesMap = {
@@ -14,9 +15,13 @@ interface AppConfigContextType {
   app?: ApplicationName;
   config?: Record<string, string | boolean | object>;
   http?: typeof baseHttp;
+  logger?: FrontendLogger;
 }
 
-type AppConfigProviderProps = { children: React.ReactNode } & AppConfigContextType;
+type AppConfigProviderProps = {
+  children: React.ReactNode;
+  enableFrontendLogger?: boolean;
+} & AppConfigContextType;
 
 const AppConfigContext = React.createContext<AppConfigContextType>({});
 
@@ -30,10 +35,22 @@ function AppConfigProvider({
   app,
   config,
   http = baseHttp,
+  enableFrontendLogger = false,
 }: AppConfigProviderProps) {
+  const logger = new FrontendLogger(baseUrl, enableFrontendLogger);
   return (
     <AppConfigContext.Provider
-      value={{ dokumentinnsendingBaseURL, baseUrl, fyllutBaseURL, featureToggles, submissionMethod, app, config, http }}
+      value={{
+        dokumentinnsendingBaseURL,
+        baseUrl,
+        fyllutBaseURL,
+        featureToggles,
+        submissionMethod,
+        app,
+        config,
+        http,
+        logger,
+      }}
     >
       {children}
     </AppConfigContext.Provider>

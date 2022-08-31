@@ -40,6 +40,7 @@ export const statiske = {
     selectEntityDefault: "Velg enhet",
     entityNotSelectedError: "Førsteside kan ikke genereres før du har valgt enhet",
     entityFetchError: "En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.",
+    entityNoMatchError: "En feil har oppstått. Ingen relevante enheter funnet. Vi har registrert problemet.",
     firstSectionTitle: "Last ned og skriv ut dokumentene til saken din",
     firstDescription:
       "Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.",
