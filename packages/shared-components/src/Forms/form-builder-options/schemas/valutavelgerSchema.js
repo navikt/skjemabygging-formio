@@ -2,7 +2,7 @@ const valutavelgerSchema = () => ({
   label: "Velg valuta",
   type: "valutavelger",
   key: "valutavelger",
-  fieldSize: "input--s",
+  fieldSize: "input--m",
   input: true,
   clearOnHide: true,
   validateOn: "blur",

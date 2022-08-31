@@ -82,9 +82,12 @@ const styles = {
   "& .components-row .builder-components, .components-row": {
     display: "flex",
     flexWrap: "wrap",
-    gap: "24px",
+    columnGap: "24px",
   },
-  "& .formio-component-valutavelger .formio-choices": {
+  "& .formio-component-angiValutaOgBelop .components-row > div ": {
+    maxWidth: "100%",
+  },
+  "& .formio-component-angiValutaOgBelop .components-row .formio-component-valutavelger ": {
     width: "224px",
   },
   "& .formio-component-valutavelger .formio-form .choices__list--dropdown .choices__input, .choices__list--single .choices__item":
