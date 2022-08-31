@@ -7,6 +7,7 @@ import commonCodes from "./common-codes";
 import config from "./config.js";
 import countries from "./countries.js";
 import enhetsliste from "./enhetsliste.js";
+import exstream from "./exstream";
 import foersteside from "./foersteside.js";
 import form from "./form.js";
 import forms from "./forms.js";
@@ -34,5 +35,6 @@ apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
+apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
 
 export default apiRouter;
