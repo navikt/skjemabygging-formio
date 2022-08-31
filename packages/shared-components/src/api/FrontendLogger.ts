@@ -1,43 +1,47 @@
+import baseHttp from "../api/http";
+
 type LogLevel = "info" | "error";
+type BaseHttp = typeof baseHttp;
+
+const noop = () => {};
 
 class FrontendLogger {
+  private readonly http: BaseHttp;
   private readonly baseUrl: string;
   private readonly enabled: boolean;
 
-  constructor(baseUrl: string = "", enabled: boolean = false) {
+  constructor(http: BaseHttp, baseUrl: string = "", enabled: boolean = false) {
+    this.http = http;
     this.baseUrl = baseUrl;
     this.enabled = enabled;
   }
 
   info(message: string, metadata?: object) {
-    this.log("info", message, metadata);
+    this._info(message, metadata).then(noop);
   }
 
   error(message: string, metadata?: object) {
-    this.log("error", message, metadata);
+    this._error(message, metadata).then(noop);
   }
 
-  private log(level: LogLevel, message: string, metadata?: object) {
+  async _info(message: string, metadata?: object) {
+    return this.log("info", message, metadata);
+  }
+
+  async _error(message: string, metadata?: object) {
+    return this.log("error", message, metadata);
+  }
+
+  private async log(level: LogLevel, message: string, metadata?: object) {
     if (this.enabled) {
-      try {
-        fetch(`${this.baseUrl}/api/log/${level}`, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            message,
-            metadata,
-          }),
-        }).then((response) => {
-          if (!response.ok) {
-            console.log(`Failed to log ${level}: ${message} (status: ${response.status})`);
-          }
-        });
-      } catch (err) {
-        console.log(`Failed to log ${level}: ${message}`, err);
-      }
+      return this.http
+        .post(`${this.baseUrl}/api/log/${level}`, {
+          message,
+          metadata,
+        })
+        .catch(noop);
     }
+    return Promise.resolve();
   }
 }
 

@@ -37,7 +37,7 @@ function AppConfigProvider({
   http = baseHttp,
   enableFrontendLogger = false,
 }: AppConfigProviderProps) {
-  const logger = new FrontendLogger(baseUrl, enableFrontendLogger);
+  const logger = new FrontendLogger(http, baseUrl, enableFrontendLogger);
   return (
     <AppConfigContext.Provider
       value={{
