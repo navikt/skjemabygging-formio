@@ -1,6 +1,7 @@
 import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
+import testformCustomConditional from "./testdata/form-alertstripe-cusom-conditional";
 
 const {
   createDummyContainerElement,
@@ -52,6 +53,23 @@ describe("Map and evaluate conditionals", () => {
     const data = { radiopanel: "ja" };
 
     expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ alert1: true, alert2: false });
+  });
+
+  describe("Form containing alertstripe with custom conditional", () => {
+    it("should not display alertstripe when vegghengt is not present in submission data", () => {
+      const { form, submissionVegghengtOmitted } = testformCustomConditional;
+      expect(mapAndEvaluateConditionals(form, submissionVegghengtOmitted.data)).toEqual({ alertstripe: false });
+    });
+
+    it("should not display alertstripe when vegghengt=nei", () => {
+      const { form, submissionVegghengtNei } = testformCustomConditional;
+      expect(mapAndEvaluateConditionals(form, submissionVegghengtNei.data)).toEqual({ alertstripe: false });
+    });
+
+    it("should display alertstripe when vegghengt=ja", () => {
+      const { form, submissionVegghengtJa } = testformCustomConditional;
+      expect(mapAndEvaluateConditionals(form, submissionVegghengtJa.data)).toEqual({ alertstripe: true });
+    });
   });
 });
 

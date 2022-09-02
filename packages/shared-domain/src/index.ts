@@ -30,6 +30,7 @@ import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest
 import TEXTS from "./texts";
 import dateUtils from "./utils/date";
 import featureUtils, { FeatureTogglesMap } from "./utils/featureUtils";
+import navFormioUtils from "./utils/formio";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
 import navFormUtils from "./utils/navFormUtils";
@@ -42,6 +43,7 @@ export {
   createFormSummaryObject,
   TEXTS,
   MockedComponentObjectForTest,
+  navFormioUtils,
   navFormUtils,
   stringUtils,
   objectUtils,
