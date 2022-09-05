@@ -251,6 +251,9 @@ export function handleComponent(
   translate,
   evaluatedConditionals = {}
 ) {
+  if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
+    return formSummaryObject;
+  }
   switch (component.type) {
     case "panel":
       return handlePanel(
@@ -301,6 +304,9 @@ function evaluateConditionals(components = [], form, data, row = []) {
       return clone;
     })
     .flatMap((component) => {
+      if (!FormioUtils.checkCondition(component, row, data, form)) {
+        return [{ key: component.key, value: false }];
+      }
       switch (component.type) {
         case "container":
           return evaluateConditionals(component.components, form, data, data[component.key]);
