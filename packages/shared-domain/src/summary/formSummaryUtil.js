@@ -1,6 +1,7 @@
 import FormioUtils from "formiojs/utils";
 import moment from "moment";
 import TEXTS from "../texts";
+import sanitizeJavaScriptCode from "../utils/formio/sanitize-javascript-code";
 import { addToMap } from "../utils/objectUtils";
 import { toPascalCase } from "../utils/stringUtils";
 
@@ -250,6 +251,9 @@ export function handleComponent(
   translate,
   evaluatedConditionals = {}
 ) {
+  if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
+    return formSummaryObject;
+  }
   switch (component.type) {
     case "panel":
       return handlePanel(
@@ -293,21 +297,30 @@ const shouldShowInSummary = (componentKey, evaluatedConditionals) =>
   evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
 
 function evaluateConditionals(components = [], form, data, row = []) {
-  return components.flatMap((component) => {
-    switch (component.type) {
-      case "container":
-        return evaluateConditionals(component.components, form, data, data[component.key]);
-      case "panel":
-      case "fieldset":
-      case "navSkjemagruppe":
-        return evaluateConditionals(component.components, form, data);
-      case "htmlelement":
-      case "alertstripe":
-        return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
-      default:
-        return [];
-    }
-  });
+  return components
+    .map((component) => {
+      const clone = JSON.parse(JSON.stringify(component));
+      clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
+      return clone;
+    })
+    .flatMap((component) => {
+      if (!FormioUtils.checkCondition(component, row, data, form)) {
+        return [{ key: component.key, value: false }];
+      }
+      switch (component.type) {
+        case "container":
+          return evaluateConditionals(component.components, form, data, data[component.key]);
+        case "panel":
+        case "fieldset":
+        case "navSkjemagruppe":
+          return evaluateConditionals(component.components, form, data);
+        case "htmlelement":
+        case "alertstripe":
+          return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
+        default:
+          return [];
+      }
+    });
 }
 
 export function mapAndEvaluateConditionals(form, data = {}) {

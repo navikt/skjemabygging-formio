@@ -1,6 +1,9 @@
+import { flattenComponents } from "../utils/navFormUtils";
 import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
+import testformCustomConditional from "./testdata/form-alertstripe-cusom-conditional";
+import testformContainerConditional from "./testdata/form-container-conditional";
 
 const {
   createDummyContainerElement,
@@ -21,6 +24,8 @@ const {
   createDummyDayComponent,
   createDummyLandvelger,
 } = MockedComponentObjectForTest;
+
+const onlyAlertstripes = (comp) => comp.type === "alertstripe";
 
 const mockedTranslate = (value) => {
   switch (value) {
@@ -807,6 +812,73 @@ describe("When creating form summary object", () => {
           },
         ]),
       ]);
+    });
+  });
+
+  describe("Alertstripe with custom conditional", () => {
+    it("should not be visible when vegghengt is not present in submission data", () => {
+      const actual = createFormSummaryObject(
+        testformCustomConditional.form,
+        testformCustomConditional.submissionVegghengtOmitted,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(0);
+    });
+
+    it("should not be visible when vegghengt=nei", () => {
+      const actual = createFormSummaryObject(
+        testformCustomConditional.form,
+        testformCustomConditional.submissionVegghengtNei,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(0);
+    });
+
+    it("should be visible when vegghengt=ja", () => {
+      const actual = createFormSummaryObject(
+        testformCustomConditional.form,
+        testformCustomConditional.submissionVegghengtJa,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(1);
+      expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker");
+    });
+  });
+
+  describe("Alertstripe inside container with conditional", () => {
+    it("should not be visible when show=false for container", () => {
+      const actual = createFormSummaryObject(
+        testformContainerConditional.form,
+        testformContainerConditional.submissionKjokken,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(0);
+    });
+
+    it("should be visible when show=true for containerBad", () => {
+      const actual = createFormSummaryObject(
+        testformContainerConditional.form,
+        testformContainerConditional.submissionBad,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(1);
+      expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker (bad)");
+    });
+
+    it("should be visible when show=true for containerStue", () => {
+      const actual = createFormSummaryObject(
+        testformContainerConditional.form,
+        testformContainerConditional.submissionStue,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(1);
+      expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker (stue)");
     });
   });
 
