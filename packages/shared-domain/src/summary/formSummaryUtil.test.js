@@ -64,7 +64,6 @@ describe("Map and evaluate conditionals", () => {
 describe("Image component with custom conditional", () => {
   it("should not be visible when inputCondition=doNotShowImg", () => {
     const { imgForm, submissionDoNotShowConditionalInput } = testImgFormCustomConditional;
-    console.log("BAA", mapAndEvaluateConditionals(imgForm, submissionDoNotShowConditionalInput));
     expect(mapAndEvaluateConditionals(imgForm, submissionDoNotShowConditionalInput)).toEqual({ image1: false });
   });
 
