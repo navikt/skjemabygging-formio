@@ -213,19 +213,19 @@ describe("PrepareLetterPage", () => {
         await waitFor(() => expect(fetchMock).toHaveBeenCalled());
       });
 
-      it("select list is not renderes", () => {
+      it("defaults to rendering complete enhetsliste", () => {
+        expect(fetchMock.mock.calls[0][0]).toEqual("/api/enhetsliste");
+
+        const enhetSelector = screen.getByText(TEXTS.statiske.prepareLetterPage.selectEntityDefault);
+        fireEvent.keyDown(enhetSelector, DOWN_ARROW);
+
         const enhetSelectList = screen.queryAllByText(/^NAV-ENHET/);
-        expect(enhetSelectList).toHaveLength(0);
+        expect(enhetSelectList).toHaveLength(6);
       });
 
       it("fetch error message is not rendered", () => {
         const errorMessage = screen.queryByText(TEXTS.statiske.prepareLetterPage.entityFetchError);
         expect(errorMessage).not.toBeInTheDocument();
-      });
-
-      it("renders message explaining that no match is found", () => {
-        const errorMessage = screen.queryByText(TEXTS.statiske.prepareLetterPage.entityNoMatchError);
-        expect(errorMessage).toBeInTheDocument();
       });
 
       it("reports error to backend", async () => {
