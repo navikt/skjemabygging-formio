@@ -315,6 +315,7 @@ function evaluateConditionals(components = [], form, data, row = []) {
         case "navSkjemagruppe":
           return evaluateConditionals(component.components, form, data);
         case "htmlelement":
+        case "image":
         case "alertstripe":
           return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
         default:
