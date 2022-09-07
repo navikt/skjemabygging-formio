@@ -183,6 +183,7 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
   const { key, contentForPdf, type } = component;
+
   if (shouldShowInSummary(key, evaluatedConditionals) && contentForPdf) {
     const componentKey = createComponentKey(parentContainerKey, key);
     return [
@@ -224,7 +225,6 @@ function handleField(component, submission, formSummaryObject, parentContainerKe
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, image, altText, widthPercent, showInPdf } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
-
   if (image.length > 0 && image[0].url) {
     return [
       ...formSummaryObject,
@@ -315,6 +315,7 @@ function evaluateConditionals(components = [], form, data, row = []) {
         case "navSkjemagruppe":
           return evaluateConditionals(component.components, form, data);
         case "htmlelement":
+        case "image":
         case "alertstripe":
           return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
         default:
