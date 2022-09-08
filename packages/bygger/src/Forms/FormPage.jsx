@@ -99,6 +99,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
             form={form}
             testFormUrl={`${url}/view/${firstPanelSlug}`}
             formSettingsUrl={`${url}/settings`}
+            editFormUrl={`${url}/edit`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -106,13 +107,19 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
           />
         </Route>
         <Route path={`${url}/view`}>
-          <TestFormPage form={form} editFormUrl={`${url}/edit`} formSettingsUrl={`${url}/settings`} />
+          <TestFormPage
+            form={form}
+            editFormUrl={`${url}/edit`}
+            formSettingsUrl={`${url}/settings`}
+            testFormUrl={`${url}/view/${firstPanelSlug}`}
+          />
         </Route>
         <Route path={`${url}/settings`}>
           <FormSettingsPage
             form={form}
             editFormUrl={`${url}/edit`}
             testFormUrl={`${url}/view/${firstPanelSlug}`}
+            formSettingsUrl={`${url}/settings`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}

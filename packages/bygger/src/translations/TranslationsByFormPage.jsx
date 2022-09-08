@@ -3,9 +3,8 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import { Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
@@ -36,7 +35,6 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
   const [form, setForm] = useState();
   const [status, setStatus] = useState("LOADING");
-
   const history = useHistory();
   const { translations } = useI18nState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
@@ -81,16 +79,27 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           visSkjemaliste: false,
           visLagNyttSkjema: false,
           visOversettelseliste: true,
+          visSkjemaMeny: true,
+          links: [
+            {
+              label: "Innstillinger",
+              url: `/forms/${path}/settings`,
+            },
+            {
+              label: "Forhåndsvis",
+              url: `/forms/${path}/view/veiledning`,
+            },
+            {
+              label: "Rediger skjema",
+              url: `/forms/${path}/edit`,
+            },
+            {
+              label: "Språk",
+              url: `/translations/${form.path}`,
+            },
+          ],
         }}
       >
-        <ActionRow>
-          <Link className="knapp" to={`/forms/${path}/edit`}>
-            Rediger skjema
-          </Link>
-          <Link className="knapp" to={`/forms/${path}/view/skjema${languageCode ? `?lang=${languageCode}` : ""}`}>
-            Forhåndsvis
-          </Link>
-        </ActionRow>
         <Row>
           <Column className={styles.mainCol}>
             <TranslationsFormPage

@@ -2,7 +2,6 @@ import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
-import { ToggleGruppe } from "nav-frontend-toggle";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -228,29 +227,31 @@ const GlobalTranslationsPage = ({
           title: "Globale oversettelser",
           visOversettelseliste: true,
           visLagNyttSkjema: false,
+          visOversettelsesMeny: true,
+          links: [
+            {
+              label: "Skjematekster",
+              url: `/translations/global/${languageCode}/skjematekster`,
+              dataKey: tags.SKJEMATEKSTER,
+            },
+            {
+              label: "Grensesnitt",
+              url: `/translations/global/${languageCode}/grensesnitt`,
+              dataKey: tags.GRENSESNITT,
+            },
+            {
+              label: "Statiske tekster",
+              url: `/translations/global/${languageCode}/statiske-tekster`,
+              dataKey: tags.STATISKE_TEKSTER,
+            },
+            {
+              label: "Validering",
+              url: `/translations/global/${languageCode}/validering`,
+              dataKey: tags.VALIDERING,
+            },
+          ],
         }}
       >
-        <ToggleGruppe
-          className={classes.toggleGruppe}
-          defaultToggles={[
-            {
-              children: "Skjematekster",
-              "data-key": tags.SKJEMATEKSTER,
-              pressed: selectedTag === tags.SKJEMATEKSTER,
-            },
-            { children: "Grensesnitt", "data-key": tags.GRENSESNITT, pressed: selectedTag === tags.GRENSESNITT },
-            {
-              children: "Statiske tekster",
-              "data-key": tags.STATISKE_TEKSTER,
-              pressed: selectedTag === tags.STATISKE_TEKSTER,
-            },
-            { children: "Validering", "data-key": tags.VALIDERING, pressed: selectedTag === tags.VALIDERING },
-          ]}
-          onChange={(event) => {
-            const newTag = event.target.getAttribute("data-key");
-            history.push(`/translations/global/${languageCode}/${newTag}`);
-          }}
-        />
         <Row className={classes.titleRow}>
           <Innholdstittel>
             {languageCode && languageCode !== "undefined" ? languagesInNorwegian[languageCode] : ""}

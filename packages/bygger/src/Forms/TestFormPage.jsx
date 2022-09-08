@@ -1,32 +1,38 @@
 import { FyllUtRouter, useAppConfig, useLanguageCodeFromURL } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
-import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import ActionRow from "../components/layout/ActionRow";
 import { useI18nState } from "../context/i18n/I18nContext";
 
-export function TestFormPage({ editFormUrl, form, formSettingsUrl }) {
+export function TestFormPage({ editFormUrl, testFormUrl, form, formSettingsUrl, visSkjemaMeny }) {
   const { featureToggles } = useAppConfig();
   const currentLanguage = useLanguageCodeFromURL();
   const { translationsForNavForm } = useI18nState();
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Forhåndsvisning", visSkjemaliste: true }}>
-      <ActionRow>
-        {formSettingsUrl && (
-          <Link className="knapp" to={formSettingsUrl}>
-            Innstillinger
-          </Link>
-        )}
-        <Link className="knapp" to={editFormUrl}>
-          Rediger
-        </Link>
-        {featureToggles.enableTranslations && (
-          <Link className="knapp" to={`/translations/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`}>
-            Oversettelse
-          </Link>
-        )}
-      </ActionRow>
+    <AppLayoutWithContext
+      navBarProps={{
+        title: "Forhåndsvisning",
+        visSkjemaMeny: true,
+        links: [
+          {
+            label: "Innstillinger",
+            url: formSettingsUrl,
+          },
+          {
+            label: "Forhåndsvis",
+            url: testFormUrl,
+          },
+          {
+            label: "Rediger skjema",
+            url: editFormUrl,
+          },
+          {
+            label: "Språk",
+            url: `/translations/${form.path}${currentLanguage ? `/${currentLanguage}` : ""}`,
+          },
+        ],
+      }}
+    >
       <FyllUtRouter form={form} translations={featureToggles.enableTranslations && translationsForNavForm} />
     </AppLayoutWithContext>
   );

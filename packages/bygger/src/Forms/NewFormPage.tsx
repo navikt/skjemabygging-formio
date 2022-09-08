@@ -66,7 +66,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true }}>
+    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema" }}>
       <main className={styles.root}>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} />
         <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
