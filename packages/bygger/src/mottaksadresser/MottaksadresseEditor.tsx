@@ -75,6 +75,7 @@ const MottaksadresseEditor = ({
             <div>
               {mottaksadresse.data.postnummer} {mottaksadresse.data.poststed}
             </div>
+            {mottaksadresse.data.temakoder && <div>Tema: {mottaksadresse.data.temakoder}</div>}
           </>
         )}
         <div>
