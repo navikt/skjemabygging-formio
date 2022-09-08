@@ -24,6 +24,7 @@ const {
   createPanelObject,
   createDummyDayComponent,
   createDummyLandvelger,
+  createDummyCheckbox,
 } = MockedComponentObjectForTest;
 
 const onlyAlertstripes = (comp) => comp.type === "alertstripe";
@@ -413,6 +414,13 @@ describe("When handling component", () => {
 
     it("does not add anything if no option is selected (current version of landvelger)", () => {
       const actual = handleComponent(createDummyLandvelger(), { data: { land: {} } }, [], "", mockedTranslate);
+      expect(actual).toEqual([]);
+    });
+  });
+
+  describe("Checkbox", () => {
+    it("does not add anything if not selected", () => {
+      const actual = handleComponent(createDummyCheckbox(), { label: { key: "" } }, [], "", mockedTranslate);
       expect(actual).toEqual([]);
     });
   });

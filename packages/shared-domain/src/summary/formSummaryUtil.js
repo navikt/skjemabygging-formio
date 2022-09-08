@@ -181,6 +181,26 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
   ];
 }
 
+function handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+
+  if (!submissionValue) {
+    return [...formSummaryObject];
+  } else {
+    return [
+      ...formSummaryObject,
+      {
+        label: translate(label),
+        key: componentKey,
+        type,
+        value: formatValue(component, submissionValue, translate),
+      },
+    ];
+  }
+}
+
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
   const { key, contentForPdf, type } = component;
 
@@ -276,6 +296,8 @@ export function handleComponent(
       return handleDataGrid(component, submission, formSummaryObject, translate);
     case "selectboxes":
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
+    case "navCheckbox":
+      return handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate);
     case "fieldset":
     case "navSkjemagruppe":
       return handleFieldSet(
