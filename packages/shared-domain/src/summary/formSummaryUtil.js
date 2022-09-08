@@ -198,12 +198,6 @@ function handleCheckBox(component, submission, formSummaryObject, parentContaine
       },
     ];
   }
-
-  if (submissionValue === null || submissionValue === undefined || submissionValue === "") {
-    return formSummaryObject;
-    console.log("submissionValue", submissionValue);
-  }
-  console.log("submissionValue2", submissionValue);
 }
 
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
