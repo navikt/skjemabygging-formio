@@ -1,10 +1,11 @@
-import { NextFunction, Response } from "express";
-import { createRemoteJWKSet, FlattenedJWSInput, JWSHeaderParameters, JWTPayload, jwtVerify } from "jose";
+import { NextFunction, Request, Response } from "express";
+import { createRemoteJWKSet, FlattenedJWSInput, JWSHeaderParameters, jwtVerify } from "jose";
 import { GetKeyFunction } from "jose/dist/types/types";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import { ByggerRequest, User } from "../types";
+import { AzureAdTokenPayload, User } from "../types/custom";
 import { getDevUser } from "../util/devUser";
+import { adGroups } from "./azureAd";
 
 function toExpiredDateString(exp?: number) {
   if (exp) {
@@ -19,16 +20,16 @@ const getAzureRemoteJWKSet: GetKeyFunction<JWSHeaderParameters, FlattenedJWSInpu
   new URL(config.azure.openidConfigJwksUri)
 );
 
-const verifyToken = async (token: string) => {
+const verifyToken = async (token: string): Promise<AzureAdTokenPayload> => {
   const verified = await jwtVerify(token, getAzureRemoteJWKSet, {
     algorithms: ["RS256"],
     issuer: config.azure.openidConfigIssuer,
     audience: config.azure.clientId,
   });
-  return verified.payload;
+  return verified.payload as AzureAdTokenPayload;
 };
 
-const authHandler = async (req: ByggerRequest, res: Response, next: NextFunction) => {
+const authHandler = async (req: Request, res: Response, next: NextFunction) => {
   if (config.isDevelopment) {
     const user: User = await getDevUser(req);
     req.getUser = () => user;
@@ -42,7 +43,7 @@ const authHandler = async (req: ByggerRequest, res: Response, next: NextFunction
     }
 
     console.log("Verifying jwt token signature...");
-    let tokenPayload: JWTPayload;
+    let tokenPayload: AzureAdTokenPayload;
     try {
       tokenPayload = await verifyToken(token);
     } catch (err) {
@@ -62,9 +63,10 @@ const authHandler = async (req: ByggerRequest, res: Response, next: NextFunction
 
     console.log(`Validation of jwt token succeeded (expires ${toExpiredDateString(tokenPayload.exp)})`);
     req.getUser = () => ({
-      name: tokenPayload.name as string,
-      preferredUsername: tokenPayload.preferred_username as string,
-      NAVident: tokenPayload.NAVident as string,
+      name: tokenPayload.name,
+      preferredUsername: tokenPayload.preferred_username,
+      NAVident: tokenPayload.NAVident,
+      isAdmin: tokenPayload.groups.includes(adGroups.ADMINISTRATOR),
     });
   }
   next();

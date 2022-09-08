@@ -13,6 +13,7 @@ import migrateUpdate from "./migrate-update";
 import publishForm from "./publish-form";
 import publishForms from "./publish-forms";
 import publishResource from "./publish-resource";
+import reportsRouter from "./reports";
 import unpublishForm from "./unpublish-form";
 
 const apiRouter = express.Router();
@@ -26,6 +27,7 @@ apiRouter.post("/published-forms", authorizedPublisher, publishForms);
 apiRouter.post("/publish-bulk", authorizedPublisher, deprecatedPublishBulk);
 apiRouter.put("/published-resource/:resourceName", authorizedPublisher, publishResource);
 apiRouter.get("/enhetsliste", enhetsliste);
+apiRouter.use("/reports", reportsRouter);
 apiRouter.get("/migrate", migrate);
 apiRouter.get("/migrate/preview/:formPath", migratePreview);
 apiRouter.post("/migrate/update", authorizedPublisher, migrateUpdate);

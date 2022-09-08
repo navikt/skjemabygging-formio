@@ -2366,6 +2366,11 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
+csv-stringify@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.2.0.tgz#f89881e8f61293bf5af11f421266b5da7b744030"
+  integrity sha512-dcUbQLRTTDcgQxgEU8V9IctkaCwHZjZfzUZ5ZB3RY8Y+pXtdtl5iVQHfGzANytFFkRKanYzBXrkfpNdGR7eviA==
+
 custom-event-polyfill@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/custom-event-polyfill/-/custom-event-polyfill-1.0.7.tgz#9bc993ddda937c1a30ccd335614c6c58c4f87aee"
