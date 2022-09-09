@@ -66,7 +66,7 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
       name: tokenPayload.name,
       preferredUsername: tokenPayload.preferred_username,
       NAVident: tokenPayload.NAVident,
-      isAdmin: tokenPayload.groups.includes(adGroups.ADMINISTRATOR),
+      isAdmin: tokenPayload.groups?.includes(adGroups.ADMINISTRATOR) || false,
     });
   }
   next();

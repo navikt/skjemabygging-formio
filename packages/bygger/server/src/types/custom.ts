@@ -11,5 +11,5 @@ export type AzureAdTokenPayload = {
   name: string;
   preferred_username: string;
   NAVident: string;
-  groups: string[];
+  groups?: string[];
 } & JWTPayload;
