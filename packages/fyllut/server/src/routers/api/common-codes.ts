@@ -31,7 +31,7 @@ const commonCodes = {
     const languageCode = "nb";
     const mostUsedCurr = [];
     const currencyList = [];
-    const compareAscending = (a, b, locale) => a.localeCompare(b, locale);
+    const compareAscending = (a: string, b: string, locale) => a.localeCompare(b, locale);
 
     try {
       const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
@@ -46,8 +46,8 @@ const commonCodes = {
       }
       sortAsc(currencyList);
       sortAsc(mostUsedCurr);
-      function sortAsc(arr) {
-        let sortedarr = arr.sort((a, b) =>
+      function sortAsc(list: Array<string>) {
+        let sortedarr = list.sort((a: string, b: string) =>
           compareAscending(a.label.toUpperCase(), b.label.toUpperCase(), languageCode)
         );
         return sortedarr;

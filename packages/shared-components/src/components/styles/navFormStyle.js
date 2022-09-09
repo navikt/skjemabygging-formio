@@ -80,6 +80,7 @@ const styles = {
     maxWidth: "100%",
   },
   "& .components-row .builder-components, .components-row": {
+    width: "100%",
     display: "flex",
     flexWrap: "wrap",
     columnGap: "24px",
@@ -87,8 +88,11 @@ const styles = {
   "& .formio-component-angiValutaOgBelop .components-row > div ": {
     maxWidth: "100%",
   },
-  "& .formio-component-angiValutaOgBelop .components-row .formio-component-valutavelger ": {
-    width: "224px",
+  "& .formio-component-angiValutaOgBelop .components-row .builder-component": {
+    flexGrow: "1",
+  },
+  "& .components-row .formio-component-valutavelger ": {
+    minWidth: "224px",
   },
   "& .formio-component-valutavelger .formio-form .choices__list--dropdown .choices__input, .choices__list--single .choices__item":
     {
