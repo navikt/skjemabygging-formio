@@ -31,7 +31,7 @@ const commonCodes = {
     const languageCode = "nb";
     const mostUsedCurr = [];
     const currencyList = [];
-    const compareAscending = (a: Array<string>, b: Array<string>, locale) => a.localeCompare(b, locale);
+    //const compareAscending = (a: string, b: string, locale: string) => a.localeCompare(b, locale);
 
     try {
       const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
@@ -44,14 +44,9 @@ const commonCodes = {
           currencyList.push(newObj);
         }
       }
-      sortAsc(currencyList);
-      sortAsc(mostUsedCurr);
-      function sortAsc(list: Array<string>) {
-        let sortedarr = list.sort((a: string, b: string) =>
-          compareAscending(a.label.toUpperCase(), b.label.toUpperCase(), languageCode)
-        );
-        return sortedarr;
-      }
+      sortAsc(currencyList, languageCode);
+      sortAsc(mostUsedCurr, languageCode);
+
       const options = mostUsedCurr.concat(currencyList);
       res.send(options);
     } catch (e) {
@@ -60,6 +55,10 @@ const commonCodes = {
   },
 };
 
+const sortAsc = (list: { label: string; value: string }[], languageCode: string) => {
+  let sortedarr = list.sort((a, b) => a.label.toUpperCase().localeCompare(b.label.toUpperCase(), languageCode));
+  return sortedarr;
+};
 /**
  * Doc: https://navikt.github.io/felleskodeverk/
  * Swagger: https://kodeverk.dev.intern.nav.no/swagger-ui.html
