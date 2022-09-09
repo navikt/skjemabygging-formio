@@ -6,6 +6,7 @@ interface UserData {
   name?: string;
   preferredUsername?: string;
   NAVident?: string;
+  isAdmin: boolean;
   data?: {
     email: string;
   };
