@@ -31,7 +31,6 @@ const commonCodes = {
     const languageCode = "nb";
     const mostUsedCurr = [];
     const currencyList = [];
-    //const compareAscending = (a: string, b: string, locale: string) => a.localeCompare(b, locale);
 
     try {
       const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
