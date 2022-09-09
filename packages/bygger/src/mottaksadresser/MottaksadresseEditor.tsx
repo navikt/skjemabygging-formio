@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { AppConfigProvider, NavForm } from "@navikt/skjemadigitalisering-shared-components";
-import { MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
+import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
 import { Fareknapp, Knapp } from "nav-frontend-knapper";
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  mottaksadresse?: MottaksadresseEntity;
+  mottaksadresse?: Mottaksadresse;
   onSubmitDone: Function;
   onEdit?: Function;
   onCancel: Function;

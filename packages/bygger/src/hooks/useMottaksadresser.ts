@@ -1,12 +1,10 @@
-import { MottaksadresseEntity, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { Mottaksadresse, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useContext, useEffect, useState } from "react";
 import { UserAlerterContext } from "../userAlerting";
-import { fromEntity, Mottaksadresse } from "./mottaksadresser";
 
 interface Output {
   mottaksadresser: Mottaksadresse[];
-  mottaksadresseEntities: MottaksadresseEntity[];
   ready: boolean;
   errorMessage?: string;
   loadMottaksadresser: Function;
@@ -17,7 +15,6 @@ interface Output {
 const useMottaksadresser = (): Output => {
   const userAlerter = useContext(UserAlerterContext);
   const [mottaksadresser, setMottaksadresser] = useState<Mottaksadresse[]>([]);
-  const [mottaksadresseEntities, setMottaksadresseEntities] = useState<MottaksadresseEntity[]>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
@@ -25,19 +22,34 @@ const useMottaksadresser = (): Output => {
     fetch(`${Formiojs.getProjectUrl()}/mottaksadresse/submission`, {
       method: "GET",
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
-          return res.json();
+          setErrorMessage(undefined);
+          const addresses = await res.json();
+          validateThemes(addresses);
+          return addresses;
         }
         setErrorMessage("Feil ved henting av mottaksadresser");
         throw new Error(`Feil ved henting av mottaksadresser: ${res.status}`);
       })
-      .then((mottaksadresser: MottaksadresseEntity[]) => {
-        setMottaksadresseEntities(mottaksadresser);
-        setMottaksadresser(mottaksadresser.map(fromEntity));
+      .then((mottaksadresser: Mottaksadresse[]) => {
+        setMottaksadresser(mottaksadresser);
         setReady(true);
       })
       .catch((err) => console.error(err));
+  };
+
+  const validateThemes = (addresses: Mottaksadresse[] = []) => {
+    const themes = addresses
+      .filter((address) => address.data.temakoder)
+      .flatMap((address) => address.data.temakoder?.split(","))
+      .map((theme) => theme?.trim());
+
+    if (new Set(themes).size !== themes.length) {
+      setErrorMessage("Tema kan bare være en gang per mottaksadresse");
+    } else if (themes.some((theme) => theme?.length !== 3)) {
+      setErrorMessage("Hvert tema skal bestå av tre tegn");
+    }
   };
 
   const deleteMottaksadresse = async (mottaksadresseId) => {
@@ -68,7 +80,7 @@ const useMottaksadresser = (): Output => {
   const publishMottaksadresser = async () => {
     const payload = {
       token: Formiojs.getToken(),
-      resource: mottaksadresseEntities,
+      resource: mottaksadresser,
     };
 
     const response = await fetch("/api/published-resource/mottaksadresser", {
@@ -106,7 +118,6 @@ const useMottaksadresser = (): Output => {
     ready,
     errorMessage,
     mottaksadresser,
-    mottaksadresseEntities,
     loadMottaksadresser,
     deleteMottaksadresse,
     publishMottaksadresser,

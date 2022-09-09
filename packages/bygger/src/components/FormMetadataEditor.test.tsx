@@ -8,7 +8,6 @@ import waitForExpect from "wait-for-expect";
 import form from "../../example_data/Form.json";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
 import featureToggles from "../featureToggles.js";
-import { fromEntity } from "../hooks/mottaksadresser";
 import {
   COMPONENT_TEXTS,
   CreationFormMetadataEditor,
@@ -18,11 +17,10 @@ import {
 
 const testform = form as unknown as NavFormType;
 
-const MOCK_DEFAULT_MOTTAKSADRESSER = mockMottaksadresser.map(fromEntity);
 jest.mock("../hooks/useMottaksadresser", () => () => {
   return {
     ready: true,
-    mottaksadresser: MOCK_DEFAULT_MOTTAKSADRESSER,
+    mottaksadresser: mockMottaksadresser,
     errorMessage: undefined,
   };
 });

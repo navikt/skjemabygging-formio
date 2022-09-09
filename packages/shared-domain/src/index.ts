@@ -24,7 +24,7 @@ import type {
   TranslationScope,
   TranslationTag,
 } from "./languages/types";
-import type { Mottaksadresse, MottaksadresseData, MottaksadresseEntity } from "./mottaksadresse";
+import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
@@ -80,7 +80,6 @@ export type {
   TranslationScope,
   TranslationTag,
   MottaksadresseData,
-  MottaksadresseEntity,
   Mottaksadresse,
   ResourceContent,
   MottaksadresserResourceContent,
