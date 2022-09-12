@@ -43,6 +43,12 @@ function formatValue(component, value, translate) {
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
+    case "valuta":
+      // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
+      return translate(typeof value === "string" ? value : value?.label);
+    case "select": {
+      return translate((component.data.values.find((option) => option.value === value) || {}).label);
+    }
     case "day": {
       if (value.match("00/00/")) {
         return value.slice(6);
@@ -90,6 +96,30 @@ function handleContainer(component, submission, formSummaryObject, translate, ev
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
+}
+
+function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  if (
+    submissionValue === null ||
+    submissionValue === undefined ||
+    submissionValue === "" ||
+    (type === "landvelger" && Object.keys(submissionValue).length === 0) ||
+    (type === "valutavelger" && Object.keys(submissionValue).length === 0)
+  ) {
+    return formSummaryObject;
+  }
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key: componentKey,
+      type,
+      value: formatValue(component, submissionValue, translate),
+    },
+  ];
 }
 
 function handleDataGridRows(component, submission, translate) {
@@ -219,29 +249,6 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey, tra
   return formSummaryObject;
 }
 
-function handleField(component, submission, formSummaryObject, parentContainerKey, translate) {
-  const { key, label, type } = component;
-  const componentKey = createComponentKey(parentContainerKey, key);
-  const submissionValue = FormioUtils.getValue(submission, componentKey);
-  if (
-    submissionValue === null ||
-    submissionValue === undefined ||
-    submissionValue === "" ||
-    (type === "landvelger" && Object.keys(submissionValue).length === 0)
-  ) {
-    return formSummaryObject;
-  }
-  return [
-    ...formSummaryObject,
-    {
-      label: translate(label),
-      key: componentKey,
-      type,
-      value: formatValue(component, submissionValue, translate),
-    },
-  ];
-}
-
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, image, altText, widthPercent, showInPdf } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
@@ -261,6 +268,21 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
   }
 
   return [...formSummaryObject];
+}
+
+function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+  return [
+    ...formSummaryObject,
+    {
+      label: translate(label),
+      key,
+      type: "currency",
+      value: `${submissionValue.belop} ${submissionValue.valutavelger.value}`,
+    },
+  ];
 }
 
 export function handleComponent(
@@ -310,6 +332,18 @@ export function handleComponent(
       );
     case "image":
       return handleImage(component, formSummaryObject, parentContainerKey, translate);
+    case "row":
+      if (component.isAmountWithCurrencySelector) {
+        return handleAmountWithCurrencySelector(
+          component,
+          submission,
+          formSummaryObject,
+          parentContainerKey,
+          translate
+        );
+      } else {
+        return handleContainer(component, submission, formSummaryObject, translate);
+      }
     default:
       return handleField(component, submission, formSummaryObject, parentContainerKey, translate);
   }
