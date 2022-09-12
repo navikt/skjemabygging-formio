@@ -36,7 +36,7 @@ const commonCodes = {
       const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
       for (const [key, values] of Object.entries(response.betydninger)) {
         const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.tekst;
-        let newObj = { label: currencyName + " (" + key + ")", value: key };
+        let newObj = { label: `${currencyName} (${key})`, value: key };
         if (key === "NOK" || key === "EUR" || key === "SEK") {
           mostUsedCurr.push(newObj);
         } else {
