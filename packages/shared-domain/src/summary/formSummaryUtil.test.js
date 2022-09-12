@@ -1,6 +1,10 @@
+import { flattenComponents } from "../utils/navFormUtils";
 import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
+import testformCustomConditional from "./testdata/form-alertstripe-cusom-conditional";
+import testformContainerConditional from "./testdata/form-container-conditional";
+import testImgFormCustomConditional from "./testdata/form-image-custom-conditional";
 
 const {
   createDummyContainerElement,
@@ -20,7 +24,10 @@ const {
   createPanelObject,
   createDummyDayComponent,
   createDummyLandvelger,
+  createDummyCheckbox,
 } = MockedComponentObjectForTest;
+
+const onlyAlertstripes = (comp) => comp.type === "alertstripe";
 
 const mockedTranslate = (value) => {
   switch (value) {
@@ -52,6 +59,19 @@ describe("Map and evaluate conditionals", () => {
     const data = { radiopanel: "ja" };
 
     expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ alert1: true, alert2: false });
+  });
+});
+
+describe("Image component with custom conditional", () => {
+  it("should not be visible when inputCondition=doNotShowImg", () => {
+    const { imgForm, submissionDoNotShowConditionalInput } = testImgFormCustomConditional;
+    expect(mapAndEvaluateConditionals(imgForm, submissionDoNotShowConditionalInput)).toEqual({ image1: false });
+  });
+
+  it("should display image when inputCondition other value than doNotShowImg", () => {
+    const { imgForm, submissionOtherInput, submissionEmptyInput } = testImgFormCustomConditional;
+    expect(mapAndEvaluateConditionals(imgForm, submissionOtherInput)).toEqual({ image1: true });
+    expect(mapAndEvaluateConditionals(imgForm, submissionEmptyInput)).toEqual({ image1: true });
   });
 });
 
@@ -394,6 +414,13 @@ describe("When handling component", () => {
 
     it("does not add anything if no option is selected (current version of landvelger)", () => {
       const actual = handleComponent(createDummyLandvelger(), { data: { land: {} } }, [], "", mockedTranslate);
+      expect(actual).toEqual([]);
+    });
+  });
+
+  describe("Checkbox", () => {
+    it("does not add anything if not selected", () => {
+      const actual = handleComponent(createDummyCheckbox(), { label: { key: "" } }, [], "", mockedTranslate);
       expect(actual).toEqual([]);
     });
   });
@@ -807,6 +834,73 @@ describe("When creating form summary object", () => {
           },
         ]),
       ]);
+    });
+  });
+
+  describe("Alertstripe with custom conditional", () => {
+    it("should not be visible when vegghengt is not present in submission data", () => {
+      const actual = createFormSummaryObject(
+        testformCustomConditional.form,
+        testformCustomConditional.submissionVegghengtOmitted,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(0);
+    });
+
+    it("should not be visible when vegghengt=nei", () => {
+      const actual = createFormSummaryObject(
+        testformCustomConditional.form,
+        testformCustomConditional.submissionVegghengtNei,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(0);
+    });
+
+    it("should be visible when vegghengt=ja", () => {
+      const actual = createFormSummaryObject(
+        testformCustomConditional.form,
+        testformCustomConditional.submissionVegghengtJa,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(1);
+      expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker");
+    });
+  });
+
+  describe("Alertstripe inside container with conditional", () => {
+    it("should not be visible when show=false for container", () => {
+      const actual = createFormSummaryObject(
+        testformContainerConditional.form,
+        testformContainerConditional.submissionKjokken,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(0);
+    });
+
+    it("should be visible when show=true for containerBad", () => {
+      const actual = createFormSummaryObject(
+        testformContainerConditional.form,
+        testformContainerConditional.submissionBad,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(1);
+      expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker (bad)");
+    });
+
+    it("should be visible when show=true for containerStue", () => {
+      const actual = createFormSummaryObject(
+        testformContainerConditional.form,
+        testformContainerConditional.submissionStue,
+        mockedTranslate
+      );
+      const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
+      expect(alertstripes).toHaveLength(1);
+      expect(alertstripes[0].value).toEqual("Må signeres av både eier og bruker (stue)");
     });
   });
 

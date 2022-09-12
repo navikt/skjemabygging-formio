@@ -37,7 +37,7 @@ describe("NewFormPage", () => {
     );
     await waitFor(() => screen.getByText("Opprett nytt skjema"));
 
-    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30");
+    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
     await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
     await userEvent.type(screen.getByLabelText("Temakode"), "BIL");
     await userEvent.click(screen.getByRole("button", { name: "Opprett" }));

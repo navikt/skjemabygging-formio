@@ -1,6 +1,7 @@
 import FormioUtils from "formiojs/utils";
 import moment from "moment";
 import TEXTS from "../texts";
+import sanitizeJavaScriptCode from "../utils/formio/sanitize-javascript-code";
 import { addToMap } from "../utils/objectUtils";
 import { toPascalCase } from "../utils/stringUtils";
 
@@ -210,8 +211,29 @@ function handleSelectboxes(component, submission, formSummaryObject, parentConta
   ];
 }
 
+function handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate) {
+  const { key, label, type } = component;
+  const componentKey = createComponentKey(parentContainerKey, key);
+  const submissionValue = FormioUtils.getValue(submission, componentKey);
+
+  if (!submissionValue) {
+    return [...formSummaryObject];
+  } else {
+    return [
+      ...formSummaryObject,
+      {
+        label: translate(label),
+        key: componentKey,
+        type,
+        value: formatValue(component, submissionValue, translate),
+      },
+    ];
+  }
+}
+
 function handleHtmlElement(component, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
   const { key, contentForPdf, type } = component;
+
   if (shouldShowInSummary(key, evaluatedConditionals) && contentForPdf) {
     const componentKey = createComponentKey(parentContainerKey, key);
     return [
@@ -230,7 +252,6 @@ function handleHtmlElement(component, formSummaryObject, parentContainerKey, tra
 function handleImage(component, formSummaryObject, parentContainerKey, translate) {
   const { key, label, type, image, altText, widthPercent, showInPdf } = component;
   const componentKey = createComponentKey(parentContainerKey, key);
-
   if (image.length > 0 && image[0].url) {
     return [
       ...formSummaryObject,
@@ -272,6 +293,9 @@ export function handleComponent(
   translate,
   evaluatedConditionals = {}
 ) {
+  if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
+    return formSummaryObject;
+  }
   switch (component.type) {
     case "panel":
       return handlePanel(
@@ -294,6 +318,8 @@ export function handleComponent(
       return handleDataGrid(component, submission, formSummaryObject, translate);
     case "selectboxes":
       return handleSelectboxes(component, submission, formSummaryObject, parentContainerKey, translate);
+    case "navCheckbox":
+      return handleCheckBox(component, submission, formSummaryObject, parentContainerKey, translate);
     case "fieldset":
     case "navSkjemagruppe":
       return handleFieldSet(
@@ -327,21 +353,31 @@ const shouldShowInSummary = (componentKey, evaluatedConditionals) =>
   evaluatedConditionals[componentKey] === undefined || evaluatedConditionals[componentKey];
 
 function evaluateConditionals(components = [], form, data, row = []) {
-  return components.flatMap((component) => {
-    switch (component.type) {
-      case "container":
-        return evaluateConditionals(component.components, form, data, data[component.key]);
-      case "panel":
-      case "fieldset":
-      case "navSkjemagruppe":
-        return evaluateConditionals(component.components, form, data);
-      case "htmlelement":
-      case "alertstripe":
-        return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
-      default:
-        return [];
-    }
-  });
+  return components
+    .map((component) => {
+      const clone = JSON.parse(JSON.stringify(component));
+      clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
+      return clone;
+    })
+    .flatMap((component) => {
+      if (!FormioUtils.checkCondition(component, row, data, form)) {
+        return [{ key: component.key, value: false }];
+      }
+      switch (component.type) {
+        case "container":
+          return evaluateConditionals(component.components, form, data, data[component.key]);
+        case "panel":
+        case "fieldset":
+        case "navSkjemagruppe":
+          return evaluateConditionals(component.components, form, data);
+        case "htmlelement":
+        case "image":
+        case "alertstripe":
+          return { key: component.key, value: FormioUtils.checkCondition(component, row, data, form) };
+        default:
+          return [];
+      }
+    });
 }
 
 export function mapAndEvaluateConditionals(form, data = {}) {
