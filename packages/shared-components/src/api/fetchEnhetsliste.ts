@@ -32,6 +32,6 @@ export async function fetchEnhetsliste(baseUrl = ""): Promise<Enhet[]> {
     if (response.ok) {
       return response.json();
     }
-    return [];
+    throw Error("Failed to fetch enhetsliste");
   });
 }

@@ -59,10 +59,13 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   const onCreate = () => {
-    formio.saveForm(state.form).then((form) => {
-      userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
-      history.push(`/forms/${form.path}/edit`);
-    });
+    const trimmedFormNumber = state.form.properties.skjemanummer.trim();
+    formio
+      .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
+      .then((form) => {
+        userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
+        history.push(`/forms/${form.path}/edit`);
+      });
   };
 
   return (
