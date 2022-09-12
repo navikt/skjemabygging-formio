@@ -85,10 +85,10 @@ const styles = {
     flexWrap: "wrap",
     columnGap: "24px",
   },
-  "& .formio-component-angiValutaOgBelop .components-row > div ": {
+  "& .components-row > div ": {
     maxWidth: "100%",
   },
-  "& .formio-component-angiValutaOgBelop .components-row .builder-component": {
+  "& .components-row .builder-component": {
     flexGrow: "1",
   },
   "& .components-row .formio-component-valutavelger ": {
