@@ -22,17 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({
-  editFormUrl,
-  testFormUrl,
-  formSettingsUrl,
-  form,
-  onSave,
-  onChange,
-  onPublish,
-  onUnpublish,
-  visSkjemaMeny,
-}) {
+export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublish, visSkjemaMeny }) {
   const title = `${form.title}`;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
@@ -42,24 +32,7 @@ export function FormSettingsPage({
       navBarProps={{
         title: "Skjemainnstillinger",
         visSkjemaMeny: true,
-        links: [
-          {
-            label: "Innstillinger",
-            url: formSettingsUrl,
-          },
-          {
-            label: "Forhåndsvis",
-            url: testFormUrl,
-          },
-          {
-            label: "Rediger skjema",
-            url: editFormUrl,
-          },
-          {
-            label: "Språk",
-            url: `/translations/${form.path}`,
-          },
-        ],
+        formPath: form.path,
       }}
     >
       <Row className={styles.titleRow}>

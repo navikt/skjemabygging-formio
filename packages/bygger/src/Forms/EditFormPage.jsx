@@ -24,17 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({
-  form,
-  formSettingsUrl,
-  testFormUrl,
-  visSkjemaMeny,
-  editFormUrl,
-  onSave,
-  onChange,
-  onPublish,
-  onUnpublish,
-}) {
+export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish, onUnpublish }) {
   const {
     title,
     properties: { skjemanummer },
@@ -47,24 +37,7 @@ export function EditFormPage({
         navBarProps={{
           title: "Rediger skjema",
           visSkjemaMeny: true,
-          links: [
-            {
-              label: "Innstillinger",
-              url: formSettingsUrl,
-            },
-            {
-              label: "Forhåndsvis",
-              url: testFormUrl,
-            },
-            {
-              label: "Rediger skjema",
-              url: editFormUrl,
-            },
-            {
-              label: "Språk",
-              url: `/translations/${form.path}`,
-            },
-          ],
+          formPath: form.path,
         }}
       >
         <Row>

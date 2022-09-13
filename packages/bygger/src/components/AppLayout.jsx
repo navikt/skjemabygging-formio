@@ -1,9 +1,9 @@
-import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
-import { NavBar } from "./NavBar";
-import { UserAlerterContext } from "../userAlerting";
 import React from "react";
+import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
+import { UserAlerterContext } from "../userAlerting";
+import { NavBar } from "./navbar/NavBar";
 
-export const AppLayout = ({ children, navBarProps }) => {
+export const AppLayout = ({ children, navBarProps, formMenuProps }) => {
   return (
     <>
       <NoScrollWrapper>

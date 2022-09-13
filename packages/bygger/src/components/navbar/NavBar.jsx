@@ -1,10 +1,12 @@
 import { makeStyles } from "@material-ui/styles";
-import { Edit, Eye, Globe, HomeFilled, People, Settings, System } from "@navikt/ds-icons";
+import { HomeFilled, People, System } from "@navikt/ds-icons";
 import { Dropdown, Header } from "@navikt/ds-react-internal";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../context/auth-context";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/auth-context";
+import { FormMenu } from "./FormMenu";
+import { TranslationsMenu } from "./TranslationsMenu";
 
 const useStyles = makeStyles({
   navBar: {
@@ -41,34 +43,6 @@ const useStyles = makeStyles({
     height: "100%",
     display: "flex",
   },
-  navBarLink: {
-    display: "flex",
-    alignSelf: "center",
-    alignItems: "center",
-    padding: "5px 15px 0 15px",
-    flexDirection: "column",
-    color: "#7d7d7d",
-    textDecoration: "none",
-    "@media (max-width: 1040px)": {
-      height: "100%",
-      flexDirection: "row",
-      padding: "0 15px 0 15px",
-    },
-  },
-  linkText: {
-    "@media (max-width: 1040px)": {
-      display: "none",
-    },
-  },
-  navBarLinkNoIcon: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    padding: "0 15px 0 15px",
-    color: "#7d7d7d",
-    textDecoration: "none",
-  },
   headerMenus: {
     height: "100%",
     position: "absolute",
@@ -99,62 +73,20 @@ const useStyles = makeStyles({
   },
 });
 
-export const NavBar = ({ title, visSkjemaliste, visSkjemaMeny, visOversettelsesMeny, links, translateLinks }) => {
+export const NavBar = ({ title, visSkjemaliste, formPath, visSkjemaMeny, visOversettelsesMeny, translateLinks }) => {
   const { logout, userData } = useAuth();
   const { featureToggles, config } = useAppConfig();
   const styles = useStyles();
-  const navLinkActiveStyle = { color: "#ffffff", borderBottom: "3px solid #0074df" };
-
   return (
     <section>
       <Header className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
         <Link className={styles.formsLink} to="/forms" aria-label="Gå til skjemaliste">
           <HomeFilled style={{ color: "#ffffff", fontSize: "1.5rem" }} alt="Skjemaliste" />
         </Link>
-        {visSkjemaMeny && (
-          <div>
-            <div className={styles.navBarLinks}>
-              {links?.map((link) => (
-                <NavLink
-                  to={link.url}
-                  className={styles.navBarLink}
-                  aria-label={link.label}
-                  activeStyle={navLinkActiveStyle}
-                >
-                  {(() => {
-                    if (link.label === "Innstillinger") {
-                      return <Settings style={{ fontSize: "1.5rem" }} alt="Innstillinger" />;
-                    } else if (link.label === "Forhåndsvis") {
-                      return <Eye style={{ fontSize: "1.5rem" }} alt="Forhåndsvis" />;
-                    } else if (link.label === "Rediger skjema") {
-                      return <Edit style={{ fontSize: "1.5rem" }} alt="Skjemaliste" />;
-                    } else {
-                      return <Globe style={{ fontSize: "1.5rem" }} alt="Skjemaliste" />;
-                    }
-                  })()}
-                  <span className={styles.linkText}>{link.label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        )}
-        {visOversettelsesMeny && (
-          <div>
-            <div className={styles.navBarLinks}>
-              {links?.map((link) => (
-                <NavLink
-                  className={(styles.navBarLink, styles.navBarLinkNoIcon)}
-                  to={link.url}
-                  aria-label={link.label}
-                  activeStyle={navLinkActiveStyle}
-                  data-key={link.dataKey}
-                >
-                  {link.label}
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className={styles.navBarLinks}>
+          {visSkjemaMeny && <FormMenu formPath={formPath} />}
+          {visOversettelsesMeny && <TranslationsMenu formPath={formPath} />}
+        </div>
         <div className={styles.headerMenus}>
           <Dropdown>
             <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">

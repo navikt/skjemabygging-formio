@@ -228,28 +228,6 @@ const GlobalTranslationsPage = ({
           visOversettelseliste: true,
           visLagNyttSkjema: false,
           visOversettelsesMeny: true,
-          links: [
-            {
-              label: "Skjematekster",
-              url: `/translations/global/${languageCode}/skjematekster`,
-              dataKey: tags.SKJEMATEKSTER,
-            },
-            {
-              label: "Grensesnitt",
-              url: `/translations/global/${languageCode}/grensesnitt`,
-              dataKey: tags.GRENSESNITT,
-            },
-            {
-              label: "Statiske tekster",
-              url: `/translations/global/${languageCode}/statiske-tekster`,
-              dataKey: tags.STATISKE_TEKSTER,
-            },
-            {
-              label: "Validering",
-              url: `/translations/global/${languageCode}/validering`,
-              dataKey: tags.VALIDERING,
-            },
-          ],
         }}
       >
         <Row className={classes.titleRow}>

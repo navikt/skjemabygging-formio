@@ -80,24 +80,7 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           visLagNyttSkjema: false,
           visOversettelseliste: true,
           visSkjemaMeny: true,
-          links: [
-            {
-              label: "Innstillinger",
-              url: `/forms/${path}/settings`,
-            },
-            {
-              label: "Forhåndsvis",
-              url: `/forms/${path}/view/veiledning`,
-            },
-            {
-              label: "Rediger skjema",
-              url: `/forms/${path}/edit`,
-            },
-            {
-              label: "Språk",
-              url: `/translations/${form.path}`,
-            },
-          ],
+          formPath: form.path,
         }}
       >
         <Row>
