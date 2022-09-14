@@ -1,7 +1,7 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
 import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst, Undertittel } from "nav-frontend-typografi";
+import { Normaltekst, Sidetittel } from "nav-frontend-typografi";
 import React from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
@@ -35,7 +35,6 @@ export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish,
     <>
       <AppLayoutWithContext
         navBarProps={{
-          title: "Rediger skjema",
           visSkjemaMeny: true,
           formPath: form.path,
         }}
@@ -43,7 +42,7 @@ export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish,
         <Row>
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
-            <Undertittel>{title}</Undertittel>
+            <Sidetittel>{title}</Sidetittel>
             <Normaltekst>{skjemanummer}</Normaltekst>
           </Column>
         </Row>

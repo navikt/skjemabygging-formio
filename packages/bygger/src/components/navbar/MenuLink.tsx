@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     padding: "5px 15px 0 15px",
     flexDirection: "column",
-    color: "#7d7d7d",
+    color: "#a1a1a1",
     textDecoration: "none",
     "@media (max-width: 1040px)": {
       height: "100%",
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     flexDirection: "row",
     alignItems: "center",
     padding: "0 15px 0 15px",
-    color: "#7d7d7d",
+    color: "#a1a1a1",
     textDecoration: "none",
   },
 });

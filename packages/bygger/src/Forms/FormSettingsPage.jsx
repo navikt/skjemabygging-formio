@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Knapp } from "nav-frontend-knapper";
-import { Undertittel } from "nav-frontend-typografi";
+import { Sidetittel } from "nav-frontend-typografi";
 import React from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetadataEditor";
@@ -37,7 +37,7 @@ export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublis
     >
       <Row className={styles.titleRow}>
         <Column className={styles.mainCol}>
-          <Undertittel tag="h1">{title}</Undertittel>
+          <Sidetittel>{title}</Sidetittel>
         </Column>
       </Row>
       <Row>
