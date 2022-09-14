@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { HomeFilled, People, System } from "@navikt/ds-icons";
+import { HomeFilled, System } from "@navikt/ds-icons";
 import { Dropdown, Header } from "@navikt/ds-react-internal";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
@@ -55,17 +55,6 @@ const useStyles = makeStyles({
   dropdownMenu: {
     top: "56px !important",
   },
-  userButton: {
-    "@media (max-width: 1040px)": {
-      display: "none",
-    },
-  },
-  userButtonResponsive: {
-    display: "none",
-    "@media (max-width: 1040px)": {
-      display: "flex",
-    },
-  },
   logOutBtn: {
     width: "auto",
     padding: "0",
@@ -73,19 +62,25 @@ const useStyles = makeStyles({
   },
 });
 
-export const NavBar = ({ title, visSkjemaliste, formPath, visSkjemaMeny, visOversettelsesMeny, translateLinks }) => {
+interface Props {
+  formPath: string;
+  visSkjemaMeny: boolean;
+  visOversettelsesMeny: boolean;
+}
+
+export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props) => {
   const { logout, userData } = useAuth();
-  const { featureToggles, config } = useAppConfig();
+  const { config } = useAppConfig();
   const styles = useStyles();
   return (
     <section>
       <Header className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
         <Link className={styles.formsLink} to="/forms" aria-label="Gå til skjemaliste">
-          <HomeFilled style={{ color: "#ffffff", fontSize: "1.5rem" }} alt="Skjemaliste" />
+          <HomeFilled style={{ color: "#ffffff", fontSize: "1.5rem" }} title="Hjem-ikon" />
         </Link>
         <div className={styles.navBarLinks}>
           {visSkjemaMeny && <FormMenu formPath={formPath} />}
-          {visOversettelsesMeny && <TranslationsMenu formPath={formPath} />}
+          {visOversettelsesMeny && <TranslationsMenu />}
         </div>
         <div className={styles.headerMenus}>
           <Dropdown>
@@ -96,9 +91,7 @@ export const NavBar = ({ title, visSkjemaliste, formPath, visSkjemaMeny, visOver
               <Dropdown.Menu.GroupedList>
                 <Dropdown.Menu.GroupedList.Item>
                   {" "}
-                  {featureToggles.enableTranslations && (
-                    <Link to="/translations/global/nn-NO/skjematekster">Globale Oversettelser</Link>
-                  )}
+                  <Link to="/translations/global/nn-NO/skjematekster">Globale Oversettelser</Link>
                 </Dropdown.Menu.GroupedList.Item>
                 <Dropdown.Menu.GroupedList.Item>
                   {" "}
@@ -113,16 +106,7 @@ export const NavBar = ({ title, visSkjemaliste, formPath, visSkjemaMeny, visOver
           </Dropdown>
           {!!userData && (
             <Dropdown>
-              <Header.UserButton
-                className={styles.userButton}
-                as={Dropdown.Toggle}
-                name={userData ? userData.name : "Ukjent brukernavn"}
-              />
-              <Header.UserButton
-                as={Dropdown.Toggle}
-                className={styles.userButtonResponsive}
-                name={<People style={{ fontSize: "1.5rem" }} alt="Skjemaliste" />}
-              ></Header.UserButton>
+              <Header.UserButton as={Dropdown.Toggle} name={userData.name ? userData.name : ""} />
               <Dropdown.Menu className={styles.dropdownMenu}>
                 <Dropdown.Menu.List>
                   <Dropdown.Menu.List.Item className={styles.logOutBtn}>

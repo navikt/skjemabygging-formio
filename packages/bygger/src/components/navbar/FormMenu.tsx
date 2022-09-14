@@ -21,17 +21,17 @@ export const FormMenu = ({ formPath }) => {
   return (
     <>
       <MenuLink to={`/forms/${formPath}/settings`} ariaLabel={"Innstillinger"} noIconStyling={false}>
-        <Settings className={styles.navBarLinkIcon} alt="Tannhjul: ikon for innstillinger" />
+        <Settings className={styles.navBarLinkIcon} title="Tannhjul-ikon" />
         <span className={styles.linkText}>Innstillinger</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/view/veiledning`} ariaLabel={"Veiledning"} noIconStyling={false}>
-        <Eye className={styles.navBarLinkIcon} alt="Øye: ikon for forhåndsvis" />
+        <Eye className={styles.navBarLinkIcon} title="Øye-ikon" />
         <span className={styles.linkText}>Forhåndsvis</span>
       </MenuLink>
 
       <MenuLink to={`/forms/${formPath}/edit`} ariaLabel={"Rediger skjema"} noIconStyling={false}>
-        <Edit className={styles.navBarLinkIcon} alt="Skjemaliste" />
+        <Edit className={styles.navBarLinkIcon} title="Rediger-ikon" />
         <span className={styles.linkText}>Rediger skjema</span>
       </MenuLink>
 
@@ -40,7 +40,7 @@ export const FormMenu = ({ formPath }) => {
         ariaLabel={"Språk"}
         noIconStyling={false}
       >
-        <Globe className={styles.navBarLinkIcon} alt="Språk" />
+        <Globe className={styles.navBarLinkIcon} title="Språk-ikon" />
         <span className={styles.linkText}>Språk</span>
       </MenuLink>
     </>

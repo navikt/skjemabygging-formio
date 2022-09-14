@@ -3,10 +3,10 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
   to: string;
   ariaLabel: string;
-  dataKey: string;
+  dataKey?: string;
   noIconStyling: boolean;
 }
 
