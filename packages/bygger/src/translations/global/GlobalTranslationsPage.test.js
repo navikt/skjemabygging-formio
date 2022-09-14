@@ -104,9 +104,9 @@ describe("GlobalTranslationsPage", () => {
     });
 
     it("navigates to tag 'validering'", async () => {
-      const valideringButton = await screen.findByRole("button", { name: "Validering" });
-      expect(valideringButton).toBeInTheDocument();
-      userEvent.click(valideringButton);
+      const valideringLink = await screen.findByRole("link", { name: "Validering" });
+      expect(valideringLink).toBeInTheDocument();
+      userEvent.click(valideringLink);
 
       const inputFieldWithValidering = await screen.findByDisplayValue("No IBAN was provided");
       expect(inputFieldWithValidering).toBeInTheDocument();
