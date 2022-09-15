@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 });
 
 export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublish, visSkjemaMeny }) {
-  const title = `${form.title}`;
+  const title = form.title;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
 

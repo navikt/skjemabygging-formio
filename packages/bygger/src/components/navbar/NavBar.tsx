@@ -33,6 +33,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     marginRight: "auto",
     padding: "0 30px",
+    color: "#ffffff",
     "@media (max-width: 1040px)": {
       position: "relative",
       flexGrow: "1",
@@ -51,6 +52,9 @@ const useStyles = makeStyles({
       position: "relative",
     },
   },
+  navBarLinkIcon: {
+    fontSize: "1.5rem",
+  },
   dropdownMenu: {
     top: "56px !important",
   },
@@ -59,7 +63,7 @@ const useStyles = makeStyles({
     padding: "0",
     margin: "4px auto",
   },
-  indicalteLocalBorder: {
+  indicateLocalBorder: {
     height: "10px",
     width: "100%",
     background:
@@ -82,7 +86,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
     <section>
       <Header className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
         <Link className={styles.formsLink} to="/forms" aria-label="Gå til skjemaliste">
-          <HomeFilled style={{ color: "#ffffff", fontSize: "1.5rem" }} title="Hjem-ikon" />
+          <HomeFilled className={styles.navBarLinkIcon} role="presentation" />
         </Link>
         <div className={styles.navBarLinks}>
           {visSkjemaMeny && <FormMenu formPath={formPath} />}
@@ -91,7 +95,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
         <div className={styles.headerMenus}>
           <Dropdown>
             <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
-              <System style={{ fontSize: "1.5rem" }} title="Meny" />
+              <System className={styles.navBarLinkIcon} role="presentation" />
             </Header.Button>
             <Dropdown.Menu className={styles.dropdownMenu}>
               <Dropdown.Menu.GroupedList>
@@ -127,7 +131,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
           )}
         </div>
       </Header>
-      {config?.isDevelopment && <div className={styles.indicalteLocalBorder} />}
+      {config?.isDevelopment && <div className={styles.indicateLocalBorder} />}
     </section>
   );
 };

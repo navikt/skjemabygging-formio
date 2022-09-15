@@ -1,4 +1,4 @@
-import { formUtils, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useCallback, useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
@@ -12,9 +12,8 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
   const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
-
   const loadTranslationsForFormPath = useCallback(() => loadTranslations(form?.path), [loadTranslations, form?.path]);
-  const firstPanelSlug = formUtils.getPanelSlug(form, 0);
+
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
@@ -97,9 +96,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
           />
           <EditFormPage
             form={form}
-            testFormUrl={`${url}/view/${firstPanelSlug}`}
-            formSettingsUrl={`${url}/settings`}
-            editFormUrl={`${url}/edit`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -107,19 +103,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
           />
         </Route>
         <Route path={`${url}/view`}>
-          <TestFormPage
-            form={form}
-            editFormUrl={`${url}/edit`}
-            formSettingsUrl={`${url}/settings`}
-            testFormUrl={`${url}/view/${firstPanelSlug}`}
-          />
+          <TestFormPage form={form} />
         </Route>
         <Route path={`${url}/settings`}>
           <FormSettingsPage
             form={form}
-            editFormUrl={`${url}/edit`}
-            testFormUrl={`${url}/view/${firstPanelSlug}`}
-            formSettingsUrl={`${url}/settings`}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}

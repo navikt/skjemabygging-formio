@@ -20,27 +20,23 @@ export const FormMenu = ({ formPath }) => {
   const currentLanguage = useLanguageCodeFromURL();
   return (
     <>
-      <MenuLink to={`/forms/${formPath}/settings`} ariaLabel={"Innstillinger"} noIconStyling={false}>
-        <Settings className={styles.navBarLinkIcon} title="Tannhjul-ikon" />
+      <MenuLink to={`/forms/${formPath}/settings`} noIconStyling={false}>
+        <Settings className={styles.navBarLinkIcon} role="presentation" />
         <span className={styles.linkText}>Innstillinger</span>
       </MenuLink>
 
-      <MenuLink to={`/forms/${formPath}/view/veiledning`} ariaLabel={"Veiledning"} noIconStyling={false}>
-        <Eye className={styles.navBarLinkIcon} title="Øye-ikon" />
+      <MenuLink to={`/forms/${formPath}/view/veiledning`} noIconStyling={false}>
+        <Eye className={styles.navBarLinkIcon} role="presentation" />
         <span className={styles.linkText}>Forhåndsvis</span>
       </MenuLink>
 
-      <MenuLink to={`/forms/${formPath}/edit`} ariaLabel={"Rediger skjema"} noIconStyling={false}>
-        <Edit className={styles.navBarLinkIcon} title="Rediger-ikon" />
+      <MenuLink to={`/forms/${formPath}/edit`} noIconStyling={false}>
+        <Edit className={styles.navBarLinkIcon} role="presentation" />
         <span className={styles.linkText}>Rediger skjema</span>
       </MenuLink>
 
-      <MenuLink
-        to={`/translations/${formPath}${currentLanguage ? `/${currentLanguage}` : ""}`}
-        ariaLabel={"Språk"}
-        noIconStyling={false}
-      >
-        <Globe className={styles.navBarLinkIcon} title="Språk-ikon" />
+      <MenuLink to={`/translations/${formPath}${currentLanguage ? `/${currentLanguage}` : ""}`} noIconStyling={false}>
+        <Globe className={styles.navBarLinkIcon} role="presentation" />
         <span className={styles.linkText}>Språk</span>
       </MenuLink>
     </>

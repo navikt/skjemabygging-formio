@@ -5,7 +5,6 @@ import { NavLink } from "react-router-dom";
 interface Props {
   children: React.ReactNode;
   to: string;
-  ariaLabel: string;
   dataKey?: string;
   noIconStyling: boolean;
 }
@@ -36,7 +35,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const MenuLink = ({ children, to, ariaLabel, dataKey, noIconStyling }: Props) => {
+export const MenuLink = ({ children, to, dataKey, noIconStyling }: Props) => {
   const styles = useStyles();
   const navLinkActiveStyle = { color: "#ffffff", borderBottom: "3px solid #0074df" };
 
@@ -45,7 +44,6 @@ export const MenuLink = ({ children, to, ariaLabel, dataKey, noIconStyling }: Pr
       <NavLink
         className={`${noIconStyling ? styles.navBarLinkNoIcon : styles.navBarLink}`}
         to={to}
-        aria-label={ariaLabel}
         data-key={dataKey}
         activeStyle={navLinkActiveStyle}
       >

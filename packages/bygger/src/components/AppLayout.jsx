@@ -3,7 +3,7 @@ import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
 import { UserAlerterContext } from "../userAlerting";
 import { NavBar } from "./navbar/NavBar";
 
-export const AppLayout = ({ children, navBarProps, formMenuProps }) => {
+export const AppLayout = ({ children, navBarProps }) => {
   return (
     <>
       <NoScrollWrapper>

@@ -11,7 +11,7 @@ const MigrationRouter = () => {
       navBarProps={{
         title: "Migrer skjema",
         visSkjemaliste: true,
-        visSkjemaMeny: true,
+        visSkjemaMeny: false,
       }}
     >
       <Switch>
