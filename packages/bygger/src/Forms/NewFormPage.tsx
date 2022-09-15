@@ -2,6 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 import { Hovedknapp } from "nav-frontend-knapper";
+import { Sidetittel } from "nav-frontend-typografi";
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -14,6 +15,9 @@ const useStyles = makeStyles({
   root: {
     margin: "0 auto 2rem",
     maxWidth: "50rem",
+  },
+  centerColumn: {
+    gridColumn: "2 / 3",
   },
 });
 
@@ -69,8 +73,9 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema", visSkjemaliste: true }}>
+    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema" }}>
       <main className={styles.root}>
+        <Sidetittel className="margin-bottom-double">Opprett nytt skjema</Sidetittel>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} />
         <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
       </main>
