@@ -37,7 +37,7 @@ export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublis
     >
       <Row className={styles.titleRow}>
         <Column className={styles.mainCol}>
-          <Sidetittel>{title}</Sidetittel>
+          <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
         </Column>
       </Row>
       <Row>
