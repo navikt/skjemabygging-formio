@@ -1,6 +1,5 @@
-import { Mottaksadresse } from "../api/Mottaksadresse";
+import { ForstesideRequestBody, Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import {
-  ForstesideRequestBody,
   genererAdresse,
   genererDokumentlisteFoersteside,
   genererFoerstesideData,

@@ -9,6 +9,7 @@ import type {
   NavFormType,
   NewFormSignatureType,
 } from "./form";
+import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
 import type {
   FormioTranslation,
@@ -23,7 +24,7 @@ import type {
   TranslationScope,
   TranslationTag,
 } from "./languages/types";
-import type { MottaksadresseData, MottaksadresseEntity } from "./mottaksadresse";
+import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
@@ -79,8 +80,11 @@ export type {
   TranslationScope,
   TranslationTag,
   MottaksadresseData,
-  MottaksadresseEntity,
+  Mottaksadresse,
   ResourceContent,
   MottaksadresserResourceContent,
   GlobalTranslationsResourceContent,
+  ForstesideRequestBody,
+  KjentBruker,
+  UkjentBruker,
 };

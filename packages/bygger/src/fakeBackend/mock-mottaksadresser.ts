@@ -1,6 +1,6 @@
-import { MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
+import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 
-const mottaksadresser: MottaksadresseEntity[] = [
+const mottaksadresser: Mottaksadresse[] = [
   {
     _id: "1",
     data: {

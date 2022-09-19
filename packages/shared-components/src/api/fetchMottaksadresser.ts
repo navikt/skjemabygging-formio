@@ -1,4 +1,4 @@
-import { Mottaksadresse } from "./Mottaksadresse";
+import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 
 export async function fetchMottaksadresser(baseUrl = ""): Promise<Mottaksadresse[]> {
   return await fetch(`${baseUrl}/mottaksadresser`).then((response) => {
