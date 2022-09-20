@@ -30,7 +30,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     if (formHasChanged(form, changedForm)) {
       setHasUnsavedChanged(true);
     }
-
     setForm(changedForm);
   };
 
@@ -88,12 +87,12 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
 
   return (
     <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={form}>
+      <Prompt
+        when={hasUnsavedChanges}
+        message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
+      />
       <Switch>
         <Route path={`${url}/edit`}>
-          <Prompt
-            when={hasUnsavedChanges}
-            message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
-          />
           <EditFormPage
             form={form}
             onSave={saveFormAndResetIsUnsavedChanges}

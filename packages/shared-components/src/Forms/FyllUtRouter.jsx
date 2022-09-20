@@ -25,6 +25,10 @@ const ALERT_MESSAGE_BACK_BUTTON =
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
+  let inBuilderApp = false;
+  if (app == "bygger") {
+    inBuilderApp = true;
+  }
   const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
@@ -108,11 +112,11 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route path={`${path}/:panelSlug`}>
             {formForRendering && (
               <>
-                <Prompt
-                  message={(location) =>
-                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
-                  }
-                />
+                {!inBuilderApp && (
+                  <Prompt
+                    message={(location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true)}
+                  />
+                )}
                 <FillInFormPage
                   form={formForRendering}
                   submission={submission}
