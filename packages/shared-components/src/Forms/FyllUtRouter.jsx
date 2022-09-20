@@ -26,6 +26,7 @@ const ALERT_MESSAGE_BACK_BUTTON =
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
   let inBuilderApp = false;
+
   if (app == "bygger") {
     inBuilderApp = true;
   }
