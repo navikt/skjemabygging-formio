@@ -124,6 +124,7 @@ describe("FormMetadataEditor", () => {
       components: [],
       properties: {
         skjemanummer: "TST 12.34-56",
+        metabeskrivelse: "Testskjema",
         innsending: undefined,
         tema: "BIL",
         enhetMaVelgesVedPapirInnsending: false,

@@ -4,7 +4,7 @@ import { Status } from "./status/types";
 
 export type SortDirection = "ascending" | "descending";
 export type FormMetadata = Pick<NavFormType, "_id" | "title" | "path" | "tags"> &
-  Pick<FormPropertiesType, "skjemanummer" | "modified" | "published" | "tema"> & { status: Status };
+  Pick<FormPropertiesType, "skjemanummer" | "modified" | "published" | "tema" | "metabeskrivelse"> & { status: Status };
 
 export function sortFormsByProperty(
   formMetadataList: FormMetadata[],
@@ -80,6 +80,7 @@ export function asFormMetadata(form: NavFormType): FormMetadata {
     tags: form.tags,
     skjemanummer: form.properties ? (form.properties.skjemanummer ? form.properties.skjemanummer.trim() : "") : "",
     tema: form.properties ? (form.properties.tema ? form.properties.tema : "") : "",
+    metabeskrivelse: form.properties ? (form.properties.metabeskrivelse ? form.properties.metabeskrivelse : "") : "",
     status: determineStatus(form.properties),
   };
 }
