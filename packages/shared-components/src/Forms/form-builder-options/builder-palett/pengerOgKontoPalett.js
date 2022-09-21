@@ -59,10 +59,6 @@ const pengerOgKontoPalett = {
         spellcheck: false,
         validateOn: "blur",
         clearOnHide: true,
-        truncateMultipleSpaces: false,
-        requireDecimal: false,
-        minLength: 11,
-        maxLength: 11,
         validate: {
           required: true,
           custom: "valid = instance.validateAccountNumber(input)",
