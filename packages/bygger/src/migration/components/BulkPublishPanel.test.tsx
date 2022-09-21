@@ -10,6 +10,7 @@ Modal.setAppElement(document.createElement("div"));
 const properties: FormPropertiesType = {
   skjemanummer: "skjemanummer",
   tema: "tema",
+  metabeskrivelse: "metabeskrivelse",
   innsending: "PAPIR_OG_DIGITAL",
   signatures: {
     signature1: "",
