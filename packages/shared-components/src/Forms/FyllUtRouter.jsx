@@ -108,7 +108,7 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route path={`${path}/:panelSlug`}>
             {formForRendering && (
               <>
-                {!app === "bygger" && (
+                {app !== "bygger" && (
                   <Prompt
                     message={(location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true)}
                   />
