@@ -33,16 +33,11 @@ const FyllUtRouter = ({ form, translations }) => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
-  const beforeUnload = (e) => {
-    e.preventDefault();
-    e.returnValue = "";
-  };
-
   useEffect(() => {
     loggSkjemaApnet();
-    window.addEventListener("beforeunload", beforeUnload);
+    navFormUtils.addBeforeUnload();
     return () => {
-      window.removeEventListener("beforeunload", beforeUnload);
+      navFormUtils.removeBeforeUnload();
     };
   }, [loggSkjemaApnet]);
 

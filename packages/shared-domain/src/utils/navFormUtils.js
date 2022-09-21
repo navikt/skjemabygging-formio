@@ -119,11 +119,26 @@ export const removeVedleggspanel = (form) => {
   return removeComponents(form, isVedleggspanel);
 };
 
+const beforeUnload = (e) => {
+  e.preventDefault();
+  e.returnValue = "";
+};
+
+const addBeforeUnload = () => {
+  window.addEventListener("beforeunload", beforeUnload);
+};
+
+const removeBeforeUnload = () => {
+  window.removeEventListener("beforeunload", beforeUnload);
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
   findDependentComponents,
   flattenComponents,
   removeVedleggspanel,
+  addBeforeUnload,
+  removeBeforeUnload,
 };
 export default navFormUtils;

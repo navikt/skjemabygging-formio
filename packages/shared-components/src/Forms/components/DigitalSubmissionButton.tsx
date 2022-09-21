@@ -1,4 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
@@ -51,6 +51,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
         currentLanguage,
         config.isDelingslenke
       );
+      navFormUtils.removeBeforeUnload();
       onSuccess(response);
     } catch (err: any) {
       onError(err);
