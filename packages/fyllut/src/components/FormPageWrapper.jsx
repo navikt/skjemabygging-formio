@@ -22,8 +22,15 @@ export const FormPageWrapper = () => {
   }, [formPath]);
 
   useEffect(() => {
-    if (form && form.title) {
+    if (form?.title) {
       document.title = `${form.title} | www.nav.no`;
+      document.querySelector('meta[property="og:title"]').setAttribute("content", `${form.title} | www.nav.no`);
+    }
+    if (form?.properties?.metabeskrivelse) {
+      document.querySelector('meta[name="description"]').setAttribute("content", form.properties.metabeskrivelse);
+      document
+        .querySelector('meta[property="og:description"]')
+        .setAttribute("content", form.properties.metabeskrivelse);
     }
   }, [form]);
 

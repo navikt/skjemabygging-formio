@@ -43,6 +43,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
     type,
     properties: {
       isTestForm,
+      metabeskrivelse,
       skjemanummer,
       tema,
       downloadPdfButtonText,
@@ -142,6 +143,16 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         placeholder="Skriv inn tittel"
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
+      />
+      <Textarea
+        label="Metabeskrivelse"
+        maxLength={150}
+        id="metabeskrivelse"
+        placeholder="Skriv inn beskrivelse"
+        value={metabeskrivelse}
+        onChange={(event) =>
+          onChange({ ...form, properties: { ...form.properties, metabeskrivelse: event.target.value } })
+        }
       />
       <Input
         label="Temakode"
