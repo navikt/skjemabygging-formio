@@ -31,9 +31,6 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
       <label htmlFor="enhetSelect" className="skjemaelement__label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>
-      <div className="skjemaelement__description">
-        {translate(TEXTS.statiske.prepareLetterPage.chooseEntityDescription)}
-      </div>
       <ReactSelect
         id="enhetSelect"
         className={styles.enhetsliste}

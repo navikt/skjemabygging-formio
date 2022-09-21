@@ -1,12 +1,12 @@
 export const grensesnitt = {
   //Grensesnitt / navigering
   navigation: {
-    previous: "Forrige",
-    next: "Neste",
+    previous: "Forrige steg",
+    next: "Neste steg",
     cancel: "Avbryt",
     exit: "Avslutt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
-    submit: "Neste",
+    submit: "Neste steg",
     "Legg til": "Legg til",
     Fjern: "Fjern",
   },
@@ -24,7 +24,7 @@ export const grensesnitt = {
   },
   summaryPage: {
     edit: "Rediger",
-    editAnswers: "Rediger opplysningene",
+    editAnswers: "Forrige steg",
     continueToPostalSubmission: "Send i posten",
     continueToDigitalSubmission: "Til digital innsending",
   },
