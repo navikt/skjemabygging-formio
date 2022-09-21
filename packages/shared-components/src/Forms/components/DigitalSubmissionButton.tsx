@@ -42,6 +42,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   const sendInn = async () => {
     try {
       setLoading(true);
+      navFormUtils.removeBeforeUnload();
       const response = await postToSendInn(
         http,
         baseUrl,
@@ -51,9 +52,9 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
         currentLanguage,
         config.isDelingslenke
       );
-      navFormUtils.removeBeforeUnload();
       onSuccess(response);
     } catch (err: any) {
+      navFormUtils.addBeforeUnload();
       onError(err);
     } finally {
       setLoading(false);
