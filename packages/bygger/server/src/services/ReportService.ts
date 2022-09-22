@@ -2,9 +2,21 @@ import { stringify } from "csv-stringify";
 import { Writable } from "stream";
 import { FormioService } from "./formioService";
 
-export enum Report {
-  FORMS_PUBLISHED_LANGUAGES = "forms-published-language",
+export interface Report {
+  id: string;
+  title: string;
+  contentType: string;
+  fileEnding: "csv";
 }
+
+const ReportMap: Record<string, Report> = {
+  FORMS_PUBLISHED_LANGUAGES: {
+    id: "forms-published-languages",
+    title: "Publiserte språk per skjema",
+    contentType: "text/csv",
+    fileEnding: "csv",
+  },
+};
 
 class ReportService {
   private readonly formioService: FormioService;
@@ -15,11 +27,17 @@ class ReportService {
 
   async generate(report: Report, writableStream: Writable) {
     switch (report) {
-      case Report.FORMS_PUBLISHED_LANGUAGES:
+      case ReportMap.FORMS_PUBLISHED_LANGUAGES:
         return this.generateFormsPublishedLanguage(writableStream);
       default:
-        throw new Error(`Report not implemented: ${report}`);
+        throw new Error(`Report not implemented: ${report.id}`);
     }
+  }
+
+  getReportType = (reportId: string) => Object.values(ReportMap).find((report) => report.id === reportId);
+
+  getAllReports(): Report[] {
+    return Object.keys(ReportMap).map((key) => ({ ...ReportMap[key] }));
   }
 
   async generateFormsPublishedLanguage(writableStream: Writable) {
