@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { Report } from "@navikt/skjemadigitalisering-shared-domain";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
@@ -12,11 +13,6 @@ const useStyles = makeStyles({
     gridColumn: "2 / 3",
   },
 });
-
-type Report = {
-  id: string;
-  title: string;
-};
 
 const ReportsPage = () => {
   const styles = useStyles();

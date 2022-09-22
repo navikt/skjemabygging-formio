@@ -1,13 +1,7 @@
+import { Report } from "@navikt/skjemadigitalisering-shared-domain";
 import { stringify } from "csv-stringify";
 import { Writable } from "stream";
 import { FormioService } from "./formioService";
-
-export interface Report {
-  id: string;
-  title: string;
-  contentType: string;
-  fileEnding: "csv";
-}
 
 const ReportMap: Record<string, Report> = {
   FORMS_PUBLISHED_LANGUAGES: {
