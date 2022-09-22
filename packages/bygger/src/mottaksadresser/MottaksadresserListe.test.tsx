@@ -1,4 +1,4 @@
-import { MottaksadresseEntity } from "@navikt/skjemadigitalisering-shared-domain";
+import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor, waitForElementToBeRemoved, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Formiojs from "formiojs/Formio";
@@ -24,7 +24,7 @@ describe("MottaksadresseListe", () => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);
   });
 
-  let savedMottaksadresseRequests: MottaksadresseEntity[] = [];
+  let savedMottaksadresseRequests: Mottaksadresse[] = [];
   let deletedMottaksadresseIds: string[] = [];
 
   beforeEach(() => {
@@ -37,13 +37,13 @@ describe("MottaksadresseListe", () => {
           return Promise.resolve(new Response(JSON.stringify(mockMottaksadresser), RESPONSE_HEADERS));
         }
         if (options?.method === "POST") {
-          savedMottaksadresseRequests.push(JSON.parse(options?.body as string) as MottaksadresseEntity);
+          savedMottaksadresseRequests.push(JSON.parse(options?.body as string) as Mottaksadresse);
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
       }
       if (SUBMISSION_PUT_REGEX.test(url)) {
         if (options?.method === "PUT") {
-          savedMottaksadresseRequests.push(JSON.parse(options?.body as string) as MottaksadresseEntity);
+          savedMottaksadresseRequests.push(JSON.parse(options?.body as string) as Mottaksadresse);
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
         if (options?.method === "DELETE") {

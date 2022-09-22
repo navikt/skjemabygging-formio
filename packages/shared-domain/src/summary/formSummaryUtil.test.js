@@ -4,6 +4,7 @@ import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
 import testformCustomConditional from "./testdata/form-alertstripe-cusom-conditional";
 import testformContainerConditional from "./testdata/form-container-conditional";
+import testImgFormCustomConditional from "./testdata/form-image-custom-conditional";
 
 const {
   createDummyContainerElement,
@@ -23,6 +24,7 @@ const {
   createPanelObject,
   createDummyDayComponent,
   createDummyLandvelger,
+  createDummyCheckbox,
 } = MockedComponentObjectForTest;
 
 const onlyAlertstripes = (comp) => comp.type === "alertstripe";
@@ -57,6 +59,19 @@ describe("Map and evaluate conditionals", () => {
     const data = { radiopanel: "ja" };
 
     expect(mapAndEvaluateConditionals(formObject, data)).toEqual({ alert1: true, alert2: false });
+  });
+});
+
+describe("Image component with custom conditional", () => {
+  it("should not be visible when inputCondition=doNotShowImg", () => {
+    const { imgForm, submissionDoNotShowConditionalInput } = testImgFormCustomConditional;
+    expect(mapAndEvaluateConditionals(imgForm, submissionDoNotShowConditionalInput)).toEqual({ image1: false });
+  });
+
+  it("should display image when inputCondition other value than doNotShowImg", () => {
+    const { imgForm, submissionOtherInput, submissionEmptyInput } = testImgFormCustomConditional;
+    expect(mapAndEvaluateConditionals(imgForm, submissionOtherInput)).toEqual({ image1: true });
+    expect(mapAndEvaluateConditionals(imgForm, submissionEmptyInput)).toEqual({ image1: true });
   });
 });
 
@@ -399,6 +414,13 @@ describe("When handling component", () => {
 
     it("does not add anything if no option is selected (current version of landvelger)", () => {
       const actual = handleComponent(createDummyLandvelger(), { data: { land: {} } }, [], "", mockedTranslate);
+      expect(actual).toEqual([]);
+    });
+  });
+
+  describe("Checkbox", () => {
+    it("does not add anything if not selected", () => {
+      const actual = handleComponent(createDummyCheckbox(), { label: { key: "" } }, [], "", mockedTranslate);
       expect(actual).toEqual([]);
     });
   });

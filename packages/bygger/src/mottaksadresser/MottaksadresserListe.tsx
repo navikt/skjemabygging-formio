@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import Column from "../components/layout/Column";
@@ -17,14 +18,8 @@ const useStyles = makeStyles({
 
 const MottaksadresserListe = () => {
   const styles = useStyles();
-  const {
-    mottaksadresseEntities,
-    ready,
-    errorMessage,
-    loadMottaksadresser,
-    deleteMottaksadresse,
-    publishMottaksadresser,
-  } = useMottaksadresser();
+  const { mottaksadresser, ready, errorMessage, loadMottaksadresser, deleteMottaksadresse, publishMottaksadresser } =
+    useMottaksadresser();
   const [editAddressId, setEditAddressId] = useState<string | undefined>(undefined);
   const [loadingForm, setLoadingForm] = useState<boolean>(false);
   const [publishing, setPublishing] = useState<boolean>(false);
@@ -52,7 +47,7 @@ const MottaksadresserListe = () => {
     <>
       <Column className={styles.mottaksadresser}>
         {!ready && "Laster mottaksadresser..."}
-        {errorMessage}
+        {errorMessage && <AlertStripeFeil>{errorMessage}</AlertStripeFeil>}
         {editAddressId === "new" && (
           <MottaksadresseEditor
             onSubmitDone={onSubmitDone}
@@ -62,7 +57,7 @@ const MottaksadresserListe = () => {
             editMode
           />
         )}
-        {mottaksadresseEntities.map((entity) => (
+        {mottaksadresser.map((entity) => (
           <MottaksadresseEditor
             key={entity._id}
             mottaksadresse={entity}

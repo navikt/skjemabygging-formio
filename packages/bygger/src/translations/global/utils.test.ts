@@ -145,7 +145,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
   });
 
   describe("transformGlobalTranslationsToCsvData", () => {
-    const allPredefinedOriginalTexts = ["Forrige", "{{field}} kan ikke være senere enn {{maxYear}}"];
+    const allPredefinedOriginalTexts = ["Forrige steg", "{{field}} kan ikke være senere enn {{maxYear}}"];
     const allGlobalTranslations = {
       en: [
         {
@@ -166,8 +166,8 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
         {
           tag: "grensesnitt",
           translations: {
-            Forrige: {
-              value: "Previous",
+            "Forrige steg": {
+              value: "Previous step",
               scope: "global",
             },
           },
@@ -195,7 +195,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       expect(data).toEqual([
         { text: "Personopplysninger", en: "Personal information" },
         { text: "{{field}} kan ikke være senere enn {{maxYear}}", en: "{{field}} cannot be later than {{maxYear}}" },
-        { text: "Forrige", en: "Previous" },
+        { text: "Forrige steg", en: "Previous step" },
       ]);
       expect(headers).toEqual([
         { key: "text", label: "Globale tekster" },
@@ -247,7 +247,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
           "nn-NO": "{{field}} kan ikkje vere seinare enn {{maxYear}}",
         },
         { text: "Personopplysninger", "nn-NO": undefined },
-        { text: "Forrige", "nn-NO": undefined },
+        { text: "Forrige steg", "nn-NO": undefined },
       ]);
       expect(headers).toEqual([
         { key: "text", label: "Globale tekster" },
@@ -264,7 +264,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       expect(data).toEqual([
         { text: "Personopplysninger" },
         { text: "{{field}} kan ikke være senere enn {{maxYear}}" },
-        { text: "Forrige" },
+        { text: "Forrige steg" },
       ]);
       expect(headers).toEqual([
         { key: "text", label: "Globale tekster" },

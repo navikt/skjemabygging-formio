@@ -2,6 +2,7 @@ import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
   DisplayType,
   InnsendingType,
+  MottaksadresseData,
   NavFormType,
   signatureUtils,
   TEXTS,
@@ -99,7 +100,19 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       });
     }
   };
+
   const innsending = innsendingFraProps || "PAPIR_OG_DIGITAL";
+
+  const toAddressString = (address: MottaksadresseData) => {
+    const linjer = [address.adresselinje1];
+    if (address.adresselinje2) {
+      linjer.push(address.adresselinje2);
+    }
+    if (address.adresselinje3) {
+      linjer.push(address.adresselinje3);
+    }
+    return `${linjer.join(", ")}, ${address.postnummer} ${address.poststed}`;
+  };
 
   return (
     <SkjemaGruppe>
@@ -260,8 +273,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
               {mottaksadresseId && !ready ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
             </option>
             {mottaksadresser.map((adresse) => (
-              <option value={adresse.id} key={adresse.id}>
-                {adresse.toString()}
+              <option value={adresse._id} key={adresse._id}>
+                {toAddressString(adresse.data)}
               </option>
             ))}
           </Select>

@@ -1,12 +1,10 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import { FormBuilderOptions, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
 import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst, Undertittel } from "nav-frontend-typografi";
+import { Normaltekst, Sidetittel } from "nav-frontend-typografi";
 import React from "react";
-import { Link } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
-import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import NavFormBuilder from "../components/NavFormBuilder";
@@ -26,8 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onChange, onPublish, onUnpublish }) {
-  const { featureToggles } = useAppConfig();
+export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish, onUnpublish }) {
   const {
     title,
     properties: { skjemanummer },
@@ -38,29 +35,14 @@ export function EditFormPage({ form, formSettingsUrl, testFormUrl, onSave, onCha
     <>
       <AppLayoutWithContext
         navBarProps={{
-          title: "Rediger skjema",
-          visSkjemaliste: true,
+          visSkjemaMeny: true,
+          formPath: form.path,
         }}
       >
-        <ActionRow>
-          {formSettingsUrl && (
-            <Link className="knapp" to={formSettingsUrl}>
-              Innstillinger
-            </Link>
-          )}
-          <Link className="knapp" to={testFormUrl}>
-            Forhåndsvis
-          </Link>
-          {featureToggles.enableTranslations && (
-            <Link className="knapp" to={`/translations/${form.path}`}>
-              Oversettelse
-            </Link>
-          )}
-        </ActionRow>
         <Row>
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
-            <Undertittel>{title}</Undertittel>
+            <Sidetittel>{title}</Sidetittel>
             <Normaltekst>{skjemanummer}</Normaltekst>
           </Column>
         </Row>

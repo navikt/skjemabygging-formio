@@ -1,37 +1,13 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { Mottaksadresse, MottaksadresseData } from "../api/Mottaksadresse";
-
-type ForstesideType = "SKJEMA" | "ETTERSENDELSE";
-
-interface Bruker {
-  brukerId: string;
-  brukerType: string;
-}
-
-interface UkjentBruker {
-  ukjentBrukerPersoninfo: string;
-}
-
-interface KjentBruker {
-  bruker: Bruker;
-}
+import {
+  ForstesideRequestBody,
+  KjentBruker,
+  Mottaksadresse,
+  MottaksadresseData,
+  navFormUtils,
+  UkjentBruker,
+} from "@navikt/skjemadigitalisering-shared-domain";
 
 type BrukerInfo = KjentBruker | UkjentBruker;
-
-export interface ForstesideRequestBody {
-  foerstesidetype: ForstesideType;
-  navSkjemaId: string;
-  spraakkode: string;
-  overskriftstittel: string;
-  arkivtittel: string;
-  tema: string;
-  vedleggsliste: string[];
-  dokumentlisteFoersteside: string[];
-  netsPostboks?: string;
-  adresse?: MottaksadresseData;
-  bruker?: Bruker;
-  ukjentBrukerPersoninfo?: string;
-}
 
 const adressLine = (text, prefix?) => {
   if (text) {

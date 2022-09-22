@@ -1,26 +1,48 @@
 import ibanSchema from "../schemas/ibanSchema";
+import valutavelgerSchema from "../schemas/valutavelgerSchema";
+
+const currency = {
+  title: "Beløp",
+  key: "belop",
+  icon: "dollar",
+  schema: {
+    label: "Beløp",
+    type: "currency",
+    key: "belop",
+    fieldSize: "input--s",
+    input: true,
+    currency: "nok",
+    spellcheck: false,
+    dataGridLabel: true,
+    clearOnHide: true,
+    validateOn: "blur",
+    validate: {
+      required: true,
+    },
+  },
+};
+
+const valutavelger = {
+  title: "Valutavelger",
+  key: "valutavelger",
+  icon: "home",
+  weight: 71,
+  schema: valutavelgerSchema(),
+};
 
 const pengerOgKontoPalett = {
   title: "Penger og konto",
   components: {
-    currency: {
-      title: "Beløp",
-      key: "belop",
+    currency,
+    amountWithCurrencySelector: {
+      title: "Beløp med valuta",
+      key: "belopMedValuta",
       icon: "dollar",
       schema: {
-        label: "Beløp",
-        type: "currency",
-        key: "belop",
-        fieldSize: "input--s",
-        input: true,
-        currency: "nok",
-        spellcheck: false,
-        dataGridLabel: true,
-        clearOnHide: true,
-        validateOn: "blur",
-        validate: {
-          required: true,
-        },
+        label: "Angi valuta og beløp",
+        components: [valutavelger.schema, { ...currency.schema, type: "number" }],
+        type: "row",
+        isAmountWithCurrencySelector: true,
       },
     },
     bankAccount: {
@@ -29,7 +51,7 @@ const pengerOgKontoPalett = {
       icon: "bank",
       schema: {
         label: "Kontonummer",
-        type: "textfield",
+        type: "bankAccount",
         key: "kontoNummer",
         fieldSize: "input--s",
         input: true,
@@ -39,8 +61,8 @@ const pengerOgKontoPalett = {
         clearOnHide: true,
         validate: {
           required: true,
-          maxLength: 11,
-          minLength: 11,
+          custom: "valid = instance.validateAccountNumber(input)",
+          customMessage: "Dette er ikke et gyldig kontonummer",
         },
       },
     },
@@ -50,6 +72,7 @@ const pengerOgKontoPalett = {
       icon: "bank",
       schema: ibanSchema(),
     },
+    valutavelger,
   },
 };
 

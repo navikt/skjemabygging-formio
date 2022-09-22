@@ -22,25 +22,23 @@ export const statiske = {
   summaryPage: {
     title: "Oppsummering",
     description:
-      "Vennligst sjekk at alle opplysningene dine er riktige. Hvis du finner noe som må korrigeres " +
-      "trykker du på «{{editAnswers}}» på bunnen av denne siden. Hvis alle opplysningene er riktige går du videre til neste steg.",
+      "Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.",
   },
   warningAboutDifficultSubmission: {
     modal: {
       title: "Dette er en tjeneste under utvikling",
-      text1: "Hvis du velger digital innsending må du laste ned søknaden og laste den opp igjen i neste steg.",
+      text1: "Hvis du velger digital innsending må du laste ned skjemaet og laste det opp igjen i neste steg.",
       text2: "Digital innsending er vanskelig på iPad og iPhone.",
     },
     alert:
-      "Hvis du velger digital innsending må du laste ned søknaden i neste steg og laste den opp igjen etter innlogging.",
+      "Hvis du velger digital innsending må du laste ned skjemaet i neste steg og laste det opp igjen etter innlogging.",
   },
   prepareLetterPage: {
-    chooseEntity: "Velg enhet som skal behandle saken din",
-    chooseEntityDescription: "Du må velge enheten som skal behandle saken din",
+    chooseEntity: "Velg hvilken NAV-enhet som skal motta innsendingen",
     selectEntityDefault: "Velg enhet",
     entityNotSelectedError: "Førsteside kan ikke genereres før du har valgt enhet",
     entityFetchError: "En feil har oppstått. Vi kunne ikke laste enheter. Beklager ulempen, prøv igjen senere.",
-    firstSectionTitle: "Last ned og skriv ut dokumentene til saken din",
+    firstSectionTitle: "Last ned og skriv ut dokumentene",
     firstDescription:
       "Førstesidearket inneholder viktig informasjon om hvilken enhet i NAV som skal motta dokumentene, og hvilken adresse de skal sendes til.",
     attachmentSectionTitleAttachTo: "Legg ved",
