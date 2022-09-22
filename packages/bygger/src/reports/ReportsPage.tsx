@@ -19,6 +19,7 @@ const ReportsPage = () => {
   const { userData } = useAuth();
   const { config, http } = useAppConfig();
   const [reports, setReports] = useState<Report[] | undefined>(undefined);
+  const reportUrlPrefix = config?.isDevelopment ? "http://localhost:8080" : "";
 
   useEffect(() => {
     http?.get<Report[]>("/api/reports").then((list) => setReports(list));
@@ -34,7 +35,7 @@ const ReportsPage = () => {
               <ul>
                 {reports?.map((report) => (
                   <li key={report.id}>
-                    <a href={`/api/reports/${report.id}`} target="_blank" rel="noreferrer">
+                    <a href={`${reportUrlPrefix}/api/reports/${report.id}`} target="_blank" rel="noreferrer">
                       {report.title}
                     </a>
                   </li>
