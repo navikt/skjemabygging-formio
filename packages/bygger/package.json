@@ -69,6 +69,7 @@
     "check-types": "tsc",
     "clean": "rimraf build coverage",
     "test": "craco test",
+    "cypress": "cypress open",
     "test:coverage": "craco test --coverage --watchAll=false",
     "eject": "craco eject"
   },
@@ -95,6 +96,9 @@
     "@testing-library/react": "^12.0.0",
     "@testing-library/react-hooks": "^7.0.1",
     "@testing-library/user-event": "^13.2.1",
+    "@testing-library/cypress": "^8.0.3",
+    "cypress": "^10.6.0",
+    "eslint-plugin-cypress":"^2.12.1",
     "craco-alias": "^3.0.1",
     "cross-env": "^7.0.2",
     "jest-fetch-mock": "^3.0.3",

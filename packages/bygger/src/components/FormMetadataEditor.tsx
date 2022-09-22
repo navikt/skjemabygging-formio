@@ -295,6 +295,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
 
       <Textarea
         label="Generelle instruksjoner (valgfritt)"
+        id="form-generalinstructions"
+        name="form-generalinstructions"
         value={descriptionOfSignatures || ""}
         maxLength={0}
         onChange={(event) =>
