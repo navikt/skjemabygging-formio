@@ -34,7 +34,7 @@ class ReportService {
     return Object.keys(ReportMap).map((key) => ({ ...ReportMap[key] }));
   }
 
-  async generateFormsPublishedLanguage(writableStream: Writable) {
+  private async generateFormsPublishedLanguage(writableStream: Writable) {
     const columns = ["skjemanummer", "skjematittel", "språk"];
     const publishedForms = await this.formioService.getPublishedForms("title,properties");
     const stringifier = stringify({ header: true, columns, delimiter: ";" });
