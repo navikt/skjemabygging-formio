@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import Column from "../components/layout/Column";
@@ -28,14 +29,10 @@ const ReportsPage = () => {
   }, [http]);
 
   return (
-    <AppLayoutWithContext
-      navBarProps={{
-        title: "Rapporter",
-        visSkjemaliste: true,
-      }}
-    >
+    <AppLayoutWithContext>
       <Row>
         <Column className={styles.reports}>
+          <Sidetittel>Rapporter</Sidetittel>
           {userData?.isAdmin || config?.isDevelopment ? (
             <div>
               <ul>
