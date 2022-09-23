@@ -1,0 +1,62 @@
+import { makeStyles } from "@material-ui/styles";
+import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
+import AlertStripe from "nav-frontend-alertstriper";
+import { Sidetittel } from "nav-frontend-typografi";
+import React, { useEffect, useState } from "react";
+import { AppLayoutWithContext } from "../components/AppLayout";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
+import { useAuth } from "../context/auth-context";
+
+const useStyles = makeStyles({
+  reports: {
+    gridColumn: "2 / 3",
+  },
+});
+
+const ReportsPage = () => {
+  const styles = useStyles();
+  const { userData } = useAuth();
+  const { config, http } = useAppConfig();
+  const [reports, setReports] = useState<ReportDefinition[] | undefined>(undefined);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const reportUrlPrefix = config?.isDevelopment ? "http://localhost:8080" : "";
+
+  useEffect(() => {
+    if (userData?.isAdmin) {
+      http
+        ?.get<ReportDefinition[]>("/api/reports")
+        .then((list) => setReports(list))
+        .catch(() => setErrorMessage("Henting av rapportoversikt feilet"));
+    }
+  }, [http, userData]);
+
+  return (
+    <AppLayoutWithContext>
+      <Row>
+        <Column className={styles.reports}>
+          <Sidetittel>Rapporter</Sidetittel>
+          {errorMessage && <AlertStripe type={"feil"}>{errorMessage}</AlertStripe>}
+          {userData?.isAdmin ? (
+            <div>
+              <ul>
+                {reports?.map((report) => (
+                  <li key={report.id}>
+                    <a href={`${reportUrlPrefix}/api/reports/${report.id}`} target="_blank" rel="noreferrer">
+                      {report.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div>Du er ikke autorisert til å ta ut rapporter</div>
+          )}
+        </Column>
+      </Row>
+    </AppLayoutWithContext>
+  );
+};
+
+export default ReportsPage;

@@ -82,6 +82,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
   const { logout, userData } = useAuth();
   const { config } = useAppConfig();
   const styles = useStyles();
+  const showAdmin = userData?.isAdmin;
   return (
     <section>
       <Header className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>
@@ -111,6 +112,12 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
                   {" "}
                   <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
                 </Dropdown.Menu.GroupedList.Item>
+                {showAdmin && (
+                  <Dropdown.Menu.GroupedList.Item>
+                    {" "}
+                    <Link to="/rapporter">Rapporter</Link>
+                  </Dropdown.Menu.GroupedList.Item>
+                )}
               </Dropdown.Menu.GroupedList>
             </Dropdown.Menu>
           </Dropdown>
