@@ -34,16 +34,14 @@ export const COMPONENT_TEXTS = {
 const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
   const { mottaksadresser, ready, errorMessage: mottaksadresseError } = useMottaksadresser();
-
   const {
     title,
-    path,
-    display,
-    name,
-    type,
+    //path,
+    //  display,
+    //name,
+    //  type,
     properties: {
       isTestForm,
-      metabeskrivelse,
       skjemanummer,
       tema,
       downloadPdfButtonText,
@@ -144,16 +142,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
       />
-      <Textarea
-        label="Metabeskrivelse"
-        maxLength={150}
-        id="metabeskrivelse"
-        placeholder="Skriv inn beskrivelse"
-        value={metabeskrivelse}
-        onChange={(event) =>
-          onChange({ ...form, properties: { ...form.properties, metabeskrivelse: event.target.value } })
-        }
-      />
       <Input
         label="Temakode"
         type="text"
@@ -161,51 +149,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-      />
-      <Select
-        label="Type"
-        name="form-type"
-        id="form-type"
-        value={type}
-        onChange={(event) => onChange({ ...form, type: event.target.value })}
-      >
-        <option label="Form" value="form">
-          Form
-        </option>
-        <option label="Resource" value="resource">
-          Resource
-        </option>
-      </Select>
-      <Select
-        label="Vis som"
-        name="form-display"
-        id="form-display"
-        value={display}
-        onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
-      >
-        <option label="Skjema" value="form">
-          Skjema
-        </option>
-        <option label="Veiviser" value="wizard">
-          Veiviser
-        </option>
-      </Select>
-      <Input
-        label="Navn"
-        type="text"
-        id="name"
-        value={name}
-        readOnly={usageContext === "edit"}
-        onChange={(event) => onChange({ ...form, name: event.target.value })}
-      />
-      <Input
-        label="Path"
-        type="text"
-        id="path"
-        style={{ textTransform: "lowercase" }}
-        value={path}
-        readOnly={usageContext === "edit"}
-        onChange={(event) => onChange({ ...form, path: event.target.value })}
       />
       <Input
         label="Tekst på knapp for nedlasting av pdf"
@@ -237,6 +180,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         <option value="KUN_DIGITAL">Kun digital</option>
         <option value="INGEN">Ingen</option>
       </Select>
+
       {innsending === "INGEN" && (
         <>
           <Input

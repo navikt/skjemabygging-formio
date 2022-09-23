@@ -43,7 +43,6 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
       path: "",
       properties: {
         skjemanummer: "",
-        metabeskrivelse: "",
         tema: "",
         innsending: "PAPIR_OG_DIGITAL",
         signatures: [{ label: "", description: "", key: uuidv4() }],

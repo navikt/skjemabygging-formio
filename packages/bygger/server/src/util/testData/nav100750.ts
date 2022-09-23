@@ -4259,7 +4259,6 @@ const form: any = {
   path: "nav100750",
   properties: {
     skjemanummer: "NAV 10-07.50",
-    metabeskrivelse: "Søknad om førerhund skjema",
     tema: "HJE",
     published: "2022-04-29T08:13:33.878Z",
     modified: "2022-04-29T08:13:33.878Z",

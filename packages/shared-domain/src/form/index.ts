@@ -26,7 +26,6 @@ export interface NewFormSignatureType {
 
 export interface FormPropertiesType {
   skjemanummer: string;
-  metabeskrivelse: string;
   tema: string;
   modified?: string;
   modifiedBy?: string;

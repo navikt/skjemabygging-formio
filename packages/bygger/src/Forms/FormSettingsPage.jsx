@@ -17,9 +17,6 @@ const useStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
   },
-  titleRow: {
-    height: "79px",
-  },
 });
 
 export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublish, visSkjemaMeny }) {

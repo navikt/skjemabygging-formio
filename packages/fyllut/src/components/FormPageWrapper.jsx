@@ -9,6 +9,7 @@ export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
+
   useEffect(() => {
     httpFyllut
       .get(`/fyllut/api/forms/${formPath}`)
@@ -24,13 +25,20 @@ export const FormPageWrapper = () => {
   useEffect(() => {
     if (form?.title) {
       document.title = `${form.title} | www.nav.no`;
-      document.querySelector('meta[property="og:title"]').setAttribute("content", `${form.title} | www.nav.no`);
+      document.querySelector('meta[property="og:title"]')?.setAttribute("content", `${form.title} | www.nav.no`);
     }
-    if (form?.properties?.metabeskrivelse) {
-      document.querySelector('meta[name="description"]').setAttribute("content", form.properties.metabeskrivelse);
-      document
-        .querySelector('meta[property="og:description"]')
-        .setAttribute("content", form.properties.metabeskrivelse);
+
+    const descriptionComponent = form?.components[0]?.components?.find((i) => i.key === "beskrivelsetekst");
+    //sjekker på om finnes og om den inneholder defaultval: "Her skal det stå en kort beskrivelse av søknaden"
+    //regner med at det er ønskelig med en "global prop" for dette hvis man skal løse det på denne måten..
+    // annen måte å løse det på: påkrevd inputfelt? Hør med de andre i morgen..
+    if (
+      descriptionComponent?.content &&
+      descriptionComponent?.content !== "Her skal det stå en kort beskrivelse av søknaden"
+    ) {
+      const descriptionTxt = descriptionComponent.content.replace(/[^a-zA-Z0-9 ]/g, "");
+      document.querySelector('meta[name="description"]')?.setAttribute("content", descriptionTxt);
+      document.querySelector('meta[property="og:description"]')?.setAttribute("content", descriptionTxt);
     }
   }, [form]);
 
