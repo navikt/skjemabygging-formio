@@ -82,7 +82,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
   const { logout, userData } = useAuth();
   const { config } = useAppConfig();
   const styles = useStyles();
-  const showAdmin = userData?.isAdmin || config?.isDevelopment;
+  const showAdmin = userData?.isAdmin;
   return (
     <section>
       <Header className={config?.isDevelopment ? styles.navBarLocal : styles.navBar}>

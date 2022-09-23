@@ -23,6 +23,7 @@ const enforceUserName = (formioUser) => {
     return {
       ...formioUser,
       name: formioUser.data?.email,
+      isAdmin: true,
     };
   }
   return formioUser;
