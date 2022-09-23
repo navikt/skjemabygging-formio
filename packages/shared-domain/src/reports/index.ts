@@ -1,4 +1,4 @@
-export interface Report {
+export interface ReportDefinition {
   id: string;
   title: string;
   contentType: string;

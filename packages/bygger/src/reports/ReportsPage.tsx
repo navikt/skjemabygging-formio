@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { Report } from "@navikt/skjemadigitalisering-shared-domain";
+import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
@@ -18,11 +18,11 @@ const ReportsPage = () => {
   const styles = useStyles();
   const { userData } = useAuth();
   const { config, http } = useAppConfig();
-  const [reports, setReports] = useState<Report[] | undefined>(undefined);
+  const [reports, setReports] = useState<ReportDefinition[] | undefined>(undefined);
   const reportUrlPrefix = config?.isDevelopment ? "http://localhost:8080" : "";
 
   useEffect(() => {
-    http?.get<Report[]>("/api/reports").then((list) => setReports(list));
+    http?.get<ReportDefinition[]>("/api/reports").then((list) => setReports(list));
   }, [http]);
 
   return (

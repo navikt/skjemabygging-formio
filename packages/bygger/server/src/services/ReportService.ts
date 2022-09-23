@@ -1,9 +1,9 @@
-import { Report } from "@navikt/skjemadigitalisering-shared-domain";
+import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
 import { stringify } from "csv-stringify";
 import { Writable } from "stream";
 import { FormioService } from "./formioService";
 
-const ReportMap: Record<string, Report> = {
+const ReportMap: Record<string, ReportDefinition> = {
   FORMS_PUBLISHED_LANGUAGES: {
     id: "forms-published-languages",
     title: "Publiserte språk per skjema",
@@ -19,18 +19,18 @@ class ReportService {
     this.formioService = formioService;
   }
 
-  async generate(report: Report, writableStream: Writable) {
-    switch (report) {
-      case ReportMap.FORMS_PUBLISHED_LANGUAGES:
+  async generate(reportId: string, writableStream: Writable) {
+    switch (reportId) {
+      case ReportMap.FORMS_PUBLISHED_LANGUAGES.id:
         return this.generateFormsPublishedLanguage(writableStream);
       default:
-        throw new Error(`Report not implemented: ${report.id}`);
+        throw new Error(`Report not implemented: ${reportId}`);
     }
   }
 
-  getReportType = (reportId: string) => Object.values(ReportMap).find((report) => report.id === reportId);
+  getReportDefinition = (reportId: string) => Object.values(ReportMap).find((report) => report.id === reportId);
 
-  getAllReports(): Report[] {
+  getAllReports(): ReportDefinition[] {
     return Object.keys(ReportMap).map((key) => ({ ...ReportMap[key] }));
   }
 

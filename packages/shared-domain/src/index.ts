@@ -25,7 +25,7 @@ import type {
   TranslationTag,
 } from "./languages/types";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
-import type { Report } from "./reports";
+import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
@@ -88,5 +88,5 @@ export type {
   ForstesideRequestBody,
   KjentBruker,
   UkjentBruker,
-  Report,
+  ReportDefinition,
 };

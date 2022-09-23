@@ -25,6 +25,19 @@ describe("ReportService", () => {
     expect(report?.contentType).toEqual("text/csv");
   });
 
+  describe("getReportDefinition", () => {
+    it("returns report definition for given id", () => {
+      const reportDefinition = reportService.getReportDefinition("forms-published-languages");
+      expect(reportDefinition).toBeDefined();
+      expect(reportDefinition?.title).toEqual("Publiserte språk per skjema");
+    });
+
+    it("returns undefined when id is unknown", () => {
+      const reportDefinition = reportService.getReportDefinition("unknown-report-id");
+      expect(reportDefinition).toBeUndefined();
+    });
+  });
+
   describe("generateFormsPublishedLanguage", () => {
     const CSV_HEADER_LINE = "skjemanummer;skjematittel;språk\n";
 
@@ -74,10 +87,9 @@ describe("ReportService", () => {
       setupNock(publishedForms);
 
       const writableStream = createWritableStream();
-      const report = reportService.getReportType("forms-published-languages")!;
-      await reportService.generate(report, writableStream);
+      await reportService.generate("forms-published-languages", writableStream);
       expect(writableStream.toString()).toEqual(
-        CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\n" + "TEST2;Testskjema2;en\n" + "TEST3;Testskjema3;\n"
+        CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\nTEST2;Testskjema2;en\nTEST3;Testskjema3;\n"
       );
     });
 
@@ -104,17 +116,15 @@ describe("ReportService", () => {
       setupNock(publishedForms);
 
       const writableStream = createWritableStream();
-      const report = reportService.getReportType("forms-published-languages")!;
-      await reportService.generate(report, writableStream);
+      await reportService.generate("forms-published-languages", writableStream);
       expect(writableStream.toString()).toEqual(CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\n");
     });
 
     it("fails if unknown report", async () => {
       let errorCatched = false;
       const writableStream = createWritableStream();
-      const report = reportService.getReportType("unknown-report-id")!;
       try {
-        await reportService.generate(report, writableStream);
+        await reportService.generate("unknown-report-id", writableStream);
       } catch (err) {
         errorCatched = true;
       }

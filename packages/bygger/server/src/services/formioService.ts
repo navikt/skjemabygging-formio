@@ -31,7 +31,7 @@ export class FormioService {
 
   async getPublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
-      `/form?type=form&tags=nav-skjema&properties.published__regex=/^\\d/&select=${select}&limit=${limit}`
+      `/form?type=form&tags=nav-skjema&properties.published__exists=true&select=${select}&limit=${limit}`
     );
   }
 
