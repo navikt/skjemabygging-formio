@@ -26,7 +26,7 @@ export const FormPageWrapper = () => {
     const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
     const metaNameDescr = document.querySelector('meta[name="description"]');
     const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
-    const setHeaderProp = function (headerObj: HTMLMetaElement, metaPropValue: string) {
+    const setHeaderProp = function (headerObj, metaPropValue) {
       headerObj?.setAttribute("content", metaPropValue);
     };
 
