@@ -69,7 +69,8 @@
     "check-types": "tsc",
     "clean": "rimraf build coverage",
     "test": "craco test",
-    "cypress": "cypress open",
+    "cypress:open": "cypress open",
+    "cypress": "cypress run",
     "test:coverage": "craco test --coverage --watchAll=false",
     "eject": "craco eject"
   },
