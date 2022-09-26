@@ -30,7 +30,8 @@ const fetchTranslations = (url) => {
     .then((response) => response.json())
     .then((response) => {
       return response;
-    });
+    })
+    .catch(() => []);
 };
 
 const mapFormioKeyToLabel = (i18n: I18nTranslationMap) => {
