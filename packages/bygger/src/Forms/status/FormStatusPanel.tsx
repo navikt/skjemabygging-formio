@@ -20,7 +20,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
       </div>
       <Timestamp label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <Timestamp label="Sist publisert:" timestamp={published} userName={publishedBy} />
-      <Timestamp label="Apublisert:" timestamp={unpublished} userName={unpublishedBy} />
+      <Timestamp label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
       <PublishedLanguages formProperties={formProperties} />
     </Panel>
   );
