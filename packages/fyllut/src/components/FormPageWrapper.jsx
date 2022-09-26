@@ -23,23 +23,34 @@ export const FormPageWrapper = () => {
   }, [formPath]);
 
   useEffect(() => {
+    const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
+    const metaNameDescr = document.querySelector('meta[name="description"]');
+    const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
+    const setHeaderProp = function (headerObj: HTMLMetaElement, metaPropValue: string) {
+      headerObj?.setAttribute("content", metaPropValue);
+    };
+
     if (form?.title) {
       document.title = `${form.title} | www.nav.no`;
-      document.querySelector('meta[property="og:title"]')?.setAttribute("content", `${form.title} | www.nav.no`);
+      setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
     }
 
-    const descriptionComponent = form?.components[0]?.components?.find((i) => i.key === "beskrivelsetekst");
-    //sjekker på om finnes og om den inneholder defaultval: "Her skal det stå en kort beskrivelse av søknaden"
-    //regner med at det er ønskelig med en "global prop" for dette hvis man skal løse det på denne måten..
-    // annen måte å løse det på: påkrevd inputfelt? Hør med de andre i morgen..
-    if (
-      descriptionComponent?.content &&
-      descriptionComponent?.content !== "Her skal det stå en kort beskrivelse av søknaden"
-    ) {
-      const descriptionTxt = descriptionComponent.content.replace(/[^a-zA-Z0-9 ]/g, "");
-      document.querySelector('meta[name="description"]')?.setAttribute("content", descriptionTxt);
-      document.querySelector('meta[property="og:description"]')?.setAttribute("content", descriptionTxt);
+    for (let i = 0; i < form?.components.length; i++) {
+      if (form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")) {
+        const descriptionComponent = form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst");
+        const descriptionTxt = descriptionComponent?.content?.replace(/[^a-zA-Z0-9 ]/g, "");
+        setHeaderProp(metaNameDescr, descriptionTxt);
+        setHeaderProp(metaNameOgDescr, descriptionTxt);
+        break;
+      }
     }
+
+    return function cleanup() {
+      document.title = "Fyll ut skjema - www.nav.no";
+      setHeaderProp(metaPropOgTitle, "Fyll ut skjema - www.nav.no");
+      setHeaderProp(metaNameDescr, "NAV søknadsskjema");
+      setHeaderProp(metaNameOgDescr, "NAV søknadsskjema");
+    };
   }, [form]);
 
   if (status === "LOADING" || status === "UNAUTHENTICATED") {
