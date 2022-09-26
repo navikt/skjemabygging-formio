@@ -44,5 +44,6 @@ jobs:
           working-directory: ./packages/bygger
           start: yarn --cwd ./server run start, yarn run start
           wait-on: 'http://localhost:3000, http://localhost:8080/internal/isready'
+          config: video=false
           config-file: cypress.config.ts
           
