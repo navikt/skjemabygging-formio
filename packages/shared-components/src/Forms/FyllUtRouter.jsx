@@ -5,6 +5,7 @@ import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
+import { addBeforeUnload, removeBeforeUnload } from "../util/unload.js";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
@@ -35,9 +36,9 @@ const FyllUtRouter = ({ form, translations }) => {
 
   useEffect(() => {
     loggSkjemaApnet();
-    navFormUtils.addBeforeUnload();
+    addBeforeUnload();
     return () => {
-      navFormUtils.removeBeforeUnload();
+      removeBeforeUnload();
     };
   }, [loggSkjemaApnet]);
 

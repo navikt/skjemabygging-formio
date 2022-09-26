@@ -1,8 +1,9 @@
-import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
+import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 import { getRelevantAttachments } from "./attachmentsUtil";
 
 export interface Props {
@@ -42,7 +43,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   const sendInn = async () => {
     try {
       setLoading(true);
-      navFormUtils.removeBeforeUnload();
+      removeBeforeUnload();
       const response = await postToSendInn(
         http,
         baseUrl,
@@ -54,7 +55,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
       );
       onSuccess(response);
     } catch (err: any) {
-      navFormUtils.addBeforeUnload();
+      addBeforeUnload();
       onError(err);
     } finally {
       setLoading(false);
