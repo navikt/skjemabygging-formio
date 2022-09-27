@@ -24,7 +24,7 @@
     "express": "^4.17.1",
     "express-correlation-id": "^2.0.1",
     "express-rate-limit": "^6.3.0",
-    "formiojs": "4.14.0-rc.18",
+    "formiojs": "4.14.6",
     "jose": "^4.8.1",
     "jsonwebtoken": "^8.5.1",
     "nock": "^13.2.4",

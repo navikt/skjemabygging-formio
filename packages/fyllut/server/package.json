@@ -31,7 +31,7 @@
     "express": "^4.17.1",
     "express-correlation-id": "^2.0.1",
     "express-rate-limit": "^6.5.2",
-    "formiojs": "4.14.0-rc.18",
+    "formiojs": "4.14.6",
     "glob": "^7.1.7",
     "i18n-iso-countries": "^6.8.0",
     "jsdom": "^16.4.0",
