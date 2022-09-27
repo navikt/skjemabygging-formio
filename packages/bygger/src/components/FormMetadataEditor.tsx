@@ -23,23 +23,41 @@ export type UsageContext = "create" | "edit";
 interface Props {
   form: NavFormType;
   onChange: UpdateFormFunction;
+  errors?: FormMetadataError;
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
+type FormMetadataError = { [key: string]: string };
+
+const validateFormMetadata = (form: NavFormType) => {
+  const errors = {} as FormMetadataError;
+  if (!!form.title) {
+  } else {
+    errors.title = "Du må oppgi skjematittel";
+  }
+  if (!!form.properties.skjemanummer) {
+  } else {
+    errors.skjemanummer = "Du må oppgi skjemanummer";
+  }
+
+  if (!!form.properties.tema) {
+  } else {
+    errors.tema = "Du må oppgi temakode";
+  }
+  return errors;
+};
+
+const isFormMetadataValid = (errors) => !(errors.title || errors.skjemanummer || errors.tema);
 
 export const COMPONENT_TEXTS = {
   BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir",
 };
 
-const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
+const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
   const { mottaksadresser, ready, errorMessage: mottaksadresseError } = useMottaksadresser();
   const {
     title,
-    //path,
-    //  display,
-    //name,
-    //  type,
     properties: {
       isTestForm,
       skjemanummer,
@@ -133,6 +151,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
         }
+        feil={!skjemanummer && errors?.skjemanummer}
       />
       <Input
         label="Tittel"
@@ -141,6 +160,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         placeholder="Skriv inn tittel"
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
+        feil={!title && errors?.title}
       />
       <Input
         label="Temakode"
@@ -149,6 +169,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
+        feil={!tema && errors?.tema}
       />
       <Input
         label="Tekst på knapp for nedlasting av pdf"
@@ -306,10 +327,12 @@ export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
   );
 };
 
-export const CreationFormMetadataEditor = ({ form, onChange }: Props) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" />
+export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" errors={errors} />
 );
 
-export const FormMetadataEditor = ({ form, onChange }: Props) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" />
+export const FormMetadataEditor = ({ form, onChange, errors }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" errors={errors} />
 );
+
+export { validateFormMetadata, isFormMetadataValid };
