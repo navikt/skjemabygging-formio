@@ -21,6 +21,10 @@ type DiffObject = {
   diff?: PropertyDiff[];
   label?: string;
   propertyDiff?: PropertyDiff[];
+  _source?: {
+    originalForm: NavFormType;
+    newForm: NavFormType;
+  };
 };
 
 const isJsonEqual = (originalJSON: any, newJSON: any) => JSON.stringify(originalJSON) === JSON.stringify(newJSON);
@@ -64,6 +68,7 @@ const generateComponentDiff = (originalComponent: Component, newComponent: Compo
     if (afterValue === undefined) {
       return {
         id: property,
+        label: originalComponent.label,
         status: DiffStatus.DELETED,
         before: beforeValue,
       };
@@ -112,7 +117,9 @@ const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType): D
     diff.push({
       id: deletedComponent.id,
       status: DiffStatus.DELETED,
+      label: deletedComponent.label,
     });
+    console.log("Deleted component", JSON.stringify(deletedComponent, null, 2));
     // TODO: Update parent component to mark it as changed and add the deleted component as a diff
   });
 
@@ -145,6 +152,10 @@ const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType): D
     status: DiffStatus.CHANGED,
     diff,
     propertyDiff,
+    _source: {
+      originalForm,
+      newForm,
+    },
   };
 
   // TODO: Should maybe put diffed components as map instead of array?

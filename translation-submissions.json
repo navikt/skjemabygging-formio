@@ -1,0 +1,29 @@
+[
+  {
+    "language": "en",
+    "name": "global",
+    "scope": "global",
+    "tag": "skjematekster",
+    "i18n": {
+      "translation": "translation"
+    }
+  },
+  {
+    "language": "nn-NO",
+    "name": "global",
+    "scope": "global",
+    "tag": "validation",
+    "i18n": {
+      "optional": "valfritt"
+    }
+  },
+  {
+    "form": "nav082005",
+    "language": "nn-NO",
+    "name": "global.nav082005",
+    "scope": "local",
+    "i18n": {
+      "Opplysninger om arbeidstaker": "Opplysningar om arbeidstakar"
+    }
+  }
+]
