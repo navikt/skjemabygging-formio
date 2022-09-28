@@ -63,6 +63,28 @@ export const globalStyles = {
     },
   },
   ...stepperStyles,
+
+  ".diff__label": {
+    padding: "0.2rem 0.4rem",
+    borderRadius: "0.7rem",
+    backgroundColor: "lightblue",
+    color: "white",
+    display: "inline-block",
+    "&--elevated": {
+      position: "absolute",
+      right: "-1rem",
+      top: "-1rem",
+    },
+
+    "&--counter": {
+      backgroundColor: "gold",
+      color: "black",
+    },
+
+    "&__parent": {
+      position: "relative", // Necessary for positioning of diff-labels
+    },
+  },
 };
 
 export const appStyles = {

@@ -1,4 +1,4 @@
-import { DiffStatus, generateNavFormDiff } from "./formDiffingTool";
+import { DiffStatus, generateNavFormDiff } from "./formDiffingTool-old";
 import form from "./testData/nav100750";
 
 describe("formDiffingTool", () => {

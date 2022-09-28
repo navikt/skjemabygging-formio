@@ -2,7 +2,8 @@ import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
 import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Sidetittel } from "nav-frontend-typografi";
-import React from "react";
+import fetch from "node-fetch";
+import React, { useEffect, useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
 import { SkjemaVisningSelect } from "../components/FormMetadataEditor";
 import Column from "../components/layout/Column";
@@ -24,13 +25,34 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish, onUnpublish }) {
+const useFormDiff = (formPath) => {
+  const [formDiff, setFormDiff] = useState();
+
+  async function fetchFormDiff(formPath) {
+    const response = await fetch(`/api/form/${formPath}/diff`).catch((error) => console.log(error));
+    const json = await response.json();
+    setFormDiff(json);
+  }
+
+  useEffect(() => {
+    fetchFormDiff(formPath);
+  }, [formPath]);
+
+  return formDiff;
+};
+
+export function EditFormPage({ form, onSave, onChange, onPublish, onUnpublish }) {
   const {
     title,
     properties: { skjemanummer },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
+  const formDiff = useFormDiff(form.path);
+  if (!formDiff) {
+    return null;
+  }
+  console.log("Property diff", formDiff.propertyDiff);
   return (
     <>
       <AppLayoutWithContext
@@ -51,7 +73,12 @@ export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish,
             className={styles.formBuilder}
             form={form}
             onChange={onChange}
-            formBuilderOptions={FormBuilderOptions}
+            formBuilderOptions={{
+              ...FormBuilderOptions,
+              formConfig: {
+                formDiff,
+              },
+            }}
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>

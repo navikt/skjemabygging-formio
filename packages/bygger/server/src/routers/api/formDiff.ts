@@ -11,14 +11,18 @@ const formDiff = async (req: Request, res: Response, next: NextFunction) => {
       publishedForm = await backendInstance.fetchPublishedForm(formPath);
 
       if (!publishedForm) {
-        return notFound(next);
+        return res.json({
+          status: "UNCHANGED",
+        });
       }
     } catch (e) {
+      console.error(e);
       return notFound(next);
     }
 
     const form = await formioService.getForm(formPath);
 
+    console.log(`Made diff for ${formPath}`, JSON.stringify(generateNavFormDiff(publishedForm, form), null, 2));
     res.json(generateNavFormDiff(publishedForm, form));
   } catch (error) {
     next(error);

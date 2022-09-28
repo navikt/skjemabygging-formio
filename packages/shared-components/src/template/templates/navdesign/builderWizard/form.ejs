@@ -7,7 +7,12 @@
       <ol class="breadcrumb">
         {% ctx.pages.forEach(function(page, pageIndex) { %}
         <li>
-          <a href="#{{page.title}}" class="wizard-page-label" {% if (pageIndex === ctx.self.page) { %}aria-current="step"{% } %} ref="gotoPage">{{page.title}}</a>
+          <a href="#{{page.title}}" class="wizard-page-label diff__label__parent" {% if (pageIndex === ctx.self.page) { %}aria-current="step"{% } %} ref="gotoPage">
+            {{page.title}}
+            {% if (ctx.config && ctx.config.formDiff && ctx.config.formDiff.diff && ctx.config.formDiff.diff.find(comp => comp.id === page.id)) { %}
+              <div class="diff__label diff__label--counter diff__label--elevated">{{ctx.config.formDiff.diff.find(comp => comp.id === page.id).numberOfChanges}}</div>
+            {% } %}
+          </a>
         </li>
         {% }) %}
         <li>

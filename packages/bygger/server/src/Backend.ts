@@ -151,7 +151,7 @@ export class Backend {
   }
 
   async fetchPublishedForm(formPath: string) {
-    const filePath = getTranslationFilePath(formPath);
+    const filePath = `forms/${formPath}.json`; // TODO: Check why Lars Olav changed this to point to translations file
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
     if (response && "content" in response.data) {
       const content = base64ToString(response.data.content);

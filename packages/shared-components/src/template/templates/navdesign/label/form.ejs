@@ -11,4 +11,7 @@
   {% if (ctx.component.tooltip) { %}
     <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
   {% } %}
+  {% if (ctx.config && ctx.config.formDiff && ctx.config.formDiff.diff.find(comp => comp.id === ctx.component.id)) { %}
+    <div class="diff__label">{{ctx.config.formDiff.diff.find(comp => comp.id === ctx.component.id).status}}</div>
+  {% } %}
 </label>
