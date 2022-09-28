@@ -233,9 +233,6 @@ const basicPalett = {
     password: {
       ignore: true,
     },
-    button: {
-      ignore: true,
-    },
   },
 };
 
