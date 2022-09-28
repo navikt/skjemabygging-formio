@@ -57,7 +57,7 @@ export default class Image extends Component {
           },
           {
             type: "navCheckbox",
-            label: "Inkludere bilde i pdf?",
+            label: "Inkludér bilde i pdf",
             key: "showInPdf",
             customDefaultValue: "value=true",
             input: true,
