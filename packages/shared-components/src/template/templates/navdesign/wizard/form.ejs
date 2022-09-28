@@ -1,5 +1,27 @@
 <div class="{{ctx.className}}">
   <div style="position: relative;">
+    {% if (ctx.wizardHeaderType === 'wizardHeaderVertical') { %}
+    <div class="row">
+      {% if (ctx.wizardHeaderLocation !== 'right') { %}
+      <div class="col-sm-2">
+        {{ ctx.wizardHeader }}
+      </div>
+      {% } %}
+      <form aria-labelledby="form-id">
+        <div class="wizard-page" ref="{{ctx.wizardKey}}">
+          {{ ctx.components }}
+        </div>
+      </form>
+      {% if (ctx.wizardHeaderLocation === 'right') { %}
+      <div class="col-sm-2">
+        {{ ctx.wizardHeader }}
+      </div>
+      {% } %}
+    </div>
+    <div class="margin-bottom-default {{ctx.wizardHeaderLocation === 'right' ? 'col-sm-offset-0 col-md-offset-0' : ''}}">
+        {{ ctx.wizardNav }}
+    </div>
+    {% } else { %}
     {{ ctx.wizardHeader }}
     <main id="maincontent" tabIndex="-1">
       <h2 id="form-id" class="margin-bottom-default typo-innholdstittel">{{ctx.t(ctx.panels[ctx.currentPage].title)}}</h2>
@@ -12,5 +34,6 @@
         </div>
       </form>
     </main>
+    {% } %}
   </div>
 </div>
