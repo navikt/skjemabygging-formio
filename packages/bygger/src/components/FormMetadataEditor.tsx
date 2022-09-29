@@ -31,23 +31,19 @@ type FormMetadataError = { [key: string]: string };
 
 const validateFormMetadata = (form: NavFormType) => {
   const errors = {} as FormMetadataError;
-  if (!!form.title) {
-  } else {
+  if (!form.title) {
     errors.title = "Du må oppgi skjematittel";
   }
-  if (!!form.properties.skjemanummer) {
-  } else {
+  if (!form.properties.skjemanummer) {
     errors.skjemanummer = "Du må oppgi skjemanummer";
   }
-
-  if (!!form.properties.tema) {
-  } else {
+  if (!form.properties.tema) {
     errors.tema = "Du må oppgi temakode";
   }
   return errors;
 };
 
-const isFormMetadataValid = (errors) => !(errors.title || errors.skjemanummer || errors.tema);
+const isFormMetadataValid = (errors) => Object.keys(errors).length === 0;
 
 export const COMPONENT_TEXTS = {
   BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir",
@@ -151,7 +147,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
         }
-        feil={!skjemanummer && errors?.skjemanummer}
+        feil={errors?.skjemanummer}
       />
       <Input
         label="Tittel"
@@ -160,7 +156,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         placeholder="Skriv inn tittel"
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
-        feil={!title && errors?.title}
+        feil={errors?.title}
       />
       <Input
         label="Temakode"
@@ -169,7 +165,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-        feil={!tema && errors?.tema}
+        feil={errors?.tema}
       />
       <Input
         label="Tekst på knapp for nedlasting av pdf"
