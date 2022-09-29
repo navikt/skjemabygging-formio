@@ -1,13 +1,13 @@
 [
   {
-    "_id": "632827b2acab016472eac7bb",
+    "_id": "hg378gh38hgr833",
     "title": "Cypress test for settings page",
     "name": "cypressInnstillinger",
     "path": "cypressinnstillinger",
     "type": "form",
     "display": "wizard",
     "tags": ["nav-skjema", ""],
-    "owner": "628cd08405690db58c975faa",
+    "owner": "2345yu3tg3ygew8",
     "components": [
       {
         "title": "Veiledning",
@@ -292,22 +292,22 @@
       ],
       "isTestForm": true,
       "modified": "2022-09-22T10:39:43.497Z",
-      "modifiedBy": "ivan.kanagalingam@nav.no",
+      "modifiedBy": "test@nav.no",
       "downloadPdfButtonText": "Test",
       "descriptionOfSignatures": "Test Instructions"
     },
-    "project": "628ca77305690db58c974cfd",
+    "project": "project1",
     "revisions": "",
     "_vid": 0,
     "access": [
       {
         "type": "read_all",
-        "roles": ["628ca77305690db58c974d04", "628ca77305690db58c974d09", "628ca77305690db58c974d0e"]
+        "roles": ["role1", "role2"]
       }
     ],
     "submissionAccess": [],
     "created": "2022-09-19T08:26:26.936Z",
     "modified": "2022-09-22T10:39:44.218Z",
-    "machineName": "jvcemxwcpghcqjn:cypressInnstillinger"
+    "machineName": "machine:cypressInnstillinger"
   }
 ]

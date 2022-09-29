@@ -31,7 +31,7 @@ const fetchTranslations = (url) => {
     .then((response) => {
       return response;
     })
-    .catch(() => []);
+    .catch((err) => (process.env.NODE_ENV !== "production" ? [] : err));
 };
 
 const mapFormioKeyToLabel = (i18n: I18nTranslationMap) => {

@@ -70,7 +70,7 @@
     "clean": "rimraf build coverage",
     "test": "craco test",
     "cypress:open": "cypress open --config-file=cypress.config.ts",
-    "cypress": "cypress run",
+    "cypress": "cypress run --config-file=cypress.config.ts",
     "test:coverage": "craco test --coverage --watchAll=false",
     "eject": "craco eject"
   },

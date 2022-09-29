@@ -1,8 +1,6 @@
 {
   "formioProjectUrl": "http://localhost",
-  "fyllutBaseUrl": "https://skjemadelingslenke.ekstern.dev.nav.no/fyllut",
-  "pusherCluster": "eu",
-  "pusherKey": "sdhfuisahf7435283",
+  "fyllutBaseUrl": "http://localhost",
   "isDevelopment": true,
   "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100" }
 }
