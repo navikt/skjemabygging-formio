@@ -7,7 +7,11 @@ import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { CreationFormMetadataEditor } from "../components/FormMetadataEditor";
+import {
+  CreationFormMetadataEditor,
+  isFormMetadataValid,
+  validateFormMetadata,
+} from "../components/FormMetadataEditor";
 import { UserAlerterContext } from "../userAlerting";
 import { defaultFormFields } from "./DefaultForm";
 
@@ -51,6 +55,8 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
     },
   });
 
+  const [errors, setErrors] = useState({});
+
   const setForm = (form) => {
     const newForm = cloneDeep(form);
     setState((oldState) => {
@@ -61,22 +67,31 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
       return { form: newForm };
     });
   };
+  const validateAndSave = async (form) => {
+    const updatedErrors = validateFormMetadata(form);
+    const trimmedFormNumber = state.form.properties.skjemanummer.trim();
+    if (isFormMetadataValid(updatedErrors)) {
+      setErrors({});
+      return await formio
+        .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
+        .then((form) => {
+          userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
+          history.push(`/forms/${form.path}/edit`);
+        });
+    } else {
+      setErrors(updatedErrors);
+    }
+  };
 
   const onCreate = () => {
-    const trimmedFormNumber = state.form.properties.skjemanummer.trim();
-    formio
-      .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
-      .then((form) => {
-        userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
-        history.push(`/forms/${form.path}/edit`);
-      });
+    validateAndSave(state.form);
   };
 
   return (
     <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema" }}>
       <main className={styles.root}>
         <Sidetittel className="margin-bottom-double">Opprett nytt skjema</Sidetittel>
-        <CreationFormMetadataEditor form={state.form} onChange={setForm} />
+        <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
         <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
       </main>
     </AppLayoutWithContext>
