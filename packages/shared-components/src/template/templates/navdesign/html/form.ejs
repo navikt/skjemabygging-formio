@@ -2,4 +2,5 @@
 {% ctx.attrs.forEach(function(attr) { %}
 {{attr.attr}}="{{attr.value}}"
 {% }) %}
->{{ctx.t(ctx.content)}}{% if (!ctx.singleTags || ctx.singleTags.indexOf(ctx.tag) === -1) { %}</{{ctx.tag}}>{% } %}
+>{{ctx.instance.addNavClassNames ? ctx.instance.addNavClassNames(ctx.t(ctx.content)) : ctx.t(ctx.content)}}
+{% if (!ctx.singleTags || ctx.singleTags.indexOf(ctx.tag) === -1) { %}</{{ctx.tag}}>{% } %}
