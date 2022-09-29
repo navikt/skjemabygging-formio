@@ -38,7 +38,6 @@ export const FormPageWrapper = () => {
     for (let i = 0; i < form?.components.length; i++) {
       if (form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")) {
         const descriptionTxt = form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")?.content;
-        //const descriptionTxt = descriptionComponent?.content?;
         setHeaderProp(metaNameDescr, descriptionTxt);
         setHeaderProp(metaNameOgDescr, descriptionTxt);
         break;
