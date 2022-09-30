@@ -198,7 +198,7 @@ const createForm = () => ({
 
 describe("generating doc definition", () => {
   function now() {
-    return DateTime.fromObject({ year: 1992, day: 19, month: 10, zone: "Europe/Oslo" });
+    return DateTime.fromObject({ year: 1992, day: 19, month: 10 });
   }
 
   function setupDocDefinitionContent(submission, form, version = "deadbeef", translations = {}) {
@@ -222,7 +222,7 @@ describe("generating doc definition", () => {
     expect(docDefinitionContent.footer(1, 1).columns).toEqual([
       {
         width: "80%",
-        text: "Skjemaet ble opprettet 19. oktober 1992, 00:00 CET \n Skjemaversjon: deadbeef-dirty",
+        text: "Skjemaet ble opprettet 19. oktober 1992 kl. 00:00 CET \n Skjemaversjon: deadbeef-dirty",
         alignment: "left",
       },
       {
