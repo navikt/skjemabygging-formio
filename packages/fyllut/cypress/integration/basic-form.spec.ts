@@ -11,16 +11,16 @@ describe("Basic form", () => {
   });
 
   describe("Step navigation", () => {
-    it("navigates to step 2 when 'neste' is clicked", { defaultCommandTimeout: 10000 }, () => {
+    it("navigates to step 2 when 'neste steg' is clicked", { defaultCommandTimeout: 10000 }, () => {
       cy.findByRole("heading", { level: 2, name: "Veiledning" }).should("exist");
 
-      cy.clickNext();
+      cy.clickNextStep();
       cy.findByRole("heading", { level: 2, name: "Dine opplysninger" }).should("exist");
     });
 
     it("validation errors stops navigation to step 3", () => {
-      cy.clickNext();
-      cy.clickNext();
+      cy.clickNextStep();
+      cy.clickNextStep();
       cy.findByRole("heading", { level: 2, name: "Dine opplysninger" });
       cy.findByText("For å gå videre må du rette opp følgende:").should("exist");
 
@@ -33,7 +33,7 @@ describe("Basic form", () => {
   describe("Fill in form", () => {
     it("fill in - go to summary - edit form - navigate back to summary", () => {
       // Steg 1 -> Steg 2
-      cy.clickNext();
+      cy.clickNextStep();
       cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Kari");
       cy.findByRole("textbox", { name: "Etternavn" }).should("exist").type("Norman");
 
@@ -61,21 +61,21 @@ describe("Basic form", () => {
         .type("01.01.2020");
 
       // Steg 2 -> Steg 3
-      cy.clickNext();
+      cy.clickNextStep();
       cy.findByRole("heading", { level: 2, name: "Vedlegg" }).should("exist");
       cy.findByLabelText("Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.")
         .should("exist")
         .check({ force: true });
 
       // Step 3 -> Oppsummering
-      cy.clickNext();
+      cy.clickNextStep();
       cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
 
       // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
       // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-      cy.findByRoleWhenAttached("link", { name: "Rediger opplysningene" }).should("exist").click();
+      cy.findByRoleWhenAttached("link", { name: "Forrige steg" }).should("exist").click();
       cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("not.exist");
-      cy.clickNext();
+      cy.clickNextStep();
 
       // Oppsummering
       cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");

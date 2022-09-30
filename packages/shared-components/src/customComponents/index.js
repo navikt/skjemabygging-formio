@@ -1,3 +1,4 @@
+import AccountNumber from "./components/AccountNumber";
 import AlertStripe from "./components/AlertStripe";
 import Container from "./components/Container";
 import CountrySelect from "./components/CountrySelect";
@@ -24,6 +25,7 @@ const customComponents = {
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
   orgNr: OrganizationNumber,
+  bankAccount: AccountNumber,
   htmlelement: HTMLElement,
   landvelger: CountrySelect,
   valutavelger: CurrencySelect,

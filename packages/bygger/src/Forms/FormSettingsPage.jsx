@@ -1,11 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
 import { Knapp } from "nav-frontend-knapper";
-import { Undertittel } from "nav-frontend-typografi";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Sidetittel } from "nav-frontend-typografi";
+import React, { useState } from "react";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import { FormMetadataEditor } from "../components/FormMetadataEditor";
-import ActionRow from "../components/layout/ActionRow";
+import { FormMetadataEditor, isFormMetadataValid, validateFormMetadata } from "../components/FormMetadataEditor";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
@@ -19,39 +17,45 @@ const useStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
   },
-  titleRow: {
-    height: "79px",
-  },
 });
 
-export function FormSettingsPage({ editFormUrl, testFormUrl, form, onSave, onChange, onPublish, onUnpublish }) {
-  const title = `${form.title}`;
+export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublish, visSkjemaMeny, validateAndSave }) {
+  const title = form.title;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
+  const [errors, setErrors] = useState({});
+
+  validateAndSave = async (form) => {
+    const updatedErrors = validateFormMetadata(form);
+    if (isFormMetadataValid(updatedErrors)) {
+      setErrors({});
+      return await onSave(form);
+    } else {
+      setErrors(updatedErrors);
+    }
+  };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Skjemainnstillinger", visSkjemaliste: true }}>
-      <ActionRow>
-        <Link className="knapp" to={editFormUrl}>
-          Rediger skjema
-        </Link>
-        <Link className="knapp" to={testFormUrl}>
-          Forhåndsvis
-        </Link>
-      </ActionRow>
+    <AppLayoutWithContext
+      navBarProps={{
+        title: "Skjemainnstillinger",
+        visSkjemaMeny: true,
+        formPath: form.path,
+      }}
+    >
       <Row className={styles.titleRow}>
         <Column className={styles.mainCol}>
-          <Undertittel tag="h1">{title}</Undertittel>
+          <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
         </Column>
       </Row>
       <Row>
         <Column className={styles.mainCol}>
-          <FormMetadataEditor form={form} onChange={onChange} />
+          <FormMetadataEditor form={form} errors={errors} onChange={onChange} />
         </Column>
         <Column>
           <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
-          <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
+          <PrimaryButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</PrimaryButtonWithSpinner>
           <FormStatusPanel formProperties={form.properties} />
           <UserFeedback />
         </Column>

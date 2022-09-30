@@ -9,6 +9,7 @@ export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
+
   useEffect(() => {
     httpFyllut
       .get(`/fyllut/api/forms/${formPath}`)
@@ -22,9 +23,33 @@ export const FormPageWrapper = () => {
   }, [formPath]);
 
   useEffect(() => {
-    if (form && form.title) {
+    const metaPropOgTitle = document.querySelector('meta[property="og:title"]');
+    const metaNameDescr = document.querySelector('meta[name="description"]');
+    const metaNameOgDescr = document.querySelector('meta[property="og:description"]');
+    const setHeaderProp = function (headerObj, metaPropValue) {
+      headerObj?.setAttribute("content", metaPropValue);
+    };
+
+    if (form?.title) {
       document.title = `${form.title} | www.nav.no`;
+      setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
     }
+
+    for (let i = 0; i < form?.components.length; i++) {
+      if (form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")) {
+        const descriptionTxt = form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")?.content;
+        setHeaderProp(metaNameDescr, descriptionTxt);
+        setHeaderProp(metaNameOgDescr, descriptionTxt);
+        break;
+      }
+    }
+
+    return function cleanup() {
+      document.title = "Fyll ut skjema - www.nav.no";
+      setHeaderProp(metaPropOgTitle, "Fyll ut skjema - www.nav.no");
+      setHeaderProp(metaNameDescr, "NAV søknadsskjema");
+      setHeaderProp(metaNameOgDescr, "NAV søknadsskjema");
+    };
   }, [form]);
 
   if (status === "LOADING" || status === "UNAUTHENTICATED") {

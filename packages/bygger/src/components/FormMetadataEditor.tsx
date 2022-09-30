@@ -2,6 +2,7 @@ import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
   DisplayType,
   InnsendingType,
+  MottaksadresseData,
   NavFormType,
   signatureUtils,
   TEXTS,
@@ -22,24 +23,37 @@ export type UsageContext = "create" | "edit";
 interface Props {
   form: NavFormType;
   onChange: UpdateFormFunction;
+  errors?: FormMetadataError;
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
+type FormMetadataError = { [key: string]: string };
+
+const validateFormMetadata = (form: NavFormType) => {
+  const errors = {} as FormMetadataError;
+  if (!form.title) {
+    errors.title = "Du må oppgi skjematittel";
+  }
+  if (!form.properties.skjemanummer) {
+    errors.skjemanummer = "Du må oppgi skjemanummer";
+  }
+  if (!form.properties.tema) {
+    errors.tema = "Du må oppgi temakode";
+  }
+  return errors;
+};
+
+const isFormMetadataValid = (errors) => Object.keys(errors).length === 0;
 
 export const COMPONENT_TEXTS = {
   BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir",
 };
 
-const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProps) => {
+const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
   const { mottaksadresser, ready, errorMessage: mottaksadresseError } = useMottaksadresser();
-
   const {
     title,
-    path,
-    display,
-    name,
-    type,
     properties: {
       isTestForm,
       skjemanummer,
@@ -99,7 +113,19 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
       });
     }
   };
+
   const innsending = innsendingFraProps || "PAPIR_OG_DIGITAL";
+
+  const toAddressString = (address: MottaksadresseData) => {
+    const linjer = [address.adresselinje1];
+    if (address.adresselinje2) {
+      linjer.push(address.adresselinje2);
+    }
+    if (address.adresselinje3) {
+      linjer.push(address.adresselinje3);
+    }
+    return `${linjer.join(", ")}, ${address.postnummer} ${address.poststed}`;
+  };
 
   return (
     <SkjemaGruppe>
@@ -121,6 +147,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
         }
+        feil={errors?.skjemanummer}
       />
       <Input
         label="Tittel"
@@ -129,6 +156,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         placeholder="Skriv inn tittel"
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
+        feil={errors?.title}
       />
       <Input
         label="Temakode"
@@ -137,51 +165,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-      />
-      <Select
-        label="Type"
-        name="form-type"
-        id="form-type"
-        value={type}
-        onChange={(event) => onChange({ ...form, type: event.target.value })}
-      >
-        <option label="Form" value="form">
-          Form
-        </option>
-        <option label="Resource" value="resource">
-          Resource
-        </option>
-      </Select>
-      <Select
-        label="Vis som"
-        name="form-display"
-        id="form-display"
-        value={display}
-        onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
-      >
-        <option label="Skjema" value="form">
-          Skjema
-        </option>
-        <option label="Veiviser" value="wizard">
-          Veiviser
-        </option>
-      </Select>
-      <Input
-        label="Navn"
-        type="text"
-        id="name"
-        value={name}
-        readOnly={usageContext === "edit"}
-        onChange={(event) => onChange({ ...form, name: event.target.value })}
-      />
-      <Input
-        label="Path"
-        type="text"
-        id="path"
-        style={{ textTransform: "lowercase" }}
-        value={path}
-        readOnly={usageContext === "edit"}
-        onChange={(event) => onChange({ ...form, path: event.target.value })}
+        feil={errors?.tema}
       />
       <Input
         label="Tekst på knapp for nedlasting av pdf"
@@ -213,6 +197,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
         <option value="KUN_DIGITAL">Kun digital</option>
         <option value="INGEN">Ingen</option>
       </Select>
+
       {innsending === "INGEN" && (
         <>
           <Input
@@ -260,8 +245,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext }: BasicFormProp
               {mottaksadresseId && !ready ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
             </option>
             {mottaksadresser.map((adresse) => (
-              <option value={adresse.id} key={adresse.id}>
-                {adresse.toString()}
+              <option value={adresse._id} key={adresse._id}>
+                {toAddressString(adresse.data)}
               </option>
             ))}
           </Select>
@@ -338,10 +323,12 @@ export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
   );
 };
 
-export const CreationFormMetadataEditor = ({ form, onChange }: Props) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" />
+export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" errors={errors} />
 );
 
-export const FormMetadataEditor = ({ form, onChange }: Props) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" />
+export const FormMetadataEditor = ({ form, onChange, errors }: Props) => (
+  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" errors={errors} />
 );
+
+export { validateFormMetadata, isFormMetadataValid };

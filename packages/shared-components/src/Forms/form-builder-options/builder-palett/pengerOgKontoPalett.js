@@ -51,7 +51,7 @@ const pengerOgKontoPalett = {
       icon: "bank",
       schema: {
         label: "Kontonummer",
-        type: "textfield",
+        type: "bankAccount",
         key: "kontoNummer",
         fieldSize: "input--s",
         input: true,
@@ -61,8 +61,8 @@ const pengerOgKontoPalett = {
         clearOnHide: true,
         validate: {
           required: true,
-          maxLength: 11,
-          minLength: 11,
+          custom: "valid = instance.validateAccountNumber(input)",
+          customMessage: "Dette er ikke et gyldig kontonummer",
         },
       },
     },

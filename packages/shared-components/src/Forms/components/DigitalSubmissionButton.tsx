@@ -3,6 +3,7 @@ import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
+import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 import { getRelevantAttachments } from "./attachmentsUtil";
 
 export interface Props {
@@ -42,6 +43,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   const sendInn = async () => {
     try {
       setLoading(true);
+      removeBeforeUnload();
       const response = await postToSendInn(
         http,
         baseUrl,
@@ -53,6 +55,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
       );
       onSuccess(response);
     } catch (err: any) {
+      addBeforeUnload();
       onError(err);
     } finally {
       setLoading(false);

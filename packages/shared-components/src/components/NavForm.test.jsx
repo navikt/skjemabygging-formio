@@ -157,7 +157,7 @@ describe("NavForm", () => {
       expect(ibanField).toBeInTheDocument();
       expect(ibanField).toHaveValue("GB33BUKB20201555555555");
 
-      const nextLink = await screen.findByRole("button", { name: "Neste" });
+      const nextLink = await screen.findByRole("button", { name: "Neste steg" });
       await userEvent.click(nextLink);
       await waitFor(() => expect(mockedOnSubmit).toHaveBeenCalled());
     });

@@ -50,14 +50,11 @@ export default class Image extends Component {
           {
             ...ComponentDisplayEditForm.find((component) => component.key === "description"),
             label: "Beskrivelse",
-            validate: {
-              required: true,
-            },
             weight: 2,
           },
           {
             type: "navCheckbox",
-            label: "Inkludere bilde i pdf?",
+            label: "Inkludér bilde i pdf",
             key: "showInPdf",
             customDefaultValue: "value=true",
             input: true,

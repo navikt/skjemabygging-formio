@@ -92,6 +92,27 @@ Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
       enableDigitalInnsending: true
     }
 
+## Brukeradministrasjon
+
+### Bygger
+
+I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/), bortsett fra under
+utvikling på lokal maskin, hvor utviklerene logger inn med [Formio-brukere](https://help.form.io/userguide/user-authentication).
+
+I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
+"Skjemabygging", og kan søkes fram på Microsofts
+[Access Panel Groups](https://account.activedirectory.windowsazure.com/r#/groups).
+_Eierene_ av gruppene kan legge til nye medlemmer.
+
+En oversikt over gruppenes id'er vil dessuten ligge i koden for bygger backend såfremt de faktisk er i bruk:
+
+-   [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger/server/src/middleware/azureAd.ts)
+
+### Fyllut
+
+Fyllut støtter uinnlogget utfylling av skjemaer, men har også mulighet for innlogging med
+[ID-porten](https://doc.nais.io/security/auth/idporten/sidecar/) for å kunne benytte digital innsending.
+
 ## Bygge docker-image for testing av produksjonsbygg lokalt
 
 Dersom man trenger å teste produksjonsbygg av applikasjonene lokalt kan man følge stegene i github-workflow

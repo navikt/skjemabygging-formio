@@ -4,11 +4,9 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import waitForExpect from "wait-for-expect";
 import form from "../../example_data/Form.json";
 import mockMottaksadresser from "../fakeBackend/mock-mottaksadresser";
 import featureToggles from "../featureToggles.js";
-import { fromEntity } from "../hooks/mottaksadresser";
 import {
   COMPONENT_TEXTS,
   CreationFormMetadataEditor,
@@ -18,11 +16,10 @@ import {
 
 const testform = form as unknown as NavFormType;
 
-const MOCK_DEFAULT_MOTTAKSADRESSER = mockMottaksadresser.map(fromEntity);
 jest.mock("../hooks/useMottaksadresser", () => () => {
   return {
     ready: true,
-    mottaksadresser: MOCK_DEFAULT_MOTTAKSADRESSER,
+    mottaksadresser: mockMottaksadresser,
     errorMessage: undefined,
   };
 });
@@ -74,45 +71,6 @@ describe("FormMetadataEditor", () => {
         </AppConfigProvider>
       );
       expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund");
-    });
-
-    it("should display form name", async () => {
-      render(
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={testform} onChange={mockOnChange} />
-        </AppConfigProvider>
-      );
-      const navnInput = screen.getByRole("textbox", { name: /Navn/i }) as HTMLInputElement;
-      expect(navnInput).toBeVisible();
-      expect(navnInput.readOnly).toBe(true);
-    });
-
-    it("should update form when display is changed", async () => {
-      const { rerender } = render(
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={testform} onChange={mockOnChange} />
-        </AppConfigProvider>
-      );
-      expect(screen.getByLabelText(/Vis som/i)).toHaveValue("form");
-
-      await userEvent.selectOptions(screen.getByLabelText(/Vis som/i), "wizard");
-
-      const updatedForm = { ...testform, display: "wizard" } as unknown as NavFormType;
-      await waitForExpect(() => expect(mockOnChange).toHaveBeenCalledWith(updatedForm));
-
-      rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
-      expect(screen.getByLabelText(/Vis som/i)).toHaveValue("wizard");
-    });
-
-    it("should display form path", async () => {
-      render(
-        <AppConfigProvider featureToggles={featureToggles}>
-          <FormMetadataEditor form={testform} onChange={mockOnChange} />
-        </AppConfigProvider>
-      );
-      const pathInput = screen.getByRole("textbox", { name: /Path/i }) as HTMLInputElement;
-      expect(pathInput).toBeVisible();
-      expect(pathInput.readOnly).toBe(true);
     });
   });
 

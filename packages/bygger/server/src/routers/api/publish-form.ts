@@ -1,11 +1,11 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import { logger } from "../../logging/logger";
 import { publisherService } from "../../services";
-import { ByggerRequest } from "../../types";
 import { BadRequest } from "./helpers/errors";
 
-const publishForm = async (req: ByggerRequest, res: Response, next: NextFunction) => {
-  const formioToken = req.getFormioToken?.()!;
-  const userName = req.getUser?.().name!;
+const publishForm = async (req: Request, res: Response, next: NextFunction) => {
+  const formioToken = req.getFormioToken();
+  const userName = req.getUser().name;
   const { formPath } = req.params;
   const { form, translations } = req.body;
 
@@ -14,10 +14,15 @@ const publishForm = async (req: ByggerRequest, res: Response, next: NextFunction
     return;
   }
 
+  const logMeta = { formPath, userName };
+  logger.info("Attempting to publish form", logMeta);
+
   try {
     const result = await publisherService.publishForm(form, translations, { formioToken, userName });
+    logger.info("Form is published", logMeta);
     res.json(result);
   } catch (error) {
+    logger.error("Failed to publish form", logMeta);
     next(error);
   }
 };
