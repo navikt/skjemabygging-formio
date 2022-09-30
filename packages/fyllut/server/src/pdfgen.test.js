@@ -198,7 +198,7 @@ const createForm = () => ({
 
 describe("generating doc definition", () => {
   function now() {
-    return DateTime.fromObject({ year: 1992, day: 19, month: 10 });
+    return DateTime.fromObject({ year: 1992, day: 19, month: 10 }, { zone: "Europe/Oslo" });
   }
 
   function setupDocDefinitionContent(submission, form, version = "deadbeef", translations = {}) {
