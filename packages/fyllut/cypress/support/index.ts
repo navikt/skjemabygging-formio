@@ -28,9 +28,8 @@ declare global {
        */
       findByRoleWhenAttached(role: ByRoleMatcher, options?: ByRoleOptions): Chainable<JQuery<HTMLElement>>;
       /**
-       * Provided you are in the form wizard. Use this to click on the "Neste"-button.
+       * Provided you are in the form wizard. Use this to click on the "Neste steg"-button.
        */
-      clickNext(): Chainable<JQuery<HTMLElement>>;
       clickNextStep(): Chainable<JQuery<HTMLElement>>;
       clickStart(): Chainable<JQuery<HTMLElement>>;
     }

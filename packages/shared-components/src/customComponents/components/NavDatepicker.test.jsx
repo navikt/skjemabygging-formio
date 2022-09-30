@@ -575,7 +575,7 @@ describe("NavDatePicker", () => {
       userEvent.type(datepickerInput, "{selectall}{backspace}");
       expect(datepickerInput.value).toBe("");
 
-      const nextButton = screen.getByRole("button", { name: "Neste" });
+      const nextButton = screen.getByRole("button", { name: "Neste steg" });
       expect(nextButton).toBeInTheDocument();
       nextButton.click();
 
