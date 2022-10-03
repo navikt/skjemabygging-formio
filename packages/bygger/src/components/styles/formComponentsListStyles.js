@@ -16,6 +16,9 @@ const formComponentsListStyles = {
       "& .form-builder-group-header": {
         margin: "0",
         padding: "0",
+        "& h5": {
+          margin: "0",
+        },
       },
 
       "& .builder-group-button": {
