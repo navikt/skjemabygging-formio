@@ -94,7 +94,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
           {visOversettelsesMeny && <TranslationsMenu />}
         </div>
         <div className={styles.headerMenus}>
-          {!showAdmin && (
+          {showAdmin && (
             <Dropdown>
               <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
                 <System className={styles.navBarLinkIcon} role="presentation" />
