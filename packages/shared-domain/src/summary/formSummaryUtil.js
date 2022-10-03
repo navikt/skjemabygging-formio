@@ -37,15 +37,14 @@ function formatValue(component, value, translate) {
     case "navCheckbox": {
       return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
-    case "landvelger":
+    case "landvelger": {
       // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
       return translate(typeof value === "string" ? value : value?.label);
-    case "select": {
-      return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
-    case "valuta":
+    case "valutavelger": {
       // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
       return translate(typeof value === "string" ? value : value?.label);
+    }
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
@@ -271,16 +270,27 @@ function handleImage(component, formSummaryObject, parentContainerKey, translate
 }
 
 function handleAmountWithCurrencySelector(component, submission, formSummaryObject, parentContainerKey, translate) {
-  const { key, label } = component;
+  const { key, label, components } = component;
+
   const componentKey = createComponentKey(parentContainerKey, key);
+
+  var componentWithType = (type) =>
+    components.find((obj) => {
+      return obj.type === type;
+    });
+
+  const numberKey = componentWithType("number")?.key;
+  const valutaKey = componentWithType("valutavelger")?.key;
+
   const submissionValue = FormioUtils.getValue(submission, componentKey);
+
   return [
     ...formSummaryObject,
     {
       label: translate(label),
       key,
       type: "currency",
-      value: `${submissionValue.belop} ${submissionValue.valutavelger.value}`,
+      value: `${submissionValue[numberKey]} ${submissionValue[valutaKey].value}`,
     },
   ];
 }
