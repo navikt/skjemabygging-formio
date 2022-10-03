@@ -46,11 +46,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
         path={`${path}/:formPath/:languageCode?`}
         render={({ match }) => (
           <I18nStateProvider loadTranslations={() => loadTranslationsForEditPage(match.params.formPath)}>
-            <TranslationsByFormPage
-              loadForm={loadForm}
-              deleteTranslation={deleteTranslation}
-              saveTranslation={saveLocalTranslation}
-            />
+            <TranslationsByFormPage loadForm={loadForm} saveTranslation={saveLocalTranslation} />
           </I18nStateProvider>
         )}
       />

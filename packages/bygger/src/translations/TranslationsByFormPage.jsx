@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }) => {
+const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
   const { formPath, languageCode } = useParams();
   const [form, setForm] = useState();
   const [status, setStatus] = useState("LOADING");
