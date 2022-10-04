@@ -77,6 +77,7 @@ class ReportService {
       "sist endret",
       "endret av",
       "innsending",
+      "signaturfelt",
       "path",
     ];
     const allForms = await this.formioService.getAllForms(1000, true, "title,path,properties");
@@ -84,13 +85,14 @@ class ReportService {
     stringifier.pipe(writableStream);
     allForms.filter(notTestForm).forEach((form) => {
       const { title, properties, path } = form;
-      const { published, publishedBy, modified, modifiedBy, innsending, tema } = properties;
+      const { published, publishedBy, modified, modifiedBy, innsending, tema, signatures } = properties;
       let unpublishedChanges: string = "";
       if (modified && published) {
         const modifiedDate = DateTime.fromISO(modified);
         const publishedDate = DateTime.fromISO(published);
         unpublishedChanges = publishedDate.until(modifiedDate).isEmpty() ? "nei" : "ja";
       }
+      const numberOfSignatures = signatures?.length || 1;
       stringifier.write([
         properties.skjemanummer,
         title,
@@ -101,6 +103,7 @@ class ReportService {
         modified,
         modifiedBy,
         innsending,
+        numberOfSignatures,
         path,
       ]);
     });
