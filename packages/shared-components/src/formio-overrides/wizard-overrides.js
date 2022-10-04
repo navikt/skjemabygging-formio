@@ -10,7 +10,7 @@ WebForm.prototype.cancel = function () {
   const shouldReset = this.hook("beforeCancel", true);
   // eslint-disable-next-line no-restricted-globals
   if (shouldReset) {
-    if (window.location.href.indexOf("dev.nav.") > 0) {
+    if (window.location.href.indexOf(".dev.nav.") > 0) {
       window.location.href = "https://www.dev.nav.no";
     } else {
       window.location.href = "https://www.nav.no";
