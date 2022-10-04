@@ -5,6 +5,7 @@ import {
   NavFormType,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { Backend } from "../Backend";
+import { logger } from "../logging/logger";
 import { ApiError } from "../routers/api/helpers/errors";
 import { FormioService } from "./formioService";
 
@@ -34,11 +35,15 @@ class PublisherService {
       return { changed: !!publishResult, form: formWithPublishProps };
     } catch (error) {
       if (formWithPublishProps) {
+        logger.debug("Rolling back props since publishing failed", { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);
         try {
           await this.formioService.saveForm(formWithPublishProps, formioToken, userName, rollbackFormProps);
         } catch (innerError: any) {
-          console.warn(`Failed rollback attempt while publishing form ${form.path}: ${innerError.message}`);
+          logger.warn("Failed rollback attempt while publishing form", {
+            formPath: form.path,
+            errorMessage: innerError.message,
+          });
         }
       }
       throw new ApiError("Publisering feilet", true, error as Error);
@@ -57,6 +62,7 @@ class PublisherService {
       return { changed: !!gitSha, form: formWithUnpublishProps };
     } catch (error) {
       if (formWithUnpublishProps) {
+        logger.debug("Rolling back props since unpublishing failed", { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);
         await this.formioService.saveForm(formWithUnpublishProps, formioToken, userName, rollbackFormProps);
       }

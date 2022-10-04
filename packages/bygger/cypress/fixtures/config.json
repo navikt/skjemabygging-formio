@@ -1,0 +1,6 @@
+{
+  "formioProjectUrl": "http://localhost",
+  "fyllutBaseUrl": "http://localhost",
+  "isDevelopment": true,
+  "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100" }
+}

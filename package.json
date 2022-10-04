@@ -39,7 +39,7 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
     "eslint-plugin-testing-library": "^3.9.0",
-    "formiojs": "4.14.0-rc.18",
+    "formiojs": "4.14.6",
     "husky": "^7.0.4",
     "lerna": "^4.0.0",
     "lint-staged": "^10.4.0",

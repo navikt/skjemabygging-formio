@@ -94,33 +94,34 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
           {visOversettelsesMeny && <TranslationsMenu />}
         </div>
         <div className={styles.headerMenus}>
-          <Dropdown>
-            <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
-              <System className={styles.navBarLinkIcon} role="presentation" />
-            </Header.Button>
-            <Dropdown.Menu className={styles.dropdownMenu}>
-              <Dropdown.Menu.GroupedList>
-                <Dropdown.Menu.GroupedList.Item>
-                  {" "}
-                  <Link to="/translations/global/nn-NO/skjematekster">Globale Oversettelser</Link>
-                </Dropdown.Menu.GroupedList.Item>
-                <Dropdown.Menu.GroupedList.Item>
-                  {" "}
-                  <Link to="/migrering">Migrering</Link>
-                </Dropdown.Menu.GroupedList.Item>
-                <Dropdown.Menu.GroupedList.Item>
-                  {" "}
-                  <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
-                </Dropdown.Menu.GroupedList.Item>
-                {showAdmin && (
+          {showAdmin && (
+            <Dropdown>
+              <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
+                <System className={styles.navBarLinkIcon} role="presentation" />
+              </Header.Button>
+              <Dropdown.Menu className={styles.dropdownMenu}>
+                <Dropdown.Menu.GroupedList>
+                  <Dropdown.Menu.GroupedList.Item>
+                    {" "}
+                    <Link to="/translations/global/nn-NO/skjematekster">Globale Oversettelser</Link>
+                  </Dropdown.Menu.GroupedList.Item>
+                  <Dropdown.Menu.GroupedList.Item>
+                    {" "}
+                    <Link to="/migrering">Migrering</Link>
+                  </Dropdown.Menu.GroupedList.Item>
+                  <Dropdown.Menu.GroupedList.Item>
+                    {" "}
+                    <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
+                  </Dropdown.Menu.GroupedList.Item>
+
                   <Dropdown.Menu.GroupedList.Item>
                     {" "}
                     <Link to="/rapporter">Rapporter</Link>
                   </Dropdown.Menu.GroupedList.Item>
-                )}
-              </Dropdown.Menu.GroupedList>
-            </Dropdown.Menu>
-          </Dropdown>
+                </Dropdown.Menu.GroupedList>
+              </Dropdown.Menu>
+            </Dropdown>
+          )}
           {!!userData && (
             <Dropdown>
               <Header.UserButton as={Dropdown.Toggle} name={userData.name ? userData.name : ""} />

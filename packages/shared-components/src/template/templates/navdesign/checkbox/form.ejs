@@ -6,7 +6,7 @@
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
-  aria-describedby="{{ctx.component.id}}-{{ctx.component.key}}-error {{ctx.component.id}}-{{ctx.component.key}}-description"
+  aria-describedby="{{ ctx.component.description ? `d-${ctx.instance.id}-${ctx.component.key} ` : '' }}e-{{ctx.instance.id}}-{{ctx.component.key}}"
   {% if (ctx.checked) { %}checked=true{% } %}
   />
   {% if (!ctx.self.labelIsHidden()) { %}

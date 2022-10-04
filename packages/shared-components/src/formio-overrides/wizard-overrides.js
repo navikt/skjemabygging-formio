@@ -6,12 +6,15 @@ const WebForm = Formio.Displays.displays.webform;
 const originalNextPage = Wizard.prototype.nextPage;
 const originalSubmit = Wizard.prototype.submit;
 
-WebForm.prototype.cancel = function (noconfirm) {
+WebForm.prototype.cancel = function () {
   const shouldReset = this.hook("beforeCancel", true);
   // eslint-disable-next-line no-restricted-globals
-  if (shouldReset && (noconfirm || confirm(this.t("Er du sikker på at du vil avbryte?")))) {
-    this.resetValue();
-    return true;
+  if (shouldReset) {
+    if (window.location.href.indexOf(".dev.nav.") > 0) {
+      window.location.href = "https://www.dev.nav.no";
+    } else {
+      window.location.href = "https://www.nav.no";
+    }
   } else {
     return false;
   }
@@ -30,6 +33,7 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-stepindicator-previous`]: "single",
     [`${this.wizardKey}-tooltip`]: "multiple",
   });
+
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
     if (this.pages) {
       this.enabledIndex = this.pages.length - 1;

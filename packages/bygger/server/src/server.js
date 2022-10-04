@@ -1,4 +1,5 @@
 import express from "express";
+import correlator from "express-correlation-id";
 import config from "./config";
 import { buildDirectory, buildDirectoryIndexHtml } from "./context.js";
 import authHandler from "./middleware/authHandler";
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(correlator());
 app.use("/internal", internalRouter);
 app.use("/api", authHandler, apiRouter);
 

@@ -19,7 +19,7 @@
     "craco-less": "^1.16.0",
     "cross-env": "^7.0.2",
     "cypress-axe": "^0.14.0",
-    "formiojs": "4.14.0-rc.18",
+    "formiojs": "4.14.6",
     "nav-frontend-alertstriper": "^3.0.23",
     "nav-frontend-alertstriper-style": "^2.0.17",
     "nav-frontend-chevron": "^1.0.13",

@@ -29,9 +29,16 @@ fetch("/api/config")
   .then((config) => renderReact(config));
 
 const renderReact = (config) => {
-  const pusher = new Pusher(config.pusherKey, {
-    cluster: config.pusherCluster,
-  });
+  let pusher;
+
+  if (config.pusherKey) {
+    pusher = new Pusher(config.pusherKey, {
+      cluster: config.pusherCluster,
+    });
+  } else {
+    pusher = { subscribe: () => ({ bind: () => {}, unbind: () => {} }) };
+  }
+
   ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter>
