@@ -80,7 +80,7 @@ class ReportService {
       "signaturfelt",
       "path",
     ];
-    const allForms = await this.formioService.getAllForms(1000, true, "title,path,properties");
+    const allForms = await this.formioService.getAllForms(undefined, true, "title,path,properties");
     const stringifier = stringify({ header: true, columns, delimiter: ";" });
     stringifier.pipe(writableStream);
     allForms.filter(notTestForm).forEach((form) => {
