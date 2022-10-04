@@ -37,14 +37,11 @@ function formatValue(component, value, translate) {
     case "navCheckbox": {
       return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
-    case "landvelger": {
+    case "landvelger":
+    case "valutavelger":
       // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
       return translate(typeof value === "string" ? value : value?.label);
-    }
-    case "valutavelger": {
-      // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
-      return translate(typeof value === "string" ? value : value?.label);
-    }
+
     case "select": {
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
     }
