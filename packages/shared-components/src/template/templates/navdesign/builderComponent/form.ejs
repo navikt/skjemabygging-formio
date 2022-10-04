@@ -1,4 +1,5 @@
 <div data-testid="builder-component" class="builder-component" ref="dragComponent">
+  {% if (!ctx.disableBuilderActions) { %}
   <div class="component-btn-group" data-noattach="true">
     <button
       class="knapp knapp--standard knapp--kompakt knapp--hoved component-settings-button component-settings-button-edit"
@@ -62,5 +63,6 @@
       </svg>
     </button>
   </div>
+  {% } %}
   {{ctx.html}}
 </div>

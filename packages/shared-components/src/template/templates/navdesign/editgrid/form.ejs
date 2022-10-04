@@ -14,9 +14,9 @@
     {{row}}
     {% if (ctx.openRows[rowIndex] && !ctx.readOnly) { %}
     <div class="editgrid-actions">
-      <button class="knapp knapp--hoved" type="button" ref="{{ctx.ref.saveRow}}">{{ctx.t(ctx.component.saveRow || 'Save')}}</button>
+      <button class="knapp knapp--hoved" type="button" ref="{{ctx.ref.saveRow}}">{{ctx.t(ctx.component.saveRow || 'Save', { _userInput: true })}}</button>
       {% if (ctx.component.removeRow) { %}
-      <button class="knapp knapp--fare" type="button" ref="{{ctx.ref.cancelRow}}">{{ctx.t(ctx.component.removeRow || 'Cancel')}}</button>
+      <button class="knapp knapp--fare" type="button" ref="{{ctx.ref.cancelRow}}">{{ctx.t(ctx.component.removeRow || 'Cancel', { _userInput: true })}}</button>
       {% } %}
     </div>
     {% } %}
@@ -38,6 +38,6 @@
   <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8z" fill="currentColor" />
   </svg>
-  <span>{{ctx.t(ctx.component.addAnother || 'Add Another')}}</span>
+  <span>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
 </button>
 {% } %}

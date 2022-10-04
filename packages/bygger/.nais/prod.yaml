@@ -1,0 +1,20 @@
+app-name: skjemabygging
+ingresses:
+- "https://skjemabygging.nav.no"
+image: {{image}}
+publish-repo: skjemautfylling-formio
+submodule-repo: skjemabygging-formio
+publish-repo-owner: navikt
+publish-repo-base: master
+skjemabygging-proxy-host: skjemabygging-proxy.prod-fss-pub.nais.io
+skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
+skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
+accessPolicy:
+  outbound:
+    rules:
+      - application: skjemabygging-proxy
+        namespace: skjemadigitalisering
+        cluster: prod-fss
+secrets:
+  - bygger
+  - bygger-pusher
