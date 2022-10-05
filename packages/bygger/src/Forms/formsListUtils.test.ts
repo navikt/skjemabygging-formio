@@ -72,13 +72,13 @@ describe("formsListUtils", () => {
 
     it("places standard NAV form numbers first on ascending sort", () => {
       const sorted = sortByFormNumber(list, "ascending");
-      expect(sorted).toHaveLength(6);
+      expect(sorted).toHaveLength(5);
       expect(sorted).toStrictEqual([nav01, nav02, nav03, noneStandard01, noneStandard02]);
     });
 
     it("places standard NAV form numbers last on descending sort", () => {
       const sorted = sortByFormNumber(list, "descending");
-      expect(sorted).toHaveLength(6);
+      expect(sorted).toHaveLength(5);
       expect(sorted).toStrictEqual([noneStandard02, noneStandard01, nav03, nav02, nav01]);
     });
   });
