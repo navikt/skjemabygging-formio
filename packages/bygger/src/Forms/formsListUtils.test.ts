@@ -72,13 +72,13 @@ describe("formsListUtils", () => {
 
     it("places standard NAV form numbers first on ascending sort", () => {
       const sorted = sortByFormNumber(list, "ascending");
-      expect(sorted).toHaveLength(5);
+      expect(sorted).toHaveLength(6);
       expect(sorted).toStrictEqual([nav01, nav02, nav03, noneStandard01, noneStandard02]);
     });
 
     it("places standard NAV form numbers last on descending sort", () => {
       const sorted = sortByFormNumber(list, "descending");
-      expect(sorted).toHaveLength(5);
+      expect(sorted).toHaveLength(6);
       expect(sorted).toStrictEqual([noneStandard02, noneStandard01, nav03, nav02, nav01]);
     });
   });
@@ -86,32 +86,33 @@ describe("formsListUtils", () => {
   describe("sortByStatus", () => {
     const draft = createFormMetadata({ status: "DRAFT" });
     const published = createFormMetadata({ status: "PUBLISHED" });
+    const unpublished = createFormMetadata({ status: "UNPUBLISHED" });
     const pending = createFormMetadata({ status: "PENDING" });
     const unknown = createFormMetadata({ status: "UNKNOWN" });
     const testform = createFormMetadata({ status: "TESTFORM" });
-    const list = [draft, published, pending, testform];
-    const listWithUnknown = [pending, unknown, published, draft, testform];
+    const list = [draft, published, pending, testform, unpublished];
+    const listWithUnknown = [pending, unknown, published, draft, unpublished, testform];
 
     it("sorts the list by status in fixed ascending order", () => {
       const sorted = sortByStatus(list, "ascending");
-      expect(sorted).toStrictEqual([published, pending, draft, testform]);
+      expect(sorted).toStrictEqual([published, pending, draft, unpublished, testform]);
     });
 
     it("sorts the list by status in fixed descending order", () => {
       const sorted = sortByStatus(list, "descending");
-      expect(sorted).toStrictEqual([testform, draft, pending, published]);
+      expect(sorted).toStrictEqual([testform, unpublished, draft, pending, published]);
     });
 
     it("adds items with status UNKNOWN to the end of list when sorting in ascending order", () => {
       const sorted = sortByStatus(listWithUnknown, "ascending");
-      expect(sorted).toHaveLength(5);
-      expect(sorted[4].status).toBe("UNKNOWN");
+      expect(sorted).toHaveLength(6);
+      expect(sorted[5].status).toBe("UNKNOWN");
     });
 
     it("adds items with status UNKNOWN to the end of list when sorting in descending order", () => {
       const sorted = sortByStatus(listWithUnknown, "descending");
-      expect(sorted).toHaveLength(5);
-      expect(sorted[4].status).toBe("UNKNOWN");
+      expect(sorted).toHaveLength(6);
+      expect(sorted[5].status).toBe("UNKNOWN");
     });
   });
 });
