@@ -103,6 +103,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         data,
         contentForPdf,
         altText,
+        buttonText,
       }) => ({
         title,
         label: getLabel(label, type, hideLabel),
@@ -118,6 +119,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         data: data ? data.values.map((value) => value.label) : undefined,
         contentForPdf: getTextFromComponentProperty(contentForPdf),
         altText: getTextFromComponentProperty(altText),
+        buttonText: getTextFromComponentProperty(buttonText),
       })
     );
 

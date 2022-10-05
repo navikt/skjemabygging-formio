@@ -233,6 +233,16 @@ const basicPalett = {
     password: {
       ignore: true,
     },
+    button: {
+      title: "Knapp",
+      key: "knapp",
+      icon: "button",
+      schema: {
+        label: "Knapp",
+        type: "button",
+        key: "knapp",
+      },
+    },
   },
 };
 
