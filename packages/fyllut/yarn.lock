@@ -1745,10 +1745,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@navikt/ds-css@^0.16.20":
-  version "0.16.20"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-0.16.20.tgz#089bb224b80acb0cb7a31f1817b6fc5c74243cdc"
-  integrity sha512-rbpdeelCO/DZ87GDP+rksx+lHIbJdiG1NHmNBPDVpaaZNU8tYTqCGDNRIruzek9mYQcbXAtX2WYllXh1C2TXzA==
+"@navikt/ds-css@^1.3.5":
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-1.3.5.tgz#9a7f048400bc7e3dafd41170af8ed8600fd836cf"
+  integrity sha512-J0p5B33KA+Vf9B4RI61TQpwPdE2efpiENbi+UMiwoo17siMMC/htLN1gbLOp/wXEDwUHzhGG5zEk9uJkXsoqVg==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
