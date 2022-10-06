@@ -1,24 +1,6 @@
 import merge from "lodash.merge";
 import { navCssVariables } from "../../util/navCssVariables";
 
-const wizardSidevelgerStyles = {
-  "& .pagination": {
-    display: "flex",
-    justifyContent: "center",
-    padding: "3rem 0 1rem 0",
-  },
-
-  "& .stegindikator": {
-    margin: "3rem",
-  },
-
-  "& .stegindikator__steg-inner--aktiv .stegindikator__steg-num": {
-    minWidth: "2rem",
-    width: "auto",
-    padding: "0 0.5rem",
-  },
-};
-
 const allFieldsStyles = {
   "& .form-group:not(.formio-hidden)": {
     clear: "both",
@@ -103,12 +85,5 @@ const styles = {
     },
 };
 
-const navFormStyle = merge(
-  styles,
-  wizardSidevelgerStyles,
-  fieldsSideBySideStyles,
-  allFieldsStyles,
-  dataGridStyles,
-  errorValidationStyles
-);
+const navFormStyle = merge(styles, fieldsSideBySideStyles, allFieldsStyles, dataGridStyles, errorValidationStyles);
 export default navFormStyle;
