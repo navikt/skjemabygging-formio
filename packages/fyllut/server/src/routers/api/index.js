@@ -2,7 +2,7 @@ import express from "express";
 import { config as appConfig } from "../../config/config";
 import { rateLimiter } from "../../middleware/ratelimit";
 import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
-import idportenAuthHandler from "../../security/idportenAuthHandler.js";
+import idportenAuthHandler from "../../security/idportenAuthHandler";
 import tokenxHandler from "../../security/tokenxHandler.js";
 import commonCodes from "./common-codes";
 import config from "./config.js";

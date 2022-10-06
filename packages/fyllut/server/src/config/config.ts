@@ -1,7 +1,7 @@
 import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
-import { ConfigType, SendInnConfig, TokenxConfig } from "./types";
+import { ConfigType, IdportenConfig, SendInnConfig, TokenxConfig } from "./types";
 
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();
@@ -11,6 +11,12 @@ const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
   wellKnownUrl: process.env.TOKEN_X_WELL_KNOWN_URL!,
+};
+
+const idporten: IdportenConfig = {
+  idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
+  idportenJwksUri: process.env.IDPORTEN_JWKS_URI!,
+  idportenIssuer: process.env.IDPORTEN_ISSUER!,
 };
 
 const sendInnConfig: SendInnConfig = {
@@ -43,6 +49,10 @@ const localDevelopmentConfig: Partial<ConfigType> = {
     host: sendInnConfig.host || "https://innsending-api.dev.nav.no",
     tokenxClientId: sendInnConfig.tokenxClientId || "dev-gcp:soknad:send-inn",
   },
+  idporten: {
+    ...idporten,
+    idportenJwksUri: idporten.idportenJwksUri || "https://oidc-ver2.difi.no/idporten-oidc-provider/jwk",
+  },
 };
 
 const defaultConfig: Partial<ConfigType> = {
@@ -61,6 +71,7 @@ const defaultConfig: Partial<ConfigType> = {
   translationDir: process.env.TRANSLATION_DIR!,
   tokenx,
   sendInnConfig,
+  idporten,
 };
 const config: ConfigType = {
   ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
@@ -70,7 +81,6 @@ const config: ConfigType = {
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
   isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
-  idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = console.error, exit = process.exit) => {
