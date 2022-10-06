@@ -104,6 +104,8 @@ const getTranslatablePropertiesFromForm = (form) =>
         contentForPdf,
         altText,
         buttonText,
+        addAnother,
+        removeAnother,
       }) => ({
         title,
         label: getLabel(label, type, hideLabel),
@@ -120,6 +122,8 @@ const getTranslatablePropertiesFromForm = (form) =>
         contentForPdf: getTextFromComponentProperty(contentForPdf),
         altText: getTextFromComponentProperty(altText),
         buttonText: getTextFromComponentProperty(buttonText),
+        addAnother: getTextFromComponentProperty(addAnother),
+        removeAnother: getTextFromComponentProperty(removeAnother),
       })
     );
 
