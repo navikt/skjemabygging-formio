@@ -338,7 +338,10 @@ describe("testGetAllTextsAndTypeForForm", () => {
   });
   it("Test form with button component", () => {
     const actual = getFormTexts(
-      createFormObject([createPanelObject("Introduksjon", [createDummyButtonComponent()], "Introduksjon")], "title"),
+      createFormObject(
+        [createPanelObject("Introduksjon", [createDummyButtonComponent("buttonText")], "Introduksjon")],
+        "title"
+      ),
       true
     );
 
@@ -346,7 +349,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "title", type: "text" },
       { text: "Introduksjon", type: "text" },
       { text: "Knapp", type: "text" },
-      { text: "Submit", type: "text" },
+      { text: "buttonText", type: "text" },
     ]);
   });
   it("Henter innsendingsrelaterte tekster fra form properties", () => {
