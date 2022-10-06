@@ -7,7 +7,7 @@ import { allLanguagesInNorwegian } from "./PublishedLanguages";
 
 type PartialFormProperties = Pick<
   FormPropertiesType,
-  "modified" | "modifiedBy" | "published" | "publishedBy" | "isTestForm"
+  "modified" | "modifiedBy" | "published" | "publishedBy" | "isTestForm" | "unpublished"
 >;
 
 describe("FormStatusPanel", () => {
