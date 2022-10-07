@@ -16,8 +16,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "No unstaged changes allowed (changes in yarn.lock?)"
@@ -49,8 +47,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
       - name: "Build application: Bygger"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
@@ -76,8 +72,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
       - name: "Build application: Fyllut"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
