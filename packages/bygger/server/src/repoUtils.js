@@ -48,6 +48,7 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         `oppdater monorepo ref: ${newSubmoduleGitSha}`,
         stringTobase64(newSubmoduleGitSha)
       );
+      // updateSubmodule-kallet kan fjernes når vi går bort fra git submodule i skjemautfylling-formio
       await repo.updateSubmodule(
         branch,
         newSubmoduleGitSha,
