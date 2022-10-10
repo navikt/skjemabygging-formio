@@ -1,6 +1,6 @@
 import { styled } from "@material-ui/styles";
+import { Button } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -102,8 +102,8 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
       <div className="margin-bottom-default">
-        <Knapp
-          className="knapp knapp--fullbredde"
+        <Button
+          className="navds-button navds-button--secondary"
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
               setIsRequiredEnhetMissing(true);
@@ -123,7 +123,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
           spinner={foerstesideLoading}
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        </Knapp>
+        </Button>
       </div>
       {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
       <DownloadPdfButton
@@ -132,7 +132,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
-        classNames="knapp knapp--fullbredde"
+        classNames="navds-button navds-button--secondary"
         translations={translations}
       />
     </section>

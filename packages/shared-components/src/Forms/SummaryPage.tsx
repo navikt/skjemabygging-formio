@@ -1,4 +1,5 @@
 import { makeStyles, styled } from "@material-ui/styles";
+import { Accordion } from "@navikt/ds-react";
 import {
   Component,
   createFormSummaryObject,
@@ -68,7 +69,7 @@ const FormSummaryFieldset: FunctionComponent<LabelComponents> = ({ label, compon
   <>
     <dt>{label}</dt>
     <dd>
-      <dl className="margin-left-default">
+      <dl className="component-collection">
         <ComponentSummary components={components} />
       </dl>
     </dd>
@@ -114,30 +115,40 @@ const ImageSummary: FunctionComponent<ImageComp> = ({ label, value, alt, widthPe
 };
 
 const panelStyles = makeStyles({
-  header: {
-    display: "grid",
+  link: {
+    display: "block",
+    marginBottom: "2rem",
+  },
+  fomSum: {
+    marginTop: "2rem",
   },
 });
 
 const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, formUrl, path }) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const { header } = panelStyles();
+  const { link } = panelStyles();
+  const [defaultOpen] = useState(true);
   return (
-    <section className="margin-bottom-default wizard-page">
-      <div className={header}>
-        <Systemtittel tag="h3" className="margin-bottom-default">
-          {label}
-        </Systemtittel>
-        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="lenke margin-bottom-default">
-          <span>
-            {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
-          </span>
-        </Link>
-      </div>
-      <dl>
-        <ComponentSummary components={components} formUrl={formUrl} />
-      </dl>
+    <section className="wizard-page">
+      <Accordion>
+        <Accordion.Item defaultOpen={defaultOpen}>
+          <Accordion.Header>
+            {" "}
+            <Systemtittel tag="h3">{label}</Systemtittel>
+          </Accordion.Header>
+          <Accordion.Content>
+            <Link to={{ pathname: `${formUrl}/${path}`, search }} className={link}>
+              <span>
+                {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
+              </span>
+            </Link>
+            <dl>
+              <ComponentSummary className={ComponentSummary} components={components} formUrl={formUrl} />
+            </dl>
+          </Accordion.Content>
+        </Accordion.Item>
+      </Accordion>
     </section>
   );
 };
@@ -219,34 +230,30 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
         </Normaltekst>
         <FormSummary submission={submission} form={form} formUrl={formUrl} />
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
-        <nav className="list-inline">
-          <div className="list-inline-item">
-            <Link
-              className="btn btn-secondary btn-wizard-nav-previous"
-              to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
-            >
-              {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-            </Link>
-          </div>
+        <nav class="form-nav">
+          <Link
+            className="navds-button navds-button--secondary"
+            to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+          >
+            {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
+          </Link>
           {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-            <div className="list-inline-item">
-              <Link
-                className={`btn ${
-                  innsending === "KUN_PAPIR"
-                    ? "btn-primary btn-wizard-nav-next"
-                    : "btn-secondary btn-wizard-nav-previous"
-                }`}
-                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
-              >
-                {innsending === "KUN_PAPIR" || submissionMethod === "paper"
-                  ? translate(TEXTS.grensesnitt.moveForward)
-                  : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
-              </Link>
-            </div>
+            <Link
+              className={`navds-button navds-button--secondary ${
+                innsending === "KUN_PAPIR"
+                  ? "navds-button navds-button--primary"
+                  : "navds-button navds-button--secondary"
+              }`}
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
+            >
+              {innsending === "KUN_PAPIR" || submissionMethod === "paper"
+                ? translate(TEXTS.grensesnitt.moveForward)
+                : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+            </Link>
           )}
           {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
-            <div className="list-inline-item">
+            <>
               {submissionMethod === "digital" ? (
                 <DigitalSubmissionButton
                   form={form}
@@ -256,7 +263,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 />
               ) : (
                 <Link
-                  className="btn btn-primary btn-wizard-nav-next wizard-button"
+                  className="navds-button navds-button--primary"
                   onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                   to={{
                     pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
@@ -269,22 +276,21 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
                 </Link>
               )}
-            </div>
+            </>
           )}
           {innsending === "INGEN" && (
-            <div className="list-inline-item">
-              <Link
-                className="btn btn-primary btn-wizard-nav-next"
-                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
-              >
-                {translate(TEXTS.grensesnitt.moveForward)}
-              </Link>
-            </div>
+            <Link
+              className="navds-button navds-button--primary"
+              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+              to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+            >
+              {translate(TEXTS.grensesnitt.moveForward)}
+            </Link>
           )}
         </nav>
         {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
       </main>
+      {}
     </SummaryContent>
   );
 }
@@ -293,11 +299,29 @@ const SummaryContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-
   "& .data-grid__row": {
     border: `1px solid ${navCssVariables.navGra60}`,
     borderRadius: "7px",
     marginBottom: "1rem",
     padding: "1.5rem 2rem 0",
+  },
+  "& dt:not(.component-collection > dt)": {
+    fontSize: "1.2rem",
+    marginTop: "1.5rem",
+  },
+  "& .component-collection": {
+    borderLeft: "4px solid #33AA5F",
+    backgroundColor: "#F3FCF5",
+    padding: "0.5rem 1rem",
+    margin: "0.2srem 0",
+  },
+  "& section.wizard-page": {
+    padding: "0",
+    "&:first-of-type": {
+      paddingTop: "2rem",
+    },
+    "&:last-of-type": {
+      paddingBottom: "2.75rem",
+    },
   },
 });

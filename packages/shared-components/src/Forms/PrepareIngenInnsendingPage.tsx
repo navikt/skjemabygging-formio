@@ -45,7 +45,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
             label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
             onClick={() => loggSkjemaFullfort("ingeninnsending")}
-            classNames="knapp knapp--fullbredde"
+            classNames="navds-button navds-button--secondary"
             translations={translations}
           />
         </section>

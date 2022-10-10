@@ -35,7 +35,7 @@ function App({ className }) {
 
 export default styled(App)({
   margin: "0 auto",
-  padding: "2rem",
+  padding: "2rem 1rem",
   maxWidth: "800px",
   ...appStyles,
 });
