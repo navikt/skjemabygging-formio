@@ -8,10 +8,10 @@ const pusher = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     const event: PusherEvent = req.body;
     try {
-      logger.info("Trigger pusher event", { body: req.body });
+      logger.info("Trigger pusher event", { event });
       await pusherService.trigger(event);
     } catch (error) {
-      logger.warn("Failed to trigger pusher event", { body: req.body, error });
+      logger.warn("Failed to trigger pusher event", { event, error });
       return next(new ApiError("Failed to trigger pusher event", true, error as Error));
     }
     return res.sendStatus(200);
