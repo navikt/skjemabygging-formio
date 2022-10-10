@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "No unstaged changes allowed (changes in yarn.lock?)"
@@ -47,6 +49,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: "Build application: Bygger"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
@@ -72,6 +76,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '14.17.0'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: "Build application: Fyllut"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
@@ -91,7 +97,7 @@ jobs:
   deploy-bygger-to-dev:
     name: "Deploy bygger to dev"
     if: github.ref == 'refs/heads/master'
-    needs: [build-and-test, package-and-push-bygger, verify-scripts]
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v3"
@@ -106,7 +112,7 @@ jobs:
   deploy-bygger-to-prod:
     name: "Deploy bygger to prod"
     if: github.ref == 'refs/heads/master'
-    needs: [build-and-test, package-and-push-bygger, verify-scripts]
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v3"
@@ -121,7 +127,7 @@ jobs:
   deploy-bygger-experimental-to-dev:
     name: "Deploy bygger experimental to dev"
     if: startsWith(github.ref, 'refs/heads/experimental/')
-    needs: [build-and-test, package-and-push-bygger, verify-scripts]
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
     runs-on: ubuntu-18.04
     steps:
       - uses: "actions/checkout@v3"
