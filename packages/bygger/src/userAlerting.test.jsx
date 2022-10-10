@@ -77,6 +77,7 @@ describe("userAlerting", () => {
     it("subscribes on mount", () => {
       expect(Object.keys(channelSubscriptions)).toEqual([
         "skjemautfyller-deployed",
+        "fyllut-deployment",
         "build-aborted",
         "publish-aborted",
         "publish-resource-aborted",

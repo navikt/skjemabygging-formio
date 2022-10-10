@@ -58,6 +58,8 @@ const config: ConfigType = {
   pusher: {
     cluster: env("PUSHER_CLUSTER", devPusher.cluster),
     key: env("PUSHER_KEY"),
+    app: env("PUSHER_APP"),
+    secret: env("PUSHER_SECRET"),
   },
   nodeEnv,
   port: parseInt(process.env.PORT || "8080"),
