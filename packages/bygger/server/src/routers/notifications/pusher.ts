@@ -6,12 +6,12 @@ import { ApiError } from "../api/helpers/errors";
 
 const pusher = {
   post: async (req: Request, res: Response, next: NextFunction) => {
-    const event: PusherEvent = req.body;
+    const pusherEvent: PusherEvent = req.body;
     try {
-      logger.info("Trigger pusher event", { event });
-      await pusherService.trigger(event);
+      logger.info("Trigger pusher event", { pusherEvent });
+      await pusherService.trigger(pusherEvent);
     } catch (error) {
-      logger.warn("Failed to trigger pusher event", { event, error });
+      logger.warn("Failed to trigger pusher event", { pusherEvent, error });
       return next(new ApiError("Failed to trigger pusher event", true, error as Error));
     }
     return res.sendStatus(200);
