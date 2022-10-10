@@ -98,7 +98,7 @@ jobs:
     name: "Deploy bygger to dev"
     if: github.ref == 'refs/heads/master'
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to DEV"
@@ -113,7 +113,7 @@ jobs:
     name: "Deploy bygger to prod"
     if: github.ref == 'refs/heads/master'
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to PROD"
@@ -128,7 +128,7 @@ jobs:
     name: "Deploy bygger experimental to dev"
     if: startsWith(github.ref, 'refs/heads/experimental/')
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy experimental to DEV"
