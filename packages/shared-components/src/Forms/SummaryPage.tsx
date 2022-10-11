@@ -307,7 +307,7 @@ const SummaryContent = styled("div")({
   },
   "& dt:not(.component-collection > dt)": {
     fontSize: "1.2rem",
-    marginTop: "1.5rem",
+    marginTop: "2rem",
   },
   "& .component-collection": {
     borderLeft: "4px solid #33AA5F",
