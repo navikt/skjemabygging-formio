@@ -63,7 +63,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   };
 
   return (
-    <Button onClick={sendInn} spinner={loading}>
+    <Button onClick={sendInn} loading={loading}>
       {translate(TEXTS.grensesnitt.moveForward)}
     </Button>
   );

@@ -73,7 +73,7 @@ export function IntroPage({ form, formUrl }: Props) {
         </ul>
       </GuidePanel>
 
-      <nav class="form-nav">
+      <nav className="form-nav">
         <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
           <Button className="navds-button navds-button--primary">{translate(TEXTS.grensesnitt.introPage.start)}</Button>
         </Link>

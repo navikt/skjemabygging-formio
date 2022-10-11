@@ -144,7 +144,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
               </span>
             </Link>
             <dl>
-              <ComponentSummary className={ComponentSummary} components={components} formUrl={formUrl} />
+              <ComponentSummary components={components} formUrl={formUrl} />
             </dl>
           </Accordion.Content>
         </Accordion.Item>
@@ -230,7 +230,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
         </Normaltekst>
         <FormSummary submission={submission} form={form} formUrl={formUrl} />
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
-        <nav class="form-nav">
+        <nav className="form-nav">
           <Link
             className="navds-button navds-button--secondary"
             to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}

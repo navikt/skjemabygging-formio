@@ -120,7 +120,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
             }
           }}
           type="standard"
-          spinner={foerstesideLoading}
+          loading={foerstesideLoading}
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         </Button>
