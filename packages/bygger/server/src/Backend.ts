@@ -1,4 +1,5 @@
 import { I18nTranslations, NavFormType, ResourceContent } from "@navikt/skjemadigitalisering-shared-domain";
+import { PushEvent } from "@octokit/webhooks-types";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigType } from "./config/types";
 import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
@@ -12,6 +13,10 @@ import {
   pushFilesAndUpdateSubmoduleCallback,
 } from "./repoUtils.js";
 import { FormioService } from "./services/formioService";
+
+const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
+const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
+const UNPUBLISH_REGEXP = /^\[avpublisering\] skjema (.*), monorepo ref: (.*)$/;
 
 export class Backend {
   private readonly skjemaUtfylling: GitHubRepo;
@@ -91,6 +96,52 @@ export class Backend {
       pushFilesAndUpdateSubmoduleCallback(formFiles, this.config.gitSha, this.config.publishRepo.submoduleName),
       `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
+  }
+
+  interpretGithubPushEvent(pushEvent: PushEvent, type: string) {
+    const success = type === "success";
+    const thisCommit = pushEvent.head_commit;
+    const commitMessage = thisCommit?.message || "";
+
+    const titleRegexp = new RegExp(PUBLISH_REGEXP, "g");
+    const publishFormTitleMatch = titleRegexp.exec(commitMessage);
+    const unpublishRegexp = new RegExp(UNPUBLISH_REGEXP, "g");
+    const unpublishFormPathMatch = unpublishRegexp.exec(commitMessage);
+    const amountRegexp = new RegExp(BULK_PUBLISH_REGEXP, "g");
+    const buldPublishCountMatch = amountRegexp.exec(commitMessage);
+
+    if (publishFormTitleMatch) {
+      return {
+        type,
+        title: success ? "Publisering fullført" : "Publisering feilet",
+        message: success
+          ? `Skjema ${publishFormTitleMatch[1]} er nå publisert`
+          : `Feilet for skjema ${publishFormTitleMatch[1]}`,
+      };
+    }
+    if (unpublishFormPathMatch) {
+      return {
+        type,
+        title: success ? "Avpublisering fullført" : "Avpublisering feilet",
+        message: success
+          ? `Skjema ${unpublishFormPathMatch[1]} er nå avpublisert`
+          : `Feilet for skjema ${unpublishFormPathMatch[1]}`,
+      };
+    }
+    if (buldPublishCountMatch) {
+      return {
+        type,
+        title: success ? "Bulk-publisering fullført" : "Bulk-publisering feilet",
+        message: success
+          ? `${buldPublishCountMatch[1]} skjemaer ble bulk-publisert`
+          : `${buldPublishCountMatch[1]} skjemaer feilet`,
+      };
+    }
+    return {
+      type,
+      title: success ? "Ny versjon av FyllUt" : "Deploy av FyllUt feilet",
+      message: commitMessage,
+    };
   }
 
   async fetchEnhetsliste() {
