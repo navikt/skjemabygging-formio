@@ -20,6 +20,7 @@ const getRelevantAttachments = (form, submission) => {
       label: comp.label,
       beskrivelse: comp.description,
       pakrevd: comp.properties.vedleggErValgfritt !== "ja",
+      propertyNavn: comp.key,
     }));
 };
 
