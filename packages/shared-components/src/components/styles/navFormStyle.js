@@ -96,12 +96,77 @@ const styles = {
     },
 };
 
+const stepIndicator = {
+  "& .stepper": {
+    display: "none",
+
+    "@media screen and (min-width: 40rem)": {
+      position: "initial",
+      display: "block",
+    },
+
+    "& .navds-stepper__content": {
+      maxWidth: "26ch",
+      wordBreak: "break-word",
+      hyphens: "auto",
+    },
+  },
+  "& .stepper--open": {
+    display: "block",
+    position: "fixed",
+    right: 0,
+    top: 0,
+    zIndex: "100",
+    width: "calc(100vw - 1rem)",
+    maxWidth: "20rem",
+    height: "100%",
+    backgroundColor: "white",
+
+    "& .stepper-container": {
+      position: "relative",
+      padding: "6rem 1.5rem 1.5rem",
+      height: "100%",
+      overflowY: "auto",
+    },
+  },
+  "& .stepper-close": {
+    position: "absolute",
+    right: "1rem",
+    top: "1rem",
+
+    "@media screen and (min-width: 40rem)": {
+      display: "none",
+    },
+  },
+  "& .stepper-toggle": {
+    display: "block",
+    position: "fixed",
+    top: "9rem",
+    right: 0,
+
+    "@media screen and (min-width: 40rem)": {
+      display: "none",
+    },
+  },
+
+  "& .stepper-backdrop": {
+    display: "none",
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+};
+
 const navFormStyle = merge(
   layout,
   styles,
   fieldsSideBySideStyles,
   allFieldsStyles,
   dataGridStyles,
-  errorValidationStyles
+  errorValidationStyles,
+  stepIndicator
 );
 export default navFormStyle;

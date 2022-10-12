@@ -30,6 +30,10 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-submit`]: "single",
     [`${this.wizardKey}-link`]: "multiple",
     [`${this.wizardKey}-tooltip`]: "multiple",
+    [`${this.wizardKey}-header`]: "single",
+    [`${this.wizardKey}-stepper-open`]: "single",
+    [`${this.wizardKey}-stepper-close`]: "single",
+    [`${this.wizardKey}-stepper-backdrop`]: "single",
   });
 
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
@@ -45,12 +49,33 @@ Wizard.prototype.attach = function (element) {
   ]);
   this.attachNav();
   this.attachHeader();
+  this.attachStepper();
+
   return promises.then(() => {
     this.emit("render", { component: this.currentPage, page: this.page });
     if (this.component.scrollToTop) {
       this.scrollPageToTop();
     }
   });
+};
+
+Wizard.prototype.attachStepper = function () {
+  const openStepper = () => {
+    this.isStepperOpen = true;
+    this.refs[`${this.wizardKey}-header`].classList.add("stepper--open");
+    this.refs[`${this.wizardKey}-stepper-backdrop`].style.display = "block";
+    this.refs[`${this.wizardKey}-stepper-close`].focus();
+  };
+  const closeStepper = () => {
+    this.isStepperOpen = false;
+    this.refs[`${this.wizardKey}-header`].classList.remove("stepper--open");
+    this.refs[`${this.wizardKey}-stepper-backdrop`].style.display = "none";
+    this.refs[`${this.wizardKey}-stepper-open`].focus();
+  };
+
+  this.refs[`${this.wizardKey}-stepper-open`].addEventListener("click", openStepper);
+  this.refs[`${this.wizardKey}-stepper-close`].addEventListener("click", closeStepper);
+  this.refs[`${this.wizardKey}-stepper-backdrop`].addEventListener("click", closeStepper);
 };
 
 Wizard.prototype.redrawHeader = function () {

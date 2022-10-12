@@ -1,30 +1,35 @@
-<nav aria-label="Søknadssteg" id="{{ ctx.wizardKey }}-header" ref="{{ctx.wizardKey}}-header">
-    <ol class="navds-stepper">
-    {% ctx.panels.forEach(function(panel, index) { %}
-        {{console.log("Form", ctx.form)}}
-        <li class="navds-stepper__item">
-            <span class="navds-stepper__line navds-stepper__line--1"></span>
-            <{{ctx.currentPage < index ? 'div' : 'a'}}
-                {% if (ctx.currentPage >= index) { %}
-                href="/fyllut/{{ctx.form.path}}/{{panel.key}}"
-                {% } %}
-                class="navds-stepper__step {{ctx.currentPage > index ? 'navds-stepper__step--behind navds-stepper__step--completed' : ctx.currentPage < index ? 'navds-stepper__step--non-interactive' : 'navds-stepper__step--active'}}"
-                ref="{{ctx.wizardKey}}-link"
-                {% if (ctx.currentPage === index) { %}
-                aria-current="step"
-                {% } %}
-            >
-                {% if (ctx.currentPage > index) { %}
-                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" aria-hidden="true" class="navds-stepper__circle navds-stepper__circle--success">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0Zm5.047 7.671 1.399 1.43-8.728 8.398L6 14.02l1.395-1.434 2.319 2.118 7.333-7.032Z" fill="currentColor"></path>
-                    </svg>
-                {% } else { %}
+<button class="stepper-toggle knapp knapp--standard" ref="{{ctx.wizardKey}}-stepper-open">Steg {{ctx.currentPage + 1}} av {{ctx.panels.length}}</button>
+<div class="stepper-backdrop" ref="{{ctx.wizardKey}}-stepper-backdrop"></div>
+<nav aria-label="Søknadssteg" id="{{ ctx.wizardKey }}-header" class="stegindikator stepper" ref="{{ctx.wizardKey}}-header">
+    <div class="stepper-container">
+        <button class="stepper-close navds-button navds-button--tertiary navds-button--medium" ref="{{ctx.wizardKey}}-stepper-close">
+            <span class="navds-button__icon">
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" aria-hidden="true">
+                    <title>{{ctx.t("Lukk")}}</title>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385 13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385Z" fill="currentColor"></path>
+                </svg>
+            </span>
+            {{ctx.t("Lukk")}}
+        </button>
+        <ol class="navds-stepper">
+        {% ctx.panels.forEach(function(panel, index) { %}
+            {{console.log("Form", ctx.form)}}
+            <li class="navds-stepper__item">
+                <span class="navds-stepper__line navds-stepper__line--1"></span>
+                <a
+                    href="/fyllut/{{ctx.form.path}}/{{panel.key}}"
+                    class="navds-stepper__step {{ctx.currentPage > index ? 'navds-stepper__step--behind navds-stepper__step--completed' : ctx.currentPage === index ? 'navds-stepper__step--active' : ''}}"
+                    ref="{{ctx.wizardKey}}-link"
+                    {% if (ctx.currentPage === index) { %}
+                    aria-current="step"
+                    {% } %}
+                >
                     <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(index+1)}}</span>
-                {% } %}
-                <div class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</div>
-            </{{ctx.currentPage < index ? 'div' : 'a'}}>
-            <span class="navds-stepper__line navds-stepper__line--2"></span>
-        </li>
-    {% }) %}
-  </ol>
+                    <div class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</div>
+                </a>
+                <span class="navds-stepper__line navds-stepper__line--2"></span>
+            </li>
+        {% }) %}
+        </ol>
+    </div>
 </nav>
