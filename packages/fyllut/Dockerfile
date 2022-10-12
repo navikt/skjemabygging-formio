@@ -1,4 +1,4 @@
-FROM node:14.17.0-alpine
+FROM node:16.17.1-alpine
 ENV NODE_ENV production
 ENV SKJEMA_DIR /app/skjema/
 ENV RESOURCES_DIR /app/resources/
