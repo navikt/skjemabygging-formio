@@ -1,6 +1,17 @@
 import merge from "lodash.merge";
 import { navCssVariables } from "../../util/navCssVariables";
 
+const layout = {
+  "& .fyllut-layout": {
+    "@media screen and (min-width: 40rem)": {
+      display: "grid",
+      gap: "3rem",
+      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
+      margin: "0 auto",
+    },
+  },
+};
+
 const allFieldsStyles = {
   "& .form-group:not(.formio-hidden)": {
     clear: "both",
@@ -85,5 +96,12 @@ const styles = {
     },
 };
 
-const navFormStyle = merge(styles, fieldsSideBySideStyles, allFieldsStyles, dataGridStyles, errorValidationStyles);
+const navFormStyle = merge(
+  layout,
+  styles,
+  fieldsSideBySideStyles,
+  allFieldsStyles,
+  dataGridStyles,
+  errorValidationStyles
+);
 export default navFormStyle;
