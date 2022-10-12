@@ -17,7 +17,6 @@ import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import { navCssVariables } from "../util/navCssVariables";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
-import { FormTitle } from "./components/FormTitle";
 
 type LabelValue = {
   label: string;
@@ -207,7 +206,6 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
 
   return (
     <SummaryContent>
-      <FormTitle form={form} className="margin-bottom-double" />
       <main id="maincontent" tabIndex={-1}>
         <Innholdstittel tag="h2" className="margin-bottom-default">
           {translate(TEXTS.statiske.summaryPage.title)}
