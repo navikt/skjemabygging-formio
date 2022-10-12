@@ -50,10 +50,7 @@ const componentCollectionStyles = {
     },
   "& .data-grid__row": {
     marginBottom: "1rem",
-    "& .knapp--fjern": {
-      marginBottom: "1.5rem",
-    },
-    "& div:last-of-type .formio-component:last-of-type": {
+    "& div:last-of-type .formio-component:last-of-type, .knapp--fjern": {
       marginBottom: "0.75rem",
     },
   },

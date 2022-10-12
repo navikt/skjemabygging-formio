@@ -22,6 +22,11 @@ const useStyles = makeStyles({
     margin: "0.5rem 0 0 0",
     fontSize: "0.875rem",
   },
+  "@media screen and (max-width: 992px)": {
+    titleHeader: {
+      padding: "1rem",
+    },
+  },
 });
 
 export function FormTitle({ form, className }: Props) {
