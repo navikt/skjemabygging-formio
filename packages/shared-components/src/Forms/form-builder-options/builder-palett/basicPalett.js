@@ -234,7 +234,14 @@ const basicPalett = {
       ignore: true,
     },
     button: {
-      ignore: true,
+      title: "Knapp",
+      key: "knapp",
+      icon: "button",
+      schema: {
+        label: "Knapp",
+        type: "button",
+        key: "knapp",
+      },
     },
   },
 };
