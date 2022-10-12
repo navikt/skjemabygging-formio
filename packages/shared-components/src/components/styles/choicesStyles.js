@@ -95,12 +95,12 @@ const choicesStyles = {
         overflow: "hidden",
         wordBreak: "break-all",
         willChange: "visibility",
-        visibility: "hidden",
+        display: "none",
         zIndex: "100",
 
         "&.is-active": {
           position: "relative",
-          visibility: "visible",
+          display: "block",
         },
 
         "& .choices__list": {
