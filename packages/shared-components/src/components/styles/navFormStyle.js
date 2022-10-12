@@ -35,20 +35,26 @@ const fieldsSideBySideStyles = {
 };
 
 const componentCollectionStyles = {
-  "& fieldset.skjemagruppe:not(.data-grid__row):not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type, & .data-grid__row ":
+  "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type, & .data-grid__row ":
     {
       borderLeft: "4px solid #368DA8",
       backgroundColor: "#E6F1F8",
       padding: "0.75rem 1rem",
-      margin: "0.25rem 0",
+      margin: "0.375rem 0",
+    },
+  "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type":
+    {
+      "& .formio-component:last-of-type": {
+        marginBottom: "0.75rem",
+      },
     },
   "& .data-grid__row": {
     marginBottom: "1rem",
     "& .knapp--fjern": {
       marginBottom: "1.5rem",
     },
-    " & > .skjemagruppe__legend": {
-      float: "left",
+    "& div:last-of-type .formio-component:last-of-type": {
+      marginBottom: "0.75rem",
     },
   },
 };
