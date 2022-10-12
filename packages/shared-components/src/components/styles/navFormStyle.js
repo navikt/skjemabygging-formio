@@ -1,5 +1,4 @@
 import merge from "lodash.merge";
-import { navCssVariables } from "../../util/navCssVariables";
 
 const wizardSidevelgerStyles = {
   "& .pagination": {
@@ -35,19 +34,22 @@ const fieldsSideBySideStyles = {
   },
 };
 
-const dataGridStyles = {
+const componentCollectionStyles = {
+  "& fieldset.skjemagruppe:not(.data-grid__row):not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type, & .data-grid__row ":
+    {
+      borderLeft: "4px solid #368DA8",
+      backgroundColor: "#E6F1F8",
+      padding: "0.75rem 1rem",
+      margin: "0.25rem 0",
+    },
   "& .data-grid__row": {
-    border: `1px solid ${navCssVariables.navGra60}`,
-    borderRadius: "7px",
     marginBottom: "1rem",
-    padding: "1.5rem 2rem 0",
-
     "& .knapp--fjern": {
       marginBottom: "1.5rem",
     },
-  },
-  "& .data-grid__row > .skjemagruppe__legend": {
-    float: "left",
+    " & > .skjemagruppe__legend": {
+      float: "left",
+    },
   },
 };
 
@@ -108,7 +110,7 @@ const navFormStyle = merge(
   wizardSidevelgerStyles,
   fieldsSideBySideStyles,
   allFieldsStyles,
-  dataGridStyles,
+  componentCollectionStyles,
   errorValidationStyles
 );
 export default navFormStyle;
