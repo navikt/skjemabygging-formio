@@ -1,5 +1,6 @@
 import AccountNumber from "./components/AccountNumber";
 import AlertStripe from "./components/AlertStripe";
+import Button from "./components/Button";
 import Container from "./components/Container";
 import CountrySelect from "./components/CountrySelect";
 import CurrencySelect from "./components/CurrencySelect";
@@ -42,5 +43,6 @@ const customComponents = {
   iban: IBAN,
   image: Image,
   row: Row,
+  button: Button,
 };
 export default customComponents;

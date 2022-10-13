@@ -18,6 +18,7 @@ const {
   createDummyTextfield,
   createDummyAlertstripe,
   createDummySelectComponent,
+  createDummyButtonComponent,
   createFormObject,
   createPanelObject,
 } = MockedComponentObjectForTest;
@@ -333,6 +334,22 @@ describe("testGetAllTextsAndTypeForForm", () => {
       { text: "Milk", type: "text" },
       { text: "Bread", type: "text" },
       { text: "Juice", type: "text" },
+    ]);
+  });
+  it("Test form with button component", () => {
+    const actual = getFormTexts(
+      createFormObject(
+        [createPanelObject("Introduksjon", [createDummyButtonComponent("buttonText")], "Introduksjon")],
+        "title"
+      ),
+      true
+    );
+
+    expect(actual).toEqual([
+      { text: "title", type: "text" },
+      { text: "Introduksjon", type: "text" },
+      { text: "Knapp", type: "text" },
+      { text: "buttonText", type: "text" },
     ]);
   });
   it("Henter innsendingsrelaterte tekster fra form properties", () => {

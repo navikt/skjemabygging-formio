@@ -1,5 +1,5 @@
+import { Button } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
@@ -63,9 +63,9 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   };
 
   return (
-    <Hovedknapp onClick={sendInn} spinner={loading}>
+    <Button onClick={sendInn} loading={loading}>
       {translate(TEXTS.grensesnitt.moveForward)}
-    </Hovedknapp>
+    </Button>
   );
 };
 

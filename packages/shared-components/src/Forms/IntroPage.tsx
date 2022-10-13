@@ -1,6 +1,5 @@
-import { GuidePanel } from "@navikt/ds-react";
+import { Button, GuidePanel } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
@@ -47,7 +46,7 @@ export function IntroPage({ form, formUrl }: Props) {
 
   return (
     <main>
-      <GuidePanel className="margin-bottom-double">
+      <GuidePanel poster className="margin-bottom-double">
         <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
         <ul>
           {description && (
@@ -71,21 +70,14 @@ export function IntroPage({ form, formUrl }: Props) {
         </ul>
       </GuidePanel>
 
-      <nav>
-        <div className="list-inline">
-          <div className="list-inline-item">
-            <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
-              <Hovedknapp className="btn-wizard-nav-next">{translate(TEXTS.grensesnitt.introPage.start)}</Hovedknapp>
-            </Link>
-          </div>
-        </div>
-        <div className="list-inline">
-          <div className="list-inline-item">
-            <button onClick={() => history.goBack()} className="btn-wizard-nav-cancel">
-              {translate(TEXTS.grensesnitt.goBack)}
-            </button>
-          </div>
-        </div>
+      <nav className="form-nav">
+        <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
+          <Button className="navds-button navds-button--primary">{translate(TEXTS.grensesnitt.introPage.start)}</Button>
+        </Link>
+
+        <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
+          {translate(TEXTS.grensesnitt.goBack)}
+        </button>
       </nav>
     </main>
   );

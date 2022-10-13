@@ -74,7 +74,7 @@ export function PrepareSubmitPage({ form, submission, formUrl, translations }) {
               setHasDownloadedPDF(true);
               setErrorMessage(undefined);
             }}
-            classNames="knapp"
+            classNames="navds-button navds-button navds-button--secondary"
             translations={translations}
           />
         </section>
@@ -121,34 +121,30 @@ export function PrepareSubmitPage({ form, submission, formUrl, translations }) {
               </AlertStripe>
             )}
           </div>
-          <nav className="list-inline">
-            <div className="list-inline-item">
-              <Link className="knapp knapp--fullbredde" to={{ pathname: goBackUrl, search }}>
-                {translate(TEXTS.grensesnitt.goBack)}
-              </Link>
-            </div>
-            <div className="list-inline-item">
-              <a
-                className="knapp knapp--hoved"
-                href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission.data)}
-                onClick={(event) => {
-                  if (!allowedToProgress) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                  } else if (!hasDownloadedPDF) {
-                    setErrorMessage(TEXTS.statiske.prepareSubmitPage.confirmDownloadedPdf);
-                    event.preventDefault();
-                    event.stopPropagation();
-                  } else {
-                    loggSkjemaFullfort("dokumentinnsending");
-                  }
-                }}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {translate(TEXTS.grensesnitt.moveForward)}
-              </a>
-            </div>
+          <nav className="form-nav">
+            <Link className="navds-button navds-button--secondary" to={{ pathname: goBackUrl, search }}>
+              {translate(TEXTS.grensesnitt.goBack)}
+            </Link>
+            <a
+              className="navds-button navds-button--primary"
+              href={computeDokumentinnsendingURL(dokumentinnsendingBaseURL, form, submission.data)}
+              onClick={(event) => {
+                if (!allowedToProgress) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                } else if (!hasDownloadedPDF) {
+                  setErrorMessage(TEXTS.statiske.prepareSubmitPage.confirmDownloadedPdf);
+                  event.preventDefault();
+                  event.stopPropagation();
+                } else {
+                  loggSkjemaFullfort("dokumentinnsending");
+                }
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {translate(TEXTS.grensesnitt.moveForward)}
+            </a>
           </nav>
         </section>
       </main>

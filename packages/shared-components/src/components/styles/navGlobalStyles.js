@@ -1,9 +1,7 @@
-import { navCssVariables } from "../../util/navCssVariables";
-
 export const globalStyles = {
   body: {
     margin: 0,
-    backgroundColor: navCssVariables.navGraBakgrunn,
+    backgroundColor: "#ffffff",
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -53,8 +51,6 @@ export const globalStyles = {
 
 export const appStyles = {
   "& .wizard-page": {
-    borderRadius: "0.25rem",
-    background: "#fff",
-    padding: "1rem",
+    padding: "2rem 0 2.75rem 0",
   },
 };
