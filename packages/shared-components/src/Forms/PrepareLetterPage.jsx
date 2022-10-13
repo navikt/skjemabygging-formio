@@ -2,7 +2,6 @@ import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -103,8 +102,8 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
       <div className="margin-bottom-default">
-        <Button
-          className="navds-button navds-button--secondary"
+        <Knapp
+          className="btn btn-secondary"
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
               setIsRequiredEnhetMissing(true);
@@ -124,7 +123,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
           loading={foerstesideLoading}
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        </Button>
+        </Knapp>
       </div>
       {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
       <DownloadPdfButton
