@@ -22,7 +22,7 @@ const wizardSidevelgerStyles = {
 const allFieldsStyles = {
   "& .form-group:not(.formio-hidden)": {
     clear: "both",
-    marginBottom: "2rem",
+    marginBottom: "2.5rem",
   },
 };
 
