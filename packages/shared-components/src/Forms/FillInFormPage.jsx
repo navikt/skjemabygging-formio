@@ -5,7 +5,6 @@ import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { getPanelSlug } from "../util/form";
-import { FormTitle } from "./components/FormTitle";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
@@ -57,7 +56,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   return (
     <div>
-      <FormTitle form={form} />
       <NavForm
         form={form}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}

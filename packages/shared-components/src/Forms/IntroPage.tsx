@@ -7,7 +7,6 @@ import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
 import { getPanelSlug } from "../util/form";
-import { FormTitle } from "./components/FormTitle";
 
 export interface Props {
   form: NavFormType;
@@ -47,8 +46,6 @@ export function IntroPage({ form, formUrl }: Props) {
 
   return (
     <main>
-      <FormTitle form={form} className="margin-bottom-double" />
-
       <GuidePanel poster className="margin-bottom-double">
         <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
         <ul>
