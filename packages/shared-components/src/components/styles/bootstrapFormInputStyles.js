@@ -9,10 +9,6 @@ const bootstrapFormInputStyles = {
     marginBottom: "2.5rem",
   },
 
-  "& .form-group.formio-component.formio-component-navSkjemagruppe": {
-    marginBottom: "0",
-  },
-
   "& fieldset": {
     padding: "0",
     margin: "0",

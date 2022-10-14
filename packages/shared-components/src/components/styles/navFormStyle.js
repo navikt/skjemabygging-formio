@@ -37,13 +37,13 @@ const componentCollectionStyles = {
     },
   "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type":
     {
-      "& .formio-component:last-of-type": {
+      "& .formio-component:not(.formio-hidden):last-of-type": {
         marginBottom: "0.75rem",
       },
     },
   "& .data-grid__row": {
     marginBottom: "1rem",
-    "& div:last-of-type .formio-component:last-of-type, .knapp--fjern": {
+    "& div:last-of-type .formio-component:not(.formio-hidden):last-of-type, .knapp--fjern": {
       marginBottom: "0.75rem",
     },
   },
