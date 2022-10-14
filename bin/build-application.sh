@@ -45,7 +45,7 @@ cd_package() {
 }
 
 install() {
-    yarn install --frozen-lockfile || exit 1
+    yarn install --prefer-offline --frozen-lockfile || exit 1
 }
 
 build() {

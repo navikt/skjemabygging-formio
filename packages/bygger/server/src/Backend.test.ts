@@ -199,7 +199,7 @@ describe("Backend", () => {
       });
 
       it("sends the sha of the original file to createOrUpdateFile", () => {
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(1);
+        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           "resources/settings.json",
@@ -232,7 +232,7 @@ describe("Backend", () => {
       });
 
       it("calls createOrUpdateFile without a sha", () => {
-        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(1);
+        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           "resources/settings.json",
