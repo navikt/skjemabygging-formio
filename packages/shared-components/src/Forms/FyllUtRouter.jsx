@@ -19,7 +19,7 @@ import { SummaryPage } from "./SummaryPage.tsx";
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "960px",
-  padding: "2rem 1rem",
+  padding: "2rem 0",
   ...bootstrapStyles,
 });
 
