@@ -1,8 +1,7 @@
 import cors from "cors";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
-import path from "path";
 import { checkConfigConsistency, config } from "./config/config";
 import { buildDirectory } from "./context.js";
 import { createRedirectUrl, getDecorator } from "./dekorator.js";
@@ -12,9 +11,7 @@ import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
-
-const __dirname = path.resolve();
-const BUILD_PATH = path.resolve(__dirname, "../build");
+import { formService } from "./services";
 
 export const createApp = () => {
   checkConfigConsistency(config);
@@ -40,22 +37,25 @@ export const createApp = () => {
   fyllutRouter.use("/internal", internalRouter);
 
   // Get the form id
-  fyllutRouter.use("/:formId", (req, res, next) => {
+  fyllutRouter.use("/:formId", (req: Request, res: Response, next: NextFunction) => {
     res.locals.formId = req.params.formId;
     next();
   });
 
   // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, (req, res) => {
-    return getDecorator(`${BUILD_PATH}/index.html`, createRedirectUrl(req, res))
-      .then((html) => {
-        res.send(html);
-      })
-      .catch((err) => {
-        const errorMessage = `Failed to get decorator: ${err.message}`;
-        logger.error(errorMessage);
-        res.status(500).send(errorMessage);
+  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, async (req: Request, res: Response) => {
+    try {
+      const formMeta = await formService.getMeta(res.locals.formId);
+      const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
+      res.render("index.html", {
+        ...decoratorFragments,
+        ...formMeta,
       });
+    } catch (err: any) {
+      const errorMessage = `Failed to return index file: ${err.message}`;
+      logger.error(errorMessage);
+      res.status(500).send(errorMessage);
+    }
   });
 
   app.use("/fyllut", fyllutRouter);
