@@ -17,4 +17,4 @@ accessPolicy:
         cluster: dev-fss
 secrets:
   - bygger-experimental
-  - bygger-pusher
+  - bygger-pusher-dev

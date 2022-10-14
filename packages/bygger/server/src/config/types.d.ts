@@ -34,6 +34,8 @@ export type FyllutConfig = {
 export type PusherConfig = {
   cluster: string;
   key: string;
+  app: string;
+  secret: string;
 };
 
 export type NodeEnv = "production" | "development" | "test";

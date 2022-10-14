@@ -12,6 +12,7 @@ import {
 } from "../__mocks__/GitHubRepo";
 import { stringTobase64 } from "./fetchUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
+import { pushEventWithCommitMessage } from "./testdata/default-github-push-event";
 
 jest.mock("uuid", () => {
   return { v4: jest.fn().mockReturnValue("1234") };
@@ -240,6 +241,104 @@ describe("Backend", () => {
           "eyJ0b2dnbGUiOiJvbiJ9",
           undefined
         );
+      });
+    });
+  });
+
+  describe("interpretGithubPushEvent", () => {
+    describe("bulk publication", () => {
+      const commitMessage = "[bulk-publisering] 23 skjemaer publisert, monorepo ref: 1234567890";
+
+      it("success message includes number of forms published", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "success");
+        expect(result).toEqual({
+          type: "success",
+          title: "Bulk-publisering fullført",
+          message: "23 skjemaer ble bulk-publisert",
+        });
+      });
+
+      it("failure message includes number of forms published", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "failure");
+        expect(result).toEqual({
+          type: "failure",
+          title: "Bulk-publisering feilet",
+          message: "23 skjemaer feilet",
+        });
+      });
+    });
+
+    describe("publication", () => {
+      const commitMessage = '[publisering] skjema "Testskjema", monorepo ref: 1234567890';
+
+      it("success message includes form title", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "success");
+        expect(result).toEqual({
+          type: "success",
+          title: "Publisering fullført",
+          message: "Skjema Testskjema er nå publisert",
+        });
+      });
+
+      it("failure message includes form title", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "failure");
+        expect(result).toEqual({
+          type: "failure",
+          title: "Publisering feilet",
+          message: "Feilet for skjema Testskjema",
+        });
+      });
+    });
+
+    describe("unpublishing", () => {
+      const commitMessage = "[avpublisering] skjema nav123456, monorepo ref: 1234567890";
+
+      it("success message includes form title", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "success");
+        expect(result).toEqual({
+          type: "success",
+          title: "Avpublisering fullført",
+          message: "Skjema nav123456 er nå avpublisert",
+        });
+      });
+
+      it("failure message includes form title", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "failure");
+        expect(result).toEqual({
+          type: "failure",
+          title: "Avpublisering feilet",
+          message: "Feilet for skjema nav123456",
+        });
+      });
+    });
+
+    describe("random commit to repo skjemautfylling-formio", () => {
+      const commitMessage = "Endret tekstene";
+
+      it("success message includes form title", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "success");
+        expect(result).toEqual({
+          type: "success",
+          title: "Ny versjon av FyllUt",
+          message: "Endret tekstene",
+        });
+      });
+
+      it("failure message includes form title", () => {
+        const githubEvent = pushEventWithCommitMessage(commitMessage);
+        const result = backend.interpretGithubPushEvent(githubEvent, "failure");
+        expect(result).toEqual({
+          type: "failure",
+          title: "Deploy av FyllUt feilet",
+          message: "Endret tekstene",
+        });
       });
     });
   });
