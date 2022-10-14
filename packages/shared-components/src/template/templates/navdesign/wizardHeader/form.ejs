@@ -1,53 +1,34 @@
-<nav class="stegindikator" aria-label="Stegindikator" id="{{ ctx.wizardKey }}-header" ref="{{ctx.wizardKey}}-header">
-  <ol class="stegindikator__liste">
-    {% if (ctx.panels.length > 5 && ctx.currentPage >= 2) { %}
-      <li class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}">
-        <button ref="{{ctx.wizardKey}}-stepindicator-previous" class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig" type="button">
-          <div class="stegindikator__steg-num">
-            <span class="nav-frontend-chevron chevronboks chevron--venstre" />
-          </div>
-          <div class="stegindikator__steg-label">{{ctx.t('Forrige')}}</div>
+<button class="stepper-toggle knapp knapp--standard" ref="{{ctx.wizardKey}}-stepper-open">Steg {{ctx.currentPage + 1}} av {{ctx.panels.length}}</button>
+<div class="stepper-backdrop" ref="{{ctx.wizardKey}}-stepper-backdrop"></div>
+<nav aria-label="Søknadssteg" id="{{ ctx.wizardKey }}-header" class="stegindikator stepper" ref="{{ctx.wizardKey}}-header">
+    <div class="stepper-container">
+        <button class="stepper-close navds-button navds-button--tertiary navds-button--medium" ref="{{ctx.wizardKey}}-stepper-close">
+            <span class="navds-button__icon">
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" aria-hidden="true">
+                    <title>{{ctx.t("Lukk")}}</title>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385 13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385Z" fill="currentColor"></path>
+                </svg>
+            </span>
+            {{ctx.t("Lukk")}}
         </button>
-      </li>
-    {% } %}
-    {% ctx.panels.forEach(function(panel, index) { %}
-      {% if (ctx.panels.length <= 5 || index < Math.max(ctx.currentPage + 2, Math.min(ctx.panels.length - 1, 4))) { %}
-        <li
-          class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}"
-          aria-current="{{ctx.currentPage === index ? 'step' : undefined}}"
-          {% if (ctx.panels.length > 5 && !(index > Math.min(ctx.currentPage - 2, ctx.panels.length - 5) && index < Math.max(ctx.currentPage + 2, Math.min(ctx.panels.length, 5)))) { %}
-            hidden
-          {% } %}
-        >
-          <{{(ctx.currentPage === index) ? "div" : "button"}}
-            class="stegindikator__steg-inner {{ctx.currentPage === index ? 'stegindikator__steg-inner--aktiv' : 'stegindikator__steg-inner--interaktiv'}} {{ctx.currentPage > index ? 'stegindikator__steg-inner--ferdig' : ''}}"
-            ref="{{ctx.wizardKey}}-link"
-            title="{{ctx.t(ctx.panels[index].title, { _userInput: true })}}"
-            {% if (ctx.currentPage === index) { %}
-            tabindex="-1"
-            {% } %}
-          >
-          <div class="stegindikator__steg-num">{{ctx.t(index+1)}}{{ctx.panels.length > 5 && ctx.currentPage === index && window.innerWidth > 600 ? ` av ${ctx.panels.length}` : ''}}</div>
-          {% if (window.innerWidth > 600) { %}
-          <div class="stegindikator__steg-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</div>
-          {% } %}
-        </{{(ctx.currentPage === index) ? "div" : "button"}}>
-        </li>
-      {% } %}
-    {% }) %}
-    {% if (ctx.panels.length > 5 && ctx.currentPage < ctx.panels.length - 2) { %}
-    <li class="stegindikator__steg {{window.innerWidth > 600 ? 'stegindikator__steg--labelled' : ''}}">
-      <button ref="{{ctx.wizardKey}}-stepindicator-next"
-        class="stegindikator__steg-inner stegindikator__steg-inner--interaktiv stegindikator__steg-inner--ferdig"
-        type="button"
-        aria-label="Neste steg"
-      >
-        <div class="stegindikator__steg-num">
-          <span class="nav-frontend-chevron chevronboks chevron--hoyre" />
-        </div>
-        <div class="stegindikator__steg-label">{{ctx.t('Neste')}}</div>
-      </button>
-    </li>
-    {% } %}
-  </ol>
+        <ol class="navds-stepper">
+        {% ctx.panels.forEach(function(panel, index) { %}
+            <li class="navds-stepper__item">
+                <span class="navds-stepper__line navds-stepper__line--1"></span>
+                <a
+                    href="/fyllut/{{ctx.form.path}}/{{panel.key}}"
+                    class="navds-stepper__step {{ctx.currentPage > index ? 'navds-stepper__step--behind navds-stepper__step--completed' : ctx.currentPage === index ? 'navds-stepper__step--active' : ''}}"
+                    ref="{{ctx.wizardKey}}-link"
+                    {% if (ctx.currentPage === index) { %}
+                    aria-current="step"
+                    {% } %}
+                >
+                    <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(index+1)}}</span>
+                    <div class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</div>
+                </a>
+                <span class="navds-stepper__line navds-stepper__line--2"></span>
+            </li>
+        {% }) %}
+        </ol>
+    </div>
 </nav>

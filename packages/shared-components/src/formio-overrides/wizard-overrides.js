@@ -29,9 +29,11 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-next`]: "single",
     [`${this.wizardKey}-submit`]: "single",
     [`${this.wizardKey}-link`]: "multiple",
-    [`${this.wizardKey}-stepindicator-next`]: "single",
-    [`${this.wizardKey}-stepindicator-previous`]: "single",
     [`${this.wizardKey}-tooltip`]: "multiple",
+    [`${this.wizardKey}-header`]: "single",
+    [`${this.wizardKey}-stepper-open`]: "single",
+    [`${this.wizardKey}-stepper-close`]: "single",
+    [`${this.wizardKey}-stepper-backdrop`]: "single",
   });
 
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
@@ -47,12 +49,33 @@ Wizard.prototype.attach = function (element) {
   ]);
   this.attachNav();
   this.attachHeader();
+  this.attachStepper();
+
   return promises.then(() => {
     this.emit("render", { component: this.currentPage, page: this.page });
     if (this.component.scrollToTop) {
       this.scrollPageToTop();
     }
   });
+};
+
+Wizard.prototype.attachStepper = function () {
+  const openStepper = () => {
+    this.isStepperOpen = true;
+    this.refs[`${this.wizardKey}-header`].classList.add("stepper--open");
+    this.refs[`${this.wizardKey}-stepper-backdrop`].style.display = "block";
+    this.refs[`${this.wizardKey}-stepper-close`].focus();
+  };
+  const closeStepper = () => {
+    this.isStepperOpen = false;
+    this.refs[`${this.wizardKey}-header`].classList.remove("stepper--open");
+    this.refs[`${this.wizardKey}-stepper-backdrop`].style.display = "none";
+    this.refs[`${this.wizardKey}-stepper-open`].focus();
+  };
+
+  this.refs[`${this.wizardKey}-stepper-open`].addEventListener("click", openStepper);
+  this.refs[`${this.wizardKey}-stepper-close`].addEventListener("click", closeStepper);
+  this.refs[`${this.wizardKey}-stepper-backdrop`].addEventListener("click", closeStepper);
 };
 
 Wizard.prototype.redrawHeader = function () {
@@ -65,14 +88,13 @@ Wizard.prototype.redrawHeader = function () {
       this.loadRefs(headerElement, {
         [`${this.wizardKey}-link`]: "multiple",
         [`${this.wizardKey}-tooltip`]: "multiple",
-        [`${this.wizardKey}-stepindicator-next`]: "single",
-        [`${this.wizardKey}-stepindicator-previous`]: "single",
       });
       this.attachHeader();
     }
   }
 };
 
+// Overridden to re-set focus to the link after clicking on it, as a re-render will reset focus to the top of the page.
 Wizard.prototype.attachHeader = function () {
   const isAllowPrevious = this.isAllowPrevious();
 
@@ -87,38 +109,12 @@ Wizard.prototype.attachHeader = function () {
               this.emitWizardPageSelected(index);
             })
             .then(() => {
-              document.querySelector(".stegindikator__steg-inner--aktiv").focus();
+              this.refs[`${this.wizardKey}-link`][index].focus();
             });
         });
       }
     });
   }
-
-  const previousRefId = `${this.wizardKey}-stepindicator-previous`;
-  const nextRefId = `${this.wizardKey}-stepindicator-next`;
-  const addPageSwitchFunction = (newPage, nextOrPreviousRefId) => {
-    this.addEventListener(this.refs[nextOrPreviousRefId], "click", (event) => {
-      this.emit("wizardNavigationClicked", newPage);
-      event.preventDefault();
-      return this.setPage(newPage)
-        .then(() => {
-          this.emitWizardPageSelected(newPage);
-        })
-        .then(() => {
-          const nextOrPreviousButton = document.querySelector(`[ref='${nextOrPreviousRefId}']`);
-
-          if (nextOrPreviousButton) {
-            nextOrPreviousButton.focus();
-          } else if (nextOrPreviousRefId === previousRefId) {
-            document.querySelector(".stegindikator__steg:first-of-type .stegindikator__steg-inner").focus();
-          } else if (nextOrPreviousRefId === nextRefId) {
-            document.querySelector(".stegindikator__steg:last-of-type .stegindikator__steg-inner").focus();
-          }
-        });
-    });
-  };
-  addPageSwitchFunction(this.getPreviousPage(), previousRefId);
-  addPageSwitchFunction(this.getNextPage(), nextRefId);
 };
 
 Wizard.prototype.detachHeader = function () {
@@ -127,14 +123,6 @@ Wizard.prototype.detachHeader = function () {
     links.forEach((link) => {
       this.removeEventListener(link, "click");
     });
-  }
-  const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
-  if (previousButton) {
-    this.removeEventListener(previousButton, "click");
-  }
-  const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
-  if (nextButton) {
-    this.removeEventListener(nextButton, "click");
   }
 };
 
