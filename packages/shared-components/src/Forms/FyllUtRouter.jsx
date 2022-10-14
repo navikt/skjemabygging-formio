@@ -6,6 +6,7 @@ import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
+import { FormTitle } from "./components/FormTitle.tsx";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
@@ -17,7 +18,8 @@ import { SummaryPage } from "./SummaryPage.tsx";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
-  maxWidth: "800px",
+  maxWidth: "960px",
+  padding: "2rem 1rem",
   ...bootstrapStyles,
 });
 
@@ -44,6 +46,7 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
+      <FormTitle form={form} />
       <FyllUtContainer>
         {featureToggles.enableTranslations && <LanguageSelector />}
         <Switch>

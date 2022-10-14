@@ -83,7 +83,7 @@ const renderSummaryPage = async (
     </AppConfigProvider>
   );
   // verifiser render ved å sjekke at overskrift finnes
-  await screen.getByRole("heading", { name: summaryPageProps.form.title });
+  await screen.getByRole("heading", { name: TEXTS.grensesnitt.title });
   return { history, buttons: getButtons() };
 };
 

@@ -1,5 +1,4 @@
 import merge from "lodash.merge";
-import { navCssVariables } from "../../util/navCssVariables";
 
 const layout = {
   "& .fyllut-layout": {
@@ -15,7 +14,7 @@ const layout = {
 const allFieldsStyles = {
   "& .form-group:not(.formio-hidden)": {
     clear: "both",
-    marginBottom: "2rem",
+    marginBottom: "2.5rem",
   },
 };
 
@@ -28,19 +27,25 @@ const fieldsSideBySideStyles = {
   },
 };
 
-const dataGridStyles = {
-  "& .data-grid__row": {
-    border: `1px solid ${navCssVariables.navGra60}`,
-    borderRadius: "7px",
-    marginBottom: "1rem",
-    padding: "1.5rem 2rem 0",
-
-    "& .knapp--fjern": {
-      marginBottom: "1.5rem",
+const componentCollectionStyles = {
+  "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type, & .data-grid__row ":
+    {
+      borderLeft: "4px solid #368DA8",
+      backgroundColor: "#E6F1F8",
+      padding: "0.75rem 1rem",
+      margin: "0.375rem 0",
     },
-  },
-  "& .data-grid__row > .skjemagruppe__legend": {
-    float: "left",
+  "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type":
+    {
+      "& .formio-component:last-of-type": {
+        marginBottom: "0.75rem",
+      },
+    },
+  "& .data-grid__row": {
+    marginBottom: "1rem",
+    "& div:last-of-type .formio-component:last-of-type, .knapp--fjern": {
+      marginBottom: "0.75rem",
+    },
   },
 };
 
@@ -165,8 +170,9 @@ const navFormStyle = merge(
   styles,
   fieldsSideBySideStyles,
   allFieldsStyles,
-  dataGridStyles,
   errorValidationStyles,
-  stepIndicator
+  stepIndicator,
+  componentCollectionStyles,
+  errorValidationStyles
 );
 export default navFormStyle;
