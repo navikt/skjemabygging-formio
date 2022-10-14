@@ -305,6 +305,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 {step.label}
               </Stepper.Step>
             ))}
+            <Stepper.Step to={url} as={Link}>
+              {TEXTS.statiske.summaryPage.title}
+            </Stepper.Step>
           </Stepper>
         </aside>
       </main>
