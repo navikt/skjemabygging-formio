@@ -51,6 +51,6 @@ export const globalStyles = {
 
 export const appStyles = {
   "& .wizard-page": {
-    padding: "2rem 0 2.75rem 0",
+    paddingBottom: "2.75rem",
   },
 };

@@ -103,7 +103,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
       />
       <div className="margin-bottom-default">
         <Button
-          className="navds-button navds-button--secondary"
+          className="navds-button navds-button--primary"
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
               setIsRequiredEnhetMissing(true);
@@ -122,7 +122,9 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
           type="standard"
           loading={foerstesideLoading}
         >
-          {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
+          <span aria-live="polite" class="navds-label">
+            {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
+          </span>
         </Button>
       </div>
       {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
@@ -132,7 +134,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
-        classNames="navds-button navds-button--secondary"
+        classNames="navds-button navds-button--primary"
         translations={translations}
       />
     </section>
@@ -260,13 +262,13 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" translate={translate} />);
   return (
     <ResultContent>
-      <Innholdstittel className="margin-bottom-default">
+      <Innholdstittel tag="h2" className="margin-bottom-double">
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Innholdstittel>
       <main id="maincontent" tabIndex={-1}>
         {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
         <div>
-          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} secondaryOnly={true} />
         </div>
       </main>
     </ResultContent>

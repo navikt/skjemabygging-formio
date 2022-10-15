@@ -50,7 +50,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
           />
         </section>
         <div>
-          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} secondaryOnly={false} />
         </div>
       </main>
     </ResultContent>

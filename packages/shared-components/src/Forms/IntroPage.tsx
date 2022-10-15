@@ -72,11 +72,17 @@ export function IntroPage({ form, formUrl }: Props) {
 
       <nav className="form-nav">
         <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
-          <Button className="navds-button navds-button--primary">{translate(TEXTS.grensesnitt.introPage.start)}</Button>
+          <Button className="navds-button navds-button--primary">
+            <span aria-live="polite" className="navds-label">
+              {translate(TEXTS.grensesnitt.introPage.start)}
+            </span>
+          </Button>
         </Link>
 
         <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
-          {translate(TEXTS.grensesnitt.goBack)}
+          <span aria-live="polite" className="navds-label">
+            {translate(TEXTS.grensesnitt.goBack)}
+          </span>
         </button>
       </nav>
     </main>

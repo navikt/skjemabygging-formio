@@ -123,7 +123,9 @@ export function PrepareSubmitPage({ form, submission, formUrl, translations }) {
           </div>
           <nav className="form-nav">
             <Link className="navds-button navds-button--secondary" to={{ pathname: goBackUrl, search }}>
-              {translate(TEXTS.grensesnitt.goBack)}
+              <span aria-live="polite" class="navds-label">
+                {translate(TEXTS.grensesnitt.goBack)}
+              </span>
             </Link>
             <a
               className="navds-button navds-button--primary"
@@ -143,7 +145,9 @@ export function PrepareSubmitPage({ form, submission, formUrl, translations }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {translate(TEXTS.grensesnitt.moveForward)}
+              <span aria-live="polite" class="navds-label">
+                {translate(TEXTS.grensesnitt.moveForward)}
+              </span>
             </a>
           </nav>
         </section>

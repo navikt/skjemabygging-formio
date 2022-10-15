@@ -229,12 +229,6 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
         <FormSummary submission={submission} form={form} formUrl={formUrl} />
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="form-nav">
-          <Link
-            className="navds-button navds-button--secondary"
-            to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
-          >
-            {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-          </Link>
           {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
             <Link
               className={`navds-button navds-button--secondary ${
@@ -245,9 +239,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
             >
-              {innsending === "KUN_PAPIR" || submissionMethod === "paper"
-                ? translate(TEXTS.grensesnitt.moveForward)
-                : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+              <span aria-live="polite" className="navds-label">
+                {innsending === "KUN_PAPIR" || submissionMethod === "paper"
+                  ? translate(TEXTS.grensesnitt.moveForward)
+                  : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+              </span>
             </Link>
           )}
           {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
@@ -269,9 +265,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     state: { previousPage: url },
                   }}
                 >
-                  {innsending === "KUN_DIGITAL"
-                    ? translate(TEXTS.grensesnitt.moveForward)
-                    : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
+                  <span aria-live="polite" className="navds-label">
+                    {innsending === "KUN_DIGITAL"
+                      ? translate(TEXTS.grensesnitt.moveForward)
+                      : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
+                  </span>
                 </Link>
               )}
             </>
@@ -282,9 +280,19 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
             >
-              {translate(TEXTS.grensesnitt.moveForward)}
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.moveForward)}
+              </span>
             </Link>
           )}
+          <Link
+            className="navds-button navds-button--secondary"
+            to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+          >
+            <span aria-live="polite" className="navds-label">
+              {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
+            </span>
+          </Link>
         </nav>
         {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
       </main>
@@ -308,10 +316,10 @@ const SummaryContent = styled("div")({
     marginTop: "2rem",
   },
   "& .component-collection": {
-    borderLeft: "4px solid #33AA5F",
-    backgroundColor: "#F3FCF5",
+    borderLeft: `4px solid ${navCssVariables.navBla68da8}`,
+    backgroundColor: navCssVariables.navLysBla,
     padding: "0.5rem 1rem",
-    margin: "0.2srem 0",
+    margin: "0.25rem 0",
   },
   "& section.wizard-page": {
     padding: "0",
