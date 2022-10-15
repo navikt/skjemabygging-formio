@@ -239,7 +239,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
             >
-              <span aria-live="polite" class="navds-label">
+              <span aria-live="polite" className="navds-label">
                 {innsending === "KUN_PAPIR" || submissionMethod === "paper"
                   ? translate(TEXTS.grensesnitt.moveForward)
                   : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
@@ -265,7 +265,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     state: { previousPage: url },
                   }}
                 >
-                  <span aria-live="polite" class="navds-label">
+                  <span aria-live="polite" className="navds-label">
                     {innsending === "KUN_DIGITAL"
                       ? translate(TEXTS.grensesnitt.moveForward)
                       : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
@@ -280,7 +280,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
               to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
             >
-              <span aria-live="polite" class="navds-label">
+              <span aria-live="polite" className="navds-label">
                 {translate(TEXTS.grensesnitt.moveForward)}
               </span>
             </Link>
@@ -289,7 +289,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             className="navds-button navds-button--secondary"
             to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
           >
-            <span aria-live="polite" class="navds-label">
+            <span aria-live="polite" className="navds-label">
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </span>
           </Link>
