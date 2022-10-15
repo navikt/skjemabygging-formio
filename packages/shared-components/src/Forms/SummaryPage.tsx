@@ -316,8 +316,8 @@ const SummaryContent = styled("div")({
     marginTop: "2rem",
   },
   "& .component-collection": {
-    borderLeft: `4px solid ${navCssVariables.navBla68da8}`,
-    backgroundColor: navCssVariables.navLysBla,
+    borderLeft: "4px solid #368da8",
+    backgroundColor: "#e6f1f8",
     padding: "0.5rem 1rem",
     margin: "0.25rem 0",
   },
