@@ -54,6 +54,7 @@ export const bootstrapStyles = {
   },
 
   "& .input-group-text": {
+    height: "calc(1.5em + .75rem + 2px)",
     display: "flex",
     alignItems: "center",
     padding: "0.5rem",
@@ -63,7 +64,6 @@ export const bootstrapStyles = {
     lineHeight: 1.5,
     textAlign: "center",
     whiteSpace: "nowrap",
-    backgroundColor: " #e9ecef",
     border: "1px solid #78706a",
     borderRadius: ".25rem",
   },

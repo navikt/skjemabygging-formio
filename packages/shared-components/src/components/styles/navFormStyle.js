@@ -1,4 +1,5 @@
 import merge from "lodash.merge";
+import { navCssVariables } from "../../util/navCssVariables";
 
 const layout = {
   "& .fyllut-layout": {
@@ -30,8 +31,8 @@ const fieldsSideBySideStyles = {
 const componentCollectionStyles = {
   "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type, & .data-grid__row ":
     {
-      borderLeft: "4px solid #368DA8",
-      backgroundColor: "#E6F1F8",
+      borderLeft: `4px solid ${navCssVariables.navBla68da8}`,
+      backgroundColor: navCssVariables.navLysBla,
       padding: "0.75rem 1rem",
       margin: "0.375rem 0",
     },
