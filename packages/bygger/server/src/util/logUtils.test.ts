@@ -24,5 +24,20 @@ describe("logUtils", () => {
         coffee_black_two: "morning",
       });
     });
+
+    it("handles obj undefined", () => {
+      const result = toMeta("coffee", undefined);
+      expect(result).toEqual({ coffee: undefined });
+    });
+
+    it("handles obj null", () => {
+      const result = toMeta("coffee", null);
+      expect(result).toEqual({ coffee: null });
+    });
+
+    it("handles empty object", () => {
+      const result = toMeta("coffee", {});
+      expect(result).toEqual({ coffee: {} });
+    });
   });
 });
