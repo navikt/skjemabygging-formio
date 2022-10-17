@@ -1,3 +1,6 @@
+packages/shared-components/src/template/templates/navdesign/datagrid/form.ejs
+
+
 {% if (!ctx.component.isNavDataGrid) { %}
   <table class="table datagrid-table table-bordered
       {{ ctx.component.striped ? 'table-striped' : ''}}
@@ -99,7 +102,7 @@
               <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8z" fill="currentColor" />
               </svg>
-              <span>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
+              <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
             </button>
           </td>
         </tr>
@@ -156,7 +159,7 @@
                 class="navds-button navds-button--secondary knapp--fjern"
                 ref="{{ctx.datagridKey}}-removeRow"
               >
-                {{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}
+                <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}</span>
               </button>
             </div>
           {% } %}
@@ -175,7 +178,7 @@
         ref="{{ctx.datagridKey}}-addRow"
         type="button"
       >
-        {{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}
+          <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}</span>
       </button>
     </div>
     {% } %}
