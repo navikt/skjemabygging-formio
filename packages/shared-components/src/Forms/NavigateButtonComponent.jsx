@@ -18,6 +18,11 @@ const NavigateButtonComponent = ({ goBackUrl, translate, secondaryOnly }) => {
   const { search } = useLocation();
   return (
     <nav className="form-nav">
+      <Link className="navds-button navds-button--secondary" to={{ pathname: goBackUrl, search }}>
+        <span aria-live="polite" class="navds-label">
+          {translate(TEXTS.grensesnitt.goBack)}
+        </span>
+      </Link>
       <Lenke
         className={secondaryOnly ? "navds-button navds-button--secondary" : "navds-button navds-button--primary"}
         style={secondaryOnly ? linkBtnSecondaryStyle : linkBtnPrimaryStyle}
@@ -27,11 +32,6 @@ const NavigateButtonComponent = ({ goBackUrl, translate, secondaryOnly }) => {
           {translate(TEXTS.grensesnitt.navigation.exit)}
         </span>
       </Lenke>
-      <Link className="navds-button navds-button--secondary" to={{ pathname: goBackUrl, search }}>
-        <span aria-live="polite" class="navds-label">
-          {translate(TEXTS.grensesnitt.goBack)}
-        </span>
-      </Link>
     </nav>
   );
 };

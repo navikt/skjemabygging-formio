@@ -8,6 +8,7 @@ import {
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
+import Lenke from "nav-frontend-lenker";
 import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
@@ -16,7 +17,6 @@ import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
-import { navCssVariables } from "../util/navCssVariables";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 
 type LabelValue = {
@@ -214,6 +214,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
   const innsending: InnsendingType | undefined = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const linkBtStyle = {
+    textDecoration: "none",
+  };
 
   return (
     <SummaryContent>
@@ -293,6 +296,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </span>
           </Link>
+          <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
+            <span aria-live="polite" className="navds-label">
+              {translate(TEXTS.grensesnitt.navigation.cancel)}
+            </span>
+          </Lenke>
         </nav>
         {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
       </main>
@@ -305,21 +313,16 @@ const SummaryContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-  "& .data-grid__row": {
-    border: `1px solid ${navCssVariables.navGra60}`,
-    borderRadius: "7px",
-    marginBottom: "1rem",
-    padding: "1.5rem 2rem 0",
-  },
-  "& dt:not(.component-collection > dt)": {
+  "& .data-grid__row": {},
+  "& dt:not(.component-collection  dt):not(.data-grid__row  dt)": {
     fontSize: "1.2rem",
     marginTop: "2rem",
   },
-  "& .component-collection": {
+  "& .component-collection, & .data-grid__row": {
     borderLeft: "4px solid #368da8",
     backgroundColor: "#e6f1f8",
-    padding: "0.5rem 1rem",
-    margin: "0.25rem 0",
+    padding: "0.75rem 1rem",
+    margin: "0.375rem 0",
   },
   "& section.wizard-page": {
     padding: "0",
