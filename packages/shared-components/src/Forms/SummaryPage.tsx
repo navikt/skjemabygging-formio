@@ -297,7 +297,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             </span>
           </Link>
           <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
-            <span aria-live="polite" class="navds-label">
+            <span aria-live="polite" className="navds-label">
               {translate(TEXTS.grensesnitt.navigation.cancel)}
             </span>
           </Lenke>
