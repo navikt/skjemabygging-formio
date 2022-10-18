@@ -68,12 +68,40 @@ const PublishSuccessAlert = ({ message, onClose }) => {
   );
 };
 
+const FyllutDeploymentSuccessAlert = ({ data, onClose }) => {
+  return (
+    <AlertStripeSuksess>
+      <AlertContent>
+        <div>
+          <h3>{data.title}</h3>
+          <div>{data.message}</div>
+        </div>
+        <Xknapp type="flat" onClick={onClose} />
+      </AlertContent>
+    </AlertStripeSuksess>
+  );
+};
+
 const PublishAbortedAlert = ({ message, onClose }) => {
   return (
     <AlertStripeFeil>
       <AlertContent>
         <h3>Publisering feilet</h3>
         <div>{message.skjemapublisering.skjematittel || message.skjemapublisering.commitUrl} ble ikke publisert</div>
+        <Xknapp type="flat" onClick={onClose} />
+      </AlertContent>
+    </AlertStripeFeil>
+  );
+};
+
+const FyllutDeploymentFailureAlert = ({ data, onClose }) => {
+  return (
+    <AlertStripeFeil>
+      <AlertContent>
+        <div>
+          <h3>{data.title}</h3>
+          <div>{data.message}</div>
+        </div>
         <Xknapp type="flat" onClick={onClose} />
       </AlertContent>
     </AlertStripeFeil>
@@ -227,6 +255,25 @@ export function useUserAlerting(pusher) {
       deploymentChannel.unbind("other");
       deploymentChannel.unbind("bulk-publication");
       deploymentChannel.unbind("publication");
+    };
+  }, [pusher, userAlerter]);
+  useEffect(() => {
+    const fyllutDeploymentChannel = pusher.subscribe("fyllut-deployment");
+    fyllutDeploymentChannel.bind("success", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <FyllutDeploymentSuccessAlert data={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
+    fyllutDeploymentChannel.bind("failure", (data) => {
+      let key;
+      key = userAlerter.addAlertComponent(() => (
+        <FyllutDeploymentFailureAlert data={data} onClose={() => userAlerter.removeAlertComponent(key)} />
+      ));
+    });
+    return () => {
+      fyllutDeploymentChannel.unbind("success");
+      fyllutDeploymentChannel.unbind("failure");
     };
   }, [pusher, userAlerter]);
   useEffect(() => {

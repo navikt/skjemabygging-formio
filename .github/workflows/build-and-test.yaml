@@ -3,6 +3,7 @@ on:
   push
 env:
   IMAGE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
+  IMAGE_FYLLUT_BASE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'fyllut-base' || 'fyllut-base-dev' }}:${{ github.sha }}"
 
 concurrency: deploy-${{ github.ref }}
 
@@ -11,10 +12,12 @@ jobs:
     name: "Build and test packages"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.17.1'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "No unstaged changes allowed (changes in yarn.lock?)"
@@ -30,8 +33,8 @@ jobs:
     name: "Verify scripts"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.17.1'
       - name: "Build scripts"
@@ -42,43 +45,62 @@ jobs:
     name: "Package bygger"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.17.1'
-      - name: "Install top-level dependencies"
-        run: yarn install --frozen-lockfile
-      - name: "Prepare local dependencies for shared packages"
-        run: node bin/prepare-production-build.mjs
-      - name: "Build shared-domain"
-        working-directory: ./packages/shared-domain
-        run: yarn install --frozen-lockfile && yarn build
-      - name: "Build shared-components"
-        working-directory: ./packages/shared-components
-        run: yarn install --frozen-lockfile && yarn build
-      - name: "Bygger (Frontend): install dependencies and build"
-        working-directory: ./packages/bygger
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - name: "Build application: Bygger"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
-        run: yarn install --frozen-lockfile && yarn build
-      - name: "Bygger (Backend): install dependencies and build"
-        working-directory: ./packages/bygger/server
-        run: yarn install --frozen-lockfile && yarn build
+        run: bin/build-application.sh bygger
+      - name: Login to GitHub Package Repository
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: "Build and publish Docker image"
         working-directory: ./packages/bygger
-        run: >
+        run: |
           docker build --pull --tag ${IMAGE} --build-arg git_sha=${{ github.sha }} .
-          && echo ${{ secrets.GITHUB_TOKEN }} | docker login
-          --username ${{ github.repository }} --password-stdin https://ghcr.io
-          && docker push ${IMAGE}
+          docker push ${IMAGE}
+
+  package-and-push-fyllut-base:
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
+    name: "Package fyllut"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.17.1'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - name: "Build application: Fyllut"
+        env:
+          REACT_APP_GIT_VERSION: ${{ github.sha }}
+        run: bin/build-application.sh fyllut
+      - name: Login to GitHub Package Repository
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Build and publish Docker image"
+        working-directory: ./packages/fyllut
+        run: |
+          docker build --pull -t ${IMAGE_FYLLUT_BASE} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
+          docker push ${IMAGE_FYLLUT_BASE}
 
   deploy-bygger-to-dev:
     name: "Deploy bygger to dev"
     if: github.ref == 'refs/heads/master'
-    needs: [build-and-test, package-and-push-bygger, verify-scripts]
-    runs-on: ubuntu-18.04
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
+    runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v3"
       - name: "Deploy to DEV"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
@@ -90,10 +112,10 @@ jobs:
   deploy-bygger-to-prod:
     name: "Deploy bygger to prod"
     if: github.ref == 'refs/heads/master'
-    needs: [build-and-test, package-and-push-bygger, verify-scripts]
-    runs-on: ubuntu-18.04
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
+    runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v3"
       - name: "Deploy to PROD"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
@@ -105,10 +127,10 @@ jobs:
   deploy-bygger-experimental-to-dev:
     name: "Deploy bygger experimental to dev"
     if: startsWith(github.ref, 'refs/heads/experimental/')
-    needs: [build-and-test, package-and-push-bygger, verify-scripts]
-    runs-on: ubuntu-18.04
+    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base, verify-scripts]
+    runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v3"
       - name: "Deploy experimental to DEV"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"

@@ -1,5 +1,6 @@
 {
   "packages": ["packages/**"],
   "npmClient": "yarn",
+  "npmClientArgs": ["--prefer-offline"],
   "version": "1.0.0"
 }

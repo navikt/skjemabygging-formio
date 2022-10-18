@@ -4,7 +4,7 @@ function areEqualWithoutWhiteSpaces(string1, string2) {
   return string1.replace(/\s/g, "") === string2.replace(/\s/g, "");
 }
 
-async function pushJsonFileToRepo(repo, branch, path, message, fileContentAsBase64) {
+async function pushFileToRepo(repo, branch, path, message, fileContentAsBase64) {
   const remoteFile = await repo.getFileIfItExists(branch, path);
   const sha = remoteFile && remoteFile.data && remoteFile.data.sha;
 
@@ -23,7 +23,7 @@ async function pushJsonFileToRepo(repo, branch, path, message, fileContentAsBase
 }
 
 export function createFileForPushingToRepo(name, path, type, content) {
-  return { name, path, type, contentAsBase64: stringTobase64(JSON.stringify(content), "utf-8") };
+  return { name, path, type, contentAsBase64: stringTobase64(JSON.stringify(content)) };
 }
 
 export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, submoduleRepo) {
@@ -31,7 +31,7 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
     const initialRef = await repo.getRef(branch);
 
     for (const file of files) {
-      await pushJsonFileToRepo(
+      await pushFileToRepo(
         repo,
         branch,
         file.path,
@@ -41,6 +41,14 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
     }
 
     if (await repo.hasBranchChanged(initialRef, branch)) {
+      await pushFileToRepo(
+        repo,
+        branch,
+        "MONOREPO",
+        `oppdater monorepo ref: ${newSubmoduleGitSha}`,
+        stringTobase64(newSubmoduleGitSha)
+      );
+      // updateSubmodule-kallet kan fjernes når vi går bort fra git submodule i skjemautfylling-formio
       await repo.updateSubmodule(
         branch,
         newSubmoduleGitSha,
