@@ -1,4 +1,5 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
@@ -30,17 +31,16 @@ export const FormPageWrapper = () => {
       headerObj?.setAttribute("content", metaPropValue);
     };
 
-    if (form?.title) {
-      document.title = `${form.title} | www.nav.no`;
-      setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
-    }
+    if (form) {
+      if (form.title) {
+        document.title = `${form.title} | www.nav.no`;
+        setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
+      }
 
-    for (let i = 0; i < form?.components.length; i++) {
-      if (form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")) {
-        const descriptionTxt = form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")?.content;
+      const descriptionTxt = navFormUtils.findDescription(form);
+      if (descriptionTxt) {
         setHeaderProp(metaNameDescr, descriptionTxt);
         setHeaderProp(metaNameOgDescr, descriptionTxt);
-        break;
       }
     }
 

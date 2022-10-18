@@ -16,7 +16,7 @@ class FormService {
   async loadForms() {
     let forms;
     if (useFormioApi) {
-      const select = "_id,title,path,modified,properties.skjemanummer";
+      const select = "_id,title,path,modified,properties.skjemanummer,properties.innsending";
       forms = await fetchFromFormioApi(
         `${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`
       );

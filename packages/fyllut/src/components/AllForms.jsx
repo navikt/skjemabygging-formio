@@ -1,13 +1,21 @@
+import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
+import FormRow from "./FormRow";
+
+const useStyles = makeStyles({
+  skjemaliste: {
+    borderCollapse: "collapse",
+  },
+});
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
   const history = useHistory();
+  const styles = useStyles();
 
   useEffect(() => {
     const params = new URLSearchParams(history.location.search);
@@ -39,17 +47,21 @@ export const AllForms = () => {
     <main>
       <h1>Velg et skjema</h1>
       <nav>
-        <ul>
-          {forms
-            .sort((a, b) => (a.modified < b.modified ? 1 : -1))
-            .map((form) => (
-              <li key={form._id}>
-                <Link to={form.path}>
-                  <Normaltekst>{form.title}</Normaltekst>
-                </Link>
-              </li>
-            ))}
-        </ul>
+        <table className={styles.skjemaliste}>
+          <thead>
+            <tr>
+              <th>Skjematittel</th>
+              <th colSpan="3">Innsending</th>
+            </tr>
+          </thead>
+          <tbody>
+            {forms
+              .sort((a, b) => (a.modified < b.modified ? 1 : -1))
+              .map((form) => (
+                <FormRow key={form._id} form={form} />
+              ))}
+          </tbody>
+        </table>
       </nav>
     </main>
   );
