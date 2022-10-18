@@ -260,7 +260,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 />
               ) : (
                 <Link
-                  className="navds-button navds-button--primary"
+                  className="navds-button navds-button--secondary"
                   onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                   to={{
                     pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
