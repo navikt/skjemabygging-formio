@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
+import url from "url";
 import { checkConfigConsistency, config } from "./config/config";
 import { buildDirectory } from "./context.js";
 import { createRedirectUrl, getDecorator } from "./dekorator.js";
@@ -12,6 +13,10 @@ import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
 import { formService } from "./services";
+import { QueryParamSub } from "./types/custom";
+import { getDefaultPageMeta, getFormMeta, getQueryParamSub } from "./utils/page";
+
+const FYLLUT_PATH = "/fyllut";
 
 export const createApp = () => {
   checkConfigConsistency(config);
@@ -45,11 +50,44 @@ export const createApp = () => {
   // Match everything except internal, static and api
   fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, async (req: Request, res: Response) => {
     try {
-      const formMeta = await formService.getMeta(res.locals.formId);
+      const qpSub = req.query.sub as QueryParamSub;
+      const qpForm = req.query.form;
+      logger.debug("Render index.html", { queryParams: { ...req.query } });
+
+      const formPath = res.locals.formId || qpForm;
+      let pageMeta = getDefaultPageMeta();
+
+      if (formPath) {
+        logger.debug(`Loading form...`, { formPath });
+        const form = await formService.loadForm(formPath);
+        if (form) {
+          if (!qpSub) {
+            logger.warn(`Submission query param is missing`, { formPath });
+            const sub = getQueryParamSub(form);
+            if (sub) {
+              const { form, ...query } = req.query;
+              logger.info(`Redirect to sub=${sub}`, { formPath, qpForm: form });
+              return res.redirect(
+                url.format({
+                  pathname: `${FYLLUT_PATH}/${formPath}`,
+                  query: {
+                    ...query,
+                    sub,
+                  },
+                })
+              );
+            }
+          }
+
+          pageMeta = getFormMeta(form);
+        } else {
+          logger.error(`Form not found`, { formPath });
+        }
+      }
       const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
       res.render("index.html", {
         ...decoratorFragments,
-        ...formMeta,
+        ...pageMeta,
       });
     } catch (err: any) {
       const errorMessage = `Failed to return index file: ${err.message}`;
@@ -58,7 +96,7 @@ export const createApp = () => {
     }
   });
 
-  app.use("/fyllut", fyllutRouter);
+  app.use(FYLLUT_PATH, fyllutRouter);
 
   app.use(globalErrorHandler);
 

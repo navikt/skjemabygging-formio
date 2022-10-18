@@ -1,3 +1,4 @@
+import { Component, InnsendingType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import nock from "nock";
 import request from "supertest";
 import { createApp } from "./app";
@@ -5,10 +6,64 @@ import { config } from "./config/config";
 import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from "./test/testHelpers";
 
 jest.mock("./logger.js");
+jest.mock("./dekorator.js", () => ({
+  getDecorator: () => {},
+  createRedirectUrl: () => "",
+}));
 
-const { sendInnConfig, tokenx: tokenxConfig } = config;
+const { sendInnConfig, tokenx: tokenxConfig, formioProjectUrl } = config;
 
 describe("app", () => {
+  describe("index.html", () => {
+    it("Returns page", async () => {
+      await request(createApp()).get("/fyllut/").expect(200);
+    });
+
+    it("returns index page when form is not found", async () => {
+      nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, []);
+
+      const res = await request(createApp()).get("/fyllut/testform001");
+      expect(res.status).toEqual(200);
+    });
+
+    describe("Query params", () => {
+      function createFormDefinition(innsending: InnsendingType) {
+        return {
+          title: "Søknad om testhund",
+          path: "testform001",
+          properties: {
+            innsending: innsending,
+          },
+          components: [] as Component[],
+        } as NavFormType;
+      }
+
+      it("retrieves submission type from form definition and redirects", async () => {
+        const testform001 = createFormDefinition("KUN_PAPIR");
+        nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+        const res = await request(createApp()).get("/fyllut/testform001").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?sub=paper");
+      });
+
+      it("does not redirect when both paper and digital are allowed", async () => {
+        const testform001 = createFormDefinition("PAPIR_OG_DIGITAL");
+        nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+        const res = await request(createApp()).get("/fyllut/testform001").expect(200);
+        expect(res.get("location")).toBeUndefined();
+      });
+
+      it("retrieves submission type from form definition and redirects to form in query param", async () => {
+        const testform001 = createFormDefinition("KUN_DIGITAL");
+        nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+        const res = await request(createApp()).get("/fyllut/?form=testform001").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?sub=digital");
+      });
+    });
+  });
+
   it("Fetches config", async () => {
     await request(createApp())
       .get("/fyllut/api/config")

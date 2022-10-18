@@ -1,13 +1,7 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { config } from "../config/config";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "../utils/forms";
 
 const { useFormioApi, skjemaDir, formioProjectUrl } = config;
-
-const defaultMeta = {
-  PAGE_TITLE: "Fyll ut skjema - www.nav.no",
-  PAGE_DESCRIPTION: "NAV søknadsskjema",
-};
 
 class FormService {
   async loadForm(formPath: string) {
@@ -31,19 +25,6 @@ class FormService {
     }
 
     return forms;
-  }
-
-  async getMeta(formPath: string) {
-    if (formPath) {
-      const form = await this.loadForm(formPath);
-      if (form) {
-        return {
-          PAGE_TITLE: form.title || defaultMeta.PAGE_TITLE,
-          PAGE_DESCRIPTION: navFormUtils.findDescription(form) || defaultMeta.PAGE_DESCRIPTION,
-        };
-      }
-    }
-    return defaultMeta;
   }
 }
 
