@@ -1,5 +1,6 @@
-import { GuidePanel } from "@navikt/ds-react";
+import { GuidePanel, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
@@ -8,6 +9,7 @@ import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
 import { getPanelSlug } from "../util/form";
+import { removeBeforeUnload } from "../util/unload";
 import { FormTitle } from "./components/FormTitle";
 
 export interface Props {
@@ -22,7 +24,12 @@ export function IntroPage({ form, formUrl }: Props) {
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
+  const [paramSub, setParamSub] = useState<string | undefined>(submissionMethod);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const firstPanelSlug = getPanelSlug(form, 0);
+  const [submissionMethodMissing, setSubmissionMethodMissing] = useState<boolean>(
+    !submissionMethod && form.properties.innsending === "PAPIR_OG_DIGITAL"
+  );
 
   useEffect(() => {
     if (submissionMethod) {
@@ -45,6 +52,22 @@ export function IntroPage({ form, formUrl }: Props) {
       // No description when form.properties.innsending === "KUN_DIGITAL"
     }
   }, [search]);
+
+  useEffect(() => {
+    setSubmissionMethodMissing(!submissionMethod && form.properties.innsending === "PAPIR_OG_DIGITAL");
+  }, [submissionMethod, form]);
+
+  const onClickStart = () => {
+    if (paramSub) {
+      removeBeforeUnload();
+      const { pathname, search } = window.location;
+      const params = new URLSearchParams(search);
+      params.set("sub", paramSub);
+      window.location.href = `${pathname}/${firstPanelSlug}?${params.toString()}`;
+    } else {
+      setErrorMessage(translate(TEXTS.statiske.introPage.submissionMethod.required));
+    }
+  };
 
   return (
     <main>
@@ -77,9 +100,31 @@ export function IntroPage({ form, formUrl }: Props) {
       <nav>
         <div className="list-inline">
           <div className="list-inline-item">
-            <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
-              <Hovedknapp className="btn-wizard-nav-next">{translate(TEXTS.grensesnitt.introPage.start)}</Hovedknapp>
-            </Link>
+            {submissionMethodMissing && (
+              <>
+                <RadioGroup
+                  legend={translate(TEXTS.statiske.introPage.submissionMethod.legend)}
+                  required={true}
+                  onChange={(sub: string) => {
+                    setErrorMessage(undefined);
+                    setParamSub(sub);
+                  }}
+                  className="margin-bottom-default"
+                >
+                  <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
+                  <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
+                </RadioGroup>
+                {errorMessage && <AlertStripeFeil className="margin-bottom-default">{errorMessage}</AlertStripeFeil>}
+                <button onClick={onClickStart} className="knapp knapp--hoved btn-wizard-nav-next">
+                  {translate(TEXTS.grensesnitt.introPage.start)}
+                </button>
+              </>
+            )}
+            {!submissionMethodMissing && (
+              <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
+                <Hovedknapp className="btn-wizard-nav-next">{translate(TEXTS.grensesnitt.introPage.start)}</Hovedknapp>
+              </Link>
+            )}
           </div>
         </div>
         <div className="list-inline">

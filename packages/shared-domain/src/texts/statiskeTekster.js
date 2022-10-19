@@ -18,6 +18,12 @@ export const statiske = {
     publicComputerBold: "Bruk av offentlig PC:",
     publicComputer:
       "Hvis du fyller ut skjemaet på en offentlig PC (f.eks. på et bibliotek) er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre uvedkommende fra å få tak i personinformasjonen din.",
+    submissionMethod: {
+      legend: "Hvordan vil du sende inn skjemaet?",
+      paper: "På papir",
+      digital: "Digitalt",
+      required: "Du må velge hvordan skjemaet skal sendes inn.",
+    },
   },
   summaryPage: {
     title: "Oppsummering",
