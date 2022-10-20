@@ -1,10 +1,11 @@
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { config } from "../config/config";
 import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirectory } from "../utils/forms";
 
 const { useFormioApi, skjemaDir, formioProjectUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string) {
+  async loadForm(formPath: string): Promise<NavFormType> {
     if (useFormioApi) {
       const forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
       return forms.length > 0 ? forms[0] : null;
