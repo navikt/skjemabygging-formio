@@ -1,15 +1,17 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
 import FormPage from "./FormPage";
 import PageNotFound from "./PageNotFound";
+import SubmissionMethodNotAllowed from "./SubmissionMethodNotAllowed";
 
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
+  const { submissionMethod } = useAppConfig();
 
   useEffect(() => {
     httpFyllut
@@ -58,6 +60,10 @@ export const FormPageWrapper = () => {
 
   if (status === "FORM NOT FOUND" || !form) {
     return <PageNotFound />;
+  }
+
+  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
+    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
   return <FormPage form={form} />;

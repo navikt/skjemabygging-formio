@@ -1,3 +1,4 @@
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { Request, Response } from "express";
 import url from "url";
 import { config } from "./config/config";
@@ -18,11 +19,12 @@ const renderIndex = async (req: Request, res: Response) => {
     let pageMeta = getDefaultPageMeta();
 
     if (formPath) {
-      logger.debug(`Loading form...`, { formPath });
+      logger.debug("Loading form...", { formPath });
       const form = await formService.loadForm(formPath);
       if (form) {
-        if (!qpSub && form.properties.innsending === "PAPIR_OG_DIGITAL") {
-          logger.error(`Submission query param is missing`, { formPath });
+        const { innsending } = form.properties;
+        if (!qpSub && innsending === "PAPIR_OG_DIGITAL") {
+          logger.error("Submission query param is missing", { formPath });
           const targetUrl = `${config.fyllutPath}/${formPath}`;
           if (req.baseUrl !== targetUrl) {
             const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
@@ -36,6 +38,8 @@ const renderIndex = async (req: Request, res: Response) => {
               })
             );
           }
+        } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
+          logger.error("Submission method is not allowed", { qpSub, formPath, innsending });
         }
         if (qpForm) {
           return res.redirect(
@@ -50,7 +54,7 @@ const renderIndex = async (req: Request, res: Response) => {
 
         pageMeta = getFormMeta(form);
       } else {
-        logger.error(`Form not found`, { formPath });
+        logger.error("Form not found", { formPath });
       }
     }
 
