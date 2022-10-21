@@ -54,6 +54,7 @@ describe("FormPageWrapper", () => {
       title: "New form",
       modified: "2021-11-30T14:10:21.487Z",
       components: [],
+      properties: {},
     };
     fetchMock.mockImplementation((url) => {
       if (url === "/fyllut/api/forms/knownForm") {

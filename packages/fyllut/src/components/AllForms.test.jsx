@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -32,8 +32,14 @@ describe("AllForms", () => {
 
   it("Show form lists when there are forms", async () => {
     const mockedForm = [
-      { _id: "000", path: "newform", title: "New form", modified: "2021-11-30T14:10:21.487Z" },
-      { _id: "111", path: "testnewform", title: "Test new form", modified: "2021-11-29T14:10:21.487Z" },
+      { _id: "000", path: "newform", title: "New form", modified: "2021-11-30T14:10:21.487Z", properties: {} },
+      {
+        _id: "111",
+        path: "testnewform",
+        title: "Test new form",
+        modified: "2021-11-29T14:10:21.487Z",
+        properties: { innsending: "KUN_DIGITAL" },
+      },
     ];
     fetchMock.mockImplementation((url) => {
       return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
@@ -46,7 +52,15 @@ describe("AllForms", () => {
     );
 
     expect(await screen.findByRole("heading", { name: "Velg et skjema" })).toBeInTheDocument();
-    expect(await screen.findByRole("link", { name: "New form" })).toBeInTheDocument();
-    expect(await screen.findByRole("link", { name: "Test new form" })).toBeInTheDocument();
+
+    const formRow1 = screen.queryByRole("cell", { name: "New form" }).closest("tr");
+    expect(formRow1).toBeInTheDocument();
+    expect(within(formRow1).queryByRole("link", { name: "digital" })).toBeInTheDocument();
+    expect(within(formRow1).queryByRole("link", { name: "papir" })).toBeInTheDocument();
+
+    const formRow2 = screen.queryByRole("cell", { name: "Test new form" }).closest("tr");
+    expect(formRow2).toBeInTheDocument();
+    expect(within(formRow2).queryByRole("link", { name: "digital" })).toBeInTheDocument();
+    expect(within(formRow2).queryByRole("link", { name: "papir" })).not.toBeInTheDocument();
   });
 });
