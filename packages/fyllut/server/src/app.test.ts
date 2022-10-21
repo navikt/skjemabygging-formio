@@ -15,7 +15,7 @@ const { sendInnConfig, tokenx: tokenxConfig, formioProjectUrl } = config;
 
 describe("app", () => {
   describe("index.html", () => {
-    function createFormDefinition(innsending: InnsendingType) {
+    function createFormDefinition(innsending?: InnsendingType) {
       return {
         title: "Søknad om testhund",
         path: "testform001",
@@ -92,10 +92,10 @@ describe("app", () => {
         });
       });
 
-      describe("innsending PAPIR_OG_DIGITAL", () => {
+      describe.each(["PAPIR_OG_DIGITAL", undefined])("innsending %s", (innsending) => {
         describe("query param sub is missing", () => {
           it("redirects to intropage and keeps other query params", async () => {
-            const testform001 = createFormDefinition("PAPIR_OG_DIGITAL");
+            const testform001 = createFormDefinition(innsending as InnsendingType);
             nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
             const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en").expect(302);
@@ -103,7 +103,7 @@ describe("app", () => {
           });
 
           it("does not redirect when intropage is requested (avoiding circular redirects)", async () => {
-            const testform001 = createFormDefinition("PAPIR_OG_DIGITAL");
+            const testform001 = createFormDefinition(innsending as InnsendingType);
             nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
             const res = await request(createApp()).get("/fyllut/testform001").expect(200);
@@ -112,11 +112,18 @@ describe("app", () => {
         });
 
         describe("query param sub is present", () => {
-          it("does not redirect to intropage", async () => {
-            const testform001 = createFormDefinition("PAPIR_OG_DIGITAL");
+          it("does not redirect to intropage when sub=digital", async () => {
+            const testform001 = createFormDefinition(innsending as InnsendingType);
             nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
 
             const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en&sub=digital").expect(200);
+            expect(res.get("location")).toBeUndefined();
+          });
+          it("does not redirect to intropage when sub=paper", async () => {
+            const testform001 = createFormDefinition(innsending as InnsendingType);
+            nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+            const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en&sub=paper").expect(200);
             expect(res.get("location")).toBeUndefined();
           });
         });

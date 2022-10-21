@@ -17,6 +17,11 @@ export interface Props {
   formUrl: string;
 }
 
+const supportsPapirOgDigital = (form: NavFormType) => {
+  const { innsending } = form.properties;
+  return !innsending || innsending === "PAPIR_OG_DIGITAL";
+};
+
 export function IntroPage({ form, formUrl }: Props) {
   const { translate } = useLanguages();
   const { search } = useLocation();
@@ -28,7 +33,7 @@ export function IntroPage({ form, formUrl }: Props) {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   const firstPanelSlug = getPanelSlug(form, 0);
   const [submissionMethodMissing, setSubmissionMethodMissing] = useState<boolean>(
-    !submissionMethod && form.properties.innsending === "PAPIR_OG_DIGITAL"
+    !submissionMethod && supportsPapirOgDigital(form)
   );
 
   useEffect(() => {
@@ -54,7 +59,7 @@ export function IntroPage({ form, formUrl }: Props) {
   }, [search]);
 
   useEffect(() => {
-    setSubmissionMethodMissing(!submissionMethod && form.properties.innsending === "PAPIR_OG_DIGITAL");
+    setSubmissionMethodMissing(!submissionMethod && supportsPapirOgDigital(form));
   }, [submissionMethod, form]);
 
   const onClickStart = () => {

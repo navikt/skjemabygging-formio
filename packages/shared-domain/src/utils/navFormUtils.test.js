@@ -606,7 +606,7 @@ describe("navFormUtils", () => {
   describe("isSubmissionMethodAllowed", () => {
     const createTestForm = (innsending) => ({ properties: { innsending } });
 
-    describe("KUN_PAPIR", () => {
+    describe("innsending=KUN_PAPIR", () => {
       it("paper is allowed", () => {
         const testform = createTestForm("KUN_PAPIR");
         const allowed = isSubmissionMethodAllowed("paper", testform);
@@ -620,7 +620,7 @@ describe("navFormUtils", () => {
       });
     });
 
-    describe("KUN_DIGITAL", () => {
+    describe("innsending=KUN_DIGITAL", () => {
       it("paper is not allowed", () => {
         const testform = createTestForm("KUN_DIGITAL");
         const allowed = isSubmissionMethodAllowed("paper", testform);
@@ -634,7 +634,7 @@ describe("navFormUtils", () => {
       });
     });
 
-    describe("PAPIR_OG_DIGITAL", () => {
+    describe("innsending=PAPIR_OG_DIGITAL", () => {
       it("paper is allowed", () => {
         const testform = createTestForm("PAPIR_OG_DIGITAL");
         const allowed = isSubmissionMethodAllowed("paper", testform);
@@ -648,7 +648,7 @@ describe("navFormUtils", () => {
       });
     });
 
-    describe("INGEN", () => {
+    describe("innsending=INGEN", () => {
       it("paper is not allowed", () => {
         const testform = createTestForm("KUN_DIGITAL");
         const allowed = isSubmissionMethodAllowed("paper", testform);
@@ -659,6 +659,20 @@ describe("navFormUtils", () => {
         const testform = createTestForm("KUN_PAPIR");
         const allowed = isSubmissionMethodAllowed("digital", testform);
         expect(allowed).toBe(false);
+      });
+    });
+
+    describe("innsending=undefined", () => {
+      it("paper is allowed", () => {
+        const testform = createTestForm(undefined);
+        const allowed = isSubmissionMethodAllowed("paper", testform);
+        expect(allowed).toBe(true);
+      });
+
+      it("digital is allowed", () => {
+        const testform = createTestForm(undefined);
+        const allowed = isSubmissionMethodAllowed("digital", testform);
+        expect(allowed).toBe(true);
       });
     });
   });

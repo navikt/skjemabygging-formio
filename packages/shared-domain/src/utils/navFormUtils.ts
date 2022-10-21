@@ -137,9 +137,9 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
   const { innsending } = form.properties;
   switch (submissionMethod) {
     case "digital":
-      return innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_DIGITAL";
+      return !innsending || innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_DIGITAL";
     case "paper":
-      return innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_PAPIR";
+      return !innsending || innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_PAPIR";
   }
   return false;
 };

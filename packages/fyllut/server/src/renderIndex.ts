@@ -23,7 +23,7 @@ const renderIndex = async (req: Request, res: Response) => {
       const form = await formService.loadForm(formPath);
       if (form) {
         const { innsending } = form.properties;
-        if (!qpSub && innsending === "PAPIR_OG_DIGITAL") {
+        if (!qpSub && (!innsending || innsending === "PAPIR_OG_DIGITAL")) {
           logger.error("Submission query param is missing", { formPath });
           const targetUrl = `${config.fyllutPath}/${formPath}`;
           if (req.baseUrl !== targetUrl) {
