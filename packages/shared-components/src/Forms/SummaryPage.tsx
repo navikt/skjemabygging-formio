@@ -192,7 +192,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 }
 
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
@@ -227,7 +227,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
-          {(submissionMethod === "paper" || innsending === "KUN_PAPIR") && (
+          {(app === "bygger" || submissionMethod === "paper" || innsending === "KUN_PAPIR") && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next"
@@ -238,7 +238,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               </Link>
             </div>
           )}
-          {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
+          {app !== "bygger" && (submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
             <div className="list-inline-item">
               <DigitalSubmissionButton
                 form={form}

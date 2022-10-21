@@ -108,6 +108,44 @@ describe("SummaryPage", () => {
     });
   });
 
+  describe("Forhåndvisning i 'bygger' bruker papir-løpet uansett innsending", () => {
+    it("innsending=PAPIR_OG_DIGITAL, submissionMethod=paper", async () => {
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
+      const appConfigProps = { submissionMethod: "paper", app: "bygger" } as AppConfigContextType;
+      const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("innsending=PAPIR_OG_DIGITAL, submissionMethod=digital", async () => {
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
+      const appConfigProps = { submissionMethod: "digital", app: "bygger" } as AppConfigContextType;
+      const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("innsending=KUN_DIGITAL", async () => {
+      const form = formWithProperties({ innsending: "KUN_DIGITAL" });
+      const appConfigProps = { app: "bygger" } as AppConfigContextType;
+      const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("innsending=KUN_PAPIR", async () => {
+      const form = formWithProperties({ innsending: "KUN_PAPIR" });
+      const appConfigProps = { app: "bygger" } as AppConfigContextType;
+      const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+  });
+
   describe("Form med kun papir-innsending", () => {
     it("Rendrer form med innsending=KUN_PAPIR", async () => {
       const form = formWithProperties({ innsending: "KUN_PAPIR" });
