@@ -47,8 +47,6 @@ const formWithProperties = (props): NavFormType =>
 type Buttons = {
   redigerSvarKnapp: HTMLButtonElement;
   gaVidereKnapp: HTMLButtonElement;
-  sendIPostenKnapp: HTMLButtonElement;
-  sendDigitaltKnapp: HTMLButtonElement;
 };
 
 const getButton = (label): HTMLButtonElement =>
@@ -58,9 +56,7 @@ const getButton = (label): HTMLButtonElement =>
 const getButtons = (): Buttons => {
   const redigerSvarKnapp = getButton(TEXTS.grensesnitt.summaryPage.editAnswers) as HTMLButtonElement;
   const gaVidereKnapp = getButton(TEXTS.grensesnitt.moveForward) as HTMLButtonElement;
-  const sendIPostenKnapp = getButton(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission) as HTMLButtonElement;
-  const sendDigitaltKnapp = getButton(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission) as HTMLButtonElement;
-  return { redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp };
+  return { redigerSvarKnapp, gaVidereKnapp };
 };
 
 const renderSummaryPage = async (
@@ -88,37 +84,29 @@ const renderSummaryPage = async (
 };
 
 describe("SummaryPage", () => {
-  const expectKnapperForPapirOgDigitalInnsending = (buttons: Buttons) => {
-    const { redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp } = buttons;
+  const expectKnapperForRedigerSvarEllerGaVidere = (buttons: Buttons) => {
+    const { redigerSvarKnapp, gaVidereKnapp } = buttons;
     expect(redigerSvarKnapp).toBeInTheDocument();
-    expect(sendIPostenKnapp).toBeInTheDocument();
-    expect(sendDigitaltKnapp).toBeInTheDocument();
-    expect(gaVidereKnapp).not.toBeInTheDocument();
+    expect(gaVidereKnapp).toBeInTheDocument();
   };
 
-  describe("Form med både papir- og digital innsending", () => {
+  describe("Form som støtter både papir- og digital innsending", () => {
     it("Rendrer default form med riktige knapper", async () => {
       const form = formWithProperties({ innsending: undefined });
-      const { buttons } = await renderSummaryPage({ form });
-      expectKnapperForPapirOgDigitalInnsending(buttons);
+      const { history, buttons } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
     it("Rendrer form med innsending=PAPIR_OG_DIGITAL", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
-      const { history, buttons } = await renderSummaryPage({ form });
-      expectKnapperForPapirOgDigitalInnsending(buttons);
-      userEvent.click(buttons.sendIPostenKnapp);
+      const { history, buttons } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
-
-  const expectKnapperForRedigerSvarEllerGaVidere = (buttons: Buttons) => {
-    const { redigerSvarKnapp, gaVidereKnapp, sendIPostenKnapp, sendDigitaltKnapp } = buttons;
-    expect(redigerSvarKnapp).toBeInTheDocument();
-    expect(gaVidereKnapp).toBeInTheDocument();
-    expect(sendIPostenKnapp).not.toBeInTheDocument();
-    expect(sendDigitaltKnapp).not.toBeInTheDocument();
-  };
 
   describe("Form med kun papir-innsending", () => {
     it("Rendrer form med innsending=KUN_PAPIR", async () => {
@@ -132,11 +120,29 @@ describe("SummaryPage", () => {
 
   describe("Form med kun digital innsending", () => {
     it("Rendrer form med innsending=KUN_DIGITAL", async () => {
+      const windowLocation = { href: "" };
+      // @ts-ignore
+      Object.defineProperty(window, "location", {
+        value: windowLocation,
+        writable: true,
+      });
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      nock(basePath)
+        .defaultReplyHeaders({
+          Location: sendInnUrl,
+        })
+        .post("/api/send-inn")
+        .reply(201, {}, { Location: "https://www.unittest.nav.no/send-inn/123" });
       const form = formWithProperties({ innsending: "KUN_DIGITAL" });
-      const { history, buttons } = await renderSummaryPage({ form });
+      const { buttons } = await renderSummaryPage({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
+
       userEvent.click(buttons.gaVidereKnapp);
-      expect(history.location.pathname).toBe("/testform/forbered-innsending");
+      await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
+      nock.isDone();
+
+      window.location = originalWindowLocation;
     });
   });
 
