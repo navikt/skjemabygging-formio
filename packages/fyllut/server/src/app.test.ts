@@ -37,21 +37,19 @@ describe("app", () => {
       expect(res.status).toEqual(200);
     });
 
+    afterEach(() => {
+      expect(nock.isDone()).toBe(true);
+    });
+
     describe("Query param 'form'", () => {
       it("redirects with value of query param form in path", async () => {
-        const testform001 = createFormDefinition("KUN_PAPIR");
-        nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
-
         const res = await request(createApp()).get("/fyllut/?form=testform001").expect(302);
         expect(res.get("location")).toEqual("/fyllut/testform001");
       });
 
       it("redirects and includes other query params", async () => {
-        const testform001 = createFormDefinition("KUN_PAPIR");
-        nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
-
-        const res = await request(createApp()).get("/fyllut/?form=testform001&lang=en").expect(302);
-        expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+        const res = await request(createApp()).get("/fyllut/?form=testform001&lang=en&sub=digital").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?lang=en&sub=digital");
       });
     });
 

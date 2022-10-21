@@ -10,12 +10,22 @@ import { excludeQueryParam } from "./utils/express";
 import { getDefaultPageMeta, getFormMeta } from "./utils/page";
 
 const renderIndex = async (req: Request, res: Response) => {
+  logger.debug("Render index.html", { queryParams: { ...req.query }, baseUrl: req.baseUrl });
   try {
-    const qpSub = req.query.sub as QueryParamSub;
     const qpForm = req.query.form;
-    logger.debug("Render index.html", { queryParams: { ...req.query }, baseUrl: req.baseUrl });
+    if (qpForm) {
+      return res.redirect(
+        url.format({
+          pathname: `${config.fyllutPath}/${qpForm}`,
+          query: {
+            ...excludeQueryParam("form", req.query),
+          },
+        })
+      );
+    }
 
-    const formPath = res.locals.formId || qpForm;
+    const qpSub = req.query.sub as QueryParamSub;
+    const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
 
     if (formPath) {
@@ -40,16 +50,6 @@ const renderIndex = async (req: Request, res: Response) => {
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
           logger.error("Submission method is not allowed", { qpSub, formPath, innsending });
-        }
-        if (qpForm) {
-          return res.redirect(
-            url.format({
-              pathname: `${config.fyllutPath}/${formPath}`,
-              query: {
-                ...excludeQueryParam("form", req.query),
-              },
-            })
-          );
         }
 
         pageMeta = getFormMeta(form);
