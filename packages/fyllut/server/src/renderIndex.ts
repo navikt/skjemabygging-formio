@@ -1,5 +1,6 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { Request, Response } from "express";
+import { ParsedUrlQueryInput } from "querystring";
 import url from "url";
 import { config } from "./config/config";
 import { createRedirectUrl, getDecorator } from "./dekorator";
@@ -42,9 +43,7 @@ const renderIndex = async (req: Request, res: Response) => {
             return res.redirect(
               url.format({
                 pathname: targetUrl,
-                query: {
-                  ...excludeQueryParam("form", req.query),
-                },
+                query: req.query as ParsedUrlQueryInput,
               })
             );
           }
