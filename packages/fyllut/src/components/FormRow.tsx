@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 const useStyles = makeStyles({
   tableRow: {
@@ -10,10 +11,9 @@ const useStyles = makeStyles({
 
 const FormRow = ({ form }) => {
   const styles = useStyles();
-  const { innsending } = form.properties;
-  const paper = !innsending || innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL";
-  const digital = !innsending || innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL";
-  const ingen = innsending === "INGEN";
+  const paper = navFormUtils.isSubmissionMethodAllowed("paper", form);
+  const digital = navFormUtils.isSubmissionMethodAllowed("digital", form);
+  const ingen = form.properties.innsending === "INGEN";
 
   return (
     <tr className={styles.tableRow}>
@@ -21,14 +21,14 @@ const FormRow = ({ form }) => {
       <td>
         {paper && (
           <span>
-            [<a href={`/fyllut/${form.path}?sub=paper`}>papir</a>]
+            [<a href={`/fyllut/${form.path}${digital ? "?sub=paper" : ""}`}>papir</a>]
           </span>
         )}
       </td>
       <td>
         {digital && (
           <span>
-            [<a href={`/fyllut/${form.path}?sub=digital`}>digital</a>]
+            [<a href={`/fyllut/${form.path}${paper ? "?sub=digital" : ""}`}>digital</a>]
           </span>
         )}
       </td>
