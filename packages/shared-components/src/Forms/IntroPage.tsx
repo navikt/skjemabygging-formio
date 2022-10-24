@@ -62,12 +62,13 @@ export function IntroPage({ form, formUrl }: Props) {
     setSubmissionMethodMissing(!submissionMethod && supportsPapirOgDigital(form));
   }, [submissionMethod, form]);
 
-  const onClickStart = () => {
+  const navigateToFormPage = () => {
     if (paramSub) {
       removeBeforeUnload();
       const { pathname, search } = window.location;
       const params = new URLSearchParams(search);
       params.set("sub", paramSub);
+      // important to reload page due to forced idporten login if sub=digital
       window.location.href = `${pathname}/${firstPanelSlug}?${params.toString()}`;
     } else {
       setErrorMessage(translate(TEXTS.statiske.introPage.submissionMethod.required));
@@ -120,7 +121,7 @@ export function IntroPage({ form, formUrl }: Props) {
                   <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
                 </RadioGroup>
                 {errorMessage && <AlertStripeFeil className="margin-bottom-default">{errorMessage}</AlertStripeFeil>}
-                <button onClick={onClickStart} className="knapp knapp--hoved btn-wizard-nav-next">
+                <button onClick={navigateToFormPage} className="knapp knapp--hoved btn-wizard-nav-next">
                   {translate(TEXTS.grensesnitt.introPage.start)}
                 </button>
               </>
