@@ -37,10 +37,14 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
 
 const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop }: Props) => {
   const { translate, currentLanguage } = useLanguages();
-  const { baseUrl, http, config = {} } = useAppConfig();
+  const { baseUrl, http, config = {}, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
 
   const sendInn = async () => {
+    if (app === "bygger") {
+      onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
+      return;
+    }
     try {
       setLoading(true);
       removeBeforeUnload();

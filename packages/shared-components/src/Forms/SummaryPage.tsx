@@ -227,7 +227,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
             </Link>
           </div>
-          {(app === "bygger" || submissionMethod === "paper" || innsending === "KUN_PAPIR") && (
+          {(submissionMethod === "paper" ||
+            innsending === "KUN_PAPIR" ||
+            (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
             <div className="list-inline-item">
               <Link
                 className="btn btn-primary btn-wizard-nav-next"
@@ -238,7 +240,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               </Link>
             </div>
           )}
-          {app !== "bygger" && (submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
+          {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
             <div className="list-inline-item">
               <DigitalSubmissionButton
                 form={form}
@@ -260,7 +262,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             </div>
           )}
         </nav>
-        {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
+        {errorMessage && (
+          <AlertStripe data-testid="error-message" type="feil">
+            {errorMessage}
+          </AlertStripe>
+        )}
       </main>
     </SummaryContent>
   );

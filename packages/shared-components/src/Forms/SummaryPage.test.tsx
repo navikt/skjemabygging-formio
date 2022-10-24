@@ -130,10 +130,10 @@ describe("SummaryPage", () => {
     it("innsending=KUN_DIGITAL", async () => {
       const form = formWithProperties({ innsending: "KUN_DIGITAL" });
       const appConfigProps = { app: "bygger" } as AppConfigContextType;
-      const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
+      const { buttons } = await renderSummaryPage({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
       userEvent.click(buttons.gaVidereKnapp);
-      expect(history.location.pathname).toBe("/testform/send-i-posten");
+      expect(screen.getByTestId("error-message")).toBeInTheDocument();
     });
 
     it("innsending=KUN_PAPIR", async () => {
