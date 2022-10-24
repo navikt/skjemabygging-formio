@@ -74,4 +74,56 @@ describe("FormPageWrapper", () => {
     );
     await waitFor(() => expect(document.title).toEqual("New form | www.nav.no"));
   });
+
+  describe("Submission method", () => {
+    const mockedForm = {
+      _id: "007",
+      path: "nav123456",
+      title: "Testskjema",
+      modified: "2021-11-30T14:10:21.487Z",
+      components: [],
+      properties: {
+        innsending: "KUN_PAPIR",
+      },
+    };
+
+    beforeEach(() => {
+      fetchMock.mockImplementation((url) => {
+        if (url === "/fyllut/api/forms/nav123456") {
+          return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
+        }
+        throw new Error("Unknown URL: " + url);
+      });
+    });
+
+    it("Show error message when submission method is invalid", async () => {
+      render(
+        <MemoryRouter initialEntries={["/fyllut/nav123456"]}>
+          <AppConfigProvider featureToggles={{}} submissionMethod="digital">
+            <Route path="/fyllut/:formPath">
+              <FormPageWrapper />
+            </Route>
+          </AppConfigProvider>
+        </MemoryRouter>
+      );
+      await waitFor(() =>
+        expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).toBeInTheDocument()
+      );
+      expect(screen.queryByRole("heading", { name: mockedForm.title })).not.toBeInTheDocument();
+    });
+
+    it("Show form title when submission method is valid", async () => {
+      render(
+        <MemoryRouter initialEntries={["/fyllut/nav123456"]}>
+          <AppConfigProvider featureToggles={{}} submissionMethod="paper">
+            <Route path="/fyllut/:formPath">
+              <FormPageWrapper />
+            </Route>
+          </AppConfigProvider>
+        </MemoryRouter>
+      );
+      await waitFor(() => expect(screen.queryByRole("heading", { name: mockedForm.title })).toBeInTheDocument());
+      expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).not.toBeInTheDocument();
+    });
+  });
 });
