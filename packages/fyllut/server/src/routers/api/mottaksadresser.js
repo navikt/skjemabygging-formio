@@ -14,3 +14,4 @@ const mottaksadresser = {
 };
 
 export default mottaksadresser;
+export { loadMottaksadresser };

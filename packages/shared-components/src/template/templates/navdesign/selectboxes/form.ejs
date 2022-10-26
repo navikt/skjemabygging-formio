@@ -1,5 +1,5 @@
 <fieldset class="skjemagruppe inputPanelGruppe">
-  <legend class="skjemagruppe__legend">
+  <legend class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
     {{ctx.t(ctx.component.label)}}
     {% if(ctx.component.validate.required === false) { %}
       ({{ctx.t("valgfritt")}})

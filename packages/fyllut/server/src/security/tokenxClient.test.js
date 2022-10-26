@@ -1,6 +1,6 @@
 import nock from "nock";
 import { config } from "../config/config";
-import { extractHost, extractPath } from "../test/testHelpers.js";
+import { extractHost, extractPath } from "../test/testHelpers";
 import TokenXClient from "./tokenxClient.js";
 
 jest.mock("../logger.js");

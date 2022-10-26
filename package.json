@@ -10,10 +10,10 @@
   "scripts": {
     "check-types": "lerna run check-types",
     "clean": "lerna run clean && lerna clean -y",
-    "bootstrap": "yarn && lerna bootstrap",
+    "bootstrap": "yarn --prefer-offline && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
-    "build:scripts": "lerna exec --scope @navikt/skjemadigitalisering-scripts -- yarn install --frozen-lockfile",
+    "build:scripts": "lerna exec --scope @navikt/skjemadigitalisering-scripts -- yarn --prefer-offline install --frozen-lockfile",
     "prepare": "husky install",
     "start": "lerna run start --stream",
     "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start --stream",
@@ -39,7 +39,7 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
     "eslint-plugin-testing-library": "^3.9.0",
-    "formiojs": "4.14.0-rc.18",
+    "formiojs": "4.14.6",
     "husky": "^7.0.4",
     "lerna": "^4.0.0",
     "lint-staged": "^10.4.0",
@@ -54,7 +54,7 @@
     "typescript": "^4.4.2"
   },
   "engines": {
-    "node": ">=14.15.0 <=14.17.0"
+    "node": "=16.17.1"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,cjs,mjs}": [

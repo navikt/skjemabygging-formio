@@ -1,7 +1,7 @@
 import { styled } from "@material-ui/styles";
 import { NavForm, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
-import { NavBar } from "./components/NavBar";
+import { NavBar } from "./components/navbar/NavBar";
 import { useAuth } from "./context/auth-context";
 import { Pagewrapper } from "./Forms/components";
 

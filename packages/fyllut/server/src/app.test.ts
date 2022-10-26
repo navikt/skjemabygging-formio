@@ -2,7 +2,7 @@ import nock from "nock";
 import request from "supertest";
 import { createApp } from "./app";
 import { config } from "./config/config";
-import { createMockIdportenJwt, extractHost, extractPath } from "./test/testHelpers.js";
+import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from "./test/testHelpers";
 
 jest.mock("./logger.js");
 
@@ -26,7 +26,7 @@ describe("app", () => {
   });
 
   it("Returns error message and a correlation_id", async () => {
-    const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT;
+    const tokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const azureOpenidScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
       .reply(200, { access_token: "azure-access-token" });
@@ -45,6 +45,11 @@ describe("app", () => {
   });
 
   it("Performs TokenX exchange before calling SendInn", async () => {
+    let key = await generateJwk();
+    nock("https://testoidc.unittest.no")
+      .get("/idporten-oidc-provider/jwk")
+      .reply(200, { keys: [key.toJSON(false)] });
+
     const sendInnLocation = "http://www.unittest.nav.no/sendInn/123";
     const tokenEndpoint = "http://tokenx-unittest.nav.no/token";
     const applicationData = {
@@ -55,8 +60,8 @@ describe("app", () => {
       translations: {},
     };
 
-    const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl))
-      .get(extractPath(tokenxConfig?.wellKnownUrl))
+    const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl!))
+      .get(extractPath(tokenxConfig?.wellKnownUrl!))
       .reply(200, { token_endpoint: tokenEndpoint });
     const tokenEndpointNockScope = nock(extractHost(tokenEndpoint))
       .post(extractPath(tokenEndpoint))
@@ -69,7 +74,7 @@ describe("app", () => {
       .post("/fyllut/api/send-inn")
       .send(applicationData)
       .set("Fyllut-Submission-Method", "digital")
-      .set("Authorization", `Bearer ${createMockIdportenJwt("12345678911")}`); // <-- injected by idporten sidecar
+      .set("Authorization", `Bearer ${createMockIdportenJwt({ pid: "12345678911" }, undefined, key)}`); // <-- injected by idporten sidecar
     expect(res.status).toEqual(201);
     expect(res.headers["location"]).toMatch(sendInnLocation);
 

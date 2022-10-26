@@ -6,6 +6,7 @@ interface UserData {
   name?: string;
   preferredUsername?: string;
   NAVident?: string;
+  isAdmin: boolean;
   data?: {
     email: string;
   };
@@ -22,6 +23,7 @@ const enforceUserName = (formioUser) => {
     return {
       ...formioUser,
       name: formioUser.data?.email,
+      isAdmin: true,
     };
   }
   return formioUser;

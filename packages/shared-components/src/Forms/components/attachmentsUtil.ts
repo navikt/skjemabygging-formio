@@ -18,7 +18,9 @@ const getRelevantAttachments = (form, submission) => {
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
       label: comp.label,
+      beskrivelse: comp.description,
       pakrevd: comp.properties.vedleggErValgfritt !== "ja",
+      propertyNavn: comp.key,
     }));
 };
 

@@ -14,16 +14,22 @@ export type SendInnConfig = {
   };
 };
 
+export type IdportenConfig = {
+  idportenClientId: string;
+  idportenJwksUri: string;
+  idportenIssuer: string;
+};
+
 export type ConfigType = {
   featureToggles: FeatureTogglesMap;
   tokenx?: TokenxConfig;
   sendInnConfig?: SendInnConfig;
+  idporten?: IdportenConfig;
   clientSecret: string;
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;
   isDelingslenke: boolean;
-  idportenClientId: string;
   formioProjectUrl?: string;
   useFormioApi?: boolean;
   gitVersion?: string;

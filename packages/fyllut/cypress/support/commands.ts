@@ -42,10 +42,6 @@ Cypress.Commands.add("findByRoleWhenAttached", (role, options) => {
     .get("@elementWhenAttached");
 });
 
-Cypress.Commands.add("clickNext", () => {
-  return cy.findByRoleWhenAttached("button", { name: "Neste" }).click();
-});
-
 Cypress.Commands.add("clickNextStep", () => {
   return cy.findByRoleWhenAttached("button", { name: "Neste steg" }).click();
 });

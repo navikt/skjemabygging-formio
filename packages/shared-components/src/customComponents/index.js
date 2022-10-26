@@ -1,6 +1,9 @@
+import AccountNumber from "./components/AccountNumber";
 import AlertStripe from "./components/AlertStripe";
+import Button from "./components/Button";
 import Container from "./components/Container";
 import CountrySelect from "./components/CountrySelect";
+import CurrencySelect from "./components/CurrencySelect";
 import DataGrid from "./components/DataGrid";
 import Day from "./components/Day";
 import Fodselsnummer from "./components/Fodselsnummer.jsx";
@@ -13,6 +16,7 @@ import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import Number from "./components/Number";
 import OrganizationNumber from "./components/OrganizationNumber";
 import Radio from "./components/Radio";
+import Row from "./components/Row";
 import SelectBoxes from "./components/SelectBoxes";
 import Textarea from "./components/TextArea";
 import TextField from "./components/TextField";
@@ -22,8 +26,10 @@ const customComponents = {
   alertstripe: AlertStripe,
   fnrfield: Fodselsnummer,
   orgNr: OrganizationNumber,
+  bankAccount: AccountNumber,
   htmlelement: HTMLElement,
   landvelger: CountrySelect,
+  valutavelger: CurrencySelect,
   navDatepicker: NavDatepicker,
   radiopanel: Radio,
   navCheckbox: NavCheckbox,
@@ -36,5 +42,7 @@ const customComponents = {
   day: Day,
   iban: IBAN,
   image: Image,
+  row: Row,
+  button: Button,
 };
 export default customComponents;

@@ -21,7 +21,6 @@ const organisasjonPalett = {
         maxLength: 9,
         validate: {
           required: true,
-
           custom: "valid = instance.validateOrganizationNumber(input)",
           customMessage: "Organisasjonsnummeret må inneholde 9 siffer",
         },

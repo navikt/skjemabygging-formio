@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { FormsRouter } from "./Forms";
 import MigrationRouter from "./migration/MigrationRouter";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
+import ReportsPage from "./reports/ReportsPage";
 import TranslationsRouter from "./translations/TranslationsRouter";
 
 function AuthenticatedApp({ serverURL, formio }) {
@@ -21,6 +22,9 @@ function AuthenticatedApp({ serverURL, formio }) {
         </Route>
         <Route path="/migrering">
           <MigrationRouter />
+        </Route>
+        <Route path="/rapporter">
+          <ReportsPage />
         </Route>
         <Route path="/">
           <Redirect to="/forms" />

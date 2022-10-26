@@ -5,6 +5,7 @@ import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
+import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
@@ -33,16 +34,11 @@ const FyllUtRouter = ({ form, translations }) => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
-  const beforeUnload = (e) => {
-    e.preventDefault();
-    e.returnValue = "";
-  };
-
   useEffect(() => {
     loggSkjemaApnet();
-    window.addEventListener("beforeunload", beforeUnload);
+    addBeforeUnload();
     return () => {
-      window.removeEventListener("beforeunload", beforeUnload);
+      removeBeforeUnload();
     };
   }, [loggSkjemaApnet]);
 
@@ -108,11 +104,11 @@ const FyllUtRouter = ({ form, translations }) => {
           <Route path={`${path}/:panelSlug`}>
             {formForRendering && (
               <>
-                <Prompt
-                  message={(location) =>
-                    location.pathname === formBaseUrl && app !== "bygger" ? ALERT_MESSAGE_BACK_BUTTON : true
-                  }
-                />
+                {app !== "bygger" && (
+                  <Prompt
+                    message={(location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true)}
+                  />
+                )}
                 <FillInFormPage
                   form={formForRendering}
                   submission={submission}

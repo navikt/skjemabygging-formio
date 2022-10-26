@@ -1,20 +1,16 @@
 import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import { Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import ActionRow from "../components/layout/ActionRow";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
-import { getAvailableLanguages, languagesInNorwegian, useI18nState } from "../context/i18n";
+import { getAvailableLanguages, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
-import { useModal } from "../util/useModal";
-import ConfirmDeleteLanguageModal from "./ConfirmDeleteLanguageModal";
 import TranslationsFormPage from "./TranslationsFormPage";
 import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
@@ -31,13 +27,10 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }) => {
+const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
   const { formPath, languageCode } = useParams();
-  const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
   const [form, setForm] = useState();
   const [status, setStatus] = useState("LOADING");
-
-  const history = useHistory();
   const { translations } = useI18nState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
 
@@ -81,16 +74,10 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           visSkjemaliste: false,
           visLagNyttSkjema: false,
           visOversettelseliste: true,
+          visSkjemaMeny: true,
+          formPath: form.path,
         }}
       >
-        <ActionRow>
-          <Link className="knapp" to={`/forms/${path}/edit`}>
-            Rediger skjema
-          </Link>
-          <Link className="knapp" to={`/forms/${path}/view/skjema${languageCode ? `?lang=${languageCode}` : ""}`}>
-            Forhåndsvis
-          </Link>
-        </ActionRow>
         <Row>
           <Column className={styles.mainCol}>
             <TranslationsFormPage
@@ -104,7 +91,6 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath={path} label={""} />
-              <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
               <PrimaryButtonWithSpinner
                 onClick={() =>
                   saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title)
@@ -127,12 +113,6 @@ const TranslationsByFormPage = ({ deleteTranslation, loadForm, saveTranslation }
           </div>
         </Row>
       </AppLayoutWithContext>
-      <ConfirmDeleteLanguageModal
-        language={languagesInNorwegian[languageCode]}
-        isOpen={isDeleteLanguageModalOpen}
-        closeModal={() => setIsDeleteLanguageModalOpen(false)}
-        onConfirm={() => deleteTranslation(translationId).then(() => history.push("/translations"))}
-      />
     </>
   );
 };

@@ -178,6 +178,13 @@ const createDummySelectComponent = (
   data: { values },
 });
 
+const createDummyButtonComponent = (buttonText = "Submit", label = "Knapp") => ({
+  label,
+  buttonText,
+  key: keyFromLabel(label),
+  type: "button",
+});
+
 const createPanelObject = (title?: string, components?: Component[], label?: string): Component =>
   ({
     title,
@@ -215,5 +222,6 @@ const mockedComponentObjectForTest = {
   createDummyDayComponent,
   createDummySelectComponent,
   createDummyLandvelger,
+  createDummyButtonComponent,
 };
 export default mockedComponentObjectForTest;

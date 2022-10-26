@@ -1,12 +1,13 @@
 import { Request } from "express";
 import { formioService } from "../services";
-import { User } from "../types";
+import { User } from "../types/custom";
 import { getFormioToken } from "./requestTool";
 
 const devUser = {
   name: "dev-user",
   preferredUsername: "dev-user-preferred",
   NAVident: "dev-navident",
+  isAdmin: true,
 };
 
 export const getDevUser = async (req: Request): Promise<User> => {
@@ -18,6 +19,7 @@ export const getDevUser = async (req: Request): Promise<User> => {
         name: formioUser.data.email,
         preferredUsername: formioUser.data.email,
         NAVident: "N/A",
+        isAdmin: true,
       };
     } catch (e) {
       // @ts-ignore

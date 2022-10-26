@@ -29,8 +29,22 @@ export class FormioService {
     return this.fetchFromProjectApi(`/form?type=form&path__in=${formPaths.toString()}&limit=${limit}`);
   }
 
-  async getAllForms(limit = 1000, excludeDeleted = true) {
-    return this.fetchFromProjectApi(`/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&limit=${limit}`);
+  async getPublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
+    return this.fetchFromProjectApi(
+      `/form?type=form&tags=nav-skjema&properties.published__exists=true&select=${select}&limit=${limit}`
+    );
+  }
+
+  async getUnpublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
+    return this.fetchFromProjectApi(
+      `/form?type=form&tags=nav-skjema&properties.unpublished__exists=true&select=${select}&limit=${limit}`
+    );
+  }
+
+  async getAllForms(limit = 1000, excludeDeleted = true, select = ""): Promise<NavFormType[]> {
+    return this.fetchFromProjectApi(
+      `/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&select=${select}&limit=${limit}`
+    );
   }
 
   async getFormioUser(userToken: string) {

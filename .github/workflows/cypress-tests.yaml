@@ -4,14 +4,14 @@ on:
   push
 
 jobs:
-  cypress-run:
+  cypress-run-fyllut:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14.17.0'
+          node-version: '16.17.1'
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: "Bootstrap"
@@ -24,3 +24,26 @@ jobs:
           start: yarn --cwd ./server run start, yarn run start
           wait-on: 'http://localhost:3001, http://localhost:8081/fyllut/internal/isready'
           config: video=false
+
+  cypress-run-bygger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16.17.1'
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: "Bootstrap"
+        run: yarn bootstrap
+      - name: "Cypress tests (bygger)"
+        uses: cypress-io/github-action@v2
+        with:
+          install: false
+          working-directory: ./packages/bygger
+          start: yarn --cwd ./server run start, yarn run start
+          wait-on: 'http://localhost:3000, http://localhost:8080/internal/isready'
+          wait-on-timeout: 120
+          config: video=false
+          config-file: cypress.config.ts

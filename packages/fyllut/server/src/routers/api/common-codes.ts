@@ -24,8 +24,40 @@ const commonCodes = {
       next(e);
     }
   },
+
+  getCurrencies: async (req: Request, res: Response, next: NextFunction) => {
+    // As of 15.07.2022. Different languageCode like nn or en just results in same term,
+    // so no need to support req.query.languageCode
+    const languageCode = "nb";
+    const mostUsedCurr = [];
+    const currencyList = [];
+
+    try {
+      const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
+      for (const [key, values] of Object.entries(response.betydninger)) {
+        const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.tekst;
+        let newObj = { label: `${currencyName} (${key})`, value: key };
+        if (key === "NOK" || key === "EUR" || key === "SEK") {
+          mostUsedCurr.push(newObj);
+        } else {
+          currencyList.push(newObj);
+        }
+      }
+      sortAsc(currencyList, languageCode);
+      sortAsc(mostUsedCurr, languageCode);
+
+      const options = mostUsedCurr.concat(currencyList);
+      res.send(options);
+    } catch (e) {
+      next(e);
+    }
+  },
 };
 
+const sortAsc = (list: { label: string; value: string }[], languageCode: string) => {
+  let sortedarr = list.sort((a, b) => a.label.toUpperCase().localeCompare(b.label.toUpperCase(), languageCode));
+  return sortedarr;
+};
 /**
  * Doc: https://navikt.github.io/felleskodeverk/
  * Swagger: https://kodeverk.dev.intern.nav.no/swagger-ui.html

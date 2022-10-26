@@ -1,65 +1,44 @@
-import { formUtils, LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useCallback, useEffect, useState } from "react";
+import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
 import { EditFormPage } from "./EditFormPage";
+import formPageReducer from "./formPageReducer";
 import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
   let { url } = useRouteMatch();
   const { formPath } = useParams();
-  const [status, setStatus] = useState("LOADING");
-  const [form, setForm] = useState();
-  const [hasUnsavedChanges, setHasUnsavedChanged] = useState(false);
+  const [state, dispatch] = useReducer(
+    formPageReducer,
+    { status: "LOADING", hasUnsavedChanges: false },
+    (state) => state
+  );
+  const loadTranslationsForFormPath = useCallback(
+    () => loadTranslations(state.form?.path),
+    [loadTranslations, state.form?.path]
+  );
 
-  const loadTranslationsForFormPath = useCallback(() => loadTranslations(form?.path), [loadTranslations, form?.path]);
-  const firstPanelSlug = formUtils.getPanelSlug(form, 0);
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
-        setForm(form);
-        setStatus("FINISHED LOADING");
+        dispatch({ type: "form-loaded", form });
       })
       .catch((e) => {
         console.log(e);
-        setStatus("FORM NOT FOUND");
+        dispatch({ type: "form-not-found" });
       });
   }, [loadForm, formPath]);
 
   const onChange = (changedForm) => {
-    if (formHasChanged(form, changedForm)) {
-      setHasUnsavedChanged(true);
-    }
-
-    setForm(changedForm);
-  };
-
-  const formHasChanged = (form, changedForm) => {
-    return JSON.stringify(removeIds(form)) !== JSON.stringify(removeIds(changedForm));
-  };
-
-  const removeIds = (object) => {
-    const clonedObject = {
-      ...object,
-    };
-
-    if (clonedObject.id) {
-      delete clonedObject.id;
-    }
-
-    if (clonedObject.components && clonedObject.components.length > 0) {
-      clonedObject.components = clonedObject.components.map((component) => removeIds(component));
-    }
-
-    return clonedObject;
+    dispatch({ type: "form-changed", form: changedForm });
   };
 
   const saveFormAndResetIsUnsavedChanges = async (form) => {
     const savedForm = await onSave(form);
     if (!savedForm.error) {
-      setHasUnsavedChanged(false);
-      setForm(savedForm);
+      dispatch({ type: "form-saved", form: savedForm });
       return savedForm;
     }
     return form;
@@ -67,19 +46,19 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
 
   const publishForm = async (form, translations) => {
     const publishedForm = await onPublish(form, translations);
-    setForm(publishedForm);
+    dispatch({ type: "form-saved", form: publishedForm });
   };
 
   const unpublishForm = async (form) => {
     const unpublishForm = await onUnpublish(form);
-    setForm(unpublishForm);
+    dispatch({ type: "form-saved", form: unpublishForm });
   };
 
-  if (status === "LOADING") {
+  if (state.status === "LOADING") {
     return <LoadingComponent />;
   }
 
-  if (status === "FORM NOT FOUND" || !form) {
+  if (state.status === "FORM NOT FOUND" || !state.form) {
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
@@ -88,17 +67,15 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     "Er du sikker på at du vil gå videre?";
 
   return (
-    <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={form}>
+    <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={state.form}>
+      <Prompt
+        when={state.hasUnsavedChanges}
+        message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
+      />
       <Switch>
         <Route path={`${url}/edit`}>
-          <Prompt
-            when={hasUnsavedChanges}
-            message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
-          />
           <EditFormPage
-            form={form}
-            testFormUrl={`${url}/view/${firstPanelSlug}`}
-            formSettingsUrl={`${url}/settings`}
+            form={state.form}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -106,13 +83,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
           />
         </Route>
         <Route path={`${url}/view`}>
-          <TestFormPage form={form} editFormUrl={`${url}/edit`} formSettingsUrl={`${url}/settings`} />
+          <TestFormPage form={state.form} />
         </Route>
         <Route path={`${url}/settings`}>
           <FormSettingsPage
-            form={form}
-            editFormUrl={`${url}/edit`}
-            testFormUrl={`${url}/view/${firstPanelSlug}`}
+            form={state.form}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}

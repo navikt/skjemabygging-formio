@@ -172,12 +172,12 @@ const basicPalett = {
     },
     vedlegg: {
       title: "Vedlegg",
-      key: "vedlegg",
+      key: "vedleggNr",
       icon: "file",
       schema: {
         label: "< Navn på vedlegg > + husk å legge inn Gosys vedleggstittel og vedleggskode under API-fanen",
         type: "radiopanel",
-        key: "vedlegg",
+        key: "vedleggNr",
         input: true,
         clearOnHide: true,
         validateOn: "blur",
@@ -234,7 +234,14 @@ const basicPalett = {
       ignore: true,
     },
     button: {
-      ignore: true,
+      title: "Knapp",
+      key: "knapp",
+      icon: "button",
+      schema: {
+        label: "Knapp",
+        type: "button",
+        key: "knapp",
+      },
     },
   },
 };

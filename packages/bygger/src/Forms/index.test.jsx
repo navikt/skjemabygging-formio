@@ -50,7 +50,7 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     const knapp = await screen.findByRole("button", { name: "Lag nytt skjema" });
     await userEvent.click(knapp);
-    expect(await screen.findByRole("heading", { name: "Opprett nytt skjema" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Opprett" })).toBeInTheDocument();
   });
 
   it("can edit a form", async () => {

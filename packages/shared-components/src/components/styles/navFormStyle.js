@@ -8,7 +8,7 @@ const wizardSidevelgerStyles = {
     padding: "3rem 0 1rem 0",
   },
 
-  "& .stegindikator__wrapper": {
+  "& .stegindikator": {
     margin: "3rem",
   },
 
@@ -79,6 +79,28 @@ const styles = {
   "& .img-component": {
     maxWidth: "100%",
   },
+  "& .components-row .builder-components, .components-row": {
+    width: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    columnGap: "24px",
+  },
+  "& .components-row > div ": {
+    maxWidth: "100%",
+  },
+  "& .components-row .builder-component": {
+    flexGrow: "1",
+  },
+  "& .components-row .formio-component-valutavelger ": {
+    minWidth: "224px",
+  },
+  "& .formio-component-valutavelger .formio-form .choices__list--dropdown .choices__input, .choices__list--single .choices__item":
+    {
+      maxWidth: "90%",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+    },
 };
 
 const navFormStyle = merge(

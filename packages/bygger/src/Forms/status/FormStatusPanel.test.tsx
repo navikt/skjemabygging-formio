@@ -7,7 +7,7 @@ import { allLanguagesInNorwegian } from "./PublishedLanguages";
 
 type PartialFormProperties = Pick<
   FormPropertiesType,
-  "modified" | "modifiedBy" | "published" | "publishedBy" | "isTestForm"
+  "modified" | "modifiedBy" | "published" | "publishedBy" | "isTestForm" | "unpublished"
 >;
 
 describe("FormStatusPanel", () => {
@@ -97,6 +97,26 @@ describe("FormStatusPanel", () => {
 
     it("displays 'Sist publisert'", () => {
       expect(screen.queryByText("Sist publisert:")).toBeNull();
+    });
+  });
+
+  describe("When form is unpublished and modified date is same as or before unpublished date", () => {
+    const properties: PartialFormProperties = { modified: now, unpublished: now };
+    beforeEach(() => {
+      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+    });
+    it("modified (date) is before unpublisheddate", () => {
+      expect(screen.getByText("Avpublisert")).toBeInTheDocument();
+    });
+  });
+
+  describe("When form is unpublished and modified date is after unpublished date", () => {
+    const properties: PartialFormProperties = { modified: now, unpublished: earlier };
+    beforeEach(() => {
+      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+    });
+    it("modified (date) is after unpublisheddate", () => {
+      expect(screen.getByText("Utkast")).toBeInTheDocument();
     });
   });
 

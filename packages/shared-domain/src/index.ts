@@ -9,6 +9,7 @@ import type {
   NavFormType,
   NewFormSignatureType,
 } from "./form";
+import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
 import type {
   FormioTranslation,
@@ -23,13 +24,15 @@ import type {
   TranslationScope,
   TranslationTag,
 } from "./languages/types";
-import type { MottaksadresseData, MottaksadresseEntity } from "./mottaksadresse";
+import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
+import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import { createFormSummaryObject } from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
 import dateUtils from "./utils/date";
 import featureUtils, { FeatureTogglesMap } from "./utils/featureUtils";
+import navFormioUtils from "./utils/formio";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
 import navFormUtils from "./utils/navFormUtils";
@@ -42,6 +45,7 @@ export {
   createFormSummaryObject,
   TEXTS,
   MockedComponentObjectForTest,
+  navFormioUtils,
   navFormUtils,
   stringUtils,
   objectUtils,
@@ -77,8 +81,12 @@ export type {
   TranslationScope,
   TranslationTag,
   MottaksadresseData,
-  MottaksadresseEntity,
+  Mottaksadresse,
   ResourceContent,
   MottaksadresserResourceContent,
   GlobalTranslationsResourceContent,
+  ForstesideRequestBody,
+  KjentBruker,
+  UkjentBruker,
+  ReportDefinition,
 };
