@@ -129,7 +129,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
   const { link } = panelStyles();
   const [defaultOpen] = useState(true);
   return (
-    <section className="wizard-page">
+    <section>
       <Accordion>
         <Accordion.Item defaultOpen={defaultOpen}>
           <Accordion.Header>
@@ -229,7 +229,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
           })}
         </Normaltekst>
-        <FormSummary submission={submission} form={form} formUrl={formUrl} />
+        <div className="form-summary">
+          <FormSummary submission={submission} form={form} formUrl={formUrl} />
+        </div>
         {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="form-nav">
           {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
@@ -324,13 +326,8 @@ const SummaryContent = styled("div")({
     padding: "0.75rem 1rem",
     margin: "0.375rem 0",
   },
-  "& section.wizard-page": {
-    padding: "0",
-    "&:first-of-type": {
-      paddingTop: "2rem",
-    },
-    "&:last-of-type": {
-      paddingBottom: "2.75rem",
-    },
+  "& .form-summary": {
+    paddingTop: "2rem",
+    paddingBottom: "3.75rem",
   },
 });

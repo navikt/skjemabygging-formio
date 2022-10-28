@@ -21,6 +21,9 @@ const FyllUtContainer = styled("div")({
   maxWidth: "960px",
   padding: "2rem 0",
   ...bootstrapStyles,
+  "@media screen and (max-width: 992px)": {
+    padding: "1rem",
+  },
 });
 
 const ALERT_MESSAGE_BACK_BUTTON =

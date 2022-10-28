@@ -45,46 +45,47 @@ export function IntroPage({ form, formUrl }: Props) {
   }, [search]);
 
   return (
-    <main>
-      <GuidePanel poster className="margin-bottom-double">
-        <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
-        <ul>
-          {description && (
+    <main className="fyllut-layout">
+      <div>
+        <GuidePanel poster className="margin-bottom-double">
+          <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
+          <ul>
+            {description && (
+              <li className="margin-bottom-default">
+                <b>{translate(descriptionBold)} </b>
+                {translate(description)}
+              </li>
+            )}
             <li className="margin-bottom-default">
-              <b>{translate(descriptionBold)} </b>
-              {translate(description)}
+              <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
+              {translate(TEXTS.statiske.introPage.requiredFields)}
             </li>
-          )}
-          <li className="margin-bottom-default">
-            <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
-            {translate(TEXTS.statiske.introPage.requiredFields)}
-          </li>
-          <li className="margin-bottom-default">
-            <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
-            {translate(TEXTS.statiske.introPage.notSave)}
-          </li>
-          <li className="margin-bottom-default">
-            <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
-            {translate(TEXTS.statiske.introPage.publicComputer)}
-          </li>
-        </ul>
-      </GuidePanel>
+            <li className="margin-bottom-default">
+              <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
+              {translate(TEXTS.statiske.introPage.notSave)}
+            </li>
+            <li className="margin-bottom-default">
+              <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
+              {translate(TEXTS.statiske.introPage.publicComputer)}
+            </li>
+          </ul>
+        </GuidePanel>
 
-      <nav className="form-nav">
-        <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
-          <Button className="navds-button navds-button--primary">
+        <nav className="form-nav">
+          <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
+            <Button className="navds-button navds-button--primary">
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.introPage.start)}
+              </span>
+            </Button>
+          </Link>
+          <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
             <span aria-live="polite" className="navds-label">
-              {translate(TEXTS.grensesnitt.introPage.start)}
+              {translate(TEXTS.grensesnitt.goBack)}
             </span>
-          </Button>
-        </Link>
-
-        <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
-          <span aria-live="polite" className="navds-label">
-            {translate(TEXTS.grensesnitt.goBack)}
-          </span>
-        </button>
-      </nav>
+          </button>
+        </nav>
+      </div>
     </main>
   );
 }
