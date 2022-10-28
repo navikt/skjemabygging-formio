@@ -47,10 +47,23 @@ export const globalStyles = {
   "main:focus": {
     outline: "none",
   },
+  ".fyllut-layout": {
+    "@media screen and (min-width: 40rem)": {
+      display: "grid",
+      gap: "3rem",
+      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
+      margin: "0 auto",
+    },
+  },
+  ".nav-form > .alert.alert-danger": {
+    "@media screen and (min-width: 40rem)": {
+      maxWidth: "608px",
+    },
+  },
 };
 
 export const appStyles = {
   "& .wizard-page": {
-    paddingBottom: "2.75rem",
+    paddingBottom: "3.75rem",
   },
 };

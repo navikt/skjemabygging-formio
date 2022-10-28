@@ -68,6 +68,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onPrevPage={onNextOrPreviousPage}
         formReady={onFormReady}
         onWizardPageSelected={onWizardPageSelected}
+        className="nav-form"
       />
     </div>
   );

@@ -1,16 +1,5 @@
 import merge from "lodash.merge";
 
-const layout = {
-  "& .fyllut-layout": {
-    "@media screen and (min-width: 40rem)": {
-      display: "grid",
-      gap: "3rem",
-      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
-      margin: "0 auto",
-    },
-  },
-};
-
 const allFieldsStyles = {
   "& .form-group:not(.formio-hidden)": {
     clear: "both",
@@ -108,6 +97,10 @@ const stepIndicator = {
     "@media screen and (min-width: 40rem)": {
       position: "initial",
       display: "block",
+      position: "relative",
+      position: "sticky",
+      right: 0,
+      top: 0,
     },
 
     "& .navds-stepper__content": {
@@ -166,7 +159,6 @@ const stepIndicator = {
 };
 
 const navFormStyle = merge(
-  layout,
   styles,
   fieldsSideBySideStyles,
   allFieldsStyles,

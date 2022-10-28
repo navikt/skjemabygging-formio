@@ -285,6 +285,6 @@ const ResultContent = styled("div")({
   display: "flex",
   flexDirection: "column",
   "& section.wizard-page": {
-    paddingBottom: "2.75rem",
+    paddingBottom: "3.75rem",
   },
 });
