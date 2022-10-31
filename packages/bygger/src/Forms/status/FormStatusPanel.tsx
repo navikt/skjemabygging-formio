@@ -5,7 +5,7 @@ import React from "react";
 import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
 import { useStatusStyles } from "./styles";
-import Timestamp from "./Timestamp";
+import TimestampPanelItem from "./Timestamp";
 import { Props } from "./types";
 
 const FormStatusPanel = ({ formProperties }: Props) => {
@@ -18,9 +18,9 @@ const FormStatusPanel = ({ formProperties }: Props) => {
         <Element>Status:</Element>
         <FormStatus status={determineStatus(formProperties)} size="large" />
       </div>
-      <Timestamp label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
-      <Timestamp label="Sist publisert:" timestamp={published} userName={publishedBy} />
-      <Timestamp label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
+      <TimestampPanelItem label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
+      <TimestampPanelItem label="Sist publisert:" timestamp={published} userName={publishedBy} />
+      <TimestampPanelItem label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
       <PublishedLanguages formProperties={formProperties} />
     </Panel>
   );
