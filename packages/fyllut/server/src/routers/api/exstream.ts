@@ -26,7 +26,7 @@ const testHtml =
   "</html>";
 
 const exstream = {
-  // TODO: Delete this after testing done
+  // TODO: Change this to POST after testing done
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const pdf = await createPdf(req.headers.AzureAccessToken as string, "Test", testHtml);
@@ -55,7 +55,7 @@ const createPdf = async (azureAccessToken: string, title: string, html: string) 
         contentType: "application/json",
         data: base64Encode(
           JSON.stringify({
-            dokumenttypeId: "ARE1002", // TODO: Skal byttes til fs_001
+            dokumenttypeId: "fs_001",
             dokumentTittel: title,
             arkivSystem: "INGEN",
             html: base64Encode(html),
@@ -63,7 +63,6 @@ const createPdf = async (azureAccessToken: string, title: string, html: string) 
         ),
         async: "true",
       },
-      DOKUMENTNR: "JSONTEST", // TODO: Skal byttes til Fyllut-Sendinn
       RETURNFORMAT: "PDF",
       RETURNDATA: "TRUE",
     }),
