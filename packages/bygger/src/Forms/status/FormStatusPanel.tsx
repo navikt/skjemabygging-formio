@@ -16,7 +16,9 @@ const FormStatusPanel = ({ formProperties }: Props) => {
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
         <Element>Status:</Element>
-        <FormStatus status={determineStatus(formProperties)} size="large" />
+        <div className={styles.sidePanelFormStatusContainer}>
+          <FormStatus status={determineStatus(formProperties)} size="large" />
+        </div>
       </div>
       <TimestampPanelItem label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <TimestampPanelItem label="Sist publisert:" timestamp={published} userName={publishedBy} />

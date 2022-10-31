@@ -6,12 +6,11 @@ const useStatusStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
   },
-  statusRow: (props: { size?: StreetLightSize }) => ({
+  statusRow: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    marginTop: props?.size === "large" ? "0.5rem" : 0,
-  }),
+  },
   rowText: {
     flex: "1",
     margin: "0",
@@ -20,6 +19,9 @@ const useStatusStyles = makeStyles({
     "&:not(:last-child)": {
       marginBottom: "2.5rem",
     },
+  },
+  sidePanelFormStatusContainer: {
+    marginTop: "0.5rem",
   },
 });
 

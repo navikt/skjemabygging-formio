@@ -33,7 +33,7 @@ export function determineStatus(formProperties: FormPropertiesType): Status {
 type FormStatusProps = { status: Status; size: StreetLightSize };
 
 const FormStatus = ({ status, size }: FormStatusProps) => {
-  const styles = useStatusStyles({ size });
+  const styles = useStatusStyles();
   const statusTexts: Record<Status, string> = {
     PUBLISHED: "Publisert",
     UNPUBLISHED: "Avpublisert",
