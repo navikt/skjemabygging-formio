@@ -8,6 +8,7 @@ import commonCodes from "./common-codes";
 import config from "./config.js";
 import countries from "./countries.js";
 import enhetsliste from "./enhetsliste.js";
+import exstream from "./exstream";
 import form from "./form.js";
 import forms from "./forms.js";
 import forsteside from "./forsteside";
@@ -36,6 +37,7 @@ apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
+apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
 apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
