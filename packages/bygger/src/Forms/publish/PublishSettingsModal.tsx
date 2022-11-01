@@ -17,6 +17,9 @@ const useModalStyles = makeStyles({
     float: "right",
     margin: "1rem",
   },
+  languageList: {
+    margin: 0,
+  },
 });
 
 const useStatusPanelStyles = makeStyles({
@@ -101,9 +104,10 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
                 <FormStatus status={determineStatus(formProperties)} size="large" />
               </td>
               <td>
-                <ul>
-                  {formProperties.publishedLanguages?.map((language) => (
-                    <li key={language}>{language}</li>
+                <ul className={styles.languageList}>
+                  {formProperties.published && <li key="nb-NO">{"Norsk bokmål"}</li>}
+                  {formProperties.publishedLanguages?.map((languageCode) => (
+                    <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
                   ))}
                 </ul>
               </td>
