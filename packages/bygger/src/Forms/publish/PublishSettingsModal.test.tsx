@@ -5,7 +5,8 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import PublishSettingsModal, { getCompleteTranslationLanguageCodeList } from "./PublishSettingsModal";
 
-const { createDummyRadioPanel, createFormObject, createPanelObject } = MockedComponentObjectForTest;
+const { createDummyRadioPanel, createFormObject, createPanelObject, createFormPropertiesObject } =
+  MockedComponentObjectForTest;
 
 jest.mock("../../context/i18n/index", () => {
   const languagesInNorwegian = {
@@ -52,13 +53,15 @@ describe("PublishSettingsModal", () => {
     );
   };
 
-  it("not render checkbox when there is no complete translation", () => {
+  it("renders disabled checkbox for Norsk bokmål", () => {
     const form = createFormObject([createPanelObject("test", [createDummyRadioPanel("Bor du i Sverige?")])]);
     renderPublishSettingsModal(form);
-    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Norsk bokmål (NB-NO)" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Norsk bokmål (NB-NO)" })).toBeChecked();
+    expect(screen.queryByRole("checkbox", { name: "Norsk bokmål (NB-NO)" })).toBeDisabled();
   });
 
-  it("render only checkbox with English label when only complete English translation is available", async () => {
+  it("renders checkbox for language with complete translation", async () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning"
@@ -66,6 +69,18 @@ describe("PublishSettingsModal", () => {
     renderPublishSettingsModal(form);
     expect(await screen.findByRole("checkbox", { name: "Engelsk (EN)" })).toBeTruthy();
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeInTheDocument();
+  });
+
+  it("renders disabled checkbox for previously published language when current translation is incomplete", async () => {
+    const form = createFormObject(
+      [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
+      "Veiledning",
+      createFormPropertiesObject({ publishedLanguages: ["nn-NO"] })
+    );
+    renderPublishSettingsModal(form);
+    expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).toBeDisabled();
+    expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeChecked();
   });
 
   it("publish will send en-languageCode if the English checkbox is checked ", async () => {

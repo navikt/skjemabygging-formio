@@ -1,4 +1,4 @@
-import type { Component, NavFormType } from "../form";
+import type { Component, FormPropertiesType, NavFormType } from "../form";
 
 const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
 
@@ -194,11 +194,26 @@ const createPanelObject = (title?: string, components?: Component[], label?: str
     components,
   } as Component);
 
-const createFormObject = (panels: Component[] = [], title: string = "Test form"): NavFormType =>
+const dummyFormProperties: FormPropertiesType = {
+  skjemanummer: "",
+  tema: "",
+};
+
+const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertiesType> = {}) => ({
+  ...dummyFormProperties,
+  ...partialFormProperties,
+});
+
+const createFormObject = (
+  panels: Component[] = [],
+  title: string = "Test form",
+  properties: Partial<FormPropertiesType> = {}
+): NavFormType =>
   ({
     components: panels,
     type: "form",
     title,
+    properties,
   } as unknown as NavFormType);
 
 const mockedComponentObjectForTest = {
@@ -219,6 +234,7 @@ const mockedComponentObjectForTest = {
   createDummyDataGrid,
   createPanelObject,
   createFormObject,
+  createFormPropertiesObject,
   createDummyDayComponent,
   createDummySelectComponent,
   createDummyLandvelger,
