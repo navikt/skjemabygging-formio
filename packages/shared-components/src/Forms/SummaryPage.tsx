@@ -218,9 +218,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     textDecoration: "none",
   };
 
-  // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
   const formSteps = useMemo(
     () =>
+      // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
       createFormSummaryObject(form, submission, translate)
         .filter((component) => component.type === "panel")
         .map((panel) => ({ label: panel.label, url: `${formUrl}/${panel.key}` })),
