@@ -32,4 +32,7 @@ export const validering = {
   dateNotBeforeAllowedDate: "Datoen kan ikke være tidligere enn",
   dateInBetween: "Datoen kan ikke være tidligere enn {{minDate}} eller senere enn {{maxDate}}",
   dateNotLaterThanAllowedDate: "Datoen kan ikke være senere enn",
+
+  //org
+  orgNrCustomError: "Dette er ikke et gyldig organisasjonsnummer",
 };

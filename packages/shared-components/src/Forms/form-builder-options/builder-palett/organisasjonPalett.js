@@ -22,7 +22,7 @@ const organisasjonPalett = {
         validate: {
           required: true,
           custom: "valid = instance.validateOrganizationNumber(input)",
-          customMessage: "Organisasjonsnummeret må inneholde 9 siffer",
+          customMessage: "orgNrCustomError",
         },
       },
     },
