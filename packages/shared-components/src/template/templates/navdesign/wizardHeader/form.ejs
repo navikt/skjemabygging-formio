@@ -12,7 +12,7 @@
             {{ctx.t("Lukk")}}
         </button>
         <ol class="navds-stepper">
-        {% ctx.panels.forEach(function(panel, index) { %}
+            {% ctx.panels.forEach(function(panel, index) { %}
             <li class="navds-stepper__item">
                 <span class="navds-stepper__line navds-stepper__line--1"></span>
                 <a
@@ -24,11 +24,23 @@
                     {% } %}
                 >
                     <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(index+1)}}</span>
-                    <div class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</div>
+                    <span class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</span>
                 </a>
                 <span class="navds-stepper__line navds-stepper__line--2"></span>
             </li>
-        {% }) %}
+            {% }) %}
+            <li class="navds-stepper__item">
+                <span class="navds-stepper__line navds-stepper__line--1"></span>
+                <a
+                        href="/fyllut/{{ctx.form.path}}/oppsummering"
+                        class="navds-stepper__step {{ctx.form.submitted === true ? '' : 'navds-stepper__step navds-stepper__step--non-interactive'}}"
+                        ref="{{ctx.wizardKey}}-link"
+                >
+                    <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(ctx.panels.length+1)}}</span>
+                    <span class="navds-stepper__content navds-label">{{ctx.t("Oppsummering", { _userInput: true })}}</span>
+                </a>
+                <span class="navds-stepper__line navds-stepper__line--2"></span>
+            </li>
         </ol>
     </div>
 </nav>

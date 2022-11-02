@@ -1,5 +1,5 @@
 import { makeStyles, styled } from "@material-ui/styles";
-import { Accordion } from "@navikt/ds-react";
+import { Accordion, Stepper } from "@navikt/ds-react";
 import {
   Component,
   createFormSummaryObject,
@@ -10,7 +10,7 @@ import {
 import AlertStripe from "nav-frontend-alertstriper";
 import Lenke from "nav-frontend-lenker";
 import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -218,93 +218,115 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     textDecoration: "none",
   };
 
+  // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
+  const formSteps = useMemo(
+    () =>
+      createFormSummaryObject(form, submission, translate)
+        .filter((component) => component.type === "panel")
+        .map((panel) => ({ label: panel.label, url: `${formUrl}/${panel.key}` })),
+    [form, submission, translate]
+  );
+
   return (
     <SummaryContent>
-      <main id="maincontent" tabIndex={-1}>
-        <Innholdstittel tag="h2" className="margin-bottom-default">
-          {translate(TEXTS.statiske.summaryPage.title)}
-        </Innholdstittel>
-        <Normaltekst className="margin-bottom-default">
-          {translate(TEXTS.statiske.summaryPage.description, {
-            editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
-          })}
-        </Normaltekst>
-        <div className="form-summary">
-          <FormSummary submission={submission} form={form} formUrl={formUrl} />
+      <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
+        <div className="main-col">
+          <Innholdstittel tag="h2" className="margin-bottom-default">
+            {translate(TEXTS.statiske.summaryPage.title)}
+          </Innholdstittel>
+          <Normaltekst className="margin-bottom-default">
+            {translate(TEXTS.statiske.summaryPage.description, {
+              editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
+            })}
+          </Normaltekst>
+          <div className="form-summary">
+            <FormSummary submission={submission} form={form} formUrl={formUrl} />
+          </div>
+          {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
+          <nav className="form-nav">
+            {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
+              <Link
+                className={`navds-button navds-button--secondary ${
+                  innsending === "KUN_PAPIR"
+                    ? "navds-button navds-button--primary"
+                    : "navds-button navds-button--secondary"
+                }`}
+                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
+              >
+                <span aria-live="polite" className="navds-label">
+                  {innsending === "KUN_PAPIR" || submissionMethod === "paper"
+                    ? translate(TEXTS.grensesnitt.moveForward)
+                    : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+                </span>
+              </Link>
+            )}
+            {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
+              <>
+                {submissionMethod === "digital" ? (
+                  <DigitalSubmissionButton
+                    form={form}
+                    submission={submission}
+                    translations={translations}
+                    onError={(err) => setErrorMessage(err.message)}
+                  />
+                ) : (
+                  <Link
+                    className="navds-button navds-button--secondary"
+                    onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                    to={{
+                      pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
+                      search,
+                      state: { previousPage: url },
+                    }}
+                  >
+                    <span aria-live="polite" className="navds-label">
+                      {innsending === "KUN_DIGITAL"
+                        ? translate(TEXTS.grensesnitt.moveForward)
+                        : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
+                    </span>
+                  </Link>
+                )}
+              </>
+            )}
+            {innsending === "INGEN" && (
+              <Link
+                className="navds-button navds-button--secondary"
+                to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+              >
+                <span aria-live="polite" className="navds-label">
+                  {translate(TEXTS.grensesnitt.moveForward)}
+                </span>
+              </Link>
+            )}
+            <Link
+              className="navds-button navds-button--secondary"
+              to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+            >
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
+              </span>
+            </Link>
+            <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.navigation.cancel)}
+              </span>
+            </Lenke>
+          </nav>
+          {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
         </div>
-        {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
-        <nav className="form-nav">
-          {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-            <Link
-              className={`navds-button navds-button--secondary ${
-                innsending === "KUN_PAPIR"
-                  ? "navds-button navds-button--primary"
-                  : "navds-button navds-button--secondary"
-              }`}
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
-            >
-              <span aria-live="polite" className="navds-label">
-                {innsending === "KUN_PAPIR" || submissionMethod === "paper"
-                  ? translate(TEXTS.grensesnitt.moveForward)
-                  : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
-              </span>
-            </Link>
-          )}
-          {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
-            <>
-              {submissionMethod === "digital" ? (
-                <DigitalSubmissionButton
-                  form={form}
-                  submission={submission}
-                  translations={translations}
-                  onError={(err) => setErrorMessage(err.message)}
-                />
-              ) : (
-                <Link
-                  className="navds-button navds-button--secondary"
-                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                  to={{
-                    pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
-                    search,
-                    state: { previousPage: url },
-                  }}
-                >
-                  <span aria-live="polite" className="navds-label">
-                    {innsending === "KUN_DIGITAL"
-                      ? translate(TEXTS.grensesnitt.moveForward)
-                      : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
-                  </span>
-                </Link>
-              )}
-            </>
-          )}
-          {innsending === "INGEN" && (
-            <Link
-              className="navds-button navds-button--primary"
-              onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-              to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
-            >
-              <span aria-live="polite" className="navds-label">
-                {translate(TEXTS.grensesnitt.moveForward)}
-              </span>
-            </Link>
-          )}
-          <Link
-            className="navds-button navds-button--secondary"
-            to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
-          >
-            <span aria-live="polite" className="navds-label">
-              {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-            </span>
-          </Link>
-          <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
-            <span aria-live="polite" className="navds-label">
-              {translate(TEXTS.grensesnitt.navigation.cancel)}
-            </span>
-          </Lenke>
-        </nav>
-        {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
+        <aside className="right-col">
+          <Stepper activeStep={1}>
+            {formSteps.map((step) => (
+              <Stepper.Step to={step.url} as={Link}>
+                {step.label}
+              </Stepper.Step>
+            ))}
+            <Stepper.Step to={url} as={Link}>
+              {TEXTS.statiske.summaryPage.title}
+            </Stepper.Step>
+          </Stepper>
+        </aside>
       </main>
       {}
     </SummaryContent>
@@ -329,5 +351,13 @@ const SummaryContent = styled("div")({
   "& .form-summary": {
     paddingTop: "2rem",
     paddingBottom: "3.75rem",
+  },
+  "& .fyllut-layout": {
+    "@media screen and (min-width: 40rem)": {
+      display: "grid",
+      gap: "3rem",
+      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
+      margin: "0 auto",
+    },
   },
 });
