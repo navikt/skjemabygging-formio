@@ -128,6 +128,32 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
     );
   };
 
+  const LanguagePublishCheckbox = ({ languageCode }: { languageCode: string }) => (
+    <Checkbox
+      className="margin-bottom-default"
+      label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
+      onChange={(event) => {
+        console.log("event.target", event.target, event.target.checked);
+        if (event.target.checked) setPublishLanguageCodeList([...publishLanguageCodeList, languageCode]);
+        else
+          setPublishLanguageCodeList([
+            ...publishLanguageCodeList.filter((publishedLanguageCode) => publishedLanguageCode !== languageCode),
+          ]);
+      }}
+    />
+  );
+
+  const IncompleteLanguageCheckbox = ({ languageCode }: { languageCode: string }) => (
+    <Checkbox
+      className="margin-bottom-default"
+      label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
+      disabled
+    />
+  );
+
+  const isTranslationComplete = (languageCode: string) => completeTranslationLanguageCodeList.includes(languageCode);
+  const isPreviouslyPublished = (languageCode: string) => form.properties.publishedLanguages?.includes(languageCode);
+
   return (
     <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger">
       <PublishStatusPanel formProperties={form.properties} />
@@ -136,34 +162,10 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
       <CheckboxGruppe className="margin-bottom-default">
         <Checkbox disabled checked className="margin-bottom-default" label={`Norsk bokmål (NB-NO)`} />
         {Object.keys(languagesInNorwegian).map((languageCode) => {
-          const isComplete = completeTranslationLanguageCodeList.includes(languageCode);
-          const isPreviouslyPublished = form.properties.publishedLanguages?.includes(languageCode);
-          if (isComplete) {
-            return (
-              <Checkbox
-                className="margin-bottom-default"
-                label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
-                key={languageCode}
-                onChange={(event) => {
-                  if (event.target.checked) setPublishLanguageCodeList([...publishLanguageCodeList, languageCode]);
-                  else
-                    setPublishLanguageCodeList([
-                      ...publishLanguageCodeList.filter(
-                        (publishedLanguageCode) => publishedLanguageCode !== languageCode
-                      ),
-                    ]);
-                }}
-              />
-            );
-          } else if (isPreviouslyPublished) {
-            return (
-              <Checkbox
-                className="margin-bottom-default"
-                label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
-                key={languageCode}
-                disabled
-              />
-            );
+          if (isTranslationComplete(languageCode)) {
+            return <LanguagePublishCheckbox key={languageCode} languageCode={languageCode} />;
+          } else if (isPreviouslyPublished(languageCode)) {
+            return <IncompleteLanguageCheckbox key={languageCode} languageCode={languageCode} />;
           }
           return null;
         })}
