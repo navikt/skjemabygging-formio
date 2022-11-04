@@ -104,12 +104,14 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
                 <FormStatus status={determineStatus(formProperties)} size="large" />
               </td>
               <td>
-                <ul className={styles.languageList}>
-                  {formProperties.published && <li key="nb-NO">{"Norsk bokmål"}</li>}
-                  {formProperties.publishedLanguages?.map((languageCode) => (
-                    <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
-                  ))}
-                </ul>
+                {formProperties.published && (
+                  <ul className={styles.languageList}>
+                    <li>{"Norsk bokmål"}</li>
+                    {formProperties.publishedLanguages?.map((languageCode) => (
+                      <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
+                    ))}
+                  </ul>
+                )}
               </td>
               <td>
                 <Timestamp timestamp={formProperties.modified} />
@@ -132,7 +134,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
       <Undertittel>Hvilke språkversjoner skal publiseres?</Undertittel>
       <Normaltekst className="margin-bottom-default">Valgene inkluderer kun komplette språkversjoner.</Normaltekst>
       <CheckboxGruppe className="margin-bottom-default">
-        <Checkbox disabled checked className="margin-bottom-default" label={`Norsk bokmål (NB-NO)`} key="nb-NO" />
+        <Checkbox disabled checked className="margin-bottom-default" label={`Norsk bokmål (NB-NO)`} />
         {Object.keys(languagesInNorwegian).map((languageCode) => {
           const isComplete = completeTranslationLanguageCodeList.includes(languageCode);
           const isPreviouslyPublished = form.properties.publishedLanguages?.includes(languageCode);
@@ -163,7 +165,7 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
               />
             );
           }
-          return <></>;
+          return null;
         })}
       </CheckboxGruppe>
 
