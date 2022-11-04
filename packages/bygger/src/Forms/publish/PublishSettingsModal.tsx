@@ -67,7 +67,15 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
   const { translationsForNavForm } = useI18nState();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
-  const [publishLanguageCodeList, setPublishLanguageCodeList] = useState<string[]>([]);
+  const [checkedLanguages, setCheckedLanguages] = useState<Record<string, boolean>>(
+    Object.keys(languagesInNorwegian).reduce(
+      (acc, languageCode) => ({
+        ...acc,
+        [languageCode]: false,
+      }),
+      {}
+    )
+  );
 
   useEffect(() => {
     setAllFormOriginalTexts(
@@ -132,13 +140,9 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
     <Checkbox
       className="margin-bottom-default"
       label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
+      checked={checkedLanguages[languageCode]}
       onChange={(event) => {
-        console.log("event.target", event.target, event.target.checked);
-        if (event.target.checked) setPublishLanguageCodeList([...publishLanguageCodeList, languageCode]);
-        else
-          setPublishLanguageCodeList([
-            ...publishLanguageCodeList.filter((publishedLanguageCode) => publishedLanguageCode !== languageCode),
-          ]);
+        setCheckedLanguages({ ...checkedLanguages, [languageCode]: !checkedLanguages[languageCode] });
       }}
     />
   );
@@ -171,7 +175,12 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
         })}
       </CheckboxGruppe>
 
-      <Hovedknapp className={styles.modal_button} onClick={() => publishModal(publishLanguageCodeList)}>
+      <Hovedknapp
+        className={styles.modal_button}
+        onClick={() =>
+          publishModal(Object.keys(checkedLanguages).filter((languageCode) => checkedLanguages[languageCode]))
+        }
+      >
         Publiser
       </Hovedknapp>
     </Modal>

@@ -107,8 +107,8 @@ describe("PublishSettingsModal", () => {
     const englishCheckbox = await screen.findByRole("checkbox", { name: "Engelsk (EN)" });
     expect(englishCheckbox).toBeTruthy();
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeInTheDocument();
-    userEvent.click(englishCheckbox);
-    userEvent.click(englishCheckbox);
+    userEvent.click(await screen.findByRole("checkbox", { name: "Engelsk (EN)" }));
+    userEvent.click(await screen.findByRole("checkbox", { name: "Engelsk (EN)" }));
     userEvent.click(screen.getByRole("button", { name: "Publiser" }));
     expect(mockedPublishModal).toBeCalled();
     expect(mockedPublishModal.mock.calls[0][0]).toEqual([]);
