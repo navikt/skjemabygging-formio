@@ -6,7 +6,6 @@ import { checkConfigConsistency, config } from "./config/config";
 import { buildDirectory } from "./context.js";
 import { createRedirectUrl, getDecorator } from "./dekorator.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";
-import { logger } from "./logger.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
@@ -43,7 +42,7 @@ export const createApp = () => {
   });
 
   // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, async (req: Request, res: Response) => {
+  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const formMeta = await formService.getMeta(res.locals.formId);
       const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
@@ -51,10 +50,10 @@ export const createApp = () => {
         ...decoratorFragments,
         ...formMeta,
       });
-    } catch (err: any) {
-      const errorMessage = `Failed to return index file: ${err.message}`;
-      logger.error(errorMessage);
-      res.status(500).send(errorMessage);
+    } catch (cause: any) {
+      const error = new Error("Failed to return index file");
+      error.cause = cause;
+      next(error);
     }
   });
 
