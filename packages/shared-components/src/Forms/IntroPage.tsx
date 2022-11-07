@@ -110,6 +110,7 @@ export function IntroPage({ form, formUrl }: Props) {
               <>
                 <RadioGroup
                   legend={translate(TEXTS.statiske.introPage.submissionMethod.legend)}
+                  name="submissionMethod"
                   required={true}
                   onChange={(sub: string) => {
                     setErrorMessage(undefined);
