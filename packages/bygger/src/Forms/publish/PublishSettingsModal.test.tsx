@@ -83,6 +83,18 @@ describe("PublishSettingsModal", () => {
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeChecked();
   });
 
+  it("displays a warning for language when it is previously published and currently incomplete", () => {
+    const form = createFormObject(
+      [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
+      "Veiledning",
+      createFormPropertiesObject({ publishedLanguages: ["nn-NO"] })
+    );
+    renderPublishSettingsModal(form);
+    expect(
+      screen.queryByText("OBS! Norsk nynorsk (NN-NO) vil bli avpublisert hvis du publiserer med disse innstillingene.")
+    ).toBeInTheDocument();
+  });
+
   it("publish will send en-languageCode if the English checkbox is checked ", async () => {
     const form = createFormObject(
       [createPanelObject("Personinformasjon", [createDummyRadioPanel("Bor du i Norge?")])],

@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType, I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { AlertStripeAdvarsel } from "nav-frontend-alertstriper";
 import { Hovedknapp } from "nav-frontend-knapper";
 import Panel from "nav-frontend-paneler";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
@@ -174,6 +175,16 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
           return null;
         })}
       </CheckboxGruppe>
+
+      {Object.keys(languagesInNorwegian).map(
+        (languageCode) =>
+          !isTranslationComplete(languageCode) &&
+          isPreviouslyPublished(languageCode) && (
+            <AlertStripeAdvarsel key={`${languageCode}-alert`}>{`OBS! ${
+              languagesInNorwegian[languageCode]
+            } (${languageCode.toUpperCase()}) vil bli avpublisert hvis du publiserer med disse innstillingene.`}</AlertStripeAdvarsel>
+          )
+      )}
 
       <Hovedknapp
         className={styles.modal_button}
