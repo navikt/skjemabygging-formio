@@ -34,6 +34,7 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-stepper-open`]: "single",
     [`${this.wizardKey}-stepper-close`]: "single",
     [`${this.wizardKey}-stepper-backdrop`]: "single",
+    [`${this.wizardKey}-stepper-summary`]: "single",
   });
 
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
@@ -88,6 +89,7 @@ Wizard.prototype.redrawHeader = function () {
       this.loadRefs(headerElement, {
         [`${this.wizardKey}-link`]: "multiple",
         [`${this.wizardKey}-tooltip`]: "multiple",
+        [`${this.wizardKey}-stepper-summary`]: "single",
       });
       this.attachHeader();
     }
@@ -115,6 +117,23 @@ Wizard.prototype.attachHeader = function () {
       }
     });
   }
+
+  const validateAndGoToNextPage = () => {
+    if (this.isLastPage()) {
+      this.emit("submitButton");
+    } else {
+      this.nextPage().then(() => validateAndGoToNextPage());
+    }
+  };
+
+  this.refs[`${this.wizardKey}-stepper-summary`].addEventListener("click", (event) => {
+    event.preventDefault();
+    if (!this.checkValidity(this.localData, false, this.localData, false)) {
+      this.setPage(0).then(() => validateAndGoToNextPage());
+    } else {
+      this.emit("submitButton");
+    }
+  });
 };
 
 Wizard.prototype.detachHeader = function () {
