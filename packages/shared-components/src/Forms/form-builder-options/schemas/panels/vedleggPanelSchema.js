@@ -4,6 +4,9 @@ const vedleggPanelSchema = {
   input: false,
   key: "vedlegg",
   theme: "default",
+  properties: {
+    isAttachmentPanel: true,
+  },
   components: [
     {
       label: "Annen dokumentasjon",
