@@ -27,6 +27,7 @@ const useStatusStyles = makeStyles({
 
 const useFormStatusIndicatorStyles = makeStyles({
   streetLight: (props: { size: StreetLightSize }) => ({
+    width: props.size === "small" ? "1rem" : "1.5rem",
     maxWidth: props.size === "small" ? "1rem" : "1.5rem",
     height: props.size === "small" ? "1rem" : "1.5rem",
     borderRadius: "50%",
