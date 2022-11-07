@@ -316,9 +316,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
         </div>
         <aside className="right-col">
-          <Stepper activeStep={1}>
+          <Stepper activeStep={formSteps.length + 1}>
             {formSteps.map((step) => (
-              <Stepper.Step to={step.url} as={Link}>
+              <Stepper.Step to={step.url} as={Link} key={step.url} completed>
                 {step.label}
               </Stepper.Step>
             ))}
