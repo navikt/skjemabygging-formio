@@ -1,21 +1,9 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { config } from "../../config/config";
-import { fetchFromFormioApi, loadFileFromDirectory } from "../../utils/forms.js";
-
-const { useFormioApi, skjemaDir, formioProjectUrl } = config;
-
-const loadForm = async (formPath) => {
-  if (useFormioApi) {
-    const forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
-    return forms.length > 0 ? forms[0] : null;
-  } else {
-    return await loadFileFromDirectory(skjemaDir, formPath, null);
-  }
-};
+import { formService } from "../../services";
 
 const form = {
   get: async (req, res) => {
-    const form = await loadForm(req.params.formPath);
+    const form = await formService.loadForm(req.params.formPath);
     if (!form) {
       return res.sendStatus(404);
     }
