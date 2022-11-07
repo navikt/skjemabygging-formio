@@ -23,8 +23,10 @@ jest.mock("../../context/i18n/index", () => {
       "YES-label": "yes",
       "Dine opplysninger": "Your information",
       Personinformasjon: "Personal information",
+      "Hei verden": "Hello world",
+      "Hei panel": "Hello panel",
     },
-    "nn-NO": { "YES-label": "yes" },
+    "nn-NO": { "YES-label": "yes", "Hei verden": "Hei verda", "Hei panel": "Hei panel" },
   };
   const mockUseI18nState = () => ({
     translationsForNavForm: mockTranslationsForNavForm,
@@ -39,17 +41,12 @@ Modal.setAppElement(document.createElement("div"));
 
 describe("PublishSettingsModal", () => {
   let mockedCloseModal;
-  let mockedPublishModal;
+  let mockedOnPublish;
   const renderPublishSettingsModal = (form) => {
     mockedCloseModal = jest.fn();
-    mockedPublishModal = jest.fn();
+    mockedOnPublish = jest.fn();
     render(
-      <PublishSettingsModal
-        openModal={true}
-        closeModal={mockedCloseModal}
-        publishModal={mockedPublishModal}
-        form={form}
-      />
+      <PublishSettingsModal openModal={true} closeModal={mockedCloseModal} onPublish={mockedOnPublish} form={form} />
     );
   };
 
@@ -61,13 +58,14 @@ describe("PublishSettingsModal", () => {
     expect(screen.queryByRole("checkbox", { name: "Norsk bokmål (NB-NO)" })).toBeDisabled();
   });
 
-  it("renders checkbox for language with complete translation", async () => {
+  it("renders checked checkbox for language with complete translation", async () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning"
     );
     renderPublishSettingsModal(form);
-    expect(await screen.findByRole("checkbox", { name: "Engelsk (EN)" })).toBeTruthy();
+    expect(screen.queryByRole("checkbox", { name: "Engelsk (EN)" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Engelsk (EN)" })).toBeChecked();
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeInTheDocument();
   });
 
@@ -83,7 +81,23 @@ describe("PublishSettingsModal", () => {
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeChecked();
   });
 
-  it("displays a warning for language when it is previously published and currently incomplete", () => {
+  it("displays a warning when checkbox for previously published translation is unchecked", async () => {
+    const form = createFormObject(
+      [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
+      "Veiledning",
+      createFormPropertiesObject({ publishedLanguages: ["en"] })
+    );
+    renderPublishSettingsModal(form);
+    expect(
+      screen.queryByText("OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene.")
+    ).not.toBeInTheDocument();
+    userEvent.click(await screen.findByRole("checkbox", { name: "Engelsk (EN)" }));
+    expect(
+      screen.queryByText("OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene.")
+    ).toBeInTheDocument();
+  });
+
+  it("displays a warning when previously published translation currently is incomplete", () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning",
@@ -104,13 +118,24 @@ describe("PublishSettingsModal", () => {
     const englishCheckbox = await screen.findByRole("checkbox", { name: "Engelsk (EN)" });
     expect(englishCheckbox).toBeTruthy();
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeInTheDocument();
-    userEvent.click(englishCheckbox);
     userEvent.click(screen.getByRole("button", { name: "Publiser" }));
-    expect(mockedPublishModal).toBeCalled();
-    expect(mockedPublishModal.mock.calls[0][0]).toEqual(["en"]);
+    expect(mockedOnPublish).toBeCalled();
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(["en"]);
   });
 
-  it("publish will send empty array when the English checkbox is checked and checked off", async () => {
+  it("publishes all checked languages", () => {
+    const form = createFormObject([createPanelObject("Hei panel")], "Hei verden");
+    renderPublishSettingsModal(form);
+    expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).toBeChecked();
+    expect(screen.queryByRole("checkbox", { name: "Engelsk (EN)" })).toBeInTheDocument();
+    expect(screen.queryByRole("checkbox", { name: "Engelsk (EN)" })).toBeChecked();
+    userEvent.click(screen.getByRole("button", { name: "Publiser" }));
+    expect(mockedOnPublish).toBeCalled();
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual(["en", "nn-NO"]);
+  });
+
+  it("onPublish will send empty array when the English checkbox is checked off", async () => {
     const form = createFormObject(
       [createPanelObject("Personinformasjon", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning"
@@ -120,10 +145,9 @@ describe("PublishSettingsModal", () => {
     expect(englishCheckbox).toBeTruthy();
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).not.toBeInTheDocument();
     userEvent.click(await screen.findByRole("checkbox", { name: "Engelsk (EN)" }));
-    userEvent.click(await screen.findByRole("checkbox", { name: "Engelsk (EN)" }));
     userEvent.click(screen.getByRole("button", { name: "Publiser" }));
-    expect(mockedPublishModal).toBeCalled();
-    expect(mockedPublishModal.mock.calls[0][0]).toEqual([]);
+    expect(mockedOnPublish).toBeCalled();
+    expect(mockedOnPublish.mock.calls[0][0]).toEqual([]);
   });
 });
 

@@ -12,10 +12,10 @@ const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setO
       <PublishSettingsModal
         openModal={openPublishSettingModal}
         closeModal={() => setOpenPublishSettingModal(false)}
-        publishModal={(languageCode) => {
+        onPublish={(languageCodes) => {
           setOpenPublishSettingModal(false);
           setOpenConfirmPublishModal(true);
-          setSelectedLanguageCodeList(languageCode);
+          setSelectedLanguageCodeList(languageCodes);
         }}
         form={form}
       />
