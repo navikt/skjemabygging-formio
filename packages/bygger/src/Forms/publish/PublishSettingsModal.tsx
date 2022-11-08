@@ -1,17 +1,38 @@
 import { makeStyles } from "@material-ui/styles";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormPropertiesType, I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { AlertStripeAdvarsel } from "nav-frontend-alertstriper";
 import { Hovedknapp } from "nav-frontend-knapper";
+import Panel from "nav-frontend-paneler";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
-import { Normaltekst } from "nav-frontend-typografi";
+import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nState } from "../../context/i18n";
 import { getFormTexts } from "../../translations/utils";
+import FormStatus, { determineStatus } from "../status/FormStatus";
+import { allLanguagesInNorwegian } from "../status/PublishedLanguages";
+import { useStatusStyles } from "../status/styles";
+import Timestamp from "../status/Timestamp";
 
 const useModalStyles = makeStyles({
   modal_button: {
     float: "right",
     margin: "1rem",
+  },
+  languageList: {
+    margin: 0,
+  },
+});
+
+const useStatusPanelStyles = makeStyles({
+  panel: {
+    display: "flex",
+    padding: "0 0.5rem",
+    margin: "2rem 0",
+    backgroundColor: "var(--navds-semantic-color-canvas-background)",
+  },
+  table: {
+    width: "100%",
   },
 });
 
@@ -19,7 +40,7 @@ interface Props {
   form: NavFormType;
   openModal: boolean;
   closeModal: () => void;
-  publishModal: (string) => void;
+  onPublish: (languageCodes: string[]) => void;
 }
 
 export const getCompleteTranslationLanguageCodeList = (
@@ -43,12 +64,12 @@ export const getCompleteTranslationLanguageCodeList = (
   return completeTranslationList;
 };
 
-const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Props) => {
+const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props) => {
   const styles = useModalStyles();
   const { translationsForNavForm } = useI18nState();
   const [allFormOriginalTexts, setAllFormOriginalTexts] = useState<string[]>([]);
   const [completeTranslationLanguageCodeList, setCompleteTranslationLanguageCodeList] = useState<string[]>([]);
-  const [publishLanguageCodeList, setPublishLanguageCodeList] = useState<string[]>([]);
+  const [checkedLanguages, setCheckedLanguages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setAllFormOriginalTexts(
@@ -60,42 +81,124 @@ const PublishSettingsModal = ({ openModal, closeModal, publishModal, form }: Pro
   }, [form]);
 
   useEffect(() => {
-    setCompleteTranslationLanguageCodeList(
-      getCompleteTranslationLanguageCodeList(allFormOriginalTexts, translationsForNavForm)
+    const completeTranslations = getCompleteTranslationLanguageCodeList(allFormOriginalTexts, translationsForNavForm);
+    setCompleteTranslationLanguageCodeList(completeTranslations);
+    setCheckedLanguages(
+      completeTranslations.reduce(
+        (acc, languageCode) => ({
+          ...acc,
+          [languageCode]: true,
+        }),
+        {}
+      )
     );
   }, [allFormOriginalTexts, translationsForNavForm]);
 
+  const PublishStatusPanel = ({ formProperties }: { formProperties: FormPropertiesType }) => {
+    const statusPanelStyles = useStatusPanelStyles();
+    const statusStyles = useStatusStyles();
+    return (
+      <Panel className={statusPanelStyles.panel}>
+        <table className={statusPanelStyles.table}>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Publiserte språk</th>
+              <th>Sist lagret</th>
+              <th>Sist publisert</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <FormStatus status={determineStatus(formProperties)} size="large" />
+              </td>
+              <td>
+                {formProperties.published && (
+                  <ul className={styles.languageList}>
+                    <li>{allLanguagesInNorwegian["nb-NO"]}</li>
+                    {formProperties.publishedLanguages?.map((languageCode) => (
+                      <li key={languageCode}>{languagesInNorwegian[languageCode]}</li>
+                    ))}
+                  </ul>
+                )}
+              </td>
+              <td>
+                <Timestamp timestamp={formProperties.modified} />
+                <p className={statusStyles.rowText}>{formProperties.modifiedBy}</p>
+              </td>
+              <td>
+                <Timestamp timestamp={formProperties.published} />
+                <p className={statusStyles.rowText}>{formProperties.publishedBy}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </Panel>
+    );
+  };
+
+  const LanguagePublishCheckbox = ({ languageCode }: { languageCode: string }) => (
+    <Checkbox
+      className="margin-bottom-default"
+      label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
+      checked={checkedLanguages[languageCode]}
+      onChange={(event) => {
+        setCheckedLanguages({ ...checkedLanguages, [languageCode]: !checkedLanguages[languageCode] });
+      }}
+    />
+  );
+
+  const IncompleteLanguageCheckbox = ({ languageCode }: { languageCode: string }) => (
+    <Checkbox
+      className="margin-bottom-default"
+      label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
+      disabled
+    />
+  );
+
+  const isTranslationComplete = (languageCode: string) => completeTranslationLanguageCodeList.includes(languageCode);
+  const isPreviouslyPublished = (languageCode: string) => form.properties.publishedLanguages?.includes(languageCode);
+
   return (
     <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger">
-      <Normaltekst className="margin-bottom-default">
-        Følgende språkversjoner er tilgjengelige for dette skjemaet. Velg hvilke språkversjoner som skal publiseres.
-        Språkversjoner som ikke publiseres blir utilgjengelige for brukerne.
-      </Normaltekst>
+      <PublishStatusPanel formProperties={form.properties} />
+      <Undertittel>Hvilke språkversjoner skal publiseres?</Undertittel>
+      <Normaltekst className="margin-bottom-default">Valgene inkluderer kun komplette språkversjoner.</Normaltekst>
       <CheckboxGruppe className="margin-bottom-default">
-        {completeTranslationLanguageCodeList.map((languageCode) => (
-          <Checkbox
-            className="margin-bottom-default"
-            label={`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}
-            key={languageCode}
-            onChange={(event) => {
-              if (event.target.checked) setPublishLanguageCodeList([...publishLanguageCodeList, languageCode]);
-              else
-                setPublishLanguageCodeList([
-                  ...publishLanguageCodeList.filter((publishedLanguageCode) => publishedLanguageCode !== languageCode),
-                ]);
-            }}
-          />
-        ))}
+        <Checkbox
+          disabled
+          checked
+          className="margin-bottom-default"
+          label={`${allLanguagesInNorwegian["nb-NO"]} (NB-NO)`}
+        />
+        {Object.keys(checkedLanguages).length > 0 &&
+          Object.keys(languagesInNorwegian).map((languageCode) => {
+            if (isTranslationComplete(languageCode)) {
+              return <LanguagePublishCheckbox key={languageCode} languageCode={languageCode} />;
+            } else if (isPreviouslyPublished(languageCode)) {
+              return <IncompleteLanguageCheckbox key={languageCode} languageCode={languageCode} />;
+            }
+            return null;
+          })}
       </CheckboxGruppe>
-      <Normaltekst>Bare komplette språkversjoner vises i listen ovenfor.</Normaltekst>
-      <Normaltekst className="margin-bottom-default">
-        En språkversjon kan bare publiseres hvis oversdettelsen er komplett
-      </Normaltekst>
-      <Normaltekst className="margin-bottom-default">
-        Hvis du savner en språkversjon må du åpne redigering av det språket og sørge for at alle tekstene er oversatt.
-      </Normaltekst>
 
-      <Hovedknapp className={styles.modal_button} onClick={() => publishModal(publishLanguageCodeList)}>
+      {Object.keys(languagesInNorwegian).map(
+        (languageCode) =>
+          isPreviouslyPublished(languageCode) &&
+          (!isTranslationComplete(languageCode) || !checkedLanguages[languageCode]) && (
+            <AlertStripeAdvarsel key={`${languageCode}-alert`}>{`OBS! ${
+              languagesInNorwegian[languageCode]
+            } (${languageCode.toUpperCase()}) vil bli avpublisert hvis du publiserer med disse innstillingene.`}</AlertStripeAdvarsel>
+          )
+      )}
+
+      <Hovedknapp
+        className={styles.modal_button}
+        onClick={() =>
+          onPublish(completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages[languageCode]))
+        }
+      >
         Publiser
       </Hovedknapp>
     </Modal>
