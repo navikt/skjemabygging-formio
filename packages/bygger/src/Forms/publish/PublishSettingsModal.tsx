@@ -12,7 +12,7 @@ import { getFormTexts } from "../../translations/utils";
 import FormStatus, { determineStatus } from "../status/FormStatus";
 import { allLanguagesInNorwegian } from "../status/PublishedLanguages";
 import { useStatusStyles } from "../status/styles";
-import { Timestamp } from "../status/Timestamp";
+import Timestamp from "../status/Timestamp";
 
 const useModalStyles = makeStyles({
   modal_button: {
