@@ -3,7 +3,8 @@ on:
   push
 env:
   IMAGE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
-  IMAGE_FYLLUT_BASE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'fyllut-base' || 'fyllut-base-dev' }}:${{ github.sha }}"
+  IMAGE_FYLLUT_BASE: "ghcr.io/${{ github.repository }}/fyllut-base:${{ github.sha }}"
+  IMAGE_FYLLUT_BASE_DEV: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
 
 concurrency: deploy-${{ github.ref }}
 
@@ -88,10 +89,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Build and publish Docker image"
+      - name: "Build and push Docker image: fyllut-base-dev"
         working-directory: ./packages/fyllut
         run: |
-          docker build --pull -t ${IMAGE_FYLLUT_BASE} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
+          docker build --pull -t ${IMAGE_FYLLUT_BASE_DEV} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
+          docker push ${IMAGE_FYLLUT_BASE_DEV}
+      - name: "Tag and push Docker image: fyllut-base"
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker tag ${IMAGE_FYLLUT_BASE_DEV} ${IMAGE_FYLLUT_BASE}
           docker push ${IMAGE_FYLLUT_BASE}
 
   deploy-bygger-to-dev:

@@ -20,7 +20,7 @@ const getCurrenttranslationsReducer = (state: Array<any>, action: ReducerActionT
         translatedText: action.payload.translations[originalText].value || "",
       }));
       if (newState.length > 0) {
-        return newState;
+        return newState.sort((a, b) => a.originalText.localeCompare(b.originalText));
       } else {
         return [createNewRow()];
       }

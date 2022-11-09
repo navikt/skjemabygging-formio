@@ -190,7 +190,7 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
               <Link className="lenke" data-testid="editLink" to={`${url}/${formMetadata.path}/edit`}>
                 {formMetadata.title}
               </Link>
-              <FormStatus status={formMetadata.status} size={"small"} />
+              <FormStatus status={formMetadata.status} size="small" />
             </li>
           )}
         </FormsList>

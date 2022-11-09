@@ -1,5 +1,5 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ParsedUrlQueryInput } from "querystring";
 import url from "url";
 import { config } from "./config/config";
@@ -7,10 +7,11 @@ import { createRedirectUrl, getDecorator } from "./dekorator";
 import { logger } from "./logger";
 import { formService } from "./services";
 import { QueryParamSub } from "./types/custom";
+import { ErrorWithCause } from "./utils/errors";
 import { excludeQueryParam } from "./utils/express";
 import { getDefaultPageMeta, getFormMeta } from "./utils/page";
 
-const renderIndex = async (req: Request, res: Response) => {
+const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
   logger.debug("Render index.html", { queryParams: { ...req.query }, baseUrl: req.baseUrl });
   try {
     const qpForm = req.query.form;
@@ -62,10 +63,8 @@ const renderIndex = async (req: Request, res: Response) => {
       ...decoratorFragments,
       ...pageMeta,
     });
-  } catch (err: any) {
-    const errorMessage = `Failed to return index file: ${err.message}`;
-    logger.error(errorMessage);
-    res.status(500).send(errorMessage);
+  } catch (cause: any) {
+    next(new ErrorWithCause("Failed to return index file", cause));
   }
 };
 
