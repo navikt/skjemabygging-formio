@@ -18,6 +18,7 @@ const panelVeiledning = {
   components: [
     {
       key: "annenDokumentasjon",
+      otherDocumentation: true,
       id: "eo3t76",
       inputType: "radio",
       type: "radiopanel",

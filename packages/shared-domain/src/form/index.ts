@@ -67,6 +67,7 @@ export interface Component {
   customConditional?: string;
   properties?: Record<string, string>;
   components?: Component[];
+  otherDocumentation?: boolean;
 }
 
 export interface ComponentValidate {

@@ -10,6 +10,7 @@ const vedleggPanelSchema = {
       description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
       type: "radiopanel",
       key: "annenDokumentasjon",
+      otherDocumentation: true,
       input: true,
       clearOnHide: true,
       validate: {

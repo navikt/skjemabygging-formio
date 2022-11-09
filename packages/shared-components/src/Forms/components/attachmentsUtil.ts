@@ -5,7 +5,7 @@ import { sanitizeJavaScriptCode } from "../../formio-overrides";
 const getRelevantAttachments = (form, submission) => {
   const vedleggComponents = navFormUtils
     .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
+    .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
     .map((component) => {
       const clone = JSON.parse(JSON.stringify(component));
       clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
@@ -24,4 +24,8 @@ const getRelevantAttachments = (form, submission) => {
     }));
 };
 
-export { getRelevantAttachments };
+const hasOtherDocumentation = (form) => {
+  return navFormUtils.flattenComponents(form.components).some((component) => component.otherDocumentation);
+};
+
+export { getRelevantAttachments, hasOtherDocumentation };
