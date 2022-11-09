@@ -53,6 +53,7 @@ const panelVedleggsliste = {
   key: "vedleggpanel",
   title: "Vedleggsliste",
   label: "Vedlegg",
+  isAttachmentPanel: true,
   labelPosition: "top",
   validateOn: "change",
   id: "jdh58e",
