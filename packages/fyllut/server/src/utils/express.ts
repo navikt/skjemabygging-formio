@@ -1,7 +1,7 @@
 import { ParsedQs } from "qs";
 
-export const excludeQueryParam = (name: string, query: ParsedQs = {}): { [key: string]: any } => {
-  const rest = { ...query };
-  delete rest[name];
-  return rest;
+export const excludeQueryParam = (paramToExclude: string, query: ParsedQs = {}): { [key: string]: any } => {
+  const queryCopy = { ...query };
+  delete queryCopy[paramToExclude];
+  return queryCopy;
 };
