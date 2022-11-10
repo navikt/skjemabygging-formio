@@ -13,11 +13,13 @@ import BulkPublishPanel from "./components/BulkPublishPanel";
 import ConfirmMigration from "./components/ConfirmMigration";
 import MigrationDryRunResults from "./components/MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./components/MigrationOptionsForm";
+import SearchFiltersForm from "./components/SearchFiltersForm";
 import {
   createUrlParams,
   getMigrationResultsMatchingSearchFilters,
   getUrlParamMap,
   migrationOptionsAsMap,
+  searchFiltersAsParams,
 } from "./utils";
 
 const useStyles = makeStyles({
@@ -98,7 +100,7 @@ const MigrationPage = () => {
 
   const onConfirm = async () => {
     const updatedForms = await runMigrationWithUpdate(Formiojs.getToken(), {
-      searchFilters: migrationOptionsAsMap(searchFilters),
+      searchFilters: searchFiltersAsParams(searchFilters),
       editOptions: migrationOptionsAsMap(editOptions),
       include: selectedToMigrate,
     });
@@ -125,7 +127,7 @@ const MigrationPage = () => {
             await onSearch();
           }}
         >
-          <MigrationOptionsForm
+          <SearchFiltersForm
             title="Filtrer"
             addRowText="Legg til filtreringsvalg"
             state={searchFilters}

@@ -3,7 +3,7 @@ import { DryRunResults, MigrationOptions, ParsedInput } from "../../types/migrat
 export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
   let searchFilterParameters = "";
   let editOptionsParameters = "";
-  const encodedSearchFilters = JSON.stringify(migrationOptionsAsMap(searchFilters));
+  const encodedSearchFilters = JSON.stringify(searchFiltersAsParams(searchFilters));
   if (encodedSearchFilters) {
     searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
     const encodedEditOption = JSON.stringify(migrationOptionsAsMap(editOptions));
@@ -12,6 +12,13 @@ export const createUrlParams = (searchFilters: MigrationOptions, editOptions: Mi
     }
   }
   return `${searchFilterParameters}${editOptionsParameters}`;
+};
+
+export const searchFiltersAsParams = (searchFilters: MigrationOptions) => {
+  if (Object.keys(searchFilters).length === 0) {
+    return {};
+  }
+  return Object.values(searchFilters);
 };
 
 export const migrationOptionsAsMap = (migrationOptions: MigrationOptions): Record<string, ParsedInput> => {
