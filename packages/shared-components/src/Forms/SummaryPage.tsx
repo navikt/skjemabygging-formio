@@ -352,12 +352,4 @@ const SummaryContent = styled("div")({
     paddingTop: "2rem",
     paddingBottom: "3.75rem",
   },
-  "& .fyllut-layout": {
-    "@media screen and (min-width: 40rem)": {
-      display: "grid",
-      gap: "3rem",
-      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
-      margin: "0 auto",
-    },
-  },
 });

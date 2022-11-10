@@ -51,7 +51,10 @@ const FyllUtRouter = ({ form, translations }) => {
     <LanguagesProvider translations={translations}>
       <FormTitle form={form} />
       <FyllUtContainer>
-        {featureToggles.enableTranslations && <LanguageSelector />}
+        <div className="fyllut-layout">
+          <div className="main-col"></div>
+          <div className="right-col">{featureToggles.enableTranslations && <LanguageSelector />}</div>
+        </div>
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
