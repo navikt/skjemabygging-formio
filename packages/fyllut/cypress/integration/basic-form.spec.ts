@@ -128,10 +128,6 @@ describe("Basic form", () => {
     });
 
     describe("Fill in form", () => {
-      it("error message when submission method is not selected on intro page", () => {
-        cy.clickStart();
-        cy.findByText(TEXTS.statiske.introPage.submissionMethod.required).should("exist");
-      });
       it("select submission method paper - fill in - go to summary - edit form - navigate back to summary", () => {
         //cy.findByLabelText(TEXTS.statiske.introPage.submissionMethod.legend).select("paper");
         cy.get('[type="radio"]').check("paper");
