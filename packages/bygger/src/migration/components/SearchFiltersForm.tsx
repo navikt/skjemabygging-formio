@@ -4,7 +4,7 @@ import { Knapp } from "nav-frontend-knapper";
 import { Input, Select } from "nav-frontend-skjema";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { Dispatch, Fragment, useReducer } from "react";
-import { MigrationMap, MigrationOptions, Operator, SearchFilter, SearchFilters } from "../../../types/migration";
+import { Operator, SearchFilter, SearchFilters } from "../../../types/migration";
 
 const getStyles = makeStyles({
   form: {
@@ -18,24 +18,21 @@ const getStyles = makeStyles({
   },
 });
 
-const createMigrationOptions = (options: MigrationMap = {}): MigrationOptions => {
-  const migrationOptions: MigrationOptions = {};
-  if (Object.keys(options).length > 0) {
-    for (const [key, value] of Object.entries(options)) {
-      Object.assign(migrationOptions, createMigrationOption(key, value));
-    }
+const createSearchFilters = (filters: SearchFilter[] = []): SearchFilters => {
+  const searchFilters: SearchFilters = {};
+  if (filters.length > 0) {
+    filters.forEach((filter) => {
+      Object.assign(searchFilters, createSearchFilter(filter));
+    });
   } else {
-    Object.assign(migrationOptions, createMigrationOption());
+    Object.assign(searchFilters, createSearchFilter());
   }
 
-  return migrationOptions;
+  return searchFilters;
 };
 
-const createMigrationOption = (key = "", value = ""): MigrationOptions => ({
-  [guid()]: {
-    key: key,
-    value: value,
-  },
+const createSearchFilter = (filter: SearchFilter = { key: "", value: "" }): SearchFilters => ({
+  [guid()]: filter,
 });
 
 type Action =
@@ -50,7 +47,7 @@ const reducer = (state: SearchFilters = {}, action: Action) => {
     case "add":
       return {
         ...state,
-        ...createMigrationOption(),
+        ...createSearchFilter(),
       };
     case "edit":
       const { id, ...rest } = action.payload;
@@ -75,13 +72,13 @@ const isJSON = (value: string): boolean => {
   }
 };
 
-export const useMigrationOptions = (options: MigrationMap) =>
-  useReducer(reducer, {}, () => createMigrationOptions(options));
+export const useSearchFilters = (filters: SearchFilter[] = []) =>
+  useReducer(reducer, {}, () => createSearchFilters(filters));
 
 interface SearchFiltersFormProps {
   title: string;
   addRowText: string;
-  state: MigrationOptions;
+  state: SearchFilters;
   dispatch: Dispatch<Action>;
 }
 
@@ -95,6 +92,7 @@ const operators: OperatorOptions = {
 };
 
 const SearchFiltersForm = ({ addRowText, title, state, dispatch }: SearchFiltersFormProps) => {
+  console.log(state);
   const styles = getStyles();
   return (
     <>
@@ -103,7 +101,7 @@ const SearchFiltersForm = ({ addRowText, title, state, dispatch }: SearchFilters
       </Innholdstittel>
       <div className={styles.form}>
         {Object.keys(state).map((id) => {
-          const { key, value } = state[id];
+          const { key, value, operator } = state[id];
 
           return (
             <Fragment key={id}>
@@ -124,6 +122,7 @@ const SearchFiltersForm = ({ addRowText, title, state, dispatch }: SearchFilters
               />
               <Select
                 label="Operator"
+                value={operator || "eq"}
                 onChange={(event) =>
                   dispatch({
                     type: "edit",

@@ -75,7 +75,7 @@ const isJSON = (value: string): boolean => {
   }
 };
 
-export const useMigrationOptions = (options: MigrationMap) =>
+export const useMigrationOptions = (options: MigrationMap = {}) =>
   useReducer(reducer, {}, () => createMigrationOptions(options));
 
 interface MigrationOptionsFormProps {

@@ -48,6 +48,6 @@ export const getUrlParamMap = (params, name) => {
   if (param) {
     return JSON.parse(param);
   } else {
-    return {};
+    return undefined;
   }
 };

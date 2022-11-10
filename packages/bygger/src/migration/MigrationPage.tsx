@@ -13,7 +13,7 @@ import BulkPublishPanel from "./components/BulkPublishPanel";
 import ConfirmMigration from "./components/ConfirmMigration";
 import MigrationDryRunResults from "./components/MigrationDryRunResults";
 import MigrationOptionsForm, { useMigrationOptions } from "./components/MigrationOptionsForm";
-import SearchFiltersForm from "./components/SearchFiltersForm";
+import SearchFiltersForm, { useSearchFilters } from "./components/SearchFiltersForm";
 import {
   createUrlParams,
   getMigrationResultsMatchingSearchFilters,
@@ -63,7 +63,7 @@ const MigrationPage = () => {
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
 
-  const [searchFilters, dispatchSearchFilters] = useMigrationOptions(getUrlParamMap(params, "searchFilters"));
+  const [searchFilters, dispatchSearchFilters] = useSearchFilters(getUrlParamMap(params, "searchFilters"));
   const [editOptions, dispatchEditOptions] = useMigrationOptions(getUrlParamMap(params, "editOptions"));
 
   const onSearch = async () => {
