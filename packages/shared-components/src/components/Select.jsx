@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Collapse, Expand } from "@navikt/ds-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const useSelectStyle = makeStyles({
@@ -23,14 +23,14 @@ const useSelectStyle = makeStyles({
   },
 });
 
-const closeListAndResetFocus = (event, closeFunction, buttonRef) => {
+const closeListAndResetFocus = (closeFunction, buttonRef) => {
   closeFunction();
   buttonRef.current.focus();
 };
 
 const closeOnEscape = (event, closeFunction, buttonRef) => {
   if (event.key === "Escape") {
-    closeListAndResetFocus(event, closeFunction, buttonRef);
+    closeListAndResetFocus(closeFunction, buttonRef);
   }
 };
 
@@ -53,18 +53,10 @@ const Select = ({ label, className, options }) => {
   const lastListItemLinkRef = useRef(null);
   const [showItems, setShowItems] = useState(false);
   const classes = useSelectStyle();
-  useEffect(() => {
-    if (showItems && firstListItemLinkRef.current) {
-      firstListItemLinkRef.current.focus();
-    }
-  }, [firstListItemLinkRef, showItems]);
   return (
     <>
       {showItems && (
-        <div
-          className={classes.overlay}
-          onClick={(event) => closeListAndResetFocus(event, () => setShowItems(false), buttonRef)}
-        />
+        <div className={classes.overlay} onClick={() => closeListAndResetFocus(() => setShowItems(false), buttonRef)} />
       )}
       <nav
         className={`${className} ${classes.nav}`}
@@ -72,6 +64,7 @@ const Select = ({ label, className, options }) => {
       >
         <button
           className="navds-select__input navds-body-short navds-body--medium"
+          aria-expanded={showItems}
           onClick={() => setShowItems(!showItems)}
           type="button"
           ref={buttonRef}
@@ -92,7 +85,9 @@ const Select = ({ label, className, options }) => {
                 <Link
                   className="select-list__option__link"
                   to={href}
-                  onClick={() => setShowItems(!showItems)}
+                  onClick={() => {
+                    closeListAndResetFocus(() => setShowItems(false), buttonRef);
+                  }}
                   ref={
                     index === 0 ? firstListItemLinkRef : index === options.length - 1 ? lastListItemLinkRef : undefined
                   }
