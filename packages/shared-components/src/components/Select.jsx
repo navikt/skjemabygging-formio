@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Collapse, Expand } from "@navikt/ds-icons";
-import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
+import { Collapse, Expand } from "@navikt/ds-icons";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const useSelectStyle = makeStyles({
   overlay: {
@@ -13,6 +13,13 @@ const useSelectStyle = makeStyles({
   },
   nav: {
     position: "relative",
+
+    "& .navds-select__input": {
+      textAlign: "start",
+    },
+    "& .navds-select__chevron": {
+      marginTop: "0.25rem",
+    },
   },
 });
 
@@ -63,9 +70,14 @@ const Select = ({ label, className, options }) => {
         className={`${className} ${classes.nav}`}
         onKeyUp={(event) => closeOnEscape(event, () => setShowItems(false), buttonRef)}
       >
-        <button className="select-button" onClick={() => setShowItems(!showItems)} type="button" ref={buttonRef}>
+        <button
+          className="navds-select__input navds-body-short navds-body--medium"
+          onClick={() => setShowItems(!showItems)}
+          type="button"
+          ref={buttonRef}
+        >
           {label}
-          {showItems ? <Collapse className="select__chevron" /> : <Expand className="select__chevron" />}
+          {showItems ? <Collapse className="navds-select__chevron" /> : <Expand className="navds-select__chevron" />}
         </button>
         {showItems && (
           <ul className="select-list">
