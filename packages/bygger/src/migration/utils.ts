@@ -1,4 +1,5 @@
-import { DryRunResults, MigrationOptions, ParsedInput } from "../../types/migration";
+import { guid } from "nav-frontend-js-utils";
+import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from "../../types/migration";
 
 export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
   let searchFilterParameters = "";
@@ -50,4 +51,43 @@ export const getUrlParamMap = (params, name) => {
   } else {
     return undefined;
   }
+};
+
+export const isJSON = (value: string): boolean => {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (_e) {
+    return false;
+  }
+};
+
+const createMigrationOption = (filter: MigrationOption = { key: "", value: "" }): MigrationOptions => ({
+  [guid()]: filter,
+});
+
+export const createSearchFilters = (filters: MigrationOption[] = []): MigrationOptions => {
+  const searchFilters: MigrationOptions = {};
+  if (filters.length > 0) {
+    filters.forEach((filter) => {
+      Object.assign(searchFilters, createMigrationOption(filter));
+    });
+  } else {
+    Object.assign(searchFilters, createMigrationOption());
+  }
+
+  return searchFilters;
+};
+
+export const createEditOptions = (options: MigrationMap = {}): MigrationOptions => {
+  const editOptions: MigrationOptions = {};
+  if (Object.keys(options).length > 0) {
+    for (const [key, value] of Object.entries(options)) {
+      Object.assign(editOptions, createMigrationOption({ key, value }));
+    }
+  } else {
+    Object.assign(editOptions, createMigrationOption());
+  }
+
+  return editOptions;
 };

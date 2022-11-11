@@ -4,18 +4,11 @@ export type Operator = "eq" | "n_eq" | "exists" | "n_exists";
 export interface MigrationOption {
   key: string;
   value: ParsedInput;
-}
-
-export interface SearchFilter extends MigrationOption {
   operator?: Operator;
 }
 
 export interface MigrationOptions {
   [key: string]: MigrationOption;
-}
-
-export interface SearchFilters {
-  [key: string]: SearchFilter;
 }
 
 interface MigrationMap {
