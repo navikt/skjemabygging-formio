@@ -30,7 +30,7 @@ const closeListAndResetFocus = (event, closeFunction, buttonRef) => {
 
 const closeOnEscape = (event, closeFunction, buttonRef) => {
   if (event.key === "Escape") {
-    closeOnEscape(event, closeFunction, buttonRef);
+    closeListAndResetFocus(event, closeFunction, buttonRef);
   }
 };
 
