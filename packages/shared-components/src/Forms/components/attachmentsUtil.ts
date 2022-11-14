@@ -13,7 +13,7 @@ const getRelevantAttachments = (form, submission) => {
     });
 
   return vedleggComponents
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
