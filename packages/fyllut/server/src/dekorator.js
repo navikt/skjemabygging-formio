@@ -1,16 +1,15 @@
-import { injectDecoratorServerSide } from "@navikt/nav-dekoratoren-moduler/ssr/index.js";
+import { fetchDecoratorHtml } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { config } from "./config/config";
 import { NaisCluster } from "./config/nais-cluster.js";
 
 const { naisClusterName } = config;
 
-const getDecorator = async (filePath, redirect) => {
+const getDecorator = async (redirect) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
-  return injectDecoratorServerSide({
+  return fetchDecoratorHtml({
     env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
-    filePath,
     redirectToUrl: redirect,
     level: "Level4",
     simple: true,

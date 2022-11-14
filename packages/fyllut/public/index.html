@@ -5,18 +5,34 @@
         <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
-        <meta name="description" content="NAV søknadsskjema" />
         <meta name="git-version" content="%REACT_APP_GIT_VERSION%" />
+        <% if (process.env.NODE_ENV !== 'development') { %>
+        <title>{{{PAGE_TITLE}}}</title>
+        <meta property="og:title" content="{{{PAGE_TITLE}}}" />
+        <meta property="og:description" content="{{{PAGE_DESCRIPTION}}}" />
+        <meta name="description" content="{{{PAGE_DESCRIPTION}}}" />
+        <% } else { %>
+        <title>Fyll ut skjema - www.nav.no</title>
         <meta property="og:title" content="Fyll ut skjema - www.nav.no" />
         <meta property="og:description" content="NAV søknadsskjema" />
+        <meta name="description" content="NAV søknadsskjema" />
+        <% } %>
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
         <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-        <title>Fyll ut skjema - www.nav.no</title>
+        <% if (process.env.NODE_ENV !== 'development') { %>
+        {{{DECORATOR_STYLES}}}
+        <% } %>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div class="pagewrapper">
+            <% if (process.env.NODE_ENV !== 'development') { %>
+            {{{DECORATOR_HEADER}}}
+            <% } %>
             <div id="root"></div>
         </div>
+        <% if (process.env.NODE_ENV !== 'development') { %>
+        {{{DECORATOR_FOOTER}}} {{{DECORATOR_SCRIPTS}}}
+        <% } %>
     </body>
 </html>

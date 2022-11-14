@@ -1,20 +1,16 @@
 import cors from "cors";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
-import path from "path";
 import { checkConfigConsistency, config } from "./config/config";
 import { buildDirectory } from "./context.js";
 import { createRedirectUrl, getDecorator } from "./dekorator.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";
-import { logger } from "./logger.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
-
-const __dirname = path.resolve();
-const BUILD_PATH = path.resolve(__dirname, "../build");
+import { formService } from "./services";
 
 export const createApp = () => {
   checkConfigConsistency(config);
@@ -40,22 +36,25 @@ export const createApp = () => {
   fyllutRouter.use("/internal", internalRouter);
 
   // Get the form id
-  fyllutRouter.use("/:formId", (req, res, next) => {
+  fyllutRouter.use("/:formId", (req: Request, res: Response, next: NextFunction) => {
     res.locals.formId = req.params.formId;
     next();
   });
 
   // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, (req, res) => {
-    return getDecorator(`${BUILD_PATH}/index.html`, createRedirectUrl(req, res))
-      .then((html) => {
-        res.send(html);
-      })
-      .catch((err) => {
-        const errorMessage = `Failed to get decorator: ${err.message}`;
-        logger.error(errorMessage);
-        res.status(500).send(errorMessage);
+  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const formMeta = await formService.getMeta(res.locals.formId);
+      const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
+      res.render("index.html", {
+        ...decoratorFragments,
+        ...formMeta,
       });
+    } catch (cause: any) {
+      const error = new Error("Failed to return index file");
+      error.cause = cause;
+      next(error);
+    }
   });
 
   app.use("/fyllut", fyllutRouter);

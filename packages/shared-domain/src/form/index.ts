@@ -56,10 +56,27 @@ export type FormPropertiesPublishing = Pick<
 >;
 
 export interface Component {
+  id?: string;
   key: string;
   label: string;
   type: string;
+  content?: string;
+  calculateValue?: string;
+  validate?: ComponentValidate;
+  conditional?: ComponentConditional;
+  customConditional?: string;
+  properties?: Record<string, string>;
   components?: Component[];
+}
+
+export interface ComponentValidate {
+  custom?: string;
+  json?: string;
+}
+
+export interface ComponentConditional {
+  when?: string;
+  json?: string;
 }
 
 export interface NavFormType {

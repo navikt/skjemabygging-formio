@@ -1,19 +1,4 @@
-import { config } from "../../config/config";
-import { fetchFromFormioApi, loadAllJsonFilesFromDirectory } from "../../utils/forms.js";
-
-const { useFormioApi, skjemaDir, formioProjectUrl } = config;
-
-const loadForms = async () => {
-  let forms;
-  if (useFormioApi) {
-    const select = "_id,title,path,modified,properties.skjemanummer";
-    forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`);
-  } else {
-    forms = await loadAllJsonFilesFromDirectory(skjemaDir);
-  }
-
-  return forms.map(mapForm);
-};
+import { formService } from "../../services";
 
 const mapForm = (form) => ({
   _id: form._id,
@@ -27,8 +12,8 @@ const mapForm = (form) => ({
 
 const forms = {
   get: async (req, res) => {
-    const form = await loadForms();
-    return res.json(form);
+    const forms = await formService.loadForms();
+    return res.json(forms.map(mapForm));
   },
 };
 

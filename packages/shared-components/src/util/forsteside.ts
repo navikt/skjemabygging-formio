@@ -54,7 +54,7 @@ export function genererVedleggKeysSomSkalSendes(form, submissionData) {
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode)
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa")
-    .map((vedlegg) => vedlegg.properties.vedleggskode);
+    .map((vedlegg) => vedlegg.properties?.vedleggskode);
 }
 
 export function getVedleggsFelterSomSkalSendes(submissionData, form) {
@@ -64,8 +64,8 @@ export function getVedleggsFelterSomSkalSendes(submissionData, form) {
     .filter((vedlegg) => submissionData[vedlegg.key] === "leggerVedNaa");
 }
 
-export function genererVedleggsListe(form, submissionData) {
-  return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties.vedleggstittel);
+export function genererVedleggsListe(form, submissionData): string[] {
+  return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties!.vedleggstittel);
 }
 
 export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submissionData) {
