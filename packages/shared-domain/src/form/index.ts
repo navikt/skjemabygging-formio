@@ -59,7 +59,6 @@ export interface Component {
   id?: string;
   key: string;
   label: string;
-  title?: string;
   type: string;
   content?: string;
   calculateValue?: string;
@@ -68,6 +67,10 @@ export interface Component {
   customConditional?: string;
   properties?: Record<string, string>;
   components?: Component[];
+}
+
+export interface Panel extends Component {
+  title: string;
 }
 
 export interface ComponentValidate {

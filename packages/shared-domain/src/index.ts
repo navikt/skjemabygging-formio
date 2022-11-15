@@ -8,6 +8,7 @@ import type {
   InnsendingType,
   NavFormType,
   NewFormSignatureType,
+  Panel,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
@@ -67,6 +68,7 @@ export type {
   FormPropertiesPublishing,
   NavFormType,
   Component,
+  Panel,
   Enhet,
   Enhetstype,
   FormioTranslationPayload,

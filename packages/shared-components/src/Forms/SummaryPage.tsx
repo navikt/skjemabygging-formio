@@ -1,5 +1,5 @@
 import { makeStyles, styled } from "@material-ui/styles";
-import { Accordion, Stepper } from "@navikt/ds-react";
+import { Accordion } from "@navikt/ds-react";
 import {
   Component,
   formSummaryUtil,
@@ -10,7 +10,7 @@ import {
 import AlertStripe from "nav-frontend-alertstriper";
 import Lenke from "nav-frontend-lenker";
 import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import React, { FunctionComponent, useEffect, useMemo, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -18,6 +18,7 @@ import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
+import FormStepper from "./components/FormStepper";
 
 type LabelValue = {
   label: string;
@@ -218,14 +219,6 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     textDecoration: "none",
   };
 
-  const formSteps = useMemo(() => {
-    const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
-    return form.components
-      .filter((component) => component.type === "panel")
-      .filter((component) => conditionals[component.key] !== true)
-      .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
-  }, [form, submission, translate]);
-
   return (
     <SummaryContent>
       <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
@@ -315,16 +308,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
         </div>
         <aside className="right-col">
-          <Stepper activeStep={formSteps.length + 1}>
-            {formSteps.map((step) => (
-              <Stepper.Step to={step.url} as={Link} key={step.url} completed>
-                {step.label}
-              </Stepper.Step>
-            ))}
-            <Stepper.Step to={url} as={Link}>
-              {TEXTS.statiske.summaryPage.title}
-            </Stepper.Step>
-          </Stepper>
+          <FormStepper form={form} formUrl={formUrl} submission={submission} />
         </aside>
       </main>
       {}
