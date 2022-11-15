@@ -5,6 +5,7 @@ import {
   panelVedleggsliste,
   vedleggBekreftelseBostedsadresse,
 } from "./testdata/defaultFormElements";
+import vedleggConditional from "./testdata/vedlegg-conditional";
 
 describe("attachmentUtil", () => {
   describe("getRelevantAttachments", () => {
@@ -32,13 +33,13 @@ describe("attachmentUtil", () => {
       };
 
       it("return attachment which is relevant", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "nei" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
       });
 
       it("attachment contains correct data", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "nei" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
         expect(attachments[0].vedleggsnr).toEqual(vedleggBekreftelseBostedsadresse.properties.vedleggskode);
@@ -47,7 +48,7 @@ describe("attachmentUtil", () => {
       });
 
       it("does not return attachment which is not relevant", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "ja" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(0);
       });
@@ -72,13 +73,13 @@ describe("attachmentUtil", () => {
       };
 
       it("return attachment which is relevant", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "nei" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
       });
 
       it("does not return attachment which is not relevant", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "ja" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(0);
       });
@@ -103,14 +104,40 @@ describe("attachmentUtil", () => {
       };
 
       it("return attachment which is relevant", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "nei" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
       });
 
       it("does not return attachment which is not relevant", () => {
-        const submission = { [borDuINorgeRadiopanel.key]: "ja" };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
         const attachments = getRelevantAttachments(form, submission);
+        expect(attachments).toHaveLength(0);
+      });
+    });
+
+    describe("Attachment panel has conditional", () => {
+      it("All attachments are triggered", () => {
+        const attachments = getRelevantAttachments(vedleggConditional.form, vedleggConditional.submission);
+        expect(attachments).toHaveLength(4);
+      });
+      it("Some attachments are triggered", () => {
+        const submissionCopy = JSON.parse(JSON.stringify(vedleggConditional.submission));
+        submissionCopy.data.harDuDokumentasjonDuOnskerALeggeVedSoknaden = "ja";
+        submissionCopy.data.hvaOnskerDuALeggeVed = {
+          personinntektsskjema: false,
+          resultatregnskap: true,
+          naeringsoppgave: true,
+          annet: false,
+        };
+        const attachments = getRelevantAttachments(vedleggConditional.form, submissionCopy);
+        expect(attachments).toHaveLength(2);
+      });
+      it("No attachments are triggered", () => {
+        const submissionCopy = JSON.parse(JSON.stringify(vedleggConditional.submission));
+        submissionCopy.data.harDuDokumentasjonDuOnskerALeggeVedSoknaden = "nei";
+        submissionCopy.data.hvaOnskerDuALeggeVed = undefined;
+        const attachments = getRelevantAttachments(vedleggConditional.form, submissionCopy);
         expect(attachments).toHaveLength(0);
       });
     });
