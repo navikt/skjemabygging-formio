@@ -7,7 +7,7 @@ const getRelevantAttachments = (form, submission) => {
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
@@ -28,7 +28,6 @@ const hasOtherDocumentation = (form, submission) => {
 
 const sanitize = (component) => {
   const clone = JSON.parse(JSON.stringify(component));
-  if (clone.customConditional) console.log(clone.customConditional, sanitizeJavaScriptCode(clone.customConditional));
   clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
   return clone;
 };
