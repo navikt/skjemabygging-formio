@@ -1,4 +1,4 @@
-import { getRelevantAttachments } from "./attachmentsUtil";
+import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
 import {
   borDuINorgeRadiopanel,
   panelForsteSide,
@@ -140,6 +140,35 @@ describe("attachmentUtil", () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, submissionCopy);
         expect(attachments).toHaveLength(0);
       });
+    });
+  });
+
+  describe("Test if attachments have the property otherDocumentation set and take into account conditions", () => {
+    const form = {
+      components: [
+        {
+          ...panelVedleggsliste,
+          components: [
+            {
+              ...vedleggBekreftelseBostedsadresse,
+              otherDocumentation: true,
+              customConditional: `show = data.ukjentpanel.svar === "nei" || data.${borDuINorgeRadiopanel.key} === "nei"`,
+            },
+          ],
+        },
+      ],
+    };
+
+    it("does not return attachment which is not relevant", () => {
+      const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
+      const attachments = hasOtherDocumentation(form, submission);
+      expect(attachments).toBe(false);
+    });
+
+    it("does not return attachment which is not relevant", () => {
+      const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
+      const attachments = hasOtherDocumentation(form, submission);
+      expect(attachments).toBe(true);
     });
   });
 });
