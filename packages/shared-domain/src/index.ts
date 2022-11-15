@@ -27,7 +27,7 @@ import type {
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
-import { createFormSummaryObject } from "./summary/formSummaryUtil";
+import formSummaryUtil from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
 import dateUtils from "./utils/date";
@@ -42,9 +42,9 @@ import stringUtils from "./utils/stringUtils";
 import validatorUtils from "./utils/validatorUtils";
 
 export {
-  createFormSummaryObject,
   TEXTS,
   MockedComponentObjectForTest,
+  formSummaryUtil,
   navFormioUtils,
   navFormUtils,
   stringUtils,

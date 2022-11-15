@@ -2,7 +2,7 @@ import { makeStyles, styled } from "@material-ui/styles";
 import { Accordion, Stepper } from "@navikt/ds-react";
 import {
   Component,
-  createFormSummaryObject,
+  formSummaryUtil,
   InnsendingType,
   NavFormType,
   TEXTS,
@@ -177,7 +177,7 @@ const ComponentSummary = ({ components, formUrl = "" }) => {
 const FormSummary = ({ form, formUrl, submission }) => {
   const { translate } = useLanguages();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-  const formSummaryObject = createFormSummaryObject(form, submission, translate);
+  const formSummaryObject = formSummaryUtil.createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
   }
@@ -192,7 +192,7 @@ export interface Props {
 }
 
 function getUrlToLastPanel(form, formUrl, submission) {
-  const formSummary = createFormSummaryObject(form, submission);
+  const formSummary = formSummaryUtil.createFormSummaryObject(form, submission);
   const lastPanel = formSummary[formSummary.length - 1];
   const lastPanelSlug = lastPanel?.key;
   if (!lastPanelSlug) {
@@ -221,7 +221,8 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const formSteps = useMemo(
     () =>
       // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-      createFormSummaryObject(form, submission, translate)
+      formSummaryUtil
+        .createFormSummaryObject(form, submission, translate)
         .filter((component) => component.type === "panel")
         .map((panel) => ({ label: panel.label, url: `${formUrl}/${panel.key}` })),
     [form, submission, translate]
