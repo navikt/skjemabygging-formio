@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -52,15 +52,7 @@ describe("AllForms", () => {
     );
 
     expect(await screen.findByRole("heading", { name: "Velg et skjema" })).toBeInTheDocument();
-
-    const formRow1 = screen.queryByRole("cell", { name: "New form" }).closest("tr");
-    expect(formRow1).toBeInTheDocument();
-    expect(within(formRow1).queryByRole("link", { name: "digital" })).toBeInTheDocument();
-    expect(within(formRow1).queryByRole("link", { name: "papir" })).toBeInTheDocument();
-
-    const formRow2 = screen.queryByRole("cell", { name: "Test new form" }).closest("tr");
-    expect(formRow2).toBeInTheDocument();
-    expect(within(formRow2).queryByRole("link", { name: "digital" })).toBeInTheDocument();
-    expect(within(formRow2).queryByRole("link", { name: "papir" })).not.toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "New form" })).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Test new form" })).toBeInTheDocument();
   });
 });

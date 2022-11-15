@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
@@ -16,6 +16,9 @@ export const AllForms = () => {
   const [forms, setForms] = useState([]);
   const history = useHistory();
   const styles = useStyles();
+  const { config } = useAppConfig();
+
+  const isDevelopment = config && config.isDevelopment;
 
   useEffect(() => {
     const params = new URLSearchParams(history.location.search);
@@ -48,12 +51,14 @@ export const AllForms = () => {
       <h1>Velg et skjema</h1>
       <nav>
         <table className={styles.skjemaliste}>
-          <thead>
-            <tr>
-              <th>Skjematittel</th>
-              <th colSpan="3">Innsending</th>
-            </tr>
-          </thead>
+          {isDevelopment && (
+            <thead>
+              <tr>
+                <th>Skjematittel</th>
+                <th colSpan="3">Innsending</th>
+              </tr>
+            </thead>
+          )}
           <tbody>
             {forms
               .sort((a, b) => (a.modified < b.modified ? 1 : -1))
