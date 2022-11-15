@@ -137,13 +137,21 @@ const stepIndicator = {
     },
   },
   "& .stepper-toggle": {
-    display: "block",
+    paddingLeft: "1rem",
+    paddingRight: "1rem",
     position: "fixed",
-    top: "9rem",
     right: "-2px",
+    top: "9rem",
+    width: "initial",
+    minWidth: "initial",
 
     "@media screen and (min-width: 40rem)": {
       display: "none",
+    },
+
+    "& svg": {
+      height: "1.2rem",
+      width: "1.2rem",
     },
   },
 
