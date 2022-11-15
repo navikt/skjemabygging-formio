@@ -87,8 +87,8 @@ export function IntroPage({ form, formUrl }: Props) {
             onChange={(sub: string) => setSelectedSubmissionMethod(sub)}
             className="margin-bottom-default"
           >
-            <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
             <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
+            <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
           </RadioGroup>
         </>
       )}

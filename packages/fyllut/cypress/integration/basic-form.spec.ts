@@ -1,5 +1,3 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-
 describe("Basic form", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
@@ -129,17 +127,13 @@ describe("Basic form", () => {
 
     describe("Fill in form", () => {
       it("select submission method paper - fill in - go to summary - edit form - navigate back to summary", () => {
-        //cy.findByLabelText(TEXTS.statiske.introPage.submissionMethod.legend).select("paper");
         cy.get('[type="radio"]').check("paper");
         cy.clickStart();
-        cy.findByText(TEXTS.statiske.introPage.submissionMethod.required).should("not.exist");
         fillInForm(true);
       });
       it("select submission method digital - fill in - go to summary - edit form - navigate back to summary", () => {
-        //cy.findByLabelText(TEXTS.statiske.introPage.submissionMethod.legend).select("paper");
         cy.get('[type="radio"]').check("digital");
         cy.clickStart();
-        cy.findByText(TEXTS.statiske.introPage.submissionMethod.required).should("not.exist");
         fillInForm(false);
       });
     });
