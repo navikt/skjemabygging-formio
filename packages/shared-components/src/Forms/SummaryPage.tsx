@@ -218,15 +218,13 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     textDecoration: "none",
   };
 
-  const formSteps = useMemo(
-    () =>
-      // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-      formSummaryUtil
-        .createFormSummaryObject(form, submission, translate)
-        .filter((component) => component.type === "panel")
-        .map((panel) => ({ label: panel.label, url: `${formUrl}/${panel.key}` })),
-    [form, submission, translate]
-  );
+  const formSteps = useMemo(() => {
+    const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
+    return form.components
+      .filter((component) => component.type === "panel")
+      .filter((component) => conditionals[component.key] !== true)
+      .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
+  }, [form, submission, translate]);
 
   return (
     <SummaryContent>

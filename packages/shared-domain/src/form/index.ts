@@ -59,6 +59,7 @@ export interface Component {
   id?: string;
   key: string;
   label: string;
+  title?: string;
   type: string;
   content?: string;
   calculateValue?: string;
