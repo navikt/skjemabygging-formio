@@ -3,16 +3,10 @@ import FormioUtils from "formiojs/utils";
 import { sanitizeJavaScriptCode } from "../../formio-overrides";
 
 const getRelevantAttachments = (form, submission) => {
-  const vedleggComponents = navFormUtils
+  return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
-    .map((component) => {
-      const clone = JSON.parse(JSON.stringify(component));
-      clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
-      return clone;
-    });
-
-  return vedleggComponents
+    .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission, form))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
@@ -24,8 +18,19 @@ const getRelevantAttachments = (form, submission) => {
     }));
 };
 
-const hasOtherDocumentation = (form) => {
-  return navFormUtils.flattenComponents(form.components).some((component) => component.otherDocumentation);
+const hasOtherDocumentation = (form, submission) => {
+  return navFormUtils
+    .flattenComponents(form.components)
+    .map(sanitize)
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
+    .some((component) => component.otherDocumentation);
+};
+
+const sanitize = (component) => {
+  const clone = JSON.parse(JSON.stringify(component));
+  if (clone.customConditional) console.log(clone.customConditional, sanitizeJavaScriptCode(clone.customConditional));
+  clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
+  return clone;
 };
 
 export { getRelevantAttachments, hasOtherDocumentation };
