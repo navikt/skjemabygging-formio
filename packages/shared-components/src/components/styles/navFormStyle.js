@@ -140,7 +140,7 @@ const stepIndicator = {
     display: "block",
     position: "fixed",
     top: "9rem",
-    right: 0,
+    right: "-2px",
 
     "@media screen and (min-width: 40rem)": {
       display: "none",
