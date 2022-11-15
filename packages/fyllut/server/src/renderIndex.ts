@@ -35,16 +35,29 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       const form = await formService.loadForm(formPath);
       if (form) {
         const { innsending } = form.properties;
-        if (!qpSub && (!innsending || innsending === "PAPIR_OG_DIGITAL")) {
-          logger.error("Submission query param is missing", { formPath });
-          const targetUrl = `${config.fyllutPath}/${formPath}`;
-          if (req.baseUrl !== targetUrl) {
-            const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
-            logger.info("Redirecting to intro page since submission query param is missing", logMeta);
+        if (!qpSub) {
+          if (!innsending || innsending === "PAPIR_OG_DIGITAL") {
+            logger.error("Submission query param is missing", { formPath });
+            const targetUrl = `${config.fyllutPath}/${formPath}`;
+            if (req.baseUrl !== targetUrl) {
+              const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
+              logger.info("Redirecting to intro page since submission query param is missing", logMeta);
+              return res.redirect(
+                url.format({
+                  pathname: targetUrl,
+                  query: req.query as ParsedUrlQueryInput,
+                })
+              );
+            }
+          } else if (innsending === "KUN_DIGITAL") {
+            const targetUrl = `${config.fyllutPath}/${formPath}`;
             return res.redirect(
               url.format({
                 pathname: targetUrl,
-                query: req.query as ParsedUrlQueryInput,
+                query: {
+                  ...(req.query as ParsedUrlQueryInput),
+                  sub: "digital",
+                },
               })
             );
           }
