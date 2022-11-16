@@ -47,6 +47,7 @@ describe("When form has panels that are hidden unless a condition is true", () =
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByText("Pinnekjøtt").click();
       });
+      cy.findByRole("button", { name: "2 Pinnekjøtt" }).should("exist");
       cy.clickNextStep();
       cy.findByRole("checkbox", { name: "Rotmos (valgfritt)" }).click({ force: true });
       cy.clickNextStep();
@@ -71,6 +72,7 @@ describe("When form has panels that are hidden unless a condition is true", () =
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByText("Lutefisk").click();
       });
+      cy.findByRole("button", { name: "2 Lutefisk" }).should("exist");
       cy.clickNextStep();
       cy.findByRole("checkbox", { name: "Erterstuing (valgfritt)" }).click({ force: true });
       cy.clickNextStep();
