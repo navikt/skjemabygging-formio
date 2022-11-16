@@ -1,3 +1,5 @@
+import stepperStyles from "./stepperStyles.js";
+
 export const globalStyles = {
   body: {
     margin: 0,
@@ -60,6 +62,7 @@ export const globalStyles = {
       maxWidth: "608px",
     },
   },
+  ...stepperStyles,
 };
 
 export const appStyles = {

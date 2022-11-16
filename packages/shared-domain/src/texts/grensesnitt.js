@@ -34,4 +34,8 @@ export const grensesnitt = {
   prepareSubmitPage: {
     confirmCheckboxLabel: "Jeg har lest instruksjonene.",
   },
+  stepper: {
+    toggleText: "Steg {{currentStep}} av {{totalSteps}}",
+    close: "Lukk",
+  },
 };
