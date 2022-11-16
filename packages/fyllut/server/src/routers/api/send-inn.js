@@ -30,7 +30,7 @@ const sendInn = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const isTest = req.get("Fyllut-Is-Test") === "true";
-      const { form, submission, attachments, language, translations = {} } = req.body;
+      const { form, submission, attachments, otherDocumentation, language, translations = {} } = req.body;
       const pdfByteArray = await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations, isTest);
       const body = {
         brukerId: idportenPid,
@@ -55,6 +55,7 @@ const sendInn = {
           document: objectToByteArray(submission),
         },
         vedleggsListe: attachments,
+        kanLasteOppAnnet: otherDocumentation,
       };
       if (!featureToggles.enableSendInnIntegration) {
         logger.debug("SendInn integration not enabled, returning data in body");
