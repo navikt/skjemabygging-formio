@@ -218,7 +218,6 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           })}
         </Normaltekst>
         <FormSummary submission={submission} form={form} formUrl={formUrl} />
-        {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
         <nav className="list-inline">
           <div className="list-inline-item">
             <Link
