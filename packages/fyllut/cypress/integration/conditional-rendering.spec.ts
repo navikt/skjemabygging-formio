@@ -6,6 +6,12 @@ describe("When form has panels that are hidden unless a condition is true", () =
     cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", {
       fixture: "conditionalxmas.json",
     }).as("getForm");
+    cy.intercept("GET", "/fyllut/translations/conditionalxmas", {
+      fixture: "conditionalxmas-translation.json",
+    }).as("getTranslation");
+    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
+      "getGlobalTranslation"
+    );
     cy.visit("/fyllut/conditionalxmas");
     cy.wait("@getForm");
     cy.clickStart(); // <-- navigate from information page to the form
@@ -72,6 +78,14 @@ describe("When form has panels that are hidden unless a condition is true", () =
       cy.findByRole("heading", { name: "Oppsummering" }).should("exist");
       cy.findByRole("heading", { name: "Lutefisk", level: 3 }).should("exist");
       cy.findByText("Erterstuing").should("exist");
+    });
+
+    it("navigates back to the added panel on clicking 'rediger' after changing language", () => {
+      cy.findByRole("button", { name: "Norsk bokmål" }).click();
+      cy.findByText("English").click();
+      cy.findByRole("link", { name: "Edit lamb ribs" }).click();
+      cy.findByRole("checkbox", { name: "Root stew (Optional)" }).should("exist");
+      cy.findByRole("checkbox", { name: "Root stew (Optional)" }).should("be.checked");
     });
   });
 });
