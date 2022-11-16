@@ -16,6 +16,7 @@ import globalTranslations from "./global-translations.js";
 import log from "./log";
 import mottaksadresser from "./mottaksadresser.js";
 import pdf from "./pdf.js";
+import pdl from "./pdl";
 import sendInn from "./send-inn.js";
 import translations from "./translations.js";
 
@@ -39,7 +40,7 @@ apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
 apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
 apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
-apiRouter.get("/pdl", azureAccessTokenHandler, commonCodes.getCurrencies);
+apiRouter.get("/pdl", azureAccessTokenHandler, pdl.get);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
 export default apiRouter;

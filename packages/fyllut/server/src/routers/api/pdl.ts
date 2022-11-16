@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 const pdl = {
   get: async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Fetch pdl");
     fetch("https://pdl-api.dev.intern.nav.no/graphql", {
       method: "POST",
       headers: {
