@@ -27,7 +27,7 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       translations: translationsForPDF,
       language: currentLanguage,
       attachments,
-      annenDokumentasjon: hasOtherDocumentation(form, submission),
+      kanLasteOppAnnet: hasOtherDocumentation(form, submission),
     },
     {
       "Fyllut-Is-Test": isTest,
