@@ -75,6 +75,7 @@ const defaultConfig: Partial<ConfigType> = {
 };
 const config: ConfigType = {
   ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
+  fyllutPath: "/fyllut",
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),

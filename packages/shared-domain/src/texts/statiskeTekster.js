@@ -18,6 +18,11 @@ export const statiske = {
     publicComputerBold: "Bruk av offentlig PC:",
     publicComputer:
       "Hvis du fyller ut skjemaet på en offentlig PC (f.eks. på et bibliotek) er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre uvedkommende fra å få tak i personinformasjonen din.",
+    submissionMethod: {
+      legend: "Hvordan vil du sende inn skjemaet?",
+      paper: "Send i posten",
+      digital: "Send digitalt (krever innlogging)",
+    },
   },
   summaryPage: {
     title: "Oppsummering",
@@ -52,24 +57,5 @@ export const statiske = {
     sendInPapirSection: "som nevnt i punkt 2 over.",
     lastSectionTitle: "Hva skjer videre?",
     lastSectionContent: "Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.",
-  },
-  prepareSubmitPage: {
-    firstSectionTitle: "1. Last ned det ferdig utfylte dokumentet til enheten din",
-    firstSectionInstruction1:
-      "Klikk på «{{downloadApplication}}». Da åpnes det ferdig utfylte dokumentet i en ny fane i nettleseren. ",
-    firstSectionInstruction2: "Du må lagre dokumentet (PDF) på enheten din slik at du enkelt kan finne det igjen.",
-    firstSectionInstruction3:
-      "Etter at du har lastet ned og lagret dokumentet, må du laste det opp til NAV. Følg veiledningen i punkt 2 lenger ned på denne siden.",
-    secondSectionTitle: "2. Last opp dokumentet til NAV",
-    secondSectionInstruction:
-      "Når du klikker på «Gå videre» åpnes det en ny side (krever innlogging) der du skal laste opp dokumentet.",
-    confirmCheckboxDescription: "På neste side laster du opp dokumentet slik:",
-    confirmCheckboxInstructionOne: "Trykk på «Fyll ut og last opp».",
-    confirmCheckboxInstructionTwo: "Hopp over trinn 1 «Forbered skjema» og gå direkte til trinn 2 «Last opp skjema».",
-    confirmCheckboxInstructionThree: "Trykk på «Finn filen» og last opp dokumentet som du lagret på enheten din.",
-    confirmCheckboxInstructionFour:
-      "Deretter må du laste opp eventuelle vedlegg. Trykk på «Bekreft» for å gå videre til innsending av dokumentene. Trykk på knappen «Send til NAV» nederst på siden for å sende dokumentene til NAV.",
-    confirmCheckboxWarning: "Du må bekrefte at du har lest instruksjonene over før du kan gå videre.",
-    confirmDownloadedPdf: "Du må laste ned det utfylte dokumentet før du kan gå videre.",
   },
 };

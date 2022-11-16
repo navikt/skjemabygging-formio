@@ -133,12 +133,24 @@ export const removeVedleggspanel = (form: NavFormType) => {
 export const findDescription = (form: NavFormType): string | undefined =>
   findByKey("beskrivelsetekst", form.components)?.content;
 
+export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType): boolean => {
+  const { innsending } = form.properties;
+  switch (submissionMethod) {
+    case "digital":
+      return !innsending || innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_DIGITAL";
+    case "paper":
+      return !innsending || innsending === "PAPIR_OG_DIGITAL" || innsending === "KUN_PAPIR";
+  }
+  return false;
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
   findDependentComponents,
   findDescription,
   flattenComponents,
+  isSubmissionMethodAllowed,
   removeVedleggspanel,
 };
 export default navFormUtils;
