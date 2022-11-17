@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import fetch from "node-fetch";
 import { logger } from "../../logger";
+import { getTokenxAccessToken } from "../../utils/token";
 
 const pdl = {
   get: async (req: Request, res: Response, next: NextFunction) => {
@@ -12,6 +13,7 @@ const pdl = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${getTokenxAccessToken(req)}`,
         },
         body: JSON.stringify({
           query: `

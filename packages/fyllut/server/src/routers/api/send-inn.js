@@ -3,6 +3,7 @@ import { config } from "../../config/config";
 import { logger } from "../../logger.js";
 import { Pdfgen } from "../../pdfgen.js";
 import { responseToError } from "../../utils/errorHandling.js";
+import { getTokenxAccessToken } from "../../utils/token";
 
 const { featureToggles, gitVersion, sendInnConfig } = config;
 
@@ -12,14 +13,6 @@ const getIdportenPid = (req) => {
     throw new Error("Missing idporten pid");
   }
   return idportenPid;
-};
-
-const getTokenxAccessToken = (req) => {
-  const tokenxAccessToken = req.getTokenxAccessToken ? req.getTokenxAccessToken() : null;
-  if (!tokenxAccessToken) {
-    throw new Error("Missing TokenX access token");
-  }
-  return tokenxAccessToken;
 };
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
