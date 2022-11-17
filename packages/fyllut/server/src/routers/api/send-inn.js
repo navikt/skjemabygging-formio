@@ -2,8 +2,8 @@ import fetch from "node-fetch";
 import { config } from "../../config/config";
 import { logger } from "../../logger.js";
 import { Pdfgen } from "../../pdfgen.js";
+import { getTokenxAccessToken } from "../../security/tokenxHelper";
 import { responseToError } from "../../utils/errorHandling.js";
-import { getTokenxAccessToken } from "../../utils/token";
 
 const { featureToggles, gitVersion, sendInnConfig } = config;
 

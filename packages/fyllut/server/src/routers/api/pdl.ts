@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import fetch from "node-fetch";
 import { logger } from "../../logger";
-import { getTokenxAccessToken } from "../../utils/token";
+import { getTokenxAccessToken } from "../../security/tokenxHelper";
 
 const pdl = {
   get: async (req: Request, res: Response, next: NextFunction) => {
