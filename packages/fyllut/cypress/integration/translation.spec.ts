@@ -34,7 +34,7 @@ describe("Translations", () => {
 
   describe("Change translation language", () => {
     beforeEach(() => {
-      cy.visit("/fyllut/cypress101/skjema");
+      cy.visit("/fyllut/cypress101/skjema?sub=paper");
     });
 
     it("change to english and back to norwegian", () => {
@@ -45,6 +45,40 @@ describe("Translations", () => {
       cy.findByRole("button", { name: "English" }).click();
       cy.findByRole("link", { name: "Norsk bokmål" }).click();
       cy.findByRole("heading", { name: "Veiledning" }).should("exist");
+    });
+
+    it("retains selected language on navigation", () => {
+      cy.findByRole("heading", { name: "Veiledning" }).should("exist");
+      cy.findByRole("button", { name: "Norsk bokmål" }).click();
+      cy.findByRole("link", { name: "English" }).click();
+      cy.findByRole("heading", { name: "Guidance" }).should("exist");
+      cy.clickNextStep();
+
+      cy.findByRole("button", { name: "English" }).should("exist");
+      cy.findByRole("heading", { name: "Your information" }).should("exist");
+      cy.findByRole("textbox", { name: "First name" }).should("exist").type("Cyp");
+      cy.findByRole("textbox", { name: "Last name" }).should("exist").type("Ress");
+      cy.get(".radiogruppe")
+        .first()
+        .should("exist")
+        .within(($radio) => cy.findByLabelText("Yes").should("exist").check({ force: true }));
+      cy.findByRole("textbox", { name: "Norwegian national identification / D number" })
+        .should("exist")
+        .type("16020256145");
+      cy.clickNextStep();
+
+      cy.findByRole("button", { name: "English" }).should("exist");
+      cy.findByRole("heading", { name: "Attachment" }).should("exist");
+      cy.get(".radiogruppe")
+        .first()
+        .should("exist")
+        .within(($radio) =>
+          cy.findByLabelText("No, I have no other documentation.").should("exist").check({ force: true })
+        );
+      cy.clickNextStep();
+
+      cy.findByRole("button", { name: "English" }).should("exist");
+      cy.findByRole("heading", { name: "Summary" }).should("exist");
     });
   });
 });
