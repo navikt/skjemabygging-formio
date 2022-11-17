@@ -6,7 +6,9 @@ const pdl = {
   get: async (req: Request, res: Response, next: NextFunction) => {
     logger.debug("Fetch PDL");
     try {
-      const response = await fetch("https://pdl-api.dev.intern.nav.no/graphql", {
+      const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
+      // const url = "https://pdl-api.dev.intern.nav.no/graphql";
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
