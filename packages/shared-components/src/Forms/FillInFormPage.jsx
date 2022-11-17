@@ -73,6 +73,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onNextPage={onNextOrPreviousPage}
         onPrevPage={onNextOrPreviousPage}
         formReady={onFormReady}
+        submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
       />
     </div>
