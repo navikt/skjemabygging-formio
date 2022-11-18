@@ -5,7 +5,7 @@
 {% } else { %}
 <fieldset class="skjemagruppe">
  <legend class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
-   {{ctx.component.label}}
+   {{ctx.t(ctx.component.label)}}
  </legend>
   <div ref="{{ctx.nestedKey}}">{{ctx.children}}</div>
 </fieldset>
