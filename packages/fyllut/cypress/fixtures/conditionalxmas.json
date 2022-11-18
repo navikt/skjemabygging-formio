@@ -680,7 +680,7 @@
   "properties": {
     "skjemanummer": "test-magnus-007",
     "tema": "xxx",
-    "innsending": "DIGITAL",
+    "innsending": "KUN_DIGITAL",
     "signatures": [
       {
         "label": "",
