@@ -2,7 +2,7 @@ import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { DryRunResult, DryRunResults } from "../../types/migration";
+import { DryRunResult, DryRunResults, Operator } from "../../types/migration";
 import { UserAlerterContext } from "../userAlerting";
 import MigrationPage from "./MigrationPage";
 import { migrationOptionsAsMap } from "./utils";
@@ -62,9 +62,16 @@ describe("MigrationPage", () => {
     fetchSpy.mockClear();
   });
 
-  const setMigrateOptionInput = (index, prop, value) => {
+  const setMigrateOptionInput = (index, prop, value, operator: Operator) => {
     fireEvent.change(screen.getAllByLabelText("Feltnavn")[index], { target: { value: prop } });
     fireEvent.change(screen.getAllByLabelText("Verdi")[index], { target: { value } });
+    if (operator) {
+      fireEvent.change(screen.getAllByLabelText("Operator")[index], { target: { value: operator } });
+    }
+  };
+
+  const addFilterOption = () => {
+    fireEvent.click(screen.getByRole("button", { name: "Legg til filtreringsvalg" }));
   };
 
   it("renders the main heading", () => {
@@ -92,15 +99,30 @@ describe("MigrationPage", () => {
 
     it("performs a search with several search filters", async () => {
       setMigrateOptionInput(0, "prop1", true);
-      fireEvent.click(screen.getByRole("button", { name: "Legg til filtreringsvalg" }));
+      addFilterOption();
       setMigrateOptionInput(1, "prop2", 99);
-      fireEvent.click(screen.getByRole("button", { name: "Legg til filtreringsvalg" }));
+      addFilterOption();
       setMigrateOptionInput(2, "prop3", false);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}&editOptions={}',
+        expectedGetOptions
+      );
+    });
+
+    it("performs a search with operators", async () => {
+      setMigrateOptionInput(0, "prop1", "hello", "n_eq");
+      addFilterOption();
+      setMigrateOptionInput(1, "prop2", undefined, "exists");
+      addFilterOption();
+      setMigrateOptionInput(2, "prop3", true);
+      fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
+      await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(fetchSpy).toHaveBeenCalledWith(
+        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2__exists":"","prop3":true}&editOptions={}',
         expectedGetOptions
       );
     });

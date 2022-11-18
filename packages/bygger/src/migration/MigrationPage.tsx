@@ -145,7 +145,7 @@ const MigrationPage = () => {
             await onSearch();
           }}
         >
-          <MigrationOptionsForm title="Filtrer" addRowText="Legg til filtreringsvalg" dispatch={dispatchEditInputs}>
+          <MigrationOptionsForm title="Filtrer" addRowText="Legg til filtreringsvalg" dispatch={dispatchSearchFilters}>
             <div className={styles.searchFilterInputs}>
               {Object.keys(searchFilters).map((id) => (
                 <SearchFilterInput

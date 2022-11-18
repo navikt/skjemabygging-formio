@@ -19,7 +19,15 @@ export const searchFiltersAsParams = (searchFilters: MigrationOptions) => {
   if (Object.keys(searchFilters).length === 0) {
     return {};
   }
-  return Object.values(searchFilters);
+  return Object.values(searchFilters).reduce((acc, { key, value, operator }) => {
+    if (key !== "") {
+      return {
+        ...acc,
+        [operator ? `${key}__${operator}` : key]: value,
+      };
+    }
+    return acc;
+  }, {});
 };
 
 export const migrationOptionsAsMap = (migrationOptions: MigrationOptions): Record<string, ParsedInput> => {
@@ -62,8 +70,8 @@ export const isJSON = (value: string): boolean => {
   }
 };
 
-const createMigrationOption = (filter: MigrationOption = { key: "", value: "" }): MigrationOptions => ({
-  [guid()]: filter,
+const createMigrationOption = (option: MigrationOption = { key: "", value: "" }): MigrationOptions => ({
+  [guid()]: option,
 });
 
 export const createSearchFilters = (filters: MigrationOption[] = []): MigrationOptions => {

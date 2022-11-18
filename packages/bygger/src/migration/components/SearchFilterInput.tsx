@@ -11,12 +11,12 @@ const useStyles = makeStyles({
   },
 });
 
-type OperatorOptions = Record<Operator, { value: Operator; displayValue: string }>;
+type OperatorOptions = Record<Operator, string>;
 const operators: OperatorOptions = {
-  eq: { value: "eq", displayValue: "EQ" },
-  n_eq: { value: "n_eq", displayValue: "NOT EQ" },
-  exists: { value: "exists", displayValue: "eksisterer" },
-  n_exists: { value: "n_exists", displayValue: "eksisterer ikke" },
+  eq: "EQ",
+  n_eq: "NOT EQ",
+  exists: "eksisterer",
+  n_exists: "eksisterer ikke",
 };
 
 interface SearchFilterInputProps {
@@ -60,8 +60,8 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
           })
         }
       >
-        {Object.values(operators).map(({ value, displayValue }) => (
-          <option key={value} value={value}>
+        {Object.entries(operators).map(([key, displayValue]) => (
+          <option key={key} value={key}>
             {displayValue}
           </option>
         ))}
