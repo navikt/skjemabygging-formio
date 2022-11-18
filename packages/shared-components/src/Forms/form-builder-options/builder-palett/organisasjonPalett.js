@@ -22,7 +22,6 @@ const organisasjonPalett = {
         validate: {
           required: true,
           custom: "valid = instance.validateOrganizationNumber(input)",
-          customMessage: "orgNrCustomError",
         },
       },
     },
