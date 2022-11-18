@@ -63,6 +63,19 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
           logger.error("Submission method is not allowed", { qpSub, formPath, innsending });
+
+          const validSubmissionMethod = qpSub === "digital" || qpSub === "paper";
+          if (!validSubmissionMethod || innsending === "INGEN") {
+            const targetUrl = `${config.fyllutPath}/${formPath}`;
+            return res.redirect(
+              url.format({
+                pathname: targetUrl,
+                query: {
+                  ...excludeQueryParam("sub", req.query),
+                },
+              })
+            );
+          }
         }
 
         pageMeta = getFormMeta(form);
