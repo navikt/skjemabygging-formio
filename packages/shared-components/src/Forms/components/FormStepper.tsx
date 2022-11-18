@@ -45,7 +45,7 @@ const FormStepper = ({ form, formUrl, submission }: FormStepperProps) => {
       >
         {translate(TEXTS.grensesnitt.stepper.toggleText, {
           currentStep: formSteps.length,
-          totalSteps: formSteps.length,
+          totalSteps: formSteps.length + 1,
         })}
       </Button>
       {isOpen && <div className="stepper-backdrop"></div>}
