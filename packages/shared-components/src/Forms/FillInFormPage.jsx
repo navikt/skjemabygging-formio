@@ -23,18 +23,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     history.push({ pathname: `${formUrl}/${panelPath}`, search });
   }
 
-  function onNextOrPreviousPage({ page }) {
-    const pathOfPanel = getPanelSlug(form, page);
-    if (pathOfPanel) {
-      updatePanelUrl(pathOfPanel);
-    }
-  }
-
-  function onWizardPageSelected(panel) {
-    updatePanelUrl(panel.path);
-  }
-
-  function onFormReady(formioInstance) {
+  function goToPanelFromUrlParam(formioInstance) {
     if (!panelSlug) {
       const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
@@ -48,6 +37,21 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         }
       }
     }
+  }
+
+  function onNextOrPreviousPage({ page }) {
+    const pathOfPanel = getPanelSlug(form, page);
+    if (pathOfPanel) {
+      updatePanelUrl(pathOfPanel);
+    }
+  }
+
+  function onWizardPageSelected(panel) {
+    updatePanelUrl(panel.path);
+  }
+
+  function onFormReady(formioInstance) {
+    goToPanelFromUrlParam(formioInstance);
   }
 
   const onSubmit = (submission) => {
@@ -69,6 +73,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onNextPage={onNextOrPreviousPage}
         onPrevPage={onNextOrPreviousPage}
         formReady={onFormReady}
+        submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
       />
     </div>
