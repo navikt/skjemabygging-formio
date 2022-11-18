@@ -14,6 +14,11 @@ export type SendInnConfig = {
   };
 };
 
+export type PdlConfig = {
+  host: string;
+  tokenxClientId: string;
+};
+
 export type IdportenConfig = {
   idportenClientId: string;
   idportenJwksUri: string;
