@@ -5,7 +5,6 @@ import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedI
 export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
   let searchFilterParameters = "";
   let editOptionsParameters = "";
-  console.log(searchFiltersAsParams(searchFilters));
   const encodedSearchFilters = JSON.stringify(searchFiltersAsParams(searchFilters));
   if (encodedSearchFilters) {
     searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
