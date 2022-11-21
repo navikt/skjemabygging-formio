@@ -122,7 +122,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
           type="standard"
           loading={foerstesideLoading}
         >
-          <span aria-live="polite" class="navds-label">
+          <span aria-live="polite" className="navds-label">
             {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
           </span>
         </Button>
