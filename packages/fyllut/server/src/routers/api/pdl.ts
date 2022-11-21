@@ -14,6 +14,7 @@ const pdl = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getTokenxAccessToken(req)}`,
+          Tema: "AAP",
         },
         body: JSON.stringify({
           query: `
