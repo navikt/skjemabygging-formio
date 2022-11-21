@@ -1,7 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
+import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { Input, Select } from "nav-frontend-skjema";
 import React, { Dispatch, Fragment } from "react";
-import { MigrationOption, Operator } from "../../../types/migration";
+import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
 import { Action } from "./MigrationOptionsForm.reducer";
 
@@ -15,8 +16,6 @@ type OperatorOptions = Record<Operator, string>;
 const operators: OperatorOptions = {
   eq: "EQ",
   n_eq: "NOT EQ",
-  exists: "eksisterer",
-  n_exists: "eksisterer ikke",
 };
 
 interface SearchFilterInputProps {

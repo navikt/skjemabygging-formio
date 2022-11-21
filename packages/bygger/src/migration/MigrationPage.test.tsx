@@ -1,8 +1,9 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
+import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { DryRunResult, DryRunResults, Operator } from "../../types/migration";
+import { DryRunResult, DryRunResults } from "../../types/migration";
 import { UserAlerterContext } from "../userAlerting";
 import MigrationPage from "./MigrationPage";
 import { migrationOptionsAsMap } from "./utils";
@@ -62,7 +63,7 @@ describe("MigrationPage", () => {
     fetchSpy.mockClear();
   });
 
-  const setMigrateOptionInput = (index, prop, value, operator: Operator) => {
+  const setMigrateOptionInput = (index, prop, value, operator?: Operator) => {
     fireEvent.change(screen.getAllByLabelText("Feltnavn")[index], { target: { value: prop } });
     fireEvent.change(screen.getAllByLabelText("Verdi")[index], { target: { value } });
     if (operator) {
@@ -115,14 +116,14 @@ describe("MigrationPage", () => {
     it("performs a search with operators", async () => {
       setMigrateOptionInput(0, "prop1", "hello", "n_eq");
       addFilterOption();
-      setMigrateOptionInput(1, "prop2", undefined, "exists");
+      setMigrateOptionInput(1, "prop2", "world!", "eq");
       addFilterOption();
       setMigrateOptionInput(2, "prop3", true);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2__exists":"","prop3":true}&editOptions={}',
+        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}&editOptions={}',
         expectedGetOptions
       );
     });

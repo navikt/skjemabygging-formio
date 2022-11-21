@@ -18,7 +18,7 @@ import { reducer } from "./components/MigrationOptionsForm.reducer";
 import SearchFilterInput from "./components/SearchFilterInput";
 import {
   createEditOptions,
-  createSearchFilters,
+  createSearchFiltersFromParams,
   createUrlParams,
   getMigrationResultsMatchingSearchFilters,
   getUrlParamMap,
@@ -78,7 +78,7 @@ const MigrationPage = () => {
   const params = new URLSearchParams(history.location.search);
 
   const [searchFilters, dispatchSearchFilters] = useReducer(reducer, {}, () =>
-    createSearchFilters(getUrlParamMap(params, "searchFilters"))
+    createSearchFiltersFromParams(getUrlParamMap(params, "searchFilters"))
   );
   const [editInputs, dispatchEditInputs] = useReducer(reducer, {}, () =>
     createEditOptions(getUrlParamMap(params, "editOptions"))

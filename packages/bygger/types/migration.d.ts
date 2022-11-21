@@ -1,5 +1,4 @@
 export type ParsedInput = number | string | boolean | null | object | Array;
-export type Operator = "eq" | "n_eq" | "exists" | "n_exists";
 
 export interface MigrationOption {
   key: string;

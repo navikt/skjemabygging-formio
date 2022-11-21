@@ -1,9 +1,11 @@
+import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { guid } from "nav-frontend-js-utils";
 import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from "../../types/migration";
 
 export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
   let searchFilterParameters = "";
   let editOptionsParameters = "";
+  console.log(searchFiltersAsParams(searchFilters));
   const encodedSearchFilters = JSON.stringify(searchFiltersAsParams(searchFilters));
   if (encodedSearchFilters) {
     searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
@@ -23,7 +25,7 @@ export const searchFiltersAsParams = (searchFilters: MigrationOptions) => {
     if (key !== "") {
       return {
         ...acc,
-        [operator ? `${key}__${operator}` : key]: value,
+        [migrationUtils.combinePropAndOperator(key, operator)]: value,
       };
     }
     return acc;
@@ -74,12 +76,20 @@ const createMigrationOption = (option: MigrationOption = { key: "", value: "" })
   [guid()]: option,
 });
 
-export const createSearchFilters = (filters: MigrationOption[] = []): MigrationOptions => {
+export const createSearchFiltersFromParams = (filtersFromParam: Record<string, string> = {}): MigrationOptions => {
   const searchFilters: MigrationOptions = {};
-  if (filters.length > 0) {
-    filters.forEach((filter) => {
-      Object.assign(searchFilters, createMigrationOption(filter));
-    });
+  if (Object.keys(filtersFromParam).length > 0) {
+    for (const [key, value] of Object.entries(filtersFromParam)) {
+      const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
+      Object.assign(
+        searchFilters,
+        createMigrationOption({
+          key: prop,
+          value,
+          operator: (operator as Operator) || undefined,
+        })
+      );
+    }
   } else {
     Object.assign(searchFilters, createMigrationOption());
   }
