@@ -12,7 +12,6 @@ import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
-import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.tsx";
 
@@ -78,18 +77,6 @@ const FyllUtRouter = ({ form, translations }) => {
             <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareLetterPage
-                  form={form}
-                  submission={submissionObject}
-                  formUrl={formBaseUrl}
-                  translations={translations}
-                />
-              )}
-            </SubmissionWrapper>
-          </Route>
-          <Route path={`${path}/forbered-innsending`}>
-            <SubmissionWrapper submission={submission} url={formBaseUrl}>
-              {(submissionObject) => (
-                <PrepareSubmitPage
                   form={form}
                   submission={submissionObject}
                   formUrl={formBaseUrl}

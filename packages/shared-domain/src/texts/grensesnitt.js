@@ -25,14 +25,9 @@ export const grensesnitt = {
   summaryPage: {
     edit: "Rediger",
     editAnswers: "Forrige steg",
-    continueToPostalSubmission: "Send i posten",
-    continueToDigitalSubmission: "Til digital innsending",
   },
   prepareLetterPage: {
     downloadCoverPage: "Last ned førsteside",
-  },
-  prepareSubmitPage: {
-    confirmCheckboxLabel: "Jeg har lest instruksjonene.",
   },
   stepper: {
     toggleText: "Steg {{currentStep}} av {{totalSteps}}",

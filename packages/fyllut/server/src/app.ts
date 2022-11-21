@@ -4,13 +4,12 @@ import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
 import { checkConfigConsistency, config } from "./config/config";
 import { buildDirectory } from "./context.js";
-import { createRedirectUrl, getDecorator } from "./dekorator.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import httpRequestLogger from "./middleware/httpRequestLogger.js";
+import renderIndex from "./renderIndex";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
-import { formService } from "./services";
 
 export const createApp = () => {
   checkConfigConsistency(config);
@@ -42,22 +41,9 @@ export const createApp = () => {
   });
 
   // Match everything except internal, static and api
-  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const formMeta = await formService.getMeta(res.locals.formId);
-      const decoratorFragments = await getDecorator(createRedirectUrl(req, res));
-      res.render("index.html", {
-        ...decoratorFragments,
-        ...formMeta,
-      });
-    } catch (cause: any) {
-      const error = new Error("Failed to return index file");
-      error.cause = cause;
-      next(error);
-    }
-  });
+  fyllutRouter.use(/^(?!.*\/(internal|static|api)\/).*$/, renderIndex);
 
-  app.use("/fyllut", fyllutRouter);
+  app.use(config.fyllutPath, fyllutRouter);
 
   app.use(globalErrorHandler);
 

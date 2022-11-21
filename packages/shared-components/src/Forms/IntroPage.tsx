@@ -1,4 +1,4 @@
-import { Button, GuidePanel } from "@navikt/ds-react";
+import { Button, GuidePanel, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
@@ -7,11 +7,18 @@ import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
 import { getPanelSlug } from "../util/form";
+import { removeBeforeUnload } from "../util/unload";
+import { FormTitle } from "./components/FormTitle";
 
 export interface Props {
   form: NavFormType;
   formUrl: string;
 }
+
+const supportsPapirOgDigital = (form: NavFormType) => {
+  const { innsending } = form.properties;
+  return !innsending || innsending === "PAPIR_OG_DIGITAL";
+};
 
 export function IntroPage({ form, formUrl }: Props) {
   const { translate } = useLanguages();
@@ -20,15 +27,22 @@ export function IntroPage({ form, formUrl }: Props) {
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
+  const [mustSelectSubmissionMethod, setMustSelectSubmissionMethod] = useState<boolean>(
+    !submissionMethod && supportsPapirOgDigital(form)
+  );
+  const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
 
   useEffect(() => {
-    if (submissionMethod) {
-      if (submissionMethod === http.SubmissionMethodType.PAPER) {
+    if (selectedSubmissionMethod) {
+      if (selectedSubmissionMethod === http.SubmissionMethodType.PAPER) {
         setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
         setDescription(TEXTS.statiske.introPage.paperDescription);
+      } else {
+        // No description when digital submission
+        setDescriptionBold(undefined);
+        setDescription(undefined);
       }
-      // No description when submissionMethodType === http.SubmissionMethodType.DIGITAL
     } else {
       if (form.properties?.innsending === "KUN_PAPIR") {
         setDescriptionBold(TEXTS.statiske.introPage.paperDescriptionBold);
@@ -42,11 +56,43 @@ export function IntroPage({ form, formUrl }: Props) {
       }
       // No description when form.properties.innsending === "KUN_DIGITAL"
     }
-  }, [search]);
+  }, [search, selectedSubmissionMethod]);
+
+  useEffect(() => {
+    setMustSelectSubmissionMethod(!submissionMethod && supportsPapirOgDigital(form));
+  }, [submissionMethod, form]);
+
+  const navigateToFormPage = () => {
+    if (selectedSubmissionMethod) {
+      removeBeforeUnload();
+      const { pathname, search } = window.location;
+      const params = new URLSearchParams(search);
+      params.set("sub", selectedSubmissionMethod);
+      // important to reload page due to forced idporten login if sub=digital
+      window.location.href = `${pathname}/${firstPanelSlug}?${params.toString()}`;
+    }
+  };
 
   return (
     <main className="fyllut-layout">
-      <div>
+      <FormTitle form={form} className="margin-bottom-double" />
+
+      {mustSelectSubmissionMethod && (
+        <>
+          <RadioGroup
+            legend={translate(TEXTS.statiske.introPage.submissionMethod.legend)}
+            name="submissionMethod"
+            required={true}
+            onChange={(sub: string) => setSelectedSubmissionMethod(sub)}
+            className="margin-bottom-default"
+          >
+            <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
+            <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
+          </RadioGroup>
+        </>
+      )}
+
+      {(selectedSubmissionMethod || !mustSelectSubmissionMethod) && (
         <GuidePanel poster className="margin-bottom-double">
           <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
           <ul>
@@ -70,22 +116,28 @@ export function IntroPage({ form, formUrl }: Props) {
             </li>
           </ul>
         </GuidePanel>
+      )}
 
-        <nav className="form-nav">
-          <Link to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
-            <Button className="navds-button navds-button--primary">
-              <span aria-live="polite" className="navds-label">
-                {translate(TEXTS.grensesnitt.introPage.start)}
-              </span>
-            </Button>
-          </Link>
-          <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
+      <nav className="form-nav">
+        {mustSelectSubmissionMethod && selectedSubmissionMethod && (
+          <Button onClick={navigateToFormPage}>{translate(TEXTS.grensesnitt.introPage.start)}</Button>
+        )}
+        {!mustSelectSubmissionMethod && (
+          <Link
+            className="navds-button navds-button--primary"
+            to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
+          >
             <span aria-live="polite" className="navds-label">
-              {translate(TEXTS.grensesnitt.goBack)}
+              {translate(TEXTS.grensesnitt.introPage.start)}
             </span>
-          </button>
-        </nav>
-      </div>
+          </Link>
+        )}
+        <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
+          <span aria-live="polite" className="navds-label">
+            {translate(TEXTS.grensesnitt.goBack)}
+          </span>
+        </button>
+      </nav>
     </main>
   );
 }

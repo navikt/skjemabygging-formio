@@ -94,6 +94,15 @@ const NavForm = (props) => {
         props[funcName](...args);
       }
     }
+
+    // Repopulating form from submission after navigating back to form from another context (e.g. Summary page)
+    if (event === "formio.change" && args?.some((arg) => arg?.fromSubmission)) {
+      instance.ready.then((formioInstance) => {
+        if (props.submissionReady) {
+          props.submissionReady(formioInstance);
+        }
+      });
+    }
   };
 
   const initializeFormio = () => {

@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
 import React from "react";
-import { AppConfigProvider } from "../../configContext";
+import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
 import DigitalSubmissionButton, { Props } from "./DigitalSubmissionButton";
 
@@ -13,6 +13,11 @@ const BASE_URL = "http://www.unittest.nav.no/fyllut";
 const SEND_INN_URL = "http://www.unittest.nav.no/sendInn/soknad/123";
 
 const originalWindowLocation = window.location;
+
+const defaultAppConfigProps: Partial<AppConfigContextType> = {
+  baseUrl: BASE_URL,
+  app: "fyllut",
+};
 
 describe("DigitalSubmissionButton", () => {
   const defaultForm = {
@@ -26,7 +31,7 @@ describe("DigitalSubmissionButton", () => {
   const defaultSubmission = {};
   const defaultTranslations = {};
 
-  const renderButton = (props: Partial<Props> = {}) => {
+  const renderButton = (props: Partial<Props> = {}, appConfigProps: Partial<AppConfigContextType> = {}) => {
     const defaultProps: Props = {
       form: defaultForm,
       submission: defaultSubmission,
@@ -36,7 +41,7 @@ describe("DigitalSubmissionButton", () => {
       ...props,
     };
     render(
-      <AppConfigProvider baseUrl={BASE_URL}>
+      <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <LanguagesProvider translations={defaultTranslations}>
           <DigitalSubmissionButton {...defaultProps} />
         </LanguagesProvider>
@@ -88,6 +93,19 @@ describe("DigitalSubmissionButton", () => {
       await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
       expect(onError).toHaveBeenCalledTimes(0);
       expect(windowLocation.href).toEqual(SEND_INN_URL);
+    });
+
+    it("responds with error when clicked in application 'bygger'", async () => {
+      nock(BASE_URL).post("/api/send-inn").reply(201, "CREATED", { Location: SEND_INN_URL });
+      renderButton({ onError, onSuccess }, { app: "bygger" });
+      const button = screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward });
+      expect(button).toBeInTheDocument();
+      userEvent.click(button);
+      await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
+      expect(onError.mock.calls[0][0].message).toEqual(
+        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren."
+      );
+      expect(windowLocation.href).toEqual("");
     });
   });
 });

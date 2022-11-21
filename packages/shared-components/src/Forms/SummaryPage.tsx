@@ -203,7 +203,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 }
 
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
@@ -214,7 +214,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
-  const innsending: InnsendingType | undefined = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
   const linkBtStyle = {
     textDecoration: "none",
   };
@@ -234,52 +234,27 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
-          {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
           <nav className="form-nav">
-            {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
+            {(submissionMethod === "paper" ||
+              innsending === "KUN_PAPIR" ||
+              (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
               <Link
-                className={`navds-button navds-button--secondary ${
-                  innsending === "KUN_PAPIR"
-                    ? "navds-button navds-button--primary"
-                    : "navds-button navds-button--secondary"
-                }`}
+                className="navds-button navds-button--primary"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
               >
                 <span aria-live="polite" className="navds-label">
-                  {innsending === "KUN_PAPIR" || submissionMethod === "paper"
-                    ? translate(TEXTS.grensesnitt.moveForward)
-                    : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+                  {translate(TEXTS.grensesnitt.moveForward)}
                 </span>
               </Link>
             )}
-            {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
-              <>
-                {submissionMethod === "digital" ? (
-                  <DigitalSubmissionButton
-                    form={form}
-                    submission={submission}
-                    translations={translations}
-                    onError={(err) => setErrorMessage(err.message)}
-                  />
-                ) : (
-                  <Link
-                    className="navds-button navds-button--secondary"
-                    onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                    to={{
-                      pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
-                      search,
-                      state: { previousPage: url },
-                    }}
-                  >
-                    <span aria-live="polite" className="navds-label">
-                      {innsending === "KUN_DIGITAL"
-                        ? translate(TEXTS.grensesnitt.moveForward)
-                        : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
-                    </span>
-                  </Link>
-                )}
-              </>
+            {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
+              <DigitalSubmissionButton
+                form={form}
+                submission={submission}
+                translations={translations}
+                onError={(err) => setErrorMessage(err.message)}
+              />
             )}
             {innsending === "INGEN" && (
               <Link
@@ -305,7 +280,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               </span>
             </Lenke>
           </nav>
-          {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
+          {errorMessage && (
+            <AlertStripe data-testid="error-message" type="feil">
+              {errorMessage}
+            </AlertStripe>
+          )}
         </div>
         <aside className="right-col">
           <FormStepper form={form} formUrl={formUrl} submission={submission} />
