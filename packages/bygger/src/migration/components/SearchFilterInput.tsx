@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
+import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { Input, Select } from "nav-frontend-skjema";
 import React, { Dispatch, Fragment } from "react";
 import { MigrationOption } from "../../../types/migration";
@@ -14,8 +14,10 @@ const useStyles = makeStyles({
 
 type OperatorOptions = Record<Operator, string>;
 const operators: OperatorOptions = {
-  eq: "EQUALS",
-  n_eq: "NOT EQUAL",
+  eq: "Er lik",
+  n_eq: "Ikke lik",
+  ex: "Eksisterer",
+  n_ex: "Ikke eksisterer",
 };
 
 interface SearchFilterInputProps {
@@ -70,7 +72,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
         label="Verdi"
         type="text"
         value={typeof value === "object" ? JSON.stringify(value) : value}
-        disabled={!key}
+        disabled={!key || migrationUtils.isUnaryOperator(operator)}
         onChange={(event) =>
           dispatch({
             type: "edit",
