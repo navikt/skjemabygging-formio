@@ -11,7 +11,8 @@ export default class OrganizationNumber extends Number {
     }
 
     // Force organizationNumber to string
-    return validatorUtils.isOrganizationNumber(organizationNumber + "");
+    const isValid = validatorUtils.isOrganizationNumber(organizationNumber + "");
+    return isValid ? true : "orgNrCustomError";
   }
 
   static get builderInfo() {
