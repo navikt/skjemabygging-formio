@@ -1,4 +1,4 @@
-import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { migrationUtils, navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { generateDiff } from "./diffingTool.js";
 import { componentMatchesSearchFilters } from "./searchFilter.js";
 
@@ -18,7 +18,11 @@ function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, s
   return modifiedComponent;
 }
 
-function migrateForm(form, searchFilters, script) {
+function migrateForm(form, searchFiltersFromParam, script) {
+  const searchFilters = Object.entries(searchFiltersFromParam).map(([key, value]) => {
+    const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
+    return { key: prop, value, operator };
+  });
   return recursivelyMigrateComponentAndSubcomponents(form, searchFilters, script);
 }
 
