@@ -12,7 +12,7 @@ import {
   mockUpdateRef,
   Octokit,
 } from "@octokit/rest";
-import { GitHubRepo, gitTreeMode } from "./GitHubRepo.js";
+import { GitHubRepo } from "./GitHubRepo.js";
 
 jest.mock("@octokit/rest");
 
@@ -122,71 +122,6 @@ describe("GitHubRepo", () => {
         path: "files/newFile.json",
         message: "Create newFile.json",
         content: "base64-string",
-      });
-    });
-  });
-
-  describe("updateSubmodule", () => {
-    describe("When provided submodule sha is the same as the current submodule sha", () => {
-      beforeEach(async () => {
-        mockGetRef.mockReturnValueOnce({ data: { object: { sha: "new-branch-sha" } } });
-        mockGetTree.mockReturnValueOnce({
-          data: {
-            tree: [{ path: "mySubmodule", mode: gitTreeMode.SUBMODULE, sha: "my-submodule-sha", type: "commit" }],
-          },
-        });
-        await repo.updateSubmodule("branch", "my-submodule-sha", "mySubmodule", "message");
-      });
-
-      it("does not create a new tree and commit, and does not update the branch ref", () => {
-        expect(mockCreateTree).toHaveBeenCalledTimes(0);
-        expect(mockCreateRef).toHaveBeenCalledTimes(0);
-        expect(mockUpdateRef).toHaveBeenCalledTimes(0);
-      });
-    });
-
-    describe("When provided submodule sha is different from the current submodule sha", () => {
-      beforeEach(async () => {
-        mockGetRef.mockReturnValueOnce({ data: { object: { sha: "new-branch-sha" } } });
-        mockGetTree.mockReturnValueOnce({
-          data: {
-            tree: [{ path: "submodulePath", mode: gitTreeMode.SUBMODULE, sha: "old-submodule-sha", type: "commit" }],
-          },
-        });
-        mockCreateTree.mockReturnValueOnce({ data: { sha: "new-tree-sha" } });
-        mockCreateCommit.mockReturnValueOnce({ data: { sha: "new-commit-sha" } });
-        await repo.updateSubmodule("new-branch", "submodule-sha", "submodulePath", "message");
-      });
-
-      it("creates a new git tree with an updated reference to the subModule", () => {
-        expect(mockCreateTree).toHaveBeenCalledTimes(1);
-        expect(mockCreateTree).toHaveBeenCalledWith({
-          owner,
-          repo: repoName,
-          base_tree: "new-branch-sha",
-          tree: [{ path: "submodulePath", mode: gitTreeMode.SUBMODULE, type: "commit", sha: "submodule-sha" }],
-        });
-      });
-
-      it("commits the new tree, with the initial branch sha as parent", () => {
-        expect(mockCreateCommit).toHaveBeenCalledTimes(1);
-        expect(mockCreateCommit).toHaveBeenLastCalledWith({
-          owner,
-          repo: repoName,
-          message: "message",
-          tree: "new-tree-sha",
-          parents: ["new-branch-sha"],
-        });
-      });
-
-      it("updates the branch ref to point at the new commit sha", () => {
-        expect(mockUpdateRef).toHaveBeenCalledTimes(1);
-        expect(mockUpdateRef).toHaveBeenCalledWith({
-          owner,
-          repo: repoName,
-          ref: "heads/new-branch",
-          sha: "new-commit-sha",
-        });
       });
     });
   });

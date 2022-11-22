@@ -6,11 +6,11 @@ import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 import {
   createFileForPushingToRepo,
-  deleteFilesAndUpdateSubmoduleCallback,
+  deleteFilesAndUpdateMonorepoRefCallback,
   getFormFilePath,
   getTranslationFilePath,
   performChangesOnSeparateBranch,
-  pushFilesAndUpdateSubmoduleCallback,
+  pushFilesAndUpdateMonorepoRefCallback,
 } from "./repoUtils.js";
 import { FormioService } from "./services/formioService";
 
@@ -47,7 +47,7 @@ export class Backend {
       this.skjemaUtfylling,
       this.config.publishRepo.base,
       `publish-${formPath}--${uuidv4()}`,
-      pushFilesAndUpdateSubmoduleCallback(files, this.config.gitSha, this.config.publishRepo.submoduleName),
+      pushFilesAndUpdateMonorepoRefCallback(files, this.config.gitSha),
       `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
     );
   }
@@ -57,7 +57,7 @@ export class Backend {
       this.skjemaUtfylling,
       this.config.publishRepo.base,
       `unpublish-${formPath}--${uuidv4()}`,
-      deleteFilesAndUpdateSubmoduleCallback([getFormFilePath(formPath), getTranslationFilePath(formPath)]),
+      deleteFilesAndUpdateMonorepoRefCallback([getFormFilePath(formPath), getTranslationFilePath(formPath)]),
       `[avpublisering] skjema ${formPath}, monorepo ref: ${this.config.gitSha}`
     );
   }
@@ -74,7 +74,7 @@ export class Backend {
       this.skjemaUtfylling,
       this.config.publishRepo.base,
       `publish-${resourceName}--${uuidv4()}`,
-      pushFilesAndUpdateSubmoduleCallback([resourceFile], this.config.gitSha, this.config.publishRepo.submoduleName),
+      pushFilesAndUpdateMonorepoRefCallback([resourceFile], this.config.gitSha),
       `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`
     );
   }
@@ -93,7 +93,7 @@ export class Backend {
       this.skjemaUtfylling,
       this.config.publishRepo.base,
       `bulkpublish--${uuidv4()}`,
-      pushFilesAndUpdateSubmoduleCallback(formFiles, this.config.gitSha, this.config.publishRepo.submoduleName),
+      pushFilesAndUpdateMonorepoRefCallback(formFiles, this.config.gitSha),
       `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
   }

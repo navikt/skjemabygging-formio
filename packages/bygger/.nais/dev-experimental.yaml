@@ -3,7 +3,6 @@ ingresses:
 - "https://skjemabygging-experimental.dev.nav.no"
 image: {{image}}
 publish-repo: skjemautfylling-formio
-submodule-repo: skjemabygging-formio
 publish-repo-owner: navikt
 publish-repo-base: test-publishing
 skjemabygging-proxy-host: skjemabygging-proxy.dev-fss-pub.nais.io
