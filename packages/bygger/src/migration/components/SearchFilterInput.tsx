@@ -14,8 +14,8 @@ const useStyles = makeStyles({
 
 type OperatorOptions = Record<Operator, string>;
 const operators: OperatorOptions = {
-  eq: "EQ",
-  n_eq: "NOT EQ",
+  eq: "EQUALS",
+  n_eq: "NOT EQUAL",
 };
 
 interface SearchFilterInputProps {
