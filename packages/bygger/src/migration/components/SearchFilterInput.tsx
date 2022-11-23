@@ -17,6 +17,7 @@ const operators: OperatorOptions = {
   eq: "Er lik",
   n_eq: "Ikke lik",
   contains: "Inneholder",
+  n_contains: "Ikke inneholder",
   ex: "Eksisterer",
   n_ex: "Ikke eksisterer",
 };
