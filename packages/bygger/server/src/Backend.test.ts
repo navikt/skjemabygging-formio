@@ -162,7 +162,6 @@ describe("Backend", () => {
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
         expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("forms/skjema.json");
         expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("translations/skjema.json");
-        // expect(mockRepoCreateOrUpdateFileContents.mock.calls[2][1]).toEqual("MONOREPO");
       });
 
       it("does not merge the pull request", () => {
