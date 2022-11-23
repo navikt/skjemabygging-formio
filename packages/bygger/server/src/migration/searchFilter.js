@@ -12,6 +12,8 @@ function componentMatchesSearchFilters(component, searchFilters) {
         return !!getPropertyFromComponent(component, key.split("."));
       case "n_exists":
         return !getPropertyFromComponent(component, key.split("."));
+      case "contains":
+        return getPropertyFromComponent(component, key.split("."))?.includes(value);
       case "n_eq":
         return getPropertyFromComponent(component, key.split(".")) !== value;
       case "eq":

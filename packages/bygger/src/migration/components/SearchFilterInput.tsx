@@ -16,6 +16,7 @@ type OperatorOptions = Record<Operator, string>;
 const operators: OperatorOptions = {
   eq: "Er lik",
   n_eq: "Ikke lik",
+  contains: "Inneholder",
   ex: "Eksisterer",
   n_ex: "Ikke eksisterer",
 };
