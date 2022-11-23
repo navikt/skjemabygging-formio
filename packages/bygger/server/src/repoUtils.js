@@ -26,7 +26,7 @@ export function createFileForPushingToRepo(name, path, type, content) {
   return { name, path, type, contentAsBase64: stringTobase64(JSON.stringify(content)) };
 }
 
-export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, submoduleRepo) {
+export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) {
   return async (repo, branch) => {
     const initialRef = await repo.getRef(branch);
 
@@ -35,7 +35,7 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         repo,
         branch,
         file.path,
-        `${file.type} "${file.name}", monorepo ref: ${newSubmoduleGitSha}`,
+        `${file.type} "${file.name}", monorepo ref: ${newMonorepoGitSha}`,
         file.contentAsBase64
       );
     }
@@ -45,15 +45,8 @@ export function pushFilesAndUpdateSubmoduleCallback(files, newSubmoduleGitSha, s
         repo,
         branch,
         "MONOREPO",
-        `oppdater monorepo ref: ${newSubmoduleGitSha}`,
-        stringTobase64(newSubmoduleGitSha)
-      );
-      // updateSubmodule-kallet kan fjernes når vi går bort fra git submodule i skjemautfylling-formio
-      await repo.updateSubmodule(
-        branch,
-        newSubmoduleGitSha,
-        submoduleRepo,
-        `oppdater monorepo ref: ${newSubmoduleGitSha}`
+        `oppdater monorepo ref: ${newMonorepoGitSha}`,
+        stringTobase64(newMonorepoGitSha)
       );
     }
   };
@@ -67,7 +60,7 @@ async function deleteFile(repo, branch, path, message) {
   }
 }
 
-export function deleteFilesAndUpdateSubmoduleCallback(paths) {
+export function deleteFilesAndUpdateMonorepoRefCallback(paths) {
   return async (repo, branch) => {
     for (const path of paths) {
       await deleteFile(repo, branch, path, `Delete "${path}"`);
