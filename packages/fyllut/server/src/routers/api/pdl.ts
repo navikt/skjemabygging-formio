@@ -29,7 +29,7 @@ const pdl = {
 const getPerson = async (tokenxAccessToken: string, theme: string, personId: string) => {
   logger.debug(`Fetch ${personId} from pdl.`);
 
-  return await pdlRequest(
+  const response = await pdlRequest(
     tokenxAccessToken,
     theme,
     JSON.stringify({
@@ -49,6 +49,8 @@ const getPerson = async (tokenxAccessToken: string, theme: string, personId: str
       },
     })
   );
+
+  return response.hentPerson;
 };
 
 const getPersonWithChildren = async (tokenxAccessToken: string, theme: string, personId: string) => {
@@ -67,6 +69,15 @@ const getPersonWithChildren = async (tokenxAccessToken: string, theme: string, p
               etternavn
             },
             forelderBarnRelasjon {
+                query(relatertPersonsIdent) {
+                hentPerson(ident: $ident) {
+                  navn(historikk: false) {
+                    fornavn
+                    mellomnavn
+                    etternavn
+                  }
+                },            
+              }
               relatertPersonsIdent              
             }
           },            
