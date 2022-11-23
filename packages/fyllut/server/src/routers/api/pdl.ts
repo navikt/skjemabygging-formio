@@ -6,7 +6,7 @@ import { getTokenxAccessToken } from "../../security/tokenxHelper";
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await getPerson(getTokenxAccessToken(req), "AAP", "08842748500");
+      const data = await getPerson(getTokenxAccessToken(req), "AAP", req.params.id);
 
       res.send(data);
     } catch (e) {
@@ -16,7 +16,7 @@ const pdl = {
   },
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await getPersonWithChildren(getTokenxAccessToken(req), "AAP", "02824298087");
+      const data = await getPersonWithChildren(getTokenxAccessToken(req), "AAP", req.params.id);
 
       res.send(data);
     } catch (e) {
@@ -27,7 +27,8 @@ const pdl = {
 };
 
 const getPerson = async (tokenxAccessToken: string, theme: string, personId: string) => {
-  logger.debug("Fetch person with children.");
+  logger.debug(`Fetch ${personId} from pdl.`);
+
   return await pdlRequest(
     tokenxAccessToken,
     theme,
@@ -51,7 +52,8 @@ const getPerson = async (tokenxAccessToken: string, theme: string, personId: str
 };
 
 const getPersonWithChildren = async (tokenxAccessToken: string, theme: string, personId: string) => {
-  logger.debug("Fetch person.");
+  logger.debug(`Fetch ${personId} with children from pdl.`);
+
   return await pdlRequest(
     tokenxAccessToken,
     theme,

@@ -40,8 +40,8 @@ apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
 apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
 apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
-apiRouter.get("/pdl/person", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.person);
-apiRouter.get("/pdl/children", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.children);
+apiRouter.get("/pdl/person/:id", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.person);
+apiRouter.get("/pdl/children/:id", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.children);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
 export default apiRouter;
