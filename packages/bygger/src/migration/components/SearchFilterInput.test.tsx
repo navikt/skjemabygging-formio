@@ -5,7 +5,7 @@ import SearchFilterInput from "./SearchFilterInput";
 describe("SearchFilterInput", () => {
   const dispatchMock = jest.fn();
   beforeEach(() => {
-    render(<SearchFilterInput id={"id"} searchFilter={{ key: "Feltnavn", value: "" }} dispatch={dispatchMock} />);
+    render(<SearchFilterInput id={"id"} searchFilter={{ key: "Feltnavn", value: "value" }} dispatch={dispatchMock} />);
   });
   describe("Feltnavn input field", () => {
     it("is rendered", () => {
@@ -25,9 +25,21 @@ describe("SearchFilterInput", () => {
       expect(screen.getByLabelText("Operator")).toHaveDisplayValue("Er lik");
     });
 
-    it("dispatches an edit action with value on change", () => {
+    it("dispatches an edit action on change", () => {
       fireEvent.change(screen.getByLabelText("Operator"), { target: { value: "n_eq" } });
-      expect(dispatchMock).toHaveBeenCalledWith({ type: "edit", payload: { id: "id", operator: "n_eq" } });
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: "edit",
+        payload: { id: "id", operator: "n_eq", value: "value" },
+      });
+      expect(dispatchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("dispatches an edit action where value is empty when a unary operator is selected", () => {
+      fireEvent.change(screen.getByLabelText("Operator"), { target: { value: "exists" } });
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: "edit",
+        payload: { id: "id", operator: "exists", value: "" },
+      });
       expect(dispatchMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -38,8 +50,8 @@ describe("SearchFilterInput", () => {
     });
 
     it("dispatches an edit action with value on change", () => {
-      fireEvent.change(screen.getByLabelText("Verdi"), { target: { value: "value" } });
-      expect(dispatchMock).toHaveBeenCalledWith({ type: "edit", payload: { id: "id", value: "value" } });
+      fireEvent.change(screen.getByLabelText("Verdi"), { target: { value: "new value" } });
+      expect(dispatchMock).toHaveBeenCalledWith({ type: "edit", payload: { id: "id", value: "new value" } });
       expect(dispatchMock).toHaveBeenCalledTimes(1);
     });
   });

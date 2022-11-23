@@ -18,8 +18,8 @@ const operators: OperatorOptions = {
   n_eq: "Ikke lik",
   contains: "Inneholder",
   n_contains: "Ikke inneholder",
-  ex: "Eksisterer",
-  n_ex: "Ikke eksisterer",
+  exists: "Eksisterer",
+  n_exists: "Ikke eksisterer",
 };
 
 interface SearchFilterInputProps {
@@ -31,6 +31,8 @@ interface SearchFilterInputProps {
 const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProps) => {
   const styles = useStyles();
   const { key, value, operator } = searchFilter;
+
+  const isValueInputDisabled = () => !key || migrationUtils.isUnaryOperator(operator);
 
   return (
     <Fragment>
@@ -58,7 +60,8 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
             type: "edit",
             payload: {
               id,
-              operator: event.currentTarget.value as Operator,
+              operator: event.target.value as Operator,
+              value: migrationUtils.isUnaryOperator(event.target.value as Operator) ? "" : value,
             },
           })
         }
@@ -74,7 +77,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
         label="Verdi"
         type="text"
         value={typeof value === "object" ? JSON.stringify(value) : value}
-        disabled={!key || migrationUtils.isUnaryOperator(operator)}
+        disabled={isValueInputDisabled()}
         onChange={(event) =>
           dispatch({
             type: "edit",
