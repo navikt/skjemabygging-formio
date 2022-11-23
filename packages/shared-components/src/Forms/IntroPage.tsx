@@ -8,7 +8,6 @@ import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
 import { getPanelSlug } from "../util/form";
 import { removeBeforeUnload } from "../util/unload";
-import { FormTitle } from "./components/FormTitle";
 
 export interface Props {
   form: NavFormType;
@@ -75,69 +74,69 @@ export function IntroPage({ form, formUrl }: Props) {
 
   return (
     <main className="fyllut-layout">
-      <FormTitle form={form} className="margin-bottom-double" />
+      <div className="main-col">
+        {mustSelectSubmissionMethod && (
+          <>
+            <RadioGroup
+              legend={translate(TEXTS.statiske.introPage.submissionMethod.legend)}
+              name="submissionMethod"
+              required={true}
+              onChange={(sub: string) => setSelectedSubmissionMethod(sub)}
+              className="margin-bottom-default"
+            >
+              <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
+              <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
+            </RadioGroup>
+          </>
+        )}
 
-      {mustSelectSubmissionMethod && (
-        <>
-          <RadioGroup
-            legend={translate(TEXTS.statiske.introPage.submissionMethod.legend)}
-            name="submissionMethod"
-            required={true}
-            onChange={(sub: string) => setSelectedSubmissionMethod(sub)}
-            className="margin-bottom-default"
-          >
-            <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
-            <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
-          </RadioGroup>
-        </>
-      )}
-
-      {(selectedSubmissionMethod || !mustSelectSubmissionMethod) && (
-        <GuidePanel poster className="margin-bottom-double">
-          <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
-          <ul>
-            {description && (
+        {(selectedSubmissionMethod || !mustSelectSubmissionMethod) && (
+          <GuidePanel poster className="margin-bottom-double">
+            <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
+            <ul>
+              {description && (
+                <li className="margin-bottom-default">
+                  <b>{translate(descriptionBold)} </b>
+                  {translate(description)}
+                </li>
+              )}
               <li className="margin-bottom-default">
-                <b>{translate(descriptionBold)} </b>
-                {translate(description)}
+                <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
+                {translate(TEXTS.statiske.introPage.requiredFields)}
               </li>
-            )}
-            <li className="margin-bottom-default">
-              <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
-              {translate(TEXTS.statiske.introPage.requiredFields)}
-            </li>
-            <li className="margin-bottom-default">
-              <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
-              {translate(TEXTS.statiske.introPage.notSave)}
-            </li>
-            <li className="margin-bottom-default">
-              <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
-              {translate(TEXTS.statiske.introPage.publicComputer)}
-            </li>
-          </ul>
-        </GuidePanel>
-      )}
+              <li className="margin-bottom-default">
+                <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
+                {translate(TEXTS.statiske.introPage.notSave)}
+              </li>
+              <li className="margin-bottom-default">
+                <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
+                {translate(TEXTS.statiske.introPage.publicComputer)}
+              </li>
+            </ul>
+          </GuidePanel>
+        )}
 
-      <nav className="form-nav">
-        {mustSelectSubmissionMethod && selectedSubmissionMethod && (
-          <Button onClick={navigateToFormPage}>{translate(TEXTS.grensesnitt.introPage.start)}</Button>
-        )}
-        {!mustSelectSubmissionMethod && (
-          <Link
-            className="navds-button navds-button--primary"
-            to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
-          >
+        <nav className="form-nav">
+          {mustSelectSubmissionMethod && selectedSubmissionMethod && (
+            <Button onClick={navigateToFormPage}>{translate(TEXTS.grensesnitt.introPage.start)}</Button>
+          )}
+          {!mustSelectSubmissionMethod && (
+            <Link
+              className="navds-button navds-button--primary"
+              to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
+            >
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.introPage.start)}
+              </span>
+            </Link>
+          )}
+          <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
             <span aria-live="polite" className="navds-label">
-              {translate(TEXTS.grensesnitt.introPage.start)}
+              {translate(TEXTS.grensesnitt.goBack)}
             </span>
-          </Link>
-        )}
-        <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
-          <span aria-live="polite" className="navds-label">
-            {translate(TEXTS.grensesnitt.goBack)}
-          </span>
-        </button>
-      </nav>
+          </button>
+        </nav>
+      </div>
     </main>
   );
 }
