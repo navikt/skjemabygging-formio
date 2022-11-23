@@ -69,7 +69,7 @@ describe("search filter", () => {
       const typeEqTextfield = { key: "type", value: "textfield" };
       const typeEqRadio = { key: "type", value: "radio" };
 
-      it("the operator 'equal' is the same as default", () => {
+      it("the operator 'eq' (equals) is the same as default", () => {
         expect(componentMatchesSearchFilters(originalTextFieldComponent, [typeEqTextfield])).toBe(true);
         expect(
           componentMatchesSearchFilters(originalTextFieldComponent, [
@@ -90,7 +90,7 @@ describe("search filter", () => {
         ).toBe(false);
       });
 
-      it("the operator 'not equal' evaluates to false when the value is equal", () => {
+      it("the operator 'n_eq' (not equals) evaluates to false when the value is equal", () => {
         expect(
           componentMatchesSearchFilters(originalTextFieldComponent, [
             {
@@ -101,12 +101,60 @@ describe("search filter", () => {
         ).toBe(false);
       });
 
-      it("the operator 'not equal' evaluates to true when the value is not equal", () => {
+      it("the operator 'n_eq' (not equals) evaluates to true when the value is not equal", () => {
         expect(
           componentMatchesSearchFilters(originalTextFieldComponent, [
             {
               ...typeEqRadio,
               operator: "n_eq",
+            },
+          ])
+        ).toBe(true);
+      });
+
+      it("the operator 'exists' evaluates to false when the property exists", () => {
+        expect(
+          componentMatchesSearchFilters(originalTextFieldComponent, [
+            {
+              key: "type",
+              value: "",
+              operator: "exists",
+            },
+          ])
+        ).toBe(true);
+      });
+
+      it("the operator 'exists' evaluates to false when the property does not exist", () => {
+        expect(
+          componentMatchesSearchFilters(originalTextFieldComponent, [
+            {
+              key: "non-existing-prop",
+              value: "",
+              operator: "exists",
+            },
+          ])
+        ).toBe(false);
+      });
+
+      it("the operator 'n_exists' (does not exist) evaluates to false when the property exists", () => {
+        expect(
+          componentMatchesSearchFilters(originalTextFieldComponent, [
+            {
+              key: "type",
+              value: "",
+              operator: "n_exists",
+            },
+          ])
+        ).toBe(false);
+      });
+
+      it("the operator 'n_exists' (does not exist) evaluates to true when the property does not exist", () => {
+        expect(
+          componentMatchesSearchFilters(originalTextFieldComponent, [
+            {
+              key: "non-existing-prop",
+              value: "",
+              operator: "n_exists",
             },
           ])
         ).toBe(true);

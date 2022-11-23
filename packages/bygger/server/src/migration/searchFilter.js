@@ -8,6 +8,10 @@ function getPropertyFromComponent(comp, properties) {
 function componentMatchesSearchFilters(component, searchFilters) {
   return searchFilters.every(({ key, value, operator }) => {
     switch (operator) {
+      case "exists":
+        return !!getPropertyFromComponent(component, key.split("."));
+      case "n_exists":
+        return !getPropertyFromComponent(component, key.split("."));
       case "n_eq":
         return getPropertyFromComponent(component, key.split(".")) !== value;
       case "eq":

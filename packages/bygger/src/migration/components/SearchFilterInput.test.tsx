@@ -22,7 +22,7 @@ describe("SearchFilterInput", () => {
   describe("Operator input field", () => {
     it("is rendered", () => {
       expect(screen.getByLabelText("Operator")).toBeDefined();
-      expect(screen.getByLabelText("Operator")).toHaveDisplayValue("EQUALS");
+      expect(screen.getByLabelText("Operator")).toHaveDisplayValue("Er lik");
     });
 
     it("dispatches an edit action with value on change", () => {
