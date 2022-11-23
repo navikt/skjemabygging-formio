@@ -14,7 +14,6 @@ export const createBackendForTest = () => {
       publishRepo: {
         owner: "publish-repo-owner",
         name: "publish-repo",
-        submoduleName: "submodule-repo",
         base: "publish-repo-main-branch",
         token: "publishRepoToken",
       },

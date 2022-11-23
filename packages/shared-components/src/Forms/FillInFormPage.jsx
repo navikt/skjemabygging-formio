@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -12,7 +12,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translationsForNavForm } = useLanguages();
-  const { search } = useLocation();
   const { panelSlug } = useParams();
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
@@ -20,21 +19,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
-    history.push({ pathname: `${formUrl}/${panelPath}`, search });
+    history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
-  function onNextOrPreviousPage({ page }) {
-    const pathOfPanel = getPanelSlug(form, page);
-    if (pathOfPanel) {
-      updatePanelUrl(pathOfPanel);
-    }
-  }
-
-  function onWizardPageSelected(panel) {
-    updatePanelUrl(panel.path);
-  }
-
-  function onFormReady(formioInstance) {
+  function goToPanelFromUrlParam(formioInstance) {
     if (!panelSlug) {
       const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
@@ -50,9 +38,24 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
+  function onNextOrPreviousPage({ page }) {
+    const pathOfPanel = getPanelSlug(form, page);
+    if (pathOfPanel) {
+      updatePanelUrl(pathOfPanel);
+    }
+  }
+
+  function onWizardPageSelected(panel) {
+    updatePanelUrl(panel.path);
+  }
+
+  function onFormReady(formioInstance) {
+    goToPanelFromUrlParam(formioInstance);
+  }
+
   const onSubmit = (submission) => {
     setSubmission(submission);
-    history.push({ pathname: `${formUrl}/oppsummering`, search });
+    history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
   return (
@@ -69,6 +72,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onNextPage={onNextOrPreviousPage}
         onPrevPage={onNextOrPreviousPage}
         formReady={onFormReady}
+        submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
       />
     </div>

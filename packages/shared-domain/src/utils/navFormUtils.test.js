@@ -3,6 +3,7 @@ import {
   findDescription,
   flattenComponents,
   formMatcherPredicate,
+  isSubmissionMethodAllowed,
   removeComponents,
   removeVedleggspanel,
   toFormPath,
@@ -599,6 +600,80 @@ describe("navFormUtils", () => {
       };
       const description = findDescription(testForm);
       expect(description).toBeUndefined();
+    });
+  });
+
+  describe("isSubmissionMethodAllowed", () => {
+    const createTestForm = (innsending) => ({ properties: { innsending } });
+
+    describe("innsending=KUN_PAPIR", () => {
+      it("paper is allowed", () => {
+        const testform = createTestForm("KUN_PAPIR");
+        const allowed = isSubmissionMethodAllowed("paper", testform);
+        expect(allowed).toBe(true);
+      });
+
+      it("digital is not allowed", () => {
+        const testform = createTestForm("KUN_PAPIR");
+        const allowed = isSubmissionMethodAllowed("digital", testform);
+        expect(allowed).toBe(false);
+      });
+    });
+
+    describe("innsending=KUN_DIGITAL", () => {
+      it("paper is not allowed", () => {
+        const testform = createTestForm("KUN_DIGITAL");
+        const allowed = isSubmissionMethodAllowed("paper", testform);
+        expect(allowed).toBe(false);
+      });
+
+      it("digital is allowed", () => {
+        const testform = createTestForm("KUN_DIGITAL");
+        const allowed = isSubmissionMethodAllowed("digital", testform);
+        expect(allowed).toBe(true);
+      });
+    });
+
+    describe("innsending=PAPIR_OG_DIGITAL", () => {
+      it("paper is allowed", () => {
+        const testform = createTestForm("PAPIR_OG_DIGITAL");
+        const allowed = isSubmissionMethodAllowed("paper", testform);
+        expect(allowed).toBe(true);
+      });
+
+      it("digital is allowed", () => {
+        const testform = createTestForm("PAPIR_OG_DIGITAL");
+        const allowed = isSubmissionMethodAllowed("digital", testform);
+        expect(allowed).toBe(true);
+      });
+    });
+
+    describe("innsending=INGEN", () => {
+      it("paper is not allowed", () => {
+        const testform = createTestForm("KUN_DIGITAL");
+        const allowed = isSubmissionMethodAllowed("paper", testform);
+        expect(allowed).toBe(false);
+      });
+
+      it("digital is not allowed", () => {
+        const testform = createTestForm("KUN_PAPIR");
+        const allowed = isSubmissionMethodAllowed("digital", testform);
+        expect(allowed).toBe(false);
+      });
+    });
+
+    describe("innsending=undefined", () => {
+      it("paper is allowed", () => {
+        const testform = createTestForm(undefined);
+        const allowed = isSubmissionMethodAllowed("paper", testform);
+        expect(allowed).toBe(true);
+      });
+
+      it("digital is allowed", () => {
+        const testform = createTestForm(undefined);
+        const allowed = isSubmissionMethodAllowed("digital", testform);
+        expect(allowed).toBe(true);
+      });
     });
   });
 });

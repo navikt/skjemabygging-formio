@@ -13,7 +13,6 @@
     "bootstrap": "yarn --prefer-offline && lerna bootstrap",
     "watch": "lerna run --parallel watch",
     "build": "lerna run build",
-    "build:scripts": "lerna exec --scope @navikt/skjemadigitalisering-scripts -- yarn --prefer-offline install --frozen-lockfile",
     "prepare": "husky install",
     "start": "lerna run start --stream",
     "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start --stream",

@@ -32,7 +32,6 @@ export const devPusher: Partial<PusherConfig> = {
 
 export const devGithub: Partial<PublishRepoConfig> = {
   name: "skjemautfylling-formio",
-  submoduleName: "skjemabygging-formio",
   owner: "navikt",
   base: "test-publishing",
 };

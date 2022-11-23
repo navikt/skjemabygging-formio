@@ -7,6 +7,7 @@ const mapForm = (form) => ({
   modified: form.modified,
   properties: {
     skjemanummer: form.properties.skjemanummer,
+    innsending: form.properties.innsending,
   },
 });
 

@@ -21,6 +21,7 @@ export type IdportenConfig = {
 };
 
 export type ConfigType = {
+  fyllutPath: string;
   featureToggles: FeatureTogglesMap;
   tokenx?: TokenxConfig;
   sendInnConfig?: SendInnConfig;
