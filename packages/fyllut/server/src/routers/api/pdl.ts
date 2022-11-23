@@ -69,15 +69,13 @@ const getPersonWithChildren = async (tokenxAccessToken: string, theme: string, p
               etternavn
             },
             forelderBarnRelasjon {
-                query(relatertPersonsIdent) {
-                hentPerson(ident: $ident) {
-                  navn(historikk: false) {
-                    fornavn
-                    mellomnavn
-                    etternavn
-                  }
-                },            
-              }
+              hentPerson(ident: relatertPersonsIdent) {
+                navn(historikk: false) {
+                  fornavn
+                  mellomnavn
+                  etternavn
+                }
+              },
               relatertPersonsIdent              
             }
           },            
