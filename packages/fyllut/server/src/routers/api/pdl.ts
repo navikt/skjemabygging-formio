@@ -54,6 +54,7 @@ const getPerson = async (tokenxAccessToken: string, theme: string, personId: str
   const person: Person = response.hentPerson;
 
   return {
+    id: personId,
     firstName: person.firstName,
     middleName: person.middleName,
     lastName: person.lastName,
@@ -69,7 +70,12 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
     JSON.stringify({
       query: `
         query($ident: ID!) {
-          hentPerson(ident: $ident) {            
+          hentPerson(ident: $ident) {
+            navn(historikk: false) {
+              fornavn
+              mellomnavn
+              etternavn
+            },
             forelderBarnRelasjon {
               relatertPersonsIdent              
             }
@@ -81,6 +87,8 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
       },
     })
   );
+
+  logger.debug(person);
 
   let children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
