@@ -32,9 +32,21 @@ const componentCollectionStyles = {
     },
   "& .data-grid__row": {
     marginBottom: "1rem",
-    "& div:last-of-type .formio-component:not(.formio-hidden):last-of-type, .knapp--fjern": {
+    "& div:last-of-type .formio-component:not(.formio-hidden):last-of-type": {
       marginBottom: "0.75rem",
     },
+    "& .knapp--fjern": {
+      justifyContent: "start",
+      minWidth: "initial",
+    },
+    "& .data-grid__row": {
+      backgroundColor: "#cce2f0",
+    },
+  },
+  "& .datagrid-add-remove-row": {
+    display: "flex",
+    flexDirection: "row",
+    gap: "1rem",
   },
 };
 
