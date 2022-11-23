@@ -51,13 +51,15 @@ const getPerson = async (tokenxAccessToken: string, theme: string, personId: str
     })
   );
 
-  const person: Person = response.hentPerson;
+  const person: PdlPerson = response.hentPerson;
+
+  logger.debug(`${person.navn[0].fornavn} gyldig ${person.navn[0].gyldigFraOgMed}`);
 
   return {
     id: personId,
-    firstName: person.firstName,
-    middleName: person.middleName,
-    lastName: person.lastName,
+    firstName: person.navn[0].fornavn,
+    middleName: person.navn[0].mellomnavn,
+    lastName: person.navn[0].etternavn,
   };
 };
 
