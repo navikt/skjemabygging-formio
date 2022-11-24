@@ -1,4 +1,4 @@
-import { Button, GuidePanel, Radio, RadioGroup } from "@navikt/ds-react";
+import { GuidePanel, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
@@ -55,13 +55,14 @@ export function IntroPage({ form, formUrl }: Props) {
       }
       // No description when form.properties.innsending === "KUN_DIGITAL"
     }
-  }, [search, selectedSubmissionMethod]);
+  }, [form.properties?.innsending, search, selectedSubmissionMethod]);
 
   useEffect(() => {
     setMustSelectSubmissionMethod(!submissionMethod && supportsPapirOgDigital(form));
   }, [submissionMethod, form]);
 
-  const navigateToFormPage = () => {
+  const navigateToFormPage = (event) => {
+    event.preventDefault();
     if (selectedSubmissionMethod) {
       removeBeforeUnload();
       const { pathname, search } = window.location;
@@ -118,7 +119,9 @@ export function IntroPage({ form, formUrl }: Props) {
 
         <nav className="form-nav">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
-            <Button onClick={navigateToFormPage}>{translate(TEXTS.grensesnitt.introPage.start)}</Button>
+            <Link onClick={navigateToFormPage} to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}>
+              {translate(TEXTS.grensesnitt.introPage.start)}
+            </Link>
           )}
           {!mustSelectSubmissionMethod && (
             <Link
