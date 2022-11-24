@@ -12,7 +12,7 @@ type FormStepperProps = {
 };
 
 const FormStepper = ({ form, formUrl, submission }: FormStepperProps) => {
-  const openButton = useRef(null);
+  const openButton = useRef<HTMLButtonElement>(null);
   const { url } = useRouteMatch();
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
