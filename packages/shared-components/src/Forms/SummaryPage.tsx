@@ -119,20 +119,16 @@ const panelStyles = makeStyles({
     display: "block",
     marginBottom: "2rem",
   },
-  fomSum: {
-    marginTop: "2rem",
-  },
 });
 
 const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, formUrl, path }) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link } = panelStyles();
-  const [defaultOpen] = useState(true);
   return (
     <section>
       <Accordion>
-        <Accordion.Item defaultOpen={defaultOpen}>
+        <Accordion.Item defaultOpen={true}>
           <Accordion.Header>
             {" "}
             <Systemtittel tag="h3">{label}</Systemtittel>
