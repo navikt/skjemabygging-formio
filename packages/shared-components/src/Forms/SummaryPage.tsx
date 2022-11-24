@@ -258,8 +258,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             )}
             {innsending === "INGEN" && (
               <Link
-                className="navds-button navds-button--secondary"
-                to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+                className="navds-button navds-button--primary"
+                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
               >
                 <span aria-live="polite" className="navds-label">
                   {translate(TEXTS.grensesnitt.moveForward)}
