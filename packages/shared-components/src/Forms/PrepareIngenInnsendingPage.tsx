@@ -32,25 +32,24 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
 
   return (
     <ResultContent>
-      <main id="maincontent" tabIndex={-1}>
-        <section className="wizard-page" aria-label={translate(form.properties.innsendingOverskrift)}>
-          <Systemtittel className="margin-bottom-default">
-            {translate(form.properties.innsendingOverskrift)}
-          </Systemtittel>
-          <Normaltekst>{translate(form.properties.innsendingForklaring)}</Normaltekst>
-          <DownloadPdfButton
-            form={form}
-            submission={submission}
-            actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-            label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-            onClick={() => loggSkjemaFullfort("ingeninnsending")}
-            classNames="navds-button navds-button--secondary"
-            translations={translations}
-          />
+      <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
+        <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
+          <div className="wizard-page">
+            <Systemtittel className="margin-bottom-default">
+              {translate(form.properties.innsendingOverskrift)}
+            </Systemtittel>
+            <Normaltekst>{translate(form.properties.innsendingForklaring)}</Normaltekst>
+            <DownloadPdfButton
+              form={form}
+              submission={submission}
+              actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
+              label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
+              onClick={() => loggSkjemaFullfort("ingeninnsending")}
+              translations={translations}
+            />
+          </div>
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
         </section>
-        <div>
-          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} secondaryOnly={false} />
-        </div>
       </main>
     </ResultContent>
   );

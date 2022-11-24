@@ -1,20 +1,8 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import Lenke from "nav-frontend-lenker";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const linkBtnPrimaryStyle = {
-  textDecoration: "none",
-  backgroundColor: "var(--navds-button-color-primary-background)",
-  color: "var(--navds-button-color-primary-text)",
-};
-const linkBtnSecondaryStyle = {
-  textDecoration: "none",
-  backgroundColor: "var(--navds-button-color-secondary-background)",
-  color: "var(--navds-button-color-secondary-text)",
-};
-
-const NavigateButtonComponent = ({ goBackUrl, translate, secondaryOnly }) => {
+const NavigateButtonComponent = ({ goBackUrl, translate }) => {
   const { search } = useLocation();
   return (
     <nav className="form-nav">
@@ -23,15 +11,11 @@ const NavigateButtonComponent = ({ goBackUrl, translate, secondaryOnly }) => {
           {translate(TEXTS.grensesnitt.goBack)}
         </span>
       </Link>
-      <Lenke
-        className={secondaryOnly ? "navds-button navds-button--secondary" : "navds-button navds-button--primary"}
-        style={secondaryOnly ? linkBtnSecondaryStyle : linkBtnPrimaryStyle}
-        href="https://www.nav.no"
-      >
+      <a className="navds-button navds-button--tertiary" href="https://www.nav.no">
         <span aria-live="polite" className="navds-label">
           {translate(TEXTS.grensesnitt.navigation.exit)}
         </span>
-      </Lenke>
+      </a>
     </nav>
   );
 };

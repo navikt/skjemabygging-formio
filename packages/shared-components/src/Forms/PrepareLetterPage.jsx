@@ -103,7 +103,6 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
       />
       <div className="margin-bottom-default">
         <Button
-          className="navds-button navds-button--primary"
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
               setIsRequiredEnhetMissing(true);
@@ -122,9 +121,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
           type="standard"
           loading={foerstesideLoading}
         >
-          <span aria-live="polite" className="navds-label">
-            {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-          </span>
+          {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
         </Button>
       </div>
       {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
@@ -134,7 +131,6 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
-        classNames="navds-button navds-button--primary"
         translations={translations}
       />
     </section>
@@ -265,11 +261,11 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
       <Innholdstittel tag="h2" className="margin-bottom-double">
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Innholdstittel>
-      <main id="maincontent" tabIndex={-1}>
-        {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
-        <div>
+      <main className="fyllut-layout" id="maincontent" tabIndex={-1}>
+        <section className="main-col">
+          {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} secondaryOnly={true} />
-        </div>
+        </section>
       </main>
     </ResultContent>
   );

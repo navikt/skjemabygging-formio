@@ -1,4 +1,4 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { makeStyles } from "@material-ui/styles";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Sidetittel } from "nav-frontend-typografi";
 import React from "react";
