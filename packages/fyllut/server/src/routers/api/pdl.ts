@@ -91,7 +91,7 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
   );
 
   logger.debug(JSON.stringify(person));
-  logger.debug(`Length: ${person.forelderBarnRelasjon.length}`);
+  logger.debug(`Length: ${person.forelderBarnRelasjon?.length}`);
 
   let children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
