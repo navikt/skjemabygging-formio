@@ -5,7 +5,6 @@ export const gitTreeMode = {
   BLOB: "100644",
   EXECUTABLE: "100755",
   DIRECTORY: "040000",
-  SUBMODULE: "160000",
 };
 
 export class GitHubRepo {
@@ -62,55 +61,6 @@ export class GitHubRepo {
       parameters = { ...parameters, sha };
     }
     return this.octokit.rest.repos.createOrUpdateFileContents(parameters);
-  }
-
-  async updateSubmodule(branch, submoduleSha, submodulePath, commitMessage) {
-    const {
-      data: {
-        object: { sha: currentSha },
-      },
-    } = await this.getRef(branch);
-
-    const currentTree = await this.octokit.rest.git.getTree({
-      owner: this.owner,
-      repo: this.repo,
-      tree_sha: currentSha,
-    });
-
-    const isCurrentSubmoduleUpToDate = currentTree.data.tree.some(
-      (node) => node.mode === gitTreeMode.SUBMODULE && node.path === submodulePath && node.sha === submoduleSha
-    );
-
-    if (!isCurrentSubmoduleUpToDate) {
-      const tree = await this.octokit.rest.git.createTree({
-        owner: this.owner,
-        repo: this.repo,
-        base_tree: currentSha,
-        tree: [
-          {
-            path: submodulePath,
-            mode: gitTreeMode.SUBMODULE,
-            type: "commit",
-            sha: submoduleSha,
-          },
-        ],
-      });
-
-      const commit = await this.octokit.rest.git.createCommit({
-        owner: this.owner,
-        repo: this.repo,
-        message: commitMessage,
-        tree: tree.data.sha,
-        parents: [currentSha],
-      });
-
-      return this.octokit.rest.git.updateRef({
-        owner: this.owner,
-        repo: this.repo,
-        ref: `heads/${branch}`,
-        sha: commit.data.sha,
-      });
-    }
   }
 
   createPullRequest(title, head, base) {

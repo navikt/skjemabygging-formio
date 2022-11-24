@@ -90,6 +90,26 @@ describe("app", () => {
         });
       });
 
+      describe("innsending INGEN", () => {
+        it("redirects without query param sub if paper", async () => {
+          const testform001 = createFormDefinition("INGEN");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?lang=en&sub=paper").expect(302);
+          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+        });
+      });
+
+      describe("invalid query param sub", () => {
+        it("redirects without query param sub if blabla", async () => {
+          const testform001 = createFormDefinition("KUN_PAPIR");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?lang=en&sub=blabla").expect(302);
+          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+        });
+      });
+
       describe.each(["PAPIR_OG_DIGITAL", undefined])("innsending %s", (innsending) => {
         describe("query param sub is missing", () => {
           it("redirects to intropage and keeps other query params", async () => {

@@ -25,6 +25,8 @@ import type {
   TranslationScope,
   TranslationTag,
 } from "./languages/types";
+import migrationUtils from "./migration";
+import { Operator } from "./migration/operator";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
@@ -57,6 +59,7 @@ export {
   guid,
   validatorUtils,
   dateUtils,
+  migrationUtils,
 };
 export type {
   FeatureTogglesMap,
@@ -91,4 +94,5 @@ export type {
   KjentBruker,
   UkjentBruker,
   ReportDefinition,
+  Operator,
 };
