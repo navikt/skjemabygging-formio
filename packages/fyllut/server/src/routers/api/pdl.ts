@@ -66,7 +66,7 @@ const getPerson = async (tokenxAccessToken: string, theme: string, personId: str
 const getChildren = async (tokenxAccessToken: string, theme: string, personId: string): Promise<Person[]> => {
   logger.debug(`Fetch ${personId} with children from pdl.`);
 
-  const person: PdlPerson = await pdlRequest(
+  let response = await pdlRequest(
     tokenxAccessToken,
     theme,
     JSON.stringify({
@@ -90,8 +90,9 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
     })
   );
 
+  const person: PdlPerson = response.hentPerson;
+
   logger.debug(JSON.stringify(person));
-  logger.debug(`Length: ${person.forelderBarnRelasjon?.length}`);
 
   let children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
@@ -118,7 +119,8 @@ const pdlRequest = async (tokenxAccessToken: string, theme: string, query: strin
 
   const body = await response.json();
 
-  if (body.errors && body.errors.length > 0) {
+  if (body.errors?.length > 0) {
+    logger.debug(JSON.stringify(body.errors));
     throw new Error(body.errors[0].message);
   }
 
@@ -133,8 +135,8 @@ interface PdlPerson {
 interface PdlNavn {
   etternavn: string;
   fornavn: string;
-  mellomnavn: string;
-  gyldigFraOgMed: string;
+  mellomnavn?: string;
+  gyldigFraOgMed?: string;
 }
 
 interface PdlForelderBarnRelasjon {
