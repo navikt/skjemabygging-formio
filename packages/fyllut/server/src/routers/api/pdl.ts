@@ -8,20 +8,16 @@ const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await getPerson(getTokenxAccessToken(req), "AAP", req.params.id);
-
       res.send(data);
     } catch (e) {
-      logger.error(e);
       next(e);
     }
   },
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await getChildren(getTokenxAccessToken(req), "AAP", req.params.id);
-
       res.send(data);
     } catch (e) {
-      logger.error(e);
       next(e);
     }
   },
@@ -79,7 +75,11 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
               etternavn
             },
             forelderBarnRelasjon {
-              relatertPersonsIdent              
+              relatertPersonsIdent
+              relatertPersonsRolle
+              minRolleForPerson    
+              folkeregistermetadata
+              metadata          
             }
           },            
         }
@@ -95,11 +95,11 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
   logger.debug(JSON.stringify(person));
 
   let children: Person[] = [];
-  if (person.forelderBarnRelasjon?.length > 0) {
+  /*if (person.forelderBarnRelasjon?.length > 0) {
     for (const child of person.forelderBarnRelasjon) {
       children.push(await getPerson(tokenxAccessToken, theme, child.relatertPersonsIdent));
     }
-  }
+  }*/
 
   return children;
 };
@@ -120,8 +120,12 @@ const pdlRequest = async (tokenxAccessToken: string, theme: string, query: strin
   const body = await response.json();
 
   if (body.errors?.length > 0) {
-    logger.debug(JSON.stringify(body.errors));
-    throw new Error(body.errors[0].message);
+    const message = body.errors[0].message;
+    if (body.errors[0].extensions?.code === "unauthorized") {
+      // TODO: Handle unauthorized
+    }
+
+    throw new Error(message);
   }
 
   return body.data;
