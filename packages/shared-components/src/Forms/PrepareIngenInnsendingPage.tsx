@@ -1,6 +1,6 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppConfig } from "../configContext";
@@ -32,7 +32,6 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
 
   return (
     <ResultContent>
-      <Sidetittel className="margin-bottom-large">{translate(form.title)}</Sidetittel>
       <main id="maincontent" tabIndex={-1}>
         <section className="wizard-page" aria-label={translate(form.properties.innsendingOverskrift)}>
           <Systemtittel className="margin-bottom-default">
