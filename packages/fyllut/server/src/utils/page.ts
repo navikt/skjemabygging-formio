@@ -1,4 +1,4 @@
-import { NavFormType, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { QueryParamSub } from "../types/custom";
 
 const defaultMeta = {
@@ -20,6 +20,6 @@ export const getQueryParamSub = (form: NavFormType): QueryParamSub => {
 export const getFormMeta = (form: NavFormType) => {
   return {
     PAGE_TITLE: form.title || defaultMeta.PAGE_TITLE,
-    PAGE_DESCRIPTION: navFormUtils.findDescription(form) || defaultMeta.PAGE_DESCRIPTION,
+    PAGE_DESCRIPTION: defaultMeta.PAGE_DESCRIPTION,
   };
 };

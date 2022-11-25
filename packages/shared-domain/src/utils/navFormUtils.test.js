@@ -1,6 +1,5 @@
 import {
   findDependentComponents,
-  findDescription,
   flattenComponents,
   formMatcherPredicate,
   isSubmissionMethodAllowed,
@@ -571,35 +570,6 @@ describe("navFormUtils", () => {
           }),
         ])
       );
-    });
-  });
-
-  describe("findDescription", () => {
-    it("Finds description", () => {
-      const formDescription = "Beksrivelse av skjemaet";
-      const testForm = {
-        components: [
-          {
-            type: "panel",
-            components: [{ type: "html", key: "beskrivelsetekst", content: formDescription }],
-          },
-        ],
-      };
-      const description = findDescription(testForm);
-      expect(description).toEqual(formDescription);
-    });
-
-    it("Returns undefined when form has no description", () => {
-      const testForm = {
-        components: [
-          {
-            type: "panel",
-            components: [{ type: "html", key: "ingenbeskrivelse", content: "hei" }],
-          },
-        ],
-      };
-      const description = findDescription(testForm);
-      expect(description).toBeUndefined();
     });
   });
 
