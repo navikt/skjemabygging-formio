@@ -14,7 +14,7 @@ export const formMatcherPredicate = (pathFromUrl: string) => (form: NavFormType)
 };
 
 export function flattenComponents(components: Component[]): Component[] {
-  // @ts-ignore
+  // @ts-ignore|
   return components.reduce((flattenedComponents, currentComponent) => {
     return [
       ...flattenedComponents,
@@ -91,8 +91,6 @@ const findComponent = (isMatch: ComponentMatcherFunction, components: Component[
 
 const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);
-const findByKey = (key: string, components: Component[]): Component | undefined =>
-  findComponent((c) => c.key === key, components);
 
 export const findDependentComponents = (id: string, form: NavFormType) => {
   const idToPathMapping: { [s: string]: string } = {};
@@ -130,9 +128,6 @@ export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);
 };
 
-export const findDescription = (form: NavFormType): string | undefined =>
-  findByKey("beskrivelsetekst", form.components)?.content;
-
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType): boolean => {
   const { innsending } = form.properties;
   switch (submissionMethod) {
@@ -148,7 +143,6 @@ const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
   findDependentComponents,
-  findDescription,
   flattenComponents,
   isSubmissionMethodAllowed,
   removeVedleggspanel,
