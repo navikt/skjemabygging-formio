@@ -14,7 +14,7 @@ export const formMatcherPredicate = (pathFromUrl: string) => (form: NavFormType)
 };
 
 export function flattenComponents(components: Component[]): Component[] {
-  // @ts-ignore|
+  // @ts-ignore
   return components.reduce((flattenedComponents, currentComponent) => {
     return [
       ...flattenedComponents,
