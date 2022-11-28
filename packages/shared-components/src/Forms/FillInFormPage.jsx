@@ -4,7 +4,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import { getPanelPaths, getPanelSlug } from "../util/form";
+import { getPanelSlug } from "../util/form";
 import { FormTitle } from "./components/FormTitle";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
@@ -13,22 +13,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translationsForNavForm } = useLanguages();
   const { panelSlug } = useParams();
-  const panelPaths = getPanelPaths(form.components);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
   }
 
-  function getCurrentPanelPath() {
-    const result = window.location.pathname.split("/");
-    return result[result.length - 1];
-  }
-
   function updatePanelUrl(panelPath) {
-    const current = getCurrentPanelPath();
-    if (panelPath !== current && panelPaths.includes(current)) {
-      history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
-    }
+    history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
