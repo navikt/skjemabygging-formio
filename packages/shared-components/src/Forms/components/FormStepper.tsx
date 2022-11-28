@@ -2,7 +2,7 @@ import { Back, Close } from "@navikt/ds-icons";
 import { Button, Stepper } from "@navikt/ds-react";
 import { formSummaryUtil, NavFormType, Panel, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useMemo, useRef, useState } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useLanguages } from "../../context/languages";
 
 type FormStepperProps = {
@@ -16,6 +16,7 @@ const FormStepper = ({ form, formUrl, submission }: FormStepperProps) => {
   const { url } = useRouteMatch();
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
+  const { search } = useLocation();
   const formSteps = useMemo(() => {
     const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
     return (form.components as Panel[])
@@ -68,7 +69,7 @@ const FormStepper = ({ form, formUrl, submission }: FormStepperProps) => {
           )}
           <Stepper activeStep={formSteps.length + 1}>
             {formSteps.map((step) => (
-              <Stepper.Step to={step.url} as={Link} key={step.url} completed>
+              <Stepper.Step to={`${step.url}${search}`} as={Link} key={step.url} completed>
                 {step.label}
               </Stepper.Step>
             ))}
