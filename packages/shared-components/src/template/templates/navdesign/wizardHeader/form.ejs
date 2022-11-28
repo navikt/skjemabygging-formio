@@ -1,4 +1,4 @@
-<div ref="{{ctx.wizardKey}}-header">
+<div id="{{ ctx.wizardKey }}-header" ref="{{ctx.wizardKey}}-header">
     <button class="stepper-toggle navds-button navds-button--secondary navds-button--small" ref="{{ctx.wizardKey}}-stepper-open">
         <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img">
             <path fill-rule="evenodd" clip-rule="evenodd" d="m6.586 12 7.707-7.707 1.414 1.414L9.414 12l6.293 6.293-1.414 1.414L6.586 12Z" fill="currentColor" />
@@ -6,7 +6,7 @@
         Steg {{ctx.currentPage + 1}} av {{ctx.panels.length + 1}}
     </button>
     <div class="stepper-backdrop" ref="{{ctx.wizardKey}}-stepper-backdrop"></div>
-    <nav aria-label="Søknadssteg" id="{{ ctx.wizardKey }}-header" class="stegindikator stepper" ref="{{ctx.wizardKey}}-stepper">
+    <nav aria-label="Søknadssteg" class="stegindikator stepper" ref="{{ctx.wizardKey}}-stepper">
         <div class="stepper-container">
             <button class="stepper-close navds-button navds-button--tertiary navds-button--medium" ref="{{ctx.wizardKey}}-stepper-close">
                 <span class="navds-button__icon">

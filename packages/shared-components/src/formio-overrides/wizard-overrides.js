@@ -31,6 +31,7 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-link`]: "multiple",
     [`${this.wizardKey}-tooltip`]: "multiple",
     [`${this.wizardKey}-header`]: "single",
+    [`${this.wizardKey}-stepper`]: "single",
     [`${this.wizardKey}-stepper-open`]: "single",
     [`${this.wizardKey}-stepper-close`]: "single",
     [`${this.wizardKey}-stepper-backdrop`]: "single",
@@ -89,6 +90,10 @@ Wizard.prototype.redrawHeader = function () {
       this.loadRefs(headerElement, {
         [`${this.wizardKey}-link`]: "multiple",
         [`${this.wizardKey}-tooltip`]: "multiple",
+        [`${this.wizardKey}-stepper`]: "single",
+        [`${this.wizardKey}-stepper-open`]: "single",
+        [`${this.wizardKey}-stepper-close`]: "single",
+        [`${this.wizardKey}-stepper-backdrop`]: "single",
         [`${this.wizardKey}-stepper-summary`]: "single",
       });
       this.attachHeader();
