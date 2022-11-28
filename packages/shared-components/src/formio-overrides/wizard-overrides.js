@@ -62,22 +62,35 @@ Wizard.prototype.attach = function (element) {
 };
 
 Wizard.prototype.attachStepper = function () {
+  const stepperOpenButton = this.refs[`${this.wizardKey}-stepper-open`];
+  const stepperBackdrop = this.refs[`${this.wizardKey}-stepper-backdrop`];
+  const stepperCloseButton = this.refs[`${this.wizardKey}-stepper-close`];
+  const stepper = this.refs[`${this.wizardKey}-stepper`];
   const openStepper = () => {
     this.isStepperOpen = true;
-    this.refs[`${this.wizardKey}-header`].classList.add("stepper--open");
-    this.refs[`${this.wizardKey}-stepper-backdrop`].style.display = "block";
-    this.refs[`${this.wizardKey}-stepper-close`].focus();
+    stepper.classList.add("stepper--open");
+    stepperBackdrop.style.display = "block";
+    stepperCloseButton.focus();
   };
   const closeStepper = () => {
     this.isStepperOpen = false;
-    this.refs[`${this.wizardKey}-header`].classList.remove("stepper--open");
-    this.refs[`${this.wizardKey}-stepper-backdrop`].style.display = "none";
-    this.refs[`${this.wizardKey}-stepper-open`].focus();
+    stepper.classList.remove("stepper--open");
+    stepperBackdrop.style.display = "none";
+    stepperOpenButton.focus();
   };
 
-  this.refs[`${this.wizardKey}-stepper-open`].addEventListener("click", openStepper);
-  this.refs[`${this.wizardKey}-stepper-close`].addEventListener("click", closeStepper);
-  this.refs[`${this.wizardKey}-stepper-backdrop`].addEventListener("click", closeStepper);
+  this.addEventListener(stepperOpenButton, "click", openStepper);
+  this.addEventListener(stepperCloseButton, "click", closeStepper);
+  this.addEventListener(stepperBackdrop, "click", closeStepper);
+};
+
+Wizard.prototype.detachStepper = function () {
+  const stepperOpenButton = this.refs[`${this.wizardKey}-stepper-open`];
+  const stepperBackdrop = this.refs[`${this.wizardKey}-stepper-backdrop`];
+  const stepperCloseButton = this.refs[`${this.wizardKey}-stepper-close`];
+  this.removeEventListener(stepperOpenButton, "click");
+  this.removeEventListener(stepperBackdrop, "click");
+  this.removeEventListener(stepperCloseButton, "click");
 };
 
 Wizard.prototype.redrawHeader = function () {
@@ -131,7 +144,7 @@ Wizard.prototype.attachHeader = function () {
     }
   };
 
-  this.refs[`${this.wizardKey}-stepper-summary`].addEventListener("click", (event) => {
+  this.addEventListener(this.refs[`${this.wizardKey}-stepper-summary`], "click", (event) => {
     event.preventDefault();
     if (!this.checkValidity(this.localData, false, this.localData, false)) {
       this.setPage(0).then(() => validateAndGoToNextPage());
@@ -148,6 +161,7 @@ Wizard.prototype.detachHeader = function () {
       this.removeEventListener(link, "click");
     });
   }
+  this.removeEventListener(this.refs[`${this.wizardKey}-stepper-summary`], "click");
 };
 
 function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
