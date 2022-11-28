@@ -23,6 +23,9 @@ const componentCollectionStyles = {
       backgroundColor: "#e6f1f8",
       padding: "0.75rem 1rem",
       margin: "0.375rem 0",
+      "& .data-grid__row": {
+        backgroundColor: "#cce2f0",
+      },
     },
   "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type":
     {
@@ -38,9 +41,6 @@ const componentCollectionStyles = {
     "& .knapp--fjern": {
       justifyContent: "start",
       minWidth: "initial",
-    },
-    "& .data-grid__row": {
-      backgroundColor: "#cce2f0",
     },
   },
   "& .datagrid-add-remove-row": {
