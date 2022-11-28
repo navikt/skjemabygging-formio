@@ -47,12 +47,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onWizardPageSelected(panel) {
-    updatePanelUrl(panel.path);
+  function onNextOrPreviousPage({ page, currentPanels }) {
+    if (page <= currentPanels.length - 1) {
+      updatePanelUrl(currentPanels[page]);
+    }
   }
 
-  function onRender({ component }) {
-    updatePanelUrl(component.path);
+  function onWizardPageSelected(panel) {
+    updatePanelUrl(panel.path);
   }
 
   function onFormReady(formioInstance) {
@@ -75,7 +77,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalForSpesialTyper}
         onSubmit={onSubmit}
-        onRender={onRender}
+        onNextPage={onNextOrPreviousPage}
+        onPrevPage={onNextOrPreviousPage}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
