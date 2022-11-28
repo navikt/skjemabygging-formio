@@ -44,6 +44,7 @@ Wizard.prototype.attach = function (element) {
     }
   }
 
+  this.hook("attachWebform", element, this);
   const promises = this.attachComponents(this.refs[this.wizardKey], [
     ...this.prefixComps,
     ...this.currentPage.components,
@@ -51,7 +52,6 @@ Wizard.prototype.attach = function (element) {
   ]);
   this.attachNav();
   this.attachHeader();
-  this.attachStepper();
 
   return promises.then(() => {
     this.emit("render", { component: this.currentPage, page: this.page });
@@ -152,6 +152,8 @@ Wizard.prototype.attachHeader = function () {
       this.emit("submitButton");
     }
   });
+
+  this.attachStepper();
 };
 
 Wizard.prototype.detachHeader = function () {
@@ -162,6 +164,7 @@ Wizard.prototype.detachHeader = function () {
     });
   }
   this.removeEventListener(this.refs[`${this.wizardKey}-stepper-summary`], "click");
+  this.detachStepper();
 };
 
 function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
