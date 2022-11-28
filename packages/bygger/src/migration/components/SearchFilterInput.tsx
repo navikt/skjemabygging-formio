@@ -32,7 +32,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
   const styles = useStyles();
   const { key, value, operator } = searchFilter;
 
-  const isValueInputDisabled = () => !key || migrationUtils.isUnaryOperator(operator);
+  const isValueInputDisabled = !key || migrationUtils.isUnaryOperator(operator);
 
   return (
     <Fragment>
@@ -77,7 +77,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
         label="Verdi"
         type="text"
         value={typeof value === "object" ? JSON.stringify(value) : value}
-        disabled={isValueInputDisabled()}
+        disabled={isValueInputDisabled}
         onChange={(event) =>
           dispatch({
             type: "edit",
