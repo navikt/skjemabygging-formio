@@ -223,9 +223,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             {translate(TEXTS.statiske.summaryPage.title)}
           </Innholdstittel>
           <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.summaryPage.description, {
-              editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
-            })}
+            {translate(TEXTS.statiske.summaryPage.description)}
           </Normaltekst>
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
@@ -287,7 +285,6 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           <FormStepper form={form} formUrl={formUrl} submission={submission} />
         </aside>
       </main>
-      {}
     </SummaryContent>
   );
 }
