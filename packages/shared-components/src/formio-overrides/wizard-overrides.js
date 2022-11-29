@@ -138,20 +138,29 @@ Wizard.prototype.attachHeader = function () {
 
   const validateAndGoToNextPage = () => {
     if (this.isLastPage()) {
-      this.emit("submitButton");
+      this.emit("submitButton"); // Validate entire form and go to summary page
     } else {
-      this.nextPage().then(() => validateAndGoToNextPage());
+      this.nextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
+        .then(validateAndGoToNextPage); // Repeat on next step in form
     }
   };
 
-  this.addEventListener(this.refs[`${this.wizardKey}-stepper-summary`], "click", (event) => {
+  const validateEveryStepInSuccessionBeforeSubmitting = (event) => {
     event.preventDefault();
     if (!this.checkValidity(this.localData, false, this.localData, false)) {
-      this.setPage(0).then(() => validateAndGoToNextPage());
+      // Validate entire form without triggering error messages
+      this.setPage(0) // Start at first page
+        .then(validateAndGoToNextPage); // Recursively visit every step, validate and move forward if valid
     } else {
-      this.emit("submitButton");
+      this.emit("submitButton"); // Go to summary page
     }
-  });
+  };
+
+  this.addEventListener(
+    this.refs[`${this.wizardKey}-stepper-summary`],
+    "click",
+    validateEveryStepInSuccessionBeforeSubmitting
+  );
 
   this.attachStepper();
 };
