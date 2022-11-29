@@ -119,13 +119,9 @@ export function IntroPage({ form, formUrl }: Props) {
 
         <nav className="form-nav">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
-            <Link
-              className="navds-button navds-button--primary navds-label"
-              onClick={navigateToFormPage}
-              to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
-            >
+            <a className="navds-button navds-button--primary navds-label" onClick={navigateToFormPage} href="#">
               {translate(TEXTS.grensesnitt.introPage.start)}
-            </Link>
+            </a>
           )}
           {!mustSelectSubmissionMethod && (
             <Link
