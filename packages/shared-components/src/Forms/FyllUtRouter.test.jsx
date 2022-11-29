@@ -99,6 +99,7 @@ describe("FyllUtRouter", () => {
       if (stepperToggle) {
         stepperToggle.click();
       }
+      expect(screen.queryByRole("link", { name: "Veiledning" })).toBeInTheDocument();
       expect(screen.queryByRole("link", { name: "Vedleggsliste" })).not.toBeInTheDocument();
     });
   });
