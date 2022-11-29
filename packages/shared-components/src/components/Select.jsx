@@ -23,17 +23,6 @@ const useSelectStyle = makeStyles({
   },
 });
 
-const closeListAndResetFocus = (closeFunction, buttonRef) => {
-  closeFunction();
-  buttonRef.current.focus();
-};
-
-const closeOnEscape = (event, closeFunction, buttonRef) => {
-  if (event.key === "Escape") {
-    closeListAndResetFocus(closeFunction, buttonRef);
-  }
-};
-
 const handleTabKeyPressed = (event, firstItem, lastItem, index, numberOfItemsInList) => {
   if (event.key !== "Tab") {
     return;
@@ -53,15 +42,22 @@ const Select = ({ label, className, options }) => {
   const lastListItemLinkRef = useRef(null);
   const [showItems, setShowItems] = useState(false);
   const classes = useSelectStyle();
+
+  const closeListAndResetFocus = () => {
+    setShowItems(false);
+    buttonRef.current.focus();
+  };
+
+  const closeOnEscape = (event) => {
+    if (event.key === "Escape") {
+      closeListAndResetFocus();
+    }
+  };
+
   return (
     <>
-      {showItems && (
-        <div className={classes.overlay} onClick={() => closeListAndResetFocus(() => setShowItems(false), buttonRef)} />
-      )}
-      <nav
-        className={`${className} ${classes.nav}`}
-        onKeyUp={(event) => closeOnEscape(event, () => setShowItems(false), buttonRef)}
-      >
+      {showItems && <div className={classes.overlay} onClick={closeListAndResetFocus} />}
+      <nav className={`${className} ${classes.nav}`} onKeyUp={closeOnEscape}>
         <button
           className="navds-select__input navds-body-short navds-body--medium"
           aria-expanded={showItems}
@@ -85,9 +81,7 @@ const Select = ({ label, className, options }) => {
                 <Link
                   className="select-list__option__link"
                   to={href}
-                  onClick={() => {
-                    closeListAndResetFocus(() => setShowItems(false), buttonRef);
-                  }}
+                  onClick={closeListAndResetFocus}
                   ref={
                     index === 0 ? firstListItemLinkRef : index === options.length - 1 ? lastListItemLinkRef : undefined
                   }
