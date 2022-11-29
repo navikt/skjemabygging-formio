@@ -22,7 +22,7 @@
                 <li class="navds-stepper__item">
                     <span class="navds-stepper__line navds-stepper__line--1"></span>
                     <a
-                        href="/fyllut/{{ctx.form.path}}/{{panel.key}}"
+                        href="#"
                         class="navds-stepper__step {{ctx.currentPage > index ? 'navds-stepper__step--behind navds-stepper__step--completed' : ctx.currentPage === index ? 'navds-stepper__step--active' : ''}}"
                         ref="{{ctx.wizardKey}}-link"
                         {% if (ctx.currentPage === index) { %}
@@ -38,7 +38,7 @@
                 <li class="navds-stepper__item">
                     <span class="navds-stepper__line navds-stepper__line--1"></span>
                     <a
-                            href="/fyllut/{{ctx.form.path}}/oppsummering"
+                            href="#"
                             class="navds-stepper__step"
                             ref="{{ctx.wizardKey}}-stepper-summary"
                     >
