@@ -17,7 +17,7 @@ const fieldsSideBySideStyles = {
 };
 
 const componentCollectionStyles = {
-  "& .skjemagruppe:not(.skjemagruppe .skjemagruppe) .skjemagruppe__content, & .data-grid__row ": {
+  "& .skjemagruppe__content, & .data-grid__row ": {
     borderLeft: "4px solid #368da8",
     backgroundColor: "#e6f1f8",
     padding: "0.75rem 1rem",
@@ -25,8 +25,13 @@ const componentCollectionStyles = {
     "& .data-grid__row": {
       backgroundColor: "#cce2f0",
     },
+    "& .skjemagruppe__content": {
+      borderLeft: "0",
+      paddingLeft: "0",
+      backgroundColor: "transparent",
+    },
   },
-  "& .skjemagruppe:not(.skjemagruppe .skjemagruppe) .skjemagruppe__content": {
+  "& .skjemagruppe__content": {
     "& .formio-component:not(.formio-hidden):last-of-type": {
       marginBottom: "0.75rem",
     },
