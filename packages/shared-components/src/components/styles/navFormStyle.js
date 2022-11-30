@@ -17,22 +17,20 @@ const fieldsSideBySideStyles = {
 };
 
 const componentCollectionStyles = {
-  "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type, & .data-grid__row ":
-    {
-      borderLeft: "4px solid #368da8",
-      backgroundColor: "#e6f1f8",
-      padding: "0.75rem 1rem",
-      margin: "0.375rem 0",
-      "& .data-grid__row": {
-        backgroundColor: "#cce2f0",
-      },
+  "& .skjemagruppe:not(.skjemagruppe .skjemagruppe) .skjemagruppe__content, & .data-grid__row ": {
+    borderLeft: "4px solid #368da8",
+    backgroundColor: "#e6f1f8",
+    padding: "0.75rem 1rem",
+    margin: "0.375rem 0",
+    "& .data-grid__row": {
+      backgroundColor: "#cce2f0",
     },
-  "& .formio-component-navSkjemagruppe fieldset.skjemagruppe:not(fieldset.skjemagruppe fieldset.skjemagruppe) > div:first-of-type":
-    {
-      "& .formio-component:not(.formio-hidden):last-of-type": {
-        marginBottom: "0.75rem",
-      },
+  },
+  "& .skjemagruppe:not(.skjemagruppe .skjemagruppe) .skjemagruppe__content": {
+    "& .formio-component:not(.formio-hidden):last-of-type": {
+      marginBottom: "0.75rem",
     },
+  },
   "& .data-grid__row": {
     marginBottom: "1rem",
     "& div:last-of-type .formio-component:not(.formio-hidden):last-of-type": {
