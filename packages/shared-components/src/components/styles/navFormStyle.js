@@ -105,12 +105,25 @@ const styles = {
     },
 };
 
+const radioStyles = {
+  "& .navds-radio-group": {
+    "& .navds-fieldset__legend": {
+      fontSize: "var(--navds-font-size-large)",
+      fontWeight: "var(--navds-font-weight-bold)",
+      lineHeight: "var(--navds-font-line-height-large)",
+      letterSpacing: "0",
+      margin: "0",
+    },
+  },
+};
+
 const navFormStyle = merge(
   styles,
   fieldsSideBySideStyles,
   allFieldsStyles,
   errorValidationStyles,
   componentCollectionStyles,
-  errorValidationStyles
+  errorValidationStyles,
+  radioStyles
 );
 export default navFormStyle;
