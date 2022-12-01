@@ -4,6 +4,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
+import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
@@ -42,6 +43,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     if (pathOfPanel) {
       updatePanelUrl(pathOfPanel);
     }
+    scrollToAndSetFocus("#maincontent", "start");
   }
 
   function onWizardPageSelected(panel) {
