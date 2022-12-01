@@ -70,11 +70,11 @@ const FormStepper = ({ form, formUrl, submission }: FormStepperProps) => {
           <Stepper activeStep={formSteps.length + 1}>
             {formSteps.map((step) => (
               <Stepper.Step to={`${step.url}${search}`} as={Link} key={step.url} completed>
-                {step.label}
+                {translate(step.label)}
               </Stepper.Step>
             ))}
             <Stepper.Step to={url} as={Link}>
-              {TEXTS.statiske.summaryPage.title}
+              {translate(TEXTS.statiske.summaryPage.title)}
             </Stepper.Step>
           </Stepper>
         </div>
