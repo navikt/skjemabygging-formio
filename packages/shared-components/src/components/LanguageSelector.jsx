@@ -6,7 +6,7 @@ import Select from "./Select";
 
 const useLanguageSelectorStyling = makeStyles({
   languageToggleWrapper: {
-    margin: "0 auto 1rem",
+    marginBottom: "2rem",
     outline: "none",
     position: "relative",
     width: "min(230px, 100%)",

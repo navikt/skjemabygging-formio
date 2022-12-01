@@ -29,4 +29,8 @@ export const grensesnitt = {
   prepareLetterPage: {
     downloadCoverPage: "Last ned førsteside",
   },
+  stepper: {
+    toggleText: "Steg {{currentStep}} av {{totalSteps}}",
+    close: "Lukk",
+  },
 };

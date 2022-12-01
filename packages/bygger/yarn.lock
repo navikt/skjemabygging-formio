@@ -2729,48 +2729,43 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@navikt/ds-css-internal@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-1.2.4.tgz#498376e6fa467a6b4a9c2e856c1c09472d67f005"
-  integrity sha512-rcuycGyApktUVjaK1sn3+htbQfsV8kjEhYPbS9A1QTQ4/xEs00zk8m7OtRQJEnNXVf9gQcrIWQgRP/lLX2r9Ig==
+"@navikt/ds-css-internal@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-1.5.7.tgz#1e311c1ac9594e5eac8ae1e95ac973282c36523a"
+  integrity sha512-XhdHJVd0orZQVBwXgU+FNYh0xgnDB5XXA4Rd1fBNpjm7KLs7dB3HQtTRNDj8X9svW9ISGU8ycywYkU+2Ll+MXA==
 
-"@navikt/ds-css@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-1.2.4.tgz#f6450b5322a366c0e8e73fbdfb4184f9029b5c2a"
-  integrity sha512-6Yxz2udG6pv1ew8A6gtYLCc16Vwx+vzFmapir0wX/qo3ow90iFgqWZwEg4dNajg3MDgYdS9Jhe+FMSEc0Sx8SQ==
+"@navikt/ds-css@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-1.5.7.tgz#77c0bc1d1242d793b4c8e45f57047aa94f1df9a1"
+  integrity sha512-6CHKHdvx/Jv+fykwpAdhWh8Sa+RG5+TjIhphi/61C17v7l3JZ1d46bY+w7jK4sX3rigBtNO/0akMMq3UvYDRKg==
 
-"@navikt/ds-icons@^0.8.12":
-  version "0.8.12"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-0.8.12.tgz#de50a9d1230214e47c970be8344cd1f3cca491e3"
-  integrity sha512-RcLrUOiJpdhiVKhpfV7NpciLU91CLCa5X/Vcze1o2q29iWrLU1tsp441IXLeHVc+4ESr65+KUb9WjAKuKXaCAw==
+"@navikt/ds-icons@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-1.5.7.tgz#37f674b90455657dece01d0183d29427421723f7"
+  integrity sha512-4gYScPF+9cxjXbUSlRAn67elJQEh42FfPORCT2PvNK4wazIXW1WaS77d+651R0KLrz3lvaon6C9RtAGsT44AJA==
+
+"@navikt/ds-react-internal@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react-internal/-/ds-react-internal-1.5.7.tgz#61067636714222181e72af66e5369aafb9a7192c"
+  integrity sha512-21/76ye3V6PPRp+BUoLD+i44zCVCymSWJe+kl2rN/gxJjFzSRToHSFOLgNrYuui9o85cYem6ZlV9wg5ETF2N8g==
   dependencies:
-    uuid "^8.3.2"
-
-"@navikt/ds-icons@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-1.2.4.tgz#7ab9697fb6d133c674b9c59aa16de15d7d2dd206"
-  integrity sha512-5iJKhhEsHARrq82IwVPG5Ii9HAM2qyXB5wIcZVFCM+x2tav8aDkil5Ov1cP6CtqAao9M1qbyi3/t6BYyhSaXUQ==
-
-"@navikt/ds-react-internal@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-react-internal/-/ds-react-internal-1.2.4.tgz#a08699c800d678d8d16ea219de759eaf8e7494e2"
-  integrity sha512-yA0CcDpzw+GfoQ0DZBX7XAuPkqufvsXfzexOdqE/F+6au9MajwwRw8JS9jRSpEsvSiT7RIQzShk5bXqv9g15xw==
-  dependencies:
-    "@navikt/ds-icons" "^1.2.4"
-    "@navikt/ds-react" "^1.2.4"
+    "@navikt/ds-icons" "^1.5.7"
+    "@navikt/ds-react" "^1.5.7"
     clsx "^1.1.1"
     copy-to-clipboard "^3.3.1"
 
-"@navikt/ds-react@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-1.2.4.tgz#ca5297165757211f1559edfecdad94f6515419cb"
-  integrity sha512-kG08DepCA8kJX0BobIgSN2m5MHmtgYPOV++nj8X1a6MGWx22LdhsBxIBsSFtwxy45uoYspQidCZaitrxv4EsYA==
+"@navikt/ds-react@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-1.5.7.tgz#87d9fa8b83dd00edc87abe1796e768e8f97d3a9a"
+  integrity sha512-T8YYc7RhWYebsz9og/rNUyLarFCa7wZGs1t4xwGh/QMpGaxQ+mWsTbhaXAE15lHzWn8MW9X1ABDTfxiY7h9ITw==
   dependencies:
     "@floating-ui/react-dom-interactions" "0.9.2"
-    "@navikt/ds-icons" "^1.2.4"
+    "@navikt/ds-icons" "^1.5.7"
     "@radix-ui/react-tabs" "1.0.0"
     "@radix-ui/react-toggle-group" "1.0.0"
-    clsx "^1.1.1"
+    clsx "^1.2.1"
+    date-fns "2.29.3"
+    react-day-picker "8.3.4"
     react-modal "3.15.1"
 
 "@navikt/fnrvalidator@^1.1.3":
@@ -5241,7 +5236,7 @@ clsx@^1.0.4:
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
   integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
 
-clsx@^1.1.1:
+clsx@^1.1.1, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
@@ -6027,6 +6022,11 @@ data-urls@^2.0.0:
     abab "^2.0.3"
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
+
+date-fns@2.29.3:
+  version "2.29.3"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.3.tgz#27402d2fc67eb442b511b70bbdf98e6411cd68a8"
+  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
 
 dayjs@^1.10.4:
   version "1.11.5"
@@ -12346,6 +12346,11 @@ react-csv@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-2.0.3.tgz#f5d17a3c71107d9bcbe580049350200debdc042a"
   integrity sha512-exyAdFLAxtuM4wNwLYrlKyPYLiJ7e0mv9tqPAd3kq+k1CiJFtznevR3yP0icv5q/y200w+lzNgi7TQn1Wrhu0w==
+
+react-day-picker@8.3.4:
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.3.4.tgz#0942d66266c58cd815d393ec0d142372b0d42f4f"
+  integrity sha512-UuCbfZ69DhQmd+UhEv8nCPp5PxMk7ioNTuOLMlU0X7q3wd7o8TKDdsjduQoeBYTPTMS3LFdbA1qqbrIpRHo/Vg==
 
 react-debounce-input@^3.2.5:
   version "3.2.5"

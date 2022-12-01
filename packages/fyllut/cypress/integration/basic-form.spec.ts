@@ -11,7 +11,7 @@ describe("Basic form", () => {
 
     // Radio panel is currently not reachable by role. Additionally {force: true} is needed here because
     // the input is overlapping with the label element, which makes cypress assume it's not interactable
-    cy.get(".radiogruppe")
+    cy.get(".navds-radio-group")
       .first()
       .should("exist")
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check({ force: true }));

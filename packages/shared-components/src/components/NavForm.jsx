@@ -33,7 +33,6 @@ import { useAmplitude } from "../context/amplitude";
 import { evaluateOverride, overrideFormioTextField, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
 import i18nData from "../i18nData";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
-import { scrollToAndSetFocus } from "../util/focus-management";
 import formioFormStyles from "./styles/formioFormStyles";
 
 Utils.evaluate = evaluateOverride;
@@ -196,8 +195,6 @@ NavForm.propTypes = {
 NavForm.defaultProps = {
   language: "nb-NO",
   i18n: i18nData,
-  onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
-  onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
 };
 
 NavForm.getDefaultEmitter = () => {

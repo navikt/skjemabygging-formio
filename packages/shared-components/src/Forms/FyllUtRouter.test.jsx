@@ -77,17 +77,30 @@ describe("FyllUtRouter", () => {
     it("Renders vedleggspanel when submission method is undefined", () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: undefined });
       expect(screen.queryByRole("heading", { name: form.title })).toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: "Vedleggsliste" })).toBeInTheDocument();
+      const stepperToggle = screen.queryByRole("button", { name: "Steg 1 av 2" });
+      if (stepperToggle) {
+        stepperToggle.click();
+      }
+      expect(screen.queryByRole("link", { name: "Vedleggsliste" })).toBeInTheDocument();
     });
     it("Renders vedleggspanel when submission method is paper", () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: "paper" });
-      expect(screen.queryByRole("heading", { name: form.title })).toBeTruthy();
-      expect(screen.queryByRole("button", { name: "Vedleggsliste" })).toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: form.title })).toBeInTheDocument();
+      const stepperToggle = screen.queryByRole("button", { name: "Steg 1 av 2" });
+      if (stepperToggle) {
+        stepperToggle.click();
+      }
+      expect(screen.queryByRole("link", { name: "Vedleggsliste" })).toBeInTheDocument();
     });
     it("Does not render vedleggspanel when submission method is digital", () => {
       renderFyllUtRouter({ form, translationsForNavForm }, { submissionMethod: "digital" });
-      expect(screen.queryByRole("heading", { name: form.title })).toBeTruthy();
-      expect(screen.queryByRole("button", { name: "Vedleggsliste" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: form.title })).toBeInTheDocument();
+      const stepperToggle = screen.queryByRole("button", { name: "Steg 1 av 1" });
+      if (stepperToggle) {
+        stepperToggle.click();
+      }
+      expect(screen.queryByRole("link", { name: "Veiledning" })).toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: "Vedleggsliste" })).not.toBeInTheDocument();
     });
   });
 });

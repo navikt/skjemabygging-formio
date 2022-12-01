@@ -1,7 +1,7 @@
 import { styled } from "@material-ui/styles";
+import { Button } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -31,7 +31,7 @@ const LeggTilVedleggSection = ({ index, vedleggSomSkalSendes, translate }) => {
     );
   return (
     <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>
-      <Systemtittel className="margin-bottom-default">{`${index}. ${attachmentSectionTitle}`}</Systemtittel>
+      <Systemtittel tag="h3" className="margin-bottom-small">{`${index}. ${attachmentSectionTitle}`}</Systemtittel>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
           <li key={vedlegg.key}>{translate(vedlegg.label)}</li>
@@ -87,7 +87,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
       className="wizard-page"
       aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
     >
-      <Systemtittel className="margin-bottom-default">
+      <Systemtittel tag="h3" className="margin-bottom-small">
         {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
       </Systemtittel>
       <Normaltekst className="margin-bottom-default">
@@ -102,8 +102,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
       <div className="margin-bottom-default">
-        <Knapp
-          className="knapp knapp--fullbredde"
+        <Button
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
               setIsRequiredEnhetMissing(true);
@@ -120,10 +119,10 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
             }
           }}
           type="standard"
-          spinner={foerstesideLoading}
+          loading={foerstesideLoading}
         >
           {translate(TEXTS.grensesnitt.prepareLetterPage.downloadCoverPage)}
-        </Knapp>
+        </Button>
       </div>
       {foerstesideError && <AlertStripeHttpError error={foerstesideError} />}
       <DownloadPdfButton
@@ -132,7 +131,6 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
         actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
-        classNames="knapp knapp--fullbredde"
         translations={translations}
       />
     </section>
@@ -144,7 +142,7 @@ const SendSoknadIPostenSection = ({ index, vedleggSomSkalSendes, translate }) =>
     className="wizard-page"
     aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
   >
-    <Systemtittel className="margin-bottom-default">
+    <Systemtittel tag="h3" className="margin-bottom-small">
       {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
@@ -170,7 +168,7 @@ const HvaSkjerVidereSection = ({ index, translate }) => (
     className="wizard-page"
     aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.lastSectionTitle)}`}
   >
-    <Systemtittel className="margin-bottom-default">
+    <Systemtittel tag="h3" className="margin-bottom-small">
       {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.lastSectionTitle)}`}
     </Systemtittel>
     <Normaltekst className="margin-bottom-default">
@@ -260,12 +258,14 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
   sections.push(<HvaSkjerVidereSection key="hva-skjer-videre" translate={translate} />);
   return (
     <ResultContent>
-      <Sidetittel className="margin-bottom-large">{translate(form.title)}</Sidetittel>
-      <main id="maincontent" tabIndex={-1}>
-        {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
-        <div>
-          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
-        </div>
+      <Innholdstittel tag="h2" className="margin-bottom-double">
+        {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
+      </Innholdstittel>
+      <main className="fyllut-layout" id="maincontent" tabIndex={-1}>
+        <section className="main-col">
+          {sections.map((section, index) => React.cloneElement(section, { index: index + 1 }))}
+          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} secondaryOnly={true} />
+        </section>
       </main>
     </ResultContent>
   );
@@ -280,4 +280,7 @@ const ResultContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
+  "& section.wizard-page": {
+    paddingBottom: "3.75rem",
+  },
 });

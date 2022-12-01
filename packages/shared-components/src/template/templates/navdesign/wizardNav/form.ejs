@@ -1,33 +1,25 @@
-<nav id="{{ ctx.wizardKey }}-nav" >
+<nav id="{{ ctx.wizardKey }}-nav" class="form-nav" >
     {% if (ctx.buttons.next) { %}
-    <div class="list-inline">
-        <button class="btn btn-primary btn-wizard-nav-next margin-bottom-small" type="submit"
+        <button class="navds-button navds-button--primary" type="submit"
                 ref="{{ctx.wizardKey}}-next">
-            {{ctx.t('Neste steg')}}
+            <span aria-live="polite" class="navds-label">{{ctx.t('Neste steg')}}</span>
         </button>
-    </div>
     {% } %}
     {% if (ctx.buttons.submit) { %}
-    <div class="list-inline">
-        <button class="btn btn-primary btn-wizard-nav-submit margin-bottom-small" type="submit"
+        <button class="navds-button navds-button--primary" type="submit"
                 ref="{{ctx.wizardKey}}-submit">
-            {{ctx.t('Neste steg')}}
+            <span aria-live="polite" class="navds-label">{{ctx.t('Neste steg')}}</span>
         </button>
-    </div>
     {% } %}
     {% if (ctx.buttons.previous) { %}
-    <div class="list-inline">
-        <button class="btn btn-primary btn-wizard-nav-previous margin-bottom-small" type="button"
+        <button class="navds-button navds-button--secondary" type="button"
                 ref="{{ctx.wizardKey}}-previous">
-            {{ctx.t('Forrige steg')}}
+            <span aria-live="polite" class="navds-label">{{ctx.t('Forrige steg')}}</span>
         </button>
-    </div>
     {% } %}
     {% if (ctx.buttons.cancel) { %}
-    <div class="list-inline">
-        <button class="lenke btn-wizard-nav-cancel" ref="{{ctx.wizardKey}}-cancel" type="button">
-            {{ctx.t('Avbryt')}}
+        <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
+            <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt')}}</span>
         </button>
-    </div>
     {% } %}
 </nav>

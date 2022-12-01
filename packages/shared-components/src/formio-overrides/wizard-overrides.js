@@ -29,9 +29,13 @@ Wizard.prototype.attach = function (element) {
     [`${this.wizardKey}-next`]: "single",
     [`${this.wizardKey}-submit`]: "single",
     [`${this.wizardKey}-link`]: "multiple",
-    [`${this.wizardKey}-stepindicator-next`]: "single",
-    [`${this.wizardKey}-stepindicator-previous`]: "single",
     [`${this.wizardKey}-tooltip`]: "multiple",
+    [`${this.wizardKey}-header`]: "single",
+    [`${this.wizardKey}-stepper`]: "single",
+    [`${this.wizardKey}-stepper-open`]: "single",
+    [`${this.wizardKey}-stepper-close`]: "single",
+    [`${this.wizardKey}-stepper-backdrop`]: "single",
+    [`${this.wizardKey}-stepper-summary`]: "single",
   });
 
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
@@ -40,6 +44,7 @@ Wizard.prototype.attach = function (element) {
     }
   }
 
+  this.hook("attachWebform", element, this);
   const promises = this.attachComponents(this.refs[this.wizardKey], [
     ...this.prefixComps,
     ...this.currentPage.components,
@@ -47,12 +52,45 @@ Wizard.prototype.attach = function (element) {
   ]);
   this.attachNav();
   this.attachHeader();
+
   return promises.then(() => {
     this.emit("render", { component: this.currentPage, page: this.page });
     if (this.component.scrollToTop) {
       this.scrollPageToTop();
     }
   });
+};
+
+Wizard.prototype.attachStepper = function () {
+  const stepperOpenButton = this.refs[`${this.wizardKey}-stepper-open`];
+  const stepperBackdrop = this.refs[`${this.wizardKey}-stepper-backdrop`];
+  const stepperCloseButton = this.refs[`${this.wizardKey}-stepper-close`];
+  const stepper = this.refs[`${this.wizardKey}-stepper`];
+  const openStepper = () => {
+    this.isStepperOpen = true;
+    stepper.classList.add("stepper--open");
+    stepperBackdrop.style.display = "block";
+    stepperCloseButton.focus();
+  };
+  const closeStepper = () => {
+    this.isStepperOpen = false;
+    stepper.classList.remove("stepper--open");
+    stepperBackdrop.style.display = "none";
+    stepperOpenButton.focus();
+  };
+
+  this.addEventListener(stepperOpenButton, "click", openStepper);
+  this.addEventListener(stepperCloseButton, "click", closeStepper);
+  this.addEventListener(stepperBackdrop, "click", closeStepper);
+};
+
+Wizard.prototype.detachStepper = function () {
+  const stepperOpenButton = this.refs[`${this.wizardKey}-stepper-open`];
+  const stepperBackdrop = this.refs[`${this.wizardKey}-stepper-backdrop`];
+  const stepperCloseButton = this.refs[`${this.wizardKey}-stepper-close`];
+  this.removeEventListener(stepperOpenButton, "click");
+  this.removeEventListener(stepperBackdrop, "click");
+  this.removeEventListener(stepperCloseButton, "click");
 };
 
 Wizard.prototype.redrawHeader = function () {
@@ -65,14 +103,18 @@ Wizard.prototype.redrawHeader = function () {
       this.loadRefs(headerElement, {
         [`${this.wizardKey}-link`]: "multiple",
         [`${this.wizardKey}-tooltip`]: "multiple",
-        [`${this.wizardKey}-stepindicator-next`]: "single",
-        [`${this.wizardKey}-stepindicator-previous`]: "single",
+        [`${this.wizardKey}-stepper`]: "single",
+        [`${this.wizardKey}-stepper-open`]: "single",
+        [`${this.wizardKey}-stepper-close`]: "single",
+        [`${this.wizardKey}-stepper-backdrop`]: "single",
+        [`${this.wizardKey}-stepper-summary`]: "single",
       });
       this.attachHeader();
     }
   }
 };
 
+// Overridden to re-set focus to the link after clicking on it, as a re-render will reset focus to the top of the page.
 Wizard.prototype.attachHeader = function () {
   const isAllowPrevious = this.isAllowPrevious();
 
@@ -87,38 +129,40 @@ Wizard.prototype.attachHeader = function () {
               this.emitWizardPageSelected(index);
             })
             .then(() => {
-              document.querySelector(".stegindikator__steg-inner--aktiv").focus();
+              this.refs[`${this.wizardKey}-link`][index].focus();
             });
         });
       }
     });
   }
 
-  const previousRefId = `${this.wizardKey}-stepindicator-previous`;
-  const nextRefId = `${this.wizardKey}-stepindicator-next`;
-  const addPageSwitchFunction = (newPage, nextOrPreviousRefId) => {
-    this.addEventListener(this.refs[nextOrPreviousRefId], "click", (event) => {
-      this.emit("wizardNavigationClicked", newPage);
-      event.preventDefault();
-      return this.setPage(newPage)
-        .then(() => {
-          this.emitWizardPageSelected(newPage);
-        })
-        .then(() => {
-          const nextOrPreviousButton = document.querySelector(`[ref='${nextOrPreviousRefId}']`);
-
-          if (nextOrPreviousButton) {
-            nextOrPreviousButton.focus();
-          } else if (nextOrPreviousRefId === previousRefId) {
-            document.querySelector(".stegindikator__steg:first-of-type .stegindikator__steg-inner").focus();
-          } else if (nextOrPreviousRefId === nextRefId) {
-            document.querySelector(".stegindikator__steg:last-of-type .stegindikator__steg-inner").focus();
-          }
-        });
-    });
+  const validateAndGoToNextPage = () => {
+    if (this.isLastPage()) {
+      this.emit("submitButton"); // Validate entire form and go to summary page
+    } else {
+      this.nextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
+        .then(validateAndGoToNextPage); // Repeat on next step in form
+    }
   };
-  addPageSwitchFunction(this.getPreviousPage(), previousRefId);
-  addPageSwitchFunction(this.getNextPage(), nextRefId);
+
+  const validateEveryStepInSuccessionBeforeSubmitting = (event) => {
+    event.preventDefault();
+    if (!this.checkValidity(this.localData, false, this.localData, false)) {
+      // Validate entire form without triggering error messages
+      this.setPage(0) // Start at first page
+        .then(validateAndGoToNextPage); // Recursively visit every step, validate and move forward if valid
+    } else {
+      this.emit("submitButton"); // Go to summary page
+    }
+  };
+
+  this.addEventListener(
+    this.refs[`${this.wizardKey}-stepper-summary`],
+    "click",
+    validateEveryStepInSuccessionBeforeSubmitting
+  );
+
+  this.attachStepper();
 };
 
 Wizard.prototype.detachHeader = function () {
@@ -128,14 +172,8 @@ Wizard.prototype.detachHeader = function () {
       this.removeEventListener(link, "click");
     });
   }
-  const previousButton = this.refs[`${this.wizardKey}-stepindicator-previous`];
-  if (previousButton) {
-    this.removeEventListener(previousButton, "click");
-  }
-  const nextButton = this.refs[`${this.wizardKey}-stepindicator-next`];
-  if (nextButton) {
-    this.removeEventListener(nextButton, "click");
-  }
+  this.removeEventListener(this.refs[`${this.wizardKey}-stepper-summary`], "click");
+  this.detachStepper();
 };
 
 function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {

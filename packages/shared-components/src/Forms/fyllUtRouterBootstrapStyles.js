@@ -54,17 +54,17 @@ export const bootstrapStyles = {
   },
 
   "& .input-group-text": {
+    height: "calc(1.5em + .75rem + 2px)",
     display: "flex",
     alignItems: "center",
-    padding: ".375rem .75rem",
+    padding: "0.5rem",
     marginBottom: 0,
     fontSize: " 1rem",
     fontWeight: 400,
     lineHeight: 1.5,
     textAlign: "center",
     whiteSpace: "nowrap",
-    backgroundColor: " #e9ecef",
-    border: "1px solid #ced4da",
+    border: "1px solid #78706a",
     borderRadius: ".25rem",
   },
   //Bootstrap prefix og suffix  -- slutt
@@ -72,11 +72,11 @@ export const bootstrapStyles = {
   //Bootstrap day component
   "& .has-feedback .form-control": {
     height: "calc(1.5em + .75rem + 2px)",
-    padding: ".375rem .75rem",
+    padding: "0.5rem",
     fontSize: "1rem",
     fontWeight: "400",
     lineHeight: "1.5",
-    border: "1px solid #ced4da",
+    border: "1px solid #78706a",
     borderRadius: ".25rem",
   },
   " & .formio-select-autocomplete-input": {
