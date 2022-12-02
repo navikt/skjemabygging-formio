@@ -1,10 +1,7 @@
 import { Formio } from "formiojs";
-import { scrollToAndSetFocus } from "../util/focus-management";
 
 const Wizard = Formio.Displays.displays.wizard;
 const WebForm = Formio.Displays.displays.webform;
-const originalNextPage = Wizard.prototype.nextPage;
-const originalSubmit = Wizard.prototype.submit;
 
 WebForm.prototype.cancel = function () {
   const shouldReset = this.hook("beforeCancel", true);
@@ -142,7 +139,7 @@ Wizard.prototype.attachHeader = function () {
     } else {
       this.nextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
         .then(validateAndGoToNextPage) // Repeat on next step in form
-        .catch(() => scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type"));
+        .catch(() => {});
     }
   };
 
@@ -176,34 +173,3 @@ Wizard.prototype.detachHeader = function () {
   this.removeEventListener(this.refs[`${this.wizardKey}-stepper-summary`], "click");
   this.detachStepper();
 };
-
-function overrideFormioWizardNextPageAndSubmit(loggSkjemaStegFullfort, loggSkjemaValideringFeilet) {
-  Wizard.prototype.nextPage = function () {
-    return originalNextPage
-      .call(this)
-      .then((returnValue) => {
-        loggSkjemaStegFullfort();
-        return returnValue;
-      })
-      .catch((error) => {
-        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
-        loggSkjemaValideringFeilet();
-        return Promise.reject(error);
-      });
-  };
-  Wizard.prototype.submit = function () {
-    return originalSubmit
-      .call(this)
-      .then((returnValue) => {
-        loggSkjemaStegFullfort();
-        return returnValue;
-      })
-      .catch((error) => {
-        scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
-        loggSkjemaValideringFeilet();
-        return Promise.reject(error);
-      });
-  };
-}
-
-export { overrideFormioWizardNextPageAndSubmit };

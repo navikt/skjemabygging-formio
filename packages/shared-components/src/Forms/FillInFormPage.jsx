@@ -9,7 +9,12 @@ import { getPanelSlug } from "../util/form";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
-  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
+  const {
+    loggSkjemaSporsmalBesvart,
+    loggSkjemaSporsmalForSpesialTyper,
+    loggSkjemaStegFullfort,
+    loggSkjemaValideringFeilet,
+  } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translationsForNavForm } = useLanguages();
   const { panelSlug } = useParams();
@@ -38,7 +43,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onNextOrPreviousPage({ page }) {
+  function onNextPage({ page }) {
+    loggSkjemaStegFullfort(page);
+    onNextOrPreviousPage(page);
+  }
+
+  function onPreviousPage({ page }) {
+    onNextOrPreviousPage(page);
+  }
+
+  function onNextOrPreviousPage(page) {
     const pathOfPanel = getPanelSlug(form, page);
     if (pathOfPanel) {
       updatePanelUrl(pathOfPanel);
@@ -56,7 +70,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
+    loggSkjemaStegFullfort();
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+  };
+
+  const onError = () => {
+    loggSkjemaValideringFeilet();
+    scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
 
   return (
@@ -68,9 +88,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalForSpesialTyper}
+        onError={onError}
         onSubmit={onSubmit}
-        onNextPage={onNextOrPreviousPage}
-        onPrevPage={onNextOrPreviousPage}
+        onNextPage={onNextPage}
+        onPrevPage={onPreviousPage}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
