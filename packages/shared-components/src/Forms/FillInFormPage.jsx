@@ -38,10 +38,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onNextOrPreviousPage({ page }) {
-    const pathOfPanel = getPanelSlug(form, page);
-    if (pathOfPanel) {
-      updatePanelUrl(pathOfPanel);
+  function onNextOrPreviousPage({ page, currentPanels }) {
+    if (page <= currentPanels.length - 1) {
+      updatePanelUrl(currentPanels[page]);
     }
     scrollToAndSetFocus("#maincontent", "start");
   }
