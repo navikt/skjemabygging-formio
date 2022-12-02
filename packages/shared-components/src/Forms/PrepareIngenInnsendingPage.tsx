@@ -1,6 +1,6 @@
 import { styled } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Sidetittel, Systemtittel } from "nav-frontend-typografi";
+import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppConfig } from "../configContext";
@@ -32,26 +32,24 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
 
   return (
     <ResultContent>
-      <Sidetittel className="margin-bottom-large">{translate(form.title)}</Sidetittel>
-      <main id="maincontent" tabIndex={-1}>
-        <section className="wizard-page" aria-label={translate(form.properties.innsendingOverskrift)}>
-          <Systemtittel className="margin-bottom-default">
-            {translate(form.properties.innsendingOverskrift)}
-          </Systemtittel>
-          <Normaltekst>{translate(form.properties.innsendingForklaring)}</Normaltekst>
-          <DownloadPdfButton
-            form={form}
-            submission={submission}
-            actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
-            label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-            onClick={() => loggSkjemaFullfort("ingeninnsending")}
-            classNames="knapp knapp--fullbredde"
-            translations={translations}
-          />
-        </section>
-        <div>
+      <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
+        <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
+          <div className="wizard-page">
+            <Systemtittel className="margin-bottom-default">
+              {translate(form.properties.innsendingOverskrift)}
+            </Systemtittel>
+            <Normaltekst>{translate(form.properties.innsendingForklaring)}</Normaltekst>
+            <DownloadPdfButton
+              form={form}
+              submission={submission}
+              actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
+              label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
+              onClick={() => loggSkjemaFullfort("ingeninnsending")}
+              translations={translations}
+            />
+          </div>
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
-        </div>
+        </section>
       </main>
     </ResultContent>
   );

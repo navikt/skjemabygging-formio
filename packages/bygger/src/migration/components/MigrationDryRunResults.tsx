@@ -61,7 +61,9 @@ const MigrationDryRunResults = ({
               Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
             </p>
             {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
-            {result.diff.length > 0 && <pre>{JSON.stringify(result.diff, null, 2)}</pre>}
+            {result.diff.length > 0 && (
+              <pre style={{ whiteSpace: "break-spaces" }}>{JSON.stringify(result.diff, null, 2)}</pre>
+            )}
             <Link className="knapp margin-bottom-default" to={getPreviewUrl(result.path)}>
               Forhåndsvis
             </Link>

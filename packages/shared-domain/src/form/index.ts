@@ -69,6 +69,10 @@ export interface Component {
   components?: Component[];
 }
 
+export interface Panel extends Component {
+  title: string;
+}
+
 export interface ComponentValidate {
   custom?: string;
   json?: string;

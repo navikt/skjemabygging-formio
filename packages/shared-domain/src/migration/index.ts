@@ -1,4 +1,4 @@
-import { combinePropAndOperator, getPropAndOperatorFromKey } from "./operatorUtils";
+import { combinePropAndOperator, getPropAndOperatorFromKey, isUnaryOperator } from "./operatorUtils";
 
-const migrationUtils = { combinePropAndOperator, getPropAndOperatorFromKey };
+const migrationUtils = { combinePropAndOperator, getPropAndOperatorFromKey, isUnaryOperator };
 export default migrationUtils;

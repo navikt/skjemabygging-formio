@@ -24,23 +24,23 @@ describe("When form has panels that are hidden unless a condition is true", () =
 
   describe("Filling out the form", () => {
     it("adds the panel 'Pinnekjøtt' when radio option pinnekjøtt is selected", () => {
-      cy.findByRole("button", { name: "2 Pinnekjøtt" }).should("not.exist");
+      cy.findByRole("link", { name: "Pinnekjøtt" }).should("not.exist");
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByLabelText("Pinnekjøtt").check({ force: true });
       });
-      cy.findByRole("button", { name: "2 Pinnekjøtt" }).should("exist");
-      cy.findByRole("button", { name: "2 Lutefisk" }).should("not.exist");
+      cy.findByRole("link", { name: "Pinnekjøtt" }).should("exist");
+      cy.findByRole("link", { name: "Lutefisk" }).should("not.exist");
       cy.clickNextStep();
       cy.url().should("include", "/pinnekjott");
     });
 
     it("adds the panel 'Lutefisk' when radio option lutefisk is selected", () => {
-      cy.findByRole("button", { name: "2 Lutefisk" }).should("not.exist");
+      cy.findByRole("link", { name: "Lutefisk" }).should("not.exist");
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByLabelText("Lutefisk").check({ force: true });
       });
-      cy.findByRole("button", { name: "2 Lutefisk" }).should("exist");
-      cy.findByRole("button", { name: "2 Pinnekjøtt" }).should("not.exist");
+      cy.findByRole("link", { name: "Lutefisk" }).should("exist");
+      cy.findByRole("link", { name: "Pinnekjøtt" }).should("not.exist");
       cy.clickNextStep();
       cy.url().should("include", "/lutefisk");
     });
@@ -51,7 +51,7 @@ describe("When form has panels that are hidden unless a condition is true", () =
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByLabelText("Pinnekjøtt").check({ force: true });
       });
-      cy.findByRole("button", { name: "2 Pinnekjøtt" }).should("exist");
+      cy.findByRole("link", { name: "Pinnekjøtt" }).should("exist");
       cy.clickNextStep();
       cy.findByRole("checkbox", { name: "Rotmos (valgfritt)" }).check({ force: true });
       cy.clickNextStep();
@@ -75,11 +75,11 @@ describe("When form has panels that are hidden unless a condition is true", () =
     it("displays the submission for a different added panel when form is edited", () => {
       cy.findByRole("link", { name: "Rediger julemeny" }).click();
       cy.url().should("include", "/veiledning");
-      cy.findByRole("button", { name: "2 Pinnekjøtt" }).should("exist");
+      cy.findByRole("link", { name: "Pinnekjøtt" }).should("exist");
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByLabelText("Lutefisk").check({ force: true });
       });
-      cy.findByRole("button", { name: "2 Lutefisk" }).should("exist");
+      cy.findByRole("link", { name: "Lutefisk" }).should("exist");
       cy.clickNextStep();
       cy.url().should("include", "/lutefisk");
       cy.findByRole("checkbox", { name: "Erterstuing (valgfritt)" }).click({ force: true });

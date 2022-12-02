@@ -52,7 +52,7 @@ const useStyles = makeStyles({
   },
   searchFilterInputs: {
     display: "grid",
-    gridTemplateColumns: "4fr 1fr 4fr",
+    gridTemplateColumns: "3fr 1fr 3fr",
     gap: "0.25rem 1rem",
   },
   formEditInputs: {

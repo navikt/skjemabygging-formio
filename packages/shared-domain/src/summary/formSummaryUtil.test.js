@@ -1,10 +1,12 @@
 import { flattenComponents } from "../utils/navFormUtils";
-import { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } from "./formSummaryUtil";
+import formSummaryUtil from "./formSummaryUtil";
 import MockedComponentObjectForTest from "./MockedComponentObjectForTest";
 import datoISkjemagruppeIDatagrid from "./testdata/datovelger-skjemagruppe-datagrid";
 import testformCustomConditional from "./testdata/form-alertstripe-cusom-conditional";
 import testformContainerConditional from "./testdata/form-container-conditional";
 import testImgFormCustomConditional from "./testdata/form-image-custom-conditional";
+
+const { createFormSummaryObject, handleComponent, mapAndEvaluateConditionals } = formSummaryUtil;
 
 const {
   createDummyContainerElement,

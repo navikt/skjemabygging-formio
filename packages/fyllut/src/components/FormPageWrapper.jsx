@@ -38,12 +38,6 @@ export const FormPageWrapper = () => {
         document.title = `${form.title} | www.nav.no`;
         setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
       }
-
-      const descriptionTxt = navFormUtils.findDescription(form);
-      if (descriptionTxt) {
-        setHeaderProp(metaNameDescr, descriptionTxt);
-        setHeaderProp(metaNameOgDescr, descriptionTxt);
-      }
     }
 
     return function cleanup() {

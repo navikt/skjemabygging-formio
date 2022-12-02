@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Collapse, Expand } from "@navikt/ds-icons";
-import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
+import { Collapse, Expand } from "@navikt/ds-icons";
+import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const useSelectStyle = makeStyles({
   overlay: {
@@ -13,19 +13,15 @@ const useSelectStyle = makeStyles({
   },
   nav: {
     position: "relative",
+
+    "& .navds-select__input": {
+      textAlign: "start",
+    },
+    "& .navds-select__chevron": {
+      marginTop: "0.25rem",
+    },
   },
 });
-
-const closeListAndResetFocus = (event, closeFunction, buttonRef) => {
-  closeFunction();
-  buttonRef.current.focus();
-};
-
-const closeOnEscape = (event, closeFunction, buttonRef) => {
-  if (event.key === "Escape") {
-    closeOnEscape(event, closeFunction, buttonRef);
-  }
-};
 
 const handleTabKeyPressed = (event, firstItem, lastItem, index, numberOfItemsInList) => {
   if (event.key !== "Tab") {
@@ -46,26 +42,31 @@ const Select = ({ label, className, options }) => {
   const lastListItemLinkRef = useRef(null);
   const [showItems, setShowItems] = useState(false);
   const classes = useSelectStyle();
-  useEffect(() => {
-    if (showItems && firstListItemLinkRef.current) {
-      firstListItemLinkRef.current.focus();
+
+  const closeListAndResetFocus = () => {
+    setShowItems(false);
+    buttonRef.current.focus();
+  };
+
+  const closeOnEscape = (event) => {
+    if (event.key === "Escape") {
+      closeListAndResetFocus();
     }
-  }, [firstListItemLinkRef, showItems]);
+  };
+
   return (
     <>
-      {showItems && (
-        <div
-          className={classes.overlay}
-          onClick={(event) => closeListAndResetFocus(event, () => setShowItems(false), buttonRef)}
-        />
-      )}
-      <nav
-        className={`${className} ${classes.nav}`}
-        onKeyUp={(event) => closeOnEscape(event, () => setShowItems(false), buttonRef)}
-      >
-        <button className="select-button" onClick={() => setShowItems(!showItems)} type="button" ref={buttonRef}>
+      {showItems && <div className={classes.overlay} onClick={closeListAndResetFocus} />}
+      <nav className={`${className} ${classes.nav}`} onKeyUp={closeOnEscape}>
+        <button
+          className="navds-select__input navds-body-short navds-body--medium"
+          aria-expanded={showItems}
+          onClick={() => setShowItems(!showItems)}
+          type="button"
+          ref={buttonRef}
+        >
           {label}
-          {showItems ? <Collapse className="select__chevron" /> : <Expand className="select__chevron" />}
+          {showItems ? <Collapse className="navds-select__chevron" /> : <Expand className="navds-select__chevron" />}
         </button>
         {showItems && (
           <ul className="select-list">
@@ -80,7 +81,7 @@ const Select = ({ label, className, options }) => {
                 <Link
                   className="select-list__option__link"
                   to={href}
-                  onClick={() => setShowItems(!showItems)}
+                  onClick={closeListAndResetFocus}
                   ref={
                     index === 0 ? firstListItemLinkRef : index === options.length - 1 ? lastListItemLinkRef : undefined
                   }
