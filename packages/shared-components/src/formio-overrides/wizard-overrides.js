@@ -148,7 +148,8 @@ Wizard.prototype.attachHeader = function () {
       this.emit("submitButton"); // Validate entire form and go to summary page
     } else {
       this.nextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
-        .then(validateAndGoToNextPage); // Repeat on next step in form
+        .then(validateAndGoToNextPage) // Repeat on next step in form
+        .catch(() => scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type"));
     }
   };
 
