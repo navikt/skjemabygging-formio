@@ -42,6 +42,14 @@ export default class FormioReactComponent extends Field {
     return super.destroy();
   }
 
+  redraw() {
+    return super.redraw();
+  }
+
+  get dataReady() {
+    return super.dataReady();
+  }
+
   /**
    * The second phase of component building where the component is rendered as an HTML string.
    *
