@@ -139,7 +139,7 @@ Wizard.prototype.attachHeader = function () {
     } else {
       this.nextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
         .then(validateAndGoToNextPage) // Repeat on next step in form
-        .catch(() => {});
+        .catch(() => {}); // Ignore rejected promise returned by nextPage() when there are errors. Those are handled by onError defined in FillInFormPage.
     }
   };
 
