@@ -51,6 +51,7 @@ describe("NavSelect", () => {
             validateOn: "blur",
             validate: {
               onlyAvailableItems: false,
+              required: true,
             },
             key: "velgFrukt",
             type: "navSelect",
@@ -105,11 +106,24 @@ describe("NavSelect", () => {
 
       screen.debug();
       await waitFor(() => {
-        const df = screen.getByText("Persimon");
-        expect(df).toBeInTheDocument();
-        // const nedtrekksliste = screen.getByLabelText(/Velg frukt.*/) as HTMLInputElement;
-        // expect(nedtrekksliste.value).toBe("banan");
+        const valgtFrukt = screen.getByText("Persimon");
+        expect(valgtFrukt).toBeInTheDocument();
       });
+    });
+
+    it("shows error message when validation fails", async () => {
+      await renderNavForm({
+        form: testForm,
+      });
+      const nedtrekksliste = screen.getByLabelText(/Velg frukt.*/) as HTMLInputElement;
+      expect(nedtrekksliste).toBeInTheDocument();
+
+      const nextButton = screen.getByRole("button", { name: "Neste steg" });
+      expect(nextButton).toBeInTheDocument();
+      nextButton.click();
+
+      const errorMessages = await screen.findAllByText("Du må fylle ut: Velg frukt");
+      expect(errorMessages).toHaveLength(2); // på toppen av siden, og nedenfor input-feltet
     });
   });
 });
