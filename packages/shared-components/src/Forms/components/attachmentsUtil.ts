@@ -24,4 +24,8 @@ const getRelevantAttachments = (form, submission) => {
     }));
 };
 
-export { getRelevantAttachments };
+const hasRelevantAttachments = (form, submission) => {
+  return !!getRelevantAttachments(form, submission).length;
+};
+
+export { getRelevantAttachments, hasRelevantAttachments };

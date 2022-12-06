@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
-import { getRelevantAttachments } from "./attachmentsUtil";
+import { getRelevantAttachments, hasRelevantAttachments } from "./attachmentsUtil";
 
 export interface Props {
   form: object;
@@ -39,7 +39,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   const { translate, currentLanguage } = useLanguages();
   const { baseUrl, http, config = {}, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
-
+  const hasAttachments = hasRelevantAttachments(form, submission);
   const sendInn = async () => {
     if (app === "bygger") {
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
@@ -65,6 +65,14 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
       setLoading(false);
     }
   };
+
+  if (!hasAttachments) {
+    return (
+      <Button onClick={sendInn} loading={loading}>
+        {translate(TEXTS.grensesnitt.submitToNav)}
+      </Button>
+    );
+  }
 
   return (
     <Button onClick={sendInn} loading={loading}>
