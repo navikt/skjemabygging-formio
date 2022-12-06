@@ -8,15 +8,17 @@ import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 
 const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isLoading }) => {
-  const [internalValue, setInternalValue] = useState(options.find((o) => o.value === value));
+  const [selectedOption, setSelectedOption] = useState(value);
   useEffect(() => {
-    setInternalValue(options.find((option) => option.value === value));
+    console.log(`wrapper: useEffect=${JSON.stringify(value)}`);
+    setSelectedOption(value);
   }, [value, options]);
+  console.log(`wrapper: selectedOption=${JSON.stringify(selectedOption)}`);
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
       options={options}
-      value={internalValue}
+      value={selectedOption}
       defaultValue={component.defaultValue}
       inputId={`${component.id}-${component.key}`}
       required={component.validate.required}
@@ -25,8 +27,10 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       ref={inputRef}
       onChange={(event, actionType) => {
         const newValue = event.value;
-        setInternalValue(options.find((o) => o.value === newValue));
-        onChange(newValue);
+        const selectedOption = options.find((o) => o.value === newValue);
+        setSelectedOption(selectedOption);
+        console.log(`wrapper onChange: newValue=${newValue}, selectedOption=${JSON.stringify(selectedOption)}`);
+        onChange(selectedOption);
       }}
     />
   );
@@ -36,11 +40,9 @@ class NavSelect extends FormioReactComponent {
   reactElement = null;
   dataForSetting = null;
   shouldSetValue = false;
-  input: HTMLInputElement | null = null;
   isLoading = false;
-  loaded = false;
+  loadFinished = false;
   selectOptions: any[] = [];
-  _itemsLoaded: any | Promise<any> = null;
 
   static schema(...extend) {
     // @ts-ignore
@@ -69,41 +71,50 @@ class NavSelect extends FormioReactComponent {
     );
   }
 
-  translateOptions(options) {
-    // @ts-ignore
+  translateOptionLabels(options) {
     return options.map((option) => ({ ...option, label: this.t(option.label) }));
   }
 
+  translateOptionLabel(option) {
+    return option && option.label ? { ...option, label: this.t(option.label) } : option;
+  }
+
   renderReact(element) {
-    // @ts-ignore
     const component: Component = this.component as Component;
-    // let options = [];
     if (component.dataSrc === "values") {
       this.selectOptions = component.data.values;
-      this.itemsLoaded = Promise.resolve();
     } else if (component.dataSrc === "url") {
-      if (!this.isLoading && !this.loaded) {
+      if (!this.isLoading && !this.loadFinished) {
+        const dataUrl = component.data.url;
         this.isLoading = true;
-        this.itemsLoaded = http
-          .get<any[]>(component.data.url)
+        http
+          .get<any[]>(dataUrl)
           .then((data) => {
-            this.isLoading = false;
-            this.loaded = true;
-            this.selectOptions = data;
-            // super.redraw();
+            const { valueProperty, labelProperty } = component;
+            this.selectOptions = data.map((obj) => ({
+              label: obj[labelProperty || "navn"], // TODO endre default til "label"
+              value: obj[valueProperty || "value"],
+            }));
+
+            console.log(`Done loading ${data.length} options: ${dataUrl}`);
           })
           .catch((err) => {
-            console.log(`Error while loading select options: url=${component.data.url}`);
+            // TODO feilhåndtering
+            console.error(`Error while loading select options: url=${dataUrl}, msg=${err.message}`);
+          })
+          .finally(() => {
             this.isLoading = false;
+            this.loadFinished = true;
+            super.redraw();
           });
       }
     }
     return ReactDOM.render(
       <ReactSelectWrapper
         component={component}
-        options={this.translateOptions(this.selectOptions)}
-        value={this.dataForSetting || this.dataValue}
-        onChange={(value) => this.setValue(value, {})}
+        options={this.translateOptionLabels(this.selectOptions)}
+        value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
+        onChange={(value) => this.updateValue(value, {})}
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
       />,
@@ -136,28 +147,6 @@ class NavSelect extends FormioReactComponent {
       this.shouldSetValue = true;
     }
     return super.setValue(value, flag);
-  }
-
-  focus() {
-    if (this.input) {
-      this.input.focus();
-    }
-  }
-
-  get itemsLoaded() {
-    return this._itemsLoaded || Promise.resolve();
-  }
-
-  set itemsLoaded(promise) {
-    this._itemsLoaded = promise;
-  }
-
-  get dataReady(): any | Promise<any> {
-    // @ts-ignore
-    if (this.component.dataSrc === "url") {
-      return this._itemsLoaded;
-    }
-    return Promise.resolve();
   }
 }
 

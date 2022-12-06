@@ -44,6 +44,14 @@ function formatValue(component, value, translate) {
 
     case "select":
     case "navSelect":
+      console.log(`FormSummaryUtil: ${JSON.stringify(value)}`);
+      if (typeof value === "object") {
+        console.log(
+          `FormSummaryUtil: type=${component.type} value is object (valueProperty=${component.valueProperty})`
+        );
+        return translate(value.label);
+      }
+      console.log(`FormSummaryUtil: component.type=${component.type} value is not object`);
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
 
     case "day": {

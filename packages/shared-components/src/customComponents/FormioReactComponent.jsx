@@ -25,6 +25,7 @@
 import Field from "formiojs/components/_classes/field/Field";
 
 export default class FormioReactComponent extends Field {
+  input = null;
   /**
    * This method is called any time the component needs to be rebuilt. It is most frequently used to listen to other
    * components using the this.on() function.
@@ -46,8 +47,24 @@ export default class FormioReactComponent extends Field {
     return super.redraw();
   }
 
-  get dataReady() {
-    return super.dataReady();
+  t(text, ...args) {
+    return super.t(text, ...args);
+  }
+
+  get component() {
+    return super.component;
+  }
+
+  set component(component) {
+    super.component = component;
+  }
+
+  get input() {
+    return this.input;
+  }
+
+  set input(input) {
+    this.input = input;
   }
 
   /**
@@ -193,5 +210,11 @@ export default class FormioReactComponent extends Field {
    */
   validate(data, dirty, rowData) {
     return true;
+  }
+
+  focus() {
+    if (this.input) {
+      this.input.focus();
+    }
   }
 }

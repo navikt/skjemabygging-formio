@@ -69,6 +69,8 @@ export interface Component {
   validate?: ComponentValidate;
   conditional?: ComponentConditional;
   customConditional?: string;
+  valueProperty?: string;
+  labelProperty?: string;
   properties?: Record<string, string>;
   components?: Component[];
 }
