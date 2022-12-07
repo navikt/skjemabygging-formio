@@ -6,11 +6,11 @@ import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
 import { useStatusStyles } from "./styles";
 import Timestamp from "./Timestamp";
-import { Props } from "./types";
+import { FormStatusPanelProps } from "./types";
 
-const FormStatusPanel = ({ formProperties }: Props) => {
+const FormStatusPanel = ({ publishProperties }: FormStatusPanelProps) => {
   const styles: ClassNameMap = useStatusStyles();
-  const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = formProperties;
+  const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
   const LabeledTimeAndUser = ({
     label,
@@ -39,13 +39,13 @@ const FormStatusPanel = ({ formProperties }: Props) => {
       <div className={styles.panelItem}>
         <Element>Status:</Element>
         <div className={styles.sidePanelFormStatusContainer}>
-          <FormStatus status={determineStatus(formProperties)} size="large" />
+          <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />
       <LabeledTimeAndUser label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
-      <PublishedLanguages formProperties={formProperties} />
+      <PublishedLanguages publishProperties={publishProperties} />
     </Panel>
   );
 };

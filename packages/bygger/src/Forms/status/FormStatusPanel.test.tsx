@@ -18,7 +18,7 @@ describe("FormStatusPanel", () => {
     const properties: PartialFormProperties = { modified: now, modifiedBy: "Jenny" };
 
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
 
     it("displays the 'Utkast' status", () => {
@@ -42,7 +42,7 @@ describe("FormStatusPanel", () => {
     const properties: PartialFormProperties = { modified: now, published: now, publishedBy: "Jonny" };
 
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
 
     it("displays the 'Publisert' status", () => {
@@ -66,7 +66,7 @@ describe("FormStatusPanel", () => {
     const properties: PartialFormProperties = { modified: now, published: earlier };
 
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
 
     it("displays the 'Upubliserte endringer' status", () => {
@@ -84,7 +84,7 @@ describe("FormStatusPanel", () => {
 
   describe("When form has no modified date and no published date", () => {
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={{} as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={{} as FormPropertiesType} />);
     });
 
     it("displays the 'Ukjent status' status", () => {
@@ -103,7 +103,7 @@ describe("FormStatusPanel", () => {
   describe("When form is unpublished and modified date is same as or before unpublished date", () => {
     const properties: PartialFormProperties = { modified: now, unpublished: now };
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
     it("modified (date) is before unpublisheddate", () => {
       expect(screen.getByText("Avpublisert")).toBeInTheDocument();
@@ -113,7 +113,7 @@ describe("FormStatusPanel", () => {
   describe("When form is unpublished and modified date is after unpublished date", () => {
     const properties: PartialFormProperties = { modified: now, unpublished: earlier };
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
     it("modified (date) is after unpublisheddate", () => {
       expect(screen.getByText("Utkast")).toBeInTheDocument();
@@ -122,13 +122,13 @@ describe("FormStatusPanel", () => {
 
   describe("Prop publishedLanguages (array)", () => {
     it("displays nothing if form is not publised", () => {
-      render(<FormStatusPanel formProperties={{} as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={{} as FormPropertiesType} />);
       expect(screen.queryByText("Publiserte språk:")).not.toBeInTheDocument();
     });
 
     it("displays nothing if publishedLanguages is undefined", () => {
       const formProps = { published: now, publishedLanguages: undefined } as FormPropertiesType;
-      render(<FormStatusPanel formProperties={formProps} />);
+      render(<FormStatusPanel publishProperties={formProps} />);
       expect(screen.queryByText("Publiserte språk:")).not.toBeInTheDocument();
     });
 
@@ -137,7 +137,7 @@ describe("FormStatusPanel", () => {
         published: now,
         publishedLanguages: [] as string[],
       } as FormPropertiesType;
-      render(<FormStatusPanel formProperties={formProps} />);
+      render(<FormStatusPanel publishProperties={formProps} />);
       expect(screen.queryByText("Publiserte språk:")).toBeInTheDocument();
       expect(screen.queryByText(allLanguagesInNorwegian["nb-NO"])).toBeInTheDocument();
     });
@@ -148,7 +148,7 @@ describe("FormStatusPanel", () => {
         published: now,
         publishedLanguages,
       } as FormPropertiesType;
-      render(<FormStatusPanel formProperties={formProps} />);
+      render(<FormStatusPanel publishProperties={formProps} />);
       expect(screen.queryByText("Publiserte språk:")).toBeInTheDocument();
       expect(screen.queryByText(allLanguagesInNorwegian["nb-NO"])).toBeInTheDocument();
       publishedLanguages.forEach((langCode) => {
@@ -161,7 +161,7 @@ describe("FormStatusPanel", () => {
     const properties: PartialFormProperties = { modified: now, published: earlier, isTestForm: true };
 
     beforeEach(() => {
-      render(<FormStatusPanel formProperties={properties as FormPropertiesType} />);
+      render(<FormStatusPanel publishProperties={properties as FormPropertiesType} />);
     });
 
     it("displays the 'Testskjema' status even if published and modified is set", () => {
