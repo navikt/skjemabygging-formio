@@ -8,6 +8,14 @@ import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
 
+const reactSelectStyles = {
+  control: (baseStyles, state) => ({
+    ...baseStyles,
+    border: "1px solid #78706a",
+    boxShadow: state.isFocused ? "0 0 0 3px #254b6d" : undefined,
+  }),
+};
+
 const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isLoading }) => {
   const [selectedOption, setSelectedOption] = useState(value);
   useEffect(() => {
@@ -25,6 +33,7 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       isLoading={isLoading}
       ref={inputRef}
       className={component.fieldSize}
+      styles={reactSelectStyles}
       onChange={(event, actionType) => {
         const newValue = event.value;
         const selectedOption = options.find((o) => o.value === newValue);
