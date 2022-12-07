@@ -4,6 +4,7 @@ import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DryRunResult } from "../../../types/migration";
+import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 import BreakingChangesWarning from "./BreakingChangesWarning";
 
 const useStyles = makeStyles({
@@ -57,6 +58,7 @@ const MigrationDryRunResults = ({
                 />
               )}
             </div>
+            <FormStatus status={determineStatus(result)} size="large" />
             <p>
               Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
             </p>

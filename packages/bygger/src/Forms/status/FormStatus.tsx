@@ -5,8 +5,10 @@ import FormStatusIndicator from "./FormStatusIndicator";
 import { useStatusStyles } from "./styles";
 import { Status, StreetLightSize } from "./types";
 
-export function determineStatus(formProperties: FormPropertiesType): Status {
-  const { modified, published, isTestForm, unpublished } = formProperties;
+type PublishProperties = Pick<FormPropertiesType, "modified" | "published" | "isTestForm" | "unpublished">;
+
+export function determineStatus(publishProperties: PublishProperties): Status {
+  const { modified, published, isTestForm, unpublished } = publishProperties;
   let modifiedDate = moment(modified);
   const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
 
