@@ -10,10 +10,8 @@ import FormioReactComponent from "../FormioReactComponent";
 const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isLoading }) => {
   const [selectedOption, setSelectedOption] = useState(value);
   useEffect(() => {
-    console.log(`wrapper: useEffect=${JSON.stringify(value)}`);
     setSelectedOption(value);
   }, [value, options]);
-  console.log(`wrapper: selectedOption=${JSON.stringify(selectedOption)}`);
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
@@ -29,7 +27,6 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
         const newValue = event.value;
         const selectedOption = options.find((o) => o.value === newValue);
         setSelectedOption(selectedOption);
-        console.log(`wrapper onChange: newValue=${newValue}, selectedOption=${JSON.stringify(selectedOption)}`);
         onChange(selectedOption);
       }}
     />
@@ -92,11 +89,9 @@ class NavSelect extends FormioReactComponent {
           .then((data) => {
             const { valueProperty, labelProperty } = component;
             this.selectOptions = data.map((obj) => ({
-              label: obj[labelProperty || "navn"], // TODO endre default til "label"
+              label: obj[labelProperty || "label"],
               value: obj[valueProperty || "value"],
             }));
-
-            console.log(`Done loading ${data.length} options: ${dataUrl}`);
           })
           .catch((err) => {
             // TODO feilhåndtering
