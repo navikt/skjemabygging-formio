@@ -43,19 +43,18 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onNextPage({ page }) {
+  function onNextPage({ page, currentPanels }) {
     loggSkjemaStegFullfort(page);
-    onNextOrPreviousPage(page);
+    onNextOrPreviousPage(page, currentPanels);
   }
 
-  function onPreviousPage({ page }) {
-    onNextOrPreviousPage(page);
+  function onPreviousPage({ page, currentPanels }) {
+    onNextOrPreviousPage(page, currentPanels);
   }
 
-  function onNextOrPreviousPage(page) {
-    const pathOfPanel = getPanelSlug(form, page);
-    if (pathOfPanel) {
-      updatePanelUrl(pathOfPanel);
+  function onNextOrPreviousPage(page, currentPanels) {
+    if (page <= currentPanels.length - 1) {
+      updatePanelUrl(currentPanels[page]);
     }
     scrollToAndSetFocus("#maincontent", "start");
   }

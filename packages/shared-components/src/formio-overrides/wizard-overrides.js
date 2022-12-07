@@ -3,6 +3,13 @@ import { Formio } from "formiojs";
 const Wizard = Formio.Displays.displays.wizard;
 const WebForm = Formio.Displays.displays.webform;
 
+Wizard.prototype.emitNextPage = function () {
+  this.emit("nextPage", { page: this.page, submission: this.submission, currentPanels: this.currentPanels });
+};
+Wizard.prototype.emitPrevPage = function () {
+  this.emit("prevPage", { page: this.page, submission: this.submission, currentPanels: this.currentPanels });
+};
+
 WebForm.prototype.cancel = function () {
   const shouldReset = this.hook("beforeCancel", true);
   // eslint-disable-next-line no-restricted-globals
