@@ -6,6 +6,7 @@ import ReactSelect from "react-select";
 import http from "../../api/http";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
+import { fieldSizeField } from "./fields/fieldSize";
 
 const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isLoading }) => {
   const [selectedOption, setSelectedOption] = useState(value);
@@ -23,6 +24,7 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       placeholder={component.placeholder}
       isLoading={isLoading}
       ref={inputRef}
+      className={component.fieldSize}
       onChange={(event, actionType) => {
         const newValue = event.value;
         const selectedOption = options.find((o) => o.value === newValue);
@@ -61,7 +63,7 @@ class NavSelect extends FormioReactComponent {
       [
         {
           key: "display",
-          components: [{ key: "widget", ignore: true }],
+          components: [{ key: "widget", ignore: true }, fieldSizeField],
         },
         {
           key: "data",

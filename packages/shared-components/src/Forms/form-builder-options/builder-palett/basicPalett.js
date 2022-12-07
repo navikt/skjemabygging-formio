@@ -131,6 +131,7 @@ const basicPalett = {
         label: "Nedtrekksmeny",
         type: "navSelect",
         key: "navSelect",
+        fieldSize: "input--xxl",
         input: true,
         clearOnHide: true,
         dataGridLabel: true,
