@@ -1,3 +1,4 @@
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderNavForm, setupNavFormio } from "../../../test/navform-render";
@@ -5,7 +6,7 @@ import { renderNavForm, setupNavFormio } from "../../../test/navform-render";
 describe("NavSelect", () => {
   beforeAll(setupNavFormio);
 
-  const testForm = {
+  const testForm: NavFormType = {
     title: "Testskjema",
     type: "form",
     display: "wizard",
@@ -89,9 +90,9 @@ describe("NavSelect", () => {
         ],
       },
     ],
-  };
+  } as unknown as NavFormType;
 
-  it("selects item", async () => {
+  it("selects item in dropdown", async () => {
     await renderNavForm({
       form: testForm,
     });
@@ -103,7 +104,6 @@ describe("NavSelect", () => {
     const optionPersimon = await screen.findByText("Persimon");
     userEvent.click(optionPersimon);
 
-    screen.debug();
     await waitFor(() => {
       const valgtFrukt = screen.getByText("Persimon");
       expect(valgtFrukt).toBeInTheDocument();
@@ -123,5 +123,38 @@ describe("NavSelect", () => {
 
     const errorMessages = await screen.findAllByText("Du må fylle ut: Velg frukt");
     expect(errorMessages).toHaveLength(2); // på toppen av siden, og nedenfor input-feltet
+  });
+
+  it("changes language", async () => {
+    const i18n = {
+      en: {
+        "Velg frukt": "Choose fruit",
+        Eple: "Apple",
+        Banan: "Banana",
+        Persimon: "Persimon",
+        "Neste steg": "Next step",
+        Avbryt: "Cancel",
+        "Første panel": "First panel",
+      },
+    };
+    const { rerender, NavFormForTest } = await renderNavForm({
+      form: testForm,
+      i18n,
+    });
+    const dropdownNorwegian = screen.getByLabelText(/Velg frukt.*/) as HTMLInputElement;
+    expect(dropdownNorwegian).toBeInTheDocument();
+
+    rerender(<NavFormForTest form={testForm} language="en" i18n={i18n} />);
+    const dropdownEnglish = (await screen.findByLabelText(/Choose fruit.*/)) as HTMLInputElement;
+    expect(dropdownEnglish).toBeInTheDocument();
+
+    userEvent.click(dropdownEnglish);
+    const optionApple = await screen.findByText("Apple");
+    userEvent.click(optionApple);
+
+    await waitFor(() => {
+      const valgtFrukt = screen.getByText("Apple");
+      expect(valgtFrukt).toBeInTheDocument();
+    });
   });
 });
