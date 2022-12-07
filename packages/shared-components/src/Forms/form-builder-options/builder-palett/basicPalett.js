@@ -123,23 +123,6 @@ const basicPalett = {
         },
       },
     },
-    select: {
-      title: "FormioSelect",
-      key: "select",
-      icon: "th-list",
-      schema: {
-        label: "FormioNedtrekksmeny",
-        type: "select",
-        key: "select",
-        input: true,
-        clearOnHide: true,
-        dataGridLabel: true,
-        validateOn: "blur",
-        validate: {
-          required: true,
-        },
-      },
-    },
     navSelect: {
       title: "Nedtrekksmeny",
       key: "navSelect",
