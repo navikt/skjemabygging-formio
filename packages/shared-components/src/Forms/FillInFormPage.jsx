@@ -69,7 +69,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
-    loggSkjemaStegFullfort();
+    const panelKey = window.location.pathname.split(`${formUrl}/`)[1];
+    loggSkjemaStegFullfort(form.components.findIndex((panel) => panel.key === panelKey) + 1);
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
