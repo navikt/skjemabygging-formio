@@ -4,17 +4,22 @@ import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DryRunResult } from "../../../types/migration";
-import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
+import FormStatusPanel from "../../Forms/status/FormStatusPanel";
 import BreakingChangesWarning from "./BreakingChangesWarning";
 
 const useStyles = makeStyles({
-  titleRow: {
+  row: {
     display: "flex",
     flexDirection: "row",
-    marginTop: "2rem",
+    marginTop: "3rem",
   },
-  title: {
-    marginRight: "2rem",
+  mainColumn: {
+    flex: 3,
+  },
+  sideColumn: {
+    flex: 1,
+    width: "14rem",
+    marginLeft: "3rem",
   },
 });
 
@@ -39,11 +44,23 @@ const MigrationDryRunResults = ({
         const { breakingChanges } = result;
         const hasBreakingChanges = breakingChanges && breakingChanges.length > 0;
         return (
-          <li key={result.skjemanummer}>
-            <div className={styles.titleRow}>
-              <Undertittel className={styles.title}>
+          <li key={result.skjemanummer} className={styles.row}>
+            <div className={styles.mainColumn}>
+              <Undertittel>
                 {result.title} ({result.skjemanummer})
               </Undertittel>
+              <p>
+                Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
+              </p>
+              {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
+              {result.diff.length > 0 && (
+                <pre style={{ whiteSpace: "break-spaces" }}>{JSON.stringify(result.diff, null, 2)}</pre>
+              )}
+              <Link className="knapp margin-bottom-default margin-top-default" to={getPreviewUrl(result.path)}>
+                Forhåndsvis
+              </Link>
+            </div>
+            <div className={styles.sideColumn}>
               {result.changed > 0 && (
                 <Checkbox
                   label={"Inkluder i migrering"}
@@ -57,18 +74,8 @@ const MigrationDryRunResults = ({
                   }}
                 />
               )}
+              <FormStatusPanel publishProperties={result} spacing={"small"} />
             </div>
-            <FormStatus status={determineStatus(result)} size="large" />
-            <p>
-              Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
-            </p>
-            {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
-            {result.diff.length > 0 && (
-              <pre style={{ whiteSpace: "break-spaces" }}>{JSON.stringify(result.diff, null, 2)}</pre>
-            )}
-            <Link className="knapp margin-bottom-default" to={getPreviewUrl(result.path)}>
-              Forhåndsvis
-            </Link>
           </li>
         );
       })}

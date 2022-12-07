@@ -6,7 +6,5 @@ export type StreetLightSize = "small" | "large";
 
 export type PublishStatusProperties = Pick<FormPropertiesType, "modified" | "published" | "isTestForm" | "unpublished">;
 
-export interface FormStatusPanelProps {
-  publishProperties: PublishStatusProperties &
-    Pick<FormPropertiesType, "modifiedBy" | "publishedBy" | "unpublishedBy" | "publishedLanguages">;
-}
+export type PublishProperties = PublishStatusProperties &
+  Pick<FormPropertiesType, "modifiedBy" | "publishedBy" | "unpublishedBy" | "publishedLanguages">;

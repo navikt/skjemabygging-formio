@@ -29,12 +29,12 @@ import {
 const useStyles = makeStyles({
   root: {
     display: "flex",
-    maxWidth: "70rem",
+    maxWidth: "80rem",
     margin: "0 auto 4rem auto",
   },
   mainContent: {
     flexDirection: "column",
-    flex: "3",
+    flex: "5",
   },
   sideColumn: {
     flexDirection: "column",

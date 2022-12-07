@@ -6,10 +6,15 @@ import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
 import { useStatusStyles } from "./styles";
 import Timestamp from "./Timestamp";
-import { FormStatusPanelProps } from "./types";
+import { PublishProperties } from "./types";
 
-const FormStatusPanel = ({ publishProperties }: FormStatusPanelProps) => {
-  const styles: ClassNameMap = useStatusStyles();
+interface Props {
+  publishProperties: PublishProperties;
+  spacing?: "default" | "small";
+}
+
+const FormStatusPanel = ({ publishProperties, spacing }: Props) => {
+  const styles: ClassNameMap = useStatusStyles({ spacing });
   const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
   const LabeledTimeAndUser = ({
@@ -21,7 +26,7 @@ const FormStatusPanel = ({ publishProperties }: FormStatusPanelProps) => {
     timestamp?: string;
     userName?: string;
   }) => {
-    const styles = useStatusStyles();
+    const styles = useStatusStyles({ spacing });
     if (!timestamp) {
       return <></>;
     }
