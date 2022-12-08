@@ -14,7 +14,13 @@ export const grensesnitt = {
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
-  submitToNav: "Send til NAV",
+  submitToNavPrompt: {
+    open: "Send til NAV",
+    body: "Er du sikker på at du vil sende søknaden nå?",
+    confirm: "Ja, send søknaden",
+    cancel: "Avbryt",
+  },
+
   ok: "OK",
 
   formSummaryUtils: {

@@ -252,7 +252,9 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   submission={submission}
                   translations={translations}
                   onError={(err) => setErrorMessage(err.message)}
-                />
+                >
+                  {translate(TEXTS.grensesnitt.moveForward)}
+                </DigitalSubmissionButton>
               ) : (
                 <DigitalSubmissionWithPrompt
                   form={form}

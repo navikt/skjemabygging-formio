@@ -33,9 +33,9 @@ const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError }
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>{translate(TEXTS.grensesnitt.submitToNav)}</Button>
+      <Button onClick={() => setIsOpen(true)}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
       <Modal open={isOpen} ariaLabel="Modal demo" onClose={() => setIsOpen(false)}>
-        <BodyShort className={styles.body}>Er du sikker på at du vil sende søknaden nå?</BodyShort>
+        <BodyShort className={styles.body}>{translate(TEXTS.grensesnitt.submitToNavPrompt.body)}</BodyShort>
         <div className={styles.buttonRow}>
           <DigitalSubmissionButton
             form={form}
@@ -45,14 +45,16 @@ const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError }
               onError(err.message);
               setIsOpen(false);
             }}
-          />
+          >
+            {translate(TEXTS.grensesnitt.submitToNavPrompt.confirm)}
+          </DigitalSubmissionButton>
           <Button
             variant="tertiary"
             onClick={() => {
               setIsOpen(false);
             }}
           >
-            Avbryt
+            {translate(TEXTS.grensesnitt.submitToNavPrompt.cancel)}
           </Button>
         </div>
       </Modal>
