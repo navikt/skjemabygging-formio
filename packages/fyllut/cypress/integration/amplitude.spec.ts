@@ -1,3 +1,11 @@
+/*
+ * Tests for checking that Amplitude logging works.
+ *
+ * Initially only testing digital submission.
+ * TODO: We should add tests for "paper" and "no submission" options as well, as they initiate "completed" logging individually.
+ * TODO: Maybe we should also have tests for opening sub=digital or sub=paper directly, to see that the "skjema startet" logging is handled correctly.
+ */
+
 describe("Amplitude", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");

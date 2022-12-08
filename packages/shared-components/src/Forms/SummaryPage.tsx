@@ -201,7 +201,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
-  const { loggSkjemaStegFullfort } = useAmplitude();
+  const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
 
@@ -246,7 +246,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 form={form}
                 submission={submission}
                 translations={translations}
-                onError={(err) => setErrorMessage(err.message)}
+                onError={(err) => {
+                  setErrorMessage(err.message);
+                  loggSkjemaInnsendingFeilet();
+                }}
+                onSuccess={() => loggSkjemaFullfort("digital")}
               />
             )}
             {innsending === "INGEN" && (
