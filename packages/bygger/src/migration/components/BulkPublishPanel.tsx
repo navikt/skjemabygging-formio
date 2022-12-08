@@ -53,7 +53,13 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const [state, dispatch] = useReducer(reducer, {});
 
   useEffect(() => {
-    dispatch({ type: "init", payload: forms });
+    dispatch({
+      type: "init",
+      payload: forms.filter((form) => {
+        const status = determineStatus(form.properties);
+        return status === "PENDING" || status === "PUBLISHED";
+      }),
+    });
   }, [forms]);
 
   const onBulkPublish = async (formPaths) => {
@@ -75,11 +81,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
         <AlertStripe type={"advarsel"}>
           <p>
             Merk at oversettelser ikke migreres, eller publiseres. Hvis du har gjort endringer som vil påvirke
-            oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser og migrere manuelt.
-          </p>
-          <p>
-            Skjemaer listet opp her, er ikke nødvendigvis publisert til nav.no per i dag. Du må selv kontrollere om et
-            gitt skjema faktisk skal publiseres.
+            oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser før du publiserer.
           </p>
         </AlertStripe>
         <form
