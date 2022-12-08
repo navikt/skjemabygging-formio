@@ -1,0 +1,60 @@
+import { makeStyles } from "@material-ui/styles";
+import { Input } from "nav-frontend-skjema";
+import React, { Dispatch, Fragment } from "react";
+import { MigrationOption } from "../../../types/migration";
+import { isJSON } from "../utils";
+import { Action } from "./MigrationOptionsForm.reducer";
+
+const useStyles = makeStyles({
+  input: {
+    marginBottom: "1rem",
+  },
+});
+
+interface FormEditInputProps {
+  id: string;
+  formEdit: MigrationOption;
+  dispatch: Dispatch<Action>;
+}
+
+const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
+  const styles = useStyles();
+  const { key, value } = formEdit;
+  return (
+    <Fragment>
+      <Input
+        className={styles.input}
+        label="Feltnavn"
+        type="text"
+        value={formEdit.key}
+        onChange={(event) =>
+          dispatch({
+            type: "edit",
+            payload: {
+              id,
+              key: event.target.value,
+            },
+          })
+        }
+      />
+      <Input
+        className={styles.input}
+        label="Verdi"
+        type="text"
+        value={typeof value === "object" ? JSON.stringify(value) : value}
+        disabled={!key}
+        onChange={(event) =>
+          dispatch({
+            type: "edit",
+            payload: {
+              id,
+              value: isJSON(event.target.value) ? JSON.parse(event.target.value) : event.target.value,
+            },
+          })
+        }
+      />
+    </Fragment>
+  );
+};
+
+export default FormEditInput;

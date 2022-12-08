@@ -1,14 +1,17 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
 import FormPage from "./FormPage";
 import PageNotFound from "./PageNotFound";
+import SubmissionMethodNotAllowed from "./SubmissionMethodNotAllowed";
 
 export const FormPageWrapper = () => {
   const { formPath } = useParams();
   const [status, setStatus] = useState("LOADING");
   const [form, setForm] = useState();
+  const { submissionMethod } = useAppConfig();
 
   useEffect(() => {
     httpFyllut
@@ -30,17 +33,10 @@ export const FormPageWrapper = () => {
       headerObj?.setAttribute("content", metaPropValue);
     };
 
-    if (form?.title) {
-      document.title = `${form.title} | www.nav.no`;
-      setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
-    }
-
-    for (let i = 0; i < form?.components.length; i++) {
-      if (form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")) {
-        const descriptionTxt = form?.components[i]?.components?.find((j) => j.key === "beskrivelsetekst")?.content;
-        setHeaderProp(metaNameDescr, descriptionTxt);
-        setHeaderProp(metaNameOgDescr, descriptionTxt);
-        break;
+    if (form) {
+      if (form.title) {
+        document.title = `${form.title} | www.nav.no`;
+        setHeaderProp(metaPropOgTitle, `${form.title} | www.nav.no`);
       }
     }
 
@@ -58,6 +54,10 @@ export const FormPageWrapper = () => {
 
   if (status === "FORM NOT FOUND" || !form) {
     return <PageNotFound />;
+  }
+
+  if (submissionMethod && !navFormUtils.isSubmissionMethodAllowed(submissionMethod, form)) {
+    return <SubmissionMethodNotAllowed submissionMethod={submissionMethod} />;
   }
 
   return <FormPage form={form} />;

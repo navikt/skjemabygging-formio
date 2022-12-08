@@ -6,9 +6,23 @@ function getPropertyFromComponent(comp, properties) {
 }
 
 function componentMatchesSearchFilters(component, searchFilters) {
-  return Object.keys(searchFilters).every(
-    (property) => getPropertyFromComponent(component, property.split(".")) === searchFilters[property]
-  );
+  return searchFilters.every(({ key, value, operator }) => {
+    switch (operator) {
+      case "exists":
+        return !!getPropertyFromComponent(component, key.split("."));
+      case "n_exists":
+        return !getPropertyFromComponent(component, key.split("."));
+      case "contains":
+        return getPropertyFromComponent(component, key.split("."))?.includes(value);
+      case "n_contains":
+        return !getPropertyFromComponent(component, key.split("."))?.includes(value);
+      case "n_eq":
+        return getPropertyFromComponent(component, key.split(".")) !== value;
+      case "eq":
+      default:
+        return getPropertyFromComponent(component, key.split(".")) === value;
+    }
+  });
 }
 
 export { getPropertyFromComponent, componentMatchesSearchFilters };

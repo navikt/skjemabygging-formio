@@ -1,12 +1,14 @@
 import { makeStyles, styled } from "@material-ui/styles";
+import { Accordion } from "@navikt/ds-react";
 import {
   Component,
-  createFormSummaryObject,
+  formSummaryUtil,
   InnsendingType,
   NavFormType,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
+import Lenke from "nav-frontend-lenker";
 import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
@@ -15,9 +17,8 @@ import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
-import { navCssVariables } from "../util/navCssVariables";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
-import { FormTitle } from "./components/FormTitle";
+import FormStepper from "./components/FormStepper";
 
 type LabelValue = {
   label: string;
@@ -68,7 +69,7 @@ const FormSummaryFieldset: FunctionComponent<LabelComponents> = ({ label, compon
   <>
     <dt>{label}</dt>
     <dd>
-      <dl className="margin-left-default">
+      <dl className="component-collection">
         <ComponentSummary components={components} />
       </dl>
     </dd>
@@ -114,30 +115,36 @@ const ImageSummary: FunctionComponent<ImageComp> = ({ label, value, alt, widthPe
 };
 
 const panelStyles = makeStyles({
-  header: {
-    display: "grid",
+  link: {
+    display: "block",
+    marginBottom: "2rem",
   },
 });
 
 const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, formUrl, path }) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const { header } = panelStyles();
+  const { link } = panelStyles();
   return (
-    <section className="margin-bottom-default wizard-page">
-      <div className={header}>
-        <Systemtittel tag="h3" className="margin-bottom-default">
-          {label}
-        </Systemtittel>
-        <Link to={{ pathname: `${formUrl}/${path}`, search }} className="lenke margin-bottom-default">
-          <span>
-            {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
-          </span>
-        </Link>
-      </div>
-      <dl>
-        <ComponentSummary components={components} formUrl={formUrl} />
-      </dl>
+    <section>
+      <Accordion>
+        <Accordion.Item defaultOpen={true}>
+          <Accordion.Header>
+            {" "}
+            <Systemtittel tag="h3">{label}</Systemtittel>
+          </Accordion.Header>
+          <Accordion.Content>
+            <Link to={{ pathname: `${formUrl}/${path}`, search }} className={link}>
+              <span>
+                {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
+              </span>
+            </Link>
+            <dl>
+              <ComponentSummary components={components} formUrl={formUrl} />
+            </dl>
+          </Accordion.Content>
+        </Accordion.Item>
+      </Accordion>
     </section>
   );
 };
@@ -167,7 +174,7 @@ const ComponentSummary = ({ components, formUrl = "" }) => {
 const FormSummary = ({ form, formUrl, submission }) => {
   const { translate } = useLanguages();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-  const formSummaryObject = createFormSummaryObject(form, submission, translate);
+  const formSummaryObject = formSummaryUtil.createFormSummaryObject(form, submission, translate);
   if (formSummaryObject.length === 0) {
     return null;
   }
@@ -182,7 +189,7 @@ export interface Props {
 }
 
 function getUrlToLastPanel(form, formUrl, submission) {
-  const formSummary = createFormSummaryObject(form, submission);
+  const formSummary = formSummaryUtil.createFormSummaryObject(form, submission);
   const lastPanel = formSummary[formSummary.length - 1];
   const lastPanelSlug = lastPanel?.key;
   if (!lastPanelSlug) {
@@ -192,7 +199,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 }
 
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { loggSkjemaStegFullfort } = useAmplitude();
   const { translate } = useLanguages();
@@ -203,87 +210,80 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
-  const innsending: InnsendingType | undefined = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
+  const linkBtStyle = {
+    textDecoration: "none",
+  };
 
   return (
     <SummaryContent>
-      <FormTitle form={form} className="margin-bottom-double" />
-      <main id="maincontent" tabIndex={-1}>
-        <Innholdstittel tag="h2" className="margin-bottom-default">
-          {translate(TEXTS.statiske.summaryPage.title)}
-        </Innholdstittel>
-        <Normaltekst className="margin-bottom-default">
-          {translate(TEXTS.statiske.summaryPage.description, {
-            editAnswers: TEXTS.grensesnitt.summaryPage.editAnswers,
-          })}
-        </Normaltekst>
-        <FormSummary submission={submission} form={form} formUrl={formUrl} />
-        {/* <AlertStripe type="advarsel">{translate(TEXTS.statiske.warningAboutDifficultSubmission.alert)}</AlertStripe> */}
-        <nav className="list-inline">
-          <div className="list-inline-item">
-            <Link
-              className="btn btn-secondary btn-wizard-nav-previous"
-              to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
-            >
-              {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-            </Link>
+      <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
+        <div className="main-col">
+          <Innholdstittel tag="h2" className="margin-bottom-default">
+            {translate(TEXTS.statiske.summaryPage.title)}
+          </Innholdstittel>
+          <Normaltekst className="margin-bottom-default">
+            {translate(TEXTS.statiske.summaryPage.description)}
+          </Normaltekst>
+          <div className="form-summary">
+            <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
-          {submissionMethod !== "digital" && (innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-            <div className="list-inline-item">
+          <nav className="form-nav">
+            {(submissionMethod === "paper" ||
+              innsending === "KUN_PAPIR" ||
+              (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
               <Link
-                className={`btn ${
-                  innsending === "KUN_PAPIR"
-                    ? "btn-primary btn-wizard-nav-next"
-                    : "btn-secondary btn-wizard-nav-previous"
-                }`}
+                className="navds-button navds-button--primary"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
               >
-                {innsending === "KUN_PAPIR" || submissionMethod === "paper"
-                  ? translate(TEXTS.grensesnitt.moveForward)
-                  : translate(TEXTS.grensesnitt.summaryPage.continueToPostalSubmission)}
+                <span aria-live="polite" className="navds-label">
+                  {translate(TEXTS.grensesnitt.moveForward)}
+                </span>
               </Link>
-            </div>
-          )}
-          {submissionMethod !== "paper" && (innsending === "KUN_DIGITAL" || innsending === "PAPIR_OG_DIGITAL") && (
-            <div className="list-inline-item">
-              {submissionMethod === "digital" ? (
-                <DigitalSubmissionButton
-                  form={form}
-                  submission={submission}
-                  translations={translations}
-                  onError={(err) => setErrorMessage(err.message)}
-                />
-              ) : (
-                <Link
-                  className="btn btn-primary btn-wizard-nav-next wizard-button"
-                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                  to={{
-                    pathname: `${formUrl}/${submissionMethod === "digital" ? "send-inn" : "forbered-innsending"}`,
-                    search,
-                    state: { previousPage: url },
-                  }}
-                >
-                  {innsending === "KUN_DIGITAL"
-                    ? translate(TEXTS.grensesnitt.moveForward)
-                    : translate(TEXTS.grensesnitt.summaryPage.continueToDigitalSubmission)}
-                </Link>
-              )}
-            </div>
-          )}
-          {innsending === "INGEN" && (
-            <div className="list-inline-item">
+            )}
+            {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
+              <DigitalSubmissionButton
+                form={form}
+                submission={submission}
+                translations={translations}
+                onError={(err) => setErrorMessage(err.message)}
+              />
+            )}
+            {innsending === "INGEN" && (
               <Link
-                className="btn btn-primary btn-wizard-nav-next"
+                className="navds-button navds-button--primary"
                 onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                 to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
               >
-                {translate(TEXTS.grensesnitt.moveForward)}
+                <span aria-live="polite" className="navds-label">
+                  {translate(TEXTS.grensesnitt.moveForward)}
+                </span>
               </Link>
-            </div>
+            )}
+            <Link
+              className="navds-button navds-button--secondary"
+              to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+            >
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
+              </span>
+            </Link>
+            <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
+              <span aria-live="polite" className="navds-label">
+                {translate(TEXTS.grensesnitt.navigation.cancel)}
+              </span>
+            </Lenke>
+          </nav>
+          {errorMessage && (
+            <AlertStripe data-testid="error-message" type="feil">
+              {errorMessage}
+            </AlertStripe>
           )}
-        </nav>
-        {errorMessage && <AlertStripe type="feil">{errorMessage}</AlertStripe>}
+        </div>
+        <aside className="right-col">
+          <FormStepper form={form} formUrl={formUrl} submission={submission} />
+        </aside>
       </main>
     </SummaryContent>
   );
@@ -293,11 +293,19 @@ const SummaryContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-
-  "& .data-grid__row": {
-    border: `1px solid ${navCssVariables.navGra60}`,
-    borderRadius: "7px",
-    marginBottom: "1rem",
-    padding: "1.5rem 2rem 0",
+  "& .data-grid__row": {},
+  "& dt:not(.component-collection  dt):not(.data-grid__row  dt)": {
+    fontSize: "1.2rem",
+    marginTop: "2rem",
+  },
+  "& .component-collection, & .data-grid__row": {
+    borderLeft: "4px solid #368da8",
+    backgroundColor: "#e6f1f8",
+    padding: "0.75rem 1rem",
+    margin: "0.375rem 0",
+  },
+  "& .form-summary": {
+    paddingTop: "2rem",
+    paddingBottom: "3.75rem",
   },
 });

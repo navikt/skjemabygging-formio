@@ -1,28 +1,9 @@
 import merge from "lodash.merge";
-import { navCssVariables } from "../../util/navCssVariables";
-
-const wizardSidevelgerStyles = {
-  "& .pagination": {
-    display: "flex",
-    justifyContent: "center",
-    padding: "3rem 0 1rem 0",
-  },
-
-  "& .stegindikator": {
-    margin: "3rem",
-  },
-
-  "& .stegindikator__steg-inner--aktiv .stegindikator__steg-num": {
-    minWidth: "2rem",
-    width: "auto",
-    padding: "0 0.5rem",
-  },
-};
 
 const allFieldsStyles = {
   "& .form-group:not(.formio-hidden)": {
     clear: "both",
-    marginBottom: "2rem",
+    marginBottom: "2.5rem",
   },
 };
 
@@ -35,19 +16,40 @@ const fieldsSideBySideStyles = {
   },
 };
 
-const dataGridStyles = {
-  "& .data-grid__row": {
-    border: `1px solid ${navCssVariables.navGra60}`,
-    borderRadius: "7px",
-    marginBottom: "1rem",
-    padding: "1.5rem 2rem 0",
-
-    "& .knapp--fjern": {
-      marginBottom: "1.5rem",
+const componentCollectionStyles = {
+  "& .skjemagruppe__content, & .data-grid__row ": {
+    borderLeft: "4px solid #368da8",
+    backgroundColor: "#e6f1f8",
+    padding: "0.75rem 1rem",
+    margin: "0.375rem 0",
+    "& .data-grid__row": {
+      backgroundColor: "#cce2f0",
+    },
+    "& .skjemagruppe__content": {
+      borderLeft: "0",
+      paddingLeft: "0",
+      backgroundColor: "transparent",
     },
   },
-  "& .data-grid__row > .skjemagruppe__legend": {
-    float: "left",
+  "& .skjemagruppe__content": {
+    "& .formio-component:not(.formio-hidden):last-of-type": {
+      marginBottom: "0.75rem",
+    },
+  },
+  "& .data-grid__row": {
+    marginBottom: "1rem",
+    "& div:last-of-type .formio-component:not(.formio-hidden):last-of-type": {
+      marginBottom: "0.75rem",
+    },
+    "& .knapp--fjern": {
+      justifyContent: "start",
+      minWidth: "initial",
+    },
+  },
+  "& .datagrid-add-remove-row": {
+    display: "flex",
+    flexDirection: "row",
+    gap: "1rem",
   },
 };
 
@@ -103,12 +105,25 @@ const styles = {
     },
 };
 
+const radioStyles = {
+  "& .navds-radio-group": {
+    "& .navds-fieldset__legend": {
+      fontSize: "var(--navds-font-size-large)",
+      fontWeight: "var(--navds-font-weight-bold)",
+      lineHeight: "var(--navds-font-line-height-large)",
+      letterSpacing: "0",
+      margin: "0",
+    },
+  },
+};
+
 const navFormStyle = merge(
   styles,
-  wizardSidevelgerStyles,
   fieldsSideBySideStyles,
   allFieldsStyles,
-  dataGridStyles,
-  errorValidationStyles
+  errorValidationStyles,
+  componentCollectionStyles,
+  errorValidationStyles,
+  radioStyles
 );
 export default navFormStyle;

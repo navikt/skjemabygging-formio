@@ -3,7 +3,7 @@ import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
 import Column from "../components/layout/Column";
@@ -11,13 +11,19 @@ import UserFeedback from "../components/UserFeedback";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
 import BulkPublishPanel from "./components/BulkPublishPanel";
 import ConfirmMigration from "./components/ConfirmMigration";
+import FormEditInput from "./components/FormEditInput";
 import MigrationDryRunResults from "./components/MigrationDryRunResults";
-import MigrationOptionsForm, { useMigrationOptions } from "./components/MigrationOptionsForm";
+import MigrationOptionsForm from "./components/MigrationOptionsForm";
+import { reducer } from "./components/MigrationOptionsForm.reducer";
+import SearchFilterInput from "./components/SearchFilterInput";
 import {
+  createEditOptions,
+  createSearchFiltersFromParams,
   createUrlParams,
   getMigrationResultsMatchingSearchFilters,
   getUrlParamMap,
   migrationOptionsAsMap,
+  searchFiltersAsParams,
 } from "./utils";
 
 const useStyles = makeStyles({
@@ -44,6 +50,16 @@ const useStyles = makeStyles({
   hasMarginLeft: {
     marginLeft: "1rem",
   },
+  searchFilterInputs: {
+    display: "grid",
+    gridTemplateColumns: "3fr 1fr 3fr",
+    gap: "0.25rem 1rem",
+  },
+  formEditInputs: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "0.25rem 1rem",
+  },
 });
 
 const MigrationPage = () => {
@@ -61,12 +77,16 @@ const MigrationPage = () => {
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
 
-  const [searchFilters, dispatchSearchFilters] = useMigrationOptions(getUrlParamMap(params, "searchFilters"));
-  const [editOptions, dispatchEditOptions] = useMigrationOptions(getUrlParamMap(params, "editOptions"));
+  const [searchFilters, dispatchSearchFilters] = useReducer(reducer, {}, () =>
+    createSearchFiltersFromParams(getUrlParamMap(params, "searchFilters"))
+  );
+  const [editInputs, dispatchEditInputs] = useReducer(reducer, {}, () =>
+    createEditOptions(getUrlParamMap(params, "editOptions"))
+  );
 
   const onSearch = async () => {
     setIsLoading(true);
-    const results = await runMigrationDryRun(searchFilters, editOptions);
+    const results = await runMigrationDryRun(searchFilters, editInputs);
     const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
     setDryRunSearchResults({
       dryRunSearchResults,
@@ -93,13 +113,13 @@ const MigrationPage = () => {
     );
 
     setIsLoading(false);
-    history.push(createUrlParams(searchFilters, editOptions));
+    history.push(createUrlParams(searchFilters, editInputs));
   };
 
   const onConfirm = async () => {
     const updatedForms = await runMigrationWithUpdate(Formiojs.getToken(), {
-      searchFilters: migrationOptionsAsMap(searchFilters),
-      editOptions: migrationOptionsAsMap(editOptions),
+      searchFilters: searchFiltersAsParams(searchFilters),
+      editOptions: migrationOptionsAsMap(editInputs),
       include: selectedToMigrate,
     });
     setMigratedForms(updatedForms);
@@ -125,18 +145,29 @@ const MigrationPage = () => {
             await onSearch();
           }}
         >
-          <MigrationOptionsForm
-            title="Filtrer"
-            addRowText="Legg til filtreringsvalg"
-            state={searchFilters}
-            dispatch={dispatchSearchFilters}
-          />
+          <MigrationOptionsForm title="Filtrer" addRowText="Legg til filtreringsvalg" dispatch={dispatchSearchFilters}>
+            <div className={styles.searchFilterInputs}>
+              {Object.keys(searchFilters).map((id) => (
+                <SearchFilterInput
+                  key={id}
+                  id={id}
+                  searchFilter={searchFilters[id]}
+                  dispatch={dispatchSearchFilters}
+                ></SearchFilterInput>
+              ))}
+            </div>
+          </MigrationOptionsForm>
           <MigrationOptionsForm
             title="Sett opp felter som skal migreres og ny verdi for feltene"
             addRowText="Legg til felt som skal endres"
-            state={editOptions}
-            dispatch={dispatchEditOptions}
-          />
+            dispatch={dispatchEditInputs}
+          >
+            <div className={styles.formEditInputs}>
+              {Object.keys(editInputs).map((id) => (
+                <FormEditInput key={id} id={id} formEdit={editInputs[id]} dispatch={dispatchEditInputs}></FormEditInput>
+              ))}
+            </div>
+          </MigrationOptionsForm>
 
           <div className={styles.hasMarginBottom}>
             <Knapp type="hoved" spinner={isLoading}>
@@ -182,7 +213,7 @@ const MigrationPage = () => {
                   dryRunResults={dryRunSearchResults}
                   selectedPaths={selectedToMigrate}
                   getPreviewUrl={(formPath) =>
-                    `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editOptions)}`
+                    `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editInputs)}`
                   }
                 />
               </>

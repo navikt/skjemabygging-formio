@@ -47,5 +47,5 @@ Cypress.Commands.add("clickNextStep", () => {
 });
 
 Cypress.Commands.add("clickStart", () => {
-  return cy.findByRoleWhenAttached("button", { name: "Start" }).click();
+  return cy.findByRoleWhenAttached("link", { name: "Start" }).click();
 });

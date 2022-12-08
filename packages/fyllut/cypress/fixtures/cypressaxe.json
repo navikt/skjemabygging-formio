@@ -5601,7 +5601,7 @@
   "properties": {
     "skjemanummer": "cypress-axe",
     "tema": "",
-    "innsending": "PAPIR_OG_DIGITAL",
+    "innsending": "KUN_PAPIR",
     "hasLabeledSignatures": false,
     "signatures": {
       "signature1": "",

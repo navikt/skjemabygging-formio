@@ -1,3 +1,4 @@
+import { Component, InnsendingType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import nock from "nock";
 import request from "supertest";
 import { createApp } from "./app";
@@ -5,10 +6,149 @@ import { config } from "./config/config";
 import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from "./test/testHelpers";
 
 jest.mock("./logger.js");
+jest.mock("./dekorator.js", () => ({
+  getDecorator: () => {},
+  createRedirectUrl: () => "",
+}));
 
-const { sendInnConfig, tokenx: tokenxConfig } = config;
+const { sendInnConfig, tokenx: tokenxConfig, formioProjectUrl } = config;
 
 describe("app", () => {
+  describe("index.html", () => {
+    function createFormDefinition(innsending?: InnsendingType) {
+      return {
+        title: "Søknad om testhund",
+        path: "testform001",
+        properties: {
+          innsending: innsending,
+        },
+        components: [] as Component[],
+      } as NavFormType;
+    }
+
+    it("Renders index.html", async () => {
+      await request(createApp()).get("/fyllut/").expect(200);
+    });
+
+    it("Renders index.html even if form is not found", async () => {
+      nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, []);
+
+      const res = await request(createApp()).get("/fyllut/testform001");
+      expect(res.status).toEqual(200);
+    });
+
+    afterEach(() => {
+      expect(nock.isDone()).toBe(true);
+    });
+
+    describe("Query param 'form'", () => {
+      it("redirects with value of query param form in path", async () => {
+        const res = await request(createApp()).get("/fyllut/?form=testform001").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001");
+      });
+
+      it("redirects and includes other query params", async () => {
+        const res = await request(createApp()).get("/fyllut/?form=testform001&lang=en&sub=digital").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?lang=en&sub=digital");
+      });
+    });
+
+    describe("Form property 'innsending'", () => {
+      describe("innsending KUN_PAPIR", () => {
+        it("renders index.html when query param sub is missing", async () => {
+          const testform001 = createFormDefinition("KUN_PAPIR");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001").expect(200);
+          expect(res.get("location")).toBeUndefined();
+        });
+
+        it("renders index.html when query param sub is paper", async () => {
+          const testform001 = createFormDefinition("KUN_PAPIR");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?sub=paper").expect(200);
+          expect(res.get("location")).toBeUndefined();
+        });
+      });
+
+      describe("innsending KUN_DIGITAL", () => {
+        it("redirects with query param sub=digital when it is missing", async () => {
+          const testform001 = createFormDefinition("KUN_DIGITAL");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?lang=en").expect(302);
+          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en&sub=digital");
+        });
+
+        it("renders index.html when query param sub is digital", async () => {
+          const testform001 = createFormDefinition("KUN_DIGITAL");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?sub=digital").expect(200);
+          expect(res.get("location")).toBeUndefined();
+        });
+      });
+
+      describe("innsending INGEN", () => {
+        it("redirects without query param sub if paper", async () => {
+          const testform001 = createFormDefinition("INGEN");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?lang=en&sub=paper").expect(302);
+          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+        });
+      });
+
+      describe("invalid query param sub", () => {
+        it("redirects without query param sub if blabla", async () => {
+          const testform001 = createFormDefinition("KUN_PAPIR");
+          nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+          const res = await request(createApp()).get("/fyllut/testform001?lang=en&sub=blabla").expect(302);
+          expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+        });
+      });
+
+      describe.each(["PAPIR_OG_DIGITAL", undefined])("innsending %s", (innsending) => {
+        describe("query param sub is missing", () => {
+          it("redirects to intropage and keeps other query params", async () => {
+            const testform001 = createFormDefinition(innsending as InnsendingType);
+            nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+            const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en").expect(302);
+            expect(res.get("location")).toEqual("/fyllut/testform001?lang=en");
+          });
+
+          it("does not redirect when intropage is requested (avoiding circular redirects)", async () => {
+            const testform001 = createFormDefinition(innsending as InnsendingType);
+            nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+            const res = await request(createApp()).get("/fyllut/testform001").expect(200);
+            expect(res.get("location")).toBeUndefined();
+          });
+        });
+
+        describe("query param sub is present", () => {
+          it("does not redirect to intropage when sub=digital", async () => {
+            const testform001 = createFormDefinition(innsending as InnsendingType);
+            nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+            const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en&sub=digital").expect(200);
+            expect(res.get("location")).toBeUndefined();
+          });
+          it("does not redirect to intropage when sub=paper", async () => {
+            const testform001 = createFormDefinition(innsending as InnsendingType);
+            nock(formioProjectUrl!).get("/form?type=form&tags=nav-skjema&path=testform001").reply(200, [testform001]);
+
+            const res = await request(createApp()).get("/fyllut/testform001/panel1?lang=en&sub=paper").expect(200);
+            expect(res.get("location")).toBeUndefined();
+          });
+        });
+      });
+    });
+  });
+
   it("Fetches config", async () => {
     await request(createApp())
       .get("/fyllut/api/config")

@@ -14,7 +14,6 @@ export type SkjemabyggingProxyConfig = {
 export type PublishRepoConfig = {
   name: string;
   token: string;
-  submoduleName: string;
   owner: string;
   base: string;
 };

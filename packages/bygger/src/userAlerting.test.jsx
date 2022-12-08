@@ -68,31 +68,23 @@ describe("userAlerting", () => {
 
   describe("pusher messages", () => {
     const pusherMessage = {
-      skjemapublisering: {
-        commitUrl: "nav123456",
-        skjematittel: "Et testskjema",
-      },
+      title: "Tittel",
+      message: "En beskjed",
     };
 
     it("subscribes on mount", () => {
-      expect(Object.keys(channelSubscriptions)).toEqual([
-        "skjemautfyller-deployed",
-        "fyllut-deployment",
-        "build-aborted",
-        "publish-aborted",
-        "publish-resource-aborted",
-      ]);
+      expect(Object.keys(channelSubscriptions)).toEqual(["fyllut-deployment"]);
     });
 
-    it("renders pusher message skjemaufyller-deployed", () => {
+    it("renders success pusher message fyllut-deployment", () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
-      act(() => channelSubscriptions["skjemautfyller-deployed"]["publication"](pusherMessage));
+      act(() => channelSubscriptions["fyllut-deployment"]["success"](pusherMessage));
       expect(hookResult.result.current.alertComponent()).not.toBeNull();
     });
 
-    it("renders pusher message build-aborted", () => {
+    it("renders failure pusher message fyllut-deployment", () => {
       expect(hookResult.result.current.alertComponent()).toBeNull();
-      act(() => channelSubscriptions["build-aborted"]["publication"](pusherMessage));
+      act(() => channelSubscriptions["fyllut-deployment"]["failure"](pusherMessage));
       expect(hookResult.result.current.alertComponent()).not.toBeNull();
     });
   });

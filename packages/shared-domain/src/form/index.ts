@@ -70,6 +70,10 @@ export interface Component {
   otherDocumentation?: boolean;
 }
 
+export interface Panel extends Component {
+  title: string;
+}
+
 export interface ComponentValidate {
   custom?: string;
   json?: string;

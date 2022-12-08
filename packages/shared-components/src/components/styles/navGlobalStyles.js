@@ -1,9 +1,9 @@
-import { navCssVariables } from "../../util/navCssVariables";
+import stepperStyles from "./stepperStyles.js";
 
 export const globalStyles = {
   body: {
     margin: 0,
-    backgroundColor: navCssVariables.navGraBakgrunn,
+    backgroundColor: "#ffffff",
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -49,12 +49,24 @@ export const globalStyles = {
   "main:focus": {
     outline: "none",
   },
+  ".fyllut-layout": {
+    "@media screen and (min-width: 40rem)": {
+      display: "grid",
+      gap: "3rem",
+      gridTemplateColumns: "minmax(20rem, 2fr) minmax(15rem, 1fr)",
+      margin: "0 auto",
+    },
+  },
+  ".nav-form > .alert.alert-danger": {
+    "@media screen and (min-width: 40rem)": {
+      maxWidth: "608px",
+    },
+  },
+  ...stepperStyles,
 };
 
 export const appStyles = {
   "& .wizard-page": {
-    borderRadius: "0.25rem",
-    background: "#fff",
-    padding: "1rem",
+    paddingBottom: "3.75rem",
   },
 };

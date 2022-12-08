@@ -3,6 +3,7 @@ export type ParsedInput = number | string | boolean | null | object | Array;
 export interface MigrationOption {
   key: string;
   value: ParsedInput;
+  operator?: Operator;
 }
 
 export interface MigrationOptions {

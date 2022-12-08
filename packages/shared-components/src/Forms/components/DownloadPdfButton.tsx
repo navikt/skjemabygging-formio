@@ -8,11 +8,10 @@ interface Props {
   actionUrl: string;
   label: string;
   onClick: MouseEventHandler<HTMLInputElement>;
-  classNames: string;
   translations: { [key: string]: string } | {};
 }
 
-const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, classNames, translations }: Props) => {
+const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, translations }: Props) => {
   const { currentLanguage } = useLanguages();
   const { config = {} } = useAppConfig();
   const translationsForPDF = currentLanguage !== "nb-NO" ? translations[currentLanguage] : {};
@@ -31,7 +30,13 @@ const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, classN
         />
       </form>
       <div>
-        <input form={form.path} className={classNames} onClick={onClick} type="submit" value={label} />
+        <input
+          form={form.path}
+          className="navds-button navds-button--primary navds-label"
+          onClick={onClick}
+          type="submit"
+          value={label}
+        />
       </div>
     </>
   );

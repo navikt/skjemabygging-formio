@@ -8,7 +8,6 @@ import {
   mockRepoGetRef,
   mockRepoHasBranchChanged,
   mockRepoMergePullRequest,
-  mockRepoUpdateSubmodule,
 } from "../__mocks__/GitHubRepo";
 import { stringTobase64 } from "./fetchUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
@@ -32,7 +31,6 @@ describe("Backend", () => {
         hasBranchChanged: mockRepoHasBranchChanged,
         getFileIfItExists: mockRepoGetFileIfItExists,
         createOrUpdateFileContents: mockRepoCreateOrUpdateFileContents,
-        updateSubmodule: mockRepoUpdateSubmodule,
         createPullRequest: mockRepoCreatePullRequest,
         mergePullRequest: mockRepoMergePullRequest,
       };
@@ -52,7 +50,6 @@ describe("Backend", () => {
     mockRepoDeleteRef.mockClear();
     mockRepoHasBranchChanged.mockClear();
     mockRepoGetFileIfItExists.mockClear();
-    mockRepoUpdateSubmodule.mockClear();
     mockRepoCreateOrUpdateFileContents.mockClear();
     mockRepoCreatePullRequest.mockClear();
     mockRepoMergePullRequest.mockClear();
@@ -131,14 +128,11 @@ describe("Backend", () => {
         await backend.publishForm({ title: "Form" }, { en: {} }, formPath);
       });
 
-      it("updates submodule", () => {
-        expect(mockRepoUpdateSubmodule).toHaveBeenCalledTimes(1);
-        expect(mockRepoUpdateSubmodule).toHaveBeenCalledWith(
-          expectedBranchName,
-          "publish-repo-git-sha",
-          "submodule-repo",
-          "oppdater monorepo ref: publish-repo-git-sha"
-        );
+      it("updates monorepo ref", () => {
+        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(3);
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("forms/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("translations/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[2][1]).toEqual("MONOREPO");
       });
 
       it("creates a pull request", () => {
@@ -164,8 +158,10 @@ describe("Backend", () => {
         await backend.publishForm({ title: "Form" }, { en: {} }, formPath);
       });
 
-      it("does not update submodule", () => {
-        expect(mockRepoUpdateSubmodule).toHaveBeenCalledTimes(0);
+      it("does not update monorepo ref", () => {
+        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("forms/skjema.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("translations/skjema.json");
       });
 
       it("does not merge the pull request", () => {
@@ -210,14 +206,10 @@ describe("Backend", () => {
         );
       });
 
-      it("updates submodule", () => {
-        expect(mockRepoUpdateSubmodule).toHaveBeenCalledTimes(1);
-        expect(mockRepoUpdateSubmodule).toHaveBeenCalledWith(
-          expectedBranchName,
-          "publish-repo-git-sha",
-          "submodule-repo",
-          "oppdater monorepo ref: publish-repo-git-sha"
-        );
+      it("updates monorepo ref", () => {
+        expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledTimes(2);
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[0][1]).toEqual("resources/settings.json");
+        expect(mockRepoCreateOrUpdateFileContents.mock.calls[1][1]).toEqual("MONOREPO");
       });
 
       it("deletes the branch", () => {

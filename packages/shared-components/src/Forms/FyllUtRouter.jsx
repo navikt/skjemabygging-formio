@@ -6,19 +6,23 @@ import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
+import { FormTitle } from "./components/FormTitle.tsx";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
-import { PrepareSubmitPage } from "./PrepareSubmitPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.tsx";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
-  maxWidth: "800px",
+  maxWidth: "960px",
+  padding: "2rem 0",
   ...bootstrapStyles,
+  "@media screen and (max-width: 992px)": {
+    padding: "1rem",
+  },
 });
 
 const ALERT_MESSAGE_BACK_BUTTON =
@@ -44,8 +48,12 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
+      <FormTitle form={form} />
       <FyllUtContainer>
-        {featureToggles.enableTranslations && <LanguageSelector />}
+        <div className="fyllut-layout">
+          <div className="main-col"></div>
+          <div className="right-col">{featureToggles.enableTranslations && <LanguageSelector />}</div>
+        </div>
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>
@@ -69,18 +77,6 @@ const FyllUtRouter = ({ form, translations }) => {
             <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <PrepareLetterPage
-                  form={form}
-                  submission={submissionObject}
-                  formUrl={formBaseUrl}
-                  translations={translations}
-                />
-              )}
-            </SubmissionWrapper>
-          </Route>
-          <Route path={`${path}/forbered-innsending`}>
-            <SubmissionWrapper submission={submission} url={formBaseUrl}>
-              {(submissionObject) => (
-                <PrepareSubmitPage
                   form={form}
                   submission={submissionObject}
                   formUrl={formBaseUrl}
