@@ -1,27 +1,26 @@
-import Select from "formiojs/components/select/Select";
-import selectEditForm from "formiojs/components/select/Select.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
+import NavSelect from "./NavSelect";
 
-class CountrySelect extends Select {
+class CountrySelect extends NavSelect {
   static get builderInfo() {
     return {
       title: "Landvelger",
       key: "landvelger",
       group: "person",
       icon: "th-list",
-      schema: FormBuilderOptions.builder.person.components.landvelger.schema,
+      schema: CountrySelect.schema(),
     };
   }
 
   static schema(...extend) {
-    return Select.schema({
+    return NavSelect.schema({
       ...FormBuilderOptions.builder.person.components.landvelger.schema,
       ...extend,
     });
   }
 
   static editForm(...extend) {
-    return selectEditForm([
+    return NavSelect.editForm([
       {
         key: "data",
         components: [
