@@ -222,9 +222,11 @@ const MigrationPage = () => {
                   dryRunResults={dryRunSearchResults}
                   onConfirm={onConfirm}
                 />
-                <div className={styles.pagination}>
-                  <Pagination page={currentPage} onPageChange={setCurrentPage} count={totalNumberOfPages} />
-                </div>
+                {totalNumberOfPages > 1 && (
+                  <div className={styles.pagination}>
+                    <Pagination page={currentPage} onPageChange={setCurrentPage} count={totalNumberOfPages} />
+                  </div>
+                )}
                 <MigrationDryRunResults
                   onChange={setSelectedToMigrate}
                   dryRunResults={resultsForCurrentPage}
@@ -233,9 +235,11 @@ const MigrationPage = () => {
                     `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editInputs)}`
                   }
                 />
-                <div className={styles.pagination}>
-                  <Pagination page={currentPage} onPageChange={setCurrentPage} count={totalNumberOfPages} />
-                </div>
+                {totalNumberOfPages > 1 && (
+                  <div className={styles.pagination}>
+                    <Pagination page={currentPage} onPageChange={setCurrentPage} count={totalNumberOfPages} />
+                  </div>
+                )}
               </>
             )}
           </>
