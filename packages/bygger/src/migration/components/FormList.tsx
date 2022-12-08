@@ -12,6 +12,10 @@ const useStyles = makeStyles({
   },
 });
 
+const isNavForm = (element: DryRunResult | NavFormType): element is NavFormType => {
+  return !!element["properties"];
+};
+
 export const FormList = ({
   heading,
   listElements,
@@ -36,13 +40,16 @@ export const FormList = ({
           </Table.Header>
           <Table.Body>
             {listElements.map((element, i) => {
-              const skjemanummer = element.skjemanummer ?? element.properties.skjemanummer;
+              const skjemanummer = isNavForm(element) ? element.properties.skjemanummer : element.skjemanummer;
               return (
                 <Table.Row key={i + skjemanummer}>
                   <Table.HeaderCell scope="row">{skjemanummer}</Table.HeaderCell>
                   <Table.DataCell>{element.name}</Table.DataCell>
                   <Table.DataCell>
-                    <FormStatus status={determineStatus(element)} size={"small"} />
+                    <FormStatus
+                      status={determineStatus(isNavForm(element) ? element.properties : element)}
+                      size={"small"}
+                    />
                   </Table.DataCell>
                 </Table.Row>
               );

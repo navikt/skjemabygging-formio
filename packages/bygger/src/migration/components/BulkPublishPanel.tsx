@@ -105,7 +105,9 @@ const BulkPublishPanel = ({ forms }: Props) => {
                   <Table.Row key={i + form.properties.skjemanummer}>
                     <Table.HeaderCell scope="row">{form.properties.skjemanummer}</Table.HeaderCell>
                     <Table.DataCell>{form.name}</Table.DataCell>
-                    <Table.DataCell>{<FormStatus status={determineStatus(form)} size={"small"} />}</Table.DataCell>
+                    <Table.DataCell>
+                      {<FormStatus status={determineStatus(form.properties)} size={"small"} />}
+                    </Table.DataCell>
                     <Table.DataCell className={styles.checkBoxCell}>
                       {
                         <Checkbox
