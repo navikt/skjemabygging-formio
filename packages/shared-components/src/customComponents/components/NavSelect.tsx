@@ -34,6 +34,8 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       ref={inputRef}
       className={component.fieldSize}
       styles={reactSelectStyles}
+      isClearable={true}
+      backspaceRemovesValue={true}
       onChange={(event, actionType) => {
         switch (actionType.action) {
           case "select-option":
@@ -42,6 +44,9 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
             setSelectedOption(selectedOption);
             onChange(selectedOption);
             break;
+          case "clear":
+            setSelectedOption("");
+            onChange("");
         }
       }}
     />
