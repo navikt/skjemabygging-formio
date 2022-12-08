@@ -1,5 +1,5 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useCallback, useEffect, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
 import { EditFormPage } from "./EditFormPage";
@@ -10,6 +10,7 @@ import { TestFormPage } from "./TestFormPage";
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
   let { url } = useRouteMatch();
   const { formPath } = useParams();
+  const [, setFormDiff] = useState(null);
   const [state, dispatch] = useReducer(
     formPageReducer,
     { status: "LOADING", hasUnsavedChanges: false },
@@ -30,6 +31,21 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         dispatch({ type: "form-not-found" });
       });
   }, [loadForm, formPath]);
+
+  useEffect(() => {
+    async function loadDiff() {
+      const response = await fetch(`/api/form/${formPath}/diff`, {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+      const diff = await response.json();
+      console.log("Form diff", diff);
+      return diff;
+    }
+    loadDiff().then(setFormDiff);
+  }, [formPath, setFormDiff]);
 
   const onChange = (changedForm) => {
     dispatch({ type: "form-changed", form: changedForm });
