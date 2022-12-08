@@ -1,9 +1,10 @@
 import { makeStyles } from "@material-ui/styles";
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { Pagination } from "@navikt/ds-react";
+import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
 import Column from "../components/layout/Column";
@@ -60,6 +61,11 @@ const useStyles = makeStyles({
     gridTemplateColumns: "1fr 1fr",
     gap: "0.25rem 1rem",
   },
+  pagination: {
+    display: "flex",
+    marginTop: "2rem",
+    justifyContent: "center",
+  },
 });
 
 const MigrationPage = () => {
@@ -73,6 +79,14 @@ const MigrationPage = () => {
     }>({});
   const [selectedToMigrate, setSelectedToMigrate] = useState<string[]>([]);
   const [migratedForms, setMigratedForms] = useState<NavFormType[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const MAX_ITEMS_PER_PAGE = 20;
+  const totalNumberOfPages = Math.ceil((dryRunSearchResults || []).length / MAX_ITEMS_PER_PAGE);
+  const resultsForCurrentPage = useMemo(
+    () => paginationUtils.retrieveRangeOfList(dryRunSearchResults || [], currentPage, MAX_ITEMS_PER_PAGE),
+    [dryRunSearchResults, currentPage]
+  );
 
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
@@ -208,14 +222,20 @@ const MigrationPage = () => {
                   dryRunResults={dryRunSearchResults}
                   onConfirm={onConfirm}
                 />
+                <div className={styles.pagination}>
+                  <Pagination page={currentPage} onPageChange={setCurrentPage} count={totalNumberOfPages} />
+                </div>
                 <MigrationDryRunResults
                   onChange={setSelectedToMigrate}
-                  dryRunResults={dryRunSearchResults}
+                  dryRunResults={resultsForCurrentPage}
                   selectedPaths={selectedToMigrate}
                   getPreviewUrl={(formPath) =>
                     `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editInputs)}`
                   }
                 />
+                <div className={styles.pagination}>
+                  <Pagination page={currentPage} onPageChange={setCurrentPage} count={totalNumberOfPages} />
+                </div>
               </>
             )}
           </>
