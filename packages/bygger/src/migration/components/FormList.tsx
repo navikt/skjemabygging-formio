@@ -36,9 +36,10 @@ export const FormList = ({
           </Table.Header>
           <Table.Body>
             {listElements.map((element, i) => {
+              const skjemanummer = element.skjemanummer ?? element.properties.skjemanummer;
               return (
-                <Table.Row key={i + element.skjemanummer}>
-                  <Table.HeaderCell scope="row">{element.skjemanummer}</Table.HeaderCell>
+                <Table.Row key={i + skjemanummer}>
+                  <Table.HeaderCell scope="row">{skjemanummer}</Table.HeaderCell>
                   <Table.DataCell>{element.name}</Table.DataCell>
                   <Table.DataCell>
                     <FormStatus status={determineStatus(element)} size={"small"} />
