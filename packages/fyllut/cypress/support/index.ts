@@ -32,6 +32,7 @@ declare global {
        */
       clickNextStep(): Chainable<JQuery<HTMLElement>>;
       clickStart(): Chainable<JQuery<HTMLElement>>;
+      checkLogToAmplitude(eventType: string): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
