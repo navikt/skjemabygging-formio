@@ -35,10 +35,14 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       className={component.fieldSize}
       styles={reactSelectStyles}
       onChange={(event, actionType) => {
-        const newValue = event.value;
-        const selectedOption = options.find((o) => o.value === newValue);
-        setSelectedOption(selectedOption);
-        onChange(selectedOption);
+        switch (actionType.action) {
+          case "select-option":
+            const newValue = event.value;
+            const selectedOption = options.find((o) => o.value === newValue);
+            setSelectedOption(selectedOption);
+            onChange(selectedOption);
+            break;
+        }
       }}
     />
   );
