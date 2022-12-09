@@ -40,6 +40,7 @@ import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
 import navFormUtils from "./utils/navFormUtils";
 import objectUtils from "./utils/objectUtils";
+import paginationUtils from "./utils/pagination";
 import signatureUtils from "./utils/signatureUtils";
 import stringUtils from "./utils/stringUtils";
 import validatorUtils from "./utils/validatorUtils";
@@ -60,6 +61,7 @@ export {
   validatorUtils,
   dateUtils,
   migrationUtils,
+  paginationUtils,
 };
 export type {
   FeatureTogglesMap,

@@ -2,7 +2,7 @@ import { Element } from "nav-frontend-typografi";
 import React from "react";
 import { languagesInNorwegian } from "../../context/i18n";
 import { useStatusStyles } from "./styles";
-import { Props } from "./types";
+import { PublishProperties } from "./types";
 
 const langCodeBokmal = "nb-NO";
 export const allLanguagesInNorwegian = {
@@ -10,10 +10,14 @@ export const allLanguagesInNorwegian = {
   [langCodeBokmal]: "Norsk bokmål",
 };
 
-const PublishedLanguages = ({ formProperties }: Props) => {
+interface Props {
+  publishProperties: PublishProperties;
+}
+
+const PublishedLanguages = ({ publishProperties }: Props) => {
   const styles = useStatusStyles();
-  if (formProperties.published && formProperties.publishedLanguages) {
-    const sortedLanguageCodes = [...formProperties.publishedLanguages, langCodeBokmal].sort();
+  if (publishProperties.published && publishProperties.publishedLanguages) {
+    const sortedLanguageCodes = [...publishProperties.publishedLanguages, langCodeBokmal].sort();
     return (
       <div className={styles.panelItem}>
         <Element>Publiserte språk:</Element>
