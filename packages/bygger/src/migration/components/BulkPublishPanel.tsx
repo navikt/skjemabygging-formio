@@ -123,7 +123,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                             }
                           }}
                         >
-                          Skal publiseres
+                          {form.name}
                         </Checkbox>
                       }
                     </Table.DataCell>
