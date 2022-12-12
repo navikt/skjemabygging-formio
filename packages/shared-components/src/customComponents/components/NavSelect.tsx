@@ -149,8 +149,12 @@ class NavSelect extends FormioReactComponent {
             }));
           })
           .catch((err) => {
-            // TODO feilhåndtering
-            console.error(`Error while loading select options: url=${dataUrl}, msg=${err.message}`);
+            this.emit("componentError", {
+              component,
+              message: err.toString(),
+            });
+            // @ts-ignore
+            console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
           })
           .finally(() => {
             this.isLoading = false;

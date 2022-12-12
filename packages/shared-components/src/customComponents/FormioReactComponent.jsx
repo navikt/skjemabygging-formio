@@ -67,6 +67,10 @@ export default class FormioReactComponent extends Field {
     this.input = input;
   }
 
+  emit(event, ...data) {
+    super.emit(event, ...data);
+  }
+
   /**
    * The second phase of component building where the component is rendered as an HTML string.
    *
