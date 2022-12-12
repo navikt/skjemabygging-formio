@@ -45,7 +45,6 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
 export default class NavDatepicker extends FormioReactComponent {
   isValid = this.errors.length === 0;
   reactElement = undefined;
-  input = null;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -332,12 +331,6 @@ export default class NavDatepicker extends FormioReactComponent {
       />,
       element
     );
-  }
-
-  focus() {
-    if (this.input) {
-      this.input.focus();
-    }
   }
 
   attachReact(element) {
