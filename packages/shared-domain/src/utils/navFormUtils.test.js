@@ -419,7 +419,20 @@ describe("navFormUtils", () => {
   });
 
   describe("removeVedleggspanel", () => {
-    it("removes vedleggspanel with key vedlegg", () => {
+    it("removes vedleggspanel with param isAttachmentPanel", () => {
+      const actualForm = removeVedleggspanel({
+        components: [
+          {
+            type: "panel",
+            key: "vedlegg",
+            isAttachmentPanel: true,
+          },
+        ],
+      });
+      expect(actualForm.components).toHaveLength(0);
+    });
+
+    it.skip("do not remove panel with key vedlegg", () => {
       const actualForm = removeVedleggspanel({
         components: [
           {
@@ -428,9 +441,10 @@ describe("navFormUtils", () => {
           },
         ],
       });
-      expect(actualForm.components).toHaveLength(0);
+      expect(actualForm.components).toHaveLength(1);
     });
-    it("removes vedleggspanel with key vedleggpanel", () => {
+
+    it.skip("do not remove panel with key vedleggpanel", () => {
       const actualForm = removeVedleggspanel({
         components: [
           {
@@ -439,7 +453,7 @@ describe("navFormUtils", () => {
           },
         ],
       });
-      expect(actualForm.components).toHaveLength(0);
+      expect(actualForm.components).toHaveLength(1);
     });
 
     describe("A form with a component that calculates value based on another", () => {
