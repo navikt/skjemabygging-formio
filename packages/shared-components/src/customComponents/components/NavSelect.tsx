@@ -1,4 +1,4 @@
-import { Component } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import selectEditForm from "formiojs/components/select/Select.form";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
@@ -8,6 +8,8 @@ import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
 import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
+
+const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 
 const reactSelectStyles = {
   control: (baseStyles, state) => ({
@@ -152,6 +154,10 @@ class NavSelect extends FormioReactComponent {
     return option && option.label ? { ...option, label: this.t(option.label) } : option;
   }
 
+  translateAriaLiveMessages(messages) {
+    return messages(this.t.bind(this));
+  }
+
   renderReact(element) {
     const component: Component = this.component as Component;
     if (component.dataSrc === "values") {
@@ -190,9 +196,9 @@ class NavSelect extends FormioReactComponent {
         options={this.translateOptionLabels(this.selectOptions)}
         label={this.t(component.label)}
         value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
-        ariaLiveMessages={ariaLiveMessages}
-        screenReaderStatus={({ count }: { count: number }) => `${count} verdi${count !== 1 ? "er" : ""} tilgjengelig`}
-        loadingMessage={() => "Laster..."}
+        ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
+        screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
+        loadingMessage={() => this.t(TEXTS.statiske.loading)}
         onChange={(value) => this.updateValue(value, {})}
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
