@@ -21,7 +21,6 @@ describe("Amplitude", () => {
 
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check("digital");
-    // TODO: Burde vi logge svar på denne?
     cy.clickStart();
     cy.checkLogToAmplitude("skjema åpnet");
 
