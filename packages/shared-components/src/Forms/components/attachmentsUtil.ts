@@ -29,7 +29,7 @@ const hasOtherDocumentation = (form, submission) => {
     .flattenComponents(form.components)
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
-    .some((component) => component.otherDocumentation || component.key !== "annenDokumentasjon");
+    .some((component) => component.otherDocumentation || component.key === "annenDokumentasjon");
 };
 
 const sanitize = (component) => {

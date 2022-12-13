@@ -119,7 +119,7 @@ describe("attachmentUtil", () => {
     describe("Attachment panel has conditional", () => {
       it("All attachments are triggered", () => {
         const attachments = getRelevantAttachments(vedleggConditional.form, vedleggConditional.submission);
-        expect(attachments).toHaveLength(4);
+        expect(attachments).toHaveLength(3);
       });
       it("Some attachments are triggered", () => {
         const submissionCopy = JSON.parse(JSON.stringify(vedleggConditional.submission));
