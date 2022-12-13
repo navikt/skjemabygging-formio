@@ -1,3 +1,4 @@
+import { Select } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
   DisplayType,
@@ -9,7 +10,7 @@ import {
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeFeil } from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
-import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
+import { Checkbox, Input, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -29,6 +30,9 @@ interface Props {
 type BasicFormProps = Props & { usageContext: UsageContext };
 type FormMetadataError = { [key: string]: string };
 
+// Mock data
+const temakoder = ["HJE", "ABC", "NAV", "XYZ"];
+
 const validateFormMetadata = (form: NavFormType) => {
   const errors = {} as FormMetadataError;
   if (!form.title) {
@@ -37,8 +41,9 @@ const validateFormMetadata = (form: NavFormType) => {
   if (!form.properties.skjemanummer) {
     errors.skjemanummer = "Du må oppgi skjemanummer";
   }
-  if (!form.properties.tema) {
-    errors.tema = "Du må oppgi temakode";
+  //TODO: tilpass ekte datastruktur
+  if (!temakoder.includes(form.properties.tema)) {
+    errors.tema = "Du må velge temakode";
   }
   return errors;
 };
@@ -161,12 +166,26 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       <Input
         label="Temakode"
         type="text"
-        id="tema"
+        id="temax"
         placeholder="Skriv inn temakode (f.eks. OPP)"
         value={tema}
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
         feil={errors?.tema}
       />
+      <Select
+        label={"Temakode"}
+        id="tema"
+        value={temakoder.includes(tema) ? tema : ""}
+        onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
+        error={errors?.tema}
+      >
+        <option value="">{"Velg temakode"}</option>
+        {temakoder.map((temakode) => (
+          <option key={temakode} value={temakode}>
+            {temakode}
+          </option>
+        ))}
+      </Select>
       <Input
         label="Tekst på knapp for nedlasting av pdf"
         type="text"
@@ -315,7 +334,7 @@ export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
       id="form-display"
       value={display}
       onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
-      bredde="s"
+      size="small"
     >
       <option value="form">Skjema</option>
       <option value="wizard">Veiviser</option>
