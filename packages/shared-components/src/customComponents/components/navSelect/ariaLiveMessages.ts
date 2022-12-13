@@ -4,7 +4,7 @@ export const ariaLiveMessages = {
     switch (context) {
       case "menu":
         return `Bruk pil opp og ned for å bla${
-          isDisabled ? "" : ", trykk Enter for å velge gjeldende verdi"
+          isDisabled ? "" : ", trykk Enter for å velge verdi med fokus"
         }, trykk Escape for å lukke nedtrekksmenyen${
           tabSelectsValue ? ", trykk Tab for å velge verdi og lukke nedtrekksmenyen" : ""
         }.`;
@@ -21,13 +21,14 @@ export const ariaLiveMessages = {
     }
   },
   onChange: (props) => {
-    const { action, label = "", labels = [], isDisabled } = props;
+    const { action, label = "", isDisabled, removedValues = [] } = props;
     switch (action) {
       case "deselect-option":
       case "pop-value":
       case "remove-value":
       case "clear":
-        return `Verdi ${label || labels[0]} er nå fjernet.`;
+        const removedLabels = removedValues.map((value) => value.label ?? value);
+        return removedLabels.length ? `${removedLabels.join(", ")} er nå fjernet.` : "";
       case "select-option":
         return isDisabled ? `${label} er deaktivert, og kan ikke velges.` : `${label} er valgt.`;
       case "initial-input-focus":
@@ -39,7 +40,6 @@ export const ariaLiveMessages = {
 
   onFocus: (props) => {
     const { context, options, label = "", isDisabled, isSelected } = props;
-
     if (context === "menu" && options?.length) {
       const disabled = isDisabled ? " deaktivert" : "";
       const status = `${isSelected ? "valgt" : "ikke valgt"}${disabled}`;

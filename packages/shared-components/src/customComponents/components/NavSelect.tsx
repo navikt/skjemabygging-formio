@@ -24,6 +24,7 @@ const reactSelectStyles = {
 const ReactSelectWrapper = ({
   component,
   options,
+  label,
   value,
   onChange,
   inputRef,
@@ -40,7 +41,7 @@ const ReactSelectWrapper = ({
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
       aria-labelledby={`l-${component.id}-${component.key}`}
-      aria-label={component.label}
+      aria-label={label}
       options={options}
       value={selectedOption}
       defaultValue={component.defaultValue}
@@ -187,6 +188,7 @@ class NavSelect extends FormioReactComponent {
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
+        label={this.t(component.label)}
         value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
         ariaLiveMessages={ariaLiveMessages}
         screenReaderStatus={({ count }: { count: number }) => `${count} verdi${count !== 1 ? "er" : ""} tilgjengelig`}
