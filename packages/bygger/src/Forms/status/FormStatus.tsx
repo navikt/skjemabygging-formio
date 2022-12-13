@@ -1,12 +1,11 @@
-import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import moment from "moment";
 import React from "react";
 import FormStatusIndicator from "./FormStatusIndicator";
 import { useStatusStyles } from "./styles";
-import { Status, StreetLightSize } from "./types";
+import { PublishStatusProperties, Status, StreetLightSize } from "./types";
 
-export function determineStatus(formProperties: FormPropertiesType): Status {
-  const { modified, published, isTestForm, unpublished } = formProperties;
+export function determineStatus(publishProperties: PublishStatusProperties): Status {
+  const { modified, published, isTestForm, unpublished } = publishProperties;
   let modifiedDate = moment(modified);
   const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
 

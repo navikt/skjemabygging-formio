@@ -56,6 +56,8 @@ describe("Translations", () => {
 
       cy.findByRole("button", { name: "English" }).should("exist");
       cy.findByRole("heading", { name: "Your information" }).should("exist");
+      cy.findByRole("combobox", { name: "Title" }).should("exist").click();
+      cy.findByText("Mr").should("exist").click();
       cy.findByRole("textbox", { name: "First name" }).should("exist").type("Cyp");
       cy.findByRole("textbox", { name: "Last name" }).should("exist").type("Ress");
       cy.get(".navds-radio-group")

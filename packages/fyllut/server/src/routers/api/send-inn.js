@@ -30,31 +30,38 @@ const sendInn = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const isTest = req.get("Fyllut-Is-Test") === "true";
-      const { form, submission, attachments, otherDocumentation, language, translations = {} } = req.body;
+      const { form, submission, attachments, language, otherDocumentation, translations = {} } = req.body;
+      const translate = (term) => translations[term] ?? term;
+      const translatedAttachments = attachments.map((attachment) => ({
+        ...attachment,
+        label: translate(attachment.label),
+        beskrivelse: translate(attachment.beskrivelse),
+        tittel: translate(attachment.tittel),
+      }));
       const pdfByteArray = await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations, isTest);
       const body = {
         brukerId: idportenPid,
         skjemanr: form.properties.skjemanummer,
-        tittel: form.title,
+        tittel: translate(form.title),
         tema: form.properties.tema,
         spraak: language || "nb-NO",
         hoveddokument: {
           vedleggsnr: form.properties.skjemanummer,
-          label: form.title,
-          tittel: form.title,
+          label: translate(form.title),
+          tittel: translate(form.title),
           mimetype: "application/pdf",
           pakrevd: true,
           document: pdfByteArray,
         },
         hoveddokumentVariant: {
           vedleggsnr: form.properties.skjemanummer,
-          label: form.title,
-          tittel: form.title,
+          label: translate(form.title),
+          tittel: translate(form.title),
           mimetype: "application/json",
           pakrevd: false,
           document: objectToByteArray(submission),
         },
-        vedleggsListe: attachments,
+        vedleggsListe: translatedAttachments,
         kanLasteOppAnnet: otherDocumentation,
       };
       if (!featureToggles.enableSendInnIntegration) {

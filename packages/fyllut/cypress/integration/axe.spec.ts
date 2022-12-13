@@ -16,14 +16,7 @@ describe("Axe: Accessibility testing", () => {
 
     it("Person", () => {
       cy.clickStart();
-      cy.checkA11y(
-        {
-          exclude: [".formio-select-autocomplete-input"],
-        },
-        {
-          includedImpacts: ["minor"],
-        }
-      );
+      cy.checkA11y();
     });
 
     it("Penger og konto", () => {
@@ -38,16 +31,12 @@ describe("Axe: Accessibility testing", () => {
 
     it("Dato og tid", () => {
       cy.findByRole("link", { name: "Dato og tid" }).click();
-      cy.checkA11y({
-        exclude: [".formio-select-autocomplete-input"],
-      });
+      cy.checkA11y();
     });
 
     it("Standard felter", () => {
       cy.findByRole("link", { name: "Standard felter" }).click();
-      cy.checkA11y({
-        exclude: [".formio-select-autocomplete-input"],
-      });
+      cy.checkA11y();
     });
 
     it("Layout", () => {

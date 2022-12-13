@@ -56,7 +56,7 @@ export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublis
           <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           <PrimaryButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</PrimaryButtonWithSpinner>
-          <FormStatusPanel formProperties={form.properties} />
+          <FormStatusPanel publishProperties={form.properties} />
           <UserFeedback />
         </Column>
       </Row>
