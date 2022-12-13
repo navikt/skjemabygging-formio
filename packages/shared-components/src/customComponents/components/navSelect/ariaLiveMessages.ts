@@ -5,34 +5,12 @@ const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 export const ariaLiveMessages = (translate) => {
   return {
     guidance: (props) => {
-      const { isSearchable, isMulti, isDisabled, tabSelectsValue, context } = props;
+      const { context } = props;
       switch (context) {
-        case "menu":
-          const menuLines = [translate(SELECT_TEXTS.guidance.contextMenu.navigationArrows)];
-          if (!isDisabled) {
-            menuLines.push(translate(SELECT_TEXTS.guidance.contextMenu.navigationEnter));
-          }
-          menuLines.push(translate(SELECT_TEXTS.guidance.contextMenu.navigationEscape));
-          if (tabSelectsValue) {
-            menuLines.push(translate(SELECT_TEXTS.guidance.contextMenu.navigationTab));
-          }
-          return menuLines.join(" ");
         case "input":
-          const lines = [
-            translate(SELECT_TEXTS.inputHasFocus, {
-              label: props["aria-label"] || translate(SELECT_TEXTS.defaultLabel),
-            }),
-          ];
-          if (isSearchable) {
-            lines.push(translate(SELECT_TEXTS.inputIsSearchable));
-          }
-          lines.push(translate(SELECT_TEXTS.inputUseArrows));
-          if (isMulti) {
-            lines.push(translate(SELECT_TEXTS.inputIsMulti));
-          }
-          return lines.join(" ");
-        case "value":
-          return translate(SELECT_TEXTS.valueNavigation);
+          return translate(SELECT_TEXTS.inputHasFocus, {
+            label: props["aria-label"] || translate(SELECT_TEXTS.defaultLabel),
+          });
         default:
           return "";
       }
