@@ -7,6 +7,7 @@ import http from "../../api/http";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
+import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
 
 const reactSelectStyles = {
   control: (baseStyles, state) => ({
@@ -14,9 +15,23 @@ const reactSelectStyles = {
     border: "1px solid #78706a",
     boxShadow: state.isFocused ? "0 0 0 3px #254b6d" : undefined,
   }),
+  menu: (baseStyles) => ({
+    ...baseStyles,
+    zIndex: "3",
+  }),
 };
 
-const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isLoading }) => {
+const ReactSelectWrapper = ({
+  component,
+  options,
+  value,
+  onChange,
+  inputRef,
+  isLoading,
+  ariaLiveMessages,
+  screenReaderStatus,
+  loadingMessage,
+}) => {
   const [selectedOption, setSelectedOption] = useState(value);
   useEffect(() => {
     setSelectedOption(value);
@@ -24,6 +39,8 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
+      aria-labelledby={`l-${component.id}-${component.key}`}
+      aria-label={component.label}
       options={options}
       value={selectedOption}
       defaultValue={component.defaultValue}
@@ -36,6 +53,9 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       styles={reactSelectStyles}
       isClearable={true}
       backspaceRemovesValue={true}
+      ariaLiveMessages={ariaLiveMessages}
+      screenReaderStatus={screenReaderStatus}
+      loadingMessage={loadingMessage}
       onChange={(event, actionType) => {
         switch (actionType.action) {
           case "select-option":
@@ -168,6 +188,9 @@ class NavSelect extends FormioReactComponent {
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
         value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
+        ariaLiveMessages={ariaLiveMessages}
+        screenReaderStatus={({ count }: { count: number }) => `${count} verdi${count !== 1 ? "er" : ""} tilgjengelig`}
+        loadingMessage={() => "Laster..."}
         onChange={(value) => this.updateValue(value, {})}
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
