@@ -6,6 +6,7 @@ const landvelgerSchema = () => ({
   clearOnHide: true,
   validateOn: "blur",
   dataGridLabel: true,
+  fieldSize: "input--xxl",
   data: {
     url: "https://www.nav.no/fyllut/countries?lang=nb",
   },

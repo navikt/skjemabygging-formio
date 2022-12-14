@@ -122,9 +122,8 @@ export const removeComponents = (form: NavFormType, isTarget: ComponentFilterFun
   return formCopy;
 };
 
-const VEDLEGGSPANEL_KEY = /^vedlegg(panel)?$/;
 export const isVedleggspanel = (component: Component) =>
-  component.type === "panel" && VEDLEGGSPANEL_KEY.test(component.key);
+  !!(component.type === "panel" && (component.isAttachmentPanel || /^vedlegg(panel)?$/.test(component.key)));
 
 export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);

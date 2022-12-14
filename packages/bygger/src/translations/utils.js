@@ -118,7 +118,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         additionalDescriptionText: getTextFromComponentProperty(additionalDescriptionText),
         suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
         prefix: getTextFromComponentProperty(prefix),
-        data: data ? data.values.map((value) => value.label) : undefined,
+        data: data?.values ? data.values.map((value) => value.label) : undefined,
         contentForPdf: getTextFromComponentProperty(contentForPdf),
         altText: getTextFromComponentProperty(altText),
         buttonText: getTextFromComponentProperty(buttonText),

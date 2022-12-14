@@ -6,11 +6,16 @@ import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
 import { useStatusStyles } from "./styles";
 import Timestamp from "./Timestamp";
-import { Props } from "./types";
+import { PublishProperties } from "./types";
 
-const FormStatusPanel = ({ formProperties }: Props) => {
-  const styles: ClassNameMap = useStatusStyles();
-  const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = formProperties;
+interface Props {
+  publishProperties: PublishProperties;
+  spacing?: "default" | "small";
+}
+
+const FormStatusPanel = ({ publishProperties, spacing }: Props) => {
+  const styles: ClassNameMap = useStatusStyles({ spacing });
+  const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
   const LabeledTimeAndUser = ({
     label,
@@ -21,7 +26,7 @@ const FormStatusPanel = ({ formProperties }: Props) => {
     timestamp?: string;
     userName?: string;
   }) => {
-    const styles = useStatusStyles();
+    const styles = useStatusStyles({ spacing });
     if (!timestamp) {
       return <></>;
     }
@@ -39,13 +44,13 @@ const FormStatusPanel = ({ formProperties }: Props) => {
       <div className={styles.panelItem}>
         <Element>Status:</Element>
         <div className={styles.sidePanelFormStatusContainer}>
-          <FormStatus status={determineStatus(formProperties)} size="large" />
+          <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />
       <LabeledTimeAndUser label="Avpublisert:" timestamp={unpublished} userName={unpublishedBy} />
-      <PublishedLanguages formProperties={formProperties} />
+      <PublishedLanguages publishProperties={publishProperties} />
     </Panel>
   );
 };

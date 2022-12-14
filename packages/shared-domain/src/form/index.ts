@@ -55,6 +55,8 @@ export type FormPropertiesPublishing = Pick<
   "modified" | "modifiedBy" | "published" | "publishedBy" | "publishedLanguages" | "unpublished" | "unpublishedBy"
 >;
 
+type ComponentDataSrc = "values" | "url" | "json" | "custom" | "resource";
+
 export interface Component {
   id?: string;
   key: string;
@@ -62,11 +64,16 @@ export interface Component {
   type: string;
   content?: string;
   calculateValue?: string;
+  data?: any;
+  dataSrc?: ComponentDataSrc;
   validate?: ComponentValidate;
   conditional?: ComponentConditional;
   customConditional?: string;
+  valueProperty?: string;
+  labelProperty?: string;
   properties?: Record<string, string>;
   components?: Component[];
+  isAttachmentPanel?: boolean;
 }
 
 export interface Panel extends Component {

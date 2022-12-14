@@ -7,6 +7,16 @@ import BulkPublishPanel from "./BulkPublishPanel";
 
 Modal.setAppElement(document.createElement("div"));
 
+const published = {
+  modified: "2022-11-17T13:12:38.825Z",
+  modifiedBy: "user@company.com",
+  published: "2022-11-17T13:12:38.825Z",
+};
+const pending = {
+  modified: "2022-12-08T15:05:28.353Z",
+  modifiedBy: "user@company.com",
+  published: "2022-03-17T13:12:38.825Z",
+};
 const properties: FormPropertiesType = {
   skjemanummer: "skjemanummer",
   tema: "tema",
@@ -30,8 +40,18 @@ const form: NavFormType = {
   properties,
 };
 
-const testForm1 = { ...form, path: "form1", name: "Form 1", properties: { ...properties, skjemanummer: "001" } };
-const testForm2 = { ...form, path: "form2", name: "Form 2", properties: { ...properties, skjemanummer: "002" } };
+const testForm1 = {
+  ...form,
+  path: "form1",
+  name: "Form 1",
+  properties: { ...properties, ...published, skjemanummer: "001" },
+};
+const testForm2 = {
+  ...form,
+  path: "form2",
+  name: "Form 2",
+  properties: { ...properties, ...pending, skjemanummer: "002" },
+};
 const testForm3 = { ...form, path: "form3", name: "Form 3", properties: { ...properties, skjemanummer: "003" } };
 
 describe("BulkPublishPanel", () => {
@@ -46,40 +66,41 @@ describe("BulkPublishPanel", () => {
     bulkPublish.mockClear();
   });
 
-  it("checks all three checkboxes initially", () => {
-    const checkBoxes = screen.getAllByRole("checkbox", { checked: true });
-    expect(checkBoxes).toHaveLength(3);
+  it("checkboxes for pending and published forms are initially checked", () => {
+    expect(screen.getByRole("checkbox", { name: "Form 1", checked: true })).toBeDefined();
+    expect(screen.getByRole("checkbox", { name: "Form 2", checked: true })).toBeDefined();
+    expect(screen.getByRole("checkbox", { name: "Form 3", checked: false })).toBeDefined();
   });
 
   describe("When a form is unchecked", () => {
     beforeEach(() => {
-      fireEvent.click(screen.getByRole("checkbox", { name: "002 - Form 2 (form2)" }));
+      fireEvent.click(screen.getByRole("checkbox", { name: "Form 2" }));
     });
 
     it("unselects one form", () => {
-      const unCheckedCheckBoxes = screen.getAllByRole("checkbox", { checked: false });
-      expect(unCheckedCheckBoxes).toHaveLength(1);
+      expect(screen.getByRole("checkbox", { name: "Form 2" })).not.toBeChecked();
     });
 
     describe("When modal button is clicked", () => {
       beforeEach(() => {
+        fireEvent.click(screen.getByRole("checkbox", { name: "Form 3" }));
         const button = screen.getByRole("button");
         fireEvent.click(button);
       });
 
       it("opens modal with a summary of which forms will be published", () => {
-        const lists = screen.getAllByRole("list");
+        const table = screen.getAllByRole("table");
 
         expect(screen.getByRole("heading", { name: "Skjemaer som vil bli publisert" })).toBeTruthy();
-        const willBePublished = within(lists[1]).getAllByRole("listitem");
-        expect(willBePublished).toHaveLength(2);
-        expect(willBePublished[0].textContent).toBe("Form 1");
-        expect(willBePublished[1].textContent).toBe("Form 3");
+        const willBePublished = within(table[1]).getAllByRole("row");
+        expect(willBePublished).toHaveLength(3);
+        expect(willBePublished[1]).toHaveTextContent("Form 1");
+        expect(willBePublished[2]).toHaveTextContent("Form 3");
 
         expect(screen.getByRole("heading", { name: "Skjemaer som ikke vil bli publisert" })).toBeTruthy();
-        const willNotBePublished = within(lists[2]).getAllByRole("listitem");
-        expect(willNotBePublished).toHaveLength(1);
-        expect(willNotBePublished[0].textContent).toBe("Form 2");
+        const willNotBePublished = within(table[2]).getAllByRole("row");
+        expect(willNotBePublished).toHaveLength(2);
+        expect(willNotBePublished[1]).toHaveTextContent("Form 2");
       });
 
       it("bulk publishes selected forms when bulk publish is confirmed", async () => {
