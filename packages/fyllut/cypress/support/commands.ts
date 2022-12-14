@@ -51,11 +51,17 @@ Cypress.Commands.add("clickStart", () => {
   return cy.findByRoleWhenAttached("link", { name: "Start" }).click();
 });
 
-Cypress.Commands.add("checkLogToAmplitude", (eventType: string) => {
+Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
   return cy
     .wait("@amplitudeLogging")
     .its("request.body")
     .then(parse)
     .then((body: any) => JSON.parse(body.e)[0])
-    .should("have.property", "event_type", eventType);
+    .then((event) => {
+      expect(event.event_type).to.equal(eventType);
+      if (properties && Object.keys(properties).length > 0) {
+        const propertyKeys = Object.keys(properties);
+        propertyKeys.forEach((key) => expect(event.event_properties?.[key]).to.equal(properties[key]));
+      }
+    });
 });

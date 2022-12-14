@@ -26,15 +26,15 @@ describe("Amplitude", () => {
 
     // Veiledning step
     cy.clickNextStep();
-    cy.checkLogToAmplitude("skjemasteg fullført");
+    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 1 });
 
     // Dine opplysninger step
     cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Kari").blur();
     cy.checkLogToAmplitude("skjema startet");
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Fornavn" });
 
     cy.findByRole("textbox", { name: "Etternavn" }).type("Norman").blur();
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Etternavn" });
 
     // Radio panel is currently not reachable by role. Additionally {force: true} is needed here because
     // the input is overlapping with the label element, which makes cypress assume it's not interactable
@@ -42,41 +42,45 @@ describe("Amplitude", () => {
       .first()
       .should("exist")
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check({ force: true }));
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Har du norsk fødselsnummer eller D-nummer?" });
 
     cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995").blur();
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Din fødselsdato (dd.mm.åååå)" });
 
     cy.findByText("Bor du i Norge?")
       .should("exist")
       .parent()
       .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Bor du i Norge?" });
 
     cy.findByText("Er kontaktadressen din en vegadresse eller postboksadresse?")
       .should("exist")
       .parent()
       .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", {
+      spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",
+    });
 
     cy.findByRole("textbox", { name: "Vegadresse" }).should("exist").type("Kirkegata 1").blur();
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Vegadresse" });
 
     cy.findByRole("textbox", { name: "Postnummer" }).should("exist").type("1234").blur();
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Postnummer" });
 
     cy.findByRole("textbox", { name: "Poststed" }).should("exist").type("Nesvik").blur();
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Poststed" });
 
     cy.findByRole("textbox", { name: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?" })
       .should("exist")
       .type("01.01.2020")
       .blur();
-    cy.checkLogToAmplitude("skjemaspørsmål besvart");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", {
+      spørsmål: "Fra hvilken dato skal denne adressen brukes (dd.mm.åååå)?",
+    });
 
-    // Step 3 -> Oppsummering
+    // Step 2 -> Oppsummering
     cy.clickNextStep();
-    cy.checkLogToAmplitude("skjemasteg fullført");
+    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 2 });
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
@@ -108,6 +112,10 @@ describe("Amplitude", () => {
     // The second attempt is successful, causing "skjema fullført"
     cy.findByRole("button", { name: "Gå videre" }).click();
     cy.wait("@submitToSendinnSuccess");
-    cy.checkLogToAmplitude("skjema fullført");
+    cy.checkLogToAmplitude("skjema fullført", {
+      innsendingsType: "digital",
+      skjemaId: "cypress-101",
+      skjemanavn: "Skjema for Cypress-testing",
+    });
   });
 });
