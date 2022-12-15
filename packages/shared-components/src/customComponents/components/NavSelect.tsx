@@ -50,6 +50,7 @@ const ReactSelectWrapper = ({
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
+      instanceId={`${component.id}-${component.key}`}
       aria-labelledby={`l-${component.id}-${component.key}`}
       aria-describedby={component.description ? `d-${component.id}-${component.key}` : ""}
       aria-label={label}
