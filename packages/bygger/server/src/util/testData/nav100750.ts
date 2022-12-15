@@ -4005,6 +4005,7 @@ const form: any = {
           },
           errorLabel: "",
           key: "annenDokumentasjon",
+          otherDocumentation: true,
           tags: [],
           properties: {
             vedleggstittel: "Annet",
