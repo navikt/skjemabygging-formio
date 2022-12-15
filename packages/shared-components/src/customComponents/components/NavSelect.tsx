@@ -2,7 +2,7 @@ import { Component, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import selectEditForm from "formiojs/components/select/Select.form";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import ReactSelect from "react-select";
+import ReactSelect, { components } from "react-select";
 import http from "../../api/http";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
@@ -21,6 +21,14 @@ const reactSelectStyles = {
     ...baseStyles,
     zIndex: "3",
   }),
+};
+
+const Input = (props) => {
+  const ariaProps = {
+    "aria-describedby": props.selectProps["aria-describedby"],
+  };
+
+  return <components.Input {...props} {...ariaProps} />;
 };
 
 const ReactSelectWrapper = ({
@@ -43,6 +51,7 @@ const ReactSelectWrapper = ({
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
       aria-labelledby={`l-${component.id}-${component.key}`}
+      aria-describedby={component.description ? `d-${component.id}-${component.key}` : ""}
       aria-label={label}
       options={options}
       value={selectedOption}
@@ -56,6 +65,7 @@ const ReactSelectWrapper = ({
       styles={reactSelectStyles}
       isClearable={true}
       backspaceRemovesValue={true}
+      components={{ Input }}
       ariaLiveMessages={ariaLiveMessages}
       screenReaderStatus={screenReaderStatus}
       loadingMessage={loadingMessage}
