@@ -1,5 +1,6 @@
 describe("Submission method", () => {
   beforeEach(() => {
+    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" });
     cy.intercept("GET", "/fyllut/api/forms/bug101010", { fixture: "submission-method.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
       "getFormTranslations"
@@ -57,9 +58,10 @@ describe("Submission method", () => {
           });
       });
 
-      it("includes one attachment", () => {
+      it("includes zero attachments, but has flag otherDocumentation", () => {
         cy.intercept("POST", "/fyllut/api/send-inn", (req) => {
-          expect(req.body.attachments).to.have.length(1);
+          expect(req.body.attachments).to.have.length(0);
+          expect(req.body.otherDocumentation).to.eq(true);
           req.reply(200);
         }).as("sendInn");
 
@@ -68,9 +70,10 @@ describe("Submission method", () => {
         cy.wait("@sendInn");
       });
 
-      it("includes two attachments", () => {
+      it("includes one attachment, and has flag otherDocumentation", () => {
         cy.intercept("POST", "/fyllut/api/send-inn", (req) => {
-          expect(req.body.attachments).to.have.length(2);
+          expect(req.body.attachments).to.have.length(1);
+          expect(req.body.otherDocumentation).to.eq(true);
           req.reply(200);
         }).as("sendInn");
 
