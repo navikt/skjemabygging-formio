@@ -73,6 +73,8 @@ export interface Component {
   labelProperty?: string;
   properties?: Record<string, string>;
   components?: Component[];
+  otherDocumentation?: boolean;
+  isAttachmentPanel?: boolean;
 }
 
 export interface Panel extends Component {

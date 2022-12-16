@@ -273,6 +273,7 @@
             "input": true,
             "clearOnHide": true,
             "validate": { "required": true },
+            "otherDocumentation": true,
             "properties": { "vedleggstittel": "Annet", "vedleggskode": "N6" },
             "values": [
               { "value": "nei", "label": "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved." },

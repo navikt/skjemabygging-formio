@@ -65,7 +65,7 @@ const FyllUtRouter = ({ form, translations }) => {
             <SubmissionWrapper submission={submission} url={formBaseUrl}>
               {(submissionObject) => (
                 <SummaryPage
-                  form={formForRendering}
+                  form={form}
                   submission={submissionObject}
                   translations={translations}
                   formUrl={formBaseUrl}
