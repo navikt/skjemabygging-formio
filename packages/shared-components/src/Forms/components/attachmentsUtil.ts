@@ -24,10 +24,6 @@ const getRelevantAttachments = (form, submission) => {
     }));
 };
 
-const hasRelevantAttachments = (form, submission) => {
-  return !!getRelevantAttachments(form, submission).length;
-};
-
 const hasOtherDocumentation = (form, submission) => {
   return navFormUtils
     .flattenComponents(form.components)
@@ -42,4 +38,8 @@ const sanitize = (component) => {
   return clone;
 };
 
-export { getRelevantAttachments, hasRelevantAttachments, hasOtherDocumentation };
+const hasRelevantAttachments = (form, submission) => {
+  return !!getRelevantAttachments(form, submission).length || hasOtherDocumentation(form, submission);
+};
+
+export { getRelevantAttachments, hasOtherDocumentation, hasRelevantAttachments };
