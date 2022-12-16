@@ -30,7 +30,7 @@ const sendInn = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const isTest = req.get("Fyllut-Is-Test") === "true";
-      const { form, submission, attachments, language, translations = {} } = req.body;
+      const { form, submission, attachments, language, otherDocumentation, translations = {} } = req.body;
       const translate = (term) => translations[term] ?? term;
       const translatedAttachments = attachments.map((attachment) => ({
         ...attachment,
@@ -62,6 +62,7 @@ const sendInn = {
           document: objectToByteArray(submission),
         },
         vedleggsListe: translatedAttachments,
+        kanLasteOppAnnet: otherDocumentation,
       };
       if (!featureToggles.enableSendInnIntegration) {
         logger.debug("SendInn integration not enabled, returning data in body");
