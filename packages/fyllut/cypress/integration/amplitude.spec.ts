@@ -17,7 +17,6 @@ describe("Amplitude", () => {
   it("logs for all relevant events", () => {
     cy.visit("/fyllut/cypress101");
     cy.wait("@getCypress101");
-    cy.checkLogToAmplitude("skjema åpnet"); // TODO: Denne bør ikke logges - logg først når vi kommer inn i skjemaet
 
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check("digital");
