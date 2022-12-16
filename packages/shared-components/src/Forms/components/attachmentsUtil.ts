@@ -3,16 +3,16 @@ import FormioUtils from "formiojs/utils";
 import { sanitizeJavaScriptCode } from "../../formio-overrides";
 
 const getRelevantAttachments = (form, submission) => {
-  const vedleggComponents = navFormUtils
+  return navFormUtils
     .flattenComponents(form.components)
-    .filter((component) => component.properties && !!component.properties.vedleggskode)
-    .map((component) => {
-      const clone = JSON.parse(JSON.stringify(component));
-      clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
-      return clone;
-    });
-
-  return vedleggComponents
+    .filter(
+      (component) =>
+        component.properties &&
+        !!component.properties.vedleggskode &&
+        component.key !== "annenDokumentasjon" &&
+        !component.otherDocumentation
+    )
+    .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
@@ -28,4 +28,18 @@ const hasRelevantAttachments = (form, submission) => {
   return !!getRelevantAttachments(form, submission).length;
 };
 
-export { getRelevantAttachments, hasRelevantAttachments };
+const hasOtherDocumentation = (form, submission) => {
+  return navFormUtils
+    .flattenComponents(form.components)
+    .map(sanitize)
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
+    .some((component) => component.otherDocumentation || component.key === "annenDokumentasjon");
+};
+
+const sanitize = (component) => {
+  const clone = JSON.parse(JSON.stringify(component));
+  clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
+  return clone;
+};
+
+export { getRelevantAttachments, hasRelevantAttachments, hasOtherDocumentation };

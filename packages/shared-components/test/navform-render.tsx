@@ -13,15 +13,19 @@ const setupNavFormio = () => {
 
 const featureToggles = { enableAutoComplete: true };
 
-const renderNavForm = async (props) => {
-  const formReady = jest.fn();
-  const renderReturn = render(
+const NavFormForTest = (props) => {
+  return (
     <AppConfigProvider featureToggles={featureToggles} dokumentinnsendingBaseURL={undefined} fyllutBaseURL={undefined}>
-      <NavForm {...props} formReady={formReady} />
+      <NavForm {...props} />
     </AppConfigProvider>
   );
+};
+
+const renderNavForm = async (props) => {
+  const formReady = jest.fn();
+  const renderReturn = render(<NavFormForTest {...props} formReady={formReady} />);
   await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
-  return renderReturn;
+  return { ...renderReturn, NavFormForTest };
 };
 
 const defaultPanelProps = (label) => ({

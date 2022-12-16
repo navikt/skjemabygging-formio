@@ -57,7 +57,7 @@ export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish,
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
             <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
-            <FormStatusPanel formProperties={form.properties} />
+            <FormStatusPanel publishProperties={form.properties} />
             <UserFeedback />
           </Column>
         </Row>

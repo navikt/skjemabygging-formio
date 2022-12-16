@@ -4126,7 +4126,7 @@
           }
         },
         {
-          "label": "Nedtrekksmeny",
+          "label": "Nedtrekksmeny (formio)",
           "labelPosition": "top",
           "widget": "choicesjs",
           "labelWidth": "",
@@ -4244,6 +4244,131 @@
           },
           "id": "eyab0w",
           "defaultValue": ""
+        },
+        {
+          "label": "Nedtrekksmeny (NAV)",
+          "labelPosition": "top",
+          "labelWidth": "",
+          "labelMargin": "",
+          "placeholder": "",
+          "description": "",
+          "tooltip": "",
+          "customClass": "",
+          "tabindex": "",
+          "hidden": false,
+          "hideLabel": false,
+          "uniqueOptions": false,
+          "autofocus": false,
+          "disabled": false,
+          "tableView": true,
+          "modalEdit": false,
+          "multiple": false,
+          "dataSrc": "values",
+          "data": {
+            "values": [
+              {
+                "label": "Eple",
+                "value": "eple"
+              },
+              {
+                "label": "Banan",
+                "value": "banan"
+              },
+              {
+                "label": "Persimon",
+                "value": "persimon"
+              }
+            ],
+            "resource": "",
+            "json": "",
+            "url": "",
+            "custom": ""
+          },
+          "dataType": "",
+          "idPath": "id",
+          "valueProperty": "",
+          "limit": 100,
+          "template": "<span>{{ item.label }}</span>",
+          "refreshOn": "",
+          "refreshOnBlur": "",
+          "clearOnRefresh": false,
+          "searchEnabled": true,
+          "selectThreshold": 0.3,
+          "readOnlyValue": false,
+          "customOptions": {},
+          "useExactSearch": false,
+          "persistent": true,
+          "protected": false,
+          "dbIndex": false,
+          "encrypted": false,
+          "clearOnHide": true,
+          "customDefaultValue": "",
+          "calculateValue": "",
+          "calculateServer": false,
+          "allowCalculateOverride": false,
+          "validateOn": "blur",
+          "validate": {
+            "required": true,
+            "onlyAvailableItems": false,
+            "customMessage": "",
+            "custom": "",
+            "customPrivate": false,
+            "json": "",
+            "strictDateValidation": false,
+            "multiple": false,
+            "unique": false
+          },
+          "unique": false,
+          "errorLabel": "",
+          "errors": "",
+          "key": "velgFrukt",
+          "tags": [],
+          "properties": {},
+          "conditional": {
+            "show": null,
+            "when": null,
+            "eq": "",
+            "json": ""
+          },
+          "customConditional": "",
+          "logic": [],
+          "attributes": {},
+          "overlay": {
+            "style": "",
+            "page": "",
+            "left": "",
+            "top": "",
+            "width": "",
+            "height": ""
+          },
+          "type": "navSelect",
+          "indexeddb": {
+            "filter": {}
+          },
+          "selectFields": "",
+          "searchField": "",
+          "searchDebounce": 0.3,
+          "minSearch": 0,
+          "filter": "",
+          "redrawOn": "",
+          "lazyLoad": true,
+          "authenticate": false,
+          "ignoreCache": false,
+          "fuseOptions": {
+            "include": "score",
+            "threshold": 0.3
+          },
+          "input": true,
+          "dataGridLabel": true,
+          "prefix": "",
+          "suffix": "",
+          "widget": null,
+          "showCharCount": false,
+          "showWordCount": false,
+          "allowMultipleMasks": false,
+          "addons": [],
+          "id": "edo41vk",
+          "defaultValue": null
         },
         {
           "label": "Radiopanel",

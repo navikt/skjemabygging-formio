@@ -1,13 +1,14 @@
 import { makeStyles } from "@material-ui/styles";
+import { Checkbox, Table } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Knapp } from "nav-frontend-knapper";
 import Panel from "nav-frontend-paneler";
-import { Checkbox } from "nav-frontend-skjema";
 import { Undertekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useReducer, useState } from "react";
+import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 import { bulkPublish } from "../api";
 import FormList from "./FormList";
 
@@ -32,11 +33,12 @@ function reducer(state: State, action: Action) {
 }
 
 const useStyles = makeStyles({
-  noBullets: {
-    listStyleType: "none",
+  table: {
+    marginTop: "2rem",
+    marginBottom: "2rem",
   },
-  listElement: {
-    marginBottom: "1rem",
+  checkBoxCell: {
+    maxWidth: "4rem",
   },
 });
 
@@ -51,7 +53,13 @@ const BulkPublishPanel = ({ forms }: Props) => {
   const [state, dispatch] = useReducer(reducer, {});
 
   useEffect(() => {
-    dispatch({ type: "init", payload: forms });
+    dispatch({
+      type: "init",
+      payload: forms.filter((form) => {
+        const status = determineStatus(form.properties);
+        return status === "PENDING" || status === "PUBLISHED";
+      }),
+    });
   }, [forms]);
 
   const onBulkPublish = async (formPaths) => {
@@ -73,11 +81,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
         <AlertStripe type={"advarsel"}>
           <p>
             Merk at oversettelser ikke migreres, eller publiseres. Hvis du har gjort endringer som vil påvirke
-            oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser og migrere manuelt.
-          </p>
-          <p>
-            Skjemaer listet opp her, er ikke nødvendigvis publisert til nav.no per i dag. Du må selv kontrollere om et
-            gitt skjema faktisk skal publiseres.
+            oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser før du publiserer.
           </p>
         </AlertStripe>
         <form
@@ -86,23 +90,48 @@ const BulkPublishPanel = ({ forms }: Props) => {
             setIsModalOpen(true);
           }}
         >
-          <ul className={styles.noBullets}>
-            {forms.map((form) => (
-              <li className={styles.listElement} key={form.properties.skjemanummer}>
-                <Checkbox
-                  label={`${form.properties.skjemanummer} - ${form.name} (${form.path})`}
-                  checked={state[form.path] || false}
-                  onChange={(event) => {
-                    if (event.target.checked) {
-                      dispatch({ type: "check", payload: form.path });
-                    } else {
-                      dispatch({ type: "uncheck", payload: form.path });
-                    }
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
+          <Table className={styles.table} size="small">
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell scope="col">Skjemanummer</Table.HeaderCell>
+                <Table.HeaderCell scope="col">Name</Table.HeaderCell>
+                <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+                <Table.HeaderCell scope="col" className={styles.checkBoxCell}>
+                  Skal publiseres
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {forms.map((form, i) => {
+                return (
+                  <Table.Row key={i + form.properties.skjemanummer}>
+                    <Table.HeaderCell scope="row">{form.properties.skjemanummer}</Table.HeaderCell>
+                    <Table.DataCell>{form.name}</Table.DataCell>
+                    <Table.DataCell>
+                      {<FormStatus status={determineStatus(form.properties)} size={"small"} />}
+                    </Table.DataCell>
+                    <Table.DataCell className={styles.checkBoxCell}>
+                      {
+                        <Checkbox
+                          hideLabel
+                          checked={state[form.path] || false}
+                          onChange={(event) => {
+                            if (event.target.checked) {
+                              dispatch({ type: "check", payload: form.path });
+                            } else {
+                              dispatch({ type: "uncheck", payload: form.path });
+                            }
+                          }}
+                        >
+                          {form.name}
+                        </Checkbox>
+                      }
+                    </Table.DataCell>
+                  </Table.Row>
+                );
+              })}
+            </Table.Body>
+          </Table>
           <Knapp type="hoved">Publiser nå</Knapp>
         </form>
       </Panel>

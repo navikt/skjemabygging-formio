@@ -4,6 +4,7 @@ export type Status = "PENDING" | "DRAFT" | "PUBLISHED" | "UNKNOWN" | "TESTFORM" 
 
 export type StreetLightSize = "small" | "large";
 
-export interface Props {
-  formProperties: FormPropertiesType;
-}
+export type PublishStatusProperties = Pick<FormPropertiesType, "modified" | "published" | "isTestForm" | "unpublished">;
+
+export type PublishProperties = PublishStatusProperties &
+  Pick<FormPropertiesType, "modifiedBy" | "publishedBy" | "unpublishedBy" | "publishedLanguages">;

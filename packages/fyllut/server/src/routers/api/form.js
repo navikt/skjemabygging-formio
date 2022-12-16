@@ -39,6 +39,7 @@ const getAttachments = (form) => {
         label: component.label,
         key: component.key,
         description: component.description,
+        otherDocumentation: component.otherDocumentation,
         attachmentTitle: component.properties.vedleggstittel,
         attachmentCode: component.properties.vedleggskode,
       };

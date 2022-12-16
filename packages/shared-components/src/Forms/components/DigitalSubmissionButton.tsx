@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
-import { getRelevantAttachments } from "./attachmentsUtil";
+import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
 
 export interface Props {
   form: object;
@@ -27,6 +27,7 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       translations: translationsForPDF,
       language: currentLanguage,
       attachments,
+      otherDocumentation: hasOtherDocumentation(form, submission),
     },
     {
       "Fyllut-Is-Test": isTest,
