@@ -18,6 +18,7 @@ const panelVeiledning = {
   components: [
     {
       key: "annenDokumentasjon",
+      otherDocumentation: true,
       id: "eo3t76",
       inputType: "radio",
       type: "radiopanel",
@@ -53,6 +54,7 @@ const panelVedleggsliste = {
   key: "vedleggpanel",
   title: "Vedleggsliste",
   label: "Vedlegg",
+  isAttachmentPanel: true,
   labelPosition: "top",
   validateOn: "change",
   id: "jdh58e",

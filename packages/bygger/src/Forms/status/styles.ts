@@ -15,11 +15,11 @@ const useStatusStyles = makeStyles({
     flex: "1",
     margin: "0",
   },
-  panelItem: {
+  panelItem: ({ spacing }: { spacing?: string }) => ({
     "&:not(:last-child)": {
-      marginBottom: "2.5rem",
+      marginBottom: spacing && spacing === "small" ? "1rem" : "2.5rem",
     },
-  },
+  }),
   sidePanelFormStatusContainer: {
     marginTop: "0.5rem",
   },

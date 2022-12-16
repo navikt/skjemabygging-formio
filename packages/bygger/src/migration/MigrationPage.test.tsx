@@ -200,15 +200,15 @@ describe("MigrationPage", () => {
 
       it("opens a modal with info on which forms have been selected for migration", () => {
         const modal = screen.getByRole("dialog");
-        const formLists = within(modal).getAllByRole("list");
+        const tables = within(modal).getAllByRole("table");
         expect(screen.getByText("Skjemaer som vil bli migrert")).toBeTruthy();
-        expect(within(formLists[0]).getByRole("listitem")).toHaveTextContent("Skjema 3");
+        expect(within(tables[0]).getAllByRole("row")[1]).toHaveTextContent("Skjema 3");
         expect(screen.getByText("Skjemaer som ikke vil bli migrert")).toBeTruthy();
-        expect(within(formLists[1]).getByRole("listitem")).toHaveTextContent("Skjema 1");
+        expect(within(tables[1]).getAllByRole("row")[1]).toHaveTextContent("Skjema 1");
         expect(
           screen.getByText("Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering")
         ).toBeTruthy();
-        expect(within(formLists[2]).getByRole("listitem")).toHaveTextContent("Skjema 2");
+        expect(within(tables[2]).getAllByRole("row")[1]).toHaveTextContent("Skjema 2");
       });
 
       it("sends a POST request with instructions for the migration", async () => {

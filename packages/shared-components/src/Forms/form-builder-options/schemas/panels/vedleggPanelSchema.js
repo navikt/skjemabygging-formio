@@ -4,12 +4,14 @@ const vedleggPanelSchema = {
   input: false,
   key: "vedlegg",
   theme: "default",
+  isAttachmentPanel: true,
   components: [
     {
       label: "Annen dokumentasjon",
       description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
       type: "radiopanel",
       key: "annenDokumentasjon",
+      otherDocumentation: true,
       input: true,
       clearOnHide: true,
       validate: {

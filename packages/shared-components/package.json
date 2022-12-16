@@ -87,7 +87,7 @@
     "nav-frontend-typografi": "^3.0.2",
     "nav-frontend-typografi-style": "^1.0.33",
     "react-day-picker": "^7.4.8",
-    "react-select": "^5.2.2"
+    "react-select": "^5.6.1"
   },
   "peerDependencies": {
     "@material-ui/styles": "4.10.0",
