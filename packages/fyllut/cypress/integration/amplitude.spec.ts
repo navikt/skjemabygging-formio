@@ -28,8 +28,12 @@ describe("Amplitude", () => {
     cy.checkLogToAmplitude("skjemasteg fullført", { steg: 1 });
 
     // Dine opplysninger step
-    cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Kari").blur();
+    cy.findByRole("combobox", { name: "Tittel" }).should("exist").click();
+    cy.findByText("Fru").should("exist").click();
     cy.checkLogToAmplitude("skjema startet");
+    cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Tittel" });
+
+    cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Kari").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Fornavn" });
 
     cy.findByRole("textbox", { name: "Etternavn" }).type("Norman").blur();
@@ -93,14 +97,16 @@ describe("Amplitude", () => {
     cy.get("dl")
       .first()
       .within(() => {
-        cy.get("dt").eq(0).should("contain.text", "Fornavn");
-        cy.get("dd").eq(0).should("contain.text", "Kari");
-        cy.get("dt").eq(1).should("contain.text", "Etternavn");
-        cy.get("dd").eq(1).should("contain.text", "Norman");
-        cy.get("dt").eq(2).should("contain.text", "Har du norsk fødselsnummer eller D-nummer?");
-        cy.get("dd").eq(2).should("contain.text", "Nei");
-        cy.get("dt").eq(3).should("contain.text", "Din fødselsdato (dd.mm.åååå)");
-        cy.get("dd").eq(3).should("contain.text", "10.5.1995");
+        cy.get("dt").eq(0).should("contain.text", "Tittel");
+        cy.get("dd").eq(0).should("contain.text", "Fru");
+        cy.get("dt").eq(1).should("contain.text", "Fornavn");
+        cy.get("dd").eq(1).should("contain.text", "Kari");
+        cy.get("dt").eq(2).should("contain.text", "Etternavn");
+        cy.get("dd").eq(2).should("contain.text", "Norman");
+        cy.get("dt").eq(3).should("contain.text", "Har du norsk fødselsnummer eller D-nummer?");
+        cy.get("dd").eq(3).should("contain.text", "Nei");
+        cy.get("dt").eq(4).should("contain.text", "Din fødselsdato (dd.mm.åååå)");
+        cy.get("dd").eq(4).should("contain.text", "10.5.1995");
       });
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
