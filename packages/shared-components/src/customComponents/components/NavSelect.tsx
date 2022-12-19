@@ -1,12 +1,15 @@
-import { Component } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import selectEditForm from "formiojs/components/select/Select.form";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import ReactSelect from "react-select";
+import ReactSelect, { components } from "react-select";
 import http from "../../api/http";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
+import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
+
+const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 
 const reactSelectStyles = {
   control: (baseStyles, state) => ({
@@ -14,9 +17,32 @@ const reactSelectStyles = {
     border: "1px solid #78706a",
     boxShadow: state.isFocused ? "0 0 0 3px #254b6d" : undefined,
   }),
+  menu: (baseStyles) => ({
+    ...baseStyles,
+    zIndex: "3",
+  }),
 };
 
-const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isLoading }) => {
+const Input = (props) => {
+  const ariaProps = {
+    "aria-describedby": props.selectProps["aria-describedby"],
+  };
+
+  return <components.Input {...props} {...ariaProps} />;
+};
+
+const ReactSelectWrapper = ({
+  component,
+  options,
+  label,
+  value,
+  onChange,
+  inputRef,
+  isLoading,
+  ariaLiveMessages,
+  screenReaderStatus,
+  loadingMessage,
+}) => {
   const [selectedOption, setSelectedOption] = useState(value);
   useEffect(() => {
     setSelectedOption(value);
@@ -24,6 +50,10 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
   return (
     <ReactSelect
       id={`selectContainer-${component.id}-${component.key}`}
+      instanceId={`${component.id}-${component.key}`}
+      aria-labelledby={`l-${component.id}-${component.key}`}
+      aria-describedby={component.description ? `d-${component.id}-${component.key}` : ""}
+      aria-label={label}
       options={options}
       value={selectedOption}
       defaultValue={component.defaultValue}
@@ -36,6 +66,10 @@ const ReactSelectWrapper = ({ component, options, value, onChange, inputRef, isL
       styles={reactSelectStyles}
       isClearable={true}
       backspaceRemovesValue={true}
+      components={{ Input }}
+      ariaLiveMessages={ariaLiveMessages}
+      screenReaderStatus={screenReaderStatus}
+      loadingMessage={loadingMessage}
       onChange={(event, actionType) => {
         switch (actionType.action) {
           case "select-option":
@@ -131,6 +165,10 @@ class NavSelect extends FormioReactComponent {
     return option && option.label ? { ...option, label: this.t(option.label) } : option;
   }
 
+  translateAriaLiveMessages(messages) {
+    return messages(this.t.bind(this));
+  }
+
   renderReact(element) {
     const component: Component = this.component as Component;
     if (component.dataSrc === "values") {
@@ -167,7 +205,11 @@ class NavSelect extends FormioReactComponent {
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
+        label={this.t(component.label)}
         value={this.translateOptionLabel(this.dataForSetting || this.dataValue)}
+        ariaLiveMessages={this.translateAriaLiveMessages(ariaLiveMessages)}
+        screenReaderStatus={({ count }: { count: number }) => this.t(SELECT_TEXTS.numberOfAvailableOptions, { count })}
+        loadingMessage={() => this.t(TEXTS.statiske.loading)}
         onChange={(value) => this.updateValue(value, {})}
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
