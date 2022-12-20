@@ -11,7 +11,7 @@ concurrency: deploy-${{ github.ref }}
 jobs:
   build-and-test:
     name: "Build and test packages"
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest-16-cores
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -33,7 +33,7 @@ jobs:
   package-and-push-bygger:
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
     name: "Package bygger"
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest-16-cores
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -60,7 +60,7 @@ jobs:
   package-and-push-fyllut-base:
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
     name: "Package fyllut"
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest-16-cores
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -123,7 +123,7 @@ jobs:
     name: "Deploy bygger experimental to dev"
     if: startsWith(github.ref, 'refs/heads/experimental/')
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest-16-cores
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy experimental to DEV"
