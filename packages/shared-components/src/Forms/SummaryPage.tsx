@@ -203,14 +203,13 @@ function getUrlToLastPanel(form, formUrl, submission) {
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
-  const { loggSkjemaStegFullfort } = useAmplitude();
+  const { loggSkjemaStegFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  useEffect(() => loggSkjemaStegFullfort(getPanels(form.components).length), [form.components, loggSkjemaStegFullfort]);
 
   const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
   const linkBtStyle = {
@@ -251,7 +250,10 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   form={form}
                   submission={submission}
                   translations={translations}
-                  onError={(err) => setErrorMessage(err.message)}
+                  onError={(err) => {
+                    setErrorMessage(err.message);
+                    loggSkjemaInnsendingFeilet();
+                  }}
                 >
                   {translate(TEXTS.grensesnitt.moveForward)}
                 </DigitalSubmissionButton>
@@ -260,9 +262,13 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   form={form}
                   submission={submission}
                   translations={translations}
-                  onError={(err) => setErrorMessage(err.message)}
+                  onError={(err) => {
+                    setErrorMessage(err.message);
+                    loggSkjemaInnsendingFeilet();
+                  }}
                 />
               ))}
+
             {innsending === "INGEN" && (
               <Link
                 className="navds-button navds-button--primary"

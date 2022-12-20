@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Euro (EUR)",
+    "value": "EUR"
+  },
+  {
+    "label": "Norske kroner (NOK)",
+    "value": "NOK"
+  },
+  {
+    "label": "Svenske kroner (SEK)",
+    "value": "SEK"
+  },
+  {
+    "label": "Amerikanske dollar (USD)",
+    "value": "USD"
+  },
+  {
+    "label": "Australske dollar (AUD)",
+    "value": "AUD"
+  }
+]
