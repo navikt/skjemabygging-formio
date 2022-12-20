@@ -1,14 +1,21 @@
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 
-type ReducerAction = "form-loaded" | "form-not-found" | "form-changed" | "form-saved";
+type ReducerAction =
+  | "form-loaded"
+  | "form-not-found"
+  | "form-changed"
+  | "form-saved"
+  | "diff-loaded"
+  | "diff-not-found";
 type Status = "LOADING" | "FINISHED LOADING" | "FORM NOT FOUND";
-type ReducerActionType = { type: ReducerAction; form?: NavFormType };
+type ReducerActionType = { type: ReducerAction; form?: NavFormType; diff?: any };
 
 interface ReducerState {
   status: Status;
   dbForm?: NavFormType;
   form?: NavFormType;
+  formDiff?: any;
   hasUnsavedChanges: boolean;
 }
 
@@ -38,13 +45,14 @@ const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
     case "form-loaded":
     case "form-saved":
       return {
-        status: "FINISHED LOADING",
+        status: state.formDiff ? "FINISHED LOADING" : state.status,
         dbForm: formClone,
         form: formClone,
         hasUnsavedChanges: false,
       };
     case "form-changed":
       return {
+        ...state,
         dbForm: state.dbForm,
         form: formClone,
         hasUnsavedChanges: isDifferent(state.dbForm, formClone),
@@ -53,6 +61,18 @@ const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
       return {
         status: "FORM NOT FOUND",
         hasUnsavedChanges: false,
+      };
+    case "diff-loaded":
+      return {
+        ...state,
+        status: state.form ? "FINISHED LOADING" : state.status,
+        formDiff: action.diff,
+      };
+    case "diff-not-found":
+      return {
+        ...state,
+        status: state.form ? "FINISHED LOADING" : state.status,
+        formDiff: {},
       };
     default: {
       return state;

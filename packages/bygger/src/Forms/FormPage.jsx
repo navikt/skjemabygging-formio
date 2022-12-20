@@ -1,7 +1,8 @@
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useCallback, useEffect, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
+import { loadFormDiff } from "./diffing/formDiff";
 import { EditFormPage } from "./EditFormPage";
 import formPageReducer from "./formPageReducer";
 import { FormSettingsPage } from "./FormSettingsPage";
@@ -10,7 +11,6 @@ import { TestFormPage } from "./TestFormPage";
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
   let { url } = useRouteMatch();
   const { formPath } = useParams();
-  const [, setFormDiff] = useState(null);
   const [state, dispatch] = useReducer(
     formPageReducer,
     { status: "LOADING", hasUnsavedChanges: false },
@@ -30,22 +30,13 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         console.log(e);
         dispatch({ type: "form-not-found" });
       });
-  }, [loadForm, formPath]);
-
-  useEffect(() => {
-    async function loadDiff() {
-      const response = await fetch(`/api/form/${formPath}/diff`, {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-        },
+    loadFormDiff(formPath)
+      .then((diff) => dispatch({ type: "diff-loaded", diff }))
+      .catch(() => {
+        console.debug("Form diff not found");
+        dispatch({ type: "diff-not-found" });
       });
-      const diff = await response.json();
-      console.log("Form diff", diff);
-      return diff;
-    }
-    loadDiff().then(setFormDiff);
-  }, [formPath, setFormDiff]);
+  }, [loadForm, formPath]);
 
   const onChange = (changedForm) => {
     dispatch({ type: "form-changed", form: changedForm });
@@ -92,6 +83,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/edit`}>
           <EditFormPage
             form={state.form}
+            formDiff={state.formDiff}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -104,6 +96,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/settings`}>
           <FormSettingsPage
             form={state.form}
+            formDiff={state.formDiff}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
