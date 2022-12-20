@@ -23,9 +23,10 @@ export interface Props {
   submission: object;
   translations: object;
   onError: (err: Error) => void;
+  onSuccess?: () => void;
 }
 
-const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError }: Props) => {
+const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError, onSuccess }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,6 +46,7 @@ const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError }
               onError(err.message);
               setIsOpen(false);
             }}
+            onSuccess={onSuccess}
           >
             {translate(TEXTS.grensesnitt.submitToNavPrompt.confirm)}
           </DigitalSubmissionButton>

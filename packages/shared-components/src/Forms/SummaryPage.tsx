@@ -203,7 +203,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
-  const { loggSkjemaStegFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
 
@@ -254,6 +254,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     setErrorMessage(err.message);
                     loggSkjemaInnsendingFeilet();
                   }}
+                  onSuccess={() => loggSkjemaFullfort("digital")}
                 >
                   {translate(TEXTS.grensesnitt.moveForward)}
                 </DigitalSubmissionButton>
@@ -266,6 +267,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     setErrorMessage(err.message);
                     loggSkjemaInnsendingFeilet();
                   }}
+                  onSuccess={() => loggSkjemaFullfort("digital")}
                 />
               ))}
 
