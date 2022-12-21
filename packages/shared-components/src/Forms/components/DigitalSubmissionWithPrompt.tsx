@@ -36,7 +36,11 @@ const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError, 
   return (
     <>
       <Button onClick={() => setIsOpen(true)}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
-      <Modal open={isOpen} ariaLabel="Modal demo" onClose={() => setIsOpen(false)}>
+      <Modal
+        open={isOpen}
+        ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
+        onClose={() => setIsOpen(false)}
+      >
         <BodyShort className={styles.body}>{translate(TEXTS.grensesnitt.submitToNavPrompt.body)}</BodyShort>
         <div className={styles.buttonRow}>
           <DigitalSubmissionButton
