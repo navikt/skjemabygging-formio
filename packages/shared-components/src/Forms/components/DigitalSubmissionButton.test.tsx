@@ -37,13 +37,12 @@ describe("DigitalSubmissionButton", () => {
       translations: defaultTranslations,
       onError: jest.fn(),
       onSuccess: jest.fn(),
-      children: "Digital submission",
       ...props,
-    };
+    } as Props;
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <LanguagesProvider translations={defaultTranslations}>
-          <DigitalSubmissionButton {...defaultProps} />
+          <DigitalSubmissionButton {...defaultProps}>Digital submission</DigitalSubmissionButton>
         </LanguagesProvider>
       </AppConfigProvider>
     );
