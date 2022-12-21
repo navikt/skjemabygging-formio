@@ -20,6 +20,7 @@ import datagrid from "./datagrid";
 import day from "./day";
 import dialog from "./dialog";
 import editgrid from "./editgrid";
+import errorsList from "./errorsList";
 import field from "./field";
 import fieldset from "./fieldset";
 import file from "./file";
@@ -94,6 +95,7 @@ export default {
   day,
   dialog,
   editgrid,
+  errorsList,
   field,
   fieldset,
   file,
