@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Button } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "../../components/modal/Modal";
 import { useLanguages } from "../../context/languages";
 import DigitalSubmissionButton from "./DigitalSubmissionButton";
@@ -28,6 +28,7 @@ export interface Props {
 
 const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError, onSuccess }: Props) => {
   const { translate } = useLanguages();
+  useEffect(() => Modal.setAppElement("#root"), []);
   const [isOpen, setIsOpen] = useState(false);
 
   const styles = useStyles();

@@ -74,11 +74,13 @@ const renderSummaryPage = async (
     ...props,
   };
   render(
-    <AppConfigProvider {...appConfigProps}>
-      <Router history={history}>
-        <SummaryPage {...summaryPageProps} />
-      </Router>
-    </AppConfigProvider>
+    <div id="root">
+      <AppConfigProvider {...appConfigProps}>
+        <Router history={history}>
+          <SummaryPage {...summaryPageProps} />
+        </Router>
+      </AppConfigProvider>
+    </div>
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { name: TEXTS.grensesnitt.title });
