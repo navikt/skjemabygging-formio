@@ -5,6 +5,15 @@ Formio.Utils.toggleClass = (id, className) => {
   return `document.getElementById('${id}').classList.toggle('${className}')`;
 };
 
+Formio.Utils.getDiffLabel = (component, diff) => {
+  if (!diff || !diff[component?.id]) {
+    console.log("No diff", component.label, component?.id, diff);
+    return "";
+  }
+  const componentDiff = diff[component?.id];
+  return componentDiff.status ? `<span>${componentDiff.status}</span>` : "";
+};
+
 /*
  * This function is overridden because FormioUtils.sanitize calls dompurify.sanitize, which has a bug.
  * The bug is discussed here: https://github.com/cure53/DOMPurify/issues/276
