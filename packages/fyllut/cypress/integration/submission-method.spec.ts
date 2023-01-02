@@ -46,7 +46,7 @@ describe("Submission method", () => {
       });
 
       // Denne feiler pga. bug i react stepper hvor link til vedleggspanelet vises selv om søknaden skal sendes digitalt
-      it.skip("renders stepper without 'Vedlegg' on summary page", () => {
+      it("renders stepper without 'Vedlegg' on summary page", () => {
         cy.findByRole("navigation", { name: "Søknadssteg" })
           .should("exist")
           .within(() => {
