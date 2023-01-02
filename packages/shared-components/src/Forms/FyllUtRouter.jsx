@@ -3,7 +3,6 @@ import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
-import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FormTitle } from "./components/FormTitle.tsx";
@@ -33,18 +32,16 @@ const FyllUtRouter = ({ form, translations }) => {
   const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
-  const { loggSkjemaApnet } = useAmplitude();
   useEffect(() => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
   useEffect(() => {
-    loggSkjemaApnet();
     addBeforeUnload();
     return () => {
       removeBeforeUnload();
     };
-  }, [loggSkjemaApnet]);
+  }, []);
 
   return (
     <LanguagesProvider translations={translations}>

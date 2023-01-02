@@ -1,5 +1,5 @@
 import { overrideFormioTextField } from "./component-overrides";
 import { evaluateOverride, sanitizeJavaScriptCode } from "./utils-overrides";
-import { overrideFormioWizardNextPageAndSubmit } from "./wizard-overrides";
+import "./wizard-overrides"; // Need import so that overrides are registered
 
-export { evaluateOverride, overrideFormioWizardNextPageAndSubmit, sanitizeJavaScriptCode, overrideFormioTextField };
+export { evaluateOverride, sanitizeJavaScriptCode, overrideFormioTextField };

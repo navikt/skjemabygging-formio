@@ -10,6 +10,7 @@
 
 import "@testing-library/cypress/add-commands";
 import "cypress-wait-until";
+import { parse } from "querystring";
 
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
@@ -48,4 +49,19 @@ Cypress.Commands.add("clickNextStep", () => {
 
 Cypress.Commands.add("clickStart", () => {
   return cy.findByRoleWhenAttached("link", { name: "Start" }).click();
+});
+
+Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
+  return cy
+    .wait("@amplitudeLogging")
+    .its("request.body")
+    .then(parse)
+    .then((body: any) => JSON.parse(body.e)[0])
+    .then((event) => {
+      expect(event.event_type).to.equal(eventType);
+      if (properties && Object.keys(properties).length > 0) {
+        const propertyKeys = Object.keys(properties);
+        propertyKeys.forEach((key) => expect(event.event_properties?.[key]).to.equal(properties[key]));
+      }
+    });
 });

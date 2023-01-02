@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
@@ -9,10 +9,20 @@ import { getPanelSlug } from "../util/form";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
-  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useAmplitude();
+  const {
+    loggSkjemaApnet,
+    loggSkjemaSporsmalBesvart,
+    loggSkjemaSporsmalForSpesialTyper,
+    loggSkjemaStegFullfort,
+    loggSkjemaValideringFeilet,
+  } = useAmplitude();
   const { featureToggles } = useAppConfig();
   const { currentLanguage, translationsForNavForm } = useLanguages();
   const { panelSlug } = useParams();
+
+  useEffect(() => {
+    loggSkjemaApnet();
+  }, [loggSkjemaApnet]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -38,7 +48,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onNextOrPreviousPage({ page, currentPanels }) {
+  function onNextPage({ page, currentPanels }) {
+    loggSkjemaStegFullfort(page);
+    onNextOrPreviousPage(page, currentPanels);
+  }
+
+  function onPreviousPage({ page, currentPanels }) {
+    onNextOrPreviousPage(page, currentPanels);
+  }
+
+  function onNextOrPreviousPage(page, currentPanels) {
     if (page <= currentPanels.length - 1) {
       updatePanelUrl(currentPanels[page]);
     }
@@ -55,7 +74,15 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
+    const panelKey = window.location.pathname.split(`${formUrl}/`)[1];
+    loggSkjemaStegFullfort(form.components.findIndex((panel) => panel.key === panelKey) + 1);
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+  };
+
+  const onError = () => {
+    loggSkjemaValideringFeilet();
+    // Commenting out as temporary fix for issue where we scroll to errorsList when onChange is triggered
+    //scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
 
   return (
@@ -67,9 +94,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalForSpesialTyper}
+        onError={onError}
         onSubmit={onSubmit}
-        onNextPage={onNextOrPreviousPage}
-        onPrevPage={onNextOrPreviousPage}
+        onNextPage={onNextPage}
+        onPrevPage={onPreviousPage}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
