@@ -15,6 +15,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import useMottaksadresser from "../hooks/useMottaksadresser";
+import useTemaKoder from "../hooks/useTemaKoder";
 import EnhetSettings from "./EnhetSettings";
 import SignatureComponent from "./layout/SignatureComponent";
 
@@ -56,7 +57,8 @@ export const COMPONENT_TEXTS = {
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
-  const { mottaksadresser, ready, errorMessage: mottaksadresseError } = useMottaksadresser();
+  const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
+  const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
   const {
     title,
     properties: {
@@ -172,20 +174,27 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
         feil={errors?.tema}
       />
-      <Select
-        label={"Temakode"}
-        id="tema"
-        value={temakoder.includes(tema) ? tema : ""}
-        onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-        error={errors?.tema}
-      >
-        <option value="">{"Velg temakode"}</option>
-        {temakoder.map((temakode) => (
-          <option key={temakode} value={temakode}>
-            {temakode}
-          </option>
-        ))}
-      </Select>
+      <div className="margin-bottom-default">
+        <Select
+          label={"Tema"}
+          id="tema"
+          disabled={!isTemaKoderReady}
+          value={Object.keys(temaKoder).includes(tema) ? tema : ""}
+          onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
+          error={errors?.tema}
+        >
+          <option value="">{"Velg tema"}</option>
+          {/*TODO: Move transformation and default sorting to hook*/}
+          {Object.entries(temaKoder)
+            .sort((a, b) => a[1].localeCompare(b[1]))
+            .map(([key, value]) => (
+              <option key={key} value={key}>
+                {`${value} (${key})`}
+              </option>
+            ))}
+        </Select>
+        {temaKoderError && <AlertStripeFeil>{temaKoderError}</AlertStripeFeil>}
+      </div>
       <Input
         label="Tekst på knapp for nedlasting av pdf"
         type="text"
@@ -248,7 +257,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
             name="form-mottaksadresse"
             id="form-mottaksadresse"
             value={mottaksadresseId}
-            disabled={!ready}
+            disabled={!isMottaksAdresserReady}
             onChange={(event) =>
               onChange({
                 ...form,
@@ -261,7 +270,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
             }
           >
             <option value="">
-              {mottaksadresseId && !ready ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
+              {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
             </option>
             {mottaksadresser.map((adresse) => (
               <option value={adresse._id} key={adresse._id}>
