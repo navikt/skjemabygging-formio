@@ -1,4 +1,4 @@
-import { createFormSummaryObject, signatureUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { formSummaryUtil, signatureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { DateTime } from "luxon";
 import PdfPrinter from "pdfmake";
 
@@ -255,7 +255,7 @@ export class Pdfgen {
   }
 
   generateBody() {
-    const formSummaryObject = createFormSummaryObject(this.form, this.submission);
+    const formSummaryObject = formSummaryUtil.createFormSummaryObject(this.form, this.submission);
     const panels = formSummaryObject.filter((component) => component.type === "panel");
     const homelessComponents = formSummaryObject.filter((component) => component.type !== "panel");
     const homelessComponentsTable = this.createTableWithBody(this.componentsToBody(homelessComponents));

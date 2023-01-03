@@ -16,49 +16,38 @@ describe("Axe: Accessibility testing", () => {
 
     it("Person", () => {
       cy.clickStart();
-      cy.checkA11y(
-        {
-          exclude: [".formio-select-autocomplete-input"],
-        },
-        {
-          includedImpacts: ["minor"],
-        }
-      );
+      cy.checkA11y();
     });
 
     it("Penger og konto", () => {
-      cy.findByRole("button", { name: "2 Penger og konto" }).click();
+      cy.findByRole("link", { name: "Penger og konto" }).click();
       cy.checkA11y();
     });
 
     it("Bedrift / organisasjon", () => {
-      cy.findByRole("button", { name: "3 Bedrift / organisasjon" }).click();
+      cy.findByRole("link", { name: "Bedrift / organisasjon" }).click();
       cy.checkA11y();
     });
 
     it("Dato og tid", () => {
-      cy.findByRole("button", { name: "4 Dato og tid" }).click();
-      cy.checkA11y({
-        exclude: [".formio-select-autocomplete-input"],
-      });
+      cy.findByRole("link", { name: "Dato og tid" }).click();
+      cy.checkA11y();
     });
 
     it("Standard felter", () => {
-      cy.findByRole("button", { name: "5 Standard felter" }).click();
-      cy.checkA11y({
-        exclude: [".formio-select-autocomplete-input"],
-      });
+      cy.findByRole("link", { name: "Standard felter" }).click();
+      cy.checkA11y();
     });
 
     it("Layout", () => {
-      cy.findByRole("button", { name: "6 Layout" }).click();
+      cy.findByRole("link", { name: "Layout" }).click();
       cy.checkA11y({
         exclude: [".alertstripe"],
       });
     });
 
     it("Data", () => {
-      cy.findByRole("button", { name: "7 Data" }).click();
+      cy.findByRole("link", { name: "Data" }).click();
       cy.checkA11y();
     });
   });

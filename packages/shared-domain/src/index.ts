@@ -8,6 +8,7 @@ import type {
   InnsendingType,
   NavFormType,
   NewFormSignatureType,
+  Panel,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
@@ -24,10 +25,12 @@ import type {
   TranslationScope,
   TranslationTag,
 } from "./languages/types";
+import migrationUtils from "./migration";
+import { Operator } from "./migration/operator";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
-import { createFormSummaryObject } from "./summary/formSummaryUtil";
+import formSummaryUtil from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
 import dateUtils from "./utils/date";
@@ -37,14 +40,15 @@ import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
 import navFormUtils from "./utils/navFormUtils";
 import objectUtils from "./utils/objectUtils";
+import paginationUtils from "./utils/pagination";
 import signatureUtils from "./utils/signatureUtils";
 import stringUtils from "./utils/stringUtils";
 import validatorUtils from "./utils/validatorUtils";
 
 export {
-  createFormSummaryObject,
   TEXTS,
   MockedComponentObjectForTest,
+  formSummaryUtil,
   navFormioUtils,
   navFormUtils,
   stringUtils,
@@ -56,6 +60,8 @@ export {
   guid,
   validatorUtils,
   dateUtils,
+  migrationUtils,
+  paginationUtils,
 };
 export type {
   FeatureTogglesMap,
@@ -67,6 +73,7 @@ export type {
   FormPropertiesPublishing,
   NavFormType,
   Component,
+  Panel,
   Enhet,
   Enhetstype,
   FormioTranslationPayload,
@@ -89,4 +96,5 @@ export type {
   KjentBruker,
   UkjentBruker,
   ReportDefinition,
+  Operator,
 };

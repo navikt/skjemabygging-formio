@@ -1,8 +1,11 @@
+import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+
 export type ParsedInput = number | string | boolean | null | object | Array;
 
 export interface MigrationOption {
   key: string;
   value: ParsedInput;
+  operator?: Operator;
 }
 
 export interface MigrationOptions {
@@ -53,11 +56,9 @@ export interface BreakingChanges {
   dependentComponents: DependentComponents[];
 }
 
-export interface DryRunResult {
-  skjemanummer: string;
-  name: string;
-  title: string;
-  path: string;
+export interface DryRunResult
+  extends Pick<FormPropertiesType, "skjemanummer" | "modified" | "published" | "isTestForm" | "unpublished">,
+    Pick<NavFormType, "name" | "title" | "path"> {
   found: number;
   changed: number;
   diff: FormMigrationDiff[];

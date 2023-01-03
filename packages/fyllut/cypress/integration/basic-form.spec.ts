@@ -6,12 +6,15 @@ describe("Basic form", () => {
   const fillInForm = (expectVedleggspanel: boolean) => {
     // Steg 1 -> Steg 2
     cy.clickNextStep();
+
+    cy.findByRole("combobox", { name: "Tittel" }).should("exist").click();
+    cy.findByText("Fru").should("exist").click();
     cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Kari");
     cy.findByRole("textbox", { name: "Etternavn" }).should("exist").type("Norman");
 
     // Radio panel is currently not reachable by role. Additionally {force: true} is needed here because
     // the input is overlapping with the label element, which makes cypress assume it's not interactable
-    cy.get(".radiogruppe")
+    cy.get(".navds-radio-group")
       .first()
       .should("exist")
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check({ force: true }));
@@ -56,14 +59,16 @@ describe("Basic form", () => {
     cy.get("dl")
       .first()
       .within(() => {
-        cy.get("dt").eq(0).should("contain.text", "Fornavn");
-        cy.get("dd").eq(0).should("contain.text", "Kari");
-        cy.get("dt").eq(1).should("contain.text", "Etternavn");
-        cy.get("dd").eq(1).should("contain.text", "Norman");
-        cy.get("dt").eq(2).should("contain.text", "Har du norsk fødselsnummer eller D-nummer?");
-        cy.get("dd").eq(2).should("contain.text", "Nei");
-        cy.get("dt").eq(3).should("contain.text", "Din fødselsdato (dd.mm.åååå)");
-        cy.get("dd").eq(3).should("contain.text", "10.5.1995");
+        cy.get("dt").eq(0).should("contain.text", "Tittel");
+        cy.get("dd").eq(0).should("contain.text", "Fru");
+        cy.get("dt").eq(1).should("contain.text", "Fornavn");
+        cy.get("dd").eq(1).should("contain.text", "Kari");
+        cy.get("dt").eq(2).should("contain.text", "Etternavn");
+        cy.get("dd").eq(2).should("contain.text", "Norman");
+        cy.get("dt").eq(3).should("contain.text", "Har du norsk fødselsnummer eller D-nummer?");
+        cy.get("dd").eq(3).should("contain.text", "Nei");
+        cy.get("dt").eq(4).should("contain.text", "Din fødselsdato (dd.mm.åååå)");
+        cy.get("dd").eq(4).should("contain.text", "10.5.1995");
       });
   };
 
@@ -92,7 +97,7 @@ describe("Basic form", () => {
         cy.findByRole("heading", { level: 2, name: "Dine opplysninger" });
         cy.findByText("For å gå videre må du rette opp følgende:").should("exist");
 
-        cy.findAllByRole("link", { name: /^Du må fylle ut:/ }).should("have.length", 3);
+        cy.findAllByRole("link", { name: /^Du må fylle ut:/ }).should("have.length", 4);
         cy.findByRoleWhenAttached("link", { name: "Du må fylle ut: Fornavn" }).click();
         cy.findByRole("textbox", { name: "Fornavn" }).should("have.focus");
       });

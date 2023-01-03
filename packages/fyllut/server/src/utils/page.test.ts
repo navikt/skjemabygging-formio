@@ -3,16 +3,6 @@ import { getDefaultPageMeta, getFormMeta, getQueryParamSub } from "./page";
 
 describe("page (util)", () => {
   describe("getFormMeta", () => {
-    it("retrieves title and description from form definition", () => {
-      const form = {
-        title: "Søknad om servicehund",
-        components: [{ key: "beskrivelsetekst", content: "Dette er en beskrivelse av skjemaet" }] as Component[],
-      } as NavFormType;
-      const meta = getFormMeta(form);
-      expect(meta.PAGE_TITLE).toEqual("Søknad om servicehund");
-      expect(meta.PAGE_DESCRIPTION).toEqual("Dette er en beskrivelse av skjemaet");
-    });
-
     it("uses default description when it is missing in form definition", () => {
       const form = {
         title: "Søknad om servicehund",

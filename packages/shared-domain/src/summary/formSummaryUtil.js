@@ -42,9 +42,13 @@ function formatValue(component, value, translate) {
       // For å sikre bakoverkompatibilitet må vi ta høyde for at value kan være string
       return translate(typeof value === "string" ? value : value?.label);
 
-    case "select": {
+    case "select":
+    case "navSelect":
+      if (typeof value === "object") {
+        return translate(value.label);
+      }
       return translate((component.data.values.find((option) => option.value === value) || {}).label);
-    }
+
     case "day": {
       if (value.match("00/00/")) {
         return value.slice(6);
@@ -292,7 +296,7 @@ function handleAmountWithCurrencySelector(component, submission, formSummaryObje
   ];
 }
 
-export function handleComponent(
+function handleComponent(
   component,
   submission = { data: {} },
   formSummaryObject,
@@ -387,11 +391,11 @@ function evaluateConditionals(components = [], form, data, row = []) {
     });
 }
 
-export function mapAndEvaluateConditionals(form, data = {}) {
+function mapAndEvaluateConditionals(form, data = {}) {
   return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
 }
 
-export function createFormSummaryObject(form, submission, translate = (txt) => txt) {
+function createFormSummaryObject(form, submission, translate = (txt) => txt) {
   const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
   return form.components.reduce(
     (formSummaryObject, component) =>
@@ -399,3 +403,9 @@ export function createFormSummaryObject(form, submission, translate = (txt) => t
     []
   );
 }
+
+export default {
+  createFormSummaryObject,
+  handleComponent,
+  mapAndEvaluateConditionals,
+};

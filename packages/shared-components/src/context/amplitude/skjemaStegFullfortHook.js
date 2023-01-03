@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { loggSkjemaStegFullfort } from "../../util/amplitude";
-import { Formio } from "formiojs";
 
 export default function useSkjemaStegFullfort(form) {
   const [completedSteps, setCompletedSteps] = useState({});
@@ -17,6 +16,5 @@ export default function useSkjemaStegFullfort(form) {
       });
     }
   }, [completedSteps, form, lastCompletedStep]);
-  // Defaulting steg to the page of the current form, looked up by the one with page !== 0.
-  return (steg = Object.values(Formio.forms).find((someForm) => someForm.page > 0).page) => setLastCompletedStep(steg);
+  return (steg) => setLastCompletedStep(steg);
 }

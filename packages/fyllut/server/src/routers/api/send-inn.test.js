@@ -17,6 +17,14 @@ describe("[endpoint] send-inn", () => {
     translations: {},
   };
 
+  const bodyWithTranslations = {
+    form: { title: "Original title", components: [], properties: { skjemanummer: "NAV 12.34-56" } },
+    submission: {},
+    attachments: [{ label: "vedlegg1" }, { label: "vedlegg2" }],
+    language: "en",
+    translations: { "Original title": "Translated title", vedlegg1: "attachment1", vedlegg2: "attachment2" },
+  };
+
   it("returns 201 and location header if success", async () => {
     const sendInnNockScope = nock(sendInnConfig.host)
       .post(sendInnConfig.paths.leggTilVedlegg)
@@ -34,6 +42,26 @@ describe("[endpoint] send-inn", () => {
       Location: SEND_LOCATION,
     });
     expect(next).not.toHaveBeenCalled();
+    expect(sendInnNockScope.isDone()).toBe(true);
+  });
+
+  it("translates metadata", async () => {
+    let postedBody;
+    const sendInnNockScope = nock(sendInnConfig.host)
+      .post(sendInnConfig.paths.leggTilVedlegg, (body) => (postedBody = body))
+      .reply(302, "FOUND", { Location: SEND_LOCATION });
+    const req = mockRequest({ body: bodyWithTranslations });
+    req.getIdportenPid = () => "12345678911";
+    req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
+    const res = mockResponse();
+    const next = jest.fn();
+    await sendInn.post(req, res, next);
+
+    expect(postedBody.tittel).toBe("Translated title");
+    expect(postedBody.hoveddokument.tittel).toBe("Translated title");
+    expect(postedBody.hoveddokument.label).toBe("Translated title");
+    expect(postedBody.vedleggsListe[0].label).toBe("attachment1");
+    expect(postedBody.vedleggsListe[1].label).toBe("attachment2");
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 

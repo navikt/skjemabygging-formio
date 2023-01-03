@@ -1,6 +1,19 @@
 {
   "en": {
+    "Skjema for Cypress-testing": "Form for Cypress testing",
     "Veiledning": "Guidance",
-    "Her skal det stå litt informasjon om søknaden": "Info about the application"
+    "Dine opplysninger": "Your information",
+    "Her skal det stå litt informasjon om søknaden": "Info about the application",
+    "Fornavn": "First name",
+    "Etternavn": "Last name",
+    "Tittel": "Title",
+    "Herr": "Mr",
+    "Fru": "Mrs",
+    "Frøken": "Ms",
+    "Har du norsk fødselsnummer eller D-nummer?": "Do you have norwegian national identification number or D number?",
+    "Fødselsnummer / D-nummer": "Norwegian national identification / D number",
+    "Oppsummering": "Summary",
+    "Annen dokumentasjon": "Other documentation",
+    "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.": "No, I have no other documentation."
   }
 }

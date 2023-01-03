@@ -3,9 +3,9 @@ import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
-import { useAmplitude } from "../context/amplitude";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
+import { FormTitle } from "./components/FormTitle.tsx";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
@@ -16,8 +16,12 @@ import { SummaryPage } from "./SummaryPage.tsx";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
-  maxWidth: "800px",
+  maxWidth: "960px",
+  padding: "2rem 0",
   ...bootstrapStyles,
+  "@media screen and (max-width: 992px)": {
+    padding: "1rem",
+  },
 });
 
 const ALERT_MESSAGE_BACK_BUTTON =
@@ -28,23 +32,25 @@ const FyllUtRouter = ({ form, translations }) => {
   const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
-  const { loggSkjemaApnet } = useAmplitude();
   useEffect(() => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
 
   useEffect(() => {
-    loggSkjemaApnet();
     addBeforeUnload();
     return () => {
       removeBeforeUnload();
     };
-  }, [loggSkjemaApnet]);
+  }, []);
 
   return (
     <LanguagesProvider translations={translations}>
+      <FormTitle form={form} />
       <FyllUtContainer>
-        {featureToggles.enableTranslations && <LanguageSelector />}
+        <div className="fyllut-layout">
+          <div className="main-col"></div>
+          <div className="right-col">{featureToggles.enableTranslations && <LanguageSelector />}</div>
+        </div>
         <Switch>
           <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
           <Route exact path={path}>

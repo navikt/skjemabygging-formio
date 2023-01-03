@@ -29,11 +29,9 @@ import "nav-frontend-skjema-style";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { useAppConfig } from "../configContext";
-import { useAmplitude } from "../context/amplitude";
-import { evaluateOverride, overrideFormioTextField, overrideFormioWizardNextPageAndSubmit } from "../formio-overrides";
+import { evaluateOverride, overrideFormioTextField } from "../formio-overrides";
 import i18nData from "../i18nData";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
-import { scrollToAndSetFocus } from "../util/focus-management";
 import formioFormStyles from "./styles/formioFormStyles";
 
 Utils.evaluate = evaluateOverride;
@@ -94,6 +92,15 @@ const NavForm = (props) => {
         props[funcName](...args);
       }
     }
+
+    // Repopulating form from submission after navigating back to form from another context (e.g. Summary page)
+    if (event === "formio.change" && args?.some((arg) => arg?.fromSubmission)) {
+      instance.ready.then((formioInstance) => {
+        if (props.submissionReady) {
+          props.submissionReady(formioInstance);
+        }
+      });
+    }
   };
 
   const initializeFormio = () => {
@@ -143,10 +150,6 @@ const NavForm = (props) => {
   }, [props.language]);
 
   useEffect(() => {
-    overrideFormioWizardNextPageAndSubmit(props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet);
-  }, [props.loggSkjemaStegFullfort, props.loggSkjemaValideringFeilet]);
-
-  useEffect(() => {
     const { submission } = props;
     if (formio && submission) {
       formio.submission = JSON.parse(JSON.stringify(submission));
@@ -187,8 +190,6 @@ NavForm.propTypes = {
 NavForm.defaultProps = {
   language: "nb-NO",
   i18n: i18nData,
-  onNextPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
-  onPrevPage: () => scrollToAndSetFocus(".wizard-page input, .wizard-page textarea, .wizard-page select", "center"),
 };
 
 NavForm.getDefaultEmitter = () => {
@@ -198,17 +199,4 @@ NavForm.getDefaultEmitter = () => {
   });
 };
 
-const withAmplitudeHooks = (Component) => {
-  return (props) => {
-    const { loggSkjemaStegFullfort, loggSkjemaValideringFeilet } = useAmplitude();
-    return (
-      <Component
-        loggSkjemaStegFullfort={loggSkjemaStegFullfort}
-        loggSkjemaValideringFeilet={loggSkjemaValideringFeilet}
-        {...props}
-      />
-    );
-  };
-};
-
-export default withAmplitudeHooks(NavForm);
+export default NavForm;

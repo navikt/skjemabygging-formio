@@ -91,8 +91,6 @@ const findComponent = (isMatch: ComponentMatcherFunction, components: Component[
 
 const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);
-const findByKey = (key: string, components: Component[]): Component | undefined =>
-  findComponent((c) => c.key === key, components);
 
 export const findDependentComponents = (id: string, form: NavFormType) => {
   const idToPathMapping: { [s: string]: string } = {};
@@ -124,14 +122,11 @@ export const removeComponents = (form: NavFormType, isTarget: ComponentFilterFun
   return formCopy;
 };
 
-const VEDLEGGSPANEL_KEY = /^vedlegg(panel)?$/;
 export const removeVedleggspanel = (form: NavFormType) => {
-  const isVedleggspanel = (component: Component) => component.type === "panel" && VEDLEGGSPANEL_KEY.test(component.key);
+  const isVedleggspanel = (component: Component) =>
+    !!(component.type === "panel" && (component.isAttachmentPanel || /^vedlegg(panel)?$/.test(component.key)));
   return removeComponents(form, isVedleggspanel);
 };
-
-export const findDescription = (form: NavFormType): string | undefined =>
-  findByKey("beskrivelsetekst", form.components)?.content;
 
 export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFormType): boolean => {
   const { innsending } = form.properties;
@@ -148,7 +143,6 @@ const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
   findDependentComponents,
-  findDescription,
   flattenComponents,
   isSubmissionMethodAllowed,
   removeVedleggspanel,

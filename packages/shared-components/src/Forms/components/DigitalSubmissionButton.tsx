@@ -1,10 +1,10 @@
+import { Button } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
-import { getRelevantAttachments } from "./attachmentsUtil";
+import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
 
 export interface Props {
   form: object;
@@ -27,6 +27,7 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       translations: translationsForPDF,
       language: currentLanguage,
       attachments,
+      otherDocumentation: hasOtherDocumentation(form, submission),
     },
     {
       "Fyllut-Is-Test": isTest,
@@ -67,9 +68,9 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
   };
 
   return (
-    <Hovedknapp onClick={sendInn} spinner={loading}>
+    <Button onClick={sendInn} loading={loading}>
       {translate(TEXTS.grensesnitt.moveForward)}
-    </Hovedknapp>
+    </Button>
   );
 };
 

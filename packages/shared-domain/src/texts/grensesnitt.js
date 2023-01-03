@@ -29,4 +29,20 @@ export const grensesnitt = {
   prepareLetterPage: {
     downloadCoverPage: "Last ned førsteside",
   },
+  stepper: {
+    toggleText: "Steg {{currentStep}} av {{totalSteps}}",
+    close: "Lukk",
+  },
+  navSelect: {
+    defaultLabel: "Nedtrekksmeny",
+    numberOfAvailableOptions: "{{count}} valg tilgjengelig",
+    labelWithFocusSelected: "{{label}} har fokus, er valgt.",
+    labelWithFocusNotSelected: "{{label}} har fokus, er ikke valgt.",
+    noOptionSelected: "Ingen verdi er valgt.",
+    optionSelected: "{{label}} er valgt",
+    optionDeselected: "{{label}} er nå fjernet.",
+    optionDisabled: "{{label}} er deaktivert, og kan ikke velges.",
+    inputHasFocus: "{{label}} har fokus.",
+    onFilterSearchResult: "for søkeordet {{inputValue}}.",
+  },
 };

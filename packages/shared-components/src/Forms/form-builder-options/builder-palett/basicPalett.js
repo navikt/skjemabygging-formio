@@ -123,14 +123,15 @@ const basicPalett = {
         },
       },
     },
-    select: {
+    navSelect: {
       title: "Nedtrekksmeny",
-      key: "select",
+      key: "navSelect",
       icon: "th-list",
       schema: {
         label: "Nedtrekksmeny",
-        type: "select",
-        key: "select",
+        type: "navSelect",
+        key: "navSelect",
+        fieldSize: "input--xxl",
         input: true,
         clearOnHide: true,
         dataGridLabel: true,

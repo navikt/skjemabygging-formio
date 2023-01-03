@@ -21,11 +21,11 @@
             <th>
               {% if (!ctx.builder && ctx.hasAddButton && ctx.hasTopSubmit) { %}
                 <button
-                  class="knapp knapp--hoved"
+                  class="navds-button navds-button--primary"
                   ref="{{ctx.datagridKey}}-addRow"
                   type="button"
                 >
-                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8z" fill="currentColor" />
                   </svg>
                   <span>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
@@ -50,7 +50,7 @@
           {% if (ctx.component.reorder) { %}
             <td>
               <button type="button" class="formio-drag-button knapp knapp--kompakt" data-key="{{ctx.datagridKey}}">
-                <svg role="presentation" focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg focusable="false" width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0a3 3 0 013 3v6l4.758.465c2.558.34 4.414 2.673 4.23 5.317L22.37 24H8.742l-6.068-7.791c-.98-1.258-.976-3.003.227-4.209 1.155-1.158 2.872-.992 3.964-.32L9 13V3a3 3 0 013-3zm0 2a1 1 0 00-.993.883L11 3v13.58l-5.051-3.11-.085-.055c-.508-.35-1.2-.35-1.547-.002-.412.412-.462.965-.145 1.455l.08.112 5.466 7.019h10.971l1.306-7.438.005-.102c.017-1.462-.976-2.715-2.273-2.976l-.164-.027L13 10.814V3a1 1 0 00-.883-.993L12 2z" fill="currentColor"></path>
                 </svg>
                 <span class="sr-only">Dra for å bytte rekkefølge</span>
@@ -70,7 +70,7 @@
                   class="knapp knapp--flat knapp--kompakt"
                   ref="{{ctx.datagridKey}}-removeRow"
                 >
-                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385L13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385z" fill="currentColor"></path>
                   </svg>
                   <span class="sr-only">ctx.t("Fjern")</span>
@@ -91,15 +91,15 @@
         <tr>
           <td colspan="{{ctx.numColumns + 1}}">
             <button
-              class="knapp knapp--hoved"
+              class="navds-button navds-button--primary"
               ref="{{ctx.datagridKey}}-addRow"
               type="button"
             >
 
-              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8z" fill="currentColor" />
               </svg>
-              <span>{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
+              <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
             </button>
           </td>
         </tr>
@@ -149,17 +149,32 @@
         </div>
         {% }) %}
         {% if (ctx.hasExtraColumn) { %}
+          <div class="datagrid-add-remove-row">
+          {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit && index === ctx.rows.length - 1) { %}
+            <button
+              class="navds-button navds-button--secondary knapp--legg-til navds-button--small"
+              ref="{{ctx.datagridKey}}-addRow"
+              type="button"
+            >
+            <span class="navds-button__icon">
+              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8Z" fill="currentColor"></path></svg>
+            </span>
+              <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}</span>
+            </button>
+          {% } %}
           {% if (!ctx.builder && ctx.hasRemoveButtons && (index > 0 || ctx.component.initEmpty || ctx.rows.length > 1)) { %}
-            <div>
               <button
                 type="button"
-                class="knapp knapp--standard knapp--fjern"
+                class="navds-button navds-button--tertiary knapp--fjern navds-button--small"
                 ref="{{ctx.datagridKey}}-removeRow"
               >
-                {{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}
+                <span class="navds-button__icon">
+                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385 13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385Z" fill="currentColor"></path></svg>
+                </span>
+                <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}</span>
               </button>
-            </div>
           {% } %}
+          </div>
           {% if (ctx.canAddColumn) { %}
             <div ref="{{ctx.key}}-container">
               {{ctx.placeholder}}
@@ -168,16 +183,5 @@
         {% } %}
       </fieldset>
     {% }) %}
-    {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit) { %}
-    <div>
-      <button
-        class="knapp knapp--standard knapp--legg-til"
-        ref="{{ctx.datagridKey}}-addRow"
-        type="button"
-      >
-        {{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}
-      </button>
-    </div>
-    {% } %}
   </fieldset>
 {% } %}
