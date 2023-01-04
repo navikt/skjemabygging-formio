@@ -1,7 +1,6 @@
 import { Select } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
-  DisplayType,
   InnsendingType,
   MottaksadresseData,
   NavFormType,
@@ -14,10 +13,11 @@ import { Checkbox, Input, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import useMottaksadresser from "../hooks/useMottaksadresser";
-import useTemaKoder from "../hooks/useTemaKoder";
+import useMottaksadresser from "../../hooks/useMottaksadresser";
+import useTemaKoder from "../../hooks/useTemaKoder";
+import SignatureComponent from "../layout/SignatureComponent";
 import EnhetSettings from "./EnhetSettings";
-import SignatureComponent from "./layout/SignatureComponent";
+import { FormMetadataError } from "./utils";
 
 export type UpdateFormFunction = (form: NavFormType) => void;
 export type UsageContext = "create" | "edit";
@@ -29,23 +29,6 @@ interface Props {
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
-type FormMetadataError = { [key: string]: string };
-
-const validateFormMetadata = (form: NavFormType) => {
-  const errors = {} as FormMetadataError;
-  if (!form.title) {
-    errors.title = "Du må oppgi skjematittel";
-  }
-  if (!form.properties.skjemanummer) {
-    errors.skjemanummer = "Du må oppgi skjemanummer";
-  }
-  if (form.properties.tema === "") {
-    errors.tema = "Du må velge temakode";
-  }
-  return errors;
-};
-
-const isFormMetadataValid = (errors) => Object.keys(errors).length === 0;
 
 export const COMPONENT_TEXTS = {
   BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir",
@@ -320,23 +303,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
   );
 };
 
-export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
-  const { display } = form;
-  return (
-    <Select
-      label="Vis som"
-      name="form-display"
-      id="form-display"
-      value={display}
-      onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
-      size="small"
-    >
-      <option value="form">Skjema</option>
-      <option value="wizard">Veiviser</option>
-    </Select>
-  );
-};
-
 export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) => (
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" errors={errors} />
 );
@@ -344,5 +310,3 @@ export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) =>
 export const FormMetadataEditor = ({ form, onChange, errors }: Props) => (
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" errors={errors} />
 );
-
-export { validateFormMetadata, isFormMetadataValid };
