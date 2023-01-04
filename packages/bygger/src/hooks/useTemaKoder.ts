@@ -20,7 +20,6 @@ const useTemaKoder = () => {
         throw new Error(`Feil ved henting av temakoder: ${res.status}`);
       })
       .then((koder: Temakoder) => {
-        console.log(koder);
         setTemaKoder(koder);
         setReady(true);
       })

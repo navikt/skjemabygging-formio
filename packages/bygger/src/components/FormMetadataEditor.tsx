@@ -163,6 +163,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       />
       <div className="margin-bottom-default">
         <Select
+          className="margin-bottom-default"
           label={"Tema"}
           id="tema"
           disabled={!isTemaKoderReady}
@@ -195,6 +196,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         placeholder={TEXTS.grensesnitt.downloadApplication}
       />
       <Select
+        className="margin-bottom-default"
         label="Innsending"
         name="form-innsending"
         id="form-innsending"
@@ -239,6 +241,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
         <div className="margin-bottom-default">
           <Select
+            className="margin-bottom-default"
             label="Mottaksadresse"
             name="form-mottaksadresse"
             id="form-mottaksadresse"
@@ -315,7 +318,9 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         </div>
       ))}
 
-      <Knapp onClick={addNewSignature}>Legg til signatur</Knapp>
+      <Knapp className="margin-bottom-default" onClick={addNewSignature}>
+        Legg til signatur
+      </Knapp>
     </SkjemaGruppe>
   );
 };
