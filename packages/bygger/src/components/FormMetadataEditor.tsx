@@ -31,9 +31,6 @@ interface Props {
 type BasicFormProps = Props & { usageContext: UsageContext };
 type FormMetadataError = { [key: string]: string };
 
-// Mock data
-const temakoder = ["HJE", "ABC", "NAV", "XYZ"];
-
 const validateFormMetadata = (form: NavFormType) => {
   const errors = {} as FormMetadataError;
   if (!form.title) {
@@ -42,8 +39,7 @@ const validateFormMetadata = (form: NavFormType) => {
   if (!form.properties.skjemanummer) {
     errors.skjemanummer = "Du må oppgi skjemanummer";
   }
-  //TODO: tilpass ekte datastruktur
-  if (!temakoder.includes(form.properties.tema)) {
+  if (form.properties.tema === "") {
     errors.tema = "Du må velge temakode";
   }
   return errors;
@@ -165,15 +161,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         onChange={(event) => onChange({ ...form, title: event.target.value })}
         feil={errors?.title}
       />
-      <Input
-        label="Temakode"
-        type="text"
-        id="temax"
-        placeholder="Skriv inn temakode (f.eks. OPP)"
-        value={tema}
-        onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-        feil={errors?.tema}
-      />
       <div className="margin-bottom-default">
         <Select
           label={"Tema"}
@@ -184,7 +171,6 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
           error={errors?.tema}
         >
           <option value="">{"Velg tema"}</option>
-          {/*TODO: Move transformation and default sorting to hook*/}
           {Object.entries(temaKoder)
             .sort((a, b) => a[1].localeCompare(b[1]))
             .map(([key, value]) => (
