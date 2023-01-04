@@ -5,7 +5,6 @@ import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Ingress } from "nav-frontend-typografi";
 import React, { useEffect } from "react";
-import { COMPONENT_TEXTS } from "./FormMetadataEditor";
 
 interface EnhetSettingsProps {
   enhetMaVelges: boolean;
@@ -51,7 +50,7 @@ const EnhetSettings = ({
     <>
       <div className="margin-bottom-default">
         <Checkbox
-          label={COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
+          label={"Bruker må velge enhet ved innsending på papir"}
           checked={enhetMaVelges}
           onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}
         />

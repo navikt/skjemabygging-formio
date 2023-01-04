@@ -17,10 +17,9 @@ import useMottaksadresser from "../../hooks/useMottaksadresser";
 import useTemaKoder from "../../hooks/useTemaKoder";
 import SignatureComponent from "../layout/SignatureComponent";
 import EnhetSettings from "./EnhetSettings";
-import { FormMetadataError } from "./utils";
+import { FormMetadataError, UpdateFormFunction } from "./utils";
 
-export type UpdateFormFunction = (form: NavFormType) => void;
-export type UsageContext = "create" | "edit";
+type UsageContext = "create" | "edit";
 
 interface Props {
   form: NavFormType;
@@ -29,10 +28,6 @@ interface Props {
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
-
-export const COMPONENT_TEXTS = {
-  BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir",
-};
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
