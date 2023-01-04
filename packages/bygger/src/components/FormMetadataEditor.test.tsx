@@ -23,6 +23,13 @@ jest.mock("../hooks/useMottaksadresser", () => () => {
     errorMessage: undefined,
   };
 });
+jest.mock("../hooks/useTemaKoder", () => () => {
+  return {
+    ready: true,
+    temaKoder: { ABC: "Tema 1", XYZ: "Tema 3", DEF: "Tema 2" },
+    errorMessage: undefined,
+  };
+});
 
 jest.mock("react-router-dom", () => ({
   // @ts-ignore
