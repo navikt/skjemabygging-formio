@@ -146,18 +146,16 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
           label={"Tema"}
           id="tema"
           disabled={!isTemaKoderReady}
-          value={Object.keys(temaKoder).includes(tema) ? tema : ""}
+          value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ""}
           onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
           error={errors?.tema}
         >
           <option value="">{"Velg tema"}</option>
-          {Object.entries(temaKoder)
-            .sort((a, b) => a[1].localeCompare(b[1]))
-            .map(([key, value]) => (
-              <option key={key} value={key}>
-                {`${value} (${key})`}
-              </option>
-            ))}
+          {temaKoder?.map(({ key, value }) => (
+            <option key={key} value={key}>
+              {`${value} (${key})`}
+            </option>
+          ))}
         </Select>
         {temaKoderError && (
           <Alert variant="error" size="small">

@@ -22,7 +22,11 @@ jest.mock("../../hooks/useMottaksadresser", () => () => {
 jest.mock("../../hooks/useTemaKoder", () => () => {
   return {
     ready: true,
-    temaKoder: { ABC: "Tema 1", XYZ: "Tema 3", DEF: "Tema 2" },
+    temaKoder: [
+      { key: "ABC", value: "Tema 1" },
+      { key: "XYZ", value: "Tema 3" },
+      { key: "DEF", value: "Tema 2" },
+    ],
     errorMessage: undefined,
   };
 });
@@ -191,14 +195,14 @@ describe("FormMetadataEditor", () => {
     });
 
     describe("Tema", () => {
-      it("lister ut temaer i alfabetisk rekkefølge", () => {
+      it("lister ut temaer", () => {
         render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
         const temaSelect = screen.getByRole("combobox", { name: "Tema" });
         const options = within(temaSelect).queryAllByRole("option");
         expect(options).toHaveLength(4);
         expect(options[1]).toHaveTextContent("Tema 1 (ABC)");
-        expect(options[2]).toHaveTextContent("Tema 2 (DEF)");
-        expect(options[3]).toHaveTextContent("Tema 3 (XYZ)");
+        expect(options[2]).toHaveTextContent("Tema 3 (XYZ)");
+        expect(options[3]).toHaveTextContent("Tema 2 (DEF)");
       });
 
       it("setter valgt tema hvis temakoden finnes blant valgene", () => {

@@ -1,11 +1,11 @@
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { useEffect, useState } from "react";
 
-type Temakoder = Record<string, string>;
+type Temakoder = Array<{ key: string; value: string }>;
 
 const useTemaKoder = () => {
   const { baseUrl } = useAppConfig();
-  const [temaKoder, setTemaKoder] = useState<Temakoder>({});
+  const [temaKoder, setTemaKoder] = useState<Temakoder>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
@@ -19,8 +19,12 @@ const useTemaKoder = () => {
         setErrorMessage("Feil ved henting av temakoder. Venligst prøv igjen senere.");
         throw new Error(`Feil ved henting av temakoder: ${res.status}`);
       })
-      .then((koder: Temakoder) => {
-        setTemaKoder(koder);
+      .then((koder: Record<string, string>) => {
+        setTemaKoder(
+          Object.entries(koder)
+            .map(([key, value]) => ({ key, value }))
+            .sort((a, b) => a.value.localeCompare(b.value))
+        );
         setReady(true);
       })
       .catch((err) => console.error(err));

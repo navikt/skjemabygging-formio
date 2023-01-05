@@ -151,7 +151,7 @@ export class Backend {
   }
 
   async fetchTemakoder() {
-    return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api//common-codes/archive-subjects`, {
+    return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/common-codes/archive-subjects`, {
       method: "GET",
     }).then((response) => response.data);
   }

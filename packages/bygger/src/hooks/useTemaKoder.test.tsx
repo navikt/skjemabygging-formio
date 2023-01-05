@@ -21,7 +21,7 @@ describe("useTemaKoder", () => {
   it("returns ready: false and empty temakoder initially", async () => {
     const { result, waitForNextUpdate } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
     expect(result.current.ready).toBe(false);
-    expect(result.current.temaKoder).toEqual({});
+    expect(result.current.temaKoder).toEqual([]);
     await waitForNextUpdate();
   });
 
@@ -30,7 +30,7 @@ describe("useTemaKoder", () => {
     await waitForNextUpdate();
     expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/temakoder`);
     expect(result.current.ready).toBe(true);
-    expect(result.current.temaKoder).toEqual({ TEST: "test" });
+    expect(result.current.temaKoder).toEqual([{ key: "TEST", value: "test" }]);
   });
 
   describe("When fetch returns with not ok", () => {
