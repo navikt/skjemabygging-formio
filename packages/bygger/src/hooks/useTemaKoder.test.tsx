@@ -43,7 +43,7 @@ describe("useTemaKoder", () => {
       const { result, waitForNextUpdate } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
       await waitForNextUpdate();
 
-      expect(result.current.errorMessage).toEqual("Feil ved henting av temakoder. Venligst prøv igjen senere.");
+      expect(result.current.errorMessage).toEqual("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
     });
   });
 });
