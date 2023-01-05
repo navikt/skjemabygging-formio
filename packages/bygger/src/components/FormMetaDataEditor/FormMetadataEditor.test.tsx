@@ -12,14 +12,14 @@ import { UpdateFormFunction } from "./utils";
 
 const testform = form as unknown as NavFormType;
 
-jest.mock("../hooks/useMottaksadresser", () => () => {
+jest.mock("../../hooks/useMottaksadresser", () => () => {
   return {
     ready: true,
     mottaksadresser: mockMottaksadresser,
     errorMessage: undefined,
   };
 });
-jest.mock("../hooks/useTemaKoder", () => () => {
+jest.mock("../../hooks/useTemaKoder", () => () => {
   return {
     ready: true,
     temaKoder: { ABC: "Tema 1", XYZ: "Tema 3", DEF: "Tema 2" },
