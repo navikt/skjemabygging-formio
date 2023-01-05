@@ -27,6 +27,7 @@ type MockRequestParams = {
 function mockRequest({ headers = {}, body }: MockRequestParams): Request {
   return {
     header: (name: string) => headers[name],
+    headers: { ...headers },
     body,
     get: () => "",
   } as unknown as Request;
