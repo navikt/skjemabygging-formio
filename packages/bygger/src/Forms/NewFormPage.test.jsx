@@ -1,5 +1,5 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
@@ -42,10 +42,10 @@ describe("NewFormPage", () => {
     );
     await waitFor(() => screen.getByText("Opprett nytt skjema"));
 
-    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
-    await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
-    fireEvent.change(screen.getByLabelText("Tema"), { target: { value: "ABC" } });
-    await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
+    userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
+    userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
     const savedForm = saveForm.mock.calls[0][0];
