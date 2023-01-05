@@ -303,7 +303,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           )}
         </div>
         <aside className="right-col">
-          <FormStepper form={form} formUrl={formUrl} submission={submission} />
+          <FormStepper form={form} formUrl={formUrl} submissionMethod={submissionMethod} submission={submission} />
         </aside>
       </main>
     </SummaryContent>

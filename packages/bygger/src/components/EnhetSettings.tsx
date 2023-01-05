@@ -1,6 +1,5 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import { supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-components";
-import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
+import { Enhetstype, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-domain";
 import Panel from "nav-frontend-paneler";
 import { Checkbox } from "nav-frontend-skjema";
 import { Ingress } from "nav-frontend-typografi";
