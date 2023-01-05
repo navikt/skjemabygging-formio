@@ -7,11 +7,8 @@ import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { AppLayoutWithContext } from "../components/AppLayout";
-import {
-  CreationFormMetadataEditor,
-  isFormMetadataValid,
-  validateFormMetadata,
-} from "../components/FormMetadataEditor";
+import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
+import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
 import { UserAlerterContext } from "../userAlerting";
 import { defaultFormFields } from "./DefaultForm";
 

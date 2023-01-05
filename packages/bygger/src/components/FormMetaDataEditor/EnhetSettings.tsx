@@ -3,7 +3,6 @@ import { Checkbox, Label, Panel } from "@navikt/ds-react";
 import { supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-components";
 import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect } from "react";
-import { COMPONENT_TEXTS } from "./FormMetadataEditor";
 
 interface EnhetSettingsProps {
   enhetMaVelges: boolean;
@@ -48,10 +47,10 @@ const EnhetSettings = ({
   return (
     <>
       <Checkbox checked={enhetMaVelges} onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}>
-        {COMPONENT_TEXTS.BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR}
+        {"Bruker må velge enhet ved innsending på papir"}
       </Checkbox>
       {enhetMaVelges && selectedEnhetstyper && (
-        <Panel>
+        <Panel className="margin-bottom-default">
           <Label>Enhetstyper</Label>
           <ul className={styles.list}>
             {supportedEnhetstyper.map((enhetsType: Enhetstype) => (
