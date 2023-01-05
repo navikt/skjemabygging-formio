@@ -37,7 +37,7 @@ const validateFormMetadata = (form: NavFormType) => {
     errors.skjemanummer = "Du må oppgi skjemanummer";
   }
   if (form.properties.tema === "") {
-    errors.tema = "Du må velge temakode";
+    errors.tema = "Du må velge et tema";
   }
   return errors;
 };
