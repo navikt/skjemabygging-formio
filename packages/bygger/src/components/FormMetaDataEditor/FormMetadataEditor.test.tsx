@@ -287,6 +287,7 @@ describe("FormMetadataEditor", () => {
     });
 
     describe("Innstilling for valg av enhet ved papirinnsending", () => {
+      const expectedCheckboxName = "Bruker må velge enhet ved innsending på papir";
       const creationFormMetadataEditor = (form, onChange) => (
         <AppConfigProvider featureToggles={{ ...featureToggles, enableEnhetsListe: true }}>
           <CreationFormMetadataEditor form={form} onChange={onChange} />
@@ -299,32 +300,32 @@ describe("FormMetadataEditor", () => {
           mottaksadresseId: undefined,
         });
         render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: "Bruker må velge enhet ved innsending på papir" })).toBeTruthy();
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeTruthy();
       });
 
       it("Vises når innsending=PAPIR_OG_DIGITAL", async () => {
         const form: NavFormType = formMedProps({ innsending: "PAPIR_OG_DIGITAL" });
         render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: "Bruker må velge enhet ved innsending på papir" })).toBeTruthy();
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeTruthy();
       });
 
       it("Vises ikke når innsending=INGEN", async () => {
         const form: NavFormType = formMedProps({ innsending: "INGEN" });
         render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: "Bruker må velge enhet ved innsending på papir" })).toBeFalsy();
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
       });
 
       it("Vises ikke når innsending=KUN_DIGITAL", async () => {
         const form: NavFormType = formMedProps({ innsending: "KUN_DIGITAL" });
         render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: "Bruker må velge enhet ved innsending på papir" })).toBeFalsy();
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
       });
 
       it("Kan endres til true ved klikk på checkbox", () => {
         const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: false });
         const { rerender } = render(creationFormMetadataEditor(form, mockOnChange));
         let checkbox = screen.getByRole("checkbox", {
-          name: "Bruker må velge enhet ved innsending på papir",
+          name: expectedCheckboxName,
         });
         expect(checkbox).not.toBeChecked();
         userEvent.click(checkbox);
@@ -335,7 +336,7 @@ describe("FormMetadataEditor", () => {
 
         rerender(creationFormMetadataEditor(updatedForm, mockOnChange));
         checkbox = screen.getByRole("checkbox", {
-          name: "Bruker må velge enhet ved innsending på papir",
+          name: expectedCheckboxName,
         });
         expect(checkbox).toBeChecked();
       });
@@ -344,7 +345,7 @@ describe("FormMetadataEditor", () => {
         const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
         const { rerender } = render(creationFormMetadataEditor(form, mockOnChange));
         let checkbox = screen.getByRole("checkbox", {
-          name: "Bruker må velge enhet ved innsending på papir",
+          name: expectedCheckboxName,
         });
         expect(checkbox).toBeChecked();
         userEvent.click(checkbox);
@@ -355,7 +356,7 @@ describe("FormMetadataEditor", () => {
 
         rerender(creationFormMetadataEditor(updatedForm, mockOnChange));
         checkbox = screen.getByRole("checkbox", {
-          name: "Bruker må velge enhet ved innsending på papir",
+          name: expectedCheckboxName,
         });
         expect(checkbox).not.toBeChecked();
       });
@@ -420,13 +421,13 @@ describe("FormMetadataEditor", () => {
         expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
 
         rerender(creationFormMetadataEditor(updatedForm, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: "Bruker må velge enhet ved innsending på papir" })).toBeFalsy();
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
       });
 
       it("Er skjult når mottaksadresse er valgt", () => {
         const form: NavFormType = formMedProps({ mottaksadresseId: "1", enhetMaVelgesVedPapirInnsending: true });
         render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: "Bruker må velge enhet ved innsending på papir" })).toBeFalsy();
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
       });
     });
 
