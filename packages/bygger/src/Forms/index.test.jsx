@@ -34,7 +34,7 @@ describe("FormsRouter", () => {
           }}
         >
           <UserAlerterContext.Provider value={userAlerter}>
-            <AppConfigProvider featureToggles={featureToggles}>
+            <AppConfigProvider featureToggles={featureToggles} baseUrl="http://baseurl.example.org">
               <AuthenticatedApp
                 formio={new Formio("http://myproject.example.org")}
                 serverURL={"http://myproject.example.org"}

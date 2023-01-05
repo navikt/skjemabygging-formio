@@ -1,9 +1,7 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { Checkbox, Label, Panel } from "@navikt/ds-react";
 import { supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-components";
 import { Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
-import Panel from "nav-frontend-paneler";
-import { Checkbox } from "nav-frontend-skjema";
-import { Ingress } from "nav-frontend-typografi";
 import React, { useEffect } from "react";
 
 interface EnhetSettingsProps {
@@ -48,21 +46,16 @@ const EnhetSettings = ({
 
   return (
     <>
-      <div className="margin-bottom-default">
-        <Checkbox
-          label={"Bruker må velge enhet ved innsending på papir"}
-          checked={enhetMaVelges}
-          onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}
-        />
-      </div>
+      <Checkbox checked={enhetMaVelges} onChange={(event) => onChangeEnhetMaVelges(event.target.checked)}>
+        {"Bruker må velge enhet ved innsending på papir"}
+      </Checkbox>
       {enhetMaVelges && selectedEnhetstyper && (
         <Panel className="margin-bottom-default">
-          <Ingress>Enhetstyper</Ingress>
+          <Label>Enhetstyper</Label>
           <ul className={styles.list}>
             {supportedEnhetstyper.map((enhetsType: Enhetstype) => (
               <li key={enhetsType}>
                 <Checkbox
-                  label={enhetsType}
                   checked={selectedEnhetstyper.includes(enhetsType)}
                   onChange={(event) => {
                     const updatedSelectedEnhetstyper = event.target.checked
@@ -70,7 +63,9 @@ const EnhetSettings = ({
                       : selectedEnhetstyper.filter((selected) => selected !== enhetsType);
                     onChangeEnhetstyper(updatedSelectedEnhetstyper);
                   }}
-                />
+                >
+                  {enhetsType}
+                </Checkbox>
               </li>
             ))}
           </ul>
