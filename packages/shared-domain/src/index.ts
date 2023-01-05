@@ -1,4 +1,4 @@
-import { Enhet, Enhetstype } from "./enhet";
+import { Enhet, Enhetstype, supportedEnhetstyper } from "./enhet";
 import type {
   Component,
   DisplayType,
@@ -62,6 +62,7 @@ export {
   dateUtils,
   migrationUtils,
   paginationUtils,
+  supportedEnhetstyper,
 };
 export type {
   FeatureTogglesMap,
