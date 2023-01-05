@@ -16,7 +16,7 @@ const useTemaKoder = () => {
           setErrorMessage(undefined);
           return res.json();
         }
-        setErrorMessage("Feil ved henting av temakoder");
+        setErrorMessage("Feil ved henting av temakoder. Venligst prøv igjen senere.");
         throw new Error(`Feil ved henting av temakoder: ${res.status}`);
       })
       .then((koder: Temakoder) => {

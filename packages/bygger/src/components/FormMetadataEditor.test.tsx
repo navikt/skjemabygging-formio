@@ -194,6 +194,40 @@ describe("FormMetadataEditor", () => {
       },
     });
 
+    describe("Tema", () => {
+      it("lister ut temaer i alfabetisk rekkefølge", () => {
+        render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
+        const temaSelect = screen.getByRole("combobox", { name: "Tema" });
+        const options = within(temaSelect).queryAllByRole("option");
+        expect(options).toHaveLength(4);
+        expect(options[1]).toHaveTextContent("Tema 1 (ABC)");
+        expect(options[2]).toHaveTextContent("Tema 2 (DEF)");
+        expect(options[3]).toHaveTextContent("Tema 3 (XYZ)");
+      });
+
+      it("setter valgt tema hvis temakoden finnes blant valgene", () => {
+        const form = formMedProps({ tema: "DEF" });
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        expect(screen.getByRole("combobox", { name: "Tema" })).toHaveValue("DEF");
+      });
+
+      it("setter valg til default verdi hvis temakoden ikke eksisterer", () => {
+        const form = formMedProps({ tema: "JKL" });
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        expect(screen.getByRole("combobox", { name: "Tema" })).toHaveValue("");
+      });
+
+      it("oppdaterer skjema når bruker velger et nytt tema", async () => {
+        const form: NavFormType = formMedProps({ tema: "ABC" });
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        userEvent.selectOptions(screen.getByRole("combobox", { name: "Tema" }), "XYZ");
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.tema).toEqual("XYZ");
+      });
+    });
+
     describe("Mottaksadresse", () => {
       describe("Dropdown med mottaksadresser", () => {
         it("Vises ikke når innsending=INGEN", async () => {
