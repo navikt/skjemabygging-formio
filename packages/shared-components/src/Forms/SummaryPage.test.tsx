@@ -193,23 +193,15 @@ describe("SummaryPage", () => {
   });
 
   describe("Form med kun digital innsending", () => {
-    const windowLocation = { href: "" };
-    const basePath = "https://www.unittest.nav.no/fyllut";
-    const sendInnUrl = "https://www.unittest.nav.no/sendInn";
-
-    beforeEach(() => {
+    it("sender skjema med vedlegg til send-inn", async () => {
+      const windowLocation = { href: "" };
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
       });
-    });
-
-    afterEach(() => {
-      window.location = originalWindowLocation;
-    });
-
-    it("sender skjema med vedlegg til send-inn", async () => {
       nock(basePath)
         .defaultReplyHeaders({
           Location: sendInnUrl,
@@ -223,11 +215,19 @@ describe("SummaryPage", () => {
       userEvent.click(buttons.gaVidereKnapp);
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
+
+      window.location = originalWindowLocation;
     });
 
     it("ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg", async () => {
+      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      // @ts-ignore
+      Object.defineProperty(window, "location", {
+        value: windowLocation,
+        writable: true,
+      });
       nock(basePath)
         .defaultReplyHeaders({
           Location: sendInnUrl,
@@ -242,6 +242,8 @@ describe("SummaryPage", () => {
       userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
+
+      window.location = originalWindowLocation;
     });
   });
 
