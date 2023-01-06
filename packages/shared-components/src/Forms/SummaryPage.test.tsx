@@ -6,6 +6,7 @@ import nock from "nock";
 import React from "react";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../configContext";
+import { Modal } from "../index";
 import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;
@@ -18,6 +19,8 @@ jest.mock("react-router-dom", () => ({
 jest.mock("../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
+
+Modal.setAppElement(document.createElement("div"));
 
 const defaultFormProperties = {
   skjemanummer: "NAV 10-11.13",
@@ -101,13 +104,11 @@ const renderSummaryPage = async (
     ...props,
   };
   render(
-    <div id="root">
-      <AppConfigProvider {...appConfigProps}>
-        <Router history={history}>
-          <SummaryPage {...summaryPageProps} />
-        </Router>
-      </AppConfigProvider>
-    </div>
+    <AppConfigProvider {...appConfigProps}>
+      <Router history={history}>
+        <SummaryPage {...summaryPageProps} />
+      </Router>
+    </AppConfigProvider>
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { name: TEXTS.grensesnitt.title });

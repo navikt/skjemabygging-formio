@@ -2,9 +2,12 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
+import { Modal } from "../../index";
 import DigitalSubmissionWithPrompt from "./DigitalSubmissionWithPrompt";
 
 jest.mock("../../context/languages/useLanguageCodeFromURL", () => () => "nb-NO");
+
+Modal.setAppElement(document.createElement("div"));
 
 describe("DigitalSubmissionWithPrompt", () => {
   const onError = jest.fn();
@@ -22,19 +25,17 @@ describe("DigitalSubmissionWithPrompt", () => {
     };
 
     render(
-      <div id="root">
-        <AppConfigProvider baseUrl={BASE_URL} app="fyllut">
-          <LanguagesProvider translations={{}}>
-            <DigitalSubmissionWithPrompt
-              form={defaultForm}
-              submission={{}}
-              translations={{}}
-              onError={onError}
-              onSuccess={onSuccess}
-            />
-          </LanguagesProvider>
-        </AppConfigProvider>
-      </div>
+      <AppConfigProvider baseUrl={BASE_URL} app="fyllut">
+        <LanguagesProvider translations={{}}>
+          <DigitalSubmissionWithPrompt
+            form={defaultForm}
+            submission={{}}
+            translations={{}}
+            onError={onError}
+            onSuccess={onSuccess}
+          />
+        </LanguagesProvider>
+      </AppConfigProvider>
     );
   });
 
