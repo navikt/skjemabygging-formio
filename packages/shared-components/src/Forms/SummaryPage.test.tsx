@@ -1,4 +1,4 @@
-import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
@@ -35,11 +35,38 @@ const defaultForm = {
   components: [],
 };
 
-const formWithProperties = (props): NavFormType =>
+const defaultFormWithAttachment = {
+  ...defaultForm,
+  components: [
+    {
+      title: "Vedlegg",
+      key: "vedlegg",
+      type: "panel",
+      components: [
+        {
+          label: "Annen dokumentasjon",
+          description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          key: "annenDokumentasjon",
+          properties: {
+            vedleggstittel: "Annet",
+            vedleggskode: "N6",
+          },
+          otherDocumentation: true,
+        },
+      ],
+      isAttachmentPanel: true,
+    },
+  ],
+} as unknown as NavFormType;
+
+const formWithProperties = (
+  props: Partial<FormPropertiesType>,
+  originalForm: Partial<NavFormType> = defaultForm
+): NavFormType =>
   ({
-    ...defaultForm,
+    ...originalForm,
     properties: {
-      ...defaultFormProperties,
+      ...originalForm.properties,
       ...props,
     },
   } as unknown as NavFormType);
@@ -165,13 +192,39 @@ describe("SummaryPage", () => {
   });
 
   describe("Form med kun digital innsending", () => {
-    it("Rendrer form med innsending=KUN_DIGITAL", async () => {
-      const windowLocation = { href: "" };
+    const windowLocation = { href: "" };
+    const basePath = "https://www.unittest.nav.no/fyllut";
+    const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+
+    beforeEach(() => {
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
       });
+    });
+
+    afterEach(() => {
+      window.location = originalWindowLocation;
+    });
+
+    it("sender skjema med vedlegg til send-inn", async () => {
+      nock(basePath)
+        .defaultReplyHeaders({
+          Location: sendInnUrl,
+        })
+        .post("/api/send-inn")
+        .reply(201, {}, { Location: "https://www.unittest.nav.no/send-inn/123" });
+      const form = formWithProperties({ innsending: "KUN_DIGITAL" }, defaultFormWithAttachment);
+      const { buttons } = await renderSummaryPage({ form }, { baseUrl: basePath });
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+
+      userEvent.click(buttons.gaVidereKnapp);
+      await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
+      nock.isDone();
+    });
+
+    it("ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg", async () => {
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
       nock(basePath)
@@ -188,8 +241,6 @@ describe("SummaryPage", () => {
       userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
-
-      window.location = originalWindowLocation;
     });
   });
 
