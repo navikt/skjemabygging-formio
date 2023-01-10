@@ -22,7 +22,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
     const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
     return (form.components as Panel[])
       .filter((component) => component.type === "panel")
-      .filter((component) => conditionals[component.key] === true || conditionals[component.key] === undefined)
+      .filter((component) => conditionals[component.key] !== false)
       .filter((component) => !(submissionMethod === "digital" && navFormUtils.isVedleggspanel(component)))
       .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
   }, [form, formUrl, submissionMethod, submission]);
