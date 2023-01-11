@@ -1,9 +1,11 @@
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import fetch, { HeadersInit } from "node-fetch";
 import { config } from "../../config/config";
 import { base64Decode, base64Encode } from "../../utils/base64";
 import { responseToError } from "../../utils/errorHandling.js";
+import { createHtmlFromSubmission } from "./helpers/htmlBuilder";
 
 const { skjemabyggingProxyUrl } = config;
 
@@ -162,8 +164,16 @@ const testHtml = `
 </body>
 </html>`;
 
+const parseBody = (req: Request): { form: NavFormType; submission: any; translations: any; isTest: boolean } => {
+  const submission = JSON.parse(req.body.submission);
+  const form = JSON.parse(req.body.form);
+  const translations = JSON.parse(req.body.translations);
+  const isTest = req.body.isTest && JSON.parse(req.body.isTest);
+  return { form, submission, translations, isTest };
+};
+
 const exstream = {
-  // TODO: Change this to POST after testing done
+  //TODO: remove get
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const pdf = await createPdf(
@@ -171,6 +181,17 @@ const exstream = {
         "Søknad om stønad til anskaffelse av motorkjøretøy og / eller spesialutstyr og tilpassing til bil",
         testHtml
       );
+      res.contentType(pdf.contentType);
+      res.send(base64Decode(pdf.data));
+    } catch (e) {
+      next(e);
+    }
+  },
+  post: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { form, submission, translations, isTest } = parseBody(req);
+      const html = createHtmlFromSubmission(form, submission, translations, isTest);
+      const pdf = await createPdf(req.headers.AzureAccessToken as string, form.title, html);
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
     } catch (e) {
