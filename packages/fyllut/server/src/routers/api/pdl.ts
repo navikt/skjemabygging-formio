@@ -7,7 +7,7 @@ import { Person } from "../../types/person";
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await getPerson(getTokenxAccessToken(req), "AAP", req.params.id);
+      const data = await getPerson(req.headers.AzureAccessToken as string, "AAP", req.params.id);
       res.send(data);
     } catch (e) {
       next(e);
@@ -23,11 +23,11 @@ const pdl = {
   },
 };
 
-const getPerson = async (tokenxAccessToken: string, theme: string, personId: string): Promise<Person> => {
+const getPerson = async (accessToken: string, theme: string, personId: string): Promise<Person> => {
   logger.debug(`Fetch ${personId} from pdl.`);
 
   const response = await pdlRequest(
-    tokenxAccessToken,
+    accessToken,
     theme,
     JSON.stringify({
       query: `
@@ -59,11 +59,11 @@ const getPerson = async (tokenxAccessToken: string, theme: string, personId: str
   };
 };
 
-const getChildren = async (tokenxAccessToken: string, theme: string, personId: string): Promise<Person[]> => {
+const getChildren = async (accessToken: string, theme: string, personId: string): Promise<Person[]> => {
   logger.debug(`Fetch ${personId} with children from pdl.`);
 
   let response = await pdlRequest(
-    tokenxAccessToken,
+    accessToken,
     theme,
     JSON.stringify({
       query: `
@@ -104,14 +104,14 @@ const getChildren = async (tokenxAccessToken: string, theme: string, personId: s
   return children;
 };
 
-const pdlRequest = async (tokenxAccessToken: string, theme: string, query: string) => {
-  const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
-  // const url = "https://pdl-api.dev.intern.nav.no/graphql";
+const pdlRequest = async (accessToken: string, theme: string, query: string) => {
+  //const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
+  const url = "https://pdl-api.dev.intern.nav.no/graphql";
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${tokenxAccessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       tema: theme,
     },
     body: query,
