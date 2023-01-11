@@ -1,11 +1,9 @@
-import { Enhet, Enhetstype, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-domain";
+import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 
-// TODO filtreringen er flyttet til Fyllut backend; bruk av "supportedEnhetstyper" samt sjekk på enhetNr "0000" skal fjernes fra denne filen.
-export const isEnhetSupported = (selectedEnhetstyper?: Enhetstype[]) => {
-  const enhetstyperToInclude =
-    Array.isArray(selectedEnhetstyper) && selectedEnhetstyper.length > 0 ? selectedEnhetstyper : supportedEnhetstyper;
+const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0;
 
-  return (enhet: Enhet) => enhetstyperToInclude.includes(enhet.type) && enhet.enhetNr !== "0000";
+export const isEnhetSupported = (selectedEnhetstyper: Enhetstype[]) => {
+  return (enhet: Enhet) => (notEmptyArray(selectedEnhetstyper) ? selectedEnhetstyper.includes(enhet.type) : true);
 };
 
 export async function fetchEnhetsliste(baseUrl = ""): Promise<Enhet[]> {
