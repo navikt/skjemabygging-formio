@@ -105,8 +105,8 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
 };
 
 const pdlRequest = async (accessToken: string, theme: string, query: string) => {
-  //const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
-  const url = "https://pdl-api.dev.intern.nav.no/graphql";
+  //const url = "https://pdl-api.prod-fss-pub.nais.io/graphql";
+  const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
   const response = await fetch(url, {
     method: "POST",
     headers: {
