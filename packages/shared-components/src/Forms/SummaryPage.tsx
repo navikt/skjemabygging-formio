@@ -17,7 +17,9 @@ import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
+import { hasRelevantAttachments } from "./components/attachmentsUtil";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
+import DigitalSubmissionWithPrompt from "./components/DigitalSubmissionWithPrompt";
 import FormStepper from "./components/FormStepper";
 
 type LabelValue = {
@@ -213,6 +215,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const linkBtStyle = {
     textDecoration: "none",
   };
+  const hasAttachments = hasRelevantAttachments(form, submission);
 
   return (
     <SummaryContent>
@@ -241,18 +244,33 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 </span>
               </Link>
             )}
-            {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") && (
-              <DigitalSubmissionButton
-                form={form}
-                submission={submission}
-                translations={translations}
-                onError={(err) => {
-                  setErrorMessage(err.message);
-                  loggSkjemaInnsendingFeilet();
-                }}
-                onSuccess={() => loggSkjemaFullfort("digital")}
-              />
-            )}
+            {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
+              (hasAttachments ? (
+                <DigitalSubmissionButton
+                  form={form}
+                  submission={submission}
+                  translations={translations}
+                  onError={(err) => {
+                    setErrorMessage(err.message);
+                    loggSkjemaInnsendingFeilet();
+                  }}
+                  onSuccess={() => loggSkjemaFullfort("digital")}
+                >
+                  {translate(TEXTS.grensesnitt.moveForward)}
+                </DigitalSubmissionButton>
+              ) : (
+                <DigitalSubmissionWithPrompt
+                  form={form}
+                  submission={submission}
+                  translations={translations}
+                  onError={(err) => {
+                    setErrorMessage(err.message);
+                    loggSkjemaInnsendingFeilet();
+                  }}
+                  onSuccess={() => loggSkjemaFullfort("digital")}
+                />
+              ))}
+
             {innsending === "INGEN" && (
               <Link
                 className="navds-button navds-button--primary"

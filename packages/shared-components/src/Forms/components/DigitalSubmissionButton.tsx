@@ -1,5 +1,4 @@
 import { Button } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
@@ -12,6 +11,7 @@ export interface Props {
   translations: object;
   onError: Function;
   onSuccess?: Function;
+  children: React.ReactNode;
 }
 
 const noop = () => {};
@@ -36,11 +36,10 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
   );
 };
 
-const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop }: Props) => {
-  const { translate, currentLanguage } = useLanguages();
+const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop, children }: Props) => {
+  const { currentLanguage } = useLanguages();
   const { baseUrl, http, config = {}, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
-
   const sendInn = async () => {
     if (app === "bygger") {
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
@@ -69,7 +68,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
 
   return (
     <Button onClick={sendInn} loading={loading}>
-      {translate(TEXTS.grensesnitt.moveForward)}
+      {children}
     </Button>
   );
 };

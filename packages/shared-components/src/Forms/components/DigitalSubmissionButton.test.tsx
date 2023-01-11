@@ -1,4 +1,3 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
@@ -38,6 +37,7 @@ describe("DigitalSubmissionButton", () => {
       translations: defaultTranslations,
       onError: jest.fn(),
       onSuccess: jest.fn(),
+      children: "Digital submission",
       ...props,
     };
     render(
@@ -51,7 +51,7 @@ describe("DigitalSubmissionButton", () => {
 
   it("renders button", () => {
     renderButton();
-    expect(screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Digital submission" })).toBeInTheDocument();
   });
 
   describe("backend endpoint", () => {
@@ -77,7 +77,7 @@ describe("DigitalSubmissionButton", () => {
     it("calls onError when backend returns 500", async () => {
       nock(BASE_URL).post("/api/send-inn").reply(500, { message: "Feil ved kall til SendInn" });
       renderButton({ onError, onSuccess });
-      const button = screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward });
+      const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
       userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
@@ -87,7 +87,7 @@ describe("DigitalSubmissionButton", () => {
     it("redirects when backend returns 201 and Location header", async () => {
       nock(BASE_URL).post("/api/send-inn").reply(201, "CREATED", { Location: SEND_INN_URL });
       renderButton({ onError, onSuccess });
-      const button = screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward });
+      const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
       userEvent.click(button);
       await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
@@ -98,7 +98,7 @@ describe("DigitalSubmissionButton", () => {
     it("responds with error when clicked in application 'bygger'", async () => {
       nock(BASE_URL).post("/api/send-inn").reply(201, "CREATED", { Location: SEND_INN_URL });
       renderButton({ onError, onSuccess }, { app: "bygger" });
-      const button = screen.getByRole("button", { name: TEXTS.grensesnitt.moveForward });
+      const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
       userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
