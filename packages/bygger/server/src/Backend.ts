@@ -151,11 +151,12 @@ export class Backend {
   }
 
   async fetchPublishedForm(formPath: string) {
-    const filePath = getTranslationFilePath(formPath);
+    const filePath = getFormFilePath(formPath);
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
     if (response && "content" in response.data) {
       const content = base64ToString(response.data.content);
       return JSON.parse(content);
     }
+    return null;
   }
 }

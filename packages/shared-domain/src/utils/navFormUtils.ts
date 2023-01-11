@@ -91,6 +91,8 @@ const findComponent = (isMatch: ComponentMatcherFunction, components: Component[
 
 const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);
+const findByKey = (key: string, components: Component[]): Component | undefined =>
+  findComponent((c) => c.key === key, components);
 
 export const findDependentComponents = (id: string, form: NavFormType) => {
   const idToPathMapping: { [s: string]: string } = {};
@@ -146,5 +148,6 @@ const navFormUtils = {
   flattenComponents,
   isSubmissionMethodAllowed,
   removeVedleggspanel,
+  findByKey,
 };
 export default navFormUtils;

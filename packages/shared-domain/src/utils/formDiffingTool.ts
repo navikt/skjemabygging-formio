@@ -1,13 +1,23 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, NavFormType } from "../form";
+import { navFormUtils } from "../index";
 
 enum DiffStatus {
-  NEW = "NEW",
-  DELETED = "DELETED",
-  CHANGED = "CHANGED",
+  NEW = "NY",
+  DELETED = "SLETTET",
+  CHANGED = "ENDRING",
 }
 
 const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) => {
   return generateFormDiff(originalForm, newForm);
+};
+
+const checkComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
+  if (publishedForm) {
+    const publishedComponent = navFormUtils.findByKey(currentComponent.key, publishedForm.components);
+    const diff = generateObjectDiff(publishedComponent, currentComponent);
+    return diff;
+  }
+  return null;
 };
 
 /**
@@ -56,7 +66,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
   if (isEmptyObject(originalObject)) {
     return {
       status: DiffStatus.NEW,
-      value1: newObject,
+      value: newObject,
     };
   }
 
@@ -79,6 +89,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
         if (diff) {
           return {
             ...acc,
+            status: DiffStatus.CHANGED,
             diff: {
               ...acc?.diff,
               [key]: diff,
@@ -94,7 +105,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
 
       return acc;
     },
-    isNullOrUndefined(originalIndex) ? {} : { originalIndex }
+    isNullOrUndefined(originalIndex) ? {} : { originalIndex, status: DiffStatus.CHANGED }
   );
 };
 
@@ -119,7 +130,7 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
 
   if (allowNesting) {
     const arr = newArray.map((value, newIndex) => {
-      const originalIndex = originalArray.findIndex((v) => v.id === value.id);
+      const originalIndex = originalArray.findIndex((v) => v.key === value.key);
       if (originalIndex === -1) {
         return generateFormDiff(undefined, value, allowNesting);
       } else {
@@ -133,7 +144,7 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
     });
 
     originalArray.forEach((value) => {
-      const newIndex = newArray.findIndex((v) => v.id === value.id);
+      const newIndex = newArray.findIndex((v) => v.key === value.key);
       if (newIndex === -1) {
         arr.push(generateFormDiff(value, undefined, allowNesting));
       }
@@ -170,4 +181,11 @@ const isObject = (element: any) => {
   return typeof element === "object" && !Array.isArray(element);
 };
 
+const tools = {
+  generateNavFormDiff,
+  checkComponentDiff,
+};
+
 export { generateNavFormDiff, DiffStatus };
+
+export default tools;

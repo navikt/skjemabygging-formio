@@ -1,17 +1,20 @@
-import { navFormioUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { formDiffingTool, navFormioUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { Formio, Utils } from "formiojs";
 
 Formio.Utils.toggleClass = (id, className) => {
   return `document.getElementById('${id}').classList.toggle('${className}')`;
 };
 
-Formio.Utils.getDiffLabel = (component, diff) => {
-  if (!diff || !diff[component?.id]) {
-    console.log("No diff", component.label, component?.id, diff);
-    return "";
+Formio.Utils.getDiffLabel = (ctx) => {
+  const { component, config } = ctx;
+  const { publishedForm } = config;
+  if (ctx.builder && publishedForm) {
+    const changes = formDiffingTool.checkComponentDiff(component, publishedForm);
+    if (changes && changes.status) {
+      return `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${changes.status}</span>`;
+    }
   }
-  const componentDiff = diff[component?.id];
-  return componentDiff.status ? `<span>${componentDiff.status}</span>` : "";
+  return "";
 };
 
 /*

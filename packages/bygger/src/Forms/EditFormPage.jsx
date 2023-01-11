@@ -24,14 +24,14 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({ form, formDiff, onSave, onChange, onPublish, onUnpublish }) {
+export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }) {
   const {
     title,
     properties: { skjemanummer },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
-  const formBuilderOptions = { ...FormBuilderOptions, formConfig: { formDiff } };
+  const formBuilderOptions = { ...FormBuilderOptions, formConfig: { publishedForm } };
   return (
     <>
       <AppLayoutWithContext

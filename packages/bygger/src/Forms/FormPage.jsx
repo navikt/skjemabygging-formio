@@ -2,7 +2,7 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import React, { useCallback, useEffect, useReducer } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
-import { loadFormDiff } from "./diffing/formDiff";
+import { loadPublishedForm } from "./diffing/publishedForm";
 import { EditFormPage } from "./EditFormPage";
 import formPageReducer from "./formPageReducer";
 import { FormSettingsPage } from "./FormSettingsPage";
@@ -24,17 +24,16 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
-        dispatch({ type: "form-loaded", form });
+        loadPublishedForm(formPath)
+          .then((publishedForm) => dispatch({ type: "form-loaded", form, publishedForm }))
+          .catch(() => {
+            console.debug("Failed to load published form");
+            dispatch({ type: "form-loaded", form });
+          });
       })
       .catch((e) => {
         console.log(e);
         dispatch({ type: "form-not-found" });
-      });
-    loadFormDiff(formPath)
-      .then((diff) => dispatch({ type: "diff-loaded", diff }))
-      .catch(() => {
-        console.debug("Form diff not found");
-        dispatch({ type: "diff-not-found" });
       });
   }, [loadForm, formPath]);
 
@@ -83,7 +82,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/edit`}>
           <EditFormPage
             form={state.form}
-            formDiff={state.formDiff}
+            publishedForm={state.publishedForm}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -96,7 +95,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/settings`}>
           <FormSettingsPage
             form={state.form}
-            formDiff={state.formDiff}
+            publishedForm={state.publishedForm}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}

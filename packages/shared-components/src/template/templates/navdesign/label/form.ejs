@@ -1,15 +1,17 @@
-<label
-  ref="label"
-  class="skjemaelement__label {{ctx.label.className}}"
-  for="{{ctx.instance.id}}-{{ctx.component.key}}"
-  id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
->
-  {{ ctx.t(ctx.component.label, { _userInput: true }) }}
-  {% if(ctx.component.validate.required === false) { %}
-    ({{ctx.t("valgfritt")}})
-  {% } %}
-  {% if (ctx.component.tooltip) { %}
-    <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
-  {% } %}
-</label>
-{{ctx.util.getDiffLabel(ctx.component, ctx.config.formDiff)}}
+<span class="label-track-changes">
+  <label
+    ref="label"
+    class="skjemaelement__label {{ctx.label.className}}"
+    for="{{ctx.instance.id}}-{{ctx.component.key}}"
+    id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
+  >
+    {{ ctx.t(ctx.component.label, { _userInput: true }) }}
+    {% if(ctx.component.validate.required === false) { %}
+      ({{ctx.t("valgfritt")}})
+    {% } %}
+    {% if (ctx.component.tooltip) { %}
+      <i ref="tooltip" tabindex="0" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
+    {% } %}
+  </label>
+  {{ctx.util.getDiffLabel(ctx)}}
+</span>

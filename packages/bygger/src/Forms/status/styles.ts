@@ -38,7 +38,7 @@ const useFormStatusIndicatorStyles = makeStyles({
     backgroundColor: "#219653",
   },
   pending: {
-    backgroundColor: "#F2C94C",
+    backgroundColor: "rgb(255, 145, 0)",
   },
   draft: {
     backgroundColor: "#2D9CDB",
