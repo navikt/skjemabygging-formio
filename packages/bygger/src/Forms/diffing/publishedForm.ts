@@ -5,11 +5,10 @@ async function loadPublishedForm(formPath) {
       "content-type": "application/json",
     },
   });
-  let publishedForm = null;
   if (response.ok) {
-    publishedForm = await response.json();
+    return await response.json();
   }
-  return publishedForm;
+  return null;
 }
 
 export { loadPublishedForm };
