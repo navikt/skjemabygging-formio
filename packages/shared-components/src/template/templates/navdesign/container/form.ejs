@@ -4,9 +4,12 @@
 </div>
 {% } else { %}
 <fieldset class="skjemagruppe">
- <legend class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
-   {{ctx.t(ctx.component.label)}}
- </legend>
+  <span class="label-track-changes">
+    <legend class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+      {{ctx.t(ctx.component.label)}}
+    </legend>
+    {{ctx.util.getDiffLabel(ctx)}}
+  </span>
   <div ref="{{ctx.nestedKey}}">{{ctx.children}}</div>
 </fieldset>
 {% } %}

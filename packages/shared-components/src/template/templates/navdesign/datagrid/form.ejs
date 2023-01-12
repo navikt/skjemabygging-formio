@@ -123,7 +123,10 @@
   {% } %}
   <fieldset ref="{{ctx.datagridKey}}-tbody">
     {% if (!ctx.component.hideLabel) { %}
-    <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
+    <span class="label-track-changes">
+      <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
+      {{ctx.util.getDiffLabel(ctx)}}
+    </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
       <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>

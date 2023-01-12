@@ -10,11 +10,14 @@
   {% if (ctx.checked) { %}checked=true{% } %}
   />
   {% if (!ctx.self.labelIsHidden()) { %}
+  <span class="label-track-changes">
   <label class="navds-checkbox__label" for="{{ctx.instance.id}}-{{ctx.component.key}}">
     {{ctx.t(ctx.input.label)}}
     {% if(ctx.component.validate.required === false) { %}
     ({{ctx.t("valgfritt")}})
     {% } %}
   </label>
+  {{ctx.util.getDiffLabel(ctx)}}
+  </span>
   {% } %}
   </div>
