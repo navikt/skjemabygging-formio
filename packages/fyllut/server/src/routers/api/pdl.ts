@@ -123,9 +123,12 @@ const getPdlAccessToken = async (token: string) => {
     }),
   })
     .then((response) => {
+      logger.debug(`Client id: ${clientId}`);
+      logger.debug(`Token: ${token}`);
       logger.debug(`Response: ${qs.stringify(response)}`);
       if (response.ok) {
         const data = response.json();
+        logger.debug("Ok");
         logger.debug(qs.stringify(data));
         // @ts-ignore
         return data.access_token;
