@@ -3,11 +3,11 @@ import qs from "qs";
 import { config } from "../config/config";
 import { toJsonOrThrowError } from "../utils/errorHandling.js";
 
-const { skjemabyggingProxyClientId, clientId, clientSecret, azureOpenidTokenEndpoint } = config;
+const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
 const postData = {
   grant_type: "client_credentials",
-  scope: `openid api://${skjemabyggingProxyClientId}/.default`,
+  scope: `openid api:/dev-fss.pdl.pdl-api/.default`,
   client_id: clientId,
   client_secret: clientSecret,
   client_auth_method: "client_secret_basic",
