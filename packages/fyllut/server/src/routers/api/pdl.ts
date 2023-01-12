@@ -1,13 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import fetch from "node-fetch";
+import qs from "qs";
+import { config } from "../../config/config";
 import { logger } from "../../logger";
 import { getTokenxAccessToken } from "../../security/tokenxHelper";
 import { Person } from "../../types/person";
 
+const { clientId, azureOpenidTokenEndpoint } = config;
+
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log(req.headers.AzureAccessToken);
+      logger.debug(req.headers.AzureAccessToken);
       const data = await getPerson(req.headers.AzureAccessToken as string, "AAP", req.params.id);
       res.send(data);
     } catch (e) {
@@ -105,6 +109,27 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
   return children;
 };
 
+const getPdlAccessToken = (token: string) => {
+  fetch(azureOpenidTokenEndpoint!, {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    method: "POST",
+    body: qs.stringify({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      client_id: clientId,
+      client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+      assertion: token,
+      requested_token_use: "on_behalf_of",
+      scope: "api:/dev-fss.pdl.pdl-api/.default",
+    }),
+  })
+    .then((response) => {
+      logger.debug(response);
+    })
+    .catch((error) => {
+      logger.debug(error);
+    });
+};
+
 const pdlRequest = async (accessToken: string, theme: string, query: string) => {
   //const url = "https://pdl-api.prod-fss-pub.nais.io/graphql";
   const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
@@ -112,7 +137,7 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${getPdlAccessToken(accessToken)}`,
       tema: theme,
     },
     body: query,
