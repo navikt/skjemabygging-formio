@@ -109,8 +109,8 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
   return children;
 };
 
-const getPdlAccessToken = (token: string) => {
-  fetch(azureOpenidTokenEndpoint!, {
+const getPdlAccessToken = async (token: string) => {
+  return fetch(azureOpenidTokenEndpoint!, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
     body: qs.stringify({
@@ -136,11 +136,13 @@ const getPdlAccessToken = (token: string) => {
 const pdlRequest = async (accessToken: string, theme: string, query: string) => {
   //const url = "https://pdl-api.prod-fss-pub.nais.io/graphql";
   const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
+  const pdlAccessToken = await getPdlAccessToken(accessToken);
+  logger.debug(pdlAccessToken);
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getPdlAccessToken(accessToken)}`,
+      Authorization: `Bearer ${pdlAccessToken}`,
       tema: theme,
     },
     body: query,
