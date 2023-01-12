@@ -6,7 +6,7 @@ import { logger } from "../../logger";
 import { getTokenxAccessToken } from "../../security/tokenxHelper";
 import { Person } from "../../types/person";
 
-const { clientId, azureOpenidTokenEndpoint } = config;
+const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
@@ -116,13 +116,14 @@ const getPdlAccessToken = async (token: string) => {
     body: qs.stringify({
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
       client_id: clientId,
-      client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+      client_secret: clientSecret,
       assertion: token,
-      requested_token_use: "on_behalf_of",
       scope: "api:/dev-fss.pdl.pdl-api/.default",
+      requested_token_use: "on_behalf_of",
     }),
   })
     .then((response) => {
+      logger.debug("got response");
       logger.debug(qs.stringify(response));
       // @ts-ignore
       return response.access_token;
@@ -137,6 +138,7 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
   //const url = "https://pdl-api.prod-fss-pub.nais.io/graphql";
   const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
   const pdlAccessToken = await getPdlAccessToken(accessToken);
+  logger.debug("pdlAccessToken");
   logger.debug(pdlAccessToken);
   const response = await fetch(url, {
     method: "POST",
