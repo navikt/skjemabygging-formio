@@ -25,14 +25,14 @@ const field = (component: { label: any; value: any }) => `
 
 const section = (formSection: { label: any; components: { label: any; value: any }[] }) => `
   <h2>${formSection.label}</h2>
-  ${formSection.components.map(field)}
+  ${formSection.components.map(field).join("")}
 `;
 
 const body = (formSummaryObject: { label: any; components: { label: any; value: any }[] }[]) => {
   console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
   return `
 <body>
-    ${formSummaryObject.map(section)}
+    ${formSummaryObject.map(section).join("")}
 </body>
   `;
 };
