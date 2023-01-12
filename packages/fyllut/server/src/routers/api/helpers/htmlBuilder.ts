@@ -1,4 +1,4 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { formSummaryUtil, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 
 const style = () => `
 <style>
@@ -18,20 +18,34 @@ const head = (title: string) => `
 </head>
 `;
 
-const body = (form: NavFormType, submission: any) => {
+const field = (component: { label: any; value: any }) => `
+  <div class="spm">${component.label}</div>
+  <div class="svar">- ${component.value}</div>
+`;
+
+const section = (formSection: { label: any; components: { label: any; value: any }[] }) => `
+  <h2>${formSection.label}</h2>
+  ${formSection.components.map(field)}
+`;
+
+const body = (formSummaryObject: { label: any; components: { label: any; value: any }[] }[]) => {
+  console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
   return `
-  <body></body>
+<body>
+    ${formSummaryObject.map(section)}
+</body>
   `;
 };
 
 const createHtmlFromSubmission = (form: NavFormType, submission: any, translations: any, isTest: boolean) => {
   const lang = "no";
 
+  const formSummaryObject = formSummaryUtil.createFormSummaryObject(form, submission);
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
   ${head(form.title)}
-  ${body(form, submission)}
+  ${body(formSummaryObject)}
 </html>
   `;
 };
