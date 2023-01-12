@@ -1,17 +1,25 @@
-import { formDiffingTool, navFormioUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { formDiffingTool, navFormioUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { Formio, Utils } from "formiojs";
 
 Formio.Utils.toggleClass = (id, className) => {
   return `document.getElementById('${id}').classList.toggle('${className}')`;
 };
 
+const TAG = (text) =>
+  `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
+
 Formio.Utils.getDiffLabel = (ctx) => {
   const { component, config } = ctx;
   const { publishedForm } = config;
   if (ctx.builder && publishedForm) {
     const changes = formDiffingTool.checkComponentDiff(component, publishedForm);
-    if (changes && changes.status) {
-      return `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${changes.status}</span>`;
+    if (component.type === "panel" && changes && changes.components) {
+      const deletedComponents = navFormUtils
+        .flattenComponents(changes.components)
+        .filter((compDiff) => compDiff.status === "Slettet");
+      return deletedComponents.length > 0 ? TAG("Slettede elementer") : "";
+    } else if (changes && changes.status) {
+      return `${TAG(changes.status)}`;
     }
   }
   return "";

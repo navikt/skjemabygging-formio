@@ -2,9 +2,9 @@ import { Component, NavFormType } from "../form";
 import { navFormUtils } from "../index";
 
 enum DiffStatus {
-  NEW = "NY",
-  DELETED = "SLETTET",
-  CHANGED = "ENDRING",
+  NEW = "Ny",
+  DELETED = "Slettet",
+  CHANGED = "Endring",
 }
 
 const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) => {
