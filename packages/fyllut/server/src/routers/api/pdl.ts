@@ -123,10 +123,13 @@ const getPdlAccessToken = (token: string) => {
     }),
   })
     .then((response) => {
-      logger.debug(response);
+      logger.debug(qs.stringify(response));
+      // @ts-ignore
+      return response.access_token;
     })
     .catch((error) => {
-      logger.debug(error);
+      logger.debug("PDL access token failed");
+      logger.debug(qs.stringify(error));
     });
 };
 
