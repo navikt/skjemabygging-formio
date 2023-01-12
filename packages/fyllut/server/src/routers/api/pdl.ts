@@ -123,10 +123,15 @@ const getPdlAccessToken = async (token: string) => {
     }),
   })
     .then((response) => {
-      logger.debug("got response");
-      logger.debug(qs.stringify(response));
-      // @ts-ignore
-      return response.access_token;
+      logger.debug(`Response: ${qs.stringify(response)}`);
+      if (response.ok) {
+        const data = response.json();
+        logger.debug(qs.stringify(data));
+        // @ts-ignore
+        return data.access_token;
+      } else {
+        logger.debug("Error");
+      }
     })
     .catch((error) => {
       logger.debug("PDL access token failed");
