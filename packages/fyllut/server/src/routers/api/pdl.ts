@@ -7,6 +7,7 @@ import { Person } from "../../types/person";
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(req.headers.AzureAccessToken);
       const data = await getPerson(req.headers.AzureAccessToken as string, "AAP", req.params.id);
       res.send(data);
     } catch (e) {
