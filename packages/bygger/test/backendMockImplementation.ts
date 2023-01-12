@@ -26,6 +26,7 @@ const GET_LANGUAGES_REGEX = /http.*\/language\/submission(\?.*)?$/;
 const GET_LANGUAGE_REGEX = /http.*\/language\/submission\/(.*)$/;
 const GET_COUNTRIES_REGEX = /http.*\/countries\??lang=(.*)$/;
 const GET_MOTTAKSADRESSER_REGEX = /http.*\/mottaksadresse\/submission/;
+const GET_TEMAKODER_REGEX = /http.*\/api\/temakoder/;
 const GET_FORM_DIFF = /http.*\/form\/.*\/diff/;
 
 const DEFAULT_PROJECT_URL = "http://myproject.example.org";
@@ -65,6 +66,9 @@ const createMockImplementation =
     }
     if (GET_MOTTAKSADRESSER_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
+    }
+    if (GET_TEMAKODER_REGEX.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify({ TEST: "test" }), RESPONSE_HEADERS));
     }
     if (GET_COUNTRIES_REGEX.test(url)) {
       const matches = GET_COUNTRIES_REGEX.exec(url);

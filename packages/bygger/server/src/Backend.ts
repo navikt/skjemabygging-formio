@@ -150,6 +150,12 @@ export class Backend {
     }).then((response) => response.data);
   }
 
+  async fetchTemakoder() {
+    return fetchWithErrorHandling(`${this.config.fyllut.baseUrl}/api/common-codes/archive-subjects`, {
+      method: "GET",
+    }).then((response) => response.data);
+  }
+
   async fetchPublishedForm(formPath: string) {
     const filePath = getFormFilePath(formPath);
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);

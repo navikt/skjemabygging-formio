@@ -15,6 +15,7 @@ import publishForms from "./publish-forms";
 import publishResource from "./publish-resource";
 import publishedForms from "./published-forms";
 import reportsRouter from "./reports";
+import temakoder from "./temakoder";
 import unpublishForm from "./unpublish-form";
 
 const apiRouter = express.Router();
@@ -29,6 +30,7 @@ apiRouter.post("/published-forms", authorizedPublisher, publishForms);
 apiRouter.post("/publish-bulk", authorizedPublisher, deprecatedPublishBulk);
 apiRouter.put("/published-resource/:resourceName", authorizedPublisher, publishResource);
 apiRouter.get("/enhetsliste", enhetsliste);
+apiRouter.get("/temakoder", temakoder);
 apiRouter.use("/reports", reportsRouter);
 apiRouter.get("/migrate", migrate);
 apiRouter.get("/migrate/preview/:formPath", migratePreview);

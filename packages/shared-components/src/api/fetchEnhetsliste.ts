@@ -1,30 +1,9 @@
 import { Enhet, Enhetstype } from "@navikt/skjemadigitalisering-shared-domain";
 
-export const supportedEnhetstyper: Enhetstype[] = [
-  "ALS",
-  "ARK",
-  "FPY",
-  "FYLKE",
-  "HMS",
-  "INNKREV",
-  "INTRO",
-  "KLAGE",
-  "KO",
-  "KONTROLL",
-  "LOKAL",
-  "OKONOMI",
-  "OPPFUTLAND",
-  "ROL",
-  "TILTAK",
-  "UTLAND",
-  "YTA",
-];
+const notEmptyArray = (arr) => Array.isArray(arr) && arr.length > 0;
 
-export const isEnhetSupported = (selectedEnhetstyper?: Enhetstype[]) => {
-  const enhetstyperToInclude =
-    Array.isArray(selectedEnhetstyper) && selectedEnhetstyper.length > 0 ? selectedEnhetstyper : supportedEnhetstyper;
-
-  return (enhet: Enhet) => enhetstyperToInclude.includes(enhet.type) && enhet.enhetNr !== "0000";
+export const isEnhetSupported = (selectedEnhetstyper: Enhetstype[]) => {
+  return (enhet: Enhet) => (notEmptyArray(selectedEnhetstyper) ? selectedEnhetstyper.includes(enhet.type) : true);
 };
 
 export async function fetchEnhetsliste(baseUrl = ""): Promise<Enhet[]> {

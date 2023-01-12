@@ -1,24 +1,22 @@
+import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
-  DisplayType,
   InnsendingType,
   MottaksadresseData,
   NavFormType,
   signatureUtils,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import { AlertStripeFeil } from "nav-frontend-alertstriper";
-import { Knapp } from "nav-frontend-knapper";
-import { Checkbox, Input, Select, SkjemaGruppe, Textarea } from "nav-frontend-skjema";
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import useMottaksadresser from "../hooks/useMottaksadresser";
+import useMottaksadresser from "../../hooks/useMottaksadresser";
+import useTemaKoder from "../../hooks/useTemaKoder";
+import SignatureComponent from "../layout/SignatureComponent";
 import EnhetSettings from "./EnhetSettings";
-import SignatureComponent from "./layout/SignatureComponent";
+import { FormMetadataError, UpdateFormFunction } from "./utils";
 
-export type UpdateFormFunction = (form: NavFormType) => void;
-export type UsageContext = "create" | "edit";
+type UsageContext = "create" | "edit";
 
 interface Props {
   form: NavFormType;
@@ -27,31 +25,11 @@ interface Props {
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
-type FormMetadataError = { [key: string]: string };
-
-const validateFormMetadata = (form: NavFormType) => {
-  const errors = {} as FormMetadataError;
-  if (!form.title) {
-    errors.title = "Du må oppgi skjematittel";
-  }
-  if (!form.properties.skjemanummer) {
-    errors.skjemanummer = "Du må oppgi skjemanummer";
-  }
-  if (!form.properties.tema) {
-    errors.tema = "Du må oppgi temakode";
-  }
-  return errors;
-};
-
-const isFormMetadataValid = (errors) => Object.keys(errors).length === 0;
-
-export const COMPONENT_TEXTS = {
-  BRUKER_MA_VELGE_ENHET_VED_INNSENDING_PA_PAPIR: "Bruker må velge enhet ved innsending på papir",
-};
 
 const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
-  const { mottaksadresser, ready, errorMessage: mottaksadresseError } = useMottaksadresser();
+  const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
+  const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
   const {
     title,
     properties: {
@@ -128,16 +106,19 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
   };
 
   return (
-    <SkjemaGruppe>
+    <Fieldset hideLegend legend="">
       <Checkbox
-        label="Dette er et testskjema"
+        className="mb-double"
         id="teststatus"
         checked={!!isTestForm}
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
         }
-      />
-      <Input
+      >
+        Dette er et testskjema
+      </Checkbox>
+      <TextField
+        className="mb-double"
         label="Skjemanummer"
         type="text"
         id="skjemanummer"
@@ -147,27 +128,43 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         onChange={(event) =>
           onChange({ ...form, properties: { ...form.properties, skjemanummer: event.target.value } })
         }
-        feil={errors?.skjemanummer}
+        error={errors?.skjemanummer}
       />
-      <Input
+      <TextField
+        className="mb-double"
         label="Tittel"
         type="text"
         id="title"
         placeholder="Skriv inn tittel"
         value={title}
         onChange={(event) => onChange({ ...form, title: event.target.value })}
-        feil={errors?.title}
+        error={errors?.title}
       />
-      <Input
-        label="Temakode"
-        type="text"
-        id="tema"
-        placeholder="Skriv inn temakode (f.eks. OPP)"
-        value={tema}
-        onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-        feil={errors?.tema}
-      />
-      <Input
+      <div className="mb-double">
+        <Select
+          className="mb-small"
+          label={"Tema"}
+          id="tema"
+          disabled={!isTemaKoderReady}
+          value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ""}
+          onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
+          error={errors?.tema}
+        >
+          <option value="">{"Velg tema"}</option>
+          {temaKoder?.map(({ key, value }) => (
+            <option key={key} value={key}>
+              {`${value} (${key})`}
+            </option>
+          ))}
+        </Select>
+        {temaKoderError && (
+          <Alert variant="error" size="small">
+            {temaKoderError}
+          </Alert>
+        )}
+      </div>
+      <TextField
+        className="mb-double"
         label="Tekst på knapp for nedlasting av pdf"
         type="text"
         id="downloadPdfButtonText"
@@ -181,6 +178,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         placeholder={TEXTS.grensesnitt.downloadApplication}
       />
       <Select
+        className="mb-double"
         label="Innsending"
         name="form-innsending"
         id="form-innsending"
@@ -200,7 +198,8 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
 
       {innsending === "INGEN" && (
         <>
-          <Input
+          <TextField
+            className="mb-double"
             label="Overskrift til innsending"
             value={form.properties.innsendingOverskrift || ""}
             onChange={(event) =>
@@ -211,6 +210,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
             }
           />
           <Textarea
+            className="mb-double"
             label="Forklaring til innsending"
             value={form.properties.innsendingForklaring || ""}
             onChange={(event) =>
@@ -223,13 +223,14 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         </>
       )}
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-        <div className="margin-bottom-default">
+        <div className="mb-default">
           <Select
+            className="mb-small"
             label="Mottaksadresse"
             name="form-mottaksadresse"
             id="form-mottaksadresse"
             value={mottaksadresseId}
-            disabled={!ready}
+            disabled={!isMottaksAdresserReady}
             onChange={(event) =>
               onChange({
                 ...form,
@@ -242,7 +243,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
             }
           >
             <option value="">
-              {mottaksadresseId && !ready ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
+              {mottaksadresseId && !isMottaksAdresserReady ? `Mottaksadresse-id: ${mottaksadresseId}` : "Standard"}
             </option>
             {mottaksadresser.map((adresse) => (
               <option value={adresse._id} key={adresse._id}>
@@ -250,35 +251,42 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
               </option>
             ))}
           </Select>
-          {mottaksadresseError && <AlertStripeFeil>{mottaksadresseError}</AlertStripeFeil>}
+          {mottaksadresseError && (
+            <Alert variant="error" size="small">
+              {mottaksadresseError}
+            </Alert>
+          )}
         </div>
       )}
-      <div className="margin-bottom-default">
+      <div className="mb-double">
         <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
       </div>
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") &&
         !mottaksadresseId &&
         featureToggles?.enableEnhetsListe && (
-          <EnhetSettings
-            enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
-            selectedEnhetstyper={enhetstyper}
-            onChangeEnhetMaVelges={(selected) =>
-              onChange({
-                ...form,
-                properties: {
-                  ...form.properties,
-                  enhetMaVelgesVedPapirInnsending: selected,
-                  enhetstyper: selected ? form.properties.enhetstyper : undefined,
-                },
-              })
-            }
-            onChangeEnhetstyper={(enhetstyper) =>
-              onChange({ ...form, properties: { ...form.properties, enhetstyper } })
-            }
-          />
+          <div className="mb-double">
+            <EnhetSettings
+              enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
+              selectedEnhetstyper={enhetstyper}
+              onChangeEnhetMaVelges={(selected) =>
+                onChange({
+                  ...form,
+                  properties: {
+                    ...form.properties,
+                    enhetMaVelgesVedPapirInnsending: selected,
+                    enhetstyper: selected ? form.properties.enhetstyper : undefined,
+                  },
+                })
+              }
+              onChangeEnhetstyper={(enhetstyper) =>
+                onChange({ ...form, properties: { ...form.properties, enhetstyper } })
+              }
+            />
+          </div>
         )}
 
       <Textarea
+        className="mb-double"
         label="Generelle instruksjoner (valgfritt)"
         value={descriptionOfSignatures || ""}
         maxLength={0}
@@ -301,25 +309,10 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         </div>
       ))}
 
-      <Knapp onClick={addNewSignature}>Legg til signatur</Knapp>
-    </SkjemaGruppe>
-  );
-};
-
-export const SkjemaVisningSelect = ({ form, onChange }: Props) => {
-  const { display } = form;
-  return (
-    <Select
-      label="Vis som"
-      name="form-display"
-      id="form-display"
-      value={display}
-      onChange={(event) => onChange({ ...form, display: event.target.value as DisplayType })}
-      bredde="s"
-    >
-      <option value="form">Skjema</option>
-      <option value="wizard">Veiviser</option>
-    </Select>
+      <Button variant="secondary" className="mb-double" onClick={addNewSignature}>
+        Legg til signatur
+      </Button>
+    </Fieldset>
   );
 };
 
@@ -330,5 +323,3 @@ export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) =>
 export const FormMetadataEditor = ({ form, onChange, errors }: Props) => (
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" errors={errors} />
 );
-
-export { validateFormMetadata, isFormMetadataValid };

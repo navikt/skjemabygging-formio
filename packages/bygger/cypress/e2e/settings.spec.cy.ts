@@ -1,7 +1,7 @@
 const _submitData = {
   title: "Cypress test for settings page",
   skjemanummer: "cypress-innstillinger",
-  tema: "CYPRESSTEST",
+  tema: "BIL",
   downloadPdfButtonText: "DownloadPDFBtnTest",
   innsending: "PAPIR_OG_DIGITAL",
   descriptionOfSignatures: "Test Instructions",
@@ -16,6 +16,7 @@ describe("FormSettingsPage", () => {
       fixture: "getForm.json",
     }).as("getForm");
     cy.intercept("GET", "/mottaksadresse/submission", { fixture: "mottakadresse.json" }).as("getMottakAdresse");
+    cy.intercept("GET", "/api/temakoder", { fixture: "temakoder.json" }).as("getTemaKoder");
     cy.intercept("GET", "/countries?*", { fixture: "getCountriesLangNb.json" }).as("getCountriesLangNb");
     cy.visit("forms/cypressinnstillinger/settings");
   });
@@ -33,7 +34,7 @@ describe("FormSettingsPage", () => {
     }).as("compareRequestData");
 
     cy.findByRole("textbox", { name: "Tittel" }).focus().clear().type(_submitData.title);
-    cy.findByRole("textbox", { name: "Temakode" }).focus().clear().type(_submitData.tema);
+    cy.findByRole("combobox", { name: "Tema" }).select(_submitData.tema);
     cy.findByRole("textbox", { name: "Tekst på knapp for nedlasting av pdf" })
       .focus()
       .clear()

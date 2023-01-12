@@ -38,4 +38,8 @@ const sanitize = (component) => {
   return clone;
 };
 
-export { getRelevantAttachments, hasOtherDocumentation };
+const hasRelevantAttachments = (form, submission) => {
+  return !!getRelevantAttachments(form, submission).length || hasOtherDocumentation(form, submission);
+};
+
+export { getRelevantAttachments, hasOtherDocumentation, hasRelevantAttachments };
