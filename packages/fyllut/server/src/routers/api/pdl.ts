@@ -12,7 +12,7 @@ const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
       logger.debug(req.headers.AzureAccessToken);
-      const data = await getPerson(req.headers.AzureAccessToken as string, "AAP", req.params.id);
+      const data = await getPerson(req.getIdportenJwt(), "AAP", req.params.id);
       res.send(data);
     } catch (e) {
       next(e);

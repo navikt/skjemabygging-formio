@@ -26,3 +26,6 @@ accessPolicy:
       - application: innsending-api
         namespace: team-soknad
         cluster: dev-gcp
+      - application: pdl-api
+        namespace: pdl
+        cluster: dev-fss
