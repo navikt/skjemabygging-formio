@@ -30,6 +30,7 @@ import { Operator } from "./migration/operator";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
+import type { ComponentType, FormSummaryComponent, FormSummaryPanel, SubmissionValue } from "./summary/FormSummaryType";
 import formSummaryUtil from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
@@ -72,6 +73,10 @@ export type {
   NewFormSignatureType,
   FormPropertiesType,
   FormPropertiesPublishing,
+  FormSummaryComponent,
+  FormSummaryPanel,
+  SubmissionValue,
+  ComponentType,
   NavFormType,
   Component,
   Panel,

@@ -1,4 +1,9 @@
-import { formSummaryUtil, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  FormSummaryComponent,
+  FormSummaryPanel,
+  formSummaryUtil,
+  NavFormType,
+} from "@navikt/skjemadigitalisering-shared-domain";
 
 const style = () => `
 <style>
@@ -18,17 +23,17 @@ const head = (title: string) => `
 </head>
 `;
 
-const field = (component: { label: any; value: any }) => `
+const field = (component: FormSummaryComponent) => `
   <div class="spm">${component.label}</div>
   <div class="svar">- ${component.value}</div>
 `;
 
-const section = (formSection: { label: any; components: { label: any; value: any }[] }) => `
+const section = (formSection: FormSummaryPanel) => `
   <h2>${formSection.label}</h2>
   ${formSection.components.map(field).join("")}
 `;
 
-const body = (formSummaryObject: { label: any; components: { label: any; value: any }[] }[]) => {
+export const body = (formSummaryObject: FormSummaryPanel[]) => {
   console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
   return `
 <body>
@@ -37,10 +42,14 @@ const body = (formSummaryObject: { label: any; components: { label: any; value: 
   `;
 };
 
-const createHtmlFromSubmission = (form: NavFormType, submission: any, translations: any, isTest: boolean) => {
+export const createHtmlFromSubmission = (form: NavFormType, submission: any, translations: any, isTest: boolean) => {
   const lang = "no";
 
-  const formSummaryObject = formSummaryUtil.createFormSummaryObject(form, submission);
+  console.log("submission", submission);
+  console.log("translations", translations);
+
+  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission);
+  console.log(body(formSummaryObject));
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
@@ -49,5 +58,3 @@ const createHtmlFromSubmission = (form: NavFormType, submission: any, translatio
 </html>
   `;
 };
-
-export { createHtmlFromSubmission };
