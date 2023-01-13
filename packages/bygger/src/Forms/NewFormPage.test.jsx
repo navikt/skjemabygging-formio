@@ -15,6 +15,8 @@ const RESPONSE_HEADERS = {
   },
 };
 
+const mockTemaKoder = { ABC: "Tema 1", XYZ: "Tema 3", DEF: "Tema 2" };
+
 describe("NewFormPage", () => {
   it("should create a new form with correct path, title and name", async () => {
     const userAlerter = { flashSuccessMessage: jest.fn(), alertComponent: jest.fn() };
@@ -23,6 +25,9 @@ describe("NewFormPage", () => {
     fetchMock.mockImplementation((url) => {
       if (url.endsWith("/mottaksadresse/submission")) {
         return Promise.resolve(new Response(JSON.stringify(mockMottaksadresser), RESPONSE_HEADERS));
+      }
+      if (url.endsWith("/temakoder")) {
+        return Promise.resolve(new Response(JSON.stringify(mockTemaKoder), RESPONSE_HEADERS));
       }
       throw new Error(`Manglende testoppsett: Ukjent url ${url}`);
     });
@@ -37,10 +42,10 @@ describe("NewFormPage", () => {
     );
     await waitFor(() => screen.getByText("Opprett nytt skjema"));
 
-    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
-    await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
-    await userEvent.type(screen.getByLabelText("Temakode"), "BIL");
-    await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
+    userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
+    userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
     const savedForm = saveForm.mock.calls[0][0];
@@ -53,6 +58,8 @@ describe("NewFormPage", () => {
       tags: ["nav-skjema", ""],
       properties: {
         skjemanummer: "NAV 10-20.30",
+        tema: "ABC",
+        innsending: "PAPIR_OG_DIGITAL",
       },
     });
   });

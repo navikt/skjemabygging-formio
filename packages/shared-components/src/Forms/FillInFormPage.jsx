@@ -81,7 +81,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onError = () => {
     loggSkjemaValideringFeilet();
-    scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
+    // Commenting out as temporary fix for issue where we scroll to errorsList when onChange is triggered
+    //scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
 
   return (

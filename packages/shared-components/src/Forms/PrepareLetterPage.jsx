@@ -203,7 +203,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }) {
           const filteredList = enhetsliste.filter(isEnhetSupported(enhetstyper)).sort(compareEnheter);
           if (filteredList.length === 0) {
             setEnhetslisteFilteringError(true);
-            return enhetsliste.filter(isEnhetSupported()).sort(compareEnheter);
+            return enhetsliste.sort(compareEnheter);
           }
           return filteredList;
         })
