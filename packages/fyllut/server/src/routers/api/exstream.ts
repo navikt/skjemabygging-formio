@@ -164,12 +164,15 @@ const testHtml = `
 </body>
 </html>`;
 
-const parseBody = (req: Request): { form: NavFormType; submission: any; translations: any; isTest: boolean } => {
+const parseBody = (
+  req: Request
+): { form: NavFormType; submission: any; translations: any; isTest: boolean; language: string } => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
   const translations = JSON.parse(req.body.translations);
   const isTest = req.body.isTest && JSON.parse(req.body.isTest);
-  return { form, submission, translations, isTest };
+  const language = req.body.language;
+  return { form, submission, translations, isTest, language };
 };
 
 const exstream = {
@@ -189,8 +192,8 @@ const exstream = {
   },
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { form, submission, translations, isTest } = parseBody(req);
-      const html = createHtmlFromSubmission(form, submission, translations, isTest);
+      const { form, submission, translations, isTest, language } = parseBody(req);
+      const html = createHtmlFromSubmission(form, submission, translations, isTest, language);
       const pdf = await createPdf(req.headers.AzureAccessToken as string, form.title, html);
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));

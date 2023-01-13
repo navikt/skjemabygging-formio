@@ -25,26 +25,25 @@ const createComponent = (label: string, value: SubmissionValue, type: ComponentT
 describe("htmlBuilder", () => {
   describe("Html document", () => {
     const formWithTitle = { title: "Abc def", components: [] } as unknown as NavFormType;
-    const translations = { languageCode: {} };
     let html: String;
 
     beforeEach(() => {
-      html = createHtmlFromSubmission(formWithTitle, {}, translations, true);
+      html = createHtmlFromSubmission(formWithTitle, {}, {}, true);
     });
 
     it("creates a html document with the forms title", () => {
       expect(html).toContain("<title>Abc def</title>");
     });
 
-    it("sets the language from translations", () => {
-      expect(html).toContain('xml:lang="languageCode"');
-      expect(html).toContain('lang="languageCode"');
-    });
-
     it("sets norsk Bokmål as language by default", () => {
-      html = createHtmlFromSubmission(formWithTitle, {}, {}, true);
       expect(html).toContain('xml:lang="nb-NO"');
       expect(html).toContain('lang="nb-NO"');
+    });
+
+    it("sets the language from parameter", () => {
+      html = createHtmlFromSubmission(formWithTitle, {}, {}, true, "languageCode");
+      expect(html).toContain('xml:lang="languageCode"');
+      expect(html).toContain('lang="languageCode"');
     });
   });
 

@@ -42,18 +42,23 @@ export const body = (formSummaryObject: FormSummaryPanel[]) => {
   `;
 };
 
-export const createHtmlFromSubmission = (form: NavFormType, submission: any, translations: any, isTest: boolean) => {
-  const lang = "no";
-
+export const createHtmlFromSubmission = (
+  form: NavFormType,
+  submission: any,
+  translations: any,
+  isTest: boolean,
+  lang: string = "nb-NO"
+) => {
+  const translate = (text: string): string => translations[text] || text;
   console.log("submission", submission);
   console.log("translations", translations);
 
-  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission);
+  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
   console.log(body(formSummaryObject));
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
-  ${head(form.title)}
+  ${head(translate(form.title))}
   ${body(formSummaryObject)}
 </html>
   `;
