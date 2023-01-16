@@ -58,6 +58,9 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
   } else if (req.header("Fyllut-Submission-Method") === "digital") {
     logger.debug("Missing jwt");
     return res.sendStatus(401);
+  } else {
+    logger.debug("No auth header");
+    logger.debug(JSON.stringify(req.headers));
   }
 
   next();
