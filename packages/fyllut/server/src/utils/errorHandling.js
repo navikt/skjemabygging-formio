@@ -1,4 +1,5 @@
 import correlator from "express-correlation-id";
+import { logger } from "../logger";
 
 /**
  *
@@ -29,6 +30,7 @@ const toJsonOrThrowError =
     if (response.ok) {
       return response.json();
     }
+    logger.debug(response);
     throw await responseToError(response, errorMessage, functional);
   };
 
