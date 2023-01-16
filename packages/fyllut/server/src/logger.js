@@ -8,7 +8,7 @@ const correlationIdFormat = format((info) => {
 });
 
 export const logger = createLogger({
-  level: process.env.FYLLUT_BACKEND_LOGLEVEL || "info",
+  level: process.env.FYLLUT_BACKEND_LOGLEVEL || "debug",
   format: format.combine(correlationIdFormat(), ecsFormat({ apmIntegration: false })),
   transports: [new transports.Console()],
 });
