@@ -8,7 +8,7 @@ Formio.Utils.toggleClass = (id, className) => {
 const TAG = (text) =>
   `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
-Formio.Utils.getDiffLabel = (ctx) => {
+Formio.Utils.getDiffTag = (ctx) => {
   const { component, config } = ctx;
   const { publishedForm } = config;
   if (ctx.builder && publishedForm) {

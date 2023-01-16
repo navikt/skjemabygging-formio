@@ -125,7 +125,7 @@
     {% if (!ctx.component.hideLabel) { %}
     <span class="label-track-changes">
       <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
-      {{ctx.util.getDiffLabel(ctx)}}
+      {{ctx.util.getDiffTag(ctx)}}
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
