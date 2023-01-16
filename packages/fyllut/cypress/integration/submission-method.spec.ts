@@ -38,7 +38,7 @@ describe("Submission method", () => {
         cy.findByRole("textbox", { name: "Etternavn" }).should("exist").type("Testesen");
         cy.findByText("Bor du i Norge?")
           .should("exist")
-          .parent()
+          .closest("fieldset")
           .within(() => cy.findByLabelText("Ja").should("exist").check({ force: true }));
         cy.findByRole("combobox", { name: "Hva søker du støtte til?" }).should("exist").type("Sykk{downArrow}{enter}");
         cy.clickNextStep();

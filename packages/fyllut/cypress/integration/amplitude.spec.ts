@@ -52,13 +52,13 @@ describe("Amplitude", () => {
 
     cy.findByText("Bor du i Norge?")
       .should("exist")
-      .parent()
+      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Bor du i Norge?" });
 
     cy.findByText("Er kontaktadressen din en vegadresse eller postboksadresse?")
       .should("exist")
-      .parent()
+      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
     cy.checkLogToAmplitude("skjemaspørsmål besvart", {
       spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",
