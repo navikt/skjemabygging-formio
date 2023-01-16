@@ -31,6 +31,7 @@ const toJsonOrThrowError =
       return response.json();
     }
     logger.debug(response);
+    logger.debug(JSON.stringify(response));
     throw await responseToError(response, errorMessage, functional);
   };
 
