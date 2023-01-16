@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils-overrides navFormDiffToHtmlList generates html list with changed properties 1`] = `"<ul aria-labelledby=\\"test-diff-label\\"><li>label: Fra 'Fornavn' til 'Oppgi fornavn'</li><li>id: Fra 'ehnemzu' til 'e6s77h'</li></ul>"`;
+
+exports[`utils-overrides navFormDiffToHtmlList generates html list with deleted radiopanel from panel 1`] = `"<ul aria-labelledby=\\"test-diff-label\\"><li>radiopanel: Bekreftelse på skoleplass</li></ul>"`;
+
+exports[`utils-overrides navFormDiffToHtmlList generates nested html list with deleted datagrid and its components 1`] = `"<ul aria-labelledby=\\"test-diff-label\\"><li>datagrid: Dine hunder<ul><li>textfield: Navn</li><li>textfield: Rase</li></ul></li></ul>"`;

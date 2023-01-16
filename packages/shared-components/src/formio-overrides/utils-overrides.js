@@ -8,6 +8,42 @@ Formio.Utils.toggleClass = (id, className) => {
 const TAG = (text) =>
   `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
+const navFormDiffToHtmlList = (changes, labelId) => {
+  const { diff, components } = changes;
+  console.log("navFormDiffToHtmlList", JSON.stringify(changes));
+  const li = [];
+  if (diff) {
+    Object.keys(diff).forEach((key) => {
+      li.push(`<li>${key}: Fra '${diff[key].originalValue}' til '${diff[key].value}'</li>`);
+    });
+  } else if (components) {
+    components
+      .filter((compDiff) => compDiff.status === "Slettet")
+      .map((comp) => comp.originalValue)
+      .forEach((comp) => {
+        const sublist = createSubList(comp.components);
+        li.push(`<li>${comp.type}: ${comp.label}${sublist}</li>`);
+      });
+  }
+  return `<ul aria-labelledby="${labelId}">`.concat(li.join("")).concat("</ul>");
+};
+
+const createSubList = (components) => {
+  if (components && components.length > 0) {
+    return "<ul>"
+      .concat(
+        components
+          .map((component) => {
+            return `<li>${component.type}: ${component.label}${createSubList(component)}</li>`;
+          })
+          .join("")
+      )
+      .concat("</ul>");
+  }
+  return "";
+};
+Formio.Utils.navFormDiffToHtmlList = navFormDiffToHtmlList;
+
 Formio.Utils.getDiffTag = (ctx) => {
   const { component, config } = ctx;
   const { publishedForm } = config;
@@ -48,4 +84,4 @@ function evaluateOverride(func, args, ret, tokenize) {
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
-export { evaluateOverride, sanitizeJavaScriptCode };
+export { evaluateOverride, sanitizeJavaScriptCode, navFormDiffToHtmlList };
