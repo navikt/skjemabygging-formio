@@ -32,6 +32,7 @@ const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunct
       next();
     })
     .catch((error) => {
+      logger.debug(error);
       next(error);
     });
 };
