@@ -8,6 +8,8 @@ import { toJsonOrThrowError } from "../utils/errorHandling.js";
 const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
 const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunction) => {
+  logger.debug(`Client id: ${clientId}`);
+  logger.debug(req.getIdportenJwt());
   return fetch(azureOpenidTokenEndpoint!, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
@@ -22,7 +24,6 @@ const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunct
   })
     .then(toJsonOrThrowError("Feil ved OBO autentisering"))
     .then((response) => {
-      logger.debug(`Client id: ${clientId}`);
       logger.debug(`Response: ${qs.stringify(response)}`);
 
       // @ts-ignore
