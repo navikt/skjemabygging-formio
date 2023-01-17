@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import fetch from "node-fetch";
 import { logger } from "../../logger";
-import { getTokenxAccessToken } from "../../security/tokenxHelper";
 import { Person } from "../../types/person";
 
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // TODO: Validate req.params.id against logged inn user token. And only let logged inn users call this.
       const data = await getPerson(req.headers.AzureAccessToken as string, "AAP", req.params.id);
       res.send(data);
     } catch (e) {
@@ -15,7 +15,7 @@ const pdl = {
   },
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await getChildren(getTokenxAccessToken(req), "AAP", req.params.id);
+      const data = await getChildren(req.headers.AzureAccessToken as string, "AAP", req.params.id);
       res.send(data);
     } catch (e) {
       next(e);
@@ -48,8 +48,6 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
   );
 
   const person: PdlPerson = response.hentPerson;
-
-  logger.debug(`${person.navn[0].fornavn} gyldig ${person.navn[0].gyldigFraOgMed}`);
 
   return {
     id: personId,
@@ -90,16 +88,16 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
     })
   );
 
+  logger.debug(JSON.stringify(response.hentPerson));
+
   const person: PdlPerson = response.hentPerson;
 
-  logger.debug(JSON.stringify(person));
-
   let children: Person[] = [];
-  /*if (person.forelderBarnRelasjon?.length > 0) {
+  if (person.forelderBarnRelasjon?.length > 0) {
     for (const child of person.forelderBarnRelasjon) {
-      children.push(await getPerson(tokenxAccessToken, theme, child.relatertPersonsIdent));
+      children.push(await getPerson(accessToken, theme, child.relatertPersonsIdent));
     }
-  }*/
+  }
 
   return children;
 };

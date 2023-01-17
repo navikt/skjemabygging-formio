@@ -2,7 +2,7 @@ import express from "express";
 import { config as appConfig } from "../../config/config";
 import { rateLimiter } from "../../middleware/ratelimit";
 import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
-import azureOBOAccessTokenHandler from "../../security/azureOBOAccessTokenHandler";
+import azurePdlAccessTokenHandler from "../../security/azurePdlAccessTokenHandler";
 import idportenAuthHandler from "../../security/idportenAuthHandler";
 import tokenxHandler from "../../security/tokenxHandler.js";
 import commonCodes from "./common-codes";
@@ -41,7 +41,7 @@ apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
 apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
 apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
-apiRouter.get("/pdl/person/:id", azureOBOAccessTokenHandler, pdl.person);
+apiRouter.get("/pdl/person/:id", azurePdlAccessTokenHandler, pdl.person);
 apiRouter.get("/pdl/children/:id", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.children);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 

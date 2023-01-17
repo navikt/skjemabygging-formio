@@ -7,9 +7,7 @@ import { toJsonOrThrowError } from "../utils/errorHandling.js";
 
 const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
-const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunction) => {
-  logger.debug(`Client id: ${clientId}`);
-  logger.debug(req.getIdportenJwt());
+const azurePdlAccessTokenHandler = (req: Request, res: Response, next: NextFunction) => {
   return fetch(azureOpenidTokenEndpoint!, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
@@ -23,18 +21,14 @@ const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunct
   })
     .then(toJsonOrThrowError("Feil ved PDL autentisering"))
     .then((response) => {
-      logger.debug(`Response: ${qs.stringify(response)}`);
-
       // @ts-ignore
       req.headers.AzureAccessToken = response.access_token;
-
-      logger.debug(`PDL token: ${req.headers.AzureAccessToken}`);
       next();
     })
     .catch((error) => {
-      logger.error(`Status: ${error.http_status} and error: ${JSON.stringify(error.http_response_body)}`);
+      logger.error(`PDL access token failed with: ${JSON.stringify(error.http_response_body)}`);
       next(error);
     });
 };
 
-export default azureOBOAccessTokenHandler;
+export default azurePdlAccessTokenHandler;
