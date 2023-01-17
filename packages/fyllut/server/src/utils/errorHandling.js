@@ -31,7 +31,9 @@ const toJsonOrThrowError =
       return response.json();
     }
     const error = await responseToError(response, errorMessage, functional);
-    logger.error(`Error from response: error.http_response_body`);
+    logger.error(`Error from response: ${error.http_response_body}`);
+    logger.error(`Error from response: ${error.http_status}`);
+    logger.error(`Error from response: ${error.http_url}`);
     throw error;
   };
 
