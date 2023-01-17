@@ -1,13 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import fetch from "node-fetch";
 import { logger } from "../../logger";
+import { getTokenxAccessToken } from "../../security/tokenxHelper";
 import { Person } from "../../types/person";
 
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
       // TODO: Validate req.params.id against logged inn user token. And only let logged inn users call this.
-      const data = await getPerson(req.headers.AzureAccessToken as string, "AAP", req.params.id);
+      const data = await getPerson(
+        getTokenxAccessToken(req),
+        "AAP", // TODO: Use correct theme
+        req.params.id
+      );
       res.send(data);
     } catch (e) {
       next(e);
@@ -15,7 +20,13 @@ const pdl = {
   },
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = await getChildren(req.headers.AzureAccessToken as string, "AAP", req.params.id);
+      // TODO: Validate req.params.id against logged inn user token. And only let logged inn users call this.
+      const data = await getPersonWithRelations(
+        req.headers.AzureAccessToken as string,
+        "AAP", // TODO: Use correct theme
+        req.params.id,
+        "BARN"
+      );
       res.send(data);
     } catch (e) {
       next(e);
@@ -57,7 +68,12 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
   };
 };
 
-const getChildren = async (accessToken: string, theme: string, personId: string): Promise<Person[]> => {
+const getPersonWithRelations = async (
+  accessToken: string,
+  theme: string,
+  personId: string,
+  role?: "BARN" | "MOR" | "FAR" // More roles probably exist.
+): Promise<Person[]> => {
   logger.debug(`Fetch ${personId} with children from pdl.`);
 
   let response = await pdlRequest(
@@ -75,7 +91,6 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
             forelderBarnRelasjon {
               relatertPersonsIdent
               relatertPersonsRolle
-              minRolleForPerson
             }
           },            
         }
@@ -92,8 +107,9 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
 
   let children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
-    for (const child of person.forelderBarnRelasjon) {
-      children.push(await getPerson(accessToken, theme, child.relatertPersonsIdent));
+    for (const relation of person.forelderBarnRelasjon) {
+      if (!role || role === relation.relatertPersonsRolle)
+        children.push(await getPerson(accessToken, theme, relation.relatertPersonsIdent));
     }
   }
 
@@ -102,6 +118,7 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
 
 const pdlRequest = async (accessToken: string, theme: string, query: string) => {
   //const url = "https://pdl-api.prod-fss-pub.nais.io/graphql";
+  // TODO: Move to config
   const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
 
   const response = await fetch(url, {
@@ -137,11 +154,11 @@ interface PdlNavn {
   etternavn: string;
   fornavn: string;
   mellomnavn?: string;
-  gyldigFraOgMed?: string;
 }
 
 interface PdlForelderBarnRelasjon {
   relatertPersonsIdent: string;
+  relatertPersonsRolle: string;
 }
 
 export default pdl;

@@ -48,7 +48,7 @@ apiRouter.get(
   azureAccessTokenHandler(skjemabyggingProxyClientId),
   commonCodes.getCurrencies
 );
-apiRouter.get("/pdl/person/:id", azureAccessTokenHandler("dev-fss.pdl.pdl-api"), pdl.person); // TODO: Create config
+apiRouter.get("/pdl/person/:id", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.person); // TODO: Create config
 apiRouter.get("/pdl/children/:id", azureAccessTokenHandler("dev-fss.pdl.pdl-api"), pdl.children);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
