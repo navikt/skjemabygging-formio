@@ -14,22 +14,21 @@ const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunct
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     method: "POST",
     body: qs.stringify({
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      grant_type: "client_credentials",
+      scope: `openid api://dev-fss.pdl.pdl-api/.default`,
       client_id: clientId,
       client_secret: clientSecret,
-      assertion: req.getIdportenJwt(),
-      scope: "api://dev-fss.pdl.pdl-api/.default",
-      requested_token_use: "on_behalf_of",
+      client_auth_method: "client_secret_basic",
     }),
   })
-    .then(toJsonOrThrowError("Feil ved OBO autentisering"))
+    .then(toJsonOrThrowError("Feil ved PDL autentisering"))
     .then((response) => {
       logger.debug(`Response: ${qs.stringify(response)}`);
 
       // @ts-ignore
       req.headers.AzureAccessToken = response.access_token;
 
-      logger.debug(`OBO: ${req.headers.AzureAccessToken}`);
+      logger.debug(`PDL token: ${req.headers.AzureAccessToken}`);
       next();
     })
     .catch((error) => {
