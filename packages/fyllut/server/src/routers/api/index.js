@@ -1,8 +1,7 @@
 import express from "express";
 import { config as appConfig } from "../../config/config";
 import { rateLimiter } from "../../middleware/ratelimit";
-import azureAccessTokenHandler from "../../security/azureAccessTokenHandler.js";
-import azurePdlAccessTokenHandler from "../../security/azurePdlAccessTokenHandler";
+import azureAccessTokenHandler from "../../security/azureAccessTokenHandler";
 import idportenAuthHandler from "../../security/idportenAuthHandler";
 import tokenxHandler from "../../security/tokenxHandler.js";
 import commonCodes from "./common-codes";
@@ -21,28 +20,36 @@ import pdl from "./pdl";
 import sendInn from "./send-inn.js";
 import translations from "./translations.js";
 
-const { sendInnConfig } = appConfig;
+const { sendInnConfig, skjemabyggingProxyClientId } = appConfig;
 
 const apiRouter = express.Router();
 
 apiRouter.all("*", idportenAuthHandler);
 apiRouter.get("/config", config.get);
 apiRouter.get("/countries", countries.get);
-apiRouter.get("/enhetsliste", azureAccessTokenHandler, enhetsliste.get);
+apiRouter.get("/enhetsliste", azureAccessTokenHandler(skjemabyggingProxyClientId), enhetsliste.get);
 apiRouter.get("/forms", forms.get);
 apiRouter.get("/forms/:formPath", form.get);
-apiRouter.post("/foersteside", azureAccessTokenHandler, forsteside.post);
+apiRouter.post("/foersteside", azureAccessTokenHandler(skjemabyggingProxyClientId), forsteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
 apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
-apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
-apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
-apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
-apiRouter.get("/pdl/person/:id", azurePdlAccessTokenHandler, pdl.person);
-apiRouter.get("/pdl/children/:id", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.children);
+apiRouter.get(
+  "/common-codes/archive-subjects",
+  azureAccessTokenHandler(skjemabyggingProxyClientId),
+  commonCodes.getArchiveSubjects
+);
+apiRouter.get("/pdf/convert", azureAccessTokenHandler(skjemabyggingProxyClientId), exstream.get);
+apiRouter.get(
+  "/common-codes/currencies",
+  azureAccessTokenHandler(skjemabyggingProxyClientId),
+  commonCodes.getCurrencies
+);
+apiRouter.get("/pdl/person/:id", azureAccessTokenHandler("dev-fss.pdl.pdl-api"), pdl.person); // TODO: Create config
+apiRouter.get("/pdl/children/:id", azureAccessTokenHandler("dev-fss.pdl.pdl-api"), pdl.children);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
 export default apiRouter;
