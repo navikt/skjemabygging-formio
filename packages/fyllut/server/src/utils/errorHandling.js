@@ -30,9 +30,9 @@ const toJsonOrThrowError =
     if (response.ok) {
       return response.json();
     }
-    logger.debug(response);
-    logger.debug(JSON.stringify(response));
-    throw await responseToError(response, errorMessage, functional);
+    const error = await responseToError(response, errorMessage, functional);
+    logger.error(error.http_response_body);
+    throw error;
   };
 
 export { responseToError, toJsonOrThrowError };
