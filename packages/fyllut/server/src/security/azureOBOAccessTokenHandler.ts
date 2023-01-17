@@ -18,7 +18,7 @@ const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunct
       client_id: clientId,
       client_secret: clientSecret,
       assertion: req.getIdportenJwt(),
-      scope: "api:/dev-fss.pdl.pdl-api/.default",
+      scope: "api://dev-fss.pdl.pdl-api/.default",
       requested_token_use: "on_behalf_of",
     }),
   })
