@@ -75,9 +75,7 @@ const getChildren = async (accessToken: string, theme: string, personId: string)
             forelderBarnRelasjon {
               relatertPersonsIdent
               relatertPersonsRolle
-              minRolleForPerson    
-              folkeregistermetadata
-              metadata          
+              minRolleForPerson
             }
           },            
         }
