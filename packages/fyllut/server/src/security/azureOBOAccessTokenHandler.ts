@@ -7,34 +7,7 @@ import { toJsonOrThrowError } from "../utils/errorHandling.js";
 
 const { clientId, clientSecret, azureOpenidTokenEndpoint } = config;
 
-const postData = {
-  grant_type: "client_credentials",
-  scope: `openid api://${clientId}/.default`,
-  client_id: clientId,
-  client_secret: clientSecret,
-  client_auth_method: "client_secret_basic",
-};
-
-const azureAccessTokenHandler = async () => {
-  const body = qs.stringify(postData);
-  return fetch(azureOpenidTokenEndpoint!, {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    method: "POST",
-    body: body,
-  })
-    .then(toJsonOrThrowError("Feil ved autentisering"))
-    .then((response) => {
-      // @ts-ignore
-      return response.access_token;
-    })
-    .catch((error) => {
-      logger.error(`Status az: ${error.http_status} and error: ${JSON.stringify(error.http_response_body)}`);
-    });
-};
-
-const azureOBOAccessTokenHandler = async (req: Request, res: Response, next: NextFunction) => {
-  const token = await azureAccessTokenHandler();
-  logger.debug(`Token is: ${token}`);
+const azureOBOAccessTokenHandler = (req: Request, res: Response, next: NextFunction) => {
   logger.debug(`Client id: ${clientId}`);
   logger.debug(req.getIdportenJwt());
   return fetch(azureOpenidTokenEndpoint!, {
@@ -44,7 +17,7 @@ const azureOBOAccessTokenHandler = async (req: Request, res: Response, next: Nex
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
       client_id: clientId,
       client_secret: clientSecret,
-      assertion: token,
+      assertion: req.getIdportenJwt(),
       scope: "api://dev-fss.pdl.pdl-api/.default",
       requested_token_use: "on_behalf_of",
     }),
