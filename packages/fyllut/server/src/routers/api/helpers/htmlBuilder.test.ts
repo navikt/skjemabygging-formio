@@ -14,12 +14,18 @@ const createPanel = (label: string, components: FormSummaryComponent[] = []) =>
     key: label,
     type: "panel",
   } as FormSummaryPanel);
-const createComponent = (label: string, value: SubmissionValue, type: ComponentType = "textfield") =>
+const createComponent = (
+  label: string,
+  value: SubmissionValue,
+  type: ComponentType = "textfield",
+  optionalProps = {}
+) =>
   ({
     label,
     value,
     type,
     key: label,
+    ...optionalProps,
   } as FormSummaryComponent);
 
 describe("htmlBuilder", () => {
@@ -57,7 +63,7 @@ describe("htmlBuilder", () => {
       expect(bodyElement).toContain("<h2>Panel 3</h2>");
     });
 
-    it("adds fields for each second-level element in the array", () => {
+    it("adds fields for each element with a field type in the array", () => {
       const bodyElement = body([
         createPanel("Panel", [createComponent("Field 1", "value 1"), createComponent("Field 2", "value 2")]),
       ]);
@@ -65,6 +71,24 @@ describe("htmlBuilder", () => {
       expect(bodyElement).toContain('<div class="svar">- value 1</div>');
       expect(bodyElement).toContain('<div class="spm">Field 2</div>');
       expect(bodyElement).toContain('<div class="svar">- value 2</div>');
+    });
+  });
+
+  describe("Special types", () => {
+    describe("image", () => {
+      it("Adds label image tag and alt text", () => {
+        const bodyElement = body([
+          createPanel("Panel", [
+            createComponent("This is an image", "data:image/png;base64,image", "image", {
+              alt: "alt text",
+              widthPercent: 40,
+            }),
+          ]),
+        ]);
+        expect(bodyElement).toContain('<div class="spm">This is an image</div>');
+        expect(bodyElement).toContain('<img src="data:image/png;base64,image" alt="alt text" width="200"/>');
+        expect(bodyElement).toContain('<div class="alt">alt text</div>');
+      });
     });
   });
 });
