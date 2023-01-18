@@ -107,13 +107,13 @@ const getPersonWithRelations = async (
     theme,
     JSON.stringify({
       query: `
-        query($ident: ID!) {
-          navn(historikk: false) {
-            fornavn
-            mellomnavn
-            etternavn
-          },
+        query($ident: ID!) {          
           hentPerson(ident: $ident) {
+            navn(historikk: false) {
+              fornavn
+              mellomnavn
+              etternavn
+            },
             forelderBarnRelasjon {
               relatertPersonsIdent
               relatertPersonsRolle
