@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import fetch from "node-fetch";
 import { config as appConfig } from "../../config/config";
 import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
