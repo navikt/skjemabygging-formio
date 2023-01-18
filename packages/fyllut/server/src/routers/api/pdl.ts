@@ -53,7 +53,7 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
               gradering
             },
             bostedsadresse(historikk: false) {
-                utenlandskAdresse: {
+                utenlandskAdresse {
                   adresselinje1
                   adresselinje2
                   adresselinje3
@@ -61,7 +61,7 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
                   landkode
                   postkode
                 }
-                vegadresse: {
+                vegadresse {
                   adressenavn
                   husbokstav
                   husnummer
