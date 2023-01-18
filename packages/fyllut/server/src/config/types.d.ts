@@ -14,11 +14,6 @@ export type SendInnConfig = {
   };
 };
 
-export type PdlConfig = {
-  host: string;
-  tokenxClientId: string;
-};
-
 export type IdportenConfig = {
   idportenClientId: string;
   idportenJwksUri: string;
@@ -31,6 +26,7 @@ export type ConfigType = {
   tokenx?: TokenxConfig;
   sendInnConfig?: SendInnConfig;
   idporten?: IdportenConfig;
+  pdlTokenScopeCluster: string;
   clientSecret: string;
   naisClusterName: string;
   isDevelopment: boolean;

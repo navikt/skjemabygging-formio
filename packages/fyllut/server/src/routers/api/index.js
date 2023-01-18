@@ -20,7 +20,7 @@ import pdl from "./pdl";
 import sendInn from "./send-inn.js";
 import translations from "./translations.js";
 
-const { sendInnConfig, skjemabyggingProxyClientId } = appConfig;
+const { sendInnConfig, skjemabyggingProxyClientId, pdlTokenScopeCluster } = appConfig;
 
 const apiRouter = express.Router();
 
@@ -48,8 +48,8 @@ apiRouter.get(
   azureAccessTokenHandler(skjemabyggingProxyClientId),
   commonCodes.getCurrencies
 );
-apiRouter.get("/pdl/person/:id", tokenxHandler("dev-fss:pdl:pdl-api"), pdl.person); // TODO: Create config
-apiRouter.get("/pdl/children/:id", azureAccessTokenHandler("dev-fss.pdl.pdl-api"), pdl.children);
+apiRouter.get("/pdl/person/:id", tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`), pdl.person);
+apiRouter.get("/pdl/children/:id", azureAccessTokenHandler(`${pdlTokenScopeCluster}.pdl:pdl-api`), pdl.children);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
 export default apiRouter;
