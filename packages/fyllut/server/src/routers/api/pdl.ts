@@ -70,8 +70,7 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
                   adressenavn
                   husnummer
                   husbokstav                  
-                  postnummer         
-                  poststed     
+                  postnummer
                 }
             },
             doedsfall {
@@ -137,7 +136,6 @@ const toAddress = (person: any) => {
     return {
       street: address.vegadresse.adressenavn,
       postalCode: address.vegadresse.postnummer,
-      city: address.vegadresse.poststed,
       countryCode: "no",
     };
   } else if (address.utenlandskAdresse) {
