@@ -79,6 +79,13 @@ class NavDataGrid extends DataGrid {
             key: "tabindex",
             ignore: true,
           },
+          { key: "reorder", ignore: true },
+          { key: "addAnotherPosition", ignore: true },
+          { key: "layoutFixed", ignore: true },
+          { key: "enableRowGroups", ignore: true },
+          { key: "initEmpty", ignore: true },
+          { key: "hideLabel", ignore: true },
+          { key: "disableAddingRemovingRows", ignore: true },
         ],
       },
       {
@@ -127,20 +134,7 @@ class NavDataGrid extends DataGrid {
       },
       {
         key: "validation",
-        components: [
-          {
-            key: "unique",
-            ignore: true,
-          },
-          {
-            key: "validateOn",
-            ignore: true,
-          },
-          {
-            key: "unique",
-            ignore: true,
-          },
-        ],
+        ignore: true,
       },
       {
         key: "logic",

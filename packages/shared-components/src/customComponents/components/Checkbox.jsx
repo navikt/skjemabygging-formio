@@ -113,6 +113,7 @@ export default class CheckboxComponent extends FormioReactComponent {
             key: "modalEdit",
             ignore: true,
           },
+          { key: "hideLabel", ignore: true },
         ],
       },
       {
