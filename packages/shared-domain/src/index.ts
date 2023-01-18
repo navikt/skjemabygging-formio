@@ -32,6 +32,7 @@ import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import type {
   ComponentType,
+  ContainerType,
   FormSummaryComponent,
   FormSummaryContainer,
   FormSummaryField,
@@ -88,6 +89,7 @@ export type {
   FormSummaryPanel,
   SubmissionValue,
   ComponentType,
+  ContainerType,
   NavFormType,
   Component,
   Panel,

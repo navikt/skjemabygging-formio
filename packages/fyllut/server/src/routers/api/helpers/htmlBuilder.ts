@@ -1,5 +1,6 @@
 import {
   FormSummaryComponent,
+  FormSummaryContainer,
   FormSummaryField,
   FormSummaryImage,
   FormSummaryPanel,
@@ -44,12 +45,22 @@ const img = (component: FormSummaryImage) => `
   </div>
 `;
 
-const sectionContent = (components: FormSummaryComponent[]): string => {
+const sectionContent = (components: FormSummaryComponent[], level: number): string => {
   return components
     .map((component) => {
       switch (component.type) {
         case "fieldset":
-          return sectionContent(component.components);
+          return sectionContent(component.components, level);
+        case "panel":
+        case "navSkjemagruppe":
+        case "datagrid":
+          return subsection(component, level);
+        case "datagrid-row":
+          const label = `<div class="spm">${component.label}</div>`;
+          return `
+            ${component.label.length && label}
+            ${sectionContent(component.components, level)}
+          `;
         case "image":
           return img(component as FormSummaryImage);
         default:
@@ -59,9 +70,19 @@ const sectionContent = (components: FormSummaryComponent[]): string => {
     .join("");
 };
 
+const h3 = (label: string) => `<h3>${label}</h3>`;
+const h4 = (label: string) => `<h4>${label}</h4>`;
+
+const subsection = (component: FormSummaryContainer, level: number) => `
+  <div class="innrykk">
+    ${level <= 1 ? h3(component.label) : h4(component.label)}
+    ${sectionContent(component.components, level + 1)}
+  </div>
+`;
+
 const section = (formSection: FormSummaryPanel) => `
   <h2>${formSection.label}</h2>
-  ${sectionContent(formSection.components)}
+  ${sectionContent(formSection.components, 1)}
 `;
 
 export const body = (formSummaryObject: FormSummaryPanel[]) => {
