@@ -93,6 +93,19 @@ const findById = (id: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.id === id, components);
 const findByKey = (key: string, components: Component[]): Component | undefined =>
   findComponent((c) => c.key === key, components);
+const findByNavId = (navId: string, components: Component[]): Component | undefined =>
+  findComponent((c) => c.navId === navId, components);
+type ComponentIdType = Pick<Component, "navId" | "key">;
+const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Component | undefined => {
+  let comp;
+  if (ids.navId) {
+    comp = findByNavId(ids.navId, components);
+  }
+  if (!comp) {
+    comp = findByKey(ids.key, components);
+  }
+  return comp;
+};
 
 export const findDependentComponents = (id: string, form: NavFormType) => {
   const idToPathMapping: { [s: string]: string } = {};
@@ -142,6 +155,29 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
   return false;
 };
 
+export const enrichComponentsWithNavIds = (
+  components: Component[] | undefined,
+  navIdGenerator: () => string = FormioUtils.getRandomComponentId
+): Component[] | undefined => {
+  if (components) {
+    return components.map((component) => {
+      const subComponents = component.components;
+      if (!component.navId) {
+        return {
+          ...component,
+          navId: navIdGenerator(),
+          ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
+        };
+      }
+      return {
+        ...component,
+        ...(subComponents && { components: enrichComponentsWithNavIds(subComponents, navIdGenerator) }),
+      };
+    });
+  }
+  return components;
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -151,5 +187,7 @@ const navFormUtils = {
   isVedleggspanel,
   removeVedleggspanel,
   findByKey,
+  findByNavIdOrKey,
+  enrichComponentsWithNavIds,
 };
 export default navFormUtils;

@@ -13,7 +13,7 @@ const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) =>
 
 const checkComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
   if (publishedForm) {
-    const publishedComponent = navFormUtils.findByKey(currentComponent.key, publishedForm.components);
+    const publishedComponent = navFormUtils.findByNavIdOrKey(currentComponent, publishedForm.components);
     return generateObjectDiff(publishedComponent, currentComponent);
   }
   return null;
@@ -117,7 +117,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
           ...acc,
           [key]: generateFormDiff(originalObject[key], newObject[key], true),
         };
-      } else if (key !== "id") {
+      } else if (key !== "id" && key !== "navId") {
         const diff = generateFormDiff(originalObject[key], newObject[key]);
         if (diff) {
           return {
@@ -163,7 +163,10 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
 
   if (allowNesting) {
     const arr = newArray.map((value, newIndex) => {
-      const originalIndex = originalArray.findIndex((v) => v.key === value.key);
+      let originalIndex = originalArray.findIndex((v) => v.navId === value.navId);
+      if (originalIndex === -1) {
+        originalIndex = originalArray.findIndex((v) => v.key === value.key);
+      }
       if (originalIndex === -1) {
         return generateFormDiff(undefined, value, allowNesting);
       } else {
@@ -177,7 +180,10 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
     });
 
     originalArray.forEach((value) => {
-      const newIndex = newArray.findIndex((v) => v.key === value.key);
+      let newIndex = newArray.findIndex((v) => v.navId === value.navId);
+      if (newIndex === -1) {
+        newIndex = newArray.findIndex((v) => v.key === value.key);
+      }
       if (newIndex === -1) {
         arr.push(generateFormDiff(value, undefined, allowNesting));
       }

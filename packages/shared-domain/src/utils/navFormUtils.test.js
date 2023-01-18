@@ -1,4 +1,5 @@
 import {
+  enrichComponentsWithNavIds,
   findDependentComponents,
   flattenComponents,
   formMatcherPredicate,
@@ -657,6 +658,95 @@ describe("navFormUtils", () => {
         const testform = createTestForm(undefined);
         const allowed = isSubmissionMethodAllowed("digital", testform);
         expect(allowed).toBe(true);
+      });
+    });
+  });
+
+  describe("enrichComponentsWithNavIds", () => {
+    let navIdGenerator;
+
+    beforeEach(() => {
+      navIdGenerator = jest.fn();
+    });
+
+    it("ignores undefined input", () => {
+      const components = enrichComponentsWithNavIds(undefined, navIdGenerator);
+      expect(components).toBeUndefined();
+      expect(navIdGenerator).toHaveBeenCalledTimes(0);
+    });
+
+    it("does not update existing navId", () => {
+      const input = [{ navId: "123" }];
+      const components = enrichComponentsWithNavIds(input, navIdGenerator);
+      expect(components).toEqual([{ navId: "123" }]);
+      expect(navIdGenerator).toHaveBeenCalledTimes(0);
+    });
+
+    it("updates only component without navId", () => {
+      navIdGenerator.mockReturnValueOnce("4444");
+      const input = [{ navId: "123" }, {}];
+      const components = enrichComponentsWithNavIds(input, navIdGenerator);
+      expect(components).toEqual([{ navId: "123" }, { navId: "4444" }]);
+      expect(navIdGenerator).toHaveBeenCalledTimes(1);
+    });
+
+    it("iterates component tree and inserts navId when missing", () => {
+      navIdGenerator
+        .mockReturnValueOnce("200")
+        .mockReturnValueOnce("201")
+        .mockReturnValueOnce("202")
+        .mockReturnValueOnce("203");
+      const input = [
+        {
+          navId: "100",
+          components: [
+            {
+              components: [{}],
+            },
+            {
+              navId: "101",
+            },
+          ],
+        },
+        {
+          components: [{}],
+        },
+      ];
+      const components = enrichComponentsWithNavIds(input, navIdGenerator);
+      expect(components).toEqual([
+        {
+          navId: "100",
+          components: [
+            {
+              navId: "200",
+              components: [{ navId: "201" }],
+            },
+            {
+              navId: "101",
+            },
+          ],
+        },
+        {
+          navId: "202",
+          components: [{ navId: "203" }],
+        },
+      ]);
+      expect(navIdGenerator).toHaveBeenCalledTimes(4);
+    });
+
+    describe("prop components on components without subcomponents", () => {
+      it("is not added when navId is missing", () => {
+        navIdGenerator.mockReturnValueOnce("123");
+        const input = [{}];
+        const components = enrichComponentsWithNavIds(input, navIdGenerator);
+        expect(components).toHaveLength(1);
+        expect(Object.keys(components[0])).toEqual(["navId"]);
+      });
+      it("is not added when navId is present", () => {
+        const input = [{ navId: "1" }];
+        const components = enrichComponentsWithNavIds(input, navIdGenerator);
+        expect(components).toHaveLength(1);
+        expect(Object.keys(components[0])).toEqual(["navId"]);
       });
     });
   });
