@@ -2,18 +2,10 @@ import fetch from "node-fetch";
 import { config } from "../../config/config";
 import { logger } from "../../logger.js";
 import { Pdfgen } from "../../pdfgen.js";
-import { getTokenxAccessToken } from "../../security/tokenxHelper";
+import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling.js";
 
 const { featureToggles, gitVersion, sendInnConfig } = config;
-
-const getIdportenPid = (req) => {
-  const idportenPid = req.getIdportenPid ? req.getIdportenPid() : null;
-  if (!idportenPid) {
-    throw new Error("Missing idporten pid");
-  }
-  return idportenPid;
-};
 
 const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 

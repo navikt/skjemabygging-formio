@@ -5,6 +5,7 @@ declare global {
     export interface Request {
       getIdportenJwt: () => User;
       getIdportenPid: () => string;
+      getTokenxAccessToken: () => string;
     }
   }
 }

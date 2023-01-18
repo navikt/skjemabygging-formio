@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import fetch from "node-fetch";
 import { logger } from "../../logger";
-import { getTokenxAccessToken } from "../../security/tokenxHelper";
+import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { Person } from "../../types/person";
 
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO: Validate req.params.id against logged inn user token. And only let logged inn users call this.
+      validateLoggedInUser(getIdportenPid(req), req.params.id);
       const data = await getPerson(
         getTokenxAccessToken(req),
         "AAP", // TODO: Use correct theme
@@ -20,7 +20,7 @@ const pdl = {
   },
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO: Validate req.params.id against logged inn user token. And only let logged inn users call this.
+      validateLoggedInUser(getIdportenPid(req), req.params.id);
       const data = await getPersonWithRelations(
         req.headers.AzureAccessToken as string,
         "AAP", // TODO: Use correct theme
@@ -136,13 +136,22 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
   if (body.errors?.length > 0) {
     const message = body.errors[0].message;
     if (body.errors[0].extensions?.code === "unauthorized") {
-      // TODO: Handle unauthorized
+      logger.warn(`User is not authorized to do this pdl request`);
     }
 
     throw new Error(message);
   }
 
   return body.data;
+};
+
+const validateLoggedInUser = (idPortenPid: string, personId: string) => {
+  logger.debug(`User ${idPortenPid} trying to access ${personId}`);
+  if (!idPortenPid) {
+    throw new Error(`User have to be logged in to access pdl data.`);
+  } else if (idPortenPid !== personId) {
+    throw new Error(`Logged in user do not match the person they tried to retrieve.`);
+  }
 };
 
 interface PdlPerson {
