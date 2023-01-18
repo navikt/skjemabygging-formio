@@ -29,6 +29,13 @@ Container.editForm = () => {
         { key: "customClass", ignore: true },
       ],
     },
+    {
+      key: "api",
+      components: [
+        { key: "tags", ignore: true },
+        { key: "properties", ignore: true },
+      ],
+    },
     { key: "data", ignore: true },
     { key: "logic", ignore: true },
     { key: "layout", ignore: true },

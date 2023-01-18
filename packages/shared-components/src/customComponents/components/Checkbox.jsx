@@ -171,6 +171,13 @@ export default class CheckboxComponent extends FormioReactComponent {
         ],
       },
       {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
+        ],
+      },
+      {
         key: "logic",
         ignore: true,
         components: false,

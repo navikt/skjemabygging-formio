@@ -122,11 +122,13 @@ class Day extends FormioDay {
       {
         key: "api",
         components: [
-          {
-            key: "tags",
-            ignore: true,
-          },
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
         ],
+      },
+      {
+        key: "validation",
+        components: [{ key: "unique", ignore: true }],
       },
       ...extend,
     ]);

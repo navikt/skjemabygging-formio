@@ -133,6 +133,10 @@ class NavDataGrid extends DataGrid {
         ],
       },
       {
+        key: "api",
+        components: [{ key: "tags", ignore: true }],
+      },
+      {
         key: "validation",
         ignore: true,
       },

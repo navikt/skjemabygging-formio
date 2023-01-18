@@ -54,6 +54,13 @@ class CountrySelect extends NavSelect {
         key: "validation",
         components: [{ key: "unique", ignore: true }],
       },
+      {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
+        ],
+      },
       { key: "logic", ignore: true },
       { key: "layout", ignore: true },
       ...extend,

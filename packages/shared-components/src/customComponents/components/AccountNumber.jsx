@@ -36,6 +36,13 @@ export default class AccountNumber extends Number {
         ],
       },
       {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
+        ],
+      },
+      {
         key: "validation",
         components: [
           { key: "validateOn", ignore: true },
