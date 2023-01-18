@@ -48,6 +48,28 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
               fornavn
               mellomnavn
               etternavn
+            },
+            adressebeskyttelse {
+              gradering
+            },
+            bostedsadresse(historikk: false) {
+                utenlandskAdresse: {
+                  adresselinje1
+                  adresselinje2
+                  adresselinje3
+                  byEllerStedsnavn
+                  landkode
+                  postkode
+                }
+                vegadresse: {
+                  adressenavn
+                  husbokstav
+                  husnummer
+                  postnummer              
+                }
+            },
+            doedsfall {
+              doedsdato
             }
           },            
         }
@@ -106,8 +128,9 @@ const getPersonWithRelations = async (
   let children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
     for (const relation of person.forelderBarnRelasjon) {
-      if (!role || role === relation.relatertPersonsRolle)
+      if (relation.relatertPersonsIdent && (!role || role === relation.relatertPersonsRolle)) {
         children.push(await getPerson(accessToken, theme, relation.relatertPersonsIdent));
+      }
     }
   }
 
