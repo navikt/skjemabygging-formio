@@ -43,23 +43,9 @@ WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJ
     this.navFormDiff = null;
     const { publishedForm } = this.options.formConfig;
     if (publishedForm) {
-      const changes = formDiffingTool.checkComponentDiff(original, publishedForm);
-      console.log("override diff", JSON.stringify(changes));
-      if (original.type === "panel" && changes && changes.components) {
-        const deletedComponents = navFormUtils
-          .flattenComponents(changes.components)
-          .filter((compDiff) => compDiff.status === "Slettet");
-        console.log("delete", deletedComponents);
-        this.navFormDiff = {
-          message: "Slettede elementer",
-          data: changes,
-        };
-      } else if (changes && changes.status === "Endring") {
-        // const {diff} = changes;
-        this.navFormDiff = {
-          message: "Endrede elementer",
-          data: changes,
-        };
+      const diff = formDiffingTool.getComponentDiff(original, publishedForm);
+      if (diff.changesToCurrentComponent.length || diff.deletedComponents.length) {
+        this.navFormDiff = diff;
       }
     }
   }

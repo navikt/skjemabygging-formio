@@ -14,10 +14,43 @@ const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) =>
 const checkComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
   if (publishedForm) {
     const publishedComponent = navFormUtils.findByKey(currentComponent.key, publishedForm.components);
-    const diff = generateObjectDiff(publishedComponent, currentComponent);
-    return diff;
+    return generateObjectDiff(publishedComponent, currentComponent);
   }
   return null;
+};
+
+const getComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
+  const changes = checkComponentDiff(currentComponent, publishedForm) || {};
+  return createDiffSummary(changes);
+};
+
+const createDiffSummary = (changes: any) => {
+  const { diff, components } = changes;
+  const diffSummary: any = {
+    changesToCurrentComponent: [],
+    deletedComponents: [],
+  };
+  if (diff) {
+    Object.keys(diff).forEach((key) => {
+      diffSummary.changesToCurrentComponent.push({
+        key,
+        oldValue: diff[key].originalValue,
+        newValue: diff[key].value,
+      });
+    });
+  }
+  if (components) {
+    const allDeleted = components.status === "Slettet";
+    if (allDeleted) {
+      diffSummary.deletedComponents.push(...components.value);
+    } else {
+      // @ts-ignore
+      diffSummary.deletedComponents.push(
+        ...components.filter((c: any) => c.status === "Slettet").map((c: any) => c.originalValue)
+      );
+    }
+  }
+  return diffSummary;
 };
 
 /**
@@ -184,6 +217,8 @@ const isObject = (element: any) => {
 const tools = {
   generateNavFormDiff,
   checkComponentDiff,
+  getComponentDiff,
+  createDiffSummary,
 };
 
 export { generateNavFormDiff, DiffStatus };

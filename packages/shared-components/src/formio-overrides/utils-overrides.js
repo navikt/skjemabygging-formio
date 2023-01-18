@@ -1,31 +1,42 @@
-import { formDiffingTool, navFormioUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { formDiffingTool, navFormioUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { Formio, Utils } from "formiojs";
 
 Formio.Utils.toggleClass = (id, className) => {
   return `document.getElementById('${id}').classList.toggle('${className}')`;
 };
 
-const TAG = (text) =>
-  `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
-
-const navFormDiffToHtmlList = (changes, labelId) => {
-  const { diff, components } = changes;
-  console.log("navFormDiffToHtmlList", JSON.stringify(changes));
-  const li = [];
-  if (diff) {
-    Object.keys(diff).forEach((key) => {
-      li.push(`<li>${key}: Fra '${diff[key].originalValue}' til '${diff[key].value}'</li>`);
-    });
-  } else if (components) {
-    components
-      .filter((compDiff) => compDiff.status === "Slettet")
-      .map((comp) => comp.originalValue)
-      .forEach((comp) => {
-        const sublist = createSubList(comp.components);
-        li.push(`<li>${comp.type}: ${comp.label}${sublist}</li>`);
-      });
+const navFormDiffToHtml = (diffSummary) => {
+  try {
+    const { changesToCurrentComponent, deletedComponents } = diffSummary;
+    const html = [];
+    if (changesToCurrentComponent.length) {
+      const labelId = "nav-form-diff-changed-elements";
+      html.push(`<span id="${labelId}" class="skjemaelement__label">Endringer</span>`);
+      html.push(`<ul aria-labelledby="${labelId}">`);
+      html.push(
+        ...changesToCurrentComponent.map(
+          (change) => `<li>${change.key}: Fra '${change.oldValue}' til '${change.newValue}'</li>`
+        )
+      );
+      html.push("</ul>");
+    }
+    if (deletedComponents.length) {
+      const labelId = "nav-form-diff-deleted-elements";
+      html.push(`<span id="${labelId}" class="skjemaelement__label">Slettede elementer</span>`);
+      html.push(`<ul aria-labelledby="${labelId}">`);
+      html.push(
+        ...deletedComponents.map((component) => {
+          const sublist = createSubList(component.components);
+          return `<li>${component.type}: ${component.label}${sublist}</li>`;
+        })
+      );
+      html.push("</ul>");
+    }
+    return html.join("");
+  } catch (err) {
+    console.error(`Failed to render form diff: ${err.message} diffSummery="${JSON.stringify(diffSummary)}"`, err);
+    return "<span>Det oppstod dessverre en feil under behandling av endringene i dette skjemaet.</span>";
   }
-  return `<ul aria-labelledby="${labelId}">`.concat(li.join("")).concat("</ul>");
 };
 
 const createSubList = (components) => {
@@ -42,21 +53,24 @@ const createSubList = (components) => {
   }
   return "";
 };
-Formio.Utils.navFormDiffToHtmlList = navFormDiffToHtmlList;
+Formio.Utils.navFormDiffToHtml = navFormDiffToHtml;
+
+const TAG = (text) =>
+  `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
 Formio.Utils.getDiffTag = (ctx) => {
   const { component, config } = ctx;
   const { publishedForm } = config;
   if (ctx.builder && publishedForm) {
-    const changes = formDiffingTool.checkComponentDiff(component, publishedForm);
-    if (component.type === "panel" && changes && changes.components) {
-      const deletedComponents = navFormUtils
-        .flattenComponents(changes.components)
-        .filter((compDiff) => compDiff.status === "Slettet");
-      return deletedComponents.length > 0 ? TAG("Slettede elementer") : "";
-    } else if (changes && changes.status) {
-      return `${TAG(changes.status)}`;
+    const diff = formDiffingTool.getComponentDiff(component, publishedForm);
+    const tags = [];
+    if (diff.changesToCurrentComponent?.length) {
+      tags.push(`${TAG("Endring")}`);
     }
+    if (diff.deletedComponents?.length) {
+      tags.push(`${TAG("Slettede elementer")}`);
+    }
+    return tags.join(" ");
   }
   return "";
 };
@@ -84,4 +98,4 @@ function evaluateOverride(func, args, ret, tokenize) {
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
-export { evaluateOverride, sanitizeJavaScriptCode, navFormDiffToHtmlList };
+export { evaluateOverride, sanitizeJavaScriptCode, navFormDiffToHtml };

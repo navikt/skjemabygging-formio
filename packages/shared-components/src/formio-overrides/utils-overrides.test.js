@@ -1,6 +1,7 @@
+import { formDiffingTool } from "@navikt/skjemadigitalisering-shared-domain";
 import panelDiffDeletedDatagrid from "./testdata/diff-deleted-datagrid";
 import panelDiffDeletedRadiopanel from "./testdata/diff-deleted-radio";
-import { navFormDiffToHtmlList, sanitizeJavaScriptCode } from "./utils-overrides";
+import { navFormDiffToHtml, sanitizeJavaScriptCode } from "./utils-overrides";
 
 describe("utils-overrides", () => {
   describe("sanitizeJavaScriptCode", () => {
@@ -109,8 +110,7 @@ describe("utils-overrides", () => {
     });
   });
 
-  describe("navFormDiffToHtmlList", () => {
-    const LABEL_ID = "test-diff-label";
+  describe("navFormDiffToHtml", () => {
     it("generates html list with changed properties", () => {
       const changes = {
         status: "Endring",
@@ -121,18 +121,35 @@ describe("utils-overrides", () => {
         key: "fornavn",
         type: "textfield",
       };
-      const html = navFormDiffToHtmlList(changes, LABEL_ID);
+      const diffSummary = formDiffingTool.createDiffSummary(changes);
+      const html = navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
 
     it("generates html list with deleted radiopanel from panel", () => {
-      const html = navFormDiffToHtmlList(panelDiffDeletedRadiopanel, LABEL_ID);
+      const diffSummary = formDiffingTool.createDiffSummary(panelDiffDeletedRadiopanel);
+      const html = navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
     });
 
     it("generates nested html list with deleted datagrid and its components", () => {
-      const html = navFormDiffToHtmlList(panelDiffDeletedDatagrid, LABEL_ID);
+      const diffSummary = formDiffingTool.createDiffSummary(panelDiffDeletedDatagrid);
+      const html = navFormDiffToHtml(diffSummary);
       expect(html).toMatchSnapshot();
+    });
+
+    it("handles failure when diffSummary is of unexpected type", () => {
+      const originalConsoleError = console.error;
+      console.error = () => {};
+      try {
+        const diffSummary = { some: "thing", is: "wrong", with: ["this", "obj", "ect"] };
+        const html = navFormDiffToHtml(diffSummary);
+        expect(html).toMatchSnapshot();
+      } catch (e) {
+        throw new Error(`Should never fail, but it did: ${e.message}`);
+      } finally {
+        console.error = originalConsoleError;
+      }
     });
   });
 });
