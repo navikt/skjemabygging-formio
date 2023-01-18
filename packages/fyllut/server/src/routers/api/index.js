@@ -49,7 +49,7 @@ apiRouter.get(
   commonCodes.getCurrencies
 );
 apiRouter.get("/pdl/person/:id", tokenxHandler(`${pdlTokenScopeCluster}:pdl:pdl-api`), pdl.person);
-apiRouter.get("/pdl/children/:id", azureAccessTokenHandler(`${pdlTokenScopeCluster}.pdl:pdl-api`), pdl.children);
+apiRouter.get("/pdl/children/:id", azureAccessTokenHandler(`${pdlTokenScopeCluster}.pdl.pdl-api`), pdl.children);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
 export default apiRouter;
