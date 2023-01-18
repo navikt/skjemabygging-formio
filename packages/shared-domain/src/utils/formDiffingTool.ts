@@ -117,7 +117,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
           ...acc,
           [key]: generateFormDiff(originalObject[key], newObject[key], true),
         };
-      } else {
+      } else if (key !== "id") {
         const diff = generateFormDiff(originalObject[key], newObject[key]);
         if (diff) {
           return {
@@ -128,7 +128,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
               [key]: diff,
             },
           };
-        } else if (key === "title" || key === "key" || key === "id" || key === "type" || key === "label") {
+        } else if (key === "title" || key === "key" || key === "type" || key === "label") {
           return {
             ...acc,
             [key]: newObject[key],

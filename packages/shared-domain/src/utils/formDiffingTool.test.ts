@@ -62,9 +62,9 @@ describe("formDiffingTool", () => {
       const changes: any = generateNavFormDiff(form, newForm);
       checkDefaultComponentsValues(changes.components[0]);
       checkDefaultComponentsValues(changes.components[0].components[0]);
-      expect(changes.components[0].components[0].id).toBe(form.components[0].components[1].id);
+      expect(changes.components[0].components[0].id).toBeUndefined();
       expect(changes.components[0].components[0].originalIndex).toBe(1);
-      expect(changes.components[0].components[1].id).toBe(form.components[0].components[0].id);
+      expect(changes.components[0].components[1].id).toBeUndefined();
       expect(changes.components[0].components[1].originalIndex).toBe(0);
     });
   });
@@ -84,7 +84,7 @@ describe("formDiffingTool", () => {
       expect(changes.status).toBeUndefined();
       expect(changes.diff).toBeUndefined();
     });
-    it("marks label as changed", () => {
+    it("marks label as changed, but ignores id", () => {
       const comp = {
         ...getComp("fornavn"),
         label: "Oppgi fornavn",
@@ -93,17 +93,13 @@ describe("formDiffingTool", () => {
       const changes = tool.checkComponentDiff(comp, publishedForm);
       expect(changes.status).toEqual(DiffStatus.CHANGED);
       expect(changes.diff).toBeDefined();
-      expect(Object.keys(changes.diff)).toHaveLength(2);
+      expect(Object.keys(changes.diff)).toHaveLength(1);
       expect(changes.diff.label).toEqual({
         originalValue: "Fornavn",
         status: DiffStatus.CHANGED,
         value: "Oppgi fornavn",
       });
-      expect(changes.diff.id).toEqual({
-        originalValue: "ehnemzu",
-        status: DiffStatus.CHANGED,
-        value: "e123456",
-      });
+      expect(changes.diff.id).toBeUndefined();
     });
     it("marks ", () => {
       const comp = {
@@ -124,7 +120,7 @@ describe("formDiffingTool", () => {
 });
 
 const checkDefaultComponentsValues = (component: object) => {
-  expect(component).toHaveProperty("id");
+  expect(component).not.toHaveProperty("id");
   expect(component).toHaveProperty("key");
   expect(component).toHaveProperty("type");
   expect(component).toHaveProperty("label");
