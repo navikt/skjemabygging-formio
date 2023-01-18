@@ -35,7 +35,7 @@ const pdl = {
 };
 
 const getPerson = async (accessToken: string, theme: string, personId: string): Promise<Person> => {
-  logger.debug(`Fetch ${personId} from pdl.`);
+  logger.debug(`Fetch person from pdl.`);
 
   const response = await pdlRequest(
     accessToken,
@@ -74,7 +74,7 @@ const getPersonWithRelations = async (
   personId: string,
   role?: "BARN" | "MOR" | "FAR" // More roles probably exist.
 ): Promise<Person[]> => {
-  logger.debug(`Fetch ${personId} with children from pdl.`);
+  logger.debug(`Fetch person with children from pdl.`);
 
   let response = await pdlRequest(
     accessToken,
@@ -100,8 +100,6 @@ const getPersonWithRelations = async (
       },
     })
   );
-
-  logger.debug(JSON.stringify(response.hentPerson));
 
   const person: PdlPerson = response.hentPerson;
 
@@ -146,7 +144,6 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
 };
 
 const validateLoggedInUser = (idPortenPid: string, personId: string) => {
-  logger.debug(`User ${idPortenPid} trying to access ${personId}`);
   if (!idPortenPid) {
     throw new Error(`User have to be logged in to access pdl data.`);
   } else if (idPortenPid !== personId) {

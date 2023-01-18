@@ -7,7 +7,6 @@ import {
 } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useEffect, useState } from "react";
 import { loadCountryNamesForLanguages, loadFormTranslations, loadGlobalTranslationsForLanguages } from "../api";
-import httpFyllut from "../util/httpFyllut";
 
 function FormPage({ form }) {
   const [translation, setTranslation] = useState({});
@@ -20,13 +19,6 @@ function FormPage({ form }) {
         const availableLanguages = Object.keys(localTranslationsForForm);
         const countryNameTranslations = await loadCountryNamesForLanguages(availableLanguages);
         const globalTranslations = await loadGlobalTranslationsForLanguages(availableLanguages);
-
-        try {
-          const test = await httpFyllut.get("/fyllut/api/pdl/person/02824298087");
-          console.log(test);
-        } catch (e) {
-          console.log(e);
-        }
 
         return availableLanguages.reduce(
           (accumulated, lang) => ({
