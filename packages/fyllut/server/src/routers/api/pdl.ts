@@ -37,6 +37,10 @@ const pdl = {
   },
 };
 
+const getCurrentRecord = (records: any[]) => {
+  return records.find((record: any) => record.erGjeldene);
+};
+
 const getPerson = async (accessToken: string, theme: string, personId: string): Promise<Person> => {
   logger.debug(`Fetch person from pdl.`);
 
@@ -66,7 +70,8 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
                   adressenavn
                   husnummer
                   husbokstav                  
-                  postnummer              
+                  postnummer         
+                  poststed     
                 }
             },
             doedsfall {
@@ -84,14 +89,67 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
   // TODO: Remove this
   logger.info(JSON.stringify(response.hentPerson));
 
-  const person: PdlPerson = response.hentPerson;
+  const person = response.hentPerson;
+
+  return toPerson(personId, person);
+};
+
+const toPerson = (id: string, person: any) => {
+  return {
+    id,
+    ...toName(person),
+    ...toDeath(person),
+    ...toAddress(person),
+  };
+};
+
+const toName = (person: any) => {
+  const name = getCurrentRecord(person.navn);
 
   return {
-    id: personId,
-    firstName: person.navn[0].fornavn,
-    middleName: person.navn[0].mellomnavn,
-    lastName: person.navn[0].etternavn,
+    firstName: name.fornavn,
+    middleName: name.mellomnavn,
+    lastName: name.etternavn,
   };
+};
+
+const toDeath = (person: any) => {
+  const death = getCurrentRecord(person.doedsfall);
+
+  if (death?.doedsdato) {
+    return {
+      deathDate: death.doedsdato,
+    };
+  }
+
+  return {};
+};
+
+const toAddress = (person: any) => {
+  const addressProtection = getCurrentRecord(person.adressebeskyttelse);
+  if (addressProtection) {
+    return {};
+  }
+
+  const address = getCurrentRecord(person.bostedsadresse);
+
+  if (address.vegadresse) {
+    return {
+      street: address.vegadresse.adressenavn,
+      postalCode: address.vegadresse.postnummer,
+      city: address.vegadresse.poststed,
+      countryCode: "no",
+    };
+  } else if (address.utenlandskAdresse) {
+    return {
+      street: address.utenlandskAdresse.adressenavnNummer,
+      postalCode: address.utenlandskAdresse.postkode,
+      city: address.utenlandskAdresse.bySted,
+      countryCode: address.utenlandskAdresse.landkode,
+    };
+  }
+
+  return {};
 };
 
 const getPersonWithRelations = async (
@@ -127,7 +185,7 @@ const getPersonWithRelations = async (
     })
   );
 
-  const person: PdlPerson = response.hentPerson;
+  const person = response.hentPerson;
 
   let children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
@@ -175,21 +233,5 @@ const validateLoggedInUser = (idPortenPid: string, personId: string) => {
     throw new Error(`Logged in user do not match the person they tried to retrieve.`);
   }
 };
-
-interface PdlPerson {
-  navn: PdlNavn[];
-  forelderBarnRelasjon: PdlForelderBarnRelasjon[];
-}
-
-interface PdlNavn {
-  etternavn: string;
-  fornavn: string;
-  mellomnavn?: string;
-}
-
-interface PdlForelderBarnRelasjon {
-  relatertPersonsIdent: string;
-  relatertPersonsRolle: string;
-}
 
 export default pdl;
