@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import fetch from "node-fetch";
+import { config as appConfig } from "../../config/config";
 import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { Person } from "../../types/person";
+
+const { pdlTokenScopeCluster } = appConfig;
 
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
@@ -53,18 +55,16 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
               gradering
             },
             bostedsadresse(historikk: false) {
-                utenlandskAdresse {
-                  adresselinje1
-                  adresselinje2
-                  adresselinje3
-                  byEllerStedsnavn
-                  landkode
+                utenlandskAdresse {                 
+                  adressenavnNummer
                   postkode
+                  bySted                                    
+                  landkode
                 }
                 vegadresse {
                   adressenavn
-                  husbokstav
                   husnummer
+                  husbokstav                  
                   postnummer              
                 }
             },
@@ -79,6 +79,9 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
       },
     })
   );
+
+  // TODO: Remove this
+  logger.info(JSON.stringify(response.hentPerson));
 
   const person: PdlPerson = response.hentPerson;
 
@@ -104,12 +107,12 @@ const getPersonWithRelations = async (
     JSON.stringify({
       query: `
         query($ident: ID!) {
+          navn(historikk: false) {
+            fornavn
+            mellomnavn
+            etternavn
+          },
           hentPerson(ident: $ident) {
-            navn(historikk: false) {
-              fornavn
-              mellomnavn
-              etternavn
-            },
             forelderBarnRelasjon {
               relatertPersonsIdent
               relatertPersonsRolle
@@ -138,9 +141,7 @@ const getPersonWithRelations = async (
 };
 
 const pdlRequest = async (accessToken: string, theme: string, query: string) => {
-  //const url = "https://pdl-api.prod-fss-pub.nais.io/graphql";
-  // TODO: Move to config
-  const url = "https://pdl-api.dev-fss-pub.nais.io/graphql";
+  const url = `https://pdl-api.${pdlTokenScopeCluster}-pub.nais.io/graphql`;
 
   const response = await fetch(url, {
     method: "POST",
