@@ -39,7 +39,7 @@ WebformBuilder.prototype.editComponent = function (component, parent, isNew, isJ
       };
     }
   }
-  if (original && original.key) {
+  if (original && original.key && this.options.formConfig) {
     this.navFormDiff = null;
     const { publishedForm } = this.options.formConfig;
     if (publishedForm) {
