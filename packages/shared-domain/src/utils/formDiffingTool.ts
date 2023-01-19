@@ -179,7 +179,10 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
 
   if (allowNesting) {
     const arr = newArray.map((value, newIndex) => {
-      let originalIndex = originalArray.findIndex((v) => v.navId === value.navId);
+      let originalIndex = -1;
+      if (value.navId) {
+        originalIndex = originalArray.findIndex((v) => v.navId === value.navId);
+      }
       if (originalIndex === -1) {
         originalIndex = originalArray.findIndex((v) => v.key === value.key);
       }
@@ -196,7 +199,10 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
     });
 
     originalArray.forEach((value) => {
-      let newIndex = newArray.findIndex((v) => v.navId === value.navId);
+      let newIndex = -1;
+      if (value.navId) {
+        newIndex = newArray.findIndex((v) => v.navId === value.navId);
+      }
       if (newIndex === -1) {
         newIndex = newArray.findIndex((v) => v.key === value.key);
       }
