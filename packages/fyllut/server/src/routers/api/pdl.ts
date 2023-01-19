@@ -37,10 +37,6 @@ const pdl = {
   },
 };
 
-const getCurrentRecord = (records: any[]) => {
-  return records.find((record: any) => record.erGjeldene);
-};
-
 const getPerson = async (accessToken: string, theme: string, personId: string): Promise<Person> => {
   logger.debug(`Fetch person from pdl.`);
 
@@ -103,7 +99,7 @@ const toPerson = (id: string, person: any) => {
 };
 
 const toName = (person: any) => {
-  const name = getCurrentRecord(person.navn);
+  const name = person.navn[0];
 
   return {
     firstName: name.fornavn,
@@ -113,7 +109,7 @@ const toName = (person: any) => {
 };
 
 const toDeath = (person: any) => {
-  const death = getCurrentRecord(person.doedsfall);
+  const death = person.doedsfall[0];
 
   if (death?.doedsdato) {
     return {
@@ -125,12 +121,12 @@ const toDeath = (person: any) => {
 };
 
 const toAddress = (person: any) => {
-  const addressProtection = getCurrentRecord(person.adressebeskyttelse);
+  const addressProtection = person.adressebeskyttelse[0];
   if (addressProtection) {
     return {};
   }
 
-  const address = getCurrentRecord(person.bostedsadresse);
+  const address = person.bostedsadresse[0];
 
   if (address.vegadresse) {
     return {
