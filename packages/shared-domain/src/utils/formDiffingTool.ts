@@ -11,6 +11,66 @@ const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) =>
   return generateFormDiff(originalForm, newForm);
 };
 
+function toMap(arrayOfSignatures: any[]) {
+  return (
+    arrayOfSignatures?.reduce?.((acc: any, cur: any) => {
+      const { key, label, description } = cur;
+      acc[key] = { label, description };
+      return acc;
+    }, {}) || {}
+  );
+}
+
+const toSignaturesDiff = (arrayDiff: any) => {
+  const { originalValue, value } = arrayDiff;
+  if (!isArray(originalValue)) {
+    return undefined;
+  }
+  const originalSignatures = toMap(originalValue);
+  const newSignatures = toMap(value);
+  const diff: any = {};
+  Object.keys(originalSignatures).forEach((key: any) => {
+    const originalValue = originalSignatures[key];
+    const newValue = newSignatures[key];
+    diff[key] = {
+      status: newValue ? DiffStatus.CHANGED : DiffStatus.DELETED,
+      originalValue: originalValue,
+      value: newValue,
+    };
+  });
+  Object.keys(newSignatures).forEach((key: any) => {
+    if (!diff[key]) {
+      diff[key] = {
+        status: DiffStatus.NEW,
+        value: newSignatures[key],
+      };
+    }
+  });
+  return diff;
+};
+const generateNavFormSettingsDiff = (originalForm: NavFormType | undefined, navForm: NavFormType) => {
+  try {
+    if (!originalForm) {
+      return {};
+    }
+    const propsDiff = generateObjectDiff(originalForm.properties, navForm.properties);
+    let signaturesDiff;
+    if (propsDiff.diff?.signatures) {
+      signaturesDiff = toSignaturesDiff(propsDiff.diff?.signatures);
+    }
+    return {
+      ...(originalForm.title !== navForm.title && {
+        title: { ...generatePrimitiveDiff(originalForm.title, navForm.title) },
+      }),
+      ...(propsDiff.status === DiffStatus.CHANGED && { ...propsDiff.diff }),
+      signatures: signaturesDiff,
+    };
+  } catch (err: any) {
+    console.error(`Failed to generate form settings diff: ${err.message}`, err);
+    return { errorMessage: "Feil oppstod ved forsøk på å vise endringer siden forrige publisering." };
+  }
+};
+
 const checkComponentDiff = (currentComponent: Component, publishedForm?: NavFormType) => {
   if (publishedForm) {
     const publishedComponent = navFormUtils.findByNavIdOrKey(currentComponent, publishedForm.components);
@@ -133,7 +193,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
           ...acc,
           [key]: generateFormDiff(originalObject[key], newObject[key], true),
         };
-      } else if (key !== "id" && key !== "navId") {
+      } else if (key !== "id") {
         const diff = generateFormDiff(originalObject[key], newObject[key]);
         if (diff) {
           return {
@@ -144,7 +204,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
               [key]: diff,
             },
           };
-        } else if (key === "title" || key === "key" || key === "type" || key === "label") {
+        } else if (key === "title" || key === "key" || key === "id" || key === "type" || key === "label") {
           return {
             ...acc,
             [key]: newObject[key],
@@ -244,9 +304,11 @@ const isObject = (element: any) => {
 
 const tools = {
   generateNavFormDiff,
+  generateNavFormSettingsDiff,
   checkComponentDiff,
   getComponentDiff,
   createDiffSummary,
+  generateObjectDiff,
 };
 
 export { generateNavFormDiff, DiffStatus };

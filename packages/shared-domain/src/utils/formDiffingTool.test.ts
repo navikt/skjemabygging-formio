@@ -1,5 +1,5 @@
 import form from "../../../bygger/server/src/util/testData/nav100750";
-import { Component, NavFormType } from "../form";
+import { Component, FormPropertiesType, NavFormType } from "../form";
 import { navFormUtils } from "../index";
 import tool, { DiffStatus, generateNavFormDiff } from "./formDiffingTool";
 import testdataPublishedForm from "./testdata/diff/published-form";
@@ -8,6 +8,137 @@ describe("formDiffingTool", () => {
   it("Diff same form", () => {
     const changes = generateNavFormDiff(form, form);
     expect(changes).toBeUndefined();
+  });
+
+  describe("generateNavFormSettingsDiff", () => {
+    const publishedProperties: FormPropertiesType = {
+      isTestForm: true,
+      tema: "BIL",
+      innsending: "PAPIR_OG_DIGITAL",
+      skjemanummer: "NAV 12.13-14",
+      signatures: [
+        {
+          key: "12790e44-15da-40b4-8168-a5afaf6f92b7",
+          label: "Lege",
+          description: "Det bekreftes at søker trenger dette",
+        },
+      ],
+    } as FormPropertiesType;
+
+    const publishedForm: NavFormType = {
+      title: "Søknad om penger",
+      properties: publishedProperties,
+    } as NavFormType;
+
+    it("reports diff on form title", () => {
+      const testform = {
+        ...publishedForm,
+        title: "Søknad om servicehund",
+      } as NavFormType;
+      const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
+      expect(diff).toEqual({
+        title: {
+          status: DiffStatus.CHANGED,
+          originalValue: "Søknad om penger",
+          value: "Søknad om servicehund",
+        },
+      });
+    });
+
+    it("reports diff on tema", () => {
+      const testform = {
+        ...publishedForm,
+        properties: {
+          ...publishedProperties,
+          tema: "YRK",
+        },
+      } as NavFormType;
+      const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
+      expect(diff).toEqual({
+        tema: {
+          status: DiffStatus.CHANGED,
+          originalValue: "BIL",
+          value: "YRK",
+        },
+      });
+    });
+
+    it("reports diff on signatures", () => {
+      const testform = {
+        ...publishedForm,
+        properties: {
+          ...publishedProperties,
+          signatures: [
+            {
+              key: "12790e44-15da-40b4-8168-a5afaf6f92b7",
+              label: "Fastlege",
+              description: "Det bekreftes at søker trenger dette",
+            },
+            {
+              label: "Mor",
+              description: "Mor må signere",
+              key: "0bf65131-7ea6-4430-9a0d-fcf937f1c039",
+            },
+          ],
+        },
+      } as NavFormType;
+      const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
+      expect(diff).toEqual({
+        signatures: {
+          "12790e44-15da-40b4-8168-a5afaf6f92b7": {
+            status: "Endring",
+            originalValue: {
+              label: "Lege",
+              description: "Det bekreftes at søker trenger dette",
+            },
+            value: {
+              label: "Fastlege",
+              description: "Det bekreftes at søker trenger dette",
+            },
+          },
+          "0bf65131-7ea6-4430-9a0d-fcf937f1c039": {
+            status: "Ny",
+            value: {
+              label: "Mor",
+              description: "Mor må signere",
+            },
+          },
+        },
+      });
+    });
+
+    it("ignores signatures on old format", () => {
+      const publishedFormWithOldSignatures = {
+        ...publishedForm,
+        properties: {
+          ...publishedProperties,
+          signatures: {
+            signature2:
+              "NAV-enhet som erklærer at bedriften er godkjent som tiltaksarrangør for VTA i ordinær virksomhet for ovennevnte person",
+            signature1: "For Bedrift",
+          },
+        },
+      };
+      const testform = {
+        ...publishedFormWithOldSignatures,
+        properties: {
+          ...publishedFormWithOldSignatures.properties,
+          signatures: [
+            { key: "1", label: "For Bedrift" },
+            {
+              key: "2",
+              label:
+                "NAV-enhet som erklærer at bedriften er godkjent som tiltaksarrangør for VTA i ordinær virksomhet for ovennevnte person",
+            },
+            { key: "3" },
+          ],
+        },
+      } as NavFormType;
+      const diff = tool.generateNavFormSettingsDiff(publishedFormWithOldSignatures, testform);
+      expect(diff).toEqual({
+        signatures: undefined,
+      });
+    });
   });
 
   describe("Diff against changes", () => {
