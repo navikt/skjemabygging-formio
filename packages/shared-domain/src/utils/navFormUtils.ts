@@ -187,6 +187,7 @@ const navFormUtils = {
   isVedleggspanel,
   removeVedleggspanel,
   findByKey,
+  findByNavId,
   findByNavIdOrKey,
   enrichComponentsWithNavIds,
 };

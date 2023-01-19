@@ -1,6 +1,8 @@
-import { formDiffingTool } from "@navikt/skjemadigitalisering-shared-domain";
+import { formDiffingTool, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import panelDiffDeletedDatagrid from "./testdata/diff-deleted-datagrid";
 import panelDiffDeletedRadiopanel from "./testdata/diff-deleted-radio";
+import formNavSelectChanges from "./testdata/form-navSelect-changes";
+import publishedForm from "./testdata/published-form";
 import { navFormDiffToHtml, sanitizeJavaScriptCode } from "./utils-overrides";
 
 describe("utils-overrides", () => {
@@ -150,6 +152,34 @@ describe("utils-overrides", () => {
       } finally {
         console.error = originalConsoleError;
       }
+    });
+
+    describe("Form -> diff -> html", () => {
+      it("empty html when navSelect is not changed", () => {
+        const navSelect = navFormUtils.findByNavId("e0a8kbj", publishedForm.components);
+        const componentDiff = formDiffingTool.getComponentDiff(navSelect, publishedForm);
+        const html = navFormDiffToHtml(componentDiff);
+        expect(html).toEqual("");
+        expect(html).toMatchSnapshot();
+      });
+      it("should list changes for navSelect", () => {
+        const navSelect = navFormUtils.findByNavId("e0a8kbj", formNavSelectChanges.components);
+        const componentDiff = formDiffingTool.getComponentDiff(navSelect, publishedForm);
+        const html = navFormDiffToHtml(componentDiff);
+        expect(html).toMatchSnapshot();
+      });
+      it("should list changed key", () => {
+        const radiopanel = navFormUtils.findByKey("doYouLiveInNorway", formNavSelectChanges.components);
+        const componentDiff = formDiffingTool.getComponentDiff(radiopanel, publishedForm);
+        const html = navFormDiffToHtml(componentDiff);
+        expect(html).toMatchSnapshot();
+      });
+      it("should list change in conditional", () => {
+        const alertstripe = navFormUtils.findByKey("alertstripeArstid", formNavSelectChanges.components);
+        const componentDiff = formDiffingTool.getComponentDiff(alertstripe, publishedForm);
+        const html = navFormDiffToHtml(componentDiff);
+        expect(html).toMatchSnapshot();
+      });
     });
   });
 });

@@ -24,6 +24,17 @@ const getComponentDiff = (currentComponent: Component, publishedForm?: NavFormTy
   return createDiffSummary(changes);
 };
 
+function toChange(diff: any, key: string) {
+  const oldValue = diff.originalValue;
+  const newValue = diff.value;
+  const change = {
+    key,
+    oldValue: isObject(oldValue) || isArray(oldValue) ? JSON.stringify(oldValue) : oldValue,
+    newValue: isObject(newValue) || isArray(newValue) ? JSON.stringify(newValue) : newValue,
+  };
+  return change;
+}
+
 const createDiffSummary = (changes: any) => {
   const { diff, components } = changes;
   const diffSummary: any = {
@@ -32,11 +43,16 @@ const createDiffSummary = (changes: any) => {
   };
   if (diff) {
     Object.keys(diff).forEach((key) => {
-      diffSummary.changesToCurrentComponent.push({
-        key,
-        oldValue: diff[key].originalValue,
-        newValue: diff[key].value,
-      });
+      const subDiff = diff[key].diff;
+      if (subDiff) {
+        Object.keys(subDiff).forEach((subKey) => {
+          const change = toChange(subDiff[subKey], `${key}.${subKey}`);
+          diffSummary.changesToCurrentComponent.push(change);
+        });
+      } else {
+        const change = toChange(diff[key], key);
+        diffSummary.changesToCurrentComponent.push(change);
+      }
     });
   }
   if (components) {
