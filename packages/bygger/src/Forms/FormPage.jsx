@@ -51,13 +51,23 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   };
 
   const publishForm = async (form, translations) => {
-    const publishedForm = await onPublish(form, translations);
-    dispatch({ type: "form-saved", form: publishedForm });
+    const savedForm = await onPublish(form, translations);
+    await loadPublishedForm(formPath)
+      .then((publishedForm) => dispatch({ type: "form-saved", form: savedForm, publishedForm }))
+      .catch(() => {
+        console.debug("Publish completed: Failed to load published form");
+        dispatch({ type: "form-saved", form: savedForm });
+      });
   };
 
   const unpublishForm = async (form) => {
-    const unpublishForm = await onUnpublish(form);
-    dispatch({ type: "form-saved", form: unpublishForm });
+    const savedForm = await onUnpublish(form);
+    await loadPublishedForm(formPath)
+      .then((publishedForm) => dispatch({ type: "form-saved", form: savedForm, publishedForm }))
+      .catch(() => {
+        console.debug("Unpublish completed: Failed to load published form");
+        dispatch({ type: "form-saved", form: savedForm });
+      });
   };
 
   if (state.status === "LOADING") {
