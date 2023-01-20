@@ -1,4 +1,4 @@
-import { Component, NavFormType } from "../form";
+import { Component, FormPropertiesType, NavFormType, NewFormSignatureType } from "../form";
 import { navFormUtils } from "../index";
 
 enum DiffStatus {
@@ -11,7 +11,7 @@ const generateNavFormDiff = (originalForm: NavFormType, newForm: NavFormType) =>
   return generateFormDiff(originalForm, newForm);
 };
 
-function toMap(arrayOfSignatures: any[]) {
+function toMap(arrayOfSignatures: NewFormSignatureType[]) {
   return (
     arrayOfSignatures?.reduce?.((acc: any, cur: any) => {
       const { key, label, description } = cur;
@@ -21,34 +21,62 @@ function toMap(arrayOfSignatures: any[]) {
   );
 }
 
-const toSignaturesDiff = (arrayDiff: any) => {
+type NewSignature = {
+  status: DiffStatus.NEW;
+  value: NewFormSignatureType;
+};
+
+type ChangedSignature = {
+  status: DiffStatus.CHANGED;
+  originalValue: NewFormSignatureType;
+  value: NewFormSignatureType;
+};
+
+type DeletedSignature = {
+  status: DiffStatus.DELETED;
+  originalValue: NewFormSignatureType;
+};
+type SignatureDiff = NewSignature | ChangedSignature | DeletedSignature;
+type SignaturesDiff = {
+  [key: string]: SignatureDiff;
+};
+const toSignaturesDiff = (arrayDiff: any): SignaturesDiff | undefined => {
   const { originalValue, value } = arrayDiff;
   if (!isArray(originalValue)) {
     return undefined;
   }
   const originalSignatures = toMap(originalValue);
-  const newSignatures = toMap(value);
-  const diff: any = {};
-  Object.keys(originalSignatures).forEach((key: any) => {
-    const originalValue = originalSignatures[key];
-    const newValue = newSignatures[key];
-    diff[key] = {
-      status: newValue ? DiffStatus.CHANGED : DiffStatus.DELETED,
-      originalValue: originalValue,
-      value: newValue,
-    };
+  const currentSignatures = toMap(value);
+  const diff: { [key: string]: SignatureDiff } = {};
+  Object.keys(originalSignatures).forEach((key: string) => {
+    const originalValue = originalSignatures[key] as NewFormSignatureType;
+    const newValue = currentSignatures[key];
+    if (JSON.stringify(originalValue) !== JSON.stringify(newValue)) {
+      diff[key] = {
+        status: newValue ? DiffStatus.CHANGED : DiffStatus.DELETED,
+        originalValue: originalValue,
+        value: newValue,
+      };
+    }
   });
-  Object.keys(newSignatures).forEach((key: any) => {
-    if (!diff[key]) {
+  Object.keys(currentSignatures).forEach((key: string) => {
+    if (!diff[key] && !originalSignatures[key]) {
       diff[key] = {
         status: DiffStatus.NEW,
-        value: newSignatures[key],
+        value: currentSignatures[key],
       };
     }
   });
   return diff;
 };
-const generateNavFormSettingsDiff = (originalForm: NavFormType | undefined, navForm: NavFormType) => {
+
+type NavFormSettingsDiff = {
+  [key in keyof FormPropertiesType]?: object;
+} & { errorMessage?: string; title?: string };
+const generateNavFormSettingsDiff = (
+  originalForm: NavFormType | undefined,
+  navForm: NavFormType
+): NavFormSettingsDiff => {
   try {
     if (!originalForm) {
       return {};

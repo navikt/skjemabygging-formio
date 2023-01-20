@@ -63,47 +63,82 @@ describe("formDiffingTool", () => {
       });
     });
 
-    it("reports diff on signatures", () => {
-      const testform = {
-        ...publishedForm,
-        properties: {
-          ...publishedProperties,
-          signatures: [
-            {
-              key: "12790e44-15da-40b4-8168-a5afaf6f92b7",
-              label: "Fastlege",
-              description: "Det bekreftes at søker trenger dette",
+    describe("signatures", () => {
+      it("reports diff on signatures", () => {
+        const testform = {
+          ...publishedForm,
+          properties: {
+            ...publishedProperties,
+            signatures: [
+              {
+                key: "12790e44-15da-40b4-8168-a5afaf6f92b7",
+                label: "Fastlege",
+                description: "Det bekreftes at søker trenger dette",
+              },
+              {
+                label: "Mor",
+                description: "Mor må signere",
+                key: "0bf65131-7ea6-4430-9a0d-fcf937f1c039",
+              },
+            ],
+          },
+        } as NavFormType;
+        const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
+        expect(diff).toEqual({
+          signatures: {
+            "12790e44-15da-40b4-8168-a5afaf6f92b7": {
+              status: "Endring",
+              originalValue: {
+                label: "Lege",
+                description: "Det bekreftes at søker trenger dette",
+              },
+              value: {
+                label: "Fastlege",
+                description: "Det bekreftes at søker trenger dette",
+              },
             },
-            {
-              label: "Mor",
-              description: "Mor må signere",
-              key: "0bf65131-7ea6-4430-9a0d-fcf937f1c039",
-            },
-          ],
-        },
-      } as NavFormType;
-      const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
-      expect(diff).toEqual({
-        signatures: {
-          "12790e44-15da-40b4-8168-a5afaf6f92b7": {
-            status: "Endring",
-            originalValue: {
-              label: "Lege",
-              description: "Det bekreftes at søker trenger dette",
-            },
-            value: {
-              label: "Fastlege",
-              description: "Det bekreftes at søker trenger dette",
+            "0bf65131-7ea6-4430-9a0d-fcf937f1c039": {
+              status: "Ny",
+              value: {
+                label: "Mor",
+                description: "Mor må signere",
+              },
             },
           },
-          "0bf65131-7ea6-4430-9a0d-fcf937f1c039": {
-            status: "Ny",
-            value: {
-              label: "Mor",
-              description: "Mor må signere",
+        });
+      });
+
+      it("reports diff only on new signature", () => {
+        const testform = {
+          ...publishedForm,
+          properties: {
+            ...publishedProperties,
+            signatures: [
+              {
+                key: "12790e44-15da-40b4-8168-a5afaf6f92b7",
+                label: "Lege",
+                description: "Det bekreftes at søker trenger dette",
+              },
+              {
+                label: "Mor",
+                description: "Mor må signere",
+                key: "0bf65131-7ea6-4430-9a0d-fcf937f1c039",
+              },
+            ],
+          },
+        } as NavFormType;
+        const diff = tool.generateNavFormSettingsDiff(publishedForm, testform);
+        expect(diff).toEqual({
+          signatures: {
+            "0bf65131-7ea6-4430-9a0d-fcf937f1c039": {
+              status: "Ny",
+              value: {
+                label: "Mor",
+                description: "Mor må signere",
+              },
             },
           },
-        },
+        });
       });
     });
 
