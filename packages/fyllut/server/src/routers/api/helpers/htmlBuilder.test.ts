@@ -1,13 +1,14 @@
 import {
   ComponentType,
   ContainerType,
+  FormPropertiesType,
   FormSummaryComponent,
   FormSummaryContainer,
   FormSummaryPanel,
   NavFormType,
   SubmissionValue,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import { body, createHtmlFromSubmission } from "./htmlBuilder";
+import { body, createHtmlFromSubmission, signatureSection } from "./htmlBuilder";
 
 const createContainer = (label: string, type: ContainerType, components: FormSummaryComponent[] = []) =>
   ({
@@ -36,7 +37,11 @@ const createComponent = (
 
 describe("htmlBuilder", () => {
   describe("Html document", () => {
-    const formWithTitle = { title: "Abc def", components: [] } as unknown as NavFormType;
+    const formWithTitle = {
+      title: "Abc def",
+      components: [],
+      properties: { signatures: [] },
+    } as unknown as NavFormType;
     let html: String;
 
     beforeEach(() => {
@@ -80,7 +85,7 @@ describe("htmlBuilder", () => {
     });
   });
 
-  describe("Container types", () => {
+  describe("Container component types", () => {
     describe("fieldset", () => {
       it("adds the fields contained by the fieldset", () => {
         const bodyElement = body([
@@ -214,9 +219,9 @@ describe("htmlBuilder", () => {
     });
   });
 
-  describe("Special types", () => {
+  describe("Special component types", () => {
     describe("image", () => {
-      it("Adds label image tag and alt text", () => {
+      it("adds label image tag and alt text", () => {
         const bodyElement = body([
           createPanel("Panel", [
             createComponent("This is an image", "data:image/png;base64,image", "image", {
@@ -229,6 +234,68 @@ describe("htmlBuilder", () => {
         expect(bodyElement).toContain('<img src="data:image/png;base64,image" alt="alt text" width="200"/>');
         expect(bodyElement).toContain('<div class="alt">alt text</div>');
       });
+    });
+  });
+
+  describe("signatures", () => {
+    const dummyTranslate = (text: string) => text;
+    const expectedSignatureSectionWithSingleSignature = `<h2>Underskrift</h2>
+<p>Signér på de stedene som er aktuelle for din stønad.</p>
+<p class="underskrift"></p>
+<h3></h3>
+<p></p>
+<div>_____________________________________________________________</div>
+<div class="underskrift">Sted og dato</div>
+<div>_____________________________________________________________</div>
+<div class="underskrift">Underskrift</div>`;
+
+    it("adds a singel signature when form contains the old format", () => {
+      const signatures = {
+        signature1: "",
+        signature2: "",
+        signature3: "",
+        signature4: "",
+        signature5: "",
+      };
+      const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
+      expect(element).toEqual(expectedSignatureSectionWithSingleSignature);
+    });
+
+    it("adds a singel signature", () => {
+      const signatures = [{ label: "", description: "", key: "qwertyuio" }];
+      const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
+      expect(element).toEqual(expectedSignatureSectionWithSingleSignature);
+    });
+
+    it("adds signatures with labels and description", () => {
+      const signatures = [
+        { label: "Søker", description: "Beskrivelse", key: "qwertyuio" },
+        { label: "Arbeidsgiver", description: "", key: "qwertyuio" },
+      ];
+      const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
+
+      expect(element).toContain(`<h3>Søker</h3>
+<p>Beskrivelse</p>
+<div>_____________________________________________________________</div>
+<div class="underskrift">Sted og dato</div>
+<div>_____________________________________________________________</div>
+<div class="underskrift">Underskrift</div>`);
+
+      expect(element).toContain(`<h3>Arbeidsgiver</h3>
+<p></p>
+<div>_____________________________________________________________</div>
+<div class="underskrift">Sted og dato</div>
+<div>_____________________________________________________________</div>
+<div class="underskrift">Underskrift</div>`);
+    });
+
+    it("adds description of signatures", () => {
+      const signatures = [{ label: "", description: "", key: "qwertyuio" }];
+      const element = signatureSection(
+        { signatures, descriptionOfSignatures: "Description of signatures" } as unknown as FormPropertiesType,
+        dummyTranslate
+      );
+      expect(element).toContain(`<p class="underskrift">Description of signatures</p>`);
     });
   });
 });

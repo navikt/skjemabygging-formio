@@ -1,4 +1,5 @@
 import {
+  FormPropertiesType,
   FormSummaryComponent,
   FormSummaryContainer,
   FormSummaryField,
@@ -6,8 +7,11 @@ import {
   FormSummaryPanel,
   formSummaryUtil,
   NavFormType,
+  NewFormSignatureType,
+  signatureUtils,
 } from "@navikt/skjemadigitalisering-shared-domain";
 
+type TranslateFunction = (text: string) => string;
 const calcImageWidth = (widthInPercentage: number) => {
   const MAX_WIDTH = 500;
   return (MAX_WIDTH * widthInPercentage) / 100;
@@ -58,7 +62,7 @@ const sectionContent = (components: FormSummaryComponent[], level: number): stri
         case "datagrid-row":
           const label = `<div class="spm">${component.label}</div>`;
           return `
-            ${component.label.length && label}
+            ${component.label === "" ? "" : label}
             ${sectionContent(component.components, level)}
           `;
         case "image":
@@ -85,16 +89,35 @@ const section = (formSection: FormSummaryPanel) => `
   ${sectionContent(formSection.components, 1)}
 `;
 
-export const body = (formSummaryObject: FormSummaryPanel[]) => {
+const body = (formSummaryObject: FormSummaryPanel[], signatures?: string) => {
   console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
   return `
-<body>
-    ${formSummaryObject.map(section).join("")}
-</body>
+    <body>
+      ${formSummaryObject.map(section).join("")}
+      ${signatures || ""}
+    </body>
   `;
 };
 
-export const createHtmlFromSubmission = (
+const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) =>
+  `<h3>${translate(label)}</h3>
+<p>${translate(description)}</p>
+<div>_____________________________________________________________</div>
+<div class="underskrift">${translate("Sted og dato")}</div>
+<div>_____________________________________________________________</div>
+<div class="underskrift">${translate("Underskrift")}</div>`;
+
+const signatureSection = (formProperties: FormPropertiesType, translate: TranslateFunction) => {
+  const { signatures, descriptionOfSignatures } = formProperties;
+  const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
+
+  return `<h2>${translate("Underskrift")}</h2>
+<p>${translate("Signér på de stedene som er aktuelle for din stønad.")}</p>
+<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
+${signatureList.map((signatureObject) => signature(signatureObject, translate))}`;
+};
+
+const createHtmlFromSubmission = (
   form: NavFormType,
   submission: any,
   translations: any,
@@ -106,12 +129,16 @@ export const createHtmlFromSubmission = (
   console.log("translations", translations);
 
   const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
-  console.log(body(formSummaryObject));
+
+  console.log(form.properties);
+  // console.log(body(formSummaryObject));
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
   ${head(translate(form.title))}
-  ${body(formSummaryObject)}
+  ${body(formSummaryObject, signatureSection(form.properties, translate))}
 </html>
   `;
 };
+
+export { createHtmlFromSubmission, body, signatureSection };
