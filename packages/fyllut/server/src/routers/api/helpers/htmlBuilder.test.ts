@@ -220,6 +220,16 @@ describe("htmlBuilder", () => {
   });
 
   describe("Special component types", () => {
+    describe("selectboxes", () => {
+      it("adds a div for each answer", () => {
+        const bodyElement = body([
+          createPanel("Panel", [createComponent("Multiple choice", ["Abc", "Def", "Ghi"], "selectboxes")]),
+        ]);
+        expect(bodyElement).toContain(`<div class="spm">Multiple choice</div>
+<div class="svar">- Abc</div><div class="svar">- Def</div><div class="svar">- Ghi</div>`);
+      });
+    });
+
     describe("image", () => {
       it("adds label image tag and alt text", () => {
         const bodyElement = body([

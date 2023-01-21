@@ -38,6 +38,7 @@ import type {
   FormSummaryField,
   FormSummaryImage,
   FormSummaryPanel,
+  FormSummarySelectboxes,
   SubmissionValue,
 } from "./summary/FormSummaryType";
 import formSummaryUtil from "./summary/formSummaryUtil";
@@ -83,6 +84,7 @@ export type {
   FormPropertiesType,
   FormPropertiesPublishing,
   FormSummaryField,
+  FormSummarySelectboxes,
   FormSummaryImage,
   FormSummaryContainer,
   FormSummaryComponent,

@@ -5,6 +5,7 @@ import {
   FormSummaryField,
   FormSummaryImage,
   FormSummaryPanel,
+  FormSummarySelectboxes,
   formSummaryUtil,
   NavFormType,
   NewFormSignatureType,
@@ -49,6 +50,11 @@ const img = (component: FormSummaryImage) => `
   </div>
 `;
 
+function multipleAnswers(component: FormSummarySelectboxes) {
+  return `<div class="spm">${component.label}</div>
+${component.value.map((val) => `<div class="svar">- ${val}</div>`).join("")}`;
+}
+
 const sectionContent = (components: FormSummaryComponent[], level: number): string => {
   return components
     .map((component) => {
@@ -65,6 +71,8 @@ const sectionContent = (components: FormSummaryComponent[], level: number): stri
             ${component.label === "" ? "" : label}
             ${sectionContent(component.components, level)}
           `;
+        case "selectboxes":
+          return multipleAnswers(component as FormSummarySelectboxes);
         case "image":
           return img(component as FormSummaryImage);
         default:

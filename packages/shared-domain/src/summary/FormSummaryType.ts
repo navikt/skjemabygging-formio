@@ -1,8 +1,8 @@
-export type SubmissionValue = string | number | boolean;
+export type SubmissionValue = string | number | boolean | string[];
 //TODO: add all types
 
 export type ContainerType = "fieldset" | "panel" | "navSkjemagruppe" | "datagrid" | "datagrid-row";
-export type FieldType = "textfield" | "selectboxes" | "image";
+export type FieldType = "textfield" | "image" | "selectboxes";
 
 export type ComponentType = ContainerType | FieldType;
 
@@ -11,6 +11,11 @@ export interface FormSummaryField {
   key: string;
   type: FieldType;
   value: SubmissionValue;
+}
+
+export interface FormSummarySelectboxes extends FormSummaryField {
+  type: "selectboxes";
+  value: string[];
 }
 
 export interface FormSummaryImage extends FormSummaryField {
