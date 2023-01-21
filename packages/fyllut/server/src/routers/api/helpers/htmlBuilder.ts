@@ -14,6 +14,38 @@ import {
 
 type TranslateFunction = (text: string) => string;
 
+const createHtmlFromSubmission = (
+  form: NavFormType,
+  submission: any,
+  translations: any,
+  isTest: boolean,
+  lang: string = "nb-NO"
+) => {
+  const translate = (text: string): string => translations[text] || text;
+  console.log("submission", submission);
+  console.log("translations", translations);
+
+  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
+
+  console.log(form.properties);
+  // console.log(body(formSummaryObject));
+  return `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
+  ${head(translate(form.title))}
+  ${body(formSummaryObject, signatureSection(form.properties, translate))}
+</html>
+  `;
+};
+
+const head = (title: string) => `
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>${title}</title>
+    ${style()}
+</head>
+`;
+
 const style = () => `
 <style>
     body {}
@@ -25,25 +57,20 @@ const style = () => `
 </style>
 `;
 
-const head = (title: string) => `
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>${title}</title>
-    ${style()}
-</head>
+const body = (formSummaryObject: FormSummaryPanel[], signatures?: string) => {
+  console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
+  return `
+    <body>
+      ${formSummaryObject.map(section).join("")}
+      ${signatures || ""}
+    </body>
+  `;
+};
+
+const section = (formSection: FormSummaryPanel) => `
+  <h2>${formSection.label}</h2>
+  ${sectionContent(formSection.components, 1)}
 `;
-
-const field = (component: FormSummaryField) => `
-  <div class="spm">${component.label}</div>
-  <div class="svar">- ${component.value}</div>
-`;
-
-const img = (_component: FormSummaryImage) => "";
-
-function multipleAnswers(component: FormSummarySelectboxes) {
-  return `<div class="spm">${component.label}</div>
-${component.value.map((val) => `<div class="svar">- ${val}</div>`).join("")}`;
-}
 
 const sectionContent = (components: FormSummaryComponent[], level: number): string => {
   return components
@@ -83,20 +110,17 @@ const subsection = (component: FormSummaryContainer, level: number) => `
   </div>
 `;
 
-const section = (formSection: FormSummaryPanel) => `
-  <h2>${formSection.label}</h2>
-  ${sectionContent(formSection.components, 1)}
+const field = (component: FormSummaryField) => `
+  <div class="spm">${component.label}</div>
+  <div class="svar">- ${component.value}</div>
 `;
 
-const body = (formSummaryObject: FormSummaryPanel[], signatures?: string) => {
-  console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
-  return `
-    <body>
-      ${formSummaryObject.map(section).join("")}
-      ${signatures || ""}
-    </body>
-  `;
-};
+const img = (_component: FormSummaryImage) => "";
+
+function multipleAnswers(component: FormSummarySelectboxes) {
+  return `<div class="spm">${component.label}</div>
+${component.value.map((val) => `<div class="svar">- ${val}</div>`).join("")}`;
+}
 
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) =>
   `<h3>${translate(label)}</h3>
@@ -114,30 +138,6 @@ const signatureSection = (formProperties: FormPropertiesType, translate: Transla
 <p>${translate("Signér på de stedene som er aktuelle for din stønad.")}</p>
 <p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
 ${signatureList.map((signatureObject) => signature(signatureObject, translate))}`;
-};
-
-const createHtmlFromSubmission = (
-  form: NavFormType,
-  submission: any,
-  translations: any,
-  isTest: boolean,
-  lang: string = "nb-NO"
-) => {
-  const translate = (text: string): string => translations[text] || text;
-  console.log("submission", submission);
-  console.log("translations", translations);
-
-  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
-
-  console.log(form.properties);
-  // console.log(body(formSummaryObject));
-  return `
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
-  ${head(translate(form.title))}
-  ${body(formSummaryObject, signatureSection(form.properties, translate))}
-</html>
-  `;
 };
 
 export { createHtmlFromSubmission, body, signatureSection };
