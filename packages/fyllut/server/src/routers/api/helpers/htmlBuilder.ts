@@ -50,7 +50,12 @@ const style = () => `
 <style>
     body {}
     h1, h2, h3, h4, .spm {font-family: Arial;}
+    h3 {margin-bottom: 2px}
+    h4 {margin: 4px auto 2px auto}
+    p {margin: 0}
     .svar {margin-bottom: 5px; font-family: "Courier New", sans-serif;}
+    .row-label {margin-bottom: 2px; font-family: "Arial", sans-serif; font-weight: bold; text-decoration: underline}
+    .row {margin-bottom: 12px;}
     .alt {margin-bottom: 5px; font-family: "Courier New", sans-serif; font-style: italic;}
     .innrykk {margin: 0px 0px 10px 20px;}
     .underskrift {margin-bottom: 30px;}
@@ -83,11 +88,7 @@ const sectionContent = (components: FormSummaryComponent[], level: number): stri
         case "datagrid":
           return subsection(component, level);
         case "datagrid-row":
-          const label = `<div class="spm">${component.label}</div>`;
-          return `
-            ${component.label === "" ? "" : label}
-            ${sectionContent(component.components, level)}
-          `;
+          return datagridRow(component, level);
         case "selectboxes":
           return multipleAnswers(component as FormSummarySelectboxes);
         case "image":
@@ -110,6 +111,12 @@ const subsection = (component: FormSummaryContainer, level: number) => `
   </div>
 `;
 
+const datagridRow = (component: FormSummaryContainer, level: number) => `
+<div class="row">
+${component.label ? `<div class="row-label">${component.label}</div>` : ""}
+${sectionContent(component.components, level)}
+</div>`;
+
 const field = (component: FormSummaryField) => `
   <div class="spm">${component.label}</div>
   <div class="svar">- ${component.value}</div>
@@ -124,7 +131,7 @@ ${component.value.map((val) => `<div class="svar">- ${val}</div>`).join("")}`;
 
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) =>
   `<h3>${translate(label)}</h3>
-<p>${translate(description)}</p>
+<div class="underskrift">${translate(description)}</div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">${translate("Sted og dato")}</div>
 <div>_____________________________________________________________</div>
@@ -137,7 +144,7 @@ const signatureSection = (formProperties: FormPropertiesType, translate: Transla
   return `<h2>${translate("Underskrift")}</h2>
 <p>${translate("Signér på de stedene som er aktuelle for din stønad.")}</p>
 <p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
-${signatureList.map((signatureObject) => signature(signatureObject, translate))}`;
+${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`;
 };
 
 export { createHtmlFromSubmission, body, signatureSection };
