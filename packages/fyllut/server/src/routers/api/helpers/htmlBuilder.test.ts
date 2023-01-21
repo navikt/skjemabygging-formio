@@ -216,6 +216,28 @@ describe("htmlBuilder", () => {
           expect(bodyElement).toContain("<h4>Skjemagruppe level 2</h4>");
         });
       });
+
+      describe("Containing two nested navSkjemagruppe", () => {
+        beforeEach(() => {
+          bodyElement = body([
+            createPanel("Panel", [
+              createContainer("Skjemagruppe level 1", "navSkjemagruppe", [
+                createContainer("Skjemagruppe level 2", "navSkjemagruppe", [
+                  createContainer("Skjemagruppe level 3", "navSkjemagruppe", [createComponent("Field", "value")]),
+                ]),
+              ]),
+            ]),
+          ]);
+        });
+
+        it("does not add a third indentation", () => {
+          expect(bodyElement.split('<div class="innrykk">')).toHaveLength(3);
+        });
+
+        it("adds an h4 for the third nested skjemagruppe", () => {
+          expect(bodyElement).toContain("<h4>Skjemagruppe level 3</h4>");
+        });
+      });
     });
   });
 

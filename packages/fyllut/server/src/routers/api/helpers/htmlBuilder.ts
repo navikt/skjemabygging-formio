@@ -74,10 +74,11 @@ const sectionContent = (components: FormSummaryComponent[], level: number): stri
 
 const h3 = (label: string) => `<h3>${label}</h3>`;
 const h4 = (label: string) => `<h4>${label}</h4>`;
+const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : "");
 
 const subsection = (component: FormSummaryContainer, level: number) => `
-  <div class="innrykk">
-    ${level <= 1 ? h3(component.label) : h4(component.label)}
+  ${level <= 1 ? h3(component.label) : h4(component.label)}
+  <div ${addInnrykkClass(level)}>
     ${sectionContent(component.components, level + 1)}
   </div>
 `;
