@@ -27,55 +27,45 @@ const createHtmlFromSubmission = (
 
   const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
 
-  console.log(form.properties);
-  // console.log(body(formSummaryObject));
-  return `
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
-  ${head(translate(form.title))}
-  ${body(formSummaryObject, signatureSection(form.properties, translate))}
-</html>
-  `;
+${head(translate(form.title))}
+${body(formSummaryObject, signatureSection(form.properties, translate))}
+</html>`;
 };
 
-const head = (title: string) => `
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>${title}</title>
-    ${style()}
-</head>
-`;
+const head = (title: string) =>
+  `<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>${title}</title>
+${style()}
+</head>`;
 
-const style = () => `
-<style>
-    body {}
-    h1, h2, h3, h4, .spm {font-family: Arial;}
-    h3 {margin-bottom: 2px}
-    h4 {margin: 4px auto 2px auto}
-    p {margin: 0}
-    .svar {margin-bottom: 5px; font-family: "Courier New", sans-serif;}
-    .row-label {margin-bottom: 2px; font-family: "Arial", sans-serif; font-weight: bold; text-decoration: underline}
-    .row {margin-bottom: 12px;}
-    .alt {margin-bottom: 5px; font-family: "Courier New", sans-serif; font-style: italic;}
-    .innrykk {margin: 0px 0px 10px 20px;}
-    .underskrift {margin-bottom: 30px;}
-</style>
-`;
+const style = () =>
+  `<style>
+body {}
+h1, h2, h3, h4, .spm {font-family: Arial;}
+h3 {margin-bottom: 2px}
+h4 {margin: 4px auto 2px auto}
+p {margin: 0}
+.svar {margin-bottom: 5px; font-family: "Courier New", sans-serif;}
+.row-label {margin-bottom: 2px; font-family: "Arial", sans-serif; font-weight: bold; text-decoration: underline}
+.row {margin-bottom: 12px;}
+.alt {margin-bottom: 5px; font-family: "Courier New", sans-serif; font-style: italic;}
+.innrykk {margin: 0px 0px 10px 20px;}
+.underskrift {margin-bottom: 30px;}
+</style>`;
 
 const body = (formSummaryObject: FormSummaryPanel[], signatures?: string) => {
-  console.log("formSubmission", JSON.stringify(formSummaryObject, null, 2));
-  return `
-    <body>
-      ${formSummaryObject.map(section).join("")}
-      ${signatures || ""}
-    </body>
-  `;
+  return `<body>
+${formSummaryObject.map(section).join("")}
+${signatures || ""}
+</body>`;
 };
 
-const section = (formSection: FormSummaryPanel) => `
-  <h2>${formSection.label}</h2>
-  ${sectionContent(formSection.components, 1)}
-`;
+const section = (formSection: FormSummaryPanel) =>
+  `<h2>${formSection.label}</h2>
+${sectionContent(formSection.components, 1)}`;
 
 const sectionContent = (components: FormSummaryComponent[], level: number): string => {
   return components
@@ -104,12 +94,11 @@ const h3 = (label: string) => `<h3>${label}</h3>`;
 const h4 = (label: string) => `<h4>${label}</h4>`;
 const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : "");
 
-const subsection = (component: FormSummaryContainer, level: number) => `
-  ${level <= 1 ? h3(component.label) : h4(component.label)}
-  <div ${addInnrykkClass(level)}>
-    ${sectionContent(component.components, level + 1)}
-  </div>
-`;
+const subsection = (component: FormSummaryContainer, level: number) =>
+  `${level <= 1 ? h3(component.label) : h4(component.label)}
+<div ${addInnrykkClass(level)}>
+${sectionContent(component.components, level + 1)}
+</div>`;
 
 const datagridRow = (component: FormSummaryContainer, level: number) => `
 <div class="row">
@@ -117,10 +106,8 @@ ${component.label ? `<div class="row-label">${component.label}</div>` : ""}
 ${sectionContent(component.components, level)}
 </div>`;
 
-const field = (component: FormSummaryField) => `
-  <div class="spm">${component.label}</div>
-  <div class="svar">- ${component.value}</div>
-`;
+const field = (component: FormSummaryField) =>
+  `<div class="spm">${component.label}</div><div class="svar">- ${component.value}</div>`;
 
 const img = (_component: FormSummaryImage) => "";
 

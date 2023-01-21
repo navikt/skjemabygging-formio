@@ -78,10 +78,8 @@ describe("htmlBuilder", () => {
       const bodyElement = body([
         createPanel("Panel", [createComponent("Field 1", "value 1"), createComponent("Field 2", "value 2")]),
       ]);
-      expect(bodyElement).toContain('<div class="spm">Field 1</div>');
-      expect(bodyElement).toContain('<div class="svar">- value 1</div>');
-      expect(bodyElement).toContain('<div class="spm">Field 2</div>');
-      expect(bodyElement).toContain('<div class="svar">- value 2</div>');
+      expect(bodyElement).toContain('<div class="spm">Field 1</div><div class="svar">- value 1</div>');
+      expect(bodyElement).toContain('<div class="spm">Field 2</div><div class="svar">- value 2</div>');
     });
   });
 
@@ -94,8 +92,7 @@ describe("htmlBuilder", () => {
 
         expect(bodyElement).toContain("<h2>Panel</h2>");
         expect(bodyElement).not.toContain("<h2>Fieldset</h2>");
-        expect(bodyElement).toContain('<div class="spm">Field</div>');
-        expect(bodyElement).toContain('<div class="svar">- value</div>');
+        expect(bodyElement).toContain('<div class="spm">Field</div><div class="svar">- value</div>');
       });
     });
 
@@ -129,15 +126,13 @@ describe("htmlBuilder", () => {
         });
 
         it("displays the datagrid row labels", () => {
-          expect(bodyElement).toContain("My datagrid row 1");
-          expect(bodyElement).toContain("My datagrid row 2");
+          expect(bodyElement).toContain('<div class="row-label">My datagrid row 1</div>');
+          expect(bodyElement).toContain('<div class="row-label">My datagrid row 2</div>');
         });
 
         it("displays the contained fields", () => {
-          expect(bodyElement).toContain('<div class="spm">Field 1</div>');
-          expect(bodyElement).toContain('<div class="svar">- value 1</div>');
-          expect(bodyElement).toContain('<div class="spm">Field 2</div>');
-          expect(bodyElement).toContain('<div class="svar">- value 2</div>');
+          expect(bodyElement).toContain('<div class="spm">Field 1</div><div class="svar">- value 1</div>');
+          expect(bodyElement).toContain('<div class="spm">Field 2</div><div class="svar">- value 2</div>');
         });
 
         it("does not add a second indentation", () => {
@@ -166,13 +161,12 @@ describe("htmlBuilder", () => {
 
         it("adds an h4 with the skjemagruppe label, in addition to an h3 and the row label", () => {
           expect(bodyElement).toContain("<h3>My datagrid</h3>");
-          expect(bodyElement).toContain("My datagrid row");
+          expect(bodyElement).toContain('<div class="row-label">My datagrid row</div>');
           expect(bodyElement).toContain("<h4>Skjemagruppe inside datagrid</h4>");
         });
 
         it("adds the fields in the skjemagruppe", () => {
-          expect(bodyElement).toContain('<div class="spm">Field</div>');
-          expect(bodyElement).toContain('<div class="svar">- value</div>');
+          expect(bodyElement).toContain('<div class="spm">Field</div><div class="svar">- value</div>');
         });
       });
     });
@@ -259,7 +253,7 @@ describe("htmlBuilder", () => {
 <p>Signér på de stedene som er aktuelle for din stønad.</p>
 <p class="underskrift"></p>
 <h3></h3>
-<p></p>
+<div class="underskrift"></div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Sted og dato</div>
 <div>_____________________________________________________________</div>
@@ -291,14 +285,14 @@ describe("htmlBuilder", () => {
       const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
 
       expect(element).toContain(`<h3>Søker</h3>
-<p>Beskrivelse</p>
+<div class="underskrift">Beskrivelse</div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Sted og dato</div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Underskrift</div>`);
 
       expect(element).toContain(`<h3>Arbeidsgiver</h3>
-<p></p>
+<div class="underskrift"></div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Sted og dato</div>
 <div>_____________________________________________________________</div>
