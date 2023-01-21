@@ -229,22 +229,6 @@ describe("htmlBuilder", () => {
 <div class="svar">- Abc</div><div class="svar">- Def</div><div class="svar">- Ghi</div>`);
       });
     });
-
-    describe("image", () => {
-      it("adds label image tag and alt text", () => {
-        const bodyElement = body([
-          createPanel("Panel", [
-            createComponent("This is an image", "data:image/png;base64,image", "image", {
-              alt: "alt text",
-              widthPercent: 40,
-            }),
-          ]),
-        ]);
-        expect(bodyElement).toContain('<div class="spm">This is an image</div>');
-        expect(bodyElement).toContain('<img src="data:image/png;base64,image" alt="alt text" width="200"/>');
-        expect(bodyElement).toContain('<div class="alt">alt text</div>');
-      });
-    });
   });
 
   describe("signatures", () => {

@@ -13,10 +13,6 @@ import {
 } from "@navikt/skjemadigitalisering-shared-domain";
 
 type TranslateFunction = (text: string) => string;
-const calcImageWidth = (widthInPercentage: number) => {
-  const MAX_WIDTH = 500;
-  return (MAX_WIDTH * widthInPercentage) / 100;
-};
 
 const style = () => `
 <style>
@@ -42,13 +38,7 @@ const field = (component: FormSummaryField) => `
   <div class="svar">- ${component.value}</div>
 `;
 
-const img = (component: FormSummaryImage) => `
-  <div>
-    <div class="spm">${component.label}</div>
-    <img src="${component.value}" alt="${component.alt}" width="${calcImageWidth(component.widthPercent)}"/>
-    <div class="alt">${component.alt}</div>
-  </div>
-`;
+const img = (_component: FormSummaryImage) => "";
 
 function multipleAnswers(component: FormSummarySelectboxes) {
   return `<div class="spm">${component.label}</div>
