@@ -1,16 +1,6 @@
 name: Build and test monorepo, and deploy bygger
 on:
-  push:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        default: 'preprod'
-        type: choice
-        options:
-          - preprod
-          - preprod-alt
+  push
 env:
   IMAGE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
   IMAGE_FYLLUT_BASE: "ghcr.io/${{ github.repository }}/fyllut-base:${{ github.sha }}"
@@ -41,7 +31,7 @@ jobs:
         run: yarn test
 
   package-and-push-bygger:
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/') || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
     name: "Package bygger"
     runs-on: ubuntu-latest
     steps:
@@ -68,7 +58,7 @@ jobs:
           docker push ${IMAGE}
 
   package-and-push-fyllut-base:
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/') || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
     name: "Package fyllut"
     runs-on: ubuntu-latest
     steps:
@@ -98,21 +88,6 @@ jobs:
         run: |
           docker tag ${IMAGE_FYLLUT_BASE_DEV} ${IMAGE_FYLLUT_BASE}
           docker push ${IMAGE_FYLLUT_BASE}
-
-  deploy-bygger-to-preprod:
-    name: "Deploy bygger to preprod"
-    if: github.event_name == 'workflow_dispatch'
-    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: "actions/checkout@v3"
-      - name: "Deploy to preprod"
-        env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "dev-gcp"
-          RESOURCE: "./packages/bygger/.nais/nais.yaml"
-          VARS: "./packages/bygger/.nais/${{ github.event.inputs.environment }}.yaml"
-        uses: "nais/deploy/actions/deploy@v1"
 
   deploy-bygger-to-dev:
     name: "Deploy bygger to dev"
