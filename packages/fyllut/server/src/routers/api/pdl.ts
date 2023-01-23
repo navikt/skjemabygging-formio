@@ -219,7 +219,7 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
 
 const validateRequest = (req: Request) => {
   const idPortenPid = getIdportenPid(req);
-  if (req.query.theme) {
+  if (!req.query.theme) {
     throw new Error(`Theme query param is required.`);
   }
 
