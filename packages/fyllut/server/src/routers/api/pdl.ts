@@ -86,9 +86,6 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
     })
   );
 
-  // TODO: Remove this
-  logger.info(JSON.stringify(response.hentPerson));
-
   const person = response.hentPerson;
 
   return toPerson(personId, person);
@@ -126,7 +123,6 @@ const toDeath = (person: any) => {
 
 const toAddress = (person: any) => {
   const addressProtection = person.adressebeskyttelse[0];
-  logger.warn(JSON.stringify(addressProtection));
   if (addressProtection && addressProtection.gradering !== "UGRADERT") {
     return {};
   }
