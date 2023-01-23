@@ -13,7 +13,9 @@ const tokenxHandler = (targetClientId) => async (req, res, next) => {
       logger.debug("Mocking TokenX access token");
       tokenxAccessToken = "mocked-tokenx-access-token"; // TODO how to get TokenX access token for development?
     } else if (typeof req.getIdportenJwt !== "function") {
-      logger.debug("No Authorization header set, so user is not logged in. Cant get idporten jwt.");
+      const message = "No Authorization header set, so user is not logged in. Cant get idporten jwt.";
+      logger.debug(message);
+      throw Error(message);
     } else {
       tokenxAccessToken = await tokenx.exchangeToken(req.getIdportenJwt(), targetClientId);
     }

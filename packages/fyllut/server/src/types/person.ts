@@ -1,7 +1,6 @@
 export interface Person {
   id: string;
   firstName: string;
-  middleName?: string;
   lastName: string;
   deathDate?: string;
   address?: Address;
@@ -9,8 +8,8 @@ export interface Person {
 }
 
 export interface Address {
-  street: string;
-  postalCode?: string;
+  streetAddress: string;
+  postcode?: string;
   city?: string;
   countryCode: string;
 }

@@ -7,6 +7,11 @@ import { Person } from "../../types/person";
 
 const { pdlTokenScopeCluster } = appConfig;
 
+/**
+ * Documentation: https://pdldocs-navno.msappproxy.net
+ * Test the API: https://pdl-playground.dev.intern.nav.no/editor
+ * Test data: https://www.skatteetaten.no/en/forms/tenor-test-data
+ */
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -102,8 +107,7 @@ const toName = (person: any) => {
   const name = person.navn[0];
 
   return {
-    firstName: name.fornavn,
-    middleName: name.mellomnavn,
+    firstName: name.mellomnavn ? `${name.fornavn} ${name.mellomnavn}` : name.fornavn,
     lastName: name.etternavn,
   };
 };
@@ -122,7 +126,8 @@ const toDeath = (person: any) => {
 
 const toAddress = (person: any) => {
   const addressProtection = person.adressebeskyttelse[0];
-  if (addressProtection) {
+  logger.warn(addressProtection);
+  if (addressProtection && addressProtection.gradering === "UGRADERT") {
     return {};
   }
 
@@ -130,14 +135,14 @@ const toAddress = (person: any) => {
 
   if (address.vegadresse) {
     return {
-      street: address.vegadresse.adressenavn,
-      postalCode: address.vegadresse.postnummer,
+      streetAddress: address.vegadresse.adressenavn,
+      postcode: address.vegadresse.postnummer,
       countryCode: "no",
     };
   } else if (address.utenlandskAdresse) {
     return {
-      street: address.utenlandskAdresse.adressenavnNummer,
-      postalCode: address.utenlandskAdresse.postkode,
+      streetAddress: address.utenlandskAdresse.adressenavnNummer,
+      postcode: address.utenlandskAdresse.postkode,
       city: address.utenlandskAdresse.bySted,
       countryCode: address.utenlandskAdresse.landkode,
     };
