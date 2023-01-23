@@ -15,12 +15,8 @@ const { pdlTokenScopeCluster } = appConfig;
 const pdl = {
   person: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      validateLoggedInUser(getIdportenPid(req), req.params.id);
-      const data = await getPerson(
-        getTokenxAccessToken(req),
-        "AAP", // TODO: Use correct theme
-        req.params.id
-      );
+      validateRequest(req);
+      const data = await getPerson(getTokenxAccessToken(req), req.query.theme as string, req.params.id);
       res.send(data);
     } catch (e) {
       next(e);
@@ -28,10 +24,10 @@ const pdl = {
   },
   children: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      validateLoggedInUser(getIdportenPid(req), req.params.id);
+      validateRequest(req);
       const data = await getPersonWithRelations(
         req.headers.AzureAccessToken as string,
-        "AAP", // TODO: Use correct theme
+        req.query.theme as string,
         req.params.id,
         "BARN"
       );
@@ -221,10 +217,17 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
   return body.data;
 };
 
-const validateLoggedInUser = (idPortenPid: string, personId: string) => {
+const validateRequest = (req: Request) => {
+  const idPortenPid = getIdportenPid(req);
+  if (req.query.theme) {
+    throw new Error(`Theme query param is required.`);
+  }
+
   if (!idPortenPid) {
     throw new Error(`User have to be logged in to access pdl data.`);
-  } else if (idPortenPid !== personId) {
+  }
+
+  if (idPortenPid !== req.params.id) {
     throw new Error(`Logged in user do not match the person they tried to retrieve.`);
   }
 };
