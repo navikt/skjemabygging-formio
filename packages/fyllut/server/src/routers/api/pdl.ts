@@ -126,20 +126,20 @@ const toDeath = (person: any) => {
 
 const toAddress = (person: any) => {
   const addressProtection = person.adressebeskyttelse[0];
-  logger.warn(addressProtection);
-  if (addressProtection && addressProtection.gradering === "UGRADERT") {
+  logger.warn(JSON.stringify(addressProtection));
+  if (addressProtection && addressProtection.gradering !== "UGRADERT") {
     return {};
   }
 
   const address = person.bostedsadresse[0];
 
-  if (address.vegadresse) {
+  if (address?.vegadresse) {
     return {
       streetAddress: address.vegadresse.adressenavn,
       postcode: address.vegadresse.postnummer,
       countryCode: "no",
     };
-  } else if (address.utenlandskAdresse) {
+  } else if (address?.utenlandskAdresse) {
     return {
       streetAddress: address.utenlandskAdresse.adressenavnNummer,
       postcode: address.utenlandskAdresse.postkode,
