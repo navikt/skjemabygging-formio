@@ -56,10 +56,6 @@ class NavDataGrid extends DataGrid {
             ignore: true,
           },
           {
-            key: "disabled",
-            ignore: true,
-          },
-          {
             key: "hidden",
             ignore: true,
           },

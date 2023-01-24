@@ -65,6 +65,12 @@ TextField.editForm = () => {
           key: "allowMultipleMasks",
           ignore: true,
         },
+        { key: "showWordCount", ignore: true },
+        { key: "showCharCount", ignore: true },
+        { key: "hideInput", ignore: true },
+        { key: "disabled", ignore: true },
+        { key: "displayMask", ignore: true },
+        { key: "mask", ignore: true },
       ],
     },
     {
@@ -110,6 +116,7 @@ TextField.editForm = () => {
           key: "allowCalculateOverride",
           ignore: true,
         },
+        { key: "truncateMultipleSpaces", ignore: true },
       ],
     },
     {
@@ -119,6 +126,18 @@ TextField.editForm = () => {
           key: "unique",
           ignore: true,
         },
+        { key: "validateOn", ignore: true },
+        { key: "validate.minWords", ignore: true },
+        { key: "validate.maxWords", ignore: true },
+        { key: "validate.pattern", ignore: true },
+        { key: "minWordLength", ignore: true },
+      ],
+    },
+    {
+      key: "api",
+      components: [
+        { key: "tags", ignore: true },
+        { key: "properties", ignore: true },
       ],
     },
     {
