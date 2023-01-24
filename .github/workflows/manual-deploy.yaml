@@ -38,8 +38,6 @@ jobs:
     runs-on: ubuntu-latest-8-cores
     needs: [init]
     if: ${{ needs.init.outputs.byggerImageExists == 'false' }}
-    env:
-      IMAGE: "${{ env.BYGGER_IMAGE }}"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -61,18 +59,17 @@ jobs:
       - name: "Build and publish Docker image"
         working-directory: ./packages/bygger
         run: |
-          docker build --pull --tag ${IMAGE} --build-arg git_sha=${{ github.sha }} .
-          docker push ${IMAGE}
+          docker build --pull --tag ${BYGGER_IMAGE} --build-arg git_sha=${{ github.sha }} .
+          docker push ${BYGGER_IMAGE}
 
   deploy-bygger-to-preprod:
     name: "Deploy bygger to preprod"
     needs: [package-and-push-bygger]
     if: ${{ !failure() }}
     runs-on: ubuntu-latest
-    env:
-      IMAGE: "${{ env.BYGGER_IMAGE }}"
     steps:
       - uses: "actions/checkout@v3"
+      - run: echo "IMAGE=$BYGGER_IMAGE" >> $GITHUB_ENV
       - name: "Deploy to preprod"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
@@ -86,8 +83,6 @@ jobs:
     if: ${{ needs.init.outputs.fyllutImageExists == 'false' }}
     name: "Package fyllut"
     runs-on: ubuntu-latest-8-cores
-    env:
-      IMAGE: "${{ env.FYLLUT_IMAGE }}"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -109,18 +104,17 @@ jobs:
       - name: "Build and push Docker image: fyllut-base-dev"
         working-directory: ./packages/fyllut
         run: |
-          docker build --pull -t ${IMAGE} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
-          docker push ${IMAGE}
+          docker build --pull -t ${FYLLUT_IMAGE} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
+          docker push ${FYLLUT_IMAGE}
 
   deploy-fyllut-to-preprod:
     name: "Deploy fyllut to preprod"
     needs: [package-and-push-fyllut]
     if: ${{ !failure() }}
     runs-on: ubuntu-latest
-    env:
-      IMAGE: "${{ env.FYLLUT_IMAGE }}"
     steps:
       - uses: "actions/checkout@v3"
+      - run: echo "IMAGE=$FYLLUT_IMAGE" >> $GITHUB_ENV
       - name: "Deploy to preprod"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
