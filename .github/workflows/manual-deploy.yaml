@@ -39,7 +39,7 @@ jobs:
     needs: [init]
     if: ${{ needs.init.outputs.byggerImageExists == 'false' }}
     env:
-      IMAGE: ${BYGGER_IMAGE}
+      IMAGE: ${{ env.BYGGER_IMAGE }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -70,7 +70,7 @@ jobs:
     if: ${{ !failure() }}
     runs-on: ubuntu-latest
     env:
-      IMAGE: ${BYGGER_IMAGE}
+      IMAGE: ${{ env.BYGGER_IMAGE }}
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to preprod"
@@ -87,7 +87,7 @@ jobs:
     name: "Package fyllut"
     runs-on: ubuntu-latest-8-cores
     env:
-      IMAGE: ${FYLLUT_IMAGE}
+      IMAGE: ${{ env.FYLLUT_IMAGE }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -118,7 +118,7 @@ jobs:
     if: ${{ !failure() }}
     runs-on: ubuntu-latest
     env:
-      IMAGE: ${FYLLUT_IMAGE}
+      IMAGE: ${{ env.FYLLUT_IMAGE }}
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to preprod"
