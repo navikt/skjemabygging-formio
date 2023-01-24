@@ -11,7 +11,8 @@ on:
           - preprod
           - preprod-alt
 env:
-  IMAGE: "ghcr.io/${{ github.repository }}/bygger-dev:${{ github.sha }}"
+  BYGGER_IMAGE: "ghcr.io/${{ github.repository }}/bygger-dev:${{ github.sha }}"
+  FYLLUT_IMAGE: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
 
 jobs:
   init:
@@ -19,31 +20,26 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       byggerImageExists: ${{ steps.bygger-image.outputs.exists }}
+      fyllutImageExists: ${{ steps.fyllut-image.outputs.exists }}
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Check if docker image exists
+      - name: Check if bygger-dev image exists
         id: bygger-image
         run: |
           byggerImageExists=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/orgs/navikt/packages/docker/bygger-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
-          echo "exists=$(echo $byggerImageExists)"
           echo "exists=$(echo $byggerImageExists)" >> $GITHUB_OUTPUT
-
-  package-bla:
-    name: "Bygger image already exists"
-    runs-on: ubuntu-latest
-    needs: [init]
-    if: ${{ needs.init.outputs.byggerImageExists == 'true' }}
-    steps:
-      - run: echo "byggerImageExists='${{ needs.init.outputs.byggerImageExists }}'"
+      - name: Check if fyllut-base-dev image exists
+        id: fyllut-image
+        run: |
+          fyllutImageExists=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/orgs/navikt/packages/docker/fyllut-base-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
+          echo "exists=$(echo $fyllutImageExists)" >> $GITHUB_OUTPUT
 
   package-and-push-bygger:
     name: "Package bygger"
     runs-on: ubuntu-latest-8-cores
     needs: [init]
     if: ${{ needs.init.outputs.byggerImageExists == 'false' }}
+    env:
+      IMAGE: ${BYGGER_IMAGE}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -71,8 +67,10 @@ jobs:
   deploy-bygger-to-preprod:
     name: "Deploy bygger to preprod"
     needs: [package-and-push-bygger]
-    if: ${{ !cancelled() }}
+    if: ${{ !failure() }}
     runs-on: ubuntu-latest
+    env:
+      IMAGE: ${BYGGER_IMAGE}
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to preprod"
@@ -81,4 +79,52 @@ jobs:
           CLUSTER: "dev-gcp"
           RESOURCE: "./packages/bygger/.nais/nais.yaml"
           VARS: "./packages/bygger/.nais/${{ github.event.inputs.environment }}.yaml"
+        uses: "nais/deploy/actions/deploy@v1"
+
+  package-and-push-fyllut:
+    needs: [init]
+    if: ${{ needs.init.outputs.fyllutImageExists == 'false' }}
+    name: "Package fyllut"
+    runs-on: ubuntu-latest-8-cores
+    env:
+      IMAGE: ${FYLLUT_IMAGE}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.17.1'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - name: "Build application: Fyllut"
+        env:
+          REACT_APP_GIT_VERSION: ${{ github.sha }}
+          REACT_APP_GIT_BRANCH: ${{ github.ref_name }}
+        run: bin/build-application.sh fyllut
+      - name: Login to GitHub Package Repository
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Build and push Docker image: fyllut-base-dev"
+        working-directory: ./packages/fyllut
+        run: |
+          docker build --pull -t ${IMAGE} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
+          docker push ${IMAGE}
+
+  deploy-fyllut-to-preprod:
+    name: "Deploy fyllut to preprod"
+    needs: [package-and-push-fyllut]
+    if: ${{ !failure() }}
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ${FYLLUT_IMAGE}
+    steps:
+      - uses: "actions/checkout@v3"
+      - name: "Deploy to preprod"
+        env:
+          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          CLUSTER: "dev-gcp"
+          RESOURCE: "./packages/fyllut/.nais/config.yaml"
+          VARS: "./packages/fyllut/.nais/${{ github.event.inputs.environment }}.yaml"
         uses: "nais/deploy/actions/deploy@v1"
