@@ -40,7 +40,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         console.log(e);
         dispatch({ type: "form-not-found" });
       });
-  }, [loadForm, formPath]);
+  }, [loadForm, formPath, featureToggles.enableDiff]);
 
   const onChange = (changedForm) => {
     dispatch({ type: "form-changed", form: changedForm });
