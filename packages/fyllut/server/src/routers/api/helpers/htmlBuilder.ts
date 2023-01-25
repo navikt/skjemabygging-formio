@@ -25,12 +25,12 @@ const createHtmlFromSubmission = (
   console.log("submission", submission);
   console.log("translations", translations);
 
-  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
+  const symmaryPanels: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
 
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
 ${head(translate(form.title))}
-${body(formSummaryObject, signatureSection(form.properties, translate))}
+${body(symmaryPanels, signatureSection(form.properties, translate))}
 </html>`;
 };
 
@@ -80,9 +80,9 @@ const sectionContent = (components: FormSummaryComponent[], level: number): stri
         case "datagrid-row":
           return datagridRow(component, level);
         case "selectboxes":
-          return multipleAnswers(component as FormSummarySelectboxes);
+          return multipleAnswers(component);
         case "image":
-          return img(component as FormSummaryImage);
+          return img(component);
         default:
           return field(component as FormSummaryField);
       }
@@ -94,7 +94,7 @@ const h3 = (label: string) => `<h3>${label}</h3>`;
 const h4 = (label: string) => `<h4>${label}</h4>`;
 const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : "");
 
-const subsection = (component: FormSummaryContainer, level: number) =>
+const subsection = (component: FormSummaryContainer | FormSummaryPanel, level: number) =>
   `${level <= 1 ? h3(component.label) : h4(component.label)}
 <div ${addInnrykkClass(level)}>
 ${sectionContent(component.components, level + 1)}

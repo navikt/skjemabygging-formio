@@ -1,8 +1,22 @@
-export type SubmissionValue = string | number | boolean | string[];
-//TODO: add all types
+export type SubmissionValue = string | number;
 
-export type ContainerType = "fieldset" | "panel" | "navSkjemagruppe" | "datagrid" | "datagrid-row";
-export type FieldType = "textfield" | "image" | "selectboxes";
+export type ContainerType = "fieldset" | "navSkjemagruppe";
+export type FieldType =
+  | "textfield"
+  | "textarea"
+  | "number"
+  | "navCheckbox"
+  | "radiopanel"
+  | "navSelect"
+  | "select"
+  | "email"
+  | "phoneNumber"
+  | "navDatepicker"
+  | "day"
+  | "landvelger"
+  | "currency"
+  | "valutavelger"
+  | "alertstripe";
 
 export type ComponentType = ContainerType | FieldType;
 
@@ -13,13 +27,14 @@ export interface FormSummaryField {
   value: SubmissionValue;
 }
 
-export interface FormSummarySelectboxes extends FormSummaryField {
+export interface FormSummarySelectboxes extends Omit<FormSummaryField, "type" | "value"> {
   type: "selectboxes";
   value: string[];
 }
 
-export interface FormSummaryImage extends FormSummaryField {
+export interface FormSummaryImage extends Omit<FormSummaryField, "type"> {
   type: "image";
+  value: string;
   alt: string;
   widthPercent: number;
 }
@@ -31,8 +46,23 @@ export interface FormSummaryContainer {
   components: FormSummaryComponent[];
 }
 
-export interface FormSummaryPanel extends FormSummaryContainer {
+export interface FormSummaryPanel extends Omit<FormSummaryContainer, "type"> {
   type: "panel";
 }
 
-export type FormSummaryComponent = FormSummaryField | FormSummaryContainer;
+export interface FormSummaryDataGridRow extends Omit<FormSummaryContainer, "type"> {
+  type: "datagrid-row";
+}
+
+export interface FormSummaryDataGrid extends Omit<FormSummaryContainer, "type" | "components"> {
+  type: "datagrid";
+  components: FormSummaryDataGridRow[];
+}
+
+export type FormSummaryComponent =
+  | FormSummaryField
+  | FormSummaryContainer
+  | FormSummaryPanel
+  | FormSummaryDataGrid
+  | FormSummarySelectboxes
+  | FormSummaryImage;
