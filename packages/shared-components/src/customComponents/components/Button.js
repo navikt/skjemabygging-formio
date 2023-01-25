@@ -103,6 +103,13 @@ export default class NavButton extends Button {
         ],
       },
       {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
+        ],
+      },
+      {
         key: "addons",
         ignore: true,
       },
