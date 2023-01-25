@@ -3,6 +3,7 @@ const featureToggles = {
   enableConditionalAlert: true,
   enableEnhetsListe: true,
   enableAutoComplete: true,
+  enableDiff: false,
 };
 
 export default featureToggles;
