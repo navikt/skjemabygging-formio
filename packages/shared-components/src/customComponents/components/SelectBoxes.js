@@ -119,6 +119,13 @@ class SelectBoxes extends FormioSelectBoxes {
         ],
       },
       {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
+        ],
+      },
+      {
         key: "logic",
         ignore: true,
         components: false,

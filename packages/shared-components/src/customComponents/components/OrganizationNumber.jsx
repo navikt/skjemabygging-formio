@@ -36,6 +36,7 @@ export default class OrganizationNumber extends Number {
           { key: "disabled", ignore: true },
           { key: "tableView", ignore: true },
           { key: "modalEdit", ignore: true },
+          { key: "labelPosition", ignore: true },
         ],
       },
       {
@@ -45,6 +46,14 @@ export default class OrganizationNumber extends Number {
           { key: "unique", ignore: true },
           { key: "errorLabel", ignore: true },
           { key: "errors", ignore: true },
+          { key: "validate.customMessage", ignore: true },
+        ],
+      },
+      {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
         ],
       },
       { key: "data", ignore: true },

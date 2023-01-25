@@ -33,6 +33,14 @@ export default class AccountNumber extends Number {
           { key: "disabled", ignore: true },
           { key: "tableView", ignore: true },
           { key: "modalEdit", ignore: true },
+          { key: "labelPosition", ignore: true },
+        ],
+      },
+      {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
         ],
       },
       {

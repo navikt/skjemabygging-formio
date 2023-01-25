@@ -115,7 +115,22 @@ class NavSelect extends FormioReactComponent {
       [
         {
           key: "display",
-          components: [{ key: "widget", ignore: true }, fieldSizeField],
+          components: [
+            { key: "widget", ignore: true },
+            { key: "labelPosition", ignore: true },
+            { key: "placeholder", ignore: true },
+            { key: "tooltip", ignore: true },
+            { key: "customClass", ignore: true },
+            { key: "tabindex", ignore: true },
+            { key: "hidden", ignore: true },
+            { key: "hideLabel", ignore: true },
+            { key: "uniqueOptions", ignore: true },
+            { key: "autofocus", ignore: true },
+            { key: "disabled", ignore: true },
+            { key: "tableView", ignore: true },
+            { key: "modalEdit", ignore: true },
+            fieldSizeField,
+          ],
         },
         {
           key: "data",
@@ -152,6 +167,24 @@ class NavSelect extends FormioReactComponent {
             { key: "ignoreCache", ignore: true },
           ],
         },
+        {
+          key: "validation",
+          components: [
+            { key: "validateOn", ignore: true },
+            { key: "errorLabel", ignore: true },
+            { key: "validate.customMessage", ignore: true },
+            { key: "unique", ignore: true },
+          ],
+        },
+        {
+          key: "api",
+          components: [
+            { key: "tags", ignore: true },
+            { key: "properties", ignore: true },
+          ],
+        },
+        { key: "logic", ignore: true },
+        { key: "layout", ignore: true },
       ],
       ...extend
     );
