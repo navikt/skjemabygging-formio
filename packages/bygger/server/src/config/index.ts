@@ -1,5 +1,14 @@
+import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
-import { devAzure, devFormio, devFyllut, devGithub, devPusher, devSkjemabyggingProxy } from "./development";
+import {
+  devAzure,
+  devEnabledFeatures,
+  devFormio,
+  devFyllut,
+  devGithub,
+  devPusher,
+  devSkjemabyggingProxy,
+} from "./development";
 import { ConfigType, NodeEnv } from "./types";
 
 const nodeEnv = process.env.NODE_ENV as NodeEnv;
@@ -64,6 +73,7 @@ const config: ConfigType = {
   port: parseInt(process.env.PORT || "8080"),
   isProduction: nodeEnv === "production",
   isDevelopment: nodeEnv === "development",
+  featureToggles: featureUtils.toFeatureToggles(env("ENABLED_FEATURES", devEnabledFeatures)),
 };
 
 export default config;

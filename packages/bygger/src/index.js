@@ -38,6 +38,8 @@ const renderReact = (config) => {
   } else {
     pusher = { subscribe: () => ({ bind: () => {}, unbind: () => {} }) };
   }
+  // TODO remove feature toggle backward compatibility, should use toggles from config
+  const toggles = { ...featureToggles, ...config.featureToggles };
 
   ReactDOM.render(
     <React.StrictMode>
@@ -45,7 +47,7 @@ const renderReact = (config) => {
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
-          featureToggles={featureToggles}
+          featureToggles={toggles}
           config={config}
           app="bygger"
         >

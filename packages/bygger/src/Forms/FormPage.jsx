@@ -1,4 +1,4 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useCallback, useEffect, useReducer } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
@@ -9,6 +9,7 @@ import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
+  const { featureToggles } = useAppConfig();
   let { url } = useRouteMatch();
   const { formPath } = useParams();
   const [state, dispatch] = useReducer(
@@ -24,12 +25,16 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
-        loadPublishedForm(formPath)
-          .then((publishedForm) => dispatch({ type: "form-loaded", form, publishedForm }))
-          .catch(() => {
-            console.debug("Failed to load published form");
-            dispatch({ type: "form-loaded", form });
-          });
+        if (featureToggles.enableDiff) {
+          loadPublishedForm(formPath)
+            .then((publishedForm) => dispatch({ type: "form-loaded", form, publishedForm }))
+            .catch(() => {
+              console.debug("Failed to load published form");
+              dispatch({ type: "form-loaded", form });
+            });
+        } else {
+          dispatch({ type: "form-loaded", form });
+        }
       })
       .catch((e) => {
         console.log(e);
