@@ -4,7 +4,6 @@
   "isDevelopment": true,
   "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100" },
   "featureToggles": {
-    "enableConditionalAlert": true,
     "enableTranslations": true,
     "enableEnhetsliste": true,
     "enableAutoComplete": true,
