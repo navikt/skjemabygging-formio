@@ -30,19 +30,7 @@ import { Operator } from "./migration/operator";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
-import type {
-  ComponentType,
-  ContainerType,
-  FormSummaryComponent,
-  FormSummaryContainer,
-  FormSummaryDataGrid,
-  FormSummaryDataGridRow,
-  FormSummaryField,
-  FormSummaryImage,
-  FormSummaryPanel,
-  FormSummarySelectboxes,
-  SubmissionValue,
-} from "./summary/FormSummaryType";
+import type { Summary } from "./summary/FormSummaryType";
 import formSummaryUtil from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
 import TEXTS from "./texts";
@@ -85,17 +73,7 @@ export type {
   NewFormSignatureType,
   FormPropertiesType,
   FormPropertiesPublishing,
-  FormSummaryField,
-  FormSummarySelectboxes,
-  FormSummaryImage,
-  FormSummaryContainer,
-  FormSummaryComponent,
-  FormSummaryPanel,
-  FormSummaryDataGrid,
-  FormSummaryDataGridRow,
-  SubmissionValue,
-  ComponentType,
-  ContainerType,
+  Summary,
   NavFormType,
   Component,
   Panel,

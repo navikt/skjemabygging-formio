@@ -1,17 +1,10 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { Accordion } from "@navikt/ds-react";
 import {
-  FormSummaryComponent,
-  FormSummaryContainer,
-  FormSummaryDataGrid,
-  FormSummaryDataGridRow,
-  FormSummaryField,
-  FormSummaryImage,
-  FormSummaryPanel,
-  FormSummarySelectboxes,
   formSummaryUtil,
   InnsendingType,
   NavFormType,
+  Summary,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
@@ -27,14 +20,14 @@ import { getPanels } from "../util/form";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 import FormStepper from "./components/FormStepper";
 
-const SummaryField = ({ component }: { component: FormSummaryField }) => (
+const SummaryField = ({ component }: { component: Summary.Field }) => (
   <>
     <dt>{component.label}</dt>
     <dd>{component.value}</dd>
   </>
 );
 
-const SelectboxesSummary = ({ component }: { component: FormSummarySelectboxes }) => (
+const SelectboxesSummary = ({ component }: { component: Summary.Selectboxes }) => (
   <>
     <dt>{component.label}</dt>
     <dd>
@@ -47,7 +40,7 @@ const SelectboxesSummary = ({ component }: { component: FormSummarySelectboxes }
   </>
 );
 
-const FormSummaryFieldset = ({ component }: { component: FormSummaryContainer }) => (
+const FormSummaryFieldset = ({ component }: { component: Summary.Fieldset }) => (
   <>
     <dt>{component.label}</dt>
     <dd>
@@ -58,14 +51,14 @@ const FormSummaryFieldset = ({ component }: { component: FormSummaryContainer })
   </>
 );
 
-const DataGridSummary = ({ component }: { component: FormSummaryDataGrid }) => (
+const DataGridSummary = ({ component }: { component: Summary.DataGrid }) => (
   <>
     <dt>{component.label}</dt>
     <dd>{component.components && component.components.map((row) => <DataGridRow key={row.key} row={row} />)}</dd>
   </>
 );
 
-const DataGridRow = ({ row }: { row: FormSummaryDataGridRow }) => (
+const DataGridRow = ({ row }: { row: Summary.DataGridRow }) => (
   <div className="data-grid__row skjemagruppe">
     {row.label && <p className="skjemagruppe__legend">{row.label}</p>}
     <dl>
@@ -79,7 +72,7 @@ const useImgSummaryStyles = (widthPercent) =>
     description: { minWidth: 100, maxWidth: widthPercent + "%" },
   })();
 
-const ImageSummary = ({ component }: { component: FormSummaryImage }) => {
+const ImageSummary = ({ component }: { component: Summary.Image }) => {
   const { label, value, alt, widthPercent } = component;
   const { description } = useImgSummaryStyles(widthPercent);
   return (
@@ -99,7 +92,7 @@ const panelStyles = makeStyles({
   },
 });
 
-const PanelSummary = ({ component, formUrl }: { component: FormSummaryPanel; formUrl: string }) => {
+const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUrl: string }) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link } = panelStyles();
@@ -128,7 +121,7 @@ const PanelSummary = ({ component, formUrl }: { component: FormSummaryPanel; for
   );
 };
 
-const ComponentSummary = ({ components, formUrl = "" }: { components: FormSummaryComponent[]; formUrl?: string }) => {
+const ComponentSummary = ({ components, formUrl = "" }: { components: Summary.Component[]; formUrl?: string }) => {
   return (
     <>
       {components.map((comp) => {
@@ -146,7 +139,7 @@ const ComponentSummary = ({ components, formUrl = "" }: { components: FormSummar
           case "image":
             return <ImageSummary key={key} component={comp} />;
           default:
-            return <SummaryField key={key} component={comp as FormSummaryField} />;
+            return <SummaryField key={key} component={comp as Summary.Field} />;
         }
       })}
     </>
@@ -171,7 +164,7 @@ export interface Props {
 }
 
 function getUrlToLastPanel(form, formUrl, submission) {
-  const formSummary = formSummaryUtil.createFormSummaryObject(form, submission);
+  const formSummary = formSummaryUtil.createFormSummaryPanels(form, submission);
   const lastPanel = formSummary[formSummary.length - 1];
   const lastPanelSlug = lastPanel?.key;
   if (!lastPanelSlug) {

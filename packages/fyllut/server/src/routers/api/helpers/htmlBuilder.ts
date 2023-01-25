@@ -1,15 +1,10 @@
 import {
   FormPropertiesType,
-  FormSummaryComponent,
-  FormSummaryContainer,
-  FormSummaryField,
-  FormSummaryImage,
-  FormSummaryPanel,
-  FormSummarySelectboxes,
   formSummaryUtil,
   NavFormType,
   NewFormSignatureType,
   signatureUtils,
+  Summary,
 } from "@navikt/skjemadigitalisering-shared-domain";
 
 type TranslateFunction = (text: string) => string;
@@ -25,7 +20,7 @@ const createHtmlFromSubmission = (
   console.log("submission", submission);
   console.log("translations", translations);
 
-  const symmaryPanels: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
+  const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
 
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
@@ -56,18 +51,18 @@ p {margin: 0}
 .underskrift {margin-bottom: 30px;}
 </style>`;
 
-const body = (formSummaryObject: FormSummaryPanel[], signatures?: string) => {
+const body = (formSummaryObject: Summary.Panel[], signatures?: string) => {
   return `<body>
 ${formSummaryObject.map(section).join("")}
 ${signatures || ""}
 </body>`;
 };
 
-const section = (formSection: FormSummaryPanel) =>
+const section = (formSection: Summary.Panel) =>
   `<h2>${formSection.label}</h2>
 ${sectionContent(formSection.components, 1)}`;
 
-const sectionContent = (components: FormSummaryComponent[], level: number): string => {
+const sectionContent = (components: Summary.Component[], level: number): string => {
   return components
     .map((component) => {
       switch (component.type) {
@@ -84,7 +79,7 @@ const sectionContent = (components: FormSummaryComponent[], level: number): stri
         case "image":
           return img(component);
         default:
-          return field(component as FormSummaryField);
+          return field(component);
       }
     })
     .join("");
@@ -94,24 +89,24 @@ const h3 = (label: string) => `<h3>${label}</h3>`;
 const h4 = (label: string) => `<h4>${label}</h4>`;
 const addInnrykkClass = (level: number) => (level <= 2 ? 'class="innrykk"' : "");
 
-const subsection = (component: FormSummaryContainer | FormSummaryPanel, level: number) =>
+const subsection = (component: Summary.Fieldset | Summary.Panel | Summary.DataGrid, level: number) =>
   `${level <= 1 ? h3(component.label) : h4(component.label)}
 <div ${addInnrykkClass(level)}>
 ${sectionContent(component.components, level + 1)}
 </div>`;
 
-const datagridRow = (component: FormSummaryContainer, level: number) => `
+const datagridRow = (component: Summary.DataGridRow, level: number) => `
 <div class="row">
 ${component.label ? `<div class="row-label">${component.label}</div>` : ""}
 ${sectionContent(component.components, level)}
 </div>`;
 
-const field = (component: FormSummaryField) =>
+const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">- ${component.value}</div>`;
 
-const img = (_component: FormSummaryImage) => "";
+const img = (_component: Summary.Image) => "";
 
-function multipleAnswers(component: FormSummarySelectboxes) {
+function multipleAnswers(component: Summary.Selectboxes) {
   return `<div class="spm">${component.label}</div>
 ${component.value.map((val) => `<div class="svar">- ${val}</div>`).join("")}`;
 }
