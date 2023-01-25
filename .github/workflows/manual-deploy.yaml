@@ -25,13 +25,17 @@ jobs:
       - name: Check if bygger-dev image exists
         id: bygger-image
         run: |
-          byggerImageExists=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/orgs/navikt/packages/container/skjemabygging-formio%2Fbygger-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
+          byggerImageExists=$(gh api -H "Accept: application/vnd.github+json" /orgs/navikt/packages/container/skjemabygging-formio%2Fbygger-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
           echo "exists=$(echo $byggerImageExists)" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Check if fyllut-base-dev image exists
         id: fyllut-image
         run: |
-          fyllutImageExists=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/orgs/navikt/packages/container/skjemabygging-formio%2Ffyllut-base-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
+          fyllutImageExists=$(gh api -H "Accept: application/vnd.github+json" /orgs/navikt/packages/container/skjemabygging-formio%2Ffyllut-base-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
           echo "exists=$(echo $fyllutImageExists)" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   package-and-push-bygger:
     name: "Package bygger"
