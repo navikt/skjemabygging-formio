@@ -146,14 +146,22 @@ const ComponentSummary = ({ components, formUrl = "" }: { components: Summary.Co
   );
 };
 
-const FormSummary = ({ form, formUrl, submission }) => {
+const FormSummary = ({ form, formUrl, submission }: { form: NavFormType; formUrl: string; submission: object }) => {
+  const { logger } = useAppConfig();
   const { translate } = useLanguages();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-  const formSummaryObject: FormSummaryPanel[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
-  if (formSummaryObject.length === 0) {
+  const summaryComponents: Summary.Component[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
+  const summaryPanels = summaryComponents.filter((component) => component.type === "panel");
+  if (summaryPanels.length < summaryComponents.length) {
+    logger?.info(
+      `OBS! Skjemaet ${form.title} (${form.properties.skjemanummer}) har komponenter som ikke ligger inne i et panel`
+    );
+  }
+
+  if (summaryPanels.length === 0) {
     return null;
   }
-  return <ComponentSummary components={formSummaryObject} formUrl={formUrl} />;
+  return <ComponentSummary components={summaryPanels} formUrl={formUrl} />;
 };
 
 export interface Props {
