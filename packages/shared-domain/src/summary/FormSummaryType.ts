@@ -19,8 +19,6 @@ export namespace Summary {
     | "valutavelger"
     | "alertstripe";
 
-  export type ComponentType = FieldsetType | FieldType;
-
   export interface Field {
     label: string;
     key: string;

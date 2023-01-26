@@ -1,30 +1,25 @@
-import {
-  ComponentType,
-  ContainerType,
-  FormPropertiesType,
-  FormSummaryComponent,
-  FormSummaryContainer,
-  FormSummaryPanel,
-  NavFormType,
-  SubmissionValue,
-} from "@navikt/skjemadigitalisering-shared-domain";
+import { FormPropertiesType, NavFormType, Summary } from "@navikt/skjemadigitalisering-shared-domain";
 import { body, createHtmlFromSubmission, signatureSection } from "./htmlBuilder";
 
-const createContainer = (label: string, type: ContainerType, components: FormSummaryComponent[] = []) =>
+const createContainer = (
+  label: string,
+  type: Summary.FieldsetType | "panel" | "datagrid" | "datagrid-row",
+  components: Summary.Component[] = []
+) =>
   ({
     label,
     components,
     key: label,
     type,
-  } as FormSummaryContainer);
+  } as Summary.Fieldset | Summary.Panel | Summary.DataGrid | Summary.DataGridRow);
 
-const createPanel = (label: string, components: FormSummaryComponent[] = []) =>
-  createContainer(label, "panel", components) as FormSummaryPanel;
+const createPanel = (label: string, components: Summary.Component[] = []) =>
+  createContainer(label, "panel", components) as Summary.Panel;
 
 const createComponent = (
   label: string,
-  value: SubmissionValue,
-  type: ComponentType = "textfield",
+  value: Summary.SubmissionValue | string[],
+  type = "textfield",
   optionalProps = {}
 ) =>
   ({
@@ -33,7 +28,7 @@ const createComponent = (
     type,
     key: label,
     ...optionalProps,
-  } as FormSummaryComponent);
+  } as Summary.Component);
 
 describe("htmlBuilder", () => {
   describe("Html document", () => {
