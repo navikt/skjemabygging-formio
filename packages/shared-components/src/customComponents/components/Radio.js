@@ -132,13 +132,6 @@ class Radio extends FormioRadio {
         ],
       },
       {
-        key: "api",
-        components: [
-          { key: "tags", ignore: true },
-          { key: "properties", ignore: true },
-        ],
-      },
-      {
         key: "logic",
         ignore: true,
         components: false,
