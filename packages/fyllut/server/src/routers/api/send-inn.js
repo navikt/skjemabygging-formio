@@ -30,7 +30,15 @@ const sendInn = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       // const isTest = req.get("Fyllut-Is-Test") === "true";
-      const { form, submission, attachments, language, otherDocumentation, translations = {} } = req.body;
+      const {
+        form,
+        submission,
+        attachments,
+        language,
+        otherDocumentation,
+        translations = {},
+        submissionMethod,
+      } = req.body;
       const translate = (term) => translations[term] ?? term;
       const translatedAttachments = attachments.map((attachment) => ({
         ...attachment,
@@ -42,8 +50,9 @@ const sendInn = {
         req.headers.AzureAccessToken,
         form,
         submission,
+        submissionMethod,
         translations,
-        "en"
+        language
       );
 
       const body = {

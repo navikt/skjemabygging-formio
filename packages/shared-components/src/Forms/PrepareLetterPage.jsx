@@ -128,10 +128,11 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
       <DownloadPdfButton
         form={form}
         submission={submission}
-        actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
+        actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         translations={translations}
+        submissionMethod="paper"
       />
     </section>
   );

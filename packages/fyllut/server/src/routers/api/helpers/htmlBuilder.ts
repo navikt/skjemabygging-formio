@@ -14,6 +14,7 @@ type TranslateFunction = (text: string) => string;
 const createHtmlFromSubmission = (
   form: NavFormType,
   submission: Submission,
+  submissionMethod: string,
   translate: (text: string) => string,
   lang: Language = "nb-NO"
 ) => {
@@ -22,7 +23,7 @@ const createHtmlFromSubmission = (
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
 ${head(translate(form.title))}
-${body(symmaryPanels, signatureSection(form.properties, translate))}
+${body(symmaryPanels, signatureSection(form.properties, submissionMethod, translate))}
 </html>`;
 };
 
@@ -116,7 +117,14 @@ const signature = ({ label, description, key }: NewFormSignatureType, translate:
 <div>_____________________________________________________________</div>
 <div class="underskrift">${translate("Underskrift")}</div>`;
 
-const signatureSection = (formProperties: FormPropertiesType, translate: TranslateFunction) => {
+const signatureSection = (
+  formProperties: FormPropertiesType,
+  submissionMethod: string,
+  translate: TranslateFunction
+) => {
+  if (submissionMethod === "digital") {
+    return "";
+  }
   const { signatures, descriptionOfSignatures } = formProperties;
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
 

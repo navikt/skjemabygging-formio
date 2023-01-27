@@ -1,4 +1,10 @@
-import { I18nTranslationMap, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  I18nTranslationMap,
+  Language,
+  localizationUtils,
+  NavFormType,
+  Submission,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import fetch, { HeadersInit } from "node-fetch";
@@ -169,14 +175,16 @@ const parseBody = (
 ): {
   form: NavFormType;
   submission: Submission;
+  submissionMethod: string;
   translations: I18nTranslationMap;
   language: Language;
 } => {
   const submission = JSON.parse(req.body.submission);
+  const submissionMethod = req.body.submissionMethod;
   const form = JSON.parse(req.body.form);
   const translations = JSON.parse(req.body.translations);
   const language = req.body.language;
-  return { form, submission, translations, language };
+  return { form, submission, submissionMethod, translations, language };
 };
 
 const exstream = {
@@ -198,8 +206,15 @@ const exstream = {
   },
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { form, submission, translations, language } = parseBody(req);
-      const pdf = await createPdf(req.headers.AzureAccessToken as string, form, submission, translations, language);
+      const { form, submission, submissionMethod, translations, language } = parseBody(req);
+      const pdf = await createPdf(
+        req.headers.AzureAccessToken as string,
+        form,
+        submission,
+        submissionMethod,
+        translations,
+        language
+      );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
     } catch (e) {
@@ -212,10 +227,11 @@ export const createPdfAsByteArray = async (
   accessToken: string,
   form: NavFormType,
   submission: Submission,
+  submissionMethod: string,
   translations: I18nTranslationMap,
   language: Language
 ) => {
-  const pdf = await createPdf(accessToken, form, submission, translations, language);
+  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
   return Array.from(base64Decode(pdf.data));
 };
 
@@ -223,11 +239,12 @@ const createPdf = async (
   accessToken: string,
   form: NavFormType,
   submission: Submission,
+  submissionMethod: string,
   translations: I18nTranslationMap,
   language: Language
 ) => {
   const translate = (text: string): string => translations[text] || text;
-  const html = createHtmlFromSubmission(form, submission, translate, language);
+  const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
   return await createPdfFromHtml(accessToken, translate(form.title), form.properties.skjemanummer, language, html);
 };
 

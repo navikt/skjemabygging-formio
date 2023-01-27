@@ -42,10 +42,11 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             <DownloadPdfButton
               form={form}
               submission={submission}
-              actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
+              actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
               onClick={() => loggSkjemaFullfort("ingeninnsending")}
               translations={translations}
+              submissionMethod={"ingen"}
             />
           </div>
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
