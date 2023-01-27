@@ -126,6 +126,7 @@ function toChange(diff: any, key: string) {
 const createDiffSummary = (changes: any) => {
   const { diff, components } = changes;
   const diffSummary: any = {
+    isNew: changes.status === DiffStatus.NEW,
     changesToCurrentComponent: [],
     deletedComponents: [],
   };
@@ -221,7 +222,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
           ...acc,
           [key]: generateFormDiff(originalObject[key], newObject[key], true),
         };
-      } else if (key !== "id") {
+      } else if (key !== "id" && key !== "navId") {
         const diff = generateFormDiff(originalObject[key], newObject[key]);
         if (diff) {
           return {

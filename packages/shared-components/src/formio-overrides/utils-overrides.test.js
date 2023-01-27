@@ -3,7 +3,7 @@ import panelDiffDeletedDatagrid from "./testdata/diff-deleted-datagrid";
 import panelDiffDeletedRadiopanel from "./testdata/diff-deleted-radio";
 import formNavSelectChanges from "./testdata/form-navSelect-changes";
 import publishedForm from "./testdata/published-form";
-import { navFormDiffToHtml, sanitizeJavaScriptCode } from "./utils-overrides";
+import { getDiffTag, navFormDiffToHtml, sanitizeJavaScriptCode } from "./utils-overrides";
 
 describe("utils-overrides", () => {
   describe("sanitizeJavaScriptCode", () => {
@@ -180,6 +180,60 @@ describe("utils-overrides", () => {
         const html = navFormDiffToHtml(componentDiff);
         expect(html).toMatchSnapshot();
       });
+    });
+  });
+
+  describe("getDiffTag", () => {
+    it("returns no tag when component is unchanged", () => {
+      const navSelect = navFormUtils.findByNavId("e0a8kbj", publishedForm.components);
+      const ctx = {
+        builder: true,
+        component: navSelect,
+        config: {
+          publishedForm,
+        },
+      };
+      const html = getDiffTag(ctx);
+      expect(html).toMatchSnapshot();
+    });
+
+    it("returns tag 'Endring' when component is changed", () => {
+      const navSelect = navFormUtils.findByNavId("e0a8kbj", formNavSelectChanges.components);
+      const ctx = {
+        builder: true,
+        component: navSelect,
+        config: {
+          publishedForm,
+        },
+      };
+      const html = getDiffTag(ctx);
+      expect(html).toMatchSnapshot();
+    });
+
+    it("returns no tag even if component is changed when it renders outside builder", () => {
+      const navSelect = navFormUtils.findByNavId("e0a8kbj", formNavSelectChanges.components);
+      const ctx = {
+        builder: false,
+        component: navSelect,
+        config: {
+          publishedForm,
+        },
+      };
+      const html = getDiffTag(ctx);
+      expect(html).toMatchSnapshot();
+    });
+
+    it("returns tag 'Ny' when component does not exist in published form", () => {
+      const component = { navId: "123456", key: "aaaa" };
+      const ctx = {
+        builder: true,
+        component,
+        config: {
+          publishedForm,
+        },
+      };
+      const html = getDiffTag(ctx);
+      expect(html).toMatchSnapshot();
     });
   });
 });

@@ -25,8 +25,21 @@ Container.editForm = () => {
           key: "modalEdit",
           ignore: true,
         },
+        { key: "tooltip", ignore: true },
+        { key: "customClass", ignore: true },
       ],
     },
+    {
+      key: "api",
+      components: [
+        { key: "tags", ignore: true },
+        { key: "properties", ignore: true },
+      ],
+    },
+    { key: "data", ignore: true },
+    { key: "logic", ignore: true },
+    { key: "layout", ignore: true },
+    { key: "validation", ignore: true },
   ]);
 };
 

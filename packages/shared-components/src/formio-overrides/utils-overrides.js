@@ -58,12 +58,15 @@ Formio.Utils.navFormDiffToHtml = navFormDiffToHtml;
 const TAG = (text) =>
   `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
 
-Formio.Utils.getDiffTag = (ctx) => {
+const getDiffTag = (ctx) => {
   const { component, config } = ctx;
   const { publishedForm } = config;
   if (ctx.builder && publishedForm) {
     const diff = formDiffingTool.getComponentDiff(component, publishedForm);
     const tags = [];
+    if (diff.isNew) {
+      tags.push(`${TAG("Ny")}`);
+    }
     if (diff.changesToCurrentComponent?.length) {
       tags.push(`${TAG("Endring")}`);
     }
@@ -74,6 +77,7 @@ Formio.Utils.getDiffTag = (ctx) => {
   }
   return "";
 };
+Formio.Utils.getDiffTag = getDiffTag;
 
 /*
  * This function is overridden because FormioUtils.sanitize calls dompurify.sanitize, which has a bug.
@@ -98,4 +102,4 @@ function evaluateOverride(func, args, ret, tokenize) {
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
-export { evaluateOverride, sanitizeJavaScriptCode, navFormDiffToHtml };
+export { evaluateOverride, sanitizeJavaScriptCode, navFormDiffToHtml, getDiffTag };
