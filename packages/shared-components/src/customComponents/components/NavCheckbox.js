@@ -51,10 +51,14 @@ export default class NavCheckbox extends FormioCheckbox {
             key: "modalEdit",
             ignore: true,
           },
+          { key: "labelWidth", ignore: true },
+          { key: "labelMargin", ignore: true },
+          { key: "hideLabel", ignore: true },
         ],
       },
       {
         key: "data",
+        ignore: true,
         components: [
           {
             key: "multiple",
@@ -101,10 +105,17 @@ export default class NavCheckbox extends FormioCheckbox {
       {
         key: "validation",
         components: [
-          {
-            key: "unique",
-            ignore: true,
-          },
+          { key: "validate.customMessage", ignore: true },
+          { key: "errorLabel", ignore: true },
+          { key: "unique", ignore: true },
+          { key: "validateOn", ignore: true },
+        ],
+      },
+      {
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
         ],
       },
       {

@@ -73,6 +73,11 @@ Number.editForm = () => {
           key: "spellcheck",
           ignore: true,
         },
+        { key: "prefix", ignore: true },
+        { key: "suffix", ignore: true },
+        { key: "displayMask", ignore: true },
+        { key: "autocomplete", ignore: true },
+        { key: "disabled", ignore: true },
       ],
     },
     {
@@ -118,6 +123,9 @@ Number.editForm = () => {
           key: "allowCalculateOverride",
           ignore: true,
         },
+        { key: "truncateMultipleSpaces", ignore: true },
+        { key: "decimalLimit", ignore: true },
+        { key: "requireDecimal", ignore: true },
       ],
     },
     {
@@ -127,6 +135,14 @@ Number.editForm = () => {
           key: "unique",
           ignore: true,
         },
+        { key: "validateOn", ignore: true },
+      ],
+    },
+    {
+      key: "api",
+      components: [
+        { key: "tags", ignore: true },
+        { key: "properties", ignore: true },
       ],
     },
     {

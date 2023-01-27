@@ -110,12 +110,24 @@ export default class Fodselsnummer extends TextFieldComponent {
           components: false,
         },
         {
+          key: "api",
+          components: [
+            { key: "tags", ignore: true },
+            { key: "properties", ignore: true },
+          ],
+        },
+        {
           key: "logic",
           ignore: true,
           components: false,
         },
         {
           key: "layout",
+          ignore: true,
+          components: false,
+        },
+        {
+          key: "addons",
           ignore: true,
           components: false,
         },
