@@ -1,9 +1,11 @@
 import {
   FormPropertiesType,
   formSummaryUtil,
+  Language,
   NavFormType,
   NewFormSignatureType,
   signatureUtils,
+  Submission,
   Summary,
 } from "@navikt/skjemadigitalisering-shared-domain";
 
@@ -11,15 +13,10 @@ type TranslateFunction = (text: string) => string;
 
 const createHtmlFromSubmission = (
   form: NavFormType,
-  submission: any,
-  translations: any,
-  isTest: boolean,
-  lang: string = "nb-NO"
+  submission: Submission,
+  translate: (text: string) => string,
+  lang: Language = "nb-NO"
 ) => {
-  const translate = (text: string): string => translations[text] || text;
-  console.log("submission", submission);
-  console.log("translations", translations);
-
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
 
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

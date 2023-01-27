@@ -1,4 +1,4 @@
-import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslationMap, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import fetch, { HeadersInit } from "node-fetch";
@@ -166,13 +166,17 @@ const testHtml = `
 
 const parseBody = (
   req: Request
-): { form: NavFormType; submission: any; translations: any; isTest: boolean; language: string } => {
+): {
+  form: NavFormType;
+  submission: Submission;
+  translations: I18nTranslationMap;
+  language: Language;
+} => {
   const submission = JSON.parse(req.body.submission);
   const form = JSON.parse(req.body.form);
   const translations = JSON.parse(req.body.translations);
-  const isTest = req.body.isTest && JSON.parse(req.body.isTest);
   const language = req.body.language;
-  return { form, submission, translations, isTest, language };
+  return { form, submission, translations, language };
 };
 
 const exstream = {
@@ -182,6 +186,8 @@ const exstream = {
       const pdf = await createPdf(
         req.headers.AzureAccessToken as string,
         "Søknad om stønad til anskaffelse av motorkjøretøy og / eller spesialutstyr og tilpassing til bil",
+        "NAV-123",
+        "nb-NO",
         testHtml
       );
       res.contentType(pdf.contentType);
@@ -191,10 +197,18 @@ const exstream = {
     }
   },
   post: async (req: Request, res: Response, next: NextFunction) => {
+    console.log("POST");
     try {
-      const { form, submission, translations, isTest, language } = parseBody(req);
-      const html = createHtmlFromSubmission(form, submission, translations, isTest, language);
-      const pdf = await createPdf(req.headers.AzureAccessToken as string, form.title, html);
+      const { form, submission, translations, language } = parseBody(req);
+      const translate = (text: string): string => translations[text] || text;
+      const html = createHtmlFromSubmission(form, submission, translate, language);
+      const pdf = await createPdf(
+        req.headers.AzureAccessToken as string,
+        translate(form.title),
+        form.properties.skjemanummer,
+        language,
+        html
+      );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
     } catch (e) {
@@ -203,7 +217,13 @@ const exstream = {
   },
 };
 
-const createPdf = async (azureAccessToken: string, title: string, html: string) => {
+const createPdf = async (
+  azureAccessToken: string,
+  title: string,
+  skjemanummer: string,
+  language: Language,
+  html: string
+) => {
   if (!html || Object.keys(html).length === 0) {
     throw Error("Missing HTML for generating PDF.");
   }
@@ -223,8 +243,8 @@ const createPdf = async (azureAccessToken: string, title: string, html: string) 
             dokumenttypeId: "fs_001",
             dokumentTittel: title,
             arkivSystem: "INGEN",
-            spraakkode: "NB",
-            blankettnr: "NAV 10-07.40",
+            spraakkode: language,
+            blankettnr: skjemanummer,
             brukersFnr: "20048119949",
             skjemaversjon: "8b4d3fbc9b5be00d1db0285ec013f9dbc6750631",
             html: base64Encode(html),

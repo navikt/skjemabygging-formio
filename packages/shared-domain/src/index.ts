@@ -9,6 +9,7 @@ import type {
   NavFormType,
   NewFormSignatureType,
   Panel,
+  Submission,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
@@ -75,6 +76,7 @@ export type {
   FormPropertiesPublishing,
   Summary,
   NavFormType,
+  Submission,
   Component,
   Panel,
   Enhet,
