@@ -7,7 +7,7 @@ import { base64Decode, base64Encode } from "../../utils/base64";
 import { responseToError } from "../../utils/errorHandling.js";
 import { createHtmlFromSubmission } from "./helpers/htmlBuilder";
 
-const { skjemabyggingProxyUrl } = config;
+const { skjemabyggingProxyUrl, gitVersion } = config;
 
 const testHtml = `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -183,7 +183,7 @@ const exstream = {
   //TODO: remove get
   get: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const pdf = await createPdf(
+      const pdf = await createPdfFromHtml(
         req.headers.AzureAccessToken as string,
         "Søknad om stønad til anskaffelse av motorkjøretøy og / eller spesialutstyr og tilpassing til bil",
         "NAV-123",
@@ -197,18 +197,9 @@ const exstream = {
     }
   },
   post: async (req: Request, res: Response, next: NextFunction) => {
-    console.log("POST");
     try {
       const { form, submission, translations, language } = parseBody(req);
-      const translate = (text: string): string => translations[text] || text;
-      const html = createHtmlFromSubmission(form, submission, translate, language);
-      const pdf = await createPdf(
-        req.headers.AzureAccessToken as string,
-        translate(form.title),
-        form.properties.skjemanummer,
-        language,
-        html
-      );
+      const pdf = await createPdf(req.headers.AzureAccessToken as string, form, submission, translations, language);
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
     } catch (e) {
@@ -217,7 +208,30 @@ const exstream = {
   },
 };
 
+export const createPdfAsByteArray = async (
+  accessToken: string,
+  form: NavFormType,
+  submission: Submission,
+  translations: I18nTranslationMap,
+  language: Language
+) => {
+  const pdf = await createPdf(accessToken, form, submission, translations, language);
+  return Array.from(base64Decode(pdf.data));
+};
+
 const createPdf = async (
+  accessToken: string,
+  form: NavFormType,
+  submission: Submission,
+  translations: I18nTranslationMap,
+  language: Language
+) => {
+  const translate = (text: string): string => translations[text] || text;
+  const html = createHtmlFromSubmission(form, submission, translate, language);
+  return await createPdfFromHtml(accessToken, translate(form.title), form.properties.skjemanummer, language, html);
+};
+
+const createPdfFromHtml = async (
   azureAccessToken: string,
   title: string,
   skjemanummer: string,
@@ -246,7 +260,7 @@ const createPdf = async (
             spraakkode: language,
             blankettnr: skjemanummer,
             brukersFnr: "20048119949",
-            skjemaversjon: "8b4d3fbc9b5be00d1db0285ec013f9dbc6750631",
+            skjemaversjon: gitVersion,
             html: base64Encode(html),
           })
         ),

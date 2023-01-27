@@ -38,7 +38,7 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
 
 const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop }: Props) => {
   const { translate, currentLanguage } = useLanguages();
-  const { baseUrl, http, config = {}, app } = useAppConfig();
+  const { baseUrl, http, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
 
   const sendInn = async () => {

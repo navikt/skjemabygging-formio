@@ -1,10 +1,10 @@
 import fetch from "node-fetch";
 import { config } from "../../config/config";
 import { logger } from "../../logger.js";
-import { Pdfgen } from "../../pdfgen.js";
 import { responseToError } from "../../utils/errorHandling.js";
+import { createPdfAsByteArray } from "./exstream";
 
-const { featureToggles, gitVersion, sendInnConfig } = config;
+const { featureToggles, sendInnConfig } = config;
 
 const getIdportenPid = (req) => {
   const idportenPid = req.getIdportenPid ? req.getIdportenPid() : null;
@@ -29,7 +29,7 @@ const sendInn = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
-      const isTest = req.get("Fyllut-Is-Test") === "true";
+      // const isTest = req.get("Fyllut-Is-Test") === "true";
       const { form, submission, attachments, language, otherDocumentation, translations = {} } = req.body;
       const translate = (term) => translations[term] ?? term;
       const translatedAttachments = attachments.map((attachment) => ({
@@ -38,7 +38,14 @@ const sendInn = {
         beskrivelse: translate(attachment.beskrivelse),
         tittel: translate(attachment.tittel),
       }));
-      const pdfByteArray = await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations, isTest);
+      const pdfByteArray = await createPdfAsByteArray(
+        req.headers.AzureAccessToken,
+        form,
+        submission,
+        translations,
+        "en"
+      );
+
       const body = {
         brukerId: idportenPid,
         skjemanr: form.properties.skjemanummer,
