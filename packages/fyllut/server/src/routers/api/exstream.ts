@@ -257,7 +257,7 @@ const createPdfFromHtml = async (
             dokumenttypeId: "fs_001",
             dokumentTittel: title,
             arkivSystem: "INGEN",
-            spraakkode: language,
+            spraakkode: localizationUtils.getLanguageCodeAsIso639_1(language),
             blankettnr: skjemanummer,
             brukersFnr: "20048119949",
             skjemaversjon: gitVersion,
