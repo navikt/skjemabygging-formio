@@ -33,7 +33,7 @@ apiRouter.post("/foersteside", azureAccessTokenHandler, forsteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
-apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), azureAccessTokenHandler, sendInn.post);
+apiRouter.post("/send-inn", azureAccessTokenHandler, tokenxHandler(sendInnConfig.tokenxClientId), sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);

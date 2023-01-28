@@ -184,14 +184,15 @@ describe("app", () => {
     skjemabyggingproxyScope.done();
   });
 
-  it("Performs TokenX exchange before calling SendInn", async () => {
+  it("Performs TokenX exchange and retrieves pdf from exstream before calling SendInn", async () => {
     let key = await generateJwk();
     nock("https://testoidc.unittest.no")
       .get("/idporten-oidc-provider/jwk")
       .reply(200, { keys: [key.toJSON(false)] });
 
+    const azureTokenEndpoint = process.env.AZURE_OPENID_CONFIG_TOKEN_ENDPOINT!;
     const sendInnLocation = "http://www.unittest.nav.no/sendInn/123";
-    const tokenEndpoint = "http://tokenx-unittest.nav.no/token";
+    const tokenxEndpoint = "http://tokenx-unittest.nav.no/token";
     const applicationData = {
       form: { components: [], properties: { skjemanummer: "NAV 12.34-56" } },
       submission: {},
@@ -200,11 +201,17 @@ describe("app", () => {
       translations: {},
     };
 
+    const azureOpenidScope = nock(extractHost(azureTokenEndpoint))
+      .post(extractPath(azureTokenEndpoint))
+      .reply(200, { access_token: "azure-access-token" });
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL as string)
+      .post("/exstream")
+      .reply(200, { data: { result: [{ content: { data: "" } }] } });
     const tokenxWellKnownScope = nock(extractHost(tokenxConfig?.wellKnownUrl!))
       .get(extractPath(tokenxConfig?.wellKnownUrl!))
-      .reply(200, { token_endpoint: tokenEndpoint });
-    const tokenEndpointNockScope = nock(extractHost(tokenEndpoint))
-      .post(extractPath(tokenEndpoint))
+      .reply(200, { token_endpoint: tokenxEndpoint });
+    const tokenEndpointNockScope = nock(extractHost(tokenxEndpoint))
+      .post(extractPath(tokenxEndpoint))
       .reply(200, { access_token: "123456" }, { "Content-Type": "application/json" });
     const sendInnNockScope = nock(sendInnConfig?.host as string)
       .post(sendInnConfig?.paths.leggTilVedlegg as string)
@@ -218,6 +225,8 @@ describe("app", () => {
     expect(res.status).toEqual(201);
     expect(res.headers["location"]).toMatch(sendInnLocation);
 
+    azureOpenidScope.done();
+    skjemabyggingproxyScope.done();
     tokenxWellKnownScope.done();
     tokenEndpointNockScope.done();
     sendInnNockScope.done();
