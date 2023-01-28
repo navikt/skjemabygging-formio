@@ -37,9 +37,7 @@ apiRouter.post("/send-inn", tokenxHandler(sendInnConfig.tokenxClientId), azureAc
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureAccessTokenHandler, commonCodes.getArchiveSubjects);
-apiRouter.get("/pdf/convert", azureAccessTokenHandler, exstream.get);
 apiRouter.post("/pdf/convert", azureAccessTokenHandler, exstream.post);
-// apiRouter.post("/pdf/convert", pdf["DIGITAL"].post);
 apiRouter.get("/common-codes/currencies", azureAccessTokenHandler, commonCodes.getCurrencies);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 
