@@ -21,14 +21,12 @@ const DownloadPdfButton = ({
   submissionMethod = "paper",
 }: Props) => {
   const { currentLanguage } = useLanguages();
-  // const { config = {} } = useAppConfig();
   const translationsForPDF = currentLanguage !== "nb-NO" ? translations[currentLanguage] : {};
   return (
     <>
       <form id={form.path} action={actionUrl} method="post" acceptCharset="utf-8" target="_blank" hidden>
         <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
         <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
-        {/*{config.isDelingslenke && <input type="text" name="isTest" value="true" />}*/}
         <input type="text" name="submissionMethod" value={submissionMethod} />
         <textarea
           hidden={true}

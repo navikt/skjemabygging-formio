@@ -29,7 +29,6 @@ const sendInn = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
-      // const isTest = req.get("Fyllut-Is-Test") === "true";
       const {
         form,
         submission,
