@@ -213,7 +213,7 @@ const exstream = {
         submission,
         submissionMethod,
         translations,
-        language
+        localizationUtils.getLanguageCodeAsIso639_1(language)
       );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));
@@ -242,7 +242,7 @@ const createPdf = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: Language,
+  language: string,
   pid?: string
 ) => {
   const translate = (text: string): string => translations[text] || text;
@@ -254,7 +254,7 @@ const createPdfFromHtml = async (
   azureAccessToken: string,
   title: string,
   skjemanummer: string,
-  language: Language,
+  language: string,
   html: string,
   pid?: string
 ) => {
@@ -277,7 +277,7 @@ const createPdfFromHtml = async (
             dokumenttypeId: "fs_001",
             dokumentTittel: title,
             arkivSystem: "INGEN",
-            spraakkode: localizationUtils.getLanguageCodeAsIso639_1(language),
+            spraakkode: language,
             blankettnr: skjemanummer,
             brukersFnr: pid,
             skjemaversjon: gitVersion,

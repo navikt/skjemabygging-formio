@@ -1,7 +1,6 @@
 import {
   FormPropertiesType,
   formSummaryUtil,
-  Language,
   NavFormType,
   NewFormSignatureType,
   signatureUtils,
@@ -16,7 +15,7 @@ const createHtmlFromSubmission = (
   submission: Submission,
   submissionMethod: string,
   translate: (text: string) => string,
-  lang: Language = "nb-NO"
+  lang: string = "nb"
 ) => {
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
 

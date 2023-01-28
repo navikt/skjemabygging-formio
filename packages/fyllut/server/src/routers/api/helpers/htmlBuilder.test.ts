@@ -1,4 +1,4 @@
-import { FormPropertiesType, NavFormType, Summary } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormPropertiesType, NavFormType, Submission, Summary } from "@navikt/skjemadigitalisering-shared-domain";
 import { body, createHtmlFromSubmission, signatureSection } from "./htmlBuilder";
 
 const createContainer = (
@@ -30,8 +30,10 @@ const createComponent = (
     ...optionalProps,
   } as Summary.Component);
 
+const mockTranslate = (text: string) => text;
+
 describe("htmlBuilder", () => {
-  describe("Html document", () => {
+  describe("createHtmlFromSubmission", () => {
     const formWithTitle = {
       title: "Abc def",
       components: [],
@@ -40,7 +42,7 @@ describe("htmlBuilder", () => {
     let html: String;
 
     beforeEach(() => {
-      html = createHtmlFromSubmission(formWithTitle, {}, {}, true);
+      html = createHtmlFromSubmission(formWithTitle, { data: {} } as Submission, "digital", mockTranslate);
     });
 
     it("creates a html document with the forms title", () => {
@@ -48,14 +50,14 @@ describe("htmlBuilder", () => {
     });
 
     it("sets norsk Bokmål as language by default", () => {
-      expect(html).toContain('xml:lang="nb-NO"');
-      expect(html).toContain('lang="nb-NO"');
+      expect(html).toContain('xml:lang="nb"');
+      expect(html).toContain('lang="nb"');
     });
 
     it("sets the language from parameter", () => {
-      html = createHtmlFromSubmission(formWithTitle, {}, {}, true, "languageCode");
-      expect(html).toContain('xml:lang="languageCode"');
-      expect(html).toContain('lang="languageCode"');
+      html = createHtmlFromSubmission(formWithTitle, { data: {} } as Submission, "digital", mockTranslate, "nn");
+      expect(html).toContain('xml:lang="nn"');
+      expect(html).toContain('lang="nn"');
     });
   });
 
@@ -243,7 +245,6 @@ describe("htmlBuilder", () => {
   });
 
   describe("signatures", () => {
-    const dummyTranslate = (text: string) => text;
     const expectedSignatureSectionWithSingleSignature = `<h2>Underskrift</h2>
 <p>Signér på de stedene som er aktuelle for din stønad.</p>
 <p class="underskrift"></p>
@@ -262,13 +263,13 @@ describe("htmlBuilder", () => {
         signature4: "",
         signature5: "",
       };
-      const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
+      const element = signatureSection({ signatures } as FormPropertiesType, "paper", mockTranslate);
       expect(element).toEqual(expectedSignatureSectionWithSingleSignature);
     });
 
     it("adds a singel signature", () => {
       const signatures = [{ label: "", description: "", key: "qwertyuio" }];
-      const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
+      const element = signatureSection({ signatures } as FormPropertiesType, "paper", mockTranslate);
       expect(element).toEqual(expectedSignatureSectionWithSingleSignature);
     });
 
@@ -277,7 +278,7 @@ describe("htmlBuilder", () => {
         { label: "Søker", description: "Beskrivelse", key: "qwertyuio" },
         { label: "Arbeidsgiver", description: "", key: "qwertyuio" },
       ];
-      const element = signatureSection({ signatures } as FormPropertiesType, dummyTranslate);
+      const element = signatureSection({ signatures } as FormPropertiesType, "paper", mockTranslate);
 
       expect(element).toContain(`<h3>Søker</h3>
 <div class="underskrift">Beskrivelse</div>
@@ -298,7 +299,8 @@ describe("htmlBuilder", () => {
       const signatures = [{ label: "", description: "", key: "qwertyuio" }];
       const element = signatureSection(
         { signatures, descriptionOfSignatures: "Description of signatures" } as unknown as FormPropertiesType,
-        dummyTranslate
+        "paper",
+        mockTranslate
       );
       expect(element).toContain(`<p class="underskrift">Description of signatures</p>`);
     });
