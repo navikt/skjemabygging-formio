@@ -244,7 +244,7 @@ describe("htmlBuilder", () => {
     });
   });
 
-  describe("signatures", () => {
+  describe("Signatures", () => {
     const expectedSignatureSectionWithSingleSignature = `<h2>Underskrift</h2>
 <p>Signér på de stedene som er aktuelle for din stønad.</p>
 <p class="underskrift"></p>
@@ -303,6 +303,15 @@ describe("htmlBuilder", () => {
         mockTranslate
       );
       expect(element).toContain(`<p class="underskrift">Description of signatures</p>`);
+    });
+
+    it('does not add signature when submission method is "digital"', () => {
+      const signatures = [
+        { label: "Ikke vis meg", description: "Vises ikke ved digital innsending", key: "qwertyuio" },
+      ];
+      const element = signatureSection({ signatures } as FormPropertiesType, "digital", mockTranslate);
+      expect(element).not.toContain("<h2>Underskrift</h2>");
+      expect(element).not.toContain("Ikke vis meg");
     });
   });
 });
