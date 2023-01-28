@@ -89,6 +89,8 @@ describe("When form has panels that are hidden unless a condition is true", () =
       cy.url().should("include", "/oppsummering");
       cy.findByRole("heading", { name: "Oppsummering" }).should("exist");
       cy.findByRole("heading", { name: "Lutefisk", level: 3 }).should("exist");
+      cy.findByRole("link", { name: "Lutefisk" }).should("exist");
+      cy.findByRole("link", { name: "Pinnekjøtt" }).should("not.exist");
       cy.findByText("Erterstuing").should("exist");
     });
 

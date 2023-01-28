@@ -61,6 +61,9 @@ class Day extends FormioDay {
             key: "useLocaleSettings",
             ignore: true,
           },
+          { key: "disabled", ignore: true },
+          { key: "inputsLabelPosition", ignore: true },
+          { key: "hideInputLabels", ignore: true },
         ],
       },
       {
@@ -119,11 +122,13 @@ class Day extends FormioDay {
       {
         key: "api",
         components: [
-          {
-            key: "tags",
-            ignore: true,
-          },
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
         ],
+      },
+      {
+        key: "validation",
+        components: [{ key: "unique", ignore: true }],
       },
       ...extend,
     ]);

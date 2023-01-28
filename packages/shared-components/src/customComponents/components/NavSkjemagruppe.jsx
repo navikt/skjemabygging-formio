@@ -39,15 +39,15 @@ class Skjemagruppe extends Fieldset {
         ],
       },
       {
-        key: "logic",
-        ignore: true,
-        components: false,
+        key: "api",
+        components: [
+          { key: "tags", ignore: true },
+          { key: "properties", ignore: true },
+        ],
       },
-      {
-        key: "layout",
-        ignore: true,
-        components: false,
-      },
+      { key: "addons", ignore: true },
+      { key: "logic", ignore: true },
+      { key: "layout", ignore: true },
       ...extend,
     ]);
   }

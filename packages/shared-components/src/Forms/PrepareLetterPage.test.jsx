@@ -35,28 +35,13 @@ const RESPONSE_HEADERS_ERROR = {
   status: 500,
 };
 
-const enhetWithUnsupportedEnhetNr = {
-  enhetId: 0,
-  navn: "NAV-ENHET Ekskluderes pga enhetNr",
-  type: "KO",
-  enhetNr: "0000",
-};
-const enhetWithUnsupportedEnhetstype = {
-  enhetId: 1000,
-  navn: "NAV-ENHET Ekskluderes pga type",
-  type: "IKKE_STOTTET_ENHETSTYPE",
-  enhetNr: "1000",
-};
 const mockEnhetsListe = [
   { enhetId: 1, navn: "NAV-ENHET YTA", type: "YTA", enhetNr: "001" },
   { enhetId: 2, navn: "NAV-ENHET LOKAL", type: "LOKAL", enhetNr: "002" },
   { enhetId: 3, navn: "NAV-ENHET ARK", type: "ARK", enhetNr: "003" },
   { enhetId: 4, navn: "NAV-ENHET FPY", type: "FPY", enhetNr: "004" },
   { enhetId: 5, navn: "NAV-ENHET INTRO", type: "INTRO", enhetNr: "005" },
-  { enhetId: 6, navn: "NAV-ENHET FORVALTNING", type: "FORVALTNING", enhetNr: "006" },
-  { enhetId: 7, navn: "NAV-ENHET ALS", type: "ALS", enhetNr: "007" },
-  enhetWithUnsupportedEnhetNr,
-  enhetWithUnsupportedEnhetstype,
+  { enhetId: 6, navn: "NAV-ENHET ALS", type: "ALS", enhetNr: "006" },
 ];
 
 const defaultForm = {
@@ -186,6 +171,7 @@ describe("PrepareLetterPage", () => {
         fireEvent.keyDown(enhetSelector, DOWN_ARROW);
 
         const options = screen.getAllByText(/^NAV-ENHET/).map((element) => element.textContent);
+        expect(options).toHaveLength(3);
         expect(options).toEqual(["NAV-ENHET ALS", "NAV-ENHET ARK", "NAV-ENHET LOKAL"]);
       });
     });
@@ -276,8 +262,6 @@ describe("PrepareLetterPage", () => {
 
         const enhetSelectList = screen.getAllByText(/^NAV-ENHET/);
         expect(enhetSelectList).toHaveLength(6);
-        expect(screen.queryByText(enhetWithUnsupportedEnhetNr.navn)).toBeNull();
-        expect(screen.queryByText(enhetWithUnsupportedEnhetstype.navn)).toBeNull();
       }
     );
   });

@@ -1,4 +1,4 @@
-import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
@@ -6,6 +6,7 @@ import nock from "nock";
 import React from "react";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../configContext";
+import { Modal } from "../index";
 import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;
@@ -18,6 +19,8 @@ jest.mock("react-router-dom", () => ({
 jest.mock("../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
+
+Modal.setAppElement(document.createElement("div"));
 
 const defaultFormProperties = {
   skjemanummer: "NAV 10-11.13",
@@ -35,11 +38,38 @@ const defaultForm = {
   components: [],
 };
 
-const formWithProperties = (props): NavFormType =>
+const defaultFormWithAttachment = {
+  ...defaultForm,
+  components: [
+    {
+      title: "Vedlegg",
+      key: "vedlegg",
+      type: "panel",
+      components: [
+        {
+          label: "Annen dokumentasjon",
+          description: "Har du noen annen dokumentasjon du ønsker å legge ved?",
+          key: "annenDokumentasjon",
+          properties: {
+            vedleggstittel: "Annet",
+            vedleggskode: "N6",
+          },
+          otherDocumentation: true,
+        },
+      ],
+      isAttachmentPanel: true,
+    },
+  ],
+} as unknown as NavFormType;
+
+const formWithProperties = (
+  props: Partial<FormPropertiesType>,
+  originalForm: Partial<NavFormType> = defaultForm
+): NavFormType =>
   ({
-    ...defaultForm,
+    ...originalForm,
     properties: {
-      ...defaultFormProperties,
+      ...originalForm.properties,
       ...props,
     },
   } as unknown as NavFormType);
@@ -47,6 +77,7 @@ const formWithProperties = (props): NavFormType =>
 type Buttons = {
   redigerSvarKnapp: HTMLButtonElement;
   gaVidereKnapp: HTMLButtonElement;
+  sendTilNavKnapp: HTMLButtonElement;
 };
 
 const getButton = (label): HTMLButtonElement =>
@@ -56,7 +87,8 @@ const getButton = (label): HTMLButtonElement =>
 const getButtons = (): Buttons => {
   const redigerSvarKnapp = getButton(TEXTS.grensesnitt.summaryPage.editAnswers) as HTMLButtonElement;
   const gaVidereKnapp = getButton(TEXTS.grensesnitt.moveForward) as HTMLButtonElement;
-  return { redigerSvarKnapp, gaVidereKnapp };
+  const sendTilNavKnapp = getButton(TEXTS.grensesnitt.submitToNavPrompt.open) as HTMLButtonElement;
+  return { redigerSvarKnapp, gaVidereKnapp, sendTilNavKnapp };
 };
 
 const renderSummaryPage = async (
@@ -88,6 +120,12 @@ describe("SummaryPage", () => {
     const { redigerSvarKnapp, gaVidereKnapp } = buttons;
     expect(redigerSvarKnapp).toBeInTheDocument();
     expect(gaVidereKnapp).toBeInTheDocument();
+  };
+
+  const expectKnapperForRedigerSvarEllerSendTilNav = (buttons: Buttons) => {
+    const { redigerSvarKnapp, sendTilNavKnapp } = buttons;
+    expect(redigerSvarKnapp).toBeInTheDocument();
+    expect(sendTilNavKnapp).toBeInTheDocument();
   };
 
   describe("Form som støtter både papir- og digital innsending", () => {
@@ -127,13 +165,11 @@ describe("SummaryPage", () => {
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
-    it("innsending=KUN_DIGITAL", async () => {
+    it("innsending=KUN_DIGITAL - rendrer knapp for direkte innsending til NAV", async () => {
       const form = formWithProperties({ innsending: "KUN_DIGITAL" });
       const appConfigProps = { app: "bygger" } as AppConfigContextType;
       const { buttons } = await renderSummaryPage({ form }, appConfigProps);
-      expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
-      expect(screen.getByTestId("error-message")).toBeInTheDocument();
+      expectKnapperForRedigerSvarEllerSendTilNav(buttons);
     });
 
     it("innsending=KUN_PAPIR", async () => {
@@ -157,15 +193,41 @@ describe("SummaryPage", () => {
   });
 
   describe("Form med kun digital innsending", () => {
-    it("Rendrer form med innsending=KUN_DIGITAL", async () => {
+    it("sender skjema med vedlegg til send-inn", async () => {
       const windowLocation = { href: "" };
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
       });
+      nock(basePath)
+        .defaultReplyHeaders({
+          Location: sendInnUrl,
+        })
+        .post("/api/send-inn")
+        .reply(201, {}, { Location: "https://www.unittest.nav.no/send-inn/123" });
+      const form = formWithProperties({ innsending: "KUN_DIGITAL" }, defaultFormWithAttachment);
+      const { buttons } = await renderSummaryPage({ form }, { baseUrl: basePath });
+      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+
+      userEvent.click(buttons.gaVidereKnapp);
+      await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
+      nock.isDone();
+
+      window.location = originalWindowLocation;
+    });
+
+    it("ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg", async () => {
+      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      // @ts-ignore
+      Object.defineProperty(window, "location", {
+        value: windowLocation,
+        writable: true,
+      });
       nock(basePath)
         .defaultReplyHeaders({
           Location: sendInnUrl,
@@ -174,9 +236,10 @@ describe("SummaryPage", () => {
         .reply(201, {}, { Location: "https://www.unittest.nav.no/send-inn/123" });
       const form = formWithProperties({ innsending: "KUN_DIGITAL" });
       const { buttons } = await renderSummaryPage({ form }, { baseUrl: basePath });
-      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      expectKnapperForRedigerSvarEllerSendTilNav(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      userEvent.click(buttons.sendTilNavKnapp);
+      userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
 
@@ -219,9 +282,10 @@ describe("SummaryPage", () => {
           baseUrl: basePath,
         }
       );
-      expectKnapperForRedigerSvarEllerGaVidere(buttons);
+      expectKnapperForRedigerSvarEllerSendTilNav(buttons);
+      userEvent.click(buttons.sendTilNavKnapp);
+      userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
 
-      userEvent.click(buttons.gaVidereKnapp);
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
 

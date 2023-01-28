@@ -7,6 +7,9 @@ const dataPalett = {
     editgrid: {
       ignore: true,
     },
+    hidden: {
+      ignore: true,
+    },
     datamap: null,
     tree: null,
     navDataGrid: {
