@@ -52,7 +52,8 @@ const sendInn = {
         submission,
         submissionMethod,
         translations,
-        language
+        language,
+        idportenPid
       );
 
       const body = {

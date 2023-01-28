@@ -229,9 +229,10 @@ export const createPdfAsByteArray = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: Language
+  language: Language,
+  pid: string
 ) => {
-  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
+  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language, pid);
   return Array.from(base64Decode(pdf.data));
 };
 
@@ -241,11 +242,12 @@ const createPdf = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: Language
+  language: Language,
+  pid?: string
 ) => {
   const translate = (text: string): string => translations[text] || text;
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
-  return await createPdfFromHtml(accessToken, translate(form.title), form.properties.skjemanummer, language, html);
+  return await createPdfFromHtml(accessToken, translate(form.title), form.properties.skjemanummer, language, html, pid);
 };
 
 const createPdfFromHtml = async (
@@ -253,7 +255,8 @@ const createPdfFromHtml = async (
   title: string,
   skjemanummer: string,
   language: Language,
-  html: string
+  html: string,
+  pid?: string
 ) => {
   if (!html || Object.keys(html).length === 0) {
     throw Error("Missing HTML for generating PDF.");
@@ -276,7 +279,7 @@ const createPdfFromHtml = async (
             arkivSystem: "INGEN",
             spraakkode: localizationUtils.getLanguageCodeAsIso639_1(language),
             blankettnr: skjemanummer,
-            brukersFnr: "20048119949",
+            brukersFnr: pid,
             skjemaversjon: gitVersion,
             html: base64Encode(html),
           })
