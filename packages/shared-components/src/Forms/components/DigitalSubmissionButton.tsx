@@ -30,6 +30,7 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       otherDocumentation: hasOtherDocumentation(form, submission),
       submissionMethod,
     },
+    {},
     { redirectToLocation: true }
   );
 };
