@@ -195,7 +195,7 @@ describe("app", () => {
     const tokenxEndpoint = "http://tokenx-unittest.nav.no/token";
     const applicationData = {
       form: { components: [], properties: { skjemanummer: "NAV 12.34-56" } },
-      submission: {},
+      submission: { data: {} },
       attachments: [],
       language: "nb-NO",
       translations: {},

@@ -11,7 +11,7 @@ const { sendInnConfig } = config;
 describe("[endpoint] send-inn", () => {
   const defaultBody = {
     form: { components: [], properties: { skjemanummer: "NAV 12.34-56" } },
-    submission: {},
+    submission: { data: {} },
     attachments: [],
     language: "nb-NO",
     translations: {},
@@ -19,7 +19,7 @@ describe("[endpoint] send-inn", () => {
 
   const bodyWithTranslations = {
     form: { title: "Original title", components: [], properties: { skjemanummer: "NAV 12.34-56" } },
-    submission: {},
+    submission: { data: {} },
     attachments: [{ label: "vedlegg1" }, { label: "vedlegg2" }],
     language: "en",
     translations: { "Original title": "Translated title", vedlegg1: "attachment1", vedlegg2: "attachment2" },
