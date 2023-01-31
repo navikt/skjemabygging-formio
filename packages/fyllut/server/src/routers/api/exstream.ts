@@ -76,7 +76,15 @@ const createPdf = async (
 ) => {
   const translate = (text: string): string => translations[text] || text;
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
-  return await createPdfFromHtml(accessToken, translate(form.title), form.properties.skjemanummer, language, html, pid);
+  const { fodselsnummerDNummerSoker } = submission.data;
+  return await createPdfFromHtml(
+    accessToken,
+    translate(form.title),
+    form.properties.skjemanummer,
+    language,
+    html,
+    (fodselsnummerDNummerSoker as string | undefined) || pid
+  );
 };
 
 const createPdfFromHtml = async (
