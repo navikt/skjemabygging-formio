@@ -1,3 +1,4 @@
+import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import fetch from "node-fetch";
 import { config } from "../../config/config";
 import { logger } from "../../logger.js";
@@ -51,7 +52,7 @@ const sendInn = {
         submission,
         submissionMethod,
         translations,
-        language,
+        localizationUtils.getLanguageCodeAsIso639_1(language),
         idportenPid
       );
 

@@ -58,7 +58,7 @@ export const createPdfAsByteArray = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: Language,
+  language: string,
   pid: string
 ) => {
   const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language, pid);
