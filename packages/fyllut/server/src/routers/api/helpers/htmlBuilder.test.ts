@@ -246,7 +246,6 @@ describe("htmlBuilder", () => {
 
   describe("Signatures", () => {
     const expectedSignatureSectionWithSingleSignature = `<h2>Underskrift</h2>
-<p>Signér på de stedene som er aktuelle for din stønad.</p>
 <p class="underskrift"></p>
 <h3></h3>
 <div class="underskrift"></div>
