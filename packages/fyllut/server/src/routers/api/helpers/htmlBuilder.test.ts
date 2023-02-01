@@ -233,6 +233,26 @@ describe("htmlBuilder", () => {
   });
 
   describe("Special component types", () => {
+    describe("image", () => {
+      it("adds label image tag and alt text", () => {
+        const bodyElement = body([
+          createPanel("Panel", [
+            createComponent("This is an image", "data:image/png;base64,image", "image", {
+              alt: "alt text",
+              widthPercent: 40,
+            }),
+          ]),
+        ]);
+        expect(bodyElement).toContain(
+          `<div>
+<div class="spm">This is an image</div>
+<img src="data:image/png;base64,image" alt="alt text" width="200"/>
+<div class="alt">alt text</div>
+</div>`
+        );
+      });
+    });
+
     describe("selectboxes", () => {
       it("adds a div for each answer", () => {
         const bodyElement = body([

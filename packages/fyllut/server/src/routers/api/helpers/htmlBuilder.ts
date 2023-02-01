@@ -9,6 +9,10 @@ import {
 } from "@navikt/skjemadigitalisering-shared-domain";
 
 type TranslateFunction = (text: string) => string;
+const calcImageWidth = (widthInPercentage: number) => {
+  const MAX_WIDTH = 500;
+  return (MAX_WIDTH * widthInPercentage) / 100;
+};
 
 const createHtmlFromSubmission = (
   form: NavFormType,
@@ -108,7 +112,13 @@ const field = (component: Summary.Field) =>
 const alert = (component: Summary.Field) =>
   `<div class="label">${component.label}</div><div class="alert">${component.value}</div>`;
 
-const img = (_component: Summary.Image) => "";
+const img = (component: Summary.Image) =>
+  `<div>
+<div class="spm">${component.label}</div>
+<img src="${component.value}" alt="${component.alt}" width="${calcImageWidth(component.widthPercent)}"/>
+<div class="alt">${component.alt}</div>
+</div>
+`;
 
 function multipleAnswers(component: Summary.Selectboxes) {
   return `<div class="spm">${component.label}</div>
