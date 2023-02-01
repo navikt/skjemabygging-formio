@@ -41,6 +41,7 @@ h3 {margin-bottom: 2px}
 h4 {margin: 4px auto 2px auto}
 p {margin: 0}
 .svar {margin-bottom: 5px; font-family: "Courier New", sans-serif;}
+.label {font-weight: bold;}
 .alert {margin-bottom: 5px;}
 .row-label {margin-bottom: 2px; font-family: "Arial", sans-serif; font-weight: bold; text-decoration: underline}
 .row {margin-bottom: 12px;}
@@ -104,7 +105,8 @@ ${sectionContent(component.components, level)}
 const field = (component: Summary.Field) =>
   `<div class="spm">${component.label}</div><div class="svar">- ${component.value}</div>`;
 
-const alert = (component: Summary.Field) => `<div class="alert">${component.label}: ${component.value}</div>`;
+const alert = (component: Summary.Field) =>
+  `<div class="label">${component.label}</div><div class="alert">${component.value}</div>`;
 
 const img = (_component: Summary.Image) => "";
 
