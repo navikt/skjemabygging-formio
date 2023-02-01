@@ -12,7 +12,7 @@ skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 forms-source: "formioapi"
 secrets:
   - fyllut-formio-dev
-  - fyllut-features
+  - fyllut-features-experimental
   - digital-innsending
 azure:
   application:
