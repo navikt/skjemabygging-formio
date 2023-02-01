@@ -14,6 +14,8 @@ const extractPath = (url: string): string => PATH_REGEX.exec(url)?.[1]!;
 function mockResponse(): Response {
   return {
     json: jest.fn(),
+    send: jest.fn(),
+    contentType: jest.fn(),
     sendStatus: jest.fn(),
     header: jest.fn(),
   } as unknown as Response;
