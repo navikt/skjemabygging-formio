@@ -75,6 +75,7 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { currentLanguage } = useLanguages();
+  const { featureToggles } = useAppConfig();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -128,7 +129,9 @@ const LastNedSoknadSection = ({ form, index, submission, enhetsListe, fyllutBase
       <DownloadPdfButton
         form={form}
         submission={submission}
-        actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
+        actionUrl={
+          featureToggles?.enableExstreamPdf ? `${fyllutBaseURL}/api/pdf/convert` : `${fyllutBaseURL}/api/pdf-form-papir`
+        }
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         translations={translations}

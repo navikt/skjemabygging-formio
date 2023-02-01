@@ -2,10 +2,11 @@ import { localizationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import fetch from "node-fetch";
 import { config } from "../../config/config";
 import { logger } from "../../logger.js";
+import { Pdfgen } from "../../pdfgen";
 import { responseToError } from "../../utils/errorHandling.js";
 import { createPdfAsByteArray } from "./exstream";
 
-const { featureToggles, sendInnConfig } = config;
+const { featureToggles, gitVersion, sendInnConfig } = config;
 
 const getIdportenPid = (req) => {
   const idportenPid = req.getIdportenPid ? req.getIdportenPid() : null;
@@ -30,6 +31,7 @@ const sendInn = {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
+      const isTest = req.get("Fyllut-Is-Test") === "true";
       const {
         form,
         submission,
@@ -46,14 +48,17 @@ const sendInn = {
         beskrivelse: translate(attachment.beskrivelse),
         tittel: translate(attachment.tittel),
       }));
-      const pdfByteArray = await createPdfAsByteArray(
-        req.headers.AzureAccessToken,
-        form,
-        submission,
-        submissionMethod,
-        translations,
-        localizationUtils.getLanguageCodeAsIso639_1(language)
-      );
+
+      const pdfByteArray = featureToggles.enableExstreamPdf
+        ? await createPdfAsByteArray(
+            req.headers.AzureAccessToken,
+            form,
+            submission,
+            submissionMethod,
+            translations,
+            localizationUtils.getLanguageCodeAsIso639_1(language)
+          )
+        : await Pdfgen.generatePdfByteArray(submission, form, gitVersion, translations, isTest);
 
       const body = {
         brukerId: idportenPid,
