@@ -58,10 +58,9 @@ export const createPdfAsByteArray = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: string,
-  pid: string
+  language: string
 ) => {
-  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language, pid);
+  const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
   return Array.from(base64Decode(pdf.data));
 };
 
@@ -71,8 +70,7 @@ const createPdf = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: string,
-  pid?: string
+  language: string
 ) => {
   const translate = (text: string): string => translations[text] || text;
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
@@ -83,7 +81,7 @@ const createPdf = async (
     form.properties.skjemanummer,
     language,
     html,
-    (fodselsnummerDNummerSoker as string | undefined) || pid
+    (fodselsnummerDNummerSoker as string | undefined) || "—"
   );
 };
 
@@ -93,7 +91,7 @@ const createPdfFromHtml = async (
   skjemanummer: string,
   language: string,
   html: string,
-  pid?: string
+  pid: string
 ) => {
   if (!html || Object.keys(html).length === 0) {
     throw Error("Missing HTML for generating PDF.");

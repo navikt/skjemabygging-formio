@@ -128,7 +128,6 @@ const signatureSection = (
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
 
   return `<h2>${translate("Underskrift")}</h2>
-<p>${translate("Signér på de stedene som er aktuelle for din stønad.")}</p>
 <p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
 ${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`;
 };
