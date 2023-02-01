@@ -109,9 +109,7 @@ const createPdfFromHtml = async (
         contentType: "application/json",
         data: base64Encode(
           JSON.stringify({
-            dokumenttypeId: "fs_001",
             dokumentTittel: title,
-            arkivSystem: "INGEN",
             spraakkode: language,
             blankettnr: skjemanummer,
             brukersFnr: pid,
