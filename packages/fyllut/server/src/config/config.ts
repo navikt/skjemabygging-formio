@@ -73,6 +73,7 @@ const defaultConfig: Partial<ConfigType> = {
   sendInnConfig,
   idporten,
 };
+
 const config: ConfigType = {
   ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
   fyllutPath: "/fyllut",
@@ -82,6 +83,7 @@ const config: ConfigType = {
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
   isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
+  pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
 };
 
 const checkConfigConsistency = (config: ConfigType, logError = console.error, exit = process.exit) => {
