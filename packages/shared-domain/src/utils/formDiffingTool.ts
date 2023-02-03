@@ -149,7 +149,6 @@ const createDiffSummary = (changes: any) => {
     if (allDeleted) {
       diffSummary.deletedComponents.push(...components.value);
     } else {
-      // @ts-ignore
       diffSummary.deletedComponents.push(
         ...components.filter((c: any) => c.status === "Slettet").map((c: any) => c.originalValue)
       );
@@ -233,7 +232,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
               [key]: diff,
             },
           };
-        } else if (key === "title" || key === "key" || key === "id" || key === "type" || key === "label") {
+        } else if (key === "title" || key === "key" || key === "type" || key === "label") {
           return {
             ...acc,
             [key]: newObject[key],
