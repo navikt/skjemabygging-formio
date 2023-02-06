@@ -23,14 +23,7 @@ const navFormDiffToHtml = (diffSummary) => {
     if (deletedComponents.length) {
       const labelId = "nav-form-diff-deleted-elements";
       html.push(`<span id="${labelId}" class="skjemaelement__label">Slettede elementer</span>`);
-      html.push(`<ul aria-labelledby="${labelId}">`);
-      html.push(
-        ...deletedComponents.map((component) => {
-          const sublist = createSubList(component.components);
-          return `<li>${component.type}: ${component.label}${sublist}</li>`;
-        })
-      );
-      html.push("</ul>");
+      html.push(createList(deletedComponents, labelId));
     }
     return html.join("");
   } catch (err) {
@@ -39,13 +32,14 @@ const navFormDiffToHtml = (diffSummary) => {
   }
 };
 
-const createSubList = (components) => {
+const createList = (components, labelId) => {
   if (components && components.length > 0) {
-    return "<ul>"
+    const labelledBy = labelId ? ` aria-labelledby="${labelId}"` : "";
+    return `<ul${labelledBy}>`
       .concat(
         components
           .map((component) => {
-            return `<li>${component.type}: ${component.label}${createSubList(component)}</li>`;
+            return `<li>${component.type}: ${component.label}${createList(component.components)}</li>`;
           })
           .join("")
       )
