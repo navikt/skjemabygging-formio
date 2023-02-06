@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import form from "../../../example_data/Form.json";
+import featureToggles from "../../../test/featureToggles";
 import mockMottaksadresser from "../../fakeBackend/mock-mottaksadresser";
-import featureToggles from "../../featureToggles.js";
 import { CreationFormMetadataEditor, FormMetadataEditor } from "./FormMetadataEditor";
 import { UpdateFormFunction } from "./utils";
 

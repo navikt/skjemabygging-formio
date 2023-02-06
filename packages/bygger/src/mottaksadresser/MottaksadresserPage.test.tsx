@@ -2,7 +2,7 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import featureToggles from "../featureToggles";
+import featureToggles from "../../test/featureToggles";
 import MottaksadresserPage from "./MottaksadresserPage";
 
 jest.mock("./MottaksadresserListe", () => () => {

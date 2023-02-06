@@ -6,7 +6,6 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/auth-context";
-import featureToggles from "./featureToggles.js";
 import "./index.less";
 import * as serviceWorker from "./serviceWorker";
 
@@ -38,8 +37,6 @@ const renderReact = (config) => {
   } else {
     pusher = { subscribe: () => ({ bind: () => {}, unbind: () => {} }) };
   }
-  // TODO remove feature toggle backward compatibility, should use toggles from config
-  const toggles = { ...featureToggles, ...config.featureToggles };
 
   ReactDOM.render(
     <React.StrictMode>
@@ -47,7 +44,7 @@ const renderReact = (config) => {
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
-          featureToggles={toggles}
+          featureToggles={config.featureToggles}
           config={config}
           app="bygger"
         >
