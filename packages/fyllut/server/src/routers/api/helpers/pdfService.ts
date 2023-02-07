@@ -3,7 +3,7 @@ import correlator from "express-correlation-id";
 import fetch, { HeadersInit } from "node-fetch";
 import { config } from "../../../config/config";
 import { base64Decode, base64Encode } from "../../../utils/base64";
-import { responseToError } from "../../../utils/errorHandling";
+import { responseToError, synchronousResponseToError } from "../../../utils/errorHandling";
 import { createHtmlFromSubmission } from "./htmlBuilder";
 
 const { skjemabyggingProxyUrl, gitVersion } = config;
@@ -82,6 +82,9 @@ export const createPdfFromHtml = async (
 
   if (response.ok) {
     const json = await response.json();
+    if (!json.data?.result?.[0]?.content) {
+      throw synchronousResponseToError("Feil i responsdata fra Exstream", json, response.status, response.url, true);
+    }
     return json.data.result[0].content;
   }
 
