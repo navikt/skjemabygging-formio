@@ -45,7 +45,7 @@ describe("[endpoint] send-inn", () => {
       Location: SEND_LOCATION,
     });
     expect(next).not.toHaveBeenCalled();
-    skjemabyggingproxyScope.done();
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 
@@ -69,7 +69,7 @@ describe("[endpoint] send-inn", () => {
     expect(postedBody.hoveddokument.label).toBe("Translated title");
     expect(postedBody.vedleggsListe[0].label).toBe("attachment1");
     expect(postedBody.vedleggsListe[1].label).toBe("attachment2");
-    skjemabyggingproxyScope.done();
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 
@@ -91,7 +91,7 @@ describe("[endpoint] send-inn", () => {
     expect(error.message).toEqual("Feil ved kall til SendInn");
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
-    skjemabyggingproxyScope.done();
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
     expect(sendInnNockScope.isDone()).toBe(true);
   });
 
@@ -112,7 +112,7 @@ describe("[endpoint] send-inn", () => {
     expect(error.message).toEqual("Feil ved generering av PDF hos Exstream");
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(res.header).not.toHaveBeenCalled();
-    skjemabyggingproxyScope.done();
+    expect(skjemabyggingproxyScope.isDone()).toBe(true);
   });
 
   it("calls next with error if idporten pid is missing", async () => {
