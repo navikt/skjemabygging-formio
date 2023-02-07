@@ -4,7 +4,7 @@ import { config } from "../../config/config";
 import { logger } from "../../logger.js";
 import { Pdfgen } from "../../pdfgen";
 import { responseToError } from "../../utils/errorHandling.js";
-import { createPdfAsByteArray } from "./exstream";
+import { createPdfAsByteArray } from "./helpers/pdfService";
 
 const { featureToggles, gitVersion, sendInnConfig } = config;
 
