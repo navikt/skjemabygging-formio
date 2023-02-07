@@ -1,4 +1,5 @@
 name: Manual deploy
+run-name: Manual deploy to ${{ inputs.environment }} [${{ github.ref_name }}]
 on:
   workflow_dispatch:
     inputs:
