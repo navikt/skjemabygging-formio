@@ -47,7 +47,7 @@ const FormStatusPanel = ({ publishProperties, spacing }: Props) => {
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>
-        <ToggleDiffButton />
+        {published && <ToggleDiffButton className={styles.toggleDiffButton} />}
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />

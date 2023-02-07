@@ -94,16 +94,14 @@ class NavFormBuilder extends Component {
   };
 
   componentDidUpdate = (prevProps) => {
-    if (
-      !isEqual(
-        this.props.formBuilderOptions.formConfig.publishedForm,
-        prevProps.formBuilderOptions.formConfig.publishedForm
-      )
-    ) {
-      this.builder.instance.options.formConfig.publishedForm = this.props.formBuilderOptions.formConfig.publishedForm;
-      this.builder.instance.redraw();
+    const builderInstance = this.builder.instance;
+    const prevPublishedForm = prevProps.formBuilderOptions.formConfig.publishedForm;
+    const nextPublishedForm = this.props.formBuilderOptions.formConfig.publishedForm;
+    if (!isEqual(nextPublishedForm, prevPublishedForm)) {
+      builderInstance.options.formConfig.publishedForm = nextPublishedForm;
+      builderInstance.redraw();
     }
-    if (isEqual(this.builder.instance.form, this.props.form)) {
+    if (isEqual(builderInstance.form, this.props.form)) {
       return;
     }
     this.updateFormBuilder();

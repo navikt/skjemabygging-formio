@@ -1,22 +1,16 @@
+import { Button } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
 
-const ToggleDiffButton = () => {
-  const { diffOn, setDiffOn, featureToggles } = useAppConfig();
+const noop = () => {};
+
+const ToggleDiffButton = ({ className }) => {
+  const { diffOn, setDiffOn = noop, featureToggles } = useAppConfig();
   if (featureToggles?.enableDiff) {
-    const toggleAnchorHref = "#"; // TODO use button instead of anchor?
     return (
-      <div>
-        {diffOn ? (
-          <a href={toggleAnchorHref} onClick={() => setDiffOn?.(false)}>
-            Skjul
-          </a>
-        ) : (
-          <a href={toggleAnchorHref} onClick={() => setDiffOn?.(true)}>
-            Vis
-          </a>
-        )}
-      </div>
+      <Button className={className} variant="tertiary" size="xsmall" onClick={() => setDiffOn(!diffOn)}>
+        {diffOn ? "Skjul endringer" : "Vis endringer"}
+      </Button>
     );
   }
   return null;
