@@ -16,7 +16,16 @@ export interface Props {
 
 const noop = () => {};
 
-const postToSendInn = async (http, baseUrl, form, submission, translations, currentLanguage, submissionMethod) => {
+const postToSendInn = async (
+  http,
+  baseUrl,
+  form,
+  submission,
+  translations,
+  currentLanguage,
+  submissionMethod,
+  isTest
+) => {
   const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
   const attachments = getRelevantAttachments(form, submission);
   return http.post(
@@ -30,14 +39,16 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       otherDocumentation: hasOtherDocumentation(form, submission),
       submissionMethod,
     },
-    {},
+    {
+      "Fyllut-Is-Test": isTest,
+    },
     { redirectToLocation: true }
   );
 };
 
 const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop, children }: Props) => {
   const { currentLanguage } = useLanguages();
-  const { baseUrl, http, app } = useAppConfig();
+  const { baseUrl, http, config = {}, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
   const sendInn = async () => {
     if (app === "bygger") {
@@ -47,7 +58,16 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
     try {
       setLoading(true);
       removeBeforeUnload();
-      const response = await postToSendInn(http, baseUrl, form, submission, translations, currentLanguage, "digital");
+      const response = await postToSendInn(
+        http,
+        baseUrl,
+        form,
+        submission,
+        translations,
+        currentLanguage,
+        "digital",
+        config.isDelingslenke
+      );
       onSuccess(response);
     } catch (err: any) {
       addBeforeUnload();
