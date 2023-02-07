@@ -65,7 +65,7 @@ describe("htmlBuilder", () => {
     const panels = [createPanel("Panel 1"), createPanel("Panel 2"), createPanel("Panel 3")];
 
     it("adds headers for each top level element in the array", () => {
-      const bodyElement = body(panels).replace("\n", "");
+      const bodyElement = body(panels);
       expect(bodyElement).toContain("<h2>Panel 1</h2>");
       expect(bodyElement).toContain("<h2>Panel 2</h2>");
       expect(bodyElement).toContain("<h2>Panel 3</h2>");
@@ -265,8 +265,10 @@ describe("htmlBuilder", () => {
   });
 
   describe("Signatures", () => {
-    const expectedSignatureSectionWithSingleSignature = `<h2>Underskrift</h2>
+    const expectedSignatureSectionWithSingleSignature = `
+<h2>Underskrift</h2>
 <p class="underskrift"></p>
+
 <h3></h3>
 <div class="underskrift"></div>
 <div>_____________________________________________________________</div>
@@ -299,14 +301,16 @@ describe("htmlBuilder", () => {
       ];
       const element = signatureSection({ signatures } as FormPropertiesType, "paper", mockTranslate);
 
-      expect(element).toContain(`<h3>Søker</h3>
+      expect(element).toContain(`
+<h3>Søker</h3>
 <div class="underskrift">Beskrivelse</div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Sted og dato</div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Underskrift</div>`);
 
-      expect(element).toContain(`<h3>Arbeidsgiver</h3>
+      expect(element).toContain(`
+<h3>Arbeidsgiver</h3>
 <div class="underskrift"></div>
 <div>_____________________________________________________________</div>
 <div class="underskrift">Sted og dato</div>
