@@ -6,6 +6,7 @@ import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
 import { useStatusStyles } from "./styles";
 import Timestamp from "./Timestamp";
+import ToggleDiffButton from "./ToggleDiffButton";
 import { PublishProperties } from "./types";
 
 interface Props {
@@ -46,6 +47,7 @@ const FormStatusPanel = ({ publishProperties, spacing }: Props) => {
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>
+        <ToggleDiffButton />
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />

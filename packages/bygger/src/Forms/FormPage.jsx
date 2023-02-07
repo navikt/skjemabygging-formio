@@ -9,7 +9,7 @@ import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
-  const { featureToggles } = useAppConfig();
+  const { featureToggles, diffOn } = useAppConfig();
   let { url } = useRouteMatch();
   const { formPath } = useParams();
   const [state, dispatch] = useReducer(
@@ -97,7 +97,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/edit`}>
           <EditFormPage
             form={state.form}
-            publishedForm={state.publishedForm}
+            publishedForm={diffOn ? state.publishedForm : undefined}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -110,7 +110,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/settings`}>
           <FormSettingsPage
             form={state.form}
-            publishedForm={state.publishedForm}
+            publishedForm={diffOn ? state.publishedForm : undefined}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}

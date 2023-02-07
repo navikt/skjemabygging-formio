@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import FrontendLogger from "./api/FrontendLogger";
 import baseHttp from "./api/http";
 
@@ -16,6 +16,8 @@ interface AppConfigContextType {
   config?: Record<string, string | boolean | object>;
   http?: typeof baseHttp;
   logger?: FrontendLogger;
+  diffOn?: boolean;
+  setDiffOn?: Function;
 }
 
 type AppConfigProviderProps = {
@@ -38,6 +40,7 @@ function AppConfigProvider({
   enableFrontendLogger = false,
 }: AppConfigProviderProps) {
   const logger = new FrontendLogger(http, baseUrl, enableFrontendLogger);
+  const [diffOn, setDiffOn] = useState<boolean>(true);
   return (
     <AppConfigContext.Provider
       value={{
@@ -50,6 +53,8 @@ function AppConfigProvider({
         config,
         http,
         logger,
+        diffOn,
+        setDiffOn,
       }}
     >
       {children}
