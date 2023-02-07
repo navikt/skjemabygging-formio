@@ -4,14 +4,15 @@ import React from "react";
 const ToggleDiffButton = () => {
   const { diffOn, setDiffOn, featureToggles } = useAppConfig();
   if (featureToggles?.enableDiff) {
+    const toggleAnchorHref = "#"; // TODO use button instead of anchor?
     return (
       <div>
         {diffOn ? (
-          <a href="#" onClick={() => setDiffOn?.(false)}>
+          <a href={toggleAnchorHref} onClick={() => setDiffOn?.(false)}>
             Skjul
           </a>
         ) : (
-          <a href="#" onClick={() => setDiffOn?.(true)}>
+          <a href={toggleAnchorHref} onClick={() => setDiffOn?.(true)}>
             Vis
           </a>
         )}
