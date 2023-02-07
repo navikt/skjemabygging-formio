@@ -10,6 +10,7 @@
   {% if (ctx.checked) { %}checked=true{% } %}
   />
   {% if (!ctx.self.labelIsHidden()) { %}
+  {{ctx.util.getDiffTag(ctx)}}
   <label class="navds-checkbox__label" for="{{ctx.instance.id}}-{{ctx.component.key}}">
     {{ctx.t(ctx.input.label)}}
     {% if(ctx.component.validate.required === false) { %}

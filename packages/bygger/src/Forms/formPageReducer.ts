@@ -3,12 +3,13 @@ import cloneDeep from "lodash.clonedeep";
 
 type ReducerAction = "form-loaded" | "form-not-found" | "form-changed" | "form-saved";
 type Status = "LOADING" | "FINISHED LOADING" | "FORM NOT FOUND";
-type ReducerActionType = { type: ReducerAction; form?: NavFormType };
+type ReducerActionType = { type: ReducerAction; form?: NavFormType; publishedForm?: NavFormType };
 
 interface ReducerState {
   status: Status;
   dbForm?: NavFormType;
   form?: NavFormType;
+  publishedForm?: NavFormType | null;
   hasUnsavedChanges: boolean;
 }
 
@@ -41,10 +42,12 @@ const formPageReducer = (state: ReducerState, action: ReducerActionType) => {
         status: "FINISHED LOADING",
         dbForm: formClone,
         form: formClone,
+        publishedForm: action.publishedForm || state.publishedForm,
         hasUnsavedChanges: false,
       };
     case "form-changed":
       return {
+        ...state,
         dbForm: state.dbForm,
         form: formClone,
         hasUnsavedChanges: isDifferent(state.dbForm, formClone),

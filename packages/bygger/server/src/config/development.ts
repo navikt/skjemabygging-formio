@@ -35,3 +35,5 @@ export const devGithub: Partial<PublishRepoConfig> = {
   owner: "navikt",
   base: "test-publishing",
 };
+
+export const devEnabledFeatures = "translations,enhetsliste,autoComplete,diff";

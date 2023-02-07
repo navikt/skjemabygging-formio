@@ -24,13 +24,14 @@ const useStyles = makeStyles({
   },
 });
 
-export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish, onUnpublish }) {
+export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish }) {
   const {
     title,
     properties: { skjemanummer },
   } = form;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
+  const formBuilderOptions = { ...FormBuilderOptions, formConfig: { publishedForm } };
   return (
     <>
       <AppLayoutWithContext
@@ -51,7 +52,7 @@ export function EditFormPage({ form, visSkjemaMeny, onSave, onChange, onPublish,
             className={styles.formBuilder}
             form={form}
             onChange={onChange}
-            formBuilderOptions={FormBuilderOptions}
+            formBuilderOptions={formBuilderOptions}
           />
           <Column>
             <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>

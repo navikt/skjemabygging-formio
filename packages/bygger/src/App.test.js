@@ -4,9 +4,9 @@ import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import createMockImplementation from "../test/backendMockImplementation";
+import featureToggles from "../test/featureToggles";
 import App from "./App";
 import { AuthContext } from "./context/auth-context";
-import featureToggles from "./featureToggles";
 
 const createFakeChannel = () => ({
   bind: jest.fn(),

@@ -20,7 +20,16 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublish, visSkjemaMeny, validateAndSave }) {
+export function FormSettingsPage({
+  form,
+  publishedForm,
+  onSave,
+  onChange,
+  onPublish,
+  onUnpublish,
+  visSkjemaMeny,
+  validateAndSave,
+}) {
   const title = form.title;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
@@ -51,7 +60,7 @@ export function FormSettingsPage({ form, onSave, onChange, onPublish, onUnpublis
       </Row>
       <Row>
         <Column className={styles.mainCol}>
-          <FormMetadataEditor form={form} errors={errors} onChange={onChange} />
+          <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
         </Column>
         <Column>
           <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>

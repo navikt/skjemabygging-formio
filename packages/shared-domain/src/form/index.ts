@@ -59,6 +59,7 @@ type ComponentDataSrc = "values" | "url" | "json" | "custom" | "resource";
 
 export interface Component {
   id?: string;
+  navId?: string;
   key: string;
   label: string;
   type: string;

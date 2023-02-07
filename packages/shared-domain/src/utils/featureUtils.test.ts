@@ -32,5 +32,27 @@ describe("features", () => {
       const featureToggles = toFeatureToggles(" translations  , foo,   bar ");
       expect(featureToggles).toEqual({ enableTranslations: true, enableFoo: true, enableBar: true });
     });
+
+    describe("support for enabling and disabling with booleans", () => {
+      it("one disable and one enable", () => {
+        const featureToggles = toFeatureToggles("translations=false,autoComplete=true");
+        expect(featureToggles).toEqual({ enableTranslations: false, enableAutoComplete: true });
+      });
+
+      it("one disabled, and one defaults to enabled", () => {
+        const featureToggles = toFeatureToggles("translations=false,autoComplete");
+        expect(featureToggles).toEqual({ enableTranslations: false, enableAutoComplete: true });
+      });
+
+      it("one disabled, one defaults to enabled, and one explicitly enabled", () => {
+        const featureToggles = toFeatureToggles("translations=false,autoComplete, diff=true");
+        expect(featureToggles).toEqual({ enableTranslations: false, enableAutoComplete: true, enableDiff: true });
+      });
+
+      it("one explicitly enabled with spaces", () => {
+        const featureToggles = toFeatureToggles(" diff=true   ");
+        expect(featureToggles).toEqual({ enableDiff: true });
+      });
+    });
   });
 });

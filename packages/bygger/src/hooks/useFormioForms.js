@@ -1,4 +1,4 @@
-import { dateUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
@@ -41,6 +41,7 @@ export const useFormioForms = (formio, userAlerter) => {
         .saveForm({
           ...callbackForm,
           display: "wizard",
+          components: navFormUtils.enrichComponentsWithNavIds(callbackForm.components),
           properties: {
             ...callbackForm.properties,
             modified: getIso8601String(),

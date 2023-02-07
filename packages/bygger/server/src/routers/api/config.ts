@@ -14,6 +14,7 @@ const config = (req: ByggerRequest, res: Response) => {
     pusherCluster: appConfig.pusher.cluster,
     pusherKey: appConfig.pusher.key,
     isDevelopment: appConfig.isDevelopment,
+    featureToggles: appConfig.featureToggles,
     user,
   });
 };

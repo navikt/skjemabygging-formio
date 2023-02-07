@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import featureToggles from "../featureToggles";
+import featureToggles from "../../test/featureToggles";
 import mockMottaksadresser from "../mottaksadresser/testdata/mottaksadresser";
 import { UserAlerterContext } from "../userAlerting";
 import NewFormPage from "./NewFormPage";

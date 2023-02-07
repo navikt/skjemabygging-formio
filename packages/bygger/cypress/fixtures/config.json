@@ -2,5 +2,11 @@
   "formioProjectUrl": "http://localhost",
   "fyllutBaseUrl": "http://localhost",
   "isDevelopment": true,
-  "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100" }
+  "user": { "name": "Test", "preferredUsername": "test@nav.no", "NAVident": "K100" },
+  "featureToggles": {
+    "enableTranslations": true,
+    "enableEnhetsliste": true,
+    "enableAutoComplete": true,
+    "enableDiff": true
+  }
 }

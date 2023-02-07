@@ -6,7 +6,6 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/auth-context";
-import featureToggles from "./featureToggles.js";
 import "./index.less";
 import * as serviceWorker from "./serviceWorker";
 
@@ -45,7 +44,7 @@ const renderReact = (config) => {
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
           fyllutBaseURL={config.fyllutBaseUrl}
-          featureToggles={featureToggles}
+          featureToggles={config.featureToggles}
           config={config}
           app="bygger"
         >

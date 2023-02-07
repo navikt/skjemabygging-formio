@@ -9,10 +9,6 @@ import createMockImplementation from "../../test/backendMockImplementation";
 import NavFormBuilder from "./NavFormBuilder";
 import testform from "./testdata/conditional-multiple-dependencies";
 
-jest.mock("../featureToggles", () => ({
-  enableConditionalAlert: true,
-}));
-
 const findClosestWithAttribute = (element, { name, value }) => {
   if (element.getAttribute(name) === value) {
     return element;

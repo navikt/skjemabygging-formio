@@ -13,6 +13,15 @@
   {% } %}
 </div>
 <div class="row">
+  {% if (ctx.instance.navFormDiff) { %}
+  <div class="col col-sm-12">
+      <div class="alertstripe alertstripe--advarsel margin-bottom-default">
+          <div>
+              {{ctx.util.navFormDiffToHtml(ctx.instance.navFormDiff)}}
+          </div>
+      </div>
+  </div>
+  {% } %}
   {% if (ctx.instance.conditionalAlert) { %}
   <div class="col col-sm-12">
     <div class="alertstripe alertstripe--advarsel margin-bottom-default">

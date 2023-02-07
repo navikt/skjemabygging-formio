@@ -73,23 +73,21 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 ## Feature toggles
 
-### Bygger
+I fyllut og bygger styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en kommaseparert
+liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
 
-Byggeren har en fil i frontend (`featureToggles.js`) som inneholder hardkodede feature toggles.
-
-### Fyllut
-
-I fyllut styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en kommaseparert
-liste med navn på features. Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
+Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
 i miljøets nais-config. Lokalt kan man f.eks. gjøre det ved å legge inn følgende i `.env`-filen under `fyllut/server`:
 
-    ENABLED_FEATURES="translations,digitalInnsending"
+    ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
 
 Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
 
     {
       enableTranslations: true,
-      enableDigitalInnsending: true
+      enableDigitalInnsending: true,
+      enableAutoComplete: true,
+      enableDiff: false
     }
 
 ## Brukeradministrasjon
