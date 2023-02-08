@@ -131,6 +131,18 @@ describe("useFormioForms", () => {
       expect(formioMock.saveForm).toHaveBeenCalled();
       expect(formioMock.saveForm.mock.calls[0][0]["properties"]["modified"]).not.toBe(modifiedDate);
     });
+
+    it("adds navId to all components if missing", async () => {
+      renderHook(() => formioForms.onSave({ components: [{}, { navId: "123", components: [{}] }] }));
+
+      expect(formioMock.saveForm).toHaveBeenCalled();
+      const savedComponents = formioMock.saveForm.mock.calls[0][0]["components"];
+      expect(savedComponents).toHaveLength(2);
+      expect(savedComponents[0].navId).toBeDefined();
+      expect(savedComponents[1].navId).toEqual("123");
+      expect(savedComponents[1].components).toHaveLength(1);
+      expect(savedComponents[1].components[0].navId).toBeDefined();
+    });
   });
 
   describe("Test onPublish and onUnpublish", () => {

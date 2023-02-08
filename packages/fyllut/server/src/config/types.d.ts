@@ -26,6 +26,7 @@ export type ConfigType = {
   tokenx?: TokenxConfig;
   sendInnConfig?: SendInnConfig;
   idporten?: IdportenConfig;
+  pdlTokenScopeCluster: string;
   clientSecret: string;
   naisClusterName: string;
   isDevelopment: boolean;

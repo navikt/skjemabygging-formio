@@ -76,6 +76,8 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    - name: PDL_TOKEN_SCOPE_CLUSTER
+      value: {{pdl-token-scope-cluster}}
   envFrom:
   {{#each secrets as |secret|}}
     - secret: {{secret}}

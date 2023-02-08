@@ -33,10 +33,11 @@ import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
 import type { Summary } from "./summary/FormSummaryType";
 import formSummaryUtil from "./summary/formSummaryUtil";
-import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest.js";
+import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest";
 import TEXTS from "./texts";
 import dateUtils from "./utils/date";
 import featureUtils, { FeatureTogglesMap } from "./utils/featureUtils";
+import formDiffingTool from "./utils/formDiffingTool";
 import navFormioUtils from "./utils/formio";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
@@ -65,6 +66,7 @@ export {
   migrationUtils,
   paginationUtils,
   supportedEnhetstyper,
+  formDiffingTool,
 };
 export type {
   FeatureTogglesMap,

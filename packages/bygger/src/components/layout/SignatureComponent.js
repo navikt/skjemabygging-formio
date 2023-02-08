@@ -4,6 +4,7 @@ import Panel from "nav-frontend-paneler";
 import { Input, SkjemaGruppe } from "nav-frontend-skjema";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
+import LabelWithDiff from "../FormMetaDataEditor/LabelWithDiff";
 
 const useStyles = makeStyles({
   closeBtn: {
@@ -11,12 +12,14 @@ const useStyles = makeStyles({
   },
 });
 
-const SignatureComponent = ({ signature, index, onChange, onDelete }) => {
+const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undefined }) => {
   const styles = useStyles();
   return (
     <Panel className="margin-bottom-default" border>
       <Lukknapp className={styles.closeBtn} bla={true} onClick={onDelete} />
-      <SkjemaGruppe legend={<Undertittel>{"Signatur " + (index + 1)}</Undertittel>}>
+      <SkjemaGruppe
+        legend={<LabelWithDiff label={<Undertittel>{"Signatur " + (index + 1)}</Undertittel>} diff={diff?.status} />}
+      >
         <Input
           label="Hvem skal signere?"
           type="text"

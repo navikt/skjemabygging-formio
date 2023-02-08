@@ -51,4 +51,5 @@ export type ConfigType = {
   port: number;
   isProduction: boolean;
   isDevelopment: boolean;
+  featureToggles: { [key: string]: boolean };
 };

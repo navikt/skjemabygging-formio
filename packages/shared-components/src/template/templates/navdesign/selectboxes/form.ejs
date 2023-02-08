@@ -1,10 +1,13 @@
-<fieldset class="navds-checkbox-group navds-checkbox-group--medium navds-fieldset navds-fieldset--medium" inputPanelGruppe">
-  <legend class="navds-fieldset__legend navds-label" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
-    {{ctx.t(ctx.component.label)}}
-    {% if(ctx.component.validate.required === false) { %}
-      ({{ctx.t("valgfritt")}})
-    {% } %}
-  </legend>
+<fieldset class="navds-checkbox-group navds-checkbox-group--medium navds-fieldset navds-fieldset--medium">
+  <span class="label-track-changes">
+    <legend class="navds-fieldset__legend navds-label" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+      {{ctx.t(ctx.component.label)}}
+      {% if(ctx.component.validate.required === false) { %}
+        ({{ctx.t("valgfritt")}})
+      {% } %}
+    </legend>
+    {{ctx.util.getDiffTag(ctx)}}
+  </span>
   {% if (ctx.component.description && ctx.component.descriptionPosition !== "above" ) { %}
     <div class="navds-fieldset__description">{{ctx.t(ctx.component.description)}}</div>
     {% if (ctx.component.additionalDescription) { %}

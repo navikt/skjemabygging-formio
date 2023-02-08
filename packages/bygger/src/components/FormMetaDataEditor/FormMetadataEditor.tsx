@@ -1,12 +1,14 @@
 import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
+  formDiffingTool,
   InnsendingType,
   MottaksadresseData,
   NavFormType,
   signatureUtils,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
+import { AlertStripeAdvarsel } from "nav-frontend-alertstriper";
 import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -14,22 +16,25 @@ import useMottaksadresser from "../../hooks/useMottaksadresser";
 import useTemaKoder from "../../hooks/useTemaKoder";
 import SignatureComponent from "../layout/SignatureComponent";
 import EnhetSettings from "./EnhetSettings";
+import LabelWithDiff from "./LabelWithDiff";
 import { FormMetadataError, UpdateFormFunction } from "./utils";
 
 type UsageContext = "create" | "edit";
 
 interface Props {
   form: NavFormType;
+  publishedForm?: NavFormType;
   onChange: UpdateFormFunction;
   errors?: FormMetadataError;
 }
 
 type BasicFormProps = Props & { usageContext: UsageContext };
 
-const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: BasicFormProps) => {
+const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, errors }: BasicFormProps) => {
   const { featureToggles } = useAppConfig();
   const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
   const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
+  const diff = formDiffingTool.generateNavFormSettingsDiff(publishedForm, form);
   const {
     title,
     properties: {
@@ -107,6 +112,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
 
   return (
     <Fieldset hideLegend legend="">
+      {diff.errorMessage && <AlertStripeAdvarsel>{diff.errorMessage}</AlertStripeAdvarsel>}
       <Checkbox
         className="mb-double"
         id="teststatus"
@@ -132,7 +138,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       />
       <TextField
         className="mb-double"
-        label="Tittel"
+        label={<LabelWithDiff label="Tittel" diff={!!diff.title} />}
         type="text"
         id="title"
         placeholder="Skriv inn tittel"
@@ -143,7 +149,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       <div className="mb-double">
         <Select
           className="mb-small"
-          label={"Tema"}
+          label={<LabelWithDiff label="Tema" diff={!!diff.tema} />}
           id="tema"
           disabled={!isTemaKoderReady}
           value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ""}
@@ -165,7 +171,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       </div>
       <TextField
         className="mb-double"
-        label="Tekst på knapp for nedlasting av pdf"
+        label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}
         type="text"
         id="downloadPdfButtonText"
         value={downloadPdfButtonText || ""}
@@ -179,7 +185,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
       />
       <Select
         className="mb-double"
-        label="Innsending"
+        label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
         name="form-innsending"
         id="form-innsending"
         value={innsending}
@@ -200,7 +206,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         <>
           <TextField
             className="mb-double"
-            label="Overskrift til innsending"
+            label={<LabelWithDiff label="Overskrift til innsending" diff={!!diff.innsendingOverskrift} />}
             value={form.properties.innsendingOverskrift || ""}
             onChange={(event) =>
               onChange({
@@ -211,7 +217,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
           />
           <Textarea
             className="mb-double"
-            label="Forklaring til innsending"
+            label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
             value={form.properties.innsendingForklaring || ""}
             onChange={(event) =>
               onChange({
@@ -226,7 +232,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         <div className="mb-default">
           <Select
             className="mb-small"
-            label="Mottaksadresse"
+            label={<LabelWithDiff label="Mottaksadresse" diff={!!diff.mottaksadresseId} />}
             name="form-mottaksadresse"
             id="form-mottaksadresse"
             value={mottaksadresseId}
@@ -287,7 +293,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
 
       <Textarea
         className="mb-double"
-        label="Generelle instruksjoner (valgfritt)"
+        label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
         value={descriptionOfSignatures || ""}
         maxLength={0}
         onChange={(event) =>
@@ -302,6 +308,7 @@ const BasicFormMetadataEditor = ({ form, onChange, usageContext, errors }: Basic
         <div key={signature.key}>
           <SignatureComponent
             signature={signature}
+            diff={diff.signatures?.[signature.key]}
             index={index}
             onChange={(newSignature) => addExistingSignature(newSignature, index)}
             onDelete={() => removeSignature(signature.key)}
@@ -320,6 +327,12 @@ export const CreationFormMetadataEditor = ({ form, onChange, errors }: Props) =>
   <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="create" errors={errors} />
 );
 
-export const FormMetadataEditor = ({ form, onChange, errors }: Props) => (
-  <BasicFormMetadataEditor form={form} onChange={onChange} usageContext="edit" errors={errors} />
+export const FormMetadataEditor = ({ form, publishedForm, onChange, errors }: Props) => (
+  <BasicFormMetadataEditor
+    form={form}
+    publishedForm={publishedForm}
+    onChange={onChange}
+    usageContext="edit"
+    errors={errors}
+  />
 );

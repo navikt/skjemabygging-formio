@@ -1,13 +1,15 @@
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useCallback, useEffect, useReducer } from "react";
 import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
+import { loadPublishedForm } from "./diffing/publishedForm";
 import { EditFormPage } from "./EditFormPage";
 import formPageReducer from "./formPageReducer";
 import { FormSettingsPage } from "./FormSettingsPage";
 import { TestFormPage } from "./TestFormPage";
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
+  const { featureToggles } = useAppConfig();
   let { url } = useRouteMatch();
   const { formPath } = useParams();
   const [state, dispatch] = useReducer(
@@ -23,13 +25,22 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   useEffect(() => {
     loadForm(formPath)
       .then((form) => {
-        dispatch({ type: "form-loaded", form });
+        if (featureToggles.enableDiff) {
+          loadPublishedForm(formPath)
+            .then((publishedForm) => dispatch({ type: "form-loaded", form, publishedForm }))
+            .catch(() => {
+              console.debug("Failed to load published form");
+              dispatch({ type: "form-loaded", form });
+            });
+        } else {
+          dispatch({ type: "form-loaded", form });
+        }
       })
       .catch((e) => {
         console.log(e);
         dispatch({ type: "form-not-found" });
       });
-  }, [loadForm, formPath]);
+  }, [loadForm, formPath, featureToggles.enableDiff]);
 
   const onChange = (changedForm) => {
     dispatch({ type: "form-changed", form: changedForm });
@@ -45,13 +56,23 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   };
 
   const publishForm = async (form, translations) => {
-    const publishedForm = await onPublish(form, translations);
-    dispatch({ type: "form-saved", form: publishedForm });
+    const savedForm = await onPublish(form, translations);
+    await loadPublishedForm(formPath)
+      .then((publishedForm) => dispatch({ type: "form-saved", form: savedForm, publishedForm }))
+      .catch(() => {
+        console.debug("Publish completed: Failed to load published form");
+        dispatch({ type: "form-saved", form: savedForm });
+      });
   };
 
   const unpublishForm = async (form) => {
-    const unpublishForm = await onUnpublish(form);
-    dispatch({ type: "form-saved", form: unpublishForm });
+    const savedForm = await onUnpublish(form);
+    await loadPublishedForm(formPath)
+      .then((publishedForm) => dispatch({ type: "form-saved", form: savedForm, publishedForm }))
+      .catch(() => {
+        console.debug("Unpublish completed: Failed to load published form");
+        dispatch({ type: "form-saved", form: savedForm });
+      });
   };
 
   if (state.status === "LOADING") {
@@ -76,6 +97,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/edit`}>
           <EditFormPage
             form={state.form}
+            publishedForm={state.publishedForm}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
@@ -88,6 +110,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         <Route path={`${url}/settings`}>
           <FormSettingsPage
             form={state.form}
+            publishedForm={state.publishedForm}
             onSave={saveFormAndResetIsUnsavedChanges}
             onChange={onChange}
             onPublish={publishForm}
