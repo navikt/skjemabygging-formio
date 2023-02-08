@@ -98,7 +98,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
           <LetterNextSteps translate={translate} index={hasAttachments ? 4 : 3} />
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
           {
-            // TODO: If the pilot is successful the study code should be new setting on the form.
+            // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
             skjemanummer === "lo-0001" && <LetterUXSignals code="study-dont9j6txe" />
           }
         </section>

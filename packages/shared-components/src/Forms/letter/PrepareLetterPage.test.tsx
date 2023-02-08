@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
@@ -57,14 +56,13 @@ const defaultForm = {
           label: "Fornavn",
           type: "textfield",
           key: "fornavn",
-          inputType: "text",
-          input: true,
         },
       ],
     },
   ],
-  properties: {},
-};
+  properties: {} as FormPropertiesType,
+} as NavFormType;
+
 const defaultSubmission = {
   data: {
     fornavn: "Mie",
@@ -97,6 +95,7 @@ function renderPrepareLetterPage(
 describe("PrepareLetterPage", () => {
   beforeEach(() => {
     fetchMock.mockImplementation((url) => {
+      url = url as string;
       if (url.endsWith("/mottaksadresser")) {
         return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
       }
@@ -106,7 +105,9 @@ describe("PrepareLetterPage", () => {
       if (url.endsWith("/api/enhetsliste")) {
         return Promise.resolve(new Response(JSON.stringify(mockEnhetsListe), RESPONSE_HEADERS));
       }
+
       console.error(`Manglende testoppsett: Ukjent url ${url}`);
+      return Promise.reject<Response>();
     });
   });
 
@@ -119,6 +120,7 @@ describe("PrepareLetterPage", () => {
     beforeEach(() => {
       pdfDownloads = [];
 
+      // @ts-ignore
       pdf.lastNedFilBase64.mockImplementation((base64, tittel, filtype) => {
         pdfDownloads.push({ base64, tittel, filtype });
       });
@@ -182,6 +184,7 @@ describe("PrepareLetterPage", () => {
 
       beforeEach(async () => {
         fetchMock.mockImplementation((url) => {
+          url = url as string;
           if (url.endsWith("/api/enhetsliste")) {
             return Promise.resolve(new Response(JSON.stringify(mockEnhetsListe), RESPONSE_HEADERS));
           }
@@ -189,6 +192,7 @@ describe("PrepareLetterPage", () => {
             return Promise.resolve(new Response("OK", RESPONSE_HEADERS_PLAIN_TEXT));
           }
           console.error(`Manglende testoppsett: Ukjent url ${url}`);
+          return Promise.reject<Response>();
         });
         renderPrepareLetterPage(
           formWithProperties({
@@ -220,6 +224,7 @@ describe("PrepareLetterPage", () => {
         expect(fetchMock.mock.calls[1][0]).toEqual("/api/log/error");
         const request = {
           path: fetchMock.mock.calls[1][0],
+          // @ts-ignore
           body: JSON.parse(fetchMock.mock.calls[1][1].body),
         };
         expect(request.path).toEqual("/api/log/error");
@@ -231,10 +236,12 @@ describe("PrepareLetterPage", () => {
     describe("When fetching of enhetsliste fails", () => {
       beforeEach(async () => {
         fetchMock.mockImplementation((url) => {
+          url = url as string;
           if (url.endsWith("/api/enhetsliste")) {
             return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS_ERROR));
           }
           console.error(`Manglende testoppsett: Ukjent url ${url}`);
+          return Promise.reject<Response>();
         });
         renderPrepareLetterPage(formWithProperties({ enhetMaVelgesVedPapirInnsending: true, enhetstyper }));
         await waitFor(() => expect(fetchMock).toHaveBeenCalled());
