@@ -1,19 +1,20 @@
+// @ts-nocheck
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { AppConfigProvider } from "../configContext";
-import pdf from "../util/pdf";
+import { AppConfigProvider } from "../../configContext";
+import pdf from "../../util/pdf";
+import forstesideMock from "../testdata/forsteside-mock";
 import { PrepareLetterPage } from "./PrepareLetterPage";
-import forstesideMock from "./testdata/forsteside-mock";
 
-jest.mock("../context/languages", () => ({
+jest.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
-jest.mock("../util/pdf");
+jest.mock("../../util/pdf");
 
 const DEFAULT_TRANSLATIONS = {};
 const RESPONSE_HEADERS = {
@@ -114,7 +115,7 @@ describe("PrepareLetterPage", () => {
   });
 
   describe("Førsteside-knapp", () => {
-    let pdfDownloads = [];
+    let pdfDownloads: any[] = [];
     beforeEach(() => {
       pdfDownloads = [];
 
