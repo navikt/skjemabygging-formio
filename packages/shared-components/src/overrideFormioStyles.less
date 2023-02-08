@@ -169,11 +169,13 @@
 
 nav.form-nav {
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
+  justify-content: center;
+  flex-wrap: wrap;
   .navds-button {
     width: -moz-fit-content;
-    width: fit-content;
-    margin: 0 0 1.25rem 0;
+    flex-grow: 1;
+    margin: 0 1.25rem 1.25rem 0;
   }
 }
 
