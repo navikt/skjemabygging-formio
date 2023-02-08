@@ -13,7 +13,8 @@ const commonCodes = {
     const languageCode = "nb";
 
     try {
-      const response = await fetchCommonCodeDescriptions(req, "Arkivtemaer", languageCode);
+      // Alle temakoder ligger i Arkivtemaer, men vi har fått laget eget kodeverk for oss som heter TemaIFyllUt
+      const response = await fetchCommonCodeDescriptions(req, "TemaIFyllUt", languageCode);
       const archiveSubjects: { [key: string]: string } = {};
       for (const [key, values] of Object.entries(response.betydninger)) {
         const term = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
@@ -194,6 +195,7 @@ type commonCodeType =
   | "Summert skattegrunnlag filter"
   | "Telefontyper"
   | "Tema"
+  | "TemaIFyllUt"
   | "Temagrupper"
   | "TemagrupperMidlertidig"
   | "TilknyttetJournalpostSom"
