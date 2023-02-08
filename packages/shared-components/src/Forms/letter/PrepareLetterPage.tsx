@@ -99,7 +99,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
           {
             // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
-            skjemanummer === "lo-0001" && <LetterUXSignals code="study-dont9j6txe" />
+            skjemanummer === "NAV 08-09.08" && <LetterUXSignals code="study-dont9j6txe" />
           }
         </section>
       </main>
