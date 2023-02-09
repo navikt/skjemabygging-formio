@@ -9,8 +9,8 @@ import { FormTitle } from "./components/FormTitle.tsx";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
+import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
-import { PrepareLetterPage } from "./PrepareLetterPage.jsx";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.tsx";
 
