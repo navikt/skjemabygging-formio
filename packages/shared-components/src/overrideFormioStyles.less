@@ -167,15 +167,23 @@
   }
 }
 
-nav.form-nav {
+.button-row {
   display: flex;
   flex-direction: row-reverse;
-  justify-content: center;
+  justify-content: start;
+  gap: 1.25rem;
   flex-wrap: wrap;
-  .navds-button {
-    width: -moz-fit-content;
+  margin-bottom: 1.25rem;
+  button, a {
     flex-grow: 1;
-    margin: 0 1.25rem 1.25rem 0;
+    min-width: 12rem;
+    max-width: 18.75rem;
+  }
+  &__center {
+    justify-content: center;
+    @media (max-width: 540px) {
+      justify-content: start;
+    }
   }
 }
 

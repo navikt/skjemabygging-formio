@@ -230,71 +230,75 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
-          <nav className="form-nav">
-            {(submissionMethod === "paper" ||
-              innsending === "KUN_PAPIR" ||
-              (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
-              <Link
-                className="navds-button navds-button--primary"
-                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
-              >
-                <span aria-live="polite" className="navds-label">
-                  {translate(TEXTS.grensesnitt.moveForward)}
-                </span>
-              </Link>
-            )}
-            {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
-              (hasAttachments ? (
-                <DigitalSubmissionButton
-                  form={form}
-                  submission={submission}
-                  translations={translations}
-                  onError={(err) => {
-                    setErrorMessage(err.message);
-                    loggSkjemaInnsendingFeilet();
-                  }}
-                  onSuccess={() => loggSkjemaFullfort("digital")}
+          <nav>
+            <div className="button-row button-row__center">
+              {(submissionMethod === "paper" ||
+                innsending === "KUN_PAPIR" ||
+                (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
+                <Link
+                  className="navds-button navds-button--primary"
+                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
                 >
-                  {translate(TEXTS.grensesnitt.moveForward)}
-                </DigitalSubmissionButton>
-              ) : (
-                <DigitalSubmissionWithPrompt
-                  form={form}
-                  submission={submission}
-                  translations={translations}
-                  onError={(err) => {
-                    setErrorMessage(err.message);
-                    loggSkjemaInnsendingFeilet();
-                  }}
-                  onSuccess={() => loggSkjemaFullfort("digital")}
-                />
-              ))}
+                  <span aria-live="polite" className="navds-label">
+                    {translate(TEXTS.grensesnitt.moveForward)}
+                  </span>
+                </Link>
+              )}
+              {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
+                (hasAttachments ? (
+                  <DigitalSubmissionButton
+                    form={form}
+                    submission={submission}
+                    translations={translations}
+                    onError={(err) => {
+                      setErrorMessage(err.message);
+                      loggSkjemaInnsendingFeilet();
+                    }}
+                    onSuccess={() => loggSkjemaFullfort("digital")}
+                  >
+                    {translate(TEXTS.grensesnitt.moveForward)}
+                  </DigitalSubmissionButton>
+                ) : (
+                  <DigitalSubmissionWithPrompt
+                    form={form}
+                    submission={submission}
+                    translations={translations}
+                    onError={(err) => {
+                      setErrorMessage(err.message);
+                      loggSkjemaInnsendingFeilet();
+                    }}
+                    onSuccess={() => loggSkjemaFullfort("digital")}
+                  />
+                ))}
 
-            {innsending === "INGEN" && (
+              {innsending === "INGEN" && (
+                <Link
+                  className="navds-button navds-button--primary"
+                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+                >
+                  <span aria-live="polite" className="navds-label">
+                    {translate(TEXTS.grensesnitt.moveForward)}
+                  </span>
+                </Link>
+              )}
               <Link
-                className="navds-button navds-button--primary"
-                onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
-                to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+                className="navds-button navds-button--secondary"
+                to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
               >
                 <span aria-live="polite" className="navds-label">
-                  {translate(TEXTS.grensesnitt.moveForward)}
+                  {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
                 </span>
               </Link>
-            )}
-            <Link
-              className="navds-button navds-button--secondary"
-              to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
-            >
-              <span aria-live="polite" className="navds-label">
-                {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-              </span>
-            </Link>
-            <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
-              <span aria-live="polite" className="navds-label">
-                {translate(TEXTS.grensesnitt.navigation.cancel)}
-              </span>
-            </Lenke>
+            </div>
+            <div className="button-row button-row__center">
+              <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
+                <span aria-live="polite" className="navds-label">
+                  {translate(TEXTS.grensesnitt.navigation.cancel)}
+                </span>
+              </Lenke>
+            </div>
           </nav>
           {errorMessage && (
             <AlertStripe data-testid="error-message" type="feil">
