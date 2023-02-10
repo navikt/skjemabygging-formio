@@ -12,9 +12,10 @@ import { PublishProperties } from "./types";
 interface Props {
   publishProperties: PublishProperties;
   spacing?: "default" | "small";
+  hideToggleDiffButton?: boolean;
 }
 
-const FormStatusPanel = ({ publishProperties, spacing }: Props) => {
+const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = false }: Props) => {
   const styles: ClassNameMap = useStatusStyles({ spacing });
   const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
@@ -47,7 +48,7 @@ const FormStatusPanel = ({ publishProperties, spacing }: Props) => {
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>
-        {published && <ToggleDiffButton className={styles.toggleDiffButton} />}
+        {!hideToggleDiffButton && published && <ToggleDiffButton className={styles.toggleDiffButton} />}
       </div>
       <LabeledTimeAndUser label="Sist lagret:" timestamp={modified} userName={modifiedBy} />
       <LabeledTimeAndUser label="Sist publisert:" timestamp={published} userName={publishedBy} />

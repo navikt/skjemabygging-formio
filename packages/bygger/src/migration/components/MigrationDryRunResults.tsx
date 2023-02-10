@@ -74,7 +74,7 @@ const MigrationDryRunResults = ({
                   }}
                 />
               )}
-              <FormStatusPanel publishProperties={result} spacing={"small"} />
+              <FormStatusPanel publishProperties={result} spacing={"small"} hideToggleDiffButton />
             </div>
           </li>
         );
