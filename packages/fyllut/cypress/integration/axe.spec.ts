@@ -3,6 +3,7 @@ describe("Axe: Accessibility testing", () => {
     before(() => {
       cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
       cy.intercept("GET", "/fyllut/api/forms/cypressaxe", { fixture: "cypressaxe.json" }).as("getCypressAxe");
+      cy.intercept("GET", "/fyllut/translations/cypressaxe", { body: {} }).as("getTranslation");
       cy.visit("/fyllut/cypressaxe");
       cy.wait("@getCypressAxe");
       cy.injectAxe();
