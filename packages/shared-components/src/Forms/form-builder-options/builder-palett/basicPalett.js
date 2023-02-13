@@ -186,8 +186,8 @@ const basicPalett = {
           required: true,
         },
         properties: {
-          vedleggstittel: " ",
-          vedleggskode: " ",
+          vedleggstittel: "",
+          vedleggskode: "",
         },
         values: [
           {
