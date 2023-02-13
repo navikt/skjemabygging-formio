@@ -9,6 +9,7 @@
 describe("Amplitude", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
+    cy.intercept("GET", "/fyllut/translations/cypress101", { body: {} }).as("getTranslation");
     cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
     cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 200 }).as("submitToSendinnSuccess");
     cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 500 }).as("submitToSendinnFailed");
