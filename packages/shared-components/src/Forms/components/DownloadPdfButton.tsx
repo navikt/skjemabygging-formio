@@ -9,9 +9,18 @@ interface Props {
   label: string;
   onClick: MouseEventHandler<HTMLInputElement>;
   translations: { [key: string]: string } | {};
+  submissionMethod?: string;
 }
 
-const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, translations }: Props) => {
+const DownloadPdfButton = ({
+  form,
+  submission,
+  actionUrl,
+  label,
+  onClick,
+  translations,
+  submissionMethod = "paper",
+}: Props) => {
   const { currentLanguage } = useLanguages();
   const { config = {} } = useAppConfig();
   const translationsForPDF = currentLanguage !== "nb-NO" ? translations[currentLanguage] : {};
@@ -21,6 +30,7 @@ const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, transl
         <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
         <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
         {config.isDelingslenke && <input type="text" name="isTest" value="true" />}
+        <input type="text" name="submissionMethod" value={submissionMethod} />
         <textarea
           hidden={true}
           name="translations"
@@ -28,6 +38,7 @@ const DownloadPdfButton = ({ form, submission, actionUrl, label, onClick, transl
           required
           value={JSON.stringify(translationsForPDF)}
         />
+        <input type="text" name="language" value={currentLanguage} />
       </form>
       <div>
         <input

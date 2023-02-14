@@ -16,7 +16,16 @@ export interface Props {
 
 const noop = () => {};
 
-const postToSendInn = async (http, baseUrl, form, submission, translations, currentLanguage, isTest) => {
+const postToSendInn = async (
+  http,
+  baseUrl,
+  form,
+  submission,
+  translations,
+  currentLanguage,
+  submissionMethod,
+  isTest
+) => {
   const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
   const attachments = getRelevantAttachments(form, submission);
   return http.post(
@@ -28,6 +37,7 @@ const postToSendInn = async (http, baseUrl, form, submission, translations, curr
       language: currentLanguage,
       attachments,
       otherDocumentation: hasOtherDocumentation(form, submission),
+      submissionMethod,
     },
     {
       "Fyllut-Is-Test": isTest,
@@ -55,6 +65,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
         submission,
         translations,
         currentLanguage,
+        "digital",
         config.isDelingslenke
       );
       onSuccess(response);

@@ -1,16 +1,16 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { Accordion } from "@navikt/ds-react";
 import {
-  Component,
   formSummaryUtil,
   InnsendingType,
   NavFormType,
+  Summary,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
 import Lenke from "nav-frontend-lenker";
 import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -22,79 +22,49 @@ import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "./components/DigitalSubmissionWithPrompt";
 import FormStepper from "./components/FormStepper";
 
-type LabelValue = {
-  label: string;
-  value: string;
-};
-type LabelValues = {
-  label: string;
-  values: string[];
-};
-type LabelComponents = {
-  label: string;
-  components?: Component[];
-};
-
-type PanelComponents = {
-  label: string;
-  components?: Component[];
-  formUrl: string;
-  path: string;
-};
-
-type ImageComp = LabelValue & {
-  alt: string;
-  widthPercent: string;
-};
-
-const FormSummaryField: FunctionComponent<LabelValue> = ({ label, value }) => (
+const SummaryField = ({ component }: { component: Summary.Field }) => (
   <>
-    <dt>{label}</dt>
-    <dd>{value}</dd>
+    <dt>{component.label}</dt>
+    <dd>{component.value}</dd>
   </>
 );
 
-const SelectboxesSummary: FunctionComponent<LabelValues> = ({ label, values }) => (
+const SelectboxesSummary = ({ component }: { component: Summary.Selectboxes }) => (
   <>
-    <dt>{label}</dt>
+    <dt>{component.label}</dt>
     <dd>
       <ul>
-        {values.map((value) => (
-          <li key={`${label}_${value}`}>{value}</li>
+        {component.value.map((value) => (
+          <li key={`${component.label}_${value}`}>{value}</li>
         ))}
       </ul>
     </dd>
   </>
 );
 
-const FormSummaryFieldset: FunctionComponent<LabelComponents> = ({ label, components }) => (
+const FormSummaryFieldset = ({ component }: { component: Summary.Fieldset }) => (
   <>
-    <dt>{label}</dt>
+    <dt>{component.label}</dt>
     <dd>
       <dl className="component-collection">
-        <ComponentSummary components={components} />
+        <ComponentSummary components={component.components} />
       </dl>
     </dd>
   </>
 );
 
-const DataGridSummary: FunctionComponent<LabelComponents> = ({ label, components }) => (
+const DataGridSummary = ({ component }: { component: Summary.DataGrid }) => (
   <>
-    <dt>{label}</dt>
-    <dd>
-      {components &&
-        components.map((component) => (
-          <DataGridRow key={component.key} label={component.label} components={component.components} />
-        ))}
-    </dd>
+    <dt>{component.label}</dt>
+    <dd>{component.components && component.components.map((row) => <DataGridRow key={row.key} row={row} />)}</dd>
   </>
 );
 
-const DataGridRow: FunctionComponent<LabelComponents> = ({ label, components }) => (
+const DataGridRow = ({ row }: { row: Summary.DataGridRow }) => (
   <div className="data-grid__row skjemagruppe">
-    {label && <p className="skjemagruppe__legend">{label}</p>}
+    {row.label && <p className="skjemagruppe__legend">{row.label}</p>}
     <dl>
-      <ComponentSummary components={components} />
+      <ComponentSummary components={row.components} />
     </dl>
   </div>
 );
@@ -104,7 +74,8 @@ const useImgSummaryStyles = (widthPercent) =>
     description: { minWidth: 100, maxWidth: widthPercent + "%" },
   })();
 
-const ImageSummary: FunctionComponent<ImageComp> = ({ label, value, alt, widthPercent }) => {
+const ImageSummary = ({ component }: { component: Summary.Image }) => {
+  const { label, value, alt, widthPercent } = component;
   const { description } = useImgSummaryStyles(widthPercent);
   return (
     <>
@@ -123,10 +94,11 @@ const panelStyles = makeStyles({
   },
 });
 
-const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, formUrl, path }) => {
+const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUrl: string }) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link } = panelStyles();
+  const { key, label, components } = component;
   return (
     <section>
       <Accordion>
@@ -136,7 +108,7 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
             <Systemtittel tag="h3">{label}</Systemtittel>
           </Accordion.Header>
           <Accordion.Content>
-            <Link to={{ pathname: `${formUrl}/${path}`, search }} className={link}>
+            <Link to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
               <span>
                 {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
               </span>
@@ -151,36 +123,47 @@ const PanelSummary: FunctionComponent<PanelComponents> = ({ label, components, f
   );
 };
 
-const ComponentSummary = ({ components, formUrl = "" }) => {
-  return components.map(({ type, key, label, ...comp }) => {
-    switch (type) {
-      case "panel":
-        return <PanelSummary key={key} label={label} components={comp.components} formUrl={formUrl} path={key} />;
-      case "fieldset":
-      case "navSkjemagruppe":
-        return <FormSummaryFieldset key={key} label={label} components={comp.components} />;
-      case "datagrid":
-        return <DataGridSummary key={key} label={label} components={comp.components} />;
-      case "selectboxes":
-        return <SelectboxesSummary key={key} label={label} values={comp.value} />;
-      case "image":
-        return (
-          <ImageSummary key={key} label={label} value={comp.value} alt={comp.alt} widthPercent={comp.widthPercent} />
-        );
-      default:
-        return <FormSummaryField key={key} label={label} value={comp.value} />;
-    }
-  });
+const ComponentSummary = ({ components, formUrl = "" }: { components: Summary.Component[]; formUrl?: string }) => {
+  return (
+    <>
+      {components.map((comp) => {
+        const { type, key } = comp;
+        switch (type) {
+          case "panel":
+            return <PanelSummary key={key} component={comp} formUrl={formUrl} />;
+          case "fieldset":
+          case "navSkjemagruppe":
+            return <FormSummaryFieldset key={key} component={comp} />;
+          case "datagrid":
+            return <DataGridSummary key={key} component={comp} />;
+          case "selectboxes":
+            return <SelectboxesSummary key={key} component={comp} />;
+          case "image":
+            return <ImageSummary key={key} component={comp} />;
+          default:
+            return <SummaryField key={key} component={comp as Summary.Field} />;
+        }
+      })}
+    </>
+  );
 };
 
-const FormSummary = ({ form, formUrl, submission }) => {
+const FormSummary = ({ form, formUrl, submission }: { form: NavFormType; formUrl: string; submission: object }) => {
+  const { logger } = useAppConfig();
   const { translate } = useLanguages();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-  const formSummaryObject = formSummaryUtil.createFormSummaryObject(form, submission, translate);
-  if (formSummaryObject.length === 0) {
+  const summaryComponents: Summary.Component[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
+  const summaryPanels = summaryComponents.filter((component) => component.type === "panel");
+  if (summaryPanels.length < summaryComponents.length) {
+    logger?.info(
+      `OBS! Skjemaet ${form.title} (${form.properties.skjemanummer}) har komponenter som ikke ligger inne i et panel`
+    );
+  }
+
+  if (summaryPanels.length === 0) {
     return null;
   }
-  return <ComponentSummary components={formSummaryObject} formUrl={formUrl} />;
+  return <ComponentSummary components={summaryPanels} formUrl={formUrl} />;
 };
 
 export interface Props {
@@ -191,7 +174,7 @@ export interface Props {
 }
 
 function getUrlToLastPanel(form, formUrl, submission) {
-  const formSummary = formSummaryUtil.createFormSummaryObject(form, submission);
+  const formSummary = formSummaryUtil.createFormSummaryPanels(form, submission);
   const lastPanel = formSummary[formSummary.length - 1];
   const lastPanelSlug = lastPanel?.key;
   if (!lastPanelSlug) {

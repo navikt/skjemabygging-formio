@@ -164,7 +164,7 @@ describe("When handling component", () => {
       ]);
     });
 
-    it("is translates label and img alt", () => {
+    it("translates label and img alt", () => {
       const actual = handleComponent(createDummyImage(), {}, [], "", mockedTranslate);
       const expectedResult = { label: actual[0].label, alt: actual[0].alt };
       expect(expectedResult).toEqual({
