@@ -47,78 +47,91 @@ describe("Diff", () => {
     });
   });
 
-  describe("Edit component modal", () => {
+  describe("Form builder page", () => {
     beforeEach(() => {
       cy.visit("forms/dif123456/edit");
       cy.wait("@getForm");
       cy.wait("@getPublishedForm");
     });
 
-    const diffSincePublishedVersion = {
-      changes: 2,
-      deletions: 1,
-    };
+    describe("Tags", () => {
+      const diffSincePublishedVersion = {
+        changes: 2,
+        deletions: 1,
+      };
 
-    it("Shows tags for components that have changed", () => {
-      cy.findAllByText("Endring").should("have.length", diffSincePublishedVersion.changes);
-      cy.findAllByText("Slettede elementer").should("have.length", diffSincePublishedVersion.deletions);
+      it("are visible for components that have changed", () => {
+        cy.findAllByText("Endring").should("have.length", diffSincePublishedVersion.changes);
+        cy.findAllByText("Slettede elementer").should("have.length", diffSincePublishedVersion.deletions);
+      });
+
+      it("occur when component is deleted", () => {
+        cy.findByLabelText("Etternavn")
+          .should("exist")
+          .closest("[data-testid='builder-component']")
+          .within(clickBuilderComponentButton("Slett"));
+
+        cy.findAllByText("Endring").should("have.length", diffSincePublishedVersion.changes);
+        cy.findAllByText("Slettede elementer").should("have.length", diffSincePublishedVersion.deletions + 1);
+      });
+
+      it("are hidden when button 'Skjul endringer' is pressed", () => {
+        cy.findAllByText("Endring").should("have.length", diffSincePublishedVersion.changes);
+        cy.findAllByText("Slettede elementer").should("have.length", diffSincePublishedVersion.deletions);
+
+        cy.findByRole("button", { name: "Skjul endringer" }).should("exist").click();
+        cy.findAllByText("Endring").should("have.length", 0);
+        cy.findAllByText("Slettede elementer").should("have.length", 0);
+      });
     });
 
-    it("Shows changes for text component :: label 'Fornavn' -> 'Fornavn2'", () => {
-      cy.findByLabelText("Fornavn2")
-        .should("exist")
-        .closest("[data-testid='builder-component']")
-        .within(clickBuilderComponentButton("Rediger"));
+    describe("Edit component modal", () => {
+      it("Shows changes for text component :: label 'Fornavn' -> 'Fornavn2'", () => {
+        cy.findByLabelText("Fornavn2")
+          .should("exist")
+          .closest("[data-testid='builder-component']")
+          .within(clickBuilderComponentButton("Rediger"));
 
-      cy.findByLabelText("Endringer")
-        .should("exist")
-        .within(() => {
-          cy.get("li").should("have.length", 1);
-          cy.get("li").eq(0).should("contain.text", "label: Fra 'Fornavn' til 'Fornavn2'");
-        });
-    });
+        cy.findByLabelText("Endringer")
+          .should("exist")
+          .within(() => {
+            cy.get("li").should("have.length", 1);
+            cy.get("li").eq(0).should("contain.text", "label: Fra 'Fornavn' til 'Fornavn2'");
+          });
+      });
 
-    it("Shows changes for skjemagruppe :: legend changed and component deleted", () => {
-      cy.findByText("Kontaktadresse2")
-        .should("exist")
-        .closest("[data-testid='builder-component']")
-        .within(clickBuilderComponentButton("Rediger"));
+      it("Shows changes for skjemagruppe :: legend changed and component deleted", () => {
+        cy.findByText("Kontaktadresse2")
+          .should("exist")
+          .closest("[data-testid='builder-component']")
+          .within(clickBuilderComponentButton("Rediger"));
 
-      cy.findByLabelText("Endringer")
-        .should("exist")
-        .within(() => {
-          cy.get("li").should("have.length", 1);
-          cy.get("li").eq(0).should("contain.text", "legend: Fra 'Kontaktadresse' til 'Kontaktadresse2'");
-        });
+        cy.findByLabelText("Endringer")
+          .should("exist")
+          .within(() => {
+            cy.get("li").should("have.length", 1);
+            cy.get("li").eq(0).should("contain.text", "legend: Fra 'Kontaktadresse' til 'Kontaktadresse2'");
+          });
 
-      cy.findByLabelText("Slettede elementer")
-        .should("exist")
-        .within(() => {
-          cy.get("li").should("have.length", 2);
-          cy.get("li").eq(0).should("contain.text", "navDatepicker: ");
-          cy.get("li").eq(1).should("contain.text", "navDatepicker: ");
-        });
-    });
+        cy.findByLabelText("Slettede elementer")
+          .should("exist")
+          .within(() => {
+            cy.get("li").should("have.length", 2);
+            cy.get("li").eq(0).should("contain.text", "navDatepicker: ");
+            cy.get("li").eq(1).should("contain.text", "navDatepicker: ");
+          });
+      });
 
-    it("Shows tag when component is deleted", () => {
-      cy.findByLabelText("Etternavn")
-        .should("exist")
-        .closest("[data-testid='builder-component']")
-        .within(clickBuilderComponentButton("Slett"));
+      it("Shows no changes for skjemagruppe", () => {
+        cy.findAllByText("Utenlandsk kontaktadresse")
+          .first()
+          .should("exist")
+          .closest("[data-testid='builder-component']")
+          .within(clickBuilderComponentButton("Rediger"));
 
-      cy.findAllByText("Endring").should("have.length", diffSincePublishedVersion.changes);
-      cy.findAllByText("Slettede elementer").should("have.length", diffSincePublishedVersion.deletions + 1);
-    });
-
-    it("Shows no changes for skjemagruppe", () => {
-      cy.findAllByText("Utenlandsk kontaktadresse")
-        .first()
-        .should("exist")
-        .closest("[data-testid='builder-component']")
-        .within(clickBuilderComponentButton("Rediger"));
-
-      cy.findByLabelText("Endringer").should("not.exist");
-      cy.findByLabelText("Slettede elementer").should("not.exist");
+        cy.findByLabelText("Endringer").should("not.exist");
+        cy.findByLabelText("Slettede elementer").should("not.exist");
+      });
     });
   });
 });
