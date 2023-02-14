@@ -5,6 +5,10 @@ Formio.Utils.toggleClass = (id, className) => {
   return `document.getElementById('${id}').classList.toggle('${className}')`;
 };
 
+Utils.translateHTMLTemplate = (template, translate) => {
+  return translate(template);
+};
+
 const navFormDiffToHtml = (diffSummary) => {
   try {
     const { changesToCurrentComponent, deletedComponents } = diffSummary;
