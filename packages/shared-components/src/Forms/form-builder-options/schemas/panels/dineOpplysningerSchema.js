@@ -1,7 +1,7 @@
 import firstNameSchema from "../firstNameSchema";
-import surnameSchema from "../surnameSchema";
-import norskVegadresseSchema from "../norskVegadresseSchema";
 import norskPostboksadresseSchema from "../norskPostboksadresseSchema";
+import norskVegadresseSchema from "../norskVegadresseSchema";
+import surnameSchema from "../surnameSchema";
 import utenlandskAdresseSchema from "../utenlandskAdresseSchema";
 
 const sokerPostfix = "Soker";
@@ -60,8 +60,7 @@ const dineOpplysningerSchema = {
       validateOn: "blur",
       validate: {
         required: true,
-        custom:
-          "valid = instance.validateDatePickerV2(input, data, component, row);",
+        custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
       },
       conditional: {
         show: true,
@@ -72,7 +71,7 @@ const dineOpplysningerSchema = {
     {
       label: "Alertstripe",
       content:
-        'NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra NAV på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme siden hos Skatteetaten.',
+        'NAV sender svar på søknad og annen kommunikasjon til din folkeregistrerte adresse. \n<br>\nDu kan <a href="https://www.skatteetaten.no/person/folkeregister/flytte/endre-postadresse/" target="_blank">sjekke og endre din folkeregistrerte adresse på skatteetatens nettsider (åpnes i et nytt vindu).</a>\nHvis du ønsker å motta kommunikasjon fra NAV på en annen adresse enn din folkeregistrerte adresse, kan du bruke lenken ovenfor til å oppgi en postadresse i Folkeregisteret.\nDu finner også papirskjema for å endre postadresse på samme side hos Skatteetaten.',
       key: "alertstripe",
       type: "alertstripe",
       alerttype: "info",
@@ -162,8 +161,7 @@ const dineOpplysningerSchema = {
           validateOn: "blur",
           validate: {
             required: true,
-            custom:
-              "valid = instance.validateDatePickerV2(input, data, component, row);",
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
         {
@@ -181,8 +179,7 @@ const dineOpplysningerSchema = {
           mayBeEqual: false,
           validateOn: "blur",
           validate: {
-            custom:
-              "valid = instance.validateDatePickerV2(input, data, component, row);",
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
       ],
@@ -213,8 +210,7 @@ const dineOpplysningerSchema = {
           validateOn: "blur",
           validate: {
             required: true,
-            custom:
-              "valid = instance.validateDatePickerV2(input, data, component, row);",
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
         {
@@ -225,8 +221,7 @@ const dineOpplysningerSchema = {
           beforeDateInputKey: "gyldigFraDatoDdMmAaaa2",
           mayBeEqual: false,
           validate: {
-            custom:
-              "valid = instance.validateDatePickerV2(input, data, component, row);",
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
           validateOn: "blur",
           key: "gyldigTilDatoDdMmAaaa2",
@@ -264,8 +259,7 @@ const dineOpplysningerSchema = {
           validateOn: "blur",
           validate: {
             required: true,
-            custom:
-              "valid = instance.validateDatePickerV2(input, data, component, row);",
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
         {
@@ -283,8 +277,7 @@ const dineOpplysningerSchema = {
           validateOn: "blur",
           validate: {
             required: true,
-            custom:
-              "valid = instance.validateDatePickerV2(input, data, component, row);",
+            custom: "valid = instance.validateDatePickerV2(input, data, component, row);",
           },
         },
       ],
