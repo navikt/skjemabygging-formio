@@ -28,4 +28,5 @@ export interface ForstesideRequestBody {
   adresse?: MottaksadresseData;
   bruker?: Bruker;
   ukjentBrukerPersoninfo?: string;
+  enhetsnummer?: string;
 }

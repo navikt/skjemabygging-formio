@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import fetch, { BodyInit, HeadersInit } from "node-fetch";
 import { config } from "../../config/config";
+import { logger } from "../../logger";
 import { responseToError } from "../../utils/errorHandling.js";
 import { loadMottaksadresser } from "./mottaksadresser";
 
@@ -13,6 +14,7 @@ const forsteside = {
     try {
       const forsteside = await validateForstesideRequest(req.body);
       const response = await forstesideRequest(req, JSON.stringify(forsteside));
+      logForsteside(req.body, response);
       res.contentType("application/json");
       res.send(response);
     } catch (e) {
@@ -82,6 +84,16 @@ const forstesideRequest = async (req: Request, body?: BodyInit) => {
   }
 
   throw await responseToError(response, "Feil ved generering av førsteside", true);
+};
+
+const logForsteside = (forsteside: ForstesideRequestBody, response: any) => {
+  logger.info("Download frontpage", {
+    loepenummer: JSON.parse(response).loepenummer,
+    navSkjemaId: forsteside.navSkjemaId,
+    tema: forsteside.tema,
+    enhetsnummer: forsteside.enhetsnummer,
+    spraakkode: forsteside.spraakkode,
+  });
 };
 
 export default forsteside;
