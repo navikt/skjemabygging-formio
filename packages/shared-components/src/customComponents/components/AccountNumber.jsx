@@ -2,9 +2,9 @@ import { validatorUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import { advancedDescription } from "./fields/advancedDescription.js";
-import Number from "./Number.js";
+import TextField from "./TextField.js";
 
-export default class AccountNumber extends Number {
+export default class AccountNumber extends TextField {
   validateAccountNumber(accountNumber) {
     if (accountNumber === "") {
       return true;
