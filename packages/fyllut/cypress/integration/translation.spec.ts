@@ -84,7 +84,7 @@ describe("Translations", () => {
     });
   });
 
-  describe("Sepcial cases", () => {
+  describe("Special cases", () => {
     beforeEach(() => {
       cy.visit("/fyllut/cypress101/skjema?sub=paper");
     });
