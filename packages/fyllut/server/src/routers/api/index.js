@@ -34,11 +34,11 @@ apiRouter.post("/foersteside", azureSkjemabyggingProxy, forsteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
-apiRouter.post("/send-inn", tokenxSendInn, sendInn.post);
+apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
 apiRouter.post("/pdf-form", pdf["DIGITAL"].post);
 apiRouter.post("/pdf-form-papir", pdf["PAPIR"].post);
 apiRouter.get("/common-codes/archive-subjects", azureSkjemabyggingProxy, commonCodes.getArchiveSubjects);
-apiRouter.get("/pdf/convert", azureSkjemabyggingProxy, exstream.get);
+apiRouter.post("/pdf/convert", azureSkjemabyggingProxy, exstream.post);
 apiRouter.get("/common-codes/currencies", azureSkjemabyggingProxy, commonCodes.getCurrencies);
 apiRouter.post("/log/:level", rateLimiter(60000, 60), log.post);
 

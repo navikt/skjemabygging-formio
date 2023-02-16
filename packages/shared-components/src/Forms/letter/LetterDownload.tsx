@@ -4,6 +4,7 @@ import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { fetchMottaksadresser } from "../../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../../components/error/AlertStripeHttpError";
+import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { genererFoerstesideData } from "../../util/forsteside";
@@ -56,6 +57,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { currentLanguage } = useLanguages();
+  const { featureToggles } = useAppConfig();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -108,7 +110,9 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
       <DownloadPdfButton
         form={form}
         submission={submission}
-        actionUrl={`${fyllutBaseURL}/pdf-form-papir`}
+        actionUrl={
+          featureToggles?.enableExstreamPdf ? `${fyllutBaseURL}/api/pdf/convert` : `${fyllutBaseURL}/api/pdf-form-papir`
+        }
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         translations={translations}

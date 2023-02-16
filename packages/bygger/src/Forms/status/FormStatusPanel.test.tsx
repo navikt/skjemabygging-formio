@@ -1,3 +1,4 @@
+import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import moment from "moment";
@@ -166,6 +167,61 @@ describe("FormStatusPanel", () => {
 
     it("displays the 'Testskjema' status even if published and modified is set", () => {
       expect(screen.getByText("Testskjema")).toBeInTheDocument();
+    });
+  });
+
+  describe("Toggle diff button", () => {
+    let setDiffOn;
+
+    beforeEach(() => {
+      setDiffOn = jest.fn();
+    });
+
+    describe("feature toggle enableDiff is true", () => {
+      describe("form is published", () => {
+        it("button text is 'Skjul' when diffOn is true", () => {
+          const properties: PartialFormProperties = { modified: now, published: earlier };
+          render(
+            <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
+              <FormStatusPanel publishProperties={properties as FormPropertiesType} />
+            </AppConfigProvider>
+          );
+          expect(screen.queryByRole("button", { name: "Skjul endringer" })).toBeInTheDocument();
+        });
+
+        it("button text is 'Vis' when diffOn is false", () => {
+          const properties: PartialFormProperties = { modified: now, published: earlier };
+          render(
+            <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={false} setDiffOn={setDiffOn}>
+              <FormStatusPanel publishProperties={properties as FormPropertiesType} />
+            </AppConfigProvider>
+          );
+          expect(screen.queryByRole("button", { name: "Vis endringer" })).toBeInTheDocument();
+        });
+      });
+
+      describe("form is not published", () => {
+        it("is not visible when form is not published", () => {
+          const properties: PartialFormProperties = { modified: earlier, published: undefined };
+          render(
+            <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
+              <FormStatusPanel publishProperties={properties as FormPropertiesType} />
+            </AppConfigProvider>
+          );
+          expect(screen.queryByRole("button", { name: "Skjul endringer" })).not.toBeInTheDocument();
+        });
+      });
+    });
+
+    describe("feature toggle enableDiff is false", () => {
+      const properties: PartialFormProperties = { modified: now, published: earlier };
+      render(
+        <AppConfigProvider featureToggles={{ enableDiff: false }} diffOn={true} setDiffOn={setDiffOn}>
+          <FormStatusPanel publishProperties={properties as FormPropertiesType} />
+        </AppConfigProvider>
+      );
+      expect(screen.queryByRole("button", { name: "Skjul endringer" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Vis endringer" })).not.toBeInTheDocument();
     });
   });
 });

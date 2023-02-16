@@ -9,6 +9,7 @@ import type {
   NavFormType,
   NewFormSignatureType,
   Panel,
+  Submission,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
@@ -30,6 +31,7 @@ import { Operator } from "./migration/operator";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
 import type { ReportDefinition } from "./reports";
 import type { GlobalTranslationsResourceContent, MottaksadresserResourceContent, ResourceContent } from "./resource";
+import type { Summary } from "./summary/FormSummaryType";
 import formSummaryUtil from "./summary/formSummaryUtil";
 import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest";
 import TEXTS from "./texts";
@@ -74,7 +76,9 @@ export type {
   NewFormSignatureType,
   FormPropertiesType,
   FormPropertiesPublishing,
+  Summary,
   NavFormType,
+  Submission,
   Component,
   Panel,
   Enhet,

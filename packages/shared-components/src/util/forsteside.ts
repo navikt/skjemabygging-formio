@@ -27,13 +27,13 @@ export function genererPersonalia(fnrEllerDnr?: string, adresse?: Adresse): Bruk
   } else if (adresse) {
     return {
       ukjentBrukerPersoninfo:
-        `${adresse.navn || ""}, ` +
+        adressLine(adresse.navn) +
         adressLine(adresse.co, "c/o") +
         adressLine(adresse.postboksEier, "c/o") +
-        `${adresse.adresse || ""}, ` +
+        adressLine(adresse.adresse) +
         adressLine(adresse.bygning) +
         `${adresse.postnr || ""} ` +
-        `${adresse.sted || ""}, ` +
+        adressLine(adresse.sted) +
         adressLine(adresse.region) +
         `${adresse.land || ""}.`,
     };
@@ -142,7 +142,7 @@ export function genererAdresse(submission: Submission): Adresse {
     utenlandskAdresse,
   } = submission;
   return {
-    navn: `${fornavnSoker} ${etternavnSoker}`,
+    navn: fornavnSoker || etternavnSoker ? `${fornavnSoker} ${etternavnSoker}` : "",
     co: (norskVegadresse && norskVegadresse.coSoker) || (utenlandskAdresse && utenlandskAdresse.coSoker) || coSoker,
     postboksEier: norskPostboksadresse && norskPostboksadresse.coSoker,
     adresse:

@@ -404,8 +404,13 @@ function createFormSummaryObject(form, submission, translate = (txt) => txt) {
   );
 }
 
+function createFormSummaryPanels(form, submission, translate) {
+  return createFormSummaryObject(form, submission, translate).filter((component) => component.type === "panel");
+}
+
 export default {
   createFormSummaryObject,
+  createFormSummaryPanels,
   handleComponent,
   mapAndEvaluateConditionals,
 };
