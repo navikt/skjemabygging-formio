@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import I18nStateProvider from "../context/i18n";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
 import { UserAlerterContext } from "../userAlerting";
 import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 import NewTranslation from "./NewTranslation";
-import TranslationsByFormPage from "./TranslationsByFormPage";
+import { TranslationsByFormRoute } from "./TranslationsByFormRoute.tsx";
 import { TranslationsListPage } from "./TranslationsListPage";
 
 const TranslationsRouter = ({ formio, serverURL }) => {
@@ -45,9 +44,12 @@ const TranslationsRouter = ({ formio, serverURL }) => {
       <Route
         path={`${path}/:formPath/:languageCode?`}
         render={({ match }) => (
-          <I18nStateProvider loadTranslations={() => loadTranslationsForEditPage(match.params.formPath)}>
-            <TranslationsByFormPage loadForm={loadForm} saveTranslation={saveLocalTranslation} />
-          </I18nStateProvider>
+          <TranslationsByFormRoute
+            formPath={match.params.formPath}
+            loadTranslationsForEditPage={loadTranslationsForEditPage}
+            saveLocalTranslation={saveLocalTranslation}
+            loadForm={loadForm}
+          />
         )}
       />
     </Switch>
