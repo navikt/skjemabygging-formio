@@ -288,7 +288,9 @@ export const useFormioTranslations = (serverURL, formio, userAlerter) => {
         });
         if (response.ok) {
           userAlerter.flashSuccessMessage(
-            !formTitle ? `Lagret globale ${tag}` : `Lagret oversettelser for skjema: ${formTitle}`
+            !formTitle
+              ? `Lagret globale ${tag}`
+              : `Lagret oversettelser for skjema "${formTitle}" på ${languagesInNorwegian[language]}`
           );
           return response;
         } else {
