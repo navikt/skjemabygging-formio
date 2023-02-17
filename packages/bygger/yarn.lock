@@ -12342,6 +12342,11 @@ react-collapse@^5.1.1:
   resolved "https://registry.yarnpkg.com/react-collapse/-/react-collapse-5.1.1.tgz#a2fa08ef13f372141b02e6a7d49ef72427bcbc2b"
   integrity sha512-k6cd7csF1o9LBhQ4AGBIdxB60SUEUMQDAnL2z1YvYNr9KoKr+nDkhN6FK7uGaBd/rYrYfrMpzpmJEIeHRYogBw==
 
+react-context-devtool@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-context-devtool/-/react-context-devtool-2.0.3.tgz#60d6d8669bc64e32e42069638e961acc8320d77a"
+  integrity sha512-GVpDaQqRsVoofcbViVWelWTUHNjk4CAA81ZU+TVjEwZUTjhwOgKDM4t6yGfLBoEEG8PFYKbp9QqzyWw2BASe5Q==
+
 react-csv@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-2.0.3.tgz#f5d17a3c71107d9bcbe580049350200debdc042a"
