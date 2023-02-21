@@ -36,4 +36,4 @@ export const devGithub: Partial<PublishRepoConfig> = {
   base: "test-publishing",
 };
 
-export const devEnabledFeatures = "translations,enhetsliste,autoComplete,diff";
+export const devEnabledFeatures = "translations,enhetsListe,autoComplete,diff";
