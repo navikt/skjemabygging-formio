@@ -1,10 +1,16 @@
 import { i18nData, mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
-import { FormioTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormioTranslationMap, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { getFormTexts } from "../../translations/utils";
 import i18nReducer, { I18nAction, I18nState } from "./i18nReducer";
 
 export const getAvailableLanguages = (translations: FormioTranslationMap) => Object.keys(translations);
+
+interface I18nStateProviderProps {
+  children: React.ReactElement;
+  loadTranslations: () => Promise<FormioTranslationMap>;
+  form?: NavFormType;
+}
 
 const initialState: I18nState = {
   translations: {},
@@ -28,7 +34,7 @@ const extractDefaultI18nNbNoFormTexts = (form) => {
   return form ? getFormTexts(form).reduce((i18n, formText) => ({ ...i18n, [formText.text]: formText.text }), {}) : {};
 };
 
-function I18nStateProvider({ children, loadTranslations, form }) {
+function I18nStateProvider({ children, loadTranslations, form }: I18nStateProviderProps) {
   const [state, dispatch] = useReducer(i18nReducer, initialState);
 
   useEffect(() => {
