@@ -5,7 +5,6 @@ import { appStyles, globalStyles } from "@navikt/skjemadigitalisering-shared-com
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import Formiojs from "formiojs/Formio";
 import React, { useMemo } from "react";
-import { debugContextDevtool } from "react-context-devtool";
 import AuthenticatedApp from "./AuthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import UnauthenticatedApp from "./UnauthenticatedApp";
@@ -31,11 +30,6 @@ function App({ projectURL, serverURL, pusher }) {
   const contentFunc = userData
     ? () => <AuthenticatedApp serverURL={serverURL} formio={formio} />
     : () => <UnauthenticatedApp projectURL={projectURL} />;
-
-  const root = document.getElementById("root", {
-    disable: process.env.NODE_ENV === "production",
-  });
-  debugContextDevtool(root);
 
   return (
     <UserAlerterContext.Provider value={userAlerter}>
