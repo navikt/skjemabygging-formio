@@ -70,7 +70,7 @@ jobs:
   deploy-bygger-to-preprod:
     name: "Deploy bygger to preprod"
     needs: [package-and-push-bygger]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
@@ -115,7 +115,7 @@ jobs:
   deploy-fyllut-to-preprod:
     name: "Deploy fyllut to preprod"
     needs: [package-and-push-fyllut]
-    if: ${{ !failure() }}
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
