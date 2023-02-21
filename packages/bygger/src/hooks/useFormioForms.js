@@ -52,9 +52,10 @@ export const useFormioForms = (formio, userAlerter) => {
           userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
           return form;
         })
-        .catch(() => {
+        .catch((err) => {
           userAlerter.setErrorMessage(
-            "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
+            "Lagring feilet. Det kan komme av at skjemaet har blitt lagret fra en annen nettleser. " +
+              "Last siden på ny for å få siste lagrede versjon."
           );
           return { error: true };
         });
