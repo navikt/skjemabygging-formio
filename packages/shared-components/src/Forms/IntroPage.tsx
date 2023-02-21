@@ -117,7 +117,7 @@ export function IntroPage({ form, formUrl }: Props) {
           </GuidePanel>
         )}
 
-        <nav className="form-nav">
+        <nav className="button-row button-row__center">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
             <a className="navds-button navds-button--primary navds-label" onClick={navigateToFormPage} href="#">
               {translate(TEXTS.grensesnitt.introPage.start)}

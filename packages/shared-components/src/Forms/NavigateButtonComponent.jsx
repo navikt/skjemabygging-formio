@@ -5,17 +5,21 @@ import { Link, useLocation } from "react-router-dom";
 const NavigateButtonComponent = ({ goBackUrl, translate }) => {
   const { search } = useLocation();
   return (
-    <nav className="form-nav">
-      <Link className="navds-button navds-button--secondary" to={{ pathname: goBackUrl, search }}>
-        <span aria-live="polite" className="navds-label">
-          {translate(TEXTS.grensesnitt.goBack)}
-        </span>
-      </Link>
-      <a className="navds-button navds-button--tertiary" href="https://www.nav.no">
-        <span aria-live="polite" className="navds-label">
-          {translate(TEXTS.grensesnitt.navigation.exit)}
-        </span>
-      </a>
+    <nav>
+      <div className="button-row">
+        <Link className="navds-button navds-button--secondary" to={{ pathname: goBackUrl, search }}>
+          <span aria-live="polite" className="navds-label">
+            {translate(TEXTS.grensesnitt.goBack)}
+          </span>
+        </Link>
+      </div>
+      <div className="button-row">
+        <a className="navds-button navds-button--tertiary" href="https://www.nav.no">
+          <span aria-live="polite" className="navds-label">
+            {translate(TEXTS.grensesnitt.navigation.exit)}
+          </span>
+        </a>
+      </div>
     </nav>
   );
 };

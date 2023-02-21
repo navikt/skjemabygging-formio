@@ -167,13 +167,23 @@
   }
 }
 
-nav.form-nav {
+.button-row {
   display: flex;
-  flex-direction: column;
-  .navds-button {
-    width: -moz-fit-content;
-    width: fit-content;
-    margin: 0 0 1.25rem 0;
+  flex-direction: row-reverse;
+  justify-content: start;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  button, a {
+    flex-grow: 1;
+    min-width: 12rem;
+    max-width: 18.75rem;
+  }
+  &__center {
+    justify-content: center;
+    @media (max-width: 540px) {
+      justify-content: start;
+    }
   }
 }
 
