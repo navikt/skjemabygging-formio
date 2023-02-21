@@ -54,8 +54,8 @@ export const useFormioForms = (formio, userAlerter) => {
         })
         .catch((err) => {
           userAlerter.setErrorMessage(
-            "Lagring feilet. Det kan komme av at skjemaet har blitt lagret fra en annen nettleser. " +
-              "Last siden på ny for å få siste lagrede versjon."
+            "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
+              "Last siden på nytt for å få siste versjon."
           );
           return { error: true };
         });

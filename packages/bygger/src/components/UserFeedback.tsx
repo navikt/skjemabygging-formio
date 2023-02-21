@@ -5,6 +5,7 @@ import { UserAlerterContext } from "../userAlerting";
 const useStyles = makeStyles({
   alertstripe: {
     display: "flex",
+    minWidth: "15rem",
   },
 });
 
