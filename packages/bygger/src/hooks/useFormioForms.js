@@ -52,7 +52,7 @@ export const useFormioForms = (formio, userAlerter) => {
           userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
           return form;
         })
-        .catch((err) => {
+        .catch(() => {
           userAlerter.setErrorMessage(
             "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
               "Last siden på nytt for å få siste versjon."
