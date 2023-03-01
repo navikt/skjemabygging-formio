@@ -144,10 +144,12 @@ const signatureSection = (
   const { signatures, descriptionOfSignatures } = formProperties;
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
 
-  return `
+  return signatureList.length > 0
+    ? `
 <h2>${translate("Underskrift")}</h2>
 <p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
-${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`;
+${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`
+    : undefined;
 };
 
 export { createHtmlFromSubmission, body, signatureSection };
