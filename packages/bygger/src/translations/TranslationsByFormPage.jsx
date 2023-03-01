@@ -32,7 +32,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
   const [form, setForm] = useState();
   const [status, setStatus] = useState("LOADING");
   const { translations } = useI18nState();
-  const [translationId, setTranslationId] = useState((translations[languageCode] || {}).id);
+  const [translationId, setTranslationId] = useState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
 
   useRedirectIfNoLanguageCode(languageCode, translations);
@@ -48,6 +48,10 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
         setStatus("FORM NOT FOUND");
       });
   }, [loadForm, formPath]);
+
+  useEffect(() => {
+    setTranslationId(translations[languageCode]?.id);
+  }, [translations, languageCode]);
 
   const flattenedComponents = getFormTexts(form, true);
   const styles = useStyles();
