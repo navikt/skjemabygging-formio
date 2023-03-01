@@ -32,6 +32,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
   const [form, setForm] = useState();
   const [status, setStatus] = useState("LOADING");
   const { translations } = useI18nState();
+  const [translationId, setTranslationId] = useState((translations[languageCode] || {}).id);
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
 
   useRedirectIfNoLanguageCode(languageCode, translations);
@@ -49,8 +50,18 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
   }, [loadForm, formPath]);
 
   const flattenedComponents = getFormTexts(form, true);
-  const translationId = (translations[languageCode] || {}).id;
   const styles = useStyles();
+
+  const onSave = async () => {
+    const savedTranslation = await saveTranslation(
+      translationId,
+      languageCode,
+      translations[languageCode]?.translations,
+      path,
+      title
+    );
+    setTranslationId(savedTranslation._id);
+  };
 
   if (status === "LOADING") {
     return <LoadingComponent />;
@@ -91,13 +102,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath={path} label={""} />
-              <PrimaryButtonWithSpinner
-                onClick={() =>
-                  saveTranslation(translationId, languageCode, translations[languageCode]?.translations, path, title)
-                }
-              >
-                Lagre
-              </PrimaryButtonWithSpinner>
+              <PrimaryButtonWithSpinner onClick={onSave}>Lagre</PrimaryButtonWithSpinner>
               <UserFeedback />
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}
