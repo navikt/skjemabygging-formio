@@ -14,6 +14,7 @@ const objectToByteArray = (obj) => Array.from(new TextEncoder().encode(JSON.stri
 const sendInn = {
   post: async (req, res, next) => {
     try {
+      const defaultLanguage = "nb-NO";
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const isTest = req.get("Fyllut-Is-Test") === "true";
@@ -50,7 +51,7 @@ const sendInn = {
         skjemanr: form.properties.skjemanummer,
         tittel: translate(form.title),
         tema: form.properties.tema,
-        spraak: language || "nb-NO",
+        spraak: language || defaultLanguage,
         hoveddokument: {
           vedleggsnr: form.properties.skjemanummer,
           label: translate(form.title),
@@ -65,7 +66,10 @@ const sendInn = {
           tittel: translate(form.title),
           mimetype: "application/json",
           pakrevd: false,
-          document: objectToByteArray(submission),
+          document: {
+            language: language || defaultLanguage,
+            data: objectToByteArray(submission),
+          },
         },
         vedleggsListe: translatedAttachments,
         kanLasteOppAnnet: otherDocumentation,
