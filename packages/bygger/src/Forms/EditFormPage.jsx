@@ -3,7 +3,7 @@ import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-componen
 import { Knapp } from "nav-frontend-knapper";
 import { Normaltekst, Sidetittel } from "nav-frontend-typografi";
 import React from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import NavFormBuilder from "../components/NavFormBuilder";
@@ -34,7 +34,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
   const formBuilderOptions = { ...FormBuilderOptions, formConfig: { publishedForm } };
   return (
     <>
-      <AppLayoutWithContext
+      <AppLayout
         navBarProps={{
           visSkjemaMeny: true,
           formPath: form.path,
@@ -62,7 +62,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             <UserFeedback />
           </Column>
         </Row>
-      </AppLayoutWithContext>
+      </AppLayout>
 
       <PublishModalComponents
         form={form}

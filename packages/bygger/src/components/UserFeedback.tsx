@@ -1,9 +1,16 @@
-import React, { useContext } from "react";
-import { UserAlerterContext } from "../userAlerting";
+import React from "react";
+import { useFeedbackMessage } from "../context/notifications/feedbackContext";
+import { usePusherNotificationSubscription } from "../context/notifications/notificationsContext";
 
 const UserFeedback = () => {
-  const userAlerter = useContext(UserAlerterContext).alertComponent();
-  return <aside aria-live="polite">{userAlerter && userAlerter()}</aside>;
+  const feedbackAlertComponent = useFeedbackMessage();
+  const pusherAlertComponent = usePusherNotificationSubscription();
+  return (
+    <aside aria-live="polite">
+      {feedbackAlertComponent()}
+      {pusherAlertComponent()}
+    </aside>
+  );
 };
 
 export default UserFeedback;

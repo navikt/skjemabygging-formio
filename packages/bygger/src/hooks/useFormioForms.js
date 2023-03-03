@@ -2,10 +2,12 @@ import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-dom
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
+import { useFeedBackEmit } from "../context/notifications/feedbackContext";
 
 const { getIso8601String } = dateUtils;
 
-export const useFormioForms = (formio, userAlerter) => {
+export const useFormioForms = (formio) => {
+  const { emitSuccessMessage, emitErrorMessage, emitWarningMessage } = useFeedBackEmit();
   const { userData } = useAuth();
 
   const loadFormsList = useCallback(() => {
@@ -49,26 +51,26 @@ export const useFormioForms = (formio, userAlerter) => {
           },
         })
         .then((form) => {
-          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
+          emitSuccessMessage(`Lagret skjema ${form.title}`);
           return form;
         })
         .catch(() => {
-          userAlerter.setErrorMessage(
+          emitErrorMessage(
             "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
           );
           return { error: true };
         });
     },
-    [formio, userAlerter, userData]
+    [formio, userData]
   );
 
   const deleteForm = useCallback(
     async (formId, tags, title) => {
       formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== "nav-skjema") }).then(() => {
-        userAlerter.flashSuccessMessage("Slettet skjemaet " + title);
+        emitSuccessMessage("Slettet skjemaet " + title);
       });
     },
-    [formio, userAlerter]
+    [formio]
   );
 
   const onPublish = useCallback(
@@ -89,15 +91,15 @@ export const useFormioForms = (formio, userAlerter) => {
           "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
 
         const { changed, form } = await response.json();
-        changed ? userAlerter.flashSuccessMessage(success) : userAlerter.setWarningMessage(warning);
+        changed ? emitSuccessMessage(success) : emitWarningMessage(warning);
         return form;
       } else {
         const { message } = await response.json();
-        userAlerter.setErrorMessage(message);
+        emitErrorMessage(message);
         return await loadForm(form.path);
       }
     },
-    [userAlerter, loadForm]
+    [loadForm]
   );
 
   const onUnpublish = useCallback(
@@ -108,15 +110,15 @@ export const useFormioForms = (formio, userAlerter) => {
       });
       if (response.ok) {
         const { form } = await response.json();
-        userAlerter.flashSuccessMessage("Satt i gang avpublisering, dette kan ta noen minutter.");
+        emitSuccessMessage("Satt i gang avpublisering, dette kan ta noen minutter.");
         return form;
       } else {
         const { message } = await response.json();
-        userAlerter.setErrorMessage(message);
+        emitErrorMessage(message);
         return await loadForm(form.path);
       }
     },
-    [userAlerter, loadForm]
+    [loadForm]
   );
 
   return {
