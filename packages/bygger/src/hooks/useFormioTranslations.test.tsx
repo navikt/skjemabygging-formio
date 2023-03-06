@@ -2,6 +2,7 @@ import { waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
 import createMockImplementation from "../../test/backendMockImplementation";
+import { FeedbackEmitContext } from "../context/notifications/feedbackContext";
 import { useFormioTranslations } from "./useFormioTranslations";
 
 const MOCK_PREDEFINED_TEXTS_I18N_EN = {
@@ -40,14 +41,17 @@ describe("useFormioTranslations", () => {
   const expectedHeader = { headers: { "x-jwt-token": "" } };
   let fetchSpy;
   let formioTranslations: ReturnType<typeof useFormioTranslations>;
-  let mockUserAlerter;
+  let mockFeedbackEmit;
 
   beforeEach(() => {
     fetchSpy = jest.spyOn(global, "fetch");
     fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
-    mockUserAlerter = { setErrorMessage: jest.fn(), flashSuccessMessage: jest.fn() };
+    mockFeedbackEmit = { success: jest.fn(), error: jest.fn() };
+    const wrapper = ({ children }) => (
+      <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
+    );
 
-    const { result } = renderHook(() => useFormioTranslations(projectUrl, new Formio(projectUrl), mockUserAlerter));
+    const { result } = renderHook(() => useFormioTranslations(projectUrl, new Formio(projectUrl)), { wrapper });
     formioTranslations = result.current;
   });
 
@@ -260,9 +264,9 @@ describe("useFormioTranslations", () => {
           })
         );
         await waitFor(() => formioTranslations.publishGlobalTranslations("en"));
-        expect(mockUserAlerter.setErrorMessage).not.toHaveBeenCalled();
-        expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled();
-        const messages = mockUserAlerter.flashSuccessMessage.mock.calls;
+        expect(mockFeedbackEmit.error).not.toHaveBeenCalled();
+        expect(mockFeedbackEmit.success).toHaveBeenCalled();
+        const messages = mockFeedbackEmit.success.mock.calls;
         expect(messages).toHaveLength(1);
         expect(messages[0][0]).toEqual("Publisering av Engelsk startet");
       });
@@ -288,9 +292,9 @@ describe("useFormioTranslations", () => {
           })
         );
         await waitFor(() => formioTranslations.publishGlobalTranslations("en"));
-        expect(mockUserAlerter.flashSuccessMessage).not.toHaveBeenCalled();
-        expect(mockUserAlerter.setErrorMessage).toHaveBeenCalled();
-        const errorMessages = mockUserAlerter.setErrorMessage.mock.calls;
+        expect(mockFeedbackEmit.success).not.toHaveBeenCalled();
+        expect(mockFeedbackEmit.error).toHaveBeenCalled();
+        const errorMessages = mockFeedbackEmit.error.mock.calls;
         expect(errorMessages).toHaveLength(1);
         expect(errorMessages[0][0]).toEqual("Det mangler oversettelser for følgende tekster: Forrige, Neste");
       });
@@ -312,9 +316,9 @@ describe("useFormioTranslations", () => {
           })
         );
         await waitFor(() => formioTranslations.publishGlobalTranslations("pl"));
-        expect(mockUserAlerter.flashSuccessMessage).not.toHaveBeenCalled();
-        expect(mockUserAlerter.setErrorMessage).toHaveBeenCalled();
-        const errorMessages = mockUserAlerter.setErrorMessage.mock.calls;
+        expect(mockFeedbackEmit.success).not.toHaveBeenCalled();
+        expect(mockFeedbackEmit.error).toHaveBeenCalled();
+        const errorMessages = mockFeedbackEmit.error.mock.calls;
         expect(errorMessages).toHaveLength(1);
         expect(errorMessages[0][0]).toEqual("Publisering feilet");
       });
@@ -385,7 +389,7 @@ describe("useFormioTranslations", () => {
         "formTitle"
       );
 
-      await waitFor(() => expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled());
+      await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
       expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/translationId`, {
         body: JSON.stringify({
@@ -406,7 +410,7 @@ describe("useFormioTranslations", () => {
         "formPath",
         "formTitle"
       );
-      await waitFor(() => expect(mockUserAlerter.flashSuccessMessage).toHaveBeenCalled());
+      await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
       expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission`, {
         body: JSON.stringify({

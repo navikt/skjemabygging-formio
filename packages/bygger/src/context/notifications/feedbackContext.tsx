@@ -3,7 +3,7 @@ import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
 
 const defaultEmit = (message: string) => {};
 
-const FeedbackEmitContext = createContext({
+export const FeedbackEmitContext = createContext({
   success: defaultEmit,
   error: defaultEmit,
   warning: defaultEmit,
