@@ -3,13 +3,13 @@ import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjem
 import cloneDeep from "lodash.clonedeep";
 import { Hovedknapp } from "nav-frontend-knapper";
 import { Sidetittel } from "nav-frontend-typografi";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { AppLayout } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import { UserAlerterContext } from "../userAlerting";
+import { useFeedBackEmit } from "../context/notifications/feedbackContext";
 import { defaultFormFields } from "./DefaultForm";
 
 const useStyles = makeStyles({
@@ -31,7 +31,7 @@ interface State {
 }
 
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
-  const userAlerter = useContext(UserAlerterContext);
+  const feedbackEmit = useFeedBackEmit();
   const history = useHistory();
   const styles = useStyles();
   const [state, setState] = useState<State>({
@@ -72,7 +72,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
       return await formio
         .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
         .then((form) => {
-          userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
+          feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
           history.push(`/forms/${form.path}/edit`);
         });
     } else {
