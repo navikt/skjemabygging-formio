@@ -1,14 +1,51 @@
+import { AlertStripeSuksess } from "nav-frontend-alertstriper";
 import React from "react";
-import { useFeedbackMessage } from "../context/notifications/feedbackContext";
+import { useFeedbackMessages } from "../context/notifications/feedbackContext";
 import { usePusherNotificationSubscription } from "../context/notifications/notificationsContext";
+import { Message } from "../hooks/useMessageQueue";
+import { ErrorAlert, FyllutDeploymentFailureAlert, FyllutDeploymentSuccessAlert, WarningAlert } from "./Alerts";
 
 const UserFeedback = () => {
-  const feedbackAlertComponent = useFeedbackMessage();
-  const pusherAlertComponent = usePusherNotificationSubscription();
+  const feedbackMessages = useFeedbackMessages();
+  const pusherMessages = usePusherNotificationSubscription();
+
+  const renderUserFeedback = (message: Message) => {
+    switch (message.type) {
+      case "success":
+        setTimeout(() => message.clear(), 5000);
+        return <AlertStripeSuksess key={message.id}>{message.message}</AlertStripeSuksess>;
+      case "warning":
+        return <WarningAlert key={message.id} message={message.message} onClose={() => message.clear()} />;
+      case "error":
+        return <ErrorAlert key={message.id} exception={message.message} onClose={() => message.clear()} />;
+    }
+  };
+
+  const renderPusherMessages = (message: Message) => {
+    switch (message.type) {
+      case "success":
+        return (
+          <FyllutDeploymentSuccessAlert
+            title={message.title}
+            message={message.message}
+            onClose={() => message.clear()}
+          />
+        );
+      case "error":
+        return (
+          <FyllutDeploymentFailureAlert
+            title={message.title}
+            message={message.message}
+            onClose={() => message.clear()}
+          />
+        );
+    }
+  };
+
   return (
     <aside aria-live="polite">
-      {feedbackAlertComponent()}
-      {pusherAlertComponent()}
+      {feedbackMessages.map(renderUserFeedback)}
+      {pusherMessages.map(renderPusherMessages)}
     </aside>
   );
 };

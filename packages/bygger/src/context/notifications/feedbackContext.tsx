@@ -1,31 +1,40 @@
-import { createContext, useContext, useState } from "react";
-import { UserAlerter } from "../../userAlerting";
+import React, { createContext, useContext, useEffect } from "react";
+import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
 
-const defaultEmit = (message: string) => {};
+const defaultEmit = (_message: string) => {};
 
 const FeedbackEmitContext = createContext({
-  emitSuccessMessage: defaultEmit,
-  emitErrorMessage: defaultEmit,
-  emitWarningMessage: defaultEmit,
+  success: defaultEmit,
+  error: defaultEmit,
+  warning: defaultEmit,
 });
-const FeedbackMessageContext = createContext<() => JSX.Element | null>(() => null);
+const FeedbackMessageContext = createContext<Message[]>([]);
 
 function FeedbackProvider({ children }: { children: React.ReactElement }) {
-  const [alerts, setAlerts] = useState([]);
-  const userAlerter = new UserAlerter(alerts, setAlerts);
+  const [messages, messageQueue] = useMessageQueue();
 
-  const emitSuccessMessage = (message: string) => userAlerter.flashSuccessMessage(message);
-  const emitErrorMessage = (message: string) => userAlerter.setErrorMessage(message);
-  const emitWarningMessage = (message: string) => userAlerter.setWarningMessage(message);
+  useEffect(() => {
+    const callback = (error) => messageQueue.push({ message: error, type: "error" });
+    window.addEventListener("unhandledrejection", callback);
+    return () => window.removeEventListener("unhandledrejection", callback);
+  }, [messageQueue]);
+
+  console.log(messages);
+
+  const emit = {
+    success: (message: string) => messageQueue.push({ message, type: "success" }),
+    warning: (message: string) => messageQueue.push({ message, type: "error" }),
+    error: (message: string) => messageQueue.push({ message, type: "warning" }),
+  };
 
   return (
-    <FeedbackEmitContext.Provider value={{ emitSuccessMessage, emitErrorMessage, emitWarningMessage }}>
-      <FeedbackMessageContext.Provider value={userAlerter.alertComponent()}>{children}</FeedbackMessageContext.Provider>
+    <FeedbackEmitContext.Provider value={emit}>
+      <FeedbackMessageContext.Provider value={messages}>{children}</FeedbackMessageContext.Provider>
     </FeedbackEmitContext.Provider>
   );
 }
 
-export const useFeedbackMessage = () => useContext(FeedbackMessageContext);
+export const useFeedbackMessages = () => useContext(FeedbackMessageContext);
 export const useFeedBackEmit = () => useContext(FeedbackEmitContext);
 
 export default FeedbackProvider;

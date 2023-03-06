@@ -37,13 +37,13 @@ export const WarningAlert = ({ message, onClose }) => (
   </AlertStripeAdvarsel>
 );
 
-export const FyllutDeploymentSuccessAlert = ({ data, onClose }) => {
+export const FyllutDeploymentSuccessAlert = ({ title, message, onClose }) => {
   return (
     <AlertStripeSuksess>
       <AlertContent>
         <div>
-          <h3>{data.title}</h3>
-          <div>{data.message}</div>
+          <h3>{title}</h3>
+          <div>{message}</div>
         </div>
         <Xknapp type="flat" onClick={onClose} />
       </AlertContent>
@@ -51,13 +51,13 @@ export const FyllutDeploymentSuccessAlert = ({ data, onClose }) => {
   );
 };
 
-export const FyllutDeploymentFailureAlert = ({ data, onClose }) => {
+export const FyllutDeploymentFailureAlert = ({ title, message, onClose }) => {
   return (
     <AlertStripeFeil>
       <AlertContent>
         <div>
-          <h3>{data.title}</h3>
-          <div>{data.message}</div>
+          <h3>{title}</h3>
+          <div>{message}</div>
         </div>
         <Xknapp type="flat" onClick={onClose} />
       </AlertContent>

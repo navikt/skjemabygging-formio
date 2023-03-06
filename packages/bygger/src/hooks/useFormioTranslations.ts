@@ -12,10 +12,11 @@ import {
   TranslationTag,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { languagesInNorwegian } from "../context/i18n";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
 import { getTranslationKeysForAllPredefinedTexts, tags } from "../translations/global/utils";
+import { UserAlerterContext } from "../userAlerting";
 
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
@@ -59,7 +60,8 @@ const mapFormioKeysToLabelsForValidering = (translationPayload) =>
     },
   }));
 
-export const useFormioTranslations = (serverURL, formio, userAlerter) => {
+export const useFormioTranslations = (serverURL, formio) => {
+  const userAlerter = useContext(UserAlerterContext);
   const loadGlobalTranslations = useCallback(
     async (language?: Language, mapper = (response) => response): Promise<FormioTranslationMap> => {
       let filter = "";

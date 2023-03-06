@@ -7,7 +7,7 @@ import { useFeedBackEmit } from "../context/notifications/feedbackContext";
 const { getIso8601String } = dateUtils;
 
 export const useFormioForms = (formio) => {
-  const { emitSuccessMessage, emitErrorMessage, emitWarningMessage } = useFeedBackEmit();
+  const feedbackEmit = useFeedBackEmit();
   const { userData } = useAuth();
 
   const loadFormsList = useCallback(() => {
@@ -51,26 +51,26 @@ export const useFormioForms = (formio) => {
           },
         })
         .then((form) => {
-          emitSuccessMessage(`Lagret skjema ${form.title}`);
+          feedbackEmit.success(`Lagret skjema ${form.title}`);
           return form;
         })
         .catch(() => {
-          emitErrorMessage(
+          feedbackEmit.error(
             "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
           );
           return { error: true };
         });
     },
-    [formio, userData]
+    [formio, userData, feedbackEmit]
   );
 
   const deleteForm = useCallback(
     async (formId, tags, title) => {
       formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== "nav-skjema") }).then(() => {
-        emitSuccessMessage("Slettet skjemaet " + title);
+        feedbackEmit.success("Slettet skjemaet " + title);
       });
     },
-    [formio]
+    [formio, feedbackEmit]
   );
 
   const onPublish = useCallback(
@@ -91,15 +91,15 @@ export const useFormioForms = (formio) => {
           "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
 
         const { changed, form } = await response.json();
-        changed ? emitSuccessMessage(success) : emitWarningMessage(warning);
+        changed ? feedbackEmit.success(success) : feedbackEmit.warning(warning);
         return form;
       } else {
         const { message } = await response.json();
-        emitErrorMessage(message);
+        feedbackEmit.error(message);
         return await loadForm(form.path);
       }
     },
-    [loadForm]
+    [loadForm, feedbackEmit]
   );
 
   const onUnpublish = useCallback(
@@ -110,15 +110,15 @@ export const useFormioForms = (formio) => {
       });
       if (response.ok) {
         const { form } = await response.json();
-        emitSuccessMessage("Satt i gang avpublisering, dette kan ta noen minutter.");
+        feedbackEmit.success("Satt i gang avpublisering, dette kan ta noen minutter.");
         return form;
       } else {
         const { message } = await response.json();
-        emitErrorMessage(message);
+        feedbackEmit.error(message);
         return await loadForm(form.path);
       }
     },
-    [loadForm]
+    [loadForm, feedbackEmit]
   );
 
   return {
