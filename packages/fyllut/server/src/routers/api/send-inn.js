@@ -66,10 +66,10 @@ const sendInn = {
           tittel: translate(form.title),
           mimetype: "application/json",
           pakrevd: false,
-          document: {
+          document: objectToByteArray({
             language: language || defaultLanguage,
-            data: objectToByteArray(submission),
-          },
+            data: submission,
+          }),
         },
         vedleggsListe: translatedAttachments,
         kanLasteOppAnnet: otherDocumentation,
