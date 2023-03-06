@@ -56,7 +56,8 @@ export const useFormioForms = (formio) => {
         })
         .catch(() => {
           feedbackEmit.error(
-            "Kunne ikke lagre skjemadefinsjonen. Pass på at du er innlogget og at skjemaet ikke innholder flere store bilder."
+            "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
+              "Last siden på nytt for å få siste versjon."
           );
           return { error: true };
         });

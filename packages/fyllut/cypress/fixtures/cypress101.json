@@ -812,6 +812,28 @@
           "id": "e1wksdo"
         },
         {
+          "content": "<span>Eksempel</span> Oversettelse",
+          "alerttype": "info",
+          "isInline": false,
+          "key": "alertstripe",
+          "type": "alertstripe",
+          "label": "Alertstripe",
+          "input": true,
+          "tableView": false,
+          "id": "alert-i18n1"
+        },
+        {
+          "content": "<span>Eksempel</span> <span>Oversettelse</span>",
+          "alerttype": "info",
+          "isInline": false,
+          "key": "alertstripe",
+          "type": "alertstripe",
+          "label": "Alertstripe",
+          "input": true,
+          "tableView": false,
+          "id": "alert-i18n2"
+        },
+        {
           "label": "Er kontaktadressen din en vegadresse eller postboksadresse?",
           "key": "vegadresseEllerPostboksadresse",
           "type": "radiopanel",

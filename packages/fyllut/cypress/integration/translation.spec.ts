@@ -83,4 +83,20 @@ describe("Translations", () => {
       cy.findByRole("heading", { name: "Summary" }).should("exist");
     });
   });
+
+  describe("Special cases", () => {
+    beforeEach(() => {
+      cy.visit("/fyllut/cypress101/skjema?sub=paper");
+    });
+
+    it("Check that translateHTMLTemplate override work", () => {
+      cy.findByRole("button", { name: "Norsk bokmål" }).click();
+      cy.findByRole("link", { name: "English" }).click();
+      cy.clickNextStep();
+
+      // Both these examples fail without the override in translateHTMLTemplate
+      cy.get("[id='alert-i18n1']").contains("Example correct translation").should("exist");
+      cy.get("[id='alert-i18n2']").contains("Example correct translation").should("exist");
+    });
+  });
 });

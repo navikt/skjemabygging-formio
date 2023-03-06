@@ -294,7 +294,7 @@ export const useFormioTranslations = (serverURL, formio) => {
               ? `Lagret globale ${tag}`
               : `Lagret oversettelser for skjema "${formTitle}" på ${languagesInNorwegian[language]}`
           );
-          return response;
+          return response.json();
         } else {
           const error = await response.json();
           const errorMessage = "Lagret oversettelser feilet: ".concat(error?.message);

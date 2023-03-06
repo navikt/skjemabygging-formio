@@ -14,6 +14,10 @@
     "Fødselsnummer / D-nummer": "Norwegian national identification / D number",
     "Oppsummering": "Summary",
     "Annen dokumentasjon": "Other documentation",
-    "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.": "No, I have no other documentation."
+    "Nei, jeg har ingen ekstra dokumentasjon jeg vil legge ved.": "No, I have no other documentation.",
+    "<span>Eksempel</span> Oversettelse": "Example correct translation",
+    "<span>Eksempel</span> <span>Oversettelse</span>": "Example correct translation",
+    "Eksempel": "Example",
+    "Oversettelse": "Translation"
   }
 }
