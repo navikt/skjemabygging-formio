@@ -1,8 +1,19 @@
 import styled from "@material-ui/styles/styled";
+import { Alert } from "@navikt/ds-react";
 import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { AlertStripeAdvarsel, AlertStripeFeil, AlertStripeSuksess } from "nav-frontend-alertstriper";
 import { Xknapp } from "nav-frontend-ikonknapper";
 import React from "react";
+
+interface AlertProps {
+  className?: string;
+  title?: string;
+  message: string;
+  onClose: () => void;
+}
+
+interface ErrorAlertProps extends Omit<AlertProps, "message"> {
+  exception: { message: string } | string;
+}
 
 const AlertContent = styled("div")({
   display: "flex",
@@ -19,27 +30,27 @@ const AlertContent = styled("div")({
   },
 });
 
-export const ErrorAlert = ({ exception, onClose }) => (
-  <AlertStripeFeil>
+export const ErrorAlert = ({ className, exception, onClose }: ErrorAlertProps) => (
+  <Alert className={className} variant="error">
     <AlertContent>
-      <p>{exception.message || exception}</p>
+      <p>{typeof exception === "object" ? exception.message : exception}</p>
       <Xknapp onClick={onClose} />
     </AlertContent>
-  </AlertStripeFeil>
+  </Alert>
 );
 
-export const WarningAlert = ({ message, onClose }) => (
-  <AlertStripeAdvarsel>
+export const WarningAlert = ({ className, message, onClose }: AlertProps) => (
+  <Alert className={className} variant="warning">
     <AlertContent>
       <p>{message}</p>
       <Xknapp onClick={onClose} />
     </AlertContent>
-  </AlertStripeAdvarsel>
+  </Alert>
 );
 
-export const FyllutDeploymentSuccessAlert = ({ title, message, onClose }) => {
+export const FyllutDeploymentSuccessAlert = ({ className, title, message, onClose }: AlertProps) => {
   return (
-    <AlertStripeSuksess>
+    <Alert className={className} variant="success">
       <AlertContent>
         <div>
           <h3>{title}</h3>
@@ -47,13 +58,13 @@ export const FyllutDeploymentSuccessAlert = ({ title, message, onClose }) => {
         </div>
         <Xknapp type="flat" onClick={onClose} />
       </AlertContent>
-    </AlertStripeSuksess>
+    </Alert>
   );
 };
 
-export const FyllutDeploymentFailureAlert = ({ title, message, onClose }) => {
+export const FyllutDeploymentFailureAlert = ({ className, title, message, onClose }: AlertProps) => {
   return (
-    <AlertStripeFeil>
+    <Alert className={className} variant="error">
       <AlertContent>
         <div>
           <h3>{title}</h3>
@@ -61,6 +72,6 @@ export const FyllutDeploymentFailureAlert = ({ title, message, onClose }) => {
         </div>
         <Xknapp type="flat" onClick={onClose} />
       </AlertContent>
-    </AlertStripeFeil>
+    </Alert>
   );
 };

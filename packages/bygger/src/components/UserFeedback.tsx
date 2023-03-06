@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import { AlertStripeSuksess } from "nav-frontend-alertstriper";
+import { Alert } from "@navikt/ds-react";
 import React from "react";
 import { useFeedbackMessages } from "../context/notifications/feedbackContext";
 import { usePusherNotificationSubscription } from "../context/notifications/notificationsContext";
@@ -9,7 +9,11 @@ import { ErrorAlert, FyllutDeploymentFailureAlert, FyllutDeploymentSuccessAlert,
 const useStyles = makeStyles({
   alertstripe: {
     display: "flex",
+    flexDirection: "column",
     minWidth: "15rem",
+  },
+  alert: {
+    marginBottom: "1rem",
   },
 });
 
@@ -22,11 +26,29 @@ const UserFeedback = () => {
     switch (message.type) {
       case "success":
         setTimeout(() => message.clear(), 5000);
-        return <AlertStripeSuksess key={message.id}>{message.message}</AlertStripeSuksess>;
+        return (
+          <Alert variant="success" className={style.alert} key={message.id}>
+            {message.message}
+          </Alert>
+        );
       case "warning":
-        return <WarningAlert key={message.id} message={message.message} onClose={() => message.clear()} />;
+        return (
+          <WarningAlert
+            className={style.alert}
+            key={message.id}
+            message={message.message}
+            onClose={() => message.clear()}
+          />
+        );
       case "error":
-        return <ErrorAlert key={message.id} exception={message.message} onClose={() => message.clear()} />;
+        return (
+          <ErrorAlert
+            className={style.alert}
+            key={message.id}
+            exception={message.message}
+            onClose={() => message.clear()}
+          />
+        );
     }
   };
 
@@ -35,6 +57,7 @@ const UserFeedback = () => {
       case "success":
         return (
           <FyllutDeploymentSuccessAlert
+            className={style.alert}
             title={message.title}
             message={message.message}
             onClose={() => message.clear()}
@@ -43,6 +66,7 @@ const UserFeedback = () => {
       case "error":
         return (
           <FyllutDeploymentFailureAlert
+            className={style.alert}
             title={message.title}
             message={message.message}
             onClose={() => message.clear()}
