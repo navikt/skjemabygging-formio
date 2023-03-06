@@ -6,7 +6,7 @@ import { Sidetittel } from "nav-frontend-typografi";
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
 import { UserAlerterContext } from "../userAlerting";
@@ -85,13 +85,13 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema" }}>
+    <AppLayout navBarProps={{ title: "Opprett nytt skjema" }}>
       <main className={styles.root}>
         <Sidetittel className="margin-bottom-double">Opprett nytt skjema</Sidetittel>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
         <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
       </main>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 

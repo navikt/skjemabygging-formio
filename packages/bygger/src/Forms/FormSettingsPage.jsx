@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Knapp } from "nav-frontend-knapper";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
 import Column from "../components/layout/Column";
@@ -46,7 +46,7 @@ export function FormSettingsPage({
   };
 
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         title: "Skjemainnstillinger",
         visSkjemaMeny: true,
@@ -77,6 +77,6 @@ export function FormSettingsPage({
         openPublishSettingModal={openPublishSettingModal}
         setOpenPublishSettingModal={setOpenPublishSettingModal}
       />
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 }

@@ -3,7 +3,7 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import React, { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
@@ -83,7 +83,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
 
   return (
     <>
-      <AppLayoutWithContext
+      <AppLayout
         navBarProps={{
           title: "Rediger oversettelse",
           visSkjemaliste: false,
@@ -121,7 +121,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
             </Column>
           </div>
         </Row>
-      </AppLayoutWithContext>
+      </AppLayout>
     </>
   );
 };

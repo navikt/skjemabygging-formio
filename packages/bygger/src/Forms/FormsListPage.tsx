@@ -6,7 +6,7 @@ import { Hovedknapp } from "nav-frontend-knapper";
 import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import {
   asFormMetadata,
@@ -167,7 +167,7 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
   const onNew = () => history.push("/forms/new");
 
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
@@ -195,7 +195,7 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
           )}
         </FormsList>
       </nav>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 

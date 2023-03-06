@@ -4,7 +4,7 @@ import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
 import AlertStripe from "nav-frontend-alertstriper";
 import { Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import { useAuth } from "../context/auth-context";
@@ -33,7 +33,7 @@ const ReportsPage = () => {
   }, [http, userData]);
 
   return (
-    <AppLayoutWithContext>
+    <AppLayout navBarProps={{}}>
       <Row>
         <Column className={styles.reports}>
           <Sidetittel>Rapporter</Sidetittel>
@@ -55,7 +55,7 @@ const ReportsPage = () => {
           )}
         </Column>
       </Row>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 
