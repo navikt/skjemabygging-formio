@@ -8,7 +8,7 @@ import React, { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import FeedbackProvider from "./context/notifications/FeedbackContext";
-import { PusherNotificationsProvider } from "./context/notifications/NotificationsContext";
+import PusherNotificationsProvider from "./context/notifications/NotificationsContext";
 import UnauthenticatedApp from "./UnauthenticatedApp";
 
 const useStyles = makeStyles(() => ({

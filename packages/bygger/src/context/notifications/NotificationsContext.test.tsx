@@ -1,7 +1,7 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { act } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
-import { PusherNotificationsProvider, usePusherNotifications } from "./NotificationsContext";
+import PusherNotificationsProvider, { usePusherNotifications } from "./NotificationsContext";
 
 let channelSubscriptions = {};
 jest.mock("pusher-js", () => {

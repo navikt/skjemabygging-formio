@@ -14,7 +14,7 @@ function createPusher(config) {
   return { subscribe: () => ({ bind: () => {}, unbind: () => {} }) };
 }
 
-export function PusherNotificationsProvider({ children }: { children: React.ReactElement }) {
+function PusherNotificationsProvider({ children }: { children: React.ReactElement }) {
   const [messages, messageQueue] = useMessageQueue();
   const { config } = useAppConfig();
   const pusher = createPusher(config);
@@ -37,3 +37,4 @@ export function PusherNotificationsProvider({ children }: { children: React.Reac
 }
 
 export const usePusherNotifications = () => useContext(PusherNotificationContext);
+export default PusherNotificationsProvider;
