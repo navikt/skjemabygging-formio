@@ -8,16 +8,16 @@ export const EVENT = { success: "success", failure: "failure" };
 
 const PusherNotificationContext = createContext<Message[]>([]);
 
-function createPusher(config) {
+const createPusher = (config) => {
   if (config && config.pusherKey) {
     return new Pusher(config.pusherKey as string, {
       cluster: config.pusherCluster as string,
     });
   }
   return { subscribe: () => ({ bind: () => {}, unbind: () => {} }) };
-}
+};
 
-function PusherNotificationsProvider({ children }: { children: React.ReactElement }) {
+const PusherNotificationsProvider = ({ children }: { children: React.ReactElement }) => {
   const [messages, messageQueue] = useMessageQueue();
   const { config } = useAppConfig();
   const pusher = createPusher(config);
@@ -37,7 +37,7 @@ function PusherNotificationsProvider({ children }: { children: React.ReactElemen
   }, [pusher, messageQueue]);
 
   return <PusherNotificationContext.Provider value={messages}>{children}</PusherNotificationContext.Provider>;
-}
+};
 
 export const usePusherNotifications = () => useContext(PusherNotificationContext);
 export default PusherNotificationsProvider;

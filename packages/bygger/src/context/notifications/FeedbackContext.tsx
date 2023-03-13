@@ -10,7 +10,7 @@ export const FeedbackEmitContext = createContext({
 });
 const FeedbackMessageContext = createContext<Message[]>([]);
 
-function FeedbackProvider({ children }: { children: React.ReactElement }) {
+const FeedbackProvider = ({ children }: { children: React.ReactElement }) => {
   const [messages, messageQueue] = useMessageQueue();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function FeedbackProvider({ children }: { children: React.ReactElement }) {
       <FeedbackMessageContext.Provider value={messages}>{children}</FeedbackMessageContext.Provider>
     </FeedbackEmitContext.Provider>
   );
-}
+};
 
 export const useFeedbackMessages = () => useContext(FeedbackMessageContext);
 export const useFeedbackEmit = () => useContext(FeedbackEmitContext);
