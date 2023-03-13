@@ -6,6 +6,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/auth-context";
 import { FormMenu } from "./FormMenu";
+import NotificationDropdown from "./NotificationDropdown";
 import { TranslationsMenu } from "./TranslationsMenu";
 
 const useStyles = makeStyles({
@@ -94,6 +95,7 @@ export const NavBar = ({ formPath, visSkjemaMeny, visOversettelsesMeny }: Props)
           {visOversettelsesMeny && <TranslationsMenu />}
         </div>
         <div className={styles.headerMenus}>
+          <NotificationDropdown />
           {showAdmin && (
             <Dropdown>
               <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
