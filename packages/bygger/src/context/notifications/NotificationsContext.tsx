@@ -3,6 +3,9 @@ import Pusher from "pusher-js";
 import React, { createContext, useContext, useEffect } from "react";
 import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
 
+export const CHANNEL = "fyllut-deployment";
+export const EVENT = { success: "success", failure: "failure" };
+
 const PusherNotificationContext = createContext<Message[]>([]);
 
 function createPusher(config) {
@@ -20,16 +23,16 @@ function PusherNotificationsProvider({ children }: { children: React.ReactElemen
   const pusher = createPusher(config);
 
   useEffect(() => {
-    const fyllutDeploymentChannel = pusher.subscribe("fyllut-deployment");
-    fyllutDeploymentChannel.bind("success", ({ title, message }) =>
+    const fyllutDeploymentChannel = pusher.subscribe(CHANNEL);
+    fyllutDeploymentChannel.bind(EVENT.success, ({ title, message }) =>
       messageQueue.push({ title, message, type: "success" })
     );
-    fyllutDeploymentChannel.bind("failure", ({ title, message }) =>
+    fyllutDeploymentChannel.bind(EVENT.failure, ({ title, message }) =>
       messageQueue.push({ title, message, type: "error" })
     );
     return () => {
-      fyllutDeploymentChannel.unbind("success");
-      fyllutDeploymentChannel.unbind("failure");
+      fyllutDeploymentChannel.unbind(EVENT.success);
+      fyllutDeploymentChannel.unbind(EVENT.failure);
     };
   }, [pusher, messageQueue]);
 
