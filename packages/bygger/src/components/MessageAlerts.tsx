@@ -15,12 +15,11 @@ const useStyles = makeStyles({
     marginBottom: "1rem",
   },
   body: {
-    overflowWrap: "break-word",
+    overflowWrap: "anywhere",
   },
 });
 
 const AlertContent = styled("div")({
-  overflowWrap: "break-word",
   display: "flex",
   alignItems: "flex-start",
   "& .knapp": {
@@ -46,7 +45,7 @@ export const ErrorAlert = ({ message }: AlertProps) => {
   return (
     <Alert variant="error" key={message.id} className={styles.alert}>
       <AlertContent>
-        <BodyShort>{message.message}</BodyShort>
+        <BodyShort className={styles.body}>{message.message}</BodyShort>
         <Xknapp onClick={() => message.clear()} />
       </AlertContent>
     </Alert>
@@ -58,7 +57,7 @@ export const WarningAlert = ({ message }: AlertProps) => {
   return (
     <Alert variant="warning" key={message.id} className={styles.alert}>
       <AlertContent>
-        <BodyShort>{message.message}</BodyShort>
+        <BodyShort className={styles.body}>{message.message}</BodyShort>
         <Xknapp onClick={() => message.clear()} />
       </AlertContent>
     </Alert>
@@ -91,7 +90,7 @@ export const FyllutDeploymentFailureAlert = ({ message }: AlertProps) => {
           <Heading level="3" size="small">
             {message.title}
           </Heading>
-          <BodyShort>{message.message}</BodyShort>
+          <BodyShort className={styles.body}>{message.message}</BodyShort>
         </div>
         <Xknapp type="flat" onClick={() => message.clear()} />
       </AlertContent>
