@@ -75,8 +75,8 @@ describe("htmlBuilder", () => {
       const bodyElement = body([
         createPanel("Panel", [createComponent("Field 1", "value 1"), createComponent("Field 2", "value 2")]),
       ]);
-      expect(bodyElement).toContain('<div class="spm">Field 1</div><div class="svar">- value 1</div>');
-      expect(bodyElement).toContain('<div class="spm">Field 2</div><div class="svar">- value 2</div>');
+      expect(bodyElement).toContain('<div class="spm">Field 1</div><div class="svar">: value 1</div>');
+      expect(bodyElement).toContain('<div class="spm">Field 2</div><div class="svar">: value 2</div>');
     });
   });
 
@@ -89,7 +89,7 @@ describe("htmlBuilder", () => {
 
         expect(bodyElement).toContain("<h2>Panel</h2>");
         expect(bodyElement).not.toContain("<h2>Fieldset</h2>");
-        expect(bodyElement).toContain('<div class="spm">Field</div><div class="svar">- value</div>');
+        expect(bodyElement).toContain('<div class="spm">Field</div><div class="svar">: value</div>');
       });
     });
 
@@ -128,8 +128,8 @@ describe("htmlBuilder", () => {
         });
 
         it("displays the contained fields", () => {
-          expect(bodyElement).toContain('<div class="spm">Field 1</div><div class="svar">- value 1</div>');
-          expect(bodyElement).toContain('<div class="spm">Field 2</div><div class="svar">- value 2</div>');
+          expect(bodyElement).toContain('<div class="spm">Field 1</div><div class="svar">: value 1</div>');
+          expect(bodyElement).toContain('<div class="spm">Field 2</div><div class="svar">: value 2</div>');
         });
 
         it("does not add a second indentation", () => {
@@ -163,7 +163,7 @@ describe("htmlBuilder", () => {
         });
 
         it("adds the fields in the skjemagruppe", () => {
-          expect(bodyElement).toContain('<div class="spm">Field</div><div class="svar">- value</div>');
+          expect(bodyElement).toContain('<div class="spm">Field</div><div class="svar">: value</div>');
         });
       });
     });
@@ -259,7 +259,7 @@ describe("htmlBuilder", () => {
           createPanel("Panel", [createComponent("Multiple choice", ["Abc", "Def", "Ghi"], "selectboxes")]),
         ]);
         expect(bodyElement).toContain(`<div class="spm">Multiple choice</div>
-<div class="svar">- Abc</div><div class="svar">- Def</div><div class="svar">- Ghi</div>`);
+<div class="svar">: Abc</div><div class="svar">: Def</div><div class="svar">: Ghi</div>`);
       });
     });
   });
