@@ -2,12 +2,12 @@ import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-dom
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
-import { useFeedBackEmit } from "../context/notifications/feedbackContext";
+import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 
 const { getIso8601String } = dateUtils;
 
 export const useFormioForms = (formio) => {
-  const feedbackEmit = useFeedBackEmit();
+  const feedbackEmit = useFeedbackEmit();
   const { userData } = useAuth();
 
   const loadFormsList = useCallback(() => {

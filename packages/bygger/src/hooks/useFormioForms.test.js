@@ -4,7 +4,7 @@ import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
 import React, { useEffect, useState } from "react";
 import { AuthProvider } from "../context/auth-context";
-import { FeedbackEmitContext } from "../context/notifications/feedbackContext";
+import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
 import { useFormioForms } from "./useFormioForms";
 
 const RESPONSE_HEADERS_OK = {

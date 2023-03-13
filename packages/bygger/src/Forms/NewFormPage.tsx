@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AppLayout } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import { useFeedBackEmit } from "../context/notifications/feedbackContext";
+import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 import { defaultFormFields } from "./DefaultForm";
 
 const useStyles = makeStyles({
@@ -31,7 +31,7 @@ interface State {
 }
 
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
-  const feedbackEmit = useFeedBackEmit();
+  const feedbackEmit = useFeedbackEmit();
   const history = useHistory();
   const styles = useStyles();
   const [state, setState] = useState<State>({

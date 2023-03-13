@@ -1,8 +1,8 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Alert } from "@navikt/ds-react";
 import React from "react";
-import { useFeedbackMessages } from "../context/notifications/feedbackContext";
-import { usePusherNotificationSubscription } from "../context/notifications/notificationsContext";
+import { useFeedbackMessages } from "../context/notifications/FeedbackContext";
+import { usePusherNotifications } from "../context/notifications/NotificationsContext";
 import { Message } from "../hooks/useMessageQueue";
 import { ErrorAlert, FyllutDeploymentFailureAlert, FyllutDeploymentSuccessAlert, WarningAlert } from "./Alerts";
 
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 
 const UserFeedback = () => {
   const feedbackMessages = useFeedbackMessages();
-  const pusherMessages = usePusherNotificationSubscription();
+  const pusherMessages = usePusherNotifications();
   const style = useStyles();
 
   const renderUserFeedback = (message: Message) => {

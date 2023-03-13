@@ -9,7 +9,7 @@ import createMockImplementation from "../../test/backendMockImplementation";
 import featureToggles from "../../test/featureToggles";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { AuthContext } from "../context/auth-context";
-import FeedbackProvider from "../context/notifications/feedbackContext";
+import FeedbackProvider from "../context/notifications/FeedbackContext";
 
 describe("FormsRouter", () => {
   beforeEach(() => {

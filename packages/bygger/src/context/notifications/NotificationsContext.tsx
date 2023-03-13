@@ -36,4 +36,4 @@ export function PusherNotificationsProvider({ children }: { children: React.Reac
   return <PusherNotificationContext.Provider value={messages}>{children}</PusherNotificationContext.Provider>;
 }
 
-export const usePusherNotificationSubscription = () => useContext(PusherNotificationContext);
+export const usePusherNotifications = () => useContext(PusherNotificationContext);

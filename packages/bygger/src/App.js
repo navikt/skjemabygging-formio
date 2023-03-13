@@ -7,8 +7,8 @@ import Formiojs from "formiojs/Formio";
 import React, { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
 import { useAuth } from "./context/auth-context";
-import FeedbackProvider from "./context/notifications/feedbackContext";
-import { PusherNotificationsProvider } from "./context/notifications/notificationsContext";
+import FeedbackProvider from "./context/notifications/FeedbackContext";
+import { PusherNotificationsProvider } from "./context/notifications/NotificationsContext";
 import UnauthenticatedApp from "./UnauthenticatedApp";
 
 const useStyles = makeStyles(() => ({

@@ -1,7 +1,7 @@
 import { Mottaksadresse, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useEffect, useState } from "react";
-import { useFeedBackEmit } from "../context/notifications/feedbackContext";
+import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 
 interface Output {
   mottaksadresser: Mottaksadresse[];
@@ -13,7 +13,7 @@ interface Output {
 }
 
 const useMottaksadresser = (): Output => {
-  const feedbackEmit = useFeedBackEmit();
+  const feedbackEmit = useFeedbackEmit();
   const [mottaksadresser, setMottaksadresser] = useState<Mottaksadresse[]>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);

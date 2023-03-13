@@ -19,8 +19,6 @@ function FeedbackProvider({ children }: { children: React.ReactElement }) {
     return () => window.removeEventListener("unhandledrejection", callback);
   }, [messageQueue]);
 
-  console.log(messages);
-
   const emit = {
     success: (message: string) => messageQueue.push({ message, type: "success" }),
     warning: (message: string) => messageQueue.push({ message, type: "error" }),
@@ -35,6 +33,6 @@ function FeedbackProvider({ children }: { children: React.ReactElement }) {
 }
 
 export const useFeedbackMessages = () => useContext(FeedbackMessageContext);
-export const useFeedBackEmit = () => useContext(FeedbackEmitContext);
+export const useFeedbackEmit = () => useContext(FeedbackEmitContext);
 
 export default FeedbackProvider;

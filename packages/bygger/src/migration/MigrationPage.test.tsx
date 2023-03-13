@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
-import FeedbackProvider from "../context/notifications/feedbackContext";
+import FeedbackProvider from "../context/notifications/FeedbackContext";
 import MigrationPage from "./MigrationPage";
 import { migrationOptionsAsMap } from "./utils";
 

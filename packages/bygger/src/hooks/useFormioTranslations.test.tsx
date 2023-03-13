@@ -2,7 +2,7 @@ import { waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
 import createMockImplementation from "../../test/backendMockImplementation";
-import { FeedbackEmitContext } from "../context/notifications/feedbackContext";
+import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
 import { useFormioTranslations } from "./useFormioTranslations";
 
 const MOCK_PREDEFINED_TEXTS_I18N_EN = {
