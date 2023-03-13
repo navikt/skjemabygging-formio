@@ -1,10 +1,15 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import { Alert } from "@navikt/ds-react";
 import React from "react";
 import { useFeedbackMessages } from "../context/notifications/FeedbackContext";
 import { usePusherNotifications } from "../context/notifications/NotificationsContext";
 import { Message } from "../hooks/useMessageQueue";
-import { ErrorAlert, FyllutDeploymentFailureAlert, FyllutDeploymentSuccessAlert, WarningAlert } from "./Alerts";
+import {
+  ErrorAlert,
+  FyllutDeploymentFailureAlert,
+  FyllutDeploymentSuccessAlert,
+  SuccessAlert,
+  WarningAlert,
+} from "./MessageAlerts";
 
 const useStyles = makeStyles({
   alertstripe: {
@@ -26,52 +31,20 @@ const UserFeedback = () => {
     switch (message.type) {
       case "success":
         setTimeout(() => message.clear(), 5000);
-        return (
-          <Alert variant="success" className={style.alert} key={message.id}>
-            {message.message}
-          </Alert>
-        );
+        return <SuccessAlert message={message} />;
       case "warning":
-        return (
-          <WarningAlert
-            className={style.alert}
-            key={message.id}
-            message={message.message}
-            onClose={() => message.clear()}
-          />
-        );
+        return <WarningAlert message={message} />;
       case "error":
-        return (
-          <ErrorAlert
-            className={style.alert}
-            key={message.id}
-            exception={message.message}
-            onClose={() => message.clear()}
-          />
-        );
+        return <ErrorAlert message={message} />;
     }
   };
 
   const renderPusherMessages = (message: Message) => {
     switch (message.type) {
       case "success":
-        return (
-          <FyllutDeploymentSuccessAlert
-            className={style.alert}
-            title={message.title}
-            message={message.message}
-            onClose={() => message.clear()}
-          />
-        );
+        return <FyllutDeploymentSuccessAlert message={message} />;
       case "error":
-        return (
-          <FyllutDeploymentFailureAlert
-            className={style.alert}
-            title={message.title}
-            message={message.message}
-            onClose={() => message.clear()}
-          />
-        );
+        return <FyllutDeploymentFailureAlert message={message} />;
     }
   };
 
