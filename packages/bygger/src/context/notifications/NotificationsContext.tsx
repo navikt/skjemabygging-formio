@@ -6,7 +6,11 @@ import useMessageQueue, { Message } from "../../hooks/useMessageQueue";
 export const CHANNEL = "fyllut-deployment";
 export const EVENT = { success: "success", failure: "failure" };
 
-const PusherNotificationContext = createContext<Message[]>([]);
+interface ContextValue {
+  messages: Message[];
+  clearAll: () => void;
+}
+const PusherNotificationContext = createContext<ContextValue>({ messages: [], clearAll: () => {} });
 
 const createPusher = (config) => {
   if (config && config.pusherKey) {
@@ -36,7 +40,12 @@ const PusherNotificationsProvider = ({ children }: { children: React.ReactElemen
     };
   }, [pusher, messageQueue]);
 
-  return <PusherNotificationContext.Provider value={messages}>{children}</PusherNotificationContext.Provider>;
+  const value = {
+    messages,
+    clearAll: () => messageQueue.clearAll(),
+  };
+
+  return <PusherNotificationContext.Provider value={value}>{children}</PusherNotificationContext.Provider>;
 };
 
 export const usePusherNotifications = () => useContext(PusherNotificationContext);

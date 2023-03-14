@@ -16,6 +16,10 @@ class MessageQueue {
     this.setQueueState((prevState) => prevState.filter((m) => id !== m.id));
   }
 
+  clearAll() {
+    this.setQueueState([]);
+  }
+
   push(message: MessageIn) {
     const id = uuidv4();
     const created = new Date().toLocaleString();

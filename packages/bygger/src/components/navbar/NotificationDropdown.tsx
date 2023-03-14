@@ -16,18 +16,18 @@ const useStyles = makeStyles({
 
 const NotificationDropdown = () => {
   const styles = useStyles();
-  const pusherMessages = usePusherNotifications();
+  const { messages, clearAll } = usePusherNotifications();
 
-  if (pusherMessages.length === 0) return <></>;
+  if (messages.length === 0) return <></>;
 
   return (
     <Dropdown>
       <Header.Button as={Dropdown.Toggle} aria-label="Notifikasjoner">
         <InformationFilled fontSize="1.5rem" role="presentation" />
       </Header.Button>
-      <Dropdown.Menu className={styles.notificationsMenu}>
+      <Dropdown.Menu className={styles.notificationsMenu} onClose={() => clearAll()}>
         <Dropdown.Menu.List>
-          {pusherMessages.map(({ title, message, type, id, created }) => (
+          {messages.map(({ title, message, type, id, created }) => (
             <Alert key={id} variant={type} className={styles.notificationPanel}>
               <Heading level="3" size="small">
                 {title}
