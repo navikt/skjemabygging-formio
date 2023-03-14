@@ -34,9 +34,9 @@ const commonCodes = {
     const currencyList = [];
 
     try {
-      const response = await fetchCommonCodeDescriptions(req, "Valutaer", languageCode);
+      const response = await fetchCommonCodeDescriptions(req, "ValutaBetaling", languageCode);
       for (const [key, values] of Object.entries(response.betydninger)) {
-        const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.tekst;
+        const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
         let newObj = { label: `${currencyName} (${key})`, value: key };
         if (key === "NOK" || key === "EUR" || key === "SEK") {
           mostUsedCurr.push(newObj);
@@ -207,6 +207,7 @@ type commonCodeType =
   | "Utsendingskanaler"
   | "UtstederlandIDFreg"
   | "Valutaer"
+  | "ValutaBetaling"
   | "Variantformater"
   | "Varslingskode_Aa-registeret"
   | "Varslingstyper"
