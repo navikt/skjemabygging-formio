@@ -1,7 +1,7 @@
 import { Mottaksadresse, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import { useContext, useEffect, useState } from "react";
-import { UserAlerterContext } from "../userAlerting";
+import { useEffect, useState } from "react";
+import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 
 interface Output {
   mottaksadresser: Mottaksadresse[];
@@ -13,7 +13,7 @@ interface Output {
 }
 
 const useMottaksadresser = (): Output => {
-  const userAlerter = useContext(UserAlerterContext);
+  const feedbackEmit = useFeedbackEmit();
   const [mottaksadresser, setMottaksadresser] = useState<Mottaksadresse[]>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
@@ -56,7 +56,7 @@ const useMottaksadresser = (): Output => {
     const forms = await getFormsWithMottaksadresse(mottaksadresseId);
     if (forms.length > 0) {
       const skjemanummerliste = forms.map((form) => form.properties.skjemanummer).join(", ");
-      userAlerter.setErrorMessage(`Mottaksadressen brukes i følgende skjema: ${skjemanummerliste}`);
+      feedbackEmit.error(`Mottaksadressen brukes i følgende skjema: ${skjemanummerliste}`);
       return Promise.reject();
     } else {
       return fetch(`${Formiojs.getProjectUrl()}/mottaksadresse/submission/${mottaksadresseId}`, {
@@ -68,9 +68,9 @@ const useMottaksadresser = (): Output => {
         .then((res) => {
           if (res.ok) {
             loadMottaksadresser();
-            userAlerter.flashSuccessMessage("Mottaksadresse slettet");
+            feedbackEmit.success("Mottaksadresse slettet");
           } else {
-            userAlerter.setErrorMessage(`Sletting feilet: ${res.status}`);
+            feedbackEmit.error(`Sletting feilet: ${res.status}`);
           }
         })
         .catch((err) => console.error(err));
@@ -93,13 +93,13 @@ const useMottaksadresser = (): Output => {
 
     const { changed } = await response.json();
     if (response.ok && changed) {
-      userAlerter.flashSuccessMessage("Publisering startet");
+      feedbackEmit.success("Publisering startet");
     } else if (response.ok && !changed) {
-      userAlerter.setWarningMessage(
+      feedbackEmit.warning(
         "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
       );
     } else {
-      userAlerter.setErrorMessage(`Publisering feilet: ${response.status}`);
+      feedbackEmit.error(`Publisering feilet: ${response.status}`);
     }
   };
 

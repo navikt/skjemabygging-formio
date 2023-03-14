@@ -5,7 +5,7 @@ import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { AppLayoutWithContext } from "../../components/AppLayout";
+import { AppLayout } from "../../components/AppLayout";
 import Column from "../../components/layout/Column";
 import Row from "../../components/layout/Row";
 import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
@@ -222,7 +222,7 @@ const GlobalTranslationsPage = ({
 
   return (
     <>
-      <AppLayoutWithContext
+      <AppLayout
         navBarProps={{
           title: "Globale oversettelser",
           visOversettelseliste: true,
@@ -277,7 +277,7 @@ const GlobalTranslationsPage = ({
             </Column>
           </div>
         </Row>
-      </AppLayoutWithContext>
+      </AppLayout>
       <ConfirmDeleteLanguageModal
         isOpen={isDeleteLanguageModalOpen}
         closeModal={() => setIsDeleteLanguageModalOpen(false)}

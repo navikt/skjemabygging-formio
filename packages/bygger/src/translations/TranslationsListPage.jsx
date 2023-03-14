@@ -3,7 +3,7 @@ import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components
 import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import { FormsList } from "../Forms/FormsListPage";
 import { asFormMetadata } from "../Forms/formsListUtils";
 import FormStatus from "../Forms/status/FormStatus";
@@ -52,7 +52,7 @@ export function TranslationsListPage({ loadFormsList }) {
   }
 
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         title: "Oversettelser",
         visSkjemaliste: true,
@@ -89,6 +89,6 @@ export function TranslationsListPage({ loadFormsList }) {
           )}
         </nav>
       </main>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 }

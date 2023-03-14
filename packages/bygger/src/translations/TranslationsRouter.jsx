@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
-import { UserAlerterContext } from "../userAlerting";
 import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 import NewTranslation from "./NewTranslation";
 import { TranslationsByFormRoute } from "./TranslationsByFormRoute.tsx";
@@ -10,8 +9,7 @@ import { TranslationsListPage } from "./TranslationsListPage";
 
 const TranslationsRouter = ({ formio, serverURL }) => {
   let { path } = useRouteMatch();
-  const userAlerter = useContext(UserAlerterContext);
-  const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
+  const { loadForm, loadFormsList } = useFormioForms(formio);
   const {
     loadGlobalTranslationsForTranslationsPage,
     publishGlobalTranslations,
@@ -19,7 +17,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
     deleteTranslation,
     saveLocalTranslation,
     saveGlobalTranslation,
-  } = useFormioTranslations(serverURL, formio, userAlerter);
+  } = useFormioTranslations(serverURL, formio);
 
   return (
     <Switch>

@@ -28,16 +28,6 @@ fetch("/api/config")
   .then((config) => renderReact(config));
 
 const renderReact = (config) => {
-  let pusher;
-
-  if (config.pusherKey) {
-    pusher = new Pusher(config.pusherKey, {
-      cluster: config.pusherCluster,
-    });
-  } else {
-    pusher = { subscribe: () => ({ bind: () => {}, unbind: () => {} }) };
-  }
-
   ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter>
@@ -49,7 +39,7 @@ const renderReact = (config) => {
           app="bygger"
         >
           <AuthProvider user={config.user}>
-            <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} pusher={pusher} />
+            <App projectURL={config.formioProjectUrl} serverURL={config.fyllutBaseUrl} />
           </AuthProvider>
         </AppConfigProvider>
       </BrowserRouter>

@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import Formiojs from "formiojs/Formio";
 import fetchMock from "jest-fetch-mock";
 import React from "react";
-import { UserAlerterContext } from "../userAlerting";
 import MottaksadresserListe from "./MottaksadresserListe";
 import mockMottaksadresseForm from "./testdata/mottaksadresse-form";
 import mockMottaksadresser from "./testdata/mottaksadresser";
@@ -66,12 +65,7 @@ describe("MottaksadresseListe", () => {
   });
 
   const renderMottaksadresseListe = async () => {
-    const userAlerter = { flashSuccessMessage: jest.fn(), setErrorMessage: jest.fn(), alertComponent: jest.fn() };
-    render(
-      <UserAlerterContext.Provider value={userAlerter}>
-        <MottaksadresserListe />
-      </UserAlerterContext.Provider>
-    );
+    render(<MottaksadresserListe />);
     await waitForElementToBeRemoved(() => screen.queryByText("Laster mottaksadresser..."));
   };
 

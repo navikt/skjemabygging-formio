@@ -4,6 +4,7 @@ import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
 import React, { useEffect, useState } from "react";
 import { AuthProvider } from "../context/auth-context";
+import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
 import { useFormioForms } from "./useFormioForms";
 
 const RESPONSE_HEADERS_OK = {
@@ -22,18 +23,14 @@ const RESPONSE_HEADERS_ERROR = {
 
 const USER_NAME = "Bond, James";
 describe("useFormioForms", () => {
-  let userAlerter;
+  let mockFeedbackEmit;
 
   beforeEach(() => {
-    userAlerter = {
-      flashSuccessMessage: jest.fn(),
-      alertComponent: jest.fn(),
-      setErrorMessage: jest.fn(),
-    };
+    mockFeedbackEmit = { success: jest.fn(), error: jest.fn() };
   });
 
   const TestComponent = ({ formio, formPath }) => {
-    const { loadForm, loadFormsList } = useFormioForms(formio, userAlerter);
+    const { loadForm, loadFormsList } = useFormioForms(formio);
     const [forms, setForms] = useState([]);
     useEffect(() => {
       if (formPath) {
@@ -114,7 +111,7 @@ describe("useFormioForms", () => {
 
       ({
         result: { current: formioForms },
-      } = renderHook(() => useFormioForms(formioMock, userAlerter), { wrapper }));
+      } = renderHook(() => useFormioForms(formioMock), { wrapper }));
     });
 
     it("add modified property onSave", async () => {
@@ -154,7 +151,11 @@ describe("useFormioForms", () => {
       return date;
     };
 
-    const wrapper = ({ children }) => <AuthProvider user={{ name: USER_NAME }}>{children}</AuthProvider>;
+    const wrapper = ({ children }) => (
+      <AuthProvider user={{ name: USER_NAME }}>
+        <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
+      </AuthProvider>
+    );
 
     beforeEach(() => {
       formioMock = {
@@ -164,7 +165,7 @@ describe("useFormioForms", () => {
 
       ({
         result: { current: formioForms },
-      } = renderHook(() => useFormioForms(formioMock, userAlerter), { wrapper }));
+      } = renderHook(() => useFormioForms(formioMock), { wrapper }));
     });
 
     describe("when publishing succeeds", () => {
@@ -179,7 +180,7 @@ describe("useFormioForms", () => {
 
       it("flashes success message", async () => {
         renderHook(() => formioForms.onPublish({ path: "testform", properties: {} }));
-        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+        await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
         expect(fetchMock).toHaveBeenCalledTimes(1);
       });
 
@@ -187,7 +188,7 @@ describe("useFormioForms", () => {
         const form = { path: "testform", properties: {} };
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
-        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+        await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
         const publishRequestBody = JSON.parse(fetchMock.mock.calls[0][1].body);
@@ -220,7 +221,7 @@ describe("useFormioForms", () => {
         };
         const translations = { "no-NN": {}, en: {} };
         renderHook(() => formioForms.onPublish(form, translations));
-        await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
+        await waitFor(() => expect(mockFeedbackEmit.error).toHaveBeenCalled());
         await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
       });
     });
@@ -237,7 +238,7 @@ describe("useFormioForms", () => {
 
       it("flashes success message", async () => {
         renderHook(() => formioForms.onUnpublish({ path: "testform", properties: {} }));
-        await waitFor(() => expect(userAlerter.flashSuccessMessage).toHaveBeenCalled());
+        await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
         expect(fetchMock).toHaveBeenCalledTimes(1);
       });
     });
@@ -263,7 +264,7 @@ describe("useFormioForms", () => {
           },
         };
         renderHook(() => formioForms.onUnpublish(form));
-        await waitFor(() => expect(userAlerter.setErrorMessage).toHaveBeenCalled());
+        await waitFor(() => expect(mockFeedbackEmit.error).toHaveBeenCalled());
         await waitFor(() => expect(formioMock.loadForms).toHaveBeenCalledTimes(1));
       });
     });

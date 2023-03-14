@@ -1,13 +1,13 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import MigrationFormPreview from "./MigrationFormPreview";
 import MigrationPage from "./MigrationPage";
 
 const MigrationRouter = () => {
   const { path } = useRouteMatch("/migrering");
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         title: "Migrer skjema",
         visSkjemaliste: true,
@@ -22,7 +22,7 @@ const MigrationRouter = () => {
           <MigrationPage />
         </Route>
       </Switch>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 

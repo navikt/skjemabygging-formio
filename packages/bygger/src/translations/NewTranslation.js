@@ -1,7 +1,7 @@
 import { styled } from "@material-ui/styles";
 import { NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import { Pagewrapper } from "../Forms/components";
 
 const StyledNavForm = styled(NavForm)({
@@ -10,7 +10,7 @@ const StyledNavForm = styled(NavForm)({
 });
 
 const NewTranslation = ({ projectURL }) => (
-  <AppLayoutWithContext
+  <AppLayout
     navBarProps={{
       title: "Oversettelser",
       visOversettelseliste: true,
@@ -20,7 +20,7 @@ const NewTranslation = ({ projectURL }) => (
     <Pagewrapper>
       <StyledNavForm src={`${projectURL}/language`} />
     </Pagewrapper>
-  </AppLayoutWithContext>
+  </AppLayout>
 );
 
 export default NewTranslation;

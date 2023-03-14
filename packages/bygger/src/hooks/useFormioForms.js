@@ -2,10 +2,12 @@ import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-dom
 import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
+import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 
 const { getIso8601String } = dateUtils;
 
-export const useFormioForms = (formio, userAlerter) => {
+export const useFormioForms = (formio) => {
+  const feedbackEmit = useFeedbackEmit();
   const { userData } = useAuth();
 
   const loadFormsList = useCallback(() => {
@@ -49,27 +51,27 @@ export const useFormioForms = (formio, userAlerter) => {
           },
         })
         .then((form) => {
-          userAlerter.flashSuccessMessage("Lagret skjema " + form.title);
+          feedbackEmit.success(`Lagret skjema ${form.title}`);
           return form;
         })
         .catch(() => {
-          userAlerter.setErrorMessage(
+          feedbackEmit.error(
             "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
               "Last siden på nytt for å få siste versjon."
           );
           return { error: true };
         });
     },
-    [formio, userAlerter, userData]
+    [formio, userData, feedbackEmit]
   );
 
   const deleteForm = useCallback(
     async (formId, tags, title) => {
       formio.saveForm({ _id: formId, tags: tags.filter((each) => each !== "nav-skjema") }).then(() => {
-        userAlerter.flashSuccessMessage("Slettet skjemaet " + title);
+        feedbackEmit.success("Slettet skjemaet " + title);
       });
     },
-    [formio, userAlerter]
+    [formio, feedbackEmit]
   );
 
   const onPublish = useCallback(
@@ -90,15 +92,15 @@ export const useFormioForms = (formio, userAlerter) => {
           "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)";
 
         const { changed, form } = await response.json();
-        changed ? userAlerter.flashSuccessMessage(success) : userAlerter.setWarningMessage(warning);
+        changed ? feedbackEmit.success(success) : feedbackEmit.warning(warning);
         return form;
       } else {
         const { message } = await response.json();
-        userAlerter.setErrorMessage(message);
+        feedbackEmit.error(message);
         return await loadForm(form.path);
       }
     },
-    [userAlerter, loadForm]
+    [loadForm, feedbackEmit]
   );
 
   const onUnpublish = useCallback(
@@ -109,15 +111,15 @@ export const useFormioForms = (formio, userAlerter) => {
       });
       if (response.ok) {
         const { form } = await response.json();
-        userAlerter.flashSuccessMessage("Satt i gang avpublisering, dette kan ta noen minutter.");
+        feedbackEmit.success("Satt i gang avpublisering, dette kan ta noen minutter.");
         return form;
       } else {
         const { message } = await response.json();
-        userAlerter.setErrorMessage(message);
+        feedbackEmit.error(message);
         return await loadForm(form.path);
       }
     },
-    [userAlerter, loadForm]
+    [loadForm, feedbackEmit]
   );
 
   return {
