@@ -50,7 +50,7 @@ p {margin: 0}
 .label {font-weight: bold;}
 .alert {margin-bottom: 5px;}
 .row-label {margin-bottom: 2px; font-family: "Arial", sans-serif; font-weight: bold; text-decoration: underline}
-.row {margin-bottom: 12px;}
+.row {margin: 12px 0 24px 0;}
 .alt {margin-bottom: 5px; font-family: "Courier New", sans-serif; font-style: italic;}
 .innrykk {margin: 0px 0px 10px 20px;}
 .underskrift {margin-bottom: 30px;}
@@ -108,7 +108,7 @@ ${sectionContent(component.components, level)}
 </div>`;
 
 const field = (component: Summary.Field) =>
-  `<div class="spm">${component.label}</div><div class="svar">- ${component.value}</div>`;
+  `<div class="spm">${component.label}</div><div class="svar">: ${component.value}</div>`;
 
 const alert = (component: Summary.Field) =>
   `<div class="label">${component.label}</div><div class="alert">${component.value}</div>`;
@@ -123,7 +123,7 @@ const img = (component: Summary.Image) => `
 
 const multipleAnswers = (component: Summary.Selectboxes) => `
 <div class="spm">${component.label}</div>
-${component.value.map((val) => `<div class="svar">- ${val}</div>`).join("")}`;
+${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
 
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
