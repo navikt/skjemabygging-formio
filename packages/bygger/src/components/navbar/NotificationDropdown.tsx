@@ -2,11 +2,13 @@ import { makeStyles } from "@material-ui/styles";
 import { InformationFilled } from "@navikt/ds-icons";
 import { Alert, BodyShort, Detail, Heading } from "@navikt/ds-react";
 import { Dropdown, Header } from "@navikt/ds-react-internal";
+import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
 import { usePusherNotifications } from "../../context/notifications/NotificationsContext";
 
 const useStyles = makeStyles({
   notificationsMenu: {
+    padding: 0,
     width: "28rem",
   },
   notificationPanel: {
@@ -23,7 +25,7 @@ const NotificationDropdown = () => {
   return (
     <Dropdown>
       <Header.Button as={Dropdown.Toggle} aria-label="Notifikasjoner">
-        <InformationFilled fontSize="1.5rem" role="presentation" />
+        <InformationFilled color={navCssVariables.navWarning} fontSize="1.5rem" role="presentation" />
       </Header.Button>
       <Dropdown.Menu className={styles.notificationsMenu} onClose={() => clearAll()}>
         <Dropdown.Menu.List>
