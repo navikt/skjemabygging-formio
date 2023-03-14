@@ -1,15 +1,8 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import React from "react";
 import { useFeedbackMessages } from "../context/notifications/FeedbackContext";
-import { usePusherNotifications } from "../context/notifications/NotificationsContext";
 import { Message } from "../hooks/useMessageQueue";
-import {
-  ErrorAlert,
-  FyllutDeploymentFailureAlert,
-  FyllutDeploymentSuccessAlert,
-  SuccessAlert,
-  WarningAlert,
-} from "./MessageAlerts";
+import { ErrorAlert, SuccessAlert, WarningAlert } from "./MessageAlerts";
 
 const useStyles = makeStyles({
   alertstripe: {
@@ -24,7 +17,6 @@ const useStyles = makeStyles({
 
 const UserFeedback = () => {
   const feedbackMessages = useFeedbackMessages();
-  const pusherMessages = usePusherNotifications();
   const style = useStyles();
 
   const renderUserFeedback = (message: Message) => {
@@ -39,19 +31,9 @@ const UserFeedback = () => {
     }
   };
 
-  const renderPusherMessages = (message: Message) => {
-    switch (message.type) {
-      case "success":
-        return <FyllutDeploymentSuccessAlert message={message} />;
-      case "error":
-        return <FyllutDeploymentFailureAlert message={message} />;
-    }
-  };
-
   return (
     <aside className={style.alertstripe} aria-live="polite">
       {feedbackMessages.map(renderUserFeedback)}
-      {pusherMessages.map(renderPusherMessages)}
     </aside>
   );
 };
