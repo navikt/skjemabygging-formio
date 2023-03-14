@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { InformationFilled } from "@navikt/ds-icons";
-import { Alert, BodyShort, Heading } from "@navikt/ds-react";
+import { Alert, BodyShort, Detail, Heading } from "@navikt/ds-react";
 import { Dropdown, Header } from "@navikt/ds-react-internal";
 import React from "react";
 import { usePusherNotifications } from "../../context/notifications/NotificationsContext";
@@ -27,12 +27,13 @@ const NotificationDropdown = () => {
       </Header.Button>
       <Dropdown.Menu className={styles.notificationsMenu}>
         <Dropdown.Menu.List>
-          {pusherMessages.map(({ title, message, type, id }) => (
+          {pusherMessages.map(({ title, message, type, id, created }) => (
             <Alert key={id} variant={type} className={styles.notificationPanel}>
               <Heading level="3" size="small">
                 {title}
               </Heading>
               <BodyShort>{message}</BodyShort>
+              <Detail>{created}</Detail>
             </Alert>
           ))}
         </Dropdown.Menu.List>

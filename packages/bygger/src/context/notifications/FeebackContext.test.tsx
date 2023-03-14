@@ -50,11 +50,11 @@ describe("FeedbackContext", () => {
       execute.mockClear();
     });
 
-    it("returns emitted messages", () => {
+    it("returns emitted messages in reverse order of when it was added", () => {
       const messages = getLatest(onMessagesUpdated);
-      expect(messages[0].message).toBe("Success message");
+      expect(messages[0].message).toBe("Warning message");
       expect(messages[1].message).toBe("Error message");
-      expect(messages[2].message).toBe("Warning message");
+      expect(messages[2].message).toBe("Success message");
     });
 
     it("returns an updated list when a message is removed", () => {
