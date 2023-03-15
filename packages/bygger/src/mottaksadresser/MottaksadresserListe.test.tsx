@@ -19,8 +19,15 @@ const RESPONSE_HEADERS = {
 const SUBMISSION_PUT_REGEX = /http:\/\/.*\/mottaksadresse\/submission\/(.*)$/;
 
 describe("MottaksadresseListe", () => {
+  let windowSpy;
+
   beforeAll(() => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);
+    windowSpy = jest.spyOn(window, "scrollTo");
+  });
+
+  afterAll(() => {
+    windowSpy.mockRestore();
   });
 
   let savedMottaksadresseRequests: Mottaksadresse[] = [];

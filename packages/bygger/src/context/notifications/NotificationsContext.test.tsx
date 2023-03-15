@@ -32,29 +32,44 @@ describe("NotificationsContext", () => {
   describe("usePusherNotifications", () => {
     it("initially returns no messages", () => {
       const { result } = renderHook(() => usePusherNotifications(), { wrapper });
-      expect(result.current).toHaveLength(0);
+      expect(result.current.messages).toHaveLength(0);
     });
 
     it("returns a success message when pusher emits a success event", () => {
       const { result } = renderHook(() => usePusherNotifications(), { wrapper });
       act(() => channelSubscriptions[CHANNEL][EVENT.success]({ title: "Title", message: "success message" }));
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0].type).toBe("success");
+      const { messages } = result.current;
+      expect(messages).toHaveLength(1);
+      expect(messages[0].type).toBe("success");
     });
 
     it("returns an error message when pusher emits a failure event", () => {
       const { result } = renderHook(() => usePusherNotifications(), { wrapper });
       act(() => channelSubscriptions[CHANNEL][EVENT.failure]({ title: "Title", message: "error message" }));
-      expect(result.current).toHaveLength(1);
-      expect(result.current[0].type).toBe("error");
+      const { messages } = result.current;
+      expect(messages).toHaveLength(1);
+      expect(messages[0].type).toBe("error");
     });
 
-    it("returns messages for all emitted success and failure events", () => {
-      const { result } = renderHook(() => usePusherNotifications(), { wrapper });
-      act(() => channelSubscriptions[CHANNEL][EVENT.success]({ title: "Title", message: "error message" }));
-      act(() => channelSubscriptions[CHANNEL][EVENT.failure]({ title: "Title", message: "error message" }));
-      act(() => channelSubscriptions[CHANNEL][EVENT.success]({ title: "Title", message: "error message" }));
-      expect(result.current).toHaveLength(3);
+    describe("When several messages are emitted", () => {
+      let result;
+
+      beforeEach(() => {
+        const hookResult = renderHook(() => usePusherNotifications(), { wrapper });
+        result = hookResult.result;
+        act(() => channelSubscriptions[CHANNEL][EVENT.success]({ title: "Title", message: "success message" }));
+        act(() => channelSubscriptions[CHANNEL][EVENT.failure]({ title: "Title", message: "error message" }));
+        act(() => channelSubscriptions[CHANNEL][EVENT.success]({ title: "Title", message: "success message" }));
+      });
+
+      it("returns messages for all emitted success and failure events", () => {
+        expect(result.current.messages).toHaveLength(3);
+      });
+
+      it("clears all messages", () => {
+        act(() => result.current.clearAll());
+        expect(result.current.messages).toHaveLength(0);
+      });
     });
   });
 });
