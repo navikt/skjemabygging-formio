@@ -7,13 +7,14 @@
     "url": "https://github.com/navikt/skjemabygging-formio.git",
     "directory": "packages/shared-domain"
   },
+  "type": "module",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "babel src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
+    "build": "vite build",
     "check-types": "tsc",
     "clean": "rimraf dist coverage",
     "watch": "babel -w src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
@@ -31,7 +32,8 @@
     "@babel/preset-typescript": "^7.16.7",
     "@types/jest": "^27.4.1",
     "jest": "^27.0.4",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "vite": "^4.1.4"
   },
   "peerDependencies": {
     "formiojs": "4.14.6"
