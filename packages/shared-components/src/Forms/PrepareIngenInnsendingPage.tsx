@@ -19,7 +19,7 @@ export interface Props {
 
 export function PrepareIngenInnsendingPage({ form, submission, formUrl, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
-  const { fyllutBaseURL, featureToggles } = useAppConfig();
+  const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
   const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
@@ -42,11 +42,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             <DownloadPdfButton
               form={form}
               submission={submission}
-              actionUrl={
-                featureToggles?.enableExstreamPdf
-                  ? `${fyllutBaseURL}/api/pdf/convert`
-                  : `${fyllutBaseURL}/api/pdf-form-papir`
-              }
+              actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
               onClick={() => loggSkjemaFullfort("ingeninnsending")}
               translations={translations}
