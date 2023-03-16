@@ -53,12 +53,12 @@ const useStyles = makeStyles({
   },
   searchFilterInputs: {
     display: "grid",
-    gridTemplateColumns: "3fr 1fr 3fr",
+    gridTemplateColumns: "3fr 1fr 3fr 0.2fr",
     gap: "0.25rem 1rem",
   },
   formEditInputs: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "3fr 3fr 0.2fr",
     gap: "0.25rem 1rem",
   },
   pagination: {
