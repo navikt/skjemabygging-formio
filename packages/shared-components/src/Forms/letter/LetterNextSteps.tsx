@@ -1,5 +1,5 @@
+import { BodyShort, Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React from "react";
 
 interface Props {
@@ -12,12 +12,12 @@ const LetterNextSteps = ({ index, translate }: Props) => (
     className="wizard-page"
     aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.lastSectionTitle)}`}
   >
-    <Systemtittel tag="h3" className="margin-bottom-small">
+    <Heading level="3" size="medium" className="margin-bottom-small">
       {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.lastSectionTitle)}`}
-    </Systemtittel>
-    <Normaltekst className="margin-bottom-default">
+    </Heading>
+    <BodyShort className="margin-bottom-default">
       {translate(TEXTS.statiske.prepareLetterPage.lastSectionContent)}
-    </Normaltekst>
+    </BodyShort>
   </section>
 );
 

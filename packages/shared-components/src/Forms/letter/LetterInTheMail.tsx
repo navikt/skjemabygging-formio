@@ -1,5 +1,5 @@
+import { BodyShort, Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React from "react";
 
 interface Props {
@@ -13,10 +13,10 @@ const LetterInTheMail = ({ index, vedleggSomSkalSendes, translate }: Props) => (
     className="wizard-page"
     aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
   >
-    <Systemtittel tag="h3" className="margin-bottom-small">
+    <Heading level="3" size="medium" className="margin-bottom-small">
       {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
-    </Systemtittel>
-    <Normaltekst className="margin-bottom-default">
+    </Heading>
+    <BodyShort className="margin-bottom-default">
       {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
       {vedleggSomSkalSendes.length > 0 &&
         " ".concat(
@@ -30,7 +30,7 @@ const LetterInTheMail = ({ index, vedleggSomSkalSendes, translate }: Props) => (
             .concat(" ")
             .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection))
         )}
-    </Normaltekst>
+    </BodyShort>
   </section>
 );
 

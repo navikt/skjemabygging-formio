@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { Sidetittel } from "nav-frontend-typografi";
 import React from "react";
 import { useLanguages } from "../../context/languages";
 
@@ -36,7 +36,9 @@ export function FormTitle({ form, className }: Props) {
   return (
     <header className={styles.titleHeader}>
       <div className={styles.maxContentWidth}>
-        <Sidetittel>{translate(form.title)}</Sidetittel>
+        <Heading level="1" size="xlarge">
+          {translate(form.title)}
+        </Heading>
         {form.properties && form.properties.skjemanummer && (
           <p className={styles.formNumber}>{form.properties.skjemanummer}</p>
         )}
