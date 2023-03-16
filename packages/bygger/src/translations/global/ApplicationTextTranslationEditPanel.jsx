@@ -1,5 +1,5 @@
+import { Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import ObsoleteTranslationsPanel from "../ObsoleteTranslationsPanel";
 import TranslationTextInput from "../TranslationTextInput";
@@ -82,7 +82,9 @@ const ApplicationTextTranslationEditPanel = ({
       />
       {pdfStaticTexts.length > 0 && (
         <>
-          <Undertittel className={"margin-bottom-default"}>Tekster som brukes ved generering av PDF</Undertittel>
+          <Heading level="2" size="small">
+            Tekster som brukes ved generering av PDF
+          </Heading>
           <TranslationEditPanelComponent
             components={pdfStaticTexts}
             languageCode={languageCode}

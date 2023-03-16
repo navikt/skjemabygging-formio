@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { Knapp } from "nav-frontend-knapper";
-import { Sidetittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { AppLayout } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
@@ -55,7 +55,9 @@ export function FormSettingsPage({
     >
       <Row className={styles.titleRow}>
         <Column className={styles.mainCol}>
-          <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
+          <Heading level="1" size="xlarge">
+            {title}
+          </Heading>
         </Column>
       </Row>
       <Row>

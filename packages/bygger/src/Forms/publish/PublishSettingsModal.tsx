@@ -1,11 +1,10 @@
 import { makeStyles } from "@material-ui/styles";
+import { BodyShort, Heading, Panel } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType, I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { AlertStripeAdvarsel } from "nav-frontend-alertstriper";
 import { Hovedknapp } from "nav-frontend-knapper";
-import Panel from "nav-frontend-paneler";
 import { Checkbox, CheckboxGruppe } from "nav-frontend-skjema";
-import { Normaltekst, Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nState } from "../../context/i18n";
 import { getFormTexts } from "../../translations/utils";
@@ -163,8 +162,10 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
   return (
     <Modal open={openModal} onClose={closeModal} title="Publiseringsinnstillinger">
       <PublishStatusPanel formProperties={form.properties} />
-      <Undertittel>Hvilke språkversjoner skal publiseres?</Undertittel>
-      <Normaltekst className="margin-bottom-default">Valgene inkluderer kun komplette språkversjoner.</Normaltekst>
+      <Heading level="2" size="medium">
+        Hvilke språkversjoner skal publiseres?
+      </Heading>
+      <BodyShort className="margin-bottom-default">Valgene inkluderer kun komplette språkversjoner.</BodyShort>
       <CheckboxGruppe className="margin-bottom-default">
         <Checkbox
           disabled

@@ -1,8 +1,7 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import Lukknapp from "nav-frontend-lukknapp";
-import Panel from "nav-frontend-paneler";
+import { Close } from "@navikt/ds-icons";
+import { Button, Heading, Panel } from "@navikt/ds-react";
 import { Input, SkjemaGruppe } from "nav-frontend-skjema";
-import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import LabelWithDiff from "../FormMetaDataEditor/LabelWithDiff";
 
@@ -16,9 +15,18 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
   const styles = useStyles();
   return (
     <Panel className="margin-bottom-default" border>
-      <Lukknapp className={styles.closeBtn} bla={true} onClick={onDelete} />
+      <Button variant="tertiary" icon={<Close aria-hidden />} onClick={onDelete} className={styles.closeBtn} />
       <SkjemaGruppe
-        legend={<LabelWithDiff label={<Undertittel>{"Signatur " + (index + 1)}</Undertittel>} diff={diff?.status} />}
+        legend={
+          <LabelWithDiff
+            label={
+              <Heading level="2" size="small">
+                {"Signatur " + (index + 1)}
+              </Heading>
+            }
+            diff={diff?.status}
+          />
+        }
       >
         <Input
           label="Hvem skal signere?"

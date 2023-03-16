@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
@@ -61,7 +61,9 @@ export function TranslationsListPage({ loadFormsList }) {
     >
       <main className={classes.root}>
         <nav className="margin-bottom-double">
-          <Innholdstittel className="margin-bottom-default">Globale oversettelser</Innholdstittel>
+          <Heading level="2" size="large">
+            Globale oversettelser
+          </Heading>
           <ul className={classes.list}>
             <li className={classes.globalListItem}>
               <Link to="/translations/global/nn-NO/skjematekster">Felles oversettelser for alle skjemaer</Link>
@@ -69,7 +71,9 @@ export function TranslationsListPage({ loadFormsList }) {
           </ul>
         </nav>
         <nav className="margin-bottom-large">
-          <Innholdstittel className="margin-bottom-default">Skjemaliste</Innholdstittel>
+          <Heading level="2" size="large">
+            Skjemaliste
+          </Heading>
           {!forms ? (
             <p>Finner ingen skjemaer...</p>
           ) : (

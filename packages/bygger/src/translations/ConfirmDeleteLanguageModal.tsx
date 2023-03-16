@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
+import { BodyShort } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import { Normaltekst } from "nav-frontend-typografi";
 import React from "react";
 
 type ConfirmDeleteLanguageModalProps = {
@@ -43,9 +43,9 @@ const ConfirmDeleteLanguageModal = ({
       ariaLabel="Bekreft sletting av språk"
       title="Er du sikker på at du ønsker å slette språket?"
     >
-      <Normaltekst className="margin-bottom-default">
+      <BodyShort className="margin-bottom-default">
         {isGlobal ? modalTextForGlobalTranslations : modalTextForFormTranslations}
-      </Normaltekst>
+      </BodyShort>
       <div className={styles.buttonRow}>
         <Knapp className={styles.modal_button} onClick={closeModal}>
           Avbryt

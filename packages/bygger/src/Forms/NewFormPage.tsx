@@ -1,8 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 import { Hovedknapp } from "nav-frontend-knapper";
-import { Sidetittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -87,7 +87,9 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   return (
     <AppLayout navBarProps={{ title: "Opprett nytt skjema" }}>
       <main className={styles.root}>
-        <Sidetittel className="margin-bottom-double">Opprett nytt skjema</Sidetittel>
+        <Heading level="1" size="xlarge">
+          Opprett nytt skjema
+        </Heading>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
         <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
       </main>

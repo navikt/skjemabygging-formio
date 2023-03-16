@@ -1,7 +1,7 @@
+import { BodyShort } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { useI18nState } from "../../context/i18n";
 
@@ -46,7 +46,7 @@ const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeL
   };
   return (
     <Modal open={openModal} onClose={closeModal} ariaLabel="Publiseringsadvarsel">
-      <Normaltekst className="margin-bottom-double">Er du sikker på at dette skjemaet skal publiseres?</Normaltekst>
+      <BodyShort className="margin-bottom-double">Er du sikker på at dette skjemaet skal publiseres?</BodyShort>
       <ul className="list-inline">
         <li className="list-inline-item">
           <Knapp onClick={() => onPublishClick(form, completeLocalTranslationsForNavForm)} spinner={publiserer}>

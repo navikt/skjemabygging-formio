@@ -1,15 +1,12 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { Knapp } from "nav-frontend-knapper";
-import { Innholdstittel } from "nav-frontend-typografi";
 import React, { Dispatch } from "react";
 import { Action } from "./MigrationOptionsForm.reducer";
 
 const getStyles = makeStyles({
   form: {
     marginBottom: "3rem",
-  },
-  heading: {
-    marginBottom: "1rem",
   },
 });
 
@@ -24,9 +21,9 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, children }: Migrati
   const styles = getStyles();
   return (
     <>
-      <Innholdstittel tag="h2" className={styles.heading}>
+      <Heading level="2" size="large">
         {title}
-      </Innholdstittel>
+      </Heading>
       <div className={styles.form}>
         {children}
         <div>

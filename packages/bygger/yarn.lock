@@ -2381,32 +2381,33 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@floating-ui/core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.0.1.tgz#00e64d74e911602c8533957af0cce5af6b2e93c8"
-  integrity sha512-bO37brCPfteXQfFY0DyNDGB3+IMe4j150KFQcgJ5aBP295p9nBGeHEs/p0czrRbtlHq4Px/yoPXO/+dOCcF4uA==
+"@floating-ui/core@^1.2.3":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.2.4.tgz#89e6311b021190c9e121fcf20306e76ac66e4066"
+  integrity sha512-SQOeVbMwb1di+mVWWJLpsUTToKfqVNioXys011beCAhyOIFtS+GQoW4EQSneuxzmQKddExDwQ+X0hLl4lJJaSQ==
 
-"@floating-ui/dom@^1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.0.1.tgz#3321d4e799d6ac2503e729131d07ad0e714aabeb"
-  integrity sha512-wBDiLUKWU8QNPNOTAFHiIAkBv1KlHauG2AhqjSeh2H+wR8PX+AArXfz8NkRexH5PgMJMmSOS70YS89AbWYh5dA==
+"@floating-ui/dom@^1.2.1":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.2.4.tgz#e2eb2674f57fc182c425587e48ea43e336f4b8f8"
+  integrity sha512-4+k+BLhtWj+peCU60gp0+rHeR8+Ohqx6kjJf/lHMnJ8JD5Qj6jytcq1+SZzRwD7rvHKRhR7TDiWWddrNrfwQLg==
   dependencies:
-    "@floating-ui/core" "^1.0.1"
+    "@floating-ui/core" "^1.2.3"
 
-"@floating-ui/react-dom-interactions@0.9.2":
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom-interactions/-/react-dom-interactions-0.9.2.tgz#9a364cc44ecbc242b5218dff0e0d071de115e13a"
-  integrity sha512-1I0urs4jlGuo4FRukvjtMmdUwxqvgwtTlESEPVwEvFGHXVh1PKkKaPZJ0Dcp9B8DQt4ewQEbwJxsoker2pDYTQ==
+"@floating-ui/react-dom@^1.2.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-1.3.0.tgz#4d35d416eb19811c2b0e9271100a6aa18c1579b3"
+  integrity sha512-htwHm67Ji5E/pROEAr7f8IKFShuiCKHwUC/UY4vC3I5jiSvGFAYnSYiZO5MlGmads+QqvUkR9ANHEguGrDv72g==
   dependencies:
-    "@floating-ui/react-dom" "^1.0.0"
+    "@floating-ui/dom" "^1.2.1"
+
+"@floating-ui/react@0.17.0":
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react/-/react-0.17.0.tgz#f3a2fcb5c198df6cdc0aedac56bd3b2a6c0bb089"
+  integrity sha512-LYlTmiB1O2TmeNub1agGYJrO7Qkw1B0Q53aElN5dgZDO5v3yzYJmrGm/xmfD+0T03yEECzPKdwlSFCEPWKMLEQ==
+  dependencies:
+    "@floating-ui/react-dom" "^1.2.0"
     aria-hidden "^1.1.3"
-
-"@floating-ui/react-dom@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-1.0.0.tgz#e0975966694433f1f0abffeee5d8e6bb69b7d16e"
-  integrity sha512-uiOalFKPG937UCLm42RxjESTWUVpbbatvlphQAU6bsv+ence6IoVG8JOUZcy8eW81NkU+Idiwvx10WFLmR4MIg==
-  dependencies:
-    "@floating-ui/dom" "^1.0.0"
+    tabbable "^6.0.1"
 
 "@formio/bootstrap3@^2.12.2":
   version "2.12.2"
@@ -2729,38 +2730,43 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@navikt/ds-css-internal@^1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-1.5.7.tgz#1e311c1ac9594e5eac8ae1e95ac973282c36523a"
-  integrity sha512-XhdHJVd0orZQVBwXgU+FNYh0xgnDB5XXA4Rd1fBNpjm7KLs7dB3HQtTRNDj8X9svW9ISGU8ycywYkU+2Ll+MXA==
+"@navikt/aksel-icons@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-2.7.8.tgz#d7540c31ce0ef3c3f87783363df1c92b46f46f79"
+  integrity sha512-sAAG12COjekQSVzsPeRLF40Tg540sX4Tr2nNnJpgZao06gqjn0KdvVj2H7Fwgw6manIQpNkIw9CQN+6QAFbkQA==
 
-"@navikt/ds-css@^1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-1.5.7.tgz#77c0bc1d1242d793b4c8e45f57047aa94f1df9a1"
-  integrity sha512-6CHKHdvx/Jv+fykwpAdhWh8Sa+RG5+TjIhphi/61C17v7l3JZ1d46bY+w7jK4sX3rigBtNO/0akMMq3UvYDRKg==
+"@navikt/ds-css-internal@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-2.7.8.tgz#97ce84e1552f731929ea8513e05110874f9b81d8"
+  integrity sha512-JiUQpVCZUznSGt08XOI1TGMVIwAJ0G3DD2FS6KpyW8DboNSbK0oYVQNPPldTjZ0K1Phzl1CTRL43Ag8byyBCtg==
 
-"@navikt/ds-icons@^1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-1.5.7.tgz#37f674b90455657dece01d0183d29427421723f7"
-  integrity sha512-4gYScPF+9cxjXbUSlRAn67elJQEh42FfPORCT2PvNK4wazIXW1WaS77d+651R0KLrz3lvaon6C9RtAGsT44AJA==
+"@navikt/ds-css@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-2.7.8.tgz#8a310077aa78f1f92bcf574e9523e62ddb4d167a"
+  integrity sha512-rGKXgzEGMn5tdHc1mNnMImJc4CC9ox5lucJn/m6dXcfs026e1IED3mi+pBCKbgtM3EHhS3zGXQwrgf9R1m+skQ==
 
-"@navikt/ds-react-internal@^1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-react-internal/-/ds-react-internal-1.5.7.tgz#61067636714222181e72af66e5369aafb9a7192c"
-  integrity sha512-21/76ye3V6PPRp+BUoLD+i44zCVCymSWJe+kl2rN/gxJjFzSRToHSFOLgNrYuui9o85cYem6ZlV9wg5ETF2N8g==
+"@navikt/ds-icons@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-2.7.8.tgz#8fca6f5fcd6ab40d3a715dd51a0fafe071f59832"
+  integrity sha512-jBXDzkpyfKkqnqWDRiu7VNDTCe/bJWiG1Evmng/M1DmGFQiGiOA6ogvjp0lCIQ0+p7umOGb7ycX0kNUb1XS9vw==
+
+"@navikt/ds-react-internal@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react-internal/-/ds-react-internal-2.7.8.tgz#ffab5d61647ebef37344bdee71c9ee967c7544b2"
+  integrity sha512-DlzF179FAyymOpJ7wKen/Py0RScMaNze7aSsAgclP/FQQQXlkYX/CVhJkWC78t+pIS4A/af1Y67nJFgTmCBk9A==
   dependencies:
-    "@navikt/ds-icons" "^1.5.7"
-    "@navikt/ds-react" "^1.5.7"
+    "@navikt/ds-icons" "^2.7.8"
+    "@navikt/ds-react" "^2.7.8"
     clsx "^1.1.1"
     copy-to-clipboard "^3.3.1"
 
-"@navikt/ds-react@^1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-1.5.7.tgz#87d9fa8b83dd00edc87abe1796e768e8f97d3a9a"
-  integrity sha512-T8YYc7RhWYebsz9og/rNUyLarFCa7wZGs1t4xwGh/QMpGaxQ+mWsTbhaXAE15lHzWn8MW9X1ABDTfxiY7h9ITw==
+"@navikt/ds-react@^2.7.8":
+  version "2.7.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-2.7.8.tgz#d3781613e9a695bd7443d47a78ce6bd7ab258e86"
+  integrity sha512-23Km0dIXKOqX3z4DdtqB2STROYGuOBm0qBE3sZEFFW6HxzadhACC9AkHp7mWx8FX62GuopLT64OVBlyothIdVw==
   dependencies:
-    "@floating-ui/react-dom-interactions" "0.9.2"
-    "@navikt/ds-icons" "^1.5.7"
+    "@floating-ui/react" "0.17.0"
+    "@navikt/ds-icons" "^2.7.8"
     "@radix-ui/react-tabs" "1.0.0"
     "@radix-ui/react-toggle-group" "1.0.0"
     clsx "^1.2.1"
@@ -10431,16 +10437,6 @@ nav-frontend-alertstriper@^3.0.23:
   resolved "https://registry.yarnpkg.com/nav-frontend-alertstriper/-/nav-frontend-alertstriper-3.0.23.tgz#21743aa2396739defffba1ec43bd37d5ed459c57"
   integrity sha512-ePZn15nseITLwZhD+oVWMRUqtWQgVR8TLDeC8wSXSX19J2D+KNSRwAMrsN7pdCDmufRvb32Mim1XsVenx7eJfQ==
 
-nav-frontend-chevron-style@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/nav-frontend-chevron-style/-/nav-frontend-chevron-style-0.3.5.tgz#778d814ccf98825da744b7fb95a6e7dfb3ff7f4e"
-  integrity sha512-RahSZnJ+R/GtSHy4I15omGUyLawqswb3xgIG7Zcc88pbLH1x4Z1UHyqRShbsf1yKklXCgHzhx+JneZKYb2av/w==
-
-nav-frontend-chevron@^1.0.13:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/nav-frontend-chevron/-/nav-frontend-chevron-1.0.13.tgz#38efff6b1c84e0d45dd0899c1a0dcc04da2f07a4"
-  integrity sha512-hYn0tTDUEaJafzT6cw/ZTvipVpg7xA9GJrp32Ymo47zRf6XXzfNeycC0q+IqtPrlECUfZXaDne3cSaU+CqOYRg==
-
 nav-frontend-core@^5.0.11:
   version "5.0.11"
   resolved "https://registry.yarnpkg.com/nav-frontend-core/-/nav-frontend-core-5.0.11.tgz#d2611a79f5f5372166a467a5f6e5eaccb8725086"
@@ -10455,11 +10451,6 @@ nav-frontend-ekspanderbartpanel@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/nav-frontend-ekspanderbartpanel/-/nav-frontend-ekspanderbartpanel-4.0.3.tgz#bc123763fd1036e2480a19773b8e3842ff6650ad"
   integrity sha512-ftV8/G8WyrAUT2Hu4ohJKJwVx3XQkCCnPw6vVcwBmOu+jaiMVgj5WGn94ES+BDLHDWOeSzuZod7T72M1vKKkuQ==
-
-nav-frontend-ikoner-assets@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/nav-frontend-ikoner-assets/-/nav-frontend-ikoner-assets-2.0.3.tgz#b5de7cdc59c470f6077f5a61a978e54f40ee8076"
-  integrity sha512-B8mizkduCh4O2JzD4BBl2SKUwAZgm9bZCkEGv1JoaSUFrnJFDHBh2ZSRGSFGvceJueJ1omuCNgRwjb/1BCcSfg==
 
 nav-frontend-ikonknapper@^1.0.9:
   version "1.0.9"
@@ -10482,16 +10473,6 @@ nav-frontend-knapper@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/nav-frontend-knapper/-/nav-frontend-knapper-3.1.2.tgz#18f4ed49f778d8cc55d44a4086b54e7087b07af4"
   integrity sha512-IR+0lz1ir14FnLx6rZNA3DH6DUAUlN1MK/cwg7syDx1v0qh1wMHjv9GI85ciP0WW65W2zBo2fDjRMA7IlHB2wA==
-
-nav-frontend-lenker-style@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/nav-frontend-lenker-style/-/nav-frontend-lenker-style-1.0.2.tgz#2375f26c782ba6dd5c5102fbea0f575d03b80e82"
-  integrity sha512-i4Gu5vIORbOvUeu7x77oxa9wv15p+zC1RlZDGN/pnPYuK6iCJEbliBzHYqeMmvlzHo0rTMl92tcpg1HCgl8i5A==
-
-nav-frontend-lenker@^1.0.58:
-  version "1.0.60"
-  resolved "https://registry.yarnpkg.com/nav-frontend-lenker/-/nav-frontend-lenker-1.0.60.tgz#ab32a842c4dd2ed842479ae1e9c742df8f05499e"
-  integrity sha512-Bv7McvpXRARaNsQCYCt/JW1iZYetlYc+kAPxPKaBDSGiZYp5u3ZOM4sorTIiCXMXOe/y3cahO4i3oF2q78/mNA==
 
 nav-frontend-lukknapp-style@^1.0.0:
   version "1.0.2"
@@ -13932,6 +13913,11 @@ symbol-tree@^3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
+
+tabbable@^6.0.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.1.1.tgz#40cfead5ed11be49043f04436ef924c8890186a0"
+  integrity sha512-4kl5w+nCB44EVRdO0g/UGoOp3vlwgycUVtkk/7DPyeLZUCuNFFKCFG6/t/DgHLrUPHjrZg6s5tNm+56Q2B0xyg==
 
 table@^6.0.9:
   version "6.8.0"

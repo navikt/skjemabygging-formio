@@ -1,8 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
-import { Innholdstittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
@@ -231,9 +231,9 @@ const GlobalTranslationsPage = ({
         }}
       >
         <Row className={classes.titleRow}>
-          <Innholdstittel>
+          <Heading level="1" size="large">
             {languageCode && languageCode !== "undefined" ? languagesInNorwegian[languageCode] : ""}
-          </Innholdstittel>
+          </Heading>
         </Row>
         <Row>
           <Column className={classes.mainCol}>

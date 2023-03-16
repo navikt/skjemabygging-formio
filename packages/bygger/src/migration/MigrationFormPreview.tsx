@@ -8,10 +8,9 @@ import {
 } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import { Components } from "formiojs";
-import "nav-frontend-typografi-style";
-import React, { useEffect, useState } from "react";
-import { useLocation, useParams, useHistory } from "react-router-dom";
 import { Tilbakeknapp } from "nav-frontend-ikonknapper";
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   "@global": globalStyles,

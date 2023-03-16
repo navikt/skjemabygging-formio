@@ -1,11 +1,10 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading, Panel } from "@navikt/ds-react";
 import { AppConfigProvider, NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
 import { Fareknapp, Knapp } from "nav-frontend-knapper";
-import Panel from "nav-frontend-paneler";
-import { Undertittel } from "nav-frontend-typografi";
 import React, { useState } from "react";
 import Column from "../components/layout/Column";
 
@@ -56,7 +55,11 @@ const MottaksadresseEditor = ({
       <div className={styles.panelContentMain}>
         {editMode && (
           <>
-            {!mottaksadresse && <Undertittel>Ny mottaksadresse</Undertittel>}
+            {!mottaksadresse && (
+              <Heading level="2" size="small">
+                Ny mottaksadresse
+              </Heading>
+            )}
             <AppConfigProvider featureToggles={featureToggles}>
               <NavForm
                 src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
@@ -69,7 +72,9 @@ const MottaksadresseEditor = ({
         )}
         {(!editMode || loadingForm) && mottaksadresse && (
           <>
-            <Undertittel>{mottaksadresse.data.adresselinje1}</Undertittel>
+            <Heading level="2" size="small">
+              {mottaksadresse.data.adresselinje1}
+            </Heading>
             <div>{mottaksadresse.data.adresselinje2}</div>
             <div>{mottaksadresse.data.adresselinje3}</div>
             <div>

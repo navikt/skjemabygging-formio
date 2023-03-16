@@ -1,9 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
-import { Pagination } from "@navikt/ds-react";
+import { Heading, Pagination } from "@navikt/ds-react";
 import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { Knapp } from "nav-frontend-knapper";
-import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
@@ -41,9 +40,6 @@ const useStyles = makeStyles({
     flexDirection: "column",
     flex: "1",
     marginLeft: "2rem",
-  },
-  mainHeading: {
-    marginBottom: "4rem",
   },
   hasMarginBottom: {
     marginBottom: "2rem",
@@ -152,7 +148,9 @@ const MigrationPage = () => {
   return (
     <main className={styles.root}>
       <Column className={styles.mainContent}>
-        <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
+        <Heading level="1" size="xlarge">
+          Søk og migrer
+        </Heading>
         <form
           onSubmit={async (event) => {
             event.preventDefault();
@@ -205,7 +203,9 @@ const MigrationPage = () => {
 
         {dryRunSearchResults && (
           <>
-            <Innholdstittel tag="h2">Resultater av simulert migrering</Innholdstittel>
+            <Heading level="2" size="large">
+              Resultater av simulert migrering
+            </Heading>
             <p>
               Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
               {numberOfComponentsFound !== undefined && (

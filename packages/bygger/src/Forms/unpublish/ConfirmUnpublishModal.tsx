@@ -1,7 +1,7 @@
+import { BodyShort } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst } from "nav-frontend-typografi";
 import React, { useState } from "react";
 
 interface Props {
@@ -22,7 +22,7 @@ const ConfirmUnpublishModal = ({ openModal, closeModal, onUnpublish, form }: Pro
 
   return (
     <Modal open={openModal} onClose={closeModal} ariaLabel="Avpubliseringsadvarsel">
-      <Normaltekst className="margin-bottom-double">Er du sikker på at dette skjemaet skal avpubliseres?</Normaltekst>
+      <BodyShort>Er du sikker på at dette skjemaet skal avpubliseres?</BodyShort>
       <ul className="list-inline">
         <li className="list-inline-item">
           <Knapp onClick={unpublish} spinner={loading}>

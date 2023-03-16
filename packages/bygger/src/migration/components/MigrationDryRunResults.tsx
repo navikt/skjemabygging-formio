@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { Heading } from "@navikt/ds-react";
 import { Checkbox } from "nav-frontend-skjema";
-import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DryRunResult } from "../../../types/migration";
@@ -46,9 +46,9 @@ const MigrationDryRunResults = ({
         return (
           <li key={result.skjemanummer} className={styles.row}>
             <div className={styles.mainColumn}>
-              <Undertittel>
+              <Heading level="2" size="small">
                 {result.title} ({result.skjemanummer})
-              </Undertittel>
+              </Heading>
               <p>
                 Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
               </p>
