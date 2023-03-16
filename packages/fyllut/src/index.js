@@ -1,5 +1,4 @@
 import { AppConfigProvider, Modal, url } from "@navikt/skjemadigitalisering-shared-components";
-import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
@@ -18,9 +17,6 @@ const subissionMethod = url.getUrlParam(window.location.search, "sub");
 httpFyllut
   .get("/fyllut/api/config")
   .then((json) => {
-    if (json.REACT_APP_SENTRY_DSN) {
-      Sentry.init({ dsn: json.REACT_APP_SENTRY_DSN });
-    }
     if (json.FEATURE_TOGGLES) {
       featureToggles = json.FEATURE_TOGGLES;
     }
