@@ -92,7 +92,7 @@ export function IntroPage({ form, formUrl }: Props) {
 
         {(selectedSubmissionMethod || !mustSelectSubmissionMethod) && (
           <GuidePanel poster className="margin-bottom-double">
-            <Heading level="3" size="medium" className="margin-bottom-default">
+            <Heading level="2" size="small" className="margin-bottom-default">
               {translate(TEXTS.statiske.introPage.title)}
             </Heading>
             <ul>

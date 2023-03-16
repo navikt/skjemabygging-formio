@@ -17,8 +17,7 @@
     "classnames": "^2.3.2",
     "craco-alias": "^3.0.1",
     "craco-less": "^1.16.0",
-    "cross-env": "^7.0.2",
-    "cypress-axe": "^0.14.0",
+    "cross-env": "^7.0.3",
     "formiojs": "4.14.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -26,18 +25,20 @@
     "react-scripts": "^4.0.3"
   },
   "devDependencies": {
-    "@testing-library/cypress": "^8.0.7",
+    "@testing-library/cypress": "^9.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.4.3",
-    "cypress": "^9.7.0",
+    "cypress": "^12.8.1",
+    "cypress-axe": "^1.4.0",
     "cypress-wait-until": "^1.7.2",
     "eslint-plugin-cypress": "^2.12.1",
     "jest-fetch-mock": "^3.0.3",
     "lint-staged": "^13.2.0",
     "nodemon": "^2.0.21",
     "prettier": "^2.8.4",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "typescript": "^4.6.3"
   },
   "scripts": {
     "start": "cross-env-shell PORT=3001 craco start",

@@ -94,7 +94,7 @@ const panelStyles = makeStyles({
 const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUrl: string }) => {
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const { linkStyle } = panelStyles();
+  const { link } = panelStyles();
   const { key, label, components } = component;
   return (
     <section>
@@ -107,7 +107,7 @@ const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUr
             </Heading>
           </Accordion.Header>
           <Accordion.Content>
-            <Link to={{ pathname: `${formUrl}/${key}`, search }} className={linkStyle}>
+            <Link to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
               <span>
                 {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
               </span>
