@@ -10,6 +10,10 @@ export type Action =
   | {
       type: "edit";
       payload: { id: string } & Partial<MigrationOption>;
+    }
+  | {
+      type: "remove";
+      payload: { id: string };
     };
 
 export const reducer = (state: MigrationOptions = {}, action: Action) => {
@@ -19,7 +23,7 @@ export const reducer = (state: MigrationOptions = {}, action: Action) => {
         ...state,
         ...createMigrationOption(),
       };
-    case "edit":
+    case "edit": {
       const { id, ...rest } = action.payload;
       return {
         ...state,
@@ -28,6 +32,13 @@ export const reducer = (state: MigrationOptions = {}, action: Action) => {
           ...rest,
         },
       };
+    }
+    case "remove": {
+      const { id } = action.payload;
+      let copyOfState = { ...state };
+      delete copyOfState[id];
+      return copyOfState;
+    }
     default:
       return state;
   }
