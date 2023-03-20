@@ -89,24 +89,26 @@ async function migrateForms(searchFilters, editOptions, allForms, formPaths = []
         unpublishedBy,
         publishedLanguages,
       } = form.properties;
-      log[form.properties.skjemanummer] = {
-        skjemanummer,
-        modified,
-        modifiedBy,
-        published,
-        publishedBy,
-        isTestForm,
-        unpublished,
-        unpublishedBy,
-        publishedLanguages,
-        name: form.name,
-        title: form.title,
-        path: form.path,
-        found: affectedComponentsLogger.length,
-        changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
-        diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
-        breakingChanges: breakingChanges,
-      };
+      if (affectedComponentsLogger.length > 0) {
+        log[form.properties.skjemanummer] = {
+          skjemanummer,
+          modified,
+          modifiedBy,
+          published,
+          publishedBy,
+          isTestForm,
+          unpublished,
+          unpublishedBy,
+          publishedLanguages,
+          name: form.name,
+          title: form.title,
+          path: form.path,
+          found: affectedComponentsLogger.length,
+          changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
+          diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
+          breakingChanges: breakingChanges,
+        };
+      }
       return result;
     });
   return { log, migratedForms };
