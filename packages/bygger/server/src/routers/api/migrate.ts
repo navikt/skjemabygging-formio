@@ -4,10 +4,11 @@ import { formioService } from "../../services";
 
 const migrate = async (req: Request, res: Response, next: NextFunction) => {
   const searchFilters = JSON.parse((req.query["searchFilters"] as string) || "{}");
+  const dependencyFilters = JSON.parse((req.query["dependencyFilters"] as string) || "{}");
   const editOptions = JSON.parse((req.query["editOptions"] as string) || "{}");
   try {
     const allForms = await formioService.getAllForms();
-    const { log } = await migrateForms(searchFilters, editOptions, allForms);
+    const { log } = await migrateForms(searchFilters, dependencyFilters, editOptions, allForms);
     res.send(log);
   } catch (error) {
     next(error);

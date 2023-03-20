@@ -18,11 +18,15 @@ function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, s
   return modifiedComponent;
 }
 
-function migrateForm(form, searchFiltersFromParam, script) {
-  const searchFilters = Object.entries(searchFiltersFromParam).map(([key, value]) => {
+function parseFiltersFromParam(filtersFromParam) {
+  return Object.entries(filtersFromParam).map(([key, value]) => {
     const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
     return { key: prop, value, operator };
   });
+}
+
+function migrateForm(form, filtersFromParam, script) {
+  const searchFilters = parseFiltersFromParam(filtersFromParam);
   return recursivelyMigrateComponentAndSubcomponents(form, searchFilters, script);
 }
 
@@ -70,7 +74,22 @@ function getBreakingChanges(form, changes) {
     });
 }
 
-async function migrateForms(searchFilters, editOptions, allForms, formPaths = []) {
+function getDependeeComponents(form, changes, filtersFromParam) {
+  const filters = parseFiltersFromParam(filtersFromParam);
+  return changes.reduce((acc, { key, original }) => {
+    const dependeeComponents = navFormUtils.findDependeeComponents(original, form).map(({ component, types }) => {
+      const { key, label } = component;
+      const matchesFilters = Object.keys(filters).length > 0 && componentMatchesSearchFilters(component, filters);
+      return { key, label, types, matchesFilters };
+    });
+    if (dependeeComponents.length > 0) {
+      return { ...acc, [key]: dependeeComponents };
+    }
+    return {};
+  }, {});
+}
+
+async function migrateForms(searchFilters, dependencyFilters, editOptions, allForms, formPaths = []) {
   let log = {};
   const migratedForms = allForms
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
@@ -78,6 +97,12 @@ async function migrateForms(searchFilters, editOptions, allForms, formPaths = []
       const affectedComponentsLogger = [];
       const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
       const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
+      const dependeeComponents = getDependeeComponents(form, affectedComponentsLogger, dependencyFilters);
+
+      if (Object.keys(dependencyFilters).length > 0) {
+        affectedComponentsLogger.filter((affected) => dependeeComponents[affected.key]?.matchesFilters);
+      }
+
       const {
         skjemanummer,
         modified,
@@ -106,7 +131,8 @@ async function migrateForms(searchFilters, editOptions, allForms, formPaths = []
           found: affectedComponentsLogger.length,
           changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
           diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
-          breakingChanges: breakingChanges,
+          dependeeComponents,
+          breakingChanges,
         };
       }
       return result;
