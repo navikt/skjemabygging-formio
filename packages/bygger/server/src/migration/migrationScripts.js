@@ -37,7 +37,7 @@ function getEditScript(editOptions, logger = []) {
   return (comp) => {
     const editedComp = objectUtils.deepMerge(comp, mergedEditOptionObject);
     const changed = JSON.stringify(comp) !== JSON.stringify(editedComp);
-    const diff = changed && generateDiff(comp, editedComp);
+    const diff = generateDiff(comp, editedComp);
     logger.push({ key: comp.key, original: comp, new: editedComp, changed, diff });
     return editedComp;
   };
