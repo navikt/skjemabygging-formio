@@ -94,13 +94,16 @@ const MigrationPage = () => {
   const [searchFilters, dispatchSearchFilters] = useReducer(reducer, {}, () =>
     createSearchFiltersFromParams(getUrlParamMap(params, "searchFilters"))
   );
+  const [dependencyFilters, dispatchDependencyFilters] = useReducer(reducer, {}, () =>
+    createSearchFiltersFromParams(getUrlParamMap(params, "dependencyFilters"))
+  );
   const [editInputs, dispatchEditInputs] = useReducer(reducer, {}, () =>
     createEditOptions(getUrlParamMap(params, "editOptions"))
   );
 
   const onSearch = async () => {
     setIsLoading(true);
-    const results = await runMigrationDryRun(searchFilters, editInputs);
+    const results = await runMigrationDryRun(searchFilters, dependencyFilters, editInputs);
     const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
     setDryRunSearchResults({
       dryRunSearchResults,
@@ -127,7 +130,7 @@ const MigrationPage = () => {
     );
 
     setIsLoading(false);
-    history.push(createUrlParams(searchFilters, editInputs));
+    history.push(createUrlParams(searchFilters, dependencyFilters, editInputs));
   };
 
   const onConfirm = async () => {
@@ -159,7 +162,11 @@ const MigrationPage = () => {
             await onSearch();
           }}
         >
-          <MigrationOptionsForm title="Filtrer" addRowText="Legg til filtreringsvalg" dispatch={dispatchSearchFilters}>
+          <MigrationOptionsForm
+            title="Komponenten må oppfylle følgende"
+            addRowText="Legg til filter"
+            dispatch={dispatchSearchFilters}
+          >
             <div className={styles.searchFilterInputs}>
               {Object.keys(searchFilters).map((id) => (
                 <SearchFilterInput
@@ -172,7 +179,23 @@ const MigrationPage = () => {
             </div>
           </MigrationOptionsForm>
           <MigrationOptionsForm
-            title="Sett opp felter som skal migreres og ny verdi for feltene"
+            title="... og er avhengig av komponenter som oppfyller følgende"
+            addRowText="Legg til filter"
+            dispatch={dispatchDependencyFilters}
+          >
+            <div className={styles.searchFilterInputs}>
+              {Object.keys(dependencyFilters).map((id) => (
+                <SearchFilterInput
+                  key={id}
+                  id={id}
+                  searchFilter={dependencyFilters[id]}
+                  dispatch={dispatchDependencyFilters}
+                />
+              ))}
+            </div>
+          </MigrationOptionsForm>
+          <MigrationOptionsForm
+            title="Nye verdier for felter i komponenten"
             addRowText="Legg til felt som skal endres"
             dispatch={dispatchEditInputs}
           >
@@ -232,7 +255,7 @@ const MigrationPage = () => {
                   dryRunResults={resultsForCurrentPage}
                   selectedPaths={selectedToMigrate}
                   getPreviewUrl={(formPath) =>
-                    `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, editInputs)}`
+                    `/migrering/forhandsvis/${formPath}${createUrlParams(searchFilters, dependencyFilters, editInputs)}`
                   }
                 />
                 {totalNumberOfPages > 1 && (

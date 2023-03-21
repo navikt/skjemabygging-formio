@@ -13,9 +13,13 @@ async function postJson(url, bodyAsJSON, token) {
   return result.json();
 }
 
-export async function runMigrationDryRun(searchFilters: MigrationOptions, editOptions: MigrationOptions) {
+export async function runMigrationDryRun(
+  searchFilters: MigrationOptions,
+  dependencyFilters: MigrationOptions,
+  editOptions: MigrationOptions
+) {
   try {
-    const response = await fetch(`/api/migrate${createUrlParams(searchFilters, editOptions)}`, {
+    const response = await fetch(`/api/migrate${createUrlParams(searchFilters, dependencyFilters, editOptions)}`, {
       method: "GET",
       headers: {
         "content-type": "application/json",
