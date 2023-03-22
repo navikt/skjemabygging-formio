@@ -1,26 +1,26 @@
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
+import { Button } from "@navikt/ds-react";
 import React from "react";
 
 const useStyles = makeStyles({
-  iconWrapper: {
-    height: "2.5rem",
-    display: "flex",
+  button: {
+    height: "fit-content",
+    minWidth: "fit-content",
     alignSelf: "end",
-    alignItems: "center",
-    justifySelf: "end",
-  },
-  icon: {
-    cursor: "pointer",
   },
 });
 
-const DeleteButton = ({ className, onClick }) => {
+const DeleteButton = ({ className, onClick }: { className?: string; onClick: () => void }) => {
   const styles = useStyles();
   return (
-    <div className={`${className} ${styles.iconWrapper}`}>
-      <Delete className={styles.icon} fontSize={"1.5rem"} onClick={onClick} />
-    </div>
+    <Button
+      className={`${styles.button} ${className}`}
+      type="button"
+      variant="tertiary"
+      icon={<Delete aria-hidden />}
+      onClick={onClick}
+    ></Button>
   );
 };
 
