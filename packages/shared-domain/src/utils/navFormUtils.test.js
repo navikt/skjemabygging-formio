@@ -10,6 +10,7 @@ import {
 } from "./navFormUtils";
 import formWithContainer from "./testdata/conditional-container";
 import formWithCustomConditional from "./testdata/conditional-custom";
+import formWithCompositeCustomConditional from "./testdata/conditional-custom-composite";
 import formWithJsonConditional from "./testdata/conditional-json";
 import formWithMultipleConditionalDependencies from "./testdata/conditional-multiple-dependencies";
 import formWithPanel from "./testdata/conditional-panel";
@@ -137,6 +138,27 @@ describe("navFormUtils", () => {
       it("Returns an array with the key of the component it has a conditional on", () => {
         const actual = findDependentComponents("ekoo75nf", formWithCustomConditional);
         const expected = [expect.objectContaining({ key: "oppgiYndlingsfarge" })];
+        expect(actual).toEqual(expect.arrayContaining(expected));
+        expect(actual).toHaveLength(expected.length);
+      });
+    });
+
+    describe("A form where one component has a custom conditional with dependency to several components", () => {
+      it("when given the id of the first component in the conditional it returns the key of the component owning the conditional", () => {
+        const actual = findDependentComponents("em5trf1", formWithCompositeCustomConditional);
+        const expected = [expect.objectContaining({ key: "hvisSolbrillerOgSolkremEllerSolseng" })];
+        expect(actual).toEqual(expect.arrayContaining(expected));
+        expect(actual).toHaveLength(expected.length);
+      });
+      it("when given the id of the second component in the conditional it returns the key of the component owning the conditional", () => {
+        const actual = findDependentComponents("eoql8pp", formWithCompositeCustomConditional);
+        const expected = [expect.objectContaining({ key: "hvisSolbrillerOgSolkremEllerSolseng" })];
+        expect(actual).toEqual(expect.arrayContaining(expected));
+        expect(actual).toHaveLength(expected.length);
+      });
+      it("when given the id of the last component in the conditional it returns the key of the component owning the conditional", () => {
+        const actual = findDependentComponents("eo9rcfe", formWithCompositeCustomConditional);
+        const expected = [expect.objectContaining({ key: "hvisSolbrillerOgSolkremEllerSolseng" })];
         expect(actual).toEqual(expect.arrayContaining(expected));
         expect(actual).toHaveLength(expected.length);
       });
