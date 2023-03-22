@@ -63,9 +63,9 @@ describe("GlobalTranslationsPage", () => {
 
   describe("Render global translation page with English translations", () => {
     let mockedLoadTranslation;
-    beforeEach(() => {
+    beforeEach(async () => {
       mockedLoadTranslation = jest.fn(() => Promise.resolve(globalTranslations));
-      renderGlobalTranslationsPage(mockedLoadTranslation, "en");
+      await renderGlobalTranslationsPage(mockedLoadTranslation, "en");
     });
     afterEach(() => {
       mockedLoadTranslation.mockClear();
