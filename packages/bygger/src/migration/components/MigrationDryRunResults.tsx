@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { DryRunResult } from "../../../types/migration";
 import FormStatusPanel from "../../Forms/status/FormStatusPanel";
 import BreakingChangesWarning from "./BreakingChangesWarning";
+import ComponentDependencies from "./ComponentDependencies";
 
 const useStyles = makeStyles({
   row: {
@@ -20,6 +21,15 @@ const useStyles = makeStyles({
     flex: 1,
     width: "14rem",
     marginLeft: "3rem",
+  },
+  resultContainer: {
+    marginBottom: "1.5rem",
+  },
+  data: {
+    whiteSpace: "break-spaces",
+    overflowWrap: "anywhere",
+    maxWidth: "100%",
+    marginBottom: "0",
   },
 });
 
@@ -43,6 +53,7 @@ const MigrationDryRunResults = ({
       {dryRunResults.map((result) => {
         const { breakingChanges } = result;
         const hasBreakingChanges = breakingChanges && breakingChanges.length > 0;
+
         return (
           <li key={result.skjemanummer} className={styles.row}>
             <div className={styles.mainColumn}>
@@ -53,11 +64,15 @@ const MigrationDryRunResults = ({
                 Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
               </p>
               {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
-              {result.diff.length > 0 && (
-                <pre style={{ whiteSpace: "break-spaces", overflowWrap: "anywhere", maxWidth: "100%" }}>
-                  {JSON.stringify(result.diff, null, 2)}
-                </pre>
-              )}
+              {result.diff.map((componentDiff) => {
+                const componentKey = componentDiff.key || componentDiff.key["_ORIGINAL"];
+                return (
+                  <div className={styles.resultContainer} key={componentKey}>
+                    <pre className={styles.data}>{JSON.stringify(componentDiff, null, 2)}</pre>
+                    <ComponentDependencies dependencies={result.dependeeComponents[componentKey]} />
+                  </div>
+                );
+              })}
               <Link className="knapp margin-bottom-default margin-top-default" to={getPreviewUrl(result.path)}>
                 Forhåndsvis
               </Link>

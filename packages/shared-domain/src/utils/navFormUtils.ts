@@ -107,7 +107,7 @@ const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Compon
   return comp;
 };
 
-type DependencyType = "conditional" | "validation" | "calculateValue";
+export type DependencyType = "conditional" | "validation" | "calculateValue";
 type Dependee = { component: Component; types: DependencyType[] };
 export const findDependeeComponents = (componentWithDependencies: Component, form: NavFormType) => {
   const dependees: Dependee[] = [];
