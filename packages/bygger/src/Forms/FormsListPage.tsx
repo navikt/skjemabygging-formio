@@ -1,9 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
 import { Down, Up, UpDown } from "@navikt/ds-icons";
-import { Heading } from "@navikt/ds-react";
+import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
@@ -181,9 +180,9 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
       }}
     >
       <ActionRow>
-        <Hovedknapp className={classes.centerColumn} onClick={onNew}>
+        <Button className={classes.centerColumn} onClick={onNew}>
           Lag nytt skjema
-        </Hovedknapp>
+        </Button>
       </ActionRow>
       <nav className={classes.root}>
         <Heading level="2" size="small">

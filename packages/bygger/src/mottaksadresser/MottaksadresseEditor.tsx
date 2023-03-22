@@ -1,10 +1,9 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading, Panel } from "@navikt/ds-react";
+import { Button, Heading, Panel } from "@navikt/ds-react";
 import { AppConfigProvider, NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
-import { Fareknapp, Knapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import Column from "../components/layout/Column";
 
@@ -85,9 +84,9 @@ const MottaksadresseEditor = ({
         )}
         <div>
           {(!editMode || loadingForm) && mottaksadresse && (
-            <Knapp onClick={() => onEdit()} spinner={loadingForm}>
+            <Button variant="secondary" onClick={() => onEdit()} loading={loadingForm} type="button">
               Endre
-            </Knapp>
+            </Button>
           )}
           {!mottaksadresse && loadingForm && <div>Laster skjema...</div>}
         </div>
@@ -96,11 +95,13 @@ const MottaksadresseEditor = ({
         {editMode && !loadingForm && (
           <>
             {!!mottaksadresse && deleteMottaksadresse && (
-              <Fareknapp onClick={onDelete} spinner={deleting}>
+              <Button variant="danger" onClick={onDelete} loading={deleting} type="button">
                 Slett
-              </Fareknapp>
+              </Button>
             )}
-            <Knapp onClick={() => onCancel()}>Avbryt</Knapp>
+            <Button variant="secondary" onClick={() => onCancel()} type="button">
+              Avbryt
+            </Button>
           </>
         )}
       </Column>

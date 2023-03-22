@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Locked, Unlocked } from "@navikt/ds-icons";
-import { Input, Textarea } from "nav-frontend-skjema";
+import { Textarea, TextField } from "@navikt/ds-react";
 import React from "react";
 import { DebounceInput } from "react-debounce-input";
 
@@ -67,7 +67,7 @@ const TranslationTextInput = ({
         />
       ) : (
         <DebounceInput
-          element={Input}
+          element={TextField}
           debounceTimeout={500}
           className="margin-bottom-default"
           label={text}

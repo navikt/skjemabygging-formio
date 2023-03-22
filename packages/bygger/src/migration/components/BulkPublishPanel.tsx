@@ -1,10 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
-import { BodyShort, Checkbox, Heading, Panel, Table } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import AlertStripe from "nav-frontend-alertstriper";
-import { Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useReducer, useState } from "react";
 import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 import { bulkPublish } from "../api";
@@ -76,12 +74,12 @@ const BulkPublishPanel = ({ forms }: Props) => {
           Disse skjemaene ble migrert
         </Heading>
         <BodyShort>Her kan du velge skjemaer du ønsker å publisere samlet</BodyShort>
-        <AlertStripe type={"advarsel"}>
+        <Alert variant="warning">
           <p>
             Merk at oversettelser ikke migreres, eller publiseres. Hvis du har gjort endringer som vil påvirke
             oversettelser, for eksempel "label", bør du kontrollere skjemaoversettelser før du publiserer.
           </p>
-        </AlertStripe>
+        </Alert>
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -130,7 +128,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
               })}
             </Table.Body>
           </Table>
-          <Knapp type="hoved">Publiser nå</Knapp>
+          <Button>Publiser nå</Button>
         </form>
       </Panel>
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} ariaLabel="Bekreft publisering">
@@ -138,25 +136,26 @@ const BulkPublishPanel = ({ forms }: Props) => {
         <FormList heading={"Skjemaer som ikke vil bli publisert"} listElements={willNotBePublished} />
         <ul className="list-inline">
           <li className="list-inline-item">
-            <Knapp
-              spinner={isLoading}
+            <Button
+              loading={isLoading}
               onClick={async () => {
                 await onBulkPublish(Object.entries(state).flatMap(([path, selected]) => (selected ? [path] : [])));
                 setIsModalOpen(false);
               }}
-              htmlType="button"
             >
               Bekreft publisering
-            </Knapp>
+            </Button>
           </li>
           <li className="list-inline-item">
-            <Knapp
+            <Button
+              variant="secondary"
+              type="button"
               onClick={() => {
                 setIsModalOpen(false);
               }}
             >
               Avbryt publisering
-            </Knapp>
+            </Button>
           </li>
         </ul>
       </Modal>

@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
-import { Checkbox } from "nav-frontend-skjema";
+import { Checkbox, Heading } from "@navikt/ds-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { DryRunResult } from "../../../types/migration";
@@ -63,7 +62,6 @@ const MigrationDryRunResults = ({
             <div className={styles.sideColumn}>
               {result.changed > 0 && (
                 <Checkbox
-                  label={"Inkluder i migrering"}
                   checked={selectedPaths.includes(result.path)}
                   onChange={(event) => {
                     if (event.target.checked) {
@@ -72,7 +70,9 @@ const MigrationDryRunResults = ({
                       onChange(selectedPaths.filter((path) => path !== result.path));
                     }
                   }}
-                />
+                >
+                  Inkluder i migrering
+                </Checkbox>
               )}
               <FormStatusPanel publishProperties={result} spacing={"small"} hideToggleDiffButton />
             </div>

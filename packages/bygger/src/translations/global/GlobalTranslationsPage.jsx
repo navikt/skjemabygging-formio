@@ -1,8 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
+import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
@@ -248,9 +247,14 @@ const GlobalTranslationsPage = ({
                   deleteOneRow={deleteOneRow}
                   predefinedGlobalOriginalTexts={predefinedOriginalTextList}
                 />
-                <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
+                <Button
+                  variant="secondary"
+                  className={classes.addButton}
+                  onClick={() => addNewTranslation()}
+                  type="button"
+                >
                   Legg til ny tekst
-                </Knapp>
+                </Button>
               </div>
             ) : (
               <ApplicationTextTranslationEditPanel
@@ -266,7 +270,9 @@ const GlobalTranslationsPage = ({
           <div className={classes.sideBarContainer}>
             <Column className={classes.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />
-              <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
+              <Button variant="secondary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button">
+                Slett språk
+              </Button>
               <PublishGlobalTranslationsButton
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}

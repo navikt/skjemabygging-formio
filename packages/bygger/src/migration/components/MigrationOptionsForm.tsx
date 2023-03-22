@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
-import { Knapp } from "nav-frontend-knapper";
+import { Button, Heading } from "@navikt/ds-react";
 import React, { Dispatch } from "react";
 import { Action } from "./MigrationOptionsForm.reducer";
 
@@ -27,14 +26,15 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, children }: Migrati
       <div className={styles.form}>
         {children}
         <div>
-          <Knapp
+          <Button
+            type="button"
+            variant="secondary"
             onClick={() => {
               dispatch({ type: "add" });
             }}
-            htmlType="button"
           >
             {addRowText}
-          </Knapp>
+          </Button>
         </div>
       </div>
     </>

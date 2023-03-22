@@ -1,7 +1,6 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Close } from "@navikt/ds-icons";
-import { Button, Heading, Panel } from "@navikt/ds-react";
-import { Input, SkjemaGruppe } from "nav-frontend-skjema";
+import { Button, Fieldset, Heading, Panel, TextField } from "@navikt/ds-react";
 import React from "react";
 import LabelWithDiff from "../FormMetaDataEditor/LabelWithDiff";
 
@@ -16,8 +15,8 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
   return (
     <Panel className="margin-bottom-default" border>
       <Button variant="tertiary" icon={<Close aria-hidden />} onClick={onDelete} className={styles.closeBtn} />
-      <SkjemaGruppe
-        legend={
+      <Fieldset data-testid="signature">
+        <legend>
           <LabelWithDiff
             label={
               <Heading level="2" size="small">
@@ -26,9 +25,8 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
             }
             diff={diff?.status}
           />
-        }
-      >
-        <Input
+        </legend>
+        <TextField
           label="Hvem skal signere?"
           type="text"
           name={`signature${index + 1}`}
@@ -41,7 +39,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
             })
           }
         />
-        <Input
+        <TextField
           label="Instruksjoner til den som signerer"
           type="text"
           name={`signatureInstruction${index}`}
@@ -54,7 +52,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
             })
           }
         />
-      </SkjemaGruppe>
+      </Fieldset>
     </Panel>
   );
 };

@@ -1,8 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading, Pagination } from "@navikt/ds-react";
+import { Button, Heading, Pagination } from "@navikt/ds-react";
 import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import { Knapp } from "nav-frontend-knapper";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
@@ -182,12 +181,13 @@ const MigrationPage = () => {
           </MigrationOptionsForm>
 
           <div className={styles.hasMarginBottom}>
-            <Knapp type="hoved" spinner={isLoading}>
+            <Button variant="primary" loading={isLoading}>
               Simuler og kontroller migrering
-            </Knapp>
+            </Button>
 
-            <Knapp
-              type="flat"
+            <Button
+              variant="tertiary"
+              type="button"
               onClick={() => {
                 history.push();
                 history.go();
@@ -195,7 +195,7 @@ const MigrationPage = () => {
               className={styles.hasMarginLeft}
             >
               Nullstill skjema
-            </Knapp>
+            </Button>
           </div>
         </form>
 

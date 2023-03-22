@@ -1,5 +1,5 @@
+import { Button } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { Knapp } from "nav-frontend-knapper";
 import React from "react";
 import { useModal } from "../../util/useModal";
 import ConfirmUnpublishModal from "./ConfirmUnpublishModal";
@@ -16,7 +16,9 @@ const UnpublishButton = ({ onUnpublish, form }: UnpublishButtonProps) => {
     <>
       {form.properties?.published && (
         <>
-          <Knapp onClick={() => setOpenConfirmModal(true)}>Avpubliser</Knapp>
+          <Button variant="secondary" onClick={() => setOpenConfirmModal(true)} type="button">
+            Avpubliser
+          </Button>
 
           <ConfirmUnpublishModal
             openModal={openConfirmModal}

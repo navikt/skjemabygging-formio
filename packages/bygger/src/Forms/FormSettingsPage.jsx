@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
-import { Knapp } from "nav-frontend-knapper";
+import { Button, Heading } from "@navikt/ds-react";
 import React, { useState } from "react";
 import { AppLayout } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
@@ -65,7 +64,9 @@ export function FormSettingsPage({
           <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
         </Column>
         <Column>
-          <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
+          <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+            Publiser
+          </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           <PrimaryButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</PrimaryButtonWithSpinner>
           <FormStatusPanel publishProperties={form.properties} />

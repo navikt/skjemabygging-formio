@@ -1,8 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
+import { Alert, Heading } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
-import AlertStripe from "nav-frontend-alertstriper";
 import React, { useEffect, useState } from "react";
 import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
@@ -39,7 +38,7 @@ const ReportsPage = () => {
           <Heading level="1" size="xlarge">
             Rapporter
           </Heading>
-          {errorMessage && <AlertStripe type={"feil"}>{errorMessage}</AlertStripe>}
+          {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
           {userData?.isAdmin ? (
             <div>
               <ul>

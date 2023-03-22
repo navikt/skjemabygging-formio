@@ -1,4 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { Close } from "@navikt/ds-icons";
+import { Button } from "@navikt/ds-react";
 import {
   CustomComponents,
   ErrorPage,
@@ -8,7 +10,6 @@ import {
 } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import { Components } from "formiojs";
-import { Tilbakeknapp } from "nav-frontend-ikonknapper";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
@@ -54,7 +55,9 @@ const MigrationFormPreview = () => {
   return (
     <div>
       <div className={styles.backContainer}>
-        <Tilbakeknapp onClick={history.goBack}>Tilbake</Tilbakeknapp>
+        <Button variant="tertiary" icon={<Close aria-hidden />} onClick={history.goBack} type="button">
+          Tilbake
+        </Button>
       </div>
       <FyllUtRouter form={form} translations={{}} />
     </div>

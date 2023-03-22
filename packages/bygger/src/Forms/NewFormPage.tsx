@@ -1,8 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
+import { Button, Heading } from "@navikt/ds-react";
 import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
-import { Hovedknapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -91,7 +90,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
           Opprett nytt skjema
         </Heading>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
-        <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
+        <Button onClick={onCreate}>Opprett</Button>
       </main>
     </AppLayout>
   );
