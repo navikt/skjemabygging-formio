@@ -271,10 +271,8 @@ describe("htmlBuilder", () => {
 
 <h3></h3>
 <div class="underskrift"></div>
-<div>_____________________________________________________________</div>
-<div class="underskrift">Sted og dato</div>
-<div>_____________________________________________________________</div>
-<div class="underskrift">Underskrift</div>`;
+<div class="underskrift">Sted og dato _________________________________________</div>
+<div class="underskrift">Underskrift _________________________________________</div>`;
 
     it("adds a singel signature when form contains the old format", () => {
       const signatures = {
