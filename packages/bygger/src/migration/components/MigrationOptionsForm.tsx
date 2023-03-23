@@ -13,17 +13,19 @@ const getStyles = makeStyles({
   },
 });
 
+export type TestId = "search-filters" | "dependency-filters" | "edit-options";
 interface MigrationOptionsFormProps {
   title: string;
   addRowText: string;
   dispatch: Dispatch<Action>;
+  testId: TestId;
   children: JSX.Element;
 }
 
-const MigrationOptionsForm = ({ addRowText, title, dispatch, children }: MigrationOptionsFormProps) => {
+const MigrationOptionsForm = ({ addRowText, title, dispatch, testId, children }: MigrationOptionsFormProps) => {
   const styles = getStyles();
   return (
-    <>
+    <div data-testid={testId}>
       <Innholdstittel tag="h2" className={styles.heading}>
         {title}
       </Innholdstittel>
@@ -40,7 +42,7 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, children }: Migrati
           </Knapp>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

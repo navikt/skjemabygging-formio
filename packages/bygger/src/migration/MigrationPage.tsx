@@ -167,6 +167,7 @@ const MigrationPage = () => {
             title="Komponenten må oppfylle følgende"
             addRowText="Legg til filter"
             dispatch={dispatchSearchFilters}
+            testId="search-filters"
           >
             <div className={styles.searchFilterInputs}>
               {Object.keys(searchFilters).map((id) => (
@@ -183,6 +184,7 @@ const MigrationPage = () => {
             title="... og er avhengig av komponenter som oppfyller følgende"
             addRowText="Legg til filter"
             dispatch={dispatchDependencyFilters}
+            testId="dependency-filters"
           >
             <div className={styles.searchFilterInputs}>
               {Object.keys(dependencyFilters).map((id) => (
@@ -199,6 +201,7 @@ const MigrationPage = () => {
             title="Nye verdier for felter i komponenten"
             addRowText="Legg til felt som skal endres"
             dispatch={dispatchEditInputs}
+            testId="edit-options"
           >
             <div className={styles.formEditInputs}>
               {Object.keys(editInputs).map((id) => (

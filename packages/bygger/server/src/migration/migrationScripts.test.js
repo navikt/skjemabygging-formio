@@ -8,14 +8,6 @@ import {
   originalTextFieldComponent,
 } from "./testData";
 
-const migrateFnrFieldFunction = (component) => ({
-  ...component,
-  validate: {
-    ...component.validate,
-    custom: "valid = instance.newValidateFnr(input)",
-  },
-});
-
 function createTestForm(...components) {
   return {
     path: "testForm",
@@ -29,8 +21,10 @@ function createTestForm(...components) {
 
 describe("Migration scripts", () => {
   describe("migrateForm", () => {
+    const fnrEditOptions = { "validate.custom": "valid = instance.newValidateFnr(input)" };
+
     it("can update component based on type", () => {
-      const actual = migrateForm(originalForm, { type: "fnrfield" }, migrateFnrFieldFunction);
+      const { migratedForm: actual } = migrateForm(originalForm, { type: "fnrfield" }, {}, fnrEditOptions);
       expect(actual).toEqual({
         path: "test-form",
         components: [
@@ -47,7 +41,7 @@ describe("Migration scripts", () => {
     });
 
     it("can migrate subcomponents", () => {
-      const actual = migrateForm(
+      const { migratedForm: actual } = migrateForm(
         {
           path: "test-form",
           components: [
@@ -58,7 +52,8 @@ describe("Migration scripts", () => {
           ],
         },
         { type: "fnrfield" },
-        migrateFnrFieldFunction
+        {},
+        fnrEditOptions
       );
 
       expect(actual).toEqual({
@@ -81,7 +76,7 @@ describe("Migration scripts", () => {
     });
 
     it("can migrate subcomponents of a migrated component", () => {
-      const actual = migrateForm(
+      const { migratedForm: actual } = migrateForm(
         {
           path: "test-form",
           components: [
@@ -98,10 +93,8 @@ describe("Migration scripts", () => {
           ],
         },
         { type: "navSkjemagruppe" },
-        (component) => ({
-          ...component,
-          modifiedByTest: true,
-        })
+        {},
+        { modifiedByTest: true }
       );
 
       expect(actual).toEqual({
@@ -132,11 +125,11 @@ describe("Migration scripts", () => {
     ];
 
     it("generates log only for included form paths", async () => {
-      const { log } = await migrateForms({ disabled: false }, { disabled: true }, allForms, ["form1", "form3"]);
+      const { log } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, ["form1", "form3"]);
       expect(Object.keys(log)).toEqual(["form1", "form3"]);
     });
     it("only migrates forms included by the provided formPaths", async () => {
-      const { migratedForms } = await migrateForms({ disabled: false }, { disabled: true }, allForms, [
+      const { migratedForms } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, [
         "form2",
         "form3",
       ]);

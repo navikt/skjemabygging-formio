@@ -1,10 +1,11 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
+import { TestId } from "./components/MigrationOptionsForm";
 import MigrationPage from "./MigrationPage";
 import { migrationOptionsAsMap } from "./utils";
 
@@ -25,6 +26,7 @@ describe("MigrationPage", () => {
     path: "form",
     found: 0,
     changed: 0,
+    dependeeComponents: {},
     diff: [{ key: "1", label: "label", id: "123", property: { _ORIGINAL: "original value", _NEW: "new value" } }],
   };
   const dryRunResponse: DryRunResults = {
@@ -57,16 +59,20 @@ describe("MigrationPage", () => {
     fetchSpy.mockClear();
   });
 
-  const setMigrateOptionInput = (index, prop, value, operator?: Operator) => {
-    fireEvent.change(screen.getAllByLabelText("Feltnavn")[index], { target: { value: prop } });
-    fireEvent.change(screen.getAllByLabelText("Verdi")[index], { target: { value } });
+  const setMigrateOptionInput = (optionType: TestId, index, prop, value, operator?: Operator) => {
+    const migrationOptions = screen.getByTestId(optionType);
+    const propertyField = getAllByLabelText(migrationOptions, "Feltnavn")[index];
+    if (propertyField) fireEvent.change(propertyField, { target: { value: prop } });
+    const valueField = getAllByLabelText(migrationOptions, "Verdi")[index];
+    if (valueField) fireEvent.change(valueField, { target: { value } });
     if (operator) {
-      fireEvent.change(screen.getAllByLabelText("Operator")[index], { target: { value: operator } });
+      const operatorField = getAllByLabelText(migrationOptions, "Operator")[index];
+      if (operatorField) fireEvent.change(operatorField, { target: { value: operator } });
     }
   };
 
-  const addFilterOption = () => {
-    fireEvent.click(screen.getByRole("button", { name: "Legg til filtreringsvalg" }));
+  const clickAddButton = (optionType: TestId) => {
+    fireEvent.click(within(screen.getByTestId(optionType)).getByRole("button"));
   };
 
   it("renders the main heading", () => {
@@ -74,74 +80,70 @@ describe("MigrationPage", () => {
   });
 
   it("renders options form for search filters and edit options", () => {
-    expect(screen.getByRole("heading", { level: 2, name: "Filtrer" }));
-    expect(
-      screen.getByRole("heading", { level: 2, name: "Sett opp felter som skal migreres og ny verdi for feltene" })
-    );
+    expect(screen.getByRole("heading", { level: 2, name: "Komponenten må oppfylle følgende" }));
+    expect(screen.getByRole("heading", { level: 2, name: "Nye verdier for felter i komponenten" }));
   });
 
   describe("Migration dry run", () => {
     it("performs a search with the provided search filters", async () => {
-      setMigrateOptionInput(0, "searchFilter1", true);
+      setMigrateOptionInput("search-filters", 0, "searchFilter1", true);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
-      expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"searchFilter1":true}&editOptions={}',
-        expectedGetOptions
-      );
+      expect(fetchSpy).toHaveBeenCalledWith('/api/migrate?searchFilters={"searchFilter1":true}', expectedGetOptions);
     });
 
     it("performs a search with several search filters", async () => {
-      setMigrateOptionInput(0, "prop1", true);
-      addFilterOption();
-      setMigrateOptionInput(1, "prop2", 99);
-      addFilterOption();
-      setMigrateOptionInput(2, "prop3", false);
+      setMigrateOptionInput("search-filters", 0, "prop1", true);
+      clickAddButton("search-filters");
+      setMigrateOptionInput("search-filters", 1, "prop2", 99);
+      clickAddButton("search-filters");
+      setMigrateOptionInput("search-filters", 2, "prop3", false);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}&editOptions={}',
+        '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}',
         expectedGetOptions
       );
     });
 
     it("performs a search with operators", async () => {
-      setMigrateOptionInput(0, "prop1", "hello", "n_eq");
-      addFilterOption();
-      setMigrateOptionInput(1, "prop2", "world!", "eq");
-      addFilterOption();
-      setMigrateOptionInput(2, "prop3", true);
+      setMigrateOptionInput("search-filters", 0, "prop1", "hello", "n_eq");
+      clickAddButton("search-filters");
+      setMigrateOptionInput("search-filters", 1, "prop2", "world!", "eq");
+      clickAddButton("search-filters");
+      setMigrateOptionInput("search-filters", 2, "prop3", true);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}&editOptions={}',
+        '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}',
         expectedGetOptions
       );
     });
 
     it("performs a migration dryrun with several edit options", async () => {
-      setMigrateOptionInput(1, "prop1", true);
-      fireEvent.click(screen.getByRole("button", { name: "Legg til felt som skal endres" }));
-      setMigrateOptionInput(2, "prop2", 99);
-      fireEvent.click(screen.getByRole("button", { name: "Legg til felt som skal endres" }));
-      setMigrateOptionInput(3, "prop3", false);
+      setMigrateOptionInput("search-filters", 0, "prop1", false);
+      setMigrateOptionInput("edit-options", 0, "prop1", true);
+      clickAddButton("edit-options");
+      setMigrateOptionInput("edit-options", 1, "prop2", 99);
+      clickAddButton("edit-options");
+      setMigrateOptionInput("edit-options", 2, "prop3", false);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
-        '/api/migrate?searchFilters={}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
+        '/api/migrate?searchFilters={"prop1":false}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
         expectedGetOptions
       );
     });
 
     it("performs a migration dryrun with search filters and edit options", async () => {
-      setMigrateOptionInput(0, "prop1", true);
-      setMigrateOptionInput(1, "prop1", false);
-      fireEvent.click(screen.getByRole("button", { name: "Legg til felt som skal endres" }));
-      setMigrateOptionInput(2, "prop2", "new value");
+      setMigrateOptionInput("search-filters", 0, "prop1", true);
+      setMigrateOptionInput("edit-options", 0, "prop1", false);
+      clickAddButton("edit-options");
+      setMigrateOptionInput("edit-options", 1, "prop2", "new value");
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
       expect(fetchSpy).toHaveBeenCalledTimes(1);
@@ -154,8 +156,8 @@ describe("MigrationPage", () => {
 
   describe("Migration dry run results", () => {
     beforeEach(async () => {
-      setMigrateOptionInput(0, "prop1", true);
-      setMigrateOptionInput(1, "prop1", false);
+      setMigrateOptionInput("search-filters", 0, "prop1", true);
+      setMigrateOptionInput("edit-options", 0, "prop1", false);
       fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
       await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
     });
@@ -184,8 +186,8 @@ describe("MigrationPage", () => {
 
     describe("onClick", () => {
       beforeEach(async () => {
-        setMigrateOptionInput(0, "prop1", true);
-        setMigrateOptionInput(1, "prop1", false);
+        setMigrateOptionInput("search-filters", 0, "prop1", true);
+        setMigrateOptionInput("edit-options", 0, "prop1", false);
         fireEvent.click(screen.getByRole("button", { name: "Simuler og kontroller migrering" }));
         await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
         fireEvent.click(screen.getAllByLabelText("Inkluder i migrering")[1]);
@@ -213,7 +215,12 @@ describe("MigrationPage", () => {
         expect(fetchSpy).toHaveBeenCalledTimes(2);
         expect(fetchSpy).toHaveBeenCalledWith("/api/migrate/update", {
           body: JSON.stringify({
-            payload: { searchFilters: { prop1: true }, editOptions: { prop1: false }, include: ["form3"] },
+            payload: {
+              searchFilters: { prop1: true },
+              dependencyFilters: {},
+              editOptions: { prop1: false },
+              include: ["form3"],
+            },
           }),
           headers: { "Bygger-Formio-Token": "", "content-type": "application/json" },
           method: "POST",
