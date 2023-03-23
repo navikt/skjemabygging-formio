@@ -25,9 +25,23 @@ function parseFiltersFromParam(filtersFromParam) {
   });
 }
 
-function migrateForm(form, filtersFromParam, script) {
-  const searchFilters = parseFiltersFromParam(filtersFromParam);
-  return recursivelyMigrateComponentAndSubcomponents(form, searchFilters, script);
+function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, editOptions) {
+  const logger = [];
+  const searchFilters = parseFiltersFromParam(searchFiltersFromParam);
+  const dependencyFilters = parseFiltersFromParam(dependencyFiltersFromParam);
+
+  const migratedForm = recursivelyMigrateComponentAndSubcomponents(
+    form,
+    searchFilters,
+    getEditScript(editOptions, logger)
+  );
+  const breakingChanges = getBreakingChanges(form, logger);
+  const dependeeComponents = getDependeeComponents(form, logger, dependencyFilters);
+
+  if (Object.keys(dependencyFilters).length > 0) {
+    logger.filter((affected) => dependeeComponents[affected.key]?.matchesFilters);
+  }
+  return { migratedForm, affectedComponentsLog: logger, breakingChanges, dependeeComponents };
 }
 
 function getEditScript(editOptions, logger = []) {
@@ -74,8 +88,7 @@ function getBreakingChanges(form, changes) {
     });
 }
 
-function getDependeeComponents(form, changes, filtersFromParam) {
-  const filters = parseFiltersFromParam(filtersFromParam);
+function getDependeeComponents(form, changes, filters) {
   return changes.reduce((acc, { key, original }) => {
     const dependeeComponents = navFormUtils.findDependeeComponents(original, form).map(({ component, types }) => {
       const { key, label } = component;
@@ -94,14 +107,12 @@ async function migrateForms(searchFilters, dependencyFilters, editOptions, allFo
   const migratedForms = allForms
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
     .map((form) => {
-      const affectedComponentsLogger = [];
-      const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
-      const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
-      const dependeeComponents = getDependeeComponents(form, affectedComponentsLogger, dependencyFilters);
-
-      if (Object.keys(dependencyFilters).length > 0) {
-        affectedComponentsLogger.filter((affected) => dependeeComponents[affected.key]?.matchesFilters);
-      }
+      const { migratedForm, affectedComponentsLog, breakingChanges, dependeeComponents } = migrateForm(
+        form,
+        searchFilters,
+        dependencyFilters,
+        editOptions
+      );
 
       const {
         skjemanummer,
@@ -114,7 +125,7 @@ async function migrateForms(searchFilters, dependencyFilters, editOptions, allFo
         unpublishedBy,
         publishedLanguages,
       } = form.properties;
-      if (affectedComponentsLogger.length > 0) {
+      if (affectedComponentsLog.length > 0) {
         log[form.properties.skjemanummer] = {
           skjemanummer,
           modified,
@@ -128,20 +139,21 @@ async function migrateForms(searchFilters, dependencyFilters, editOptions, allFo
           name: form.name,
           title: form.title,
           path: form.path,
-          found: affectedComponentsLogger.length,
-          changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
-          diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
+          found: affectedComponentsLog.length,
+          changed: affectedComponentsLog.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
+          diff: affectedComponentsLog.map((affected) => affected.diff).filter((diff) => diff),
           dependeeComponents,
           breakingChanges,
         };
       }
-      return result;
+      return migratedForm;
     });
   return { log, migratedForms };
 }
 
-async function previewForm(searchFilters, editOptions, form) {
-  return migrateForm(form, searchFilters, getEditScript(editOptions));
+async function previewForm(searchFilters, dependencyFilters, editOptions, form) {
+  const { migratedForm } = migrateForm(form, searchFilters, dependencyFilters, editOptions);
+  return migratedForm;
 }
 
 export { migrateForm, migrateForms, getEditScript, previewForm, getBreakingChanges };

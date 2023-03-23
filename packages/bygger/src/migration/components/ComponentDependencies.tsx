@@ -29,7 +29,7 @@ const useStyles = makeStyles({
 
 const ComponentDependencies = ({ dependencies }: { dependencies: DependeeComponent[] }) => {
   const styles = useStyles();
-  const matching = dependencies?.filter((dependee) => dependee);
+  const matching = dependencies?.filter((dependee) => dependee.matchesFilters);
 
   if (!matching || matching.length === 0) return null;
 

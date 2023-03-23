@@ -136,6 +136,7 @@ const MigrationPage = () => {
   const onConfirm = async () => {
     const updatedForms = await runMigrationWithUpdate(Formiojs.getToken(), {
       searchFilters: searchFiltersAsParams(searchFilters),
+      dependencyFilters: searchFiltersAsParams(dependencyFilters),
       editOptions: migrationOptionsAsMap(editInputs),
       include: selectedToMigrate,
     });
