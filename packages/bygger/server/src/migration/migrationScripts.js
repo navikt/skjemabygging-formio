@@ -1,17 +1,20 @@
 import { migrationUtils, navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { generateDiff } from "./diffingTool.js";
-import { componentMatchesSearchFilters } from "./searchFilter.js";
+import { componentHasDependencyMatchingFilters, componentMatchesFilters } from "./searchFilter.js";
 
-function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
+function recursivelyMigrateComponentAndSubcomponents(form, component, searchFilters, dependencyFilters, script) {
   let modifiedComponent = component;
-  if (componentMatchesSearchFilters(component, searchFilters)) {
+  if (
+    componentMatchesFilters(component, searchFilters) &&
+    componentHasDependencyMatchingFilters(form, component, dependencyFilters)
+  ) {
     modifiedComponent = script(component);
   }
   if (modifiedComponent.components) {
     return {
       ...modifiedComponent,
       components: modifiedComponent.components.map((subComponent) =>
-        recursivelyMigrateComponentAndSubcomponents(subComponent, searchFilters, script)
+        recursivelyMigrateComponentAndSubcomponents(form, subComponent, searchFilters, dependencyFilters, script)
       ),
     };
   }
@@ -26,21 +29,27 @@ function parseFiltersFromParam(filtersFromParam) {
 }
 
 function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, editOptions) {
+  //TODO: potentially turn logger into a class
   let logger = [];
   const searchFilters = parseFiltersFromParam(searchFiltersFromParam);
   const dependencyFilters = parseFiltersFromParam(dependencyFiltersFromParam);
 
   const migratedForm = recursivelyMigrateComponentAndSubcomponents(
     form,
+    form,
     searchFilters,
+    dependencyFilters,
     getEditScript(editOptions, logger)
   );
   const breakingChanges = getBreakingChanges(form, logger);
+  //TODO: find a way to check for matching dependencies inside recursivelyMigrateComponentAndSubcomponents - maybe generate a map and send in
   const dependeeComponents = getDependeeComponents(form, logger, dependencyFilters);
 
-  if (Object.keys(dependencyFilters).length > 0) {
-    logger = logger.filter((affected) => !!dependeeComponents[affected.key]?.matchesFilters);
-  }
+  // if (Object.keys(dependencyFilters).length > 0) {
+  //   logger = logger.filter((affected) => {
+  //     return !!dependeeComponents[affected.key]?.some((dependee) => dependee.matchesFilters);
+  //   });
+  // }
   return { migratedForm, affectedComponentsLog: logger, breakingChanges, dependeeComponents };
 }
 
@@ -92,7 +101,7 @@ function getDependeeComponents(form, changes, filters) {
   return changes.reduce((acc, { key, original }) => {
     const dependeeComponents = navFormUtils.findDependeeComponents(original, form).map(({ component, types }) => {
       const { key, label } = component;
-      const matchesFilters = Object.keys(filters).length > 0 && componentMatchesSearchFilters(component, filters);
+      const matchesFilters = Object.keys(filters).length > 0 && componentMatchesFilters(component, filters);
       return { key, label, types, matchesFilters };
     });
     if (dependeeComponents.length > 0) {
