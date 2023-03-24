@@ -130,7 +130,7 @@ const MigrationPage = () => {
     );
 
     setIsLoading(false);
-    history.push(createUrlParams(searchFilters, dependencyFilters, editInputs));
+    history.push({ search: createUrlParams(searchFilters, dependencyFilters, editInputs) });
   };
 
   const onConfirm = async () => {

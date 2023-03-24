@@ -37,9 +37,9 @@ const ComponentDependencies = ({ dependencies }: { dependencies: DependeeCompone
     <div>
       <div className={styles.heading}>Har avhengighet til</div>
       {matching.map((dependee, index) => (
-        <>
+        <div key={dependee.key}>
           {index > 0 && <div className={styles.separator} />}
-          <div className={styles.gridContainer} key={dependee.key}>
+          <div className={styles.gridContainer}>
             <div>Key:</div>
             <div>{dependee.key}</div>
             <div>Label:</div>
@@ -47,7 +47,7 @@ const ComponentDependencies = ({ dependencies }: { dependencies: DependeeCompone
             <div>Type:</div>
             <div>{dependee.types}</div>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

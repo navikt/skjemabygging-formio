@@ -10,6 +10,10 @@ async function postJson(url, bodyAsJSON, token) {
     },
     body: JSON.stringify(bodyAsJSON),
   });
+  if (!result.ok) {
+    const error = await result.text();
+    throw new Error(error);
+  }
   return result.json();
 }
 
@@ -25,6 +29,10 @@ export async function runMigrationDryRun(
         "content-type": "application/json",
       },
     });
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error);
+    }
     return response.json();
   } catch (error) {
     console.error(error);
