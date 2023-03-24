@@ -1598,20 +1598,30 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@navikt/ds-css-internal@^2.7.8":
-  version "2.7.8"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-2.7.8.tgz#97ce84e1552f731929ea8513e05110874f9b81d8"
-  integrity sha512-JiUQpVCZUznSGt08XOI1TGMVIwAJ0G3DD2FS6KpyW8DboNSbK0oYVQNPPldTjZ0K1Phzl1CTRL43Ag8byyBCtg==
+"@navikt/aksel-icons@^2.8.3":
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-2.8.3.tgz#ed18b605a91f0162757bad1fbcc028bb2db7a975"
+  integrity sha512-s0MCa2k4g/3DbsN90QY4YpKEyt+lQFCVPDcNsLBEnnEWHYHByeNbXaRHU6N963TuYNkvEfpKYzSGr0JlYOV8Pg==
 
-"@navikt/ds-css@^2.7.8":
-  version "2.7.8"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-2.7.8.tgz#8a310077aa78f1f92bcf574e9523e62ddb4d167a"
-  integrity sha512-rGKXgzEGMn5tdHc1mNnMImJc4CC9ox5lucJn/m6dXcfs026e1IED3mi+pBCKbgtM3EHhS3zGXQwrgf9R1m+skQ==
+"@navikt/ds-css-internal@^2.8.3":
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-2.8.3.tgz#fe6aa35cb70beb99f9519d1c678ea5d481d3547a"
+  integrity sha512-ZdSc4WkhMHY0FpyCwfaBuHoGFxmcXRCXhyb4XKbQpSD2OaCoitsXARBvMvTz05/HWvNJxWVoDf73k4c02GaUfw==
+
+"@navikt/ds-css@^2.8.3":
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-2.8.3.tgz#0059eafb004b35e79d84107e24d0c3239e370c3c"
+  integrity sha512-B8xGzajBHH6MDp9x4To97ec8OKt7Mmx9O7jyoTIL0PJOZppa2rv3S8rtDQOqwrFMdXzb6VHzDimpY1TBZ68yAw==
 
 "@navikt/ds-icons@^2.7.8":
   version "2.7.8"
   resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-2.7.8.tgz#8fca6f5fcd6ab40d3a715dd51a0fafe071f59832"
   integrity sha512-jBXDzkpyfKkqnqWDRiu7VNDTCe/bJWiG1Evmng/M1DmGFQiGiOA6ogvjp0lCIQ0+p7umOGb7ycX0kNUb1XS9vw==
+
+"@navikt/ds-icons@^2.8.3":
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-2.8.3.tgz#7666b1478afd0699221d78c252074d459f1a2388"
+  integrity sha512-/ps/U8EkNNDSxbsOYCPM0WqD24sjME035qd9vCR8DN3lZ3PCCtdeIA7Mfl5PLBMBy6kVdPOXeU8YFJSa/IYFJg==
 
 "@navikt/ds-react-internal@^2.7.8":
   version "2.7.8"
@@ -1637,7 +1647,22 @@
     react-day-picker "8.3.4"
     react-modal "3.15.1"
 
-"@navikt/fnrvalidator@^1.1.3":
+"@navikt/ds-react@^2.8.3":
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-2.8.3.tgz#38dcfdbbc62133654b52076497c7764d5e0ed813"
+  integrity sha512-NL56Zo5Va/Djw5B+ImYErBGlHihzkPeOYmZFGB5A/JFQxfLJpu/sjYlCaXgCj12XMIFu9ARkj5Dz81JCAm2UCA==
+  dependencies:
+    "@floating-ui/react" "0.17.0"
+    "@navikt/aksel-icons" "^2.8.3"
+    "@navikt/ds-icons" "^2.8.3"
+    "@radix-ui/react-tabs" "1.0.0"
+    "@radix-ui/react-toggle-group" "1.0.0"
+    clsx "^1.2.1"
+    date-fns "2.29.3"
+    react-day-picker "8.3.4"
+    react-modal "3.15.1"
+
+"@navikt/fnrvalidator@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@navikt/fnrvalidator/-/fnrvalidator-1.3.0.tgz#3653dedeed860bb85dac5c30462f762dc99f6c01"
   integrity sha512-FEcjhR/i5vfIrKHZ9C/fzfM/R5uoWsouktQHBEqMY4yqUNuqSdF9k6fUassxMIhLLUKsiJy10LA9NQ3z89Iltw==
@@ -3446,11 +3471,6 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap@4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.4.1.tgz#8582960eea0c5cd2bede84d8b0baf3789c3e8b01"
-  integrity sha512-tbx5cHubwE6e2ZG7nqM3g/FZ5PQEDMWmMGNrCUBVRPHXTJaH7CBDdsLeu3eCh3B1tzAxTnAbtmrzvWEvT2NNEA==
-
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
@@ -3911,7 +3931,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.6:
+classnames@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
   integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
@@ -4337,7 +4357,7 @@ create-require@^1.1.0:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-env@^7.0.2:
+cross-env@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
   integrity sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
@@ -8989,11 +9009,6 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
-
-nav-frontend-paneler@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/nav-frontend-paneler/-/nav-frontend-paneler-3.0.2.tgz#1de91e57abcab76ec18400d9686050df55a0cce5"
-  integrity sha512-SJIOPC9znsmxHmeDHDWaXpr1K0uJoIlF+iEvC7svjZEOw1GaK6i6EoER9lysnyTnljFFMgyyt2OwpOp7sNulQQ==
 
 negotiator@0.6.3:
   version "0.6.3"
