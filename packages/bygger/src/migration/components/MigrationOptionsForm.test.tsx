@@ -7,7 +7,7 @@ describe("MigrationOptionsForm", () => {
   const dispatchMock = jest.fn();
   beforeEach(() => {
     render(
-      <MigrationOptionsForm title={"title"} addRowText={"addRowText"} dispatch={dispatchMock}>
+      <MigrationOptionsForm title={"title"} addRowText={"addRowText"} dispatch={dispatchMock} testId={"search-filters"}>
         <></>
       </MigrationOptionsForm>
     );

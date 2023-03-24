@@ -26,7 +26,7 @@ function parseFiltersFromParam(filtersFromParam) {
 }
 
 function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, editOptions) {
-  const logger = [];
+  let logger = [];
   const searchFilters = parseFiltersFromParam(searchFiltersFromParam);
   const dependencyFilters = parseFiltersFromParam(dependencyFiltersFromParam);
 
@@ -39,7 +39,7 @@ function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, e
   const dependeeComponents = getDependeeComponents(form, logger, dependencyFilters);
 
   if (Object.keys(dependencyFilters).length > 0) {
-    logger.filter((affected) => dependeeComponents[affected.key]?.matchesFilters);
+    logger = logger.filter((affected) => !!dependeeComponents[affected.key]?.matchesFilters);
   }
   return { migratedForm, affectedComponentsLog: logger, breakingChanges, dependeeComponents };
 }
@@ -141,7 +141,7 @@ async function migrateForms(searchFilters, dependencyFilters, editOptions, allFo
           path: form.path,
           found: affectedComponentsLog.length,
           changed: affectedComponentsLog.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
-          diff: affectedComponentsLog.map((affected) => affected.diff).filter((diff) => diff),
+          diff: affectedComponentsLog.map((affected) => affected.diff).filter((diff) => Object.keys(diff).length > 0),
           dependeeComponents,
           breakingChanges,
         };
