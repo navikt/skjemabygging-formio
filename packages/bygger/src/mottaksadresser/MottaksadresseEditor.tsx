@@ -63,9 +63,9 @@ const MottaksadresseEditor = ({
               <NavForm
                 src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
-                /* @ts-expect-error */
+                /* @ts-ignore */
                 onSubmitDone={onSubmitDone}
-                /* @ts-expect-error */
+                /* @ts-ignore */
                 formReady={onFormReady}
               />
             </AppConfigProvider>
