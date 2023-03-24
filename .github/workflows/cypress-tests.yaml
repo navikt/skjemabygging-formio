@@ -17,7 +17,7 @@ jobs:
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "Cypress tests (fyllut)"
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           install: false
           working-directory: ./packages/fyllut
@@ -38,7 +38,7 @@ jobs:
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "Cypress tests (bygger)"
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           install: false
           working-directory: ./packages/bygger
