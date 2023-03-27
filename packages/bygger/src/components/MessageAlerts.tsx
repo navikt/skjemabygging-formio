@@ -46,7 +46,13 @@ export const ErrorAlert = ({ message }: AlertProps) => {
     <Alert variant="error" key={message.id} className={styles.alert}>
       <AlertContent>
         <BodyShort className={styles.body}>{message.message}</BodyShort>
-        <Button variant="tertiary" icon={<Close aria-hidden />} onClick={() => message.clear()} type="button" />
+        <Button
+          variant="tertiary"
+          icon={<Close aria-hidden />}
+          onClick={() => message.clear()}
+          type="button"
+          aria-label="Lukk feilmelding"
+        />
       </AlertContent>
     </Alert>
   );
@@ -58,7 +64,13 @@ export const WarningAlert = ({ message }: AlertProps) => {
     <Alert variant="warning" key={message.id} className={styles.alert}>
       <AlertContent>
         <BodyShort className={styles.body}>{message.message}</BodyShort>
-        <Button variant="tertiary" icon={<Close aria-hidden />} onClick={() => message.clear()} type="button" />
+        <Button
+          variant="tertiary"
+          icon={<Close aria-hidden />}
+          onClick={() => message.clear()}
+          type="button"
+          aria-label="Lukk advarsel"
+        />
       </AlertContent>
     </Alert>
   );

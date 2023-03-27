@@ -111,7 +111,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
 
   return (
     <Fieldset hideLegend legend="">
-      {diff.errorMessage && <Alert variant="error">{diff.errorMessage}</Alert>}
+      {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
       <Checkbox
         className="mb-double"
         id="teststatus"

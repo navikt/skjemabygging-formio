@@ -30,13 +30,13 @@ describe("Diff", () => {
 
     it("Renders tags when data is changed", () => {
       cy.findByRole("textbox", { name: "Tittel" }).should("exist").type(" og sånt");
-      cy.findAllByTestId("signature")
+      cy.findAllByTestId("signatures")
         .should("exist")
         .within(() => {
           cy.findByRole("textbox", { name: "Hvem skal signere?" }).should("exist").type("{selectall}Doktor");
         });
       cy.findByRole("button", { name: "Legg til signatur" }).should("exist").click();
-      cy.findAllByTestId("signature")
+      cy.findAllByTestId("signatures")
         .eq(1)
         .should("exist")
         .within(() => {

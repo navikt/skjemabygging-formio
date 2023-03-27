@@ -14,8 +14,14 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
   const styles = useStyles();
   return (
     <Panel className="margin-bottom-default" border>
-      <Button variant="tertiary" icon={<Close aria-hidden />} onClick={onDelete} className={styles.closeBtn} />
-      <Fieldset data-testid="signature">
+      <Button
+        variant="tertiary"
+        icon={<Close aria-hidden />}
+        onClick={onDelete}
+        className={styles.closeBtn}
+        aria-label={"Slett signatur " + (index + 1)}
+      />
+      <Fieldset data-testid="signatures">
         <legend>
           <LabelWithDiff
             label={

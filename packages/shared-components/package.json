@@ -55,8 +55,8 @@
     "webpack-node-externals": "2.5.2"
   },
   "dependencies": {
-    "@navikt/ds-icons": "^1.5.10",
-    "@navikt/ds-react": "^1.5.10",
+    "@navikt/ds-icons": "^2.8.3",
+    "@navikt/ds-react": "^2.8.3",
     "@navikt/fnrvalidator": "^1.1.4",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "amplitude-js": "7.3.3",
