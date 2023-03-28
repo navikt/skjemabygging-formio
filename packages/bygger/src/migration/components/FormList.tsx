@@ -3,7 +3,7 @@ import { BodyShort, Table } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
-import { DryRunResult } from "../../../types/migration";
+import { FormMigrationLogData } from "../../../types/migration";
 import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 
 const useStyles = makeStyles({
@@ -12,7 +12,7 @@ const useStyles = makeStyles({
   },
 });
 
-const isNavForm = (element: DryRunResult | NavFormType): element is NavFormType => {
+const isNavForm = (element: FormMigrationLogData | NavFormType): element is NavFormType => {
   return !!element["properties"];
 };
 
@@ -21,7 +21,7 @@ export const FormList = ({
   listElements,
 }: {
   heading: string;
-  listElements: DryRunResult[] | NavFormType[];
+  listElements: FormMigrationLogData[] | NavFormType[];
 }) => {
   const styles = useStyles();
   return (

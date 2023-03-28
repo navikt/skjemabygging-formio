@@ -6,7 +6,7 @@ import { Knapp } from "nav-frontend-knapper";
 import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { DryRunResult } from "../../types/migration";
+import { FormMigrationLogData } from "../../types/migration";
 import Column from "../components/layout/Column";
 import UserFeedback from "../components/UserFeedback";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
@@ -21,10 +21,10 @@ import {
   createEditOptions,
   createSearchFiltersFromParams,
   createUrlParams,
-  getMigrationResultsMatchingSearchFilters,
   getUrlParamMap,
   migrationOptionsAsMap,
   searchFiltersAsParams,
+  sortAndFilterResults,
 } from "./utils";
 
 const useStyles = makeStyles({
@@ -73,7 +73,7 @@ const MigrationPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [{ dryRunSearchResults, numberOfComponentsFound, numberOfComponentsChanged }, setDryRunSearchResults] =
     useState<{
-      dryRunSearchResults?: DryRunResult[];
+      dryRunSearchResults?: FormMigrationLogData[];
       numberOfComponentsFound?: number;
       numberOfComponentsChanged?: number;
     }>({});
@@ -104,7 +104,7 @@ const MigrationPage = () => {
   const onSearch = async () => {
     setIsLoading(true);
     const results = await runMigrationDryRun(searchFilters, dependencyFilters, editInputs);
-    const dryRunSearchResults = getMigrationResultsMatchingSearchFilters(results);
+    const dryRunSearchResults = sortAndFilterResults(results);
     setDryRunSearchResults({
       dryRunSearchResults,
       ...dryRunSearchResults.reduce(

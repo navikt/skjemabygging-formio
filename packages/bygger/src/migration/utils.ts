@@ -72,7 +72,7 @@ export const migrationOptionsAsMap = (migrationOptions: MigrationOptions): Recor
   }, {});
 };
 
-export const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) =>
+export const sortAndFilterResults = (dryRunResults: DryRunResults) =>
   dryRunResults
     ? Object.values(dryRunResults)
         .filter((results) => results.found > 0)

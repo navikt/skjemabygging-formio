@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/styles";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Knapp } from "nav-frontend-knapper";
 import React, { useState } from "react";
-import { DryRunResult } from "../../../types/migration";
+import { FormMigrationLogData } from "../../../types/migration";
 import FormList from "./FormList";
 
 const useStyles = makeStyles({
@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 
 interface ConfirmMigrationProps {
   selectedFormPaths: string[];
-  dryRunResults: DryRunResult[];
+  dryRunResults: FormMigrationLogData[];
   onConfirm: () => Promise<unknown>;
 }
 

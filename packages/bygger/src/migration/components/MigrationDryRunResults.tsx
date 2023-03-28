@@ -3,7 +3,7 @@ import { Checkbox } from "nav-frontend-skjema";
 import { Undertittel } from "nav-frontend-typografi";
 import React from "react";
 import { Link } from "react-router-dom";
-import { DryRunResult } from "../../../types/migration";
+import { FormMigrationLogData } from "../../../types/migration";
 import FormStatusPanel from "../../Forms/status/FormStatusPanel";
 import BreakingChangesWarning from "./BreakingChangesWarning";
 import ComponentDependencies from "./ComponentDependencies";
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 });
 
 interface MigrationDryRunResultsProps {
-  dryRunResults: DryRunResult[];
+  dryRunResults: FormMigrationLogData[];
   selectedPaths: string[];
   onChange: (val: string[]) => void;
   getPreviewUrl: (val: string) => string;
@@ -65,11 +65,11 @@ const MigrationDryRunResults = ({
               </p>
               {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
               {result.diff.map((componentDiff) => {
-                const componentKey = componentDiff.key || componentDiff.key["_ORIGINAL"];
+                const componentKey = componentDiff.key || componentDiff["key_ORIGINAL"];
                 return (
                   <div className={styles.resultContainer} key={componentKey}>
                     <pre className={styles.data}>{JSON.stringify(componentDiff, null, 2)}</pre>
-                    <ComponentDependencies dependencies={result.dependeeComponents[componentKey]} />
+                    <ComponentDependencies dependencies={result.dependencies[componentKey]} />
                   </div>
                 );
               })}

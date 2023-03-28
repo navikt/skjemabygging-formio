@@ -3,7 +3,7 @@ import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { DryRunResult, DryRunResults } from "../../types/migration";
+import { DryRunResults, FormMigrationLogData } from "../../types/migration";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
 import { TestId } from "./components/MigrationOptionsForm";
 import MigrationPage from "./MigrationPage";
@@ -19,14 +19,14 @@ describe("MigrationPage", () => {
     method: "GET",
   };
 
-  const defaultdryRunResponse: DryRunResult = {
+  const defaultdryRunResponse: FormMigrationLogData = {
     skjemanummer: "form",
     name: "Skjema",
     title: "title",
     path: "form",
     found: 0,
     changed: 0,
-    dependeeComponents: {},
+    dependencies: {},
     diff: [{ key: "1", label: "label", id: "123", property: { _ORIGINAL: "original value", _NEW: "new value" } }],
   };
   const dryRunResponse: DryRunResults = {

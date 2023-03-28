@@ -16,35 +16,12 @@ interface MigrationMap {
   [key: string]: string;
 }
 
-export type FormMigrationDiff =
-  | {
-      key: string;
-      label: string;
-      id: string;
-    }
-  | { [property: string]: { _ORIGINAL: any; _NEW: any } };
-
-export type ComponentWithDependencies = {
+export type FormMigrationDiff = {
   id: string;
-  [key: string]: string;
-} & (
-  | {
-      key: string;
-    }
-  | {
-      key_ORIGINAL: string;
-      key_NEW: string;
-    }
-) &
-  (
-    | {
-        label: string;
-      }
-    | {
-        label_ORIGINAL: string;
-        label_NEW: string;
-      }
-  );
+  key?: string;
+  label?: string;
+  [key: string]: ParsedInput;
+};
 
 export interface DependentComponents {
   key: string;
@@ -52,7 +29,7 @@ export interface DependentComponents {
 }
 
 export interface BreakingChanges {
-  componentWithDependencies: ComponentWithDependencies;
+  componentWithDependencies: FormMigrationDiff;
   dependentComponents: DependentComponents[];
 }
 
@@ -63,20 +40,31 @@ interface DependeeComponent {
   matchesFilters: boolean;
 }
 
-export interface DependeeComponents {
+export interface Dependencies {
   [key: string]: DependeeComponent[];
 }
 
-export interface DryRunResult
-  extends Pick<FormPropertiesType, "skjemanummer" | "modified" | "published" | "isTestForm" | "unpublished">,
+export interface FormMigrationLogData
+  extends Pick<
+      FormPropertiesType,
+      | "skjemanummer"
+      | "modified"
+      | "modifiedBy"
+      | "published"
+      | "publishedBy"
+      | "unpublishedBy"
+      | "isTestForm"
+      | "unpublished"
+      | "publishedLanguages"
+    >,
     Pick<NavFormType, "name" | "title" | "path"> {
   found: number;
   changed: number;
   diff: FormMigrationDiff[];
-  dependeeComponents: DependeeComponents;
+  dependencies: Dependencies;
   breakingChanges?: BreakingChanges[];
 }
 
 export interface DryRunResults {
-  [skjemanummer: string]: DryRunResult;
+  [skjemanummer: string]: FormMigrationLogData;
 }
