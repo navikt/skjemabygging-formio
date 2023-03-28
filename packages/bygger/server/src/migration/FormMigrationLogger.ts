@@ -70,7 +70,7 @@ class FormMigrationLogger {
       });
   }
 
-  private getDependencies(): Dependencies {
+  getDependencies(): Dependencies {
     return this.affectedComponents.reduce((acc, curr) => {
       if (curr.dependsOn.length > 0) {
         return {
@@ -107,7 +107,7 @@ class FormMigrationLogger {
       name: this.form.name,
       title: this.form.title,
       path: this.form.path,
-      found: this.affectedComponents.length,
+      found: this.getSize(),
       changed: this.affectedComponents.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
       diff: this.affectedComponents.map((affected) => affected.diff).filter((diff) => Object.keys(diff).length > 0),
       dependencies: this.getDependencies(),
