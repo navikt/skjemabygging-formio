@@ -49,7 +49,7 @@ const GlobalTranslationRow = ({
     <div className={classes.root}>
       <div className={classes.row}>
         <Textarea
-          label="Orginal tekst"
+          label=""
           value={originalText}
           data-testid="originalText"
           maxLength={0}
@@ -75,7 +75,7 @@ const GlobalTranslationRow = ({
           }}
         />
         <Textarea
-          label="Oversettelse"
+          label=""
           value={translatedText}
           data-testid="translation"
           disabled={duplicatedWarning}

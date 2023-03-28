@@ -28,6 +28,10 @@ const useStyles = makeStyles({
       width: "100%",
     },
   },
+  element: {
+    width: "100%",
+    marginBottom: "1rem",
+  },
   lockedIcon: {
     ...padLockIconStyle,
     marginTop: "2.5rem",
@@ -56,7 +60,7 @@ const TranslationTextInput = ({
         <DebounceInput
           element={Textarea}
           debounceTimeout={500}
-          className="margin-bottom-default"
+          className={classes.element}
           label={text}
           value={value}
           description={hasGlobalTranslation ? "Denne teksten er globalt oversatt" : undefined}
@@ -69,7 +73,7 @@ const TranslationTextInput = ({
         <DebounceInput
           element={TextField}
           debounceTimeout={500}
-          className="margin-bottom-default"
+          className={classes.element}
           label={text}
           type={type}
           value={value}
