@@ -2,7 +2,6 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { FormPropertiesType, NavFormType, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import form from "../../../example_data/Form.json";
 import featureToggles from "../../../test/featureToggles";
@@ -444,7 +443,7 @@ describe("FormMetadataEditor", () => {
       it("Legger til signatur", () => {
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
-        const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
+        const signaturFieldsets = screen.getAllByTestId("signatures");
         expect(signaturFieldsets).toHaveLength(1);
 
         const input = within(signaturFieldsets[0]).getByLabelText("Hvem skal signere?");
@@ -490,10 +489,9 @@ describe("FormMetadataEditor", () => {
         form = formMedProps({ signatures: multipleSignatures });
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
-        const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
+        const signaturFieldsets = screen.getAllByTestId("signatures");
         expect(signaturFieldsets).toHaveLength(3);
-
-        const lukkKnapp = screen.queryAllByRole("button", { name: "Lukk" })[1];
+        const lukkKnapp = screen.queryAllByRole("button")[1];
         userEvent.click(lukkKnapp);
 
         expect(mockOnChange).toHaveBeenCalled();

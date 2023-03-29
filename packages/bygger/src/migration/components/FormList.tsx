@@ -1,8 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
-import { BodyShort, Table } from "@navikt/ds-react";
+import { BodyShort, Heading, Table } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { Undertittel } from "nav-frontend-typografi";
-import React from "react";
 import { FormMigrationLogData } from "../../../types/migration";
 import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 
@@ -26,7 +24,9 @@ export const FormList = ({
   const styles = useStyles();
   return (
     <div className={styles.container}>
-      <Undertittel className="margin-bottom-default">{heading}</Undertittel>
+      <Heading level="2" size="small">
+        {heading}
+      </Heading>
       {listElements.length === 0 ? (
         <BodyShort spacing>N/A</BodyShort>
       ) : (

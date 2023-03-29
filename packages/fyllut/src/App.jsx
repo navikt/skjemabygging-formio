@@ -4,8 +4,6 @@ import "@navikt/ds-css";
 import { appStyles, CustomComponents, globalStyles, Template } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import { Components, Formio } from "formiojs";
-import "nav-frontend-typografi-style";
-import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";

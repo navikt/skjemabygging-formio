@@ -1,7 +1,6 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { act } from "react-dom/test-utils";
 import { MemoryRouter, Route } from "react-router-dom";
 import I18nStateProvider from "../../context/i18n";
@@ -63,9 +62,9 @@ describe("GlobalTranslationsPage", () => {
 
   describe("Render global translation page with English translations", () => {
     let mockedLoadTranslation;
-    beforeEach(() => {
+    beforeEach(async () => {
       mockedLoadTranslation = jest.fn(() => Promise.resolve(globalTranslations));
-      renderGlobalTranslationsPage(mockedLoadTranslation, "en");
+      await renderGlobalTranslationsPage(mockedLoadTranslation, "en");
     });
     afterEach(() => {
       mockedLoadTranslation.mockClear();

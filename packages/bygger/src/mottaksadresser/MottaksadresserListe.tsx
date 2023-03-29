@@ -1,9 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
-import { AlertStripeFeil } from "nav-frontend-alertstriper";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
-import React, { useState } from "react";
-import Column from "../components/layout/Column";
+import { Alert, Button } from "@navikt/ds-react";
+import { useState } from "react";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import MottaksadresseEditor from "./MottaksadresseEditor";
 
@@ -47,7 +46,7 @@ const MottaksadresserListe = () => {
     <>
       <Column className={styles.mottaksadresser}>
         {!ready && "Laster mottaksadresser..."}
-        {errorMessage && <AlertStripeFeil>{errorMessage}</AlertStripeFeil>}
+        {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
         {editAddressId === "new" && (
           <MottaksadresseEditor
             onSubmitDone={onSubmitDone}
@@ -72,10 +71,12 @@ const MottaksadresserListe = () => {
         ))}
       </Column>
       <Column>
-        <Hovedknapp onClick={onPublish} spinner={publishing} className={styles.publishButton}>
+        <Button onClick={onPublish} loading={publishing} className={styles.publishButton}>
           Publiser mottaksadresser
-        </Hovedknapp>
-        <Knapp onClick={() => editMottaksadresse("new")}>Legg til ny</Knapp>
+        </Button>
+        <Button variant="secondary" onClick={() => editMottaksadresse("new")} type="button">
+          Legg til ny
+        </Button>
         <UserFeedback />
       </Column>
     </>

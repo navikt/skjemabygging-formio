@@ -1,5 +1,4 @@
-import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { guid } from "nav-frontend-js-utils";
+import { guid, migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from "../../types/migration";
 
 const assembleUrlParams = (params: string[]) => {

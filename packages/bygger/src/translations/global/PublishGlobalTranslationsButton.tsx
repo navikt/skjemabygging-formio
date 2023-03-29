@@ -1,5 +1,5 @@
-import { Knapp } from "nav-frontend-knapper";
-import React, { useState } from "react";
+import { Button } from "@navikt/ds-react";
+import { useState } from "react";
 
 const PublishGlobalTranslationsButton = ({ languageCode, publishGlobalTranslations }) => {
   const [publishing, setPublishing] = useState(false);
@@ -9,9 +9,9 @@ const PublishGlobalTranslationsButton = ({ languageCode, publishGlobalTranslatio
   };
 
   return (
-    <Knapp onClick={publish} spinner={publishing}>
+    <Button variant="secondary" onClick={publish} loading={publishing} type="button">
       Publiser
-    </Knapp>
+    </Button>
   );
 };
 

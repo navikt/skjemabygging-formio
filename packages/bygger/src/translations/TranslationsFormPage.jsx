@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
-import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import { Heading } from "@navikt/ds-react";
+import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
 import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
 import TranslationTextInput from "./TranslationTextInput";
@@ -99,14 +99,16 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
 
   return (
     <div className={classes.root}>
-      <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
+      <Heading level="1" size="xlarge">
+        {title}
+      </Heading>
       <p className="margin-bottom-large">{skjemanummer}</p>
       {unusedTranslations.length > 0 && (
         <TranslationsToRemove translations={unusedTranslations} languageCode={languageCode} />
       )}
-      <Innholdstittel tag={"h2"} className="margin-bottom-default">
+      <Heading level="2" size="large">
         {`Oversettelser${languageCode ? " på " + languagesInNorwegian[languageCode] : ""}`}
-      </Innholdstittel>
+      </Heading>
       <form>
         {flattenedComponents.map(({ text, type }) => {
           return (

@@ -1,7 +1,4 @@
-import Ekspanderbartpanel from "nav-frontend-ekspanderbartpanel";
-import { Knapp } from "nav-frontend-knapper";
-import { Input } from "nav-frontend-skjema";
-import React from "react";
+import { Accordion, Button, TextField } from "@navikt/ds-react";
 
 interface ObsoleteTranslation {
   id: string;
@@ -17,14 +14,21 @@ interface Props {
 
 const ObsoleteTranslationsPanel = ({ translations, className, onDelete }: Props) => {
   return (
-    <Ekspanderbartpanel tittel={`Antall ubrukte oversettelser: ${translations.length}`} className={className}>
-      {translations.map((t) => (
-        <div key={t.id} className="margin-bottom-default">
-          <Input className="margin-bottom-default" disabled label={t.originalText} value={t.translatedText} />
-          <Knapp onClick={() => onDelete(t)}>Slett</Knapp>
-        </div>
-      ))}
-    </Ekspanderbartpanel>
+    <Accordion>
+      <Accordion.Item>
+        <Accordion.Header>{`Antall ubrukte oversettelser: ${translations.length}`}</Accordion.Header>
+        <Accordion.Content>
+          {translations.map((t) => (
+            <div key={t.id} className="margin-bottom-default">
+              <TextField className="margin-bottom-default" disabled label={t.originalText} value={t.translatedText} />
+              <Button variant="secondary" onClick={() => onDelete(t)} type="button">
+                Slett
+              </Button>
+            </div>
+          ))}
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
   );
 };
 

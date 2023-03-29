@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Locked, Unlocked } from "@navikt/ds-icons";
-import { Input, Textarea } from "nav-frontend-skjema";
-import React from "react";
+import { TextField, Textarea } from "@navikt/ds-react";
 import { DebounceInput } from "react-debounce-input";
 
 const padLockIconStyle = {
@@ -27,6 +26,10 @@ const useStyles = makeStyles({
     "& .skjemaelement": {
       width: "100%",
     },
+  },
+  element: {
+    width: "100%",
+    marginBottom: "1rem",
   },
   lockedIcon: {
     ...padLockIconStyle,
@@ -56,7 +59,7 @@ const TranslationTextInput = ({
         <DebounceInput
           element={Textarea}
           debounceTimeout={500}
-          className="margin-bottom-default"
+          className={classes.element}
           label={text}
           value={value}
           description={hasGlobalTranslation ? "Denne teksten er globalt oversatt" : undefined}
@@ -67,9 +70,9 @@ const TranslationTextInput = ({
         />
       ) : (
         <DebounceInput
-          element={Input}
+          element={TextField}
           debounceTimeout={500}
-          className="margin-bottom-default"
+          className={classes.element}
           label={text}
           type={type}
           value={value}

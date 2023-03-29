@@ -1,6 +1,6 @@
-import { Undertittel } from "nav-frontend-typografi";
+import { Heading } from "@navikt/ds-react";
+import { useEffect, useState } from "react";
 import GlobalTranslationRow from "./GlobalTranslationRow";
-import React, { useEffect, useState } from "react";
 import { getCurrentOriginalTextList } from "./utils";
 
 const GlobalTranslationsPanel = ({
@@ -19,8 +19,12 @@ const GlobalTranslationsPanel = ({
   return (
     <form>
       <li className={classes.label}>
-        <Undertittel>Original</Undertittel>
-        <Undertittel>Oversettelse</Undertittel>
+        <Heading level="2" size="small">
+          Original
+        </Heading>
+        <Heading level="2" size="small">
+          Oversettelse
+        </Heading>
       </li>
       {currentTranslation.map(({ id, originalText, translatedText }) => (
         <GlobalTranslationRow

@@ -1,6 +1,5 @@
+import { BodyShort, Button } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst } from "nav-frontend-typografi";
 import { useState } from "react";
 
 const ConfirmDelingslenkeModal = () => {
@@ -16,10 +15,10 @@ const ConfirmDelingslenkeModal = () => {
       ariaLabel="Forhåndsvisningsadvarsel"
       title="Forhåndsvisning"
     >
-      <Normaltekst className="margin-bottom-double">
+      <BodyShort className="margin-bottom-double">
         Dette er kun en forhåndsvisning av skjemaet og skal IKKE brukes til å sende søknader til NAV.
-      </Normaltekst>
-      <Knapp onClick={onClose}>OK</Knapp>
+      </BodyShort>
+      <Button onClick={onClose}>OK</Button>
     </Modal>
   );
 };

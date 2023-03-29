@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
+import { Button } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
-import { Knapp } from "nav-frontend-knapper";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FormMigrationLogData } from "../../../types/migration";
 import FormList from "./FormList";
 
@@ -39,31 +39,33 @@ const ConfirmMigration = ({ selectedFormPaths, dryRunResults, onConfirm }: Confi
         />
         <ul className="list-inline">
           <li className="list-inline-item">
-            <Knapp
-              spinner={isMigrationInProgress}
+            <Button
+              variant="primary"
+              loading={isMigrationInProgress}
               onClick={async () => {
                 setIsMigrationInProgress(true);
                 await onConfirm();
               }}
-              htmlType="button"
             >
               Bekreft migrering
-            </Knapp>
+            </Button>
           </li>
           <li className="list-inline-item">
-            <Knapp
+            <Button
+              variant="secondary"
+              type="button"
               onClick={() => {
                 setModalIsOpen(false);
               }}
             >
               Avbryt migrering
-            </Knapp>
+            </Button>
           </li>
         </ul>
       </Modal>
-      <Knapp className={styles.button} onClick={() => setModalIsOpen(true)} htmlType="button">
+      <Button variant="secondary" className={styles.button} onClick={() => setModalIsOpen(true)} type="button">
         Migrer
-      </Knapp>
+      </Button>
     </>
   );
 };
