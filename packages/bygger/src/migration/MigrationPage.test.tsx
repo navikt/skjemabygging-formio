@@ -72,7 +72,7 @@ describe("MigrationPage", () => {
   };
 
   const clickAddButton = (optionType: TestId) => {
-    fireEvent.click(within(screen.getByTestId(optionType)).getByRole("button"));
+    fireEvent.click(within(screen.getByTestId(optionType)).getByTestId("add-button"));
   };
 
   it("renders the main heading", () => {

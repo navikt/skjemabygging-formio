@@ -37,6 +37,7 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, testId, children }:
               dispatch({ type: "add" });
             }}
             htmlType="button"
+            data-testId={"add-button"}
           >
             {addRowText}
           </Knapp>
