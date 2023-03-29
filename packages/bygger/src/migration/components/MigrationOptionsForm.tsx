@@ -34,7 +34,7 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, testId, children }:
             onClick={() => {
               dispatch({ type: "add" });
             }}
-            data-testId={"add-button"}
+            data-testid={"add-button"}
           >
             {addRowText}
           </Button>
