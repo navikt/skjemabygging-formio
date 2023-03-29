@@ -9,7 +9,7 @@ const migrate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (Object.keys({ ...searchFilters, ...dependencyFilters }).length === 0)
       throw new Error("Migreringen mangler søkefiltre");
-    const allForms = await formioService.getAllForms(100);
+    const allForms = await formioService.getAllForms();
     const { log } = await migrateForms(searchFilters, dependencyFilters, editOptions, allForms);
     res.send(log);
   } catch (error) {

@@ -16,7 +16,6 @@ interface Filter {
 function parseFiltersFromParam(filtersFromParam: string): Filter[] {
   return Object.entries(filtersFromParam).map(([key, value]) => {
     const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
-    console.log({ key: prop, value, operator });
     return { key: prop, value, operator };
   });
 }
