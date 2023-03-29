@@ -1,5 +1,6 @@
 @import "../node_modules/nav-frontend-alertstriper-style/dist/main.css";
 @import "../node_modules/nav-frontend-core/dist/main.css";
+@import "../node_modules/nav-frontend-chevron-style/dist/main.css";
 @import "../node_modules/nav-frontend-knapper-style/dist/main.css";
 @import "../node_modules/nav-frontend-lenker-style/dist/main.css";
 @import "../node_modules/nav-frontend-paneler-style/dist/main.css";
@@ -40,6 +41,47 @@
 .choices__list--dropdown.is-active {
   position: relative;
 }
+
+// Legacy drowdown
+.form-control.selection.dropdown {
+  position: relative;
+  display: inline-block;
+
+  width: 100%;
+  max-width: 420px;
+  font-weight: 400;
+
+  &::before {
+    pointer-events: none;
+    content: "";
+    background: #262626;
+    height: 2px;
+    width: 10px;
+    border-radius: 10px;
+    right: 0.75rem;
+    top: 50%;
+    z-index: 4;
+    position: absolute;
+
+    transform: translateX(3px) rotate(-45deg);
+  }
+
+  &::after {
+    pointer-events: none;
+    content: "";
+    background: #262626;
+    height: 2px;
+    width: 10px;
+    border-radius: 10px;
+    right: 0.75rem;
+    top: 50%;
+    z-index: 4;
+    position: absolute;
+
+    transform: translateX(-3px) rotate(45deg);
+  }
+}
+
 //Select -- slutt
 
 //RadioPanel -- start
@@ -185,14 +227,11 @@
 
 //Feilhåndtering -- slutt
 
+.formio-form .navds-radio-group legend.navds-fieldset__legend {
+  font-weight: bold;
+}
+
 //NAV-knappestyling -- start
-/*.navds-button {
-  min-width: 12rem;
-  justify-content: center;
-  @media (max-width: 540px) {
-    width: 100%;
-  }
-}*/
 
 .label-track-changes {
   display: flex;
@@ -205,7 +244,7 @@
 .button-row {
   display: flex;
   flex-direction: row-reverse;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 1.25rem;
   flex-wrap: wrap;
   margin-bottom: 1.25rem;
