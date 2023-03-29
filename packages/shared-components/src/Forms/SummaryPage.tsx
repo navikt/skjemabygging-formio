@@ -1,5 +1,5 @@
 import { makeStyles, styled } from "@material-ui/styles";
-import { Accordion } from "@navikt/ds-react";
+import { Accordion, Alert, BodyShort, Heading, Link as NavLink } from "@navikt/ds-react";
 import {
   formSummaryUtil,
   InnsendingType,
@@ -7,9 +7,6 @@ import {
   Summary,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import AlertStripe from "nav-frontend-alertstriper";
-import Lenke from "nav-frontend-lenker";
-import { Innholdstittel, Normaltekst, Systemtittel } from "nav-frontend-typografi";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
@@ -105,7 +102,9 @@ const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUr
         <Accordion.Item defaultOpen={true}>
           <Accordion.Header>
             {" "}
-            <Systemtittel tag="h3">{label}</Systemtittel>
+            <Heading level="3" size="medium">
+              {label}
+            </Heading>
           </Accordion.Header>
           <Accordion.Content>
             <Link to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
@@ -204,12 +203,10 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     <SummaryContent>
       <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <div className="main-col">
-          <Innholdstittel tag="h2" className="margin-bottom-default">
+          <Heading level="2" size="large" className="margin-bottom-default">
             {translate(TEXTS.statiske.summaryPage.title)}
-          </Innholdstittel>
-          <Normaltekst className="margin-bottom-default">
-            {translate(TEXTS.statiske.summaryPage.description)}
-          </Normaltekst>
+          </Heading>
+          <BodyShort className="margin-bottom-default">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
@@ -276,17 +273,17 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               </Link>
             </div>
             <div className="button-row button-row__center">
-              <Lenke className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
+              <NavLink className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
                 <span aria-live="polite" className="navds-label">
                   {translate(TEXTS.grensesnitt.navigation.cancel)}
                 </span>
-              </Lenke>
+              </NavLink>
             </div>
           </nav>
           {errorMessage && (
-            <AlertStripe data-testid="error-message" type="feil">
+            <Alert variant="error" data-testid="error-message">
               {errorMessage}
-            </AlertStripe>
+            </Alert>
           )}
         </div>
         <aside className="right-col">

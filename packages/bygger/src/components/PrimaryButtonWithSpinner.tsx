@@ -1,4 +1,4 @@
-import { Hovedknapp } from "nav-frontend-knapper";
+import { Button } from "@navikt/ds-react";
 import React, { useState } from "react";
 
 const PrimaryButtonWithSpinner = ({ children, onClick }) => {
@@ -9,9 +9,9 @@ const PrimaryButtonWithSpinner = ({ children, onClick }) => {
     setIsSaving(false);
   }
   return (
-    <Hovedknapp onClick={onClickWithSpinner} spinner={isSaving}>
+    <Button onClick={onClickWithSpinner} loading={isSaving}>
       {children}
-    </Hovedknapp>
+    </Button>
   );
 };
 

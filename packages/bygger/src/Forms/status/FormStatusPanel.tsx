@@ -1,6 +1,5 @@
 import { ClassNameMap } from "@material-ui/styles";
-import Panel from "nav-frontend-paneler";
-import { Element } from "nav-frontend-typografi";
+import { Label, Panel } from "@navikt/ds-react";
 import React from "react";
 import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
@@ -34,7 +33,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
     }
     return (
       <div className={styles.panelItem}>
-        <Element>{label}</Element>
+        <Label>{label}</Label>
         <Timestamp timestamp={timestamp} />
         {userName && <p className={styles.rowText}>{userName}</p>}
       </div>
@@ -44,7 +43,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
   return (
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
-        <Element>Status:</Element>
+        <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>

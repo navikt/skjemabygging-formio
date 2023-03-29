@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
-import { Textarea } from "nav-frontend-skjema";
+import { Textarea } from "@navikt/ds-react";
 import React, { useState } from "react";
 
 const useTranslationRowStyles = makeStyles({
@@ -49,6 +49,7 @@ const GlobalTranslationRow = ({
     <div className={classes.root}>
       <div className={classes.row}>
         <Textarea
+          label=""
           value={originalText}
           data-testid="originalText"
           maxLength={0}
@@ -74,6 +75,7 @@ const GlobalTranslationRow = ({
           }}
         />
         <Textarea
+          label=""
           value={translatedText}
           data-testid="translation"
           disabled={duplicatedWarning}

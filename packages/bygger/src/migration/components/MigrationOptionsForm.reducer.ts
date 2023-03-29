@@ -1,4 +1,4 @@
-import { guid } from "nav-frontend-js-utils";
+import { guid } from "@navikt/skjemadigitalisering-shared-domain";
 import { MigrationOption, MigrationOptions } from "../../../types/migration";
 
 const createMigrationOption = (migrationOption: MigrationOption = { key: "", value: "" }): MigrationOptions => ({

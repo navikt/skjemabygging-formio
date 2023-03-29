@@ -98,8 +98,8 @@ describe("FormPage", () => {
       expect(await screen.findByRole("heading", { name: "Testskjema" })).toBeInTheDocument();
       const languageSelector = screen.queryByRole("button", { name: "Norsk bokmål" });
       expect(languageSelector).toBeInTheDocument();
-      userEvent.click(languageSelector);
-      userEvent.click(await screen.findByRole("link", { name: "English" }));
+      await userEvent.click(languageSelector);
+      await userEvent.click(await screen.findByRole("link", { name: "English" }));
       expect(await screen.findByRole("heading", { name: "Test form" })).toBeInTheDocument();
     });
   });

@@ -1,8 +1,8 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import styled from "@material-ui/styles/styled";
-import { Alert, BodyShort } from "@navikt/ds-react";
+import { Close } from "@navikt/ds-icons";
+import { Alert, BodyShort, Button } from "@navikt/ds-react";
 import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import { Xknapp } from "nav-frontend-ikonknapper";
 import React from "react";
 import { Message } from "../hooks/useMessageQueue";
 
@@ -46,7 +46,13 @@ export const ErrorAlert = ({ message }: AlertProps) => {
     <Alert variant="error" className={styles.alert}>
       <AlertContent>
         <BodyShort className={styles.body}>{message.message}</BodyShort>
-        <Xknapp onClick={() => message.clear()} />
+        <Button
+          variant="tertiary"
+          icon={<Close aria-hidden />}
+          onClick={() => message.clear()}
+          type="button"
+          aria-label="Lukk feilmelding"
+        />
       </AlertContent>
     </Alert>
   );
@@ -58,7 +64,13 @@ export const WarningAlert = ({ message }: AlertProps) => {
     <Alert variant="warning" className={styles.alert}>
       <AlertContent>
         <BodyShort className={styles.body}>{message.message}</BodyShort>
-        <Xknapp onClick={() => message.clear()} />
+        <Button
+          variant="tertiary"
+          icon={<Close aria-hidden />}
+          onClick={() => message.clear()}
+          type="button"
+          aria-label="Lukk advarsel"
+        />
       </AlertContent>
     </Alert>
   );

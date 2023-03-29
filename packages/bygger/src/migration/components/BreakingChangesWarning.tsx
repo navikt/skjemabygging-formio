@@ -1,4 +1,4 @@
-import AlertStripe from "nav-frontend-alertstriper";
+import { Alert } from "@navikt/ds-react";
 import React from "react";
 import { BreakingChanges } from "../../../types/migration";
 
@@ -7,7 +7,7 @@ type BreakingChangesWarningProps = {
 };
 
 const BreakingChangesWarning = ({ breakingChanges }: BreakingChangesWarningProps) => (
-  <AlertStripe type="feil">
+  <Alert variant="error">
     Migreringen vil gjøre endringer på komponenter som kan brekke avhengigheter i andre komponenter. Normalt vil dette
     skyldes endringer på key, samt verdier i radio eller nedtrekkslister. Vennligst se over følgende avhengigheter:
     <ul>
@@ -30,7 +30,7 @@ const BreakingChangesWarning = ({ breakingChanges }: BreakingChangesWarningProps
         );
       })}
     </ul>
-  </AlertStripe>
+  </Alert>
 );
 
 export default BreakingChangesWarning;

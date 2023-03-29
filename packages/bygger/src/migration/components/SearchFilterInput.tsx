@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
+import { Select, TextField } from "@navikt/ds-react";
 import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { Input, Select } from "nav-frontend-skjema";
 import React, { Dispatch, Fragment } from "react";
 import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
@@ -40,7 +40,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
 
   return (
     <Fragment>
-      <Input
+      <TextField
         className={styles.input}
         label="Feltnavn"
         type="text"
@@ -76,7 +76,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
           </option>
         ))}
       </Select>
-      <Input
+      <TextField
         className={styles.input}
         label="Verdi"
         type="text"

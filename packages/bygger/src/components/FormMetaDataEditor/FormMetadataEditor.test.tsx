@@ -444,7 +444,7 @@ describe("FormMetadataEditor", () => {
       it("Legger til signatur", () => {
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
-        const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
+        const signaturFieldsets = screen.getAllByTestId("signatures");
         expect(signaturFieldsets).toHaveLength(1);
 
         const input = within(signaturFieldsets[0]).getByLabelText("Hvem skal signere?");
@@ -490,10 +490,9 @@ describe("FormMetadataEditor", () => {
         form = formMedProps({ signatures: multipleSignatures });
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
 
-        const signaturFieldsets = screen.queryAllByRole("group", { name: /Signatur \d/ });
+        const signaturFieldsets = screen.getAllByTestId("signatures");
         expect(signaturFieldsets).toHaveLength(3);
-
-        const lukkKnapp = screen.queryAllByRole("button", { name: "Lukk" })[1];
+        const lukkKnapp = screen.queryAllByRole("button")[1];
         userEvent.click(lukkKnapp);
 
         expect(mockOnChange).toHaveBeenCalled();

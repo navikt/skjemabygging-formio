@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Sidetittel } from "nav-frontend-typografi";
+import { Heading } from "@navikt/ds-react";
 import React from "react";
 import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
@@ -23,7 +23,9 @@ const MottaksadresserPage = () => {
     >
       <Row>
         <Column className={styles.centerColumn}>
-          <Sidetittel className="margin-bottom-double">Mottaksadresser</Sidetittel>
+          <Heading level="1" size="xlarge">
+            Mottaksadresser
+          </Heading>
         </Column>
       </Row>
       <Row>

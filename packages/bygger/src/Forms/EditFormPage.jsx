@@ -1,7 +1,6 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
-import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst, Sidetittel } from "nav-frontend-typografi";
 import React from "react";
 import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
@@ -43,8 +42,10 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
         <Row>
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
-            <Sidetittel>{title}</Sidetittel>
-            <Normaltekst>{skjemanummer}</Normaltekst>
+            <Heading level="1" size="xlarge">
+              {title}
+            </Heading>
+            <BodyShort>{skjemanummer}</BodyShort>
           </Column>
         </Row>
         <Row>
@@ -55,7 +56,9 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
-            <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
+            <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+              Publiser
+            </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
             <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
             <FormStatusPanel publishProperties={form.properties} />
