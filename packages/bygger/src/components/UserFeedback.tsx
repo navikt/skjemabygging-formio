@@ -23,11 +23,11 @@ const UserFeedback = () => {
     switch (message.type) {
       case "success":
         setTimeout(() => message.clear(), 5000);
-        return <SuccessAlert message={message} />;
+        return <SuccessAlert key={message.id} message={message} />;
       case "warning":
-        return <WarningAlert message={message} />;
+        return <WarningAlert key={message.id} message={message} />;
       case "error":
-        return <ErrorAlert message={message} />;
+        return <ErrorAlert key={message.id} message={message} />;
     }
   };
 

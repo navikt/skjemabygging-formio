@@ -11,6 +11,9 @@ const useStyles = makeStyles({
   input: {
     marginBottom: "1rem",
   },
+  deleteButton: {
+    marginBottom: "0.8rem",
+  },
 });
 
 type OperatorOptions = Record<Operator, string>;
@@ -89,7 +92,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
           })
         }
       />
-      <DeleteButton className={styles.input} onClick={() => dispatch({ type: "remove", payload: { id } })} />
+      <DeleteButton className={styles.deleteButton} onClick={() => dispatch({ type: "remove", payload: { id } })} />
     </Fragment>
   );
 };
