@@ -88,11 +88,14 @@ async function migrateForms(searchFilters, dependencyFilters, editOptions, allFo
     .map((form) => {
       const { migratedForm, logger } = migrateForm(form, searchFilters, dependencyFilters, editOptions);
 
-      if (!logger.isEmpty()) {
-        log[logger.getSkjemanummer()] = logger.getLog();
+      if (logger.isEmpty()) {
+        return null;
       }
+
+      log[logger.getSkjemanummer()] = logger.getLog();
       return migratedForm;
-    });
+    })
+    .filter((form) => !!form);
   return { log, migratedForms };
 }
 
