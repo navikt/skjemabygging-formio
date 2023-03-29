@@ -1,6 +1,9 @@
 import mockedForm from "../../../example_data/Form";
 import { getEditScript, migrateForm, migrateForms } from "./migrationScripts";
 import {
+  formWithAdvancedConditionalToRadio,
+  formWithSimpleConditionalToCheckbox,
+  formWithSimpleConditionalToRadio,
   originalFodselsnummerComponent,
   originalForm,
   originalPanelComponent,
@@ -126,6 +129,121 @@ describe("Migration scripts", () => {
       expect(migratedForms).toHaveLength(2);
       expect(migratedForms[0].path).toBe("form2");
       expect(migratedForms[1].path).toBe("form3");
+    });
+
+    describe("When searchFilters are provided", () => {
+      let log;
+      let migratedForms;
+
+      beforeEach(async () => {
+        const migrated = await migrateForms(
+          { key__contains: "componentWithSimpleConditional" },
+          {},
+          { disabled: true },
+          [
+            formWithSimpleConditionalToRadio, // match on searchFilters
+            formWithAdvancedConditionalToRadio, // no match
+            formWithSimpleConditionalToCheckbox, // match on searchFilters
+          ]
+        );
+        migratedForms = migrated.migratedForms;
+        log = migrated.log;
+      });
+
+      it("only returns search results for forms with components that matches both", async () => {
+        expect(Object.keys(log)).toEqual(["formWithSimpleConditionalToRadio", "formWithSimpleConditionalToCheckbox"]);
+      });
+
+      it("only migrates forms with components that matches both", async () => {
+        expect(migratedForms).toEqual([
+          expect.objectContaining({ path: "formWithSimpleConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithSimpleConditionalToCheckbox" }),
+        ]);
+      });
+    });
+
+    describe("When dependencyFilters are provided (but searchFilters are not)", () => {
+      let log;
+      let migratedForms;
+      beforeEach(async () => {
+        const migrated = await migrateForms({}, { type: "radio" }, { disabled: true }, [
+          formWithSimpleConditionalToRadio, // match on dependencyFilters
+          formWithAdvancedConditionalToRadio, // match on dependencyFilters
+          formWithSimpleConditionalToCheckbox, // no match
+        ]);
+        log = migrated.log;
+        migratedForms = migrated.migratedForms;
+      });
+
+      it("only returns search results for forms that matches filters", async () => {
+        expect(Object.keys(log)).toEqual(["formWithSimpleConditionalToRadio", "formWithAdvancedConditionalToRadio"]);
+      });
+
+      it("only migrates forms that matches filters", async () => {
+        expect(migratedForms).toEqual([
+          expect.objectContaining({ path: "formWithSimpleConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithAdvancedConditionalToRadio" }),
+        ]);
+      });
+    });
+
+    describe("When both searchFilters and dependencyFilters are provided", () => {
+      let log;
+      let migratedForms;
+
+      beforeEach(async () => {
+        const migrated = await migrateForms(
+          { key__contains: "componentWithSimpleConditional" },
+          { type: "radio" },
+          { disabled: true },
+          [
+            formWithSimpleConditionalToRadio, // match on both search and dependency filters
+            formWithAdvancedConditionalToRadio, // match on dependencyFilters
+            formWithSimpleConditionalToCheckbox, // match on searchFilters
+          ]
+        );
+        migratedForms = migrated.migratedForms;
+        log = migrated.log;
+      });
+
+      it("only returns search results for forms with components that matches both", async () => {
+        expect(Object.keys(log)).toEqual(["formWithSimpleConditionalToRadio"]);
+      });
+
+      it("only migrates forms with components that matches both", async () => {
+        expect(migratedForms).toEqual([expect.objectContaining({ path: "formWithSimpleConditionalToRadio" })]);
+      });
+    });
+
+    describe("When no filters are provided", () => {
+      let log;
+      let migratedForms;
+
+      beforeEach(async () => {
+        const migrated = await migrateForms({}, {}, { disabled: true }, [
+          formWithSimpleConditionalToRadio,
+          formWithAdvancedConditionalToRadio,
+          formWithSimpleConditionalToCheckbox,
+        ]);
+        migratedForms = migrated.migratedForms;
+        log = migrated.log;
+      });
+
+      it("returns search results for all forms", () => {
+        expect(Object.keys(log)).toEqual([
+          "formWithSimpleConditionalToRadio",
+          "formWithAdvancedConditionalToRadio",
+          "formWithSimpleConditionalToCheckbox",
+        ]);
+      });
+
+      it("migrates all forms", () => {
+        expect(migratedForms).toEqual([
+          expect.objectContaining({ path: "formWithSimpleConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithAdvancedConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithSimpleConditionalToCheckbox" }),
+        ]);
+      });
     });
   });
 

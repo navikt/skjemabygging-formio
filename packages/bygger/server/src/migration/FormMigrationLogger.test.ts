@@ -1,6 +1,7 @@
-import { Component, DependencyType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { Component, DependencyType } from "@navikt/skjemadigitalisering-shared-domain";
 import { FormMigrationLogData } from "../../../types/migration";
 import FormMigrationLogger from "./FormMigrationLogger";
+import { componentWithSimpleConditionalToRadio, formWithSimpleConditionalToRadio, radioComponent } from "./testData";
 
 const idKeyAndLabel = (identifier: string): Component =>
   ({
@@ -9,71 +10,17 @@ const idKeyAndLabel = (identifier: string): Component =>
     label: `label-${identifier}`,
   } as unknown as Component);
 
-const otherComponentIsDependentOn = {
-  key: "dependee",
-  id: "dependee",
-  label: "Component that is changed",
-  isAttachmentPanel: true,
-  values: [
-    {
-      value: "ja",
-      label: "Ja",
-    },
-    {
-      value: "nei",
-      label: "Nei",
-    },
-  ],
-} as unknown as Component;
-
-const withSimpleConditional = {
-  key: "has-dependency",
-  id: "has-dependency",
-  label: "Component with simple conditional",
-  conditional: {
-    show: true,
-    when: "dependee",
-    eq: "ja",
-  },
-} as unknown as Component;
-
-const properties = {
-  skjemanummer: "TEST-form",
-  modified: "2022-11-17T13:12:38.825Z",
-  modifiedBy: "user@company.com",
-  published: "2022-11-17T13:12:38.825Z",
-  publishedBy: "publisher@company.com",
-  unpublished: "2022-12-24T17:00:00.825Z",
-  unpublishedBy: "user@company.com",
-  isTestForm: false,
-  publishedLanguages: ["en"],
-};
-
-const testForm = {
-  name: "testForm",
-  path: "testForm",
-  title: "Test form",
-  properties,
-  components: [otherComponentIsDependentOn, withSimpleConditional],
-} as NavFormType;
-
 describe("FormMigrationLogger", () => {
   let logger: FormMigrationLogger;
 
   beforeEach(() => {
-    logger = new FormMigrationLogger(testForm);
+    logger = new FormMigrationLogger(formWithSimpleConditionalToRadio);
   });
 
   describe("getLog", () => {
     it("contains title, path and key properties from the form", () => {
-      expect(logger.getLog()).toEqual(
-        expect.objectContaining({
-          name: "testForm",
-          path: "testForm",
-          title: "Test form",
-          ...properties,
-        })
-      );
+      const { name, path, title, properties } = formWithSimpleConditionalToRadio;
+      expect(logger.getLog()).toEqual(expect.objectContaining({ name, path, title, ...properties }));
     });
 
     describe("When all entries contains identical original and new components", () => {
@@ -144,34 +91,45 @@ describe("FormMigrationLogger", () => {
 
   describe("getDependencies", () => {
     it("returns dependencies", () => {
-      const { key, label } = otherComponentIsDependentOn;
+      const { key, label } = radioComponent;
       const dependency = { key, label, types: ["conditional"] as DependencyType[], matchesFilters: false };
-      logger.add(withSimpleConditional, { ...withSimpleConditional, label: "New Label" }, [dependency]);
+      logger.add(
+        componentWithSimpleConditionalToRadio,
+        {
+          ...componentWithSimpleConditionalToRadio,
+          label: "New Label",
+        },
+        [dependency]
+      );
 
-      expect(logger.getDependencies()).toEqual({ [withSimpleConditional.key]: [dependency] });
+      expect(logger.getDependencies()).toEqual({ [componentWithSimpleConditionalToRadio.key]: [dependency] });
     });
 
     it("returns nothing when no dependencies were added", () => {
-      logger.add(withSimpleConditional, { ...withSimpleConditional, label: "New Label" });
+      logger.add(componentWithSimpleConditionalToRadio, {
+        ...componentWithSimpleConditionalToRadio,
+        label: "New Label",
+      });
       expect(logger.getDependencies()).toEqual({});
     });
   });
 
   describe("getBreakingChanges", () => {
     it("lists components with dependencies when changing key", () => {
-      logger.add(otherComponentIsDependentOn, { ...otherComponentIsDependentOn, key: "changed-key" });
+      const { id, key, label } = radioComponent;
+      logger.add(radioComponent, { ...radioComponent, key: "changed-key" });
       expect(logger.getBreakingChanges()).toEqual([
         {
           componentWithDependencies: {
-            id: "dependee",
+            id,
             key_NEW: "changed-key",
-            key_ORIGINAL: "dependee",
-            label: "Component that is changed",
+            key_ORIGINAL: key,
+            label,
           },
           dependentComponents: [
             {
-              key: "has-dependency",
-              label: "Component with simple conditional",
+              key: componentWithSimpleConditionalToRadio.key,
+              label: componentWithSimpleConditionalToRadio.label,
             },
           ],
         },
@@ -180,16 +138,16 @@ describe("FormMigrationLogger", () => {
 
     it("lists components with dependencies when changing values", () => {
       const newValues = [{ value: "kanskje", label: "Kanskje" }];
-      logger.add(otherComponentIsDependentOn, { ...otherComponentIsDependentOn, values: newValues } as Component);
+      logger.add(radioComponent, { ...radioComponent, values: newValues } as Component);
       expect(logger.getBreakingChanges()).toEqual([
         {
           componentWithDependencies: expect.objectContaining({
-            id: "dependee",
+            id: radioComponent.id,
           }),
           dependentComponents: [
             {
-              key: "has-dependency",
-              label: "Component with simple conditional",
+              key: componentWithSimpleConditionalToRadio.key,
+              label: componentWithSimpleConditionalToRadio.label,
             },
           ],
         },
@@ -197,9 +155,9 @@ describe("FormMigrationLogger", () => {
     });
 
     it("does not list components with dependencies when changing other properties, as they are not breaking changes", () => {
-      logger.add(otherComponentIsDependentOn, { ...otherComponentIsDependentOn, isAttachmentPanel: false });
-      logger.add(otherComponentIsDependentOn, {
-        ...otherComponentIsDependentOn,
+      logger.add(radioComponent, { ...radioComponent, type: "video" });
+      logger.add(radioComponent, {
+        ...radioComponent,
         newProperty: "new value",
       } as unknown as Component);
       expect(logger.getBreakingChanges()).toEqual([]);
