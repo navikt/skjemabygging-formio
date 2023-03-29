@@ -1,13 +1,34 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  Component,
+  migrationUtils,
+  NavFormType,
+  navFormUtils,
+  Operator,
+} from "@navikt/skjemadigitalisering-shared-domain";
+import { ParsedInput } from "../../../types/migration";
 
-function getPropertyFromComponent(comp, properties) {
+interface Filter {
+  key: string;
+  value: ParsedInput;
+  operator?: Operator;
+}
+
+function parseFiltersFromParam(filtersFromParam: string): Filter[] {
+  return Object.entries(filtersFromParam).map(([key, value]) => {
+    const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
+    console.log({ key: prop, value, operator });
+    return { key: prop, value, operator };
+  });
+}
+
+function getPropertyFromComponent(comp: any, properties: string[]): string | undefined {
   if (properties.length > 1) {
     return getPropertyFromComponent(comp[properties[0]], properties.slice(1));
   }
   return comp && comp[properties[0]];
 }
 
-function componentMatchesFilters(component, filters) {
+function componentMatchesFilters(component: Component, filters: Filter[]) {
   return filters.every(({ key, value, operator }) => {
     switch (operator) {
       case "exists":
@@ -27,7 +48,11 @@ function componentMatchesFilters(component, filters) {
   });
 }
 
-function componentHasDependencyMatchingFilters(form, dependentComponent, dependencyFilters) {
+function componentHasDependencyMatchingFilters(
+  form: NavFormType,
+  dependentComponent: Component,
+  dependencyFilters: Filter[]
+) {
   if (Object.keys(dependencyFilters).length > 0) {
     const dependees = navFormUtils.findDependeeComponents(dependentComponent, form);
     return dependees.some(({ component }) => componentMatchesFilters(component, dependencyFilters));
@@ -35,4 +60,9 @@ function componentHasDependencyMatchingFilters(form, dependentComponent, depende
   return true;
 }
 
-export { getPropertyFromComponent, componentMatchesFilters, componentHasDependencyMatchingFilters };
+export {
+  parseFiltersFromParam,
+  getPropertyFromComponent,
+  componentMatchesFilters,
+  componentHasDependencyMatchingFilters,
+};

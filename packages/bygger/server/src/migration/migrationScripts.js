@@ -1,6 +1,10 @@
-import { migrationUtils, navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  componentHasDependencyMatchingFilters,
+  componentMatchesFilters,
+  parseFiltersFromParam,
+} from "./filterUtils.ts";
 import FormMigrationLogger from "./FormMigrationLogger";
-import { componentHasDependencyMatchingFilters, componentMatchesFilters } from "./searchFilter.js";
 
 function recursivelyMigrateComponentAndSubcomponents(
   form,
@@ -35,13 +39,6 @@ function recursivelyMigrateComponentAndSubcomponents(
     };
   }
   return modifiedComponent;
-}
-
-function parseFiltersFromParam(filtersFromParam) {
-  return Object.entries(filtersFromParam).map(([key, value]) => {
-    const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
-    return { key: prop, value, operator };
-  });
 }
 
 function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, editOptions) {

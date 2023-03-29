@@ -43,7 +43,7 @@ const originalTextFieldComponent = {
   input: true,
   dataGridLabel: true,
   tableView: true,
-};
+} as unknown as Component;
 
 const originalFodselsnummerComponent = {
   label: "Fødselsnummer / D-nummer",

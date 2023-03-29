@@ -1,7 +1,16 @@
-import { componentMatchesFilters, getPropertyFromComponent } from "./searchFilter";
-import { originalTextFieldComponent } from "./testData";
+import {
+  componentHasDependencyMatchingFilters,
+  componentMatchesFilters,
+  getPropertyFromComponent,
+} from "./filterUtils";
+import {
+  componentWithAdvancedConditionalToRadio,
+  componentWithSimpleConditionalToRadio,
+  formWithSimpleConditionalToRadio,
+  originalTextFieldComponent,
+} from "./testData";
 
-describe("search filter", () => {
+describe("filterUtils", () => {
   describe("getPropertyFromComponent", () => {
     it("gets the value of a property in the object as a string", () => {
       const actual = getPropertyFromComponent({ value: "the value" }, ["value"]);
@@ -314,6 +323,48 @@ describe("search filter", () => {
           ).toBe(true);
         });
       });
+    });
+  });
+
+  describe("componentHasDependencyMatchingFilters", () => {
+    it("returns true when component has a simple conditional dependency to a component that matches the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(formWithSimpleConditionalToRadio, componentWithSimpleConditionalToRadio, [
+          { key: "type", value: "radio" },
+        ])
+      ).toBe(true);
+    });
+
+    it("returns false when component has a simple conditional dependency to a component that does not match the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(formWithSimpleConditionalToRadio, componentWithSimpleConditionalToRadio, [
+          { key: "type", value: "radio" },
+          { key: "disabled", value: "true" },
+        ])
+      ).toBe(false);
+    });
+
+    it("returns true when component has an advanced conditional dependency to a component that matches the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(
+          formWithSimpleConditionalToRadio,
+          componentWithAdvancedConditionalToRadio,
+          [{ key: "type", value: "radio" }]
+        )
+      ).toBe(true);
+    });
+
+    it("returns false when component has an advanced conditional dependency to a component that does not match the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(
+          formWithSimpleConditionalToRadio,
+          componentWithAdvancedConditionalToRadio,
+          [
+            { key: "type", value: "radio" },
+            { key: "disabled", value: "true" },
+          ]
+        )
+      ).toBe(false);
     });
   });
 });
