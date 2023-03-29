@@ -1,11 +1,27 @@
 {
   "name": "@navikt/fyllut-frontend",
   "homepage": "/fyllut",
-  "proxy": "http://localhost:8081",
   "version": "0.1.1",
   "private": true,
+  "proxy": "http://localhost:8081",
   "type": "module",
   "cracoConfig": "craco.config.cjs",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "start": "cross-env-shell PORT=3001 craco start",
+    "build": "cross-env-shell REACT_APP_GIT_VERSION=dev craco build",
+    "build:prod": "craco build",
+    "check-types": "tsc",
+    "clean": "rimraf build coverage",
+    "test": "craco test",
+    "test:coverage": "craco test --coverage",
+    "cypress": "cypress run",
+    "cypress:open": "cypress open",
+    "eject": "craco eject",
+    "install-all": "npm install && cd server && npm install",
+    "dev-server": "cross-env-shell cd server && npm start",
+    "check-env": "node -e 'console.log(process.env)' | grep npm"
+  },
   "dependencies": {
     "@craco/craco": "^6.0.0",
     "@material-ui/styles": "4.10.0",
@@ -38,22 +54,7 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.7",
     "prop-types": "^15.8.1",
-    "typescript": "4.6.4"
-  },
-  "scripts": {
-    "start": "cross-env-shell PORT=3001 craco start",
-    "build": "cross-env-shell REACT_APP_GIT_VERSION=dev craco build",
-    "build:prod": "craco build",
-    "check-types": "tsc",
-    "clean": "rimraf build coverage",
-    "test": "craco test",
-    "test:coverage": "craco test --coverage",
-    "cypress": "cypress run",
-    "cypress:open": "cypress open",
-    "eject": "craco eject",
-    "install-all": "npm install && cd server && npm install",
-    "dev-server": "cross-env-shell cd server && npm start",
-    "check-env": "node -e 'console.log(process.env)' | grep npm"
+    "typescript": "^5.0.2"
   },
   "browserslist": {
     "production": [
