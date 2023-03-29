@@ -10,9 +10,6 @@ const useStyles = makeStyles({
   input: {
     marginBottom: "1rem",
   },
-  deleteButton: {
-    marginBottom: "0.8rem",
-  },
 });
 
 interface FormEditInputProps {
@@ -45,7 +42,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
         className={styles.input}
         label="Verdi"
         type="text"
-        value={typeof value === "object" ? JSON.stringify(value) : value}
+        value={typeof value === "object" ? JSON.stringify(value) : `${value}`}
         disabled={!key}
         onChange={(event) =>
           dispatch({
@@ -57,7 +54,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
           })
         }
       />
-      <DeleteButton className={styles.deleteButton} onClick={() => dispatch({ type: "remove", payload: { id } })} />
+      <DeleteButton className={styles.input} onClick={() => dispatch({ type: "remove", payload: { id } })} />
     </Fragment>
   );
 };
