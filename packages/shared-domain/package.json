@@ -12,6 +12,7 @@
   "files": [
     "dist"
   ],
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "build": "babel src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
     "check-types": "tsc",
@@ -21,9 +22,11 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "@types/uuid": "^8.3.4",
+    "uuid": "^8.3.2",
+    "moment": "^2.29.4"
+  },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
     "@babel/core": "^7.14.0",
@@ -31,14 +34,9 @@
     "@babel/preset-typescript": "^7.16.7",
     "@types/jest": "^27.4.1",
     "jest": "^27.0.4",
-    "typescript": "4.6.4"
+    "typescript": "^5.0.2"
   },
   "peerDependencies": {
     "formiojs": "4.14.6"
-  },
-  "dependencies": {
-    "@types/uuid": "^8.3.4",
-    "uuid": "^8.3.2",
-    "moment": "^2.29.4"
   }
 }
