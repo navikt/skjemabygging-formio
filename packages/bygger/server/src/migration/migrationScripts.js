@@ -1,10 +1,6 @@
 import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import {
-  componentHasDependencyMatchingFilters,
-  componentMatchesFilters,
-  parseFiltersFromParam,
-} from "./filterUtils.ts";
 import FormMigrationLogger from "./FormMigrationLogger";
+import { componentHasDependencyMatchingFilters, componentMatchesFilters, parseFiltersFromParam } from "./filterUtils";
 
 function recursivelyMigrateComponentAndSubcomponents(
   form,
