@@ -10,6 +10,8 @@ const INTERNAL_PATHS = /.*\/(internal|static)\/.*/i;
 const httpRequestLogger = morgan(
   (token, req, res) => {
     const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
+    logEntry["level"] = logEntry["log.level"];
+    delete logEntry["log.level"];
     logEntry.correlation_id = correlator.getId();
     return JSON.stringify(clean(logEntry));
   },

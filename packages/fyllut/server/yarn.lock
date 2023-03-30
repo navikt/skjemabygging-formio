@@ -998,13 +998,6 @@
   dependencies:
     "@elastic/ecs-helpers" "^1.1.0"
 
-"@elastic/ecs-winston-format@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@elastic/ecs-winston-format/-/ecs-winston-format-1.3.1.tgz#da37d3f6e19ee7bdc076d9e3f2110c96602238a5"
-  integrity sha512-cbDaTU6zUXNpAZSJoLUgNqB0kq2YZ1hmDePVdKrJmw7OBDbzUUMfaK+7S21yFpln/tUF4KRSSPbSwEBgtTLp7Q==
-  dependencies:
-    "@elastic/ecs-helpers" "^1.1.0"
-
 "@formio/bootstrap3@^2.12.2":
   version "2.12.2"
   resolved "https://registry.yarnpkg.com/@formio/bootstrap3/-/bootstrap3-2.12.2.tgz#19f0e336c845e544cdb6a3c17940d00795608335"
