@@ -1,6 +1,6 @@
 app-name: skjemautfylling-preprod
 ingresses:
-  - "https://fyllut-preprod.dev.nav.no/fyllut"
+  - "https://fyllut-preprod.intern.dev.nav.no/fyllut"
 image: {{image}}
 foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside
