@@ -2,7 +2,6 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import FormPage from "./FormPage";
 
@@ -98,8 +97,8 @@ describe("FormPage", () => {
       expect(await screen.findByRole("heading", { name: "Testskjema" })).toBeInTheDocument();
       const languageSelector = screen.queryByRole("button", { name: "Norsk bokmål" });
       expect(languageSelector).toBeInTheDocument();
-      userEvent.click(languageSelector);
-      userEvent.click(await screen.findByRole("link", { name: "English" }));
+      await userEvent.click(languageSelector);
+      await userEvent.click(await screen.findByRole("link", { name: "English" }));
       expect(await screen.findByRole("heading", { name: "Test form" })).toBeInTheDocument();
     });
   });

@@ -1,10 +1,8 @@
-import { Button } from "@navikt/ds-react";
+import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchMottaksadresser } from "../../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../../components/error/AlertStripeHttpError";
-import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { genererFoerstesideData } from "../../util/forsteside";
@@ -57,7 +55,6 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
   const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { currentLanguage } = useLanguages();
-  const { featureToggles } = useAppConfig();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
@@ -70,12 +67,12 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
       className="wizard-page"
       aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
     >
-      <Systemtittel tag="h3" className="margin-bottom-small">
+      <Heading level="3" size="medium" className="margin-bottom-small">
         {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
-      </Systemtittel>
-      <Normaltekst className="margin-bottom-default">
+      </Heading>
+      <BodyShort className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
-      </Normaltekst>
+      </BodyShort>
       <EnhetSelector
         enhetsliste={enhetsListe}
         onSelectEnhet={(enhetNummer) => {
@@ -110,9 +107,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
       <DownloadPdfButton
         form={form}
         submission={submission}
-        actionUrl={
-          featureToggles?.enableExstreamPdf ? `${fyllutBaseURL}/api/pdf/convert` : `${fyllutBaseURL}/api/pdf-form-papir`
-        }
+        actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
         onClick={() => setHasDownloadedPDF(true)}
         translations={translations}

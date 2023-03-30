@@ -1,7 +1,5 @@
-import React from "react";
 import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
-import { UserAlerterContext } from "../userAlerting";
-import { NavBar } from "./navbar/NavBar";
+import { NavBar } from "./Navbar/NavBar";
 
 export const AppLayout = ({ children, navBarProps }) => {
   return (
@@ -11,13 +9,5 @@ export const AppLayout = ({ children, navBarProps }) => {
       </NoScrollWrapper>
       <Pagewrapper>{children}</Pagewrapper>
     </>
-  );
-};
-
-export const AppLayoutWithContext = (props) => {
-  return (
-    <UserAlerterContext.Consumer>
-      {(userAlerter) => <AppLayout userAlerter={userAlerter} {...props} />}
-    </UserAlerterContext.Consumer>
   );
 };

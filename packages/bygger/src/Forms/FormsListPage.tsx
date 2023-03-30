@@ -1,19 +1,18 @@
 import { makeStyles } from "@material-ui/styles";
 import { Down, Up, UpDown } from "@navikt/ds-icons";
+import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import { Hovedknapp } from "nav-frontend-knapper";
-import { Undertittel } from "nav-frontend-typografi";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import {
-  asFormMetadata,
   FormMetadata,
+  SortDirection,
+  asFormMetadata,
   sortByFormNumber,
   sortByStatus,
-  SortDirection,
   sortFormsByProperty,
 } from "./formsListUtils";
 import FormStatus from "./status/FormStatus";
@@ -96,15 +95,21 @@ const FormsList = ({ formMetadataList, children }: FormsListProps) => {
     <ul className={classes.list} data-testid="forms-list">
       <li className={classes.listTitles}>
         <div className={classes.listTitleItems} onClick={() => toggleSortState("formNumber")}>
-          <Undertittel className={classes.listTitle}>Skjemanr.</Undertittel>
+          <Heading level="2" size="small">
+            Skjemanr.
+          </Heading>
           <SortIcon direction={sortBy === "formNumber" ? sortDirection : undefined} />
         </div>
         <div className={classes.listTitleItems} onClick={() => toggleSortState("formTitle")}>
-          <Undertittel className={classes.listTitle}>Skjematittel</Undertittel>
+          <Heading level="2" size="small">
+            Skjematittel
+          </Heading>
           <SortIcon direction={sortBy === "formTitle" ? sortDirection : undefined} />
         </div>
         <div className={classes.listTitleItems} onClick={() => toggleSortState("formStatus")}>
-          <Undertittel className={classes.statusListTitle}>Status</Undertittel>
+          <Heading level="2" size="small">
+            Status
+          </Heading>
           <SortIcon direction={sortBy === "formStatus" ? sortDirection : undefined} />
         </div>
       </li>
@@ -167,7 +172,7 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
   const onNew = () => history.push("/forms/new");
 
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         title: "Skjemaoversikt",
         visSkjemaliste: false,
@@ -175,12 +180,14 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
       }}
     >
       <ActionRow>
-        <Hovedknapp className={classes.centerColumn} onClick={onNew}>
+        <Button className={classes.centerColumn} onClick={onNew}>
           Lag nytt skjema
-        </Hovedknapp>
+        </Button>
       </ActionRow>
       <nav className={classes.root}>
-        <Undertittel className="margin-bottom-default">Velg skjema:</Undertittel>
+        <Heading level="2" size="small">
+          Velg skjema:
+        </Heading>
         <FormsList formMetadataList={forms.map(asFormMetadata)}>
           {(formMetadata) => (
             <li className={classes.listItem} key={formMetadata.path}>
@@ -195,7 +202,7 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
           )}
         </FormsList>
       </nav>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 

@@ -1,6 +1,5 @@
+import { Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Systemtittel } from "nav-frontend-typografi";
-import React from "react";
 
 interface Props {
   index: number;
@@ -19,7 +18,9 @@ const LetterAddAttachment = ({ index, vedleggSomSkalSendes, translate }: Props) 
     );
   return (
     <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>
-      <Systemtittel tag="h3" className="margin-bottom-small">{`${index}. ${attachmentSectionTitle}`}</Systemtittel>
+      <Heading level="3" size="medium" className="margin-bottom-small">
+        {`${index}. ${attachmentSectionTitle}`}
+      </Heading>
       <ul>
         {vedleggSomSkalSendes.map((vedlegg) => (
           <li key={vedlegg.key}>{translate(vedlegg.label)}</li>

@@ -1,25 +1,24 @@
 import { makeStyles } from "@material-ui/styles";
+import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Knapp } from "nav-frontend-knapper";
-import { Innholdstittel } from "nav-frontend-typografi";
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { AppLayoutWithContext } from "../../components/AppLayout";
-import Column from "../../components/layout/Column";
-import Row from "../../components/layout/Row";
+import { AppLayout } from "../../components/AppLayout";
 import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../../components/UserFeedback";
+import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
 import { getAvailableLanguages, languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useModal } from "../../util/useModal";
 import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalCsvLink from "./GlobalCsvLink";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 import PublishGlobalTranslationsButton from "./PublishGlobalTranslationsButton";
+import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,
@@ -222,7 +221,7 @@ const GlobalTranslationsPage = ({
 
   return (
     <>
-      <AppLayoutWithContext
+      <AppLayout
         navBarProps={{
           title: "Globale oversettelser",
           visOversettelseliste: true,
@@ -231,9 +230,9 @@ const GlobalTranslationsPage = ({
         }}
       >
         <Row className={classes.titleRow}>
-          <Innholdstittel>
+          <Heading level="1" size="large">
             {languageCode && languageCode !== "undefined" ? languagesInNorwegian[languageCode] : ""}
-          </Innholdstittel>
+          </Heading>
         </Row>
         <Row>
           <Column className={classes.mainCol}>
@@ -248,9 +247,14 @@ const GlobalTranslationsPage = ({
                   deleteOneRow={deleteOneRow}
                   predefinedGlobalOriginalTexts={predefinedOriginalTextList}
                 />
-                <Knapp className={classes.addButton} onClick={() => addNewTranslation()}>
+                <Button
+                  variant="secondary"
+                  className={classes.addButton}
+                  onClick={() => addNewTranslation()}
+                  type="button"
+                >
                   Legg til ny tekst
-                </Knapp>
+                </Button>
               </div>
             ) : (
               <ApplicationTextTranslationEditPanel
@@ -266,7 +270,9 @@ const GlobalTranslationsPage = ({
           <div className={classes.sideBarContainer}>
             <Column className={classes.stickySideBar}>
               <FormBuilderLanguageSelector languages={languages} formPath="global" tag={selectedTag} />
-              <Knapp onClick={() => setIsDeleteLanguageModalOpen(true)}>Slett språk</Knapp>
+              <Button variant="secondary" onClick={() => setIsDeleteLanguageModalOpen(true)} type="button">
+                Slett språk
+              </Button>
               <PublishGlobalTranslationsButton
                 languageCode={languageCode}
                 publishGlobalTranslations={publishGlobalTranslations}
@@ -277,7 +283,7 @@ const GlobalTranslationsPage = ({
             </Column>
           </div>
         </Row>
-      </AppLayoutWithContext>
+      </AppLayout>
       <ConfirmDeleteLanguageModal
         isOpen={isDeleteLanguageModalOpen}
         closeModal={() => setIsDeleteLanguageModalOpen(false)}

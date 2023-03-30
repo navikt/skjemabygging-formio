@@ -4,11 +4,12 @@ import "@navikt/ds-css-internal";
 import { appStyles, globalStyles } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import Formiojs from "formiojs/Formio";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
-import { useAuth } from "./context/auth-context";
 import UnauthenticatedApp from "./UnauthenticatedApp";
-import { UserAlerterContext, useUserAlerting } from "./userAlerting";
+import { useAuth } from "./context/auth-context";
+import FeedbackProvider from "./context/notifications/FeedbackContext";
+import PusherNotificationsProvider from "./context/notifications/NotificationsContext";
 
 const useStyles = makeStyles(() => ({
   "@global": {
@@ -21,10 +22,9 @@ const useStyles = makeStyles(() => ({
   app: appStyles,
 }));
 
-function App({ projectURL, serverURL, pusher }) {
+function App({ projectURL, serverURL }) {
   Formiojs.setBaseUrl(projectURL);
   const styles = useStyles();
-  const userAlerter = useUserAlerting(pusher);
   const { userData } = useAuth();
   const formio = useMemo(() => new Formiojs(projectURL), [projectURL]);
   const contentFunc = userData
@@ -32,9 +32,11 @@ function App({ projectURL, serverURL, pusher }) {
     : () => <UnauthenticatedApp projectURL={projectURL} />;
 
   return (
-    <UserAlerterContext.Provider value={userAlerter}>
-      <section className={styles.app}>{contentFunc()}</section>
-    </UserAlerterContext.Provider>
+    <FeedbackProvider>
+      <PusherNotificationsProvider>
+        <section className={styles.app}>{contentFunc()}</section>
+      </PusherNotificationsProvider>
+    </FeedbackProvider>
   );
 }
 

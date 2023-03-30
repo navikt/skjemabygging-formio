@@ -1,10 +1,9 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResult, DryRunResults } from "../../types/migration";
-import { UserAlerterContext } from "../userAlerting";
+import FeedbackProvider from "../context/notifications/FeedbackContext";
 import MigrationPage from "./MigrationPage";
 import { migrationOptionsAsMap } from "./utils";
 
@@ -33,16 +32,10 @@ describe("MigrationPage", () => {
     form3: { ...defaultdryRunResponse, skjemanummer: "form3", path: "form3", name: "Skjema 3", found: 3, changed: 2 },
   };
 
-  const userAlerter = {
-    flashSuccessMessage: jest.fn(),
-    alertComponent: jest.fn(),
-    setErrorMessage: jest.fn(),
-  };
-
   const wrapper = ({ children }) => (
-    <UserAlerterContext.Provider value={userAlerter}>
+    <FeedbackProvider>
       <MemoryRouter>{children}</MemoryRouter>
-    </UserAlerterContext.Provider>
+    </FeedbackProvider>
   );
 
   beforeEach(() => {

@@ -1,15 +1,14 @@
 import { makeStyles } from "@material-ui/styles";
+import { Button, Heading } from "@navikt/ds-react";
 import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
-import { Hovedknapp } from "nav-frontend-knapper";
-import { Sidetittel } from "nav-frontend-typografi";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { AppLayout } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import { UserAlerterContext } from "../userAlerting";
+import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 import { defaultFormFields } from "./DefaultForm";
 
 const useStyles = makeStyles({
@@ -31,7 +30,7 @@ interface State {
 }
 
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
-  const userAlerter = useContext(UserAlerterContext);
+  const feedbackEmit = useFeedbackEmit();
   const history = useHistory();
   const styles = useStyles();
   const [state, setState] = useState<State>({
@@ -72,7 +71,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
       return await formio
         .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
         .then((form) => {
-          userAlerter.flashSuccessMessage("Opprettet skjemaet " + form.title);
+          feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
           history.push(`/forms/${form.path}/edit`);
         });
     } else {
@@ -85,13 +84,15 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   };
 
   return (
-    <AppLayoutWithContext navBarProps={{ title: "Opprett nytt skjema" }}>
+    <AppLayout navBarProps={{ title: "Opprett nytt skjema" }}>
       <main className={styles.root}>
-        <Sidetittel className="margin-bottom-double">Opprett nytt skjema</Sidetittel>
+        <Heading level="1" size="xlarge">
+          Opprett nytt skjema
+        </Heading>
         <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
-        <Hovedknapp onClick={onCreate}>Opprett</Hovedknapp>
+        <Button onClick={onCreate}>Opprett</Button>
       </main>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 

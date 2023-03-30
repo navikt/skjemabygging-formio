@@ -3,13 +3,12 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formio } from "formiojs";
 import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import createMockImplementation from "../../test/backendMockImplementation";
 import featureToggles from "../../test/featureToggles";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { AuthContext } from "../context/auth-context";
-import { UserAlerterContext } from "../userAlerting";
+import FeedbackProvider from "../context/notifications/FeedbackContext";
 
 describe("FormsRouter", () => {
   beforeEach(() => {
@@ -21,10 +20,6 @@ describe("FormsRouter", () => {
   });
 
   function renderApp(pathname) {
-    const userAlerter = {
-      flashSuccessMessage: jest.fn(),
-      alertComponent: jest.fn(),
-    };
     return render(
       <MemoryRouter initialEntries={[pathname]}>
         <AuthContext.Provider
@@ -33,14 +28,14 @@ describe("FormsRouter", () => {
             login: () => {},
           }}
         >
-          <UserAlerterContext.Provider value={userAlerter}>
+          <FeedbackProvider>
             <AppConfigProvider featureToggles={featureToggles} baseUrl="http://baseurl.example.org">
               <AuthenticatedApp
                 formio={new Formio("http://myproject.example.org")}
                 serverURL={"http://myproject.example.org"}
               />
             </AppConfigProvider>
-          </UserAlerterContext.Provider>
+          </FeedbackProvider>
         </AuthContext.Provider>
       </MemoryRouter>
     );

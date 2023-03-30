@@ -1,6 +1,6 @@
+import { Checkbox } from "@navikt/ds-react";
 import CheckboxEditForm from "formiojs/components/checkbox/Checkbox.form";
-import { Checkbox } from "nav-frontend-skjema";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";

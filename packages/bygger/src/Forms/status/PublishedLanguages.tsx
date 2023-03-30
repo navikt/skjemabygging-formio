@@ -1,5 +1,4 @@
-import { Element } from "nav-frontend-typografi";
-import React from "react";
+import { Label } from "@navikt/ds-react";
 import { languagesInNorwegian } from "../../context/i18n";
 import { useStatusStyles } from "./styles";
 import { PublishProperties } from "./types";
@@ -20,7 +19,7 @@ const PublishedLanguages = ({ publishProperties }: Props) => {
     const sortedLanguageCodes = [...publishProperties.publishedLanguages, langCodeBokmal].sort();
     return (
       <div className={styles.panelItem}>
-        <Element>Publiserte språk:</Element>
+        <Label>Publiserte språk:</Label>
         {sortedLanguageCodes.map((langCode) => {
           return (
             <p key={langCode} className={styles.rowText}>

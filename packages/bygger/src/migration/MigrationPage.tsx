@@ -1,14 +1,12 @@
 import { makeStyles } from "@material-ui/styles";
-import { Pagination } from "@navikt/ds-react";
+import { Button, Heading, Pagination } from "@navikt/ds-react";
 import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import { Knapp } from "nav-frontend-knapper";
-import { Innholdstittel, Sidetittel } from "nav-frontend-typografi";
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { DryRunResult } from "../../types/migration";
-import Column from "../components/layout/Column";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
 import { runMigrationDryRun, runMigrationWithUpdate } from "./api";
 import BulkPublishPanel from "./components/BulkPublishPanel";
 import ConfirmMigration from "./components/ConfirmMigration";
@@ -42,9 +40,6 @@ const useStyles = makeStyles({
     flex: "1",
     marginLeft: "2rem",
   },
-  mainHeading: {
-    marginBottom: "4rem",
-  },
   hasMarginBottom: {
     marginBottom: "2rem",
   },
@@ -53,12 +48,12 @@ const useStyles = makeStyles({
   },
   searchFilterInputs: {
     display: "grid",
-    gridTemplateColumns: "3fr 1fr 3fr",
+    gridTemplateColumns: "3fr 1fr 3fr 0.2fr",
     gap: "0.25rem 1rem",
   },
   formEditInputs: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "3fr 3fr 0.2fr",
     gap: "0.25rem 1rem",
   },
   pagination: {
@@ -152,7 +147,9 @@ const MigrationPage = () => {
   return (
     <main className={styles.root}>
       <Column className={styles.mainContent}>
-        <Sidetittel className={styles.mainHeading}>Søk og migrer</Sidetittel>
+        <Heading level="1" size="xlarge">
+          Søk og migrer
+        </Heading>
         <form
           onSubmit={async (event) => {
             event.preventDefault();
@@ -184,12 +181,13 @@ const MigrationPage = () => {
           </MigrationOptionsForm>
 
           <div className={styles.hasMarginBottom}>
-            <Knapp type="hoved" spinner={isLoading}>
+            <Button variant="primary" loading={isLoading}>
               Simuler og kontroller migrering
-            </Knapp>
+            </Button>
 
-            <Knapp
-              type="flat"
+            <Button
+              variant="tertiary"
+              type="button"
               onClick={() => {
                 history.push();
                 history.go();
@@ -197,7 +195,7 @@ const MigrationPage = () => {
               className={styles.hasMarginLeft}
             >
               Nullstill skjema
-            </Knapp>
+            </Button>
           </div>
         </form>
 
@@ -205,7 +203,9 @@ const MigrationPage = () => {
 
         {dryRunSearchResults && (
           <>
-            <Innholdstittel tag="h2">Resultater av simulert migrering</Innholdstittel>
+            <Heading level="2" size="large">
+              Resultater av simulert migrering
+            </Heading>
             <p>
               Fant {dryRunSearchResults.length} skjemaer som matcher søkekriteriene.&nbsp;
               {numberOfComponentsFound !== undefined && (

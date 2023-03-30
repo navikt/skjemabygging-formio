@@ -1,15 +1,13 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
-import { Knapp } from "nav-frontend-knapper";
-import { Normaltekst, Sidetittel } from "nav-frontend-typografi";
-import React from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
+import { AppLayout } from "../components/AppLayout";
 import NavFormBuilder from "../components/NavFormBuilder";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import SkjemaVisningSelect from "../components/SkjemaVisningSelect";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./publish/PublishModalComponents";
 import FormStatusPanel from "./status/FormStatusPanel";
@@ -34,7 +32,7 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
   const formBuilderOptions = { ...FormBuilderOptions, formConfig: { publishedForm } };
   return (
     <>
-      <AppLayoutWithContext
+      <AppLayout
         navBarProps={{
           visSkjemaMeny: true,
           formPath: form.path,
@@ -43,8 +41,10 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
         <Row>
           <SkjemaVisningSelect form={form} onChange={onChange} />
           <Column className={styles.centerColumn}>
-            <Sidetittel>{title}</Sidetittel>
-            <Normaltekst>{skjemanummer}</Normaltekst>
+            <Heading level="1" size="xlarge">
+              {title}
+            </Heading>
+            <BodyShort>{skjemanummer}</BodyShort>
           </Column>
         </Row>
         <Row>
@@ -55,14 +55,16 @@ export function EditFormPage({ form, publishedForm, onSave, onChange, onPublish,
             formBuilderOptions={formBuilderOptions}
           />
           <Column>
-            <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
+            <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+              Publiser
+            </Button>
             <UnpublishButton onUnpublish={onUnpublish} form={form} />
             <PrimaryButtonWithSpinner onClick={() => onSave(form)}>Lagre</PrimaryButtonWithSpinner>
             <FormStatusPanel publishProperties={form.properties} />
             <UserFeedback />
           </Column>
         </Row>
-      </AppLayoutWithContext>
+      </AppLayout>
 
       <PublishModalComponents
         form={form}

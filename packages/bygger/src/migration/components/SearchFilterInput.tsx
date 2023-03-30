@@ -1,14 +1,18 @@
 import { makeStyles } from "@material-ui/styles";
-import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { Input, Select } from "nav-frontend-skjema";
-import React, { Dispatch, Fragment } from "react";
+import { Select, TextField } from "@navikt/ds-react";
+import { Operator, migrationUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { Dispatch, Fragment } from "react";
 import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
+import DeleteButton from "./DeleteButton";
 import { Action } from "./MigrationOptionsForm.reducer";
 
 const useStyles = makeStyles({
   input: {
     marginBottom: "1rem",
+  },
+  deleteButton: {
+    marginBottom: "0.8rem",
   },
 });
 
@@ -36,7 +40,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
 
   return (
     <Fragment>
-      <Input
+      <TextField
         className={styles.input}
         label="Feltnavn"
         type="text"
@@ -72,7 +76,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
           </option>
         ))}
       </Select>
-      <Input
+      <TextField
         className={styles.input}
         label="Verdi"
         type="text"
@@ -88,6 +92,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
           })
         }
       />
+      <DeleteButton className={styles.deleteButton} onClick={() => dispatch({ type: "remove", payload: { id } })} />
     </Fragment>
   );
 };

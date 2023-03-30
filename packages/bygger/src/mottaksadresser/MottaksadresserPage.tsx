@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
-import { Sidetittel } from "nav-frontend-typografi";
-import React from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { Heading } from "@navikt/ds-react";
+import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
 import MottaksadresserListe from "./MottaksadresserListe";
@@ -15,7 +14,7 @@ const useStyles = makeStyles({
 const MottaksadresserPage = () => {
   const styles = useStyles();
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         visOversettelseliste: false,
         visSkjemaliste: true,
@@ -23,13 +22,15 @@ const MottaksadresserPage = () => {
     >
       <Row>
         <Column className={styles.centerColumn}>
-          <Sidetittel className="margin-bottom-double">Mottaksadresser</Sidetittel>
+          <Heading level="1" size="xlarge">
+            Mottaksadresser
+          </Heading>
         </Column>
       </Row>
       <Row>
         <MottaksadresserListe />
       </Row>
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 };
 

@@ -8,8 +8,6 @@ import {
   signatureUtils,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import { AlertStripeAdvarsel } from "nav-frontend-alertstriper";
-import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import useMottaksadresser from "../../hooks/useMottaksadresser";
@@ -112,7 +110,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
 
   return (
     <Fieldset hideLegend legend="">
-      {diff.errorMessage && <AlertStripeAdvarsel>{diff.errorMessage}</AlertStripeAdvarsel>}
+      {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
       <Checkbox
         className="mb-double"
         id="teststatus"

@@ -3,8 +3,6 @@ import { render, screen, waitFor, waitForElementToBeRemoved, within } from "@tes
 import userEvent from "@testing-library/user-event";
 import Formiojs from "formiojs/Formio";
 import fetchMock from "jest-fetch-mock";
-import React from "react";
-import { UserAlerterContext } from "../userAlerting";
 import MottaksadresserListe from "./MottaksadresserListe";
 import mockMottaksadresseForm from "./testdata/mottaksadresse-form";
 import mockMottaksadresser from "./testdata/mottaksadresser";
@@ -20,8 +18,15 @@ const RESPONSE_HEADERS = {
 const SUBMISSION_PUT_REGEX = /http:\/\/.*\/mottaksadresse\/submission\/(.*)$/;
 
 describe("MottaksadresseListe", () => {
+  let windowSpy;
+
   beforeAll(() => {
     Formiojs.setProjectUrl(FORMIO_PROJECT_URL);
+    windowSpy = jest.spyOn(window, "scrollTo");
+  });
+
+  afterAll(() => {
+    windowSpy.mockRestore();
   });
 
   let savedMottaksadresseRequests: Mottaksadresse[] = [];
@@ -66,12 +71,7 @@ describe("MottaksadresseListe", () => {
   });
 
   const renderMottaksadresseListe = async () => {
-    const userAlerter = { flashSuccessMessage: jest.fn(), setErrorMessage: jest.fn(), alertComponent: jest.fn() };
-    render(
-      <UserAlerterContext.Provider value={userAlerter}>
-        <MottaksadresserListe />
-      </UserAlerterContext.Provider>
-    );
+    render(<MottaksadresserListe />);
     await waitForElementToBeRemoved(() => screen.queryByText("Laster mottaksadresser..."));
   };
 

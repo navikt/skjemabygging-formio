@@ -1,14 +1,13 @@
 import { makeStyles } from "@material-ui/styles";
-import { Knapp } from "nav-frontend-knapper";
-import { Sidetittel } from "nav-frontend-typografi";
-import React, { useState } from "react";
-import { AppLayoutWithContext } from "../components/AppLayout";
+import { Button, Heading } from "@navikt/ds-react";
+import { useState } from "react";
+import { AppLayout } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./publish/PublishModalComponents";
 import FormStatusPanel from "./status/FormStatusPanel";
@@ -46,7 +45,7 @@ export function FormSettingsPage({
   };
 
   return (
-    <AppLayoutWithContext
+    <AppLayout
       navBarProps={{
         title: "Skjemainnstillinger",
         visSkjemaMeny: true,
@@ -55,7 +54,9 @@ export function FormSettingsPage({
     >
       <Row className={styles.titleRow}>
         <Column className={styles.mainCol}>
-          <Sidetittel className="margin-bottom-default">{title}</Sidetittel>
+          <Heading level="1" size="xlarge">
+            {title}
+          </Heading>
         </Column>
       </Row>
       <Row>
@@ -63,7 +64,9 @@ export function FormSettingsPage({
           <FormMetadataEditor form={form} publishedForm={publishedForm} errors={errors} onChange={onChange} />
         </Column>
         <Column>
-          <Knapp onClick={() => setOpenPublishSettingModal(true)}>Publiser</Knapp>
+          <Button variant="secondary" onClick={() => setOpenPublishSettingModal(true)} type="button">
+            Publiser
+          </Button>
           <UnpublishButton onUnpublish={onUnpublish} form={form} />
           <PrimaryButtonWithSpinner onClick={() => validateAndSave(form)}>Lagre</PrimaryButtonWithSpinner>
           <FormStatusPanel publishProperties={form.properties} />
@@ -77,6 +80,6 @@ export function FormSettingsPage({
         openPublishSettingModal={openPublishSettingModal}
         setOpenPublishSettingModal={setOpenPublishSettingModal}
       />
-    </AppLayoutWithContext>
+    </AppLayout>
   );
 }

@@ -1,5 +1,4 @@
 import { useLanguageCodeFromURL } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
 import { MenuLink } from "./MenuLink";
 
 export const TranslationsMenu = () => {

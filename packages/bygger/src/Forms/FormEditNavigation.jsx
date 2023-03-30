@@ -1,7 +1,6 @@
-import { Link, useHistory } from "react-router-dom";
-import { Hovedknapp } from "nav-frontend-knapper";
-import React from "react";
+import { Button } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { Link, useHistory } from "react-router-dom";
 
 export const FormEditNavigation = ({ editFormUrl, testFormUrl, formSettingsUrl, form, onSave }) => {
   const { featureToggles } = useAppConfig();
@@ -32,7 +31,7 @@ export const FormEditNavigation = ({ editFormUrl, testFormUrl, formSettingsUrl, 
         </li>
       )}
       <li className="list-inline-item">
-        <Hovedknapp onClick={() => onSave(form)}>Lagre</Hovedknapp>
+        <Button onClick={() => onSave(form)}>Lagre</Button>
       </li>
       {featureToggles.enableTranslations && (
         <li className="list-inline-item">

@@ -1,13 +1,17 @@
 import { makeStyles } from "@material-ui/styles";
-import { Input } from "nav-frontend-skjema";
-import React, { Dispatch, Fragment } from "react";
+import { TextField } from "@navikt/ds-react";
+import { Dispatch, Fragment } from "react";
 import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
+import DeleteButton from "./DeleteButton";
 import { Action } from "./MigrationOptionsForm.reducer";
 
 const useStyles = makeStyles({
   input: {
     marginBottom: "1rem",
+  },
+  deleteButton: {
+    marginBottom: "0.8rem",
   },
 });
 
@@ -22,7 +26,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
   const { key, value } = formEdit;
   return (
     <Fragment>
-      <Input
+      <TextField
         className={styles.input}
         label="Feltnavn"
         type="text"
@@ -37,7 +41,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
           })
         }
       />
-      <Input
+      <TextField
         className={styles.input}
         label="Verdi"
         type="text"
@@ -53,6 +57,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
           })
         }
       />
+      <DeleteButton className={styles.deleteButton} onClick={() => dispatch({ type: "remove", payload: { id } })} />
     </Fragment>
   );
 };

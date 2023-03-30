@@ -1,9 +1,8 @@
 import { styled } from "@material-ui/styles";
 import { NavForm, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
-import { NavBar } from "./components/navbar/NavBar";
-import { useAuth } from "./context/auth-context";
 import { Pagewrapper } from "./Forms/components";
+import { NavBar } from "./components/Navbar/NavBar";
+import { useAuth } from "./context/auth-context";
 
 const StyledNavForm = styled(NavForm)({
   margin: "0 auto",
