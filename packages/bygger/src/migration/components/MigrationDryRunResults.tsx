@@ -63,9 +63,9 @@ const MigrationDryRunResults = ({
               </p>
               {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
               {result.diff.map((componentDiff) => {
-                const componentKey = componentDiff.key || componentDiff["key_ORIGINAL"];
+                const componentKey = componentDiff.key || (componentDiff["key_ORIGINAL"] as string);
                 return (
-                  <div className={styles.resultContainer} key={componentKey}>
+                  <div className={styles.resultContainer} key={`${componentKey}-${componentDiff.id}-diff`}>
                     <pre className={styles.data}>{JSON.stringify(componentDiff, null, 2)}</pre>
                     <ComponentDependencies dependencies={result.dependencies[componentKey]} />
                   </div>
