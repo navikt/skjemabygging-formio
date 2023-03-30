@@ -16,7 +16,7 @@ const dineOpplysningerSchema = {
     firstNameSchema(sokerPostfix),
     surnameSchema(sokerPostfix),
     {
-      label: "Har du norsk fødselsnummer eller D-nummer?",
+      label: "Har du norsk fødselsnummer eller d-nummer?",
       key: "harDuNorskFodselsnummerEllerDNummer",
       type: "radiopanel",
       input: true,
@@ -37,7 +37,7 @@ const dineOpplysningerSchema = {
       },
     },
     {
-      label: "Fødselsnummer / D-nummer",
+      label: "Fødselsnummer / d-nummer",
       key: "fodselsnummerDNummerSoker",
       type: "fnrfield",
       input: true,
