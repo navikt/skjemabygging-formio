@@ -37,7 +37,7 @@ const dineOpplysningerSchema = {
       },
     },
     {
-      label: "Fødselsnummer / d-nummer",
+      label: "Fødselsnummer eller d-nummer",
       key: "fodselsnummerDNummerSoker",
       type: "fnrfield",
       input: true,
