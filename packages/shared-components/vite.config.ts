@@ -12,12 +12,9 @@ export default defineConfig({
     },
   },
   plugins: [react()],
-  /*
   optimizeDeps: {
-    exclude: [
-      "*.ejs"
-    ]
-  },*/
+    exclude: ["*.ejs"],
+  },
   resolve: {
     alias: {
       "@navikt/skjemadigitalisering-shared-domain": path.resolve(__dirname, "../shared-domain/dist/index.js"),

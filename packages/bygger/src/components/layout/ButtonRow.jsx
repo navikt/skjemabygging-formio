@@ -1,6 +1,5 @@
-import React from "react";
-import classNames from "classnames";
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import classNames from "classnames";
 
 const useStyles = makeStyles({
   buttonRow: {

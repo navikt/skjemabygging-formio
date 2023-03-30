@@ -1,7 +1,6 @@
-import React from "react";
+import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import ButtonRow from "./ButtonRow";
 import Row from "./Row";
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 
 const useStyles = makeStyles({
   actionRow: {

@@ -1,21 +1,13 @@
 var nodeExternals = require("webpack-node-externals");
 
 const config = {
-  externals: [
-    "@material-ui/styles",
-    "react",
-    "react-dom",
-    "react-router-dom",
-    /^formiojs($|\/)/,
-    /^moment($|\/)/,
-    nodeExternals(),
-  ],
+  externals: ["react", "react-dom", "react-router-dom", /^formiojs($|\/)/, /^moment($|\/)/, nodeExternals()],
   entry: ["./src/index.ts"],
   mode: "none",
   output: {
-    libraryTarget: "commonjs2",
     path: __dirname + "/dist",
     filename: "index.js",
+    libraryTarget: "commonjs2",
   },
   module: {
     // 3
@@ -28,6 +20,9 @@ const config = {
           options: {
             configFile: "./babel.config.cjs",
           },
+        },
+        resolve: {
+          fullySpecified: false,
         },
       },
       {

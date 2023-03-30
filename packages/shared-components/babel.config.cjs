@@ -1,5 +1,11 @@
 const presets = [
-  ["@babel/preset-env", { modules: false }],
+  [
+    "@babel/preset-env",
+    {
+      modules: "auto",
+      loose: true,
+    },
+  ],
   "@babel/preset-typescript",
   ["@babel/preset-react", { runtime: "automatic" }],
 ];
