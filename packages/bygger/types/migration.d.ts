@@ -1,4 +1,4 @@
-import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { DependencyType, FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 
 export type ParsedInput = number | string | boolean | null | object | Array;
 
@@ -16,35 +16,12 @@ interface MigrationMap {
   [key: string]: string;
 }
 
-export type FormMigrationDiff =
-  | {
-      key: string;
-      label: string;
-      id: string;
-    }
-  | { [property: string]: { _ORIGINAL: any; _NEW: any } };
-
-export type ComponentWithDependencies = {
+export type FormMigrationDiff = {
   id: string;
-  [key: string]: string;
-} & (
-  | {
-      key: string;
-    }
-  | {
-      key_ORIGINAL: string;
-      key_NEW: string;
-    }
-) &
-  (
-    | {
-        label: string;
-      }
-    | {
-        label_ORIGINAL: string;
-        label_NEW: string;
-      }
-  );
+  key?: string;
+  label?: string;
+  [key: string]: ParsedInput;
+};
 
 export interface DependentComponents {
   key: string;
@@ -52,19 +29,42 @@ export interface DependentComponents {
 }
 
 export interface BreakingChanges {
-  componentWithDependencies: ComponentWithDependencies;
+  componentWithDependencies: FormMigrationDiff;
   dependentComponents: DependentComponents[];
 }
 
-export interface DryRunResult
-  extends Pick<FormPropertiesType, "skjemanummer" | "modified" | "published" | "isTestForm" | "unpublished">,
+interface DependeeComponent {
+  key: string;
+  label: string;
+  types: DependencyType[];
+  matchesFilters: boolean;
+}
+
+export interface Dependencies {
+  [key: string]: DependeeComponent[];
+}
+
+export interface FormMigrationLogData
+  extends Pick<
+      FormPropertiesType,
+      | "skjemanummer"
+      | "modified"
+      | "modifiedBy"
+      | "published"
+      | "publishedBy"
+      | "unpublishedBy"
+      | "isTestForm"
+      | "unpublished"
+      | "publishedLanguages"
+    >,
     Pick<NavFormType, "name" | "title" | "path"> {
   found: number;
   changed: number;
   diff: FormMigrationDiff[];
+  dependencies: Dependencies;
   breakingChanges?: BreakingChanges[];
 }
 
 export interface DryRunResults {
-  [skjemanummer: string]: DryRunResult;
+  [skjemanummer: string]: FormMigrationLogData;
 }

@@ -2,13 +2,13 @@ import { makeStyles } from "@material-ui/styles";
 import { Alert, Button, Checkbox, CheckboxGroup, Heading, Panel } from "@navikt/ds-react";
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType, I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nState } from "../../context/i18n";
 import { getFormTexts } from "../../translations/utils";
 import FormStatus, { determineStatus } from "../status/FormStatus";
 import { allLanguagesInNorwegian } from "../status/PublishedLanguages";
-import { useStatusStyles } from "../status/styles";
 import Timestamp from "../status/Timestamp";
+import { useStatusStyles } from "../status/styles";
 
 const useModalStyles = makeStyles({
   modal_button: {

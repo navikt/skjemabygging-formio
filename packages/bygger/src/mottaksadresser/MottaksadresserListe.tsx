@@ -1,8 +1,8 @@
 import { makeStyles } from "@material-ui/styles";
 import { Alert, Button } from "@navikt/ds-react";
-import React, { useState } from "react";
-import Column from "../components/layout/Column";
+import { useState } from "react";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
 import useMottaksadresser from "../hooks/useMottaksadresser";
 import MottaksadresseEditor from "./MottaksadresseEditor";
 

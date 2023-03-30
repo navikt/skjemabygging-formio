@@ -1,5 +1,4 @@
 import { Alert } from "@navikt/ds-react";
-import React from "react";
 import { HttpError } from "./index";
 
 interface Props {

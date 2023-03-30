@@ -26,7 +26,7 @@ import { makeStyles } from "@material-ui/styles";
 import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppConfig } from "../configContext";
 import { evaluateOverride, overrideFormioTextField } from "../formio-overrides";
 import i18nData from "../i18nData";

@@ -10,7 +10,7 @@ import {
 } from "@navikt/skjemadigitalisering-shared-components";
 import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import { Components } from "formiojs";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({

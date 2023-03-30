@@ -1,23 +1,23 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { Accordion, Alert, BodyShort, Heading, Link as NavLink } from "@navikt/ds-react";
 import {
-  formSummaryUtil,
   InnsendingType,
   NavFormType,
   Summary,
   TEXTS,
+  formSummaryUtil,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
-import { hasRelevantAttachments } from "./components/attachmentsUtil";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "./components/DigitalSubmissionWithPrompt";
 import FormStepper from "./components/FormStepper";
+import { hasRelevantAttachments } from "./components/attachmentsUtil";
 
 const SummaryField = ({ component }: { component: Summary.Field }) => (
   <>

@@ -3,7 +3,6 @@ import styled from "@material-ui/styles/styled";
 import { Close } from "@navikt/ds-icons";
 import { Alert, BodyShort, Button } from "@navikt/ds-react";
 import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
 import { Message } from "../hooks/useMessageQueue";
 
 interface AlertProps {

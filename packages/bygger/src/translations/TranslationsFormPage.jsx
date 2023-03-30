@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
 import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
 import TranslationTextInput from "./TranslationTextInput";

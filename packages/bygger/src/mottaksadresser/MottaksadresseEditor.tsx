@@ -4,7 +4,7 @@ import { AppConfigProvider, NavForm } from "@navikt/skjemadigitalisering-shared-
 import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
-import React, { useState } from "react";
+import { useState } from "react";
 import Column from "../components/layout/Column";
 
 const useStyles = makeStyles({

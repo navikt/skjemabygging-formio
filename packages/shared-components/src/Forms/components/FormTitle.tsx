@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import React from "react";
 import { useLanguages } from "../../context/languages";
 
 export interface Props {

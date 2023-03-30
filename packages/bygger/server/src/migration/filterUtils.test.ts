@@ -1,7 +1,16 @@
-import { componentMatchesSearchFilters, getPropertyFromComponent } from "./searchFilter";
-import { originalTextFieldComponent } from "./testData";
+import {
+  componentHasDependencyMatchingFilters,
+  componentMatchesFilters,
+  getPropertyFromComponent,
+} from "./filterUtils";
+import {
+  componentWithAdvancedConditionalToRadio,
+  componentWithSimpleConditionalToRadio,
+  formWithSimpleConditionalToRadio,
+  originalTextFieldComponent,
+} from "./testData";
 
-describe("search filter", () => {
+describe("filterUtils", () => {
   describe("getPropertyFromComponent", () => {
     it("gets the value of a property in the object as a string", () => {
       const actual = getPropertyFromComponent({ value: "the value" }, ["value"]);
@@ -22,7 +31,7 @@ describe("search filter", () => {
   describe("componentMatchesSearchFilters", () => {
     it("returns true if all searchFilters matches the related properties in the component", () => {
       expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, [
+        componentMatchesFilters(originalTextFieldComponent, [
           {
             key: "fieldSize",
             value: "input--xxl",
@@ -34,7 +43,7 @@ describe("search filter", () => {
 
     it("returns false if one searchFilter does not match the related property in the component", () => {
       expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, [
+        componentMatchesFilters(originalTextFieldComponent, [
           {
             key: "fieldSize",
             value: "input--s",
@@ -46,7 +55,7 @@ describe("search filter", () => {
 
     it("matches on nested properties", () => {
       expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, [
+        componentMatchesFilters(originalTextFieldComponent, [
           {
             key: "validate.required",
             value: true,
@@ -55,7 +64,7 @@ describe("search filter", () => {
         ])
       ).toBe(true);
       expect(
-        componentMatchesSearchFilters(originalTextFieldComponent, [
+        componentMatchesFilters(originalTextFieldComponent, [
           {
             key: "validate.required",
             value: false,
@@ -72,9 +81,9 @@ describe("search filter", () => {
 
       describe("equals and not equal", () => {
         it("the operator 'eq' (equals) is the same as default", () => {
-          expect(componentMatchesSearchFilters(originalTextFieldComponent, [typeEqTextfield])).toBe(true);
+          expect(componentMatchesFilters(originalTextFieldComponent, [typeEqTextfield])).toBe(true);
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqTextfield,
                 operator: "eq",
@@ -82,9 +91,9 @@ describe("search filter", () => {
             ])
           ).toBe(true);
 
-          expect(componentMatchesSearchFilters(originalTextFieldComponent, [typeEqRadio])).toBe(false);
+          expect(componentMatchesFilters(originalTextFieldComponent, [typeEqRadio])).toBe(false);
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqRadio,
                 operator: "eq",
@@ -92,9 +101,9 @@ describe("search filter", () => {
             ])
           ).toBe(false);
 
-          expect(componentMatchesSearchFilters(originalTextFieldComponent, [nonExistingProp])).toBe(false);
+          expect(componentMatchesFilters(originalTextFieldComponent, [nonExistingProp])).toBe(false);
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 ...nonExistingProp,
                 operator: "eq",
@@ -105,7 +114,7 @@ describe("search filter", () => {
 
         it("the operator 'n_eq' (not equals) evaluates to false when the value is equal", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqTextfield,
                 operator: "n_eq",
@@ -116,7 +125,7 @@ describe("search filter", () => {
 
         it("the operator 'n_eq' (not equals) evaluates to true when the value is not equal", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 ...typeEqRadio,
                 operator: "n_eq",
@@ -127,7 +136,7 @@ describe("search filter", () => {
 
         it("the operator 'n_eq' (not equals) evaluates to true when prop does not exist", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 ...nonExistingProp,
                 operator: "n_eq",
@@ -140,7 +149,7 @@ describe("search filter", () => {
       describe("exists and not exist", () => {
         it("the operator 'exists' evaluates to false when the property exists", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 key: "type",
                 value: "",
@@ -152,7 +161,7 @@ describe("search filter", () => {
 
         it("the operator 'exists' evaluates to false when the property does not exist", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 key: "non-existing-prop",
                 value: "",
@@ -164,7 +173,7 @@ describe("search filter", () => {
 
         it("the operator 'n_exists' (does not exist) evaluates to false when the property exists", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 key: "type",
                 value: "",
@@ -176,7 +185,7 @@ describe("search filter", () => {
 
         it("the operator 'n_exists' (does not exist) evaluates to true when the property does not exist", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 key: "non-existing-prop",
                 value: "",
@@ -196,7 +205,7 @@ describe("search filter", () => {
 
         it("the operator 'contains' evaluates to true when the value is a substring", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customLongText",
                 value: "substring-in-custom-long-text",
@@ -208,7 +217,7 @@ describe("search filter", () => {
 
         it("the operator 'contains' evaluates to false when the value is not a substring", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customLongText",
                 value: "substring-NOT-in-custom-long-text",
@@ -220,7 +229,7 @@ describe("search filter", () => {
 
         it("the operator 'n_contains' (not contains) evaluates to false when the value is a substring", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customLongText",
                 value: "substring-in-custom-long-text",
@@ -232,7 +241,7 @@ describe("search filter", () => {
 
         it("the operator 'n_contains' (not contains) evaluates to false when the value is not a substring", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customLongText",
                 value: "substring-NOT-in-custom-long-text",
@@ -244,7 +253,7 @@ describe("search filter", () => {
 
         it("the operator 'contains' evaluates to true when the value is a member of an array", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customArray",
                 value: "member-of-array",
@@ -256,7 +265,7 @@ describe("search filter", () => {
 
         it("the operator 'contains' evaluates to false when the value is not a member of an array", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customArray",
                 value: "not-a-member-of-array",
@@ -268,7 +277,7 @@ describe("search filter", () => {
 
         it("the operator 'n_contains' (not contains) evaluates to false when the value is a substring", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customLongText",
                 value: "substring-in-custom-long-text",
@@ -280,7 +289,7 @@ describe("search filter", () => {
 
         it("the operator 'n_contains' (not contains) evaluates to true when the value is not a substring", () => {
           expect(
-            componentMatchesSearchFilters(customComponent, [
+            componentMatchesFilters(customComponent, [
               {
                 key: "customLongText",
                 value: "substring-NOT-in-custom-long-text",
@@ -292,7 +301,7 @@ describe("search filter", () => {
 
         it("the operator 'contains' evaluates to false when the property does not exist", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 key: "customLongText",
                 value: "substring-NOT-in-custom-long-text",
@@ -304,7 +313,7 @@ describe("search filter", () => {
 
         it("the operator 'n_contains' (not contains) evaluates to true when the property does not exist", () => {
           expect(
-            componentMatchesSearchFilters(originalTextFieldComponent, [
+            componentMatchesFilters(originalTextFieldComponent, [
               {
                 key: "customLongText",
                 value: "substring-NOT-in-custom-long-text",
@@ -314,6 +323,48 @@ describe("search filter", () => {
           ).toBe(true);
         });
       });
+    });
+  });
+
+  describe("componentHasDependencyMatchingFilters", () => {
+    it("returns true when component has a simple conditional dependency to a component that matches the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(formWithSimpleConditionalToRadio, componentWithSimpleConditionalToRadio, [
+          { key: "type", value: "radio" },
+        ])
+      ).toBe(true);
+    });
+
+    it("returns false when component has a simple conditional dependency to a component that does not match the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(formWithSimpleConditionalToRadio, componentWithSimpleConditionalToRadio, [
+          { key: "type", value: "radio" },
+          { key: "disabled", value: "true" },
+        ])
+      ).toBe(false);
+    });
+
+    it("returns true when component has an advanced conditional dependency to a component that matches the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(
+          formWithSimpleConditionalToRadio,
+          componentWithAdvancedConditionalToRadio,
+          [{ key: "type", value: "radio" }]
+        )
+      ).toBe(true);
+    });
+
+    it("returns false when component has an advanced conditional dependency to a component that does not match the filter", () => {
+      expect(
+        componentHasDependencyMatchingFilters(
+          formWithSimpleConditionalToRadio,
+          componentWithAdvancedConditionalToRadio,
+          [
+            { key: "type", value: "radio" },
+            { key: "disabled", value: "true" },
+          ]
+        )
+      ).toBe(false);
     });
   });
 });

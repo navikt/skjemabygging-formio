@@ -1,6 +1,6 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";

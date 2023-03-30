@@ -1,5 +1,4 @@
 import { Alert } from "@navikt/ds-react";
-import React from "react";
 import { BreakingChanges } from "../../../types/migration";
 
 type BreakingChangesWarningProps = {
@@ -21,7 +20,7 @@ const BreakingChangesWarning = ({ breakingChanges }: BreakingChangesWarningProps
             </p>
             <ul>
               {dependentComponents.map(({ key, label }) => (
-                <li>
+                <li key={key}>
                   {label} ({key})
                 </li>
               ))}

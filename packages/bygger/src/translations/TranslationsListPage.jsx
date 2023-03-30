@@ -1,12 +1,12 @@
 import { makeStyles } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AppLayout } from "../components/AppLayout";
 import { FormsList } from "../Forms/FormsListPage";
 import { asFormMetadata } from "../Forms/formsListUtils";
 import FormStatus from "../Forms/status/FormStatus";
+import { AppLayout } from "../components/AppLayout";
 
 const useTranslationsListStyles = makeStyles({
   root: {

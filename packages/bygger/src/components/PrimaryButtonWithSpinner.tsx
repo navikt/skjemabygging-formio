@@ -1,5 +1,5 @@
 import { Button } from "@navikt/ds-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const PrimaryButtonWithSpinner = ({ children, onClick }) => {
   const [isSaving, setIsSaving] = useState(false);

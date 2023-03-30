@@ -1,5 +1,4 @@
 import { Label } from "@navikt/ds-react";
-import React from "react";
 import { languagesInNorwegian } from "../../context/i18n";
 import { useStatusStyles } from "./styles";
 import { PublishProperties } from "./types";

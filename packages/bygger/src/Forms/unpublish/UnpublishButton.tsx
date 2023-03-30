@@ -1,6 +1,5 @@
 import { Button } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import React from "react";
 import { useModal } from "../../util/useModal";
 import ConfirmUnpublishModal from "./ConfirmUnpublishModal";
 

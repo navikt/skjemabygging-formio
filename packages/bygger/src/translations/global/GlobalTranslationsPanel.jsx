@@ -1,5 +1,5 @@
 import { Heading } from "@navikt/ds-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 import { getCurrentOriginalTextList } from "./utils";
 

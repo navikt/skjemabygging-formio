@@ -1,6 +1,6 @@
 import { Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ObsoleteTranslationsPanel from "../ObsoleteTranslationsPanel";
 import TranslationTextInput from "../TranslationTextInput";
 import { flattenTextsForEditPanel, tags } from "./utils";

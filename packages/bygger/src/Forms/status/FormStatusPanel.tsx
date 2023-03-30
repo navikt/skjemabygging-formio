@@ -1,11 +1,10 @@
 import { ClassNameMap } from "@material-ui/styles";
 import { Label, Panel } from "@navikt/ds-react";
-import React from "react";
 import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
-import { useStatusStyles } from "./styles";
 import Timestamp from "./Timestamp";
 import ToggleDiffButton from "./ToggleDiffButton";
+import { useStatusStyles } from "./styles";
 import { PublishProperties } from "./types";
 
 interface Props {

@@ -1,6 +1,6 @@
 import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchMottaksadresser } from "../../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../../components/error/AlertStripeHttpError";
 import { useAmplitude } from "../../context/amplitude";

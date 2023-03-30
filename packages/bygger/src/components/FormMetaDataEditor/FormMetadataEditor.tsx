@@ -8,7 +8,6 @@ import {
   signatureUtils,
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import React from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import useMottaksadresser from "../../hooks/useMottaksadresser";

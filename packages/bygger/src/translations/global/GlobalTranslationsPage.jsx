@@ -2,23 +2,23 @@ import { makeStyles } from "@material-ui/styles";
 import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
-import Column from "../../components/layout/Column";
-import Row from "../../components/layout/Row";
 import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../../components/UserFeedback";
+import Column from "../../components/layout/Column";
+import Row from "../../components/layout/Row";
 import { getAvailableLanguages, languagesInNorwegian } from "../../context/i18n";
 import FormBuilderLanguageSelector from "../../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../../hooks/useRedirectIfNoLanguageCode";
 import { useModal } from "../../util/useModal";
 import ConfirmDeleteLanguageModal from "../ConfirmDeleteLanguageModal";
 import ApplicationTextTranslationEditPanel from "./ApplicationTextTranslationEditPanel";
-import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import GlobalCsvLink from "./GlobalCsvLink";
 import GlobalTranslationsPanel from "./GlobalTranslationsPanel";
 import PublishGlobalTranslationsButton from "./PublishGlobalTranslationsButton";
+import getCurrenttranslationsReducer from "./getCurrenttranslationsReducer";
 import {
   getAllPredefinedOriginalTexts,
   getCurrentOriginalTextList,

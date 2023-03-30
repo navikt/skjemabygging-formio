@@ -2,7 +2,7 @@ import { styled } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { fetchEnhetsliste, isEnhetSupported } from "../../api/fetchEnhetsliste";
 import ErrorPage from "../../components/ErrorPage";

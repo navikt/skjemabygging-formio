@@ -3,7 +3,7 @@ import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from "@navi
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
-import React, { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 import { bulkPublish } from "../api";
 import FormList from "./FormList";

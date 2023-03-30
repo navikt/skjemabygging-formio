@@ -1,14 +1,14 @@
 import { styled } from "@material-ui/styles";
 import { BodyShort, Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import DownloadPdfButton from "./components/DownloadPdfButton";
 import NavigateButtonComponent from "./NavigateButtonComponent";
+import DownloadPdfButton from "./components/DownloadPdfButton";
 
 export interface Props {
   form: any;

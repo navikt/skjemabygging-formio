@@ -1,5 +1,4 @@
 import { Accordion, Button, TextField } from "@navikt/ds-react";
-import React from "react";
 
 interface ObsoleteTranslation {
   id: string;

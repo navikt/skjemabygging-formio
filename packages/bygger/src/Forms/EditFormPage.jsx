@@ -1,14 +1,13 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
 import { AppLayout } from "../components/AppLayout";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
 import NavFormBuilder from "../components/NavFormBuilder";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import SkjemaVisningSelect from "../components/SkjemaVisningSelect";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./publish/PublishModalComponents";
 import FormStatusPanel from "./status/FormStatusPanel";

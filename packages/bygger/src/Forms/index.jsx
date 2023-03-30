@@ -1,6 +1,5 @@
 import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
 import Components from "formiojs/components/Components";
-import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";

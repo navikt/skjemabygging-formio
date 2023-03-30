@@ -8,11 +8,11 @@ import { Link, useHistory } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import {
-  asFormMetadata,
   FormMetadata,
+  SortDirection,
+  asFormMetadata,
   sortByFormNumber,
   sortByStatus,
-  SortDirection,
   sortFormsByProperty,
 } from "./formsListUtils";
 import FormStatus from "./status/FormStatus";

@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
-import React from "react";
 import { AppLayout } from "../components/AppLayout";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";

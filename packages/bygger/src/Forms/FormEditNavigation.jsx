@@ -1,6 +1,5 @@
 import { Button } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
 import { Link, useHistory } from "react-router-dom";
 
 export const FormEditNavigation = ({ editFormUrl, testFormUrl, formSettingsUrl, form, onSave }) => {

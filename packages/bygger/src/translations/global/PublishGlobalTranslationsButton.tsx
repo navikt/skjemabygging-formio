@@ -1,5 +1,5 @@
 import { Button } from "@navikt/ds-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const PublishGlobalTranslationsButton = ({ languageCode, publishGlobalTranslations }) => {
   const [publishing, setPublishing] = useState(false);

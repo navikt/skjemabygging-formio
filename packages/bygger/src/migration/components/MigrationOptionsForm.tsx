@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Button, Heading } from "@navikt/ds-react";
-import React, { Dispatch } from "react";
+import { Dispatch } from "react";
 import { Action } from "./MigrationOptionsForm.reducer";
 
 const getStyles = makeStyles({
@@ -9,17 +9,19 @@ const getStyles = makeStyles({
   },
 });
 
+export type TestId = "search-filters" | "dependency-filters" | "edit-options";
 interface MigrationOptionsFormProps {
   title: string;
   addRowText: string;
   dispatch: Dispatch<Action>;
+  testId: TestId;
   children: JSX.Element;
 }
 
-const MigrationOptionsForm = ({ addRowText, title, dispatch, children }: MigrationOptionsFormProps) => {
+const MigrationOptionsForm = ({ addRowText, title, dispatch, testId, children }: MigrationOptionsFormProps) => {
   const styles = getStyles();
   return (
-    <>
+    <div data-testid={testId}>
       <Heading level="2" size="large">
         {title}
       </Heading>
@@ -32,12 +34,13 @@ const MigrationOptionsForm = ({ addRowText, title, dispatch, children }: Migrati
             onClick={() => {
               dispatch({ type: "add" });
             }}
+            data-testid={"add-button"}
           >
             {addRowText}
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

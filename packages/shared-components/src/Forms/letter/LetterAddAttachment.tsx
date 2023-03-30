@@ -1,6 +1,5 @@
 import { Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React from "react";
 
 interface Props {
   index: number;

@@ -1,32 +1,63 @@
-import { migrationUtils, navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { generateDiff } from "./diffingTool.js";
-import { componentMatchesSearchFilters } from "./searchFilter.js";
+import { navFormUtils, objectUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  componentHasDependencyMatchingFilters,
+  componentMatchesFilters,
+  parseFiltersFromParam,
+} from "./filterUtils.ts";
+import FormMigrationLogger from "./FormMigrationLogger";
 
-function recursivelyMigrateComponentAndSubcomponents(component, searchFilters, script) {
+function recursivelyMigrateComponentAndSubcomponents(
+  form,
+  component,
+  searchFilters,
+  dependencyFilters,
+  script,
+  logger
+) {
   let modifiedComponent = component;
-  if (componentMatchesSearchFilters(component, searchFilters)) {
+  if (
+    componentMatchesFilters(component, searchFilters) &&
+    componentHasDependencyMatchingFilters(form, component, dependencyFilters)
+  ) {
     modifiedComponent = script(component);
+    const dependsOn = getDependeeComponentsForComponent(form, component, dependencyFilters);
+    logger.add(component, modifiedComponent, dependsOn);
   }
   if (modifiedComponent.components) {
     return {
       ...modifiedComponent,
       components: modifiedComponent.components.map((subComponent) =>
-        recursivelyMigrateComponentAndSubcomponents(subComponent, searchFilters, script)
+        recursivelyMigrateComponentAndSubcomponents(
+          form,
+          subComponent,
+          searchFilters,
+          dependencyFilters,
+          script,
+          logger
+        )
       ),
     };
   }
   return modifiedComponent;
 }
 
-function migrateForm(form, searchFiltersFromParam, script) {
-  const searchFilters = Object.entries(searchFiltersFromParam).map(([key, value]) => {
-    const [prop, operator] = migrationUtils.getPropAndOperatorFromKey(key);
-    return { key: prop, value, operator };
-  });
-  return recursivelyMigrateComponentAndSubcomponents(form, searchFilters, script);
+function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, editOptions) {
+  const logger = new FormMigrationLogger(form);
+  const searchFilters = parseFiltersFromParam(searchFiltersFromParam);
+  const dependencyFilters = parseFiltersFromParam(dependencyFiltersFromParam);
+
+  const migratedForm = recursivelyMigrateComponentAndSubcomponents(
+    form,
+    form,
+    searchFilters,
+    dependencyFilters,
+    getEditScript(editOptions),
+    logger
+  );
+  return { migratedForm, logger };
 }
 
-function getEditScript(editOptions, logger = []) {
+function getEditScript(editOptions) {
   const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
     editOptionKey.split(".").reduceRight((acc, currentValue) => {
       return { [currentValue]: acc };
@@ -35,85 +66,39 @@ function getEditScript(editOptions, logger = []) {
   const mergedEditOptionObject = editOptionObjects.reduce(objectUtils.deepMerge, {});
 
   return (comp) => {
-    const editedComp = objectUtils.deepMerge(comp, mergedEditOptionObject);
-    const changed = JSON.stringify(comp) !== JSON.stringify(editedComp);
-    const diff = changed && generateDiff(comp, editedComp);
-    logger.push({ key: comp.key, original: comp, new: editedComp, changed, diff });
-    return editedComp;
+    return objectUtils.deepMerge(comp, mergedEditOptionObject);
   };
 }
 
-function hasChangesToPropertiesWhichCanBreakDependencies(diff) {
-  return (
-    diff.key_NEW || // Keys are used to look up submissions for components, and is the most common dependency
-    diff.values_NEW || // Changes to values for Radiopanel or Flervalg components can break references that are depending on a specific value
-    diff.data_NEW ||
-    (diff.data && diff.data.values_NEW) // Values for Nedtrekksliste are stored in data.values, so changes to data or data.values can be breaking
-  );
+function getDependeeComponentsForComponent(form, dependentComponent, filters) {
+  return navFormUtils.findDependeeComponents(dependentComponent, form).map(({ component, types }) => {
+    const { key, label } = component;
+    const matchesFilters = Object.keys(filters).length > 0 && componentMatchesFilters(component, filters);
+    return { key, label, types, matchesFilters };
+  });
 }
 
-function getBreakingChanges(form, changes) {
-  return changes
-    .filter((affected) => affected.diff)
-    .map((affected) => affected.diff)
-    .filter((diff) => hasChangesToPropertiesWhichCanBreakDependencies(diff))
-    .flatMap((diff) => {
-      const dependentComponents = navFormUtils.findDependentComponents(diff.id, form);
-      if (dependentComponents.length > 0) {
-        return [
-          {
-            componentWithDependencies: diff,
-            dependentComponents,
-          },
-        ];
-      } else return [];
-    });
-}
-
-async function migrateForms(searchFilters, editOptions, allForms, formPaths = []) {
+async function migrateForms(searchFilters, dependencyFilters, editOptions, allForms, formPaths = []) {
   let log = {};
   const migratedForms = allForms
     .filter((form) => formPaths.length === 0 || formPaths.includes(form.path))
     .map((form) => {
-      const affectedComponentsLogger = [];
-      const result = migrateForm(form, searchFilters, getEditScript(editOptions, affectedComponentsLogger));
-      const breakingChanges = getBreakingChanges(form, affectedComponentsLogger);
-      const {
-        skjemanummer,
-        modified,
-        modifiedBy,
-        published,
-        publishedBy,
-        isTestForm,
-        unpublished,
-        unpublishedBy,
-        publishedLanguages,
-      } = form.properties;
-      log[form.properties.skjemanummer] = {
-        skjemanummer,
-        modified,
-        modifiedBy,
-        published,
-        publishedBy,
-        isTestForm,
-        unpublished,
-        unpublishedBy,
-        publishedLanguages,
-        name: form.name,
-        title: form.title,
-        path: form.path,
-        found: affectedComponentsLogger.length,
-        changed: affectedComponentsLogger.reduce((acc, curr) => acc + (curr.changed ? 1 : 0), 0),
-        diff: affectedComponentsLogger.map((affected) => affected.diff).filter((diff) => diff),
-        breakingChanges: breakingChanges,
-      };
-      return result;
-    });
+      const { migratedForm, logger } = migrateForm(form, searchFilters, dependencyFilters, editOptions);
+
+      if (logger.isEmpty()) {
+        return null;
+      }
+
+      log[logger.getSkjemanummer()] = logger.getLog();
+      return migratedForm;
+    })
+    .filter((form) => !!form);
   return { log, migratedForms };
 }
 
-async function previewForm(searchFilters, editOptions, form) {
-  return migrateForm(form, searchFilters, getEditScript(editOptions));
+async function previewForm(searchFilters, dependencyFilters, editOptions, form) {
+  const { migratedForm } = migrateForm(form, searchFilters, dependencyFilters, editOptions);
+  return migratedForm;
 }
 
-export { migrateForm, migrateForms, getEditScript, previewForm, getBreakingChanges };
+export { migrateForm, migrateForms, getEditScript, previewForm };

@@ -1,8 +1,8 @@
 import { validatorUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
-import { advancedDescription } from "./fields/advancedDescription.js";
 import TextField from "./TextField.js";
+import { advancedDescription } from "./fields/advancedDescription.js";
 
 export default class OrganizationNumber extends TextField {
   validateOrganizationNumber(organizationNumber) {

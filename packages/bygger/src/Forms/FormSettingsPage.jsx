@@ -1,13 +1,13 @@
 import { makeStyles } from "@material-ui/styles";
 import { Button, Heading } from "@navikt/ds-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AppLayout } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
 import { useModal } from "../util/useModal";
 import PublishModalComponents from "./publish/PublishModalComponents";
 import FormStatusPanel from "./status/FormStatusPanel";

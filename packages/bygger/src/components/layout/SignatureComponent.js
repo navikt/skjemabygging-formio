@@ -1,7 +1,6 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Close } from "@navikt/ds-icons";
 import { Button, Fieldset, Heading, Panel, TextField } from "@navikt/ds-react";
-import React from "react";
 import LabelWithDiff from "../FormMetaDataEditor/LabelWithDiff";
 
 const useStyles = makeStyles({
