@@ -1,45 +1,19 @@
 {{ctx.util.getDiffTag(ctx)}}
-<div class="alertstripe alertstripe--{{ctx.component.alerttype}}{{ctx.component.isInline ? ' alertstripe--inline' : ''}}" ref="html">
-    <span class="alertstripe__ikon">
-        <span class="sr-only">{{ctx.component.alerttype}}</span>
+<div class="navds-alert navds-alert--{{ctx.component.alerttype}}{{ctx.component.isInline ? ' navds-alert--inline' : ''}}" ref="html">
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" class="navds-alert__icon" aria-labelledby="alert-{{ctx.instance.id}}-{{ctx.component.key}}">
+        <title id="alert-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.component.alerttype}}</title>
         {% if (ctx.component.alerttype === "info") { %}
-            <svg role="img" height="1.5em" width="1.5em" viewBox="0 0 24 24">
-                <g fill="none">
-                    <path d="M12 0C5.382 0 0 5.382 0 12s5.382 12 12 12c6.617 0 12-5.382 12-12S18.617 0 12 0z" fill="#337C9B"></path><path d="M12 5a1.566 1.566 0 1 1 .11 3.13A1.566 1.566 0 0 1 12 5zm2.976 12.01c.563 0 1.043.431 1.043.991s-.48.992-1.043.992H9.39c-.564 0-1.043-.431-1.043-.992 0-.56.479-.99 1.043-.99h1.6v-5.016h-.986c-.565 0-1.044-.43-1.044-.991 0-.56.48-.991 1.044-.991h2.03c.563 0 1.043.43 1.043.99v6.007h1.899z" fill="#FFF" />
-                </g>
-            </svg>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0ZM9 19v-2h2v-5H9v-2h4v7h2v2H9Zm3-14a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" fill="currentColor"></path>
         {% } %}
-        {% if (ctx.component.alerttype === "suksess") { %}
-            <svg role="img" height="1.5em" width="1.5em" viewBox="0 0 24 24">
-                <g fill-rule="nonzero" fill="none">
-                    <path d="M12 0C5.383 0 0 5.384 0 12s5.383 12 12 12c6.616 0 12-5.384 12-12S18.616 0 12 0z" fill="#1C6937" />
-                    <path d="M9.64 14.441l6.46-5.839a.997.997 0 0 1 1.376.044.923.923 0 0 1-.046 1.334l-7.15 6.464a.993.993 0 0 1-.662.252.992.992 0 0 1-.69-.276l-2.382-2.308a.923.923 0 0 1 0-1.334.997.997 0 0 1 1.377 0l1.717 1.663z" fill="#FFF" />
-                </g>
-            </svg>
+        {% if (ctx.component.alerttype === "success") { %}
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0Zm5.047 7.671 1.399 1.43-8.728 8.398L6 14.02l1.395-1.434 2.319 2.118 7.333-7.032Z" fill="currentColor"></path>
         {% } %}
-        {% if (ctx.component.alerttype === "advarsel") { %}
-            <svg role="img" height="1.5em" width="1.5em" viewBox="0 0 24 24">
-                <g fill="none" fill-rule="evenodd">
-                    <path d="M12.205-.004l-.214.002a12.225 12.225 0 0 0-8.517 3.659C1.179 5.977-.053 9.013.002 12.208c.115 6.613 5.296 11.793 11.795 11.793l.212-.002c6.726-.116 12.105-5.595 11.99-12.21C23.883 5.178 18.702-.003 12.204-.003z" fill="#FFA733" fill-rule="nonzero" />
-                    <path d="M12.027 19H12A1.499 1.499 0 0 1 11.973 16L12 16a1.501 1.501 0 0 1 .027 3z" fill="#262626" />
-                    <path d="M12 5a1 1 0 0 1 1 1v7a1 1 0 0 1-2 0V6a1 1 0 0 1 1-1z" fill="#262626" fill-rule="nonzero" />
-                </g>
-            </svg>
+        {% if (ctx.component.alerttype === "warning") { %}
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0a1 1 0 0 1 .894.553l11 22A1 1 0 0 1 23 24H1a1 1 0 0 1-.894-1.447l11-22A1 1 0 0 1 12 0Zm-1 15V8h2v7h-2Zm2.5 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" fill="currentColor"></path>
         {% } %}
-        {% if (ctx.component.alerttype === "feil") { %}
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="1.5rem" height="1.5rem">
-            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g transform="translate(-16.000000, -20.000000)">
-                    <g transform="translate(16.000000, 20.000000)">
-                        <g stroke-width="1" fill-rule="evenodd" fill="#A13A28">
-                            <path d="M11.9989565,0 C5.39478261,0 0.0125217391,5.37182609 8.24610291e-16,11.976 C-0.00626086957,15.1815652 1.23547826,18.1972174 3.49773913,20.4688696 C5.76,22.7394783 8.77147826,23.9937391 11.9770435,24 L12,24 C18.6031304,24 23.9864348,18.6271304 24,12.021913 C24.0125217,5.40626087 18.6396522,0.0125217391 11.9989565,0 Z" fill-rule="nonzero" />
-                        </g>
-                        <path d="M12,10.6512393 L15.3719018,7.27933749 C15.7443518,6.9068875 16.3482125,6.9068875 16.7206625,7.27933749 C17.0931125,7.65178748 17.0931125,8.25564822 16.7206625,8.62809821 L13.3487607,12 L16.7206625,15.3719018 C17.0931125,15.7443518 17.0931125,16.3482125 16.7206625,16.7206625 C16.3482125,17.0931125 15.7443518,17.0931125 15.3719018,16.7206625 L12,13.3487607 L8.62809821,16.7206625 C8.25564822,17.0931125 7.65178748,17.0931125 7.27933749,16.7206625 C6.9068875,16.3482125 6.9068875,15.7443518 7.27933749,15.3719018 L10.6512393,12 L7.27933749,8.62809821 C6.9068875,8.25564822 6.9068875,7.65178748 7.27933749,7.27933749 C7.65178748,6.9068875 8.25564822,6.9068875 8.62809821,7.27933749 L12,10.6512393 Z" fill="#FFFFFF" fill-rule="nonzero" />
-                    </g>
-                </g>
-            </g>
-        </svg>
+        {% if (ctx.component.alerttype === "error") { %}
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0Zm3.571 7L17 8.429 13.428 12 17 15.571 15.571 17 12 13.428 8.429 17 7 15.571 10.572 12 7 8.429 8.429 7 12 10.572 15.571 7Z" fill="currentColor"></path>
         {% } %}
-    </span>
-    <div class="typo-normal alertstripe__tekst">{{ctx.t(ctx.content)}}</div>
+    </svg>
+    <div class="navds-alert__wrapper navds-body-long">{{ctx.t(ctx.content)}}</div>
 </div>
