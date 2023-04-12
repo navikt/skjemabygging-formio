@@ -19,6 +19,7 @@ describe("Custom react components", () => {
       cy.visit("/fyllut/customcomps/dineopplysninger?sub=paper");
       cy.wait("@getConfig");
       cy.wait("@getForm");
+      cy.wait("@getGlobalTranslation");
       cy.wait("@getTranslations");
       cy.wait("@getCountries");
       cy.wait("@getCurrencies");
