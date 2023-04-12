@@ -74,4 +74,3 @@ spec:
         - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
         - host: {{skjemabygging-proxy-host}}
-        - host: nav.no

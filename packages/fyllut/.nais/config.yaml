@@ -65,7 +65,6 @@ spec:
         - host: {{dekorator-host}}
         - host: {{foersteside-host}}
         - host: {{skjemabygging-proxy-host}}
-        - host: nav.no
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
