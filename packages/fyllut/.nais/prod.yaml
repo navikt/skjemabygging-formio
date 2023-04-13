@@ -30,3 +30,8 @@ accessPolicy:
       - application: pdl-api
         namespace: pdl
         cluster: prod-fss
+    external:
+      - host: nav.no
+      - host: skjemabygging-proxy.prod-fss-pub.nais.io
+      - host: tokendings.prod-gcp.nais.io
+      - host: formio-api.intern.nav.no
