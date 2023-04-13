@@ -1,6 +1,6 @@
 app-name: skjemautfylling
 ingresses:
-  - "https://skjemautfylling-formio.dev.nav.no/fyllut"
+  - "https://skjemautfylling-formio.intern.dev.nav.no/fyllut"
 image: {{image}}
 foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside
@@ -30,3 +30,8 @@ accessPolicy:
       - application: pdl-api
         namespace: pdl
         cluster: dev-fss
+    external:
+      - host: nav.no
+      - host: skjemabygging-proxy.dev-fss-pub.nais.io
+      - host: tokendings.dev-gcp.nais.io
+      - host: formio-api.intern.dev.nav.no
