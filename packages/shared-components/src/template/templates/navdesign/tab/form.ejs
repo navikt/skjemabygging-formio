@@ -1,26 +1,21 @@
-<div class="nav-frontend-tabs">
-  <ul class="nav-frontend-tabs__tab-list" role="tablist">
-    {% ctx.component.components.forEach(function(tab, index) { %}
-    <li class="nav-frontend-tabs__tab-outer" role="presentation" ref="{{ctx.tabLikey}}">
-      <a
-        class="nav-frontend-tabs__tab-inner{{ ctx.currentTab === index ? ' active' : ''}}"
-        href="#{{tab.key}}"
+<div class="navds-tabs">
+  <div class="navds-tabs__tablist-wrapper">
+    <div role="tablist" class="navds-tabs__tablist" tabindex="-1">
+      {% ctx.component.components.forEach(function(tab, index) { %}
+      <button
+        class="navds-tabs__tab navds-tabs__tab--medium {{ ctx.currentTab === index ? ' active' : ''}}"
+        type="button"
+        role="tab"
         ref="{{ctx.tabLinkKey}}"
-        {% if (ctx.currentTab === index) { %}
-        aria-selected="true"
-        {% } %}
-      >
-        {{ctx.t(tab.label)}}
-      </a>
-    </li>
-    {% }) %}
-  </ul>
+      >{{ctx.t(tab.label, { _userInput: true })}}{{ctx.currentTab === index ? '1' : '0'}}"</button>
+      {% }) %}
+    </div>
+  </div>
 </div>
 {% ctx.component.components.forEach(function(tab, index) { %}
 <div
   role="tabpanel"
-  class="card-body panel panel--border{{ ctx.currentTab === index ? ' active' : ''}}"
-  style="display: {{ctx.currentTab === index ? 'block' : 'none'}}"
+  class="navds-tabs__tabpanel card-body panel panel--border{{ ctx.currentTab === index ? ' active' : ''}}"
   ref="{{ctx.tabKey}}"
 >
   {{ctx.tabComponents[index]}}

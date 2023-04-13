@@ -1,3 +1,5 @@
+import navButtonStyles from "./navButtonStyles";
+import navTabsStyles from "./navTabsStyles";
 import stepperStyles from "./stepperStyles.js";
 
 export const globalStyles = {
@@ -63,6 +65,8 @@ export const globalStyles = {
     },
   },
   ...stepperStyles,
+  ...navButtonStyles,
+  ...navTabsStyles,
 };
 
 export const appStyles = {

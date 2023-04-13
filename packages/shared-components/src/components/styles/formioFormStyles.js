@@ -4,12 +4,10 @@ import bootstrapFormInputStyles from "./bootstrapFormInputStyles";
 import choicesStyles from "./choicesStyles";
 import formioTableStyles from "./formioTableStyles";
 import listGroupStyles from "./listGroupStyles";
-import navButtonStyles from "./navButtonStyles";
 import navFormStyle from "./navFormStyle";
 
 const formioFormStyles = {
   ".formio-form": merge(
-    navButtonStyles,
     navFormStyle,
     bootstrapFormInputStyles,
     choicesStyles,

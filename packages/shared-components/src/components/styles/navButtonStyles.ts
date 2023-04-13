@@ -1,6 +1,8 @@
 const navButtonStyles = {
   ".navds-button": {
-    backgroundColor: "var(--a-white)",
+    "&--secondary": {
+      backgroundColor: "var(--a-white)",
+    },
   },
 };
 
