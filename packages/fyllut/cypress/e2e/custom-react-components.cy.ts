@@ -9,6 +9,9 @@ describe("Custom react components", () => {
     cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
       "getCurrencies"
     );
+    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
+      "getGlobalTranslation"
+    );
   });
 
   describe("Fill in form and view summary", () => {
@@ -16,6 +19,7 @@ describe("Custom react components", () => {
       cy.visit("/fyllut/customcomps/dineopplysninger?sub=paper");
       cy.wait("@getConfig");
       cy.wait("@getForm");
+      cy.wait("@getGlobalTranslation");
       cy.wait("@getTranslations");
       cy.wait("@getCountries");
       cy.wait("@getCurrencies");

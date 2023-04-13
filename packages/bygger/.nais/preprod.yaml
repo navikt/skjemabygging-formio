@@ -1,6 +1,6 @@
 app-name: skjemabygging-preprod
 ingresses:
-- "https://skjemabygging-preprod.dev.nav.no"
+- "https://skjemabygging-preprod.intern.dev.nav.no"
 image: {{image}}
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt

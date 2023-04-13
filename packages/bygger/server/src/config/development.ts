@@ -19,7 +19,7 @@ export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
 };
 
 export const devFormio: Partial<FormioConfig> = {
-  projectUrl: "https://formio-api.dev.nav.no/jvcemxwcpghcqjn",
+  projectUrl: "https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn",
 };
 
 export const devFyllut: FyllutConfig = {
