@@ -1,4 +1,4 @@
-<div class="navds-checkbox navds-checkbox--medium form-check checkbox">
+<div class="navds-checkbox navds-checkbox--medium">
   <{{ctx.input.type}}
   ref="input"
   id="{{ctx.instance.id}}-{{ctx.component.key}}"
@@ -12,10 +12,14 @@
   {% if (!ctx.self.labelIsHidden()) { %}
   {{ctx.util.getDiffTag(ctx)}}
   <label class="navds-checkbox__label" for="{{ctx.instance.id}}-{{ctx.component.key}}">
-    {{ctx.t(ctx.input.label)}}
-    {% if(ctx.component.validate.required === false) { %}
-    ({{ctx.t("valgfritt")}})
-    {% } %}
+    <span class="navds-checkbox__content">
+      <span class="navds-body-short">
+        {{ctx.t(ctx.input.label)}}
+        {% if(ctx.component.validate.required === false) { %}
+        ({{ctx.t("valgfritt")}})
+        {% } %}
+      </span>
+    </span>
   </label>
   {% } %}
   </div>
