@@ -62,9 +62,9 @@ spec:
           cluster: {{this.cluster}}
       {{/each}}
       external:
-        - host: {{dekorator-host}}
-        - host: {{foersteside-host}}
-        - host: {{skjemabygging-proxy-host}}
+      {{#each accessPolicy.outbound.external}}
+        - host: {{this.host}}
+      {{/each}}
   env:
     - name: DECORATOR_URL
       value: {{dekorator-url}}
