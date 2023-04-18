@@ -8,8 +8,6 @@ const mapForm = (form) => ({
   properties: {
     skjemanummer: form.properties.skjemanummer,
     innsending: form.properties.innsending,
-    enhetstyper: form.properties.enhetstyper,
-    enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
   },
 });
 
