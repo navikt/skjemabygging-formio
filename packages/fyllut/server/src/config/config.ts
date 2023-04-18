@@ -30,7 +30,7 @@ const sendInnConfig: SendInnConfig = {
 const localDevelopmentConfig: Partial<ConfigType> = {
   gitVersion: "local",
   useFormioApi: true,
-  formioProjectUrl: process.env.FORMIO_PROJECT_URL || "https://formio-api.dev.nav.no/jvcemxwcpghcqjn",
+  formioProjectUrl: process.env.FORMIO_PROJECT_URL || "https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn",
   forstesideUrl: "https://www.nav.no/soknader/api/forsteside",
   decoratorUrl: "https://www.nav.no/dekoratoren?simple=true",
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || "https://skjemabygging-proxy.dev-fss-pub.nais.io",
@@ -46,7 +46,7 @@ const localDevelopmentConfig: Partial<ConfigType> = {
   },
   sendInnConfig: {
     ...sendInnConfig,
-    host: sendInnConfig.host || "https://innsending-api.dev.nav.no",
+    host: sendInnConfig.host || "https://innsending-api.intern.dev.nav.no",
     tokenxClientId: sendInnConfig.tokenxClientId || "dev-gcp:soknad:send-inn",
   },
   idporten: {

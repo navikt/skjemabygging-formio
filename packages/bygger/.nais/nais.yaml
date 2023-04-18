@@ -73,4 +73,7 @@ spec:
       external:
         - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
-        - host: {{skjemabygging-proxy-host}}
+        - host: formio-api.nav.no
+      {{#each accessPolicy.outbound.external}}
+        - host: {{this.host}}
+      {{/each}}

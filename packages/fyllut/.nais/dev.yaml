@@ -1,12 +1,9 @@
 app-name: skjemautfylling
 ingresses:
-  - "https://skjemautfylling-formio.dev.nav.no/fyllut"
+  - "https://skjemautfylling-formio.intern.dev.nav.no/fyllut"
 image: {{image}}
-foersteside-host: www.nav.no
 foersteside-url: https://www.nav.no/soknader/api/forsteside
-dekorator-host: www.nav.no
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
-skjemabygging-proxy-host: skjemabygging-proxy.dev-fss-pub.nais.io
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 forms-source: "static"
@@ -30,3 +27,8 @@ accessPolicy:
       - application: pdl-api
         namespace: pdl
         cluster: dev-fss
+    external:
+      - host: www.nav.no
+      - host: skjemabygging-proxy.dev-fss-pub.nais.io
+      - host: tokendings.dev-gcp.nais.io
+      - host: formio-api.intern.dev.nav.no
