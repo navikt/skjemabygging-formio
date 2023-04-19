@@ -15,7 +15,6 @@ import NavigateButtonComponent from "../NavigateButtonComponent";
 import LetterAddAttachment from "./LetterAddAttachment";
 import LetterDownload from "./LetterDownload";
 import LetterInTheMail from "./LetterInTheMail";
-import LetterNextSteps from "./LetterNextSteps";
 import LetterUXSignals from "./LetterUXSignals";
 
 const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn, "nb");
@@ -95,7 +94,6 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
           />
           {hasAttachments && <LetterAddAttachment index={2} vedleggSomSkalSendes={attachments} translate={translate} />}
           <LetterInTheMail index={hasAttachments ? 3 : 2} vedleggSomSkalSendes={attachments} translate={translate} />
-          <LetterNextSteps translate={translate} index={hasAttachments ? 4 : 3} />
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
           {
             // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
