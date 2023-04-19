@@ -13,7 +13,7 @@ const httpRequestLogger = morgan(
     return JSON.stringify(
       clean({
         ...logEntry,
-        level: res.statusCode < 500 ? "info" : "error",
+        level: res.statusCode < 500 ? "Info" : "Error",
         correlation_id: correlator.getId(),
       })
     );
