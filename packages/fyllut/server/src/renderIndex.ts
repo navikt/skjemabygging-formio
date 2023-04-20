@@ -62,7 +62,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             );
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
-          logger.warning("Submission method is not allowed", { qpSub, formPath, innsending });
+          logger.warn("Submission method is not allowed", { qpSub, formPath, innsending });
 
           const validSubmissionMethod = qpSub === "digital" || qpSub === "paper";
           if (!validSubmissionMethod || innsending === "INGEN") {
