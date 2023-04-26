@@ -1,13 +1,13 @@
 import { makeStyles } from "@material-ui/styles";
 import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
-import Column from "../components/layout/Column";
-import Row from "../components/layout/Row";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
 import { getAvailableLanguages, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
@@ -111,7 +111,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}
                 filename={`${title}(${path})_Oversettelser.csv`}
-                className="knapp knapp--standard"
+                className="navds-button navds-button--secondary"
                 separator={";"}
                 headers={getTextsAndTranslationsHeaders(translations)}
                 enclosingCharacter={"'"}

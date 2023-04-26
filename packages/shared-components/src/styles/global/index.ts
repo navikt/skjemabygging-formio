@@ -27,15 +27,15 @@ const global = {
   a: {
     color: "#0067c5",
   },
+  fieldset: {
+    border: 0,
+    padding: 0,
+  },
   ".pagewrapper": {
     flex: "1 0 auto",
   },
   "#decorator-footer": {
     flexShrink: 0,
-  },
-  /* Set as global styles to apply inside of formio-dialog (modal), as it is not placed inside of NavFormBuilder */
-  ".formio-fieldset": {
-    padding: "0",
   },
   "main:focus": {
     outline: "none",

@@ -11,7 +11,7 @@
   />
   {% if (!ctx.self.labelIsHidden()) { %}
   {{ctx.util.getDiffTag(ctx)}}
-  <label class="navds-checkbox__label" for="{{ctx.instance.id}}-{{ctx.component.key}}">
+  <label class="navds-checkbox__label navds-body-short" for="{{ctx.instance.id}}-{{ctx.component.key}}">
     <span class="navds-checkbox__content">
       <span class="navds-body-short">
         {{ctx.t(ctx.input.label)}}

@@ -12,12 +12,20 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
+import { Styles } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management";
 import { getPanels } from "../util/form";
 import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "./components/DigitalSubmissionWithPrompt";
 import FormStepper from "./components/FormStepper";
 import { hasRelevantAttachments } from "./components/attachmentsUtil";
+
+const useStyles = makeStyles(() => ({
+  "@global": {
+    ...Styles.form,
+    ...Styles.global,
+  },
+}));
 
 const SummaryField = ({ component }: { component: Summary.Field }) => (
   <>
@@ -188,6 +196,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
+  useStyles();
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
