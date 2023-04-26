@@ -1,13 +1,15 @@
 import { guid } from "@navikt/skjemadigitalisering-shared-domain";
+import jss from "jss";
+import preset from "jss-preset-default";
+import FyllUtRouter from "./Forms/FyllUtRouter";
+import FormBuilderOptions from "./Forms/form-builder-options";
+import FormBuilderSchemas from "./Forms/form-builder-options/schemas";
 import http, { FetchHeader, FetchOptions } from "./api/http";
 import ErrorPage from "./components/ErrorPage";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
-import Modal from "./components/modal/Modal";
 import NavForm from "./components/NavForm";
-import formioFormStyles from "./components/styles/formioFormStyles";
-import navFormStyle from "./components/styles/navFormStyle";
-import { appStyles, globalStyles } from "./components/styles/navGlobalStyles";
+import Modal from "./components/modal/Modal";
 import { AppConfigProvider, useAppConfig } from "./configContext";
 import AmplitudeProvider from "./context/amplitude";
 import { LanguagesProvider, useLanguages } from "./context/languages";
@@ -15,19 +17,20 @@ import { mapTranslationsToFormioI18nObject } from "./context/languages/translati
 import useCurrentLanguage from "./context/languages/useCurrentLanguage";
 import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
 import CustomComponents from "./customComponents";
-import FormBuilderOptions from "./Forms/form-builder-options";
-import FormBuilderSchemas from "./Forms/form-builder-options/schemas";
-import FyllUtRouter from "./Forms/FyllUtRouter";
-import { bootstrapStyles } from "./Forms/fyllUtRouterBootstrapStyles";
 import i18nData from "./i18nData";
+import Styles from "./styles";
 import Template from "./template";
 import * as formUtils from "./util/form.js";
+import makeStyles from "./util/jss";
 import { navCssVariables } from "./util/navCssVariables";
 import url from "./util/url";
 
+jss.setup(preset());
+
 export {
+  Styles,
+  makeStyles,
   NavForm,
-  navFormStyle,
   Template,
   FormBuilderOptions,
   FormBuilderSchemas,
@@ -36,10 +39,6 @@ export {
   useAppConfig,
   CustomComponents,
   FyllUtRouter,
-  globalStyles,
-  appStyles,
-  bootstrapStyles,
-  formioFormStyles,
   LanguagesProvider,
   i18nData,
   guid,

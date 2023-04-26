@@ -1,4 +1,4 @@
-const stepperStyles = {
+const stepper = {
   ".stepper": {
     display: "none",
 
@@ -74,4 +74,4 @@ const stepperStyles = {
   },
 };
 
-export default stepperStyles;
+export default stepper;

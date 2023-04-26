@@ -1,3 +1,4 @@
+import alert from "./alert";
 import alertstripe from "./alertstripe";
 import builderComponent from "./builderComponent";
 import builderEditForm from "./builderEditForm";
@@ -26,6 +27,7 @@ import navSkjemagruppe from "./navSkjemagruppe";
 import panel from "./panel";
 import radiopanel from "./radiopanel";
 import row from "./row";
+import select from "./select";
 import selectboxes from "./selectboxes";
 import signature from "./signature";
 import tab from "./tab";
@@ -48,6 +50,7 @@ export default {
   defaultIconset: "fa",
   iconClass,
   cssClasses,
+  alert,
   "html-alertstripe": alertstripe,
   builderComponent,
   builderEditForm,
@@ -75,6 +78,7 @@ export default {
   radio: radiopanel,
   "radio-selectboxes": selectboxes,
   row,
+  select,
   signature,
   tab,
   table,

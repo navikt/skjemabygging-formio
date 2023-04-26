@@ -1,25 +1,4 @@
-export const bootstrapStyles = {
-  "& p": {
-    marginTop: "0",
-    marginBottom: "1rem",
-  },
-  "& fieldset": {
-    border: 0,
-  },
-  "& dl": {
-    marginTop: 0,
-    "& > dt": {
-      fontWeight: 700,
-    },
-    "& > dd": {
-      marginBottom: ".5rem",
-      marginLeft: 0,
-    },
-  },
-  "& ol, & ul": {
-    marginTop: 0,
-  },
-  //Bootstrap prefix og suffix  -- start
+const inputGroup = {
   "& .input-group": {
     position: "relative",
     display: "flex",
@@ -59,29 +38,13 @@ export const bootstrapStyles = {
     alignItems: "center",
     padding: "0.5rem",
     marginBottom: 0,
-    fontSize: " 1rem",
     fontWeight: 400,
-    lineHeight: 1.5,
+    minHeight: "var(--input-min-height)",
     textAlign: "center",
     whiteSpace: "nowrap",
     border: "1px solid #78706a",
     borderRadius: ".25rem",
   },
-  //Bootstrap prefix og suffix  -- slutt
-
-  //Bootstrap day component
-  "& .has-feedback .form-control": {
-    height: "calc(1.5em + .75rem + 2px)",
-    padding: "0.5rem",
-    fontSize: "1rem",
-    fontWeight: "400",
-    lineHeight: "1.5",
-    border: "1px solid #78706a",
-    borderRadius: ".25rem",
-  },
-  " & .formio-select-autocomplete-input": {
-    opacity: 0,
-    zIndex: -1,
-    position: "absolute",
-  },
 };
+
+export default inputGroup;

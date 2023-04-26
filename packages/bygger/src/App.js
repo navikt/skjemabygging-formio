@@ -1,15 +1,14 @@
 import makeStyles from "@material-ui/styles/makeStyles";
 import "@navikt/ds-css";
 import "@navikt/ds-css-internal";
-import { appStyles, globalStyles } from "@navikt/skjemadigitalisering-shared-components";
-import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
+import { Styles } from "@navikt/skjemadigitalisering-shared-components";
 import Formiojs from "formiojs/Formio";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
+import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import FeedbackProvider from "./context/notifications/FeedbackContext";
 import PusherNotificationsProvider from "./context/notifications/NotificationsContext";
-import UnauthenticatedApp from "./UnauthenticatedApp";
 
 const useStyles = makeStyles(() => ({
   "@global": {
@@ -17,9 +16,9 @@ const useStyles = makeStyles(() => ({
       listStyle: "none",
       paddingLeft: 0,
     },
-    ...globalStyles,
+    ...Styles.global,
+    ...Styles.form,
   },
-  app: appStyles,
 }));
 
 function App({ projectURL, serverURL }) {

@@ -1,8 +1,13 @@
-import navButtonStyles from "./navButtonStyles";
-import navTabsStyles from "./navTabsStyles";
-import stepperStyles from "./stepperStyles.js";
+import buttonRow from "./buttonRow";
+import margin from "./margin";
+import stepper from "./stepper";
+import vars from "./vars";
 
-export const globalStyles = {
+const global = {
+  html: {
+    height: "100%",
+    fontFamily: "Source Sans Pro, Arial, sans-serif",
+  },
   body: {
     margin: 0,
     backgroundColor: "#ffffff",
@@ -16,6 +21,9 @@ export const globalStyles = {
     textAlign: "left",
     color: "#262626",
   },
+  ".font-bold": {
+    fontWeight: 600,
+  },
   a: {
     color: "#0067c5",
   },
@@ -25,28 +33,9 @@ export const globalStyles = {
   "#decorator-footer": {
     flexShrink: 0,
   },
-  html: {
-    height: "100%",
-    fontFamily: "Source Sans Pro, Arial, sans-serif",
-  },
   /* Set as global styles to apply inside of formio-dialog (modal), as it is not placed inside of NavFormBuilder */
   ".formio-fieldset": {
     padding: "0",
-  },
-  ".margin-bottom-default, .mb-default": {
-    marginBottom: "1rem",
-  },
-  ".margin-bottom-small, .mb-small": {
-    marginBottom: "0.5rem",
-  },
-  ".margin-bottom-double, .mb-double": {
-    marginBottom: "2rem",
-  },
-  ".margin-bottom-large, .mb-large": {
-    marginBottom: "8rem",
-  },
-  ".margin-left-default, .ml-default": {
-    marginLeft: "1rem",
   },
   "main:focus": {
     outline: "none",
@@ -64,13 +53,10 @@ export const globalStyles = {
       maxWidth: "608px",
     },
   },
-  ...stepperStyles,
-  ...navButtonStyles,
-  ...navTabsStyles,
+  ...buttonRow,
+  ...margin,
+  ...stepper,
+  ...vars,
 };
 
-export const appStyles = {
-  "& .wizard-page": {
-    paddingBottom: "3.75rem",
-  },
-};
+export default global;

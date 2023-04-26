@@ -99,7 +99,7 @@
               <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8z" fill="currentColor" />
               </svg>
-              <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
+              <span class="navds-body-short font-bold" aria-live="polite">{{ctx.t(ctx.component.addAnother || 'Add Another', { _userInput: true })}}</span>
             </button>
           </td>
         </tr>
@@ -109,7 +109,7 @@
 {% } %}
 {% if (ctx.component.isNavDataGrid) { %}
   {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
-    <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
+    <div class="navds-body-short">{{ctx.t(ctx.component.description)}}</div>
     {% if (ctx.component.additionalDescription) { %}
       <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
         {% if (ctx.component.additionalDescriptionLabel) { %}
@@ -121,15 +121,15 @@
       </div>
     {% } %}
   {% } %}
-  <fieldset ref="{{ctx.datagridKey}}-tbody">
+  <fieldset class="navds-fieldset" ref="{{ctx.datagridKey}}-tbody">
     {% if (!ctx.component.hideLabel) { %}
+    <label class="navds-fieldset__legend">{{ctx.t(ctx.component.label)}}</label>
     <span class="label-track-changes">
-      <legend class="typo-ingress margin-bottom-default">{{ctx.t(ctx.component.label)}}</legend>
       {{ctx.util.getDiffTag(ctx)}}
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
-      <div class="skjemagruppe__description">{{ctx.t(ctx.component.description)}}</div>
+      <div class="navds-body-short">{{ctx.t(ctx.component.description)}}</div>
       {% if (ctx.component.additionalDescription) { %}
         <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
           {% if (ctx.component.additionalDescriptionLabel) { %}
@@ -142,9 +142,9 @@
       {% } %}
     {% } %}
     {% ctx.rows.forEach(function(row, index) { %}
-      <fieldset class="data-grid__row skjemagruppe" ref="{{ctx.datagridKey}}-row">
+      <div class="navds-fieldset__content" ref="{{ctx.datagridKey}}-row">
         {% if (ctx.component.rowTitle) { %}
-          <legend class="skjemagruppe__legend">{{ctx.t(ctx.component.rowTitle)}}</legend>
+          <legend class="navds-fieldset__legend">{{ctx.t(ctx.component.rowTitle)}}</legend>
         {% } %}
         {% ctx.columns.forEach(function(col) { %}
         <div ref="{{ctx.datagridKey}}">
@@ -152,7 +152,7 @@
         </div>
         {% }) %}
         {% if (ctx.hasExtraColumn) { %}
-          <div class="datagrid-add-remove-row">
+          <div>
           {% if (!ctx.builder && ctx.hasAddButton && ctx.hasBottomSubmit && index === ctx.rows.length - 1) { %}
             <button
               class="navds-button navds-button--secondary navds-button--small"
@@ -162,7 +162,7 @@
             <span class="navds-button__icon">
               <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 13v8h2v-8h8v-2h-8V3h-2v8H3v2h8Z" fill="currentColor"></path></svg>
             </span>
-              <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}</span>
+              <span class="navds-body-short font-bold" aria-live="polite">{{ctx.t(ctx.component.addAnother) || ctx.t('Legg til')}}</span>
             </button>
           {% } %}
           {% if (!ctx.builder && ctx.hasRemoveButtons && (index > 0 || ctx.component.initEmpty || ctx.rows.length > 1)) { %}
@@ -174,7 +174,7 @@
                 <span class="navds-button__icon">
                     <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M21 4.385 13.385 12 21 19.615 19.615 21 12 13.385 4.385 21 3 19.615 10.615 12 3 4.385 4.385 3 12 10.615 19.615 3 21 4.385Z" fill="currentColor"></path></svg>
                 </span>
-                <span class="navds-label" aria-live="polite">{{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}</span>
+                <span class="navds-body-short font-bold" aria-live="polite">{{ctx.t(ctx.component.removeAnother) || ctx.t('Fjern')}}</span>
               </button>
           {% } %}
           </div>
@@ -184,7 +184,7 @@
             </div>
           {% } %}
         {% } %}
-      </fieldset>
+      </div>
     {% }) %}
   </fieldset>
 {% } %}

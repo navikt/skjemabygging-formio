@@ -29,8 +29,8 @@
                         aria-current="step"
                         {% } %}
                     >
-                        <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(index+1)}}</span>
-                        <span class="navds-stepper__content navds-label">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</span>
+                        <span class="navds-stepper__circle navds-body-short font-bold" aria-hidden="true">{{ctx.t(index+1)}}</span>
+                        <span class="navds-stepper__content navds-body-short font-bold">{{ctx.t(ctx.panels[index].title, { _userInput: true })}}</span>
                     </a>
                     <span class="navds-stepper__line navds-stepper__line--2"></span>
                 </li>
@@ -42,8 +42,8 @@
                             class="navds-stepper__step"
                             ref="{{ctx.wizardKey}}-stepper-summary"
                     >
-                        <span class="navds-stepper__circle navds-label" aria-hidden="true">{{ctx.t(ctx.panels.length+1)}}</span>
-                        <span class="navds-stepper__content navds-label">{{ctx.t("Oppsummering", { _userInput: true })}}</span>
+                        <span class="navds-stepper__circle navds-body-short font-bold" aria-hidden="true">{{ctx.t(ctx.panels.length+1)}}</span>
+                        <span class="navds-stepper__content navds-body-short font-bold">{{ctx.t("Oppsummering", { _userInput: true })}}</span>
                     </a>
                     <span class="navds-stepper__line navds-stepper__line--2"></span>
                 </li>

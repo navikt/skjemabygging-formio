@@ -15,7 +15,7 @@ const navFormDiffToHtml = (diffSummary) => {
     const html = [];
     if (changesToCurrentComponent.length) {
       const labelId = "nav-form-diff-changed-elements";
-      html.push(`<span id="${labelId}" class="skjemaelement__label">Endringer</span>`);
+      html.push(`<span id="${labelId}" class="navds-body-short font-bold">Endringer</span>`);
       html.push(`<ul aria-labelledby="${labelId}">`);
       html.push(
         ...changesToCurrentComponent.map(
@@ -26,7 +26,7 @@ const navFormDiffToHtml = (diffSummary) => {
     }
     if (deletedComponents.length) {
       const labelId = "nav-form-diff-deleted-elements";
-      html.push(`<span id="${labelId}" class="skjemaelement__label">Slettede elementer</span>`);
+      html.push(`<span id="${labelId}" class="navds-body-short font-bold">Slettede elementer</span>`);
       html.push(createList(deletedComponents, labelId));
     }
     return html.join("");

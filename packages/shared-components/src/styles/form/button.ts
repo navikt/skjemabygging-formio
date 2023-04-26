@@ -1,9 +1,9 @@
-const navButtonStyles = {
-  ".navds-button": {
+const button = {
+  "& .navds-button": {
     "&--secondary": {
       backgroundColor: "var(--a-white)",
     },
   },
 };
 
-export default navButtonStyles;
+export default button;

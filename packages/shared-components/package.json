@@ -37,19 +37,14 @@
     "lodash.set": "^4.3.2",
     "moment": "^2.29.1",
     "nav-datovelger": "^6.2.1",
-    "nav-frontend-alertstriper-style": "^3.0.2",
-    "nav-frontend-chevron-style": "^1.0.4",
     "nav-frontend-core": "^5.1.1",
     "nav-frontend-knapper-style": "^2.1.2",
     "nav-frontend-js-utils": "^1.0.20",
-    "nav-frontend-lenker-style": "^2.0.2",
-    "nav-frontend-paneler-style": "^2.0.2",
     "nav-frontend-skjema-style": "^3.0.3",
-    "nav-frontend-stegindikator-style": "^2.0.2",
-    "nav-frontend-tabs-style": "^2.0.2",
     "nav-frontend-typografi-style": "^2.0.2",
     "react-day-picker": "^7.4.10",
-    "react-select": "^5.6.1"
+    "react-jss": "^10.10.0",
+    "react-select": "^5.7.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
@@ -81,7 +76,6 @@
     "webpack-node-externals": "2.5.2"
   },
   "peerDependencies": {
-    "@material-ui/styles": "4.10.0",
     "formiojs": "4.14.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",

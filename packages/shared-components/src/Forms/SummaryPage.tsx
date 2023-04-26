@@ -58,8 +58,8 @@ const DataGridSummary = ({ component }: { component: Summary.DataGrid }) => (
 );
 
 const DataGridRow = ({ row }: { row: Summary.DataGridRow }) => (
-  <div className="data-grid__row skjemagruppe">
-    {row.label && <p className="skjemagruppe__legend">{row.label}</p>}
+  <div className="data-grid__row">
+    {row.label && <p className="navds-body-short font-bold">{row.label}</p>}
     <dl>
       <ComponentSummary components={row.components} />
     </dl>
@@ -201,7 +201,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
 
   return (
     <SummaryContent>
-      <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
+      <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
         <div className="main-col">
           <Heading level="2" size="large" className="margin-bottom-default">
             {translate(TEXTS.statiske.summaryPage.title)}
@@ -220,7 +220,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                   to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
                 >
-                  <span aria-live="polite" className="navds-label">
+                  <span aria-live="polite" className="navds-body-short font-bold">
                     {translate(TEXTS.grensesnitt.moveForward)}
                   </span>
                 </Link>
@@ -258,7 +258,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
                   to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
                 >
-                  <span aria-live="polite" className="navds-label">
+                  <span aria-live="polite" className="navds-body-short font-bold">
                     {translate(TEXTS.grensesnitt.moveForward)}
                   </span>
                 </Link>
@@ -267,14 +267,14 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 className="navds-button navds-button--secondary"
                 to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
               >
-                <span aria-live="polite" className="navds-label">
+                <span aria-live="polite" className="navds-body-short font-bold">
                   {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
                 </span>
               </Link>
             </div>
             <div className="button-row button-row__center">
               <NavLink className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
-                <span aria-live="polite" className="navds-label">
+                <span aria-live="polite" className="navds-body-short font-bold">
                   {translate(TEXTS.grensesnitt.navigation.cancel)}
                 </span>
               </NavLink>

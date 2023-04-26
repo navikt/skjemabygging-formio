@@ -1,4 +1,4 @@
-const formioTableStyles = {
+const table = {
   "& .table": {
     borderCollapse: "collapse",
     color: "#212529",
@@ -33,4 +33,4 @@ const formioTableStyles = {
   },
 };
 
-export default formioTableStyles;
+export default table;

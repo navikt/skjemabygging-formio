@@ -120,7 +120,11 @@ export function IntroPage({ form, formUrl }: Props) {
 
         <nav className="button-row button-row__center">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
-            <a className="navds-button navds-button--primary navds-label" onClick={navigateToFormPage} href="#">
+            <a
+              className="navds-button navds-button--primary navds-body-short font-bold"
+              onClick={navigateToFormPage}
+              href="#"
+            >
               {translate(TEXTS.grensesnitt.introPage.start)}
             </a>
           )}
@@ -129,13 +133,13 @@ export function IntroPage({ form, formUrl }: Props) {
               className="navds-button navds-button--primary"
               to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
             >
-              <span aria-live="polite" className="navds-label">
+              <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}
               </span>
             </Link>
           )}
           <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
-            <span aria-live="polite" className="navds-label">
+            <span aria-live="polite" className="navds-body-short font-bold">
               {translate(TEXTS.grensesnitt.goBack)}
             </span>
           </button>

@@ -40,7 +40,7 @@ const DownloadPdfButton = ({
       <div>
         <input
           form={form.path}
-          className="navds-button navds-button--primary navds-label"
+          className="navds-button navds-button--primary navds-body-short font-bold"
           onClick={onClick}
           type="submit"
           value={label}

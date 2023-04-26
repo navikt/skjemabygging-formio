@@ -1,4 +1,4 @@
-const listGroupStyles = {
+const listGroup = {
   "& .list-group": {
     display: "flex",
     flexDirection: "column",
@@ -24,4 +24,4 @@ const listGroupStyles = {
   },
 };
 
-export default listGroupStyles;
+export default listGroup;
