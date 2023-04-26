@@ -1,7 +1,7 @@
 {{ctx.util.getDiffTag(ctx)}}
 <div class="navds-alert navds-alert--{{ctx.component.alerttype}}{{ctx.component.isInline ? ' navds-alert--inline' : ''}}" ref="html">
+    <span class="sr-only" id="alert-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.component.alerttype}}</span>
     <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" class="navds-alert__icon" aria-labelledby="alert-{{ctx.instance.id}}-{{ctx.component.key}}">
-        <title id="alert-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.component.alerttype}}</title>
         {% if (ctx.component.alerttype === "info") { %}
         <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0ZM9 19v-2h2v-5H9v-2h4v7h2v2H9Zm3-14a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" fill="currentColor"></path>
         {% } %}
