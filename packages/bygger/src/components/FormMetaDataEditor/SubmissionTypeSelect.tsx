@@ -11,7 +11,6 @@ interface Props {
 }
 
 const SubmissionTypeSelect = ({ name, label, value, allowEmpty, onChange, error }: Props) => {
-  console.log({ name, label, value, allowEmpty });
   return (
     <Select className="mb-double" label={label} name={name} id={name} value={value} onChange={onChange} error={error}>
       {allowEmpty && <option>Velg innsendingstype</option>}
