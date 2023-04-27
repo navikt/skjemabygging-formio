@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
@@ -16,13 +16,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggSkjemaStegFullfort,
     loggSkjemaValideringFeilet,
   } = useAmplitude();
-  const { featureToggles } = useAppConfig();
+  const { featureToggles, submissionMethod } = useAppConfig();
   const { currentLanguage, translationsForNavForm } = useLanguages();
   const { panelSlug } = useParams();
 
   useEffect(() => {
-    loggSkjemaApnet();
-  }, [loggSkjemaApnet]);
+    loggSkjemaApnet(submissionMethod);
+  }, [loggSkjemaApnet, submissionMethod]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;

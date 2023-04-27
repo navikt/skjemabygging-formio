@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 import {
   initAmplitude,
   loggSkjemaFullfort,
@@ -10,13 +10,13 @@ import useSkjemaSporsmalEvent from "./skjemaEventHook";
 import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
 
 const defaultValues = {
-  loggSkjemaApnet: () => {},
+  loggSkjemaApnet: (innsendingsKanal) => {},
   loggSkjemaSporsmalBesvart: (event) => {},
   loggSkjemaSporsmalForSpesialTyper: (event) => {},
   loggSkjemaStegFullfort: (steg) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
-  loggSkjemaFullfort: (innsendingsType) => {},
+  loggSkjemaFullfort: () => {},
 };
 
 const AmplitudeContext = createContext(defaultValues);
@@ -33,13 +33,13 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
 
   const amplitude = shouldUseAmplitude
     ? {
-        loggSkjemaApnet: () => loggApnetSkjema(),
+        loggSkjemaApnet: (innsendingsKanal) => loggApnetSkjema(innsendingsKanal),
         loggSkjemaSporsmalBesvart: (event) => loggSkjemaSporsmalBesvart(event),
         loggSkjemaSporsmalForSpesialTyper: (event) => loggSkjemaSporsmalBesvartForSpesialFelter(event),
         loggSkjemaStegFullfort: (steg) => loggSkjemaStegFullfort(steg),
         loggSkjemaValideringFeilet: () => loggSkjemaValideringFeilet(form),
         loggSkjemaInnsendingFeilet: () => loggSkjemaInnsendingFeilet(form),
-        loggSkjemaFullfort: (innsendingsType) => loggSkjemaFullfort(form, innsendingsType),
+        loggSkjemaFullfort: () => loggSkjemaFullfort(form),
       }
     : defaultValues;
   return <AmplitudeContext.Provider value={amplitude}>{children}</AmplitudeContext.Provider>;

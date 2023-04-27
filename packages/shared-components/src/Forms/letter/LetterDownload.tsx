@@ -58,7 +58,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
-      loggSkjemaFullfort("papirinnsending");
+      loggSkjemaFullfort();
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
 

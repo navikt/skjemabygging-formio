@@ -235,7 +235,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
                     }}
-                    onSuccess={() => loggSkjemaFullfort("digital")}
+                    onSuccess={() => loggSkjemaFullfort()}
                   >
                     {translate(TEXTS.grensesnitt.moveForward)}
                   </DigitalSubmissionButton>
@@ -248,7 +248,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
                     }}
-                    onSuccess={() => loggSkjemaFullfort("digital")}
+                    onSuccess={() => loggSkjemaFullfort()}
                   />
                 ))}
 

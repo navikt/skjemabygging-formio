@@ -29,8 +29,8 @@ export function logAmplitudeEvent(eventName, eventData) {
   });
 }
 
-export function loggSkjemaApnet(form) {
-  logAmplitudeEvent("skjema åpnet", createEventData(form));
+export function loggSkjemaApnet(form, innsendingsKanal) {
+  logAmplitudeEvent("skjema åpnet", createEventData(form, { innsendingsKanal }));
 }
 
 export function loggSkjemaStartet(form) {
@@ -54,8 +54,8 @@ export function loggSkjemaStegFullfort(form, steg) {
   logAmplitudeEvent("skjemasteg fullført", createEventData(form, { steg }));
 }
 
-export function loggSkjemaFullfort(form, innsendingsType) {
-  logAmplitudeEvent("skjema fullført", createEventData(form, { innsendingsType: innsendingsType }));
+export function loggSkjemaFullfort(form) {
+  logAmplitudeEvent("skjema fullført", createEventData(form));
 }
 
 export function loggSkjemaValideringFeilet(form) {
