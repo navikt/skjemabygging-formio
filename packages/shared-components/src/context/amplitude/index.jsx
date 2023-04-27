@@ -2,9 +2,9 @@ import { createContext, useContext, useEffect } from "react";
 import {
   initAmplitude,
   loggEventDokumentLastetNed,
-  loggSkjemaFullfort,
-  loggSkjemaInnsendingFeilet,
-  loggSkjemaValideringFeilet,
+  loggEventSkjemaFullfort,
+  loggEventSkjemaInnsendingFeilet,
+  loggEventSkjemaValideringFeilet,
 } from "../../util/amplitude";
 import useHarApnetSkjema from "./harApnetSkjemaHook";
 import useSkjemaSporsmalEvent from "./skjemaEventHook";
@@ -39,9 +39,9 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
         loggSkjemaSporsmalForSpesialTyper: (event) => loggSkjemaSporsmalBesvartForSpesialFelter(event),
         loggSkjemaStegFullfort: (data) => loggSkjemaStegFullfort(data),
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
-        loggSkjemaValideringFeilet: () => loggSkjemaValideringFeilet(form),
-        loggSkjemaInnsendingFeilet: () => loggSkjemaInnsendingFeilet(form),
-        loggSkjemaFullfort: () => loggSkjemaFullfort(form),
+        loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),
+        loggSkjemaInnsendingFeilet: () => loggEventSkjemaInnsendingFeilet(form),
+        loggSkjemaFullfort: () => loggEventSkjemaFullfort(form),
       }
     : defaultValues;
   return <AmplitudeContext.Provider value={amplitude}>{children}</AmplitudeContext.Provider>;

@@ -29,15 +29,15 @@ export function logAmplitudeEvent(eventName, eventData) {
   });
 }
 
-export function loggSkjemaApnet(form, innsendingsKanal) {
+export function loggEventSkjemaApnet(form, innsendingsKanal) {
   logAmplitudeEvent("skjema åpnet", createEventData(form, { innsendingsKanal }));
 }
 
-export function loggSkjemaStartet(form) {
+export function loggEventSkjemaStartet(form) {
   logAmplitudeEvent("skjema startet", createEventData(form));
 }
 
-export function loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
+export function loggEventSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
   if (sporsmal && svar) {
     logAmplitudeEvent(
       "skjemaspørsmål besvart",
@@ -50,7 +50,7 @@ export function loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
   }
 }
 
-export function loggSkjemaStegFullfort(form, data) {
+export function loggEventSkjemaStegFullfort(form, data) {
   logAmplitudeEvent("skjemasteg fullført", createEventData(form, data));
 }
 
@@ -58,14 +58,14 @@ export function loggEventDokumentLastetNed(form, tittel) {
   logAmplitudeEvent("last ned", createEventData(form, { tittel }));
 }
 
-export function loggSkjemaFullfort(form) {
+export function loggEventSkjemaFullfort(form) {
   logAmplitudeEvent("skjema fullført", createEventData(form));
 }
 
-export function loggSkjemaValideringFeilet(form) {
+export function loggEventSkjemaValideringFeilet(form) {
   logAmplitudeEvent("skjemavalidering feilet", createEventData(form));
 }
 
-export function loggSkjemaInnsendingFeilet(form) {
+export function loggEventSkjemaInnsendingFeilet(form) {
   logAmplitudeEvent("skjemainnsending feilet", createEventData(form));
 }

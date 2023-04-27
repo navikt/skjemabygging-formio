@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loggSkjemaStegFullfort } from "../../util/amplitude";
+import { loggEventSkjemaStegFullfort } from "../../util/amplitude";
 
 export default function useSkjemaStegFullfort(form) {
   const [completedSteps, setCompletedSteps] = useState({});
@@ -9,7 +9,7 @@ export default function useSkjemaStegFullfort(form) {
       return;
     }
     if (!completedSteps[lastCompletedStep.skjemaStegNokkel]) {
-      loggSkjemaStegFullfort(form, lastCompletedStep);
+      loggEventSkjemaStegFullfort(form, lastCompletedStep);
       setCompletedSteps({
         ...completedSteps,
         [lastCompletedStep.skjemaStegNokkel]: true,

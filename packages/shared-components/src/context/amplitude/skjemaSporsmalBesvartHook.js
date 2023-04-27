@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loggSkjemaSporsmalBesvart } from "../../util/amplitude";
+import { loggEventSkjemaSporsmalBesvart } from "../../util/amplitude";
 
 const hasFieldValueChanged = (previousValue, newValue) => previousValue !== newValue;
 
@@ -11,7 +11,7 @@ export default function useSkjemaSporsmalBesvart(form) {
       const componentKey = lastEvent.component.key;
       if (hasFieldValueChanged(lastFormState[componentKey], lastEvent._data[componentKey])) {
         setLastFormState({ ...lastEvent._data });
-        loggSkjemaSporsmalBesvart(
+        loggEventSkjemaSporsmalBesvart(
           form,
           lastEvent.component.label,
           lastEvent.component.key,
