@@ -3,18 +3,18 @@ import { loggSkjemaStegFullfort } from "../../util/amplitude";
 
 export default function useSkjemaStegFullfort(form) {
   const [completedSteps, setCompletedSteps] = useState({});
-  const [lastCompletedStep, setLastCompletedStep] = useState(-1);
+  const [lastCompletedStep, setLastCompletedStep] = useState({ steg: -1 });
   useEffect(() => {
-    if (lastCompletedStep === -1) {
+    if (lastCompletedStep.steg === -1) {
       return;
     }
-    if (!completedSteps[lastCompletedStep]) {
+    if (!completedSteps[lastCompletedStep.skjemaStegNokkel]) {
       loggSkjemaStegFullfort(form, lastCompletedStep);
       setCompletedSteps({
         ...completedSteps,
-        [lastCompletedStep]: true,
+        [lastCompletedStep.skjemaStegNokkel]: true,
       });
     }
   }, [completedSteps, form, lastCompletedStep]);
-  return (steg) => setLastCompletedStep(steg);
+  return (data) => setLastCompletedStep(data);
 }

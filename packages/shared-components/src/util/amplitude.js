@@ -50,8 +50,8 @@ export function loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
   }
 }
 
-export function loggSkjemaStegFullfort(form, steg) {
-  logAmplitudeEvent("skjemasteg fullført", createEventData(form, { steg }));
+export function loggSkjemaStegFullfort(form, data) {
+  logAmplitudeEvent("skjemasteg fullført", createEventData(form, data));
 }
 
 export function loggSkjemaFullfort(form) {

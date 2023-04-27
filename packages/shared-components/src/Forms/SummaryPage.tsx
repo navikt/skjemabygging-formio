@@ -217,7 +217,12 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
                 <Link
                   className="navds-button navds-button--primary"
-                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  onClick={() =>
+                    loggSkjemaStegFullfort({
+                      steg: getPanels(form.components).length + 1,
+                      skjemaStegNokkel: "oppsummering",
+                    })
+                  }
                   to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
                 >
                   <span aria-live="polite" className="navds-label">
@@ -255,7 +260,12 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {innsending === "INGEN" && (
                 <Link
                   className="navds-button navds-button--primary"
-                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  onClick={() =>
+                    loggSkjemaStegFullfort({
+                      steg: getPanels(form.components).length + 1,
+                      skjemaStegNokkel: "oppsummering",
+                    })
+                  }
                   to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
                 >
                   <span aria-live="polite" className="navds-label">
