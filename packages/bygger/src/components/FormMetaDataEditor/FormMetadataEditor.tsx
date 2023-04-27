@@ -15,6 +15,7 @@ import useTemaKoder from "../../hooks/useTemaKoder";
 import SignatureComponent from "../layout/SignatureComponent";
 import EnhetSettings from "./EnhetSettings";
 import LabelWithDiff from "./LabelWithDiff";
+import SubmissionTypeSelect from "./SubmissionTypeSelect";
 import { FormMetadataError, UpdateFormFunction } from "./utils";
 
 type UsageContext = "create" | "edit";
@@ -41,6 +42,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       tema,
       downloadPdfButtonText,
       innsending: innsendingFraProps,
+      ettersending,
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
@@ -181,11 +183,10 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         }
         placeholder={TEXTS.grensesnitt.downloadApplication}
       />
-      <Select
-        className="mb-double"
-        label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
+
+      <SubmissionTypeSelect
         name="form-innsending"
-        id="form-innsending"
+        label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
         value={innsending}
         onChange={(event) =>
           onChange({
@@ -193,12 +194,20 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
             properties: { ...form.properties, innsending: event.target.value as InnsendingType },
           })
         }
-      >
-        <option value="PAPIR_OG_DIGITAL">Papir og digital</option>
-        <option value="KUN_PAPIR">Kun papir</option>
-        <option value="KUN_DIGITAL">Kun digital</option>
-        <option value="INGEN">Ingen</option>
-      </Select>
+      />
+      <SubmissionTypeSelect
+        name="form-ettersending"
+        label={<LabelWithDiff label="Ettersending" diff={!!diff.ettersending} />}
+        value={ettersending}
+        allowEmpty={true}
+        error={errors?.ettersending}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, ettersending: event.target.value as InnsendingType },
+          })
+        }
+      />
 
       {innsending === "INGEN" && (
         <>

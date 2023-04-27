@@ -4,6 +4,7 @@ const _submitData = {
   tema: "BIL",
   downloadPdfButtonText: "DownloadPDFBtnTest",
   innsending: "PAPIR_OG_DIGITAL",
+  ettersending: "PAPIR_OG_DIGITAL",
   descriptionOfSignatures: "Test Instructions",
   signatureLabel: "Test account",
   signatureDescription: "Instruction from test...",
@@ -40,6 +41,7 @@ describe("FormSettingsPage", () => {
       .clear()
       .type(_submitData.downloadPdfButtonText);
     cy.findByRole("combobox", { name: "Innsending" }).select(_submitData.innsending);
+    cy.findByRole("combobox", { name: "Ettersending" }).select(_submitData.ettersending);
     cy.findByRole("textbox", { name: "Generelle instruksjoner (valgfritt)" })
       .focus()
       .clear()

@@ -2,7 +2,6 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import featureToggles from "../../test/featureToggles";
 import mockMottaksadresser from "../mottaksadresser/testdata/mottaksadresser";
@@ -41,6 +40,7 @@ describe("NewFormPage", () => {
     userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
     userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
     userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
     userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
@@ -56,6 +56,7 @@ describe("NewFormPage", () => {
         skjemanummer: "NAV 10-20.30",
         tema: "ABC",
         innsending: "PAPIR_OG_DIGITAL",
+        ettersending: "KUN_DIGITAL",
       },
     });
   });
