@@ -15,6 +15,7 @@ const defaultValues = {
   loggSkjemaSporsmalBesvart: (event) => {},
   loggSkjemaSporsmalForSpesialTyper: (event) => {},
   loggSkjemaStegFullfort: (data) => {},
+  loggDokumentLastetNed: (tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
   loggSkjemaFullfort: () => {},
@@ -29,15 +30,15 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
     }
   }, [shouldUseAmplitude]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);
-  const loggApnetSkjema = useHarApnetSkjema(form);
-  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalBesvartForSpesialFelter } = useSkjemaSporsmalEvent(form);
+  const loggSkjemaApnet = useHarApnetSkjema(form);
+  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useSkjemaSporsmalEvent(form);
 
   const amplitude = shouldUseAmplitude
     ? {
-        loggSkjemaApnet: (innsendingsKanal) => loggApnetSkjema(innsendingsKanal),
-        loggSkjemaSporsmalBesvart: (event) => loggSkjemaSporsmalBesvart(event),
-        loggSkjemaSporsmalForSpesialTyper: (event) => loggSkjemaSporsmalBesvartForSpesialFelter(event),
-        loggSkjemaStegFullfort: (data) => loggSkjemaStegFullfort(data),
+        loggSkjemaApnet,
+        loggSkjemaSporsmalBesvart,
+        loggSkjemaSporsmalForSpesialTyper,
+        loggSkjemaStegFullfort,
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
         loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),
         loggSkjemaInnsendingFeilet: () => loggEventSkjemaInnsendingFeilet(form),
