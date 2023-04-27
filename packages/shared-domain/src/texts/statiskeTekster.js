@@ -56,7 +56,5 @@ export const statiske = {
     sendInPapirSectionAttachments: "vedleggene",
     sendInPapirSectionAttachment: "vedlegget",
     sendInPapirSection: "som nevnt i punkt 2 over.",
-    lastSectionTitle: "Hva skjer videre?",
-    lastSectionContent: "Du hører fra oss så fort vi har sett på saken din. Vi tar kontakt med deg om vi mangler noe.",
   },
 };
