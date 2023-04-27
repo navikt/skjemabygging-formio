@@ -3,7 +3,7 @@ import React from "react";
 
 interface Props {
   name: string;
-  label: React.ReactElement;
+  label: React.ReactNode;
   value: string | undefined;
   allowEmpty?: boolean;
   error?: React.ReactNode;
