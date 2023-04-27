@@ -1,12 +1,11 @@
 import { Select } from "@navikt/ds-react";
-import React from "react";
 
 interface Props {
   name: string;
-  label: React.ReactNode;
+  label: any;
   value: string | undefined;
   allowEmpty?: boolean;
-  error?: React.ReactNode;
+  error?: any;
   onChange: (event: any) => void;
 }
 
