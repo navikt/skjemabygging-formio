@@ -15,7 +15,7 @@ import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
 const defaultValues = {
   loggSkjemaApnet: (innsendingsKanal) => {},
   loggSkjemaSporsmalBesvart: (event) => {},
-  loggSkjemaSporsmalForSpesialTyper: (event) => {},
+  loggSkjemaSporsmalBesvartForSpesialTyper: (event) => {},
   loggSkjemaStegFullfort: (data) => {},
   loggSpraakValg: (spraak) => {},
   loggDokumentLastetNed: (tittel) => {},
@@ -34,13 +34,13 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
   }, [shouldUseAmplitude]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);
   const loggSkjemaApnet = useHarApnetSkjema(form);
-  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalForSpesialTyper } = useSkjemaSporsmalEvent(form);
+  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalBesvartForSpesialTyper } = useSkjemaSporsmalEvent(form);
 
   const amplitude = shouldUseAmplitude
     ? {
         loggSkjemaApnet,
         loggSkjemaSporsmalBesvart,
-        loggSkjemaSporsmalForSpesialTyper,
+        loggSkjemaSporsmalBesvartForSpesialTyper,
         loggSkjemaStegFullfort,
         loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: "språk", filternavn: spraak }),
         loggNavigeringViaLenke: (data) => loggEventNavigere(form, data),

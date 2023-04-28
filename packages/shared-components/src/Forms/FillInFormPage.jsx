@@ -12,7 +12,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const {
     loggSkjemaApnet,
     loggSkjemaSporsmalBesvart,
-    loggSkjemaSporsmalForSpesialTyper,
+    loggSkjemaSporsmalBesvartForSpesialTyper,
     loggSkjemaStegFullfort,
     loggSkjemaValideringFeilet,
     loggNavigeringViaLenke,
@@ -98,7 +98,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
-        onChange={loggSkjemaSporsmalForSpesialTyper}
+        onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
         onError={onError}
         onSubmit={onSubmit}
         onNextPage={onNextPage}

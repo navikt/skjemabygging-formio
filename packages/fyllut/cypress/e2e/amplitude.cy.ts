@@ -22,11 +22,11 @@ describe("Amplitude", () => {
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check("digital");
     cy.clickStart();
-    cy.checkLogToAmplitude("skjema åpnet");
+    cy.checkLogToAmplitude("skjema åpnet", { innsendingskanal: "digital" });
 
     // Veiledning step
     cy.clickNextStep();
-    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 1 });
+    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 1, skjemastegNokkel: "veiledning" });
 
     // Dine opplysninger step
     cy.findByRole("combobox", { name: "Tittel" }).should("exist").click();
@@ -84,7 +84,7 @@ describe("Amplitude", () => {
 
     // Step 2 -> Oppsummering
     cy.clickNextStep();
-    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 2 });
+    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 2, skjemastegNokkel: "personopplysninger" });
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
@@ -119,7 +119,6 @@ describe("Amplitude", () => {
     cy.findByRole("button", { name: "Gå videre" }).click();
     cy.wait("@submitToSendinnSuccess");
     cy.checkLogToAmplitude("skjema fullført", {
-      innsendingsType: "digital",
       skjemaId: "cypress-101",
       skjemanavn: "Skjema for Cypress-testing",
     });

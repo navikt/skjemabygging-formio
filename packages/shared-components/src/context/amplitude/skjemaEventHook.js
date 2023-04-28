@@ -6,7 +6,7 @@ export default function useSkjemaSporsmalEvent(form) {
   const [lastSporsmalEvent, setLastSporsmalEvent] = useState(null);
   const loggSkjemaStartet = useSkjemaStartet(form);
   const loggSkjemaSporsmalBesvart = useSkjemaSporsmalBesvart(form);
-  const loggSkjemaSporsmalBesvartForSpesialFelter = (event) => {
+  const loggSkjemaSporsmalBesvartForSpesialTyper = (event) => {
     if (
       event.changed &&
       ["radio", "checkbox", "navDatepicker", "day", "radiopanel", "navCheckbox", "navSelect"].includes(
@@ -27,6 +27,6 @@ export default function useSkjemaSporsmalEvent(form) {
 
   return {
     loggSkjemaSporsmalBesvart: setLastSporsmalEvent,
-    loggSkjemaSporsmalBesvartForSpesialFelter,
+    loggSkjemaSporsmalBesvartForSpesialTyper,
   };
 }
