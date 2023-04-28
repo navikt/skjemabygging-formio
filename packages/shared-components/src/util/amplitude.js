@@ -54,6 +54,10 @@ export function loggEventSkjemaStegFullfort(form, data) {
   logAmplitudeEvent("skjemasteg fullført", createEventData(form, data));
 }
 
+export function loggEventFilterValg(form, data) {
+  logAmplitudeEvent("filtervalg", createEventData(form, data));
+}
+
 export function loggEventNavigere(form, data) {
   logAmplitudeEvent("navigere", createEventData(form, data));
 }

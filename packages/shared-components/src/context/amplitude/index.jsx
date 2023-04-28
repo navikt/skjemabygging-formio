@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect } from "react";
 import {
   initAmplitude,
   loggEventDokumentLastetNed,
+  loggEventFilterValg,
   loggEventNavigere,
   loggEventSkjemaFullfort,
   loggEventSkjemaInnsendingFeilet,
@@ -16,6 +17,7 @@ const defaultValues = {
   loggSkjemaSporsmalBesvart: (event) => {},
   loggSkjemaSporsmalForSpesialTyper: (event) => {},
   loggSkjemaStegFullfort: (data) => {},
+  loggSpraakValg: (spraak) => {},
   loggDokumentLastetNed: (tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
@@ -40,6 +42,7 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
         loggSkjemaSporsmalBesvart,
         loggSkjemaSporsmalForSpesialTyper,
         loggSkjemaStegFullfort,
+        loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: "språk", filternavn: spraak }),
         loggNavigeringViaLenke: (data) => loggEventNavigere(form, data),
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
         loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),

@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Collapse, Expand } from "@navikt/ds-icons";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const useSelectStyle = makeStyles({
@@ -70,7 +70,7 @@ const Select = ({ label, className, options }) => {
         </button>
         {showItems && (
           <ul className="select-list">
-            {options.map(({ href, optionLabel }, index) => (
+            {options.map(({ href, optionLabel, onClick }, index) => (
               <li
                 className="select-list__option"
                 key={optionLabel}
@@ -81,7 +81,10 @@ const Select = ({ label, className, options }) => {
                 <Link
                   className="select-list__option__link"
                   to={href}
-                  onClick={closeListAndResetFocus}
+                  onClick={() => {
+                    onClick();
+                    closeListAndResetFocus();
+                  }}
                   ref={
                     index === 0 ? firstListItemLinkRef : index === options.length - 1 ? lastListItemLinkRef : undefined
                   }
