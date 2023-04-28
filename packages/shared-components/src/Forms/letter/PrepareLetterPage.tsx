@@ -78,7 +78,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
 
   return (
     <ResultContent>
-      <Heading level="2" size="large" className="margin-bottom-double">
+      <Heading level="2" size="large" spacing>
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Heading>
       <main className="fyllut-layout" id="maincontent" tabIndex={-1}>

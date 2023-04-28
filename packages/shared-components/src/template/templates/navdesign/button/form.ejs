@@ -9,7 +9,7 @@
   {% } %}
 >
 {% if (ctx.component.leftIcon) { %}<span class="{{ctx.component.leftIcon}}"></span>&nbsp;{% } %}
-{{ctx.t(ctx.component.buttonText  || ctx.input.content)}}
+<span aria-live="polite" class="navds-label">{{ctx.t(ctx.component.buttonText  || ctx.input.content)}}</span>
 {% if (ctx.component.tooltip) { %}
   <i ref="tooltip" class="{{ctx.iconClass('question-sign')}} text-muted" data-tooltip="{{ctx.component.tooltip}}"></i>
 {% } %}

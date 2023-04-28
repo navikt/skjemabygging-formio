@@ -26,7 +26,7 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
 
   const options = enhetsliste.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
-    <div className="margin-bottom-default">
+    <div className="mb-4">
       <label htmlFor="enhetSelect" className="navds-label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>

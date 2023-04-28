@@ -111,7 +111,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}
                 filename={`${title}(${path})_Oversettelser.csv`}
-                className="navds-button navds-button--secondary"
+                className="navds-button navds-button--secondary navds-label"
                 separator={";"}
                 headers={getTextsAndTranslationsHeaders(translations)}
                 enclosingCharacter={"'"}

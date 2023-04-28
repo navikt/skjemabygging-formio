@@ -13,7 +13,7 @@
 
 <{{ctx.input.type}}
   ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
-  class="{{ctx.input.attr.class}} {{ctx.input.type === 'textarea' ? 'navds-textarea__input' : 'navds-text-field__input'}} {{ctx.component.fieldSize}} navds-body-short"
+  class="{{ctx.input.attr.class}} {{ctx.input.type === 'textarea' ? 'navds-textarea__input' : 'navds-text-field__input'}} {{ctx.component.fieldSize ? ctx.component.fieldSize : 'input--xl'}} navds-body-short"
   {% if (ctx.enableAutoComplete === false) { %}
   autocomplete="off"
   {% } %}

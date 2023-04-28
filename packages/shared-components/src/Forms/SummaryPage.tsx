@@ -212,10 +212,10 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     <SummaryContent>
       <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
         <div className="main-col">
-          <Heading level="2" size="large" className="margin-bottom-default">
+          <Heading level="2" size="large" spacing>
             {translate(TEXTS.statiske.summaryPage.title)}
           </Heading>
-          <BodyShort className="margin-bottom-default">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
+          <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>

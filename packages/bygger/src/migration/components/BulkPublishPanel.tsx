@@ -69,7 +69,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
 
   return (
     <>
-      <Panel className="margin-bottom-double">
+      <Panel className="mb">
         <Heading level="3" size="medium">
           Disse skjemaene ble migrert
         </Heading>

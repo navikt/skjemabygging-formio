@@ -1,5 +1,5 @@
 const label = {
-  "& .navds-label:not(.navds-stepper__circle):not(.navds-stepper__content)": {
+  "& label.navds-label": {
     "&:after": {
       content: "''",
       height: "var(--a-spacing-2)",

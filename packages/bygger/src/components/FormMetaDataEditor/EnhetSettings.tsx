@@ -1,7 +1,7 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Checkbox, Label, Panel } from "@navikt/ds-react";
 import { Enhetstype, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 interface EnhetSettingsProps {
   enhetMaVelges: boolean;
@@ -49,7 +49,7 @@ const EnhetSettings = ({
         {"Bruker må velge enhet ved innsending på papir"}
       </Checkbox>
       {enhetMaVelges && selectedEnhetstyper && (
-        <Panel className="margin-bottom-default">
+        <Panel className="mb-4">
           <Label>Enhetstyper</Label>
           <ul className={styles.list}>
             {supportedEnhetstyper.map((enhetsType: Enhetstype) => (

@@ -7,19 +7,19 @@
     {% if (ctx.buttons.next) { %}
       <button class="navds-button navds-button--primary" type="submit"
         ref="{{ctx.wizardKey}}-next">
-        <span aria-live="polite" class="navds-body-short font-bold">{{ctx.t('Neste steg')}}</span>
+        <span aria-live="polite" class="navds-label">{{ctx.t('Neste steg')}}</span>
       </button>
     {% } %}
     {% if (ctx.buttons.submit) { %}
       <button class="navds-button navds-button--primary" type="submit"
         ref="{{ctx.wizardKey}}-submit">
-        <span aria-live="polite" class="navds-body-short font-bold">{{ctx.t('Neste steg')}}</span>
+        <span aria-live="polite" class="navds-label">{{ctx.t('Neste steg')}}</span>
       </button>
     {% } %}
     {% if (ctx.buttons.previous) { %}
       <button class="navds-button navds-button--secondary" type="button"
         ref="{{ctx.wizardKey}}-previous">
-        <span aria-live="polite" class="navds-body-short font-bold">{{ctx.t('Forrige steg')}}</span>
+        <span aria-live="polite" class="navds-label">{{ctx.t('Forrige steg')}}</span>
       </button>
     {% } %}
     </div>

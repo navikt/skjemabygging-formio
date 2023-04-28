@@ -15,7 +15,7 @@
 <div class="row">
   {% if (ctx.instance.navFormDiff) { %}
   <div class="col col-sm-12">
-      <div class="alertstripe alertstripe--advarsel margin-bottom-default">
+      <div class="alertstripe alertstripe--advarsel mb-4">
           <div>
               {{ctx.util.navFormDiffToHtml(ctx.instance.navFormDiff)}}
           </div>
@@ -24,7 +24,7 @@
   {% } %}
   {% if (ctx.instance.conditionalAlert) { %}
   <div class="col col-sm-12">
-    <div class="alertstripe alertstripe--advarsel margin-bottom-default">
+    <div class="alertstripe alertstripe--advarsel mb-4">
       <div>
         <span id="conditional-alert-heading">{{ctx.instance.conditionalAlert.message}}</span>
         <ul aria-labelledby="conditional-alert-heading">
@@ -44,9 +44,15 @@
     </div>
     {% } %}
     <div style="margin-top: 10px; margin-bottom: 20px;">
-      <button class="navds-button navds-button--primary" style="margin-right: 10px;" type="button" ref="saveButton">{{ctx.t('Save')}}</button>
-      <button class="navds-button navds-button--secondary" style="margin-right: 10px;" type="button" ref="cancelButton">{{ctx.t('Cancel')}}</button>
-      <button class="navds-button navds-button--danger" type="button" ref="removeButton">{{ctx.t('Remove')}}</button>
+      <button class="navds-button navds-button--primary" style="margin-right: 10px;" type="button" ref="saveButton">
+        <span aria-live="polite" class="navds-label">{{ctx.t('Save')}}</span>
+      </button>
+      <button class="navds-button navds-button--secondary" style="margin-right: 10px;" type="button" ref="cancelButton">
+        <span aria-live="polite" class="navds-label">{{ctx.t('Cancel')}}</span>
+      </button>
+      <button class="navds-button navds-button--danger" type="button" ref="removeButton">
+        <span aria-live="polite" class="navds-label">{{ctx.t('Remove')}}</span>
+      </button>
     </div>
   </div>
   {% if (ctx.preview) { %}

@@ -1,18 +1,12 @@
 const margin = {
-  ".margin-bottom-default, .mb-default": {
-    marginBottom: "1rem",
+  ".mb": {
+    marginBottom: "var(--a-spacing-10)",
   },
-  ".margin-bottom-small, .mb-small": {
-    marginBottom: "0.5rem",
+  ".mb-4": {
+    marginBottom: "var(--a-spacing-4)",
   },
-  ".margin-bottom-double, .mb-double": {
-    marginBottom: "2rem",
-  },
-  ".margin-bottom-large, .mb-large": {
-    marginBottom: "8rem",
-  },
-  ".margin-left-default, .ml-default": {
-    marginLeft: "1rem",
+  ".mb-14": {
+    marginBottom: "var(--a-spacing-14)",
   },
 };
 

@@ -71,7 +71,7 @@ const MigrationDryRunResults = ({
                   </div>
                 );
               })}
-              <Link className="knapp margin-bottom-default margin-top-default" to={getPreviewUrl(result.path)}>
+              <Link className="knapp mb-4 margin-top-default" to={getPreviewUrl(result.path)}>
                 Forhåndsvis
               </Link>
             </div>

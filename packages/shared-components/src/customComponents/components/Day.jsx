@@ -148,7 +148,7 @@ class Day extends FormioDay {
                 return {
                   key: "year",
                   label: "Year",
-                  customClass: "input--s",
+                  fieldSize: "input--s",
                   components: [
                     ...yearComponents.map((component) => {
                       if (component.key === "fields.year.minYear" || component.key === "fields.year.maxYear") {

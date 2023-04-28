@@ -1,3 +1,4 @@
+import alert from "./alert";
 import button from "./button";
 import choices from "./choices";
 import datepicker from "./datepicker";
@@ -5,6 +6,7 @@ import day from "./day";
 import error from "./error";
 import fieldset from "./fieldset";
 import group from "./group";
+import htmlElement from "./htmlElement";
 import img from "./img";
 import input from "./input";
 import inputGroup from "./inputGroup";
@@ -18,6 +20,7 @@ import tabs from "./tabs";
 
 const form = {
   ".formio-form": {
+    ...alert,
     ...button,
     ...choices,
     ...datepicker,
@@ -28,6 +31,7 @@ const form = {
     ...inputGroup,
     ...img,
     ...group,
+    ...htmlElement,
     ...label,
     ...list,
     ...listGroup,
