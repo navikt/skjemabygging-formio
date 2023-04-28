@@ -3,9 +3,9 @@ import { loggEventSkjemaApnet } from "../../util/amplitude";
 
 export default function useHarApnetSkjema(form) {
   const [harApnetSkjema, setHarApnetSkjema] = useState(false);
-  return (innsendingsKanal) => {
+  return (innsendingskanal) => {
     if (!harApnetSkjema) {
-      loggEventSkjemaApnet(form, innsendingsKanal);
+      loggEventSkjemaApnet(form, innsendingskanal);
       setHarApnetSkjema(true);
     }
   };

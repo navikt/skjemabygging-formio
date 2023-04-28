@@ -8,11 +8,11 @@ export default function useSkjemaStegFullfort(form) {
     if (lastCompletedStep.steg === -1) {
       return;
     }
-    if (!completedSteps[lastCompletedStep.skjemaStegNokkel]) {
+    if (!completedSteps[lastCompletedStep.skjemastegNokkel]) {
       loggEventSkjemaStegFullfort(form, lastCompletedStep);
       setCompletedSteps({
         ...completedSteps,
-        [lastCompletedStep.skjemaStegNokkel]: true,
+        [lastCompletedStep.skjemastegNokkel]: true,
       });
     }
   }, [completedSteps, form, lastCompletedStep]);

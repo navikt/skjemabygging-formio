@@ -91,7 +91,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
               setFoerstesideLoading(true);
               lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhetNummer)
                 .then(() => {
-                  loggDokumentLastetNed(`Forsteside ${form.properties.skjemanummer}`);
+                  loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
                   setHasDownloadedFoersteside(true);
                 })
                 .catch((error) => {

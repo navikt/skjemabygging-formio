@@ -29,8 +29,8 @@ export function logAmplitudeEvent(eventName, eventData) {
   });
 }
 
-export function loggEventSkjemaApnet(form, innsendingsKanal) {
-  logAmplitudeEvent("skjema åpnet", createEventData(form, { innsendingsKanal }));
+export function loggEventSkjemaApnet(form, innsendingskanal) {
+  logAmplitudeEvent("skjema åpnet", createEventData(form, { innsendingskanal }));
 }
 
 export function loggEventSkjemaStartet(form) {

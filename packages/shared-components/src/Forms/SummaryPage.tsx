@@ -224,7 +224,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   onClick={() =>
                     loggSkjemaStegFullfort({
                       steg: getPanels(form.components).length + 1,
-                      skjemaStegNokkel: "oppsummering",
+                      skjemastegNokkel: "oppsummering",
                     })
                   }
                   to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
@@ -267,7 +267,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   onClick={() =>
                     loggSkjemaStegFullfort({
                       steg: getPanels(form.components).length + 1,
-                      skjemaStegNokkel: "oppsummering",
+                      skjemastegNokkel: "oppsummering",
                     })
                   }
                   to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}

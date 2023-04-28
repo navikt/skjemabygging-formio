@@ -50,7 +50,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels }) {
-    loggSkjemaStegFullfort({ steg: page, skjemaStegNokkel: currentPanels?.[page - 1] || "" });
+    loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
   }
 
@@ -76,10 +76,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
-    const skjemaStegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
+    const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
-      steg: form.components.findIndex((panel) => panel.key === skjemaStegNokkel) + 1,
-      skjemaStegNokkel,
+      steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
+      skjemastegNokkel,
     });
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
