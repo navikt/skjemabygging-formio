@@ -320,6 +320,6 @@ const SummaryContent = styled("div")({
   },
   "& .form-summary": {
     paddingTop: "2rem",
-    paddingBottom: "3.75rem",
+    paddingBottom: "3.5rem",
   },
 });
