@@ -92,10 +92,12 @@ const panelStyles = makeStyles({
 });
 
 const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUrl: string }) => {
+  const { loggNavigeringViaLenke } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link } = panelStyles();
   const { key, label, components } = component;
+  const panelLinkText = `${translate(TEXTS.grensesnitt.summaryPage.edit)} ${label.toLowerCase()}`;
   return (
     <section>
       <Accordion>
@@ -107,10 +109,12 @@ const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUr
             </Heading>
           </Accordion.Header>
           <Accordion.Content>
-            <Link to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
-              <span>
-                {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
-              </span>
+            <Link
+              to={{ pathname: `${formUrl}/${key}`, search }}
+              className={link}
+              onClick={(e) => loggNavigeringViaLenke({ lenkeTekst: panelLinkText, destination: e.view.location.href })}
+            >
+              <span>{panelLinkText}</span>
             </Link>
             <dl>
               <ComponentSummary components={components} formUrl={formUrl} />

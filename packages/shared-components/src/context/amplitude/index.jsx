@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect } from "react";
 import {
   initAmplitude,
   loggEventDokumentLastetNed,
+  loggEventNavigere,
   loggEventSkjemaFullfort,
   loggEventSkjemaInnsendingFeilet,
   loggEventSkjemaValideringFeilet,
@@ -39,6 +40,7 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
         loggSkjemaSporsmalBesvart,
         loggSkjemaSporsmalForSpesialTyper,
         loggSkjemaStegFullfort,
+        loggNavigeringViaLenke: (data) => loggEventNavigere(form, data),
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
         loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),
         loggSkjemaInnsendingFeilet: () => loggEventSkjemaInnsendingFeilet(form),

@@ -54,6 +54,10 @@ export function loggEventSkjemaStegFullfort(form, data) {
   logAmplitudeEvent("skjemasteg fullført", createEventData(form, data));
 }
 
+export function loggEventNavigere(form, data) {
+  logAmplitudeEvent("navigere", createEventData(form, data));
+}
+
 export function loggEventDokumentLastetNed(form, tittel) {
   logAmplitudeEvent("last ned", createEventData(form, { tittel }));
 }

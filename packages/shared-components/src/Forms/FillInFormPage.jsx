@@ -15,6 +15,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggSkjemaSporsmalForSpesialTyper,
     loggSkjemaStegFullfort,
     loggSkjemaValideringFeilet,
+    loggNavigeringViaLenke,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
   const { currentLanguage, translationsForNavForm } = useLanguages();
@@ -49,7 +50,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels }) {
-    console.log(page, currentPanels);
     loggSkjemaStegFullfort({ steg: page, skjemaStegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
   }
@@ -67,6 +67,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onWizardPageSelected(panel) {
     updatePanelUrl(panel.path);
+    loggNavigeringViaLenke({ lenkeTekst: panel.component.title, destinasjon: window.location.href });
   }
 
   function onFormReady(formioInstance) {
