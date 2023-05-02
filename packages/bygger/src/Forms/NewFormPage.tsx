@@ -75,7 +75,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         })
         .catch((e) => {
           feedbackEmit.error("Det valgte skjema-nummeret er allerede i bruk.");
-          // console.error({ e });
+          console.error(e);
         });
     } else {
       setErrors(updatedErrors);

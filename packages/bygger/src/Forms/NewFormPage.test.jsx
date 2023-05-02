@@ -64,6 +64,7 @@ describe("NewFormPage", () => {
   it("should handle exception from saveForm, with message to user", async () => {
     const saveForm = jest.fn(() => Promise.reject(new Error("Form.io feil")));
     const onLogout = jest.fn();
+    console.error = jest.fn();
     render(
       <FeedbackProvider>
         <MemoryRouter>
@@ -73,14 +74,16 @@ describe("NewFormPage", () => {
         </MemoryRouter>
       </FeedbackProvider>
     );
-    await screen.findByText("Opprett nytt skjema");
+    await waitFor(() => screen.findByText("Opprett nytt skjema"));
 
     userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
     userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
     userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    await waitFor(() => userEvent.click(screen.getByRole("button", { name: "Opprett" })));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => expect(console.error).toHaveBeenCalledTimes(1));
 
     expect(await screen.findByText("Det valgte skjema-nummeret er allerede i bruk.")).toBeInTheDocument();
   });
