@@ -58,6 +58,20 @@ Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
 
+### Workflow tokens
+
+Det er satt opp en [fine-grained acceess token](https://github.blog/2022-10-18-introducing-fine-grained-personal-access-tokens-for-github/) (`SKJEMADIGITALISERING_WORKFLOW_TOKEN`) med repository access for [skjemautfylling-formio](https://github.com/navikt/skjemautfylling-formio) og [skjemabygging-formio](https://github.com/navikt/skjemabygging-formio). Resource owner for dette tokenet er `navikt` så endringer i permissions vil måtte godkjennes av en admin for Github i NAV. (Expiry: 27. april 2024)
+
+Tilganger gitt:
+
+-   Actions (read/write)
+-   Contents (read/write)
+-   Metadata (read)
+-   Pull requests (read/write)
+-   Secrets (read)
+-   Secrets (read - organization permissions)
+-   Workflows (read/write)
+
 ## Fagsystemsonen
 
 Vi kommuniserer med fagsystemsonen blant annet for å hente enheter og generere førsteside, og det skjer ved kall
