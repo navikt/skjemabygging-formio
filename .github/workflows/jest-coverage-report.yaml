@@ -4,15 +4,22 @@ on:
     branches: [ master ]
 jobs:
   test-coverage:
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '16.17.1'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: "Bootstrap"
         run: yarn bootstrap
+      - name: "No unstaged changes allowed (changes in yarn.lock?)"
+        run: git diff --quiet
+      - name: "Check types"
+        run: yarn check-types
+      - name: "Build"
+        run: yarn build
       - name: "Test with coverage report"
-        run: yarn test:coverage
+        run: yarn test
 
