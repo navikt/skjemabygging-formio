@@ -19,7 +19,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
   const { search } = useLocation();
-  const { loggNavigeringViaLenke } = useAmplitude();
+  const { loggNavigering } = useAmplitude();
   const formSteps = useMemo(() => {
     const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
     return (form.components as Panel[])
@@ -79,7 +79,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
                 key={step.url}
                 completed
                 onClick={(e) => {
-                  loggNavigeringViaLenke({
+                  loggNavigering({
                     lenkeTekst: translate(step.label),
                     destination: e.nativeEvent.view?.location.href,
                   });

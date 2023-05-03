@@ -43,7 +43,7 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
         loggSkjemaSporsmalBesvartForSpesialTyper,
         loggSkjemaStegFullfort,
         loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: "språk", filternavn: spraak }),
-        loggNavigeringViaLenke: (data) => loggEventNavigere(form, data),
+        loggNavigering: (data) => loggEventNavigere(form, data),
         loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
         loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),
         loggSkjemaInnsendingFeilet: () => loggEventSkjemaInnsendingFeilet(form),

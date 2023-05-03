@@ -1,3 +1,4 @@
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
@@ -15,10 +16,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggSkjemaSporsmalBesvartForSpesialTyper,
     loggSkjemaStegFullfort,
     loggSkjemaValideringFeilet,
-    loggNavigeringViaLenke,
+    loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { currentLanguage, translationsForNavForm } = useLanguages();
+  const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
 
   useEffect(() => {
@@ -50,12 +51,27 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels }) {
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
+      destination: `${formUrl}/${currentPanels?.[page]}`,
+    });
     loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
   }
 
   function onPreviousPage({ page, currentPanels }) {
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
+      destination: `${formUrl}/${currentPanels?.[page - 2]}`,
+    });
     onNextOrPreviousPage(page, currentPanels);
+  }
+
+  function onCancel({ url }) {
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      destination: url,
+    });
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -67,7 +83,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onWizardPageSelected(panel) {
     updatePanelUrl(panel.path);
-    loggNavigeringViaLenke({ lenkeTekst: panel.component.title, destinasjon: window.location.href });
+    loggNavigering({ lenkeTekst: panel.component.title, destinasjon: window.location.href });
   }
 
   function onFormReady(formioInstance) {
@@ -103,6 +119,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onSubmit={onSubmit}
         onNextPage={onNextPage}
         onPrevPage={onPreviousPage}
+        onCancel={onCancel}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
