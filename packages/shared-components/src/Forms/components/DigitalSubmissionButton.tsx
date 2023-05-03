@@ -1,6 +1,7 @@
 import { Button } from "@navikt/ds-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAppConfig } from "../../configContext";
+import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
@@ -11,7 +12,7 @@ export interface Props {
   translations: object;
   onError: Function;
   onSuccess?: Function;
-  children: React.ReactNode;
+  children: string;
 }
 
 const noop = () => {};
@@ -48,6 +49,7 @@ const postToSendInn = async (
 
 const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop, children }: Props) => {
   const { currentLanguage } = useLanguages();
+  const { loggNavigering } = useAmplitude();
   const { baseUrl, http, config = {}, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
   const sendInn = async () => {
@@ -57,6 +59,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
     }
     try {
       setLoading(true);
+      loggNavigering({ lenkeTekst: children, destination: "/sendinn" });
       removeBeforeUnload();
       const response = await postToSendInn(
         http,
