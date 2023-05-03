@@ -66,6 +66,7 @@ describe("NewFormPage", () => {
   it("should handle exception from saveForm, with message to user", async () => {
     const saveForm = jest.fn(() => Promise.reject(new Error("Form.io feil")));
     const onLogout = jest.fn();
+    console.error = jest.fn();
     render(
       <FeedbackProvider>
         <MemoryRouter>
@@ -83,6 +84,8 @@ describe("NewFormPage", () => {
     userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => expect(console.error).toHaveBeenCalledTimes(1));
 
     expect(await screen.findByText("Det valgte skjema-nummeret er allerede i bruk.")).toBeInTheDocument();
   });
