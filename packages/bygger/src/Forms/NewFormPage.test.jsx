@@ -81,6 +81,7 @@ describe("NewFormPage", () => {
     userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
     userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
     userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
     userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
