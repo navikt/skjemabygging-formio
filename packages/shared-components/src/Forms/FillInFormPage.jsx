@@ -61,7 +61,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onPreviousPage({ page, currentPanels }) {
     loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
       destination: `${formUrl}/${currentPanels?.[page - 2]}`,
     });
     onNextOrPreviousPage(page, currentPanels);
