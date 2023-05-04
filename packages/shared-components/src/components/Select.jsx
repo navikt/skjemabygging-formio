@@ -70,7 +70,7 @@ const Select = ({ label, className, options }) => {
         </button>
         {showItems && (
           <ul className="select-list">
-            {options.map(({ href, optionLabel, onClick }, index) => (
+            {options.map(({ href, optionLabel, onClick = () => {} }, index) => (
               <li
                 className="select-list__option"
                 key={optionLabel}

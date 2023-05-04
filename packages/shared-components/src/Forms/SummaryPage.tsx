@@ -286,7 +286,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 onClick={() =>
                   loggNavigering({
                     lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-                    destination: getUrlToLastPanel(form, formUrl, submission),
+                    destinasjon: getUrlToLastPanel(form, formUrl, submission),
                   })
                 }
                 to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
@@ -302,7 +302,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 onClick={() =>
                   loggNavigering({
                     lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-                    destination: "https://www.nav.no",
+                    destinasjon: "https://www.nav.no",
                   })
                 }
                 href="https://www.nav.no"
