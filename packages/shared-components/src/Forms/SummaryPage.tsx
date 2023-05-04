@@ -298,7 +298,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
             </div>
             <div className="button-row button-row__center">
               <NavLink
-                className={"navds-button navds-button--tertiary"}
+                className="navds-button navds-button--tertiary"
                 onClick={() =>
                   loggNavigering({
                     lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
