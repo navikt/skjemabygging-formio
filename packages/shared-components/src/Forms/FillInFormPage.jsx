@@ -83,7 +83,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onWizardPageSelected(panel) {
     updatePanelUrl(panel.path);
-    loggNavigering({ lenkeTekst: panel.component.title, destinasjon: window.location.href });
+    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: window.location.href });
   }
 
   function onFormReady(formioInstance) {
@@ -92,6 +92,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
+      destination: `${formUrl}/oppsummering`,
+    });
     const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
       steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
