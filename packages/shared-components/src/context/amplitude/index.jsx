@@ -18,6 +18,7 @@ const defaultValues = {
   loggSkjemaSporsmalBesvartForSpesialTyper: (event) => {},
   loggSkjemaStegFullfort: (data) => {},
   loggSpraakValg: (spraak) => {},
+  loggNavigering: (data) => {},
   loggDokumentLastetNed: (tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
