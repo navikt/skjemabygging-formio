@@ -1,22 +1,47 @@
-import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
-import { guid } from "nav-frontend-js-utils";
+import { guid, migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { DryRunResults, MigrationMap, MigrationOption, MigrationOptions, ParsedInput } from "../../types/migration";
 
-export const createUrlParams = (searchFilters: MigrationOptions, editOptions: MigrationOptions) => {
-  let searchFilterParameters = "";
-  let editOptionsParameters = "";
-  const encodedSearchFilters = JSON.stringify(searchFiltersAsParams(searchFilters));
-  if (encodedSearchFilters) {
-    searchFilterParameters = `?searchFilters=${encodedSearchFilters}`;
-    const encodedEditOption = JSON.stringify(migrationOptionsAsMap(editOptions));
-    if (encodedEditOption) {
-      editOptionsParameters = `&editOptions=${encodedEditOption}`;
-    }
-  }
-  return `${searchFilterParameters}${editOptionsParameters}`;
+const assembleUrlParams = (params: string[]) => {
+  const filteredParams = params.filter((param) => param);
+  if (filteredParams.length === 0) return "";
+  const [first, ...rest] = filteredParams;
+  return `?${first}${rest.map((param) => (param ? `&${param}` : "")).join("")}`;
 };
 
-export const searchFiltersAsParams = (searchFilters: MigrationOptions) => {
+const isEmpty = (obj) => {
+  if (typeof obj === "object") return Object.keys(obj).length === 0;
+  if (Array.isArray(obj)) return obj.length === 0;
+  return false;
+};
+
+export const createUrlParams = (
+  searchFilters: MigrationOptions,
+  dependencyFilters: MigrationOptions,
+  editOptions: MigrationOptions
+) => {
+  let searchFilterParameters;
+  let dependencyFilterParameters;
+  let editOptionsParameters;
+
+  const encodedSearchFilters = searchFiltersAsParams(searchFilters);
+  searchFilterParameters = isEmpty(encodedSearchFilters)
+    ? null
+    : `searchFilters=${JSON.stringify(encodedSearchFilters)}`;
+
+  const encodedDependencyFilters = searchFiltersAsParams(dependencyFilters);
+  dependencyFilterParameters = isEmpty(encodedDependencyFilters)
+    ? null
+    : `dependencyFilters=${JSON.stringify(encodedDependencyFilters)}`;
+
+  if (searchFilterParameters || dependencyFilterParameters) {
+    const encodedEditOption = migrationOptionsAsMap(editOptions);
+    editOptionsParameters = isEmpty(encodedEditOption) ? null : `editOptions=${JSON.stringify(encodedEditOption)}`;
+  }
+
+  return assembleUrlParams([searchFilterParameters, dependencyFilterParameters, editOptionsParameters]);
+};
+
+export const searchFiltersAsParams = (searchFilters: MigrationOptions): Record<string, ParsedInput> => {
   if (Object.keys(searchFilters).length === 0) {
     return {};
   }
@@ -46,7 +71,7 @@ export const migrationOptionsAsMap = (migrationOptions: MigrationOptions): Recor
   }, {});
 };
 
-export const getMigrationResultsMatchingSearchFilters = (dryRunResults: DryRunResults) =>
+export const sortAndFilterResults = (dryRunResults: DryRunResults) =>
   dryRunResults
     ? Object.values(dryRunResults)
         .filter((results) => results.found > 0)

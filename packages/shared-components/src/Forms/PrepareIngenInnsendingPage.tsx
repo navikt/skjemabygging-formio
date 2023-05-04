@@ -1,14 +1,14 @@
 import { styled } from "@material-ui/styles";
+import { BodyShort, Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
-import DownloadPdfButton from "./components/DownloadPdfButton";
 import NavigateButtonComponent from "./NavigateButtonComponent";
+import DownloadPdfButton from "./components/DownloadPdfButton";
 
 export interface Props {
   form: any;
@@ -35,10 +35,10 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
       <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
           <div className="wizard-page">
-            <Systemtittel className="margin-bottom-default">
+            <Heading level="3" size="medium" className="margin-bottom-default">
               {translate(form.properties.innsendingOverskrift)}
-            </Systemtittel>
-            <Normaltekst>{translate(form.properties.innsendingForklaring)}</Normaltekst>
+            </Heading>
+            <BodyShort>{translate(form.properties.innsendingForklaring)}</BodyShort>
             <DownloadPdfButton
               form={form}
               submission={submission}

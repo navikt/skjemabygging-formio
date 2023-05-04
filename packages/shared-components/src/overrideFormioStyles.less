@@ -1,12 +1,13 @@
-@import "~nav-frontend-paneler-style";
-@import "~nav-frontend-skjema-style";
-@import "~nav-frontend-tabs-style";
-@import "~nav-frontend-typografi-style";
-@import "~nav-frontend-core";
-@import "~nav-frontend-chevron-style";
-@import "~nav-frontend-knapper-style";
-@import "~nav-frontend-lenker-style";
-@import "~nav-frontend-stegindikator-style";
+@import "../node_modules/nav-frontend-alertstriper-style/dist/main.css";
+@import "../node_modules/nav-frontend-core/dist/main.css";
+@import "../node_modules/nav-frontend-chevron-style/dist/main.css";
+@import "../node_modules/nav-frontend-knapper-style/dist/main.css";
+@import "../node_modules/nav-frontend-lenker-style/dist/main.css";
+@import "../node_modules/nav-frontend-paneler-style/dist/main.css";
+@import "../node_modules/nav-frontend-skjema-style/dist/main.css";
+@import "../node_modules/nav-frontend-stegindikator-style/dist/main.css";
+@import "../node_modules/nav-frontend-tabs-style/dist/main.css";
+@import "../node_modules/nav-frontend-typografi-style/dist/main.css";
 
 //Stegindikator -- start
 .stegindikator__steg-inner--aktiv {
@@ -14,12 +15,12 @@
     outline: none;
 
     .stegindikator__steg-num {
-      box-shadow: 0 0 0 3px @fokusFarge;
+      box-shadow: 0 0 0 3px #0067C5FF;
     }
 
     .stegindikator__steg-label {
       color: white;
-      background: @fokusFarge;
+      background: #0067C5FF;
       text-decoration: none;
     }
   }
@@ -29,7 +30,8 @@
 
 //Select -- start
 .choices.form-group.formio-choices {
-  .input--xxl();
+  width: 100%;
+  max-width: 420px;
 
   &:after {
     display: none;
@@ -38,17 +40,46 @@
 
 .choices__list--dropdown.is-active {
   position: relative;
-  //width: fit-content;
 }
 
+// Legacy drowdown
 .form-control.selection.dropdown {
-  .selectContainer();
-  .input--xxl();
-  .skjemaelement();
-  .skjemaelement__input();
+  position: relative;
+  display: inline-block;
 
-  &.is-invalid {
-    .skjemaelement-feilmarkering-mixin();
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  font-weight: 400;
+
+  &::before {
+    pointer-events: none;
+    content: "";
+    background: #262626;
+    height: 2px;
+    width: 10px;
+    border-radius: 10px;
+    right: 0.75rem;
+    top: 50%;
+    z-index: 4;
+    position: absolute;
+
+    transform: translateX(3px) rotate(-45deg);
+  }
+
+  &::after {
+    pointer-events: none;
+    content: "";
+    background: #262626;
+    height: 2px;
+    width: 10px;
+    border-radius: 10px;
+    right: 0.75rem;
+    top: 50%;
+    z-index: 4;
+    position: absolute;
+
+    transform: translateX(-3px) rotate(45deg);
   }
 }
 
@@ -56,7 +87,8 @@
 
 //RadioPanel -- start
 .radioPanel {
-  .input--xxl();
+  width: 100%;
+  max-width: 420px;
 }
 
 //RadioPanel -- slutt
@@ -64,7 +96,7 @@
 //Skjemagruppe -- start
 
 .skjemagruppe.inputPanelGruppe .skjemaelement:nth-last-of-type(1) {
-  margin-bottom: 0rem;
+  margin-bottom: 0;
 }
 
 .skjemagruppe,
@@ -80,14 +112,23 @@
 }
 
 .skjemagruppe__description {
-  .typo-normal-mixin();
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 400;
 
   margin-bottom: 1rem;
 }
 
 .skjemagruppe legend,
 .skjemagruppe__legend {
-  .typo-ingress-mixin();
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+
+  @media (min-width: 30em) {
+    font-size: 1.25rem;
+    line-height: 1.625rem;
+  }
 }
 
 .skjemagruppe {
@@ -99,7 +140,9 @@
 
     legend,
     .skjemagruppe__legend {
-      .typo-element-mixin();
+      font-size: 1rem;
+      line-height: 1.375rem;
+      font-weight: 600;
     }
   }
 }
@@ -109,34 +152,69 @@
 //Feilhåndtering -- start
 .alert.alert-danger {
   border: 4px solid #ba3a26;
-  border-radius: 0px;
+  border-radius: 0;
   background-color: #fff;
   padding: 1rem;
   display: block;
   margin-bottom: 2rem;
-  .typo-undertittel-mixin();
-  color: @navMorkGra;
+  font-size: 1.25rem;
+  line-height: 1.56rem;
+  font-weight: 600;
+  color: #262626;
 
   ul > li {
-    .lenke-mixin();
-    .typo-normal-mixin();
+    color: #0067c5;
+    background: none;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover,
+    &--hover {
+      text-decoration: none;
+    }
+
+    &:focus,
+    &--focus {
+      outline: none;
+      color: white;
+      text-decoration: none;
+      background-color: #0067C5FF;
+      box-shadow: 0 0 0 2px #0067C5FF;
+    }
+
+    &:active,
+    &--active {
+      outline: none;
+      color: white;
+      text-decoration: none;
+      background-color: #0067C5FF;
+      box-shadow: 0 0 0 2px #0067C5FF;
+    }
+    font-size: 1rem;
+    line-height: 1.375rem;
+    font-weight: 400;
   }
 }
 
 .formio-error-wrapper {
   background-color: transparent;
   border-color: transparent;
-  text-decoration-color: @navMorkGra;
-  color: @navMorkGra;
+  text-decoration-color: #262626;
+  color: #262626;
 }
 
 .skjemaelement__input.is-invalid {
-  .skjemaelement-feilmarkering-mixin();
+  border-color: #ba3a26;
+  box-shadow: 0 0 0 1px #ba3a26;
   background-image: none;
 }
 
 .form-text.error {
-  .typo-feilmelding();
+  font-size: 1rem;
+  line-height: 1.375rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ba3a26;
 }
 
 .formio-component.has-feedback .invalid-feedback {
@@ -150,14 +228,11 @@
 
 //Feilhåndtering -- slutt
 
-//NAV-knappestyling -- start
-.navds-button {
-  min-width: 12rem;
-  justify-content: center;
-  @media (max-width: 540px) {
-    width: 100%;
-  }
+.formio-form .navds-radio-group legend.navds-fieldset__legend {
+  font-weight: bold;
 }
+
+//NAV-knappestyling -- start
 
 .label-track-changes {
   display: flex;
@@ -170,7 +245,7 @@
 .button-row {
   display: flex;
   flex-direction: row-reverse;
-  justify-content: start;
+  justify-content: flex-end;
   gap: 1.25rem;
   flex-wrap: wrap;
   margin-bottom: 1.25rem;
@@ -182,7 +257,7 @@
   &__center {
     justify-content: center;
     @media (max-width: 540px) {
-      justify-content: start;
+      justify-content: flex-end;
     }
   }
 }

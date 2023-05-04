@@ -1,12 +1,10 @@
 import { ClassNameMap } from "@material-ui/styles";
-import Panel from "nav-frontend-paneler";
-import { Element } from "nav-frontend-typografi";
-import React from "react";
+import { Label, Panel } from "@navikt/ds-react";
 import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
-import { useStatusStyles } from "./styles";
 import Timestamp from "./Timestamp";
 import ToggleDiffButton from "./ToggleDiffButton";
+import { useStatusStyles } from "./styles";
 import { PublishProperties } from "./types";
 
 interface Props {
@@ -34,7 +32,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
     }
     return (
       <div className={styles.panelItem}>
-        <Element>{label}</Element>
+        <Label>{label}</Label>
         <Timestamp timestamp={timestamp} />
         {userName && <p className={styles.rowText}>{userName}</p>}
       </div>
@@ -44,7 +42,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
   return (
     <Panel className={styles.container}>
       <div className={styles.panelItem}>
-        <Element>Status:</Element>
+        <Label>Status:</Label>
         <div className={styles.sidePanelFormStatusContainer}>
           <FormStatus status={determineStatus(publishProperties)} size="large" />
         </div>

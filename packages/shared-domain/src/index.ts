@@ -41,7 +41,7 @@ import formDiffingTool from "./utils/formDiffingTool";
 import navFormioUtils from "./utils/formio";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
-import navFormUtils from "./utils/navFormUtils";
+import navFormUtils, { DependencyType } from "./utils/navFormUtils";
 import objectUtils from "./utils/objectUtils";
 import paginationUtils from "./utils/pagination";
 import signatureUtils from "./utils/signatureUtils";
@@ -69,6 +69,7 @@ export {
   formDiffingTool,
 };
 export type {
+  DependencyType,
   FeatureTogglesMap,
   DisplayType,
   InnsendingType,

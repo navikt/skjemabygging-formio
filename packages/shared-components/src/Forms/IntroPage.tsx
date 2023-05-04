@@ -1,7 +1,6 @@
-import { GuidePanel, Radio, RadioGroup } from "@navikt/ds-react";
+import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Undertittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
@@ -93,7 +92,9 @@ export function IntroPage({ form, formUrl }: Props) {
 
         {(selectedSubmissionMethod || !mustSelectSubmissionMethod) && (
           <GuidePanel poster className="margin-bottom-double">
-            <Undertittel className="margin-bottom-default">{translate(TEXTS.statiske.introPage.title)}</Undertittel>
+            <Heading level="2" size="small" className="margin-bottom-default">
+              {translate(TEXTS.statiske.introPage.title)}
+            </Heading>
             <ul>
               {description && (
                 <li className="margin-bottom-default">

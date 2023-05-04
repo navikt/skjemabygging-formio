@@ -73,8 +73,6 @@ Number.editForm = () => {
           key: "spellcheck",
           ignore: true,
         },
-        { key: "prefix", ignore: true },
-        { key: "suffix", ignore: true },
         { key: "displayMask", ignore: true },
         { key: "autocomplete", ignore: true },
         { key: "disabled", ignore: true },

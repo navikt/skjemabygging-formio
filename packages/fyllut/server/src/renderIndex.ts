@@ -37,7 +37,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         const { innsending } = form.properties;
         if (!qpSub) {
           if (!innsending || innsending === "PAPIR_OG_DIGITAL") {
-            logger.error("Submission query param is missing", { formPath });
+            logger.info("Submission query param is missing", { formPath });
             const targetUrl = `${config.fyllutPath}/${formPath}`;
             if (req.baseUrl !== targetUrl) {
               const logMeta = { formPath, targetUrl, baseUrl: req.baseUrl };
@@ -62,7 +62,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
             );
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
-          logger.error("Submission method is not allowed", { qpSub, formPath, innsending });
+          logger.info("Submission method is not allowed", { qpSub, formPath, innsending });
 
           const validSubmissionMethod = qpSub === "digital" || qpSub === "paper";
           if (!validSubmissionMethod || innsending === "INGEN") {

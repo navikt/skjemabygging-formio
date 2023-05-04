@@ -5,7 +5,9 @@ describe("Axe: Accessibility testing", () => {
       cy.intercept("GET", "/fyllut/api/forms/cypressaxe", { fixture: "cypressaxe.json" }).as("getCypressAxe");
       cy.intercept("GET", "/fyllut/translations/cypressaxe", { body: {} }).as("getTranslation");
       cy.visit("/fyllut/cypressaxe");
+      cy.wait("@getConfig");
       cy.wait("@getCypressAxe");
+      cy.wait("@getTranslation");
       cy.injectAxe();
     });
 
@@ -16,39 +18,39 @@ describe("Axe: Accessibility testing", () => {
     });
 
     it("Person", () => {
-      cy.clickStart();
+      cy.contains("Start").click();
       cy.checkA11y();
     });
 
     it("Penger og konto", () => {
-      cy.findByRole("link", { name: "Penger og konto" }).click();
+      cy.contains("Penger og konto").click();
       cy.checkA11y();
     });
 
     it("Bedrift / organisasjon", () => {
-      cy.findByRole("link", { name: "Bedrift / organisasjon" }).click();
+      cy.contains("Bedrift / organisasjon").click();
       cy.checkA11y();
     });
 
     it("Dato og tid", () => {
-      cy.findByRole("link", { name: "Dato og tid" }).click();
+      cy.contains("Dato og tid").click();
       cy.checkA11y();
     });
 
     it("Standard felter", () => {
-      cy.findByRole("link", { name: "Standard felter" }).click();
+      cy.contains("Standard felter").click();
       cy.checkA11y();
     });
 
     it("Layout", () => {
-      cy.findByRole("link", { name: "Layout" }).click();
+      cy.contains("Layout").click();
       cy.checkA11y({
         exclude: [".alertstripe"],
       });
     });
 
     it("Data", () => {
-      cy.findByRole("link", { name: "Data" }).click();
+      cy.contains("Data").click();
       cy.checkA11y();
     });
   });

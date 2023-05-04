@@ -24,7 +24,9 @@ const mapLimitedForm = (form) => {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
       innsending: form.properties.innsending,
+      ettersending: form.properties.ettersending,
       enhetstyper: form.properties.enhetstyper,
+      enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
     },
     attachments: getAttachments(form),
   };

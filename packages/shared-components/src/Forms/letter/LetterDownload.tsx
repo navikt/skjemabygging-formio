@@ -1,7 +1,6 @@
-import { Button } from "@navikt/ds-react";
+import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { Normaltekst, Systemtittel } from "nav-frontend-typografi";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchMottaksadresser } from "../../api/fetchMottaksadresser";
 import AlertStripeHttpError from "../../components/error/AlertStripeHttpError";
 import { useAmplitude } from "../../context/amplitude";
@@ -68,12 +67,12 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
       className="wizard-page"
       aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
     >
-      <Systemtittel tag="h3" className="margin-bottom-small">
+      <Heading level="3" size="medium" className="margin-bottom-small">
         {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
-      </Systemtittel>
-      <Normaltekst className="margin-bottom-default">
+      </Heading>
+      <BodyShort className="margin-bottom-default">
         {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
-      </Normaltekst>
+      </BodyShort>
       <EnhetSelector
         enhetsliste={enhetsListe}
         onSelectEnhet={(enhetNummer) => {

@@ -1,12 +1,10 @@
 import { makeStyles } from "@material-ui/styles";
+import { Button, Heading, Panel } from "@navikt/ds-react";
 import { AppConfigProvider, NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
-import { Fareknapp, Knapp } from "nav-frontend-knapper";
-import Panel from "nav-frontend-paneler";
-import { Undertittel } from "nav-frontend-typografi";
-import React, { useState } from "react";
+import { useState } from "react";
 import Column from "../components/layout/Column";
 
 const useStyles = makeStyles({
@@ -56,12 +54,18 @@ const MottaksadresseEditor = ({
       <div className={styles.panelContentMain}>
         {editMode && (
           <>
-            {!mottaksadresse && <Undertittel>Ny mottaksadresse</Undertittel>}
+            {!mottaksadresse && (
+              <Heading level="2" size="small">
+                Ny mottaksadresse
+              </Heading>
+            )}
             <AppConfigProvider featureToggles={featureToggles}>
               <NavForm
                 src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
+                /* @ts-ignore */
                 onSubmitDone={onSubmitDone}
+                /* @ts-ignore */
                 formReady={onFormReady}
               />
             </AppConfigProvider>
@@ -69,7 +73,9 @@ const MottaksadresseEditor = ({
         )}
         {(!editMode || loadingForm) && mottaksadresse && (
           <>
-            <Undertittel>{mottaksadresse.data.adresselinje1}</Undertittel>
+            <Heading level="2" size="small">
+              {mottaksadresse.data.adresselinje1}
+            </Heading>
             <div>{mottaksadresse.data.adresselinje2}</div>
             <div>{mottaksadresse.data.adresselinje3}</div>
             <div>
@@ -80,9 +86,9 @@ const MottaksadresseEditor = ({
         )}
         <div>
           {(!editMode || loadingForm) && mottaksadresse && (
-            <Knapp onClick={() => onEdit()} spinner={loadingForm}>
+            <Button variant="secondary" onClick={() => onEdit()} loading={loadingForm} type="button">
               Endre
-            </Knapp>
+            </Button>
           )}
           {!mottaksadresse && loadingForm && <div>Laster skjema...</div>}
         </div>
@@ -91,11 +97,13 @@ const MottaksadresseEditor = ({
         {editMode && !loadingForm && (
           <>
             {!!mottaksadresse && deleteMottaksadresse && (
-              <Fareknapp onClick={onDelete} spinner={deleting}>
+              <Button variant="danger" onClick={onDelete} loading={deleting} type="button">
                 Slett
-              </Fareknapp>
+              </Button>
             )}
-            <Knapp onClick={() => onCancel()}>Avbryt</Knapp>
+            <Button variant="secondary" onClick={() => onCancel()} type="button">
+              Avbryt
+            </Button>
           </>
         )}
       </Column>

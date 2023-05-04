@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import { MouseEventHandler } from "react";
 import { useLanguages } from "../../context/languages";
 
 interface Props {
@@ -27,7 +27,7 @@ const DownloadPdfButton = ({
       <form id={form.path} action={actionUrl} method="post" acceptCharset="utf-8" target="_blank" hidden>
         <textarea hidden={true} name="submission" readOnly={true} required value={JSON.stringify(submission)} />
         <textarea hidden={true} name="form" readOnly={true} required value={JSON.stringify(form)} />
-        <input type="text" name="submissionMethod" value={submissionMethod} />
+        <input type="text" name="submissionMethod" value={submissionMethod} readOnly={true} />
         <textarea
           hidden={true}
           name="translations"

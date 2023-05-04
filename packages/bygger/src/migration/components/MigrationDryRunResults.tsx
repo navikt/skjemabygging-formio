@@ -1,11 +1,10 @@
 import { makeStyles } from "@material-ui/styles";
-import { Checkbox } from "nav-frontend-skjema";
-import { Undertittel } from "nav-frontend-typografi";
-import React from "react";
+import { Checkbox, Heading } from "@navikt/ds-react";
 import { Link } from "react-router-dom";
-import { DryRunResult } from "../../../types/migration";
+import { FormMigrationLogData } from "../../../types/migration";
 import FormStatusPanel from "../../Forms/status/FormStatusPanel";
 import BreakingChangesWarning from "./BreakingChangesWarning";
+import ComponentDependencies from "./ComponentDependencies";
 
 const useStyles = makeStyles({
   row: {
@@ -21,10 +20,19 @@ const useStyles = makeStyles({
     width: "14rem",
     marginLeft: "3rem",
   },
+  resultContainer: {
+    marginBottom: "1.5rem",
+  },
+  data: {
+    whiteSpace: "break-spaces",
+    overflowWrap: "anywhere",
+    maxWidth: "100%",
+    marginBottom: "0",
+  },
 });
 
 interface MigrationDryRunResultsProps {
-  dryRunResults: DryRunResult[];
+  dryRunResults: FormMigrationLogData[];
   selectedPaths: string[];
   onChange: (val: string[]) => void;
   getPreviewUrl: (val: string) => string;
@@ -43,19 +51,26 @@ const MigrationDryRunResults = ({
       {dryRunResults.map((result) => {
         const { breakingChanges } = result;
         const hasBreakingChanges = breakingChanges && breakingChanges.length > 0;
+
         return (
           <li key={result.skjemanummer} className={styles.row}>
             <div className={styles.mainColumn}>
-              <Undertittel>
+              <Heading level="2" size="small">
                 {result.title} ({result.skjemanummer})
-              </Undertittel>
+              </Heading>
               <p>
                 Antall komponenter som vil bli påvirket av migreringen: {result.changed} av {result.found}
               </p>
               {hasBreakingChanges && <BreakingChangesWarning breakingChanges={breakingChanges} />}
-              {result.diff.length > 0 && (
-                <pre style={{ whiteSpace: "break-spaces" }}>{JSON.stringify(result.diff, null, 2)}</pre>
-              )}
+              {result.diff.map((componentDiff) => {
+                const componentKey = componentDiff.key || (componentDiff["key_ORIGINAL"] as string);
+                return (
+                  <div className={styles.resultContainer} key={`${componentKey}-${componentDiff.id}-diff`}>
+                    <pre className={styles.data}>{JSON.stringify(componentDiff, null, 2)}</pre>
+                    <ComponentDependencies dependencies={result.dependencies[componentKey]} />
+                  </div>
+                );
+              })}
               <Link className="knapp margin-bottom-default margin-top-default" to={getPreviewUrl(result.path)}>
                 Forhåndsvis
               </Link>
@@ -63,7 +78,6 @@ const MigrationDryRunResults = ({
             <div className={styles.sideColumn}>
               {result.changed > 0 && (
                 <Checkbox
-                  label={"Inkluder i migrering"}
                   checked={selectedPaths.includes(result.path)}
                   onChange={(event) => {
                     if (event.target.checked) {
@@ -72,7 +86,9 @@ const MigrationDryRunResults = ({
                       onChange(selectedPaths.filter((path) => path !== result.path));
                     }
                   }}
-                />
+                >
+                  Inkluder i migrering
+                </Checkbox>
               )}
               <FormStatusPanel publishProperties={result} spacing={"small"} hideToggleDiffButton />
             </div>

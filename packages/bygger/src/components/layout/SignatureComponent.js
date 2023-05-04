@@ -1,9 +1,6 @@
 import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import Lukknapp from "nav-frontend-lukknapp";
-import Panel from "nav-frontend-paneler";
-import { Input, SkjemaGruppe } from "nav-frontend-skjema";
-import { Undertittel } from "nav-frontend-typografi";
-import React from "react";
+import { Close } from "@navikt/ds-icons";
+import { Button, Fieldset, Heading, Panel, TextField } from "@navikt/ds-react";
 import LabelWithDiff from "../FormMetaDataEditor/LabelWithDiff";
 
 const useStyles = makeStyles({
@@ -16,11 +13,25 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
   const styles = useStyles();
   return (
     <Panel className="margin-bottom-default" border>
-      <Lukknapp className={styles.closeBtn} bla={true} onClick={onDelete} />
-      <SkjemaGruppe
-        legend={<LabelWithDiff label={<Undertittel>{"Signatur " + (index + 1)}</Undertittel>} diff={diff?.status} />}
-      >
-        <Input
+      <Button
+        variant="tertiary"
+        icon={<Close aria-hidden />}
+        onClick={onDelete}
+        className={styles.closeBtn}
+        aria-label={"Slett signatur " + (index + 1)}
+      />
+      <Fieldset data-testid="signatures">
+        <legend>
+          <LabelWithDiff
+            label={
+              <Heading level="2" size="small">
+                {"Signatur " + (index + 1)}
+              </Heading>
+            }
+            diff={diff?.status}
+          />
+        </legend>
+        <TextField
           label="Hvem skal signere?"
           type="text"
           name={`signature${index + 1}`}
@@ -33,7 +44,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
             })
           }
         />
-        <Input
+        <TextField
           label="Instruksjoner til den som signerer"
           type="text"
           name={`signatureInstruction${index}`}
@@ -46,7 +57,7 @@ const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undef
             })
           }
         />
-      </SkjemaGruppe>
+      </Fieldset>
     </Panel>
   );
 };

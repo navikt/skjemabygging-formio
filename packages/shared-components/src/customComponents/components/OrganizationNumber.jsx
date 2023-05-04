@@ -1,10 +1,10 @@
 import { validatorUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import baseEditForm from "formiojs/components/_classes/component/Component.form";
 import FormBuilderOptions from "../../Forms/form-builder-options";
+import TextField from "./TextField.js";
 import { advancedDescription } from "./fields/advancedDescription.js";
-import Number from "./Number.js";
 
-export default class OrganizationNumber extends Number {
+export default class OrganizationNumber extends TextField {
   validateOrganizationNumber(organizationNumber) {
     if (organizationNumber === "") {
       return true;

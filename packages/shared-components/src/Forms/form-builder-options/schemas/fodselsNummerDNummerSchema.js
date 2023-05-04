@@ -1,5 +1,5 @@
 const fodselsNummerDNummerSchema = (keyPostfix = "") => ({
-  label: "Fødselsnummer / D-nummer",
+  label: "Fødselsnummer eller d-nummer",
   type: "fnrfield",
   key: `fodselsnummerDNummer${keyPostfix}`,
   fieldSize: "input--s",

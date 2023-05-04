@@ -1,10 +1,10 @@
 import { defineConfig } from "cypress";
 
 export default defineConfig({
+  video: false,
   e2e: {
     baseUrl: "http://localhost:3000",
-    viewportWidth: 1500,
-    viewportHeight: 1200,
-    experimentalSessionAndOrigin: true,
+    viewportWidth: 1280,
+    viewportHeight: 1000,
   },
 });
