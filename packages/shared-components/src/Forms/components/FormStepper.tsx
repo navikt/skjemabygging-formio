@@ -81,7 +81,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
                 onClick={(e) => {
                   loggNavigering({
                     lenkeTekst: translate(step.label),
-                    destination: e.nativeEvent.view?.location.href,
+                    destinasjon: e.nativeEvent.view?.location.href,
                   });
                 }}
               >

@@ -13,7 +13,7 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
           onClick={() => {
             loggNavigering({
               lenkeTekst: translate(TEXTS.grensesnitt.goBack),
-              destination: goBackUrl,
+              destinasjon: goBackUrl,
             });
           }}
           className="navds-button navds-button--secondary"
@@ -31,7 +31,7 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
           onClick={() => {
             loggNavigering({
               lenkeTekst: translate(TEXTS.grensesnitt.navigation.exit),
-              destination: exitUrl,
+              destinasjon: exitUrl,
             });
           }}
         >

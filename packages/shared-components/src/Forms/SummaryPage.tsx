@@ -112,7 +112,7 @@ const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUr
             <Link
               to={{ pathname: `${formUrl}/${key}`, search }}
               className={link}
-              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destination: e.view.location.href })}
+              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.location.href })}
             >
               <span>{panelLinkText}</span>
             </Link>
@@ -224,7 +224,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   onClick={() => {
                     loggNavigering({
                       lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
-                      destination: `${formUrl}/send-i-posten`,
+                      destinasjon: `${formUrl}/send-i-posten`,
                     });
                     loggSkjemaStegFullfort({
                       steg: getPanels(form.components).length + 1,

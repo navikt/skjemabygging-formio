@@ -59,7 +59,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
     }
     try {
       setLoading(true);
-      loggNavigering({ lenkeTekst: children, destination: "/sendinn" });
+      loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });
       removeBeforeUnload();
       const response = await postToSendInn(
         http,

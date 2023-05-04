@@ -53,7 +53,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   function onNextPage({ page, currentPanels }) {
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
-      destination: `${formUrl}/${currentPanels?.[page]}`,
+      destinasjon: `${formUrl}/${currentPanels?.[page]}`,
     });
     loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
@@ -62,7 +62,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   function onPreviousPage({ page, currentPanels }) {
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
-      destination: `${formUrl}/${currentPanels?.[page - 2]}`,
+      destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
     });
     onNextOrPreviousPage(page, currentPanels);
   }
@@ -70,7 +70,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   function onCancel({ url }) {
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-      destination: url,
+      destinasjon: url,
     });
   }
 
@@ -94,7 +94,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
-      destination: `${formUrl}/oppsummering`,
+      destinasjon: `${formUrl}/oppsummering`,
     });
     const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
