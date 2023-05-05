@@ -5,13 +5,7 @@ import { sanitizeJavaScriptCode } from "../../formio-overrides";
 const getRelevantAttachments = (form, submission) => {
   return navFormUtils
     .flattenComponents(form.components)
-    .filter(
-      (component) =>
-        component.properties &&
-        !!component.properties.vedleggskode &&
-        component.key !== "annenDokumentasjon" &&
-        !component.otherDocumentation
-    )
+    .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
     .map((comp) => ({
@@ -29,7 +23,7 @@ const hasOtherDocumentation = (form, submission) => {
     .flattenComponents(form.components)
     .map(sanitize)
     .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
-    .some((component) => component.otherDocumentation || component.key === "annenDokumentasjon");
+    .some((component) => component.otherDocumentation);
 };
 
 const sanitize = (component) => {
