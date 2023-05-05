@@ -455,7 +455,7 @@ describe("navFormUtils", () => {
       expect(actualForm.components).toHaveLength(0);
     });
 
-    it.skip("do not remove panel with key vedlegg", () => {
+    it("do not remove panel with key vedlegg", () => {
       const actualForm = removeVedleggspanel({
         components: [
           {
@@ -467,7 +467,7 @@ describe("navFormUtils", () => {
       expect(actualForm.components).toHaveLength(1);
     });
 
-    it.skip("do not remove panel with key vedleggpanel", () => {
+    it("do not remove panel with key vedleggpanel", () => {
       const actualForm = removeVedleggspanel({
         components: [
           {
