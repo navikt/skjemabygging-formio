@@ -132,7 +132,7 @@ export default class NavCheckbox extends FormioCheckbox {
   }
 
   updateValue(value, flags) {
-    const changed = super.updateValue(value || (this.input && this.input.checked ? "ja" : null), flags);
+    const changed = super.updateValue(value || (this.input && this.input.checked), flags);
 
     // Update attributes of the input element
     if (changed && this.input) {
