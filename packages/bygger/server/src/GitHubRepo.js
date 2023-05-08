@@ -1,4 +1,6 @@
+import { createActionAuth } from "@octokit/auth-action";
 import { Octokit } from "@octokit/rest";
+import { logger } from "./logging/logger";
 
 // Not exhaustive
 export const gitTreeMode = {
@@ -8,10 +10,20 @@ export const gitTreeMode = {
 };
 
 export class GitHubRepo {
-  constructor(owner, repo, personalAccessToken) {
+  constructor(owner, repo, _personalAccessToken) {
     this.owner = owner;
     this.repo = repo;
-    this.octokit = new Octokit({ auth: personalAccessToken });
+    this.octokit = new Octokit({
+      authStrategy: createActionAuth,
+      userAgent: "navikt/skjemabygging-formio",
+      baseUrl: "https://api.github.com",
+      log: {
+        debug: logger.debug,
+        info: logger.info,
+        warn: logger.warn,
+        error: logger.error,
+      },
+    });
   }
 
   getRef(branch) {
