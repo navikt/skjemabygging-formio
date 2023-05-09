@@ -208,9 +208,9 @@ export class Backend {
     const filePath = getFormFilePath(formPath);
     logger.debug(`Fetch published form ${filePath} from ${this.config.publishRepo.base}`);
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { content, ...data } = response?.data as any;
-    logger.debug("Retrieved published form", data || {});
+    const logData = { ...response?.data };
+    delete logData.content;
+    logger.debug("Retrieved published form", logData || {});
     if (response && "content" in response.data) {
       const content = base64ToString(response.data.content);
       return JSON.parse(content);
