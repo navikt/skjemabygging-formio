@@ -12,7 +12,16 @@ export class GitHubRepo {
   constructor(owner, repo, personalAccessToken) {
     this.owner = owner;
     this.repo = repo;
-    this.octokit = new Octokit({ auth: personalAccessToken });
+    this.octokit = new Octokit({
+      auth: personalAccessToken,
+      userAgent: "navikt/skjemabygger",
+      log: {
+        debug: () => {},
+        info: () => {},
+        warn: logger.warn,
+        error: logger.error,
+      },
+    });
   }
 
   getRef(branch) {
@@ -45,8 +54,8 @@ export class GitHubRepo {
     let remoteFileContent;
     try {
       remoteFileContent = await this.octokit.rest.repos.getContent({ owner: this.owner, repo: this.repo, ref, path });
-    } catch (e) {
-      logger.error(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`);
+    } catch (error) {
+      logger.error(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
     }
     return remoteFileContent;
   }

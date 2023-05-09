@@ -208,8 +208,11 @@ export class Backend {
     const filePath = getFormFilePath(formPath);
     logger.debug(`Fetch published form ${filePath} from ${this.config.publishRepo.base}`);
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
-    logger.debug("Retrieved published form", response?.data || {});
     if (response && "content" in response.data) {
+      const logData = { ...response?.data };
+      logData.content = `${logData.content.substring(0, 20)}...`;
+      logger.debug("Retrieved published form", logData);
+
       const content = base64ToString(response.data.content);
       return JSON.parse(content);
     }
