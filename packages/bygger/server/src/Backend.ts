@@ -1,9 +1,10 @@
 import { I18nTranslations, NavFormType, ResourceContent } from "@navikt/skjemadigitalisering-shared-domain";
 import { PushEvent } from "@octokit/webhooks-types";
 import { v4 as uuidv4 } from "uuid";
+import { GitHubRepo } from "./GitHubRepo.js";
 import { ConfigType } from "./config/types";
 import { base64ToString, fetchWithErrorHandling } from "./fetchUtils";
-import { GitHubRepo } from "./GitHubRepo.js";
+import { logger } from "./logging/logger";
 import {
   createFileForPushingToRepo,
   deleteFilesAndUpdateMonorepoRefCallback,
@@ -32,6 +33,7 @@ export class Backend {
   async publishForm(formContent: NavFormType, translationsContent: I18nTranslations | undefined, formPath: string) {
     const formFile = createFileForPushingToRepo(formContent.title, getFormFilePath(formPath), "skjema", formContent);
     const files = [formFile];
+    const branchName = `publish-${formPath}--${uuidv4()}`;
 
     if (translationsContent) {
       const translationsFile = createFileForPushingToRepo(
@@ -43,26 +45,50 @@ export class Backend {
       files.push(translationsFile);
     }
 
+    logger.info(
+      `Publish ${formFile.path} to '${this.config.publishRepo.base}' on '${this.config.publishRepo.name}', with working branch ${branchName}`,
+      {
+        base: this.config.publishRepo.base,
+        repo: this.config.publishRepo.name,
+        branch: branchName,
+        name: formFile.name,
+        path: formFile.path,
+        type: formFile.type,
+        sha: this.config.gitSha,
+      }
+    );
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepo.base,
-      `publish-${formPath}--${uuidv4()}`,
+      branchName,
       pushFilesAndUpdateMonorepoRefCallback(files, this.config.gitSha),
       `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
     );
   }
 
   async unpublishForm(formPath: string) {
+    const branchName = `unpublish-${formPath}--${uuidv4()}`;
+    logger.info(
+      `Unpublish ${formPath} to '${this.config.publishRepo.base}' on '${this.config.publishRepo.name}', with working branch ${branchName}`,
+      {
+        base: this.config.publishRepo.base,
+        repo: this.config.publishRepo.name,
+        branch: branchName,
+        path: formPath,
+        sha: this.config.gitSha,
+      }
+    );
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepo.base,
-      `unpublish-${formPath}--${uuidv4()}`,
+      branchName,
       deleteFilesAndUpdateMonorepoRefCallback([getFormFilePath(formPath), getTranslationFilePath(formPath)]),
       `[avpublisering] skjema ${formPath}, monorepo ref: ${this.config.gitSha}`
     );
   }
 
   async publishResource(resourceName: string, resourceContent: ResourceContent) {
+    const branchName = `publish-${resourceName}--${uuidv4()}`;
     const resourceFile = createFileForPushingToRepo(
       resourceName,
       `resources/${resourceName}.json`,
@@ -70,10 +96,22 @@ export class Backend {
       resourceContent
     );
 
+    logger.info(
+      `Publish ${resourceFile.path} to '${this.config.publishRepo.base}' on '${this.config.publishRepo.name}', with working branch ${branchName}`,
+      {
+        base: this.config.publishRepo.base,
+        repo: this.config.publishRepo.name,
+        branch: branchName,
+        name: resourceFile.name,
+        path: resourceFile.path,
+        type: resourceFile.type,
+        sha: this.config.gitSha,
+      }
+    );
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepo.base,
-      `publish-${resourceName}--${uuidv4()}`,
+      branchName,
       pushFilesAndUpdateMonorepoRefCallback([resourceFile], this.config.gitSha),
       `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`
     );
@@ -85,14 +123,24 @@ export class Backend {
   }
 
   async publishForms(forms: NavFormType[]) {
+    const branchName = `bulkpublish--${uuidv4()}`;
     const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
     );
 
+    logger.info(
+      `Bulk-publish ${formFiles.length} files to '${this.config.publishRepo.base}' on '${this.config.publishRepo.name}', with working branch ${branchName}`,
+      {
+        base: this.config.publishRepo.base,
+        repo: this.config.publishRepo.name,
+        branch: branchName,
+        sha: this.config.gitSha,
+      }
+    );
     return performChangesOnSeparateBranch(
       this.skjemaUtfylling,
       this.config.publishRepo.base,
-      `bulkpublish--${uuidv4()}`,
+      branchName,
       pushFilesAndUpdateMonorepoRefCallback(formFiles, this.config.gitSha),
       `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
