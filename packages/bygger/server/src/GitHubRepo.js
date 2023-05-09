@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import { logger } from "./logging/logger";
 
 // Not exhaustive
 export const gitTreeMode = {
@@ -44,7 +45,9 @@ export class GitHubRepo {
     let remoteFileContent;
     try {
       remoteFileContent = await this.octokit.rest.repos.getContent({ owner: this.owner, repo: this.repo, ref, path });
-    } catch (e) {}
+    } catch (e) {
+      logger.error(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`);
+    }
     return remoteFileContent;
   }
 

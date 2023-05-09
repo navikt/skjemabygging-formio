@@ -30,9 +30,9 @@ export function createFileForPushingToRepo(name, path, type, content) {
 export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) {
   return async (repo, branch) => {
     const initialRef = await repo.getRef(branch);
-
+    logger.info(`Perform ${files.length} change(s) on ${branch}, ref: ${initialRef}`);
     for (const file of files) {
-      logger.debug("Push files to repo", { repo, branch, path: file.path, type: file.type, name: file.name });
+      logger.debug("Push file to repo", { repo, branch, path: file.path, type: file.type, name: file.name });
       await pushFileToRepo(
         repo,
         branch,
