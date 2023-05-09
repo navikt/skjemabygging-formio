@@ -208,9 +208,7 @@ export class Backend {
     const filePath = getFormFilePath(formPath);
     logger.debug(`Fetch published form ${filePath} from ${this.config.publishRepo.base}`);
     const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
-    const logData = { ...response?.data };
-    delete logData.content;
-    logger.debug("Retrieved published form", logData || {});
+    logger.debug("Retrieved published form", response?.data || {});
     if (response && "content" in response.data) {
       const content = base64ToString(response.data.content);
       return JSON.parse(content);
