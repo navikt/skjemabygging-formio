@@ -1,4 +1,5 @@
 import { stringTobase64 } from "./fetchUtils";
+import { logger } from "./logging/logger";
 
 function areEqualWithoutWhiteSpaces(string1, string2) {
   return string1.replace(/\s/g, "") === string2.replace(/\s/g, "");
@@ -31,6 +32,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     const initialRef = await repo.getRef(branch);
 
     for (const file of files) {
+      logger.debug("Push files to repo", { repo, branch, path: file.path, type: file.type, name: file.name });
       await pushFileToRepo(
         repo,
         branch,
@@ -41,6 +43,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     }
 
     if (await repo.hasBranchChanged(initialRef, branch)) {
+      logger.info("Update monorepo ref", { newGitSha: newMonorepoGitSha, original: initialRef, branch, repo });
       await pushFileToRepo(
         repo,
         branch,
@@ -78,12 +81,29 @@ export async function performChangesOnSeparateBranch(repo, base, branch, perform
   if (await repo.hasBranchChanged(baseRef, branch)) {
     // Only create and merge pull request if the branch contains changes, compared to the base branch
     const pullRequest = await repo.createPullRequest("Automatic publishing job", branch, base);
+    logger.info("Created pull-request", {
+      pullRequest: pullRequest.data.number,
+      baseRef,
+      branch,
+      committMessage: mergeCommitMessage,
+    });
     await repo.mergePullRequest(pullRequest.data.number, mergeCommitMessage);
     const updatedBase = await repo.getRef(base);
     updatedBaseSha = updatedBase.data.object.sha;
+    logger.info("Merged pull-request", {
+      updatedBaseSha,
+      pullRequest: pullRequest.data.number,
+      baseRef,
+      branch,
+    });
   }
 
-  await repo.deleteRef(branch);
+  try {
+    await repo.deleteRef(branch);
+  } catch (error) {
+    logger.error(`Failed to delete branch ${branch}`, error);
+  }
+  logger.info(`Deleted branch ${branch}`);
   return updatedBaseSha;
 }
 
