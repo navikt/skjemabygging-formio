@@ -17,19 +17,21 @@ export class GitHubRepo {
   }
 
   async init(credentials) {
-    const auth = createAppAuth({
-      appId: credentials.appId,
-      privateKey: credentials.privateKey,
-      clientId: credentials.clientId,
-      clientSecret: credentials.clientSecret,
-    });
-    const appAuthentication = await auth({
-      type: "installation",
-      installationId: process.env.GITHUB_APP_INSTALLATION_ID,
-    });
+    let appAuthentication;
+    if (credentials?.appId && credentials.appId !== "test") {
+      const auth = createAppAuth({
+        appId: credentials.appId,
+        privateKey: credentials.privateKey,
+        clientId: credentials.clientId,
+        clientSecret: credentials.clientSecret,
+      });
+      appAuthentication = await auth({
+        type: "installation",
+        installationId: process.env.GITHUB_APP_INSTALLATION_ID,
+      });
+    }
     this.octokit = new Octokit({
-      auth: appAuthentication.token,
-      userAgent: "navikt/skjemabygger",
+      auth: appAuthentication?.token ?? "",
       log: {
         debug: () => {},
         info: () => {},

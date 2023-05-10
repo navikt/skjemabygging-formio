@@ -57,7 +57,7 @@ describe("Backend", () => {
 
   it("creates instance of GitHubRepo.js", () => {
     expect(GitHubRepo).toHaveBeenCalledTimes(1);
-    expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo");
+    expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", undefined);
   });
 
   describe("publishForm", () => {

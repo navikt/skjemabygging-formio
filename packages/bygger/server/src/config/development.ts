@@ -2,6 +2,7 @@ import {
   AzureConfig,
   FormioConfig,
   FyllutConfig,
+  GithubAppConfig,
   PublishRepoConfig,
   PusherConfig,
   SkjemabyggingProxyConfig,
@@ -34,6 +35,10 @@ export const devGithub: Partial<PublishRepoConfig> = {
   name: "skjemautfylling-formio",
   owner: "navikt",
   base: "test-publishing",
+};
+
+export const devGithubApp: Partial<GithubAppConfig> = {
+  appId: "test",
 };
 
 export const devEnabledFeatures = "translations,enhetsListe,autoComplete,diff";
