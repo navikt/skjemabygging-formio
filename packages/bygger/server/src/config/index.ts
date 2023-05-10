@@ -48,6 +48,13 @@ const config: ConfigType = {
     owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
     base: env("PUBLISH_REPO_BASE", devGithub.base),
   },
+  githubApp: {
+    appId: env("GITHUB_APP_ID"),
+    privateKey: env("GITHUB_APP_PRIVATE_KEY"),
+    clientId: env("GITHUB_CLIENT_ID"),
+    clientSecret: env("GITHUB_CLIENT_SECRET"),
+    installationId: env("GITHUB_APP_INSTALLATION_ID"),
+  },
   formio: {
     projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),
     projectId: env("FORMIO_PROJECT_ID"),

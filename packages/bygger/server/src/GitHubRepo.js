@@ -10,18 +10,18 @@ export const gitTreeMode = {
 };
 
 export class GitHubRepo {
-  constructor(owner, repo) {
+  constructor(owner, repo, credentials) {
     this.owner = owner;
     this.repo = repo;
-    this.init();
+    this.init(credentials);
   }
 
-  async init() {
+  async init(credentials) {
     const auth = createAppAuth({
-      appId: process.env.GITHUB_APP_ID,
-      privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      appId: credentials.appId,
+      privateKey: credentials.privateKey,
+      clientId: credentials.clientId,
+      clientSecret: credentials.clientSecret,
     });
     const appAuthentication = await auth({
       type: "installation",
