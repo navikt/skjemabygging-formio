@@ -27,7 +27,7 @@ export class Backend {
   constructor(config: ConfigType, formioService: FormioService) {
     this.config = config;
     this.formioService = formioService;
-    this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.publishRepo.token);
+    this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.githubApp);
   }
 
   async publishForm(formContent: NavFormType, translationsContent: I18nTranslations | undefined, formPath: string) {

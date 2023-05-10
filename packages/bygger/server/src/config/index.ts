@@ -6,6 +6,7 @@ import {
   devFormio,
   devFyllut,
   devGithub,
+  devGithubApp,
   devPusher,
   devSkjemabyggingProxy,
 } from "./development";
@@ -47,6 +48,13 @@ const config: ConfigType = {
     token: env("GITHUB_TEAM_TOKEN"),
     owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
     base: env("PUBLISH_REPO_BASE", devGithub.base),
+  },
+  githubApp: {
+    appId: env("GITHUB_APP_ID", devGithubApp.appId),
+    privateKey: env("GITHUB_APP_PRIVATE_KEY"),
+    clientId: env("GITHUB_CLIENT_ID"),
+    clientSecret: env("GITHUB_CLIENT_SECRET"),
+    installationId: env("GITHUB_APP_INSTALLATION_ID"),
   },
   formio: {
     projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),
