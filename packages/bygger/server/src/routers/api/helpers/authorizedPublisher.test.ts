@@ -14,8 +14,7 @@ describe("authorizedPublisher", () => {
     jest.restoreAllMocks();
   });
 
-  //TODO fix and unskip
-  it.skip("Accepts formio token in body", async () => {
+  it("Accepts formio token in body", async () => {
     nock(projectUrl).get("/current").reply(204);
     const req = mockRequest({
       body: {
@@ -29,8 +28,7 @@ describe("authorizedPublisher", () => {
     expect(next.mock.calls[0][0]).toBeUndefined();
   });
 
-  //TODO fix and unskip
-  it.skip("Accepts formio token in header", async () => {
+  it("Accepts formio token in header", async () => {
     nock(projectUrl).get("/current").reply(204);
     const req = mockRequest({
       headers: {

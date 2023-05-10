@@ -13,8 +13,7 @@ const defaultPayload = {
   name: "Jon",
 };
 
-//TODO: fix and unskip
-describe.skip("authHandler", () => {
+describe("authHandler", () => {
   let key: jose.JWK.Key;
   beforeAll(async () => {
     key = await generateJwk();

@@ -16,8 +16,7 @@ import { GitHubRepo } from "./GitHubRepo.js";
 
 jest.mock("@octokit/rest");
 
-//TODO: fix and unskip
-describe.skip("GitHubRepo", () => {
+describe("GitHubRepo", () => {
   let repo;
   const owner = "myOrganization";
   const repoName = "myRepo";
