@@ -1,3 +1,4 @@
+import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
 import { logger } from "./logging/logger";
 
@@ -9,11 +10,25 @@ export const gitTreeMode = {
 };
 
 export class GitHubRepo {
-  constructor(owner, repo, personalAccessToken) {
+  constructor(owner, repo) {
     this.owner = owner;
     this.repo = repo;
+    this.init();
+  }
+
+  async init() {
+    const auth = createAppAuth({
+      appId: process.env.GITHUB_APP_ID,
+      privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    });
+    const appAuthentication = await auth({
+      type: "installation",
+      installationId: process.env.GITHUB_APP_INSTALLATION_ID,
+    });
     this.octokit = new Octokit({
-      auth: personalAccessToken,
+      auth: appAuthentication.token,
       userAgent: "navikt/skjemabygger",
       log: {
         debug: () => {},
