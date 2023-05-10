@@ -1,4 +1,3 @@
-import { createBackendForTest } from "../testTools/backend/testUtils.js";
 import {
   mockRepoCreateOrUpdateFileContents,
   mockRepoCreatePullRequest,
@@ -9,8 +8,9 @@ import {
   mockRepoHasBranchChanged,
   mockRepoMergePullRequest,
 } from "../__mocks__/GitHubRepo";
-import { stringTobase64 } from "./fetchUtils";
+import { createBackendForTest } from "../testTools/backend/testUtils.js";
 import { GitHubRepo } from "./GitHubRepo.js";
+import { stringTobase64 } from "./fetchUtils";
 import { pushEventWithCommitMessage } from "./testdata/default-github-push-event";
 
 jest.mock("uuid", () => {
@@ -57,7 +57,7 @@ describe("Backend", () => {
 
   it("creates instance of GitHubRepo.js", () => {
     expect(GitHubRepo).toHaveBeenCalledTimes(1);
-    expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", "publishRepoToken");
+    expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo");
   });
 
   describe("publishForm", () => {
