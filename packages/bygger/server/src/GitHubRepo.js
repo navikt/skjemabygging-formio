@@ -29,9 +29,12 @@ export class GitHubRepo {
         type: "installation",
         installationId: process.env.GITHUB_APP_INSTALLATION_ID,
       });
+      logger.debug("Authenticate on Github as app installation");
     }
     this.octokit = new Octokit({
       auth: appAuthentication?.token ?? "",
+      userAgent: "navikt/skjemabygging",
+      baseUrl: "https://api.github.com",
       log: {
         debug: () => {},
         info: () => {},
