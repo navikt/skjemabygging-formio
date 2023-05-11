@@ -20,17 +20,22 @@ const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
 const UNPUBLISH_REGEXP = /^\[avpublisering\] skjema (.*), monorepo ref: (.*)$/;
 
 export class Backend {
-  private readonly skjemaUtfylling: GitHubRepo;
   private readonly config: ConfigType;
   private readonly formioService: FormioService;
 
   constructor(config: ConfigType, formioService: FormioService) {
     this.config = config;
     this.formioService = formioService;
-    this.skjemaUtfylling = new GitHubRepo(config.publishRepo.owner, config.publishRepo.name, config.githubApp);
+  }
+
+  private async createGitHubRepo() {
+    const repo = new GitHubRepo(this.config.publishRepo.owner, this.config.publishRepo.name, this.config.githubApp);
+    await repo.authenticate();
+    return repo;
   }
 
   async publishForm(formContent: NavFormType, translationsContent: I18nTranslations | undefined, formPath: string) {
+    const skjemautfyllingRepo = await this.createGitHubRepo();
     const formFile = createFileForPushingToRepo(formContent.title, getFormFilePath(formPath), "skjema", formContent);
     const files = [formFile];
     const branchName = `publish-${formPath}--${uuidv4()}`;
@@ -58,7 +63,7 @@ export class Backend {
       }
     );
     return performChangesOnSeparateBranch(
-      this.skjemaUtfylling,
+      skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       pushFilesAndUpdateMonorepoRefCallback(files, this.config.gitSha),
@@ -67,6 +72,7 @@ export class Backend {
   }
 
   async unpublishForm(formPath: string) {
+    const skjemautfyllingRepo = await this.createGitHubRepo();
     const branchName = `unpublish-${formPath}--${uuidv4()}`;
     logger.info(
       `Unpublish ${formPath} to '${this.config.publishRepo.base}' on '${this.config.publishRepo.name}', with working branch ${branchName}`,
@@ -79,7 +85,7 @@ export class Backend {
       }
     );
     return performChangesOnSeparateBranch(
-      this.skjemaUtfylling,
+      skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       deleteFilesAndUpdateMonorepoRefCallback([getFormFilePath(formPath), getTranslationFilePath(formPath)]),
@@ -88,6 +94,7 @@ export class Backend {
   }
 
   async publishResource(resourceName: string, resourceContent: ResourceContent) {
+    const skjemautfyllingRepo = await this.createGitHubRepo();
     const branchName = `publish-${resourceName}--${uuidv4()}`;
     const resourceFile = createFileForPushingToRepo(
       resourceName,
@@ -109,7 +116,7 @@ export class Backend {
       }
     );
     return performChangesOnSeparateBranch(
-      this.skjemaUtfylling,
+      skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       pushFilesAndUpdateMonorepoRefCallback([resourceFile], this.config.gitSha),
@@ -123,6 +130,7 @@ export class Backend {
   }
 
   async publishForms(forms: NavFormType[]) {
+    const skjemautfyllingRepo = await this.createGitHubRepo();
     const branchName = `bulkpublish--${uuidv4()}`;
     const formFiles = forms.map((formContent: NavFormType) =>
       createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
@@ -138,7 +146,7 @@ export class Backend {
       }
     );
     return performChangesOnSeparateBranch(
-      this.skjemaUtfylling,
+      skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       pushFilesAndUpdateMonorepoRefCallback(formFiles, this.config.gitSha),
@@ -205,9 +213,10 @@ export class Backend {
   }
 
   async fetchPublishedForm(formPath: string) {
+    const skjemautfyllingRepo = await this.createGitHubRepo();
     const filePath = getFormFilePath(formPath);
     logger.debug(`Fetch published form ${filePath} from ${this.config.publishRepo.base}`);
-    const response = await this.skjemaUtfylling.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
+    const response = await skjemautfyllingRepo.getFileIfItExists(this.config.publishRepo.base || "master", filePath);
     if (response && "content" in response.data) {
       const logData = { ...response?.data };
       logData.content = `${logData.content.substring(0, 20)}...`;

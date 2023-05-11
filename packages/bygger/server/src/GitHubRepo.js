@@ -13,26 +13,25 @@ export class GitHubRepo {
   constructor(owner, repo, credentials) {
     this.owner = owner;
     this.repo = repo;
-    this.init(credentials);
+    this.credentials = credentials;
   }
 
-  async init(credentials) {
-    let appAuthentication;
-    if (credentials?.appId && credentials.appId !== "test") {
+  async authenticate() {
+    if (this.credentials?.appId && this.credentials.appId !== "test") {
       const auth = createAppAuth({
-        appId: credentials.appId,
-        privateKey: credentials.privateKey,
-        clientId: credentials.clientId,
-        clientSecret: credentials.clientSecret,
+        appId: this.credentials.appId,
+        privateKey: this.credentials.privateKey,
+        clientId: this.credentials.clientId,
+        clientSecret: this.credentials.clientSecret,
       });
-      appAuthentication = await auth({
+      this.authentication = await auth({
         type: "installation",
         installationId: process.env.GITHUB_APP_INSTALLATION_ID,
       });
       logger.debug("Authenticate on Github as app installation");
     }
     this.octokit = new Octokit({
-      auth: appAuthentication?.token ?? "",
+      auth: this.authentication?.token ?? "",
       userAgent: "navikt/skjemabygging",
       baseUrl: "https://api.github.com",
       log: {
