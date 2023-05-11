@@ -21,7 +21,8 @@ export class GitHubRepo {
       this.credentials.appId &&
       this.credentials.privateKey &&
       this.credentials.clientId &&
-      this.credentials.clientSecret
+      this.credentials.clientSecret &&
+      this.credentials.installationId
     ) {
       const auth = createAppAuth({
         appId: this.credentials.appId,
@@ -31,7 +32,7 @@ export class GitHubRepo {
       });
       this.authentication = await auth({
         type: "installation",
-        installationId: process.env.GITHUB_APP_INSTALLATION_ID,
+        installationId: this.credentials.installationId,
       });
       logger.debug("Authenticate on Github as app installation");
     }
