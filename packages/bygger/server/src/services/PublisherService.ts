@@ -35,6 +35,7 @@ class PublisherService {
       const publishResult = await this.backend.publishForm(formWithPublishProps, translations, form.path);
       return { changed: !!publishResult, form: formWithPublishProps };
     } catch (error) {
+      logger.error(`Failed to publish form`, error);
       if (formWithPublishProps) {
         logger.debug("Rolling back props since publishing failed", { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);

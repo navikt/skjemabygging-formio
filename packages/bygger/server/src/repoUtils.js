@@ -29,6 +29,7 @@ export function createFileForPushingToRepo(name, path, type, content) {
 
 export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) {
   return async (repo, branch) => {
+    logger.debug(`Get ref for branch ${branch}`);
     const initialRef = await repo.getRef(branch);
     logger.info(`Perform ${files.length} change(s) on ${branch}, ref: ${initialRef}`);
     for (const file of files) {
@@ -72,7 +73,9 @@ export function deleteFilesAndUpdateMonorepoRefCallback(paths) {
 }
 
 export async function performChangesOnSeparateBranch(repo, base, branch, performChanges, mergeCommitMessage) {
+  logger.debug(`Get ref for ${base}`);
   const baseRef = await repo.getRef(base);
+  logger.info(`Create new branch ${branch} based on ${base}`, baseRef);
   await repo.createRef(branch, baseRef.data.object.sha);
 
   await performChanges(repo, branch);
