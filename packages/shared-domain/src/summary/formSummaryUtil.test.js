@@ -483,7 +483,7 @@ describe("When handling component", () => {
         "",
         mockedTranslate
       );
-      expect(actual[0].value).toEqual("2 512,3889999999997".replaceAll(" ", "\u00A0"));
+      expect(actual[0].value).toEqual("2 512,39".replaceAll(" ", "\u00A0"));
     });
 
     it("should add prefix and suffix", () => {

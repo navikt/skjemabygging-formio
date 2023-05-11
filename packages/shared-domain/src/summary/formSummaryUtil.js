@@ -63,7 +63,7 @@ function formatValue(component, value, translate) {
     case "number":
       const prefix = component.prefix ? `${component.prefix} ` : "";
       const suffix = component.suffix ? ` ${component.suffix}` : "";
-      return prefix + Number(value).toLocaleString("no", { maximumFractionDigits: 20 }) + suffix;
+      return prefix + Number(value).toLocaleString("no", { maximumFractionDigits: 2 }) + suffix;
     default:
       return value;
   }
