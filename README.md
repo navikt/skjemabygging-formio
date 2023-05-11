@@ -46,11 +46,11 @@ en deploy til produksjon :nerd_face:
 
 I `packages/bygger/server/.env` kan man legge inn følgende miljøvariabler:
 
-| Miljøvariabel     | Beskrivelse                                                                            |
-| ----------------- | -------------------------------------------------------------------------------------- |
-| GITHUB_TEAM_TOKEN | GitHub personal access token (se framgangsmåte i neste avsnitt)                        |
-| GIT_SHA           | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master` |
-| PUBLISH_REPO_BASE | Denne blir satt til test-publishing hvis ikke satt for lokalt utviklingsmiljø          |
+| Miljøvariabel       | Beskrivelse                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| GITHUB_ACCESS_TOKEN | GitHub personal access token (se framgangsmåte i neste avsnitt)                        |
+| GIT_SHA             | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master` |
+| PUBLISH_REPO_BASE   | Denne blir satt til test-publishing hvis ikke satt for lokalt utviklingsmiljø          |
 
 ### Hvordan opprette et personal access token på GitHub
 
