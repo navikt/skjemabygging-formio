@@ -12,6 +12,7 @@ import {
   mockUpdateRef,
   Octokit,
 } from "@octokit/rest";
+import { configForTest } from "../testTools/backend/testUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 
 jest.mock("@octokit/rest");
@@ -22,7 +23,8 @@ describe("GitHubRepo", () => {
   const repoName = "myRepo";
 
   beforeEach(() => {
-    repo = new GitHubRepo(owner, repoName, "personalAccessToken");
+    repo = new GitHubRepo(owner, repoName, configForTest.githubApp);
+    repo.authenticate();
   });
 
   afterEach(() => {
@@ -40,10 +42,9 @@ describe("GitHubRepo", () => {
     mockMergePullRequest.mockClear();
   });
 
-  //TODO fix and unskip
-  it.skip("creates instance of octokit and authenticates with provided pat", () => {
+  it("creates instance of octokit and authenticates with provided pat", () => {
     expect(Octokit).toHaveBeenCalledTimes(1);
-    expect(Octokit).toHaveBeenLastCalledWith(expect.objectContaining({ auth: "personalAccessToken" }));
+    expect(Octokit).toHaveBeenLastCalledWith(expect.objectContaining({ auth: "" }));
   });
 
   describe("getRef", () => {

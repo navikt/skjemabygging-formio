@@ -8,7 +8,7 @@ import {
   mockRepoHasBranchChanged,
   mockRepoMergePullRequest,
 } from "../__mocks__/GitHubRepo";
-import { createBackendForTest } from "../testTools/backend/testUtils.js";
+import { configForTest, createBackendForTest } from "../testTools/backend/testUtils.js";
 import { GitHubRepo } from "./GitHubRepo.js";
 import { stringTobase64 } from "./fetchUtils";
 import { pushEventWithCommitMessage } from "./testdata/default-github-push-event";
@@ -25,6 +25,7 @@ describe("Backend", () => {
     // @ts-ignore
     GitHubRepo.mockImplementation(() => {
       return {
+        authenticate: jest.fn(),
         getRef: mockRepoGetRef,
         createRef: mockRepoCreateRef,
         deleteRef: mockRepoDeleteRef,
@@ -55,17 +56,17 @@ describe("Backend", () => {
     mockRepoMergePullRequest.mockClear();
   });
 
-  it("creates instance of GitHubRepo.js", () => {
-    expect(GitHubRepo).toHaveBeenCalledTimes(1);
-    expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", undefined);
-  });
-
   describe("publishForm", () => {
     const expectedBranchName = "publish-skjema--1234";
 
     describe("When file content is different from the corresponding file in the repo", () => {
       beforeEach(async () => {
         await backend.publishForm({ title: "Form" }, { en: {} }, formPath);
+      });
+
+      it("creates instance of GitHubRepo.js", () => {
+        expect(GitHubRepo).toHaveBeenCalledTimes(1);
+        expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", configForTest.githubApp);
       });
 
       it("creates a new branch in the target repo", () => {
@@ -188,6 +189,11 @@ describe("Backend", () => {
     describe("When file already exists", () => {
       beforeEach(async () => {
         await backend.publishResource("settings", { toggle: "on" });
+      });
+
+      it("creates instance of GitHubRepo.js", () => {
+        expect(GitHubRepo).toHaveBeenCalledTimes(1);
+        expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", configForTest.githubApp);
       });
 
       it("creates a new branch in the target repo", () => {
