@@ -73,8 +73,6 @@ spec:
       external:
         - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
-        - host: github.com
-        - host: raw.githubusercontent.com
         - host: formio-api.nav.no
       {{#each accessPolicy.outbound.external}}
         - host: {{this.host}}
