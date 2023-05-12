@@ -18,11 +18,8 @@ if (nodeEnv !== "test") {
   dotenv.config();
 }
 
-const env = (name: string, devValue?: string, optional: boolean = false): string => {
+const env = (name: string, devValue?: string): string => {
   const value = process.env[name];
-  if (optional) {
-    return value;
-  }
   const exists = !!value;
   if (nodeEnv === "production" && !exists) {
     throw new Error(`Missing env var: ${name}`);
@@ -31,6 +28,10 @@ const env = (name: string, devValue?: string, optional: boolean = false): string
     return devValue;
   }
   return value!;
+};
+
+const optionalEnv = (name: string): string | undefined => {
+  return process.env[name];
 };
 
 const config: ConfigType = {
@@ -48,7 +49,7 @@ const config: ConfigType = {
   },
   publishRepo: {
     name: env("PUBLISH_REPO", devGithub.name),
-    token: env("GITHUB_ACCESS_TOKEN", undefined, true),
+    token: optionalEnv("GITHUB_ACCESS_TOKEN"),
     owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
     base: env("PUBLISH_REPO_BASE", devGithub.base),
   },
