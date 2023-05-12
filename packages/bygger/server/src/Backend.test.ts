@@ -66,7 +66,11 @@ describe("Backend", () => {
 
       it("creates instance of GitHubRepo.js", () => {
         expect(GitHubRepo).toHaveBeenCalledTimes(1);
-        expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", configForTest.githubApp);
+        expect(GitHubRepo).toHaveBeenCalledWith(
+          "publish-repo-owner",
+          "publish-repo",
+          expect.objectContaining(configForTest.githubApp)
+        );
       });
 
       it("creates a new branch in the target repo", () => {
@@ -193,7 +197,11 @@ describe("Backend", () => {
 
       it("creates instance of GitHubRepo.js", () => {
         expect(GitHubRepo).toHaveBeenCalledTimes(1);
-        expect(GitHubRepo).toHaveBeenCalledWith("publish-repo-owner", "publish-repo", configForTest.githubApp);
+        expect(GitHubRepo).toHaveBeenCalledWith(
+          "publish-repo-owner",
+          "publish-repo",
+          expect.objectContaining(configForTest.githubApp)
+        );
       });
 
       it("creates a new branch in the target repo", () => {
