@@ -52,6 +52,7 @@ jobs:
   trigger-deploy-fyllut-to-dev:
     name: "Trigger deploy fyllut to dev"
     needs: [package-and-push-fyllut]
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     steps:
       - name: "Generate app installation access token"
