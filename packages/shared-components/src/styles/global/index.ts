@@ -21,9 +21,6 @@ const global = {
     textAlign: "left",
     color: "#262626",
   },
-  ".font-bold": {
-    fontWeight: 600,
-  },
   a: {
     color: "#0067c5",
   },

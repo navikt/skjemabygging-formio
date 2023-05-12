@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Detail, Heading } from "@navikt/ds-react";
+import { BodyShort, Heading } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
 import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
@@ -102,7 +102,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
       <Heading level="1" size="xlarge">
         {title}
       </Heading>
-      <Detail className="mb">{skjemanummer}</Detail>
+      <BodyShort className="mb">{skjemanummer}</BodyShort>
       {unusedTranslations.length > 0 && (
         <TranslationsToRemove translations={unusedTranslations} languageCode={languageCode} />
       )}

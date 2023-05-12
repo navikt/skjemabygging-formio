@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Detail, Heading } from "@navikt/ds-react";
+import { BodyShort, Heading } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../../context/languages";
 
@@ -38,7 +38,7 @@ export function FormTitle({ form, className }: Props) {
         <Heading level="1" size="xlarge">
           {translate(form.title)}
         </Heading>
-        {form.properties && form.properties.skjemanummer && <Detail>{form.properties.skjemanummer}</Detail>}
+        {form.properties && form.properties.skjemanummer && <BodyShort>{form.properties.skjemanummer}</BodyShort>}
       </div>
     </header>
   );
