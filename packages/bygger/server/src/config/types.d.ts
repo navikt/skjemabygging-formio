@@ -13,7 +13,7 @@ export type SkjemabyggingProxyConfig = {
 
 export type PublishRepoConfig = {
   name: string;
-  token: string;
+  token: string | undefined;
   owner: string;
   base: string;
 };

@@ -30,6 +30,10 @@ const env = (name: string, devValue?: string): string => {
   return value!;
 };
 
+const optionalEnv = (name: string): string | undefined => {
+  return process.env[name];
+};
+
 const config: ConfigType = {
   azure: {
     openidTokenEndpoint: env("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", devAzure.openidTokenEndpoint),
@@ -45,7 +49,7 @@ const config: ConfigType = {
   },
   publishRepo: {
     name: env("PUBLISH_REPO", devGithub.name),
-    token: env("GITHUB_ACCESS_TOKEN"),
+    token: optionalEnv("GITHUB_ACCESS_TOKEN"),
     owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
     base: env("PUBLISH_REPO_BASE", devGithub.base),
   },
