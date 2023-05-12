@@ -75,6 +75,7 @@ spec:
         - host: api.github.com
         - host: formio-api.nav.no
         - host: sockjs-eu.pusher.com
+        - host: api-eu.pusher.com
       {{#each accessPolicy.outbound.external}}
         - host: {{this.host}}
       {{/each}}
