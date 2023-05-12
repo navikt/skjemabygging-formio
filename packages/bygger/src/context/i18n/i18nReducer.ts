@@ -15,7 +15,8 @@ export type I18nAction =
   | { type: "updateTranslationsForNavForm"; payload: I18nTranslations }
   | { type: "updateLocalTranslationsForNavForm"; payload: I18nTranslations }
   | { type: "update"; payload: { lang: string; translation: ScopedTranslationMap } }
-  | { type: "remove"; payload: { lang: string; key: string } };
+  | { type: "remove"; payload: { lang: string; key: string } }
+  | { type: "updateLanguageId"; payload: { lang: string; id: string } };
 
 function reducer(state: I18nState, action: I18nAction) {
   switch (action.type) {
@@ -42,7 +43,7 @@ function reducer(state: I18nState, action: I18nAction) {
           [action.payload.lang]: {
             ...state.translations[action.payload.lang],
             translations: {
-              ...state.translations[action.payload.lang].translations,
+              ...state.translations[action.payload.lang]?.translations,
               ...action.payload.translation,
             },
           },
@@ -60,6 +61,17 @@ function reducer(state: I18nState, action: I18nAction) {
                 ([key]) => key !== action.payload.key
               )
             ),
+          },
+        },
+      };
+    case "updateLanguageId":
+      return {
+        ...state,
+        translations: {
+          ...state.translations,
+          [action.payload.lang]: {
+            ...state.translations[action.payload.lang],
+            id: action.payload.id,
           },
         },
       };

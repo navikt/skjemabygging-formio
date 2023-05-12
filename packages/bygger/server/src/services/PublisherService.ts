@@ -30,10 +30,12 @@ class PublisherService {
       const publishedLanguages = translations ? Object.keys(translations) : undefined;
       const now = dateUtils.getIso8601String();
       const formProps = createPublishProps(now, userName, publishedLanguages);
+      logger.debug("Save form before publishing", { formPath: form.path, ...formProps });
       formWithPublishProps = await this.formioService.saveForm(form, formioToken, userName, formProps);
       const publishResult = await this.backend.publishForm(formWithPublishProps, translations, form.path);
       return { changed: !!publishResult, form: formWithPublishProps };
     } catch (error) {
+      logger.error(`Failed to publish form`, error);
       if (formWithPublishProps) {
         logger.debug("Rolling back props since publishing failed", { formPath: form.path });
         const rollbackFormProps = createRollbackProps(form);

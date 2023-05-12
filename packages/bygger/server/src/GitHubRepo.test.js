@@ -12,6 +12,7 @@ import {
   mockUpdateRef,
   Octokit,
 } from "@octokit/rest";
+import { configForTest } from "../testTools/backend/testUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 
 jest.mock("@octokit/rest");
@@ -22,7 +23,8 @@ describe("GitHubRepo", () => {
   const repoName = "myRepo";
 
   beforeEach(() => {
-    repo = new GitHubRepo(owner, repoName, "personalAccessToken");
+    repo = new GitHubRepo(owner, repoName, configForTest.githubApp);
+    repo.authenticate();
   });
 
   afterEach(() => {
@@ -42,7 +44,7 @@ describe("GitHubRepo", () => {
 
   it("creates instance of octokit and authenticates with provided pat", () => {
     expect(Octokit).toHaveBeenCalledTimes(1);
-    expect(Octokit).toHaveBeenLastCalledWith({ auth: "personalAccessToken" });
+    expect(Octokit).toHaveBeenLastCalledWith(expect.objectContaining({ auth: undefined }));
   });
 
   describe("getRef", () => {

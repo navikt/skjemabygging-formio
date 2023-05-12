@@ -8,14 +8,13 @@ import { v4 as uuidv4 } from "uuid";
 import { AppLayout } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
 import { isFormMetadataValid, validateFormMetadata } from "../components/FormMetaDataEditor/utils";
+import UserFeedback from "../components/UserFeedback";
+import Column from "../components/layout/Column";
+import Row from "../components/layout/Row";
 import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 import { defaultFormFields } from "./DefaultForm";
 
 const useStyles = makeStyles({
-  root: {
-    margin: "0 auto 2rem",
-    maxWidth: "50rem",
-  },
   centerColumn: {
     gridColumn: "2 / 3",
   },
@@ -73,6 +72,10 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         .then((form) => {
           feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
           history.push(`/forms/${form.path}/edit`);
+        })
+        .catch((e) => {
+          feedbackEmit.error("Det valgte skjema-nummeret er allerede i bruk.");
+          console.error(e);
         });
     } else {
       setErrors(updatedErrors);
@@ -85,13 +88,22 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
 
   return (
     <AppLayout navBarProps={{ title: "Opprett nytt skjema" }}>
-      <main className={styles.root}>
-        <Heading level="1" size="xlarge">
-          Opprett nytt skjema
-        </Heading>
-        <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
-        <Button onClick={onCreate}>Opprett</Button>
-      </main>
+      <Row>
+        <Column className={styles.centerColumn}>
+          <Heading level="1" size="xlarge">
+            Opprett nytt skjema
+          </Heading>
+        </Column>
+      </Row>
+      <Row>
+        <Column className={styles.centerColumn}>
+          <CreationFormMetadataEditor form={state.form} onChange={setForm} errors={errors} />
+        </Column>
+        <Column>
+          <Button onClick={onCreate}>Opprett</Button>
+          <UserFeedback />
+        </Column>
+      </Row>
     </AppLayout>
   );
 };

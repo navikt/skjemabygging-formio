@@ -18,3 +18,4 @@ accessPolicy:
 secrets:
   - bygger-experimental
   - bygger-pusher-dev
+  - github-app-installation
