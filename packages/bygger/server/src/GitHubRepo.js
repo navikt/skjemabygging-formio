@@ -36,8 +36,15 @@ export class GitHubRepo {
       });
       logger.debug("Authenticate on Github as app installation");
     }
+
+    const auth = this.authentication?.token ?? this.credentials.token;
+    if (auth === undefined) {
+      logger.error(
+        "Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables"
+      );
+    }
     this.octokit = new Octokit({
-      auth: this.authentication?.token ?? this.credentials.token,
+      auth,
       userAgent: "navikt/skjemabygging",
       baseUrl: "https://api.github.com",
       log: {

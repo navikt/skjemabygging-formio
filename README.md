@@ -40,21 +40,30 @@ inn konfigurasjon i denne filen.
 ## Teste publisering av skjema på lokal maskin
 
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
-test-branch i repo'et skjemaufylling-formio. Hvilken branch som benyttes defineres av `PUBLISH_REPO_BASE`, og
+test-branch i repo'et [skjemaufylling-formio](https://github.com/navikt/skjemautfylling-formio). Hvilken branch som
+benyttes defineres av `PUBLISH_REPO_BASE`, og
 default-verdi kan overstyres i `packages/bygger/server/.env`, men ikke test mot `master` siden det starter
 en deploy til produksjon :nerd_face:
 
+For å autentisere deg er det anbefalt å bruke en personlig access token. Det vil gjøre det enklere å spore endringene i
+skjemautfylling-formio, siden committene vil ha eieren av tokenet som author. I prod og dev autentiserer byggeren seg
+med en app installation token, som genereres av
+en [GitHub app](https://github.com/apps/nav-team-fyllut-sendinn-workflows). For å teste publisering lokalt med app
+installation token finner du de nødvendige miljøvariablene i secreten `github-app-installation` i Google Cloud Console.
+
 I `packages/bygger/server/.env` kan man legge inn følgende miljøvariabler:
 
-| Miljøvariabel       | Beskrivelse                                                                            |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| GITHUB_ACCESS_TOKEN | GitHub personal access token (se framgangsmåte i neste avsnitt)                        |
-| GIT_SHA             | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master` |
-| PUBLISH_REPO_BASE   | Denne blir satt til test-publishing hvis ikke satt for lokalt utviklingsmiljø          |
+| Miljøvariabel                        | Beskrivelse                                                                                                                                                        |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GITHUB_ACCESS_TOKEN                  | GitHub personal access token (se framgangsmåte i neste avsnitt). Anbefalt måte å autentisere seg lokalt.                                                           |
+| GITHUB*CLIENT*...<br/>GITHUB*APP*... | Alternativ autentisering med GitHub app installation token i stedet for personal access token. Se `github-app-installation` i Google Cloud Console Secret Manager. |
+| GIT_SHA                              | Gyldig monorepo commit id (skjemabygging-formio), f.eks. `git rev-parse origin/master`                                                                             |
+| PUBLISH_REPO_BASE                    | Denne blir satt til test-publishing hvis ikke satt for lokalt utviklingsmiljø                                                                                      |
 
 ### Hvordan opprette et personal access token på GitHub
 
-Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+Se [GitHub docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
+.
 
 Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt` etter opprettelsen (_Configure SSO_).
 
@@ -73,7 +82,8 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 ## Feature toggles
 
-I fyllut og bygger styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en kommaseparert
+I fyllut og bygger styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en
+kommaseparert
 liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
 
 Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
@@ -95,7 +105,8 @@ Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
 ### Bygger
 
 I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/), bortsett fra under
-utvikling på lokal maskin, hvor utviklerene logger inn med [Formio-brukere](https://help.form.io/userguide/user-authentication).
+utvikling på lokal maskin, hvor utviklerene logger inn
+med [Formio-brukere](https://help.form.io/userguide/user-authentication).
 
 I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
 "Skjemabygging", og kan søkes fram på Microsofts
