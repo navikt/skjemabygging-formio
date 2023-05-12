@@ -1,0 +1,70 @@
+name: Trigger deploy fyllut as app installation
+on:
+  workflow_dispatch:
+
+env:
+  IMAGE_FYLLUT_BASE_DEV: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
+
+jobs:
+  init:
+    name: "Initialization"
+    runs-on: ubuntu-latest
+    outputs:
+      fyllutImageExists: ${{ steps.fyllut-image.outputs.exists }}
+    steps:
+      - name: Check if fyllut-base-dev image exists
+        id: fyllut-image
+        run: |
+          fyllutImageExists=$(gh api -H "Accept: application/vnd.github+json" /orgs/navikt/packages/container/skjemabygging-formio%2Ffyllut-base-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
+          echo "exists=$(echo $fyllutImageExists)" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  package-and-push-fyllut:
+    needs: [ init ]
+    if: ${{ needs.init.outputs.fyllutImageExists == 'false' }}
+    name: "Package fyllut"
+    runs-on: ubuntu-latest-8-cores
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.17.1'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - name: "Build application: Fyllut"
+        env:
+          REACT_APP_GIT_VERSION: ${{ github.sha }}
+          REACT_APP_GIT_BRANCH: ${{ github.ref_name }}
+        run: bin/build-application.sh fyllut
+      - name: Login to GitHub Package Repository
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Build and push Docker image: fyllut-base-dev"
+        working-directory: ./packages/fyllut
+        run: |
+          docker build --pull -t ${IMAGE_FYLLUT_BASE_DEV} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
+          docker push ${IMAGE_FYLLUT_BASE_DEV}
+
+  trigger-deploy-fyllut-to-dev:
+    name: "Trigger deploy fyllut to dev"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Generate app installation access token"
+        uses: navikt/github-app-token-generator@v1
+        id: generate-token
+        with:
+          private-key: ${{ secrets.PUBLISHING_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.PUBLISHING_APP_ID }}
+          repo: navikt/skjemautfylling-formio
+      - name: "Trigger deploy fyllut to dev"
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: "Trigger dev deploy"
+          repo: navikt/skjemautfylling-formio
+          ref: "dev-deploy"
+          token: ${{ steps.generate-token.outputs.token }}
+          inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
