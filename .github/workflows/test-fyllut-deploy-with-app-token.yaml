@@ -2,6 +2,7 @@ name: Trigger deploy fyllut as app installation
 on:
   workflow_dispatch:
 
+jobs:
   trigger-deploy-fyllut-to-dev:
     name: "Trigger deploy fyllut to dev"
     runs-on: ubuntu-latest
