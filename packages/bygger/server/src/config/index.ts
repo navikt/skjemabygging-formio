@@ -45,7 +45,7 @@ const config: ConfigType = {
   },
   publishRepo: {
     name: env("PUBLISH_REPO", devGithub.name),
-    token: env("GITHUB_TEAM_TOKEN"),
+    token: env("GITHUB_ACCESS_TOKEN"),
     owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
     base: env("PUBLISH_REPO_BASE", devGithub.base),
   },

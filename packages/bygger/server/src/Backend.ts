@@ -29,7 +29,10 @@ export class Backend {
   }
 
   private async createGitHubRepo() {
-    const repo = new GitHubRepo(this.config.publishRepo.owner, this.config.publishRepo.name, this.config.githubApp);
+    const repo = new GitHubRepo(this.config.publishRepo.owner, this.config.publishRepo.name, {
+      token: this.config.publishRepo.token,
+      ...this.config.githubApp,
+    });
     await repo.authenticate();
     return repo;
   }

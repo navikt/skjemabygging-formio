@@ -44,7 +44,7 @@ describe("GitHubRepo", () => {
 
   it("creates instance of octokit and authenticates with provided pat", () => {
     expect(Octokit).toHaveBeenCalledTimes(1);
-    expect(Octokit).toHaveBeenLastCalledWith(expect.objectContaining({ auth: "" }));
+    expect(Octokit).toHaveBeenLastCalledWith(expect.objectContaining({ auth: undefined }));
   });
 
   describe("getRef", () => {

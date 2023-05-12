@@ -17,7 +17,13 @@ export class GitHubRepo {
   }
 
   async authenticate() {
-    if (this.credentials?.appId && this.credentials.appId !== "test") {
+    if (
+      this.credentials.appId &&
+      this.credentials.privateKey &&
+      this.credentials.clientId &&
+      this.credentials.clientSecret &&
+      this.credentials.installationId
+    ) {
       const auth = createAppAuth({
         appId: this.credentials.appId,
         privateKey: this.credentials.privateKey,
@@ -26,12 +32,19 @@ export class GitHubRepo {
       });
       this.authentication = await auth({
         type: "installation",
-        installationId: process.env.GITHUB_APP_INSTALLATION_ID,
+        installationId: this.credentials.installationId,
       });
       logger.debug("Authenticate on Github as app installation");
     }
+
+    const auth = this.authentication?.token ?? this.credentials.token;
+    if (auth === undefined) {
+      logger.error(
+        "Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables"
+      );
+    }
     this.octokit = new Octokit({
-      auth: this.authentication?.token ?? "",
+      auth,
       userAgent: "navikt/skjemabygging",
       baseUrl: "https://api.github.com",
       log: {
