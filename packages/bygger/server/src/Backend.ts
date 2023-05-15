@@ -167,7 +167,7 @@ export class Backend {
     const unpublishRegexp = new RegExp(UNPUBLISH_REGEXP, "g");
     const unpublishFormPathMatch = unpublishRegexp.exec(commitMessage);
     const amountRegexp = new RegExp(BULK_PUBLISH_REGEXP, "g");
-    const buldPublishCountMatch = amountRegexp.exec(commitMessage);
+    const bulkPublishCountMatch = amountRegexp.exec(commitMessage);
 
     if (publishFormTitleMatch) {
       return {
@@ -187,13 +187,13 @@ export class Backend {
           : `Feilet for skjema ${unpublishFormPathMatch[1]}`,
       };
     }
-    if (buldPublishCountMatch) {
+    if (bulkPublishCountMatch) {
       return {
         type,
         title: success ? "Bulk-publisering fullført" : "Bulk-publisering feilet",
         message: success
-          ? `${buldPublishCountMatch[1]} skjemaer ble bulk-publisert`
-          : `${buldPublishCountMatch[1]} skjemaer feilet`,
+          ? `${bulkPublishCountMatch[1]} skjemaer ble bulk-publisert`
+          : `${bulkPublishCountMatch[1]} skjemaer feilet`,
       };
     }
     return {
