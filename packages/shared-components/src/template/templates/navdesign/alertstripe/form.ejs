@@ -1,5 +1,5 @@
 {{ctx.util.getDiffTag(ctx)}}
-<div class="navds-alert navds-alert--{{ctx.component.alerttype}}{{ctx.component.isInline ? ' navds-alert--inline' : ''}}" ref="html">
+<div class="navds-alert navds-alert--{{ctx.component.alerttype === 'suksess' ? 'success' : (ctx.component.alerttype === 'advarsel' ? 'warning' : (ctx.component.alerttype === 'feil' ? 'error' : ctx.component.alerttype))}}{{ctx.component.isInline ? ' navds-alert--inline' : ''}}" ref="html">
     <span class="sr-only" id="alert-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.component.alerttype}}</span>
     <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" class="navds-alert__icon" aria-labelledby="alert-{{ctx.instance.id}}-{{ctx.component.key}}">
         {% if (ctx.component.alerttype === "info") { %}

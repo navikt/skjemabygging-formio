@@ -6,9 +6,6 @@ const fieldset = {
       lineHeight: "1.625rem",
       marginBottom: "var(--a-spacing-5)",
     },
-    "&__description": {
-      marginBottom: "var(--a-spacing-5)",
-    },
     "&__content": {
       borderLeft: "4px solid #368da8",
       backgroundColor: "#e6f1f8",
