@@ -15,7 +15,7 @@
 <div class="row">
   {% if (ctx.instance.navFormDiff) { %}
   <div class="col col-sm-12">
-      <div class="alertstripe alertstripe--advarsel mb-4">
+      <div class="navds-alert navds-alert--warning mb-4">
           <div>
               {{ctx.util.navFormDiffToHtml(ctx.instance.navFormDiff)}}
           </div>
@@ -24,7 +24,7 @@
   {% } %}
   {% if (ctx.instance.conditionalAlert) { %}
   <div class="col col-sm-12">
-    <div class="alertstripe alertstripe--advarsel mb-4">
+    <div class="navds-alert navds-alert--warning mb-4">
       <div>
         <span id="conditional-alert-heading">{{ctx.instance.conditionalAlert.message}}</span>
         <ul aria-labelledby="conditional-alert-heading">
