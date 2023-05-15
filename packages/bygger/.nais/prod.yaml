@@ -4,7 +4,7 @@ ingresses:
 image: {{image}}
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
-publish-repo-base: master
+publish-repo-base: migration-breaking-changes
 skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
 accessPolicy:
