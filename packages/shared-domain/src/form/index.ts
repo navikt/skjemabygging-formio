@@ -37,6 +37,7 @@ export interface FormPropertiesType {
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
   ettersending?: InnsendingType;
+  ettersendelsesfrist?: string;
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;

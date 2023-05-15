@@ -70,6 +70,10 @@ const sendInn = {
         vedleggsListe: translatedAttachments,
         kanLasteOppAnnet: otherDocumentation,
       };
+
+      if (!!form.properties.ettersendelsesfrist) {
+        body.fristForEttersendelse = parseInt(form.properties.ettersendelsesfrist);
+      }
       if (!featureToggles.enableSendInnIntegration) {
         logger.debug("SendInn integration not enabled, returning data in body");
         res.json(body);
