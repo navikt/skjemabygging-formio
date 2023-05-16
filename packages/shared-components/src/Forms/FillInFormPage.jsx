@@ -82,8 +82,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onWizardPageSelected(panel) {
+    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
     updatePanelUrl(panel.path);
-    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: window.location.href });
   }
 
   function onFormReady(formioInstance) {
