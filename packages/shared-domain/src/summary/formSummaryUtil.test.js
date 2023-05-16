@@ -27,6 +27,9 @@ const {
   createDummyDayComponent,
   createDummyLandvelger,
   createDummyCheckbox,
+  createDummyCurrencyField,
+  createDummyNumberField,
+  createDummyAmountWithCurrency,
 } = MockedComponentObjectForTest;
 
 const onlyAlertstripes = (comp) => comp.type === "alertstripe";
@@ -468,6 +471,67 @@ describe("When handling component", () => {
           ],
         },
       ]);
+    });
+  });
+
+  describe("Number", () => {
+    it("to be formated correctly", () => {
+      const actual = handleComponent(
+        createDummyNumberField(),
+        { data: { number: 2512.3889999999997 } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual[0].value).toEqual("2 512,39".replaceAll(" ", "\u00A0"));
+    });
+
+    it("should add prefix and suffix", () => {
+      const actual = handleComponent(
+        createDummyNumberField("MVA:", "%"),
+        { data: { number: 25 } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual[0].value).toEqual("MVA: 25 %");
+    });
+  });
+
+  describe("Currency", () => {
+    it("to be formated correctly", () => {
+      const actual = handleComponent(
+        createDummyCurrencyField(),
+        { data: { penger: 2512.3889999999997 } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual[0].value).toEqual("kr 2 512,39".replaceAll(" ", "\u00A0"));
+    });
+  });
+
+  describe("amountWithCurrency", () => {
+    it("to be formated correctly", () => {
+      const actual = handleComponent(
+        createDummyAmountWithCurrency(),
+        { data: { amountwithcurrency: { valutavelger: { value: "NOK" }, belop: 2512.3889999999997 } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual[0].value).toEqual("NOK 2 512,39".replaceAll(" ", "\u00A0"));
+    });
+
+    it("should not add anything if belop isn't filled", () => {
+      const actual = handleComponent(
+        createDummyAmountWithCurrency(),
+        { data: { amountwithcurrency: { valutavelger: { value: "NOK" } } } },
+        [],
+        "",
+        mockedTranslate
+      );
+      expect(actual).toEqual([]);
     });
   });
 });

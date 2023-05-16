@@ -40,7 +40,7 @@ describe("Components", () => {
           cy.get("dt").eq(1).should("contain.text", "IBAN");
           cy.get("dd").eq(1).should("contain.text", "NL04RABO8424598490");
           cy.get("dt").eq(2).should("contain.text", "Angi valuta og beløp");
-          cy.get("dd").eq(2).should("contain.text", "450 NOK");
+          cy.get("dd").eq(2).should("contain.text", "NOK 450".replace(" ", "\u00A0"));
         });
     });
   });
