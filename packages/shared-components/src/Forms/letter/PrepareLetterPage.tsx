@@ -78,7 +78,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
 
   return (
     <ResultContent>
-      <Heading level="2" size="large" className="margin-bottom-double">
+      <Heading level="2" size="large" spacing>
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Heading>
       <main className="fyllut-layout" id="maincontent" tabIndex={-1}>
@@ -115,6 +115,6 @@ const ResultContent = styled("div")({
   display: "flex",
   flexDirection: "column",
   "& section.wizard-page": {
-    paddingBottom: "3.75rem",
+    paddingBottom: "3.5rem",
   },
 });

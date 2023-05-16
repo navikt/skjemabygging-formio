@@ -41,9 +41,7 @@ const ConfirmDeleteLanguageModal = ({
       ariaLabel="Bekreft sletting av språk"
       title="Er du sikker på at du ønsker å slette språket?"
     >
-      <BodyShort className="margin-bottom-default">
-        {isGlobal ? modalTextForGlobalTranslations : modalTextForFormTranslations}
-      </BodyShort>
+      <BodyShort className="mb-4">{isGlobal ? modalTextForGlobalTranslations : modalTextForFormTranslations}</BodyShort>
       <div className={styles.buttonRow}>
         <Button variant="secondary" className={styles.modal_button} onClick={closeModal} type="button">
           Avbryt

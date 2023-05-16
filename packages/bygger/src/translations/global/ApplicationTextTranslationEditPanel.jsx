@@ -71,7 +71,7 @@ const ApplicationTextTranslationEditPanel = ({
         <ObsoleteTranslationsPanel
           translations={obsoleteTranslations}
           onDelete={(t) => deleteOneRow(t.id)}
-          className="margin-bottom-double"
+          className="mb"
         />
       )}
       <TranslationEditPanelComponent

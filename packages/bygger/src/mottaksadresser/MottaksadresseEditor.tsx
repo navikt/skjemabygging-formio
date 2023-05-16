@@ -72,7 +72,7 @@ const MottaksadresseEditor = ({
           </>
         )}
         {(!editMode || loadingForm) && mottaksadresse && (
-          <>
+          <div className="mb-4">
             <Heading level="2" size="small">
               {mottaksadresse.data.adresselinje1}
             </Heading>
@@ -82,7 +82,7 @@ const MottaksadresseEditor = ({
               {mottaksadresse.data.postnummer} {mottaksadresse.data.poststed}
             </div>
             {mottaksadresse.data.temakoder && <div>Tema: {mottaksadresse.data.temakoder}</div>}
-          </>
+          </div>
         )}
         <div>
           {(!editMode || loadingForm) && mottaksadresse && (

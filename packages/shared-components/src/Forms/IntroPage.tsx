@@ -82,7 +82,7 @@ export function IntroPage({ form, formUrl }: Props) {
               name="submissionMethod"
               required={true}
               onChange={(sub: string) => setSelectedSubmissionMethod(sub)}
-              className="margin-bottom-default"
+              className="mb-4"
             >
               <Radio value="digital">{translate(TEXTS.statiske.introPage.submissionMethod.digital)}</Radio>
               <Radio value="paper">{translate(TEXTS.statiske.introPage.submissionMethod.paper)}</Radio>
@@ -91,26 +91,26 @@ export function IntroPage({ form, formUrl }: Props) {
         )}
 
         {(selectedSubmissionMethod || !mustSelectSubmissionMethod) && (
-          <GuidePanel poster className="margin-bottom-double">
-            <Heading level="2" size="small" className="margin-bottom-default">
+          <GuidePanel poster className="mb">
+            <Heading level="2" size="small" spacing>
               {translate(TEXTS.statiske.introPage.title)}
             </Heading>
             <ul>
               {description && (
-                <li className="margin-bottom-default">
+                <li className="mb-4">
                   <b>{translate(descriptionBold)} </b>
                   {translate(description)}
                 </li>
               )}
-              <li className="margin-bottom-default">
+              <li className="mb-4">
                 <b>{translate(TEXTS.statiske.introPage.requiredFieldsBold)} </b>
                 {translate(TEXTS.statiske.introPage.requiredFields)}
               </li>
-              <li className="margin-bottom-default">
+              <li className="mb-4">
                 <b>{translate(TEXTS.statiske.introPage.notSaveBold)} </b>
                 {translate(TEXTS.statiske.introPage.notSave)}
               </li>
-              <li className="margin-bottom-default">
+              <li className="mb-4">
                 <b>{translate(TEXTS.statiske.introPage.publicComputerBold)} </b>
                 {translate(TEXTS.statiske.introPage.publicComputer)}
               </li>
@@ -120,7 +120,11 @@ export function IntroPage({ form, formUrl }: Props) {
 
         <nav className="button-row button-row__center">
           {mustSelectSubmissionMethod && selectedSubmissionMethod && (
-            <a className="navds-button navds-button--primary navds-label" onClick={navigateToFormPage} href="#">
+            <a
+              className="navds-button navds-button--primary navds-body-short font-bold"
+              onClick={navigateToFormPage}
+              href="#"
+            >
               {translate(TEXTS.grensesnitt.introPage.start)}
             </a>
           )}
@@ -129,13 +133,13 @@ export function IntroPage({ form, formUrl }: Props) {
               className="navds-button navds-button--primary"
               to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
             >
-              <span aria-live="polite" className="navds-label">
+              <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}
               </span>
             </Link>
           )}
           <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
-            <span aria-live="polite" className="navds-label">
+            <span aria-live="polite" className="navds-body-short font-bold">
               {translate(TEXTS.grensesnitt.goBack)}
             </span>
           </button>

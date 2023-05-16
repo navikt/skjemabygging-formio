@@ -12,7 +12,7 @@ const useStyles = makeStyles({
 const SignatureComponent = ({ signature, index, onChange, onDelete, diff = undefined }) => {
   const styles = useStyles();
   return (
-    <Panel className="margin-bottom-default" border>
+    <Panel className="mb-4" border>
       <Button
         variant="tertiary"
         icon={<Close aria-hidden />}

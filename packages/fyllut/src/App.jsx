@@ -1,15 +1,14 @@
 import { styled } from "@material-ui/styles";
 import makeStyles from "@material-ui/styles/makeStyles";
 import "@navikt/ds-css";
-import { appStyles, CustomComponents, globalStyles, Template } from "@navikt/skjemadigitalisering-shared-components";
-import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
+import { CustomComponents, Styles, Template } from "@navikt/skjemadigitalisering-shared-components";
 import { Components, Formio } from "formiojs";
 import { Route, Switch } from "react-router-dom";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
 
 const useStyles = makeStyles(() => ({
-  "@global": globalStyles,
+  "@global": Styles.global,
 }));
 
 Components.setComponents(CustomComponents);
@@ -33,5 +32,4 @@ function App({ className }) {
 
 export default styled(App)({
   margin: "0 auto",
-  ...appStyles,
 });

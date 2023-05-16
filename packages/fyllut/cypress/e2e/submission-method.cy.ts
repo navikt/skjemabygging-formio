@@ -36,9 +36,9 @@ describe("Submission method", () => {
         cy.clickNextStep();
         cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Test");
         cy.findByRole("textbox", { name: "Etternavn" }).should("exist").type("Testesen");
-        cy.findByText("Bor du i Norge?")
+        cy.get(".navds-radio-group")
+          .first()
           .should("exist")
-          .closest("fieldset")
           .within(() => cy.findByLabelText("Ja").should("exist").check({ force: true }));
         cy.findByRole("combobox", { name: "Hva søker du støtte til?" }).should("exist").type("Sykk{downArrow}{enter}");
         cy.clickNextStep();

@@ -23,9 +23,6 @@ const useStyles = makeStyles({
       backgroundColor: "#e9e7e7",
       cursor: "not-allowed",
     },
-    "& .skjemaelement": {
-      width: "100%",
-    },
   },
   element: {
     width: "100%",

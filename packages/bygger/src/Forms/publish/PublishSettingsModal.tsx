@@ -127,13 +127,11 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
   };
 
   const LanguagePublishCheckbox = ({ languageCode }: { languageCode: string }) => (
-    <Checkbox className="margin-bottom-default" value={languageCode}>{`${
-      languagesInNorwegian[languageCode]
-    } (${languageCode.toUpperCase()})`}</Checkbox>
+    <Checkbox value={languageCode}>{`${languagesInNorwegian[languageCode]} (${languageCode.toUpperCase()})`}</Checkbox>
   );
 
   const IncompleteLanguageCheckbox = ({ languageCode }: { languageCode: string }) => (
-    <Checkbox className="margin-bottom-default" value={languageCode} disabled>{`${
+    <Checkbox value={languageCode} disabled>{`${
       languagesInNorwegian[languageCode]
     } (${languageCode.toUpperCase()})`}</Checkbox>
   );
@@ -148,18 +146,13 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
         Hvilke språkversjoner skal publiseres?
       </Heading>
       <CheckboxGroup
-        className="margin-bottom-default"
         legend="Valgene inkluderer kun komplette språkversjoner."
         value={checkedLanguages}
         onChange={(checked) => {
           setCheckedLanguages(checked);
         }}
       >
-        <Checkbox
-          disabled
-          value={"nb-NO"}
-          className="margin-bottom-default"
-        >{`${allLanguagesInNorwegian["nb-NO"]} (NB-NO)`}</Checkbox>
+        <Checkbox disabled value={"nb-NO"}>{`${allLanguagesInNorwegian["nb-NO"]} (NB-NO)`}</Checkbox>
         {checkedLanguages.length > 0 &&
           Object.keys(languagesInNorwegian).map((languageCode) => {
             if (isTranslationComplete(languageCode)) {

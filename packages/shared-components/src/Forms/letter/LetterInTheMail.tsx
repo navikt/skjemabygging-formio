@@ -12,10 +12,10 @@ const LetterInTheMail = ({ index, vedleggSomSkalSendes, translate }: Props) => (
     className="wizard-page"
     aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
   >
-    <Heading level="3" size="medium" className="margin-bottom-small">
+    <Heading level="3" size="medium" spacing>
       {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionTitle)}`}
     </Heading>
-    <BodyShort className="margin-bottom-default">
+    <BodyShort className="mb-4">
       {translate(TEXTS.statiske.prepareLetterPage.SendInPapirSectionInstruction)}
       {vedleggSomSkalSendes.length > 0 &&
         " ".concat(

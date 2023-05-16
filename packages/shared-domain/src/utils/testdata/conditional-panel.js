@@ -330,7 +330,7 @@ const form = {
           labelWidth: "",
           labelMargin: "",
           content: "<b>Avokado</b> er mye bedre enn <b>pære</b>",
-          alerttype: "feil",
+          alerttype: "error",
           isInline: false,
           contentForPdf: "",
           key: "alertstripe",

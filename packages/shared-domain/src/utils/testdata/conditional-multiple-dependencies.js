@@ -362,7 +362,7 @@ const form = {
           labelWidth: "",
           labelMargin: "",
           content: "Alle bør like frukt",
-          alerttype: "advarsel",
+          alerttype: "warning",
           isInline: false,
           contentForPdf: "",
           key: "alertstripe",

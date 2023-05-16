@@ -7,7 +7,7 @@ interface Props {
 
 const AlertStripeHttpError = ({ error }: Props) => {
   return (
-    <Alert variant="error" className="margin-bottom-default">
+    <Alert variant="error" className="mb-4">
       <div>{error.message}</div>
     </Alert>
   );

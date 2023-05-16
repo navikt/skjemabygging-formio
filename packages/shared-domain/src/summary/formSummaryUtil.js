@@ -35,7 +35,7 @@ function formatValue(component, value, translate) {
       return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
     }
     case "navCheckbox": {
-      return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
+      return value ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
     case "landvelger":
     case "valutavelger":

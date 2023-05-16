@@ -2,8 +2,8 @@ import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-sh
 import MemoryStream from "memorystream";
 import nock from "nock";
 import config from "../config";
-import { formioService } from "./index";
 import ReportService from "./ReportService";
+import { formioService } from "./index";
 
 describe("ReportService", () => {
   let reportService: ReportService;

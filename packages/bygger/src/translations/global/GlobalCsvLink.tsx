@@ -1,5 +1,5 @@
 import { FormioTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import { getAllPredefinedOriginalTexts, transformGlobalTranslationsToCsvData } from "./utils";
 
@@ -38,7 +38,7 @@ const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
       data={csvData}
       headers={csvHeaders}
       filename={`globale-oversettelser-${languageCode}.csv`}
-      className="knapp knapp--standard"
+      className="navds-button navds-button--secondary navds-label"
       separator=";"
       enclosingCharacter="'"
     >

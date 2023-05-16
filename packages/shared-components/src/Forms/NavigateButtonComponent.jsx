@@ -10,16 +10,16 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
     <nav>
       <div className="button-row">
         <Link
+          className="navds-button navds-button--secondary"
           onClick={() => {
             loggNavigering({
               lenkeTekst: translate(TEXTS.grensesnitt.goBack),
               destinasjon: goBackUrl,
             });
           }}
-          className="navds-button navds-button--secondary"
           to={{ pathname: goBackUrl, search }}
         >
-          <span aria-live="polite" className="navds-label">
+          <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.goBack)}
           </span>
         </Link>
@@ -27,15 +27,15 @@ const NavigateButtonComponent = ({ goBackUrl, translate }) => {
       <div className="button-row">
         <a
           className="navds-button navds-button--tertiary"
-          href={exitUrl}
           onClick={() => {
             loggNavigering({
               lenkeTekst: translate(TEXTS.grensesnitt.navigation.exit),
               destinasjon: exitUrl,
             });
           }}
+          href="https://www.nav.no"
         >
-          <span aria-live="polite" className="navds-label">
+          <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.navigation.exit)}
           </span>
         </a>

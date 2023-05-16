@@ -1,4 +1,6 @@
+import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
+import { logger } from "./logging/logger";
 
 // Not exhaustive
 export const gitTreeMode = {
@@ -8,10 +10,50 @@ export const gitTreeMode = {
 };
 
 export class GitHubRepo {
-  constructor(owner, repo, personalAccessToken) {
+  constructor(owner, repo, credentials) {
     this.owner = owner;
     this.repo = repo;
-    this.octokit = new Octokit({ auth: personalAccessToken });
+    this.credentials = credentials;
+  }
+
+  async authenticate() {
+    if (
+      this.credentials.appId &&
+      this.credentials.privateKey &&
+      this.credentials.clientId &&
+      this.credentials.clientSecret &&
+      this.credentials.installationId
+    ) {
+      const auth = createAppAuth({
+        appId: this.credentials.appId,
+        privateKey: this.credentials.privateKey,
+        clientId: this.credentials.clientId,
+        clientSecret: this.credentials.clientSecret,
+      });
+      this.authentication = await auth({
+        type: "installation",
+        installationId: this.credentials.installationId,
+      });
+      logger.debug("Authenticate on Github as app installation");
+    }
+
+    const auth = this.authentication?.token ?? this.credentials.token;
+    if (auth === undefined) {
+      logger.error(
+        "Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables"
+      );
+    }
+    this.octokit = new Octokit({
+      auth,
+      userAgent: "navikt/skjemabygging",
+      baseUrl: "https://api.github.com",
+      log: {
+        debug: () => {},
+        info: () => {},
+        warn: logger.warn,
+        error: logger.error,
+      },
+    });
   }
 
   getRef(branch) {
@@ -44,7 +86,9 @@ export class GitHubRepo {
     let remoteFileContent;
     try {
       remoteFileContent = await this.octokit.rest.repos.getContent({ owner: this.owner, repo: this.repo, ref, path });
-    } catch (e) {}
+    } catch (error) {
+      logger.error(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
+    }
     return remoteFileContent;
   }
 

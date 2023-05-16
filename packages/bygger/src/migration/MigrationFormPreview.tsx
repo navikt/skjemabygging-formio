@@ -5,16 +5,15 @@ import {
   CustomComponents,
   ErrorPage,
   FyllUtRouter,
-  globalStyles,
   LoadingComponent,
+  Styles,
 } from "@navikt/skjemadigitalisering-shared-components";
-import "@navikt/skjemadigitalisering-shared-components/src/overrideFormioStyles.less";
 import { Components } from "formiojs";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
-  "@global": globalStyles,
+  "@global": Styles.global,
   backContainer: {
     maxWidth: "800px",
     margin: "0 auto 1rem auto",
