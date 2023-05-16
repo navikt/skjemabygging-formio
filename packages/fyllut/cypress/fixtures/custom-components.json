@@ -534,6 +534,7 @@
       "scrollToTop": false,
       "collapsible": false,
       "key": "vedlegg",
+      "isAttachmentPanel": true,
       "type": "panel",
       "label": "Vedlegg",
       "input": false,
@@ -568,6 +569,7 @@
             "onlyAvailableItems": false
           },
           "key": "annenDokumentasjon1",
+          "otherDocumentation": true,
           "properties": {
             "vedleggstittel": "Annet",
             "vedleggskode": "N6",

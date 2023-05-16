@@ -5070,6 +5070,7 @@ const form = {
             onlyAvailableItems: false,
           },
           key: "annenDokumentasjon",
+          otherDocumentation: true,
           properties: { vedleggstittel: "Annet", vedleggskode: "N6" },
           customConditional:
             "show=\r\n((data.hvaSlagsVirksomhetDriverDu.frilanser === true) && (data.hvaSlagsVirksomhetDriverDu.selvstendigNaeringsdrivende === false)) ||\r\n((data.hvaSlagsVirksomhetDriverDu.selvstendigNaeringsdrivende === true) && (data.hvaOnskerDuALeggeVed.annet === true));\r\n",

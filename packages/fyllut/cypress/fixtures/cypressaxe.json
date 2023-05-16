@@ -2924,6 +2924,7 @@
       "disabled": false,
       "modalEdit": false,
       "key": "vedleggpanel",
+      "isAttachmentPanel": true,
       "tags": [],
       "properties": {},
       "customConditional": "",
