@@ -6,7 +6,6 @@
   "featureToggles": {
     "enableTranslations": true,
     "enableEnhetsListe": true,
-    "enableAutoComplete": true,
     "enableDiff": true
   }
 }
