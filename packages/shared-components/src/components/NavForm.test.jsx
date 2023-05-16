@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { setupNavFormio } from "../../test/navform-render";
 import { AppConfigProvider } from "../configContext";
 import NavForm from "./NavForm";
@@ -73,15 +72,13 @@ const testskjemaForOversettelser = {
   ],
 };
 
-const featureToggles = { enableAutoComplete: true };
-
 describe("NavForm", () => {
   beforeAll(setupNavFormio);
 
   const renderNavForm = async (props) => {
     const formReady = jest.fn();
     const renderReturn = render(
-      <AppConfigProvider featureToggles={featureToggles}>
+      <AppConfigProvider>
         <NavForm {...props} formReady={formReady} />
       </AppConfigProvider>
     );
@@ -122,7 +119,7 @@ describe("NavForm", () => {
       expect(await screen.findByLabelText("Fornavn")).toBeInTheDocument();
 
       rerender(
-        <AppConfigProvider featureToggles={featureToggles}>
+        <AppConfigProvider>
           <NavForm form={testskjemaForOversettelser} language="en" i18n={i18n} />
         </AppConfigProvider>
       );

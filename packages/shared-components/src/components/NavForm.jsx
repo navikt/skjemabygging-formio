@@ -26,8 +26,7 @@ import EventEmitter from "eventemitter2";
 import { Form as FormioForm, Utils } from "formiojs";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useAppConfig } from "../configContext";
-import { evaluateOverride, overrideFormioTextField } from "../formio-overrides";
+import { evaluateOverride } from "../formio-overrides";
 import i18nData from "../i18nData";
 import Styles from "../styles";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
@@ -45,12 +44,6 @@ const NavForm = (props) => {
   let element;
   const [formio, setFormio] = useState(undefined);
   useStyles();
-
-  const { featureToggles } = useAppConfig();
-
-  useEffect(() => {
-    overrideFormioTextField(featureToggles.enableAutoComplete);
-  }, []);
 
   useEffect(
     () => () => {

@@ -1,7 +1,6 @@
 import { render, waitFor } from "@testing-library/react";
 import { Formio } from "formiojs";
 import Components from "formiojs/components/Components";
-import React from "react";
 import { CustomComponents, NavForm, Template } from "../src";
 import { AppConfigProvider } from "../src/configContext";
 
@@ -11,11 +10,9 @@ const setupNavFormio = () => {
   new Formio("http://unittest.nav-formio-api.no");
 };
 
-const featureToggles = { enableAutoComplete: true };
-
 const NavFormForTest = (props) => {
   return (
-    <AppConfigProvider featureToggles={featureToggles} dokumentinnsendingBaseURL={undefined} fyllutBaseURL={undefined}>
+    <AppConfigProvider dokumentinnsendingBaseURL={undefined} fyllutBaseURL={undefined}>
       <NavForm {...props} />
     </AppConfigProvider>
   );

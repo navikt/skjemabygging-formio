@@ -14,9 +14,6 @@
 <{{ctx.input.type}}
   ref="{{ctx.input.ref ? ctx.input.ref : 'input'}}"
   class="{{ctx.input.attr.class}} {{ctx.input.type === 'textarea' ? 'navds-textarea__input' : 'navds-text-field__input'}} {{ctx.component.fieldSize ? ctx.component.fieldSize : 'input--xl'}} navds-body-short"
-  {% if (ctx.enableAutoComplete === false) { %}
-  autocomplete="off"
-  {% } %}
   {% for (var attr in ctx.input.attr) { %}
   {{attr}}="{{ctx.input.attr[attr]}}"
   {% } %}
