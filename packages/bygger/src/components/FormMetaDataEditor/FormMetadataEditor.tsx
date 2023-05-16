@@ -114,7 +114,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
     <Fieldset hideLegend legend="">
       {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
       <Checkbox
-        className="mb-double"
+        className="mb"
         id="teststatus"
         checked={!!isTestForm}
         onChange={(event) =>
@@ -124,7 +124,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         Dette er et testskjema
       </Checkbox>
       <TextField
-        className="mb-double"
+        className="mb"
         label="Skjemanummer"
         type="text"
         id="skjemanummer"
@@ -137,7 +137,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         error={errors?.skjemanummer}
       />
       <TextField
-        className="mb-double"
+        className="mb"
         label={<LabelWithDiff label="Tittel" diff={!!diff.title} />}
         type="text"
         id="title"
@@ -146,9 +146,9 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         onChange={(event) => onChange({ ...form, title: event.target.value })}
         error={errors?.title}
       />
-      <div className="mb-double">
+      <div className="mb">
         <Select
-          className="mb-small"
+          className="mb-4"
           label={<LabelWithDiff label="Tema" diff={!!diff.tema} />}
           id="tema"
           disabled={!isTemaKoderReady}
@@ -170,7 +170,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         )}
       </div>
       <TextField
-        className="mb-double"
+        className="mb"
         label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}
         type="text"
         id="downloadPdfButtonText"
@@ -212,7 +212,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       {innsending === "INGEN" && (
         <>
           <TextField
-            className="mb-double"
+            className="mb"
             label={<LabelWithDiff label="Overskrift til innsending" diff={!!diff.innsendingOverskrift} />}
             value={form.properties.innsendingOverskrift || ""}
             onChange={(event) =>
@@ -223,7 +223,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
             }
           />
           <Textarea
-            className="mb-double"
+            className="mb"
             label={<LabelWithDiff label="Forklaring til innsending" diff={!!diff.innsendingForklaring} />}
             value={form.properties.innsendingForklaring || ""}
             onChange={(event) =>
@@ -236,9 +236,9 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         </>
       )}
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-        <div className="mb-default">
+        <div className="mb">
           <Select
-            className="mb-small"
+            className="mb-4"
             label={<LabelWithDiff label="Mottaksadresse" diff={!!diff.mottaksadresseId} />}
             name="form-mottaksadresse"
             id="form-mottaksadresse"
@@ -271,13 +271,13 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           )}
         </div>
       )}
-      <div className="mb-double">
+      <div className="mb">
         <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
       </div>
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") &&
         !mottaksadresseId &&
         featureToggles?.enableEnhetsListe && (
-          <div className="mb-double">
+          <div className="mb">
             <EnhetSettings
               enhetMaVelges={!!enhetMaVelgesVedPapirInnsending}
               selectedEnhetstyper={enhetstyper}
@@ -299,7 +299,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         )}
 
       <Textarea
-        className="mb-double"
+        className="mb"
         label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
         value={descriptionOfSignatures || ""}
         maxLength={0}
@@ -323,7 +323,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         </div>
       ))}
 
-      <Button variant="secondary" className="mb-double" onClick={addNewSignature}>
+      <Button variant="secondary" className="mb" onClick={addNewSignature}>
         Legg til signatur
       </Button>
     </Fieldset>

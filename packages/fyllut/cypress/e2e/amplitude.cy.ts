@@ -51,15 +51,15 @@ describe("Amplitude", () => {
     cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Din fødselsdato (dd.mm.åååå)" });
 
-    cy.findByText("Bor du i Norge?")
+    cy.get(".navds-radio-group")
+      .eq(1)
       .should("exist")
-      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Bor du i Norge?" });
 
-    cy.findByText("Er kontaktadressen din en vegadresse eller postboksadresse?")
+    cy.get(".navds-radio-group")
+      .eq(2)
       .should("exist")
-      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
     cy.checkLogToAmplitude("skjemaspørsmål besvart", {
       spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",

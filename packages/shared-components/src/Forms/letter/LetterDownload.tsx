@@ -67,12 +67,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
       className="wizard-page"
       aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
     >
-      <Heading level="3" size="medium" className="margin-bottom-small">
+      <Heading level="3" size="medium" spacing>
         {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
       </Heading>
-      <BodyShort className="margin-bottom-default">
-        {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
-      </BodyShort>
+      <BodyShort className="mb-4">{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
       <EnhetSelector
         enhetsliste={enhetsListe}
         onSelectEnhet={(enhetNummer) => {
@@ -81,7 +79,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
-      <div className="margin-bottom-default">
+      <div className="mb-4">
         <Button
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {

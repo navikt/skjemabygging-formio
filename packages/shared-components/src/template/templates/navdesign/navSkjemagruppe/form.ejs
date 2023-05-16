@@ -1,5 +1,5 @@
 {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
-  <div class="skjemagruppe__description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
+  <div class="navds-body-short" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
   {% if (ctx.component.additionalDescription) { %}
     <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
       {% if (ctx.component.additionalDescriptionLabel) { %}
@@ -12,21 +12,21 @@
   {% } %}
 {% } %}
 <fieldset
-    class="skjemagruppe"
+    class="navds-fieldset"
     {% if (ctx.component.description) { %}
     aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
     {% } %}
 >
     {% if (ctx.component.legend) { %}
     <span class="label-track-changes">
-      <legend ref="header" class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+      <legend ref="header" class="navds-fieldset__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
         {{ctx.t(ctx.component.legend)}}
       </legend>
       {{ctx.util.getDiffTag(ctx)}}
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
-        <div class="skjemagruppe__description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
+        <div class="navds-body-short navds-fieldset__description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
         {% if (ctx.component.additionalDescription) { %}
           <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
             {% if (ctx.component.additionalDescriptionLabel) { %}
@@ -38,7 +38,7 @@
           </div>
         {% } %}
     {% } %}
-    <div class="skjemagruppe__content" ref="{{ctx.nestedKey}}">
+    <div class="navds-body-long navds-fieldset__content" ref="{{ctx.nestedKey}}">
         {{ctx.children}}
     </div>
 </fieldset>

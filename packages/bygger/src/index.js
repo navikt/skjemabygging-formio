@@ -6,7 +6,6 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/auth-context";
-import "./index.less";
 import * as serviceWorker from "./serviceWorker";
 
 Formio.use(navdesign);

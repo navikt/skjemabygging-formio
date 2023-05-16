@@ -13,6 +13,10 @@ const formBuilderStyles = {
       minWidth: "36rem",
       overflow: "hidden",
     },
+
+    "& .form-builder-panel .btn": {
+      textAlign: "left",
+    },
   },
 };
 

@@ -1,18 +1,17 @@
 import { Select } from "@navikt/ds-react";
-import React from "react";
 
 interface Props {
   name: string;
-  label: React.ReactElement;
+  label: any;
   value: string | undefined;
   allowEmpty?: boolean;
-  error?: React.ReactNode;
+  error?: any;
   onChange: (event: any) => void;
 }
 
 const SubmissionTypeSelect = ({ name, label, value, allowEmpty, onChange, error }: Props) => {
   return (
-    <Select className="mb-double" label={label} name={name} id={name} value={value} onChange={onChange} error={error}>
+    <Select className="mb" label={label} name={name} id={name} value={value} onChange={onChange} error={error}>
       {allowEmpty && <option>Velg innsendingstype</option>}
       <option value="PAPIR_OG_DIGITAL">Papir og digital</option>
       <option value="KUN_PAPIR">Kun papir</option>

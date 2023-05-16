@@ -45,7 +45,7 @@ const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeL
   };
   return (
     <Modal open={openModal} onClose={closeModal} ariaLabel="Publiseringsadvarsel">
-      <BodyShort className="margin-bottom-double">Er du sikker på at dette skjemaet skal publiseres?</BodyShort>
+      <BodyShort className="mb">Er du sikker på at dette skjemaet skal publiseres?</BodyShort>
       <ul className="list-inline">
         <li className="list-inline-item">
           <Button

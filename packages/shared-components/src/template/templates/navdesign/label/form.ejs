@@ -1,7 +1,7 @@
-<span class="label-track-changes">
+<div class="label-track-changes">
   <label
     ref="label"
-    class="skjemaelement__label {{ctx.label.className}}"
+    class="navds-label {{ctx.label.className}}"
     for="{{ctx.instance.id}}-{{ctx.component.key}}"
     id="l-{{ctx.instance.id}}-{{ctx.component.key}}"
   >
@@ -14,4 +14,4 @@
     {% } %}
   </label>
   {{ctx.util.getDiffTag(ctx)}}
-</span>
+</div>
