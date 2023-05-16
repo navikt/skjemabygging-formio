@@ -6,6 +6,7 @@ import {
   devFormio,
   devFyllut,
   devGithub,
+  devGithubApp,
   devPusher,
   devSkjemabyggingProxy,
 } from "./development";
@@ -29,6 +30,10 @@ const env = (name: string, devValue?: string): string => {
   return value!;
 };
 
+const optionalEnv = (name: string): string | undefined => {
+  return process.env[name];
+};
+
 const config: ConfigType = {
   azure: {
     openidTokenEndpoint: env("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT", devAzure.openidTokenEndpoint),
@@ -44,9 +49,16 @@ const config: ConfigType = {
   },
   publishRepo: {
     name: env("PUBLISH_REPO", devGithub.name),
-    token: env("GITHUB_TEAM_TOKEN"),
+    token: optionalEnv("GITHUB_ACCESS_TOKEN"),
     owner: env("PUBLISH_REPO_OWNER", devGithub.owner),
     base: env("PUBLISH_REPO_BASE", devGithub.base),
+  },
+  githubApp: {
+    appId: env("GITHUB_APP_ID", devGithubApp.appId),
+    privateKey: env("GITHUB_APP_PRIVATE_KEY"),
+    clientId: env("GITHUB_CLIENT_ID"),
+    clientSecret: env("GITHUB_CLIENT_SECRET"),
+    installationId: env("GITHUB_APP_INSTALLATION_ID"),
   },
   formio: {
     projectUrl: env("FORMIO_PROJECT_URL", devFormio.projectUrl),

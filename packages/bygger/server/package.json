@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "@navikt/skjemadigitalisering-shared-domain": "^1.0.0",
-    "@octokit/rest": "^19.0.4",
+    "@octokit/auth-app": "^4.0.10",
+    "@octokit/rest": "^19.0.7",
     "@octokit/webhooks-types": "^6.4.0",
     "bcrypt": "^5.1.0",
     "csv-stringify": "^6.2.0",
