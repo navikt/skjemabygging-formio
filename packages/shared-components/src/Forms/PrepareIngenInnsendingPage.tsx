@@ -44,7 +44,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
               submission={submission}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-              onClick={() => loggSkjemaFullfort("ingeninnsending")}
+              onClick={() => loggSkjemaFullfort()}
               translations={translations}
               submissionMethod={"ingen"}
             />

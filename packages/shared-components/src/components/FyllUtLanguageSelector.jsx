@@ -1,4 +1,4 @@
-import React from "react";
+import { useAmplitude } from "../context/amplitude/index.jsx";
 import { useLanguages } from "../context/languages";
 import LanguageSelector from "./LanguageSelector";
 
@@ -10,6 +10,7 @@ export const languagesInOriginalLanguage = {
 };
 
 const FyllUtLanguageSelector = () => {
+  const { loggSpraakValg } = useAmplitude();
   const { currentLanguage, availableLanguages } = useLanguages();
   if (availableLanguages.length === 0) {
     return null;
@@ -28,6 +29,7 @@ const FyllUtLanguageSelector = () => {
         languageCode,
         optionLabel: languagesInOriginalLanguage[languageCode],
         href: `?${params.toString()}`,
+        onClick: () => loggSpraakValg(languageCode),
       };
     });
 

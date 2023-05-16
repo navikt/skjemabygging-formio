@@ -100,10 +100,12 @@ const panelStyles = makeStyles({
 });
 
 const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUrl: string }) => {
+  const { loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
   const { link } = panelStyles();
   const { key, label, components } = component;
+  const panelLinkText = `${translate(TEXTS.grensesnitt.summaryPage.edit)} ${label.toLowerCase()}`;
   return (
     <section>
       <Accordion>
@@ -115,10 +117,12 @@ const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUr
             </Heading>
           </Accordion.Header>
           <Accordion.Content>
-            <Link to={{ pathname: `${formUrl}/${key}`, search }} className={link}>
-              <span>
-                {translate(TEXTS.grensesnitt.summaryPage.edit)} {label.toLowerCase()}
-              </span>
+            <Link
+              to={{ pathname: `${formUrl}/${key}`, search }}
+              className={link}
+              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.location.href })}
+            >
+              <span>{panelLinkText}</span>
             </Link>
             <dl>
               <ComponentSummary components={components} formUrl={formUrl} />
@@ -193,7 +197,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 export function SummaryPage({ form, submission, translations, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
-  const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
   useStyles();
@@ -226,7 +230,16 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
                 <Link
                   className="navds-button navds-button--primary"
-                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  onClick={() => {
+                    loggNavigering({
+                      lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
+                      destinasjon: `${formUrl}/send-i-posten`,
+                    });
+                    loggSkjemaStegFullfort({
+                      steg: getPanels(form.components).length + 1,
+                      skjemastegNokkel: "oppsummering",
+                    });
+                  }}
                   to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
                 >
                   <span aria-live="polite" className="navds-body-short font-bold">
@@ -244,7 +257,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
                     }}
-                    onSuccess={() => loggSkjemaFullfort("digital")}
+                    onSuccess={() => loggSkjemaFullfort()}
                   >
                     {translate(TEXTS.grensesnitt.moveForward)}
                   </DigitalSubmissionButton>
@@ -257,14 +270,19 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
                     }}
-                    onSuccess={() => loggSkjemaFullfort("digital")}
+                    onSuccess={() => loggSkjemaFullfort()}
                   />
                 ))}
 
               {innsending === "INGEN" && (
                 <Link
                   className="navds-button navds-button--primary"
-                  onClick={() => loggSkjemaStegFullfort(getPanels(form.components).length + 1)}
+                  onClick={() =>
+                    loggSkjemaStegFullfort({
+                      steg: getPanels(form.components).length + 1,
+                      skjemastegNokkel: "oppsummering",
+                    })
+                  }
                   to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
                 >
                   <span aria-live="polite" className="navds-body-short font-bold">
@@ -274,6 +292,12 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               )}
               <Link
                 className="navds-button navds-button--secondary"
+                onClick={() =>
+                  loggNavigering({
+                    lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
+                    destinasjon: getUrlToLastPanel(form, formUrl, submission),
+                  })
+                }
                 to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
               >
                 <span aria-live="polite" className="navds-body-short font-bold">
@@ -282,7 +306,17 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               </Link>
             </div>
             <div className="button-row button-row__center">
-              <NavLink className={"navds-button navds-button--tertiary"} href="https://www.nav.no" style={linkBtStyle}>
+              <NavLink
+                className={"navds-button navds-button--tertiary"}
+                onClick={() =>
+                  loggNavigering({
+                    lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+                    destinasjon: "https://www.nav.no",
+                  })
+                }
+                href="https://www.nav.no"
+                style={linkBtStyle}
+              >
                 <span aria-live="polite" className="navds-body-short font-bold">
                   {translate(TEXTS.grensesnitt.navigation.cancel)}
                 </span>

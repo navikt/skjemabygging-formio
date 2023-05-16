@@ -53,12 +53,12 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
   const [foerstesideError, setFoerstesideError] = useState(undefined);
   const [foerstesideLoading, setFoerstesideLoading] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
-  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggDokumentLastetNed } = useAmplitude();
   const { currentLanguage } = useLanguages();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
-      loggSkjemaFullfort("papirinnsending");
+      loggSkjemaFullfort();
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
 
@@ -88,7 +88,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
               setFoerstesideError(undefined);
               setFoerstesideLoading(true);
               lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhetNummer)
-                .then(() => setHasDownloadedFoersteside(true))
+                .then(() => {
+                  loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
+                  setHasDownloadedFoersteside(true);
+                })
                 .catch((error) => {
                   loggSkjemaInnsendingFeilet();
                   setFoerstesideError(error);
@@ -107,7 +110,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         submission={submission}
         actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-        onClick={() => setHasDownloadedPDF(true)}
+        onClick={() => {
+          loggDokumentLastetNed(`${form.properties.skjemanummer}`);
+          setHasDownloadedPDF(true);
+        }}
         translations={translations}
       />
     </section>
