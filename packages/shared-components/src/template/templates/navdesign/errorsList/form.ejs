@@ -7,15 +7,15 @@
 <ul>
   {% ctx.errors.forEach(function(err) { %}
   <li>
-    <a
+    <span
       data-component-key="{{err.keyOrPath}}"
-      href="#"
       ref="errorRef"
       class="navds-link"
       tabIndex="0"
+      role="link"
     >
       {{err.message}}
-    </a>
+    </span>
   </li>
   {% }) %}
 </ul>
