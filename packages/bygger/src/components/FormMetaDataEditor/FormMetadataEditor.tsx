@@ -211,7 +211,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       />
       {!!ettersending && ettersending !== "INGEN" && (
         <TextField
-          className="mb-double"
+          className="mb"
           label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
           type="number"
           id="ettersendelsesfrist"
