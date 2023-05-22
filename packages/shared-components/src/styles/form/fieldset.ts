@@ -4,7 +4,7 @@ const fieldset = {
     "&__legend": {
       fontSize: "1.25rem",
       lineHeight: "1.625rem",
-      marginBottom: "var(--a-spacing-5)",
+      marginBottom: "var(--a-spacing-2)",
     },
     "&__content": {
       borderLeft: "4px solid #368da8",
