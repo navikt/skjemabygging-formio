@@ -38,7 +38,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
             <Heading level="3" size="medium" spacing>
               {translate(form.properties.innsendingOverskrift)}
             </Heading>
-            <BodyShort>{translate(form.properties.innsendingForklaring)}</BodyShort>
+            <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
             <DownloadPdfButton
               form={form}
               submission={submission}
