@@ -43,6 +43,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       downloadPdfButtonText,
       innsending: innsendingFraProps,
       ettersending,
+      ettersendelsesfrist,
       mottaksadresseId,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
@@ -208,6 +209,22 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           })
         }
       />
+      {!!ettersending && ettersending !== "INGEN" && (
+        <TextField
+          className="mb"
+          label={<LabelWithDiff label="Ettersendelsesfrist (dager)" diff={!!diff.ettersendelsesfrist} />}
+          type="number"
+          id="ettersendelsesfrist"
+          value={ettersendelsesfrist || ""}
+          onChange={(event) =>
+            onChange({
+              ...form,
+              properties: { ...form.properties, ettersendelsesfrist: event.target.value },
+            })
+          }
+          placeholder={"Standard (14 dager)"}
+        />
+      )}
 
       {innsending === "INGEN" && (
         <>
