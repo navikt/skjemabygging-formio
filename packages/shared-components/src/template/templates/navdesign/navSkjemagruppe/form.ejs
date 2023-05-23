@@ -1,5 +1,5 @@
 {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
-  <div class="navds-body-short" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
+  <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
   {% if (ctx.component.additionalDescription) { %}
     <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
       {% if (ctx.component.additionalDescriptionLabel) { %}
@@ -12,7 +12,6 @@
   {% } %}
 {% } %}
 <fieldset
-    class="navds-fieldset"
     {% if (ctx.component.description) { %}
     aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
     {% } %}
@@ -26,7 +25,7 @@
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
-        <div class="navds-fieldset__description mb-2" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
+        <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
         {% if (ctx.component.additionalDescription) { %}
           <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
             {% if (ctx.component.additionalDescriptionLabel) { %}
