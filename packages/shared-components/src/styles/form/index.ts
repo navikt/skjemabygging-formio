@@ -17,6 +17,7 @@ import row from "./row";
 import select from "./select";
 import table from "./table";
 import tabs from "./tabs";
+import typography from "./typography";
 
 const form = {
   ".formio-form": {
@@ -39,6 +40,7 @@ const form = {
     ...select,
     ...table,
     ...tabs,
+    ...typography,
     "& [hidden]": {
       display: "none !important",
     },

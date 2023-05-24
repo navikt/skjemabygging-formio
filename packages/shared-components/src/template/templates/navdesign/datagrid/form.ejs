@@ -109,7 +109,7 @@
 {% } %}
 {% if (ctx.component.isNavDataGrid) { %}
   {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
-    <div class="navds-body-short">{{ctx.t(ctx.component.description)}}</div>
+    <div class="description">{{ctx.t(ctx.component.description)}}</div>
     {% if (ctx.component.additionalDescription) { %}
       <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
         {% if (ctx.component.additionalDescriptionLabel) { %}
@@ -121,7 +121,7 @@
       </div>
     {% } %}
   {% } %}
-  <fieldset class="navds-fieldset" ref="{{ctx.datagridKey}}-tbody">
+  <fieldset ref="{{ctx.datagridKey}}-tbody">
     {% if (!ctx.component.hideLabel) { %}
     <label class="navds-fieldset__legend">{{ctx.t(ctx.component.label)}}</label>
     <span class="label-track-changes">
@@ -129,7 +129,7 @@
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
-      <div class="navds-body-short">{{ctx.t(ctx.component.description)}}</div>
+      <div class="description">{{ctx.t(ctx.component.description)}}</div>
       {% if (ctx.component.additionalDescription) { %}
         <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
           {% if (ctx.component.additionalDescriptionLabel) { %}
