@@ -1,4 +1,7 @@
 app-name: skjemabygging
+env-name: prod-gcp
+logs-url: https://logs.adeo.no/app/r/s/aRKKp
+special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts"
 ingresses:
 - "https://skjemabygging.nav.no"
 image: {{image}}
