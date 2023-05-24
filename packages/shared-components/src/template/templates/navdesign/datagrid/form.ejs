@@ -123,7 +123,7 @@
   {% } %}
   <fieldset ref="{{ctx.datagridKey}}-tbody">
     {% if (!ctx.component.hideLabel) { %}
-    <label class="navds-fieldset__legend">{{ctx.t(ctx.component.label)}}</label>
+    <legend class="navds-fieldset__legend">{{ctx.t(ctx.component.label)}}</legend>
     <span class="label-track-changes">
       {{ctx.util.getDiffTag(ctx)}}
     </span>
