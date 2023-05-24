@@ -37,4 +37,3 @@ spec:
             special_type_to_use_in_alertmanager_config: {{special-type-to-use-in-alertmanager-config}}
             alert_type: custom
             severity: critical
-            
