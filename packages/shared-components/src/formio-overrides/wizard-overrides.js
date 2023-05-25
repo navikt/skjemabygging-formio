@@ -41,7 +41,7 @@ Wizard.prototype.attach = function (element) {
 
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
     if (this.pages) {
-      this.enabledIndex = this.pages.length - 1;
+      this.enabledIndex = this.pages?.length - 1;
     }
   }
 
@@ -137,11 +137,17 @@ Wizard.prototype.attachHeader = function () {
     });
   }
 
-  // Copy of nextPage() from formio.js/src/Wizard.js, but without emitting event when going to next page
-  const validateAndGoToNextPage = () => {
+  // Copy of nextPage() from formio.js/src/Wizard.js, but without custom emit and scroll to errors
+  const validateAndGoToNextPage = (emitPage) => {
     if (this.options.readOnly) {
       return this.beforePage(true).then(() => {
-        return this.setPage(this.getNextPage());
+        if (emitPage) {
+          return this.setPage(this.getNextPage()).then(() => {
+            this.emitNextPage();
+          });
+        } else {
+          return this.setPage(this.getNextPage());
+        }
       });
     }
 
@@ -154,20 +160,33 @@ Wizard.prototype.attachHeader = function () {
             this.enabledIndex = this.page;
             this.redraw();
           }
+
+          if (emitPage) {
+            this.emitNextPage();
+          }
         });
       });
     } else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
       this.scrollIntoView(this.element);
+
+      if (this.refs.errorRef) {
+        this.refs.errorRef[0]?.focus();
+      }
+
       return Promise.reject(this.showErrors([], true));
     }
+  };
+
+  Wizard.prototype.nextPage = () => {
+    return validateAndGoToNextPage(true);
   };
 
   const validateUntilLastPage = () => {
     if (this.isLastPage()) {
       this.emit("submitButton"); // Validate entire form and go to summary page
     } else {
-      validateAndGoToNextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
+      validateAndGoToNextPage(false) // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
         .then(validateUntilLastPage) // Repeat on next step in form
         .catch(() => {}); // Ignore rejected promise returned by nextPage() when there are errors. Those are handled by onError defined in FillInFormPage.
     }
