@@ -7,10 +7,25 @@ on:
       - master
     paths:
       - "./packages/bygger/.nais/alerts.yaml"
+      - "./packages/bygger/.nais/preprod.yaml"
       - "./packages/bygger/.nais/prod.yaml"
       - ".github/workflows/alert-deploy.yaml"
 jobs:
-  apply-alerts:
+  preprod-deploy:
+    name: Deploy to preprod
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy to preprod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: "./packages/bygger/.nais/alerts.yaml"
+          VARS: "./packages/bygger/.nais/preprod.yaml"
+
+  prod-deploy:
     name: Deploy to prod
     runs-on: ubuntu-latest
     steps:

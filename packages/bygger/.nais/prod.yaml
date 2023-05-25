@@ -4,7 +4,6 @@ logs-url: https://logs.adeo.no/app/r/s/aRKKp
 special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts"
 ingresses:
 - "https://skjemabygging.nav.no"
-image: {{image}}
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
 publish-repo-base: master
