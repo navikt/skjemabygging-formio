@@ -5,6 +5,7 @@ metadata:
   namespace: skjemadigitalisering
   labels:
     team: skjemadigitalisering
+
 spec:
   groups:
     - name: {{ env-name }}
