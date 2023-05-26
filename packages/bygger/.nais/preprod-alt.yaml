@@ -2,6 +2,7 @@ app-name: skjemabygging-preprod-alt
 ingresses:
 - "https://skjemabygging-preprod-alt.intern.dev.nav.no"
 fyllut-base-url: https://fyllut-preprod-alt.intern.dev.nav.no/fyllut
+enabled-features: ""
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
 publish-repo-base: test-publishing
