@@ -5,6 +5,7 @@ ingresses:
 logs-url: https://logs.adeo.no/app/r/s/lvnlu
 special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts-dev"
 fyllut-base-url: https://skjemadelingslenke.ekstern.dev.nav.no/fyllut
+enabled-features: translations,conditionalAlert,enhetsListe,autoComplete,diff,exstreamPdf
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
 publish-repo-base: test-publishing
