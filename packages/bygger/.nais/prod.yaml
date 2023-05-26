@@ -1,9 +1,10 @@
 app-name: skjemabygging
 env-name: prod-gcp
-logs-url: https://logs.adeo.no/app/r/s/aRKKp
-special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts"
 ingresses:
 - "https://skjemabygging.nav.no"
+logs-url: https://logs.adeo.no/app/r/s/aRKKp
+special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts"
+fyllut-base-url: https://skjemadelingslenke.ekstern.dev.nav.no/fyllut
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
 publish-repo-base: master
