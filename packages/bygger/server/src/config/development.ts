@@ -41,4 +41,5 @@ export const devGithubApp: Partial<GithubAppConfig> = {
   appId: "test",
 };
 
-export const devEnabledFeatures = "translations,enhetsListe,autoComplete,diff";
+// export const devEnabledFeatures = "translations,enhetsListe,autoComplete,diff";
+export const devEnabledFeatures = "translations,conditionalAlert,enhetsListe,autoComplete,diff,exstreamPdf";

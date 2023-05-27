@@ -7,6 +7,9 @@ if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
 
+// Default enabled features for use in dev environment. Can be overridden with env variable ENABLED_FEATURES
+const devEnabledFeatures = "translations,autoComplete,sendInnIntegration";
+
 const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
@@ -79,7 +82,7 @@ const config: ConfigType = {
   fyllutPath: "/fyllut",
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,
-  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
+  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES ?? devEnabledFeatures),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
   isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
