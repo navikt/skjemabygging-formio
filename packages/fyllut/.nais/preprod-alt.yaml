@@ -2,15 +2,16 @@ app-name: skjemautfylling-preprod-alt
 ingresses:
   - "https://fyllut-preprod-alt.intern.dev.nav.no/fyllut"
 image: {{image}}
+enabled-features: translations
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
+send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
+send-inn-host: http://innsending-api.team-soknad
 forms-source: "formioapi"
 secrets:
-  - fyllut-formio-dev
-  - fyllut-features
-  - digital-innsending
+  - formio-server-dev
 azure:
   application:
     tenant: trygdeetaten.no

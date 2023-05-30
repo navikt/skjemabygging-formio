@@ -2,10 +2,13 @@ app-name: skjemautfylling
 ingresses:
   - "https://www.nav.no/fyllut"
 image: {{image}}
+enabled-features: translations,autoComplete,sendInnIntegration
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
+send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
+send-inn-host: http://innsending-api.team-soknad
 forms-source: "static"
 pdl-token-scope-cluster: "prod-fss"
 secrets:
