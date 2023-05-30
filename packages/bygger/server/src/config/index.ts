@@ -30,8 +30,8 @@ const env = (name: string, devValue?: string): string => {
   return value!;
 };
 
-const optionalEnv = (name: string, devValue?: string): string | undefined => {
-  return process.env[name] ?? devValue;
+const optionalEnv = (name: string): string | undefined => {
+  return process.env[name];
 };
 
 const config: ConfigType = {
@@ -85,7 +85,7 @@ const config: ConfigType = {
   port: parseInt(process.env.PORT || "8080"),
   isProduction: nodeEnv === "production",
   isDevelopment: nodeEnv === "development",
-  featureToggles: featureUtils.toFeatureToggles(optionalEnv("ENABLED_FEATURES", devEnabledFeatures)),
+  featureToggles: featureUtils.toFeatureToggles(env("ENABLED_FEATURES", devEnabledFeatures)),
 };
 
 export default config;
