@@ -9,7 +9,7 @@ skjemabygging-proxy-client-id: 031863f2-9881-44af-ace5-6b5ab52afeb1
 skjemabygging-proxy-url: https://skjemabygging-proxy.prod-fss-pub.nais.io
 send-inn-token-x-client-id: prod-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
-formio-project-url: "static"
+formio-project-url: ""
 forms-source: "static"
 pdl-token-scope-cluster: "prod-fss"
 secrets:
