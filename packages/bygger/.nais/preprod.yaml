@@ -4,7 +4,7 @@ ingresses:
 - "https://skjemabygging-preprod.intern.dev.nav.no"
 logs-url: https://logs.adeo.no/app/r/s/lvnlu
 special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts-dev"
-fyllut-base-url: https://skjemadelingslenke.ekstern.dev.nav.no/fyllut
+fyllut-base-url: https://fyllut-preprod.intern.dev.nav.no/fyllut
 enabled-features: translations,diff
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
@@ -18,6 +18,7 @@ accessPolicy:
         namespace: skjemadigitalisering
         cluster: dev-fss
     external:
+      - host: fyllut-preprod.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
 secrets:
   - formio-server-dev
