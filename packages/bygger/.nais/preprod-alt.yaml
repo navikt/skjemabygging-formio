@@ -15,7 +15,7 @@ accessPolicy:
         namespace: skjemadigitalisering
         cluster: dev-fss
     external:
-      - host: skjemautfylling-preprod-alt
+      - host: fyllut-preprod-alt.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
 secrets:
   - formio-server-dev
