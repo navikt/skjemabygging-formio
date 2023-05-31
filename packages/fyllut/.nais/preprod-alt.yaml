@@ -16,6 +16,9 @@ azure:
   application:
     tenant: trygdeetaten.no
 accessPolicy:
+  inbound:
+    rules:
+      - application: skjemabygging-preprod-alt
   outbound:
     rules:
       - application: skjemabygging-proxy
