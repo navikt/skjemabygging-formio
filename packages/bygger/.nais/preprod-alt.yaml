@@ -18,6 +18,6 @@ accessPolicy:
       - host: fyllut-preprod-alt.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
 secrets:
-  - formio-server-dev
+  - formio-server-access-dev
   - bygger-pusher-dev
   - github-app-installation

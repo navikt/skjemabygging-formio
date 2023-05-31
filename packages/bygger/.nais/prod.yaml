@@ -20,6 +20,6 @@ accessPolicy:
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
 secrets:
-  - bygger
+  - formio-server-access
   - bygger-pusher
   - github-app-installation
