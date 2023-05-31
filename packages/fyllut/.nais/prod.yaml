@@ -13,8 +13,6 @@ forms-source: "static"
 pdl-token-scope-cluster: "prod-fss"
 secrets:
   - sentry-dsn
-  - fyllut-features
-  - digital-innsending
 azure:
   application:
     tenant: nav.no
