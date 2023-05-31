@@ -11,11 +11,11 @@ skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 accessPolicy:
   outbound:
     rules:
-      - application: skjemautfylling-preprod-alt
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
     external:
+      - host: skjemautfylling-preprod-alt
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
 secrets:
   - formio-server-dev
