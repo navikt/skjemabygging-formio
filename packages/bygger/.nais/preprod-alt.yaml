@@ -1,7 +1,7 @@
 app-name: skjemabygging-preprod-alt
 ingresses:
 - "https://skjemabygging-preprod-alt.intern.dev.nav.no"
-fyllut-base-url: https://fyllut-preprod-alt.intern.dev.nav.no/fyllut
+fyllut-base-url: http://skjemautfylling-preprod-alt
 enabled-features: translations,diff
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
@@ -11,6 +11,7 @@ skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 accessPolicy:
   outbound:
     rules:
+      - application: skjemautfylling-preprod-alt
       - application: skjemabygging-proxy
         namespace: skjemadigitalisering
         cluster: dev-fss
