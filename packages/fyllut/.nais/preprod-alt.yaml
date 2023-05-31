@@ -10,8 +10,6 @@ skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
 forms-source: "formioapi"
-secrets:
-  - formio-server-dev
 azure:
   application:
     tenant: trygdeetaten.no

@@ -9,11 +9,8 @@ skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
 send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
 send-inn-host: http://innsending-api.team-soknad
+formio-project-url: https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn
 forms-source: "formioapi"
-secrets:
-  - fyllut-formio-dev
-  - fyllut-features
-  - digital-innsending
 azure:
   application:
     tenant: trygdeetaten.no

@@ -66,6 +66,8 @@ spec:
         - host: {{this.host}}
       {{/each}}
   env:
+    - name: FORMIO_PROJECT_URL
+      value: formio-project-url
     - name: ENABLED_FEATURES
       value: {{enabled-features}}
     - name: DECORATOR_URL
