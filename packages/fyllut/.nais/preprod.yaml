@@ -2,7 +2,7 @@ app-name: skjemautfylling-preprod
 ingresses:
   - "https://fyllut-preprod.intern.dev.nav.no/fyllut"
 image: {{image}}
-enabled-features: translations,autoComplete,sendInnIntegration
+enabled-features: translations,sendInnIntegration
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
