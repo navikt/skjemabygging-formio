@@ -7,6 +7,8 @@ if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
 
+const defaultEnabledFeatures = "translations,sendInnIntegration";
+
 const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
@@ -79,7 +81,7 @@ const config: ConfigType = {
   fyllutPath: "/fyllut",
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,
-  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
+  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES ?? defaultEnabledFeatures),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
   isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
