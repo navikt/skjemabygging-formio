@@ -24,7 +24,7 @@ Formio.Utils.additionalDescription = (ctx) => {
       </svg>
       <span>${ctx.t(ctx.component.additionalDescriptionLabel)}</span>
     </button>
-    <div class="navds-read-more__content navds-read-more__content--closed navds-body-long" id="${descriptionContentId}" aria-hidden="true">
+    <div class="navds-read-more__content navds-read-more__content--closed" id="${descriptionContentId}" aria-hidden="true">
       ${ctx.t(ctx.component.additionalDescriptionText)}  
     </div>
   </div>`;
