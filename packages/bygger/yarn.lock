@@ -1598,44 +1598,44 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@navikt/aksel-icons@^2.8.11":
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-2.8.11.tgz#2fc4f058993075693905a0890b551c5276664fe5"
-  integrity sha512-Fs1/fdRtID8s+oCd3eh5HKNgs+eOeOJjo6dya2aPuYCnaIaFEycKObuGsWNdFtPVxpaHF2kVL5PQrZyLXutpmw==
+"@navikt/aksel-icons@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-2.9.8.tgz#04e4868d2f8f1022b52e9de54668127f6d0f5052"
+  integrity sha512-HANk2yejzzQxj4UefLg5Q8YXqkwh98SN98fNJUIlfonnh1bla1XB2h690QZJiY5SghHDnb2RGo/aojc8BwI8kQ==
 
-"@navikt/ds-css-internal@^2.8.11":
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-2.8.11.tgz#81ce1087e2a719a3d64a61fbbcec97677bd1aba8"
-  integrity sha512-HyFrXpbypCK1lI3aXAIJMcG8QMPeK6AHZYBeoB3AN3AL+bQyofKEyraSENxNqtlRcZd7v328GbOzxbHLuew7uA==
+"@navikt/ds-css-internal@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css-internal/-/ds-css-internal-2.9.8.tgz#09baada0d399ca309c34bcfb3908276795fa1e96"
+  integrity sha512-fXyQnD9VdBqETb+X0RnMEB97uJZVwTkzeqZ4m6YvdakEGRKOZTs251v1PnT5menH5i5XL+Yg5KZp5RLjOaAzFQ==
 
-"@navikt/ds-css@^2.8.11":
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-2.8.11.tgz#69dd0bdb3df9e956d8ac100024f385b6f8a4fbc3"
-  integrity sha512-sR8lOeqTYz3tfuc2NKsHR3p9UUVGTs6no2Ym1wzpetVc5uYkySZq72IgYGtYQsDjh6trBV21OZ2gfoIei4yWjA==
+"@navikt/ds-css@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-css/-/ds-css-2.9.8.tgz#f620f8fc013050d272d89485bb46042819363cc2"
+  integrity sha512-6MnIJpH/pX9VYXGcO2hUn9WWqUTk1WdIiPVQQbj3jTZhUKNwnT2bofcB+OrIfCST9o0qDyYeGVfVsuAyQpZxRA==
 
-"@navikt/ds-icons@^2.8.11":
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-2.8.11.tgz#2374f9867f2bf7c62f7e7d6b9fef72706f4c8629"
-  integrity sha512-ejMtwdzDiZbl1YW+GGs1mT9mKrINIuTsdDBEUFE8UVua/Fgtd42K0EBHVE9v2LnHN4MJiigS2sBKudDc3o1zDA==
+"@navikt/ds-icons@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-2.9.8.tgz#b6f22493a3b836e00762dcc0a4397c64beb634e0"
+  integrity sha512-5IdVN4rmpXnznQMUz5YPxDoY17nykV3Oy/YCpq6gF69JRbhjwgQ+4LI/eV1tFFLaM/EW73qFCaEzhP0DY3prEw==
 
-"@navikt/ds-react-internal@^2.8.11":
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-react-internal/-/ds-react-internal-2.8.11.tgz#6e7e56126be0d88b216015d36a9e425bcf15cd17"
-  integrity sha512-lgqj88i56rApJfcPVwqBLgQKmGKf7Ucrv6LAPzz5qTAwo7HG/Ec2uXcJLTJjIFZahrLHhmV5wdAua+/ezEBDJQ==
+"@navikt/ds-react-internal@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react-internal/-/ds-react-internal-2.9.8.tgz#a952843df673b24a6054f4d420b6343ddd75f784"
+  integrity sha512-iT/ENXfcabGeMfGU/Uz+CK4ZPkXPnvhcjIuFKh0v0xCUBs/mnFvG6AQb/sSBqMuRayd4DrlS2YLWY5z+fjxfHw==
   dependencies:
-    "@navikt/ds-icons" "^2.8.11"
-    "@navikt/ds-react" "^2.8.11"
+    "@navikt/ds-icons" "^2.9.8"
+    "@navikt/ds-react" "^2.9.8"
     clsx "^1.1.1"
     copy-to-clipboard "^3.3.1"
 
-"@navikt/ds-react@^2.8.11":
-  version "2.8.11"
-  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-2.8.11.tgz#0677ce3d515daead23dc6f175d15356fb00b22be"
-  integrity sha512-Z6vMTmKyQxBDIQ9sECCsQbQxTKfvluVhBOqT3m2teBDC3STRPFF6M+yy9rdl7yzTLLeB8FFg5L9ZniZuPFf4Pw==
+"@navikt/ds-react@^2.9.8":
+  version "2.9.8"
+  resolved "https://registry.yarnpkg.com/@navikt/ds-react/-/ds-react-2.9.8.tgz#73242362d3e36916cac4ab99b14994a89c4e7737"
+  integrity sha512-xwiXR0K1imgCXZjfExDqUlPaq6IdJqrFqxeZBITnN6sIQheEee83RpOxxOLCoBCW9fkl4ZZSofCRYLh+i3Lo2w==
   dependencies:
     "@floating-ui/react" "0.17.0"
-    "@navikt/aksel-icons" "^2.8.11"
-    "@navikt/ds-icons" "^2.8.11"
+    "@navikt/aksel-icons" "^2.9.8"
+    "@navikt/ds-icons" "^2.9.8"
     "@radix-ui/react-tabs" "1.0.0"
     "@radix-ui/react-toggle-group" "1.0.0"
     clsx "^1.2.1"

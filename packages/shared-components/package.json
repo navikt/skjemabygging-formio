@@ -24,8 +24,8 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@navikt/ds-icons": "^2.8.11",
-    "@navikt/ds-react": "^2.8.11",
+    "@navikt/ds-icons": "^2.9.8",
+    "@navikt/ds-react": "^2.9.8",
     "@navikt/fnrvalidator": "^1.1.4",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "amplitude-js": "7.3.3",

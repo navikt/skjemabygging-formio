@@ -1,8 +1,8 @@
-import FieldsetDisplayForm from "formiojs/components/fieldset/editForm/Fieldset.edit.display";
-import Fieldset from "formiojs/components/fieldset/Fieldset";
 import NestedComponentForm from "formiojs/components/_classes/nested/NestedComponent.form";
+import Fieldset from "formiojs/components/fieldset/Fieldset";
+import FieldsetDisplayForm from "formiojs/components/fieldset/editForm/Fieldset.edit.display";
 import FormBuilderOptions from "../../Forms/form-builder-options";
-import { advancedDescription } from "./fields/advancedDescription.js";
+import { description } from "./fields/description.js";
 
 class Skjemagruppe extends Fieldset {
   static editForm(...extend) {
@@ -11,7 +11,7 @@ class Skjemagruppe extends Fieldset {
         key: "display",
         components: [
           ...FieldsetDisplayForm.filter((field) => field.key !== "description"),
-          ...advancedDescription,
+          ...description,
           {
             key: "tooltip",
             ignore: true,
