@@ -175,6 +175,7 @@ const choices = {
       width: "100%",
       maxWidth: "420px",
       overflow: "hidden",
+      backgroundColor: "#fff",
       "&:before": {
         pointerEvents: "none",
         content: "''",

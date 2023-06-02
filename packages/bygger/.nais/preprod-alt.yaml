@@ -1,7 +1,8 @@
 app-name: skjemabygging-preprod-alt
 ingresses:
 - "https://skjemabygging-preprod-alt.intern.dev.nav.no"
-image: {{image}}
+fyllut-base-url: https://fyllut-preprod-alt.intern.dev.nav.no/fyllut
+enabled-features: translations,diff
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
 publish-repo-base: test-publishing
@@ -14,8 +15,9 @@ accessPolicy:
         namespace: skjemadigitalisering
         cluster: dev-fss
     external:
+      - host: fyllut-preprod-alt.intern.dev.nav.no
       - host: skjemabygging-proxy.dev-fss-pub.nais.io
 secrets:
-  - bygger-preprod-alt
+  - formio-server-access-dev
   - bygger-pusher-dev
   - github-app-installation

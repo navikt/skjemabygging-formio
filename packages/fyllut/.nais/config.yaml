@@ -66,6 +66,8 @@ spec:
         - host: {{this.host}}
       {{/each}}
   env:
+    - name: ENABLED_FEATURES
+      value: {{enabled-features}}
     - name: DECORATOR_URL
       value: {{dekorator-url}}
     - name: FOERSTESIDE_URL
@@ -76,6 +78,10 @@ spec:
       value: {{skjemabygging-proxy-url}}
     - name: SKJEMABYGGING_PROXY_CLIENT_ID
       value: {{skjemabygging-proxy-client-id}}
+    - name: SEND_INN_TOKEN_X_CLIENT_ID
+      value: {{send-inn-token-x-client-id}}
+    - name: SEND_INN_HOST
+      value: {{send-inn-host}}
     - name: PDL_TOKEN_SCOPE_CLUSTER
       value: {{pdl-token-scope-cluster}}
   envFrom:

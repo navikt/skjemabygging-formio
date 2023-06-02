@@ -1,7 +1,11 @@
 app-name: skjemabygging
+env-name: prod-gcp
 ingresses:
 - "https://skjemabygging.nav.no"
-image: {{image}}
+logs-url: https://logs.adeo.no/app/r/s/aRKKp
+special-type-to-use-in-alertmanager-config: "fyllut-sendinn-alerts"
+fyllut-base-url: https://skjemadelingslenke.ekstern.dev.nav.no/fyllut
+enabled-features: translations,conditionalAlert,enhetsListe,autoComplete,diff,exstreamPdf
 publish-repo: skjemautfylling-formio
 publish-repo-owner: navikt
 publish-repo-base: master
@@ -16,6 +20,6 @@ accessPolicy:
     external:
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
 secrets:
-  - bygger
+  - formio-server-access
   - bygger-pusher
   - github-app-installation

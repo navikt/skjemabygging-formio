@@ -87,8 +87,10 @@ kommaseparert
 liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
 
 Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
-i miljøets nais-config. Lokalt kan man f.eks. gjøre det ved å legge inn følgende i `.env`-filen under `fyllut/server`:
+i miljøets nais-config. Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil
+under `fyllut/server` eller `bygger/server`.
 
+    // Eksempel på hvordan miljøvariabelen kan se ut
     ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
 
 Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:

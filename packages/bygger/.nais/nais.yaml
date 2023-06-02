@@ -34,6 +34,10 @@ spec:
       - {{url}}
     {{/each}}
   env:
+    - name: FYLLUT_BASE_URL
+      value: {{fyllut-base-url}}
+    - name: ENABLED_FEATURES
+      value: {{enabled-features}}
     - name: PUBLISH_REPO
       value: {{publish-repo}}
     - name: PUBLISH_REPO_OWNER
