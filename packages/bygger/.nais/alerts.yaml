@@ -11,7 +11,7 @@ spec:
     - name: {{ env-name }}
       rules:
         - alert: Høy feilrate i logger
-          expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="skjemabygging",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="skjemabygging"}[3m]))) > 10
+          expr: (100 * sum by (app, namespace) (rate(log_messages_errors{app="{{app-name}}",level=~"Warning|Error"}[3m])) / sum by (app, namespace) (rate(log_messages_total{app="{{app-name}}"}[3m]))) > 10
           for: 3m
           annotations:
             title: "Høy feilrate i logger"
@@ -25,7 +25,7 @@ spec:
             severity: warning
 
         - alert: Byggeren er nede
-          expr: kube_deployment_status_replicas_available{deployment="skjemabygging"} == 0
+          expr: kube_deployment_status_replicas_available{deployment="{{app-name}}"} == 0
           for: 1m
           annotations:
             title: "Byggeren er nede"
