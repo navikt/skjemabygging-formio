@@ -1,10 +1,10 @@
-<h2 class="navds-error-summary__heading navds-heading navds-heading--small" id="errorListTitle" aria-hidden="true">
+<h2 class="navds-error-summary__heading navds-heading navds-heading--small" ref="errorListTitle" autofocus tabindex="0">
   {{ctx.t('error')}}
   {% if (ctx.options.vpat) { %}
   <span ref="errorTooltip" class="{{ctx.iconClass('question-sign')}}" tabindex="0"></span>
   {% } %}
 </h2>
-<ul aria-labelledby="errorListTitle" autofocus tabindex="-1">
+<ul>
   {% ctx.errors.forEach(function(err, i) { %}
   <li>
     <span
