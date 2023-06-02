@@ -170,10 +170,7 @@ Wizard.prototype.attachHeader = function () {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
 
       if (this.refs.errorRef) {
-        this.loadRefs(this.element, {
-          errorListTitle: "single",
-        });
-        this.refs.errorListTitle?.focus();
+        this.refs.errorRef[0]?.focus();
       } else {
         this.scrollIntoView(this.element);
       }
