@@ -1,7 +1,18 @@
-import { description } from "./description.js";
-
-export const advancedDescription = [
-  ...description,
+export const description = [
+  {
+    type: "select",
+    input: true,
+    label: "Plassering av beskrivelse",
+    key: "descriptionPosition",
+    dataSrc: "values",
+    data: {
+      values: [
+        { label: "Over label", value: "above" },
+        { label: "Under label", value: "below" },
+      ],
+    },
+    weight: 200,
+  },
   {
     type: "checkbox",
     input: true,

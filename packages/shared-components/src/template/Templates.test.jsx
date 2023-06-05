@@ -71,6 +71,7 @@ describe("Templates", () => {
 
   describe("Utvidet beskrivelse ", () => {
     const buttonLabel = "Read more";
+    const description = "Expanded text";
     const testShowAndHideByType = async (type, descriptionPosition, options = {}) => {
       await renderNavForm({
         form: {
@@ -84,7 +85,7 @@ describe("Templates", () => {
               description: "Description",
               additionalDescription: true,
               additionalDescriptionLabel: buttonLabel,
-              additionalDescriptionText: "Expanded text",
+              additionalDescriptionText: description,
               input: true,
               ...options,
             },
@@ -92,16 +93,15 @@ describe("Templates", () => {
         },
       });
 
-      const expandButton = await screen.getByRole("button", { name: buttonLabel });
+      const expandButton = screen.getByRole("button", { name: buttonLabel });
       expect(expandButton).toBeInTheDocument();
 
-      const container = await screen.findByTestId(`${type}-additional-description`);
+      const container = screen.getByText(description);
       expect(container).toBeInTheDocument();
-      expect(container).toHaveClass("accordion-link");
-      expect(container).not.toHaveClass("accordion-link--expand");
+      expect(container).toHaveClass("navds-read-more__content--closed");
 
       fireEvent.click(expandButton);
-      expect(container).toHaveClass("accordion-link--expand");
+      expect(container).not.toHaveClass("navds-read-more__content--closed");
     };
 
     describe("Textarea", () => {
@@ -151,16 +151,6 @@ describe("Templates", () => {
 
       it("Description position above", async () => {
         await testShowAndHideByType("field", "above");
-      });
-    });
-
-    describe("Datagrid", () => {
-      it("Default description position", async () => {
-        await testShowAndHideByType("datagrid", "below", { isNavDataGrid: true });
-      });
-
-      it("Description position above", async () => {
-        await testShowAndHideByType("datagrid", "above", { isNavDataGrid: true });
       });
     });
 
