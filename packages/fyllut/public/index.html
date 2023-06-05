@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#000000"/>
     <meta name="git-version" content="%REACT_APP_GIT_VERSION%"/>
     <meta name="git-branch" content="%REACT_APP_GIT_BRANCH%"/>
-    <% if (process.env.NAIS_APP_NAME === 'skjemautfylling-delingslenke') { %>
+    <% if (process.env.NAIS_CLUSTER_NAME !== 'prod-gcp') { %>
     <meta name="robots" content="noindex"/>
     <% } %>
     <% if (process.env.NODE_ENV !== 'development') { %>
