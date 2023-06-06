@@ -33,7 +33,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     if (formPath) {
       logger.debug("Loading form...", { formPath });
       const form = await formService.loadForm(formPath);
-      if (form) {
+      if (form && form.properties) {
         const { innsending } = form.properties;
         if (!qpSub) {
           if (!innsending || innsending === "PAPIR_OG_DIGITAL") {
