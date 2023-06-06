@@ -4,7 +4,7 @@ import { formService } from "../../services";
 const form = {
   get: async (req, res) => {
     const form = await formService.loadForm(req.params.formPath);
-    if (!form) {
+    if (!form || !form.properties) {
       return res.sendStatus(404);
     }
     if (req.query.type === "limited") {
