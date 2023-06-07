@@ -13,7 +13,6 @@ forms-source: "static"
 pdl-token-scope-cluster: "dev-fss"
 secrets:
   - sentry-dsn
-  - formio-server-access-dev
 azure:
   application:
     tenant: trygdeetaten.no

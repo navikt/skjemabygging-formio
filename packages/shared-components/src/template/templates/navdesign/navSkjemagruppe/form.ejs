@@ -1,15 +1,5 @@
 {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
   <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
-  {% if (ctx.component.additionalDescription) { %}
-    <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-      {% if (ctx.component.additionalDescriptionLabel) { %}
-        <button type="button" class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-          {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-        </button>
-      {% } %}
-      <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
-    </div>
-  {% } %}
 {% } %}
 <fieldset
     {% if (ctx.component.description) { %}
@@ -23,19 +13,6 @@
       </legend>
       {{ctx.util.getDiffTag(ctx)}}
     </span>
-    {% } %}
-    {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
-        <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
-        {% if (ctx.component.additionalDescription) { %}
-          <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-            {% if (ctx.component.additionalDescriptionLabel) { %}
-              <button type="button" class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-                {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-              </button>
-            {% } %}
-            <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
-          </div>
-        {% } %}
     {% } %}
     <div class="navds-fieldset__content" ref="{{ctx.nestedKey}}">
         {{ctx.children}}
