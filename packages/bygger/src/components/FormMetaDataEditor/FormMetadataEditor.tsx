@@ -254,7 +254,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         </>
       )}
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-        <div className="mb">
+        <div>
           <Select
             className="mb-4"
             label={<LabelWithDiff label="Mottaksadresse" diff={!!diff.mottaksadresseId} />}
