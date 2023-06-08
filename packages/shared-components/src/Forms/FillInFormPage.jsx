@@ -21,7 +21,7 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startSoknad, updateSoknad, soknadState } = useSendInnContext();
+  const { startSoknad, updateSoknad } = useSendInnContext();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
   const [isReady, setIsReady] = useState(submissionMethod !== "digital");
@@ -32,24 +32,18 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
-      await startSoknad(initialSubmission, currentLanguage);
-      console.log("---Initializing", soknadState);
-      setIsReady(true);
+      const response = await startSoknad(initialSubmission, currentLanguage);
+      if (response?.innsendingsId) {
+        setIsReady(true);
+      }
     };
     if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
       initializeMellomlagring();
     }
-  }, [
-    initialSubmission,
-    currentLanguage,
-    startSoknad,
-    featureToggles.enableMellomlagring,
-    submissionMethod,
-    soknadState,
-  ]);
+  }, [initialSubmission, currentLanguage, startSoknad, featureToggles.enableMellomlagring, submissionMethod]);
 
-  const callUpdateSoknad = (submission) =>
-    updateSoknad({ submission, language: currentLanguage, innsendingsId: soknadState.innsendingsId });
+  // TODO: necessary?
+  const callUpdateSoknad = async (submission) => updateSoknad(submission, currentLanguage);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;

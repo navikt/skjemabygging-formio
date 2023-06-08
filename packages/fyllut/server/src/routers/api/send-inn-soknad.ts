@@ -80,8 +80,6 @@ const sendInnSoknad = {
   put: async (req, res, next) => {
     const idportenPid = getIdportenPid(req);
     const tokenxAccessToken = getTokenxAccessToken(req);
-
-    console.log(req.body);
     const { innsendingsId, form, submission, language, translations = {} } = req.body;
     const translate = (term) => translations[term] ?? term;
 
