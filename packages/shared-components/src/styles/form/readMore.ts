@@ -1,8 +1,8 @@
-// TODO: Remove this when we upgrade to @navikt packages 3.x. Just keep margin and fontSize.
+// TODO: Remove this when we upgrade to @navikt packages 3.x. Just keep margin and maybe color.
 const readMore = {
   "& .navds-read-more": {
     margin: "var(--a-spacing-2) 0",
-    fontSize: "var(--a-font-size-medium)",
+    color: "var(--a-gray-700)",
     "&__content": {
       "&--closed": {
         display: "none",
