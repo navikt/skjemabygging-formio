@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
-import { SendInnProvider } from "../context/sendInn/sendInnContext";
+import { MellomlagringProvider } from "../context/sendInn/mellomlagringContext";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { IntroPage } from "./IntroPage.tsx";
@@ -44,7 +44,7 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider form={form}>
+      <MellomlagringProvider form={form}>
         <FormTitle form={form} />
         <FyllUtContainer>
           <div className="fyllut-layout">
@@ -113,7 +113,7 @@ const FyllUtRouter = ({ form, translations }) => {
             </Route>
           </Switch>
         </FyllUtContainer>
-      </SendInnProvider>
+      </MellomlagringProvider>
     </LanguagesProvider>
   );
 };

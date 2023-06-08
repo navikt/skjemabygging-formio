@@ -5,7 +5,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import { useSendInnContext } from "../context/sendInn/sendInnContext";
+import { useMellomlagring } from "../context/sendInn/mellomlagringContext";
 import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
@@ -21,7 +21,7 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startSoknad, updateSoknad } = useSendInnContext();
+  const { startMellomlagring, updateMellomlagring } = useMellomlagring();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
   const [isReady, setIsReady] = useState(submissionMethod !== "digital");
@@ -32,7 +32,7 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
-      const response = await startSoknad(initialSubmission, currentLanguage);
+      const response = await startMellomlagring(initialSubmission, currentLanguage);
       if (response?.innsendingsId) {
         setIsReady(true);
       }
@@ -40,10 +40,10 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
     if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
       initializeMellomlagring();
     }
-  }, [initialSubmission, currentLanguage, startSoknad, featureToggles.enableMellomlagring, submissionMethod]);
+  }, [initialSubmission, currentLanguage, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
 
   // TODO: necessary?
-  const callUpdateSoknad = async (submission) => updateSoknad(submission, currentLanguage);
+  const callUpdateSoknad = async (submission) => updateMellomlagring(submission, currentLanguage);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
