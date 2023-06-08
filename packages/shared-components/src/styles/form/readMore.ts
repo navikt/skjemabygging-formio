@@ -1,4 +1,4 @@
-// TODO: Remove this when we upgrade to @navikt packages 3.x. Just keep margin and color.
+// TODO: Remove this when we upgrade to @navikt packages 3.x. Just keep margin and maybe color.
 const readMore = {
   "& .navds-read-more": {
     margin: "var(--a-spacing-2) 0",
