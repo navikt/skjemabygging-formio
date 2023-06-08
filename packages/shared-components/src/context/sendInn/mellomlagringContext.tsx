@@ -1,5 +1,5 @@
 import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 import { SendInnSoknadResponse, createSendInnSoknad, updateSendInnSoknad } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
 
