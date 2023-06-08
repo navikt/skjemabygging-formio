@@ -13,6 +13,7 @@ interface FetchHeader {
   "Content-Type"?: MimeType;
   Accept?: MimeType;
   "Fyllut-Submission-Method"?: SubmissionMethodType;
+  "Fyllut-Is-Test"?: string;
 }
 
 interface FetchOptions {
@@ -51,7 +52,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
 
 const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: "POST",
+    method: "PUT",
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });

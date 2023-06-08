@@ -15,6 +15,7 @@ import globalTranslations from "./global-translations.js";
 import log from "./log";
 import mottaksadresser from "./mottaksadresser.js";
 import pdl from "./pdl";
+import sendInnSoknad from "./send-inn-soknad";
 import sendInn from "./send-inn.js";
 import translations from "./translations.js";
 
@@ -34,6 +35,8 @@ apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
 apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
+apiRouter.post("/send-inn/soknad", tokenxSendInn, sendInnSoknad.post);
+apiRouter.put("/send-inn/soknad", tokenxSendInn, sendInnSoknad.put);
 apiRouter.get("/common-codes/archive-subjects", azureSkjemabyggingProxy, commonCodes.getArchiveSubjects);
 apiRouter.post("/pdf/convert", azureSkjemabyggingProxy, exstream.post);
 apiRouter.get("/common-codes/currencies", azureSkjemabyggingProxy, commonCodes.getCurrencies);

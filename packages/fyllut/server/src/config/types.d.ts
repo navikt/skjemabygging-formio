@@ -11,6 +11,8 @@ export type SendInnConfig = {
   tokenxClientId: string;
   paths: {
     leggTilVedlegg: string;
+    soknad: string;
+    utfyltSoknad: string;
   };
 };
 

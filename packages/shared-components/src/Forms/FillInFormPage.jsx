@@ -1,14 +1,16 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
+import { useSendInnContext } from "../context/sendInn/sendInnContext";
+import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
-export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
+export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl }) => {
   const history = useHistory();
   const {
     loggSkjemaApnet,
@@ -19,15 +21,42 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
+  const { startSoknad, updateSoknad, soknadState } = useSendInnContext();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
+  const [isReady, setIsReady] = useState(submissionMethod !== "digital");
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
   }, [loggSkjemaApnet, submissionMethod]);
 
+  useEffect(() => {
+    const initializeMellomlagring = async () => {
+      await startSoknad(initialSubmission, currentLanguage);
+      console.log("---Initializing", soknadState);
+      setIsReady(true);
+    };
+    if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
+      initializeMellomlagring();
+    }
+  }, [
+    initialSubmission,
+    currentLanguage,
+    startSoknad,
+    featureToggles.enableMellomlagring,
+    submissionMethod,
+    soknadState,
+  ]);
+
+  const callUpdateSoknad = (submission) =>
+    updateSoknad({ submission, language: currentLanguage, innsendingsId: soknadState.innsendingsId });
+
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
+  }
+
+  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !isReady) {
+    return <LoadingComponent />;
   }
 
   function updatePanelUrl(panelPath) {
@@ -50,7 +79,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onNextPage({ page, currentPanels }) {
+  function onNextPage({ page, currentPanels, submission }) {
+    callUpdateSoknad(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
@@ -116,7 +146,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         form={form}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
-        submission={submission}
+        submission={initialSubmission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
         onError={onError}
