@@ -15,7 +15,7 @@ const global = {
     display: "flex",
     flexDirection: "column",
     lineHeight: "1.5",
-    fontSize: "1rem",
+    fontSize: "1.125rem",
     fontWeight: 400,
     fontFamily: "Source Sans Pro, Arial, sans-serif",
     textAlign: "left",
