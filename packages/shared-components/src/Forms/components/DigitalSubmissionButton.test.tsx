@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
-import React from "react";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
 import DigitalSubmissionButton, { Props } from "./DigitalSubmissionButton";
@@ -16,30 +15,20 @@ const originalWindowLocation = window.location;
 const defaultAppConfigProps: Partial<AppConfigContextType> = {
   baseUrl: BASE_URL,
   app: "fyllut",
-};
+} as AppConfigContextType;
 
 describe("DigitalSubmissionButton", () => {
-  const defaultForm = {
-    components: [
-      {
-        type: "panel",
-        components: [],
-      },
-    ],
-  };
   const defaultSubmission = {};
   const defaultTranslations = {};
 
   const renderButton = (props: Partial<Props> = {}, appConfigProps: Partial<AppConfigContextType> = {}) => {
     const defaultProps: Props = {
-      form: defaultForm,
       submission: defaultSubmission,
-      translations: defaultTranslations,
       onError: jest.fn(),
       onSuccess: jest.fn(),
       children: "Digital submission",
       ...props,
-    };
+    } as Props;
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <LanguagesProvider translations={defaultTranslations}>

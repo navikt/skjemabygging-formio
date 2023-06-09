@@ -3,6 +3,7 @@ import { Accordion, Alert, BodyShort, Heading, Link as NavLink } from "@navikt/d
 import {
   InnsendingType,
   NavFormType,
+  Submission,
   Summary,
   TEXTS,
   formSummaryUtil,
@@ -179,8 +180,7 @@ const FormSummary = ({ form, formUrl, submission }: { form: NavFormType; formUrl
 
 export interface Props {
   form: NavFormType;
-  submission: object;
-  translations: object;
+  submission: Submission;
   formUrl: string;
 }
 
@@ -194,7 +194,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
   return `${formUrl}/${lastPanelSlug}`;
 }
 
-export function SummaryPage({ form, submission, translations, formUrl }: Props) {
+export function SummaryPage({ form, submission, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
@@ -250,9 +250,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
                 (hasAttachments ? (
                   <DigitalSubmissionButton
-                    form={form}
                     submission={submission}
-                    translations={translations}
                     onError={(err) => {
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
@@ -263,9 +261,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   </DigitalSubmissionButton>
                 ) : (
                   <DigitalSubmissionWithPrompt
-                    form={form}
                     submission={submission}
-                    translations={translations}
                     onError={(err) => {
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();

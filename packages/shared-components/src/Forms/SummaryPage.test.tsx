@@ -3,7 +3,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import nock from "nock";
-import React from "react";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../configContext";
 import { Modal } from "../index";
@@ -93,7 +92,7 @@ const getButtons = (): Buttons => {
 
 const renderSummaryPage = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {}
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -102,7 +101,7 @@ const renderSummaryPage = async (
     form: {} as NavFormType,
     translations: {},
     ...props,
-  };
+  } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
       <Router history={history}>

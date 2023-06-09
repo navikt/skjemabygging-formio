@@ -44,7 +44,7 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
-      <MellomlagringProvider form={form}>
+      <MellomlagringProvider form={form} translations={translations}>
         <FormTitle form={form} />
         <FyllUtContainer>
           <div className="fyllut-layout">
@@ -60,14 +60,7 @@ const FyllUtRouter = ({ form, translations }) => {
             </Route>
             <Route path={`${path}/oppsummering`}>
               <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                {(submissionObject) => (
-                  <SummaryPage
-                    form={form}
-                    submission={submissionObject}
-                    translations={translations}
-                    formUrl={formBaseUrl}
-                  />
-                )}
+                {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />}
               </SubmissionWrapper>
             </Route>
             <Route path={`${path}/send-i-posten`}>

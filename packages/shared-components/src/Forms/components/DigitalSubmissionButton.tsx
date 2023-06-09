@@ -1,15 +1,14 @@
 import { Button } from "@navikt/ds-react";
+import { Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
+import { useMellomlagring } from "../../context/sendInn/mellomlagringContext";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
-import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
 
 export interface Props {
-  form: object;
-  submission: object;
-  translations: object;
+  submission: Submission;
   onError: Function;
   onSuccess?: Function;
   children: string;
@@ -17,42 +16,14 @@ export interface Props {
 
 const noop = () => {};
 
-const postToSendInn = async (
-  http,
-  baseUrl,
-  form,
-  submission,
-  translations,
-  currentLanguage,
-  submissionMethod,
-  isTest
-) => {
-  const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
-  const attachments = getRelevantAttachments(form, submission);
-  return http.post(
-    `${baseUrl}/api/send-inn`,
-    {
-      form,
-      submission,
-      translations: translationsForPDF,
-      language: currentLanguage,
-      attachments,
-      otherDocumentation: hasOtherDocumentation(form, submission),
-      submissionMethod,
-    },
-    {
-      "Fyllut-Is-Test": isTest,
-    },
-    { redirectToLocation: true }
-  );
-};
-
-const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop, children }: Props) => {
+const DigitalSubmissionButton = ({ submission, onError, onSuccess = noop, children }: Props) => {
   const { currentLanguage } = useLanguages();
   const { loggNavigering } = useAmplitude();
-  const { baseUrl, http, config = {}, app } = useAppConfig();
+  const { app } = useAppConfig();
+  const { submitSoknad } = useMellomlagring();
   const [loading, setLoading] = useState(false);
   const sendInn = async () => {
+    //TODO: felles måte å håndtere bygger på
     if (app === "bygger") {
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
       return;
@@ -61,16 +32,7 @@ const DigitalSubmissionButton = ({ form, submission, translations, onError, onSu
       setLoading(true);
       loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });
       removeBeforeUnload();
-      const response = await postToSendInn(
-        http,
-        baseUrl,
-        form,
-        submission,
-        translations,
-        currentLanguage,
-        "digital",
-        config.isDelingslenke
-      );
+      const response = await submitSoknad(submission, currentLanguage);
       onSuccess(response);
     } catch (err: any) {
       addBeforeUnload();

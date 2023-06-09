@@ -1,4 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
@@ -15,25 +15,10 @@ describe("DigitalSubmissionWithPrompt", () => {
   const BASE_URL = "http://www.unittest.nav.no/fyllut";
 
   beforeEach(() => {
-    const defaultForm = {
-      components: [
-        {
-          type: "panel",
-          components: [],
-        },
-      ],
-    };
-
     render(
       <AppConfigProvider baseUrl={BASE_URL} app="fyllut">
         <LanguagesProvider translations={{}}>
-          <DigitalSubmissionWithPrompt
-            form={defaultForm}
-            submission={{}}
-            translations={{}}
-            onError={onError}
-            onSuccess={onSuccess}
-          />
+          <DigitalSubmissionWithPrompt submission={{} as Submission} onError={onError} onSuccess={onSuccess} />
         </LanguagesProvider>
       </AppConfigProvider>
     );
