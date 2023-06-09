@@ -10,6 +10,7 @@ export interface Props {
   form: object;
   submission: object;
   translations: object;
+  isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: Function;
   onSuccess?: Function;
   children: string;
@@ -47,12 +48,24 @@ const postToSendInn = async (
   );
 };
 
-const DigitalSubmissionButton = ({ form, submission, translations, onError, onSuccess = noop, children }: Props) => {
+const DigitalSubmissionButton = ({
+  form,
+  submission,
+  translations,
+  isValid,
+  onError,
+  onSuccess = noop,
+  children,
+}: Props) => {
   const { currentLanguage } = useLanguages();
   const { loggNavigering } = useAmplitude();
   const { baseUrl, http, config = {}, app } = useAppConfig();
   const [loading, setLoading] = useState(false);
-  const sendInn = async () => {
+  const sendInn = async (e) => {
+    if (isValid && !isValid(e)) {
+      return;
+    }
+
     if (app === "bygger") {
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
       return;

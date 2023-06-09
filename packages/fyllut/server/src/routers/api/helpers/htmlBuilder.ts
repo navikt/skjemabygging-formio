@@ -22,13 +22,14 @@ const createHtmlFromSubmission = (
   lang: string = "nb"
 ) => {
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
+  const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
 
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
 ${head(translate(form.title))}
-${body(symmaryPanels, signatures)}
+${body(symmaryPanels, confirmation, signatures)}
 </html>`;
 };
 
@@ -56,9 +57,10 @@ p {margin: 0}
 .underskrift {margin-bottom: 30px;}
 </style>`;
 
-const body = (formSummaryObject: Summary.Panel[], signatures?: string) => `
+const body = (formSummaryObject: Summary.Panel[], confirmation?: string, signatures?: string) => `
 <body>
 ${formSummaryObject.map(section).join("")}
+${confirmation}
 ${signatures || ""}
 </body>`;
 
@@ -148,6 +150,17 @@ const signatureSection = (
 <p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
 ${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`
     : undefined;
+};
+
+const createConfirmationSection = (form: NavFormType, translate: (text: string) => string) => {
+  if (form.properties.declarationText) {
+    return `<h2>${translate("Erklæring")}</h2> ${field({
+      label: form.properties.declarationText,
+      type: "textfield",
+      key: "",
+      value: translate("Ja"),
+    })}`;
+  }
 };
 
 export { createHtmlFromSubmission, body, signatureSection };

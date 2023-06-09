@@ -1,24 +1,19 @@
 import { makeStyles, styled } from "@material-ui/styles";
-import { Accordion, Alert, BodyShort, Heading, Link as NavLink } from "@navikt/ds-react";
-import {
-  InnsendingType,
-  NavFormType,
-  Summary,
-  TEXTS,
-  formSummaryUtil,
-} from "@navikt/skjemadigitalisering-shared-domain";
+import { Alert, BodyShort, ConfirmationPanel, Heading, Link as NavLink } from "@navikt/ds-react";
+import { InnsendingType, NavFormType, TEXTS, formSummaryUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
-import { useAppConfig } from "../configContext";
-import { useAmplitude } from "../context/amplitude";
-import { useLanguages } from "../context/languages";
-import { Styles } from "../index";
-import { scrollToAndSetFocus } from "../util/focus-management";
-import { getPanels } from "../util/form";
-import DigitalSubmissionButton from "./components/DigitalSubmissionButton";
-import DigitalSubmissionWithPrompt from "./components/DigitalSubmissionWithPrompt";
-import FormStepper from "./components/FormStepper";
-import { hasRelevantAttachments } from "./components/attachmentsUtil";
+import { useAppConfig } from "../../configContext";
+import { useAmplitude } from "../../context/amplitude";
+import { useLanguages } from "../../context/languages";
+import { Styles } from "../../index";
+import { scrollToAndSetFocus } from "../../util/focus-management";
+import { getPanels } from "../../util/form";
+import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
+import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
+import FormStepper from "../components/FormStepper";
+import { hasRelevantAttachments } from "../components/attachmentsUtil";
+import FormSummary from "./FormSummary";
 
 const useStyles = makeStyles(() => ({
   "@global": {
@@ -26,156 +21,6 @@ const useStyles = makeStyles(() => ({
     ...Styles.global,
   },
 }));
-
-const SummaryField = ({ component }: { component: Summary.Field }) => (
-  <>
-    <dt>{component.label}</dt>
-    <dd>{component.value}</dd>
-  </>
-);
-
-const SelectboxesSummary = ({ component }: { component: Summary.Selectboxes }) => (
-  <>
-    <dt>{component.label}</dt>
-    <dd>
-      <ul>
-        {component.value.map((value) => (
-          <li key={`${component.label}_${value}`}>{value}</li>
-        ))}
-      </ul>
-    </dd>
-  </>
-);
-
-const FormSummaryFieldset = ({ component }: { component: Summary.Fieldset }) => (
-  <>
-    <dt>{component.label}</dt>
-    <dd>
-      <dl className="component-collection">
-        <ComponentSummary components={component.components} />
-      </dl>
-    </dd>
-  </>
-);
-
-const DataGridSummary = ({ component }: { component: Summary.DataGrid }) => (
-  <>
-    <dt>{component.label}</dt>
-    <dd>{component.components && component.components.map((row) => <DataGridRow key={row.key} row={row} />)}</dd>
-  </>
-);
-
-const DataGridRow = ({ row }: { row: Summary.DataGridRow }) => (
-  <div className="data-grid__row">
-    {row.label && <p className="navds-body-short font-bold">{row.label}</p>}
-    <dl>
-      <ComponentSummary components={row.components} />
-    </dl>
-  </div>
-);
-
-const useImgSummaryStyles = (widthPercent) =>
-  makeStyles({
-    description: { minWidth: 100, maxWidth: widthPercent + "%" },
-  })();
-
-const ImageSummary = ({ component }: { component: Summary.Image }) => {
-  const { label, value, alt, widthPercent } = component;
-  const { description } = useImgSummaryStyles(widthPercent);
-  return (
-    <>
-      <dt>{label}</dt>
-      <dd>
-        <img className={description} src={value} alt={alt}></img>
-      </dd>
-    </>
-  );
-};
-
-const panelStyles = makeStyles({
-  link: {
-    display: "block",
-    marginBottom: "2rem",
-  },
-});
-
-const PanelSummary = ({ component, formUrl }: { component: Summary.Panel; formUrl: string }) => {
-  const { loggNavigering } = useAmplitude();
-  const { translate } = useLanguages();
-  const { search } = useLocation();
-  const { link } = panelStyles();
-  const { key, label, components } = component;
-  const panelLinkText = `${translate(TEXTS.grensesnitt.summaryPage.edit)} ${label.toLowerCase()}`;
-  return (
-    <section>
-      <Accordion>
-        <Accordion.Item defaultOpen={true}>
-          <Accordion.Header>
-            {" "}
-            <Heading level="3" size="medium">
-              {label}
-            </Heading>
-          </Accordion.Header>
-          <Accordion.Content>
-            <Link
-              to={{ pathname: `${formUrl}/${key}`, search }}
-              className={link}
-              onClick={(e) => loggNavigering({ lenkeTekst: panelLinkText, destinasjon: e.view.location.href })}
-            >
-              <span>{panelLinkText}</span>
-            </Link>
-            <dl>
-              <ComponentSummary components={components} formUrl={formUrl} />
-            </dl>
-          </Accordion.Content>
-        </Accordion.Item>
-      </Accordion>
-    </section>
-  );
-};
-
-const ComponentSummary = ({ components, formUrl = "" }: { components: Summary.Component[]; formUrl?: string }) => {
-  return (
-    <>
-      {components.map((comp) => {
-        const { type, key } = comp;
-        switch (type) {
-          case "panel":
-            return <PanelSummary key={key} component={comp} formUrl={formUrl} />;
-          case "fieldset":
-          case "navSkjemagruppe":
-            return <FormSummaryFieldset key={key} component={comp} />;
-          case "datagrid":
-            return <DataGridSummary key={key} component={comp} />;
-          case "selectboxes":
-            return <SelectboxesSummary key={key} component={comp} />;
-          case "image":
-            return <ImageSummary key={key} component={comp} />;
-          default:
-            return <SummaryField key={key} component={comp as Summary.Field} />;
-        }
-      })}
-    </>
-  );
-};
-
-const FormSummary = ({ form, formUrl, submission }: { form: NavFormType; formUrl: string; submission: object }) => {
-  const { logger } = useAppConfig();
-  const { translate } = useLanguages();
-  // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
-  const summaryComponents: Summary.Component[] = formSummaryUtil.createFormSummaryObject(form, submission, translate);
-  const summaryPanels = summaryComponents.filter((component) => component.type === "panel");
-  if (summaryPanels.length < summaryComponents.length) {
-    logger?.info(
-      `OBS! Skjemaet ${form.title} (${form.properties.skjemanummer}) har komponenter som ikke ligger inne i et panel`
-    );
-  }
-
-  if (summaryPanels.length === 0) {
-    return null;
-  }
-  return <ComponentSummary components={summaryPanels} formUrl={formUrl} />;
-};
 
 export interface Props {
   form: NavFormType;
@@ -201,7 +46,8 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const { translate } = useLanguages();
   const { search } = useLocation();
   useStyles();
-
+  const { declarationText } = form.properties;
+  const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
@@ -211,6 +57,19 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
     textDecoration: "none",
   };
   const hasAttachments = hasRelevantAttachments(form, submission);
+
+  const isValid = (e: React.MouseEvent<HTMLElement>) => {
+    if (declarationText && !declaration) {
+      if (declaration === undefined) {
+        setDeclaration(false);
+      }
+
+      e.preventDefault();
+      return false;
+    }
+
+    return true;
+  };
 
   return (
     <SummaryContent>
@@ -223,6 +82,17 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
+          {declarationText && (
+            <ConfirmationPanel
+              className="mb"
+              checked={declaration || false}
+              error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
+              label={declarationText}
+              onChange={() => {
+                setDeclaration((v) => !v);
+              }}
+            />
+          )}
           <nav>
             <div className="button-row button-row__center">
               {(submissionMethod === "paper" ||
@@ -230,7 +100,10 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                 (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
                 <Link
                   className="navds-button navds-button--primary"
-                  onClick={() => {
+                  onClick={(e) => {
+                    if (!isValid(e)) {
+                      return;
+                    }
                     loggNavigering({
                       lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
                       destinasjon: `${formUrl}/send-i-posten`,
@@ -253,6 +126,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     form={form}
                     submission={submission}
                     translations={translations}
+                    isValid={isValid}
                     onError={(err) => {
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
@@ -266,6 +140,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                     form={form}
                     submission={submission}
                     translations={translations}
+                    isValid={isValid}
                     onError={(err) => {
                       setErrorMessage(err.message);
                       loggSkjemaInnsendingFeilet();
@@ -277,12 +152,16 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {innsending === "INGEN" && (
                 <Link
                   className="navds-button navds-button--primary"
-                  onClick={() =>
+                  onClick={(e) => {
+                    if (!isValid(e)) {
+                      return;
+                    }
+
                     loggSkjemaStegFullfort({
                       steg: getPanels(form.components).length + 1,
                       skjemastegNokkel: "oppsummering",
-                    })
-                  }
+                    });
+                  }}
                   to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
                 >
                   <span aria-live="polite" className="navds-body-short font-bold">
@@ -354,6 +233,6 @@ const SummaryContent = styled("div")({
   },
   "& .form-summary": {
     paddingTop: "2rem",
-    paddingBottom: "3.5rem",
+    paddingBottom: "2.5rem",
   },
 });

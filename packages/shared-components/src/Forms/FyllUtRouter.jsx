@@ -9,9 +9,9 @@ import { FillInFormPage } from "./FillInFormPage.jsx";
 import { IntroPage } from "./IntroPage.tsx";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
-import { SummaryPage } from "./SummaryPage.tsx";
 import { FormTitle } from "./components/FormTitle.tsx";
 import { PrepareLetterPage } from "./letter/PrepareLetterPage";
+import { SummaryPage } from "./summary/SummaryPage.tsx";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",

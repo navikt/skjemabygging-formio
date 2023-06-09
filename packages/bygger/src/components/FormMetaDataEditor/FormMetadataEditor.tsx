@@ -45,6 +45,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       ettersending,
       ettersendelsesfrist,
       mottaksadresseId,
+      declarationText,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
       descriptionOfSignatures,
@@ -170,6 +171,20 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           </Alert>
         )}
       </div>
+
+      <Textarea
+        className="mb"
+        label={<LabelWithDiff label="Erklæringstekst på oppsummeringsside (valgfritt)" diff={!!diff.declarationText} />}
+        value={declarationText || ""}
+        maxLength={0}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, declarationText: event.target.value },
+          })
+        }
+      />
+
       <TextField
         className="mb"
         label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}

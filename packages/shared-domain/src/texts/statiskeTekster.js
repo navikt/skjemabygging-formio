@@ -28,6 +28,7 @@ export const statiske = {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.",
+    confirmationError: "Du må samtykke før du kan fortsette",
   },
   warningAboutDifficultSubmission: {
     modal: {

@@ -41,6 +41,7 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
+  declarationText?: string;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];

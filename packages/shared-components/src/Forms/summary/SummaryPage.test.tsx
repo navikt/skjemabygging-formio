@@ -3,10 +3,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import nock from "nock";
-import React from "react";
 import { Router } from "react-router-dom";
-import { AppConfigContextType, AppConfigProvider } from "../configContext";
-import { Modal } from "../index";
+import { AppConfigContextType, AppConfigProvider } from "../../configContext";
+import { Modal } from "../../index";
 import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;

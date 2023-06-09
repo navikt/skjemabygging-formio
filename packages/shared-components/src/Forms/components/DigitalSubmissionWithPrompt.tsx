@@ -22,19 +22,27 @@ export interface Props {
   form: object;
   submission: object;
   translations: object;
+  isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
   onSuccess?: () => void;
 }
 
-const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError, onSuccess }: Props) => {
+const DigitalSubmissionWithPrompt = ({ form, submission, translations, isValid, onError, onSuccess }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
 
   const styles = useStyles();
 
+  const handleClick = (e) => {
+    if (isValid && !isValid(e)) {
+      return;
+    }
+    setIsOpen(true);
+  };
+
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
+      <Button onClick={handleClick}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
       <Modal
         open={isOpen}
         ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
