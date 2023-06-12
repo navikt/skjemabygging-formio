@@ -1,7 +1,7 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { Alert, BodyShort, ConfirmationPanel, Heading, Link as NavLink } from "@navikt/ds-react";
 import { InnsendingType, NavFormType, TEXTS, formSummaryUtil } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
@@ -51,6 +51,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
+  const declarationRef = useRef<HTMLInputElement>(null);
 
   const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
   const linkBtStyle = {
@@ -65,6 +66,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
       }
 
       e.preventDefault();
+      declarationRef.current?.focus();
       return false;
     }
 
@@ -88,6 +90,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               checked={declaration || false}
               error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
               label={declarationText}
+              ref={declarationRef}
               onChange={() => {
                 setDeclaration((v) => !v);
               }}

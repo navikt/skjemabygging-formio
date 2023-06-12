@@ -15,7 +15,7 @@ jest.mock("react-router-dom", () => ({
   useRouteMatch: () => ({ url: "/forms/previous" }),
 }));
 
-jest.mock("../context/languages", () => ({
+jest.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
