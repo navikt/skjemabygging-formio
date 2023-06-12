@@ -60,7 +60,7 @@ p {margin: 0}
 const body = (formSummaryObject: Summary.Panel[], confirmation?: string, signatures?: string) => `
 <body>
 ${formSummaryObject.map(section).join("")}
-${confirmation}
+${confirmation || ""}
 ${signatures || ""}
 </body>`;
 
