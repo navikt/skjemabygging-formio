@@ -169,13 +169,19 @@ Wizard.prototype.attachHeader = function () {
     } else {
       this.currentPage.components.forEach((comp) => comp.setPristine(false));
 
+      this.showErrors([]);
+
       if (this.refs.errorRef) {
-        this.refs.errorRef[0]?.focus();
+        this.loadRefs(this.element, {
+          errorRefHeader: "single",
+        });
+
+        this.refs.errorRefHeader?.focus();
       } else {
         this.scrollIntoView(this.element);
       }
 
-      return Promise.reject(this.showErrors([], true));
+      return Promise.reject(this.errors, true);
     }
   };
 
