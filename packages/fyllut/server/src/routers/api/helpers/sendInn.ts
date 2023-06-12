@@ -12,12 +12,14 @@ interface HovedDokument {
   document: number[];
 }
 
-//TODO
 interface Attachment {
-  formioId: string;
+  vedleggsnr: string;
+  tittel: string;
   label: string;
   beskrivelse: string;
-  tittel: string;
+  pakrevd: boolean;
+  propertyNavn: string;
+  formioId: string;
 }
 
 interface SendInnSoknadBody {
