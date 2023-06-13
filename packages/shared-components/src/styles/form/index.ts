@@ -11,8 +11,10 @@ import img from "./img";
 import input from "./input";
 import inputGroup from "./inputGroup";
 import label from "./label";
+import labelTrackChanges from "./labelTrackChanges";
 import list from "./list";
 import listGroup from "./listGroup";
+import readMore from "./readMore";
 import row from "./row";
 import select from "./select";
 import table from "./table";
@@ -34,8 +36,10 @@ const form = {
     ...group,
     ...htmlElement,
     ...label,
+    ...labelTrackChanges,
     ...list,
     ...listGroup,
+    ...readMore,
     ...row,
     ...select,
     ...table,

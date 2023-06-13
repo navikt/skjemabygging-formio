@@ -5,7 +5,7 @@ import DataGridDisplayEditForm from "formiojs/components/datagrid/editForm/DataG
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import FormioReactComponent from "../FormioReactComponent";
-import { advancedDescription } from "./fields/advancedDescription.js";
+import { description } from "./fields/description.js";
 
 const originalAddRow = DataGrid.prototype.addRow;
 const originalRemoveRow = DataGrid.prototype.removeRow;
@@ -21,7 +21,7 @@ class NavDataGrid extends DataGrid {
         label: "Display",
         key: "display",
         components: [
-          ...advancedDescription,
+          ...description,
           ...DataGridDisplayEditForm,
           {
             type: "textfield",

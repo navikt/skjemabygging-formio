@@ -6,9 +6,9 @@ on:
     branches:
       - master
     paths:
-      - "./packages/bygger/.nais/alerts.yaml"
-      - "./packages/bygger/.nais/preprod.yaml"
-      - "./packages/bygger/.nais/prod.yaml"
+      - "packages/bygger/.nais/alerts.yaml"
+      - "packages/bygger/.nais/preprod.yaml"
+      - "packages/bygger/.nais/prod.yaml"
       - ".github/workflows/alert-deploy.yaml"
 jobs:
   preprod-deploy:

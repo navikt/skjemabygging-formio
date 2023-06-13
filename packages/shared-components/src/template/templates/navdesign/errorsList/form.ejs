@@ -1,21 +1,21 @@
-<h2 tabindex="-1" autofocus class="navds-error-summary__heading navds-heading navds-heading--small">
+<h2 class="navds-error-summary__heading navds-heading navds-heading--small" autofocus tabindex="-1" ref="errorRefHeader">
   {{ctx.t('error')}}
   {% if (ctx.options.vpat) { %}
   <span ref="errorTooltip" class="{{ctx.iconClass('question-sign')}}" tabindex="0"></span>
   {% } %}
 </h2>
 <ul>
-  {% ctx.errors.forEach(function(err) { %}
+  {% ctx.errors.forEach(function(err, i) { %}
   <li>
-    <a
+    <span
       data-component-key="{{err.keyOrPath}}"
-      href="#"
       ref="errorRef"
       class="navds-link"
       tabIndex="0"
+      role="link"
     >
       {{err.message}}
-    </a>
+    </span>
   </li>
   {% }) %}
 </ul>
