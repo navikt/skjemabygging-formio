@@ -50,6 +50,9 @@ export interface FormPropertiesType {
   hasLabeledSignatures?: boolean;
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
+  vedleggstittel?: string;
+  vedleggskode?: string;
+  vedleggErValgfritt?: "ja" | "nei";
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -58,6 +61,11 @@ export type FormPropertiesPublishing = Pick<
 >;
 
 type ComponentDataSrc = "values" | "url" | "json" | "custom" | "resource";
+
+interface ComponentValue {
+  value: string;
+  label: string;
+}
 
 export interface Component {
   id?: string;
@@ -74,10 +82,11 @@ export interface Component {
   customConditional?: string;
   valueProperty?: string;
   labelProperty?: string;
-  properties?: Record<string, string>;
+  properties?: Partial<FormPropertiesType>;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
+  values?: ComponentValue[];
 }
 
 export interface Panel extends Component {
