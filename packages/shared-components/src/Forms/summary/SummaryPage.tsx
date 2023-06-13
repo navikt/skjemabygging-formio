@@ -1,6 +1,12 @@
 import { makeStyles, styled } from "@material-ui/styles";
 import { Alert, BodyShort, ConfirmationPanel, Heading, Link as NavLink } from "@navikt/ds-react";
-import { InnsendingType, NavFormType, TEXTS, formSummaryUtil } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  DeclarationType,
+  InnsendingType,
+  NavFormType,
+  TEXTS,
+  formSummaryUtil,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
@@ -46,7 +52,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   const { translate } = useLanguages();
   const { search } = useLocation();
   useStyles();
-  const { declarationText } = form.properties;
+  const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
@@ -59,8 +65,11 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   };
   const hasAttachments = hasRelevantAttachments(form, submission);
 
+  const hasDeclaration = () =>
+    declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
+
   const isValid = (e: React.MouseEvent<HTMLElement>) => {
-    if (declarationText && !declaration) {
+    if (hasDeclaration() && !declaration) {
       if (declaration === undefined) {
         setDeclaration(false);
       }
@@ -84,12 +93,16 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
-          {declarationText && (
+          {hasDeclaration() && (
             <ConfirmationPanel
               className="mb"
               checked={declaration || false}
               error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
-              label={declarationText}
+              label={
+                declarationType === DeclarationType.custom
+                  ? declarationText
+                  : translate(TEXTS.statiske.declaration.defaultText)
+              }
               ref={declarationRef}
               onChange={() => {
                 setDeclaration((v) => !v);
