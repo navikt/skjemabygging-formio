@@ -1,8 +1,10 @@
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
+import { MellomlagringProvider } from "../../context/sendInn/mellomlagringContext";
 import DigitalSubmissionButton, { Props } from "./DigitalSubmissionButton";
 
 jest.mock("../../context/languages/useLanguageCodeFromURL", () => () => "nb-NO");
@@ -31,9 +33,11 @@ describe("DigitalSubmissionButton", () => {
     } as Props;
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
-        <LanguagesProvider translations={defaultTranslations}>
-          <DigitalSubmissionButton {...defaultProps} />
-        </LanguagesProvider>
+        <MellomlagringProvider form={{ components: [] } as NavFormType}>
+          <LanguagesProvider translations={defaultTranslations}>
+            <DigitalSubmissionButton {...defaultProps} />
+          </LanguagesProvider>
+        </MellomlagringProvider>
       </AppConfigProvider>
     );
   };

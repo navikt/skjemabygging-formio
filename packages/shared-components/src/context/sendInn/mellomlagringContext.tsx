@@ -34,7 +34,7 @@ const MellomlagringProvider = ({ children, form, translations }: MellomlagringPr
   }, [appConfig]);
 
   const translationForLanguage = useCallback(
-    (language) => {
+    (language = "nb-NO") => {
       if (language !== "nb-NO" && Object.keys(translations).length > 0) {
         return translations[language] ?? {};
       }
