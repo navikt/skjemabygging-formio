@@ -1,4 +1,5 @@
 import {
+  DeclarationType,
   FormPropertiesType,
   formSummaryUtil,
   NavFormType,
@@ -6,6 +7,7 @@ import {
   signatureUtils,
   Submission,
   Summary,
+  TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 
 type TranslateFunction = (text: string) => string;
@@ -130,8 +132,8 @@ ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
 <div class="underskrift">${translate(description)}</div>
-<div class="underskrift">${translate("Sted og dato")} _________________________________________</div>
-<div class="underskrift">${translate("Underskrift")} _________________________________________</div>`;
+<div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>
+<div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} _________________________________________</div>`;
 
 const signatureSection = (
   formProperties: FormPropertiesType,
@@ -146,19 +148,25 @@ const signatureSection = (
 
   return signatureList.length > 0
     ? `
-<h2>${translate("Underskrift")}</h2>
+<h2>${translate(TEXTS.pdfStatiske.signature)}</h2>
 <p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
 ${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`
     : undefined;
 };
 
 const createConfirmationSection = (form: NavFormType, translate: (text: string) => string) => {
-  if (form.properties.declarationText) {
-    return `<h2>${translate("Erklæring")}</h2> ${field({
-      label: form.properties.declarationText,
+  if (
+    form.properties.declarationType === DeclarationType.custom ||
+    form.properties.declarationType === DeclarationType.default
+  ) {
+    return `<h2>${translate(TEXTS.pdfStatiske.declarationHeader)}</h2> ${field({
+      label:
+        form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
+          ? form.properties.declarationText
+          : translate(TEXTS.pdfStatiske.declarationText),
       type: "textfield",
       key: "",
-      value: translate("Ja"),
+      value: translate(TEXTS.common.yes),
     })}`;
   }
 };

@@ -1,6 +1,7 @@
-import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField } from "@navikt/ds-react";
+import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField, ToggleGroup } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
+  DeclarationType,
   formDiffingTool,
   InnsendingType,
   MottaksadresseData,
@@ -172,18 +173,38 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         )}
       </div>
 
-      <Textarea
-        className="mb"
-        label={<LabelWithDiff label="Erklæringstekst på oppsummeringsside (valgfritt)" diff={!!diff.declarationText} />}
-        value={declarationText || ""}
-        maxLength={0}
-        onChange={(event) =>
-          onChange({
-            ...form,
-            properties: { ...form.properties, declarationText: event.target.value },
-          })
-        }
-      />
+      <label className="navds-label">Erklæring på oppsummeringsside</label>
+
+      <div className="mb">
+        <ToggleGroup
+          defaultValue="lest"
+          onChange={(value) =>
+            onChange({
+              ...form,
+              properties: { ...form.properties, declarationType: value as DeclarationType },
+            })
+          }
+          className="mb-4"
+        >
+          <ToggleGroup.Item value={DeclarationType.none}>Ingen</ToggleGroup.Item>
+          <ToggleGroup.Item value={DeclarationType.default}>Standard</ToggleGroup.Item>
+          <ToggleGroup.Item value={DeclarationType.custom}>Tilpasset</ToggleGroup.Item>
+        </ToggleGroup>
+
+        {form.properties.declarationType === DeclarationType.custom && (
+          <Textarea
+            label={<LabelWithDiff label="Tilpasset erklæringstekst" diff={!!diff.declarationText} />}
+            value={declarationText || ""}
+            maxLength={0}
+            onChange={(event) =>
+              onChange({
+                ...form,
+                properties: { ...form.properties, declarationText: event.target.value },
+              })
+            }
+          />
+        )}
+      </div>
 
       <TextField
         className="mb"
