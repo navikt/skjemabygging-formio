@@ -50,6 +50,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
       descriptionOfSignatures,
+      descriptionOfSignaturesPositionUnder,
       signatures,
     },
   } = form;
@@ -289,7 +290,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         </>
       )}
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
-        <div className="mb">
+        <div>
           <Select
             className="mb-4"
             label={<LabelWithDiff label="Mottaksadresse" diff={!!diff.mottaksadresseId} />}
@@ -352,7 +353,6 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         )}
 
       <Textarea
-        className="mb"
         label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
         value={descriptionOfSignatures || ""}
         maxLength={0}
@@ -363,6 +363,19 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           })
         }
       />
+
+      <Checkbox
+        className="mb"
+        checked={!!descriptionOfSignaturesPositionUnder}
+        onChange={(event) =>
+          onChange({
+            ...form,
+            properties: { ...form.properties, descriptionOfSignaturesPositionUnder: event.target.checked },
+          })
+        }
+      >
+        Plasser under signaturer
+      </Checkbox>
 
       {signatureUtils.mapBackwardCompatibleSignatures(signatures)?.map((signature, index) => (
         <div key={signature.key}>

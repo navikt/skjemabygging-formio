@@ -57,6 +57,7 @@ export interface FormPropertiesType {
   hasLabeledSignatures?: boolean;
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
+  descriptionOfSignaturesPositionUnder?: boolean;
 }
 
 export type FormPropertiesPublishing = Pick<
