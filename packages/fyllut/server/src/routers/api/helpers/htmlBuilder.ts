@@ -139,14 +139,15 @@ const signatureSection = (
   if (submissionMethod === "digital") {
     return "";
   }
-  const { signatures, descriptionOfSignatures } = formProperties;
+  const { signatures, descriptionOfSignatures, descriptionOfSignaturesPositionUnder } = formProperties;
   const signatureList = signatureUtils.mapBackwardCompatibleSignatures(signatures);
 
   return signatureList.length > 0
     ? `
 <h2>${translate("Underskrift")}</h2>
-<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>
-${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}`
+${!descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>` : ""}
+${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}
+${descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>` : ""}`
     : undefined;
 };
 

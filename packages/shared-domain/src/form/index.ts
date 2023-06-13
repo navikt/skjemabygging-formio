@@ -50,6 +50,7 @@ export interface FormPropertiesType {
   hasLabeledSignatures?: boolean;
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
+  descriptionOfSignaturesPositionUnder?: boolean;
   vedleggstittel?: string;
   vedleggskode?: string;
   vedleggErValgfritt?: "ja" | "nei";

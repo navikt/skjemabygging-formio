@@ -1,4 +1,5 @@
 import buttonRow from "./buttonRow";
+import errorSummary from "./errorSummary";
 import margin from "./margin";
 import stepper from "./stepper";
 import vars from "./vars";
@@ -50,6 +51,7 @@ const global = {
       maxWidth: "608px",
     },
   },
+  ...errorSummary,
   ...buttonRow,
   ...margin,
   ...stepper,
