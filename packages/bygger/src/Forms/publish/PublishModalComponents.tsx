@@ -7,36 +7,36 @@ import PublishSettingsModal from "./PublishSettingsModal";
 
 const isAttachment = (comp: Component) => comp.values?.some((v) => v.value === "leggerVedNaa");
 
-const isAllAttachmentsValid = (form) =>
+const validateAttachments = (form) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter(isAttachment)
     .every((comp) => comp.properties?.vedleggskode && comp.properties?.vedleggstittel);
 
 const PublishModalComponents = ({ form, onPublish, openPublishSettingModal, setOpenPublishSettingModal }) => {
-  const [open, setOpen] = useModal(false);
+  const [openPublishSettingModalValidated, setOpenPublishSettingModalValidated] = useModal(false);
   const [openConfirmPublishModal, setOpenConfirmPublishModal] = useModal(false);
   const [userMessage, showUserMessage, closeUserMessageModal] = useUserMessage();
   const [selectedLanguageCodeList, setSelectedLanguageCodeList] = useState<string[]>([]);
 
   useEffect(() => {
     if (openPublishSettingModal) {
-      const attachmentsAreValid = isAllAttachmentsValid(form);
+      const attachmentsAreValid = validateAttachments(form);
       if (attachmentsAreValid) {
-        setOpen(true);
+        setOpenPublishSettingModalValidated(true);
       } else {
         setOpenPublishSettingModal(false);
         showUserMessage("Du må fylle ut vedleggskode og vedleggstittel for alle vedlegg før skjemaet kan publiseres.");
       }
     } else {
-      setOpen(false);
+      setOpenPublishSettingModalValidated(false);
     }
-  }, [openPublishSettingModal, form, setOpen, setOpenPublishSettingModal, showUserMessage]);
+  }, [openPublishSettingModal, form, setOpenPublishSettingModalValidated, setOpenPublishSettingModal, showUserMessage]);
 
   return (
     <>
       <PublishSettingsModal
-        openModal={open}
+        openModal={openPublishSettingModalValidated}
         closeModal={() => setOpenPublishSettingModal(false)}
         onPublish={(languageCodes) => {
           setOpenPublishSettingModal(false);
