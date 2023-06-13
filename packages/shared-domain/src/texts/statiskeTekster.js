@@ -58,4 +58,8 @@ export const statiske = {
     sendInPapirSectionAttachment: "vedlegget",
     sendInPapirSection: "som nevnt i punkt 2 over.",
   },
+  declaration: {
+    header: "Erklæring",
+    defaultText: "Jeg bekrefter at opplysningene er riktige.",
+  },
 };

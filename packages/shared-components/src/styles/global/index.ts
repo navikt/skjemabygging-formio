@@ -1,5 +1,6 @@
 import buttonRow from "./buttonRow";
 import errorSummary from "./errorSummary";
+import labelTrackChanges from "./labelTrackChanges";
 import margin from "./margin";
 import stepper from "./stepper";
 import vars from "./vars";
@@ -51,6 +52,7 @@ const global = {
       maxWidth: "608px",
     },
   },
+  ...labelTrackChanges,
   ...errorSummary,
   ...buttonRow,
   ...margin,

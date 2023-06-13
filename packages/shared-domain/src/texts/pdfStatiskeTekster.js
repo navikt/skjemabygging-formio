@@ -3,6 +3,4 @@ export const pdfStatiske = {
   signature: "Underskrift",
   formCreated: "Skjemaet ble opprettet",
   formVersion: "Skjemaversjon",
-  declarationHeader: "Erklæring",
-  declarationText: "Jeg bekrefter at opplysningene er riktige.",
 };

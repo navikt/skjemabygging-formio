@@ -174,17 +174,25 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         )}
       </div>
 
-      <label className="navds-label">Erklæring på oppsummeringsside</label>
+      <LabelWithDiff label="Erklæring på oppsummeringsside" diff={!!diff.declarationType} />
 
       <div className="mb">
         <ToggleGroup
-          defaultValue="lest"
-          onChange={(value) =>
+          defaultValue={form.properties.declarationType ?? DeclarationType.none}
+          onChange={(value) => {
+            const declarationType = value as DeclarationType;
+            let properties;
+            if (declarationType !== DeclarationType.custom && form.properties.declarationText) {
+              properties = { ...form.properties, declarationType, declarationText: undefined };
+            } else {
+              properties = { ...form.properties, declarationType };
+            }
+
             onChange({
               ...form,
-              properties: { ...form.properties, declarationType: value as DeclarationType },
-            })
-          }
+              properties,
+            });
+          }}
           className="mb-4"
         >
           <ToggleGroup.Item value={DeclarationType.none}>Ingen</ToggleGroup.Item>
@@ -196,14 +204,21 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           <Textarea
             label={<LabelWithDiff label="Tilpasset erklæringstekst" diff={!!diff.declarationText} />}
             value={declarationText || ""}
-            maxLength={0}
             onChange={(event) =>
               onChange({
                 ...form,
                 properties: { ...form.properties, declarationText: event.target.value },
               })
             }
+            error={errors?.declarationText}
           />
+        )}
+
+        {form.properties.declarationType === DeclarationType.default && (
+          <div>
+            <label className="navds-label">Standard erklæringstekst</label>
+            <div>{TEXTS.statiske.declaration.defaultText}</div>
+          </div>
         )}
       </div>
 
