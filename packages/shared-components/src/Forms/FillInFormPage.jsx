@@ -10,7 +10,7 @@ import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
-export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl }) => {
+export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
   const {
     loggSkjemaApnet,
@@ -32,7 +32,7 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
-      const response = await startMellomlagring(initialSubmission, currentLanguage);
+      const response = await startMellomlagring(submission, currentLanguage);
       if (response?.innsendingsId) {
         setIsReady(true);
       }
@@ -40,7 +40,7 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
     if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
       initializeMellomlagring();
     }
-  }, [initialSubmission, currentLanguage, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
+  }, [submission, currentLanguage, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
 
   // TODO: necessary?
   const callUpdateSoknad = async (submission) => updateMellomlagring(submission, currentLanguage);
@@ -140,7 +140,7 @@ export const FillInFormPage = ({ form, initialSubmission, setSubmission, formUrl
         form={form}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
-        submission={initialSubmission}
+        submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
         onError={onError}
