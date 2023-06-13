@@ -15,6 +15,7 @@ import globalTranslations from "./global-translations.js";
 import log from "./log";
 import mottaksadresser from "./mottaksadresser.js";
 import pdl from "./pdl";
+import sendInn from "./send-inn";
 import sendInnSoknad from "./send-inn-soknad";
 import sendInnUtfyltSoknad from "./send-inn-utfylt-soknad";
 import translations from "./translations.js";
@@ -34,7 +35,8 @@ apiRouter.post("/foersteside", azureSkjemabyggingProxy, forsteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
-// apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
+// endpoint /send-inn is deprecated and will be replaced by /send-inn/soknad and /send-inn/utfyltsoknad when mellomlagring is turned on
+apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
 apiRouter.post("/send-inn/soknad", tokenxSendInn, sendInnSoknad.post);
 apiRouter.put("/send-inn/soknad", tokenxSendInn, sendInnSoknad.put);
 apiRouter.put("/send-inn/utfyltsoknad", azureSkjemabyggingProxy, tokenxSendInn, sendInnUtfyltSoknad.put);

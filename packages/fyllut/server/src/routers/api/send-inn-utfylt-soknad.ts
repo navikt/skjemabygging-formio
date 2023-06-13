@@ -18,7 +18,6 @@ const sendInnUtfyltSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
 
       const { form, submission, submissionMethod, translation, language } = req.body;
-      console.log("sendInnUtfyltSoknad", req.body);
       if (!req.headers.AzureAccessToken) {
         logger.error("Azure access token is missing. Unable to generate pdf");
       }

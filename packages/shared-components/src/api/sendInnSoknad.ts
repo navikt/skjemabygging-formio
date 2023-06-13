@@ -95,3 +95,32 @@ export const updateUtfyltSoknad = async (
     logger?.error("Kunne ikke sende inn søknaden fordi innsendingsId mangler");
   }
 };
+
+// Deprecated. Uses old end-point for submitting until mellomlagring is turned on.
+export const createSoknadWithoutInnsendingsId = async (
+  appConfig: AppConfigContextType,
+  form: NavFormType,
+  submission: Submission,
+  language: string,
+  translations: I18nTranslationMap = {}
+): Promise<SendInnSoknadResponse | undefined> => {
+  const { http, baseUrl, submissionMethod, config } = appConfig;
+  const attachments = getRelevantAttachments(form, submission);
+  const otherDocumentation = hasOtherDocumentation(form, submission);
+  return http?.post(
+    `${baseUrl}/api/send-inn`,
+    {
+      form,
+      submission,
+      translations,
+      language,
+      attachments,
+      otherDocumentation,
+      submissionMethod,
+    },
+    {
+      "Fyllut-Is-Test": `${!!config?.isTest}`,
+    },
+    { redirectToLocation: true }
+  );
+};
