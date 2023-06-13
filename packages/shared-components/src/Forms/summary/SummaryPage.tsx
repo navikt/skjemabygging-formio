@@ -96,6 +96,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           {hasDeclaration() && (
             <ConfirmationPanel
               className="mb"
+              size="small"
               checked={declaration || false}
               error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
               label={
