@@ -1,4 +1,4 @@
-import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { getRelevantAttachments, hasOtherDocumentation } from "../Forms/components/attachmentsUtil";
 import { AppConfigContextType } from "../configContext";
 
@@ -10,7 +10,8 @@ export const createSendInnSoknad = async (
   appConfig: AppConfigContextType,
   form: NavFormType,
   submission: Submission,
-  language: string
+  language: string,
+  translation: I18nTranslationMap = {}
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, config } = appConfig;
   return http?.post<SendInnSoknadResponse>(
@@ -19,6 +20,7 @@ export const createSendInnSoknad = async (
       form,
       submission,
       language,
+      translation,
       submissionMethod,
     },
     {
@@ -33,6 +35,7 @@ export const updateSendInnSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: string,
+  translation: I18nTranslationMap = {},
   innsendingsId?: string
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, config, logger } = appConfig;
@@ -44,6 +47,7 @@ export const updateSendInnSoknad = async (
         form,
         submission,
         language,
+        translation,
         submissionMethod,
       },
       {
@@ -61,7 +65,7 @@ export const updateUtfyltSoknad = async (
   form: NavFormType,
   submission: Submission,
   language: string,
-  translation = {},
+  translation: I18nTranslationMap = {},
   innsendingsId?: string
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, config, logger } = appConfig;

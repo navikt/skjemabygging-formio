@@ -27,31 +27,35 @@ const MellomlagringProvider = ({ children, form, translations }: MellomlagringPr
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
 
-  const translationForLanguage = (language) => {
-    if (language !== "nb-NO" && Object.keys(translations).length > 0) {
-      return translations[language] ?? {};
-    }
-    return {};
-  };
-  console.log("translations", translations);
-  //TODO: submission is initially undefined
+  const translationForLanguage = useCallback(
+    (language) => {
+      if (language !== "nb-NO" && Object.keys(translations).length > 0) {
+        return translations[language] ?? {};
+      }
+      return {};
+    },
+    [translations]
+  );
+
   const startMellomlagring = useCallback(
     async (submission: Submission, currentLanguage: string = "nb-NO") => {
+      const translation = translationForLanguage(currentLanguage);
       if (!mellomlagringStarted) {
         setMellomlagringStarted(true);
-        const response = await createSendInnSoknad(appConfig, form, submission, currentLanguage);
+        const response = await createSendInnSoknad(appConfig, form, submission, currentLanguage, translation);
         setInnsendingsId(response?.innsendingsId);
         return response;
       }
     },
-    [appConfig, form, mellomlagringStarted]
+    [appConfig, form, mellomlagringStarted, translationForLanguage]
   );
 
   const updateMellomlagring = async (
     submission: Submission,
     language: string
   ): Promise<SendInnSoknadResponse | undefined> => {
-    return updateSendInnSoknad(appConfig, form, submission, language, innsendingsId);
+    const translation = translationForLanguage(language);
+    return updateSendInnSoknad(appConfig, form, submission, language, translation, innsendingsId);
   };
 
   const submitSoknad = async (submission, language) => {

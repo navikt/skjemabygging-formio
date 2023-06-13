@@ -60,9 +60,7 @@ export const assembleSendInnSoknadBody = (
   };
 
   const hoveddokumentVariant: HovedDokument = {
-    vedleggsnr: form.properties.skjemanummer,
-    label: translate(form.title),
-    tittel: translate(form.title),
+    ...hoveddokument,
     mimetype: "application/json",
     pakrevd: false,
     document: objectToByteArray({
