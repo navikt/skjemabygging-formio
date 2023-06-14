@@ -1,12 +1,12 @@
 import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import { Attachment, assembleSendInnSoknadBody } from "./sendInn";
+import { Attachment, SendInnSoknadBody, assembleSendInnSoknadBody } from "./sendInn";
 
 const defaultFormProperties = { skjemanummer: "NAV123", tema: "TEMA", ettersendelsesfrist: "14" };
 const defaultForm = { title: "Standard skjema", properties: defaultFormProperties };
 
 const defaultRequestBody = {
   form: defaultForm as NavFormType,
-  submission: { q: "a" } as Submission,
+  submission: { q: "a" } as unknown as Submission,
   language: "nb-NO",
 };
 
@@ -41,7 +41,7 @@ const expectedSubmissionAsByteArray = [
 describe("sendInn API helper", () => {
   describe("assembleSendInnSoknadBody", () => {
     describe("Without attachments", () => {
-      let body;
+      let body: SendInnSoknadBody;
       beforeEach(() => {
         body = assembleSendInnSoknadBody(defaultRequestBody, idPortenPid, submissionPdfAsByteArray);
       });
@@ -91,7 +91,7 @@ describe("sendInn API helper", () => {
     });
 
     describe("With attachments", () => {
-      let body;
+      let body: SendInnSoknadBody;
       beforeEach(() => {
         body = assembleSendInnSoknadBody(requestBodyWithAttachments, idPortenPid, submissionPdfAsByteArray);
       });

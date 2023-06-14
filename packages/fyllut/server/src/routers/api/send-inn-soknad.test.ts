@@ -1,12 +1,12 @@
 import { jest } from "@jest/globals";
 import nock from "nock";
 import { config } from "../../config/config";
-import { mockRequest, mockResponse } from "../../test/testHelpers";
+import { mockRequest, MockRequestParams, mockResponse } from "../../test/testHelpers";
 import sendInnSoknad from "./send-inn-soknad";
 
 const { sendInnConfig } = config;
 
-const mockRequestWithPidAndTokenX = ({ headers = {}, body }) => {
+const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) => {
   const req = mockRequest({ headers, body });
   req.getIdportenPid = () => "12345678911";
   req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
@@ -48,7 +48,7 @@ describe("[endpoint] send-inn/soknad", () => {
       await sendInnSoknad.post(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      const error = next.mock.calls[0][0];
+      const error: any = next.mock.calls[0][0];
       expect(error.functional).toBe(true);
       expect(error.message).toEqual("Feil ved kall til SendInn");
       expect(res.json).not.toHaveBeenCalled();
@@ -64,7 +64,7 @@ describe("[endpoint] send-inn/soknad", () => {
       await sendInnSoknad.post(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      const error = next.mock.calls[0][0];
+      const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
       expect(error.message).toEqual("Missing idporten pid");
       expect(res.sendStatus).not.toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe("[endpoint] send-inn/soknad", () => {
       await sendInnSoknad.post(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      const error = next.mock.calls[0][0];
+      const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
       expect(error.message).toEqual("Missing TokenX access token");
       expect(res.sendStatus).not.toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe("[endpoint] send-inn/soknad", () => {
       await sendInnSoknad.put(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      const error = next.mock.calls[0][0];
+      const error: any = next.mock.calls[0][0];
       expect(error.functional).toBe(true);
       expect(error.message).toEqual("Feil ved kall til SendInn");
       expect(res.json).not.toHaveBeenCalled();
@@ -136,7 +136,7 @@ describe("[endpoint] send-inn/soknad", () => {
       await sendInnSoknad.put(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      const error = next.mock.calls[0][0];
+      const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
       expect(error.message).toEqual("Missing idporten pid");
       expect(res.sendStatus).not.toHaveBeenCalled();
@@ -155,7 +155,7 @@ describe("[endpoint] send-inn/soknad", () => {
       await sendInnSoknad.put(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
-      const error = next.mock.calls[0][0];
+      const error: any = next.mock.calls[0][0];
       expect(error.functional).toBeFalsy();
       expect(error.message).toEqual("Missing TokenX access token");
       expect(res.sendStatus).not.toHaveBeenCalled();

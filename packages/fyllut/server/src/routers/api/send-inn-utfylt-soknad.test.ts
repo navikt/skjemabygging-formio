@@ -1,14 +1,14 @@
 import { jest } from "@jest/globals";
 import nock from "nock";
 import { config } from "../../config/config";
-import { mockRequest, mockResponse } from "../../test/testHelpers";
+import { mockRequest, MockRequestParams, mockResponse } from "../../test/testHelpers";
 import sendInnUtfyltSoknad from "./send-inn-utfylt-soknad";
 
 const SEND_LOCATION = "http://www.unittest.nav.no/sendInn/123";
 
 const { sendInnConfig } = config;
 
-const mockRequestWithPidAndTokenX = ({ headers = {}, body }) => {
+const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) => {
   const req = mockRequest({ headers, body });
   req.getIdportenPid = () => "12345678911";
   req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
@@ -27,7 +27,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
   };
 
   it("returns 201 and location header if success", async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL)
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
       .post("/exstream")
       .reply(200, { data: { result: [{ content: { data: "" } }] } });
     const sendInnNockScope = nock(sendInnConfig.host)
@@ -49,7 +49,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
   });
 
   it("calls next if SendInn returns error", async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL)
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
       .post("/exstream")
       .reply(200, { data: { result: [{ content: { data: "" } }] } });
     const sendInnNockScope = nock(sendInnConfig.host)
@@ -61,7 +61,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    const error = next.mock.calls[0][0];
+    const error: any = next.mock.calls[0][0];
     expect(error.functional).toBe(true);
     expect(error.message).toEqual("Feil ved kall til SendInn");
     expect(res.sendStatus).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
   });
 
   it("calls next if exstream returns error", async () => {
-    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL)
+    const skjemabyggingproxyScope = nock(process.env.SKJEMABYGGING_PROXY_URL!)
       .post("/exstream")
       .reply(500, "error body");
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
@@ -80,7 +80,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    const error = next.mock.calls[0][0];
+    const error: any = next.mock.calls[0][0];
     expect(error.functional).toBe(true);
     expect(error.message).toEqual("Feil ved generering av PDF hos Exstream");
     expect(res.sendStatus).not.toHaveBeenCalled();
@@ -99,7 +99,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    const error = next.mock.calls[0][0];
+    const error: any = next.mock.calls[0][0];
     expect(error.functional).toBeFalsy();
     expect(error.message).toEqual("Missing idporten pid");
     expect(res.sendStatus).not.toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    const error = next.mock.calls[0][0];
+    const error: any = next.mock.calls[0][0];
     expect(error.functional).toBeFalsy();
     expect(error.message).toEqual("Missing TokenX access token");
     expect(res.sendStatus).not.toHaveBeenCalled();

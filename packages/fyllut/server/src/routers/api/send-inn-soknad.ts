@@ -30,7 +30,6 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, objectToByteArray({}));
-      console.log("POST body", body);
 
       if (!featureToggles.enableMellomlagring) {
         logger.debug("Mellomlagring not enabled, returning data in body");

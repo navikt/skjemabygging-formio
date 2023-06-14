@@ -19,7 +19,7 @@ export interface Attachment {
   formioId: string;
 }
 
-interface SendInnSoknadBody {
+export interface SendInnSoknadBody {
   brukerId: string;
   skjemanr: string;
   tittel: string;

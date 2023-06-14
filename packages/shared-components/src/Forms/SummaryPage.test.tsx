@@ -36,7 +36,7 @@ const defaultForm = {
     ...defaultFormProperties,
   },
   components: [],
-};
+} as unknown as NavFormType;
 
 const defaultFormWithAttachment = {
   ...defaultForm,
@@ -105,7 +105,7 @@ const renderSummaryPage = async (
   } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <MellomlagringProvider form={defaultForm}>
+      <MellomlagringProvider form={defaultForm} translations={{}}>
         <Router history={history}>
           <SummaryPage {...summaryPageProps} />
         </Router>

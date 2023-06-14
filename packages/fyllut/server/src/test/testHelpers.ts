@@ -54,4 +54,5 @@ const createAccessToken = (payload: string | Buffer | object, expiresIn: string 
   return jwt.sign(payload, key.toPEM(true), { expiresIn, algorithm: "RS256" });
 };
 
+export type { MockRequestParams };
 export { createAccessToken, createMockIdportenJwt, generateJwk, mockRequest, mockResponse, extractPath, extractHost };

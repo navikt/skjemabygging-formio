@@ -33,7 +33,7 @@ describe("DigitalSubmissionButton", () => {
     } as Props;
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
-        <MellomlagringProvider form={{ components: [] } as NavFormType}>
+        <MellomlagringProvider form={{ components: [] } as unknown as NavFormType} translations={{}}>
           <LanguagesProvider translations={defaultTranslations}>
             <DigitalSubmissionButton {...defaultProps} />
           </LanguagesProvider>
