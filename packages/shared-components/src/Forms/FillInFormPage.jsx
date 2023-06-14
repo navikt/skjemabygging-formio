@@ -5,7 +5,7 @@ import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
-import { useMellomlagring } from "../context/sendInn/mellomlagringContext";
+import { useSendInn } from "../context/sendInn/sendInnContext.js";
 import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
@@ -21,7 +21,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring } = useMellomlagring();
+  const { startMellomlagring, updateMellomlagring } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
   const [isReady, setIsReady] = useState(submissionMethod !== "digital");

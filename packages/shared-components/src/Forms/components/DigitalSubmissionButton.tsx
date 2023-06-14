@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
-import { useMellomlagring } from "../../context/sendInn/mellomlagringContext";
+import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 
 export interface Props {
@@ -20,7 +20,7 @@ const DigitalSubmissionButton = ({ submission, onError, onSuccess = noop, childr
   const { currentLanguage } = useLanguages();
   const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
-  const { submitSoknad } = useMellomlagring();
+  const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
   const sendInn = async () => {
     //TODO: felles måte å håndtere bygger på

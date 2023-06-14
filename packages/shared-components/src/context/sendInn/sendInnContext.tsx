@@ -9,21 +9,21 @@ import {
 } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
 
-interface MellomlagringContextType {
+interface SendInnContextType {
   startMellomlagring: (submission: Submission, language: string) => Promise<SendInnSoknadResponse | undefined>;
   updateMellomlagring: (submission: Submission, language: string) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission, language: string) => Promise<SendInnSoknadResponse | undefined>;
 }
 
-interface MellomlagringProviderProps {
+interface SendInnProviderProps {
   children: React.ReactNode;
   form: NavFormType;
   translations: I18nTranslations;
 }
 
-const MellomlagringContext = createContext<MellomlagringContextType>({} as MellomlagringContextType);
+const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
-const MellomlagringProvider = ({ children, form, translations }: MellomlagringProviderProps) => {
+const SendInnProvider = ({ children, form, translations }: SendInnProviderProps) => {
   const appConfig = useAppConfig();
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
@@ -85,9 +85,9 @@ const MellomlagringProvider = ({ children, form, translations }: MellomlagringPr
     submitSoknad,
   };
 
-  return <MellomlagringContext.Provider value={value}>{children}</MellomlagringContext.Provider>;
+  return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;
 };
 
-const useMellomlagring = () => useContext(MellomlagringContext);
+const useSendInn = () => useContext(SendInnContext);
 
-export { MellomlagringProvider, useMellomlagring };
+export { SendInnProvider, useSendInn };

@@ -5,7 +5,7 @@ import { createMemoryHistory } from "history";
 import nock from "nock";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../configContext";
-import { MellomlagringProvider } from "../context/sendInn/mellomlagringContext";
+import { SendInnProvider } from "../context/sendInn/sendInnContext";
 import { Modal } from "../index";
 import { Props, SummaryPage } from "./SummaryPage";
 
@@ -105,11 +105,11 @@ const renderSummaryPage = async (
   } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <MellomlagringProvider form={defaultForm} translations={{}}>
+      <SendInnProvider form={defaultForm} translations={{}}>
         <Router history={history}>
           <SummaryPage {...summaryPageProps} />
         </Router>
-      </MellomlagringProvider>
+      </SendInnProvider>
     </AppConfigProvider>
   );
   // verifiser render ved å sjekke at overskrift finnes
