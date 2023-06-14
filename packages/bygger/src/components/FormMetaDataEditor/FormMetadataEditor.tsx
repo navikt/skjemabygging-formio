@@ -178,6 +178,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
 
       <div className="mb">
         <ToggleGroup
+          size="small"
           defaultValue={form.properties.declarationType ?? DeclarationType.none}
           onChange={(value) => {
             const declarationType = value as DeclarationType;
