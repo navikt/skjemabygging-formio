@@ -22,11 +22,12 @@ describe("Amplitude", () => {
     // Select digital submission and go to the form
     cy.get('[type="radio"]').check("digital");
     cy.clickStart();
-    cy.checkLogToAmplitude("skjema åpnet");
+    cy.checkLogToAmplitude("skjema åpnet", { innsendingskanal: "digital" });
 
     // Veiledning step
     cy.clickNextStep();
-    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 1 });
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/personopplysninger" });
+    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 1, skjemastegNokkel: "veiledning" });
 
     // Dine opplysninger step
     cy.findByRole("combobox", { name: "Tittel" }).should("exist").click();
@@ -51,15 +52,15 @@ describe("Amplitude", () => {
     cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Din fødselsdato (dd.mm.åååå)" });
 
-    cy.findByText("Bor du i Norge?")
+    cy.get(".navds-radio-group")
+      .eq(1)
       .should("exist")
-      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Bor du i Norge?" });
 
-    cy.findByText("Er kontaktadressen din en vegadresse eller postboksadresse?")
+    cy.get(".navds-radio-group")
+      .eq(2)
       .should("exist")
-      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
     cy.checkLogToAmplitude("skjemaspørsmål besvart", {
       spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",
@@ -84,14 +85,17 @@ describe("Amplitude", () => {
 
     // Step 2 -> Oppsummering
     cy.clickNextStep();
-    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 2 });
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/oppsummering" });
+    cy.checkLogToAmplitude("skjemasteg fullført", { steg: 2, skjemastegNokkel: "personopplysninger" });
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
     cy.findByRoleWhenAttached("link", { name: "Forrige steg" }).should("exist").click();
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Forrige steg", destinasjon: "/cypress101/personopplysninger" });
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("not.exist");
     cy.clickNextStep();
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/oppsummering" });
 
     // Oppsummering
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
@@ -112,14 +116,15 @@ describe("Amplitude", () => {
 
     // First attempt is intercepted and fails, so we can test "innsending feilet"
     cy.findByRole("button", { name: "Gå videre" }).click();
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Gå videre", destinasjon: "/sendinn" });
     cy.wait("@submitToSendinnFailed");
     cy.checkLogToAmplitude("skjemainnsending feilet");
 
     // The second attempt is successful, causing "skjema fullført"
     cy.findByRole("button", { name: "Gå videre" }).click();
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Gå videre", destinasjon: "/sendinn" });
     cy.wait("@submitToSendinnSuccess");
     cy.checkLogToAmplitude("skjema fullført", {
-      innsendingsType: "digital",
       skjemaId: "cypress-101",
       skjemanavn: "Skjema for Cypress-testing",
     });

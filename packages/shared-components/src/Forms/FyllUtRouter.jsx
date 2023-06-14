@@ -1,24 +1,22 @@
 import { styled } from "@material-ui/styles";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
-import { FormTitle } from "./components/FormTitle.tsx";
 import { FillInFormPage } from "./FillInFormPage.jsx";
-import { bootstrapStyles } from "./fyllUtRouterBootstrapStyles";
 import { IntroPage } from "./IntroPage.tsx";
-import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { SubmissionWrapper } from "./SubmissionWrapper.jsx";
 import { SummaryPage } from "./SummaryPage.tsx";
+import { FormTitle } from "./components/FormTitle.tsx";
+import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "960px",
   padding: "2rem 0",
-  ...bootstrapStyles,
   "@media screen and (max-width: 992px)": {
     padding: "1rem",
   },

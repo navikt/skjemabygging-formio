@@ -18,7 +18,7 @@ const LetterAddAttachment = ({ index, vedleggSomSkalSendes, translate }: Props) 
     );
   return (
     <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>
-      <Heading level="3" size="medium" className="margin-bottom-small">
+      <Heading level="3" size="medium" spacing>
         {`${index}. ${attachmentSectionTitle}`}
       </Heading>
       <ul>

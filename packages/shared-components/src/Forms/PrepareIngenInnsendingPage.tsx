@@ -35,16 +35,16 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
       <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
           <div className="wizard-page">
-            <Heading level="3" size="medium" className="margin-bottom-default">
+            <Heading level="3" size="medium" spacing>
               {translate(form.properties.innsendingOverskrift)}
             </Heading>
-            <BodyShort>{translate(form.properties.innsendingForklaring)}</BodyShort>
+            <BodyShort className="mb">{translate(form.properties.innsendingForklaring)}</BodyShort>
             <DownloadPdfButton
               form={form}
               submission={submission}
               actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
               label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-              onClick={() => loggSkjemaFullfort("ingeninnsending")}
+              onClick={() => loggSkjemaFullfort()}
               translations={translations}
               submissionMethod={"ingen"}
             />

@@ -1,6 +1,9 @@
 import mockedForm from "../../../example_data/Form";
-import { getBreakingChanges, getEditScript, migrateForm, migrateForms } from "./migrationScripts";
+import { getEditScript, migrateForm, migrateForms } from "./migrationScripts";
 import {
+  formWithAdvancedConditionalToRadio,
+  formWithSimpleConditionalToCheckbox,
+  formWithSimpleConditionalToRadio,
   originalFodselsnummerComponent,
   originalForm,
   originalPanelComponent,
@@ -8,31 +11,14 @@ import {
   originalTextFieldComponent,
 } from "./testData";
 
-const migrateFnrFieldFunction = (component) => ({
-  ...component,
-  validate: {
-    ...component.validate,
-    custom: "valid = instance.newValidateFnr(input)",
-  },
-});
-
-function createTestForm(...components) {
-  return {
-    path: "testForm",
-    title: "Test form",
-    properties: {
-      skjemanummer: "TEST-form",
-    },
-    components: [...components],
-  };
-}
-
 describe("Migration scripts", () => {
   describe("migrateForm", () => {
+    const fnrEditOptions = { "validate.custom": "valid = instance.newValidateFnr(input)" };
+
     it("can update component based on type", () => {
-      const actual = migrateForm(originalForm, { type: "fnrfield" }, migrateFnrFieldFunction);
+      const { migratedForm: actual } = migrateForm(originalForm, { type: "fnrfield" }, {}, fnrEditOptions);
       expect(actual).toEqual({
-        path: "test-form",
+        ...originalForm,
         components: [
           {
             ...originalFodselsnummerComponent,
@@ -47,7 +33,7 @@ describe("Migration scripts", () => {
     });
 
     it("can migrate subcomponents", () => {
-      const actual = migrateForm(
+      const { migratedForm: actual } = migrateForm(
         {
           path: "test-form",
           components: [
@@ -58,7 +44,8 @@ describe("Migration scripts", () => {
           ],
         },
         { type: "fnrfield" },
-        migrateFnrFieldFunction
+        {},
+        fnrEditOptions
       );
 
       expect(actual).toEqual({
@@ -81,7 +68,7 @@ describe("Migration scripts", () => {
     });
 
     it("can migrate subcomponents of a migrated component", () => {
-      const actual = migrateForm(
+      const { migratedForm: actual } = migrateForm(
         {
           path: "test-form",
           components: [
@@ -98,10 +85,8 @@ describe("Migration scripts", () => {
           ],
         },
         { type: "navSkjemagruppe" },
-        (component) => ({
-          ...component,
-          modifiedByTest: true,
-        })
+        {},
+        { modifiedByTest: true }
       );
 
       expect(actual).toEqual({
@@ -132,17 +117,133 @@ describe("Migration scripts", () => {
     ];
 
     it("generates log only for included form paths", async () => {
-      const { log } = await migrateForms({ disabled: false }, { disabled: true }, allForms, ["form1", "form3"]);
+      const { log } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, ["form1", "form3"]);
       expect(Object.keys(log)).toEqual(["form1", "form3"]);
     });
+
     it("only migrates forms included by the provided formPaths", async () => {
-      const { migratedForms } = await migrateForms({ disabled: false }, { disabled: true }, allForms, [
+      const { migratedForms } = await migrateForms({ disabled: false }, {}, { disabled: true }, allForms, [
         "form2",
         "form3",
       ]);
       expect(migratedForms).toHaveLength(2);
       expect(migratedForms[0].path).toBe("form2");
       expect(migratedForms[1].path).toBe("form3");
+    });
+
+    describe("When searchFilters are provided", () => {
+      let log;
+      let migratedForms;
+
+      beforeEach(async () => {
+        const migrated = await migrateForms(
+          { key__contains: "componentWithSimpleConditional" },
+          {},
+          { disabled: true },
+          [
+            formWithSimpleConditionalToRadio, // match on searchFilters
+            formWithAdvancedConditionalToRadio, // no match
+            formWithSimpleConditionalToCheckbox, // match on searchFilters
+          ]
+        );
+        migratedForms = migrated.migratedForms;
+        log = migrated.log;
+      });
+
+      it("only returns search results for forms with components that matches both", async () => {
+        expect(Object.keys(log)).toEqual(["formWithSimpleConditionalToRadio", "formWithSimpleConditionalToCheckbox"]);
+      });
+
+      it("only migrates forms with components that matches both", async () => {
+        expect(migratedForms).toEqual([
+          expect.objectContaining({ path: "formWithSimpleConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithSimpleConditionalToCheckbox" }),
+        ]);
+      });
+    });
+
+    describe("When dependencyFilters are provided (but searchFilters are not)", () => {
+      let log;
+      let migratedForms;
+      beforeEach(async () => {
+        const migrated = await migrateForms({}, { type: "radio" }, { disabled: true }, [
+          formWithSimpleConditionalToRadio, // match on dependencyFilters
+          formWithAdvancedConditionalToRadio, // match on dependencyFilters
+          formWithSimpleConditionalToCheckbox, // no match
+        ]);
+        log = migrated.log;
+        migratedForms = migrated.migratedForms;
+      });
+
+      it("only returns search results for forms that matches filters", async () => {
+        expect(Object.keys(log)).toEqual(["formWithSimpleConditionalToRadio", "formWithAdvancedConditionalToRadio"]);
+      });
+
+      it("only migrates forms that matches filters", async () => {
+        expect(migratedForms).toEqual([
+          expect.objectContaining({ path: "formWithSimpleConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithAdvancedConditionalToRadio" }),
+        ]);
+      });
+    });
+
+    describe("When both searchFilters and dependencyFilters are provided", () => {
+      let log;
+      let migratedForms;
+
+      beforeEach(async () => {
+        const migrated = await migrateForms(
+          { key__contains: "componentWithSimpleConditional" },
+          { type: "radio" },
+          { disabled: true },
+          [
+            formWithSimpleConditionalToRadio, // match on both search and dependency filters
+            formWithAdvancedConditionalToRadio, // match on dependencyFilters
+            formWithSimpleConditionalToCheckbox, // match on searchFilters
+          ]
+        );
+        migratedForms = migrated.migratedForms;
+        log = migrated.log;
+      });
+
+      it("only returns search results for forms with components that matches both", async () => {
+        expect(Object.keys(log)).toEqual(["formWithSimpleConditionalToRadio"]);
+      });
+
+      it("only migrates forms with components that matches both", async () => {
+        expect(migratedForms).toEqual([expect.objectContaining({ path: "formWithSimpleConditionalToRadio" })]);
+      });
+    });
+
+    describe("When no filters are provided", () => {
+      let log;
+      let migratedForms;
+
+      beforeEach(async () => {
+        const migrated = await migrateForms({}, {}, { disabled: true }, [
+          formWithSimpleConditionalToRadio,
+          formWithAdvancedConditionalToRadio,
+          formWithSimpleConditionalToCheckbox,
+        ]);
+        migratedForms = migrated.migratedForms;
+        log = migrated.log;
+      });
+
+      it("returns search results for all forms", () => {
+        expect(Object.keys(log)).toEqual([
+          "formWithSimpleConditionalToRadio",
+          "formWithAdvancedConditionalToRadio",
+          "formWithSimpleConditionalToCheckbox",
+        ]);
+      });
+
+      it("migrates all forms", () => {
+        expect(migratedForms).toEqual([
+          expect.objectContaining({ path: "formWithSimpleConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithAdvancedConditionalToRadio" }),
+          expect.objectContaining({ path: "formWithSimpleConditionalToCheckbox" }),
+        ]);
+      });
     });
   });
 
@@ -203,139 +304,6 @@ describe("Migration scripts", () => {
           prop3_3: "newValue4",
         },
       });
-    });
-
-    describe("with logger", () => {
-      let logger;
-      beforeEach(() => {
-        logger = [];
-      });
-
-      it("adds log entry with changed being false if component wasn't edited", () => {
-        getEditScript({}, logger)(testComponent);
-        expect(logger.length).toBe(1);
-        expect(logger[0].changed).toEqual(false);
-      });
-
-      it("adds log entry with changed being true if component was edited", () => {
-        getEditScript({ prop1: "newValue" }, logger)(testComponent);
-        expect(logger.length).toBe(1);
-        expect(logger[0].changed).toEqual(true);
-      });
-
-      it("adds log entry for each tested component", () => {
-        const editScript = getEditScript({ prop1: "newValue" }, logger);
-        editScript(testComponent);
-        editScript(testComponent);
-        editScript(testComponent);
-        expect(logger.length).toBe(3);
-      });
-    });
-  });
-
-  describe("getBreakingChanges", () => {
-    const componentThatIsChanged = {
-      key: "comp-that-is-changed",
-      id: "comp-that-is-changed",
-      label: "Component that is changed",
-      values: [
-        {
-          value: "ja",
-          label: "Ja",
-        },
-        {
-          value: "nei",
-          label: "Nei",
-        },
-      ],
-    };
-
-    const componentWithSimpleConditional = {
-      key: "comp-with-simple-conditional",
-      id: "comp-with-simple-conditional",
-      label: "Component with simple conditional",
-      conditional: {
-        show: true,
-        when: "comp-that-is-changed",
-        eq: "ja",
-      },
-    };
-
-    function createAffectedComponent(...diffs) {
-      return diffs.map((diff) => ({ diff }));
-    }
-
-    it("lists components with dependencies when changing key", () => {
-      const testForm = createTestForm(componentThatIsChanged, componentWithSimpleConditional);
-      const affectedComponents = createAffectedComponent({
-        id: "comp-that-is-changed",
-        key_NEW: "changed-key",
-        key_ORIGINAL: "comp-that-is-changed",
-        label: "Component that is changed",
-      });
-      const actual = getBreakingChanges(testForm, affectedComponents);
-      expect(actual).toEqual([
-        {
-          componentWithDependencies: {
-            id: "comp-that-is-changed",
-            key_NEW: "changed-key",
-            key_ORIGINAL: "comp-that-is-changed",
-            label: "Component that is changed",
-          },
-          dependentComponents: [
-            {
-              key: "comp-with-simple-conditional",
-              label: "Component with simple conditional",
-            },
-          ],
-        },
-      ]);
-    });
-    it("lists components with dependencies when changing values", () => {
-      const testForm = createTestForm(componentThatIsChanged, componentWithSimpleConditional);
-      const { id, key, label, values } = componentThatIsChanged;
-      const affectedComponents = createAffectedComponent({
-        id,
-        key,
-        label,
-        values_NEW: [
-          ...values,
-          {
-            value: "kanskje",
-            label: "Kanskje",
-          },
-        ],
-        values_ORIGINAL: values,
-      });
-
-      const actual = getBreakingChanges(testForm, affectedComponents);
-      expect(actual).toEqual([
-        {
-          componentWithDependencies: expect.objectContaining({
-            id: "comp-that-is-changed",
-          }),
-          dependentComponents: [
-            {
-              key: "comp-with-simple-conditional",
-              label: "Component with simple conditional",
-            },
-          ],
-        },
-      ]);
-    });
-    it("does not list components with dependencies when changing other properties, as they are not breaking changes", () => {
-      const testForm = createTestForm(
-        { ...componentThatIsChanged, oldProperty: "old value" },
-        componentWithSimpleConditional
-      );
-      const affectedComponents = createAffectedComponent({
-        ...componentThatIsChanged,
-        oldProperty: "changed value",
-        newProperty: "new value",
-      });
-
-      const actual = getBreakingChanges(testForm, affectedComponents);
-      expect(actual).toEqual([]);
     });
   });
 });

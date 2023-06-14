@@ -2,6 +2,7 @@ import {
   AzureConfig,
   FormioConfig,
   FyllutConfig,
+  GithubAppConfig,
   PublishRepoConfig,
   PusherConfig,
   SkjemabyggingProxyConfig,
@@ -19,7 +20,7 @@ export const devSkjemabyggingProxy: Partial<SkjemabyggingProxyConfig> = {
 };
 
 export const devFormio: Partial<FormioConfig> = {
-  projectUrl: "https://formio-api.dev.nav.no/jvcemxwcpghcqjn",
+  projectUrl: "https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn",
 };
 
 export const devFyllut: FyllutConfig = {
@@ -36,4 +37,8 @@ export const devGithub: Partial<PublishRepoConfig> = {
   base: "test-publishing",
 };
 
-export const devEnabledFeatures = "translations,enhetsListe,autoComplete,diff";
+export const devGithubApp: Partial<GithubAppConfig> = {
+  appId: "test",
+};
+
+export const devEnabledFeatures = "translations,diff";

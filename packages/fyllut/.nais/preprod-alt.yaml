@@ -1,19 +1,17 @@
 app-name: skjemautfylling-preprod-alt
 ingresses:
-  - "https://fyllut-preprod-alt.dev.nav.no/fyllut"
+  - "https://fyllut-preprod-alt.intern.dev.nav.no/fyllut"
 image: {{image}}
-foersteside-host: www.nav.no
+enabled-features: translations,sendInnIntegration
 foersteside-url: https://www.nav.no/soknader/api/forsteside
-dekorator-host: www.nav.no
 dekorator-url: https://www.nav.no/dekoratoren?simple=true
-skjemabygging-proxy-host: skjemabygging-proxy.dev-fss-pub.nais.io
 skjemabygging-proxy-client-id: 95170319-b4d7-4190-8271-118ed19bafbf
 skjemabygging-proxy-url: https://skjemabygging-proxy.dev-fss-pub.nais.io
+send-inn-token-x-client-id: dev-gcp:team-soknad:innsending-api
+send-inn-host: http://innsending-api.team-soknad
 forms-source: "formioapi"
 secrets:
-  - fyllut-formio-dev
-  - fyllut-features
-  - digital-innsending
+  - formio-server-access-dev
 azure:
   application:
     tenant: trygdeetaten.no
@@ -26,3 +24,8 @@ accessPolicy:
       - application: innsending-api
         namespace: team-soknad
         cluster: dev-gcp
+    external:
+      - host: www.nav.no
+      - host: skjemabygging-proxy.dev-fss-pub.nais.io
+      - host: tokendings.dev-gcp.nais.io
+      - host: formio-api.intern.dev.nav.no

@@ -11,14 +11,11 @@ Wizard.prototype.emitPrevPage = function () {
 };
 
 WebForm.prototype.cancel = function () {
+  const url = window.location.href.indexOf(".dev.nav.") > 0 ? "https://www.dev.nav.no" : "https://www.nav.no";
+  this.emit("cancel", { page: this.page, submission: this.submission, currentPanels: this.currentPanels, url });
   const shouldReset = this.hook("beforeCancel", true);
-  // eslint-disable-next-line no-restricted-globals
   if (shouldReset) {
-    if (window.location.href.indexOf(".dev.nav.") > 0) {
-      window.location.href = "https://www.dev.nav.no";
-    } else {
-      window.location.href = "https://www.nav.no";
-    }
+    window.location.href = url;
   } else {
     return false;
   }
@@ -44,7 +41,7 @@ Wizard.prototype.attach = function (element) {
 
   if ((this.options.readOnly || this.editMode) && !this.enabledIndex) {
     if (this.pages) {
-      this.enabledIndex = this.pages.length - 1;
+      this.enabledIndex = this.pages?.length - 1;
     }
   }
 
@@ -140,12 +137,64 @@ Wizard.prototype.attachHeader = function () {
     });
   }
 
-  const validateAndGoToNextPage = () => {
+  // Copy of nextPage() from formio.js/src/Wizard.js, but without custom emit and scroll to errors
+  const validateAndGoToNextPage = (emitPage) => {
+    if (this.options.readOnly) {
+      return this.beforePage(true).then(() => {
+        if (emitPage) {
+          return this.setPage(this.getNextPage()).then(() => {
+            this.emitNextPage();
+          });
+        } else {
+          return this.setPage(this.getNextPage());
+        }
+      });
+    }
+
+    // Validate the form, before go to the next page
+    if (this.checkValidity(this.localData, true, this.localData, true)) {
+      this.checkData(this.submission.data);
+      return this.beforePage(true).then(() => {
+        return this.setPage(this.getNextPage()).then(() => {
+          if (!(this.options.readOnly || this.editMode) && this.enabledIndex < this.page) {
+            this.enabledIndex = this.page;
+            this.redraw();
+          }
+
+          if (emitPage) {
+            this.emitNextPage();
+          }
+        });
+      });
+    } else {
+      this.currentPage.components.forEach((comp) => comp.setPristine(false));
+
+      this.showErrors([]);
+
+      if (this.refs.errorRef) {
+        this.loadRefs(this.element, {
+          errorRefHeader: "single",
+        });
+
+        this.refs.errorRefHeader?.focus();
+      } else {
+        this.scrollIntoView(this.element);
+      }
+
+      return Promise.reject(this.errors, true);
+    }
+  };
+
+  Wizard.prototype.nextPage = () => {
+    return validateAndGoToNextPage(true);
+  };
+
+  const validateUntilLastPage = () => {
     if (this.isLastPage()) {
       this.emit("submitButton"); // Validate entire form and go to summary page
     } else {
-      this.nextPage() // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
-        .then(validateAndGoToNextPage) // Repeat on next step in form
+      validateAndGoToNextPage(false) // Use "nextPage" function, which validates current step and moves to next step if valid or display errors if invalid
+        .then(validateUntilLastPage) // Repeat on next step in form
         .catch(() => {}); // Ignore rejected promise returned by nextPage() when there are errors. Those are handled by onError defined in FillInFormPage.
     }
   };
@@ -155,7 +204,7 @@ Wizard.prototype.attachHeader = function () {
     if (!this.checkValidity(this.localData, false, this.localData, false)) {
       // Validate entire form without triggering error messages
       this.setPage(0) // Start at first page
-        .then(validateAndGoToNextPage); // Recursively visit every step, validate and move forward if valid
+        .then(validateUntilLastPage); // Recursively visit every step, validate and move forward if valid
     } else {
       this.emit("submitButton"); // Go to summary page
     }

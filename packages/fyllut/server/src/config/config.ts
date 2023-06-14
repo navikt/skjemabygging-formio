@@ -7,6 +7,8 @@ if (process.env.NODE_ENV !== "test") {
   dotenv.config();
 }
 
+const defaultEnabledFeatures = "translations,sendInnIntegration";
+
 const tokenx: TokenxConfig = {
   privateJwk: process.env.TOKEN_X_PRIVATE_JWK!,
   fyllutClientId: process.env.TOKEN_X_CLIENT_ID!,
@@ -30,7 +32,7 @@ const sendInnConfig: SendInnConfig = {
 const localDevelopmentConfig: Partial<ConfigType> = {
   gitVersion: "local",
   useFormioApi: true,
-  formioProjectUrl: process.env.FORMIO_PROJECT_URL || "https://formio-api.dev.nav.no/jvcemxwcpghcqjn",
+  formioProjectUrl: process.env.FORMIO_PROJECT_URL || "https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn",
   forstesideUrl: "https://www.nav.no/soknader/api/forsteside",
   decoratorUrl: "https://www.nav.no/dekoratoren?simple=true",
   skjemabyggingProxyUrl: process.env.SKJEMABYGGING_PROXY_URL || "https://skjemabygging-proxy.dev-fss-pub.nais.io",
@@ -46,7 +48,7 @@ const localDevelopmentConfig: Partial<ConfigType> = {
   },
   sendInnConfig: {
     ...sendInnConfig,
-    host: sendInnConfig.host || "https://innsending-api.dev.nav.no",
+    host: sendInnConfig.host || "https://innsending-api.intern.dev.nav.no",
     tokenxClientId: sendInnConfig.tokenxClientId || "dev-gcp:soknad:send-inn",
   },
   idporten: {
@@ -79,7 +81,7 @@ const config: ConfigType = {
   fyllutPath: "/fyllut",
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,
-  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES),
+  featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES ?? defaultEnabledFeatures),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
   isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",

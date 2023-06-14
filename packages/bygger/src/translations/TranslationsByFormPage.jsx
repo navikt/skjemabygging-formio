@@ -8,7 +8,7 @@ import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../components/UserFeedback";
 import Column from "../components/layout/Column";
 import Row from "../components/layout/Row";
-import { getAvailableLanguages, useI18nState } from "../context/i18n";
+import { getAvailableLanguages, useI18nDispatch, useI18nState } from "../context/i18n";
 import FormBuilderLanguageSelector from "../context/i18n/FormBuilderLanguageSelector";
 import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import TranslationsFormPage from "./TranslationsFormPage";
@@ -32,8 +32,8 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
   const [form, setForm] = useState();
   const [status, setStatus] = useState("LOADING");
   const { translations } = useI18nState();
-  const [translationId, setTranslationId] = useState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
+  const dispatch = useI18nDispatch();
 
   useRedirectIfNoLanguageCode(languageCode, translations);
 
@@ -49,11 +49,8 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
       });
   }, [loadForm, formPath]);
 
-  useEffect(() => {
-    setTranslationId(translations[languageCode]?.id);
-  }, [translations, languageCode]);
-
   const flattenedComponents = getFormTexts(form, true);
+  const translationId = translations[languageCode]?.id;
   const styles = useStyles();
 
   const onSave = async () => {
@@ -64,7 +61,16 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
       path,
       title
     );
-    setTranslationId(savedTranslation._id);
+
+    if (!translationId && savedTranslation._id) {
+      dispatch({
+        type: "updateLanguageId",
+        payload: {
+          id: savedTranslation._id,
+          lang: languageCode,
+        },
+      });
+    }
   };
 
   if (status === "LOADING") {
@@ -111,7 +117,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
               <CSVLink
                 data={getTextsAndTranslationsForForm(form, translations)}
                 filename={`${title}(${path})_Oversettelser.csv`}
-                className="knapp knapp--standard"
+                className="navds-button navds-button--secondary navds-label"
                 separator={";"}
                 headers={getTextsAndTranslationsHeaders(translations)}
                 enclosingCharacter={"'"}

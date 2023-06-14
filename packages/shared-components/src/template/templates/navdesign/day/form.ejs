@@ -1,8 +1,8 @@
-<div class="skjemaelement__rad">
+<div class="day">
   {% if (ctx.dayFirst && ctx.showDay) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-day" class="skjemaelement__label">
+    <label for="{{ctx.component.key}}-day" class="navds-label">
       {{ctx.t('Dag')}}
       {% if(ctx.component.fields.day.required === false) { %}
         ({{ctx.t("valgfritt")}})
@@ -15,20 +15,20 @@
   {% if (ctx.showMonth) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-month" class="skjemaelement__label">
+    <label for="{{ctx.component.key}}-month" class="navds-label">
       {{ctx.t('Måned')}}
       {% if(ctx.component.fields.month.required === false) { %}
         ({{ctx.t("valgfritt")}})
       {% } %}
     </label>
     {% } %}
-    <div class="{% if (ctx.component.fields.month.fieldSize) { %} {{ctx.component.fields.month.fieldSize}}{% } %}">{{ctx.month}}</div>
+    <div class="{% if (ctx.component.fields.month.fieldSize) { %} {{ctx.component.fields.month.fieldSize}}{% } %} ">{{ctx.month}}</div>
   </div>
   {% } %}
   {% if (!ctx.dayFirst && ctx.showDay) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-day" class="skjemaelement__label">
+    <label for="{{ctx.component.key}}-day" class="navds-label">
       {{ctx.t('Dag')}}
       {% if(ctx.component.fields.day.required === false) { %}
         ({{ctx.t("valgfritt")}})
@@ -41,7 +41,7 @@
   {% if (ctx.showYear) { %}
   <div>
     {% if (!ctx.component.hideInputLabels) { %}
-    <label for="{{ctx.component.key}}-year" class="skjemaelement__label">
+    <label for="{{ctx.component.key}}-year" class="navds-label">
       {{ctx.t('År')}}
       {% if(ctx.component.fields.year.required === false) { %}
         ({{ctx.t("valgfritt")}})

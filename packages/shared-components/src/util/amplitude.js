@@ -29,15 +29,15 @@ export function logAmplitudeEvent(eventName, eventData) {
   });
 }
 
-export function loggSkjemaApnet(form) {
-  logAmplitudeEvent("skjema åpnet", createEventData(form));
+export function loggEventSkjemaApnet(form, innsendingskanal) {
+  logAmplitudeEvent("skjema åpnet", createEventData(form, { innsendingskanal }));
 }
 
-export function loggSkjemaStartet(form) {
+export function loggEventSkjemaStartet(form) {
   logAmplitudeEvent("skjema startet", createEventData(form));
 }
 
-export function loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
+export function loggEventSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
   if (sporsmal && svar) {
     logAmplitudeEvent(
       "skjemaspørsmål besvart",
@@ -50,18 +50,30 @@ export function loggSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd) {
   }
 }
 
-export function loggSkjemaStegFullfort(form, steg) {
-  logAmplitudeEvent("skjemasteg fullført", createEventData(form, { steg }));
+export function loggEventSkjemaStegFullfort(form, data) {
+  logAmplitudeEvent("skjemasteg fullført", createEventData(form, data));
 }
 
-export function loggSkjemaFullfort(form, innsendingsType) {
-  logAmplitudeEvent("skjema fullført", createEventData(form, { innsendingsType: innsendingsType }));
+export function loggEventFilterValg(form, data) {
+  logAmplitudeEvent("filtervalg", createEventData(form, data));
 }
 
-export function loggSkjemaValideringFeilet(form) {
+export function loggEventNavigere(form, data) {
+  logAmplitudeEvent("navigere", createEventData(form, data));
+}
+
+export function loggEventDokumentLastetNed(form, tittel) {
+  logAmplitudeEvent("last ned", createEventData(form, { tittel }));
+}
+
+export function loggEventSkjemaFullfort(form) {
+  logAmplitudeEvent("skjema fullført", createEventData(form));
+}
+
+export function loggEventSkjemaValideringFeilet(form) {
   logAmplitudeEvent("skjemavalidering feilet", createEventData(form));
 }
 
-export function loggSkjemaInnsendingFeilet(form) {
+export function loggEventSkjemaInnsendingFeilet(form) {
   logAmplitudeEvent("skjemainnsending feilet", createEventData(form));
 }

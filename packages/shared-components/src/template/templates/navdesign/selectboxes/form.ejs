@@ -1,25 +1,15 @@
-<fieldset class="navds-checkbox-group navds-checkbox-group--medium navds-fieldset navds-fieldset--medium">
-  <span class="label-track-changes">
-    <legend class="navds-fieldset__legend navds-label" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+<div role="group" class="navds-checkbox-group navds-checkbox-group--medium">
+  <div class="label-track-changes">
+    <label class="navds-label" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
       {{ctx.t(ctx.component.label)}}
       {% if(ctx.component.validate.required === false) { %}
         ({{ctx.t("valgfritt")}})
       {% } %}
-    </legend>
+    </label>
     {{ctx.util.getDiffTag(ctx)}}
-  </span>
+  </div>
   {% if (ctx.component.description && ctx.component.descriptionPosition !== "above" ) { %}
-    <div class="navds-fieldset__description">{{ctx.t(ctx.component.description)}}</div>
-    {% if (ctx.component.additionalDescription) { %}
-      <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-        {% if (ctx.component.additionalDescriptionLabel) { %}
-          <button type="button" class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-            {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-          </button>
-        {% } %}
-        <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
-      </div>
-    {% } %}
+    <div class="description">{{ctx.t(ctx.component.description)}}</div>
   {% } %}
   <div class="navds-checkboxes">
   {% ctx.values.forEach(function(item) { %}
@@ -43,8 +33,8 @@
         disabled
         {% } %}
       />
-      <label class="navds-checkbox__label" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">{{ctx.t(item.label)}}</label>
+      <label class="navds-checkbox__label navds-body-short" for="{{ctx.id}}{{ctx.row}}-{{item.value}}">{{ctx.t(item.label)}}</label>
     </div>
   {% }) %}
   </div>
-</fieldset>
+</div>

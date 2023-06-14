@@ -8,10 +8,15 @@ const { isTest } = config;
 
 const INTERNAL_PATHS = /.*\/(internal|static)\/.*/i;
 const httpRequestLogger = morgan(
-  (token, req, res) => {
-    const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(token, req, res));
-    logEntry.correlation_id = correlator.getId();
-    return JSON.stringify(clean(logEntry));
+  (tokens, req, res) => {
+    const logEntry = JSON.parse(ecsFormat({ apmIntegration: false })(tokens, req, res));
+    return JSON.stringify(
+      clean({
+        ...logEntry,
+        level: res.statusCode < 500 ? "Info" : "Error",
+        correlation_id: correlator.getId(),
+      })
+    );
   },
   {
     skip: (req) => isTest || INTERNAL_PATHS.test(req.originalUrl),

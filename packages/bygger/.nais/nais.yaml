@@ -34,6 +34,10 @@ spec:
       - {{url}}
     {{/each}}
   env:
+    - name: FYLLUT_BASE_URL
+      value: {{fyllut-base-url}}
+    - name: ENABLED_FEATURES
+      value: {{enabled-features}}
     - name: PUBLISH_REPO
       value: {{publish-repo}}
     - name: PUBLISH_REPO_OWNER
@@ -73,4 +77,8 @@ spec:
       external:
         - host: formio-api-server.ekstern.dev.nav.no
         - host: api.github.com
-        - host: {{skjemabygging-proxy-host}}
+        - host: formio-api.nav.no
+        - host: api-eu.pusher.com
+      {{#each accessPolicy.outbound.external}}
+        - host: {{this.host}}
+      {{/each}}

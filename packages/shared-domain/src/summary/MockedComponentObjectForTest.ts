@@ -216,6 +216,43 @@ const createFormObject = (
     properties,
   } as unknown as NavFormType);
 
+const createDummyCurrencyField = (currency = "NOK", label = "Penger"): Component =>
+  ({
+    label,
+    key: keyFromLabel(label),
+    type: "currency",
+    currency,
+  } as Component);
+
+const createDummyNumberField = (prefix = "", suffix = "", label = "Number"): Component =>
+  ({
+    label,
+    key: keyFromLabel(label),
+    type: "number",
+    prefix,
+    suffix,
+  } as Component);
+
+const createDummyAmountWithCurrency = (label = "AmountWithCurrency"): Component =>
+  ({
+    label,
+    key: keyFromLabel(label),
+    type: "row",
+    components: [
+      {
+        label: "Velg valuta",
+        key: "valutavelger",
+        type: "valutavelger",
+      },
+      {
+        label: "Beløp",
+        key: "belop",
+        type: "number",
+      },
+    ],
+    isAmountWithCurrencySelector: true,
+  } as Component);
+
 const mockedComponentObjectForTest = {
   keyFromLabel,
   createDummyCheckbox,
@@ -239,5 +276,8 @@ const mockedComponentObjectForTest = {
   createDummySelectComponent,
   createDummyLandvelger,
   createDummyButtonComponent,
+  createDummyCurrencyField,
+  createDummyNumberField,
+  createDummyAmountWithCurrency,
 };
 export default mockedComponentObjectForTest;

@@ -1,22 +1,12 @@
 import merge from "lodash.merge";
-import formioDialogStyles from "./formioDialogStyles";
-import { formioFormStyles } from "@navikt/skjemadigitalisering-shared-components";
-import formBuilderStyles from "./formbuilderStyles";
-import formComponentsListStyles from "./formComponentsListStyles";
-import formAreaStyles from "./formAreaStyles";
 import cardStyling from "./cardStyling";
-import miscellaneousFormBuilderStyling from "./miscellaneousFormBuilderStyling";
+import formAreaStyles from "./formAreaStyles";
+import formComponentsListStyles from "./formComponentsListStyles";
+import formBuilderStyles from "./formbuilderStyles";
+import formioDialogStyles from "./formioDialogStyles";
 
 const builderStyles = {
-  "@global": merge(
-    miscellaneousFormBuilderStyling,
-    cardStyling,
-    formioFormStyles,
-    formComponentsListStyles,
-    formAreaStyles,
-    formioDialogStyles,
-    formBuilderStyles
-  ),
+  "@global": merge(cardStyling, formComponentsListStyles, formAreaStyles, formioDialogStyles, formBuilderStyles),
 };
 
 export { builderStyles };

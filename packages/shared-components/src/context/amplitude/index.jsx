@@ -1,22 +1,28 @@
-import React, { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 import {
   initAmplitude,
-  loggSkjemaFullfort,
-  loggSkjemaInnsendingFeilet,
-  loggSkjemaValideringFeilet,
+  loggEventDokumentLastetNed,
+  loggEventFilterValg,
+  loggEventNavigere,
+  loggEventSkjemaFullfort,
+  loggEventSkjemaInnsendingFeilet,
+  loggEventSkjemaValideringFeilet,
 } from "../../util/amplitude";
 import useHarApnetSkjema from "./harApnetSkjemaHook";
 import useSkjemaSporsmalEvent from "./skjemaEventHook";
 import useSkjemaStegFullfort from "./skjemaStegFullfortHook";
 
 const defaultValues = {
-  loggSkjemaApnet: () => {},
+  loggSkjemaApnet: (innsendingsKanal) => {},
   loggSkjemaSporsmalBesvart: (event) => {},
-  loggSkjemaSporsmalForSpesialTyper: (event) => {},
-  loggSkjemaStegFullfort: (steg) => {},
+  loggSkjemaSporsmalBesvartForSpesialTyper: (event) => {},
+  loggSkjemaStegFullfort: (data) => {},
+  loggSpraakValg: (spraak) => {},
+  loggNavigering: (data) => {},
+  loggDokumentLastetNed: (tittel) => {},
   loggSkjemaValideringFeilet: () => {},
   loggSkjemaInnsendingFeilet: () => {},
-  loggSkjemaFullfort: (innsendingsType) => {},
+  loggSkjemaFullfort: () => {},
 };
 
 const AmplitudeContext = createContext(defaultValues);
@@ -28,18 +34,21 @@ function AmplitudeProvider({ children, form, shouldUseAmplitude }) {
     }
   }, [shouldUseAmplitude]);
   const loggSkjemaStegFullfort = useSkjemaStegFullfort(form);
-  const loggApnetSkjema = useHarApnetSkjema(form);
-  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalBesvartForSpesialFelter } = useSkjemaSporsmalEvent(form);
+  const loggSkjemaApnet = useHarApnetSkjema(form);
+  const { loggSkjemaSporsmalBesvart, loggSkjemaSporsmalBesvartForSpesialTyper } = useSkjemaSporsmalEvent(form);
 
   const amplitude = shouldUseAmplitude
     ? {
-        loggSkjemaApnet: () => loggApnetSkjema(),
-        loggSkjemaSporsmalBesvart: (event) => loggSkjemaSporsmalBesvart(event),
-        loggSkjemaSporsmalForSpesialTyper: (event) => loggSkjemaSporsmalBesvartForSpesialFelter(event),
-        loggSkjemaStegFullfort: (steg) => loggSkjemaStegFullfort(steg),
-        loggSkjemaValideringFeilet: () => loggSkjemaValideringFeilet(form),
-        loggSkjemaInnsendingFeilet: () => loggSkjemaInnsendingFeilet(form),
-        loggSkjemaFullfort: (innsendingsType) => loggSkjemaFullfort(form, innsendingsType),
+        loggSkjemaApnet,
+        loggSkjemaSporsmalBesvart,
+        loggSkjemaSporsmalBesvartForSpesialTyper,
+        loggSkjemaStegFullfort,
+        loggSpraakValg: (spraak) => loggEventFilterValg(form, { kategori: "språk", filternavn: spraak }),
+        loggNavigering: (data) => loggEventNavigere(form, data),
+        loggDokumentLastetNed: (tittel) => loggEventDokumentLastetNed(form, tittel),
+        loggSkjemaValideringFeilet: () => loggEventSkjemaValideringFeilet(form),
+        loggSkjemaInnsendingFeilet: () => loggEventSkjemaInnsendingFeilet(form),
+        loggSkjemaFullfort: () => loggEventSkjemaFullfort(form),
       }
     : defaultValues;
   return <AmplitudeContext.Provider value={amplitude}>{children}</AmplitudeContext.Provider>;

@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
 import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React from "react";
 import ReactSelect from "react-select";
 import { useLanguages } from "../../context/languages";
 import { navCssVariables } from "../../util/navCssVariables";
@@ -27,8 +26,8 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
 
   const options = enhetsliste.map((enhet) => ({ label: enhet.navn, value: enhet.enhetNr }));
   return (
-    <div className="skjemaelement margin-bottom-default">
-      <label htmlFor="enhetSelect" className="skjemaelement__label">
+    <div className="mb-4">
+      <label htmlFor="enhetSelect" className="navds-label">
         {translate(TEXTS.statiske.prepareLetterPage.chooseEntity)}
       </label>
       <ReactSelect
@@ -43,7 +42,7 @@ const EnhetSelector = ({ enhetsliste = [], onSelectEnhet, error }: EnhetSelector
         }}
       />
       {error && (
-        <div id="enhetSelectError" className="skjemaelement__feilmelding">
+        <div id="enhetSelectError">
           <p className="typo-feilmelding">{error}</p>
         </div>
       )}

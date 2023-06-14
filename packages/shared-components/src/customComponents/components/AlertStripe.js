@@ -30,15 +30,15 @@ class AlertStripe extends HTMLElement {
                 label: "Info",
               },
               {
-                value: "suksess",
+                value: "success",
                 label: "Suksess",
               },
               {
-                value: "advarsel",
+                value: "warning",
                 label: "Advarsel",
               },
               {
-                value: "feil",
+                value: "error",
                 label: "Feil",
               },
             ],

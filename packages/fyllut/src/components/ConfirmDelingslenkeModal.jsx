@@ -15,7 +15,7 @@ const ConfirmDelingslenkeModal = () => {
       ariaLabel="Forhåndsvisningsadvarsel"
       title="Forhåndsvisning"
     >
-      <BodyShort className="margin-bottom-double">
+      <BodyShort className="mb">
         Dette er kun en forhåndsvisning av skjemaet og skal IKKE brukes til å sende søknader til NAV.
       </BodyShort>
       <Button onClick={onClose}>OK</Button>

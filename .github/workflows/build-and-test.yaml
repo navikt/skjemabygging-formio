@@ -31,7 +31,7 @@ jobs:
         run: yarn test
 
   package-and-push-bygger:
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
+    if: github.ref == 'refs/heads/master'
     name: "Package bygger"
     runs-on: ubuntu-latest-8-cores
     steps:
@@ -58,7 +58,7 @@ jobs:
           docker push ${IMAGE}
 
   package-and-push-fyllut-base:
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/experimental/')
+    if: github.ref == 'refs/heads/master'
     name: "Package fyllut"
     runs-on: ubuntu-latest-8-cores
     steps:
@@ -89,21 +89,6 @@ jobs:
           docker tag ${IMAGE_FYLLUT_BASE_DEV} ${IMAGE_FYLLUT_BASE}
           docker push ${IMAGE_FYLLUT_BASE}
 
-  deploy-bygger-to-dev:
-    name: "Deploy bygger to dev"
-    if: github.ref == 'refs/heads/master'
-    needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: "actions/checkout@v3"
-      - name: "Deploy to DEV"
-        env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "dev-gcp"
-          RESOURCE: "./packages/bygger/.nais/nais.yaml"
-          VARS: "./packages/bygger/.nais/dev.yaml"
-        uses: "nais/deploy/actions/deploy@v1"
-
   deploy-bygger-to-prod:
     name: "Deploy bygger to prod"
     if: github.ref == 'refs/heads/master'
@@ -119,45 +104,23 @@ jobs:
           VARS: "./packages/bygger/.nais/prod.yaml"
         uses: "nais/deploy/actions/deploy@v1"
 
-  deploy-bygger-experimental-to-dev:
-    name: "Deploy bygger experimental to dev"
-    if: startsWith(github.ref, 'refs/heads/experimental/')
+  trigger-deploy-fyllut-to-dev:
+    name: "Trigger deploy fyllut to dev"
     needs: [build-and-test, package-and-push-bygger, package-and-push-fyllut-base]
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v3"
-      - name: "Deploy experimental to DEV"
-        env:
-          APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          CLUSTER: "dev-gcp"
-          RESOURCE: "./packages/bygger/.nais/nais.yaml"
-          VARS: "./packages/bygger/.nais/dev-experimental.yaml"
-        uses: "nais/deploy/actions/deploy@v1"
-
-  trigger-deploy-fyllut-to-dev:
-    name: "Trigger deploy fyllut to dev"
-    needs: deploy-bygger-to-dev
-    runs-on: ubuntu-latest
-    steps:
+      - name: "Generate app installation access token"
+        uses: navikt/github-app-token-generator@v1
+        id: generate-token
+        with:
+          private-key: ${{ secrets.PUBLISHING_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.PUBLISHING_APP_ID }}
+          repo: navikt/skjemautfylling-formio
       - name: "Trigger deploy fyllut to dev"
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: "Trigger dev deploy"
           repo: navikt/skjemautfylling-formio
           ref: "dev-deploy"
-          token: ${{ secrets.TEAM_ACCESS_TOKEN }}
-          inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'
-
-  trigger-deploy-fyllut-experimental-to-dev:
-    name: "Trigger deploy fyllut experimental to dev"
-    needs: deploy-bygger-experimental-to-dev
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Trigger deploy fyllut experimental to dev"
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: "Trigger dev deploy"
-          repo: navikt/skjemautfylling-formio
-          ref: "experimental-deploy"
-          token: ${{ secrets.TEAM_ACCESS_TOKEN }}
+          token: ${{ steps.generate-token.outputs.token }}
           inputs: '{ "monorepoGitHash": "${{ github.sha }}" }'

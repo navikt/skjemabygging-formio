@@ -21,13 +21,14 @@ describe("Basic form", () => {
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check({ force: true }));
 
     cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995");
-    cy.findByText("Bor du i Norge?")
+    cy.get(".navds-radio-group")
+      .eq(1)
       .should("exist")
-      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
-    cy.findByText("Er kontaktadressen din en vegadresse eller postboksadresse?")
+
+    cy.get(".navds-radio-group")
+      .eq(2)
       .should("exist")
-      .closest("fieldset")
       .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
     cy.findByRole("textbox", { name: "Vegadresse" }).should("exist").type("Kirkegata 1");
     cy.findByRole("textbox", { name: "Postnummer" }).should("exist").type("1234");

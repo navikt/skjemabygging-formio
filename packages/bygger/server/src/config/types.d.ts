@@ -13,7 +13,7 @@ export type SkjemabyggingProxyConfig = {
 
 export type PublishRepoConfig = {
   name: string;
-  token: string;
+  token: string | undefined;
   owner: string;
   base: string;
 };
@@ -37,6 +37,14 @@ export type PusherConfig = {
   secret: string;
 };
 
+export type GithubAppConfig = {
+  appId: string;
+  privateKey: string;
+  clientId: string;
+  clientSecret: string;
+  installationId: string;
+};
+
 export type NodeEnv = "production" | "development" | "test";
 
 export type ConfigType = {
@@ -46,6 +54,7 @@ export type ConfigType = {
   formio: FormioConfig;
   fyllut: FyllutConfig;
   pusher: PusherConfig;
+  githubApp: GithubAppConfig;
   gitSha: string;
   nodeEnv: NodeEnv;
   port: number;

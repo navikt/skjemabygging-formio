@@ -36,6 +36,8 @@ export interface FormPropertiesType {
   unpublishedBy?: string;
   downloadPdfButtonText?: string;
   innsending?: InnsendingType;
+  ettersending?: InnsendingType;
+  ettersendelsesfrist?: string;
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
@@ -48,6 +50,7 @@ export interface FormPropertiesType {
   hasLabeledSignatures?: boolean;
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
+  descriptionOfSignaturesPositionUnder?: boolean;
 }
 
 export type FormPropertiesPublishing = Pick<

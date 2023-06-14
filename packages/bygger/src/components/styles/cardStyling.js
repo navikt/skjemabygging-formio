@@ -11,6 +11,7 @@ const cardStyling = {
       padding: ".75rem 1.25rem",
     },
     "&-body": {
+      backgroundColor: "#ffffff",
       flex: "1 1 auto",
       minHeight: "1px",
       padding: "1.25rem",

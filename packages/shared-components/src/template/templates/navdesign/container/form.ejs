@@ -3,13 +3,13 @@
   {{ctx.children}}
 </div>
 {% } else { %}
-<fieldset class="skjemagruppe">
-  <span class="label-track-changes">
-    <legend class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+<fieldset class="navds-fieldset">
+  <div class="label-track-changes">
+    <legend class="navds-label" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
       {{ctx.t(ctx.component.label)}}
     </legend>
     {{ctx.util.getDiffTag(ctx)}}
-  </span>
+  </div>
   <div ref="{{ctx.nestedKey}}">{{ctx.children}}</div>
 </fieldset>
 {% } %}

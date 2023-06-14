@@ -47,8 +47,6 @@ const MottaksadresseEditor = ({
     }
   };
 
-  const featureToggles = { enableAutoComplete: true };
-
   return (
     <Panel border className={styles.panel} data-testid={`mottaksadressepanel-${mottaksadresse?._id || "new"}`}>
       <div className={styles.panelContentMain}>
@@ -59,7 +57,7 @@ const MottaksadresseEditor = ({
                 Ny mottaksadresse
               </Heading>
             )}
-            <AppConfigProvider featureToggles={featureToggles}>
+            <AppConfigProvider>
               <NavForm
                 src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
@@ -72,7 +70,7 @@ const MottaksadresseEditor = ({
           </>
         )}
         {(!editMode || loadingForm) && mottaksadresse && (
-          <>
+          <div className="mb-4">
             <Heading level="2" size="small">
               {mottaksadresse.data.adresselinje1}
             </Heading>
@@ -82,7 +80,7 @@ const MottaksadresseEditor = ({
               {mottaksadresse.data.postnummer} {mottaksadresse.data.poststed}
             </div>
             {mottaksadresse.data.temakoder && <div>Tema: {mottaksadresse.data.temakoder}</div>}
-          </>
+          </div>
         )}
         <div>
           {(!editMode || loadingForm) && mottaksadresse && (

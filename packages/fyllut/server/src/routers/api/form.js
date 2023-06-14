@@ -4,7 +4,7 @@ import { formService } from "../../services";
 const form = {
   get: async (req, res) => {
     const form = await formService.loadForm(req.params.formPath);
-    if (!form) {
+    if (!form || !form.properties) {
       return res.sendStatus(404);
     }
     if (req.query.type === "limited") {
@@ -24,7 +24,9 @@ const mapLimitedForm = (form) => {
       skjemanummer: form.properties.skjemanummer,
       tema: form.properties.tema,
       innsending: form.properties.innsending,
+      ettersending: form.properties.ettersending,
       enhetstyper: form.properties.enhetstyper,
+      enhetMaVelgesVedPapirInnsending: form.properties.enhetMaVelgesVedPapirInnsending,
     },
     attachments: getAttachments(form),
   };

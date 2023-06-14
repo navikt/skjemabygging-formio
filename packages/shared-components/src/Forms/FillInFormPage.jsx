@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
@@ -12,17 +13,18 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const {
     loggSkjemaApnet,
     loggSkjemaSporsmalBesvart,
-    loggSkjemaSporsmalForSpesialTyper,
+    loggSkjemaSporsmalBesvartForSpesialTyper,
     loggSkjemaStegFullfort,
     loggSkjemaValideringFeilet,
+    loggNavigering,
   } = useAmplitude();
-  const { featureToggles } = useAppConfig();
-  const { currentLanguage, translationsForNavForm } = useLanguages();
+  const { featureToggles, submissionMethod } = useAppConfig();
+  const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
 
   useEffect(() => {
-    loggSkjemaApnet();
-  }, [loggSkjemaApnet]);
+    loggSkjemaApnet(submissionMethod);
+  }, [loggSkjemaApnet, submissionMethod]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -49,12 +51,27 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels }) {
-    loggSkjemaStegFullfort(page);
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
+      destinasjon: `${formUrl}/${currentPanels?.[page]}`,
+    });
+    loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
   }
 
   function onPreviousPage({ page, currentPanels }) {
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
+      destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
+    });
     onNextOrPreviousPage(page, currentPanels);
+  }
+
+  function onCancel({ url }) {
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      destinasjon: url,
+    });
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -65,6 +82,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onWizardPageSelected(panel) {
+    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
     updatePanelUrl(panel.path);
   }
 
@@ -74,8 +92,15 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   const onSubmit = (submission) => {
     setSubmission(submission);
-    const panelKey = window.location.pathname.split(`${formUrl}/`)[1];
-    loggSkjemaStegFullfort(form.components.findIndex((panel) => panel.key === panelKey) + 1);
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
+      destinasjon: `${formUrl}/oppsummering`,
+    });
+    const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
+    loggSkjemaStegFullfort({
+      steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
+      skjemastegNokkel,
+    });
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
@@ -93,11 +118,12 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
-        onChange={loggSkjemaSporsmalForSpesialTyper}
+        onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
         onError={onError}
         onSubmit={onSubmit}
         onNextPage={onNextPage}
         onPrevPage={onPreviousPage}
+        onCancel={onCancel}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}

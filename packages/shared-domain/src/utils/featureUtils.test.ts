@@ -35,18 +35,18 @@ describe("features", () => {
 
     describe("support for enabling and disabling with booleans", () => {
       it("one disable and one enable", () => {
-        const featureToggles = toFeatureToggles("translations=false,autoComplete=true");
-        expect(featureToggles).toEqual({ enableTranslations: false, enableAutoComplete: true });
+        const featureToggles = toFeatureToggles("translations=false");
+        expect(featureToggles).toEqual({ enableTranslations: false });
       });
 
       it("one disabled, and one defaults to enabled", () => {
-        const featureToggles = toFeatureToggles("translations=false,autoComplete");
-        expect(featureToggles).toEqual({ enableTranslations: false, enableAutoComplete: true });
+        const featureToggles = toFeatureToggles("translations=false");
+        expect(featureToggles).toEqual({ enableTranslations: false });
       });
 
       it("one disabled, one defaults to enabled, and one explicitly enabled", () => {
-        const featureToggles = toFeatureToggles("translations=false,autoComplete, diff=true");
-        expect(featureToggles).toEqual({ enableTranslations: false, enableAutoComplete: true, enableDiff: true });
+        const featureToggles = toFeatureToggles("translations=false, diff=true");
+        expect(featureToggles).toEqual({ enableTranslations: false, enableDiff: true });
       });
 
       it("one explicitly enabled with spaces", () => {

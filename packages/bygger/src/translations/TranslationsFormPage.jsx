@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { Heading } from "@navikt/ds-react";
+import { BodyShort, Heading } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
 import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
@@ -73,7 +73,7 @@ const TranslationsToRemove = ({ translations, languageCode }) => {
     <ObsoleteTranslationsPanel
       translations={obsoleteTranslations}
       onDelete={(t) => onDelete(t.originalText)}
-      className="margin-bottom-double"
+      className="mb"
     />
   );
 };
@@ -102,7 +102,7 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
       <Heading level="1" size="xlarge">
         {title}
       </Heading>
-      <p className="margin-bottom-large">{skjemanummer}</p>
+      <BodyShort className="mb">{skjemanummer}</BodyShort>
       {unusedTranslations.length > 0 && (
         <TranslationsToRemove translations={unusedTranslations} languageCode={languageCode} />
       )}

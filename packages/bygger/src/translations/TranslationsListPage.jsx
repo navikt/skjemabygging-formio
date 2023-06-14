@@ -60,7 +60,7 @@ export function TranslationsListPage({ loadFormsList }) {
       }}
     >
       <main className={classes.root}>
-        <nav className="margin-bottom-double">
+        <nav className="mb">
           <Heading level="2" size="large">
             Globale oversettelser
           </Heading>
@@ -70,7 +70,7 @@ export function TranslationsListPage({ loadFormsList }) {
             </li>
           </ul>
         </nav>
-        <nav className="margin-bottom-large">
+        <nav className="mb">
           <Heading level="2" size="large">
             Skjemaliste
           </Heading>

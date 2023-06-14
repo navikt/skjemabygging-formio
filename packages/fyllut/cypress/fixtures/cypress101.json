@@ -2988,6 +2988,7 @@
       "type": "panel",
       "input": false,
       "key": "vedlegg",
+      "isAttachmentPanel": true,
       "theme": "default",
       "components": [
         {

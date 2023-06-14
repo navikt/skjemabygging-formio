@@ -14,6 +14,9 @@ export const validateFormMetadata = (form: NavFormType) => {
   if (!form.properties.tema) {
     errors.tema = "Du må velge ett tema";
   }
+  if (!form.properties.ettersending) {
+    errors.ettersending = "Du må velge innsendingstype for ettersending";
+  }
   return errors;
 };
 

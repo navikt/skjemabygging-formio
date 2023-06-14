@@ -53,12 +53,12 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
   const [foerstesideError, setFoerstesideError] = useState(undefined);
   const [foerstesideLoading, setFoerstesideLoading] = useState(false);
   const [hasDownloadedPDF, setHasDownloadedPDF] = useState(false);
-  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet } = useAmplitude();
+  const { loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggDokumentLastetNed } = useAmplitude();
   const { currentLanguage } = useLanguages();
 
   useEffect(() => {
     if (hasDownloadedFoersteside && hasDownloadedPDF) {
-      loggSkjemaFullfort("papirinnsending");
+      loggSkjemaFullfort();
     }
   }, [hasDownloadedFoersteside, hasDownloadedPDF, loggSkjemaFullfort]);
 
@@ -67,12 +67,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
       className="wizard-page"
       aria-label={`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
     >
-      <Heading level="3" size="medium" className="margin-bottom-small">
+      <Heading level="3" size="medium" spacing>
         {`${index}. ${translate(TEXTS.statiske.prepareLetterPage.firstSectionTitle)}`}
       </Heading>
-      <BodyShort className="margin-bottom-default">
-        {translate(TEXTS.statiske.prepareLetterPage.firstDescription)}
-      </BodyShort>
+      <BodyShort className="mb-4">{translate(TEXTS.statiske.prepareLetterPage.firstDescription)}</BodyShort>
       <EnhetSelector
         enhetsliste={enhetsListe}
         onSelectEnhet={(enhetNummer) => {
@@ -81,7 +79,7 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         }}
         error={isRequiredEnhetMissing ? translate(TEXTS.statiske.prepareLetterPage.entityNotSelectedError) : undefined}
       />
-      <div className="margin-bottom-default">
+      <div className="mb-4">
         <Button
           onClick={() => {
             if (form.properties.enhetMaVelgesVedPapirInnsending && !selectedEnhetNummer) {
@@ -90,7 +88,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
               setFoerstesideError(undefined);
               setFoerstesideLoading(true);
               lastNedFoersteside(form, submission, fyllutBaseURL, currentLanguage, selectedEnhetNummer)
-                .then(() => setHasDownloadedFoersteside(true))
+                .then(() => {
+                  loggDokumentLastetNed(`førsteside ${form.properties.skjemanummer}`);
+                  setHasDownloadedFoersteside(true);
+                })
                 .catch((error) => {
                   loggSkjemaInnsendingFeilet();
                   setFoerstesideError(error);
@@ -109,7 +110,10 @@ const LetterDownload = ({ form, index, submission, enhetsListe, fyllutBaseURL, t
         submission={submission}
         actionUrl={`${fyllutBaseURL}/api/pdf/convert`}
         label={translate(form.properties.downloadPdfButtonText || TEXTS.grensesnitt.downloadApplication)}
-        onClick={() => setHasDownloadedPDF(true)}
+        onClick={() => {
+          loggDokumentLastetNed(`${form.properties.skjemanummer}`);
+          setHasDownloadedPDF(true);
+        }}
         translations={translations}
       />
     </section>

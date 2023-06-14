@@ -20,7 +20,7 @@ const BreakingChangesWarning = ({ breakingChanges }: BreakingChangesWarningProps
             </p>
             <ul>
               {dependentComponents.map(({ key, label }) => (
-                <li>
+                <li key={key}>
                   {label} ({key})
                 </li>
               ))}

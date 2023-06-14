@@ -193,6 +193,31 @@ describe("FormMetadataEditor", () => {
       },
     });
 
+    describe("Ettersendelsesfrist", () => {
+      it("lagres i properties", async () => {
+        const form = formMedProps({ ettersendelsesfrist: undefined, ettersending: "KUN_DIGITAL" });
+
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        const input = screen.getByLabelText("Ettersendelsesfrist (dager)");
+        await userEvent.paste(input, "42");
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.ettersendelsesfrist).toEqual("42");
+      });
+
+      it("nullstilles i properties", async () => {
+        const form = formMedProps({ ettersendelsesfrist: "42", ettersending: "KUN_DIGITAL" });
+        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        const input = screen.getByLabelText("Ettersendelsesfrist (dager)");
+        await userEvent.clear(input);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.ettersendelsesfrist).toEqual("");
+      });
+    });
+
     describe("Tema", () => {
       it("lister ut temaer", () => {
         render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);

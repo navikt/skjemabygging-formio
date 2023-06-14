@@ -35,7 +35,7 @@ function formatValue(component, value, translate) {
       return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`; // TODO: month is zero based.
     }
     case "navCheckbox": {
-      return value === "ja" ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
+      return value ? translate(TEXTS.common.yes) : translate(TEXTS.common.no);
     }
     case "landvelger":
     case "valutavelger":
@@ -58,6 +58,12 @@ function formatValue(component, value, translate) {
         return `${translate(toPascalCase(month))}, ${validValue.format("YYYY")}`;
       }
     }
+    case "currency":
+      return Number(value).toLocaleString("no", { style: "currency", currency: component.currency || "nok" });
+    case "number":
+      const prefix = component.prefix ? `${component.prefix} ` : "";
+      const suffix = component.suffix ? ` ${component.suffix}` : "";
+      return prefix + Number(value).toLocaleString("no", { maximumFractionDigits: 2 }) + suffix;
     default:
       return value;
   }
@@ -285,13 +291,21 @@ function handleAmountWithCurrencySelector(component, submission, formSummaryObje
 
   const submissionValue = FormioUtils.getValue(submission, componentKey);
 
+  const number = submissionValue[numberKey];
+
+  if (!number) {
+    return formSummaryObject;
+  }
+
+  const currency = submissionValue[valutaKey].value || "nok";
+
   return [
     ...formSummaryObject,
     {
       label: translate(label),
       key,
       type: "currency",
-      value: `${submissionValue[numberKey]} ${submissionValue[valutaKey].value}`,
+      value: Number(number).toLocaleString("no", { style: "currency", currency, currencyDisplay: "code" }),
     },
   ];
 }

@@ -26,7 +26,7 @@ const UserMenu = () => {
         <Dropdown.Menu.List>
           <Dropdown.Menu.List.Item className={styles.logOutBtn}>
             {" "}
-            <Link className="knapp knapp--standard knapp--mini" to="/" onClick={logout}>
+            <Link className="navds-button navds-button--secondary navds-button--small" to="/" onClick={logout}>
               Logg ut
             </Link>
           </Dropdown.Menu.List.Item>

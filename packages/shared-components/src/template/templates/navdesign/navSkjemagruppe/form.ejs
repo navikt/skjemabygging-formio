@@ -1,44 +1,23 @@
 {% if (ctx.component.description && ctx.component.descriptionPosition === "above") { %}
-  <div class="skjemagruppe__description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
-  {% if (ctx.component.additionalDescription) { %}
-    <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-      {% if (ctx.component.additionalDescriptionLabel) { %}
-        <button type="button" class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-          {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-        </button>
-      {% } %}
-      <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
-    </div>
-  {% } %}
+  <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
 {% } %}
 <fieldset
-    class="skjemagruppe"
     {% if (ctx.component.description) { %}
     aria-describedby="d-{{ctx.instance.id}}-{{ctx.component.key}}"
     {% } %}
 >
     {% if (ctx.component.legend) { %}
     <span class="label-track-changes">
-      <legend ref="header" class="skjemagruppe__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
+      <legend ref="header" class="navds-fieldset__legend" id="l-{{ctx.instance.id}}-{{ctx.component.key}}">
         {{ctx.t(ctx.component.legend)}}
       </legend>
       {{ctx.util.getDiffTag(ctx)}}
     </span>
     {% } %}
     {% if (ctx.component.description && ctx.component.descriptionPosition !== "above") { %}
-        <div class="skjemagruppe__description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
-        {% if (ctx.component.additionalDescription) { %}
-          <div class="accordion-link" data-testid="{{ctx.component.key}}-additional-description" id="{{ctx.component.id}}-{{ctx.component.key}}-additional-description">
-            {% if (ctx.component.additionalDescriptionLabel) { %}
-              <button type="button" class="accordion-link__link" onclick="{{ctx.utils.toggleClass(`${ctx.component.id}-${ctx.component.key}-additional-description`, 'accordion-link--expand')}}">
-                {{ctx.t(ctx.component.additionalDescriptionLabel)}}
-              </button>
-            {% } %}
-            <div class="accordion-link__text">{{ctx.t(ctx.component.additionalDescriptionText)}}</div>
-          </div>
-        {% } %}
+    <div class="description" id="d-{{ctx.instance.id}}-{{ctx.component.key}}">{{ctx.t(ctx.component.description)}}</div>
     {% } %}
-    <div class="skjemagruppe__content" ref="{{ctx.nestedKey}}">
+    <div class="navds-fieldset__content" ref="{{ctx.nestedKey}}">
         {{ctx.children}}
     </div>
 </fieldset>

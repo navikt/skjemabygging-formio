@@ -107,6 +107,24 @@ const findByNavIdOrKey = (ids: ComponentIdType, components: Component[]): Compon
   return comp;
 };
 
+export type DependencyType = "conditional" | "validation" | "calculateValue";
+type Dependee = { component: Component; types: DependencyType[] };
+export const findDependeeComponents = (componentWithDependencies: Component, form: NavFormType) => {
+  const dependees: Dependee[] = [];
+  FormioUtils.eachComponent(form.components, (potentialDependee: Component, path: string) => {
+    if (potentialDependee.id !== componentWithDependencies.id) {
+      const types: DependencyType[] = [];
+      if (hasConditionalOn([path], componentWithDependencies)) types.push("conditional");
+      if (validatesBasedOn([path], componentWithDependencies)) types.push("validation");
+      if (calculatesValueBasedOn([path], componentWithDependencies)) types.push("calculateValue");
+      if (types.length > 0) {
+        dependees.push({ component: potentialDependee, types });
+      }
+    }
+  });
+  return dependees;
+};
+
 export const findDependentComponents = (id: string, form: NavFormType) => {
   const idToPathMapping: { [s: string]: string } = {};
   FormioUtils.eachComponent(form.components, (component: Component, path: string) => {
@@ -137,8 +155,7 @@ export const removeComponents = (form: NavFormType, isTarget: ComponentFilterFun
   return formCopy;
 };
 
-export const isVedleggspanel = (component: Component) =>
-  !!(component.type === "panel" && (component.isAttachmentPanel || /^vedlegg(panel)?$/.test(component.key)));
+export const isVedleggspanel = (component: Component) => !!(component.type === "panel" && component.isAttachmentPanel);
 
 export const removeVedleggspanel = (form: NavFormType) => {
   return removeComponents(form, isVedleggspanel);
@@ -182,6 +199,7 @@ const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
   findDependentComponents,
+  findDependeeComponents,
   flattenComponents,
   isSubmissionMethodAllowed,
   isVedleggspanel,
