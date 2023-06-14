@@ -44,7 +44,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const sendInnResponse = await fetch(`${sendInnConfig!.host}${sendInnConfig!.paths.soknad}`, {
+      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly posted data to SendInn");
-        res.send(await sendInnResponse.json());
+        res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to post data to SendInn");
         next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
@@ -65,27 +65,31 @@ const sendInnSoknad = {
     }
   },
   put: async (req: Request, res: Response, next: NextFunction) => {
-    const idportenPid = getIdportenPid(req);
-    const tokenxAccessToken = getTokenxAccessToken(req);
+    try {
+      const idportenPid = getIdportenPid(req);
+      const tokenxAccessToken = getTokenxAccessToken(req);
 
-    const body = assembleSendInnSoknadBody(req.body, idportenPid, []);
-    const { innsendingsId } = req.body;
+      const body = assembleSendInnSoknadBody(req.body, idportenPid, []);
+      const { innsendingsId } = req.body;
 
-    const sendInnResponse = await fetch(`${sendInnConfig!.host}${sendInnConfig!.paths.soknad}/${innsendingsId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenxAccessToken}`,
-      },
-      body: JSON.stringify(body),
-    });
+      const sendInnResponse = await fetch(`${sendInnConfig!.host}${sendInnConfig!.paths.soknad}/${innsendingsId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenxAccessToken}`,
+        },
+        body: JSON.stringify(body),
+      });
 
-    if (sendInnResponse.ok) {
-      logger.debug("Successfylly updated data in SendInn");
-      res.send(sendInnResponse.json());
-    } else {
-      logger.debug("Failed to update data in SendInn");
-      next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+      if (sendInnResponse.ok) {
+        logger.debug("Successfylly updated data in SendInn");
+        res.json(await sendInnResponse.json());
+      } else {
+        logger.debug("Failed to update data in SendInn");
+        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+      }
+    } catch (err) {
+      next(err);
     }
   },
 };

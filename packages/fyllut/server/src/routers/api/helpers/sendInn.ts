@@ -1,8 +1,5 @@
 import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 
-const DEFAULT_LANGUAGE = "nb-NO";
-const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
-
 interface HovedDokument {
   vedleggsnr: string;
   label: string;
@@ -12,7 +9,7 @@ interface HovedDokument {
   document: number[];
 }
 
-interface Attachment {
+export interface Attachment {
   vedleggsnr: string;
   tittel: string;
   label: string;
@@ -35,6 +32,9 @@ interface SendInnSoknadBody {
   kanLasteOppAnnet?: boolean;
 }
 
+const DEFAULT_LANGUAGE = "nb-NO";
+const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+
 export const assembleSendInnSoknadBody = (
   requestBody: {
     form: NavFormType;
@@ -42,7 +42,7 @@ export const assembleSendInnSoknadBody = (
     language: string;
     translation?: I18nTranslationMap;
     attachments?: Attachment[];
-    otherDocumentation?: boolean;
+    otherDocumentation?: boolean | undefined;
   },
   idportenPid: string,
   submissionPdfAsByteArray: number[] = []
@@ -92,7 +92,6 @@ export const assembleSendInnSoknadBody = (
     }));
   }
 
-  //TODO
   if (otherDocumentation !== undefined) {
     body.kanLasteOppAnnet = otherDocumentation;
   }

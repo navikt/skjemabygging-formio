@@ -22,13 +22,13 @@ function mockResponse(): Response {
 }
 
 type MockRequestParams = {
-  headers: { [name: string]: string };
+  headers?: { [name: string]: string };
   body?: object;
 };
 
 function mockRequest({ headers = {}, body }: MockRequestParams): Request {
   return {
-    header: (name: string) => headers[name],
+    header: (name: string) => headers?.[name],
     headers: { ...headers },
     body,
     get: () => "",
