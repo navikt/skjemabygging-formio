@@ -1,7 +1,7 @@
 import { featureUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import dotenv from "dotenv";
 import { NaisCluster } from "./nais-cluster.js";
-import { ConfigType, IdportenConfig, SendInnConfig, TokenxConfig } from "./types";
+import { ConfigType, DefaultConfig, IdportenConfig, SendInnConfig, TokenxConfig } from "./types";
 
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();
@@ -31,7 +31,7 @@ const sendInnConfig: SendInnConfig = {
   },
 };
 
-const localDevelopmentConfig: Partial<ConfigType> = {
+const localDevelopmentConfig: DefaultConfig = {
   gitVersion: "local",
   useFormioApi: true,
   formioProjectUrl: process.env.FORMIO_PROJECT_URL || "https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn",
@@ -59,7 +59,7 @@ const localDevelopmentConfig: Partial<ConfigType> = {
   },
 };
 
-const defaultConfig: Partial<ConfigType> = {
+const defaultConfig: DefaultConfig = {
   sentryDsn: process.env.REACT_APP_SENTRY_DSN!,
   gitVersion: process.env.GIT_SHA!,
   useFormioApi: process.env.FORMS_SOURCE === "formioapi",

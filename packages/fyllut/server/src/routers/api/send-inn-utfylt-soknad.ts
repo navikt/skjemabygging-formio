@@ -17,7 +17,7 @@ const sendInnUtfyltSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
 
-      const { form, submission, submissionMethod, translation, language } = req.body;
+      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.AzureAccessToken) {
         logger.error("Azure access token is missing. Unable to generate pdf");
       }
@@ -31,7 +31,6 @@ const sendInnUtfyltSoknad = {
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
-      const { innsendingsId } = req.body;
 
       const sendInnResponse = await fetch(
         `${sendInnConfig!.host}${sendInnConfig!.paths.utfyltSoknad}/${innsendingsId}`,
