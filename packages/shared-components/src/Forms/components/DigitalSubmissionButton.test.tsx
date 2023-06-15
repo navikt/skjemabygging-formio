@@ -51,9 +51,10 @@ describe("DigitalSubmissionButton", () => {
     let onError;
     let onSuccess;
     let windowLocation;
+    const baseUrl = "http://baseUrl.fyllut.no";
 
     beforeEach(() => {
-      windowLocation = { href: "http://baseUrl.fyllut.no" };
+      windowLocation = { href: baseUrl };
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
@@ -74,7 +75,7 @@ describe("DigitalSubmissionButton", () => {
       expect(button).toBeInTheDocument();
       userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
-      expect(windowLocation.href).toEqual("");
+      expect(windowLocation.href).toEqual(baseUrl);
     });
 
     it("redirects when backend returns 201 and Location header", async () => {
@@ -98,7 +99,7 @@ describe("DigitalSubmissionButton", () => {
       expect(onError.mock.calls[0][0].message).toEqual(
         "Digital innsending er ikke støttet ved forhåndsvisning i byggeren."
       );
-      expect(windowLocation.href).toEqual("");
+      expect(windowLocation.href).toEqual(baseUrl);
     });
   });
 });
