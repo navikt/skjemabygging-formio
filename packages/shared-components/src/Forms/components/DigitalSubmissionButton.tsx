@@ -3,7 +3,6 @@ import { Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 
@@ -17,7 +16,6 @@ export interface Props {
 const noop = () => {};
 
 const DigitalSubmissionButton = ({ submission, onError, onSuccess = noop, children }: Props) => {
-  const { currentLanguage } = useLanguages();
   const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
   const { submitSoknad } = useSendInn();
@@ -32,7 +30,7 @@ const DigitalSubmissionButton = ({ submission, onError, onSuccess = noop, childr
       setLoading(true);
       loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });
       removeBeforeUnload();
-      const response = await submitSoknad(submission, currentLanguage);
+      const response = await submitSoknad(submission);
       onSuccess(response);
     } catch (err: any) {
       addBeforeUnload();

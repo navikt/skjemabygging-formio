@@ -32,7 +32,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   useEffect(() => {
     const initializeMellomlagring = async () => {
-      const response = await startMellomlagring(submission, currentLanguage);
+      const response = await startMellomlagring(submission);
       if (response?.innsendingsId) {
         setIsReady(true);
       }
@@ -40,10 +40,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
       initializeMellomlagring();
     }
-  }, [submission, currentLanguage, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
-
-  // TODO: necessary?
-  const callUpdateSoknad = async (submission) => updateMellomlagring(submission, currentLanguage);
+  }, [submission, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
@@ -74,7 +71,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onNextPage({ page, currentPanels, submission }) {
-    callUpdateSoknad(submission);
+    updateMellomlagring(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
@@ -115,7 +112,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   const onSubmit = (submission) => {
-    callUpdateSoknad(submission);
+    updateMellomlagring(submission);
     setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),

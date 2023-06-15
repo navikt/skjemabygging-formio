@@ -1,5 +1,5 @@
 import { I18nTranslations, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import {
   SendInnSoknadResponse,
   createSendInnSoknad,
@@ -10,9 +10,9 @@ import {
 import { useAppConfig } from "../../configContext";
 
 interface SendInnContextType {
-  startMellomlagring: (submission: Submission, language: string) => Promise<SendInnSoknadResponse | undefined>;
-  updateMellomlagring: (submission: Submission, language: string) => Promise<SendInnSoknadResponse | undefined>;
-  submitSoknad: (submission: Submission, language: string) => Promise<SendInnSoknadResponse | undefined>;
+  startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
 }
 
 interface SendInnProviderProps {
@@ -33,50 +33,46 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
     return app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
   }, [appConfig]);
 
-  const translationForLanguage = useCallback(
-    (language = "nb-NO") => {
-      if (language !== "nb-NO" && Object.keys(translations).length > 0) {
-        return translations[language] ?? {};
-      }
-      return {};
-    },
-    [translations]
-  );
+  const translationForLanguage = (language = "nb-NO") => {
+    if (language !== "nb-NO" && Object.keys(translations).length > 0) {
+      return translations[language] ?? {};
+    }
+    return {};
+  };
 
-  const startMellomlagring = useCallback(
-    async (submission: Submission, currentLanguage: string = "nb-NO") => {
-      if (appConfig.app === "bygger") {
-        appConfig.logger?.error("Mellomlagring er ikke tilgjengelig i byggeren");
-      }
-      if (isMellomLagringEnabled) {
-        const translation = translationForLanguage(currentLanguage);
-        if (!mellomlagringStarted) {
-          setMellomlagringStarted(true);
-          const response = await createSendInnSoknad(appConfig, form, submission, currentLanguage, translation);
-          setInnsendingsId(response?.innsendingsId);
-          return response;
-        }
-      }
-    },
-    [appConfig, form, isMellomLagringEnabled, mellomlagringStarted, translationForLanguage]
-  );
+  const getLanguageFromSearchParams = () => {
+    return new URL(window.location.href).searchParams.get("lang") || "nb-NO";
+  };
 
-  const updateMellomlagring = async (
-    submission: Submission,
-    language: string
-  ): Promise<SendInnSoknadResponse | undefined> => {
-    if (isMellomLagringEnabled) {
-      const translation = translationForLanguage(language);
-      return updateSendInnSoknad(appConfig, form, submission, language, translation, innsendingsId);
+  const startMellomlagring = async (submission: Submission) => {
+    if (appConfig.app === "bygger") {
+      appConfig.logger?.error("Mellomlagring er ikke tilgjengelig i byggeren");
+    }
+    if (isMellomLagringEnabled && !mellomlagringStarted) {
+      const currentLanguage = getLanguageFromSearchParams();
+      const translation = translationForLanguage(currentLanguage);
+      setMellomlagringStarted(true);
+      const response = await createSendInnSoknad(appConfig, form, submission, currentLanguage, translation);
+      setInnsendingsId(response?.innsendingsId);
+      return response;
     }
   };
 
-  const submitSoknad = async (submission, language) => {
-    const translation = translationForLanguage(language);
+  const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
     if (isMellomLagringEnabled) {
-      return updateUtfyltSoknad(appConfig, form, submission, language, translation, innsendingsId);
+      const currentLanguage = getLanguageFromSearchParams();
+      const translation = translationForLanguage(currentLanguage);
+      return updateSendInnSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
     }
-    return createSoknadWithoutInnsendingsId(appConfig, form, submission, language, translation);
+  };
+
+  const submitSoknad = async (submission: Submission) => {
+    const currentLanguage = getLanguageFromSearchParams();
+    const translation = translationForLanguage(currentLanguage);
+    if (isMellomLagringEnabled) {
+      return updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+    }
+    return createSoknadWithoutInnsendingsId(appConfig, form, submission, currentLanguage, translation);
   };
 
   const value = {
