@@ -45,6 +45,7 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
   };
 
   const startMellomlagring = async (submission: Submission) => {
+    console.log("startMellomlagring - started: ", mellomlagringStarted);
     if (appConfig.app === "bygger") {
       appConfig.logger?.error("Mellomlagring er ikke tilgjengelig i byggeren");
     }
@@ -79,6 +80,7 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
     startMellomlagring,
     updateMellomlagring,
     submitSoknad,
+    innsendingsId,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;

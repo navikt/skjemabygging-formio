@@ -1,5 +1,5 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
@@ -21,24 +21,17 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring } = useSendInn();
+  const { startMellomlagring, updateMellomlagring, innsendingsId } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
-  const [isReady, setIsReady] = useState(submissionMethod !== "digital");
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    const initializeMellomlagring = async () => {
-      const response = await startMellomlagring(submission);
-      if (response?.innsendingsId) {
-        setIsReady(true);
-      }
-    };
     if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
-      initializeMellomlagring();
+      startMellomlagring(submission);
     }
   }, [submission, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
 
@@ -46,8 +39,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     return null;
   }
 
-  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !isReady) {
-    return <LoadingComponent />;
+  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !innsendingsId) {
+    return <LoadingComponent heightOffset={18} />;
   }
 
   function updatePanelUrl(panelPath) {
