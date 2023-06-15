@@ -6,7 +6,7 @@ export interface SendInnSoknadResponse {
   innsendingsId: string;
 }
 
-export const createSendInnSoknad = async (
+export const createSoknad = async (
   appConfig: AppConfigContextType,
   form: NavFormType,
   submission: Submission,
@@ -30,7 +30,7 @@ export const createSendInnSoknad = async (
   );
 };
 
-export const updateSendInnSoknad = async (
+export const updateSoknad = async (
   appConfig: AppConfigContextType,
   form: NavFormType,
   submission: Submission,
@@ -71,7 +71,6 @@ export const updateUtfyltSoknad = async (
   const { http, baseUrl, submissionMethod, config, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
-  console.log("translation", translation);
 
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(

@@ -2,9 +2,9 @@ import { I18nTranslations, NavFormType, Submission } from "@navikt/skjemadigital
 import React, { createContext, useContext, useMemo, useState } from "react";
 import {
   SendInnSoknadResponse,
-  createSendInnSoknad,
+  createSoknad,
   createSoknadWithoutInnsendingsId,
-  updateSendInnSoknad,
+  updateSoknad,
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
@@ -13,6 +13,7 @@ interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  innsendingsId: string | undefined;
 }
 
 interface SendInnProviderProps {
@@ -45,15 +46,14 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
   };
 
   const startMellomlagring = async (submission: Submission) => {
-    console.log("startMellomlagring - started: ", mellomlagringStarted);
     if (appConfig.app === "bygger") {
       appConfig.logger?.error("Mellomlagring er ikke tilgjengelig i byggeren");
     }
     if (isMellomLagringEnabled && !mellomlagringStarted) {
+      setMellomlagringStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
       const translation = translationForLanguage(currentLanguage);
-      setMellomlagringStarted(true);
-      const response = await createSendInnSoknad(appConfig, form, submission, currentLanguage, translation);
+      const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
       setInnsendingsId(response?.innsendingsId);
       return response;
     }
@@ -63,7 +63,7 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
     if (isMellomLagringEnabled) {
       const currentLanguage = getLanguageFromSearchParams();
       const translation = translationForLanguage(currentLanguage);
-      return updateSendInnSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+      return updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
     }
   };
 
