@@ -53,7 +53,7 @@ describe("DigitalSubmissionButton", () => {
     let windowLocation;
 
     beforeEach(() => {
-      windowLocation = { href: "" };
+      windowLocation = { href: "http://baseUrl.fyllut.no" };
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,

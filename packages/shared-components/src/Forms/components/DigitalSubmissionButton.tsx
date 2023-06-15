@@ -21,7 +21,6 @@ const DigitalSubmissionButton = ({ submission, onError, onSuccess = noop, childr
   const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
   const sendInn = async () => {
-    //TODO: felles måte å håndtere bygger på
     if (app === "bygger") {
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
       return;

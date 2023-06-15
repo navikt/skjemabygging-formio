@@ -196,9 +196,9 @@ describe("SummaryPage", () => {
 
   describe("Form med kun digital innsending", () => {
     it("sender skjema med vedlegg til send-inn", async () => {
-      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
@@ -222,9 +222,9 @@ describe("SummaryPage", () => {
     });
 
     it("ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg", async () => {
-      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
@@ -262,14 +262,14 @@ describe("SummaryPage", () => {
 
   describe("Submission method", () => {
     it("renders next-button when method=digital", async () => {
-      const windowLocation = { href: "" };
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
       });
-      const basePath = "https://www.unittest.nav.no/fyllut";
-      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
       nock(basePath)
         .defaultReplyHeaders({
           Location: sendInnUrl,
