@@ -69,16 +69,18 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, []);
-      const { innsendingsId } = req.body;
 
-      const sendInnResponse = await fetch(`${sendInnConfig!.host}${sendInnConfig!.paths.soknad}/${innsendingsId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenxAccessToken}`,
-        },
-        body: JSON.stringify(body),
-      });
+      const sendInnResponse = await fetch(
+        `${sendInnConfig!.host}${sendInnConfig!.paths.soknad}/${req.params.innsendingsId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly updated data in SendInn");

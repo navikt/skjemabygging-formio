@@ -16,11 +16,11 @@ const sendInnUtfyltSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
 
-      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
+      const { form, submission, submissionMethod, translation, language } = req.body;
       if (!req.headers.AzureAccessToken) {
         logger.error("Azure access token is missing. Unable to generate pdf");
       }
-      if (!innsendingsId) {
+      if (!req.params.innsendingsId) {
         logger.error("InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon");
       }
       const pdfByteArray = await createPdfAsByteArray(
@@ -33,15 +33,18 @@ const sendInnUtfyltSoknad = {
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
-      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`, {
-        method: "PUT",
-        redirect: "manual",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenxAccessToken}`,
-        },
-        body: JSON.stringify(body),
-      });
+      const sendInnResponse = await fetch(
+        `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${req.params.innsendingsId}`,
+        {
+          method: "PUT",
+          redirect: "manual",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       if (sendInnResponse.ok || sendInnResponse.status === 302) {
         const location = sendInnResponse.headers.get("location");
