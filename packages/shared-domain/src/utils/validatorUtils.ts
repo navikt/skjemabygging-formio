@@ -1,5 +1,5 @@
 const isOrganizationNumber = (organizationNumber: string) => {
-  organizationNumber = organizationNumber.replace(/\s+/g, "");
+  organizationNumber = removeSpaces(organizationNumber);
   if (/^\d{9}$/.test(organizationNumber)) {
     return mod11(organizationNumber, [3, 2, 7, 6, 5, 4, 3, 2]);
   }
@@ -7,7 +7,7 @@ const isOrganizationNumber = (organizationNumber: string) => {
 };
 
 const isAccountNumber = (accountNumber: string) => {
-  accountNumber = accountNumber.replace(/\s+/g, "");
+  accountNumber = removeSpaces(accountNumber);
   if (/^\d{11}$/.test(accountNumber)) {
     return mod11(accountNumber, [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]);
   }
@@ -22,6 +22,10 @@ const mod11 = (value: string, weights: Array<number>) => {
   const checkDigit = parseInt(value.slice(-1), 10);
   const remainder = sum % 11;
   return checkDigit === (remainder === 0 ? 0 : 11 - remainder);
+};
+
+const removeSpaces = (input: string) => {
+  return input.replace(/\s+/g, "");
 };
 
 const validatorUtils = {
