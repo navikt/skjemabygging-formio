@@ -1,4 +1,5 @@
 const isOrganizationNumber = (organizationNumber: string) => {
+  organizationNumber = organizationNumber.replace(/\s/g, "");
   if (/^\d{9}$/.test(organizationNumber)) {
     return mod11(organizationNumber, [3, 2, 7, 6, 5, 4, 3, 2]);
   }
