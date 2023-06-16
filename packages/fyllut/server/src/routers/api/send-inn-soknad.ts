@@ -4,22 +4,7 @@ import { config } from "../../config/config";
 import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling";
-import { assembleSendInnSoknadBody } from "./helpers/sendInn";
-
-/** TODO:
- * - formioID på vedlegg
- * - innsendingsId in url queryParam? (not needed until Get)
- * - initiell post
- *    - fiks hovedDokument
- * - put underveis (uten vedleggsliste)
- * - put submit (med vedleggsliste og pdf)
- * - only digital
- * - featureToggle (sett opp med true/false i fyllut)
- * - README
- * - Update types (frontend & backend)
- *    - language
- * - logging send-inn-soknad (feature toggle or missing innsendingsid)
- */
+import { assembleSendInnSoknadBody, isValidUuid } from "./helpers/sendInn";
 
 const { featureToggles, sendInnConfig } = config;
 const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
@@ -68,19 +53,26 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
 
+      const { innsendingsId } = req.body;
+
+      if (!innsendingsId) {
+        logger.error("InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon");
+      } else if (!isValidUuid(innsendingsId)) {
+        logger.error(
+          `${innsendingsId} er ikke gyldig. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`
+        );
+        return;
+      }
       const body = assembleSendInnSoknadBody(req.body, idportenPid, []);
 
-      const sendInnResponse = await fetch(
-        `${sendInnConfig!.host}${sendInnConfig!.paths.soknad}/${req.params.innsendingsId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenxAccessToken}`,
-          },
-          body: JSON.stringify(body),
-        }
-      );
+      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}/${innsendingsId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenxAccessToken}`,
+        },
+        body: JSON.stringify(body),
+      });
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly updated data in SendInn");

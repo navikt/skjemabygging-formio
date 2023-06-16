@@ -6,7 +6,7 @@ import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling";
 import { createPdfAsByteArray } from "./helpers/pdfService";
-import { assembleSendInnSoknadBody } from "./helpers/sendInn";
+import { assembleSendInnSoknadBody, isValidUuid } from "./helpers/sendInn";
 
 const { sendInnConfig } = config;
 
@@ -16,12 +16,17 @@ const sendInnUtfyltSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
 
-      const { form, submission, submissionMethod, translation, language } = req.body;
+      const { form, submission, submissionMethod, translation, language, innsendingsId } = req.body;
       if (!req.headers.AzureAccessToken) {
         logger.error("Azure access token is missing. Unable to generate pdf");
       }
-      if (!req.params.innsendingsId) {
+      if (!innsendingsId) {
         logger.error("InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon");
+      } else if (!isValidUuid(innsendingsId)) {
+        logger.error(
+          `${innsendingsId} er ikke gyldig. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`
+        );
+        return;
       }
       const pdfByteArray = await createPdfAsByteArray(
         req.headers.AzureAccessToken as string,
@@ -33,18 +38,15 @@ const sendInnUtfyltSoknad = {
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
-      const sendInnResponse = await fetch(
-        `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${req.params.innsendingsId}`,
-        {
-          method: "PUT",
-          redirect: "manual",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenxAccessToken}`,
-          },
-          body: JSON.stringify(body),
-        }
-      );
+      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`, {
+        method: "PUT",
+        redirect: "manual",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenxAccessToken}`,
+        },
+        body: JSON.stringify(body),
+      });
 
       if (sendInnResponse.ok || sendInnResponse.status === 302) {
         const location = sendInnResponse.headers.get("location");

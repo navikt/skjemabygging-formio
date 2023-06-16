@@ -16,7 +16,7 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
 };
 
 describe("[endpoint] send-inn/utfyltsoknad", () => {
-  const innsendingsId = "innsendingsId";
+  const innsendingsId = "12345678-1234-1234-1234-12345678abcd";
   const defaultBody = {
     form: { title: "default form", components: [], properties: { skjemanummer: "NAV 12.34-56" } },
     submission: { data: {} },

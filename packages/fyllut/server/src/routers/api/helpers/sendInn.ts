@@ -35,6 +35,11 @@ export interface SendInnSoknadBody {
 const DEFAULT_LANGUAGE = "nb-NO";
 const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
+export const isValidUuid = (innsendingsId: string): boolean => {
+  const validUuidExpr = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+  return validUuidExpr.test(innsendingsId);
+};
+
 export const assembleSendInnSoknadBody = (
   requestBody: {
     form: NavFormType;
