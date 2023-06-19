@@ -5,6 +5,7 @@ env:
   IMAGE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
   IMAGE_FYLLUT_BASE: "ghcr.io/${{ github.repository }}/fyllut-base:${{ github.sha }}"
   IMAGE_FYLLUT_BASE_DEV: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency: deploy-${{ github.ref }}
 

@@ -6,6 +6,18 @@ og disse dataene vil så deployes sammen med fyllut.
 
 # Utvikling
 
+## Installere pakker lokalt
+
+For å installere npm-pakker med @navikt-scope må du sette en miljøvariabel `NODE_AUTH_TOKEN` med ditt personlige
+access token. Denne miljøvariabelen brukes i `.npmrc`-filen.
+
+Token genererer du under [developer settings på Github](https://github.com/settings/tokens).
+Den trenger kun `read:packages`. Husk å enable SSO for navikt-orgen!
+
+_(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/frontend#github-npm-registry)_
+
+## Kommandoer
+
 | Kommando           | Beskrivelse                                                                           |
 | ------------------ | ------------------------------------------------------------------------------------- |
 | yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |

@@ -14,6 +14,7 @@ on:
 env:
   BYGGER_IMAGE: "ghcr.io/${{ github.repository }}/bygger-dev:${{ github.sha }}"
   FYLLUT_IMAGE: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   init:
