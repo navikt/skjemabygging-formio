@@ -1,4 +1,4 @@
-import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { DeclarationType, FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
@@ -297,6 +297,40 @@ describe("SummaryPage", () => {
 
       userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+  });
+
+  describe("ConfirmationPanel", () => {
+    it("Ikke vis bekreftelse", async () => {
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.none });
+      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+      expect(confirmCheckbox).not.toBeInTheDocument();
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("Bekreft dataene dine", async () => {
+      const form = formWithProperties({ innsending: "KUN_PAPIR", declarationType: DeclarationType.default });
+      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+      expect(confirmCheckbox).toBeInTheDocument();
+      userEvent.click(confirmCheckbox!);
+      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "false");
+      expect(confirmCheckbox).toHaveAttribute("aria-checked", "true");
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("Ikke gå videre, uten å bekrefte dataene", async () => {
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.default });
+      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+      expect(confirmCheckbox).toBeInTheDocument();
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "true");
+      expect(confirmCheckbox).toHaveAttribute("aria-checked", "false");
+      expect(history.location.pathname).not.toBe("/testform/send-i-posten");
     });
   });
 });

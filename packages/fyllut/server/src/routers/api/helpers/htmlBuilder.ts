@@ -163,7 +163,7 @@ const createConfirmationSection = (form: NavFormType, translate: (text: string) 
     return `<h2>${translate(TEXTS.statiske.declaration.header)}</h2> ${field({
       label:
         form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
-          ? form.properties.declarationText
+          ? translate(form.properties.declarationText)
           : translate(TEXTS.statiske.declaration.defaultText),
       type: "textfield",
       key: "",

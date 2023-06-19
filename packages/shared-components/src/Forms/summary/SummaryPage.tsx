@@ -65,11 +65,10 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
   };
   const hasAttachments = hasRelevantAttachments(form, submission);
 
-  const hasDeclaration = () =>
-    declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
+  const hasDeclaration = declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
 
   const isValid = (e: React.MouseEvent<HTMLElement>) => {
-    if (hasDeclaration() && !declaration) {
+    if (hasDeclaration && !declaration) {
       if (declaration === undefined) {
         setDeclaration(false);
       }
@@ -93,7 +92,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
           <div className="form-summary">
             <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
-          {hasDeclaration() && (
+          {hasDeclaration && (
             <ConfirmationPanel
               className="mb"
               checked={declaration || false}
