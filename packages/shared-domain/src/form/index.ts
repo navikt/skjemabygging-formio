@@ -51,9 +51,6 @@ export interface FormPropertiesType {
   signatures?: NewFormSignatureType[] | FormSignaturesType;
   descriptionOfSignatures?: string;
   descriptionOfSignaturesPositionUnder?: boolean;
-  vedleggstittel?: string;
-  vedleggskode?: string;
-  vedleggErValgfritt?: "ja" | "nei";
 }
 
 export type FormPropertiesPublishing = Pick<
@@ -83,11 +80,17 @@ export interface Component {
   customConditional?: string;
   valueProperty?: string;
   labelProperty?: string;
-  properties?: Partial<FormPropertiesType>;
+  properties?: ComponentProperties;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
   values?: ComponentValue[];
+}
+
+export interface ComponentProperties {
+  vedleggstittel?: string;
+  vedleggskode?: string;
+  vedleggErValgfritt?: "ja" | "nei";
 }
 
 export interface Panel extends Component {

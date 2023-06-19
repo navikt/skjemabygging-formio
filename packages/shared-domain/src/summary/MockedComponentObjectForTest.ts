@@ -1,4 +1,4 @@
-import type { Component, FormPropertiesType, NavFormType } from "../form";
+import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from "../form";
 
 const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
 
@@ -77,7 +77,7 @@ const defaultAttachmentValues: RadioPanelOption[] = [
   },
 ];
 
-const defaultAttachmentProperties: Partial<FormPropertiesType> = {
+const defaultAttachmentProperties: ComponentProperties = {
   vedleggstittel: "Bekreftelse fra skole",
   vedleggskode: "S1",
   vedleggErValgfritt: "ja",
@@ -85,7 +85,7 @@ const defaultAttachmentProperties: Partial<FormPropertiesType> = {
 
 const createDummyAttachment = (
   label = "Vedlegg1",
-  properties: Partial<FormPropertiesType> = defaultAttachmentProperties,
+  properties: ComponentProperties = defaultAttachmentProperties,
   values: RadioPanelOption[] = defaultAttachmentValues
 ): Component =>
   ({
