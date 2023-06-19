@@ -7,18 +7,16 @@
   "type": "commonjs",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "rimraf dist && babel src --out-dir dist --extensions \".ts,.js\" --ignore \"**/*.test.js,**/*.test.ts\"",
+    "build": "tsc && vite build",
     "check-types": "tsc",
     "clean": "rimraf dist coverage",
-    "start": "cross-env-shell PORT=8081 NODE_ENV=development babel-watch --extensions \".ts,.js\" src/server.js",
+    "start": "cross-env-shell NODE_ENV=development vite",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@babel/runtime": "^7.17.8",
     "@elastic/ecs-morgan-format": "^1.1.0",
     "@navikt/nav-dekoratoren-moduler": "^1.6.9",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "dotenv": "^10.0.0",
@@ -42,10 +40,6 @@
     "winston": "^3.6.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.6",
-    "@babel/core": "^7.17.8",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-typescript": "^7.16.7",
     "@jest/globals": "^26.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -57,12 +51,13 @@
     "@types/node-fetch": "^2.6.0",
     "@types/node-jose": "^1.1.10",
     "@types/supertest": "^2.0.12",
-    "babel-jest": "^27.5.1",
-    "babel-plugin-transform-import-meta": "^2.1.1",
-    "babel-watch": "^7.7.0",
     "jest": "^27.0.4",
     "nock": "^13.2.4",
+    "nodemon": "^2.0.22",
     "supertest": "^6.2.2",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vite-plugin-node": "^3.0.2",
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

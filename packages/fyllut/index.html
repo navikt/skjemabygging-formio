@@ -2,7 +2,7 @@
 <html lang="nb-NO">
 <head>
     <meta charset="utf-8"/>
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <link rel="icon" href="/favicon.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <meta name="git-version" content="%REACT_APP_GIT_VERSION%"/>
@@ -21,8 +21,8 @@
     <meta property="og:description" content="NAV søknadsskjema"/>
     <meta name="description" content="NAV søknadsskjema"/>
     <% } %>
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <link rel="manifest" href="/manifest.json"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
     <% if (process.env.NODE_ENV !== 'development') { %>
     {{{DECORATOR_STYLES}}}
     <% } %>
@@ -38,5 +38,7 @@
 <% if (process.env.NODE_ENV !== 'development') { %>
 {{{DECORATOR_FOOTER}}} {{{DECORATOR_SCRIPTS}}}
 <% } %>
+
+<script type="module" src="src/index.js"></script>
 </body>
 </html>

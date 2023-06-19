@@ -11,7 +11,6 @@ import HTMLElement from "./components/HTMLElement";
 import IBAN from "./components/IBAN";
 import Image from "./components/Image";
 import NavCheckbox from "./components/NavCheckbox";
-import NavDatepicker from "./components/NavDatepicker.jsx";
 import NavSelect from "./components/NavSelect";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import Number from "./components/Number";
@@ -31,7 +30,6 @@ const customComponents = {
   htmlelement: HTMLElement,
   landvelger: CountrySelect,
   valutavelger: CurrencySelect,
-  navDatepicker: NavDatepicker,
   navSelect: NavSelect,
   radiopanel: Radio,
   navCheckbox: NavCheckbox,

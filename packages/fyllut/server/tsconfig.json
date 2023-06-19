@@ -10,7 +10,10 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "paths": {
+      "@navikt/skjemadigitalisering-shared-domain": ["../../shared-domain/src"],
+    }
   },
   "include": [
     "src/**/*"

@@ -3,13 +3,12 @@
   "homepage": "/fyllut",
   "version": "0.1.1",
   "private": true,
-  "proxy": "http://localhost:8081",
   "type": "module",
   "cracoConfig": "craco.config.cjs",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "cross-env-shell PORT=3001 craco start",
-    "build": "cross-env-shell REACT_APP_GIT_VERSION=dev craco build",
+    "start": "cross-env-shell NODE_ENV=development vite",
+    "build": "tsc && vite build",
     "build:prod": "craco build",
     "check-types": "tsc",
     "clean": "rimraf build coverage",
@@ -27,8 +26,6 @@
     "@material-ui/styles": "4.10.0",
     "@navikt/ds-css": "^2.9.8",
     "@navikt/ds-react": "^2.9.8",
-    "@navikt/skjemadigitalisering-shared-components": "1.0.0",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "axe-core": "^4.6.3",
     "classnames": "^2.3.2",
     "craco-alias": "^3.0.1",
@@ -45,6 +42,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.4.3",
+    "@vitejs/plugin-react": "^3.1.0",
     "cypress": "^12.8.1",
     "cypress-axe": "^1.4.0",
     "cypress-wait-until": "^1.7.2",
@@ -54,19 +52,9 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.7",
     "prop-types": "^15.8.1",
-    "typescript": "^5.0.2"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9",
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"

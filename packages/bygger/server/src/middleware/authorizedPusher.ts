@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { NextFunction, Request, Response } from "express";
 import config from "../config";
 import { UnauthorizedError } from "../routers/api/helpers/errors";

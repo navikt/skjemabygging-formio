@@ -1,4 +1,4 @@
-const amplitude = require("amplitude-js");
+import amplitude from "amplitude-js";
 
 export const initAmplitude = () => {
   amplitude.getInstance().init("default", "", {

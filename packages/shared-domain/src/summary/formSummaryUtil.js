@@ -5,7 +5,8 @@ import sanitizeJavaScriptCode from "../utils/formio/sanitize-javascript-code";
 import { addToMap } from "../utils/objectUtils";
 import { toPascalCase } from "../utils/stringUtils";
 
-require("moment/locale/nb.js");
+// TODO: Fix/remove moment
+//require("moment/locale/nb.js");
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;

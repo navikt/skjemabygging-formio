@@ -5,14 +5,13 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   server: {
     open: true,
-    port: 3000,
+    port: 3001,
     proxy: {
       "/api": {
-        target: "http://localhost:8080",
+        target: "http://localhost:8081",
         changeOrigin: true,
       },
     },
   },
-  assetsInclude: ["**/*.ejs"],
   plugins: [react(), viteTsconfigPaths()],
 });

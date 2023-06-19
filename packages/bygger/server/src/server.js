@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import express from "express";
 import correlator from "express-correlation-id";
 import config from "./config";
@@ -8,6 +9,8 @@ import apiRouter from "./routers/api";
 import internalRouter from "./routers/internal";
 import notificationsRouter from "./routers/notifications";
 import "./util/errorToJson";
+
+global.crypto = crypto;
 
 const app = express();
 
@@ -29,3 +32,5 @@ if (config.isProduction) {
 const { port, nodeEnv } = config;
 console.log(`serving on ${port} (${nodeEnv})`);
 app.listen(port);
+
+export const viteNodeApp = app;
