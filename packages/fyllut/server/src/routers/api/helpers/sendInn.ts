@@ -56,7 +56,10 @@ export const validateInnsendingsId = (innsendingsId: string | undefined) => {
   return errorMessage;
 };
 
-export const isMellomLagringEnabled = (featureToggles) => {
+export const isMellomLagringEnabled = (featureToggles: {
+  enableMellomlagring?: boolean;
+  enableSendInnIntegration?: boolean;
+}) => {
   if (!featureToggles?.enableMellomlagring) {
     logger.debug("Mellomlagring not enabled, returning data in body");
     return false;
