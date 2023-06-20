@@ -37,6 +37,7 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly posted data to SendInn");
+        res.sendStatus(201);
         res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to post data to SendInn");
@@ -81,7 +82,6 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly updated data in SendInn");
-        res.sendStatus(201);
         res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to update data in SendInn");
