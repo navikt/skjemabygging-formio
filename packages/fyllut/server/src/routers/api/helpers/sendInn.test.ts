@@ -4,6 +4,7 @@ import {
   SendInnSoknadBody,
   assembleSendInnSoknadBody,
   isMellomLagringEnabled,
+  sanitizeInnsendingsId,
   validateInnsendingsId,
 } from "./sendInn";
 
@@ -45,6 +46,18 @@ const expectedSubmissionAsByteArray = [
 ];
 
 describe("sendInn API helper", () => {
+  describe("sanitizeInnsendingsId", () => {
+    it("removes all instances of '/' from innsendingsId", () => {
+      expect(sanitizeInnsendingsId("abc/def/123")).toBe("abcdef123");
+    });
+    it("removes all instances of '.' from innsendingsId", () => {
+      expect(sanitizeInnsendingsId("abc.def.123")).toBe("abcdef123");
+    });
+    it("removes both '/' and '.' from innsendingsId", () => {
+      expect(sanitizeInnsendingsId("/abc/def.123/456.789.ABC.DEF.")).toBe("abcdef123456789ABCDEF");
+    });
+  });
+
   describe("validateInnsendingsId", () => {
     it("returns undefined when the innsendingsId is valid", () => {
       expect(validateInnsendingsId("12345678-ABCD-cdef-9876-12345678abcd")).toBeUndefined();
@@ -54,12 +67,12 @@ describe("sendInn API helper", () => {
         "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
       );
     });
-    it("returns an error message when innsendingsId contains an /", () => {
+    it("returns an error message when innsendingsId contains illegal character /", () => {
       expect(validateInnsendingsId("abcd/123-ABCD-cdef-9876-12345678abcd")).toBe(
         "abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
       );
     });
-    it("returns an error message when innsendingsId contains an .", () => {
+    it("returns an error message when innsendingsId contains illegal character .", () => {
       expect(validateInnsendingsId("abcd.123-ABCD-cdef-9876-12345678abcd")).toBe(
         "abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
       );

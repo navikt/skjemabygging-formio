@@ -1,4 +1,9 @@
-import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  FeatureTogglesMap,
+  I18nTranslationMap,
+  NavFormType,
+  Submission,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { logger } from "../../../logger";
 
 interface HovedDokument {
@@ -41,7 +46,7 @@ const isValidUuid = (innsendingsId: string): boolean => {
   return validUuidExpr.test(innsendingsId);
 };
 
-export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace("/", "").replace(".", "");
+export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[\./]/g, "");
 
 export const validateInnsendingsId = (innsendingsId: string | undefined) => {
   let errorMessage;
@@ -56,10 +61,7 @@ export const validateInnsendingsId = (innsendingsId: string | undefined) => {
   return errorMessage;
 };
 
-export const isMellomLagringEnabled = (featureToggles: {
-  enableMellomlagring?: boolean;
-  enableSendInnIntegration?: boolean;
-}) => {
+export const isMellomLagringEnabled = (featureToggles: FeatureTogglesMap) => {
   if (!featureToggles?.enableMellomlagring) {
     logger.debug("Mellomlagring not enabled, returning data in body");
     return false;
