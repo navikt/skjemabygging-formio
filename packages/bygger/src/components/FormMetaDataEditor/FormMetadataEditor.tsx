@@ -1,6 +1,7 @@
-import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField } from "@navikt/ds-react";
+import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField, ToggleGroup } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
+  DeclarationType,
   formDiffingTool,
   InnsendingType,
   MottaksadresseData,
@@ -45,6 +46,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       ettersending,
       ettersendelsesfrist,
       mottaksadresseId,
+      declarationText,
       enhetMaVelgesVedPapirInnsending,
       enhetstyper,
       descriptionOfSignatures,
@@ -171,6 +173,56 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           </Alert>
         )}
       </div>
+
+      <LabelWithDiff label="Erklæring på oppsummeringsside" diff={!!diff.declarationType} />
+
+      <div className="mb">
+        <ToggleGroup
+          size="small"
+          defaultValue={form.properties.declarationType ?? DeclarationType.none}
+          onChange={(value) => {
+            const declarationType = value as DeclarationType;
+            let properties;
+            if (declarationType !== DeclarationType.custom && form.properties.declarationText) {
+              properties = { ...form.properties, declarationType, declarationText: undefined };
+            } else {
+              properties = { ...form.properties, declarationType };
+            }
+
+            onChange({
+              ...form,
+              properties,
+            });
+          }}
+          className="mb-4"
+        >
+          <ToggleGroup.Item value={DeclarationType.none}>Ingen</ToggleGroup.Item>
+          <ToggleGroup.Item value={DeclarationType.default}>Standard</ToggleGroup.Item>
+          <ToggleGroup.Item value={DeclarationType.custom}>Tilpasset</ToggleGroup.Item>
+        </ToggleGroup>
+
+        {form.properties.declarationType === DeclarationType.custom && (
+          <Textarea
+            label={<LabelWithDiff label="Tilpasset erklæringstekst" diff={!!diff.declarationText} />}
+            value={declarationText || ""}
+            onChange={(event) =>
+              onChange({
+                ...form,
+                properties: { ...form.properties, declarationText: event.target.value },
+              })
+            }
+            error={errors?.declarationText}
+          />
+        )}
+
+        {form.properties.declarationType === DeclarationType.default && (
+          <div>
+            <label className="navds-label">Standard erklæringstekst</label>
+            <div>{TEXTS.statiske.declaration.defaultText}</div>
+          </div>
+        )}
+      </div>
+
       <TextField
         className="mb"
         label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}

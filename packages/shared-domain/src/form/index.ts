@@ -2,6 +2,11 @@ import { Enhetstype } from "../enhet";
 
 export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
+export enum DeclarationType {
+  none = "none",
+  default = "default",
+  custom = "custom",
+}
 
 export interface FormSignaturesType {
   [key: string]: any;
@@ -41,6 +46,8 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
+  declarationType?: DeclarationType;
+  declarationText?: string;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
