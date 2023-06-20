@@ -46,9 +46,6 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
   };
 
   const startMellomlagring = async (submission: Submission) => {
-    if (appConfig.app === "bygger") {
-      appConfig.logger?.error("Mellomlagring er ikke tilgjengelig i byggeren");
-    }
     if (isMellomLagringEnabled && !mellomlagringStarted) {
       setMellomlagringStarted(true);
       const currentLanguage = getLanguageFromSearchParams();
