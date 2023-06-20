@@ -1,4 +1,5 @@
 import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { logger } from "../../../logger";
 
 interface HovedDokument {
   vedleggsnr: string;
@@ -38,6 +39,32 @@ const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(J
 export const isValidUuid = (innsendingsId: string): boolean => {
   const validUuidExpr = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
   return validUuidExpr.test(innsendingsId);
+};
+
+export const validateInnsendingsId = (innsendingsId) => {
+  let errorMessage;
+  if (!innsendingsId) {
+    errorMessage = "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon";
+  } else if (!isValidUuid(innsendingsId)) {
+    errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`;
+  }
+  if (errorMessage) {
+    logger.error(errorMessage);
+  }
+  return errorMessage;
+};
+
+export const isMellomLagringEnabled = (featureToggles) => {
+  if (!featureToggles?.enableMellomlagring) {
+    logger.debug("Mellomlagring not enabled, returning data in body");
+    return false;
+  }
+
+  if (!featureToggles?.enableSendInnIntegration) {
+    logger.debug("SendInn integration not enabled, returning data in body");
+    return false;
+  }
+  return true;
 };
 
 export const assembleSendInnSoknadBody = (

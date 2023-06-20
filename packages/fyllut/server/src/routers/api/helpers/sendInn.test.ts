@@ -1,5 +1,11 @@
 import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import { Attachment, SendInnSoknadBody, assembleSendInnSoknadBody } from "./sendInn";
+import {
+  Attachment,
+  SendInnSoknadBody,
+  assembleSendInnSoknadBody,
+  isMellomLagringEnabled,
+  validateInnsendingsId,
+} from "./sendInn";
 
 const defaultFormProperties = { skjemanummer: "NAV123", tema: "TEMA", ettersendelsesfrist: "14" };
 const defaultForm = { title: "Standard skjema", properties: defaultFormProperties };
@@ -39,6 +45,45 @@ const expectedSubmissionAsByteArray = [
 ];
 
 describe("sendInn API helper", () => {
+  describe("validateInnsendingsId", () => {
+    it("returns undefined when the innsendingsId is valid", () => {
+      expect(validateInnsendingsId("12345678-ABCD-cdef-9876-12345678abcd")).toBeUndefined();
+    });
+    it("returns an error message when innsendingsId is missing", () => {
+      expect(validateInnsendingsId(undefined)).toBe(
+        "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+      );
+    });
+    it("returns an error message when innsendingsId contains an /", () => {
+      expect(validateInnsendingsId("abcd/123-ABCD-cdef-9876-12345678abcd")).toBe(
+        "abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+      );
+    });
+    it("returns an error message when innsendingsId contains an .", () => {
+      expect(validateInnsendingsId("abcd.123-ABCD-cdef-9876-12345678abcd")).toBe(
+        "abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+      );
+    });
+  });
+
+  describe("isMellomlagringEnabled", () => {
+    it("returns false when featureToggles is empty", () => {
+      expect(isMellomLagringEnabled({})).toBe(false);
+    });
+
+    it("returns true when both mellomlagring and sendInnIntegration is enabled", () => {
+      expect(isMellomLagringEnabled({ enableMellomlagring: true, enableSendInnIntegration: true })).toBe(true);
+    });
+
+    it("returns false when mellomlagring is enabled but sendInnIntegration is disabled", () => {
+      expect(isMellomLagringEnabled({ enableMellomlagring: true, enableSendInnIntegration: false })).toBe(false);
+    });
+
+    it("returns false when mellomlagring is disabled and sendInnIntegration is enabled", () => {
+      expect(isMellomLagringEnabled({ enableMellomlagring: false, enableSendInnIntegration: true })).toBe(false);
+    });
+  });
+
   describe("assembleSendInnSoknadBody", () => {
     describe("Without attachments", () => {
       let body: SendInnSoknadBody;

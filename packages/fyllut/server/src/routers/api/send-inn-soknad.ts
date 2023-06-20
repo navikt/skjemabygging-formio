@@ -4,7 +4,7 @@ import { config } from "../../config/config";
 import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling";
-import { assembleSendInnSoknadBody, isValidUuid } from "./helpers/sendInn";
+import { assembleSendInnSoknadBody, isMellomLagringEnabled, validateInnsendingsId } from "./helpers/sendInn";
 
 const { featureToggles, sendInnConfig } = config;
 const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
@@ -16,14 +16,7 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, objectToByteArray({}));
 
-      if (!featureToggles.enableMellomlagring) {
-        logger.debug("Mellomlagring not enabled, returning data in body");
-        res.json(body);
-        return;
-      }
-
-      if (!featureToggles.enableSendInnIntegration) {
-        logger.debug("SendInn integration not enabled, returning data in body");
+      if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);
         return;
       }
@@ -55,15 +48,18 @@ const sendInnSoknad = {
 
       const { innsendingsId } = req.body;
 
-      if (!innsendingsId) {
-        logger.error("InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon");
-      } else if (!isValidUuid(innsendingsId)) {
-        logger.error(
-          `${innsendingsId} er ikke gyldig. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`
-        );
+      const errorMessage = validateInnsendingsId(innsendingsId);
+      if (errorMessage) {
+        next(new Error(errorMessage));
         return;
       }
+
       const body = assembleSendInnSoknadBody(req.body, idportenPid, []);
+
+      if (!isMellomLagringEnabled(featureToggles)) {
+        res.json(body);
+        return;
+      }
 
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}/${innsendingsId}`, {
         method: "PUT",
@@ -76,6 +72,7 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly updated data in SendInn");
+        res.sendStatus(201);
         res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to update data in SendInn");

@@ -6,9 +6,9 @@ import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling";
 import { createPdfAsByteArray } from "./helpers/pdfService";
-import { assembleSendInnSoknadBody, isValidUuid } from "./helpers/sendInn";
+import { assembleSendInnSoknadBody, isMellomLagringEnabled, validateInnsendingsId } from "./helpers/sendInn";
 
-const { sendInnConfig } = config;
+const { featureToggles, sendInnConfig } = config;
 
 const sendInnUtfyltSoknad = {
   put: async (req: Request, res: Response, next: NextFunction) => {
@@ -20,14 +20,13 @@ const sendInnUtfyltSoknad = {
       if (!req.headers.AzureAccessToken) {
         logger.error("Azure access token is missing. Unable to generate pdf");
       }
-      if (!innsendingsId) {
-        logger.error("InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon");
-      } else if (!isValidUuid(innsendingsId)) {
-        logger.error(
-          `${innsendingsId} er ikke gyldig. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`
-        );
+
+      const errorMessage = validateInnsendingsId(innsendingsId);
+      if (errorMessage) {
+        next(new Error(errorMessage));
         return;
       }
+
       const pdfByteArray = await createPdfAsByteArray(
         req.headers.AzureAccessToken as string,
         form,
@@ -38,6 +37,12 @@ const sendInnUtfyltSoknad = {
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
+
+      if (!isMellomLagringEnabled(featureToggles)) {
+        res.json(body);
+        return;
+      }
+
       const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`, {
         method: "PUT",
         redirect: "manual",
