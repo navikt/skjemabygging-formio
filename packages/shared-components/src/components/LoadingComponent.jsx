@@ -16,9 +16,9 @@ const useLoadingStyles = makeStyles({
   },
 });
 
-const LoadingComponent = ({ heightOffset = 0 }) => {
+const LoadingComponent = ({ heightOffsetRem = 0 }) => {
   const { translate } = useLanguages();
-  const classes = useLoadingStyles(heightOffset);
+  const classes = useLoadingStyles(heightOffsetRem);
   return (
     <div className={classes.root}>
       <h1>{translate ? translate(TEXTS.statiske.loading) : TEXTS.statiske.loading}</h1>

@@ -40,7 +40,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !innsendingsId) {
-    return <LoadingComponent heightOffset={18} />;
+    return <LoadingComponent heightOffsetRem={18} />;
   }
 
   function updatePanelUrl(panelPath) {
