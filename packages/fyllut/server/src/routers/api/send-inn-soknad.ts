@@ -4,7 +4,12 @@ import { config } from "../../config/config";
 import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling";
-import { assembleSendInnSoknadBody, isMellomLagringEnabled, validateInnsendingsId } from "./helpers/sendInn";
+import {
+  assembleSendInnSoknadBody,
+  isMellomLagringEnabled,
+  sanitizeInnsendingsId,
+  validateInnsendingsId,
+} from "./helpers/sendInn";
 
 const { featureToggles, sendInnConfig } = config;
 const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
@@ -48,7 +53,8 @@ const sendInnSoknad = {
 
       const { innsendingsId } = req.body;
 
-      const errorMessage = validateInnsendingsId(innsendingsId);
+      const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
       if (errorMessage) {
         next(new Error(errorMessage));
         return;
@@ -61,14 +67,17 @@ const sendInnSoknad = {
         return;
       }
 
-      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}/${innsendingsId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenxAccessToken}`,
-        },
-        body: JSON.stringify(body),
-      });
+      const sendInnResponse = await fetch(
+        `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly updated data in SendInn");

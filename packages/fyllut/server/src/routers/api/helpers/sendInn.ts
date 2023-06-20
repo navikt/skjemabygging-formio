@@ -41,7 +41,9 @@ const isValidUuid = (innsendingsId: string): boolean => {
   return validUuidExpr.test(innsendingsId);
 };
 
-export const validateInnsendingsId = (innsendingsId) => {
+export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace("/", "").replace(".", "");
+
+export const validateInnsendingsId = (innsendingsId: string | undefined) => {
   let errorMessage;
   if (!innsendingsId) {
     errorMessage = "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon";

@@ -6,7 +6,12 @@ import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
 import { responseToError } from "../../utils/errorHandling";
 import { createPdfAsByteArray } from "./helpers/pdfService";
-import { assembleSendInnSoknadBody, isMellomLagringEnabled, validateInnsendingsId } from "./helpers/sendInn";
+import {
+  assembleSendInnSoknadBody,
+  isMellomLagringEnabled,
+  sanitizeInnsendingsId,
+  validateInnsendingsId,
+} from "./helpers/sendInn";
 
 const { featureToggles, sendInnConfig } = config;
 
@@ -21,7 +26,8 @@ const sendInnUtfyltSoknad = {
         logger.error("Azure access token is missing. Unable to generate pdf");
       }
 
-      const errorMessage = validateInnsendingsId(innsendingsId);
+      const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
       if (errorMessage) {
         next(new Error(errorMessage));
         return;
@@ -43,15 +49,18 @@ const sendInnUtfyltSoknad = {
         return;
       }
 
-      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${innsendingsId}`, {
-        method: "PUT",
-        redirect: "manual",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenxAccessToken}`,
-        },
-        body: JSON.stringify(body),
-      });
+      const sendInnResponse = await fetch(
+        `${sendInnConfig.host}${sendInnConfig.paths.utfyltSoknad}/${sanitizedInnsendingsId}`,
+        {
+          method: "PUT",
+          redirect: "manual",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       if (sendInnResponse.ok || sendInnResponse.status === 302) {
         const location = sendInnResponse.headers.get("location");
