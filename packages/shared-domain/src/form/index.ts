@@ -67,6 +67,11 @@ export type FormPropertiesPublishing = Pick<
 
 type ComponentDataSrc = "values" | "url" | "json" | "custom" | "resource";
 
+interface ComponentValue {
+  value: string;
+  label: string;
+}
+
 export interface Component {
   id?: string;
   navId?: string;
@@ -82,10 +87,17 @@ export interface Component {
   customConditional?: string;
   valueProperty?: string;
   labelProperty?: string;
-  properties?: Record<string, string>;
+  properties?: ComponentProperties;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
+  values?: ComponentValue[];
+}
+
+export interface ComponentProperties {
+  vedleggstittel?: string;
+  vedleggskode?: string;
+  vedleggErValgfritt?: "ja" | "nei";
 }
 
 export interface Panel extends Component {
