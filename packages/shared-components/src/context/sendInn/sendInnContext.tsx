@@ -1,4 +1,4 @@
-import { I18nTranslations, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslations, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useContext, useMemo, useState } from "react";
 import {
   SendInnSoknadResponse,
@@ -28,21 +28,22 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
   const appConfig = useAppConfig();
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
+  const nbNO: Language = "nb-NO";
 
   const isMellomLagringEnabled = useMemo(() => {
     const { app, submissionMethod, featureToggles } = appConfig;
     return app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
   }, [appConfig]);
 
-  const translationForLanguage = (language = "nb-NO") => {
-    if (language !== "nb-NO" && Object.keys(translations).length > 0) {
+  const translationForLanguage = (language: Language = nbNO) => {
+    if (language !== nbNO && Object.keys(translations).length > 0) {
       return translations[language] ?? {};
     }
     return {};
   };
 
-  const getLanguageFromSearchParams = () => {
-    return new URL(window.location.href).searchParams.get("lang") || "nb-NO";
+  const getLanguageFromSearchParams = (): Language => {
+    return (new URL(window.location.href).searchParams.get("lang") as Language) || nbNO;
   };
 
   const startMellomlagring = async (submission: Submission) => {
