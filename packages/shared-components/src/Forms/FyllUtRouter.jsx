@@ -44,7 +44,7 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider form={form} translations={translations}>
+      <SendInnProvider form={formForRendering} translations={translations}>
         <FormTitle form={form} />
         <FyllUtContainer>
           <div className="fyllut-layout">
