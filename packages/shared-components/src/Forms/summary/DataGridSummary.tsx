@@ -11,7 +11,7 @@ const DataGridSummary = ({ component }: Props) => (
     <dd>
       {component.components &&
         component.components.map((row) => (
-          <div className="data-grid__row">
+          <div className="data-grid__row" key={row.key}>
             {row.label && <p className="navds-body-short font-bold">{row.label}</p>}
             <dl>
               <ComponentSummary components={row.components} />
