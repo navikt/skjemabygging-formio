@@ -16,6 +16,7 @@ function mockResponse(): Response {
     json: jest.fn(),
     send: jest.fn(),
     contentType: jest.fn(),
+    status: jest.fn().mockImplementation(() => mockResponse()),
     sendStatus: jest.fn(),
     header: jest.fn(),
   } as unknown as Response;
