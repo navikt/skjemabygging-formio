@@ -17,7 +17,7 @@
   "dependencies": {
     "@babel/runtime": "^7.17.8",
     "@elastic/ecs-morgan-format": "^1.1.0",
-    "@navikt/nav-dekoratoren-moduler": "^1.6.9",
+    "@navikt/nav-dekoratoren-moduler": "^1.9.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",

@@ -14,6 +14,7 @@ on:
 env:
   BYGGER_IMAGE: "ghcr.io/${{ github.repository }}/bygger-dev:${{ github.sha }}"
   FYLLUT_IMAGE: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   init:
@@ -50,6 +51,8 @@ jobs:
           node-version: '16.17.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
       - name: "Build application: Bygger"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
@@ -95,6 +98,8 @@ jobs:
           node-version: '16.17.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
       - name: "Build application: Fyllut"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
