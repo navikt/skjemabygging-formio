@@ -13,6 +13,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16.17.1'
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "Test with coverage report"
