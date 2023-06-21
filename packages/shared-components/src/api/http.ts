@@ -13,7 +13,6 @@ interface FetchHeader {
   "Content-Type"?: MimeType;
   Accept?: MimeType;
   "Fyllut-Submission-Method"?: SubmissionMethodType;
-  "Fyllut-Is-Test"?: string;
 }
 
 interface FetchOptions {
@@ -21,6 +20,7 @@ interface FetchOptions {
 }
 
 class HttpError extends Error {}
+
 class UnauthenticatedError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {

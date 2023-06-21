@@ -13,7 +13,7 @@ export const createSoknad = async (
   language: string,
   translation: I18nTranslationMap = {}
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, config } = appConfig;
+  const { http, baseUrl, submissionMethod } = appConfig;
   return http?.post<SendInnSoknadResponse>(
     `${baseUrl}/api/send-inn/soknad`,
     {
@@ -23,9 +23,7 @@ export const createSoknad = async (
       translation,
       submissionMethod,
     },
-    {
-      "Fyllut-Is-Test": `${config?.isTest}`,
-    },
+    {},
     { redirectToLocation: false }
   );
 };
@@ -38,7 +36,7 @@ export const updateSoknad = async (
   translation: I18nTranslationMap = {},
   innsendingsId?: string
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, config, logger } = appConfig;
+  const { http, baseUrl, submissionMethod, logger } = appConfig;
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(
       `${baseUrl}/api/send-inn/soknad`,
@@ -50,9 +48,7 @@ export const updateSoknad = async (
         translation,
         submissionMethod,
       },
-      {
-        "Fyllut-Is-Test": `${!!config?.isTest}`,
-      },
+      {},
       { redirectToLocation: false }
     );
   } else {
@@ -68,7 +64,7 @@ export const updateUtfyltSoknad = async (
   translation: I18nTranslationMap = {},
   innsendingsId?: string
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, config, logger } = appConfig;
+  const { http, baseUrl, submissionMethod, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
 
@@ -85,9 +81,7 @@ export const updateUtfyltSoknad = async (
         attachments,
         otherDocumentation,
       },
-      {
-        "Fyllut-Is-Test": `${!!config?.isTest}`,
-      },
+      {},
       { redirectToLocation: true }
     );
   } else {
@@ -103,7 +97,7 @@ export const createSoknadWithoutInnsendingsId = async (
   language: string,
   translations: I18nTranslationMap = {}
 ): Promise<SendInnSoknadResponse | undefined> => {
-  const { http, baseUrl, submissionMethod, config } = appConfig;
+  const { http, baseUrl, submissionMethod } = appConfig;
   const attachments = getRelevantAttachments(form, submission);
   const otherDocumentation = hasOtherDocumentation(form, submission);
   return http?.post(
@@ -117,9 +111,7 @@ export const createSoknadWithoutInnsendingsId = async (
       otherDocumentation,
       submissionMethod,
     },
-    {
-      "Fyllut-Is-Test": `${!!config?.isTest}`,
-    },
+    {},
     { redirectToLocation: true }
   );
 };

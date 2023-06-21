@@ -28,7 +28,7 @@ describe("sendInnContext", () => {
   const translations = {};
   const submission = { data: { question: "answer" } } as unknown as Submission;
   const submissionMethod = "digital";
-  const headers = { "Fyllut-Is-Test": "true" };
+  const headers = {};
   const opts = { redirectToLocation: false };
 
   afterEach(() => {
