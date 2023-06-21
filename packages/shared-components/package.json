@@ -7,16 +7,11 @@
     "url": "https://github.com/navikt/skjemabygging-formio.git",
     "directory": "packages/shared-components"
   },
-  "main": "dist/index.umd.js",
+  "type": "module",
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
-    }
-  },
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "build": "vite build",

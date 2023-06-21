@@ -8,8 +8,17 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "shared-component",
-      formats: ["es", "umd"],
+      formats: ["es"],
       fileName: "index",
+    },
+    rollupOptions: {
+      external: ["react", "react-dom"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
     },
   },
   assetsInclude: ["**/*.ejs"],
