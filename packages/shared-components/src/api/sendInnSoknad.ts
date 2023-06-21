@@ -56,7 +56,7 @@ export const updateSoknad = async (
       { redirectToLocation: false }
     );
   } else {
-    logger?.error("Kunne ikke mellomlagre søknaden fordi innsendingsId mangler");
+    logger?.info("Kunne ikke mellomlagre søknaden fordi innsendingsId mangler");
   }
 };
 
@@ -91,7 +91,7 @@ export const updateUtfyltSoknad = async (
       { redirectToLocation: true }
     );
   } else {
-    logger?.error("Kunne ikke sende inn søknaden fordi innsendingsId mangler");
+    logger?.info("Kunne ikke sende inn søknaden fordi innsendingsId mangler");
   }
 };
 

@@ -1,5 +1,5 @@
 import { I18nTranslations, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import {
   SendInnSoknadResponse,
   createSoknad,
@@ -25,15 +25,16 @@ interface SendInnProviderProps {
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
 const SendInnProvider = ({ children, form, translations }: SendInnProviderProps) => {
-  const appConfig = useAppConfig();
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
-  const nbNO: Language = "nb-NO";
 
-  const isMellomLagringEnabled = useMemo(() => {
-    const { app, submissionMethod, featureToggles } = appConfig;
-    return app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
-  }, [appConfig]);
+  const appConfig = useAppConfig();
+  const { app, submissionMethod, featureToggles, logger } = appConfig;
+  const isMellomLagringEnabled =
+    app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
+  const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomLagringEnabled);
+
+  const nbNO: Language = "nb-NO";
 
   const translationForLanguage = (language: Language = nbNO) => {
     if (language !== nbNO && Object.keys(translations).length > 0) {
@@ -48,30 +49,42 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
 
   const startMellomlagring = async (submission: Submission) => {
     if (isMellomLagringEnabled && !mellomlagringStarted) {
-      setMellomlagringStarted(true);
-      const currentLanguage = getLanguageFromSearchParams();
-      const translation = translationForLanguage(currentLanguage);
-      const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
-      setInnsendingsId(response?.innsendingsId);
-      return response;
+      try {
+        setMellomlagringStarted(true);
+        const currentLanguage = getLanguageFromSearchParams();
+        const translation = translationForLanguage(currentLanguage);
+        const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
+        setInnsendingsId(response?.innsendingsId);
+        setIsMellomlagringReady(true);
+        return response;
+      } catch (error: any) {
+        logger?.info("Oppretting av mellomlagring feilet", error);
+        setIsMellomlagringReady(true);
+        // Sak for å kommunisere feil til bruker: https://trello.com/c/3y65psdc
+      }
     }
   };
 
   const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
     if (isMellomLagringEnabled) {
-      const currentLanguage = getLanguageFromSearchParams();
-      const translation = translationForLanguage(currentLanguage);
-      return updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+      try {
+        const currentLanguage = getLanguageFromSearchParams();
+        const translation = translationForLanguage(currentLanguage);
+        return await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+      } catch (error: any) {
+        logger?.info("Oppdatering av mellomlagring feilet", error);
+        // Sak for å kommunisere feil til bruker: https://trello.com/c/3y65psdc
+      }
     }
   };
 
   const submitSoknad = async (submission: Submission) => {
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
-    if (isMellomLagringEnabled) {
-      return updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+    if (isMellomLagringEnabled && innsendingsId) {
+      return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
     }
-    return createSoknadWithoutInnsendingsId(appConfig, form, submission, currentLanguage, translation);
+    return await createSoknadWithoutInnsendingsId(appConfig, form, submission, currentLanguage, translation);
   };
 
   const value = {
@@ -79,6 +92,7 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
     updateMellomlagring,
     submitSoknad,
     innsendingsId,
+    isMellomlagringReady,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;

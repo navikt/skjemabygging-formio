@@ -37,7 +37,8 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly posted data to SendInn");
-        res.status(201).json(await sendInnResponse.json());
+        res.status(201);
+        res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to post data to SendInn");
         next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));

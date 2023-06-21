@@ -21,7 +21,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring, innsendingsId } = useSendInn();
+  const { startMellomlagring, updateMellomlagring, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
 
@@ -39,7 +39,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     return null;
   }
 
-  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !innsendingsId) {
+  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !isMellomlagringReady) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
 
