@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import nock from "nock";
 import { Router } from "react-router-dom";
-import { AppConfigProvider } from "../../configContext";
+import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import { Modal } from "../../index";
 import { Props, SummaryPage } from "./SummaryPage";
