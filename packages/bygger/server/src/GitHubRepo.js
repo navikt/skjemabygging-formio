@@ -87,7 +87,10 @@ export class GitHubRepo {
     try {
       remoteFileContent = await this.octokit.rest.repos.getContent({ owner: this.owner, repo: this.repo, ref, path });
     } catch (error) {
-      logger.error(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
+      if (error?.status >= 500) {
+        logger.error(`Failed to fetch file from Github repo ${this.repo}`, error);
+      }
+      logger.info(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
     }
     return remoteFileContent;
   }
