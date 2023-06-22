@@ -12,14 +12,13 @@ import {
 } from "./helpers/sendInn";
 
 const { featureToggles, sendInnConfig } = config;
-const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
 const sendInnSoknad = {
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, objectToByteArray({}));
+      const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
 
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);
@@ -61,7 +60,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const body = assembleSendInnSoknadBody(req.body, idportenPid, []);
+      const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
 
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);

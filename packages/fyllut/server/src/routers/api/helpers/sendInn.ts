@@ -12,7 +12,7 @@ interface HovedDokument {
   tittel: string;
   mimetype: "application/json" | "application/pdf";
   pakrevd: boolean;
-  document: number[];
+  document: number[] | null;
 }
 
 export interface Attachment {
@@ -84,7 +84,7 @@ export const assembleSendInnSoknadBody = (
     otherDocumentation?: boolean | undefined;
   },
   idportenPid: string,
-  submissionPdfAsByteArray: number[] = []
+  submissionPdfAsByteArray: number[] | null = null
 ): SendInnSoknadBody => {
   const { form, submission, language, translation = {}, attachments, otherDocumentation } = requestBody;
   const translate = (term: string) => translation[term] ?? term;
