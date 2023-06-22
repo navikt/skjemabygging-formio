@@ -162,6 +162,12 @@ Docker-image bygges og startes lokalt på følgende måte:
        -e FOERSTESIDE_URL="https://www.nav.no/soknader/api/forsteside" \
        -e FORMS_SOURCE=static -p 8080:8080 fyllut
 
+    # pwd => packages/fyllut -> fyllut-base med skjema fra formio-api
+    docker build --tag fyllut-base -f Dockerfile-base --build-arg git_sha=local .
+    docker run -e FORMS_SOURCE=formioapi -e IDPORTEN_JWKS_URI=http://test.no \
+       -e FORMIO_PROJECT_URL=https://formio-api.intern.dev.nav.no/jvcemxwcpghcqjn \
+       -e NAIS_CLUSTER_NAME=dev-gcp -p 8080:8080 fyllut-base
+
 `local-skjema-dir` og `local-translations-dir` må ligge i docker build context,
 dvs. inne i `packages/fyllut`.
 

@@ -147,6 +147,49 @@ describe("app", () => {
         });
       });
     });
+
+    describe("Dev setup is enabled", () => {
+      const SETUP_DEV = true;
+
+      describe("Request without dev-access cookie", () => {
+        it("is rejected", async () => {
+          await request(createApp(SETUP_DEV)).get("/fyllut/").set("X-Forwarded-For", "192.168.2.1").expect(401);
+        });
+
+        it("is allowed when from localhost", async () => {
+          await request(createApp(SETUP_DEV)).get("/fyllut/").set("X-Forwarded-For", "127.0.0.1").expect(200);
+        });
+      });
+
+      describe("Request with dev-access cookie", () => {
+        it("is allowed", async () => {
+          await request(createApp(SETUP_DEV))
+            .get("/fyllut/")
+            .set("X-Forwarded-For", "192.168.2.1")
+            .set("Cookie", ["dev-access=true"])
+            .expect(200);
+        });
+      });
+
+      describe("Request to /fyllut/dev-access", () => {
+        it("renders dev-access html", async () => {
+          const res = await request(createApp(SETUP_DEV))
+            .get("/fyllut/dev-access")
+            .set("X-Forwarded-For", "192.168.2.1")
+            .expect(200);
+          expect(res.headers["content-type"]).toContain("text/html");
+          expect(res.text).toContain("Du har nå tilgang");
+        });
+
+        it("will return dev-access cookie in response", async () => {
+          const res = await request(createApp(SETUP_DEV))
+            .get("/fyllut/dev-access")
+            .set("X-Forwarded-For", "192.168.2.1")
+            .expect(200);
+          expect(res.headers["set-cookie"][0]).toContain("dev-access=true");
+        });
+      });
+    });
   });
 
   it("Fetches config", async () => {
