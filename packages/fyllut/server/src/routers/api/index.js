@@ -15,7 +15,9 @@ import globalTranslations from "./global-translations.js";
 import log from "./log";
 import mottaksadresser from "./mottaksadresser.js";
 import pdl from "./pdl";
-import sendInn from "./send-inn.js";
+import sendInn from "./send-inn";
+import sendInnSoknad from "./send-inn-soknad";
+import sendInnUtfyltSoknad from "./send-inn-utfylt-soknad";
 import translations from "./translations.js";
 
 const apiRouter = express.Router();
@@ -33,7 +35,11 @@ apiRouter.post("/foersteside", azureSkjemabyggingProxy, forsteside.post);
 apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
 apiRouter.get("/translations/:form", translations.get);
 apiRouter.get("/mottaksadresser", mottaksadresser.get);
+// endpoint /send-inn is deprecated and will be replaced by /send-inn/soknad and /send-inn/utfyltsoknad when mellomlagring is turned on
 apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
+apiRouter.post("/send-inn/soknad", tokenxSendInn, sendInnSoknad.post);
+apiRouter.put("/send-inn/soknad", tokenxSendInn, sendInnSoknad.put);
+apiRouter.put("/send-inn/utfyltsoknad", azureSkjemabyggingProxy, tokenxSendInn, sendInnUtfyltSoknad.put);
 apiRouter.get("/common-codes/archive-subjects", azureSkjemabyggingProxy, commonCodes.getArchiveSubjects);
 apiRouter.post("/pdf/convert", azureSkjemabyggingProxy, exstream.post);
 apiRouter.get("/common-codes/currencies", azureSkjemabyggingProxy, commonCodes.getCurrencies);

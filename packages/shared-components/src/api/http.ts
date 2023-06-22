@@ -20,6 +20,7 @@ interface FetchOptions {
 }
 
 class HttpError extends Error {}
+
 class UnauthenticatedError extends Error {}
 
 const defaultHeaders = (headers?: FetchHeader) => {
@@ -51,7 +52,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
 
 const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
-    method: "POST",
+    method: "PUT",
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });

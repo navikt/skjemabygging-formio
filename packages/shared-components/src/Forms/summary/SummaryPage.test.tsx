@@ -5,6 +5,7 @@ import { createMemoryHistory } from "history";
 import nock from "nock";
 import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
+import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import { Modal } from "../../index";
 import { Props, SummaryPage } from "./SummaryPage";
 
@@ -35,7 +36,7 @@ const defaultForm = {
     ...defaultFormProperties,
   },
   components: [],
-};
+} as unknown as NavFormType;
 
 const defaultFormWithAttachment = {
   ...defaultForm,
@@ -92,7 +93,7 @@ const getButtons = (): Buttons => {
 
 const renderSummaryPage = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {}
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -101,12 +102,14 @@ const renderSummaryPage = async (
     form: {} as NavFormType,
     translations: {},
     ...props,
-  };
+  } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <Router history={history}>
-        <SummaryPage {...summaryPageProps} />
-      </Router>
+      <SendInnProvider form={defaultForm} translations={{}}>
+        <Router history={history}>
+          <SummaryPage {...summaryPageProps} />
+        </Router>
+      </SendInnProvider>
     </AppConfigProvider>
   );
   // verifiser render ved å sjekke at overskrift finnes
@@ -193,9 +196,9 @@ describe("SummaryPage", () => {
 
   describe("Form med kun digital innsending", () => {
     it("sender skjema med vedlegg til send-inn", async () => {
-      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
@@ -219,9 +222,9 @@ describe("SummaryPage", () => {
     });
 
     it("ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg", async () => {
-      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
@@ -259,14 +262,14 @@ describe("SummaryPage", () => {
 
   describe("Submission method", () => {
     it("renders next-button when method=digital", async () => {
-      const windowLocation = { href: "" };
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
       });
-      const basePath = "https://www.unittest.nav.no/fyllut";
-      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
       nock(basePath)
         .defaultReplyHeaders({
           Location: sendInnUrl,

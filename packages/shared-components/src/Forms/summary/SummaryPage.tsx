@@ -4,6 +4,7 @@ import {
   DeclarationType,
   InnsendingType,
   NavFormType,
+  Submission,
   TEXTS,
   formSummaryUtil,
 } from "@navikt/skjemadigitalisering-shared-domain";
@@ -30,8 +31,7 @@ const useStyles = makeStyles(() => ({
 
 export interface Props {
   form: NavFormType;
-  submission: object;
-  translations: object;
+  submission: Submission;
   formUrl: string;
 }
 
@@ -45,7 +45,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
   return `${formUrl}/${lastPanelSlug}`;
 }
 
-export function SummaryPage({ form, submission, translations, formUrl }: Props) {
+export function SummaryPage({ form, submission, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
@@ -138,9 +138,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
               {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
                 (hasAttachments ? (
                   <DigitalSubmissionButton
-                    form={form}
                     submission={submission}
-                    translations={translations}
                     isValid={isValid}
                     onError={(err) => {
                       setErrorMessage(err.message);
@@ -152,9 +150,7 @@ export function SummaryPage({ form, submission, translations, formUrl }: Props) 
                   </DigitalSubmissionButton>
                 ) : (
                   <DigitalSubmissionWithPrompt
-                    form={form}
                     submission={submission}
-                    translations={translations}
                     isValid={isValid}
                     onError={(err) => {
                       setErrorMessage(err.message);

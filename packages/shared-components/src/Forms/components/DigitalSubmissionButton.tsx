@@ -1,15 +1,13 @@
 import { Button } from "@navikt/ds-react";
+import { Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
+import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
-import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
 
 export interface Props {
-  form: object;
-  submission: object;
-  translations: object;
+  submission: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: Function;
   onSuccess?: Function;
@@ -18,48 +16,10 @@ export interface Props {
 
 const noop = () => {};
 
-const postToSendInn = async (
-  http,
-  baseUrl,
-  form,
-  submission,
-  translations,
-  currentLanguage,
-  submissionMethod,
-  isTest
-) => {
-  const translationsForPDF = currentLanguage !== "nb-NO" && translations ? translations[currentLanguage] : {};
-  const attachments = getRelevantAttachments(form, submission);
-  return http.post(
-    `${baseUrl}/api/send-inn`,
-    {
-      form,
-      submission,
-      translations: translationsForPDF,
-      language: currentLanguage,
-      attachments,
-      otherDocumentation: hasOtherDocumentation(form, submission),
-      submissionMethod,
-    },
-    {
-      "Fyllut-Is-Test": isTest,
-    },
-    { redirectToLocation: true }
-  );
-};
-
-const DigitalSubmissionButton = ({
-  form,
-  submission,
-  translations,
-  isValid,
-  onError,
-  onSuccess = noop,
-  children,
-}: Props) => {
-  const { currentLanguage } = useLanguages();
+const DigitalSubmissionButton = ({ submission, isValid, onError, onSuccess = noop, children }: Props) => {
   const { loggNavigering } = useAmplitude();
-  const { baseUrl, http, config = {}, app } = useAppConfig();
+  const { app } = useAppConfig();
+  const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
   const sendInn = async (e) => {
     if (isValid && !isValid(e)) {
@@ -74,16 +34,7 @@ const DigitalSubmissionButton = ({
       setLoading(true);
       loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });
       removeBeforeUnload();
-      const response = await postToSendInn(
-        http,
-        baseUrl,
-        form,
-        submission,
-        translations,
-        currentLanguage,
-        "digital",
-        config.isDelingslenke
-      );
+      const response = await submitSoknad(submission);
       onSuccess(response);
     } catch (err: any) {
       addBeforeUnload();
