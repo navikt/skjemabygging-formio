@@ -89,17 +89,21 @@ export const assembleSendInnSoknadBody = (
   const { form, submission, language, translation = {}, attachments, otherDocumentation } = requestBody;
   const translate = (term: string) => translation[term] ?? term;
 
-  const hoveddokument: HovedDokument = {
+  const dokumentMetaData = {
     vedleggsnr: form.properties.skjemanummer,
     label: translate(form.title),
     tittel: translate(form.title),
+  };
+
+  const hoveddokument: HovedDokument = {
+    ...dokumentMetaData,
     mimetype: "application/pdf",
     pakrevd: true,
     document: submissionPdfAsByteArray,
   };
 
   const hoveddokumentVariant: HovedDokument = {
-    ...hoveddokument,
+    ...dokumentMetaData,
     mimetype: "application/json",
     pakrevd: false,
     document: objectToByteArray({
