@@ -26,6 +26,12 @@ const extractTextsFromProperties = (props) => {
       type: getInputType(props.innsendingForklaring),
     });
   }
+  if (props?.declarationText) {
+    array.push({
+      text: props.declarationText,
+      type: getInputType(props.declarationText),
+    });
+  }
   if (props?.downloadPdfButtonText) {
     array.push({
       text: props.downloadPdfButtonText,

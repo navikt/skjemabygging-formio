@@ -8,6 +8,7 @@ import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 
 export interface Props {
   submission: Submission;
+  isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: Function;
   onSuccess?: Function;
   children: string;
@@ -15,12 +16,16 @@ export interface Props {
 
 const noop = () => {};
 
-const DigitalSubmissionButton = ({ submission, onError, onSuccess = noop, children }: Props) => {
+const DigitalSubmissionButton = ({ submission, isValid, onError, onSuccess = noop, children }: Props) => {
   const { loggNavigering } = useAmplitude();
   const { app } = useAppConfig();
   const { submitSoknad } = useSendInn();
   const [loading, setLoading] = useState(false);
-  const sendInn = async () => {
+  const sendInn = async (e) => {
+    if (isValid && !isValid(e)) {
+      return;
+    }
+
     if (app === "bygger") {
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
       return;

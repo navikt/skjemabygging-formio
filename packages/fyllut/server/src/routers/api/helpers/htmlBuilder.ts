@@ -1,4 +1,5 @@
 import {
+  DeclarationType,
   FormPropertiesType,
   formSummaryUtil,
   NavFormType,
@@ -6,6 +7,7 @@ import {
   signatureUtils,
   Submission,
   Summary,
+  TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 
 type TranslateFunction = (text: string) => string;
@@ -22,13 +24,14 @@ const createHtmlFromSubmission = (
   lang: string = "nb"
 ) => {
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
+  const confirmation = createConfirmationSection(form, translate);
   const signatures = signatureSection(form.properties, submissionMethod, translate);
 
   return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${lang}" lang="${lang}">
 ${head(translate(form.title))}
-${body(symmaryPanels, signatures)}
+${body(symmaryPanels, confirmation, signatures)}
 </html>`;
 };
 
@@ -56,9 +59,10 @@ p {margin: 0}
 .underskrift {margin-bottom: 30px;}
 </style>`;
 
-const body = (formSummaryObject: Summary.Panel[], signatures?: string) => `
+const body = (formSummaryObject: Summary.Panel[], confirmation?: string, signatures?: string) => `
 <body>
 ${formSummaryObject.map(section).join("")}
+${confirmation || ""}
 ${signatures || ""}
 </body>`;
 
@@ -128,8 +132,8 @@ ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
 <div class="underskrift">${translate(description)}</div>
-<div class="underskrift">${translate("Sted og dato")} _________________________________________</div>
-<div class="underskrift">${translate("Underskrift")} _________________________________________</div>`;
+<div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>
+<div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} _________________________________________</div>`;
 
 const signatureSection = (
   formProperties: FormPropertiesType,
@@ -144,11 +148,28 @@ const signatureSection = (
 
   return signatureList.length > 0
     ? `
-<h2>${translate("Underskrift")}</h2>
+<h2>${translate(TEXTS.pdfStatiske.signature)}</h2>
 ${!descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>` : ""}
 ${signatureList.map((signatureObject) => signature(signatureObject, translate)).join("")}
 ${descriptionOfSignaturesPositionUnder ? `<p class="underskrift">${translate(descriptionOfSignatures || "")}</p>` : ""}`
     : undefined;
+};
+
+const createConfirmationSection = (form: NavFormType, translate: (text: string) => string) => {
+  if (
+    form.properties.declarationType === DeclarationType.custom ||
+    form.properties.declarationType === DeclarationType.default
+  ) {
+    return `<h2>${translate(TEXTS.statiske.declaration.header)}</h2> ${field({
+      label:
+        form.properties.declarationType === DeclarationType.custom && form.properties.declarationText
+          ? translate(form.properties.declarationText)
+          : translate(TEXTS.statiske.declaration.defaultText),
+      type: "textfield",
+      key: "",
+      value: translate(TEXTS.common.yes),
+    })}`;
+  }
 };
 
 export { createHtmlFromSubmission, body, signatureSection };

@@ -13,6 +13,10 @@ describe("validatorUtils.ts", () => {
       expect(validatorUtils.isOrganizationNumber("916575319")).toBe(true);
       expect(validatorUtils.isOrganizationNumber("993110469")).toBe(true);
       expect(validatorUtils.isOrganizationNumber("891046642")).toBe(true);
+      expect(validatorUtils.isOrganizationNumber("8 9 1 0 4 6 6 4 2")).toBe(true);
+      expect(validatorUtils.isOrganizationNumber("889640782 ")).toBe(true);
+      expect(validatorUtils.isOrganizationNumber(" 889640782")).toBe(true);
+      expect(validatorUtils.isOrganizationNumber("889 640 782")).toBe(true);
     });
 
     it("Not valid control digit", () => {
@@ -34,10 +38,7 @@ describe("validatorUtils.ts", () => {
       expect(validatorUtils.isOrganizationNumber("889640782a")).toBe(false);
       expect(validatorUtils.isOrganizationNumber("8a9640782")).toBe(false);
       expect(validatorUtils.isOrganizationNumber("88964078 ")).toBe(false);
-      expect(validatorUtils.isOrganizationNumber("889640782 ")).toBe(false);
       expect(validatorUtils.isOrganizationNumber(" 89640782")).toBe(false);
-      expect(validatorUtils.isOrganizationNumber(" 889640782")).toBe(false);
-      expect(validatorUtils.isOrganizationNumber("889 640 782")).toBe(false);
       expect(validatorUtils.isOrganizationNumber("889.640.782")).toBe(false);
       expect(validatorUtils.isOrganizationNumber("NO889640782")).toBe(false);
       expect(validatorUtils.isOrganizationNumber("NO889640782MVA")).toBe(false);

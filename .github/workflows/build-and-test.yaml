@@ -5,6 +5,7 @@ env:
   IMAGE: "ghcr.io/${{ github.repository }}/${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}:${{ github.sha }}"
   IMAGE_FYLLUT_BASE: "ghcr.io/${{ github.repository }}/fyllut-base:${{ github.sha }}"
   IMAGE_FYLLUT_BASE_DEV: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency: deploy-${{ github.ref }}
 
@@ -19,6 +20,8 @@ jobs:
           node-version: '16.17.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "No unstaged changes allowed (changes in yarn.lock?)"
@@ -41,6 +44,8 @@ jobs:
           node-version: '16.17.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
       - name: "Build application: Bygger"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}
@@ -68,6 +73,8 @@ jobs:
           node-version: '16.17.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
       - name: "Build application: Fyllut"
         env:
           REACT_APP_GIT_VERSION: ${{ github.sha }}

@@ -65,7 +65,7 @@ export function getVedleggsFelterSomSkalSendes(submissionData, form) {
 }
 
 export function genererVedleggsListe(form, submissionData): string[] {
-  return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties!.vedleggstittel);
+  return getVedleggsFelterSomSkalSendes(submissionData, form).map((component) => component.properties!.vedleggstittel!);
 }
 
 export function genererDokumentlisteFoersteside(skjemaTittel, skjemanummer, form, submissionData) {

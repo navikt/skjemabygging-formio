@@ -20,19 +20,27 @@ const useStyles = makeStyles({
 
 export interface Props {
   submission: Submission;
+  isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
   onSuccess?: () => void;
 }
 
-const DigitalSubmissionWithPrompt = ({ submission, onError, onSuccess }: Props) => {
+const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
 
   const styles = useStyles();
 
+  const handleClick = (e) => {
+    if (isValid && !isValid(e)) {
+      return;
+    }
+    setIsOpen(true);
+  };
+
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
+      <Button onClick={handleClick}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
       <Modal
         open={isOpen}
         ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
