@@ -1,10 +1,5 @@
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
-import {
-  getFormTexts,
-  getTextsAndTranslationsForForm,
-  getTextsAndTranslationsHeaders,
-  removeLineBreaksFromTranslations,
-} from "./utils";
+import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
 const {
   createDummyCheckbox,
@@ -548,16 +543,6 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
       },
     },
   };
-  it("fjerner linjeskift fra translations", () => {
-    const translationsWithoutLineBreaks = removeLineBreaksFromTranslations(translations["en"].translations);
-    expect(translationsWithoutLineBreaks).toEqual({
-      Veiledning: { value: "Guidance", scope: "global" },
-      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
-        value: 'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>.',
-        scope: "global",
-      },
-    });
-  });
   it("fjerner linjeskift i tekster som skal eksporteres", () => {
     const eksport = getTextsAndTranslationsForForm(form, translations);
     expect(eksport).toHaveLength(2);
