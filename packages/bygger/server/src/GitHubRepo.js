@@ -89,8 +89,9 @@ export class GitHubRepo {
     } catch (error) {
       if (error?.status === 404) {
         logger.info(`Was not able to retrieve file ${path} from ${ref} in repo ${this.repo}`, error);
+      } else {
+        logger.error(`Failed to fetch file from Github repo ${this.repo}`, error);
       }
-      logger.error(`Failed to fetch file from Github repo ${this.repo}`, error);
     }
     return remoteFileContent;
   }
