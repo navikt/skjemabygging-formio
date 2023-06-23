@@ -197,36 +197,36 @@ const removeLineBreaksFromTranslations = (translations) => {
 };
 
 const escapeQuote = (text) => {
-  if (typeof text === "string" && text.includes("'")) {
-    return text.replace(/'/g, '"');
+  if (typeof text === "string" && text.includes('"')) {
+    return text.replace(/"/g, '""');
   }
   return text;
 };
 
+const sanitize = (text) => escapeQuote(removeLineBreaks(text));
+
 const getTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getFormTexts(form, false, true);
-  let textsWithTranslations = [];
-  Object.keys(translations).forEach((languageCode) => {
-    const translationsForLanguage = removeLineBreaksFromTranslations(translations[languageCode].translations);
-    textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
-      if (Object.keys(translationsForLanguage).indexOf(textComponent.text) < 0) {
-        return [...newTextComponent, { ...textComponent, text: escapeQuote(textComponent.text) }];
-      } else {
-        const translationObject = translationsForLanguage[textComponent.text];
-        const translation =
-          translationObject.scope === "global"
-            ? translationObject.value.concat(" (Global Tekst)")
-            : translationObject.value;
-        return [
-          ...newTextComponent,
-          Object.assign(textComponent, {
-            [languageCode]: translation,
-          }),
-        ];
+  const textComponents = getFormTexts(form, false);
+  return textComponents.map((textComponent) => {
+    const formRowObject = Object.keys(translations).reduce((prevFormRowObject, languageCode) => {
+      const translationObject = translations[languageCode].translations[textComponent.text];
+      if (!translationObject) {
+        return prevFormRowObject;
       }
-    }, []);
+      const sanitizedTranslation = sanitize(translationObject.value);
+      const translation =
+        translationObject.scope === "global" ? sanitizedTranslation.concat(" (Global Tekst)") : sanitizedTranslation;
+      return {
+        ...prevFormRowObject,
+        [languageCode]: translation,
+      };
+    }, {});
+
+    return {
+      ...formRowObject,
+      text: sanitize(textComponent.text),
+    };
   });
-  return textsWithTranslations;
 };
 
 const getTextsAndTranslationsHeaders = (translations) => {

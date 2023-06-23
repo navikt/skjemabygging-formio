@@ -40,7 +40,7 @@ const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
       filename={`globale-oversettelser-${languageCode}.csv`}
       className="navds-button navds-button--secondary navds-label"
       separator=";"
-      enclosingCharacter="'"
+      enclosingCharacter='"'
     >
       Eksporter
     </CSVLink>

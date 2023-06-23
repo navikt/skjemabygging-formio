@@ -567,13 +567,13 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     expect(eksport[0]["nn-NO"]).toEqual("Rettleiing (Global Tekst)");
 
     expect(eksport[1].text).toEqual(
-      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.'
+      'NAV sender svar. <br> Se <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>.'
     );
     expect(eksport[1].en).toEqual(
-      'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>. (Global Tekst)'
+      'NAV sends answers. <br> See <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>. (Global Tekst)'
     );
     expect(eksport[1]["nn-NO"]).toEqual(
-      'NAV sender svar. <br> Sjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>. (Global Tekst)'
+      'NAV sender svar. <br> Sjå <a href=""https://www.nav.no/person/"" target=""_blank"">lenke</a>. (Global Tekst)'
     );
   });
 });
