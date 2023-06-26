@@ -21,12 +21,17 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
   });
 
   // Sets a cookie which will bypass the IP restriction
-  fyllutRouter.get("/dev-access", (req: Request, res: Response) => {
+  fyllutRouter.get("/test/login", (req: Request, res: Response) => {
     logger.debug("Dev access requested");
-    return res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 }).render("dev-access.html");
+    res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
+    const skjemanummer = req.query.skjemanummer as string;
+    if (skjemanummer) {
+      return res.redirect(302, `${config.fyllutPath}/${skjemanummer}`);
+    }
+    return res.render("dev-access.html");
   });
 
-  expressApp.all(/^(?!.*\/(dev-access)).*$/, cookieParser(), (req: Request, res: Response, next: NextFunction) => {
+  expressApp.all(/^(?!.*\/(test\/login)).*$/, cookieParser(), (req: Request, res: Response, next: NextFunction) => {
     if (isNavIp(req.ip) || req.cookies[DEV_ACCESS_COOKIE]) {
       logger.debug("Dev access is valid");
       return next();

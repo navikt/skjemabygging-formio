@@ -171,21 +171,23 @@ describe("app", () => {
         });
       });
 
-      describe("Request to /fyllut/dev-access", () => {
+      describe("Request to /fyllut/test/login", () => {
         it("renders dev-access html", async () => {
           const res = await request(createApp(SETUP_DEV))
-            .get("/fyllut/dev-access")
+            .get("/fyllut/test/login")
             .set("X-Forwarded-For", "192.168.2.1")
             .expect(200);
           expect(res.headers["content-type"]).toContain("text/html");
           expect(res.text).toContain("Du har nå tilgang");
+          expect(res.headers["set-cookie"][0]).toContain("dev-access=true");
         });
 
-        it("will return dev-access cookie in response", async () => {
+        it("redirects to form if query param skjemanummer exists", async () => {
           const res = await request(createApp(SETUP_DEV))
-            .get("/fyllut/dev-access")
+            .get("/fyllut/test/login?skjemanummer=nav123456")
             .set("X-Forwarded-For", "192.168.2.1")
-            .expect(200);
+            .expect(302);
+          expect(res.headers["location"]).toContain("/fyllut/nav123456");
           expect(res.headers["set-cookie"][0]).toContain("dev-access=true");
         });
       });
