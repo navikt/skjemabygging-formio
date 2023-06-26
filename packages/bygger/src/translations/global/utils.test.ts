@@ -1,4 +1,4 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { GlobalTranslationMap, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { getGlobalTranslationsWithLanguageAndTag, transformGlobalTranslationsToCsvData } from "./utils";
 
 describe("getGlobalTranslationsWithLanguageAndTag", () => {
@@ -146,15 +146,22 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
 
   describe("transformGlobalTranslationsToCsvData", () => {
     const allPredefinedOriginalTexts = ["Forrige steg", "{{field}} kan ikke være senere enn {{maxYear}}"];
-    const allGlobalTranslations = {
+
+    const allGlobalTranslations: GlobalTranslationMap = {
       en: [
         {
+          id: "1",
+          name: "global",
+          scope: "global",
           tag: "skjematekster",
           translations: {
             Personopplysninger: { value: "Personal information", scope: "global" },
           },
         },
         {
+          id: "2",
+          name: "global",
+          scope: "global",
           tag: "validering",
           translations: {
             "{{field}} kan ikke være senere enn {{maxYear}}": {
@@ -164,6 +171,9 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
           },
         },
         {
+          id: "3",
+          name: "global",
+          scope: "global",
           tag: "grensesnitt",
           translations: {
             "Forrige steg": {
@@ -175,6 +185,9 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       ],
       "nn-NO": [
         {
+          id: "4",
+          name: "global",
+          scope: "global",
           tag: "skjematekster",
           translations: {
             "{{field}} kan ikke være senere enn {{maxYear}}": {
@@ -273,9 +286,12 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
     });
 
     it("removes linebreaks before export", () => {
-      const globalTranslationLineBreaks = {
+      const globalTranslationLineBreaks: GlobalTranslationMap = {
         en: [
           {
+            id: "uuid",
+            name: "global",
+            scope: "global",
             tag: "skjematekster",
             translations: {
               "<p>Test linjeskift linux\nwindows\r\napple\r</p>": {
@@ -297,9 +313,12 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
     });
 
     it("escapes quotes", () => {
-      const globalTranslationLineBreaks = {
+      const globalTranslationLineBreaks: GlobalTranslationMap = {
         en: [
           {
+            id: "uuid",
+            name: "global",
+            scope: "global",
             tag: "skjematekster",
             translations: {
               "<p>Lenke til <a href='https://www.nav.no/fyllut'>FyllUt</a></p>": {

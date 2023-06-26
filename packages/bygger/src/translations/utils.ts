@@ -1,19 +1,34 @@
-import { navFormUtils, signatureUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  Component,
+  FormioTranslationMap,
+  Language,
+  NavFormType,
+  navFormUtils,
+  signatureUtils,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import FormioUtils from "formiojs/utils";
 
-const getInputType = (value) => {
+type TextObjectType = ReturnType<typeof textObject>;
+type InputType = ReturnType<typeof getInputType>;
+type CsvRow = {
+  text: string;
+} & {
+  [key in Language]?: string;
+};
+
+const getInputType = (value: string) => {
   return value?.length < 80 ? "text" : "textarea";
 };
 
-const filterSpecialSuffix = (suffix) => {
+const filterSpecialSuffix = (suffix: string) => {
   const specialSuffixList = ["%", "km", "cm", "kg", "kr", "m"];
   return specialSuffixList.indexOf(suffix) >= 0 ? "" : suffix;
 };
 
-const getTextFromComponentProperty = (property) => (property !== "" ? property : undefined);
+const getTextFromComponentProperty = (property: string | undefined) => (property !== "" ? property : undefined);
 
-const extractTextsFromProperties = (props) => {
-  const array = [];
+const extractTextsFromProperties = (props: NavFormType["properties"]) => {
+  const array: { text: string; type: InputType }[] = [];
   if (props?.innsendingOverskrift) {
     array.push({
       text: props.innsendingOverskrift,
@@ -64,7 +79,7 @@ const extractTextsFromProperties = (props) => {
   return array;
 };
 
-const getContent = (content) => {
+const getContent = (content: string | undefined) => {
   if (content) {
     // Formio.js runs code that changes the original text before translating,
     // and to avoid mismatch in translation object keys we need to do the same.
@@ -73,7 +88,7 @@ const getContent = (content) => {
   return content;
 };
 
-const getLabel = (label, type, hideLabel) => {
+const getLabel = (label: string, type: string, hideLabel: boolean) => {
   const excludeLabelForType = [
     "panel",
     "htmlelement",
@@ -87,7 +102,7 @@ const getLabel = (label, type, hideLabel) => {
   return label;
 };
 
-const getTranslatablePropertiesFromForm = (form) =>
+const getTranslatablePropertiesFromForm = (form: NavFormType) =>
   navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.type !== "hidden")
@@ -114,7 +129,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         removeAnother,
       }) => ({
         title,
-        label: getLabel(label, type, hideLabel),
+        label: getLabel(label, type, !!hideLabel),
         html,
         values: values ? values.map((value) => value.label) : undefined,
         content: getContent(content),
@@ -122,7 +137,7 @@ const getTranslatablePropertiesFromForm = (form) =>
         description: getTextFromComponentProperty(description),
         additionalDescriptionLabel: getTextFromComponentProperty(additionalDescriptionLabel),
         additionalDescriptionText: getTextFromComponentProperty(additionalDescriptionText),
-        suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix)),
+        suffix: getTextFromComponentProperty(filterSpecialSuffix(suffix || "")),
         prefix: getTextFromComponentProperty(prefix),
         data: data?.values ? data.values.map((value) => value.label) : undefined,
         contentForPdf: getTextFromComponentProperty(contentForPdf),
@@ -133,14 +148,14 @@ const getTranslatablePropertiesFromForm = (form) =>
       })
     );
 
-const withoutDuplicatedComponents = (component, index, currentComponents) =>
-  index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);
+const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
+  index === currentComponents.findIndex((currentComponent) => currentComponent.text === textObject.text);
 
-const textObject = (withInputType, value) => {
+const textObject = (withInputType: boolean, value: string) => {
   if (withInputType)
     return {
       text: value,
-      type: getInputType(value),
+      type: getInputType(value) as InputType,
     };
   else {
     return {
@@ -149,21 +164,26 @@ const textObject = (withInputType, value) => {
   }
 };
 
-const getFormTexts = (form, withInputType = false) => {
+const getFormTexts = (form: NavFormType, withInputType = false) => {
   if (!form) {
     return [];
   }
-  const simplifiedComponentObject = getTranslatablePropertiesFromForm(form);
-  simplifiedComponentObject.splice(0, 0, {
-    title: form.title,
-  });
+  const simplifiedComponentObject = [
+    {
+      title: form.title,
+    } as Component,
+    ...getTranslatablePropertiesFromForm(form),
+  ];
+
   return simplifiedComponentObject
     .flatMap((component) =>
       Object.keys(component)
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
           if (key === "values" || key === "data") {
-            return component[key].filter((value) => value !== "").map((value) => textObject(withInputType, value));
+            return component[key]
+              .filter((value) => value !== "")
+              .map((value) => textObject(withInputType, value)) as TextObjectType;
           }
           return textObject(withInputType, component[key]);
         })
@@ -172,27 +192,27 @@ const getFormTexts = (form, withInputType = false) => {
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
-const removeLineBreaks = (text) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
+const removeLineBreaks = (text: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
 
-const escapeQuote = (text) => {
+const escapeQuote = (text: string) => {
   if (typeof text === "string" && text.includes('"')) {
     return text.replace(/"/g, '""');
   }
   return text;
 };
 
-const sanitizeForCsv = (text) => escapeQuote(removeLineBreaks(text));
+const sanitizeForCsv = (text: string) => escapeQuote(removeLineBreaks(text));
 
-const getTextsAndTranslationsForForm = (form, translations) => {
+const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {
   const textComponents = getFormTexts(form, false);
   return textComponents.map((textComponent) => {
-    return Object.keys(translations).reduce(
-      (prevFormRowObject, languageCode) => {
-        const translationObject = translations[languageCode].translations[textComponent.text];
+    return Object.entries(translations).reduce(
+      (prevFormRowObject, [languageCode, currentTranslations]) => {
+        const translationObject = currentTranslations.translations[textComponent.text];
         if (!translationObject) {
           return prevFormRowObject;
         }
-        const sanitizedTranslation = sanitizeForCsv(translationObject.value);
+        const sanitizedTranslation = sanitizeForCsv(translationObject.value!);
         const translation =
           translationObject.scope === "global" ? sanitizedTranslation.concat(" (Global Tekst)") : sanitizedTranslation;
         return {
@@ -205,7 +225,7 @@ const getTextsAndTranslationsForForm = (form, translations) => {
   });
 };
 
-const getTextsAndTranslationsHeaders = (translations) => {
+const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
   return Object.keys(translations).reduce(
     (headers, languageCode) => {
       return [

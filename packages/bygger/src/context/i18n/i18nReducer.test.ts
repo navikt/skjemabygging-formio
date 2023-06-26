@@ -94,7 +94,7 @@ describe("i18nReducer", () => {
         type: "update",
         payload: { lang: "en", translation: newTranslation },
       });
-      expect(actualState.translations["en"].translations["Etternavn"]).toEqual({ value: "Last name", scope: "local" });
+      expect(actualState.translations["en"]?.translations["Etternavn"]).toEqual({ value: "Last name", scope: "local" });
     });
 
     it("edits a translation in translations", () => {
@@ -103,7 +103,7 @@ describe("i18nReducer", () => {
         type: "update",
         payload: { lang: "en", translation: changedTranslation },
       });
-      expect(actualState.translations["en"].translations["Fornavn"]).toEqual({
+      expect(actualState.translations["en"]?.translations["Fornavn"]).toEqual({
         value: "new value for Fornavn",
         scope: "local",
       });
@@ -117,9 +117,9 @@ describe("i18nReducer", () => {
       localTranslationsForNavForm: {},
     };
     it("removes translation from language", () => {
-      expect(initialState.translations["nn-NO"].translations["Fornavn"]).toBeDefined();
+      expect(initialState.translations["nn-NO"]?.translations["Fornavn"]).toBeDefined();
       const actualState = reducer(initialState, { type: "remove", payload: { lang: "nn-NO", key: "Fornavn" } });
-      expect(actualState.translations["nn-NO"].translations["Fornavn"]).toBeUndefined();
+      expect(actualState.translations["nn-NO"]?.translations["Fornavn"]).toBeUndefined();
     });
   });
 });

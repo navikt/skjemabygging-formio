@@ -1,10 +1,10 @@
-import { FormioTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
+import { GlobalTranslationMap } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import { getAllPredefinedOriginalTexts, transformGlobalTranslationsToCsvData } from "./utils";
 
 interface Props {
-  allGlobalTranslations: FormioTranslationMap;
+  allGlobalTranslations: GlobalTranslationMap;
   languageCode: string;
 }
 
