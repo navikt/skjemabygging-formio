@@ -164,7 +164,7 @@ const textObject = (withInputType: boolean, value: string) => {
   }
 };
 
-const getFormTexts = (form: NavFormType, withInputType = false) => {
+const getFormTexts = (form?: NavFormType, withInputType = false) => {
   if (!form) {
     return [];
   }
