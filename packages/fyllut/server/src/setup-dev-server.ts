@@ -8,6 +8,7 @@ const DEV_ACCESS_COOKIE = "dev-access";
 // 155.55.* is NAVs public IP range. Also includes the private IP range used by our
 // internal network (10.*), and localhost. Takes the IPv6 prefix ::ffff: into account.
 const isNavIp = (ip: string) => /^(::ffff:)?(155\.55\.|10\.|127\.)/.test(ip);
+const isFormPath = (value: string) => /^nav\d{6}$/.test(value);
 
 export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config: ConfigType) => {
   logger.info("Server setup dev");
@@ -23,11 +24,17 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
   // Sets a cookie which will bypass the IP restriction
   fyllutRouter.get("/test/login", (req: Request, res: Response) => {
     logger.debug("Dev access requested");
-    res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
-    const skjemanummer = req.query.skjemanummer as string;
-    if (skjemanummer) {
-      return res.redirect(302, `${config.fyllutPath}/${skjemanummer}`);
+    const formPath = req.query.formPath as string;
+    if (formPath) {
+      if (isFormPath(formPath)) {
+        res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
+        return res.redirect(302, `${config.fyllutPath}/${formPath}`);
+      } else {
+        logger.warn(`Invalid formPath when requesting dev access: ${formPath}`);
+        return res.sendStatus(400);
+      }
     }
+    res.cookie(DEV_ACCESS_COOKIE, true, { maxAge: 1000 * 3600 * 24 });
     return res.render("dev-access.html");
   });
 
