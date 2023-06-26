@@ -313,8 +313,8 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       const { data, headers } = transformGlobalTranslationsToCsvData(globalTranslationLineBreaks, [], "en");
       expect(data).toEqual([
         {
-          text: '<p>Lenke til <a href="https://www.nav.no/fyllut">FyllUt</a></p>',
-          en: '<p>Link to <a href="https://www.nav.no/fyllut">FyllUt</a></p>',
+          text: "<p>Lenke til <a href='https://www.nav.no/fyllut'>FyllUt</a></p>",
+          en: '<p>Link to <a href=""https://www.nav.no/fyllut"">FyllUt</a></p>',
         },
       ]);
       expect(headers).toEqual([

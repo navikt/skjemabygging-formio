@@ -1,10 +1,5 @@
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
-import {
-  getFormTexts,
-  getTextsAndTranslationsForForm,
-  getTextsAndTranslationsHeaders,
-  removeLineBreaksFromTranslations,
-} from "./utils";
+import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
 const {
   createDummyCheckbox,
@@ -548,16 +543,6 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
       },
     },
   };
-  it("fjerner linjeskift fra translations", () => {
-    const translationsWithoutLineBreaks = removeLineBreaksFromTranslations(translations["en"].translations);
-    expect(translationsWithoutLineBreaks).toEqual({
-      Veiledning: { value: "Guidance", scope: "global" },
-      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.': {
-        value: 'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>.',
-        scope: "global",
-      },
-    });
-  });
   it("fjerner linjeskift i tekster som skal eksporteres", () => {
     const eksport = getTextsAndTranslationsForForm(form, translations);
     expect(eksport).toHaveLength(2);
@@ -567,13 +552,13 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     expect(eksport[0]["nn-NO"]).toEqual("Rettleiing (Global Tekst)");
 
     expect(eksport[1].text).toEqual(
-      'NAV sender svar. <br> Se <a href="https://www.nav.no/person/" target="_blank">link</a>.'
+      'NAV sender svar. <br> Se <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>.'
     );
     expect(eksport[1].en).toEqual(
-      'NAV sends answers. <br> See <a href="https://www.nav.no/person/" target="_blank">link</a>. (Global Tekst)'
+      'NAV sends answers. <br> See <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>. (Global Tekst)'
     );
     expect(eksport[1]["nn-NO"]).toEqual(
-      'NAV sender svar. <br> Sjå <a href="https://www.nav.no/person/" target="_blank">lenke</a>. (Global Tekst)'
+      'NAV sender svar. <br> Sjå <a href=""https://www.nav.no/person/"" target=""_blank"">lenke</a>. (Global Tekst)'
     );
   });
 });
