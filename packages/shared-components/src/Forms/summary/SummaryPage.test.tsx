@@ -1,12 +1,12 @@
-import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { DeclarationType, FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryHistory } from "history";
 import nock from "nock";
-import React from "react";
 import { Router } from "react-router-dom";
-import { AppConfigContextType, AppConfigProvider } from "../configContext";
-import { Modal } from "../index";
+import { AppConfigContextType, AppConfigProvider } from "../../configContext";
+import { SendInnProvider } from "../../context/sendInn/sendInnContext";
+import { Modal } from "../../index";
 import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;
@@ -16,7 +16,7 @@ jest.mock("react-router-dom", () => ({
   useRouteMatch: () => ({ url: "/forms/previous" }),
 }));
 
-jest.mock("../context/languages", () => ({
+jest.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
@@ -36,7 +36,7 @@ const defaultForm = {
     ...defaultFormProperties,
   },
   components: [],
-};
+} as unknown as NavFormType;
 
 const defaultFormWithAttachment = {
   ...defaultForm,
@@ -93,7 +93,7 @@ const getButtons = (): Buttons => {
 
 const renderSummaryPage = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {}
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -102,12 +102,14 @@ const renderSummaryPage = async (
     form: {} as NavFormType,
     translations: {},
     ...props,
-  };
+  } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <Router history={history}>
-        <SummaryPage {...summaryPageProps} />
-      </Router>
+      <SendInnProvider form={defaultForm} translations={{}}>
+        <Router history={history}>
+          <SummaryPage {...summaryPageProps} />
+        </Router>
+      </SendInnProvider>
     </AppConfigProvider>
   );
   // verifiser render ved å sjekke at overskrift finnes
@@ -194,9 +196,9 @@ describe("SummaryPage", () => {
 
   describe("Form med kun digital innsending", () => {
     it("sender skjema med vedlegg til send-inn", async () => {
-      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
@@ -220,9 +222,9 @@ describe("SummaryPage", () => {
     });
 
     it("ber om bekreftelse før den kaller send-inn når skjemaet er uten vedlegg", async () => {
-      const windowLocation = { href: "" };
       const basePath = "https://www.unittest.nav.no/fyllut";
       const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
@@ -260,14 +262,14 @@ describe("SummaryPage", () => {
 
   describe("Submission method", () => {
     it("renders next-button when method=digital", async () => {
-      const windowLocation = { href: "" };
+      const basePath = "https://www.unittest.nav.no/fyllut";
+      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
+      const windowLocation = { href: basePath };
       // @ts-ignore
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
       });
-      const basePath = "https://www.unittest.nav.no/fyllut";
-      const sendInnUrl = "https://www.unittest.nav.no/sendInn";
       nock(basePath)
         .defaultReplyHeaders({
           Location: sendInnUrl,
@@ -298,6 +300,40 @@ describe("SummaryPage", () => {
 
       userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+  });
+
+  describe("ConfirmationPanel", () => {
+    it("Ikke vis bekreftelse", async () => {
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.none });
+      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+      expect(confirmCheckbox).not.toBeInTheDocument();
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("Bekreft dataene dine", async () => {
+      const form = formWithProperties({ innsending: "KUN_PAPIR", declarationType: DeclarationType.default });
+      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+      expect(confirmCheckbox).toBeInTheDocument();
+      userEvent.click(confirmCheckbox!);
+      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "false");
+      expect(confirmCheckbox).toHaveAttribute("aria-checked", "true");
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(history.location.pathname).toBe("/testform/send-i-posten");
+    });
+
+    it("Ikke gå videre, uten å bekrefte dataene", async () => {
+      const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.default });
+      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
+      expect(confirmCheckbox).toBeInTheDocument();
+      userEvent.click(buttons.gaVidereKnapp);
+      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "true");
+      expect(confirmCheckbox).toHaveAttribute("aria-checked", "false");
+      expect(history.location.pathname).not.toBe("/testform/send-i-posten");
     });
   });
 });

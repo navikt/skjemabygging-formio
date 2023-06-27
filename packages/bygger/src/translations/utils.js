@@ -26,6 +26,12 @@ const extractTextsFromProperties = (props) => {
       type: getInputType(props.innsendingForklaring),
     });
   }
+  if (props?.declarationText) {
+    array.push({
+      text: props.declarationText,
+      type: getInputType(props.declarationText),
+    });
+  }
   if (props?.downloadPdfButtonText) {
     array.push({
       text: props.downloadPdfButtonText,
@@ -130,24 +136,20 @@ const getTranslatablePropertiesFromForm = (form) =>
 const withoutDuplicatedComponents = (component, index, currentComponents) =>
   index === currentComponents.findIndex((currentComponent) => currentComponent.text === component.text);
 
-const textObject = (withInputType, value, removeLineBreak = false) => {
+const textObject = (withInputType, value) => {
   if (withInputType)
     return {
       text: value,
       type: getInputType(value),
     };
   else {
-    return removeLineBreak
-      ? { text: removeLineBreaks(value) }
-      : {
-          text: value,
-        };
+    return {
+      text: value,
+    };
   }
 };
 
-const removeLineBreaks = (text) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
-
-const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
+const getFormTexts = (form, withInputType = false) => {
   if (!form) {
     return [];
   }
@@ -161,66 +163,46 @@ const getFormTexts = (form, withInputType = false, removeLineBreak = false) => {
         .filter((key) => component[key] !== undefined)
         .flatMap((key) => {
           if (key === "values" || key === "data") {
-            return component[key]
-              .filter((value) => value !== "")
-              .map((value) => textObject(withInputType, value, removeLineBreak));
+            return component[key].filter((value) => value !== "").map((value) => textObject(withInputType, value));
           }
-          return textObject(withInputType, component[key], removeLineBreak);
+          return textObject(withInputType, component[key]);
         })
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
-/**
- * @param translations translations object for a given language
- * @returns translations object for the language without line breaks
- */
-const removeLineBreaksFromTranslations = (translations) => {
-  return Object.keys(translations).reduce((previousTranslations, originalText) => {
-    const originalTextWithoutLineBreaks = removeLineBreaks(originalText);
-    const translationObject = translations[originalText];
-    return {
-      ...previousTranslations,
-      [originalTextWithoutLineBreaks]: {
-        ...translationObject,
-        value: removeLineBreaks(translationObject.value),
-      },
-    };
-  }, {});
-};
+const removeLineBreaks = (text) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
 
 const escapeQuote = (text) => {
-  if (typeof text === "string" && text.includes("'")) {
-    return text.replace(/'/g, '"');
+  if (typeof text === "string" && text.includes('"')) {
+    return text.replace(/"/g, '""');
   }
   return text;
 };
 
+const sanitizeForCsv = (text) => escapeQuote(removeLineBreaks(text));
+
 const getTextsAndTranslationsForForm = (form, translations) => {
-  const textComponents = getFormTexts(form, false, true);
-  let textsWithTranslations = [];
-  Object.keys(translations).forEach((languageCode) => {
-    const translationsForLanguage = removeLineBreaksFromTranslations(translations[languageCode].translations);
-    textsWithTranslations = textComponents.reduce((newTextComponent, textComponent) => {
-      if (Object.keys(translationsForLanguage).indexOf(textComponent.text) < 0) {
-        return [...newTextComponent, { ...textComponent, text: escapeQuote(textComponent.text) }];
-      } else {
-        const translationObject = translationsForLanguage[textComponent.text];
+  const textComponents = getFormTexts(form, false);
+  return textComponents.map((textComponent) => {
+    return Object.keys(translations).reduce(
+      (prevFormRowObject, languageCode) => {
+        const translationObject = translations[languageCode].translations[textComponent.text];
+        if (!translationObject) {
+          return prevFormRowObject;
+        }
+        const sanitizedTranslation = sanitizeForCsv(translationObject.value);
         const translation =
-          translationObject.scope === "global"
-            ? translationObject.value.concat(" (Global Tekst)")
-            : translationObject.value;
-        return [
-          ...newTextComponent,
-          Object.assign(textComponent, {
-            [languageCode]: translation,
-          }),
-        ];
-      }
-    }, []);
+          translationObject.scope === "global" ? sanitizedTranslation.concat(" (Global Tekst)") : sanitizedTranslation;
+        return {
+          ...prevFormRowObject,
+          [languageCode]: translation,
+        };
+      },
+      { text: sanitizeForCsv(textComponent.text) }
+    );
   });
-  return textsWithTranslations;
 };
 
 const getTextsAndTranslationsHeaders = (translations) => {
@@ -239,12 +221,10 @@ const getTextsAndTranslationsHeaders = (translations) => {
 };
 
 export {
-  escapeQuote,
   getTextsAndTranslationsForForm,
   getTextsAndTranslationsHeaders,
   getInputType,
   withoutDuplicatedComponents,
   getFormTexts,
-  removeLineBreaks,
-  removeLineBreaksFromTranslations,
+  sanitizeForCsv,
 };

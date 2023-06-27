@@ -1,6 +1,7 @@
 import { Enhet, Enhetstype, supportedEnhetstyper } from "./enhet";
-import type {
+import {
   Component,
+  DeclarationType,
   DisplayType,
   FormPropertiesPublishing,
   FormPropertiesType,
@@ -67,6 +68,7 @@ export {
   paginationUtils,
   supportedEnhetstyper,
   formDiffingTool,
+  DeclarationType,
 };
 export type {
   DependencyType,

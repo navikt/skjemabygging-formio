@@ -5,6 +5,8 @@ import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
+import { useSendInn } from "../context/sendInn/sendInnContext";
+import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
@@ -19,6 +21,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
+  const { startMellomlagring, updateMellomlagring, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
 
@@ -26,8 +29,18 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggSkjemaApnet(submissionMethod);
   }, [loggSkjemaApnet, submissionMethod]);
 
+  useEffect(() => {
+    if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
+      startMellomlagring(submission);
+    }
+  }, [submission, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
+
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
+  }
+
+  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !isMellomlagringReady) {
+    return <LoadingComponent heightOffsetRem={18} />;
   }
 
   function updatePanelUrl(panelPath) {
@@ -50,7 +63,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }
 
-  function onNextPage({ page, currentPanels }) {
+  function onNextPage({ page, currentPanels, submission }) {
+    updateMellomlagring(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
       destinasjon: `${formUrl}/${currentPanels?.[page]}`,
@@ -91,6 +105,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   const onSubmit = (submission) => {
+    updateMellomlagring(submission);
     setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),

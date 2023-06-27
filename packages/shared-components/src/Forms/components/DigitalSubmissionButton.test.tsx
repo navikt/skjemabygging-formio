@@ -1,9 +1,10 @@
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
-import React from "react";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
+import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import DigitalSubmissionButton, { Props } from "./DigitalSubmissionButton";
 
 jest.mock("../../context/languages/useLanguageCodeFromURL", () => () => "nb-NO");
@@ -16,35 +17,27 @@ const originalWindowLocation = window.location;
 const defaultAppConfigProps: Partial<AppConfigContextType> = {
   baseUrl: BASE_URL,
   app: "fyllut",
-};
+} as AppConfigContextType;
 
 describe("DigitalSubmissionButton", () => {
-  const defaultForm = {
-    components: [
-      {
-        type: "panel",
-        components: [],
-      },
-    ],
-  };
   const defaultSubmission = {};
   const defaultTranslations = {};
 
   const renderButton = (props: Partial<Props> = {}, appConfigProps: Partial<AppConfigContextType> = {}) => {
     const defaultProps: Props = {
-      form: defaultForm,
       submission: defaultSubmission,
-      translations: defaultTranslations,
       onError: jest.fn(),
       onSuccess: jest.fn(),
       children: "Digital submission",
       ...props,
-    };
+    } as Props;
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
-        <LanguagesProvider translations={defaultTranslations}>
-          <DigitalSubmissionButton {...defaultProps} />
-        </LanguagesProvider>
+        <SendInnProvider form={{ components: [] } as unknown as NavFormType} translations={{}}>
+          <LanguagesProvider translations={defaultTranslations}>
+            <DigitalSubmissionButton {...defaultProps} />
+          </LanguagesProvider>
+        </SendInnProvider>
       </AppConfigProvider>
     );
   };
@@ -58,9 +51,10 @@ describe("DigitalSubmissionButton", () => {
     let onError;
     let onSuccess;
     let windowLocation;
+    const baseUrl = "http://baseUrl.fyllut.no";
 
     beforeEach(() => {
-      windowLocation = { href: "" };
+      windowLocation = { href: baseUrl };
       Object.defineProperty(window, "location", {
         value: windowLocation,
         writable: true,
@@ -81,7 +75,7 @@ describe("DigitalSubmissionButton", () => {
       expect(button).toBeInTheDocument();
       userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
-      expect(windowLocation.href).toEqual("");
+      expect(windowLocation.href).toEqual(baseUrl);
     });
 
     it("redirects when backend returns 201 and Location header", async () => {
@@ -105,7 +99,7 @@ describe("DigitalSubmissionButton", () => {
       expect(onError.mock.calls[0][0].message).toEqual(
         "Digital innsending er ikke støttet ved forhåndsvisning i byggeren."
       );
-      expect(windowLocation.href).toEqual("");
+      expect(windowLocation.href).toEqual(baseUrl);
     });
   });
 });

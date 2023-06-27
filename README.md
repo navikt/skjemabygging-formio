@@ -6,6 +6,21 @@ og disse dataene vil så deployes sammen med fyllut.
 
 # Utvikling
 
+## Installere pakker lokalt
+
+For å installere npm-pakker med @navikt-scope må man autentisere seg for registry `npm.pkg.github.com`,
+så hvis man får `401 Unauthorized` ved installering må man kjøre følgende kommando:
+
+    npm login --scope=@navikt --registry=https://npm.pkg.github.com
+
+Logg på med github-brukernavn, og passordet man skal oppgi er et personlig access token (classic) som kan
+genereres under [developer settings på GitHub](https://github.com/settings/tokens).
+Token trenger kun `read:packages`. Husk å enable SSO for navikt-orgen!
+
+_(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/frontend#github-npm-registry)_
+
+## Kommandoer
+
 | Kommando           | Beskrivelse                                                                           |
 | ------------------ | ------------------------------------------------------------------------------------- |
 | yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
@@ -36,6 +51,37 @@ App Keys i venstremenyen. Eventuelt kan man opprette sin egen Pusher-applikasjon
 
 FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man legge
 inn konfigurasjon i denne filen.
+
+## Feature toggles
+
+I fyllut og bygger styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en
+kommaseparert
+liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
+
+Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
+i miljøets nais-config. Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil
+under `fyllut/server` eller `bygger/server`.
+
+    // Eksempel på hvordan miljøvariabelen kan se ut
+    ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
+
+Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
+
+    {
+      enableTranslations: true,
+      enableDigitalInnsending: true,
+      enableAutoComplete: true,
+      enableDiff: false
+    }
+
+## Kjøre Fyllut lokalt med mellomlagring
+
+Legg til feature toggle `mellomlagring` i `.env`-filen til fyllut for å skru på mellomlagring. For å kjøre lokalt med
+mellomlagring skrudd på må du ha en lokal instans av `innsending-api` kjørende.
+Se [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan du kan kjøre api-et lokalt. Legg
+til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_HOST` i fyllut. For eksempel slik:
+
+    SEND_INN_HOST=http://localhost:9064
 
 ## Teste publisering av skjema på lokal maskin
 
@@ -79,28 +125,6 @@ fyllut og bygger i dev-gcp finner du ved å gå inn i dev-gcp clusteret med kube
 til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 `kubectl exec <pod-name> -c [skjemabygging-formio|skjemautfylling] -- env`
-
-## Feature toggles
-
-I fyllut og bygger styres feature toggles ved hjelp av en miljøvariabel (`ENABLED_FEATURES`) som inneholder en
-kommaseparert
-liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (default) eller `false`.
-
-Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
-i miljøets nais-config. Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil
-under `fyllut/server` eller `bygger/server`.
-
-    // Eksempel på hvordan miljøvariabelen kan se ut
-    ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
-
-Eksempelet over ville ført til et featureToggles-objekt som ser slik ut:
-
-    {
-      enableTranslations: true,
-      enableDigitalInnsending: true,
-      enableAutoComplete: true,
-      enableDiff: false
-    }
 
 ## Brukeradministrasjon
 

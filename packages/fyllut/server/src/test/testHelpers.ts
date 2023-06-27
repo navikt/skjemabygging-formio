@@ -16,19 +16,20 @@ function mockResponse(): Response {
     json: jest.fn(),
     send: jest.fn(),
     contentType: jest.fn(),
+    status: jest.fn(),
     sendStatus: jest.fn(),
     header: jest.fn(),
   } as unknown as Response;
 }
 
 type MockRequestParams = {
-  headers: { [name: string]: string };
+  headers?: { [name: string]: string };
   body?: object;
 };
 
 function mockRequest({ headers = {}, body }: MockRequestParams): Request {
   return {
-    header: (name: string) => headers[name],
+    header: (name: string) => headers?.[name],
     headers: { ...headers },
     body,
     get: () => "",
@@ -54,4 +55,5 @@ const createAccessToken = (payload: string | Buffer | object, expiresIn: string 
   return jwt.sign(payload, key.toPEM(true), { expiresIn, algorithm: "RS256" });
 };
 
+export type { MockRequestParams };
 export { createAccessToken, createMockIdportenJwt, generateJwk, mockRequest, mockResponse, extractPath, extractHost };

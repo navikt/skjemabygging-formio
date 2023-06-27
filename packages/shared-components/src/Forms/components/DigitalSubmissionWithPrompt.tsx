@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Button } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { useState } from "react";
+import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useState } from "react";
 import Modal from "../../components/modal/Modal";
 import { useLanguages } from "../../context/languages";
 import DigitalSubmissionButton from "./DigitalSubmissionButton";
@@ -19,22 +19,28 @@ const useStyles = makeStyles({
 });
 
 export interface Props {
-  form: object;
-  submission: object;
-  translations: object;
+  submission: Submission;
+  isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
   onSuccess?: () => void;
 }
 
-const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError, onSuccess }: Props) => {
+const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }: Props) => {
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
 
   const styles = useStyles();
 
+  const handleClick = (e) => {
+    if (isValid && !isValid(e)) {
+      return;
+    }
+    setIsOpen(true);
+  };
+
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
+      <Button onClick={handleClick}>{translate(TEXTS.grensesnitt.submitToNavPrompt.open)}</Button>
       <Modal
         open={isOpen}
         ariaLabel={translate(TEXTS.grensesnitt.submitToNavPrompt.ariaLabel)}
@@ -43,9 +49,7 @@ const DigitalSubmissionWithPrompt = ({ form, submission, translations, onError, 
         <BodyShort className={styles.body}>{translate(TEXTS.grensesnitt.submitToNavPrompt.body)}</BodyShort>
         <div className={styles.buttonRow}>
           <DigitalSubmissionButton
-            form={form}
             submission={submission}
-            translations={translations}
             onError={(err) => {
               onError(err.message);
               setIsOpen(false);

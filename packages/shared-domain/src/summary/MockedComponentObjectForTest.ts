@@ -1,4 +1,4 @@
-import type { Component, FormPropertiesType, NavFormType } from "../form";
+import type { Component, ComponentProperties, FormPropertiesType, NavFormType } from "../form";
 
 const keyFromLabel = (label = "") => label.toLowerCase().replace(/\s/gi, "");
 
@@ -59,6 +59,41 @@ const createDummyRadioPanel = (
     key: keyFromLabel(label),
     type: "radiopanel",
     values,
+  } as Component);
+
+const defaultAttachmentValues: RadioPanelOption[] = [
+  {
+    value: "leggerVedNaa",
+    label: "Jeg legger det ved denne søknaden (anbefalt)",
+  },
+  {
+    value: "ettersender",
+    label:
+      "Jeg ettersender dokumentasjonen senere (jeg er klar over at NAV ikke kan behandle søknaden før jeg har levert dokumentasjonen)",
+  },
+  {
+    value: "levertTidligere",
+    label: "Jeg har levert denne dokumentasjonen tidligere",
+  },
+];
+
+const defaultAttachmentProperties: ComponentProperties = {
+  vedleggstittel: "Bekreftelse fra skole",
+  vedleggskode: "S1",
+  vedleggErValgfritt: "ja",
+};
+
+const createDummyAttachment = (
+  label = "Vedlegg1",
+  properties: ComponentProperties = defaultAttachmentProperties,
+  values: RadioPanelOption[] = defaultAttachmentValues
+): Component =>
+  ({
+    label,
+    key: keyFromLabel(label),
+    type: "radiopanel",
+    values,
+    properties,
   } as Component);
 
 const createDummyRadioPanelWithNumberValues = (
@@ -259,6 +294,7 @@ const mockedComponentObjectForTest = {
   createDummyTextfield,
   createDummyEmail,
   createDummyRadioPanel,
+  createDummyAttachment,
   createDummyRadioPanelWithNumberValues,
   createDummySelectboxes,
   createDummyImage,

@@ -2,6 +2,11 @@ import { Enhetstype } from "../enhet";
 
 export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
+export enum DeclarationType {
+  none = "none",
+  default = "default",
+  custom = "custom",
+}
 
 export interface FormSignaturesType {
   [key: string]: any;
@@ -41,6 +46,8 @@ export interface FormPropertiesType {
   innsendingForklaring?: string;
   innsendingOverskrift?: string;
   isTestForm?: boolean;
+  declarationType?: DeclarationType;
+  declarationText?: string;
   mottaksadresseId?: string;
   enhetMaVelgesVedPapirInnsending?: boolean;
   enhetstyper?: Enhetstype[];
@@ -60,6 +67,11 @@ export type FormPropertiesPublishing = Pick<
 
 type ComponentDataSrc = "values" | "url" | "json" | "custom" | "resource";
 
+interface ComponentValue {
+  value: string;
+  label: string;
+}
+
 export interface Component {
   id?: string;
   navId?: string;
@@ -75,10 +87,17 @@ export interface Component {
   customConditional?: string;
   valueProperty?: string;
   labelProperty?: string;
-  properties?: Record<string, string>;
+  properties?: ComponentProperties;
   components?: Component[];
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
+  values?: ComponentValue[];
+}
+
+export interface ComponentProperties {
+  vedleggstittel?: string;
+  vedleggskode?: string;
+  vedleggErValgfritt?: "ja" | "nei";
 }
 
 export interface Panel extends Component {

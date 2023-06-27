@@ -11,6 +11,8 @@ export type SendInnConfig = {
   tokenxClientId: string;
   paths: {
     leggTilVedlegg: string;
+    soknad: string;
+    utfyltSoknad: string;
   };
 };
 
@@ -20,31 +22,34 @@ export type IdportenConfig = {
   idportenIssuer: string;
 };
 
-export type ConfigType = {
+export type DefaultConfig = {
+  gitVersion: string;
+  sentryDsn?: string;
+  useFormioApi: boolean;
+  formioProjectUrl: string;
+  forstesideUrl: string;
+  decoratorUrl: string;
+  skjemabyggingProxyUrl: string;
+  skjemabyggingProxyClientId: string;
+  azureOpenidTokenEndpoint: string;
+  clientId: string;
+  skjemaDir?: string;
+  resourcesDir?: string;
+  translationDir?: string;
+  tokenx: TokenxConfig;
+  sendInnConfig: SendInnConfig;
+  idporten: IdportenConfig;
+  mockIdportenPid?: string;
+  mockIdportenJwt?: string;
+};
+
+export type ConfigType = DefaultConfig & {
   fyllutPath: string;
-  featureToggles: FeatureTogglesMap;
-  tokenx?: TokenxConfig;
-  sendInnConfig?: SendInnConfig;
-  idporten?: IdportenConfig;
-  pdlTokenScopeCluster: string;
   clientSecret: string;
+  featureToggles: FeatureTogglesMap;
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;
   isDelingslenke: boolean;
-  formioProjectUrl?: string;
-  useFormioApi?: boolean;
-  gitVersion?: string;
-  sentryDsn?: string;
-  forstesideUrl?: string;
-  decoratorUrl?: string;
-  skjemabyggingProxyUrl?: string;
-  skjemabyggingProxyClientId?: string;
-  azureOpenidTokenEndpoint?: string;
-  clientId?: string;
-  skjemaDir?: string;
-  resourcesDir?: string;
-  translationDir?: string;
-  mockIdportenPid?: string;
-  mockIdportenJwt?: string;
+  pdlTokenScopeCluster: string;
 };

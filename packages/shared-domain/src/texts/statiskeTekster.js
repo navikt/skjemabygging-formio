@@ -14,10 +14,10 @@ export const statiske = {
     requiredFields: "Felt som ikke er obligatoriske er merket med: (valgfritt).",
     notSaveBold: "Du kan ikke lagre skjemaet underveis.",
     notSave:
-      "Informasjonen du fyller inn i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt inn forsvinne.",
+      "Informasjonen du fyller ut i skjemaet sendes ikke til NAV før du har fullført hele skjemaet og sendt det inn. Hvis du lukker vinduet eller nettleseren vil all informasjon du har fylt ut forsvinne.",
     publicComputerBold: "Bruk av offentlig PC:",
     publicComputer:
-      "Hvis du fyller ut skjemaet på en offentlig PC, for eksempel på et bibliotek, er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre at uvedkommende får tak i opplysningene du har fylt inn i skjemaet.",
+      "Hvis du fyller ut skjemaet på en offentlig PC, for eksempel på et bibliotek, er det viktig at du lukker nettleseren når du er ferdig. Dette vil forhindre at uvedkommende får tak i opplysningene du har fylt ut i skjemaet.",
     submissionMethod: {
       legend: "Hvordan vil du sende inn skjemaet?",
       paper: "Send i posten",
@@ -28,6 +28,7 @@ export const statiske = {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.",
+    confirmationError: "Du må samtykke før du kan fortsette",
   },
   warningAboutDifficultSubmission: {
     modal: {
@@ -56,5 +57,9 @@ export const statiske = {
     sendInPapirSectionAttachments: "vedleggene",
     sendInPapirSectionAttachment: "vedlegget",
     sendInPapirSection: "som nevnt i punkt 2 over.",
+  },
+  declaration: {
+    header: "Erklæring",
+    defaultText: "Jeg bekrefter at opplysningene er riktige.",
   },
 };

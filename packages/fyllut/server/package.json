@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.1.0",
-    "@navikt/nav-dekoratoren-moduler": "^1.6.9",
+    "@navikt/nav-dekoratoren-moduler": "^1.9.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "dotenv": "^10.0.0",

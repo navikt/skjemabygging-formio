@@ -40,8 +40,8 @@ function AppConfigProvider({
   enableFrontendLogger = false,
   diffOn = true,
 }: AppConfigProviderProps) {
-  const logger = new FrontendLogger(http, baseUrl, enableFrontendLogger);
-  const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn);
+  const logger = new FrontendLogger(http!, baseUrl, enableFrontendLogger);
+  const [internalDiffOn, setDiffOn] = useState<boolean>(diffOn!);
   return (
     <AppConfigContext.Provider
       value={{

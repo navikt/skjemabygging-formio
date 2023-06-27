@@ -120,7 +120,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
                 className="navds-button navds-button--secondary navds-label"
                 separator={";"}
                 headers={getTextsAndTranslationsHeaders(translations)}
-                enclosingCharacter={"'"}
+                enclosingCharacter={'"'}
               >
                 Eksporter
               </CSVLink>
