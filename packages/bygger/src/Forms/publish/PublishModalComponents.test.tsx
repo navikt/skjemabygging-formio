@@ -82,7 +82,6 @@ describe("PublishModalComponents", () => {
     it("an error message is rendered", () => {
       const feilmelding = screen.queryByText(ERROR_MESSAGE_MISSING_KODE_OR_TITTEL);
       expect(feilmelding).toBeInTheDocument();
-      screen.debug();
     });
   });
 

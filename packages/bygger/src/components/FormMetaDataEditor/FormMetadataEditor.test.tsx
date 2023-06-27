@@ -516,7 +516,7 @@ describe("FormMetadataEditor", () => {
 
         const signaturFieldsets = screen.getAllByTestId("signatures");
         expect(signaturFieldsets).toHaveLength(3);
-        const lukkKnapp = screen.queryAllByRole("button")[1];
+        const lukkKnapp = screen.getByRole("button", { name: "Slett signatur 2" });
         userEvent.click(lukkKnapp);
 
         expect(mockOnChange).toHaveBeenCalled();
