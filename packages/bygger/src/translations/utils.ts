@@ -192,16 +192,16 @@ const getFormTexts = (form?: NavFormType, withInputType = false) => {
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
 };
 
-const removeLineBreaks = (text: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
+const removeLineBreaks = (text?: string) => (text ? text.replace(/(\r\n|\n|\r)/gm, " ") : text);
 
-const escapeQuote = (text: string) => {
+const escapeQuote = (text?: string) => {
   if (typeof text === "string" && text.includes('"')) {
     return text.replace(/"/g, '""');
   }
   return text;
 };
 
-const sanitizeForCsv = (text: string) => escapeQuote(removeLineBreaks(text));
+const sanitizeForCsv = (text?: string) => escapeQuote(removeLineBreaks(text));
 
 const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioTranslationMap): CsvRow[] => {
   const textComponents = getFormTexts(form, false);
@@ -209,10 +209,10 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
     return Object.entries(translations).reduce(
       (prevFormRowObject, [languageCode, currentTranslations]) => {
         const translationObject = currentTranslations.translations[textComponent.text];
-        if (!translationObject) {
+        if (!translationObject || !translationObject.value) {
           return prevFormRowObject;
         }
-        const sanitizedTranslation = sanitizeForCsv(translationObject.value!);
+        const sanitizedTranslation = sanitizeForCsv(translationObject.value)!;
         const translation =
           translationObject.scope === "global" ? sanitizedTranslation.concat(" (Global Tekst)") : sanitizedTranslation;
         return {
@@ -220,7 +220,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
           [languageCode]: translation,
         };
       },
-      { text: sanitizeForCsv(textComponent.text) }
+      { text: sanitizeForCsv(textComponent.text)! }
     );
   });
 };

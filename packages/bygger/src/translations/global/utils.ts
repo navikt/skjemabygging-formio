@@ -107,8 +107,8 @@ const transformGlobalTranslationsToCsvData = (
   });
 
   const data = Object.keys(translations).map((text) => ({
-    text: sanitizeForCsv(text),
-    [languageCode]: sanitizeForCsv(translations[text].value!),
+    text: sanitizeForCsv(text)!,
+    [languageCode]: sanitizeForCsv(translations[text].value),
   }));
   const headers = [
     { label: "Globale tekster", key: "text" },
