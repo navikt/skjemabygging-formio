@@ -3,7 +3,7 @@ import { Express, NextFunction, Request, Response, Router } from "express";
 import { ConfigType } from "./config/types";
 import { logger } from "./logger";
 
-const DEV_ACCESS_COOKIE = "dev-access";
+const DEV_ACCESS_COOKIE = "fyllut-dev-access";
 
 // 155.55.* is NAVs public IP range. Also includes the private IP range used by our
 // internal network (10.*), and localhost. Takes the IPv6 prefix ::ffff: into account.

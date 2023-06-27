@@ -15,7 +15,7 @@ describe("Setup dev server", () => {
   describe("Dev setup is enabled", () => {
     const SETUP_DEV = true;
 
-    describe("Request without dev-access cookie", () => {
+    describe("Request without fyllut-dev-access cookie", () => {
       it("is rejected", async () => {
         await request(createApp(SETUP_DEV)).get("/fyllut/").set("X-Forwarded-For", IP_EXTERNAL).expect(401);
       });
@@ -25,12 +25,12 @@ describe("Setup dev server", () => {
       });
     });
 
-    describe("Request with dev-access cookie", () => {
+    describe("Request with fyllut-dev-access cookie", () => {
       it("is allowed", async () => {
         await request(createApp(SETUP_DEV))
           .get("/fyllut/")
           .set("X-Forwarded-For", IP_EXTERNAL)
-          .set("Cookie", ["dev-access=true"])
+          .set("Cookie", ["fyllut-dev-access=true"])
           .expect(200);
       });
     });
@@ -43,7 +43,7 @@ describe("Setup dev server", () => {
           .expect(200);
         expect(res.headers["content-type"]).toContain("text/html");
         expect(res.text).toContain("Du har nå tilgang");
-        expect(res.headers["set-cookie"][0]).toContain("dev-access=true");
+        expect(res.headers["set-cookie"][0]).toContain("fyllut-dev-access=true");
       });
 
       it("redirects to form if query param formPath exists when external ip", async () => {
@@ -52,7 +52,7 @@ describe("Setup dev server", () => {
           .set("X-Forwarded-For", IP_EXTERNAL)
           .expect(302);
         expect(res.headers["location"]).toContain("/fyllut/nav123456");
-        expect(res.headers["set-cookie"][0]).toContain("dev-access=true");
+        expect(res.headers["set-cookie"][0]).toContain("fyllut-dev-access=true");
       });
 
       it("redirects to form if query param formPath exists when NAV ip", async () => {
@@ -61,7 +61,7 @@ describe("Setup dev server", () => {
           .set("X-Forwarded-For", IP_NAV)
           .expect(302);
         expect(res.headers["location"]).toContain("/fyllut/nav123456");
-        expect(res.headers["set-cookie"][0]).toContain("dev-access=true");
+        expect(res.headers["set-cookie"][0]).toContain("fyllut-dev-access=true");
       });
 
       it("returns 400 bad request when formPath is invalid", async () => {
