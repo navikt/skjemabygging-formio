@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import correlator from "express-correlation-id";
 import mustacheExpress from "mustache-express";
 import { checkConfigConsistency, config } from "./config/config";
+import { NaisCluster } from "./config/nais-cluster";
 import { buildDirectory } from "./context.js";
 import { setupDeprecatedEndpoints } from "./deprecatedEndpoints.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
@@ -10,8 +11,9 @@ import httpRequestLogger from "./middleware/httpRequestLogger.js";
 import renderIndex from "./renderIndex";
 import apiRouter from "./routers/api/index.js";
 import internalRouter from "./routers/internal/index.js";
+import { setupDevServer } from "./setup-dev-server";
 
-export const createApp = () => {
+export const createApp = (setupDev: boolean = false) => {
   checkConfigConsistency(config);
 
   const app = express();
@@ -26,6 +28,10 @@ export const createApp = () => {
   app.engine("html", mustacheExpress());
 
   const fyllutRouter = express.Router();
+
+  if (config.naisClusterName === NaisCluster.DEV || setupDev) {
+    setupDevServer(app, fyllutRouter, config);
+  }
 
   fyllutRouter.use("/", express.static(buildDirectory, { index: false }));
 
