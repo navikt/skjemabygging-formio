@@ -15,18 +15,50 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
   logger.debug("Render index.html", { queryParams: { ...req.query }, baseUrl: req.baseUrl });
   try {
     const qpForm = req.query.form;
+    const qpInnsendingsId = req.query.innsendingsId;
+    const qpSub = req.query.sub as QueryParamSub;
+    let redirectUrl: string;
+    let redirectParams: { [key: string]: any } = { ...req.query };
     if (qpForm) {
+      console.log("--- if (qpForm) ---");
+      console.log(redirectParams);
+      console.log(config.fyllutPath);
+      console.log(qpForm);
+      // redirectUrl = new URL(`${config.fyllutPath}/${qpForm}`);
+      redirectUrl = `${config.fyllutPath}/${qpForm}`;
+      redirectParams = { ...excludeQueryParam("form", redirectParams) };
+      // return res.redirect(
+      //   url.format({
+      //     pathname: `${config.fyllutPath}/${qpForm}`,
+      //     query: {
+      //       ...excludeQueryParam("from", req.query),
+      //     },
+      //   })
+      // );
+    }
+
+    if (qpInnsendingsId && qpSub !== "digital") {
+      console.log('if (qpInnsendingsId && qpSub !== "digital")');
+      console.log(redirectParams);
+      console.log(req.baseUrl);
+      console.log("redirectUrl", redirectUrl);
+      // console.log(req);
+      redirectUrl = redirectUrl ?? req.baseUrl;
+      redirectParams = { ...redirectParams, sub: "digital" };
+    }
+
+    if (redirectUrl) {
+      console.log("----");
+      console.log(redirectUrl);
+      console.log(redirectParams);
       return res.redirect(
         url.format({
-          pathname: `${config.fyllutPath}/${qpForm}`,
-          query: {
-            ...excludeQueryParam("form", req.query),
-          },
+          pathname: redirectUrl,
+          query: redirectParams,
         })
       );
     }
 
-    const qpSub = req.query.sub as QueryParamSub;
     const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
 
@@ -90,6 +122,9 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       ...pageMeta,
     });
   } catch (cause: any) {
+    console.log("CATCH!");
+    console.log(cause);
+    console.log("CATCH_");
     next(new ErrorWithCause("Failed to return index file", cause));
   }
 };
