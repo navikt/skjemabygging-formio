@@ -1,14 +1,8 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock from "jest-fetch-mock";
 import { MemoryRouter } from "react-router-dom";
 import FormPage from "./FormPage";
-
-jest.mock("@navikt/skjemadigitalisering-shared-components", () => ({
-  ...jest.requireActual("@navikt/skjemadigitalisering-shared-components"),
-  AmplitudeProvider: ({ children }) => <>{children}</>,
-}));
 
 const RESPONSE_HEADERS = {
   headers: {

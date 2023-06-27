@@ -1,5 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
-import React from "react";
+import makeStyles from "../util/jss";
 
 const useLoadingStyles = makeStyles({
   root: {

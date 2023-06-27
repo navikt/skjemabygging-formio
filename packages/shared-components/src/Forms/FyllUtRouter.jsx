@@ -1,4 +1,3 @@
-import { styled } from "@material-ui/styles";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
@@ -13,6 +12,7 @@ import { SummaryPage } from "./SummaryPage.tsx";
 import { FormTitle } from "./components/FormTitle.tsx";
 import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 
+/*
 const FyllUtContainer = styled("div")({
   margin: "0 auto",
   maxWidth: "960px",
@@ -21,6 +21,7 @@ const FyllUtContainer = styled("div")({
     padding: "1rem",
   },
 });
+*/
 
 const ALERT_MESSAGE_BACK_BUTTON =
   "Hvis du går vekk fra denne siden kan du miste dataene du har fylt ut. Er du sikker på at du vil gå tilbake?";
@@ -44,7 +45,7 @@ const FyllUtRouter = ({ form, translations }) => {
   return (
     <LanguagesProvider translations={translations}>
       <FormTitle form={form} />
-      <FyllUtContainer>
+      <div>
         <div className="fyllut-layout">
           <div className="main-col"></div>
           <div className="right-col">{featureToggles.enableTranslations && <LanguageSelector />}</div>
@@ -110,7 +111,7 @@ const FyllUtRouter = ({ form, translations }) => {
             )}
           </Route>
         </Switch>
-      </FyllUtContainer>
+      </div>
     </LanguagesProvider>
   );
 };

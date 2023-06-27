@@ -1,7 +1,9 @@
 import react from "@vitejs/plugin-react";
+import { readFileSync } from "fs";
+import lodashTemplate from "lodash/template";
 import * as path from "path";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import viteTsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   build: {
@@ -21,6 +23,28 @@ export default defineConfig({
       },
     },
   },
-  assetsInclude: ["**/*.ejs"],
-  plugins: [react(), tsconfigPaths()],
+  plugins: [
+    react(),
+    viteTsconfigPaths(),
+    {
+      name: "formio-template-handler",
+      enforce: "pre",
+      config() {},
+      load(id: string) {
+        if (!id.endsWith(".ejs")) {
+          return null;
+        }
+
+        const code = readFileSync(id).toString("utf-8");
+        const template = lodashTemplate(code, {
+          variable: "ctx",
+          evaluate: /\{%([\s\S]+?)%}/g,
+          interpolate: /\{\{([\s\S]+?)}}/g,
+          escape: /\{\{\{([\s\S]+?)}}}/g,
+        });
+
+        return `export default ${template}`;
+      },
+    },
+  ],
 });

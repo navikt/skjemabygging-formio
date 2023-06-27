@@ -29,22 +29,22 @@ httpFyllut
 function renderReact(dokumentInnsendingBaseURL, config) {
   ReactDOM.render(
     <React.StrictMode>
-      <AppConfigProvider
-        dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
-        featureToggles={featureToggles}
-        baseUrl={"/fyllut"}
-        fyllutBaseURL={"/fyllut"}
-        submissionMethod={subissionMethod}
-        app="fyllut"
-        config={config}
-        http={httpFyllut}
-        enableFrontendLogger
-      >
-        <BrowserRouter basename="/fyllut">
+      <BrowserRouter basename="/fyllut">
+        <AppConfigProvider
+          dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
+          featureToggles={featureToggles}
+          baseUrl={"/fyllut"}
+          fyllutBaseURL={"/fyllut"}
+          submissionMethod={subissionMethod}
+          app="fyllut"
+          config={config}
+          http={httpFyllut}
+          enableFrontendLogger
+        >
           {config.isDelingslenke && <ConfirmDelingslenkeModal />}
           <App />
-        </BrowserRouter>
-      </AppConfigProvider>
+        </AppConfigProvider>
+      </BrowserRouter>
     </React.StrictMode>,
     document.getElementById("root")
   );

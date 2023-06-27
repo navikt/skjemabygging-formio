@@ -28,10 +28,6 @@
     "moment": "^2.29.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.13.16",
-    "@babel/core": "^7.14.0",
-    "@babel/preset-env": "^7.14.1",
-    "@babel/preset-typescript": "^7.16.7",
     "@types/jest": "^27.4.1",
     "jest": "^27.0.4",
     "typescript": "^5.0.2",

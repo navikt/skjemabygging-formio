@@ -1,8 +1,7 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor } from "@testing-library/react";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter, Route } from "react-router-dom";
+import { vi } from "vitest";
 import { FormPageWrapper } from "./FormPageWrapper";
 
 const RESPONSE_HEADERS = {
@@ -13,17 +12,15 @@ const RESPONSE_HEADERS = {
 
 describe("FormPageWrapper", () => {
   beforeEach(() => {
-    console.log = jest.fn();
-    fetchMock.doMock();
+    console.log = vi.fn();
   });
 
   afterEach(() => {
-    fetchMock.resetMocks();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
-    fetchMock.mockImplementation((url) => {
+    vi.fn().mockImplementation((url) => {
       if (url === "/fyllut/api/forms/unknownForm") {
         return Promise.resolve(new Response("", { status: 404 }));
       }
@@ -56,7 +53,7 @@ describe("FormPageWrapper", () => {
       components: [],
       properties: {},
     };
-    fetchMock.mockImplementation((url) => {
+    vi.fn().mockImplementation((url) => {
       if (url === "/fyllut/api/forms/knownForm") {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
@@ -88,7 +85,7 @@ describe("FormPageWrapper", () => {
     };
 
     beforeEach(() => {
-      fetchMock.mockImplementation((url) => {
+      vi.fn().mockImplementation((url) => {
         if (url === "/fyllut/api/forms/nav123456") {
           return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
         }

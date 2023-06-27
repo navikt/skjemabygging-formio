@@ -1,4 +1,3 @@
-import { styled } from "@material-ui/styles";
 import { BodyShort, Heading } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
@@ -31,7 +30,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   }, [state, formUrl]);
 
   return (
-    <ResultContent>
+    <div>
       <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
           <div className="wizard-page">
@@ -52,12 +51,15 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
         </section>
       </main>
-    </ResultContent>
+    </div>
   );
 }
 
+/*
+TODO: Add styling
 const ResultContent = styled("div")({
   width: "100%",
   display: "flex",
   flexDirection: "column",
 });
+*/
