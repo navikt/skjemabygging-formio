@@ -6,6 +6,11 @@ export interface SendInnSoknadResponse {
   innsendingsId: string;
 }
 
+export const getSoknad = async (innsendingsId: string, appConfig: AppConfigContextType) => {
+  const { http, baseUrl } = appConfig;
+  return http?.get<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
+};
+
 export const createSoknad = async (
   appConfig: AppConfigContextType,
   form: NavFormType,

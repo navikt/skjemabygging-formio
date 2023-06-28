@@ -14,6 +14,43 @@ import {
 const { featureToggles, sendInnConfig } = config;
 
 const sendInnSoknad = {
+  get: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tokenxAccessToken = getTokenxAccessToken(req);
+
+      if (!isMellomLagringEnabled(featureToggles)) {
+        res.end();
+        return;
+      }
+
+      const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
+      if (errorMessage) {
+        next(new Error(errorMessage));
+        return;
+      }
+
+      const sendInnResponse = await fetch(
+        `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+        }
+      );
+
+      if (sendInnResponse.ok) {
+        logger.debug("Successfylly fetched data from SendInn");
+        res.json(await sendInnResponse.json());
+      } else {
+        logger.debug("Failed to fetch data from SendInn");
+        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
   post: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const idportenPid = getIdportenPid(req);
