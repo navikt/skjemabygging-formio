@@ -148,7 +148,7 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const loadCountryNames = useCallback(
     async (locale: Language): Promise<Country[]> => {
-      return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
+      return fetch(`${serverURL}/api/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
         response.json()
       );
     },

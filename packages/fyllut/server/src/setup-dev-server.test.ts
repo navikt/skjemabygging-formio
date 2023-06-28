@@ -15,23 +15,25 @@ describe("Setup dev server", () => {
   describe("Dev setup is enabled", () => {
     const SETUP_DEV = true;
 
-    describe("Request without fyllut-dev-access cookie", () => {
-      it("is rejected", async () => {
-        await request(createApp(SETUP_DEV)).get("/fyllut/").set("X-Forwarded-For", IP_EXTERNAL).expect(401);
-      });
+    describe("Request", () => {
+      const requests = [
+        { path: "/fyllut/", ip: IP_EXTERNAL, cookies: [], expectedHttpStatus: 401 },
+        { path: "/fyllut/", ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
+        { path: "/fyllut/", ip: IP_EXTERNAL, cookies: ["fyllut-dev-access=true"], expectedHttpStatus: 200 },
+        { path: "/fyllut/", ip: IP_LOCALHOST, cookies: [], expectedHttpStatus: 200 },
+        { path: "/fyllut/api/countries?lang=en", ip: IP_EXTERNAL, cookies: [], expectedHttpStatus: 200 },
+        { path: "/fyllut/api/countries?lang=en", ip: IP_LOCALHOST, cookies: [], expectedHttpStatus: 200 },
+        { path: "/fyllut/internal/metrics", ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
+        { path: "/fyllut/internal/isalive", ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
+        { path: "/fyllut/internal/isready", ip: IP_NAV, cookies: [], expectedHttpStatus: 200 },
+      ];
 
-      it("is allowed when from localhost", async () => {
-        await request(createApp(SETUP_DEV)).get("/fyllut/").set("X-Forwarded-For", IP_LOCALHOST).expect(200);
-      });
-    });
-
-    describe("Request with fyllut-dev-access cookie", () => {
-      it("is allowed", async () => {
+      it.each(requests)("%j", async ({ path, ip, cookies, expectedHttpStatus }) => {
         await request(createApp(SETUP_DEV))
-          .get("/fyllut/")
-          .set("X-Forwarded-For", IP_EXTERNAL)
-          .set("Cookie", ["fyllut-dev-access=true"])
-          .expect(200);
+          .get(path)
+          .set("X-Forwarded-For", ip)
+          .set("Cookie", cookies)
+          .expect(expectedHttpStatus);
       });
     });
 
