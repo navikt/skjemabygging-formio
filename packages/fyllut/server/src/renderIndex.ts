@@ -101,9 +101,6 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       ...pageMeta,
     });
   } catch (cause: any) {
-    console.log("CATCH!");
-    console.log(cause);
-    console.log("CATCH_");
     next(new ErrorWithCause("Failed to return index file", cause));
   }
 };
