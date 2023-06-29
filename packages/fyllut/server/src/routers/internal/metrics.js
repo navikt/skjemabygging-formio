@@ -1,12 +1,9 @@
-import client from "prom-client";
-
-const Registry = client.Registry;
-const register = new Registry();
-client.collectDefaultMetrics({ register });
+import { appMetrics } from "../../services";
 
 const metrics = {
   get: (req, res, next) => {
     try {
+      const { register } = appMetrics;
       res.set("Content-Type", register.contentType);
       res.end(register.metrics());
     } catch (err) {
