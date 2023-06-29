@@ -5,6 +5,7 @@ import {
   Submission,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { logger } from "../../../logger";
+import { base64Encode } from "../../../utils/base64";
 
 interface HovedDokument {
   vedleggsnr: string;
@@ -12,7 +13,7 @@ interface HovedDokument {
   tittel: string;
   mimetype: "application/json" | "application/pdf";
   pakrevd: boolean;
-  document: number[] | null;
+  document: string | null;
 }
 
 export interface Attachment {
@@ -99,17 +100,19 @@ export const assembleSendInnSoknadBody = (
     ...dokumentMetaData,
     mimetype: "application/pdf",
     pakrevd: true,
-    document: submissionPdfAsByteArray,
+    document: submissionPdfAsByteArray ? base64Encode(submissionPdfAsByteArray) : null,
   };
 
   const hoveddokumentVariant: HovedDokument = {
     ...dokumentMetaData,
     mimetype: "application/json",
     pakrevd: false,
-    document: objectToByteArray({
-      language: language || DEFAULT_LANGUAGE,
-      data: submission,
-    }),
+    document: base64Encode(
+      objectToByteArray({
+        language: language || DEFAULT_LANGUAGE,
+        data: submission,
+      })
+    ),
   };
 
   let body: SendInnSoknadBody = {

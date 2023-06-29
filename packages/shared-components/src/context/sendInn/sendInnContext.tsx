@@ -48,7 +48,10 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           setInnsendingsId(innsendingsId);
           setMellomlagringStarted(true);
           const response = await getSoknad(innsendingsId, appConfig);
-          const hovedDokumentVariant = JSON.parse(String.fromCharCode(response?.hoveddokumentVariant?.document | []));
+          const hovedDokumentVariant = JSON.parse(
+            //Move to backend
+            String.fromCharCode(response?.hoveddokumentVariant?.document.data | [])
+          );
           updateSubmission(hovedDokumentVariant?.data);
           setIsMellomlagringReady(true);
         }

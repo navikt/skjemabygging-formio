@@ -1,4 +1,4 @@
-const base64Encode = (data: string) => {
+const base64Encode = (data: string | number[]) => {
   return Buffer.from(data).toString("base64");
 };
 

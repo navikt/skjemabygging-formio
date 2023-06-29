@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import { config } from "../../config/config";
 import { logger } from "../../logger";
 import { getIdportenPid, getTokenxAccessToken } from "../../security/tokenHelper";
+import { base64Decode } from "../../utils/base64";
 import { responseToError } from "../../utils/errorHandling";
 import {
   assembleSendInnSoknadBody,
@@ -35,6 +36,7 @@ const sendInnSoknad = {
         {
           method: "GET",
           headers: {
+            Accept: "application/json",
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
         }
@@ -42,7 +44,16 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug("Successfylly fetched data from SendInn");
-        res.json(await sendInnResponse.json());
+        const json = await sendInnResponse.json();
+        const response = {
+          ...json,
+          hoveddokumentVariant: {
+            ...json.hoveddokumentVariant,
+            document: base64Decode(json.hoveddokumentVariant.document),
+          },
+        };
+        console.log("GET json", json);
+        res.json(response);
       } else {
         logger.debug("Failed to fetch data from SendInn");
         next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
