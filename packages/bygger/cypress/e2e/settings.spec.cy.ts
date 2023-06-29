@@ -18,7 +18,7 @@ describe("FormSettingsPage", () => {
     }).as("getForm");
     cy.intercept("GET", "/mottaksadresse/submission", { fixture: "mottakadresse.json" }).as("getMottakAdresse");
     cy.intercept("GET", "/api/temakoder", { fixture: "temakoder.json" }).as("getTemaKoder");
-    cy.intercept("GET", "/countries?*", { fixture: "getCountriesLangNb.json" }).as("getCountriesLangNb");
+    cy.intercept("GET", "/api/countries?*", { fixture: "getCountriesLangNb.json" }).as("getCountriesLangNb");
     cy.visit("forms/cypressinnstillinger/settings");
   });
 
