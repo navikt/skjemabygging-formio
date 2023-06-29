@@ -1,9 +1,8 @@
 import moment from "moment";
-import React from "react";
 import { useStatusStyles } from "./styles";
 
 const Timestamp = ({ timestamp }: { timestamp?: string }) => {
-  const styles = useStatusStyles();
+  const styles = useStatusStyles({});
   if (!timestamp) {
     return <></>;
   }

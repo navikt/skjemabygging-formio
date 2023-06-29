@@ -83,7 +83,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
 
   const PublishStatusPanel = ({ formProperties }: { formProperties: FormPropertiesType }) => {
     const statusPanelStyles = useStatusPanelStyles();
-    const statusStyles = useStatusStyles();
+    const statusStyles = useStatusStyles({});
     return (
       <Panel className={statusPanelStyles.panel}>
         <table className={statusPanelStyles.table}>
