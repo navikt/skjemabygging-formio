@@ -1,6 +1,6 @@
 import { makeStyles, NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import { AppLayout } from "../components/AppLayout";
-import PageWrapper from "../Forms/PageWrapper.js";
+import PageWrapper from "../Forms/PageWrapper";
 
 const useStyles = makeStyles({
   form: {

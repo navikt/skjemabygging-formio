@@ -1,5 +1,5 @@
 import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import PageWrapper from "../Forms/PageWrapper.js";
+import PageWrapper from "../Forms/PageWrapper";
 import { NavBar } from "./Navbar/NavBar";
 
 const useStyles = makeStyles({

@@ -1,7 +1,7 @@
 import { makeStyles, NavForm, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { NavBar } from "./components/Navbar/NavBar";
 import { useAuth } from "./context/auth-context";
-import PageWrapper from "./Forms/PageWrapper.js";
+import PageWrapper from "./Forms/PageWrapper";
 
 const useStyles = makeStyles({
   navForm: {
