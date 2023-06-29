@@ -13,6 +13,7 @@ interface Props {
 }
 
 const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = false }: Props) => {
+  // @ts-ignore
   const styles = useStatusStyles({ spacing });
   const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
@@ -25,6 +26,7 @@ const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = fa
     timestamp?: string;
     userName?: string;
   }) => {
+    // @ts-ignore
     const styles = useStatusStyles({ spacing });
     if (!timestamp) {
       return <></>;
