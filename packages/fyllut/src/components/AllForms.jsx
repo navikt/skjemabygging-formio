@@ -1,11 +1,10 @@
-import { makeStyles } from "@material-ui/styles";
-import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useEffect, useState } from "react";
+import { LoadingComponent, makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
 import FormRow from "./FormRow";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   maxContentWidth: {
     maxWidth: "960px",
     margin: "0 auto",
@@ -13,7 +12,7 @@ const useStyles = makeStyles(() => ({
   skjemaliste: {
     borderCollapse: "collapse",
   },
-}));
+});
 
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");

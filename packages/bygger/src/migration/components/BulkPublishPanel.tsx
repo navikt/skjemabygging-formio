@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
+import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useEffect, useReducer, useState } from "react";

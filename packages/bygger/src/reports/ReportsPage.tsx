@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Alert, Heading } from "@navikt/ds-react";
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { ReportDefinition } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
 import { AppLayout } from "../components/AppLayout";

@@ -1,8 +1,6 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import styled from "@material-ui/styles/styled";
 import { Close } from "@navikt/ds-icons";
 import { Alert, BodyShort, Button } from "@navikt/ds-react";
-import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
 import { Message } from "../hooks/useMessageQueue";
 
 interface AlertProps {
@@ -16,16 +14,15 @@ const useStyles = makeStyles({
   body: {
     overflowWrap: "anywhere",
   },
-});
-
-const AlertContent = styled("div")({
-  display: "flex",
-  alignItems: "flex-start",
-  "& .knapp": {
-    color: navCssVariables.navMorkGra,
-    backgroundColor: "transparent",
-    "& svg": {
-      fill: navCssVariables.navMorkGra,
+  alertContent: {
+    display: "flex",
+    alignItems: "flex-start",
+    "& .knapp": {
+      color: navCssVariables.navMorkGra,
+      backgroundColor: "transparent",
+      "& svg": {
+        fill: navCssVariables.navMorkGra,
+      },
     },
   },
 });
@@ -43,7 +40,7 @@ export const ErrorAlert = ({ message }: AlertProps) => {
   const styles = useStyles();
   return (
     <Alert variant="error" className={styles.alert}>
-      <AlertContent>
+      <div className={styles.alertContent}>
         <BodyShort className={styles.body}>{message.message}</BodyShort>
         <Button
           variant="tertiary"
@@ -52,7 +49,7 @@ export const ErrorAlert = ({ message }: AlertProps) => {
           type="button"
           aria-label="Lukk feilmelding"
         />
-      </AlertContent>
+      </div>
     </Alert>
   );
 };
@@ -61,7 +58,7 @@ export const WarningAlert = ({ message }: AlertProps) => {
   const styles = useStyles();
   return (
     <Alert variant="warning" className={styles.alert}>
-      <AlertContent>
+      <div className={styles.alertContent}>
         <BodyShort className={styles.body}>{message.message}</BodyShort>
         <Button
           variant="tertiary"
@@ -70,7 +67,7 @@ export const WarningAlert = ({ message }: AlertProps) => {
           type="button"
           aria-label="Lukk advarsel"
         />
-      </AlertContent>
+      </div>
     </Alert>
   );
 };

@@ -1,4 +1,3 @@
-import { ClassNameMap } from "@material-ui/styles";
 import { Label, Panel } from "@navikt/ds-react";
 import FormStatus, { determineStatus } from "./FormStatus";
 import PublishedLanguages from "./PublishedLanguages";
@@ -14,7 +13,7 @@ interface Props {
 }
 
 const FormStatusPanel = ({ publishProperties, spacing, hideToggleDiffButton = false }: Props) => {
-  const styles: ClassNameMap = useStatusStyles({ spacing });
+  const styles = useStatusStyles({ spacing });
   const { modified, modifiedBy, published, publishedBy, unpublished, unpublishedBy } = publishProperties;
 
   const LabeledTimeAndUser = ({

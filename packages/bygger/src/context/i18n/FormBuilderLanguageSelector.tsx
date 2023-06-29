@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/styles";
 import {
   i18nData,
   LanguageSelector,
+  makeStyles,
   useCurrentLanguage,
   useLanguageCodeFromURL,
 } from "@navikt/skjemadigitalisering-shared-components";

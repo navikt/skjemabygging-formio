@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Checkbox, Heading } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Link } from "react-router-dom";
 import { FormMigrationLogData } from "../../../types/migration";
 import FormStatusPanel from "../../Forms/status/FormStatusPanel";

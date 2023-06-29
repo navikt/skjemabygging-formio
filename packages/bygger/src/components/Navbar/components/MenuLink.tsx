@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
 import { NavLink } from "react-router-dom";
 

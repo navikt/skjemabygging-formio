@@ -1,5 +1,4 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
-import React from "react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useFeedbackMessages } from "../context/notifications/FeedbackContext";
 import { Message } from "../hooks/useMessageQueue";
 import { ErrorAlert, SuccessAlert, WarningAlert } from "./MessageAlerts";

@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Alert, Button } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useState } from "react";
 import UserFeedback from "../components/UserFeedback";
 import Column from "../components/layout/Column";

@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Button } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles, Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { useState } from "react";
 import { FormMigrationLogData } from "../../../types/migration";
 import FormList from "./FormList";

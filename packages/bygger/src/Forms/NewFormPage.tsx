@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Button, Heading } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 import React, { useState } from "react";

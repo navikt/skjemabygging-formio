@@ -1,10 +1,10 @@
-import { styled } from "@material-ui/styles";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { SendInnProvider } from "../context/sendInn/sendInnContext";
+import makeStyles from "../util/jss";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { IntroPage } from "./IntroPage.tsx";
@@ -14,12 +14,14 @@ import { FormTitle } from "./components/FormTitle.tsx";
 import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 import { SummaryPage } from "./summary/SummaryPage.tsx";
 
-const FyllUtContainer = styled("div")({
-  margin: "0 auto",
-  maxWidth: "960px",
-  padding: "2rem 0",
-  "@media screen and (max-width: 992px)": {
-    padding: "1rem",
+const useStyles = makeStyles({
+  container: {
+    margin: "0 auto",
+    maxWidth: "960px",
+    padding: "2rem 0",
+    "@media screen and (max-width: 992px)": {
+      padding: "1rem",
+    },
   },
 });
 
@@ -31,6 +33,8 @@ const FyllUtRouter = ({ form, translations }) => {
   const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
+
+  const styles = useStyles();
   useEffect(() => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
@@ -46,7 +50,7 @@ const FyllUtRouter = ({ form, translations }) => {
     <LanguagesProvider translations={translations}>
       <SendInnProvider form={form} translations={translations}>
         <FormTitle form={form} />
-        <FyllUtContainer>
+        <div className={styles.container}>
           <div className="fyllut-layout">
             <div className="main-col"></div>
             <div className="right-col">{featureToggles.enableTranslations && <LanguageSelector />}</div>
@@ -105,7 +109,7 @@ const FyllUtRouter = ({ form, translations }) => {
               )}
             </Route>
           </Switch>
-        </FyllUtContainer>
+        </div>
       </SendInnProvider>
     </LanguagesProvider>
   );

@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Alert, Button, Checkbox, CheckboxGroup, Heading, Panel } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
+import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType, I18nTranslations, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nState } from "../../context/i18n";
