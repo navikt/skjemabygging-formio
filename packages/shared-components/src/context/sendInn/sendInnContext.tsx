@@ -1,9 +1,11 @@
 import { I18nTranslations, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   SendInnSoknadResponse,
   createSoknad,
   createSoknadWithoutInnsendingsId,
+  getSoknad,
   updateSoknad,
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
@@ -20,11 +22,12 @@ interface SendInnProviderProps {
   children: React.ReactNode;
   form: NavFormType;
   translations: I18nTranslations;
+  updateSubmission: (submission: Submission) => void;
 }
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
-const SendInnProvider = ({ children, form, translations }: SendInnProviderProps) => {
+const SendInnProvider = ({ children, form, translations, updateSubmission }: SendInnProviderProps) => {
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
 
@@ -33,6 +36,29 @@ const SendInnProvider = ({ children, form, translations }: SendInnProviderProps)
   const isMellomLagringEnabled =
     app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomLagringEnabled);
+  const { search } = useLocation();
+
+  useEffect(() => {
+    const retrievePreviousSubmission = async () => {
+      console.log(search);
+      try {
+        const searchParams = new URLSearchParams(search);
+        const innsendingsId = searchParams.get("innsendingsId");
+        if (!mellomlagringStarted && innsendingsId && appConfig.submissionMethod === "digital") {
+          setInnsendingsId(innsendingsId);
+          setMellomlagringStarted(true);
+          const response = await getSoknad(innsendingsId, appConfig);
+          const hovedDokumentVariant = JSON.parse(String.fromCharCode(response?.hoveddokumentVariant?.document | []));
+          updateSubmission(hovedDokumentVariant?.data);
+          setIsMellomlagringReady(true);
+        }
+      } catch (error) {
+        setMellomlagringStarted(false);
+        //TODO: Remove innsendingsId from url? show error (404/401)?
+      }
+    };
+    retrievePreviousSubmission();
+  }, [appConfig, mellomlagringStarted, search, updateSubmission]);
 
   const nbNO: Language = "nb-NO";
 

@@ -4,9 +4,15 @@ import { AppConfigContextType } from "../configContext";
 
 export interface SendInnSoknadResponse {
   innsendingsId: string;
+  hoveddokumentVariant: {
+    document: number[] | null;
+  };
 }
 
-export const getSoknad = async (innsendingsId: string, appConfig: AppConfigContextType) => {
+export const getSoknad = async (
+  innsendingsId: string,
+  appConfig: AppConfigContextType
+): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl } = appConfig;
   return http?.get<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
 };

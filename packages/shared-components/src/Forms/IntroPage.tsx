@@ -21,6 +21,7 @@ const supportsPapirOgDigital = (form: NavFormType) => {
 export function IntroPage({ form, formUrl }: Props) {
   const { translate } = useLanguages();
   const { search } = useLocation();
+  const innsendingsIdFromUrl = new URLSearchParams(search).get("innsendingsId");
   const history = useHistory();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
@@ -131,7 +132,10 @@ export function IntroPage({ form, formUrl }: Props) {
           {!mustSelectSubmissionMethod && (
             <Link
               className="navds-button navds-button--primary"
-              to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
+              to={{
+                pathname: innsendingsIdFromUrl ? `${formUrl}/oppsummering` : `${formUrl}/${firstPanelSlug}`,
+                search,
+              }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}

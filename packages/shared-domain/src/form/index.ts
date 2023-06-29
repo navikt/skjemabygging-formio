@@ -127,7 +127,7 @@ export interface NavFormType {
   components: Component[];
 }
 
-export type SubmissionData = Record<string, string | number | any[] | object>;
+export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 export interface Submission {
   data: SubmissionData;

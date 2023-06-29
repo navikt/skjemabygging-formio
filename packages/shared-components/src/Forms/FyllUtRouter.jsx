@@ -42,9 +42,11 @@ const FyllUtRouter = ({ form, translations }) => {
     };
   }, []);
 
+  console.log("FyllutRouter", submission);
+
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider form={form} translations={translations}>
+      <SendInnProvider form={form} translations={translations} updateSubmission={setSubmission}>
         <FormTitle form={form} />
         <FyllUtContainer>
           <div className="fyllut-layout">
