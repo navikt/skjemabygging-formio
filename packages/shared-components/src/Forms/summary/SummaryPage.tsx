@@ -12,7 +12,7 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
-import { Styles } from "../../index";
+import Styles from "../../styles";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import { getPanels } from "../../util/form";
 import makeStyles from "../../util/jss";
