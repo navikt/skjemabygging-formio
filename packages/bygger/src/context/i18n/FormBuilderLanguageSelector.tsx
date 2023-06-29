@@ -5,8 +5,15 @@ import {
   useCurrentLanguage,
   useLanguageCodeFromURL,
 } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
+import { Language, NavFormType, TranslationTag } from "@navikt/skjemadigitalisering-shared-domain";
 import { languagesInNorwegian } from "./index";
+
+interface FormBuilderLanguageSelectorProps {
+  languages: Language[];
+  formPath: NavFormType["path"];
+  languageSelectorLabel?: string;
+  tag?: TranslationTag;
+}
 
 const useStyles = makeStyles({
   sideBarLanguageSelector: {
@@ -14,9 +21,16 @@ const useStyles = makeStyles({
   },
 });
 
-const FormBuilderLanguageSelector = ({ languages, formPath, languageSelectorLabel, tag }) => {
+const FormBuilderLanguageSelector = ({
+  languages,
+  formPath,
+  languageSelectorLabel,
+  tag,
+}: FormBuilderLanguageSelectorProps) => {
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
-  const supportedLanguageLists = Object.keys(i18nData).filter((languageCode) => languageCode !== "nb-NO");
+  const supportedLanguageLists = (Object.keys(i18nData) as Language[]).filter(
+    (languageCode) => languageCode !== "nb-NO"
+  );
 
   const styles = useStyles();
 

@@ -72,7 +72,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
       getFormTexts(form).reduce((allTexts, texts) => {
         const { text } = texts;
         return [...allTexts, text];
-      }, [])
+      }, [] as string[])
     );
   }, [form]);
 

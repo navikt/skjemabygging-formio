@@ -1,9 +1,8 @@
-import { FormioTranslationMap, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormioTranslation, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import I18nStateProvider, { useI18nState } from "./I18nContext";
 
-const mockedTranslations: FormioTranslationMap = {
+const mockedTranslations: { [index: string]: FormioTranslation } = {
   "nn-NO": {
     id: "61828d1945f11b000346b3f6",
     translations: {

@@ -92,6 +92,20 @@ export interface Component {
   otherDocumentation?: boolean;
   isAttachmentPanel?: boolean;
   values?: ComponentValue[];
+  hideLabel?: boolean;
+  description?: string;
+  suffix?: string;
+  prefix?: string;
+  title?: string;
+  html?: string;
+  legend?: string;
+  additionalDescriptionLabel?: string;
+  additionalDescriptionText?: string;
+  contentForPdf?: string;
+  altText?: string;
+  buttonText?: string;
+  addAnother?: string;
+  removeAnother?: string;
 }
 
 export interface ComponentProperties {
