@@ -49,7 +49,7 @@ const sendInnSoknad = {
           ...json,
           hoveddokumentVariant: {
             ...json.hoveddokumentVariant,
-            document: base64Decode(json.hoveddokumentVariant.document),
+            document: JSON.parse(String.fromCharCode(...base64Decode(json.hoveddokumentVariant.document))),
           },
         };
         console.log("GET json", json);
