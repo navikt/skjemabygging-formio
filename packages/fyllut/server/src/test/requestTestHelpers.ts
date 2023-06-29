@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 
 interface mockRequestType {
@@ -16,16 +15,16 @@ const mockRequest = ({ headers = {}, body = {} }: mockRequestType) => {
 
 const mockResponse = () => {
   return {
-    json: jest.fn(),
-    sendStatus: jest.fn(),
-    header: jest.fn(),
-    contentType: jest.fn(),
-    send: jest.fn(),
+    json: vi.fn(),
+    sendStatus: vi.fn(),
+    header: vi.fn(),
+    contentType: vi.fn(),
+    send: vi.fn(),
   } as any as Response;
 };
 
 const mockNext = () => {
-  return jest.fn() as any as NextFunction;
+  return vi.fn() as any as NextFunction;
 };
 
 export { mockRequest, mockResponse, mockNext };

@@ -1,4 +1,3 @@
-import { styled } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import PropTypes from "prop-types";
@@ -77,7 +76,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
   const hasAttachments = attachments.length > 0;
 
   return (
-    <ResultContent>
+    <div>
       <Heading level="2" size="large" spacing>
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Heading>
@@ -101,7 +100,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
           }
         </section>
       </main>
-    </ResultContent>
+    </div>
   );
 }
 
@@ -110,6 +109,8 @@ PrepareLetterPage.propTypes = {
   submission: PropTypes.object.isRequired,
 };
 
+/*
+TODO
 const ResultContent = styled("div")({
   width: "100%",
   display: "flex",
@@ -118,3 +119,4 @@ const ResultContent = styled("div")({
     paddingBottom: "3.5rem",
   },
 });
+*/

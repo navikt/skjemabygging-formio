@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import jose from "node-jose";
@@ -13,12 +12,12 @@ const extractPath = (url: string): string => PATH_REGEX.exec(url)?.[1]!;
 
 function mockResponse(): Response {
   return {
-    json: jest.fn(),
-    send: jest.fn(),
-    contentType: jest.fn(),
-    status: jest.fn(),
-    sendStatus: jest.fn(),
-    header: jest.fn(),
+    json: vi.fn(),
+    send: vi.fn(),
+    contentType: vi.fn(),
+    status: vi.fn(),
+    sendStatus: vi.fn(),
+    header: vi.fn(),
   } as unknown as Response;
 }
 

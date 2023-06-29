@@ -5,8 +5,7 @@ import { createApp } from "./app";
 import { config } from "./config/config";
 import { createMockIdportenJwt, extractHost, extractPath, generateJwk } from "./test/testHelpers";
 
-jest.mock("./logger.js");
-jest.mock("./dekorator.js", () => ({
+vi.mock("./dekorator.js", () => ({
   getDecorator: () => {},
   createRedirectUrl: () => "",
 }));

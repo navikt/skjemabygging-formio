@@ -10,7 +10,7 @@ import { useAuth } from "./context/auth-context";
 import FeedbackProvider from "./context/notifications/FeedbackContext";
 import PusherNotificationsProvider from "./context/notifications/NotificationsContext";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   "@global": {
     ".list-inline": {
       listStyle: "none",
@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
     ...Styles.global,
     ...Styles.form,
   },
-}));
+});
 
 function App({ projectURL, serverURL }) {
   Formiojs.setBaseUrl(projectURL);

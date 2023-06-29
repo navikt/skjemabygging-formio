@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import { Request } from "express";
 import nock from "nock";
 import jose from "node-jose";
@@ -29,7 +28,7 @@ describe("idportenAuthHandler", () => {
         headers: { "Fyllut-Submission-Method": "digital" },
       });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
@@ -42,7 +41,7 @@ describe("idportenAuthHandler", () => {
       const accessToken = createMockIdportenJwt({}, "1h", key);
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);
@@ -53,7 +52,7 @@ describe("idportenAuthHandler", () => {
       const accessToken = createMockIdportenJwt({ acr: "Level3" }, "1h", key);
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
@@ -65,7 +64,7 @@ describe("idportenAuthHandler", () => {
       const accessToken = createMockIdportenJwt({ client_id: "wrong-client-id" }, "1h", key);
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
@@ -77,7 +76,7 @@ describe("idportenAuthHandler", () => {
       const accessToken = createMockIdportenJwt({}, "1ms", key);
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
@@ -92,7 +91,7 @@ describe("idportenAuthHandler", () => {
         headers: {},
       });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);

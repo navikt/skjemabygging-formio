@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import nock from "nock";
 import { mockRequest, mockResponse } from "../../test/testHelpers";
 import { base64Decode } from "../../utils/base64";
@@ -19,7 +18,7 @@ describe("exstream", () => {
       .reply(200, { data: { result: [{ content: { data: "base64EncodedPDFstring" } }] } });
     const req = mockRequest({ headers: { AzureAccessToken: "azure-access-token" }, body: defaultBody });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await exstream.post(req, res, next);
     expect(next).not.toHaveBeenCalled();
     expect(res.send).toHaveBeenCalledWith(base64Decode("base64EncodedPDFstring"));
@@ -32,7 +31,7 @@ describe("exstream", () => {
       .reply(500, "error body");
     const req = mockRequest({ headers: { AzureAccessToken: "azure-access-token" }, body: defaultBody });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await exstream.post(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

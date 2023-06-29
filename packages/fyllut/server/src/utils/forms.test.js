@@ -1,37 +1,39 @@
-import { jest } from "@jest/globals";
 import fs from "fs";
 import { loadFileFromDirectory } from "./forms";
 
-const fsOpenMock = jest.fn().mockImplementation(() => ({
-  readFile: jest.fn().mockReturnValue(JSON.stringify({ content: "fileContent" })),
-  close: jest.fn(),
-}));
-
 describe("get forms", () => {
-  fs.readdirSync = jest.fn(() => ["fileNameWithoutExtension.json", "fileNameWithExtension.json", "filename.json"]);
-  fs.promises.open = fsOpenMock;
+  let spyOpen;
+  beforeEach(() => {
+    spyOpen = vi.spyOn(fs.promises, "open").mockReturnValue({
+      readFile: vi.fn().mockReturnValue(JSON.stringify({ content: "fileContent" })),
+      close: vi.fn(),
+    });
+    vi.spyOn(fs, "readdirSync").mockReturnValue([
+      "fileNameWithoutExtension.json",
+      "fileNameWithExtension.json",
+      "filename.json",
+    ]);
+  });
 
   afterEach(() => {
-    fs.readdirSync.mockClear();
-    fsOpenMock.mockClear();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("loadFileFromDirectory", () => {
     it("adds .json extension on file name, if missing", async () => {
       await loadFileFromDirectory("dir", "fileNameWithoutExtension");
-      expect(fsOpenMock).toHaveBeenCalledTimes(1);
-      expect(fsOpenMock).toHaveBeenCalledWith("dir/fileNameWithoutExtension.json", "r");
+      expect(spyOpen).toHaveBeenCalledTimes(1);
+      expect(spyOpen).toHaveBeenCalledWith("dir/fileNameWithoutExtension.json", "r");
     });
 
     it("does not add file extension if filename ends with .json", async () => {
       await loadFileFromDirectory("dir", "fileNameWithExtension.json");
-      expect(fsOpenMock).toHaveBeenCalledTimes(1);
-      expect(fsOpenMock).toHaveBeenCalledWith("dir/fileNameWithExtension.json", "r");
+      expect(spyOpen).toHaveBeenCalledTimes(1);
+      expect(spyOpen).toHaveBeenCalledWith("dir/fileNameWithExtension.json", "r");
     });
 
     it("returns empty object if file doesn't exist", async () => {
-      console.warn = jest.fn();
+      console.warn = vi.fn();
       await loadFileFromDirectory("dir", "missingFile.json").then((data) => expect(data).toEqual({}));
     });
 

@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import nock from "nock";
 import { config } from "../../config/config";
 import { mockRequest, mockResponse } from "../../test/testHelpers";
@@ -36,7 +35,7 @@ describe("[endpoint] send-inn", () => {
     req.getIdportenPid = () => "12345678911";
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInn.post(req, res, next);
 
     expect(res.sendStatus).toHaveBeenLastCalledWith(201);
@@ -61,7 +60,7 @@ describe("[endpoint] send-inn", () => {
     req.getIdportenPid = () => "12345678911";
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInn.post(req, res, next);
 
     expect(postedBody.tittel).toBe("Translated title");
@@ -82,7 +81,7 @@ describe("[endpoint] send-inn", () => {
     req.getIdportenPid = () => "12345678911";
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInn.post(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -103,7 +102,7 @@ describe("[endpoint] send-inn", () => {
     req.getIdportenPid = () => "12345678911";
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInn.post(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -122,7 +121,7 @@ describe("[endpoint] send-inn", () => {
     const req = mockRequest({ body: defaultBody });
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInn.post(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -141,7 +140,7 @@ describe("[endpoint] send-inn", () => {
     const req = mockRequest({ body: defaultBody });
     req.getIdportenPid = () => "12345678911";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInn.post(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

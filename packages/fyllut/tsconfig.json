@@ -16,7 +16,8 @@
       "esnext"
     ],
     "types": [
-      "vite/client"
+      "vite/client",
+      "vitest/globals"
     ],
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",

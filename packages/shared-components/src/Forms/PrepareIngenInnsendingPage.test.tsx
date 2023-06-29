@@ -5,7 +5,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 
-jest.mock("../context/languages", () => ({
+vi.mock("../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 

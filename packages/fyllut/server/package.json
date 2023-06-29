@@ -7,12 +7,12 @@
   "type": "commonjs",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
+    "start": "cross-env-shell NODE_ENV=development vite",
     "build": "tsc && vite build",
     "check-types": "tsc",
     "clean": "rimraf dist coverage",
-    "start": "cross-env-shell NODE_ENV=development vite",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage"
   },
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.1.0",
@@ -40,24 +40,22 @@
     "winston": "^3.6.0"
   },
   "devDependencies": {
-    "@jest/globals": "^26.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/express-correlation-id": "^1.2.4",
-    "@types/jest": "^27.4.1",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mustache-express": "^1.2.1",
     "@types/node": "^17.0.23",
     "@types/node-fetch": "^2.6.0",
     "@types/node-jose": "^1.1.10",
     "@types/supertest": "^2.0.12",
-    "jest": "^27.0.4",
     "nock": "^13.2.4",
     "nodemon": "^2.0.22",
     "supertest": "^6.2.2",
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
     "vite-plugin-node": "^3.0.2",
-    "vite-tsconfig-paths": "^4.2.0"
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.32.2"
   }
 }

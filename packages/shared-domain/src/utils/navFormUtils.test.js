@@ -479,7 +479,7 @@ describe("navFormUtils", () => {
       expect(actualForm.components).toHaveLength(1);
     });
 
-    describe("A form with a component that calculates value based on another", () => {
+    it("A form with a component that calculates value based on another", () => {
       const formWithComponentsThatCalulateValueBasedOnAnother = {
         id: "myForm",
         title: "Form with components that calculate value based on another",
@@ -524,7 +524,7 @@ describe("navFormUtils", () => {
       );
     });
 
-    describe("A form with a component that validates based on another", () => {
+    it("A form with a component that validates based on another", () => {
       const formWithComponentsThatValidatesBasedOnAnother = {
         id: "myForm",
         title: "Form with components that calculate value based on another",
@@ -688,7 +688,7 @@ describe("navFormUtils", () => {
     let navIdGenerator;
 
     beforeEach(() => {
-      navIdGenerator = jest.fn();
+      navIdGenerator = vi.fn();
     });
 
     it("ignores undefined input", () => {

@@ -20,8 +20,8 @@ describe("sendInnContext", () => {
   };
 
   const mockHttp = {
-    post: jest.fn(),
-    put: jest.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
   };
   const innsendingsId = "abc-123-456";
   const form = { title: "TestSkjema", components: [] } as unknown as NavFormType;
@@ -32,7 +32,7 @@ describe("sendInnContext", () => {
   const opts = { redirectToLocation: false };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("When mellomlagring is enabled", () => {

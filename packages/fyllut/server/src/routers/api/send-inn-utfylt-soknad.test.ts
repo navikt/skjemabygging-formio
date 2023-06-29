@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import nock from "nock";
 import { config } from "../../config/config";
 import { mockRequest, MockRequestParams, mockResponse } from "../../test/testHelpers";
@@ -35,7 +34,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
       .reply(302, "FOUND", { Location: SEND_LOCATION });
     const req = mockRequestWithPidAndTokenX({ headers: { AzureAccessToken: "azure-access-token" }, body: defaultBody });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(res.sendStatus).toHaveBeenLastCalledWith(201);
@@ -57,7 +56,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
       .reply(500, "error body");
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -76,7 +75,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
       .reply(500, "error body");
     const req = mockRequestWithPidAndTokenX({ body: defaultBody });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -95,7 +94,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     const req = mockRequest({ body: defaultBody });
     req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -114,7 +113,7 @@ describe("[endpoint] send-inn/utfyltsoknad", () => {
     const req = mockRequest({ headers: {}, body: defaultBody });
     req.getIdportenPid = () => "12345678911";
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await sendInnUtfyltSoknad.put(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

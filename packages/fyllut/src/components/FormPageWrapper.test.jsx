@@ -13,6 +13,7 @@ const RESPONSE_HEADERS = {
 describe("FormPageWrapper", () => {
   beforeEach(() => {
     console.log = vi.fn();
+    fetchMock.doMock();
   });
 
   afterEach(() => {
@@ -20,7 +21,7 @@ describe("FormPageWrapper", () => {
   });
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
-    vi.fn().mockImplementation((url) => {
+    fetchMock.mockImplementation((url) => {
       if (url === "/fyllut/api/forms/unknownForm") {
         return Promise.resolve(new Response("", { status: 404 }));
       }
@@ -53,7 +54,8 @@ describe("FormPageWrapper", () => {
       components: [],
       properties: {},
     };
-    vi.fn().mockImplementation((url) => {
+    fetchMock.mockImplementation((url) => {
+      console.log(url);
       if (url === "/fyllut/api/forms/knownForm") {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
@@ -85,7 +87,7 @@ describe("FormPageWrapper", () => {
     };
 
     beforeEach(() => {
-      vi.fn().mockImplementation((url) => {
+      fetchMock.mockImplementation((url) => {
         if (url === "/fyllut/api/forms/nav123456") {
           return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
         }

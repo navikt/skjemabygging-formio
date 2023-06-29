@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import makeStyles from "../util/jss.js";
+import makeStyles from "../util/jss";
 import { navCssVariables } from "../util/navCssVariables";
 import Select from "./Select";
 

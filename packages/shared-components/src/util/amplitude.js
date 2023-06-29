@@ -22,7 +22,6 @@ export function logAmplitudeEvent(eventName, eventData) {
   setTimeout(() => {
     try {
       amplitude.getInstance().logEvent(eventName, eventData);
-      console.debug(eventName, eventData);
     } catch (error) {
       console.error(error);
     }

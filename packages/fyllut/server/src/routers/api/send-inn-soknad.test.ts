@@ -1,4 +1,3 @@
-import { jest } from "@jest/globals";
 import nock from "nock";
 import { config } from "../../config/config";
 import { mockRequest, MockRequestParams, mockResponse } from "../../test/testHelpers";
@@ -32,7 +31,7 @@ describe("[endpoint] send-inn/soknad", () => {
         body: defaultBody,
       });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.post(req, res, next);
 
       expect(res.json).toHaveBeenCalledWith(defaultBody);
@@ -44,7 +43,7 @@ describe("[endpoint] send-inn/soknad", () => {
       const sendInnNockScope = nock(sendInnConfig.host).post(sendInnConfig.paths.soknad).reply(500, "error body");
       const req = mockRequestWithPidAndTokenX({ body: defaultBody });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.post(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
@@ -60,7 +59,7 @@ describe("[endpoint] send-inn/soknad", () => {
       const req = mockRequest({ body: defaultBody });
       req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.post(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
@@ -77,7 +76,7 @@ describe("[endpoint] send-inn/soknad", () => {
       const req = mockRequest({ body: defaultBody });
       req.getIdportenPid = () => "12345678911";
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.post(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
@@ -100,7 +99,7 @@ describe("[endpoint] send-inn/soknad", () => {
         body: bodyWithInnsendingsId,
       });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.put(req, res, next);
 
       expect(res.json).toHaveBeenCalledWith(bodyWithInnsendingsId);
@@ -114,7 +113,7 @@ describe("[endpoint] send-inn/soknad", () => {
         .reply(500, "error body");
       const req = mockRequestWithPidAndTokenX({ body: bodyWithInnsendingsId });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.put(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
@@ -132,7 +131,7 @@ describe("[endpoint] send-inn/soknad", () => {
       const req = mockRequest({ body: bodyWithInnsendingsId });
       req.getTokenxAccessToken = () => "tokenx-access-token-for-unittest";
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.put(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);
@@ -151,7 +150,7 @@ describe("[endpoint] send-inn/soknad", () => {
       const req = mockRequest({ body: bodyWithInnsendingsId });
       req.getIdportenPid = () => "12345678911";
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await sendInnSoknad.put(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);

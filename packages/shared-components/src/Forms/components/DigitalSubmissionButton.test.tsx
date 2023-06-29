@@ -7,7 +7,11 @@ import { LanguagesProvider } from "../../context/languages";
 import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import DigitalSubmissionButton, { Props } from "./DigitalSubmissionButton";
 
-jest.mock("../../context/languages/useLanguageCodeFromURL", () => () => "nb-NO");
+vi.mock("../../context/languages/useLanguageCodeFromURL", () => {
+  return {
+    default: () => "nb-NO",
+  };
+});
 
 const BASE_URL = "http://www.unittest.nav.no/fyllut";
 const SEND_INN_URL = "http://www.unittest.nav.no/sendInn/soknad/123";
@@ -26,8 +30,8 @@ describe("DigitalSubmissionButton", () => {
   const renderButton = (props: Partial<Props> = {}, appConfigProps: Partial<AppConfigContextType> = {}) => {
     const defaultProps: Props = {
       submission: defaultSubmission,
-      onError: jest.fn(),
-      onSuccess: jest.fn(),
+      onError: vi.fn(),
+      onSuccess: vi.fn(),
       children: "Digital submission",
       ...props,
     } as Props;
@@ -59,8 +63,8 @@ describe("DigitalSubmissionButton", () => {
         value: windowLocation,
         writable: true,
       });
-      onError = jest.fn();
-      onSuccess = jest.fn();
+      onError = vi.fn();
+      onSuccess = vi.fn();
     });
 
     afterEach(() => {

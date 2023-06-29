@@ -11,12 +11,15 @@ import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useRouteMatch: () => ({ url: "/forms/previous" }),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<object>("react-router-dom");
+  return {
+    ...actual,
+    useRouteMatch: () => ({ url: "/forms/previous" }),
+  };
+});
 
-jest.mock("../../context/languages", () => ({
+vi.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 

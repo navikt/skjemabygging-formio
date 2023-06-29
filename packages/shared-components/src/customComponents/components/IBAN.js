@@ -1,6 +1,7 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import TextField from "formiojs/components/textfield/TextField";
 import TextFieldEditForm from "formiojs/components/textfield/TextField.form";
+import * as ibantools from "ibantools";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 
 export default class IBAN extends TextField {
@@ -16,7 +17,7 @@ export default class IBAN extends TextField {
   }
 
   validateIban(iban) {
-    const { validateIBAN, ValidationErrorsIBAN } = require("ibantools");
+    const { validateIBAN, ValidationErrorsIBAN } = ibantools;
     const { valid, errorCodes } = validateIBAN(iban);
     if (valid || errorCodes.includes(ValidationErrorsIBAN.NoIBANProvided)) {
       return true;

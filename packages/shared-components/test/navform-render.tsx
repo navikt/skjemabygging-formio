@@ -1,8 +1,7 @@
 import { render, waitFor } from "@testing-library/react";
 import { Formio } from "formiojs";
 import Components from "formiojs/components/Components";
-import { CustomComponents, NavForm, Template } from "../src";
-import { AppConfigProvider } from "../src/configContext";
+import { AppConfigProvider, CustomComponents, NavForm, Template } from "../src";
 
 const setupNavFormio = () => {
   Formio.use(Template);
@@ -19,7 +18,7 @@ const NavFormForTest = (props) => {
 };
 
 const renderNavForm = async (props) => {
-  const formReady = jest.fn();
+  const formReady = vi.fn();
   const renderReturn = render(<NavFormForTest {...props} formReady={formReady} />);
   await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
   return { ...renderReturn, NavFormForTest };

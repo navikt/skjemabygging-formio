@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/styles";
 import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import ReactSelect from "react-select";
 import { useLanguages } from "../../context/languages";
+import makeStyles from "../../util/jss";
 import { navCssVariables } from "../../util/navCssVariables";
 
 const useStyles = makeStyles({

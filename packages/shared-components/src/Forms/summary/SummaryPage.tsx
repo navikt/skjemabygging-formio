@@ -1,4 +1,3 @@
-import { makeStyles, styled } from "@material-ui/styles";
 import { Alert, BodyShort, ConfirmationPanel, Heading, Link as NavLink } from "@navikt/ds-react";
 import {
   DeclarationType,
@@ -13,21 +12,22 @@ import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
-import { Styles } from "../../index";
+import Styles from "../../styles";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import { getPanels } from "../../util/form";
+import makeStyles from "../../util/jss";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
 import FormStepper from "../components/FormStepper";
 import { hasRelevantAttachments } from "../components/attachmentsUtil";
 import FormSummary from "./FormSummary";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   "@global": {
     ...Styles.form,
     ...Styles.global,
   },
-}));
+});
 
 export interface Props {
   form: NavFormType;
@@ -82,7 +82,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   };
 
   return (
-    <SummaryContent>
+    <div>
       <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
         <div className="main-col">
           <Heading level="2" size="large" spacing>
@@ -223,10 +223,12 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           <FormStepper form={form} formUrl={formUrl} submissionMethod={submissionMethod} submission={submission} />
         </aside>
       </main>
-    </SummaryContent>
+    </div>
   );
 }
 
+/*
+TODO:
 const SummaryContent = styled("div")({
   width: "100%",
   display: "flex",
@@ -247,3 +249,4 @@ const SummaryContent = styled("div")({
     paddingBottom: "2.5rem",
   },
 });
+*/

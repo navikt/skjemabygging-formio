@@ -221,7 +221,6 @@ const Harness = {
   },
   clickElement(component, query) {
     const clickEvent = new MouseEvent("click", {
-      view: window,
       bubbles: true,
       cancelable: true,
     });

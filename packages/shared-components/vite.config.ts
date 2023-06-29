@@ -1,9 +1,10 @@
+/// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "fs";
 import lodashTemplate from "lodash/template";
 import * as path from "path";
-import { defineConfig } from "vite";
 import viteTsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   build: {
@@ -36,6 +37,7 @@ export default defineConfig({
         }
 
         const code = readFileSync(id).toString("utf-8");
+        // Use same values in Formio.Utils.Evaluator.templateSettings
         const template = lodashTemplate(code, {
           variable: "ctx",
           evaluate: /\{%([\s\S]+?)%}/g,
@@ -47,4 +49,10 @@ export default defineConfig({
       },
     },
   ],
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/setupTests.ts",
+    include: ["src/(**/)?*.{test,spec}.[jt]s(x)?"],
+  },
 });

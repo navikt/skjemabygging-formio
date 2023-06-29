@@ -1,19 +1,17 @@
 import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AppConfigProvider } from "../../configContext";
 import pdf from "../../util/pdf";
 import forstesideMock from "../testdata/forsteside-mock";
 import { PrepareLetterPage } from "./PrepareLetterPage";
 
-jest.mock("../../context/languages", () => ({
+vi.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
-jest.mock("../../util/pdf");
+vi.mock("../../util/pdf");
 
 const DEFAULT_TRANSLATIONS = {};
 const RESPONSE_HEADERS = {

@@ -3,8 +3,6 @@ import { config } from "../config/config";
 import { extractHost, extractPath } from "../test/testHelpers";
 import TokenXClient from "./tokenxClient.js";
 
-jest.mock("../logger.js");
-
 const { tokenx: tokenxConfig } = config;
 
 const token_endpoint = `${extractHost(tokenxConfig.wellKnownUrl)}/token`;

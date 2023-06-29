@@ -1,7 +1,6 @@
 import { ForstesideRequestBody } from "@navikt/skjemadigitalisering-shared-domain";
 import nock from "nock";
 import { config } from "../../config/config";
-import { logger } from "../../logger";
 import { mockNext, mockRequest, mockResponse } from "../../test/requestTestHelpers";
 import forsteside, { validateForstesideRequest } from "./forsteside";
 import * as mottaksadresser from "./mottaksadresser";
@@ -34,11 +33,10 @@ const addresses = [
 
 describe("[endpoint] forsteside", () => {
   beforeAll(() => {
-    jest.spyOn(mottaksadresser, "loadMottaksadresser").mockImplementation(async () => addresses);
+    vi.spyOn(mottaksadresser, "loadMottaksadresser").mockImplementation(async () => addresses);
   });
 
   it("Create front page", async () => {
-    jest.spyOn(logger, "info").mockImplementation();
     const generateFileMock = nock(skjemabyggingProxyUrl!).post("/foersteside").reply(200, "{}");
 
     const req = mockRequest({
