@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
 import { Textarea } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useState } from "react";
 
 const useTranslationRowStyles = makeStyles({

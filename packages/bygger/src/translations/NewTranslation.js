@@ -1,26 +1,30 @@
-import { styled } from "@material-ui/styles";
-import { NavForm } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
+import { makeStyles, NavForm } from "@navikt/skjemadigitalisering-shared-components";
 import { AppLayout } from "../components/AppLayout";
-import { Pagewrapper } from "../Forms/components";
+import PageWrapper from "../Forms/PageWrapper";
 
-const StyledNavForm = styled(NavForm)({
-  margin: "0 auto",
-  maxWidth: "26.25rem",
+const useStyles = makeStyles({
+  form: {
+    margin: "0 auto",
+    maxWidth: "26.25rem",
+  },
 });
 
-const NewTranslation = ({ projectURL }) => (
-  <AppLayout
-    navBarProps={{
-      title: "Oversettelser",
-      visOversettelseliste: true,
-      visLagNyttSkjema: false,
-    }}
-  >
-    <Pagewrapper>
-      <StyledNavForm src={`${projectURL}/language`} />
-    </Pagewrapper>
-  </AppLayout>
-);
+const NewTranslation = ({ projectURL }) => {
+  const styles = useStyles();
+
+  return (
+    <AppLayout
+      navBarProps={{
+        title: "Oversettelser",
+        visOversettelseliste: true,
+        visLagNyttSkjema: false,
+      }}
+    >
+      <PageWrapper>
+        <NavForm className={styles.form} src={`${projectURL}/language`} />
+      </PageWrapper>
+    </AppLayout>
+  );
+};
 
 export default NewTranslation;

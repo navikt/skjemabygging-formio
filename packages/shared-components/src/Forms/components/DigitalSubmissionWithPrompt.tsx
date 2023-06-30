@@ -1,9 +1,9 @@
-import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Button } from "@navikt/ds-react";
 import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
 import Modal from "../../components/modal/Modal";
 import { useLanguages } from "../../context/languages";
+import makeStyles from "../../util/jss";
 import DigitalSubmissionButton from "./DigitalSubmissionButton";
 
 const useStyles = makeStyles({

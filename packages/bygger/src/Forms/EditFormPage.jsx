@@ -1,6 +1,5 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { BodyShort, Button, Heading } from "@navikt/ds-react";
-import { FormBuilderOptions } from "@navikt/skjemadigitalisering-shared-components";
+import { FormBuilderOptions, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { AppLayout } from "../components/AppLayout";
 import NavFormBuilder from "../components/NavFormBuilder";
 import PrimaryButtonWithSpinner from "../components/PrimaryButtonWithSpinner";

@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Button, Heading } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useState } from "react";
 import { AppLayout } from "../components/AppLayout";
 import { FormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";

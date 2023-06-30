@@ -1,6 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
-import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
+import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
 import { DependeeComponent } from "../../../types/migration";
 
 const useStyles = makeStyles({

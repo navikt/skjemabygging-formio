@@ -1,8 +1,8 @@
-import React from "react";
 import { useFormStatusIndicatorStyles } from "./styles";
 import { Status, StreetLightSize } from "./types";
 
 const FormStatusIndicator = ({ status, size }: { status: Status; size: StreetLightSize }) => {
+  // @ts-ignore
   const styles = useFormStatusIndicatorStyles({ size });
   switch (status) {
     case "PUBLISHED":

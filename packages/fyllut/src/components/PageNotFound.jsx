@@ -1,5 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
-import React from "react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 
 const useStyles = makeStyles({
   errorPage: {

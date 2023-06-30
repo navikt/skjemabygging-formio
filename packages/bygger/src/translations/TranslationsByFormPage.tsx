@@ -1,5 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";

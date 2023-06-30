@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Heading, Table } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { FormMigrationLogData } from "../../../types/migration";
 import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";

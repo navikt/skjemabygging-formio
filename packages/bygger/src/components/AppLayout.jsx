@@ -1,14 +1,24 @@
-import React from "react";
-import { NoScrollWrapper, Pagewrapper } from "../Forms/components";
+import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
+import PageWrapper from "../Forms/PageWrapper";
 import { NavBar } from "./Navbar/NavBar";
 
+const useStyles = makeStyles({
+  noScroll: {
+    backgroundColor: navCssVariables.navGraBakgrunn,
+    position: "sticky",
+    top: "0",
+    zIndex: 900,
+  },
+});
+
 export const AppLayout = ({ children, navBarProps }) => {
+  const styles = useStyles();
   return (
     <>
-      <NoScrollWrapper>
+      <div className={styles.noScroll}>
         <NavBar {...navBarProps} />
-      </NoScrollWrapper>
-      <Pagewrapper>{children}</Pagewrapper>
+      </div>
+      <PageWrapper>{children}</PageWrapper>
     </>
   );
 };

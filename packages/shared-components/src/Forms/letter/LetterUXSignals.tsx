@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import makeStyles from "../../util/jss";
 
 const useStyles = makeStyles({
   uxsignals: {

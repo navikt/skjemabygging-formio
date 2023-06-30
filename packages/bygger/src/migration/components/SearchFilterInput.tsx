@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Select, TextField } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Operator, migrationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { Dispatch, Fragment } from "react";
 import { MigrationOption } from "../../../types/migration";

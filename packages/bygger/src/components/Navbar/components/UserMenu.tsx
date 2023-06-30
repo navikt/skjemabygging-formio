@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Dropdown, Header } from "@navikt/ds-react-internal";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/auth-context";
 import { useDropdownStyles } from "../styles";

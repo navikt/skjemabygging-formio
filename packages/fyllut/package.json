@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@craco/craco": "^6.0.0",
-    "@material-ui/styles": "4.10.0",
     "@navikt/ds-css": "^2.9.8",
     "@navikt/ds-react": "^2.9.8",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",

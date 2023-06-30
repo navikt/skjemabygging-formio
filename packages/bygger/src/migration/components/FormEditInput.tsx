@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { TextField } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Dispatch, Fragment } from "react";
 import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
