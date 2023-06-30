@@ -1,16 +1,15 @@
-import makeStyles from "@material-ui/styles/makeStyles";
 import "@navikt/ds-css";
 import "@navikt/ds-css-internal";
-import { Styles } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles, Styles } from "@navikt/skjemadigitalisering-shared-components";
 import Formiojs from "formiojs/Formio";
 import { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";
-import UnauthenticatedApp from "./UnauthenticatedApp";
 import { useAuth } from "./context/auth-context";
 import FeedbackProvider from "./context/notifications/FeedbackContext";
 import PusherNotificationsProvider from "./context/notifications/NotificationsContext";
+import UnauthenticatedApp from "./UnauthenticatedApp";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   "@global": {
     ".list-inline": {
       listStyle: "none",
@@ -19,7 +18,7 @@ const useStyles = makeStyles(() => ({
     ...Styles.global,
     ...Styles.form,
   },
-}));
+});
 
 function App({ projectURL, serverURL }) {
   Formiojs.setBaseUrl(projectURL);

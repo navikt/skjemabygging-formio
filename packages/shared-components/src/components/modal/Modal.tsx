@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
 import { Heading, Modal as NavModal } from "@navikt/ds-react";
 import React from "react";
+import makeStyles from "../../util/jss";
 
 const useModalStyles = makeStyles({
   modal: {

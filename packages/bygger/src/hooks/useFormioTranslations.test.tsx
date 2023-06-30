@@ -343,12 +343,12 @@ describe("useFormioTranslations", () => {
 
     it("fetches country names for Norwegian Bokmål", async () => {
       await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/countries?lang=nb`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/countries?lang=nb`);
     });
 
     it("fetches country names for all other languages in translations", async () => {
       await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/countries?lang=en`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/countries?lang=en`);
     });
 
     it("makes no extra fetch calls", async () => {

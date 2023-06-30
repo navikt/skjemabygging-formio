@@ -1,4 +1,9 @@
-import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  Component,
+  FormioTranslationMap,
+  MockedComponentObjectForTest,
+  NavFormType,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
 const {
@@ -350,7 +355,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
   it("Henter innsendingsrelaterte tekster fra form properties", () => {
     const actual = getFormTexts(
       {
-        components: [],
+        components: [] as Component[],
         type: "form",
         title: "Testskjema",
         properties: {
@@ -359,7 +364,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
           innsendingOverskrift: "Gi det til pasienten",
           innsendingForklaring: "Skriv ut skjemaet",
         },
-      },
+      } as NavFormType,
       true
     );
     expect(actual).toEqual([
@@ -371,7 +376,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
   it("Henter downloadPdfButtonText form properties", () => {
     const actual = getFormTexts(
       {
-        components: [],
+        components: [] as Component[],
         type: "form",
         title: "Testskjema",
         properties: {
@@ -379,7 +384,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
           innsending: "KUN_PAPIR",
           downloadPdfButtonText: "Last ned pdf",
         },
-      },
+      } as NavFormType,
       true
     );
     expect(actual).toEqual([
@@ -390,7 +395,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
   it("Henter signatur-relaterte tekster fra form properties", () => {
     const actual = getFormTexts(
       {
-        components: [],
+        components: [] as Component[],
         type: "form",
         title: "Testskjema",
         properties: {
@@ -403,7 +408,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
             signature2Description: "Jeg bekrefter at arbeidstaker er syk",
           },
         },
-      },
+      } as NavFormType,
       true
     );
     expect(actual).toEqual([
@@ -479,7 +484,7 @@ describe("testGetTextsAndTranslationsForForm", () => {
     ],
     "test"
   );
-  const translations = {
+  const translations: FormioTranslationMap = {
     en: {
       id: "123",
       translations: {
@@ -519,8 +524,8 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
         ],
       },
     ],
-  };
-  const translations = {
+  } as NavFormType;
+  const translations: FormioTranslationMap = {
     "nb-NO": {
       translations: {},
     },
@@ -564,12 +569,12 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
 });
 describe("testGetCSVfileHeaders", () => {
   it("Test headers with only origin form text", () => {
-    const actual = getTextsAndTranslationsHeaders([]);
+    const actual = getTextsAndTranslationsHeaders([] as FormioTranslationMap);
     expect(actual).toEqual([{ key: "text", label: "Skjematekster" }]);
   });
 
   it("Test headers with origin form text and language code", () => {
-    const actual = getTextsAndTranslationsHeaders({ en: {}, "nn-NO": {} });
+    const actual = getTextsAndTranslationsHeaders({ en: {}, "nn-NO": {} } as FormioTranslationMap);
     expect(actual).toEqual([
       { key: "text", label: "Skjematekster" },
       { key: "en", label: "EN" },

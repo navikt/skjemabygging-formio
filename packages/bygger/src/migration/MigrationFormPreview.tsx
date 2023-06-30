@@ -1,4 +1,3 @@
-import { makeStyles } from "@material-ui/styles";
 import { Close } from "@navikt/ds-icons";
 import { Button } from "@navikt/ds-react";
 import {
@@ -6,19 +5,20 @@ import {
   ErrorPage,
   FyllUtRouter,
   LoadingComponent,
+  makeStyles,
   Styles,
 } from "@navikt/skjemadigitalisering-shared-components";
 import { Components } from "formiojs";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({
   "@global": Styles.global,
   backContainer: {
     maxWidth: "800px",
     margin: "0 auto 1rem auto",
   },
-}));
+});
 
 Components.setComponents(CustomComponents);
 

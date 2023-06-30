@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import classNames from "classnames";
-import React from "react";
+import makeStyles from "../util/jss";
 import { navCssVariables } from "../util/navCssVariables";
 import Select from "./Select";
 

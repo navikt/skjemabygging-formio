@@ -1,28 +1,29 @@
-import { styled } from "@material-ui/styles";
-import { NavForm, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
+import { makeStyles, NavForm, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { NavBar } from "./components/Navbar/NavBar";
 import { useAuth } from "./context/auth-context";
-import { Pagewrapper } from "./Forms/components";
+import PageWrapper from "./Forms/PageWrapper";
 
-const StyledNavForm = styled(NavForm)({
-  margin: "0 auto",
-  maxWidth: "26.25rem",
+const useStyles = makeStyles({
+  navForm: {
+    margin: "0 auto",
+    maxWidth: "26.25rem",
+  },
 });
 
 const UnauthenticatedApp = ({ projectURL }) => {
   const { login } = useAuth();
   const { config } = useAppConfig();
+  const styles = useStyles();
   return (
     <>
       <NavBar title={"Skjemabygger"} />
-      <Pagewrapper>
+      <PageWrapper>
         {config?.isDevelopment ? (
-          <StyledNavForm src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
+          <NavForm className={styles.navForm} src={`${projectURL}/user/login`} onSubmitDone={(user) => login(user)} />
         ) : (
           <div>Vennligst vent, du logges ut...</div>
         )}
-      </Pagewrapper>
+      </PageWrapper>
     </>
   );
 };

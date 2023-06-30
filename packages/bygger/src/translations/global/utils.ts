@@ -1,5 +1,5 @@
 import {
-  FormioTranslationMap,
+  GlobalTranslationMap,
   objectUtils,
   ScopedTranslationMap,
   TEXTS,
@@ -93,7 +93,7 @@ const getGlobalTranslationsWithLanguageAndTag = (
 };
 
 const transformGlobalTranslationsToCsvData = (
-  allGlobalTranslations: FormioTranslationMap,
+  allGlobalTranslations: GlobalTranslationMap,
   allPredefinedOriginalTexts,
   languageCode: string
 ) => {
@@ -107,7 +107,7 @@ const transformGlobalTranslationsToCsvData = (
   });
 
   const data = Object.keys(translations).map((text) => ({
-    text: sanitizeForCsv(text),
+    text: sanitizeForCsv(text)!,
     [languageCode]: sanitizeForCsv(translations[text].value),
   }));
   const headers = [

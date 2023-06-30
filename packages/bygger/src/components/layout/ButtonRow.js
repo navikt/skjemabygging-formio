@@ -1,6 +1,5 @@
-import React from "react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import classNames from "classnames";
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 
 const useStyles = makeStyles({
   buttonRow: {

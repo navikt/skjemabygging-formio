@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Heading } from "@navikt/ds-react";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../../context/languages";
+import makeStyles from "../../util/jss";
 
 export interface Props {
   form: NavFormType;

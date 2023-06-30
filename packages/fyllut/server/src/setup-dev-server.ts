@@ -38,7 +38,7 @@ export const setupDevServer = (expressApp: Express, fyllutRouter: Router, config
     return res.render("dev-access.html");
   });
 
-  expressApp.all(/^(?!.*\/(test\/login)).*$/, cookieParser(), (req: Request, res: Response, next: NextFunction) => {
+  expressApp.all(/^(?!.*\/(test\/login|api)).*$/, cookieParser(), (req: Request, res: Response, next: NextFunction) => {
     if (isNavIp(req.ip) || req.cookies[DEV_ACCESS_COOKIE]) {
       logger.debug("Dev access is valid");
       return next();

@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Button, Heading, Pagination } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import Formiojs from "formiojs/Formio";
 import { useEffect, useMemo, useReducer, useState } from "react";

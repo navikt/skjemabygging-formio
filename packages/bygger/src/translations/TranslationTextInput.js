@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
 import { Locked, Unlocked } from "@navikt/ds-icons";
 import { TextField, Textarea } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { DebounceInput } from "react-debounce-input";
 
 const padLockIconStyle = {

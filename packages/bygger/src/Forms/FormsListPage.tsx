@@ -1,7 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
 import { Down, Up, UpDown } from "@navikt/ds-icons";
 import { Button, Heading } from "@navikt/ds-react";
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useHistory } from "react-router-dom";

@@ -1,33 +1,26 @@
 import {
-  FormioTranslation,
   FormioTranslationData,
   FormioTranslationMap,
   ScopedTranslationMap,
 } from "@navikt/skjemadigitalisering-shared-domain";
 
-export interface TranslationResource extends FormioTranslationData {
+export interface FormioTranslationDataWithId extends FormioTranslationData {
   id: string;
 }
 
 const createTranslationsMapForEditor =
   (
-    translationResource: TranslationResource,
+    translationResource: FormioTranslationDataWithId,
     translationsByLanguage: FormioTranslationMap,
-    getTranslatedText: (arg: string) => string
+    getTranslatedText: (arg: string) => string | undefined
   ) =>
   (translationsObjects: ScopedTranslationMap, translatedText: string): ScopedTranslationMap => {
     let value = getTranslatedText(translatedText);
     let scope = translationResource.scope;
-    if (
-      translationsByLanguage[translationResource.language] &&
-      translationsByLanguage[translationResource.language].translations
-    ) {
-      if (
-        Object.keys(translationsByLanguage[translationResource.language].translations).indexOf(translatedText) !== -1
-      ) {
-        value = translationsByLanguage[translationResource.language].translations[translatedText].value;
-        scope = translationsByLanguage[translationResource.language].translations[translatedText].scope;
-      }
+    const translationObject = translationsByLanguage[translationResource.language]?.translations[translatedText];
+    if (translationObject) {
+      value = translationObject.value;
+      scope = translationObject.scope;
     }
     return {
       ...translationsObjects,
@@ -40,22 +33,21 @@ const createTranslationsMapForEditor =
 
 const combineTranslationResources = (
   translationsByLanguage: FormioTranslationMap,
-  translationResource: TranslationResource
+  translationResource: FormioTranslationDataWithId
 ): FormioTranslationMap => {
-  const accumulatedTranslationForLanguage: FormioTranslation =
-    translationsByLanguage[translationResource.language] || {};
-  const accumulatedTranslationsMapForLanguage = accumulatedTranslationForLanguage.translations || {};
+  const accumulatedTranslationForLanguage = translationsByLanguage[translationResource.language];
+  const accumulatedTranslationsMapForLanguage = accumulatedTranslationForLanguage?.translations || {};
   const newTranslationsMap = translationResource.i18n;
   const newOriginalTexts = Object.keys(newTranslationsMap);
   const getTranslatedText = (originalText) => newTranslationsMap[originalText];
   const id =
-    accumulatedTranslationForLanguage.id ||
+    accumulatedTranslationForLanguage?.id ||
     (translationResource.scope === "local" && translationResource.id) ||
     undefined;
   return {
     ...translationsByLanguage,
     [translationResource.language]: {
-      ...accumulatedTranslationForLanguage,
+      ...(accumulatedTranslationForLanguage || {}),
       id,
       translations: newOriginalTexts.reduce(
         createTranslationsMapForEditor(translationResource, translationsByLanguage, getTranslatedText),

@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../context/languages";
+import makeStyles from "../util/jss";
 
 const useLoadingStyles = makeStyles({
   root: {

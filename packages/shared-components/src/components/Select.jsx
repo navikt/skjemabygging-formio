@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/styles";
 import { Collapse, Expand } from "@navikt/ds-icons";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import makeStyles from "../util/jss";
 
 const useSelectStyle = makeStyles({
   overlay: {

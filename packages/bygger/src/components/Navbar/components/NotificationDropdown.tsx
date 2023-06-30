@@ -1,9 +1,7 @@
-import { makeStyles } from "@material-ui/styles";
 import { InformationFilled } from "@navikt/ds-icons";
 import { Alert, BodyShort, Detail, Heading } from "@navikt/ds-react";
 import { Dropdown, Header } from "@navikt/ds-react-internal";
-import { navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
+import { makeStyles, navCssVariables } from "@navikt/skjemadigitalisering-shared-components";
 import { usePusherNotifications } from "../../../context/notifications/NotificationsContext";
 import { useDropdownStyles } from "../styles";
 

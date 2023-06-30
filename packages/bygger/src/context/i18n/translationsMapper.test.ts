@@ -1,6 +1,6 @@
-import { combineTranslationResources, TranslationResource } from "./translationsMapper";
+import { combineTranslationResources, FormioTranslationDataWithId } from "./translationsMapper";
 
-const defaultTranslationResource: TranslationResource = {
+const defaultTranslationResource: FormioTranslationDataWithId = {
   id: "",
   language: "en",
   scope: "local",
@@ -10,7 +10,7 @@ const defaultTranslationResource: TranslationResource = {
   tag: "",
 };
 
-const mockTranslationBokmalLocal: TranslationResource = {
+const mockTranslationBokmalLocal: FormioTranslationDataWithId = {
   ...defaultTranslationResource,
   id: "bokmal-local",
   language: "nb-NO",
@@ -21,7 +21,7 @@ const mockTranslationBokmalLocal: TranslationResource = {
   },
 };
 
-const mockTranslationNynorskLocal: TranslationResource = {
+const mockTranslationNynorskLocal: FormioTranslationDataWithId = {
   ...defaultTranslationResource,
   id: "nynorsk-local",
   language: "nn-NO",
@@ -32,7 +32,7 @@ const mockTranslationNynorskLocal: TranslationResource = {
   },
 };
 
-const mockTranslationNynorskGlobal: TranslationResource = {
+const mockTranslationNynorskGlobal: FormioTranslationDataWithId = {
   ...defaultTranslationResource,
   id: "nynorsk-global",
   language: "nn-NO",
@@ -42,7 +42,7 @@ const mockTranslationNynorskGlobal: TranslationResource = {
   },
 };
 
-const mockTranslationEnglishGlobal: TranslationResource = {
+const mockTranslationEnglishGlobal: FormioTranslationDataWithId = {
   ...defaultTranslationResource,
   id: "english-global",
   language: "en",

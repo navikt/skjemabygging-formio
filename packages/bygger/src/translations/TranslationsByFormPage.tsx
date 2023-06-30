@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import { useParams } from "react-router-dom";
@@ -14,6 +14,11 @@ import useRedirectIfNoLanguageCode from "../hooks/useRedirectIfNoLanguageCode";
 import TranslationsFormPage from "./TranslationsFormPage";
 import { getFormTexts, getTextsAndTranslationsForForm, getTextsAndTranslationsHeaders } from "./utils";
 
+interface TranslationsByFormPageProps {
+  loadForm: any;
+  saveTranslation: any;
+}
+
 const useStyles = makeStyles({
   mainCol: {
     gridColumn: "2 / 3",
@@ -27,9 +32,9 @@ const useStyles = makeStyles({
   },
 });
 
-const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
+const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFormPageProps) => {
   const { formPath, languageCode } = useParams();
-  const [form, setForm] = useState();
+  const [form, setForm] = useState<NavFormType>();
   const [status, setStatus] = useState("LOADING");
   const { translations } = useI18nState();
   const languages = useMemo(() => getAvailableLanguages(translations), [translations]);
@@ -111,7 +116,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }) => {
           </Column>
           <div className={styles.sideBarContainer}>
             <Column className={styles.stickySideBar}>
-              <FormBuilderLanguageSelector languages={languages} formPath={path} label={""} />
+              <FormBuilderLanguageSelector languages={languages} formPath={path} />
               <PrimaryButtonWithSpinner onClick={onSave}>Lagre</PrimaryButtonWithSpinner>
               <UserFeedback />
               <CSVLink

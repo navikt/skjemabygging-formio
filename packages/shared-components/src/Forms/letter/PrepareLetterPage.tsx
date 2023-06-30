@@ -1,4 +1,3 @@
-import { styled } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import PropTypes from "prop-types";
@@ -11,6 +10,7 @@ import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import { getVedleggsFelterSomSkalSendes } from "../../util/forsteside";
+import makeStyles from "../../util/jss";
 import NavigateButtonComponent from "../NavigateButtonComponent";
 import LetterAddAttachment from "./LetterAddAttachment";
 import LetterDownload from "./LetterDownload";
@@ -26,6 +26,17 @@ interface Props {
   translations: any;
 }
 
+const useStyles = makeStyles({
+  content: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    "& section.wizard-page": {
+      paddingBottom: "3.5rem",
+    },
+  },
+});
+
 export function PrepareLetterPage({ form, submission, formUrl, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL, baseUrl, logger } = useAppConfig();
@@ -35,6 +46,8 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
+
+  const styles = useStyles();
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -77,7 +90,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
   const hasAttachments = attachments.length > 0;
 
   return (
-    <ResultContent>
+    <div className={styles.content}>
       <Heading level="2" size="large" spacing>
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Heading>
@@ -101,7 +114,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
           }
         </section>
       </main>
-    </ResultContent>
+    </div>
   );
 }
 
@@ -109,12 +122,3 @@ PrepareLetterPage.propTypes = {
   form: PropTypes.object.isRequired,
   submission: PropTypes.object.isRequired,
 };
-
-const ResultContent = styled("div")({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  "& section.wizard-page": {
-    paddingBottom: "3.5rem",
-  },
-});

@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Button } from "@navikt/ds-react";
-import { Modal } from "@navikt/skjemadigitalisering-shared-components";
+import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 
 type ConfirmDeleteLanguageModalProps = {
   isOpen: boolean;

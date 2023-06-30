@@ -1,10 +1,10 @@
 import { i18nData, mapTranslationsToFormioI18nObject } from "@navikt/skjemadigitalisering-shared-components";
-import { FormioTranslationMap, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { FormioTranslationMap, Language, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { getFormTexts } from "../../translations/utils";
 import i18nReducer, { I18nAction, I18nState } from "./i18nReducer";
 
-export const getAvailableLanguages = (translations: FormioTranslationMap) => Object.keys(translations);
+export const getAvailableLanguages = (translations: FormioTranslationMap) => Object.keys(translations) as Language[];
 
 interface I18nStateProviderProps {
   children: React.ReactElement;
