@@ -12,7 +12,7 @@ const globalErrorHandler = (err, req, res, next) => {
     console.error(JSON.stringify(err));
   }
 
-  res.status(500);
+  res.status(err.http_status ?? 500);
   res.contentType("application/json");
   res.send({ message: err.functional ? err.message : "Det oppstod en feil", correlation_id: err.correlation_id });
 };
