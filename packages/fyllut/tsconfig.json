@@ -1,30 +1,15 @@
 {
+  "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "target": "ESNext",
     "jsx": "react-jsx",
     "module": "esnext",
-    "allowJs": true,
-    "checkJs": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "types": [
-      "vite/client",
-      "vitest/globals"
-    ],
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
     "paths": {
       "@navikt/skjemadigitalisering-shared-components": ["../shared-components/src"],
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
