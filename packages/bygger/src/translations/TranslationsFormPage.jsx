@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { BodyShort, Heading } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useEffect, useState } from "react";
 import { languagesInNorwegian, useI18nDispatch } from "../context/i18n";
 import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";

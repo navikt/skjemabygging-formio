@@ -1,4 +1,4 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import classNames from "classnames";
 
 const useStyles = makeStyles({

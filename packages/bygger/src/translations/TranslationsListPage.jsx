@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Heading } from "@navikt/ds-react";
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FormsList } from "../Forms/FormsListPage";

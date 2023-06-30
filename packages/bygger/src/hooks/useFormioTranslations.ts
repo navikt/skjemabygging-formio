@@ -1,5 +1,4 @@
 import {
-  FormioTranslation,
   FormioTranslationMap,
   FormioTranslationPayload,
   I18nTranslationMap,
@@ -148,7 +147,7 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const loadCountryNames = useCallback(
     async (locale: Language): Promise<Country[]> => {
-      return fetch(`${serverURL}/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
+      return fetch(`${serverURL}/api/countries?lang=${getLanguageCodeAsIso639_1(locale)}`).then((response) =>
         response.json()
       );
     },
@@ -156,7 +155,7 @@ export const useFormioTranslations = (serverURL, formio) => {
   );
 
   const loadAndInsertCountryNames = useCallback(
-    async (translations: FormioTranslationMap): Promise<FormioTranslation | {}> => {
+    async (translations: FormioTranslationMap): Promise<FormioTranslationMap | {}> => {
       const localesInTranslations = Object.keys(translations).filter((lang): lang is Language => !!(lang as Language));
       localesInTranslations.unshift("nb-NO");
       return await Promise.all(localesInTranslations.map(loadCountryNames)).then((loadedCountryNames) => {

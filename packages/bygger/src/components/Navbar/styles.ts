@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 
 export const useDropdownStyles = makeStyles({
   dropdownMenu: {

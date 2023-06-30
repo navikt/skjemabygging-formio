@@ -1,5 +1,5 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
 import { Checkbox, Label, Panel } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Enhetstype, supportedEnhetstyper } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect } from "react";
 

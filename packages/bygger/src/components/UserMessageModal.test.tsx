@@ -1,6 +1,9 @@
+import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import UserMessageModal, { useUserMessage } from "./UserMessageModal";
+
+Modal.setAppElement(document.createElement("div"));
 
 describe("UserMessageModal", () => {
   const THIS_IS_THE_MESSAGE = "This is the message";

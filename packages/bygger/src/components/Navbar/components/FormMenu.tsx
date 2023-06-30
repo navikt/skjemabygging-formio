@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Edit, Eye, Globe, Settings } from "@navikt/ds-icons";
-import { useLanguageCodeFromURL } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles, useLanguageCodeFromURL } from "@navikt/skjemadigitalisering-shared-components";
 import { MenuLink } from "./MenuLink";
 
 const useStyles = makeStyles({

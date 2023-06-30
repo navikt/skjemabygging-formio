@@ -1,4 +1,3 @@
-import { makeStyles } from "@material-ui/styles";
 import { Close } from "@navikt/ds-icons";
 import { Button } from "@navikt/ds-react";
 import {
@@ -6,6 +5,7 @@ import {
   ErrorPage,
   FyllUtRouter,
   LoadingComponent,
+  makeStyles,
   Styles,
 } from "@navikt/skjemadigitalisering-shared-components";
 import { Components } from "formiojs";

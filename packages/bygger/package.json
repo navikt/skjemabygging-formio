@@ -21,7 +21,6 @@
     "test:coverage": "craco test --coverage --watchAll=false"
   },
   "dependencies": {
-    "@material-ui/styles": "4.10.0",
     "@navikt/ds-css": "^2.9.8",
     "@navikt/ds-css-internal": "^2.9.8",
     "@navikt/ds-icons": "^2.9.8",
@@ -68,10 +67,5 @@
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(@navikt/ds-icons|nav-(.*)-style|nav-datovelger|@navikt/ds-css))"
-    ]
   }
 }

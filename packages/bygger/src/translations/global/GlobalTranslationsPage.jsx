@@ -1,6 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
 import { Button, Heading } from "@navikt/ds-react";
-import { LoadingComponent } from "@navikt/skjemadigitalisering-shared-components";
+import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";

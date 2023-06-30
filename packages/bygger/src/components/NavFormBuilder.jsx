@@ -22,7 +22,7 @@
  * SOFTWARE.
  * */
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import * as formiojs from "formiojs";
 import cloneDeep from "lodash.clonedeep";
 import isEqual from "lodash.isequal";

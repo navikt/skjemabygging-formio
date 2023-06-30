@@ -1,5 +1,6 @@
+import { Copy } from "@navikt/ds-icons";
 import { Alert, Button, Checkbox, Fieldset, Select, Textarea, TextField, ToggleGroup } from "@navikt/ds-react";
-import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
+import { makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import {
   DeclarationType,
   formDiffingTool,
@@ -13,6 +14,7 @@ import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import useMottaksadresser from "../../hooks/useMottaksadresser";
 import useTemaKoder from "../../hooks/useTemaKoder";
+import copy from "../../util/copy";
 import SignatureComponent from "../layout/SignatureComponent";
 import EnhetSettings from "./EnhetSettings";
 import LabelWithDiff from "./LabelWithDiff";
@@ -30,13 +32,22 @@ interface Props {
 
 type BasicFormProps = Props & { usageContext: UsageContext };
 
+const useStyles = makeStyles({
+  row: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+});
+
 const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, errors }: BasicFormProps) => {
-  const { featureToggles } = useAppConfig();
+  const { featureToggles, config } = useAppConfig();
   const { mottaksadresser, ready: isMottaksAdresserReady, errorMessage: mottaksadresseError } = useMottaksadresser();
   const { temaKoder, ready: isTemaKoderReady, errorMessage: temaKoderError } = useTemaKoder();
   const diff = formDiffingTool.generateNavFormSettingsDiff(publishedForm, form);
+  const styles = useStyles();
   const {
     title,
+    path,
     properties: {
       isTestForm,
       skjemanummer,
@@ -117,16 +128,27 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
   return (
     <Fieldset hideLegend legend="">
       {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
-      <Checkbox
-        className="mb"
-        id="teststatus"
-        checked={!!isTestForm}
-        onChange={(event) =>
-          onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
-        }
-      >
-        Dette er et testskjema
-      </Checkbox>
+      <div className={`mb ${styles.row}`}>
+        <Checkbox
+          id="teststatus"
+          checked={!!isTestForm}
+          onChange={(event) =>
+            onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
+          }
+        >
+          Dette er et testskjema
+        </Checkbox>
+        <span>
+          Skjemadelingslenke
+          <Button
+            onClick={() => copy(`${config!.fyllutBaseUrl}/test/login?formPath=${path}`)}
+            icon={<Copy />}
+            title="Kopier skjemadelingslenke"
+            variant="tertiary"
+            size="xsmall"
+          />
+        </span>
+      </div>
       <TextField
         className="mb"
         label="Skjemanummer"

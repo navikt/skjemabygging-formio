@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
 import { Delete } from "@navikt/ds-icons";
 import { Button } from "@navikt/ds-react";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 
 const useStyles = makeStyles({
   button: {

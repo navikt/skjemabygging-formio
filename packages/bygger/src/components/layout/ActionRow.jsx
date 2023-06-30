@@ -1,4 +1,4 @@
-import makeStyles from "@material-ui/styles/makeStyles/makeStyles";
+import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import ButtonRow from "./ButtonRow";
 import Row from "./Row";
 

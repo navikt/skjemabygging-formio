@@ -27,6 +27,26 @@ const useStyles = makeStyles({
     ...Styles.form,
     ...Styles.global,
   },
+  content: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    "& .data-grid__row": {},
+    "& dt:not(.component-collection  dt):not(.data-grid__row  dt)": {
+      fontSize: "1.2rem",
+      marginTop: "2rem",
+    },
+    "& .component-collection, & .data-grid__row": {
+      borderLeft: "4px solid #368da8",
+      backgroundColor: "#e6f1f8",
+      padding: "0.75rem 1rem",
+      margin: "0.375rem 0",
+    },
+    "& .form-summary": {
+      paddingTop: "2rem",
+      paddingBottom: "2.5rem",
+    },
+  },
 });
 
 export interface Props {
@@ -51,7 +71,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();
-  useStyles();
+  const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
@@ -82,7 +102,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   };
 
   return (
-    <div>
+    <div className={styles.content}>
       <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
         <div className="main-col">
           <Heading level="2" size="large" spacing>
@@ -226,27 +246,3 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     </div>
   );
 }
-
-/*
-TODO:
-const SummaryContent = styled("div")({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  "& .data-grid__row": {},
-  "& dt:not(.component-collection  dt):not(.data-grid__row  dt)": {
-    fontSize: "1.2rem",
-    marginTop: "2rem",
-  },
-  "& .component-collection, & .data-grid__row": {
-    borderLeft: "4px solid #368da8",
-    backgroundColor: "#e6f1f8",
-    padding: "0.75rem 1rem",
-    margin: "0.375rem 0",
-  },
-  "& .form-summary": {
-    paddingTop: "2rem",
-    paddingBottom: "2.5rem",
-  },
-});
-*/

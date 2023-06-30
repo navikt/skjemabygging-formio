@@ -17,6 +17,7 @@
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.1.0",
     "@navikt/nav-dekoratoren-moduler": "^1.9.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "dotenv": "^10.0.0",
@@ -40,6 +41,7 @@
     "winston": "^3.6.0"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/express-correlation-id": "^1.2.4",

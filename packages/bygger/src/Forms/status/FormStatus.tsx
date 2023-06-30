@@ -1,5 +1,4 @@
 import moment from "moment";
-import React from "react";
 import FormStatusIndicator from "./FormStatusIndicator";
 import { useStatusStyles } from "./styles";
 import { PublishStatusProperties, Status, StreetLightSize } from "./types";
@@ -32,7 +31,7 @@ export function determineStatus(publishProperties: PublishStatusProperties): Sta
 type FormStatusProps = { status: Status; size: StreetLightSize };
 
 const FormStatus = ({ status, size }: FormStatusProps) => {
-  const styles = useStatusStyles();
+  const styles = useStatusStyles({});
   const statusTexts: Record<Status, string> = {
     PUBLISHED: "Publisert",
     UNPUBLISHED: "Avpublisert",

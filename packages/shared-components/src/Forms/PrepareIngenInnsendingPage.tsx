@@ -6,6 +6,7 @@ import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
 import { scrollToAndSetFocus } from "../util/focus-management";
+import makeStyles from "../util/jss";
 import NavigateButtonComponent from "./NavigateButtonComponent";
 import DownloadPdfButton from "./components/DownloadPdfButton";
 
@@ -16,6 +17,14 @@ export interface Props {
   translations: { [key: string]: string } | {};
 }
 
+const useStyles = makeStyles({
+  content: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+});
+
 export function PrepareIngenInnsendingPage({ form, submission, formUrl, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
@@ -23,6 +32,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   const { state } = useLocation();
   const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
+  const styles = useStyles();
 
   useEffect(() => {
     if (!state) setGoBackURL(`${formUrl}/oppsummering`);
@@ -30,7 +40,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
   }, [state, formUrl]);
 
   return (
-    <div>
+    <div className={styles.content}>
       <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
           <div className="wizard-page">
@@ -54,12 +64,3 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
     </div>
   );
 }
-
-/*
-TODO: Add styling
-const ResultContent = styled("div")({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-});
-*/

@@ -13,9 +13,9 @@ export interface FormioTranslation {
   translations: ScopedTranslationMap;
 }
 
-export interface FormioTranslationMap {
-  [key: Language]: FormioTranslation;
-}
+export type FormioTranslationMap = {
+  [key in Language]?: FormioTranslation;
+};
 
 export type TranslationResource = {
   id: string;
@@ -45,3 +45,7 @@ export interface FormioTranslationPayload {
   created: string;
   modified: string;
 }
+
+export type GlobalTranslationMap = {
+  [key in Language]?: TranslationResource[];
+};
