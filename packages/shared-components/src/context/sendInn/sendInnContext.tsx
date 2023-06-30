@@ -1,6 +1,6 @@
 import { I18nTranslations, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   SendInnSoknadResponse,
   createSoknad,
@@ -36,11 +36,11 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const isMellomLagringEnabled =
     app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomLagringEnabled);
+  const history = useHistory();
   const { search } = useLocation();
 
   useEffect(() => {
     const retrievePreviousSubmission = async () => {
-      console.log(search);
       try {
         const searchParams = new URLSearchParams(search);
         const innsendingsId = searchParams.get("innsendingsId");
@@ -54,7 +54,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           setIsMellomlagringReady(true);
         }
       } catch (error) {
-        setMellomlagringStarted(false);
+        // setMellomlagringStarted(false);
         //TODO: Remove innsendingsId from url? show error (404/401)?
       }
     };
@@ -74,6 +74,14 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     return (new URL(window.location.href).searchParams.get("lang") as Language) || nbNO;
   };
 
+  const addInnsendingsIdToUrlParams = (value) => {
+    if (value) {
+      const searchParams = new URLSearchParams(history.location.search);
+      searchParams.set("innsendingsId", value);
+      history.push({ search: searchParams.toString() });
+    }
+  };
+
   const startMellomlagring = async (submission: Submission) => {
     if (isMellomLagringEnabled && !mellomlagringStarted) {
       try {
@@ -82,6 +90,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         const translation = translationForLanguage(currentLanguage);
         const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
         setInnsendingsId(response?.innsendingsId);
+        addInnsendingsIdToUrlParams(response?.innsendingsId);
         setIsMellomlagringReady(true);
         return response;
       } catch (error: any) {

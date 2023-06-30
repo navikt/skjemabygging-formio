@@ -5,7 +5,7 @@ import { AppConfigContextType } from "../configContext";
 export interface SendInnSoknadResponse {
   innsendingsId: string;
   hoveddokumentVariant: {
-    document: { data: number[] | null };
+    document: { data: Submission };
   };
 }
 
