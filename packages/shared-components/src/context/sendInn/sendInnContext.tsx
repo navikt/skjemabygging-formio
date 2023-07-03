@@ -42,6 +42,14 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const history = useHistory();
   const { search } = useLocation();
 
+  const addQueryParamToUrl = (key, value) => {
+    if (key && value) {
+      const searchParams = new URLSearchParams(history.location.search);
+      searchParams.set(key, value);
+      history.push({ search: searchParams.toString() });
+    }
+  };
+
   useEffect(() => {
     const retrievePreviousSubmission = async () => {
       try {
@@ -53,6 +61,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           const response = await getSoknad(innsendingsId, appConfig);
           console.log("response", response);
           if (response?.hoveddokumentVariant.document.data) {
+            addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
             updateSubmission(response.hoveddokumentVariant.document.data!);
           }
           setIsMellomlagringReady(true);
@@ -77,14 +86,6 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     return (new URL(window.location.href).searchParams.get("lang") as Language) || nbNO;
   };
 
-  const addInnsendingsIdToUrlParams = (value) => {
-    if (value) {
-      const searchParams = new URLSearchParams(history.location.search);
-      searchParams.set("innsendingsId", value);
-      history.push({ search: searchParams.toString() });
-    }
-  };
-
   const startMellomlagring = async (submission: Submission) => {
     if (isMellomLagringEnabled && !mellomlagringStarted) {
       try {
@@ -93,7 +94,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         const translation = translationForLanguage(currentLanguage);
         const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
         setInnsendingsId(response?.innsendingsId);
-        addInnsendingsIdToUrlParams(response?.innsendingsId);
+        addQueryParamToUrl("innsendingsId", response?.innsendingsId);
         setIsMellomlagringReady(true);
         return response;
       } catch (error: any) {
