@@ -19,7 +19,15 @@ interface FetchOptions {
   redirectToLocation?: boolean;
 }
 
-class HttpError extends Error {}
+class HttpError extends Error {
+  public readonly status: number;
+
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+    console.log(this.status);
+  }
+}
 
 class UnauthenticatedError extends Error {}
 
@@ -76,7 +84,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       errorMessage = await response.text();
     }
 
-    throw new HttpError(errorMessage || response.statusText);
+    throw new HttpError(errorMessage || response.statusText, response.status);
   }
 
   if (opts && opts.redirectToLocation) {

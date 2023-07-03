@@ -9,6 +9,7 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
+import { HttpError } from "../../components/error";
 import { useAppConfig } from "../../configContext";
 
 interface SendInnContextType {
@@ -16,6 +17,7 @@ interface SendInnContextType {
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   innsendingsId: string | undefined;
+  mellomlagringError: HttpError | Error | undefined;
 }
 
 interface SendInnProviderProps {
@@ -30,6 +32,7 @@ const SendInnContext = createContext<SendInnContextType>({} as SendInnContextTyp
 const SendInnProvider = ({ children, form, translations, updateSubmission }: SendInnProviderProps) => {
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
+  const [mellomlagringError, setMellomlagringError] = useState<Error>();
 
   const appConfig = useAppConfig();
   const { app, submissionMethod, featureToggles, logger } = appConfig;
@@ -48,14 +51,14 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           setInnsendingsId(innsendingsId);
           setMellomlagringStarted(true);
           const response = await getSoknad(innsendingsId, appConfig);
+          console.log("response", response);
           if (response?.hoveddokumentVariant.document.data) {
             updateSubmission(response.hoveddokumentVariant.document.data!);
           }
           setIsMellomlagringReady(true);
         }
-      } catch (error) {
-        // setMellomlagringStarted(false);
-        //TODO: Remove innsendingsId from url? show error (404/401)?
+      } catch (error: any) {
+        setMellomlagringError(error as Error);
       }
     };
     retrievePreviousSubmission();
@@ -129,6 +132,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     submitSoknad,
     innsendingsId,
     isMellomlagringReady,
+    mellomlagringError,
   };
 
   return <SendInnContext.Provider value={value}>{children}</SendInnContext.Provider>;
