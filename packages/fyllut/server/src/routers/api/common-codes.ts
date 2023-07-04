@@ -37,7 +37,7 @@ const commonCodes = {
       const response = await fetchCommonCodeDescriptions(req, "ValutaBetaling", languageCode);
       for (const [key, values] of Object.entries(response.betydninger)) {
         const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
-        let newObj = { label: `${currencyName} (${key})`, value: key };
+        const newObj = { label: `${currencyName} (${key})`, value: key };
         if (key === "NOK" || key === "EUR" || key === "SEK") {
           mostUsedCurr.push(newObj);
         } else {
@@ -56,7 +56,7 @@ const commonCodes = {
 };
 
 const sortAsc = (list: { label: string; value: string }[], languageCode: string) => {
-  let sortedarr = list.sort((a, b) => a.label.toUpperCase().localeCompare(b.label.toUpperCase(), languageCode));
+  const sortedarr = list.sort((a, b) => a.label.toUpperCase().localeCompare(b.label.toUpperCase(), languageCode));
   return sortedarr;
 };
 /**

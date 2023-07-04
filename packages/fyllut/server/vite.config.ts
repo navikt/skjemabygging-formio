@@ -1,7 +1,10 @@
 /// <reference types="vitest" />
+import * as dns from "dns";
 import { VitePluginNode } from "vite-plugin-node";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
+
+dns.setDefaultResultOrder("verbatim");
 
 export default defineConfig({
   server: {

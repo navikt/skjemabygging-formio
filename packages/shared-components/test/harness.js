@@ -59,6 +59,7 @@ const Harness = {
   builderBefore(done, options = {}) {
     let html; // Unsure what _your code_ needs here -- using `undefined` to trigger default value
     let opt = { url: "http://localhost/" };
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     this.jsdom = require("jsdom-global")(html, opt);
     window.confirm = () => true;
     formBuilderElement = document.createElement("div");

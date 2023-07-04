@@ -28,6 +28,7 @@ describe("TokenX client", () => {
     const tokenxNockScope = nock(extractHost(token_endpoint))
       .post(extractPath(token_endpoint), recorder.saveBody)
       .reply(200, { access_token: mockTokenxAccessToken }, { "Content-Type": "application/json" });
+    // eslint-disable-next-line no-useless-catch
     try {
       const accessToken = await client.exchangeToken("idporten-jwt", "unittest-gcp:namespace:app-a");
       expect(accessToken).toEqual(mockTokenxAccessToken);

@@ -3,7 +3,7 @@ import { act } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import PusherNotificationsProvider, { CHANNEL, EVENT, usePusherNotifications } from "./NotificationsContext";
 
-let channelSubscriptions = {};
+const channelSubscriptions = {};
 vi.mock("pusher-js", () => {
   return {
     default: () => ({

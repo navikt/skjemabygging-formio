@@ -46,7 +46,7 @@ const isValidUuid = (innsendingsId: string): boolean => {
   return validUuidExpr.test(innsendingsId);
 };
 
-export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[\./]/g, "");
+export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, "");
 
 export const validateInnsendingsId = (innsendingsId: string | undefined) => {
   let errorMessage;
@@ -112,7 +112,7 @@ export const assembleSendInnSoknadBody = (
     }),
   };
 
-  let body: SendInnSoknadBody = {
+  const body: SendInnSoknadBody = {
     brukerId: idportenPid,
     skjemanr: form.properties.skjemanummer,
     tittel: translate(form.title),

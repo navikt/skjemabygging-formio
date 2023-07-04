@@ -19,17 +19,15 @@ export const createUrlParams = (
   dependencyFilters: MigrationOptions,
   editOptions: MigrationOptions
 ) => {
-  let searchFilterParameters;
-  let dependencyFilterParameters;
   let editOptionsParameters;
 
   const encodedSearchFilters = searchFiltersAsParams(searchFilters);
-  searchFilterParameters = isEmpty(encodedSearchFilters)
+  const searchFilterParameters = isEmpty(encodedSearchFilters)
     ? null
     : `searchFilters=${JSON.stringify(encodedSearchFilters)}`;
 
   const encodedDependencyFilters = searchFiltersAsParams(dependencyFilters);
-  dependencyFilterParameters = isEmpty(encodedDependencyFilters)
+  const dependencyFilterParameters = isEmpty(encodedDependencyFilters)
     ? null
     : `dependencyFilters=${JSON.stringify(encodedDependencyFilters)}`;
 

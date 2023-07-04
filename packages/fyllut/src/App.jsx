@@ -19,7 +19,7 @@ Formio.use(Template);
 function App({ className }) {
   const styles = useStyles();
   return (
-    <div className={classNames(className, styles.app)}>
+    <div className={classNames(className, styles.app, "cool")}>
       <Switch>
         <Route exact path="/">
           <AllForms />

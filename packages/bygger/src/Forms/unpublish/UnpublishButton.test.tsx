@@ -6,7 +6,7 @@ import UnpublishButton from "./UnpublishButton";
 Modal.setAppElement(document.createElement("div"));
 
 describe("UnpublishButton", () => {
-  let onUnpublish = vi.fn();
+  const onUnpublish = vi.fn();
   const renderButton = (form?: NavFormType) => {
     if (!form) {
       form = {

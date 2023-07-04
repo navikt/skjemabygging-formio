@@ -184,7 +184,7 @@ describe("app", () => {
   });
 
   it("Performs TokenX exchange and retrieves pdf from exstream before calling SendInn", async () => {
-    let key = await generateJwk();
+    const key = await generateJwk();
     nock("https://testoidc.unittest.no")
       .get("/idporten-oidc-provider/jwk")
       .reply(200, { keys: [key.toJSON(false)] });

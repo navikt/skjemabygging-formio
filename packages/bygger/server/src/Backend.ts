@@ -16,7 +16,7 @@ import {
 import { FormioService } from "./services/formioService";
 
 const BULK_PUBLISH_REGEXP = /^\[bulk-publisering\] (\d+) skjemaer publisert, monorepo ref: (.*)$/;
-const PUBLISH_REGEXP = /^\[publisering\] skjema \"(.*)\", monorepo ref: (.*)$/;
+const PUBLISH_REGEXP = /^\[publisering\] skjema "(.*)", monorepo ref: (.*)$/;
 const UNPUBLISH_REGEXP = /^\[avpublisering\] skjema (.*), monorepo ref: (.*)$/;
 
 export class Backend {

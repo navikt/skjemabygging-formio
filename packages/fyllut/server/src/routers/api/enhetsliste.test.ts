@@ -76,7 +76,7 @@ describe("[endpoint] enhetsliste", () => {
         },
       });
       const res = mockResponse();
-      let next = mockNext();
+      const next = mockNext();
       await enhetslisteEndpoint.get(req, res, next);
       expect(res.json).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledTimes(1);

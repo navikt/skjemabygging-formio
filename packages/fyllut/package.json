@@ -18,6 +18,8 @@
   "dependencies": {
     "@navikt/ds-css": "^2.9.8",
     "@navikt/ds-react": "^2.9.8",
+    "@navikt/skjemadigitalisering-shared-components": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "axe-core": "^4.6.3",
     "classnames": "^2.3.2",
     "cross-env": "^7.0.3",

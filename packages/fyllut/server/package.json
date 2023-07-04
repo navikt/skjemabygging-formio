@@ -17,6 +17,7 @@
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.1.0",
     "@navikt/nav-dekoratoren-moduler": "^1.9.0",
+    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",

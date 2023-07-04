@@ -151,7 +151,7 @@ const getPersonWithRelations = async (
 ): Promise<Person[]> => {
   logger.debug(`Fetch person with children from pdl.`);
 
-  let response = await pdlRequest(
+  const response = await pdlRequest(
     accessToken,
     theme,
     JSON.stringify({
@@ -178,7 +178,7 @@ const getPersonWithRelations = async (
 
   const person = response.hentPerson;
 
-  let children: Person[] = [];
+  const children: Person[] = [];
   if (person.forelderBarnRelasjon?.length > 0) {
     for (const relation of person.forelderBarnRelasjon) {
       if (relation.relatertPersonsIdent && (!role || role === relation.relatertPersonsRolle)) {

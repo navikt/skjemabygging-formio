@@ -15,14 +15,16 @@ export default defineConfig({
       fileName: "index",
     },
     rollupOptions: {
-      external: ["react", "react-dom"],
+      external: ["react", "react-dom", "react-router-dom", "@navikt/ds-react", "@navikt/ds-css", "react-jss"],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react-jss": "React-JSS",
         },
       },
     },
+    cssCodeSplit: false,
   },
   plugins: [
     react(),

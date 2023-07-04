@@ -977,6 +977,11 @@
   resolved "https://registry.yarnpkg.com/@navikt/aksel-icons/-/aksel-icons-2.9.8.tgz#04e4868d2f8f1022b52e9de54668127f6d0f5052"
   integrity sha512-HANk2yejzzQxj4UefLg5Q8YXqkwh98SN98fNJUIlfonnh1bla1XB2h690QZJiY5SghHDnb2RGo/aojc8BwI8kQ==
 
+"@navikt/ds-css@^2.9.8":
+  version "2.9.8"
+  resolved "https://npm.pkg.github.com/download/@navikt/ds-css/2.9.8/f620f8fc013050d272d89485bb46042819363cc2#f620f8fc013050d272d89485bb46042819363cc2"
+  integrity sha512-6MnIJpH/pX9VYXGcO2hUn9WWqUTk1WdIiPVQQbj3jTZhUKNwnT2bofcB+OrIfCST9o0qDyYeGVfVsuAyQpZxRA==
+
 "@navikt/ds-icons@^2.9.8":
   version "2.9.8"
   resolved "https://registry.yarnpkg.com/@navikt/ds-icons/-/ds-icons-2.9.8.tgz#b6f22493a3b836e00762dcc0a4397c64beb634e0"
