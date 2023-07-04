@@ -28,7 +28,6 @@
     "glob": "^7.1.7",
     "i18n-iso-countries": "^6.8.0",
     "jose": "^4.10.0",
-    "jsdom": "^16.4.0",
     "jsonwebtoken": "^9.0.0",
     "luxon": "^3.0.4",
     "morgan": "^1.10.0",

@@ -15,8 +15,8 @@ describe("PublishModalComponents", () => {
   let mockedCloseModal;
   let mockedOnPublish;
   const renderPublishSettingsModal = (form) => {
-    mockedCloseModal = jest.fn();
-    mockedOnPublish = jest.fn();
+    mockedCloseModal = vi.fn();
+    mockedOnPublish = vi.fn();
     render(
       <PublishModalComponents
         openPublishSettingModal={true}

@@ -3,9 +3,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formio } from "formiojs";
 import Components from "formiojs/components/Components";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
-import createMockImplementation from "../../test/backendMockImplementation";
+import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import NavFormBuilder from "./NavFormBuilder";
 import testform from "./testdata/conditional-multiple-dependencies";
 
@@ -25,11 +23,8 @@ describe("NavFormBuilder", () => {
   beforeAll(() => {
     Formio.use(navdesign);
     Components.setComponents(CustomComponents);
-    new Formio("http://unittest.nav-formio-api.no");
-  });
-
-  beforeEach(() => {
-    fetchMock.mockImplementation(createMockImplementation({ projectUrl: "http://unittest.nav-formio-api.no" }));
+    new Formio(DEFAULT_PROJECT_URL);
+    vi.spyOn(Formio, "fetch").mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
@@ -42,8 +37,8 @@ describe("NavFormBuilder", () => {
     let onReadyMock;
 
     beforeEach(async () => {
-      onChangeMock = jest.fn();
-      onReadyMock = jest.fn();
+      onChangeMock = vi.fn();
+      onReadyMock = vi.fn();
       render(<NavFormBuilder form={testform} onChange={onChangeMock} onReady={onReadyMock} />);
       await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
       onChangeMock.mockReset();
@@ -75,7 +70,7 @@ describe("NavFormBuilder", () => {
       });
 
       it("prompts user when removing a component which other components depends on", async () => {
-        window.confirm = jest.fn().mockImplementation(() => true);
+        window.confirm = vi.fn().mockImplementation(() => true);
         const fieldset = screen.queryByRole("group", { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
@@ -89,7 +84,7 @@ describe("NavFormBuilder", () => {
       });
 
       it("does not remove component if user declines prompt", async () => {
-        window.confirm = jest.fn().mockImplementation(() => false);
+        window.confirm = vi.fn().mockImplementation(() => false);
         const fieldset = screen.queryByRole("group", { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
@@ -108,7 +103,7 @@ describe("NavFormBuilder", () => {
       });
 
       it("prompts user when removing component containing component which other components depends on", async () => {
-        window.confirm = jest.fn().mockImplementation(() => true);
+        window.confirm = vi.fn().mockImplementation(() => true);
         const panel = screen.queryByText("Tilbakemelding");
         expect(panel).toBeInTheDocument();
 

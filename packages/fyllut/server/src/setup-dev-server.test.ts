@@ -1,8 +1,8 @@
 import request from "supertest";
 import { createApp } from "./app";
 
-jest.mock("./logger.js");
-jest.mock("./dekorator.js", () => ({
+vi.mock("./logger.js");
+vi.mock("./dekorator.js", () => ({
   getDecorator: () => {},
   createRedirectUrl: () => "",
 }));

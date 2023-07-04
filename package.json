@@ -21,19 +21,17 @@
     "test": "cross-env-shell CI=true lerna run --stream test",
     "test:coverage": "cross-env-shell CI=true lerna run --stream test:coverage",
     "cypress": "lerna run --stream cypress",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
     "lint:staged": "lint-staged"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
-    "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.3",
     "eslint": "^7.11.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^24.0.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
@@ -56,7 +54,7 @@
     "node": ">=16.17.1"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,cjs,mjs}": [
+    "*.{js,jsx,ts,tsx,mjs}": [
       "eslint --fix",
       "prettier --write"
     ],

@@ -2,13 +2,12 @@ import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { MockedComponentObjectForTest } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import PublishSettingsModal, { getCompleteTranslationLanguageCodeList } from "./PublishSettingsModal";
 
 const { createDummyRadioPanel, createFormObject, createPanelObject, createFormPropertiesObject } =
   MockedComponentObjectForTest;
 
-jest.mock("../../context/i18n/index", () => {
+vi.mock("../../context/i18n/index", () => {
   const languagesInNorwegian = {
     "nn-NO": "Norsk nynorsk",
     en: "Engelsk",
@@ -43,8 +42,8 @@ describe("PublishSettingsModal", () => {
   let mockedCloseModal;
   let mockedOnPublish;
   const renderPublishSettingsModal = (form) => {
-    mockedCloseModal = jest.fn();
-    mockedOnPublish = jest.fn();
+    mockedCloseModal = vi.fn();
+    mockedOnPublish = vi.fn();
     render(
       <PublishSettingsModal openModal={true} closeModal={mockedCloseModal} onPublish={mockedOnPublish} form={form} />
     );

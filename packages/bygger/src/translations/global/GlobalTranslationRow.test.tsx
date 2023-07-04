@@ -1,21 +1,20 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import GlobalTranslationRow from "./GlobalTranslationRow";
 
 describe("GlobalTranslationRow", () => {
-  let mockedUpdateTranslation = jest.fn();
-  let mockedUpdateOriginalText = jest.fn();
-  let mockedDeleteOneRow = jest.fn();
+  let mockedUpdateTranslation = vi.fn();
+  let mockedUpdateOriginalText = vi.fn();
+  let mockedDeleteOneRow = vi.fn();
 
   const renderGlobalTranslationRow = (
     mockedOriginalText: string,
     mockedTranslation: string,
     mockedCurrentOriginalTextList: string[]
   ) => {
-    mockedUpdateTranslation = jest.fn();
-    mockedUpdateOriginalText = jest.fn();
-    mockedDeleteOneRow = jest.fn();
+    mockedUpdateTranslation = vi.fn();
+    mockedUpdateOriginalText = vi.fn();
+    mockedDeleteOneRow = vi.fn();
     render(
       <GlobalTranslationRow
         id={"123"}

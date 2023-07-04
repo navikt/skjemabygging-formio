@@ -8,9 +8,9 @@ export const generateJwk = async () => keystore.generate("RSA", 2048);
 
 export function mockResponse(): Response {
   return {
-    json: jest.fn(),
-    sendStatus: jest.fn(),
-    header: jest.fn(),
+    json: vi.fn(),
+    sendStatus: vi.fn(),
+    header: vi.fn(),
   } as unknown as Response;
 }
 

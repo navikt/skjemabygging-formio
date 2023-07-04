@@ -1,7 +1,7 @@
 import { Backend } from "../../src/Backend";
 import { FormioService } from "../../src/services/formioService";
 
-const { Response } = jest.requireActual("node-fetch");
+const { Response } = await vi.importActual("node-fetch");
 
 const FORMIO_PROJECT_URL = "https://projectApi.example.com";
 

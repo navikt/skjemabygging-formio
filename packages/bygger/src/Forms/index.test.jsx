@@ -2,21 +2,25 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Formio } from "formiojs";
-import fetchMock from "jest-fetch-mock";
 import { MemoryRouter } from "react-router-dom";
-import createMockImplementation from "../../test/backendMockImplementation";
+import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import featureToggles from "../../test/featureToggles";
 import AuthenticatedApp from "../AuthenticatedApp";
 import { AuthContext } from "../context/auth-context";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
 
 describe("FormsRouter", () => {
-  beforeEach(() => {
+  let formioFetch;
+
+  beforeAll(() => {
+    formioFetch = vi.spyOn(Formio, "fetch");
+    formioFetch.mockImplementation(createMockImplementation());
     fetchMock.mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
-    fetchMock.resetMocks();
+    formioFetch.mockClear();
+    fetchMock.mockClear();
   });
 
   function renderApp(pathname) {
@@ -29,11 +33,8 @@ describe("FormsRouter", () => {
           }}
         >
           <FeedbackProvider>
-            <AppConfigProvider featureToggles={featureToggles} baseUrl="http://baseurl.example.org">
-              <AuthenticatedApp
-                formio={new Formio("http://myproject.example.org")}
-                serverURL={"http://myproject.example.org"}
-              />
+            <AppConfigProvider featureToggles={featureToggles} baseUrl={DEFAULT_PROJECT_URL}>
+              <AuthenticatedApp formio={new Formio(DEFAULT_PROJECT_URL)} serverURL={DEFAULT_PROJECT_URL} />
             </AppConfigProvider>
           </FeedbackProvider>
         </AuthContext.Provider>
@@ -66,6 +67,8 @@ describe("FormsRouter", () => {
     renderApp("/forms");
     const editLinks = await screen.findAllByTestId("editLink");
     expect(editLinks).toHaveLength(2);
-    editLinks.forEach((link) => expect(link.href).toMatch(/http:\/\/localhost\/forms\/(columns|debugskjema)\/edit/));
+    editLinks.forEach((link) =>
+      expect(link.href).toMatch(/http:\/\/localhost(:\d+)?\/forms\/(columns|debugskjema)\/edit/)
+    );
   });
 });

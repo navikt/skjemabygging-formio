@@ -4,13 +4,13 @@ import createMockImplementation from "../../test/backendMockImplementation";
 import useTemaKoder from "./useTemaKoder";
 
 describe("useTemaKoder", () => {
-  let fetchSpy: jest.SpyInstance;
+  let fetchSpy: vi.SpyInstance;
   let appConfig: WrapperComponent<any>;
   const projectUrl = "http://test.example.org";
 
   beforeEach(() => {
     appConfig = ({ children }) => <AppConfigProvider baseUrl={projectUrl}>{children}</AppConfigProvider>;
-    fetchSpy = jest.spyOn(global, "fetch");
+    fetchSpy = vi.spyOn(global, "fetch");
     fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
   });
 
@@ -35,7 +35,7 @@ describe("useTemaKoder", () => {
 
   describe("When fetch returns with not ok", () => {
     let errorSpy;
-    beforeEach(() => (errorSpy = jest.spyOn(console, "error").mockImplementation(jest.fn())));
+    beforeEach(() => (errorSpy = vi.spyOn(console, "error").mockImplementation(vi.fn())));
     afterEach(() => errorSpy.mockClear());
 
     it("returns an error message", async () => {

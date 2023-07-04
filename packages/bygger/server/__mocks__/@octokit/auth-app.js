@@ -1,1 +1,1 @@
-export const createAppAuth = jest.fn().mockReturnValue(() => ({ auth: () => ({ token: "" }) }));
+export const createAppAuth = vi.fn().mockReturnValue(() => ({ auth: () => ({ token: "" }) }));

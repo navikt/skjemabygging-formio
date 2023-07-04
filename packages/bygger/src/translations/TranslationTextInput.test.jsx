@@ -1,11 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import React from "react";
 import TranslationTextInput from "./TranslationTextInput";
 
 describe("TranslationTextInput", () => {
-  const mockedOnChange = jest.fn();
-  const mockedSetHasGlobalTranslation = jest.fn();
-  const mockedSetGlobalTranslation = jest.fn();
+  const mockedOnChange = vi.fn();
+  const mockedSetHasGlobalTranslation = vi.fn();
+  const mockedSetGlobalTranslation = vi.fn();
   const setUp = (
     type,
     value = "native translation",

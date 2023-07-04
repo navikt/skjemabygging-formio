@@ -41,7 +41,7 @@ describe("MigrationPage", () => {
   );
 
   beforeEach(() => {
-    fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
+    fetchSpy = vi.spyOn(global, "fetch").mockImplementation(() =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
           headers: {

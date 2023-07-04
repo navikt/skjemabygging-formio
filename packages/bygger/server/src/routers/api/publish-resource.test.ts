@@ -1,8 +1,8 @@
 import { mockRequest, mockResponse } from "../../test/testHelpers";
 import publishResource, { isValidResource } from "./publish-resource";
 
-jest.mock("../../services/index.ts", () => {
-  return { backendInstance: { publishResource: jest.fn() } };
+vi.mock("../../services/index.ts", () => {
+  return { backendInstance: { publishResource: vi.fn() } };
 });
 
 describe("publish-resource", () => {
@@ -13,7 +13,7 @@ describe("publish-resource", () => {
         body: { token: "test-token", resource: "{}" },
       });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await publishResource(req, res, next);
 
       expect(next).not.toHaveBeenCalled();
@@ -26,7 +26,7 @@ describe("publish-resource", () => {
         body: { token: "test-token", resource: "{}" },
       });
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await publishResource(req, res, next);
 
       expect(next).toHaveBeenCalledTimes(1);

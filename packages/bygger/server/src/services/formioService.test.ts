@@ -47,12 +47,12 @@ describe("FormioService", () => {
         nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .reply(500);
-        jest.spyOn(console, "error").mockImplementation(() => {});
+        vi.spyOn(console, "error").mockImplementation(() => {});
       });
 
       afterEach(() => {
         nock.cleanAll();
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
       });
 
       it("is thrown as an error", async () => {

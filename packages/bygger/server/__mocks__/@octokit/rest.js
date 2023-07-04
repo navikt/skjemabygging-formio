@@ -1,15 +1,15 @@
-export const mockGetRef = jest.fn();
-export const mockCreateRef = jest.fn();
-export const mockDeleteRef = jest.fn();
-export const mockGetTree = jest.fn();
-export const mockCreateTree = jest.fn();
-export const mockCreateCommit = jest.fn();
-export const mockUpdateRef = jest.fn();
-export const mockGetContent = jest.fn();
-export const mockCreateOrUpdateFileContents = jest.fn();
-export const mockCreatePullRequest = jest.fn();
-export const mockMergePullRequest = jest.fn();
-export const Octokit = jest.fn().mockImplementation(() => {
+export const mockGetRef = vi.fn();
+export const mockCreateRef = vi.fn();
+export const mockDeleteRef = vi.fn();
+export const mockGetTree = vi.fn();
+export const mockCreateTree = vi.fn();
+export const mockCreateCommit = vi.fn();
+export const mockUpdateRef = vi.fn();
+export const mockGetContent = vi.fn();
+export const mockCreateOrUpdateFileContents = vi.fn();
+export const mockCreatePullRequest = vi.fn();
+export const mockMergePullRequest = vi.fn();
+export const Octokit = vi.fn().mockImplementation(() => {
   return {
     rest: {
       git: {

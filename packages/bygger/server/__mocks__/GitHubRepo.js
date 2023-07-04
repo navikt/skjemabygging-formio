@@ -1,19 +1,19 @@
-export const mockRepoGetRef = jest.fn().mockReturnValue({ data: { object: { sha: "sha" } } });
-export const mockRepoCreateRef = jest.fn();
-export const mockRepoDeleteRef = jest.fn();
-export const mockRepoGetFileIfItExists = jest
+export const mockRepoGetRef = vi.fn().mockReturnValue({ data: { object: { sha: "sha" } } });
+export const mockRepoCreateRef = vi.fn();
+export const mockRepoDeleteRef = vi.fn();
+export const mockRepoGetFileIfItExists = vi
   .fn()
   .mockReturnValue({ data: { sha: "existing-file-sha", content: "content" } });
-export const mockRepoCreateOrUpdateFileContents = jest
+export const mockRepoCreateOrUpdateFileContents = vi
   .fn()
   .mockReturnValue({ data: { commit: { sha: "new-commit-sha" } } });
-export const mockRepoCreatePullRequest = jest.fn().mockReturnValue({ data: { number: 14 } });
-export const mockRepoMergePullRequest = jest.fn();
-export const mockRepoHasBranchChanged = jest
+export const mockRepoCreatePullRequest = vi.fn().mockReturnValue({ data: { number: 14 } });
+export const mockRepoMergePullRequest = vi.fn();
+export const mockRepoHasBranchChanged = vi
   .fn()
   .mockImplementation((ref, _branch) => mockRepoGetRef().data.object.sha !== ref.data.object.sha);
 
-export const GitHubRepo = jest.fn().mockImplementation(() => {
+export const GitHubRepo = vi.fn().mockImplementation(() => {
   return {
     getRef: mockRepoGetRef,
     createRef: mockRepoCreateRef,

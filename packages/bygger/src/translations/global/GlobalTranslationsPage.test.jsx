@@ -13,8 +13,8 @@ describe("GlobalTranslationsPage", () => {
   let mockedSaveTranslations;
 
   const renderGlobalTranslationsPage = async (loadTranslation, languageCode = "", tag = "skjematekster") => {
-    mockedDeleteTranslation = jest.fn();
-    mockedSaveTranslations = jest.fn();
+    mockedDeleteTranslation = vi.fn();
+    mockedSaveTranslations = vi.fn();
 
     await act(async () => {
       render(
@@ -45,7 +45,7 @@ describe("GlobalTranslationsPage", () => {
   describe("Render global translation page without available languages", () => {
     beforeEach(async () => {
       await renderGlobalTranslationsPage(
-        jest.fn(() => Promise.resolve({})),
+        vi.fn(() => Promise.resolve({})),
         ""
       );
     });
@@ -63,7 +63,7 @@ describe("GlobalTranslationsPage", () => {
   describe("Render global translation page with English translations", () => {
     let mockedLoadTranslation;
     beforeEach(async () => {
-      mockedLoadTranslation = jest.fn(() => Promise.resolve(globalTranslations));
+      mockedLoadTranslation = vi.fn(() => Promise.resolve(globalTranslations));
       await renderGlobalTranslationsPage(mockedLoadTranslation, "en");
     });
     afterEach(() => {
@@ -84,7 +84,7 @@ describe("GlobalTranslationsPage", () => {
 
   describe("Navigation between tags", () => {
     beforeEach(async () => {
-      const loadGlobalTranslations = jest.fn(() => Promise.resolve(globalTranslations));
+      const loadGlobalTranslations = vi.fn(() => Promise.resolve(globalTranslations));
       await renderGlobalTranslationsPage(loadGlobalTranslations, "en", tags.SKJEMATEKSTER);
     });
 
@@ -112,7 +112,7 @@ describe("GlobalTranslationsPage", () => {
   describe("Obsolete translations", () => {
     describe("tag: validering", () => {
       beforeEach(async () => {
-        const loadGlobalTranslations = jest.fn(() => Promise.resolve(globalTranslations));
+        const loadGlobalTranslations = vi.fn(() => Promise.resolve(globalTranslations));
         await renderGlobalTranslationsPage(loadGlobalTranslations, "en", tags.VALIDERING);
       });
 

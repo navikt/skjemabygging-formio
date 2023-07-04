@@ -15,7 +15,7 @@ import {
 import { configForTest } from "../testTools/backend/testUtils";
 import { GitHubRepo } from "./GitHubRepo.js";
 
-jest.mock("@octokit/rest");
+vi.mock("@octokit/rest");
 
 describe("GitHubRepo", () => {
   let repo;

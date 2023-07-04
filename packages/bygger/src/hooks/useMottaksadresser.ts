@@ -36,7 +36,9 @@ const useMottaksadresser = (): Output => {
         setMottaksadresser(mottaksadresser);
         setReady(true);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const validateThemes = (addresses: Mottaksadresse[] = []) => {

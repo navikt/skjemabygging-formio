@@ -1,7 +1,6 @@
 import { getNodeText, render, screen, waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
-import fetchMock from "jest-fetch-mock";
 import { useEffect, useState } from "react";
 import { AuthProvider } from "../context/auth-context";
 import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
@@ -26,7 +25,11 @@ describe("useFormioForms", () => {
   let mockFeedbackEmit;
 
   beforeEach(() => {
-    mockFeedbackEmit = { success: jest.fn(), error: jest.fn() };
+    mockFeedbackEmit = { success: vi.fn(), error: vi.fn() };
+  });
+
+  afterEach(() => {
+    fetchMock.mockClear();
   });
 
   const TestComponent = ({ formio, formPath }) => {
@@ -51,6 +54,7 @@ describe("useFormioForms", () => {
   };
 
   describe("Test form", () => {
+    let formioFetch;
     beforeEach(() => {
       const forms = [
         { title: "skjema1", path: "skjema1", tags: "nav-skjema", properties: {}, modified: "", _id: "000" },
@@ -61,7 +65,8 @@ describe("useFormioForms", () => {
       const form = [
         { title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" },
       ];
-      fetchMock.mockImplementation((url) => {
+      formioFetch = vi.spyOn(Formio, "fetch");
+      formioFetch.mockImplementation((url) => {
         if (
           url.includes(
             "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id"
@@ -73,6 +78,10 @@ describe("useFormioForms", () => {
         }
         return Promise.reject(new Error(`ukjent url ${url}`));
       });
+    });
+
+    afterEach(() => {
+      formioFetch.mockClear();
     });
 
     it("loads form list in the hook", async () => {
@@ -106,7 +115,7 @@ describe("useFormioForms", () => {
 
     beforeEach(() => {
       formioMock = {
-        saveForm: jest.fn().mockImplementation((form) => Promise.resolve(form)),
+        saveForm: vi.fn().mockImplementation((form) => Promise.resolve(form)),
       };
 
       ({
@@ -159,8 +168,8 @@ describe("useFormioForms", () => {
 
     beforeEach(() => {
       formioMock = {
-        saveForm: jest.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: createDate() })),
-        loadForms: jest.fn().mockImplementation((path) => Promise.resolve([{ path, modified: createDate() }])),
+        saveForm: vi.fn().mockImplementation((form) => Promise.resolve({ ...form, modified: createDate() })),
+        loadForms: vi.fn().mockImplementation((path) => Promise.resolve([{ path, modified: createDate() }])),
       };
 
       ({

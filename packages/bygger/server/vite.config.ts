@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
+/// <reference types="vitest" />
 import { VitePluginNode } from "vite-plugin-node";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   server: {
@@ -18,4 +19,9 @@ export default defineConfig({
       appPath: "./src/server.js",
     }),
   ],
+  test: {
+    globals: true,
+    setupFiles: "./src/setupTests.ts",
+    include: ["src/(**/)?*.{test,spec}.[jt]s(x)?"],
+  },
 });

@@ -13,10 +13,10 @@ import { GitHubRepo } from "./GitHubRepo.js";
 import { stringTobase64 } from "./fetchUtils";
 import { pushEventWithCommitMessage } from "./testdata/default-github-push-event";
 
-jest.mock("uuid", () => {
-  return { v4: jest.fn().mockReturnValue("1234") };
+vi.mock("uuid", () => {
+  return { v4: vi.fn().mockReturnValue("1234") };
 });
-jest.mock("./GitHubRepo.js");
+vi.mock("./GitHubRepo.js");
 
 describe("Backend", () => {
   const formPath = "skjema";
@@ -25,7 +25,7 @@ describe("Backend", () => {
     // @ts-ignore
     GitHubRepo.mockImplementation(() => {
       return {
-        authenticate: jest.fn(),
+        authenticate: vi.fn(),
         getRef: mockRepoGetRef,
         createRef: mockRepoCreateRef,
         deleteRef: mockRepoDeleteRef,

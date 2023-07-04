@@ -1,11 +1,10 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock from "jest-fetch-mock";
 import { MemoryRouter } from "react-router-dom";
+import mockMottaksadresser from "../../example_data/mottaksadresser.json";
 import featureToggles from "../../test/featureToggles";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
-import mockMottaksadresser from "../mottaksadresser/testdata/mottaksadresser";
 import NewFormPage from "./NewFormPage";
 
 const RESPONSE_HEADERS = {
@@ -29,8 +28,8 @@ describe("NewFormPage", () => {
     });
   });
   it("should create a new form with correct path, title and name", async () => {
-    const saveForm = jest.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
-    const onLogout = jest.fn();
+    const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
+    const onLogout = vi.fn();
     render(
       <MemoryRouter>
         <AppConfigProvider featureToggles={featureToggles}>
@@ -64,9 +63,9 @@ describe("NewFormPage", () => {
     });
   });
   it("should handle exception from saveForm, with message to user", async () => {
-    const saveForm = jest.fn(() => Promise.reject(new Error("Form.io feil")));
-    const onLogout = jest.fn();
-    console.error = jest.fn();
+    const saveForm = vi.fn(() => Promise.reject(new Error("Form.io feil")));
+    const onLogout = vi.fn();
+    console.error = vi.fn();
     render(
       <FeedbackProvider>
         <MemoryRouter>

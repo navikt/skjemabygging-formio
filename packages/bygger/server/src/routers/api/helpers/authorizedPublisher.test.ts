@@ -7,11 +7,11 @@ describe("authorizedPublisher", () => {
   const projectUrl = config.formio.projectUrl;
 
   beforeAll(() => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterAll(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("Accepts formio token in body", async () => {
@@ -22,7 +22,7 @@ describe("authorizedPublisher", () => {
       },
     });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authorizedPublisher(req, res, next);
     expect(next).toHaveBeenCalledTimes(1);
     expect(next.mock.calls[0][0]).toBeUndefined();
@@ -39,7 +39,7 @@ describe("authorizedPublisher", () => {
       },
     });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authorizedPublisher(req, res, next);
     expect(next).toHaveBeenCalledTimes(1);
     expect(next.mock.calls[0][0]).toBeUndefined();
@@ -52,7 +52,7 @@ describe("authorizedPublisher", () => {
       },
     });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authorizedPublisher(req, res, next);
     expect(next).toHaveBeenCalledTimes(1);
     const nextArg = next.mock.calls[0][0];
@@ -68,7 +68,7 @@ describe("authorizedPublisher", () => {
       },
     });
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authorizedPublisher(req, res, next);
     expect(next).toHaveBeenCalledTimes(1);
     const nextArg = next.mock.calls[0][0];

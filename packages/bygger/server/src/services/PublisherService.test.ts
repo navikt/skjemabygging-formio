@@ -2,8 +2,8 @@ import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-sh
 import nock from "nock";
 import { Backend } from "../Backend";
 import config from "../config";
-import { formioService } from "./index";
 import PublisherService from "./PublisherService";
+import { formioService } from "./index";
 
 const opts = { userName: "todd", formioToken: "valid-formio-token" };
 
@@ -85,7 +85,8 @@ describe("PublisherService", () => {
     });
 
     describe("when publishing fails", () => {
-      let formioServiceSpy: jest.SpyInstance<
+      // @ts-ignore
+      let formioServiceSpy: vi.SpyInstance<
         Promise<NavFormType>,
         [form: NavFormType, formioToken: string, userName: string, formProps?: Partial<FormPropertiesType> | undefined]
       >;
@@ -101,7 +102,7 @@ describe("PublisherService", () => {
           },
         } as unknown as Backend;
         publisherService = new PublisherService(formioService, backendMock);
-        formioServiceSpy = jest.spyOn(formioService, "saveForm");
+        formioServiceSpy = vi.spyOn(formioService, "saveForm");
         nockScope = nock(config.formio.projectUrl)
           .put(/\/form\/(\d*)$/)
           .times(2)

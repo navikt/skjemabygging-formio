@@ -1,7 +1,7 @@
 import { waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { Formio } from "formiojs";
-import createMockImplementation from "../../test/backendMockImplementation";
+import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
 import { useFormioTranslations } from "./useFormioTranslations";
 
@@ -17,7 +17,7 @@ const MOCK_PREDEFINED_TEXTS_I18N_PL = {
   Forrige: "Poprzedni",
   Neste: "Następny",
 };
-jest.mock("../translations/global/utils", () => ({
+vi.mock("../translations/global/utils", () => ({
   getTranslationKeysForAllPredefinedTexts: () => Object.keys(MOCK_PREDEFINED_TEXTS_I18N_EN),
   tags: { VALIDERING: "validering", GRENSESNITT: "grensesnitt" },
 }));
@@ -37,26 +37,30 @@ const RESPONSE_HEADERS_ERROR = {
 };
 
 describe("useFormioTranslations", () => {
-  const projectUrl = "http://myProject.example.org";
   const expectedHeader = { headers: { "x-jwt-token": "" } };
-  let fetchSpy;
+  let fetchSpy, formioSpy;
   let formioTranslations: ReturnType<typeof useFormioTranslations>;
   let mockFeedbackEmit;
 
   beforeEach(() => {
-    fetchSpy = jest.spyOn(global, "fetch");
-    fetchSpy.mockImplementation(createMockImplementation({ projectUrl }));
-    mockFeedbackEmit = { success: jest.fn(), error: jest.fn() };
+    fetchSpy = vi.spyOn(global, "fetch");
+    fetchSpy.mockImplementation(createMockImplementation());
+    formioSpy = vi.spyOn(Formio, "fetch");
+    formioSpy.mockImplementation(createMockImplementation());
+    mockFeedbackEmit = { success: vi.fn(), error: vi.fn() };
     const wrapper = ({ children }) => (
       <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
     );
 
-    const { result } = renderHook(() => useFormioTranslations(projectUrl, new Formio(projectUrl)), { wrapper });
+    const { result } = renderHook(() => useFormioTranslations(DEFAULT_PROJECT_URL, new Formio(DEFAULT_PROJECT_URL)), {
+      wrapper,
+    });
     formioTranslations = result.current;
   });
 
   afterEach(() => {
     fetchSpy.mockClear();
+    formioSpy.mockClear();
   });
 
   describe("Global translations", () => {
@@ -91,7 +95,7 @@ describe("useFormioTranslations", () => {
         await waitFor(() => expect(translations).toBeDefined());
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         expect(fetchSpy).toHaveBeenCalledWith(
-          `${projectUrl}/language/submission?data.name=global&limit=1000`,
+          `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&limit=1000`,
           expectedHeader
         );
       });
@@ -101,7 +105,7 @@ describe("useFormioTranslations", () => {
         await waitFor(() => expect(translations).toBeDefined());
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         expect(fetchSpy).toHaveBeenCalledWith(
-          `${projectUrl}/language/submission?data.name=global&data.language=en&limit=1000`,
+          `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&data.language=en&limit=1000`,
           expectedHeader
         );
       });
@@ -165,7 +169,7 @@ describe("useFormioTranslations", () => {
         await waitFor(() => expect(translations).toBeDefined());
         expect(fetchSpy).toHaveBeenCalledTimes(1);
         expect(fetchSpy).toHaveBeenCalledWith(
-          `${projectUrl}/language/submission?data.name=global&limit=1000`,
+          `${DEFAULT_PROJECT_URL}/language/submission?data.name=global&limit=1000`,
           expectedHeader
         );
       });
@@ -336,19 +340,19 @@ describe("useFormioTranslations", () => {
     it("fetches translations for the given form path", async () => {
       await waitFor(() => expect(translations).toBeDefined());
       expect(fetchSpy).toHaveBeenCalledWith(
-        `${projectUrl}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`,
+        `${DEFAULT_PROJECT_URL}/language/submission?data.name__regex=/^global(.${formPath})*$/gi&limit=1000`,
         expectedHeader
       );
     });
 
     it("fetches country names for Norwegian Bokmål", async () => {
       await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/countries?lang=nb`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/api/countries?lang=nb`);
     });
 
     it("fetches country names for all other languages in translations", async () => {
       await waitFor(() => expect(translations).toBeDefined());
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/countries?lang=en`);
+      expect(fetchSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/api/countries?lang=en`);
     });
 
     it("makes no extra fetch calls", async () => {
@@ -391,14 +395,14 @@ describe("useFormioTranslations", () => {
 
       await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/translationId`, {
+      expect(formioSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission/translationId`, {
         body: JSON.stringify({
           data: { language: "en", i18n: { tekst: "text" }, name: "global.formPath", scope: "local", form: "formPath" },
         }),
         headers: { "content-type": "application/json", "x-jwt-token": "" },
         method: "PUT",
       });
-      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(formioSpy).toHaveBeenCalledTimes(1);
     });
 
     it("creates a translationSubmission, before update, when translationId is not provided", async () => {
@@ -412,7 +416,7 @@ describe("useFormioTranslations", () => {
       );
       await waitFor(() => expect(mockFeedbackEmit.success).toHaveBeenCalled());
 
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission`, {
+      expect(formioSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission`, {
         body: JSON.stringify({
           data: { language: "en", name: "global.formPath", scope: "local", form: "formPath" },
         }),
@@ -420,7 +424,7 @@ describe("useFormioTranslations", () => {
         method: "POST",
       });
 
-      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/language/submission/_translationId`, {
+      expect(formioSpy).toHaveBeenCalledWith(`${DEFAULT_PROJECT_URL}/language/submission/_translationId`, {
         body: JSON.stringify({
           data: { language: "en", i18n: { tekst: "text" }, name: "global.formPath", scope: "local", form: "formPath" },
         }),
@@ -428,7 +432,7 @@ describe("useFormioTranslations", () => {
         method: "PUT",
       });
 
-      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(formioSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

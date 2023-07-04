@@ -1,13 +1,12 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { dateUtils, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen } from "@testing-library/react";
-import React from "react";
 import UnpublishButton from "./UnpublishButton";
 
 Modal.setAppElement(document.createElement("div"));
 
 describe("UnpublishButton", () => {
-  let onUnpublish = jest.fn();
+  let onUnpublish = vi.fn();
   const renderButton = (form?: NavFormType) => {
     if (!form) {
       form = {

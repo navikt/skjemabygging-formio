@@ -1,25 +1,26 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
+import { Formio } from "formiojs";
 import { MemoryRouter } from "react-router-dom";
-import createMockImplementation from "../test/backendMockImplementation";
+import createMockImplementation, { DEFAULT_PROJECT_URL } from "../test/backendMockImplementation";
 import featureToggles from "../test/featureToggles";
 import App from "./App";
 import { AuthContext } from "./context/auth-context";
 
 const createFakeChannel = () => ({
-  bind: jest.fn(),
-  unbind: jest.fn(),
+  bind: vi.fn(),
+  unbind: vi.fn(),
 });
 
 describe("App", () => {
+  let formioFetch;
   beforeEach(() => {
-    fetchMock.mockImplementation(createMockImplementation());
+    formioFetch = vi.spyOn(Formio, "fetch");
+    formioFetch.mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
-    fetchMock.resetMocks();
+    formioFetch.mockClear();
   });
 
   const renderApp = (appConfigProps = {}) => {
@@ -32,7 +33,7 @@ describe("App", () => {
           }}
         >
           <AppConfigProvider featureToggles={featureToggles} {...appConfigProps}>
-            <App projectURL="http://myproject.example.org" pusher={{ subscribe: () => createFakeChannel() }} />
+            <App projectURL={DEFAULT_PROJECT_URL} pusher={{ subscribe: () => createFakeChannel() }} />
           </AppConfigProvider>
         </AuthContext.Provider>
       </MemoryRouter>

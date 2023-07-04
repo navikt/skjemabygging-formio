@@ -11,45 +11,52 @@ import { UpdateFormFunction } from "./utils";
 
 const testform = form as unknown as NavFormType;
 
-jest.mock("../../hooks/useMottaksadresser", () => () => {
+vi.mock("../../hooks/useMottaksadresser", () => {
   return {
-    ready: true,
-    mottaksadresser: mockMottaksadresser,
-    errorMessage: undefined,
+    default: () => ({
+      ready: true,
+      mottaksadresser: mockMottaksadresser,
+      errorMessage: undefined,
+    }),
   };
 });
-jest.mock("../../hooks/useTemaKoder", () => () => {
+vi.mock("../../hooks/useTemaKoder", () => {
   return {
-    ready: true,
-    temaKoder: [
-      { key: "ABC", value: "Tema 1" },
-      { key: "XYZ", value: "Tema 3" },
-      { key: "DEF", value: "Tema 2" },
-    ],
-    errorMessage: undefined,
+    default: () => ({
+      ready: true,
+      temaKoder: [
+        { key: "ABC", value: "Tema 1" },
+        { key: "XYZ", value: "Tema 3" },
+        { key: "DEF", value: "Tema 2" },
+      ],
+      errorMessage: undefined,
+    }),
   };
 });
 
-jest.mock("react-router-dom", () => ({
-  // @ts-ignore
-  ...jest.requireActual("react-router-dom"),
-  Link: () => <a href="/">testlink</a>,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<object>("react-router-dom");
+  return {
+    ...actual,
+    Link: () => <a href="/">testlink</a>,
+  };
+});
 
 describe("FormMetadataEditor", () => {
-  let mockOnChange: jest.MockedFunction<UpdateFormFunction>;
+  // @ts-ignore
+  let mockOnChange: vi.MockedFunction<UpdateFormFunction>;
 
   beforeEach(() => {
-    mockOnChange = jest.fn();
+    mockOnChange = vi.fn();
   });
 
   describe("Usage context: EDIT", () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it("should update form when title is changed", async () => {

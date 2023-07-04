@@ -23,15 +23,15 @@ describe("authHandler", () => {
   });
 
   afterAll(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("rejects request when authorization header is missing", async () => {
-    console.error = jest.fn();
-    console.log = jest.fn();
+    console.error = vi.fn();
+    console.log = vi.fn();
     const req = mockRequest({}) as ByggerRequest;
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authHandler(req, res, next);
     expect(next).not.toHaveBeenCalled();
     expect(res.sendStatus).toHaveBeenCalledWith(401);
@@ -42,7 +42,7 @@ describe("authHandler", () => {
       headers: { Authorization: `Bearer ${await createMockJwt(defaultPayload, key, "5s")}` },
     }) as ByggerRequest;
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authHandler(req, res, next);
     expect(next).not.toHaveBeenCalled();
     expect(res.sendStatus).toHaveBeenCalledWith(401);
@@ -54,7 +54,7 @@ describe("authHandler", () => {
       headers: { Authorization: `Bearer ${token}` },
     }) as ByggerRequest;
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authHandler(req, res, next);
     expect(next).not.toHaveBeenCalled();
     expect(res.sendStatus).toHaveBeenCalledWith(401);
@@ -65,7 +65,7 @@ describe("authHandler", () => {
       headers: { Authorization: `Bearer ${await createMockJwt(defaultPayload, key)}` },
     }) as ByggerRequest;
     const res = mockResponse();
-    const next = jest.fn();
+    const next = vi.fn();
     await authHandler(req, res, next);
     expect(res.sendStatus).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledTimes(1);

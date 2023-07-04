@@ -2,7 +2,6 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { FormPropertiesType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import moment from "moment";
-import React from "react";
 import FormStatusPanel from "./FormStatusPanel";
 import { allLanguagesInNorwegian } from "./PublishedLanguages";
 
@@ -174,7 +173,7 @@ describe("FormStatusPanel", () => {
     let setDiffOn;
 
     beforeEach(() => {
-      setDiffOn = jest.fn();
+      setDiffOn = vi.fn();
     });
 
     describe("feature toggle enableDiff is true", () => {
@@ -213,7 +212,7 @@ describe("FormStatusPanel", () => {
       });
     });
 
-    describe("feature toggle enableDiff is false", () => {
+    it("feature toggle enableDiff is false", () => {
       const properties: PartialFormProperties = { modified: now, published: earlier };
       render(
         <AppConfigProvider featureToggles={{ enableDiff: false }} diffOn={true} setDiffOn={setDiffOn}>
