@@ -21,18 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  * */
-
 import EventEmitter from "eventemitter2";
-import { Form as FormioForm, Utils } from "formiojs";
+import { Form as FormioForm } from "formiojs";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { evaluateOverride } from "../formio-overrides";
 import i18nData from "../i18nData";
 import Styles from "../styles";
 import { SANITIZE_CONFIG } from "../template/sanitizeConfig";
 import makeStyles from "../util/jss";
-
-Utils.evaluate = evaluateOverride;
 
 const useStyles = makeStyles({
   "@global": Styles.form,
@@ -108,7 +104,7 @@ const NavForm = (props) => {
 
   useEffect(() => {
     const { src } = props;
-    if (src) {
+    if (src && Object.keys(props.i18n).length !== 0) {
       createWebformInstance(src).then(() => {
         if (formio) {
           formio.src = src;
@@ -120,7 +116,7 @@ const NavForm = (props) => {
 
   useEffect(() => {
     const { form, url } = props;
-    if (form) {
+    if (form && Object.keys(props.i18n).length !== 0) {
       createWebformInstance(form).then(() => {
         if (formio) {
           formio.form = form;

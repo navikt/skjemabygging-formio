@@ -6,7 +6,7 @@ describe("When form has panels that are hidden unless a condition is true", () =
     cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", {
       fixture: "conditionalxmas.json",
     }).as("getForm");
-    cy.intercept("GET", "/fyllut/translations/conditionalxmas", {
+    cy.intercept("GET", "/fyllut/api/translations/conditionalxmas", {
       fixture: "conditionalxmas-translation.json",
     }).as("getTranslation");
     cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(

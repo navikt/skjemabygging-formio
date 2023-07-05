@@ -2,10 +2,10 @@ describe("Custom react components", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/customcomps", { fixture: "custom-components.json" }).as("getForm");
-    cy.intercept("GET", "/fyllut/translations/customcomps", { fixture: "custom-components-translations.json" }).as(
+    cy.intercept("GET", "/fyllut/api/translations/customcomps", { fixture: "custom-components-translations.json" }).as(
       "getTranslations"
     );
-    cy.intercept("GET", "/fyllut/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
+    cy.intercept("GET", "/fyllut/api/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
     cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
       "getCurrencies"
     );

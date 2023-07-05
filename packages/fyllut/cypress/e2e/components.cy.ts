@@ -4,7 +4,7 @@ describe("Components", () => {
       cy.intercept("GET", "/fyllut/api/forms/pengerogkonto", { fixture: "pengerOgKonto.json" }).as(
         "getPengerOgKontoForm"
       );
-      cy.intercept("GET", "/fyllut/translations/pengerogkonto", { body: {} }).as("getTranslation");
+      cy.intercept("GET", "/fyllut/api/translations/pengerogkonto", { body: {} }).as("getTranslation");
       cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
         "getCurrencies"
       );

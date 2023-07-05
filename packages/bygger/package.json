@@ -17,8 +17,8 @@
     "clean": "rimraf build coverage",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "cypress:open": "cypress open --config-file=cypress.config.ts",
-    "cypress": "cypress run --config-file=cypress.config.ts"
+    "cypress:open": "cypress open",
+    "cypress": "cypress run"
   },
   "dependencies": {
     "@navikt/ds-css": "^2.9.8",
@@ -58,7 +58,6 @@
     "@vitest/browser": "^0.32.2",
     "cross-env": "^7.0.3",
     "cypress": "^12.8.1",
-    "eslint-plugin-cypress": "^2.12.1",
     "jsdom": "^22.1.0",
     "lint-staged": "^10.4.0",
     "lodash.template": "^4.5.0",

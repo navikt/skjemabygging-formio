@@ -1,4 +1,4 @@
-import { evaluateOverride, sanitizeJavaScriptCode } from "./utils-overrides";
+import UtilsOverrides from "./utils-overrides";
 import "./wizard-overrides"; // Need import so that overrides are registered
 
-export { evaluateOverride, sanitizeJavaScriptCode };
+export default UtilsOverrides;

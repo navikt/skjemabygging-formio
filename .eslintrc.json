@@ -3,21 +3,24 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:vitest/recommended",
-    "plugin:vitest-globals/recommended"
+    "plugin:vitest-globals/recommended",
+    "plugin:cypress/recommended"
   ],
   "plugins": [
     "react",
     "react-hooks",
     "import",
     "@typescript-eslint",
-    "vitest"
+    "vitest",
+    "cypress"
   ],
   "globals": {
     "fetchMock": true,
     "vi": true
   },
   "env": {
-    "vitest-globals/env": true
+    "vitest-globals/env": true,
+    "cypress/globals": true
   },
   "rules": {
     "no-unused-labels": "error",
@@ -39,6 +42,7 @@
     "vitest/valid-expect": "off",
     "vitest/valid-title": "off",
     "vitest/expect-expect": "off",
+    "cypress/unsafe-to-chain-command": "off",
     "import/no-internal-modules": ["error", {
       "forbid": [
         "@navikt/skjemadigitalisering-shared-@(components|domain)/**/!(*.less)"

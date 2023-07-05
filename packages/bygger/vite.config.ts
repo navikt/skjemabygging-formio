@@ -19,8 +19,11 @@ export default defineConfig({
       },
     },
   },
+  define: {
+    global: "window",
+  },
   resolve: {
-    dedupe: ["formiojs", "react-router-dom", "react-jss", "@navikt/ds-react", "@navikt/ds-icons"],
+    dedupe: ["formiojs"],
   },
   plugins: [
     react(),

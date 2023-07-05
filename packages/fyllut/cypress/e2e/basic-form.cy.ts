@@ -1,7 +1,7 @@
 describe("Basic form", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
-    cy.intercept("GET", "/fyllut/translations/cypress101", { body: {} }).as("getTranslation");
+    cy.intercept("GET", "/fyllut/api/translations/cypress101", { body: {} }).as("getTranslation");
   });
 
   const fillInForm = (expectVedleggspanel: boolean) => {

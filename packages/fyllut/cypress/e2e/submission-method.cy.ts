@@ -2,7 +2,7 @@ describe("Submission method", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" });
     cy.intercept("GET", "/fyllut/api/forms/bug101010", { fixture: "submission-method.json" }).as("getForm");
-    cy.intercept("GET", "/fyllut/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
+    cy.intercept("GET", "/fyllut/api/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
       "getFormTranslations"
     );
     cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
