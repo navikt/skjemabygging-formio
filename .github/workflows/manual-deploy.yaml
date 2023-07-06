@@ -55,8 +55,8 @@ jobs:
           scope: "@navikt"
       - name: "Build application: Bygger"
         env:
-          REACT_APP_GIT_VERSION: ${{ github.sha }}
-          REACT_APP_GIT_BRANCH: ${{ github.ref_name }}
+          VITE_GIT_VERSION: ${{ github.sha }}
+          VITE_GIT_BRANCH: ${{ github.ref_name }}
         run: bin/build-application.sh bygger
       - name: Login to GitHub Package Repository
         uses: docker/login-action@v2
@@ -102,8 +102,8 @@ jobs:
           scope: "@navikt"
       - name: "Build application: Fyllut"
         env:
-          REACT_APP_GIT_VERSION: ${{ github.sha }}
-          REACT_APP_GIT_BRANCH: ${{ github.ref_name }}
+          VITE_GIT_VERSION: ${{ github.sha }}
+          VITE_GIT_BRANCH: ${{ github.ref_name }}
         run: bin/build-application.sh fyllut
       - name: Login to GitHub Package Repository
         uses: docker/login-action@v2
