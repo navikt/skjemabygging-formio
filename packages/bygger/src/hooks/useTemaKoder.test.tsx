@@ -36,6 +36,7 @@ describe("useTemaKoder", () => {
 
   describe("When fetch returns with not ok", () => {
     let errorSpy;
+    // @ts-ignore
     beforeEach(() => (errorSpy = vi.spyOn(console, "error").mockImplementation(vi.fn())));
     afterEach(() => errorSpy.mockClear());
 
