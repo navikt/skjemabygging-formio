@@ -1,6 +1,5 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
-import { Formio } from "formiojs";
 import { MemoryRouter } from "react-router-dom";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../test/backendMockImplementation";
 import featureToggles from "../test/featureToggles";
@@ -15,7 +14,7 @@ const createFakeChannel = () => ({
 describe("App", () => {
   let formioFetch;
   beforeEach(() => {
-    formioFetch = vi.spyOn(Formio, "fetch");
+    formioFetch = vi.spyOn(FormioJS.Formio, "fetch");
     formioFetch.mockImplementation(createMockImplementation());
   });
 

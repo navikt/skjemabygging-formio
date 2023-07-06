@@ -1,6 +1,6 @@
+import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import { getNodeText, render, screen, waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
-import { Formio } from "formiojs";
 import { useEffect, useState } from "react";
 import { AuthProvider } from "../context/auth-context";
 import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
@@ -65,7 +65,7 @@ describe("useFormioForms", () => {
       const form = [
         { title: "skjema3", path: "skjema3", tags: "nav-skjema", properties: {}, modified: "", _id: "023" },
       ];
-      formioFetch = vi.spyOn(Formio, "fetch");
+      formioFetch = vi.spyOn(FormioJS.Formio, "fetch");
       formioFetch.mockImplementation((url) => {
         if (
           url.includes(
@@ -85,7 +85,7 @@ describe("useFormioForms", () => {
     });
 
     it("loads form list in the hook", async () => {
-      render(<TestComponent formio={new Formio("http://myproject.example.org")} />);
+      render(<TestComponent formio={new FormioJS.Formio("http://myproject.example.org")} />);
       const formDivs = await screen.findAllByTestId("form");
       expect(formDivs).toHaveLength(3);
       expect(getNodeText(formDivs[0])).toEqual("skjema1");
@@ -94,14 +94,14 @@ describe("useFormioForms", () => {
     });
 
     it("loads one specific form in the hook", async () => {
-      render(<TestComponent formio={new Formio("http://myproject.example.org")} formPath="skjema3" />);
+      render(<TestComponent formio={new FormioJS.Formio("http://myproject.example.org")} formPath="skjema3" />);
       const formDivs = await screen.findAllByTestId("form");
       expect(formDivs).toHaveLength(1);
       expect(getNodeText(formDivs[0])).toEqual("skjema3");
     });
 
     it("date update", async () => {
-      render(<TestComponent formio={new Formio("http://myproject.example.org")} formPath="skjema3" />);
+      render(<TestComponent formio={new FormioJS.Formio("http://myproject.example.org")} formPath="skjema3" />);
       const formDivs = await screen.findAllByTestId("form");
       expect(formDivs).toHaveLength(1);
       expect(getNodeText(formDivs[0])).toEqual("skjema3");

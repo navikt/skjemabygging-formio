@@ -1,3 +1,4 @@
+import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import {
   Component,
   FormioTranslationMap,
@@ -6,7 +7,6 @@ import {
   navFormUtils,
   signatureUtils,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import FormioUtils from "formiojs/utils";
 
 type TextObjectType = ReturnType<typeof textObject>;
 type InputType = ReturnType<typeof getInputType>;
@@ -83,7 +83,8 @@ const getContent = (content: string | undefined) => {
   if (content) {
     // Formio.js runs code that changes the original text before translating,
     // and to avoid mismatch in translation object keys we need to do the same.
-    return FormioUtils.translateHTMLTemplate(content, (text) => text);
+    // @ts-ignore
+    return FormioJS.Utils.translateHTMLTemplate(content, (text) => text);
   }
   return content;
 };

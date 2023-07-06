@@ -10,7 +10,7 @@ dns.setDefaultResultOrder("verbatim");
 
 export default defineConfig({
   server: {
-    open: true,
+    open: false,
     port: 3000,
     proxy: {
       "/api": {
@@ -21,9 +21,6 @@ export default defineConfig({
   },
   define: {
     global: "window",
-  },
-  resolve: {
-    dedupe: ["formiojs"],
   },
   plugins: [
     react(),

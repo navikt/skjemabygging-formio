@@ -1,7 +1,6 @@
+import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor, waitForElementToBeRemoved, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Formio } from "formiojs";
-import Formiojs from "formiojs/Formio";
 import mockMottaksadresser from "../../example_data/mottaksadresser.json";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import MottaksadresserListe from "./MottaksadresserListe";
@@ -10,9 +9,9 @@ describe("MottaksadresseListe", () => {
   let windowSpy, formioSpy, globalFetchSpy;
 
   beforeAll(() => {
-    Formiojs.setProjectUrl(DEFAULT_PROJECT_URL);
+    FormioJS.Formio.setProjectUrl(DEFAULT_PROJECT_URL);
     windowSpy = vi.spyOn(window, "scrollTo");
-    formioSpy = vi.spyOn(Formio, "fetch");
+    formioSpy = vi.spyOn(FormioJS.Formio, "fetch");
     formioSpy.mockImplementation(createMockImplementation());
     globalFetchSpy = vi.spyOn(global, "fetch");
     globalFetchSpy.mockImplementation(createMockImplementation());

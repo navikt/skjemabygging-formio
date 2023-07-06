@@ -1,8 +1,6 @@
-import { CustomComponents, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
+import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Formio } from "formiojs";
-import Components from "formiojs/components/Components";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import NavFormBuilder from "./NavFormBuilder";
 import testform from "./testdata/conditional-multiple-dependencies";
@@ -21,10 +19,8 @@ const BUILDER_COMP_TESTID_ATTR = { name: "data-testid", value: "builder-componen
 
 describe("NavFormBuilder", () => {
   beforeAll(() => {
-    Formio.use(navdesign);
-    Components.setComponents(CustomComponents);
-    new Formio(DEFAULT_PROJECT_URL);
-    vi.spyOn(Formio, "fetch").mockImplementation(createMockImplementation());
+    new FormioJS.Formio(DEFAULT_PROJECT_URL);
+    vi.spyOn(FormioJS.Formio, "fetch").mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {

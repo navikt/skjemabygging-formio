@@ -16,7 +16,8 @@
   ],
   "globals": {
     "fetchMock": true,
-    "vi": true
+    "vi": true,
+    "FormioUtils": true
   },
   "env": {
     "vitest-globals/env": true,
@@ -45,7 +46,7 @@
     "cypress/unsafe-to-chain-command": "off",
     "import/no-internal-modules": ["error", {
       "forbid": [
-        "@navikt/skjemadigitalisering-shared-@(components|domain)/**/!(*.less)"
+        "@navikt/skjemadigitalisering-shared-@(components|domain)/**"
       ]
     }]
   },

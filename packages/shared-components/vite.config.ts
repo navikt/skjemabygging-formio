@@ -8,6 +8,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   build: {
+    minify: true,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "shared-component",
@@ -19,13 +20,27 @@ export default defineConfig({
         "react",
         "react-dom",
         "react-router-dom",
-        "formiojs",
         "react-jss",
+        //"formiojs",
         "@navikt/ds-css",
         "@navikt/ds-icons",
         "@navikt/ds-react",
       ],
+      /*
+      output: {
+        //preserveModules: true,
+        paths: {
+          "formiojs": "formiojs",
+        }
+      },*/
+      /*
+      output: {
+        globals: {
+          "formiojs": "Formio-JS",
+        },
+      },*/
     },
+    //watch: {},
   },
   plugins: [
     react(),

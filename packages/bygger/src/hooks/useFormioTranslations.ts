@@ -1,3 +1,4 @@
+import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import {
   FormioTranslationMap,
   FormioTranslationPayload,
@@ -10,7 +11,6 @@ import {
   TranslationScope,
   TranslationTag,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { languagesInNorwegian } from "../context/i18n";
 import { combineTranslationResources } from "../context/i18n/translationsMapper";
@@ -24,7 +24,7 @@ type Country = { label: string; value: string };
 const fetchTranslations = (url) => {
   return fetch(url, {
     headers: {
-      "x-jwt-token": Formiojs.getToken(),
+      "x-jwt-token": FormioJS.Formio.getToken(),
     },
   })
     .then((response) => response.json())
@@ -97,7 +97,7 @@ export const useFormioTranslations = (serverURL, formio) => {
         return Promise.resolve();
       }
       const payload = {
-        token: Formiojs.getToken(),
+        token: FormioJS.Formio.getToken(),
         resource: globalTranslationsForCurrentLanguage,
       };
 
@@ -199,9 +199,9 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const deleteTranslation = useCallback(
     async (id) => {
-      return Formiojs.fetch(`${formio.projectUrl}/language/submission/${id}`, {
+      return FormioJS.Formio.fetch(`${formio.projectUrl}/language/submission/${id}`, {
         headers: {
-          "x-jwt-token": Formiojs.getToken(),
+          "x-jwt-token": FormioJS.Formio.getToken(),
         },
         method: "DELETE",
       }).then((response) => {
@@ -216,9 +216,9 @@ export const useFormioTranslations = (serverURL, formio) => {
 
   const createTranslationSubmission = useCallback(
     async (data: { language: Language; name: string; scope: TranslationScope; form?: string; tag?: TranslationTag }) =>
-      Formiojs.fetch(`${formio.projectUrl}/language/submission`, {
+      FormioJS.Formio.fetch(`${formio.projectUrl}/language/submission`, {
         headers: {
-          "x-jwt-token": Formiojs.getToken(),
+          "x-jwt-token": FormioJS.Formio.getToken(),
           "content-type": "application/json",
         },
         method: "POST",
@@ -241,9 +241,9 @@ export const useFormioTranslations = (serverURL, formio) => {
         tag?: TranslationTag;
       }
     ) =>
-      Formiojs.fetch(`${formio.projectUrl}/language/submission/${translationId}`, {
+      FormioJS.Formio.fetch(`${formio.projectUrl}/language/submission/${translationId}`, {
         headers: {
-          "x-jwt-token": Formiojs.getToken(),
+          "x-jwt-token": FormioJS.Formio.getToken(),
           "content-type": "application/json",
         },
         method: "PUT",

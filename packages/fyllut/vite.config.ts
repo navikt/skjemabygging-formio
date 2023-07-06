@@ -12,7 +12,7 @@ dns.setDefaultResultOrder("verbatim");
 export default defineConfig({
   base: "/fyllut",
   server: {
-    open: true,
+    open: false,
     port: 3001,
     proxy: {
       "/fyllut/api": {
@@ -23,9 +23,6 @@ export default defineConfig({
   },
   define: {
     global: "window",
-  },
-  resolve: {
-    dedupe: ["formiojs"],
   },
   plugins: [
     react(),

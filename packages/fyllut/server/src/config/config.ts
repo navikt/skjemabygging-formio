@@ -60,7 +60,7 @@ const localDevelopmentConfig: DefaultConfig = {
 };
 
 const defaultConfig: DefaultConfig = {
-  sentryDsn: process.env.REACT_APP_SENTRY_DSN!,
+  sentryDsn: process.env.VITE_SENTRY_DSN!,
   gitVersion: process.env.GIT_SHA!,
   useFormioApi: process.env.FORMS_SOURCE === "formioapi",
   formioProjectUrl: process.env.FORMIO_PROJECT_URL!,

@@ -16,10 +16,10 @@ import { LanguagesProvider, useLanguages } from "./context/languages";
 import { mapTranslationsToFormioI18nObject } from "./context/languages/translationsMapper";
 import useCurrentLanguage from "./context/languages/useCurrentLanguage";
 import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
-import CustomComponents from "./customComponents";
+import "./formio-overrides";
+import FormioJS from "./formiojs";
 import i18nData from "./i18nData";
 import Styles from "./styles";
-import Template from "./template";
 import * as formUtils from "./util/form.js";
 import makeStyles from "./util/jss";
 import { navCssVariables } from "./util/navCssVariables";
@@ -31,13 +31,11 @@ export {
   Styles,
   makeStyles,
   NavForm,
-  Template,
   FormBuilderOptions,
   FormBuilderSchemas,
   AmplitudeProvider,
   AppConfigProvider,
   useAppConfig,
-  CustomComponents,
   FyllUtRouter,
   LanguagesProvider,
   i18nData,
@@ -54,5 +52,6 @@ export {
   formUtils,
   ErrorPage,
   Modal,
+  FormioJS,
 };
 export type { FetchHeader, FetchOptions };

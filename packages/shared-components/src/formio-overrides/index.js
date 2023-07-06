@@ -1,4 +1,3 @@
-import UtilsOverrides from "./utils-overrides";
-import "./wizard-overrides"; // Need import so that overrides are registered
-
-export default UtilsOverrides;
+// Need import so that overrides are registered
+import "./utils-overrides";
+import "./wizard-overrides";

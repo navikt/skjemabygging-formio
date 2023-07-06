@@ -1,13 +1,10 @@
-import { AppConfigProvider, Modal, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
-import { Formio } from "formiojs";
+import { AppConfigProvider, Modal } from "@navikt/skjemadigitalisering-shared-components";
 import Pusher from "pusher-js";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/auth-context";
-
-Formio.use(navdesign);
 
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 

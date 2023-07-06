@@ -1,6 +1,6 @@
+import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
 import { waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
-import { Formio } from "formiojs";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
 import { useFormioTranslations } from "./useFormioTranslations";
@@ -45,16 +45,19 @@ describe("useFormioTranslations", () => {
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, "fetch");
     fetchSpy.mockImplementation(createMockImplementation());
-    formioSpy = vi.spyOn(Formio, "fetch");
+    formioSpy = vi.spyOn(FormioJS.Formio, "fetch");
     formioSpy.mockImplementation(createMockImplementation());
     mockFeedbackEmit = { success: vi.fn(), error: vi.fn() };
     const wrapper = ({ children }) => (
       <FeedbackEmitContext.Provider value={mockFeedbackEmit}>{children}</FeedbackEmitContext.Provider>
     );
 
-    const { result } = renderHook(() => useFormioTranslations(DEFAULT_PROJECT_URL, new Formio(DEFAULT_PROJECT_URL)), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useFormioTranslations(DEFAULT_PROJECT_URL, new FormioJS.Formio(DEFAULT_PROJECT_URL)),
+      {
+        wrapper,
+      }
+    );
     formioTranslations = result.current;
   });
 

@@ -133,11 +133,10 @@ const UtilsOverrides = {
   getDiffTag,
 };
 
-// eslint-disable-next-line no-undef
 if (typeof global === "object" && global.FormioUtils) {
   Object.entries(UtilsOverrides).forEach(([key, value]) => {
+    Utils[key] = value;
     // FormioUtils is set on global scope by Formio if global is object
-    // eslint-disable-next-line no-undef
     global.FormioUtils[key] = value;
   });
 }

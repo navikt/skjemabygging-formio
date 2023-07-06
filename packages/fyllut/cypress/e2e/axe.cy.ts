@@ -4,6 +4,7 @@ describe("Axe: Accessibility testing", () => {
       cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
       cy.intercept("GET", "/fyllut/api/forms/cypressaxe", { fixture: "cypressaxe.json" }).as("getCypressAxe");
       cy.intercept("GET", "/fyllut/api/translations/cypressaxe", { body: {} }).as("getTranslation");
+      cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
       cy.visit("/fyllut/cypressaxe");
       cy.wait("@getConfig");
       cy.wait("@getCypressAxe");
