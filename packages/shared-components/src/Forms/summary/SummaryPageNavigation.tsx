@@ -1,4 +1,4 @@
-import { Link as NavLink } from "@navikt/ds-react/esm/link";
+import { Link as NavLink } from "@navikt/ds-react";
 import {
   formSummaryUtil,
   InnsendingType,
@@ -25,7 +25,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
   return `${formUrl}/${lastPanelSlug}`;
 }
 
-interface Props {
+export interface Props {
   form: NavFormType;
   submission: Submission;
   formUrl: string;
