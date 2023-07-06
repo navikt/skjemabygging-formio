@@ -1,4 +1,3 @@
-// TODO: Add again later
 describe.skip("Basic form", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");

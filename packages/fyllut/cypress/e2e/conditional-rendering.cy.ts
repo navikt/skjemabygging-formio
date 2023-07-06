@@ -46,7 +46,6 @@ describe("When form has panels that are hidden unless a condition is true", () =
     });
   });
 
-  // TODO: Add again later
   describe.skip("Summary page", () => {
     beforeEach(() => {
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {

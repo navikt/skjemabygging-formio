@@ -2,7 +2,7 @@
   "name": "@navikt/bygger-backend",
   "version": "1.0.0",
   "private": true,
-  "main": "dist/server.js",
+  "main": "dist/server.mjs",
   "type": "commonjs",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {

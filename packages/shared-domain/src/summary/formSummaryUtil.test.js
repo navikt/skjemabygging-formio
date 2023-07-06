@@ -544,7 +544,6 @@ describe("form summary", () => {
   });
 
   describe("When creating form summary object", () => {
-    // TODO: Remove skip and fix test
     it.skip("it is created as it should", () => {
       const actual = createFormSummaryObject(
         createFormObject([

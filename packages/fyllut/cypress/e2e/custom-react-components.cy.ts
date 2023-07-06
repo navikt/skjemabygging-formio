@@ -1,4 +1,3 @@
-// TODO: Add again later
 describe.skip("Custom react components", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");

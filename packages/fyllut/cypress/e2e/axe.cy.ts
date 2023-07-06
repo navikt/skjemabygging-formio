@@ -33,7 +33,6 @@ describe("Axe: Accessibility testing", () => {
       cy.checkA11y();
     });
 
-    // TODO: Add again later
     it.skip("Dato og tid", () => {
       cy.contains("Dato og tid").click();
       cy.checkA11y();
