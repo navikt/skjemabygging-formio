@@ -5,7 +5,7 @@ describe("Submission method", () => {
     cy.intercept("GET", "/fyllut/api/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
       "getFormTranslations"
     );
-    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
+    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
       "getGlobalTranslations"
     );
   });

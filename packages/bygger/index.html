@@ -5,31 +5,21 @@
     <link href="/favicon.ico" rel="icon"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <meta content="#000000" name="theme-color"/>
-    <meta
-        content="Formio.js basert skjemabygger for NAV"
-        name="description"
-    />
-    <meta
-        content="%VITE_GIT_VERSION%"
-        name="git-version"
-    />
-    <meta
-        content="%VITE_GIT_BRANCH%"
-        name="git-branch"
-    />
+    <meta content="Formio.js basert skjemabygger for NAV" name="description"/>
+    <% if (process.env.NODE_ENV !== 'development') { %>
+    <meta content="%VITE_GIT_VERSION%" name="git-version"/>
+    <meta content="%VITE_GIT_BRANCH%" name="git-branch"/>
+    <% } %>
+    <meta name="robots" content="noindex"/>
+    <title>Skjemabygging</title>
     <link href="/logo192.png" rel="apple-touch-icon"/>
     <link href="/manifest.json" rel="manifest"/>
-
-    <title>Skjemabygging</title>
-
-    <base href="/" />
+    <base href="/"/>
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <div id="root"></div>
-
 <div id="builder"></div>
-
 <script type="module" src="src/index.tsx"></script>
 </body>
 </html>
