@@ -4,6 +4,7 @@ import createMockImplementation from "../../test/backendMockImplementation";
 import useTemaKoder from "./useTemaKoder";
 
 describe("useTemaKoder", () => {
+  // @ts-ignore
   let fetchSpy: vi.SpyInstance;
   let appConfig: WrapperComponent<any>;
   const projectUrl = "http://test.example.org";
