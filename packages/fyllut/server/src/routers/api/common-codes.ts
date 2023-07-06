@@ -39,8 +39,10 @@ const commonCodes = {
         const currencyName = (values as any)[0]?.beskrivelser?.[languageCode]?.term;
         const newObj = { label: `${currencyName} (${key})`, value: key };
         if (key === "NOK" || key === "EUR" || key === "SEK") {
+          // @ts-ignore
           mostUsedCurr.push(newObj);
         } else {
+          // @ts-ignore
           currencyList.push(newObj);
         }
       }
