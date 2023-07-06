@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    resolve: {
+      dedupe: ["react-router-dom", "react-jss", "@navikt/ds-react", "@navikt/ds-icons"],
+    },
     plugins: [
       react(),
       viteTsconfigPaths(),
