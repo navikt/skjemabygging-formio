@@ -69,14 +69,22 @@ function formatValue(component, value, translate) {
   }
 }
 
-function handlePanel(component, submission, formSummaryObject, parentContainerKey, translate, evaluatedConditionals) {
+function handlePanel(
+  component,
+  submission,
+  formSummaryObject,
+  parentContainerKey,
+  translate,
+  evaluatedConditionals,
+  excludeEmptyPanels
+) {
   const { title, key, type, components = [] } = component;
   const subComponents = components.reduce(
     (subComponents, subComponent) =>
       handleComponent(subComponent, submission, subComponents, parentContainerKey, translate, evaluatedConditionals),
     []
   );
-  if (subComponents.length === 0) {
+  if (subComponents.length === 0 && excludeEmptyPanels) {
     return [...formSummaryObject];
   }
   return [
@@ -316,7 +324,8 @@ function handleComponent(
   formSummaryObject,
   parentContainerKey = "",
   translate,
-  evaluatedConditionals = {}
+  evaluatedConditionals = {},
+  excludeEmptyPanels = true
 ) {
   if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
     return formSummaryObject;
@@ -329,7 +338,8 @@ function handleComponent(
         formSummaryObject,
         parentContainerKey,
         translate,
-        evaluatedConditionals
+        evaluatedConditionals,
+        excludeEmptyPanels
       );
     case "button":
     case "content":
@@ -409,17 +419,27 @@ function mapAndEvaluateConditionals(form, data = {}) {
   return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
 }
 
-function createFormSummaryObject(form, submission, translate = (txt) => txt) {
+function createFormSummaryObject(form, submission, translate = (txt) => txt, excludeEmptyPanels) {
   const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
   return form.components.reduce(
     (formSummaryObject, component) =>
-      handleComponent(component, submission, formSummaryObject, "", translate, evaluatedConditionalsMap),
+      handleComponent(
+        component,
+        submission,
+        formSummaryObject,
+        "",
+        translate,
+        evaluatedConditionalsMap,
+        excludeEmptyPanels
+      ),
     []
   );
 }
 
-function createFormSummaryPanels(form, submission, translate) {
-  return createFormSummaryObject(form, submission, translate).filter((component) => component.type === "panel");
+function createFormSummaryPanels(form, submission, translate, excludeEmptyPanels) {
+  return createFormSummaryObject(form, submission, translate, excludeEmptyPanels).filter(
+    (component) => component.type === "panel"
+  );
 }
 
 export default {

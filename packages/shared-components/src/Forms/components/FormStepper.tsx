@@ -1,6 +1,6 @@
 import { Back, Close } from "@navikt/ds-icons";
 import { Button, Stepper } from "@navikt/ds-react";
-import { NavFormType, Panel, TEXTS, formSummaryUtil, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType, Submission, TEXTS, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useMemo, useRef, useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAmplitude } from "../../context/amplitude";
@@ -10,7 +10,7 @@ type FormStepperProps = {
   form: NavFormType;
   formUrl: string;
   submissionMethod?: string;
-  submission: object;
+  submission: Submission;
 };
 
 const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormStepperProps) => {
@@ -21,11 +21,8 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
   const { search } = useLocation();
   const { loggNavigering } = useAmplitude();
   const formSteps = useMemo(() => {
-    const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
-    return (form.components as Panel[])
-      .filter((component) => component.type === "panel")
-      .filter((component) => conditionals[component.key] !== false)
-      .filter((component) => !(submissionMethod === "digital" && navFormUtils.isVedleggspanel(component)))
+    return navFormUtils
+      .getActivePanelsFromForm(form, submission, submissionMethod)
       .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
   }, [form, formUrl, submissionMethod, submission]);
 
