@@ -12,7 +12,7 @@ import ComponentSummary from "./ComponentSummary";
 interface Props {
   form: NavFormType;
   formUrl: string;
-  submission: Submission;
+  submission?: Submission;
 }
 
 const FormSummary = ({ form, formUrl, submission }: Props) => {

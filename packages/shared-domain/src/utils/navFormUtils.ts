@@ -196,8 +196,8 @@ export const enrichComponentsWithNavIds = (
   return components;
 };
 
-const getActivePanelsFromForm = (form: NavFormType, submission: Submission, submissionMethod?: string): Panel[] => {
-  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
+const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
+  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission?.data ?? {});
   return form.components
     .filter((component: Component) => component.type === "panel")
     .filter((panel): panel is Panel => conditionals[panel.key] !== false)

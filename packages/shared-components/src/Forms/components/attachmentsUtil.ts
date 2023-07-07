@@ -1,4 +1,4 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType, navFormUtils, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import FormioUtils from "formiojs/utils";
 import { sanitizeJavaScriptCode } from "../../formio-overrides";
 
@@ -12,12 +12,12 @@ interface Attachment {
   formioId: string;
 }
 
-const getRelevantAttachments = (form, submission): Attachment[] => {
+const getRelevantAttachments = (form: NavFormType, submission?: Submission): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission?.data ?? {}, form))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,

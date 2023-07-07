@@ -419,7 +419,7 @@ function mapAndEvaluateConditionals(form, data = {}) {
   return evaluateConditionals(form.components, form, data).reduce(addToMap, {});
 }
 
-function createFormSummaryObject(form, submission, translate = (txt) => txt, excludeEmptyPanels) {
+function createFormSummaryObject(form, submission = { data: {} }, translate = (txt) => txt, excludeEmptyPanels) {
   const evaluatedConditionalsMap = mapAndEvaluateConditionals(form, submission.data);
   return form.components.reduce(
     (formSummaryObject, component) =>

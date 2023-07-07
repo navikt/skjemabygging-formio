@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 
 export interface Props {
   form: NavFormType;
-  submission: Submission;
+  submission?: Submission;
   formUrl: string;
 }
 

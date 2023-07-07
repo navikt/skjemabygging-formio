@@ -8,17 +8,18 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   const { featureToggles } = useAppConfig();
   const { isMellomlagringReady, mellomlagringError } = useSendInn();
   const innsendingsId = new URLSearchParams(search).get("innsendingsId");
+  const expectsSavedSubmissionFromMellomlagring = featureToggles.enableMellomlagring && innsendingsId;
 
   if (mellomlagringError) {
     //TODO: bedre visning av feilmeldinger
     return <ErrorPage errorMessage={mellomlagringError.status === 404 ? "Fant ikke søknaden" : "Noe galt skjedde"} />;
   }
 
-  if (featureToggles.enableMellomlagring && innsendingsId && !isMellomlagringReady) {
+  if (expectsSavedSubmissionFromMellomlagring && !isMellomlagringReady) {
     return <LoadingComponent />;
   }
 
-  if (!submission) {
+  if (!expectsSavedSubmissionFromMellomlagring && !submission) {
     return <Redirect to={`${url}${search}`} />;
   }
   return children(submission);

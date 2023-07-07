@@ -50,7 +50,13 @@ const FyllUtRouter = ({ form, translations }) => {
 
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider form={form} translations={translations} updateSubmission={setSubmission}>
+      <SendInnProvider
+        form={form}
+        translations={translations}
+        updateSubmission={(submission) => {
+          setSubmission(submission);
+        }}
+      >
         <FormTitle form={form} />
         <div className={styles.container}>
           <div className="fyllut-layout">

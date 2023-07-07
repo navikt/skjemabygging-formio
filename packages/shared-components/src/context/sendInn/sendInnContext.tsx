@@ -24,7 +24,7 @@ interface SendInnProviderProps {
   children: React.ReactNode;
   form: NavFormType;
   translations: I18nTranslations;
-  updateSubmission: (submission: Submission) => void;
+  updateSubmission: (submission?: Submission) => void;
 }
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
@@ -60,9 +60,9 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           setMellomlagringStarted(true);
           const response = await getSoknad(innsendingsId, appConfig);
           console.log("response", response);
-          if (response?.hoveddokumentVariant.document.data) {
+          if (response?.hoveddokumentVariant.document) {
             addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
-            updateSubmission(response.hoveddokumentVariant.document.data!);
+            updateSubmission(response.hoveddokumentVariant.document?.data);
           }
           setIsMellomlagringReady(true);
         }
@@ -71,7 +71,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       }
     };
     retrievePreviousSubmission();
-  }, [appConfig, mellomlagringStarted, search, updateSubmission]);
+  }, [addQueryParamToUrl, appConfig, mellomlagringStarted, search, updateSubmission]);
 
   const nbNO: Language = "nb-NO";
 
