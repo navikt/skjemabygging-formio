@@ -1,5 +1,6 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading } from "@navikt/ds-react";
 import { DeclarationType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Form as FormioForm } from "formiojs";
 import { useEffect, useRef, useState } from "react";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
@@ -50,6 +51,21 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [panelsWithValidationErrors, setPanelsWithValidationErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (panelsWithValidationErrors.length === 0) {
+      const formio = new FormioForm(document.getElementById("formio-summary-hidden"), form, {
+        language: "nb-NO",
+        i18n: {},
+      });
+      const validation = formio.instance.components
+        .map((comp) => !comp.checkValidity(submission?.data ?? {}) && comp.key)
+        .filter((key) => key);
+      console.log("validation", validation);
+      setPanelsWithValidationErrors(validation);
+    }
+  }, [form, panelsWithValidationErrors, submission]);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -79,7 +95,12 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           </Heading>
           <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
           <div className="form-summary">
-            <FormSummary submission={submission} form={form} formUrl={formUrl} />
+            <FormSummary
+              submission={submission}
+              form={form}
+              formUrl={formUrl}
+              panelsWithValidationErrors={panelsWithValidationErrors}
+            />
           </div>
           {hasDeclaration && (
             <ConfirmationPanel

@@ -9,16 +9,24 @@ import SummaryField from "./SummaryField";
 interface Props {
   components: Summary.Component[];
   formUrl?: string;
+  panelsWithValidationErrors?: string[];
 }
 
-const ComponentSummary = ({ components, formUrl = "" }: Props) => {
+const ComponentSummary = ({ components, formUrl = "", panelsWithValidationErrors = [] }: Props) => {
   return (
     <>
       {components.map((comp) => {
         const { type, key } = comp;
         switch (type) {
           case "panel":
-            return <PanelSummary key={key} component={comp} formUrl={formUrl} />;
+            return (
+              <PanelSummary
+                key={key}
+                component={comp}
+                formUrl={formUrl}
+                hasValidationErrors={panelsWithValidationErrors?.includes(key)}
+              />
+            );
           case "fieldset":
           case "navSkjemagruppe":
             return <FieldsetSummary key={key} component={comp} />;

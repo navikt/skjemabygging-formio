@@ -22,5 +22,10 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   if (!expectsSavedSubmissionFromMellomlagring && !submission) {
     return <Redirect to={`${url}${search}`} />;
   }
-  return children(submission);
+  return (
+    <>
+      {children(submission)}
+      <div id="formio-summary-hidden" hidden />
+    </>
+  );
 };

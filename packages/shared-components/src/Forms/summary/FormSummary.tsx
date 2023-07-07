@@ -13,9 +13,10 @@ interface Props {
   form: NavFormType;
   formUrl: string;
   submission?: Submission;
+  panelsWithValidationErrors: string[];
 }
 
-const FormSummary = ({ form, formUrl, submission }: Props) => {
+const FormSummary = ({ form, formUrl, submission, panelsWithValidationErrors }: Props) => {
   const { translate } = useLanguages();
   const { submissionMethod } = useAppConfig();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
@@ -33,6 +34,12 @@ const FormSummary = ({ form, formUrl, submission }: Props) => {
   if (summaryPanels.length === 0) {
     return null;
   }
-  return <ComponentSummary components={summaryPanels} formUrl={formUrl} />;
+  return (
+    <ComponentSummary
+      components={summaryPanels}
+      formUrl={formUrl}
+      panelsWithValidationErrors={panelsWithValidationErrors}
+    />
+  );
 };
 export default FormSummary;
