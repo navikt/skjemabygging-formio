@@ -44,6 +44,7 @@
     "@types/node-fetch": "^2.6.1",
     "@types/node-jose": "^1.1.10",
     "@types/uuid": "^8.3.4",
+    "@vitest/coverage-v8": "^0.33.0",
     "cross-env": "^7.0.3",
     "memorystream": "^0.3.1",
     "nock": "^13.2.4",
