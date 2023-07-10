@@ -2,14 +2,14 @@ import { Builders, Components, Formio, Utils } from "formiojs";
 import CustomComponents from "./customComponents";
 import Template from "./template";
 
-const FormioJS = {
+const NavFormioJs = {
   Components,
   Formio,
   Builders,
   Utils,
 };
 
-FormioJS.Components.setComponents(CustomComponents);
-FormioJS.Formio.use(Template);
+NavFormioJs.Components.setComponents(CustomComponents);
+NavFormioJs.Formio.use(Template);
 
-export default FormioJS;
+export default NavFormioJs;

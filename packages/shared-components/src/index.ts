@@ -18,7 +18,7 @@ import { mapTranslationsToFormioI18nObject } from "./context/languages/translati
 import useCurrentLanguage from "./context/languages/useCurrentLanguage";
 import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
 import "./formio-overrides";
-import FormioJS from "./formiojs";
+import NavFormioJs from "./formiojs";
 import i18nData from "./i18nData";
 import Styles from "./styles";
 import * as formUtils from "./util/form.js";
@@ -53,6 +53,6 @@ export {
   formUtils,
   ErrorPage,
   Modal,
-  FormioJS,
+  NavFormioJs,
 };
 export type { FetchHeader, FetchOptions };

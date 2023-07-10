@@ -1,7 +1,7 @@
-import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { formDiffingTool, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
-const WebformBuilder = FormioJS.Builders.builders.webform;
+const WebformBuilder = NavFormioJs.Builders.builders.webform;
 const originalRemoveComponent = WebformBuilder.prototype.removeComponent;
 const originalEditComponent = WebformBuilder.prototype.editComponent;
 const originalDestroy = WebformBuilder.prototype.destroy;

@@ -1,4 +1,4 @@
-import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { waitFor } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
@@ -45,7 +45,7 @@ describe("useFormioTranslations", () => {
   beforeEach(() => {
     fetchSpy = vi.spyOn(global, "fetch");
     fetchSpy.mockImplementation(createMockImplementation());
-    formioSpy = vi.spyOn(FormioJS.Formio, "fetch");
+    formioSpy = vi.spyOn(NavFormioJs.Formio, "fetch");
     formioSpy.mockImplementation(createMockImplementation());
     mockFeedbackEmit = { success: vi.fn(), error: vi.fn() };
     const wrapper = ({ children }) => (
@@ -53,7 +53,7 @@ describe("useFormioTranslations", () => {
     );
 
     const { result } = renderHook(
-      () => useFormioTranslations(DEFAULT_PROJECT_URL, new FormioJS.Formio(DEFAULT_PROJECT_URL)),
+      () => useFormioTranslations(DEFAULT_PROJECT_URL, new NavFormioJs.Formio(DEFAULT_PROJECT_URL)),
       {
         wrapper,
       }

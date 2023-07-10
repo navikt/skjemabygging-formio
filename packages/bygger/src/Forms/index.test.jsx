@@ -1,4 +1,4 @@
-import { AppConfigProvider, FormioJS } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -12,7 +12,7 @@ describe("FormsRouter", () => {
   let formioFetch;
 
   beforeAll(() => {
-    formioFetch = vi.spyOn(FormioJS.Formio, "fetch");
+    formioFetch = vi.spyOn(NavFormioJs.Formio, "fetch");
     formioFetch.mockImplementation(createMockImplementation());
     fetchMock.mockImplementation(createMockImplementation());
   });
@@ -33,7 +33,7 @@ describe("FormsRouter", () => {
         >
           <FeedbackProvider>
             <AppConfigProvider featureToggles={featureToggles} baseUrl={DEFAULT_PROJECT_URL}>
-              <AuthenticatedApp formio={new FormioJS.Formio(DEFAULT_PROJECT_URL)} serverURL={DEFAULT_PROJECT_URL} />
+              <AuthenticatedApp formio={new NavFormioJs.Formio(DEFAULT_PROJECT_URL)} serverURL={DEFAULT_PROJECT_URL} />
             </AppConfigProvider>
           </FeedbackProvider>
         </AuthContext.Provider>

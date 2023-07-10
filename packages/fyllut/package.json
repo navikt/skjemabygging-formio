@@ -47,8 +47,5 @@
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.32.2",
     "vitest-fetch-mock": "^0.2.2"
-  },
-  "resolutions": {
-    "react-error-overlay": "6.0.9"
   }
 }

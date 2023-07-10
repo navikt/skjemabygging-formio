@@ -52,7 +52,6 @@
     "@types/node-jose": "^1.1.10",
     "@types/supertest": "^2.0.12",
     "nock": "^13.2.4",
-    "nodemon": "^2.0.22",
     "supertest": "^6.2.2",
     "typescript": "^5.0.2",
     "vite": "^4.3.9",

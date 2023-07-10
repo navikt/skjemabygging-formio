@@ -1,4 +1,4 @@
-import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
@@ -19,8 +19,8 @@ const BUILDER_COMP_TESTID_ATTR = { name: "data-testid", value: "builder-componen
 
 describe("NavFormBuilder", () => {
   beforeAll(() => {
-    new FormioJS.Formio(DEFAULT_PROJECT_URL);
-    vi.spyOn(FormioJS.Formio, "fetch").mockImplementation(createMockImplementation());
+    new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
+    vi.spyOn(NavFormioJs.Formio, "fetch").mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {

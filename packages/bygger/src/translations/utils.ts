@@ -1,4 +1,4 @@
-import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import {
   Component,
   FormioTranslationMap,
@@ -84,7 +84,7 @@ const getContent = (content: string | undefined) => {
     // Formio.js runs code that changes the original text before translating,
     // and to avoid mismatch in translation object keys we need to do the same.
     // @ts-ignore
-    return FormioJS.Utils.translateHTMLTemplate(content, (text) => text);
+    return NavFormioJs.Utils.translateHTMLTemplate(content, (text) => text);
   }
   return content;
 };

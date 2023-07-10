@@ -20,7 +20,7 @@
     "watch": "vite build --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "prepare": "tsc && yarn build"
+    "prepare": "tsc && vite build"
   },
   "dependencies": {
     "@navikt/fnrvalidator": "^1.1.4",
@@ -33,7 +33,6 @@
     "ibantools": "^4.0.1",
     "lodash.clonedeep": "^4.5.0",
     "lodash.set": "^4.3.2",
-    "react-day-picker": "^7.4.10",
     "react-select": "^5.7.2"
   },
   "devDependencies": {
@@ -46,9 +45,7 @@
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/browser": "^0.32.2",
     "i18next": "^20.3.5",
-    "jest": "^27.0.4",
-    "jest-config": "^27.4.4",
-    "jest-fetch-mock": "^3.0.3",
+    "jsdom": "^22.1.0",
     "lodash.merge": "^4.5.0",
     "lodash.template": "^4.5.0",
     "nock": "^13.2.4",

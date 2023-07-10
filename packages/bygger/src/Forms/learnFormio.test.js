@@ -1,4 +1,4 @@
-import { FormioJS } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import waitForExpect from "wait-for-expect";
 import columnsForm from "../../example_data/columnsForm.json";
 
@@ -14,7 +14,7 @@ describe.skip("Formio.js replica", () => {
     builderElement = document.createElement("div");
     document.body.appendChild(builderElement);
 
-    builder = new FormioJS.Formio.FormBuilder(builderElement, {}, {});
+    builder = new NavFormioJs.Formio.FormBuilder(builderElement, {}, {});
     spy = vi.fn();
     builder.ready.then(spy);
   });
