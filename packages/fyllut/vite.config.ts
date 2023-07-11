@@ -1,13 +1,10 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
-import * as dns from "dns";
 import { readFileSync } from "fs";
 import lodashTemplate from "lodash/template";
 import { defineConfig, loadEnv } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
 import viteTsconfigPaths from "vite-tsconfig-paths";
-
-dns.setDefaultResultOrder("verbatim");
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, "env");
@@ -15,15 +12,17 @@ export default defineConfig(({ mode }) => {
     base: "/fyllut",
     server: {
       open: false,
+      host: "127.0.0.1",
       port: 3001,
       proxy: {
         "/fyllut/api": {
-          target: "http://localhost:8081",
+          target: "http://127.0.0.1:8081",
           changeOrigin: true,
         },
       },
     },
     preview: {
+      host: "127.0.0.1",
       port: 3001,
     },
     resolve: {

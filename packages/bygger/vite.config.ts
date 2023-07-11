@@ -2,25 +2,26 @@
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "fs";
 import lodashTemplate from "lodash/template";
-import { loadEnv } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
 import viteTsconfigPaths from "vite-tsconfig-paths";
-import { defineConfig } from "vitest/config";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, "env");
   return {
     server: {
       open: false,
+      host: "127.0.0.1",
       port: 3000,
       proxy: {
         "/api": {
-          target: "http://localhost:8080",
+          target: "http://127.0.0.1:8080",
           changeOrigin: true,
         },
       },
     },
     preview: {
+      host: "127.0.0.1",
       port: 3000,
     },
     resolve: {

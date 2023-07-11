@@ -1,13 +1,15 @@
 /// <reference types="vitest" />
+import { defineConfig } from "vite";
 import { VitePluginNode } from "vite-plugin-node";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   server: {
+    host: "127.0.0.1",
     port: 8080,
   },
   preview: {
+    host: "127.0.0.1",
     port: 8080,
   },
   build: {
