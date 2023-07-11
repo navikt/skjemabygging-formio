@@ -10,6 +10,9 @@ export default defineConfig({
   server: {
     port: 8080,
   },
+  preview: {
+    port: 8080,
+  },
   build: {
     rollupOptions: {
       input: "./src/server.js",

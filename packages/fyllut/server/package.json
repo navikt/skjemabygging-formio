@@ -9,6 +9,7 @@
   "scripts": {
     "start": "cross-env-shell NODE_ENV=development vite",
     "build": "tsc && vite build",
+    "preview": "vite preview",
     "check-types": "tsc",
     "clean": "rimraf dist coverage",
     "test": "vitest --run",

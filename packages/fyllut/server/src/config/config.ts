@@ -17,7 +17,7 @@ const tokenx: TokenxConfig = {
 
 const idporten: IdportenConfig = {
   idportenClientId: process.env.IDPORTEN_CLIENT_ID!,
-  idportenJwksUri: process.env.IDPORTEN_JWKS_URI!,
+  idportenJwksUri: process.env.IDPORTEN_JWKS_URI || "https://oidc-ver2.difi.no/idporten-oidc-provider/jwk",
   idportenIssuer: process.env.IDPORTEN_ISSUER!,
 };
 

@@ -7,7 +7,11 @@ import { defineConfig } from "vitest/config";
 dns.setDefaultResultOrder("verbatim");
 
 export default defineConfig({
+  base: "/fyllut",
   server: {
+    port: 8081,
+  },
+  preview: {
     port: 8081,
   },
   build: {

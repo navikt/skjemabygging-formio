@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    preview: {
+      port: 3001,
+    },
     resolve: {
       dedupe: ["react-router-dom", "react-jss", "@navikt/ds-react", "@navikt/ds-icons"],
     },
