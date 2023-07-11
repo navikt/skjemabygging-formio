@@ -28,7 +28,8 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: yarn --cwd ./packages/fyllut/server start, yarn --cwd ./packages/fyllut start
+          working-directory: ./packages/fyllut
+          start: yarn --cwd ./server start, yarn start
           wait-on: 'http://localhost:3001, http://localhost:8081/fyllut/internal/isready'
           wait-on-timeout: 120
 
@@ -40,6 +41,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: yarn --cwd ./packages/bygger/server start, yarn --cwd ./packages/bygger start
+          working-directory: ./packages/bygger
+          start: yarn --cwd ./server start, yarn start
           wait-on: 'http://localhost:3000, http://localhost:8080/internal/isready'
           wait-on-timeout: 120
