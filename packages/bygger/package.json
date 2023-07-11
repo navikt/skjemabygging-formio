@@ -18,8 +18,8 @@
     "clean": "rimraf build coverage",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "cypress:open": "cypress open --config-file=cypress.config.ts",
-    "cypress": "cypress run --config-file=cypress.config.ts"
+    "cypress": "cypress run",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@navikt/ds-css": "^2.9.8",

@@ -27,7 +27,7 @@ jobs:
           working-directory: ./packages/fyllut
           start: yarn --cwd ./server start -d, yarn start -d
           wait-on: 'http://localhost:3001, http://localhost:8081/fyllut/internal/isready'
-          config: video=false
+          config-file: cypress.config.ts
 
   cypress-run-bygger:
     runs-on: ubuntu-latest
@@ -51,5 +51,4 @@ jobs:
           start: yarn --cwd ./server start, yarn start
           wait-on: 'http://localhost:3000, http://localhost:8080/internal/isready'
           wait-on-timeout: 120
-          config: video=false
           config-file: cypress.config.ts
