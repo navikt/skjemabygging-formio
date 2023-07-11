@@ -1,13 +1,11 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
-import * as dns from "dns";
 import { readFileSync } from "fs";
 import lodashTemplate from "lodash/template";
-import { defineConfig, loadEnv } from "vite";
+import { loadEnv } from "vite";
 import { createHtmlPlugin } from "vite-plugin-html";
 import viteTsconfigPaths from "vite-tsconfig-paths";
-
-dns.setDefaultResultOrder("verbatim");
+import { defineConfig } from "vitest/config";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, "env");

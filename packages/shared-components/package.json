@@ -20,7 +20,7 @@
     "watch": "vite build --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "prepare": "tsc && vite build"
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@navikt/fnrvalidator": "^1.1.4",
@@ -56,7 +56,7 @@
     "react-jss": "^10.10.0",
     "react-router-dom": "^5.2.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.2",
+    "vite": "^4.4.3",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.33.0",
     "vitest-fetch-mock": "^0.2.2"
