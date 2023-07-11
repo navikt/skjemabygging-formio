@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.17.1'
+          node-version: '18.16.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.17.1'
+          node-version: '18.16.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
@@ -70,7 +70,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.17.1'
+          node-version: '18.16.1'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
           registry-url: https://npm.pkg.github.com/
