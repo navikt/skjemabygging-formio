@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v2
         with:
           node-version: '18.16.1'
           registry-url: https://npm.pkg.github.com/
@@ -25,14 +25,15 @@ jobs:
           working-directory: ./packages/fyllut
           start: yarn --cwd ./server start, yarn start
           wait-on: 'http://localhost:3001, http://localhost:8081/fyllut/internal/isready'
-          wait-on-timeout: 120
+          config: video=false
+          config-file: cypress.config.ts
 
   cypress-run-bygger:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v2
         with:
           node-version: '18.16.1'
           registry-url: https://npm.pkg.github.com/
@@ -47,3 +48,5 @@ jobs:
           start: yarn --cwd ./server start, yarn start
           wait-on: 'http://localhost:3000, http://localhost:8080/internal/isready'
           wait-on-timeout: 120
+          config: video=false
+          config-file: cypress.config.ts
