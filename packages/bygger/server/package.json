@@ -10,7 +10,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check-types": "tsc",
-    "clean": "rimraf coverage dist",
+    "clean": "rimraf dist coverage",
     "test": "vitest --run",
     "test:coverage": "vitest --run --coverage"
   },
