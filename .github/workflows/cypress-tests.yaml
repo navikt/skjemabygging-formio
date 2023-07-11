@@ -28,21 +28,20 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          working-directory: ./packages/fyllut
-          start: yarn --cwd ./server start, yarn start
+          start: yarn --cwd ./packages/fyllut/server start, yarn --cwd ./packages/fyllut start
           wait-on: 'http://localhost:3001, http://localhost:8081/fyllut/internal/isready'
+          wait-on-timeout: 120
           config-file: cypress.config.ts
 
   cypress-run-bygger:
-    needs: [cypress-run-fyllut]
+    needs: [cypress-setup]
     runs-on: ubuntu-latest
     steps:
       - name: "Cypress tests (bygger)"
         uses: cypress-io/github-action@v5
         with:
           install: false
-          working-directory: ./packages/bygger
-          start: yarn --cwd ./server start, yarn start
+          start: yarn --cwd ./packages/bygger/server start, yarn --cwd ./packages/bygger start
           wait-on: 'http://localhost:3000, http://localhost:8080/internal/isready'
           wait-on-timeout: 120
           config-file: cypress.config.ts
