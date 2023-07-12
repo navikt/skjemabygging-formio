@@ -6,7 +6,7 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  cypress-run-fyllut:
+  cypress-run:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -26,19 +26,6 @@ jobs:
           start: yarn --cwd ./server start, yarn start
           wait-on: 'http://127.0.0.1:3001, http://127.0.0.1:8081/fyllut/internal/isready'
           wait-on-timeout: 120
-
-  cypress-run-bygger:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.16.1'
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Bootstrap"
-        run: yarn bootstrap
       - name: "Cypress tests (bygger)"
         uses: cypress-io/github-action@v5
         with:
