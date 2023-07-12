@@ -9,10 +9,12 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, "env");
   return {
+    base: "/",
     server: {
       open: false,
       host: "127.0.0.1",
       port: 3000,
+      strictPort: true,
       proxy: {
         "/api": {
           target: "http://127.0.0.1:8080",
@@ -23,6 +25,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: "127.0.0.1",
       port: 3000,
+      strictPort: true,
     },
     resolve: {
       dedupe: ["react-router-dom", "react-jss", "@navikt/ds-react", "@navikt/ds-icons"],

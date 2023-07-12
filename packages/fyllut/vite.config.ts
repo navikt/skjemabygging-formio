@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
       open: false,
       host: "127.0.0.1",
       port: 3001,
+      strictPort: true,
       proxy: {
         "/fyllut/api": {
           target: "http://127.0.0.1:8081",
@@ -24,6 +25,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: "127.0.0.1",
       port: 3001,
+      strictPort: true,
     },
     resolve: {
       dedupe: ["react-router-dom", "react-jss", "@navikt/ds-react", "@navikt/ds-icons"],
