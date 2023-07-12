@@ -31,6 +31,8 @@ if (config.isProduction) {
 
 const { port, nodeEnv } = config;
 console.log(`serving on ${port} (${nodeEnv})`);
-app.listen(port);
+if (process.env.NODE_ENV !== "development") {
+  app.listen(port);
+}
 
 export const viteNodeApp = app;
