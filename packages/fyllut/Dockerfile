@@ -11,7 +11,7 @@ ARG skjema_dir
 ARG resources_dir
 ARG translation_dir
 
-COPY build build
+COPY dist build
 COPY server/dist server
 COPY server/fonts server/fonts
 COPY server/node_modules server/node_modules
