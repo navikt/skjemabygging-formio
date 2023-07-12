@@ -4,7 +4,6 @@ on:
   push
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NODE_ENV: development
 
 jobs:
   cypress-run-fyllut:
