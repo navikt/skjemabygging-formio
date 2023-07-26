@@ -36,7 +36,7 @@ describe("Components", () => {
         .first()
         .within(() => {
           cy.get("dt").eq(0).should("contain.text", "Kontonummer");
-          cy.get("dd").eq(0).should("contain.text", "01234567892");
+          cy.get("dd").eq(0).should("contain.text", "0123 45 67892");
           cy.get("dt").eq(1).should("contain.text", "IBAN");
           cy.get("dd").eq(1).should("contain.text", "NL04RABO8424598490");
           cy.get("dt").eq(2).should("contain.text", "Angi valuta og beløp");
