@@ -51,19 +51,25 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const [panelsWithValidationErrors, setPanelsWithValidationErrors] = useState<string[]>([]);
+  const [panelsWithValidationErrors, setPanelsWithValidationErrors] = useState<string[] | undefined>();
 
   useEffect(() => {
-    if (panelsWithValidationErrors.length === 0) {
+    const initializeFormio = async () => {
       const formio = new FormioForm(document.getElementById("formio-summary-hidden"), form, {
         language: "nb-NO",
         i18n: {},
       });
-      const validation = formio.instance.components
-        .map((comp) => !comp.checkValidity(submission?.data ?? {}) && comp.key)
+
+      const instance = await formio.ready;
+      await instance.setSubmission(submission ?? { data: {} });
+      const validation = instance.components
+        .map((panel) => !panel.checkValidity(submission?.data ?? {}) && panel.key)
         .filter((key) => key);
-      console.log("validation", validation);
+      instance.destroy(true);
       setPanelsWithValidationErrors(validation);
+    };
+    if (!panelsWithValidationErrors) {
+      initializeFormio();
     }
   }, [form, panelsWithValidationErrors, submission]);
 

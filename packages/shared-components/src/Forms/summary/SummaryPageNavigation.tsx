@@ -27,7 +27,7 @@ function getUrlToLastPanel(form, formUrl, submission) {
 
 export interface Props {
   form: NavFormType;
-  submission: Submission;
+  submission?: Submission;
   formUrl: string;
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (error: Error) => void;

@@ -7,7 +7,7 @@ import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 
 export interface Props {
-  submission: Submission;
+  submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: Function;
   onSuccess?: Function;
@@ -30,6 +30,13 @@ const DigitalSubmissionButton = ({ submission, isValid, onError, onSuccess = noo
       onError(new Error("Digital innsending er ikke støttet ved forhåndsvisning i byggeren."));
       return;
     }
+
+    //TODO: Sjekk om denne kan løses et annet sted og gi en god tilbakemelding
+    if (!submission) {
+      onError(new Error("Innsendingen er tom"));
+      return;
+    }
+
     try {
       setLoading(true);
       loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });

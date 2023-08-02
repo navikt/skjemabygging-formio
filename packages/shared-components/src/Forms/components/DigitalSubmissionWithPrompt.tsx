@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 });
 
 export interface Props {
-  submission: Submission;
+  submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
   onSuccess?: () => void;

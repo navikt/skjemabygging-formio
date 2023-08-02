@@ -13,7 +13,7 @@ interface Props {
   form: NavFormType;
   formUrl: string;
   submission?: Submission;
-  panelsWithValidationErrors: string[];
+  panelsWithValidationErrors?: string[];
 }
 
 const FormSummary = ({ form, formUrl, submission, panelsWithValidationErrors }: Props) => {

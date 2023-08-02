@@ -10,7 +10,7 @@ type FormStepperProps = {
   form: NavFormType;
   formUrl: string;
   submissionMethod?: string;
-  submission: Submission;
+  submission?: Submission;
 };
 
 const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormStepperProps) => {

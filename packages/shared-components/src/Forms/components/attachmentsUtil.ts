@@ -38,7 +38,7 @@ const hasOtherDocumentation = (form, submission) => {
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission?.data || {}, form))
     .some((component) => component.otherDocumentation);
 };
 
