@@ -131,7 +131,7 @@ ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
 
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
-<div class="underskrift">${translate(description)}</div>
+<div class="underskrift">${description ? translate(description) : ""}</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} _________________________________________</div>`;
 
