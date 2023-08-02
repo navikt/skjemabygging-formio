@@ -52,10 +52,6 @@ build() {
     yarn build || exit 1
 }
 
-build_prod() {
-    yarn build:prod || exit 1
-}
-
 yarn && yarn clean
 node bin/prepare-production-build.mjs
 

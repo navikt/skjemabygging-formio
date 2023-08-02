@@ -2,7 +2,7 @@ import { createApp } from "./app";
 import { logger } from "./logger.js";
 import "./utils/errorToJson.js";
 
-const port = parseInt(process.env.PORT || "8081");
+const port = parseInt(process.env.PORT || "8080");
 
 const app = createApp();
 
