@@ -125,30 +125,9 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
     return `${linjer.join(", ")}, ${address.postnummer} ${address.poststed}`;
   };
 
-  return (
-    <Fieldset hideLegend legend="">
-      {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
-      <div className={`mb ${styles.row}`}>
-        <Checkbox
-          id="teststatus"
-          checked={!!isTestForm}
-          onChange={(event) =>
-            onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
-          }
-        >
-          Dette er et testskjema
-        </Checkbox>
-        <span>
-          Skjemadelingslenke
-          <Button
-            onClick={() => copy(`${config!.fyllutBaseUrl}/test/login?formPath=${path}`)}
-            icon={<Copy />}
-            title="Kopier skjemadelingslenke"
-            variant="tertiary"
-            size="xsmall"
-          />
-        </span>
-      </div>
+  const basicFields = () => (
+    <>
+      {testSkjemaFields()}
       <TextField
         className="mb"
         label="Skjemanummer"
@@ -172,32 +151,65 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
         onChange={(event) => onChange({ ...form, title: event.target.value })}
         error={errors?.title}
       />
-      <div className="mb">
-        <Select
-          className="mb-4"
-          label={<LabelWithDiff label="Tema" diff={!!diff.tema} />}
-          id="tema"
-          disabled={!isTemaKoderReady}
-          value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ""}
-          onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
-          error={errors?.tema}
+      {temaKodeFields()}
+    </>
+  );
+
+  const testSkjemaFields = () => (
+    <>
+      <div className={`mb ${styles.row}`}>
+        <Checkbox
+          id="teststatus"
+          checked={!!isTestForm}
+          onChange={(event) =>
+            onChange({ ...form, properties: { ...form.properties, isTestForm: event.target.checked } })
+          }
         >
-          <option value="">{"Velg tema"}</option>
-          {temaKoder?.map(({ key, value }) => (
-            <option key={key} value={key}>
-              {`${value} (${key})`}
-            </option>
-          ))}
-        </Select>
-        {temaKoderError && (
-          <Alert variant="error" size="small">
-            {temaKoderError}
-          </Alert>
-        )}
+          Dette er et testskjema
+        </Checkbox>
+        <span>
+          Skjemadelingslenke
+          <Button
+            onClick={() => copy(`${config!.fyllutBaseUrl}/test/login?formPath=${path}`)}
+            icon={<Copy />}
+            title="Kopier skjemadelingslenke"
+            variant="tertiary"
+            size="xsmall"
+          />
+        </span>
       </div>
+    </>
+  );
 
+  const temaKodeFields = () => (
+    <>
+      <Select
+        className="mb-4"
+        label={<LabelWithDiff label="Tema" diff={!!diff.tema} />}
+        id="tema"
+        disabled={!isTemaKoderReady}
+        value={temaKoder?.find((temaKode) => temaKode.key === tema)?.key || ""}
+        onChange={(event) => onChange({ ...form, properties: { ...form.properties, tema: event.target.value } })}
+        error={errors?.tema}
+      >
+        <option value="">{"Velg tema"}</option>
+        {temaKoder?.map(({ key, value }) => (
+          <option key={key} value={key}>
+            {`${value} (${key})`}
+          </option>
+        ))}
+      </Select>
+      {temaKoderError && (
+        <Alert variant="error" size="small">
+          {temaKoderError}
+        </Alert>
+      )}
+    </>
+  );
+
+  const summaryPageDeclarationFields = () => (
+    <>
       <LabelWithDiff label="Erklæring på oppsummeringsside" diff={!!diff.declarationType} />
-
       <div className="mb">
         <ToggleGroup
           size="small"
@@ -244,22 +256,28 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           </div>
         )}
       </div>
+    </>
+  );
 
-      <TextField
-        className="mb"
-        label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}
-        type="text"
-        id="downloadPdfButtonText"
-        value={downloadPdfButtonText || ""}
-        onChange={(event) =>
-          onChange({
-            ...form,
-            properties: { ...form.properties, downloadPdfButtonText: event.target.value },
-          })
-        }
-        placeholder={TEXTS.grensesnitt.downloadApplication}
-      />
+  const downloadPdfButtonTextFields = () => (
+    <TextField
+      className="mb"
+      label={<LabelWithDiff label="Tekst på knapp for nedlasting av pdf" diff={!!diff.downloadPdfButtonText} />}
+      type="text"
+      id="downloadPdfButtonText"
+      value={downloadPdfButtonText || ""}
+      onChange={(event) =>
+        onChange({
+          ...form,
+          properties: { ...form.properties, downloadPdfButtonText: event.target.value },
+        })
+      }
+      placeholder={TEXTS.grensesnitt.downloadApplication}
+    />
+  );
 
+  const submissionFields = () => (
+    <>
       <SubmissionTypeSelect
         name="form-innsending"
         label={<LabelWithDiff label="Innsending" diff={!!diff.innsending} />}
@@ -300,7 +318,6 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           placeholder={"Standard (14 dager)"}
         />
       )}
-
       {innsending === "INGEN" && (
         <>
           <TextField
@@ -327,6 +344,11 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           />
         </>
       )}
+    </>
+  );
+
+  const addressFields = () => (
+    <>
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") && (
         <div>
           <Select
@@ -366,6 +388,11 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       <div className="mb">
         <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
       </div>
+    </>
+  );
+
+  const enhetsListFields = () => (
+    <>
       {(innsending === "KUN_PAPIR" || innsending === "PAPIR_OG_DIGITAL") &&
         !mottaksadresseId &&
         featureToggles?.enableEnhetsListe && (
@@ -389,7 +416,11 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
             />
           </div>
         )}
+    </>
+  );
 
+  const instructionFields = () => (
+    <>
       <Textarea
         label={<LabelWithDiff label="Generelle instruksjoner (valgfritt)" diff={!!diff.descriptionOfSignatures} />}
         value={descriptionOfSignatures || ""}
@@ -401,7 +432,11 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           })
         }
       />
+    </>
+  );
 
+  const signatureFields = () => (
+    <>
       <Checkbox
         className="mb"
         checked={!!descriptionOfSignaturesPositionUnder}
@@ -414,7 +449,6 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
       >
         Plasser under signaturer
       </Checkbox>
-
       {signatureUtils.mapBackwardCompatibleSignatures(signatures)?.map((signature, index) => (
         <div key={signature.key}>
           <SignatureComponent
@@ -426,10 +460,27 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           />
         </div>
       ))}
-
       <Button variant="secondary" className="mb" onClick={addNewSignature}>
         Legg til signatur
       </Button>
+    </>
+  );
+
+  return (
+    <Fieldset hideLegend legend="">
+      {diff.errorMessage && <Alert variant="warning">{diff.errorMessage}</Alert>}
+      <div className="mb">{basicFields()}</div>
+      {usageContext === "edit" && (
+        <>
+          {summaryPageDeclarationFields()}
+          {downloadPdfButtonTextFields()}
+          {submissionFields()}
+          {addressFields()}
+          {enhetsListFields()}
+          {instructionFields()}
+          {signatureFields()}
+        </>
+      )}
     </Fieldset>
   );
 };
