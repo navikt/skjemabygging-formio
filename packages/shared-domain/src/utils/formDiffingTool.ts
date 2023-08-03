@@ -70,7 +70,7 @@ const toSignaturesDiff = (arrayDiff: any): SignaturesDiff | undefined => {
   return diff;
 };
 
-type NavFormSettingsDiff = {
+export type NavFormSettingsDiff = {
   [key in keyof FormPropertiesType]?: object;
 } & { errorMessage?: string; title?: string };
 const generateNavFormSettingsDiff = (
