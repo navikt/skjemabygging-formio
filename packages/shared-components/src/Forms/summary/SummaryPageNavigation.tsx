@@ -46,6 +46,20 @@ const SummaryPageNavigation = ({ form, submission, formUrl, isValid, onError }: 
   };
   const hasAttachments = hasRelevantAttachments(form, submission);
 
+  const onClickPapirOrIngenInnsending = (e, path) => {
+    if (!isValid(e)) {
+      return;
+    }
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
+      destinasjon: `${formUrl}/${path}`,
+    });
+    loggSkjemaStegFullfort({
+      steg: getPanels(form.components).length + 1,
+      skjemastegNokkel: "oppsummering",
+    });
+  };
+
   return (
     <nav>
       <div className="button-row button-row__center">
@@ -54,19 +68,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, isValid, onError }: 
           (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
           <Link
             className="navds-button navds-button--primary"
-            onClick={(e) => {
-              if (!isValid(e)) {
-                return;
-              }
-              loggNavigering({
-                lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
-                destinasjon: `${formUrl}/send-i-posten`,
-              });
-              loggSkjemaStegFullfort({
-                steg: getPanels(form.components).length + 1,
-                skjemastegNokkel: "oppsummering",
-              });
-            }}
+            onClick={(e) => onClickPapirOrIngenInnsending(e, "send-i-posten")}
             to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
           >
             <span aria-live="polite" className="navds-body-short font-bold">
@@ -102,16 +104,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, isValid, onError }: 
         {innsending === "INGEN" && (
           <Link
             className="navds-button navds-button--primary"
-            onClick={(e) => {
-              if (!isValid(e)) {
-                return;
-              }
-
-              loggSkjemaStegFullfort({
-                steg: getPanels(form.components).length + 1,
-                skjemastegNokkel: "oppsummering",
-              });
-            }}
+            onClick={(e) => onClickPapirOrIngenInnsending(e, "ingen-innsending")}
             to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
           >
             <span aria-live="polite" className="navds-body-short font-bold">
