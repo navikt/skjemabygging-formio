@@ -55,7 +55,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
 
   const addressFields = () => <AddressFields onChange={onChange} diff={diff} form={form}></AddressFields>;
 
-  const enhetsListFields = () => <EnhetFields onChange={onChange} form={form}></EnhetFields>;
+  const enhetFields = () => <EnhetFields onChange={onChange} form={form}></EnhetFields>;
 
   const instructionFields = () => (
     <>
@@ -85,7 +85,7 @@ const BasicFormMetadataEditor = ({ form, publishedForm, onChange, usageContext, 
           {downloadPdfButtonTextFields()}
           {submissionFields()}
           {addressFields()}
-          {enhetsListFields()}
+          {enhetFields()}
           {instructionFields()}
           {signatureFields()}
         </>
