@@ -1,5 +1,5 @@
 import { TextField } from "@navikt/ds-react";
-import { NavFormSettingsDiff, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormSettingsDiff, NavFormType, UsageContext } from "@navikt/skjemadigitalisering-shared-domain";
 import LabelWithDiff from "../LabelWithDiff";
 import { FormMetadataError, UpdateFormFunction } from "../utils";
 import TemaKodeFields from "./TemaKodeFields";
@@ -10,7 +10,7 @@ export interface BasicFieldsProps {
   diff: NavFormSettingsDiff;
   form: NavFormType;
   errors?: FormMetadataError;
-  usageContext: "create" | "edit";
+  usageContext: UsageContext;
 }
 
 const BasicFields = ({ onChange, diff, form, errors, usageContext }: BasicFieldsProps) => {

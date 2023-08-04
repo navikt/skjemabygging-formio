@@ -35,7 +35,7 @@ export function FormSettingsPage({
   const [errors, setErrors] = useState({});
 
   validateAndSave = async (form) => {
-    const updatedErrors = validateFormMetadata(form);
+    const updatedErrors = validateFormMetadata(form, "edit");
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
       return await onSave(form);

@@ -1,5 +1,5 @@
 import { Alert, Fieldset, Textarea, TextField } from "@navikt/ds-react";
-import { formDiffingTool, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { formDiffingTool, NavFormType, TEXTS, UsageContext } from "@navikt/skjemadigitalisering-shared-domain";
 import AddressFields from "./fields/AddressFields";
 import BasicFields from "./fields/BasicFields";
 import DeclarationFields from "./fields/DeclarationFields";
@@ -8,8 +8,6 @@ import SignatureFields from "./fields/SignatureFields";
 import SubmissionFields from "./fields/SubmissionFields";
 import LabelWithDiff from "./LabelWithDiff";
 import { FormMetadataError, UpdateFormFunction } from "./utils";
-
-type UsageContext = "create" | "edit";
 
 interface Props {
   form: NavFormType;

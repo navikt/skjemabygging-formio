@@ -63,7 +63,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
     });
   };
   const validateAndSave = async (form) => {
-    const updatedErrors = validateFormMetadata(form);
+    const updatedErrors = validateFormMetadata(form, "create");
     const trimmedFormNumber = state.form.properties.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});
