@@ -36,6 +36,38 @@ jest.mock("react-router-dom", () => ({
   Link: () => <a href="/">testlink</a>,
 }));
 
+const defaultForm: NavFormType = {
+  title: "Testskjema",
+  name: "testskjema",
+  path: "tst123456",
+  tags: ["nav-skjema", ""],
+  type: "form",
+  components: [],
+  properties: {
+    skjemanummer: "TST 12.34-56",
+    innsending: "PAPIR_OG_DIGITAL",
+    tema: "BIL",
+    enhetMaVelgesVedPapirInnsending: false,
+    enhetstyper: [],
+    signatures: [
+      {
+        label: "",
+        description: "",
+        key: "ddade517-86c6-4f1e-b730-a477e01dc245",
+      },
+    ],
+  },
+  display: "wizard",
+};
+
+const formMedProps = (props: Partial<FormPropertiesType>): NavFormType => ({
+  ...defaultForm,
+  properties: {
+    ...defaultForm.properties,
+    ...props,
+  },
+});
+
 describe("FormMetadataEditor", () => {
   let mockOnChange: jest.MockedFunction<UpdateFormFunction>;
 
@@ -78,29 +110,10 @@ describe("FormMetadataEditor", () => {
       );
       expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund");
     });
-  });
-
-  describe("Usage context: CREATE", () => {
-    const defaultForm: NavFormType = {
-      title: "Testskjema",
-      name: "testskjema",
-      path: "tst123456",
-      tags: ["nav-skjema", ""],
-      type: "form",
-      components: [],
-      properties: {
-        skjemanummer: "TST 12.34-56",
-        innsending: undefined,
-        tema: "BIL",
-        enhetMaVelgesVedPapirInnsending: false,
-        enhetstyper: [],
-      },
-      display: "wizard",
-    };
 
     describe("Forklaring til innsending", () => {
       it("Viser input for forklaring når innsending settes til INGEN", async () => {
-        const { rerender } = render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
+        const { rerender } = render(<FormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
         userEvent.selectOptions(screen.getByLabelText("Innsending"), "INGEN");
 
@@ -108,7 +121,7 @@ describe("FormMetadataEditor", () => {
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
         expect(updatedForm.properties.innsending).toEqual("INGEN");
 
-        rerender(<CreationFormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+        rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).not.toBeNull();
       });
 
@@ -120,7 +133,7 @@ describe("FormMetadataEditor", () => {
             innsending: "INGEN",
           },
         };
-        const { rerender } = render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).not.toBeNull();
         userEvent.selectOptions(screen.getByLabelText("Innsending"), "KUN_PAPIR");
 
@@ -128,7 +141,7 @@ describe("FormMetadataEditor", () => {
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
         expect(updatedForm.properties.innsending).toEqual("KUN_PAPIR");
 
-        rerender(<CreationFormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+        rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
         expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
       });
     });
@@ -141,7 +154,7 @@ describe("FormMetadataEditor", () => {
           innsending: "PAPIR_OG_DIGITAL",
         },
       };
-      const { rerender } = render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+      const { rerender } = render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
       expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
       userEvent.selectOptions(screen.getByLabelText("Innsending"), "KUN_PAPIR");
 
@@ -149,7 +162,7 @@ describe("FormMetadataEditor", () => {
       const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
       expect(updatedForm.properties.innsending).toEqual("KUN_PAPIR");
 
-      rerender(<CreationFormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
+      rerender(<FormMetadataEditor form={updatedForm} onChange={mockOnChange} />);
       expect(screen.queryByLabelText("Forklaring til innsending")).toBeNull();
     });
 
@@ -164,7 +177,7 @@ describe("FormMetadataEditor", () => {
 
       it("lagres i properties", async () => {
         const form = formMedDownloadPdfButtonText(undefined);
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText("Tekst på knapp for nedlasting av pdf");
         await userEvent.paste(input, "Last ned pdf");
 
@@ -175,7 +188,7 @@ describe("FormMetadataEditor", () => {
 
       it("nullstilles i properties", async () => {
         const form = formMedDownloadPdfButtonText("Last meg ned");
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText("Tekst på knapp for nedlasting av pdf");
         await userEvent.clear(input);
 
@@ -184,20 +197,11 @@ describe("FormMetadataEditor", () => {
         expect(updatedForm.properties.downloadPdfButtonText).toEqual("");
       });
     });
-
-    const formMedProps = (props: Partial<FormPropertiesType>): NavFormType => ({
-      ...defaultForm,
-      properties: {
-        ...defaultForm.properties,
-        ...props,
-      },
-    });
-
     describe("Ettersendelsesfrist", () => {
       it("lagres i properties", async () => {
         const form = formMedProps({ ettersendelsesfrist: undefined, ettersending: "KUN_DIGITAL" });
 
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText("Ettersendelsesfrist (dager)");
         await userEvent.paste(input, "42");
 
@@ -208,7 +212,7 @@ describe("FormMetadataEditor", () => {
 
       it("nullstilles i properties", async () => {
         const form = formMedProps({ ettersendelsesfrist: "42", ettersending: "KUN_DIGITAL" });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
         const input = screen.getByLabelText("Ettersendelsesfrist (dager)");
         await userEvent.clear(input);
 
@@ -218,6 +222,312 @@ describe("FormMetadataEditor", () => {
       });
     });
 
+    describe("Mottaksadresse", () => {
+      describe("Dropdown med mottaksadresser", () => {
+        it("Vises ikke når innsending=INGEN", async () => {
+          const form: NavFormType = formMedProps({ innsending: "INGEN" });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
+        });
+
+        it("Vises ikke når innsending=KUN_DIGITAL", async () => {
+          const form: NavFormType = formMedProps({ innsending: "KUN_DIGITAL" });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
+        });
+
+        it("Vises når innsending=KUN_PAPIR", async () => {
+          const form: NavFormType = formMedProps({ innsending: "KUN_PAPIR" });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
+        });
+
+        it("Vises når innsending=PAPIR_OG_DIGITAL", async () => {
+          const form: NavFormType = formMedProps({ innsending: "PAPIR_OG_DIGITAL" });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
+        });
+
+        it("Vises ikke når innsending=undefined", async () => {
+          const form: NavFormType = formMedProps({ innsending: undefined });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
+        });
+
+        it("Viser valgt mottaksadresse med formattering", async () => {
+          const form: NavFormType = formMedProps({ mottaksadresseId: "1" });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          expect(screen.getByDisplayValue("NAV alternativ skanning, Postboks 3, 0591 Oslo")).toBeTruthy();
+        });
+      });
+
+      describe("Endring av mottaksadresse", () => {
+        it("Setter ny mottaksadresse", async () => {
+          const form: NavFormType = formMedProps({ mottaksadresseId: undefined });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "1");
+
+          expect(mockOnChange).toHaveBeenCalledTimes(1);
+          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+          expect(updatedForm.properties.mottaksadresseId).toEqual("1");
+        });
+
+        it("Fjerner valgt mottaksadresse", async () => {
+          const form: NavFormType = formMedProps({ mottaksadresseId: "1" });
+          render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+          userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "");
+
+          expect(mockOnChange).toHaveBeenCalledTimes(1);
+          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+          expect(updatedForm.properties.mottaksadresseId).toBeUndefined();
+        });
+      });
+    });
+
+    describe("Innstilling for valg av enhet ved papirinnsending", () => {
+      const expectedCheckboxName = "Bruker må velge enhet ved innsending på papir";
+      const editFormMetadataEditor = (form: NavFormType, onChange: UpdateFormFunction) => (
+        <AppConfigProvider featureToggles={{ ...featureToggles, enableEnhetsListe: true }}>
+          <FormMetadataEditor form={form} onChange={onChange} />
+        </AppConfigProvider>
+      );
+
+      it("Vises når innsending=KUN_PAPIR", async () => {
+        const form: NavFormType = formMedProps({
+          innsending: "KUN_PAPIR",
+          mottaksadresseId: undefined,
+        });
+        render(editFormMetadataEditor(form, mockOnChange));
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeTruthy();
+      });
+
+      it("Vises når innsending=PAPIR_OG_DIGITAL", async () => {
+        const form: NavFormType = formMedProps({ innsending: "PAPIR_OG_DIGITAL" });
+        render(editFormMetadataEditor(form, mockOnChange));
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeTruthy();
+      });
+
+      it("Vises ikke når innsending=INGEN", async () => {
+        const form: NavFormType = formMedProps({ innsending: "INGEN" });
+        render(editFormMetadataEditor(form, mockOnChange));
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
+      });
+
+      it("Vises ikke når innsending=KUN_DIGITAL", async () => {
+        const form: NavFormType = formMedProps({ innsending: "KUN_DIGITAL" });
+        render(editFormMetadataEditor(form, mockOnChange));
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
+      });
+
+      it("Kan endres til true ved klikk på checkbox", () => {
+        const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: false });
+        const { rerender } = render(editFormMetadataEditor(form, mockOnChange));
+        let checkbox = screen.getByRole("checkbox", {
+          name: expectedCheckboxName,
+        });
+        expect(checkbox).not.toBeChecked();
+        userEvent.click(checkbox);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(true);
+
+        rerender(editFormMetadataEditor(updatedForm, mockOnChange));
+        checkbox = screen.getByRole("checkbox", {
+          name: expectedCheckboxName,
+        });
+        expect(checkbox).toBeChecked();
+      });
+
+      it("Kan endres til false ved klikk på checkbox", () => {
+        const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
+        const { rerender } = render(editFormMetadataEditor(form, mockOnChange));
+        let checkbox = screen.getByRole("checkbox", {
+          name: expectedCheckboxName,
+        });
+        expect(checkbox).toBeChecked();
+        userEvent.click(checkbox);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
+
+        rerender(editFormMetadataEditor(updatedForm, mockOnChange));
+        checkbox = screen.getByRole("checkbox", {
+          name: expectedCheckboxName,
+        });
+        expect(checkbox).not.toBeChecked();
+      });
+
+      it("huker av checkboxer for valgte enhetstyper", () => {
+        const form: NavFormType = formMedProps({
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: ["ALS", "KO", "LOKAL"],
+        });
+        render(editFormMetadataEditor(form, mockOnChange));
+        const checkboxes = screen.getAllByRole("checkbox", { checked: true });
+        expect(checkboxes).toHaveLength(4);
+      });
+
+      it("fjerner valgt enhet ved klikk", () => {
+        const form: NavFormType = formMedProps({
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: ["ALS", "KO", "LOKAL"],
+        });
+        render(editFormMetadataEditor(form, mockOnChange));
+        userEvent.click(screen.getByRole("checkbox", { name: "LOKAL" }));
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.enhetstyper).toEqual(["ALS", "KO"]);
+      });
+
+      it("legger til ny valgt enhet ved klikk", () => {
+        const form: NavFormType = formMedProps({
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: ["ALS", "KO", "LOKAL"],
+        });
+        render(editFormMetadataEditor(form, mockOnChange));
+        userEvent.click(screen.getByRole("checkbox", { name: "ARK" }));
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.enhetstyper).toEqual(["ALS", "KO", "LOKAL", "ARK"]);
+      });
+
+      it("oppdaterer skjemaet med alle støttede enheter hvis enhetstyper er undefined", () => {
+        const props = {
+          mottaksadresseId: undefined,
+          enhetMaVelgesVedPapirInnsending: true,
+          enhetstyper: undefined,
+        };
+        const form: NavFormType = formMedProps(props);
+        render(editFormMetadataEditor(form, mockOnChange));
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        expect(mockOnChange).toHaveBeenCalledWith(formMedProps({ ...props, enhetstyper: supportedEnhetstyper }));
+      });
+
+      it("Nullstilles og skjules når mottaksadresse velges", () => {
+        const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
+        const { rerender } = render(editFormMetadataEditor(form, mockOnChange));
+        userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "1");
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.mottaksadresseId).toEqual("1");
+        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
+
+        rerender(editFormMetadataEditor(updatedForm, mockOnChange));
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
+      });
+
+      it("Er skjult når mottaksadresse er valgt", () => {
+        const form: NavFormType = formMedProps({ mottaksadresseId: "1", enhetMaVelgesVedPapirInnsending: true });
+        render(editFormMetadataEditor(form, mockOnChange));
+        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
+      });
+    });
+
+    describe("Signaturer", () => {
+      let form: NavFormType;
+      beforeEach(() => {
+        form = formMedProps({});
+      });
+
+      it("Legger til signatur", () => {
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const signaturFieldsets = screen.getAllByTestId("signatures");
+        expect(signaturFieldsets).toHaveLength(1);
+
+        const input = within(signaturFieldsets[0]).getByLabelText("Hvem skal signere?");
+        userEvent.paste(input, "Lege");
+
+        expect(mockOnChange).toHaveBeenCalled();
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
+      });
+
+      it("legger til ny signatur ved klikk på 'legg til signatur' knapp", () => {
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const knapp = screen.getByRole("button", { name: "Legg til signatur" });
+        userEvent.click(knapp);
+
+        expect(mockOnChange).toHaveBeenCalledTimes(1);
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("");
+        expect(updatedForm.properties.signatures?.[0].description).toEqual("");
+      });
+
+      it("Slett en signatur", () => {
+        const multipleSignatures = [
+          {
+            label: "Doctor",
+            description: "Doctor Description",
+            key: "0",
+          },
+          {
+            label: "Test",
+            description: "Test Description",
+            key: "1",
+          },
+          {
+            label: "Applicant",
+            description: "Applicant Description",
+            key: "2",
+          },
+        ];
+
+        form = formMedProps({ signatures: multipleSignatures });
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const signaturFieldsets = screen.getAllByTestId("signatures");
+        expect(signaturFieldsets).toHaveLength(3);
+        const lukkKnapp = screen.getByRole("button", { name: "Slett signatur 2" });
+        userEvent.click(lukkKnapp);
+
+        expect(mockOnChange).toHaveBeenCalled();
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("Doctor");
+        expect(updatedForm.properties.signatures?.[0].description).toEqual("Doctor Description");
+        expect(updatedForm.properties.signatures?.[1].label).toEqual("Applicant");
+        expect(updatedForm.properties.signatures?.[1].description).toEqual("Applicant Description");
+      });
+
+      it("Legger til beskrivelse for en signatur", () => {
+        form = formMedProps({ signatures: [{ label: "Lege", key: "0000" }] });
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const signature1Description = screen.getAllByRole("textbox", { name: "Instruksjoner til den som signerer" })[0];
+        userEvent.paste(signature1Description, "Jeg bekrefter at personen er syk");
+
+        expect(mockOnChange).toHaveBeenCalled();
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.signatures?.[0].description).toEqual("Jeg bekrefter at personen er syk");
+        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
+      });
+    });
+
+    describe("Beskrivelse av alle signaturene", () => {
+      it("settes i properties når tekst legges inn i tekstfelt", () => {
+        const form: NavFormType = formMedProps({ signatures: [{ label: "Lege", key: uuidv4() }] });
+        render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
+
+        const input = screen.getByLabelText("Generelle instruksjoner (valgfritt)");
+        userEvent.paste(input, "Lang beskrivelse av hvorfor man signerer");
+
+        expect(mockOnChange).toHaveBeenCalled();
+        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
+        expect(updatedForm.properties.descriptionOfSignatures).toEqual("Lang beskrivelse av hvorfor man signerer");
+      });
+    });
+  });
+
+  describe("Usage context: CREATE", () => {
     describe("Tema", () => {
       it("lister ut temaer", () => {
         render(<CreationFormMetadataEditor form={defaultForm} onChange={mockOnChange} />);
@@ -249,310 +559,6 @@ describe("FormMetadataEditor", () => {
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
         expect(updatedForm.properties.tema).toEqual("XYZ");
-      });
-    });
-
-    describe("Mottaksadresse", () => {
-      describe("Dropdown med mottaksadresser", () => {
-        it("Vises ikke når innsending=INGEN", async () => {
-          const form: NavFormType = formMedProps({ innsending: "INGEN" });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
-        });
-
-        it("Vises ikke når innsending=KUN_DIGITAL", async () => {
-          const form: NavFormType = formMedProps({ innsending: "KUN_DIGITAL" });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
-        });
-
-        it("Vises når innsending=KUN_PAPIR", async () => {
-          const form: NavFormType = formMedProps({ innsending: "KUN_PAPIR" });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
-        });
-
-        it("Vises når innsending=PAPIR_OG_DIGITAL", async () => {
-          const form: NavFormType = formMedProps({ innsending: "PAPIR_OG_DIGITAL" });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
-        });
-
-        it("Vises når innsending=undefined", async () => {
-          const form: NavFormType = formMedProps({ innsending: undefined });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
-        });
-
-        it("Viser valgt mottaksadresse med formattering", async () => {
-          const form: NavFormType = formMedProps({ mottaksadresseId: "1" });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.getByDisplayValue("NAV alternativ skanning, Postboks 3, 0591 Oslo")).toBeTruthy();
-        });
-      });
-
-      describe("Endring av mottaksadresse", () => {
-        it("Setter ny mottaksadresse", async () => {
-          const form: NavFormType = formMedProps({ mottaksadresseId: undefined });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "1");
-
-          expect(mockOnChange).toHaveBeenCalledTimes(1);
-          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-          expect(updatedForm.properties.mottaksadresseId).toEqual("1");
-        });
-
-        it("Fjerner valgt mottaksadresse", async () => {
-          const form: NavFormType = formMedProps({ mottaksadresseId: "1" });
-          render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-          userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "");
-
-          expect(mockOnChange).toHaveBeenCalledTimes(1);
-          const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-          expect(updatedForm.properties.mottaksadresseId).toBeUndefined();
-        });
-      });
-    });
-
-    describe("Innstilling for valg av enhet ved papirinnsending", () => {
-      const expectedCheckboxName = "Bruker må velge enhet ved innsending på papir";
-      const creationFormMetadataEditor = (form, onChange) => (
-        <AppConfigProvider featureToggles={{ ...featureToggles, enableEnhetsListe: true }}>
-          <CreationFormMetadataEditor form={form} onChange={onChange} />
-        </AppConfigProvider>
-      );
-
-      it("Vises når innsending=KUN_PAPIR", async () => {
-        const form: NavFormType = formMedProps({
-          innsending: "KUN_PAPIR",
-          mottaksadresseId: undefined,
-        });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeTruthy();
-      });
-
-      it("Vises når innsending=PAPIR_OG_DIGITAL", async () => {
-        const form: NavFormType = formMedProps({ innsending: "PAPIR_OG_DIGITAL" });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeTruthy();
-      });
-
-      it("Vises ikke når innsending=INGEN", async () => {
-        const form: NavFormType = formMedProps({ innsending: "INGEN" });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
-      });
-
-      it("Vises ikke når innsending=KUN_DIGITAL", async () => {
-        const form: NavFormType = formMedProps({ innsending: "KUN_DIGITAL" });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
-      });
-
-      it("Kan endres til true ved klikk på checkbox", () => {
-        const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: false });
-        const { rerender } = render(creationFormMetadataEditor(form, mockOnChange));
-        let checkbox = screen.getByRole("checkbox", {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).not.toBeChecked();
-        userEvent.click(checkbox);
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(true);
-
-        rerender(creationFormMetadataEditor(updatedForm, mockOnChange));
-        checkbox = screen.getByRole("checkbox", {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).toBeChecked();
-      });
-
-      it("Kan endres til false ved klikk på checkbox", () => {
-        const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
-        const { rerender } = render(creationFormMetadataEditor(form, mockOnChange));
-        let checkbox = screen.getByRole("checkbox", {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).toBeChecked();
-        userEvent.click(checkbox);
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
-
-        rerender(creationFormMetadataEditor(updatedForm, mockOnChange));
-        checkbox = screen.getByRole("checkbox", {
-          name: expectedCheckboxName,
-        });
-        expect(checkbox).not.toBeChecked();
-      });
-
-      it("huker av checkboxer for valgte enhetstyper", () => {
-        const form: NavFormType = formMedProps({
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ["ALS", "KO", "LOKAL"],
-        });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        const checkboxes = screen.getAllByRole("checkbox", { checked: true });
-        expect(checkboxes).toHaveLength(4);
-      });
-
-      it("fjerner valgt enhet ved klikk", () => {
-        const form: NavFormType = formMedProps({
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ["ALS", "KO", "LOKAL"],
-        });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        userEvent.click(screen.getByRole("checkbox", { name: "LOKAL" }));
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.enhetstyper).toEqual(["ALS", "KO"]);
-      });
-
-      it("legger til ny valgt enhet ved klikk", () => {
-        const form: NavFormType = formMedProps({
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: ["ALS", "KO", "LOKAL"],
-        });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        userEvent.click(screen.getByRole("checkbox", { name: "ARK" }));
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.enhetstyper).toEqual(["ALS", "KO", "LOKAL", "ARK"]);
-      });
-
-      it("oppdaterer skjemaet med alle støttede enheter hvis enhetstyper er undefined", () => {
-        const props = {
-          mottaksadresseId: undefined,
-          enhetMaVelgesVedPapirInnsending: true,
-          enhetstyper: undefined,
-        };
-        const form: NavFormType = formMedProps(props);
-        render(creationFormMetadataEditor(form, mockOnChange));
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        expect(mockOnChange).toHaveBeenCalledWith(formMedProps({ ...props, enhetstyper: supportedEnhetstyper }));
-      });
-
-      it("Nullstilles og skjules når mottaksadresse velges", () => {
-        const form: NavFormType = formMedProps({ mottaksadresseId: undefined, enhetMaVelgesVedPapirInnsending: true });
-        const { rerender } = render(creationFormMetadataEditor(form, mockOnChange));
-        userEvent.selectOptions(screen.getByLabelText("Mottaksadresse"), "1");
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.mottaksadresseId).toEqual("1");
-        expect(updatedForm.properties.enhetMaVelgesVedPapirInnsending).toBe(false);
-
-        rerender(creationFormMetadataEditor(updatedForm, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
-      });
-
-      it("Er skjult når mottaksadresse er valgt", () => {
-        const form: NavFormType = formMedProps({ mottaksadresseId: "1", enhetMaVelgesVedPapirInnsending: true });
-        render(creationFormMetadataEditor(form, mockOnChange));
-        expect(screen.queryByRole("checkbox", { name: expectedCheckboxName })).toBeFalsy();
-      });
-    });
-
-    describe("Signaturer", () => {
-      let form: NavFormType;
-      beforeEach(() => {
-        form = formMedProps({});
-      });
-
-      it("Legger til signatur", () => {
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const signaturFieldsets = screen.getAllByTestId("signatures");
-        expect(signaturFieldsets).toHaveLength(1);
-
-        const input = within(signaturFieldsets[0]).getByLabelText("Hvem skal signere?");
-        userEvent.paste(input, "Lege");
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
-      });
-
-      it("legger til ny signatur ved klikk på 'legg til signatur' knapp", () => {
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const knapp = screen.getByRole("button", { name: "Legg til signatur" });
-        userEvent.click(knapp);
-
-        expect(mockOnChange).toHaveBeenCalledTimes(1);
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("");
-        expect(updatedForm.properties.signatures?.[0].description).toEqual("");
-      });
-
-      it("Slett en signatur", () => {
-        const multipleSignatures = [
-          {
-            label: "Doctor",
-            description: "Doctor Description",
-            key: "0",
-          },
-          {
-            label: "Test",
-            description: "Test Description",
-            key: "1",
-          },
-          {
-            label: "Applicant",
-            description: "Applicant Description",
-            key: "2",
-          },
-        ];
-
-        form = formMedProps({ signatures: multipleSignatures });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const signaturFieldsets = screen.getAllByTestId("signatures");
-        expect(signaturFieldsets).toHaveLength(3);
-        const lukkKnapp = screen.getByRole("button", { name: "Slett signatur 2" });
-        userEvent.click(lukkKnapp);
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("Doctor");
-        expect(updatedForm.properties.signatures?.[0].description).toEqual("Doctor Description");
-        expect(updatedForm.properties.signatures?.[1].label).toEqual("Applicant");
-        expect(updatedForm.properties.signatures?.[1].description).toEqual("Applicant Description");
-      });
-
-      it("Legger til beskrivelse for en signatur", () => {
-        form = formMedProps({ signatures: [{ label: "Lege", key: "0000" }] });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const signature1Description = screen.getAllByRole("textbox", { name: "Instruksjoner til den som signerer" })[0];
-        userEvent.paste(signature1Description, "Jeg bekrefter at personen er syk");
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.signatures?.[0].description).toEqual("Jeg bekrefter at personen er syk");
-        expect(updatedForm.properties.signatures?.[0].label).toEqual("Lege");
-      });
-    });
-
-    describe("Beskrivelse av alle signaturene", () => {
-      it("settes i properties når tekst legges inn i tekstfelt", () => {
-        const form: NavFormType = formMedProps({ signatures: [{ label: "Lege", key: uuidv4() }] });
-        render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-
-        const input = screen.getByLabelText("Generelle instruksjoner (valgfritt)");
-        userEvent.paste(input, "Lang beskrivelse av hvorfor man signerer");
-
-        expect(mockOnChange).toHaveBeenCalled();
-        const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
-        expect(updatedForm.properties.descriptionOfSignatures).toEqual("Lang beskrivelse av hvorfor man signerer");
       });
     });
   });

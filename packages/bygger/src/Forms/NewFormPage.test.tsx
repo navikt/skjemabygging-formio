@@ -46,8 +46,7 @@ describe("NewFormPage", () => {
     userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
-    // @ts-ignore
-    const savedForm = saveForm.mock.calls[0][0];
+    const savedForm = saveForm.mock.calls[0][0] as NavFormType;
     expect(savedForm).toMatchObject({
       type: "form",
       path: "nav102030",
