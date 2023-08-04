@@ -1,4 +1,5 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock from "jest-fetch-mock";
@@ -46,6 +47,7 @@ describe("NewFormPage", () => {
     userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
+    // @ts-ignore
     const savedForm = saveForm.mock.calls[0][0] as NavFormType;
     expect(savedForm).toMatchObject({
       type: "form",
