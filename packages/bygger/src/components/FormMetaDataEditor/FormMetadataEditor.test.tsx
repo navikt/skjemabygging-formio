@@ -248,10 +248,10 @@ describe("FormMetadataEditor", () => {
           expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
         });
 
-        it("Vises ikke når innsending=undefined", async () => {
+        it("Vises når innsending=undefined", async () => {
           const form: NavFormType = formMedProps({ innsending: undefined });
           render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
-          expect(screen.queryByLabelText("Mottaksadresse")).toBeFalsy();
+          expect(screen.queryByLabelText("Mottaksadresse")).toBeTruthy();
         });
 
         it("Viser valgt mottaksadresse med formattering", async () => {
