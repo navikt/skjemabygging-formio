@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -24,6 +24,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { startMellomlagring, updateMellomlagring, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
+  const { hash } = useLocation();
+  const mutationObserverRef = useRef(undefined);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
@@ -34,6 +36,27 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       startMellomlagring(submission);
     }
   }, [submission, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
+
+  const removeMutationObserver = () => {
+    if (mutationObserverRef.current) {
+      mutationObserverRef.current.disconnect();
+      mutationObserverRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (hash && !mutationObserverRef.current) {
+      mutationObserverRef.current = new MutationObserver(() => {
+        const hashElementList = document.querySelectorAll(`[id$=${hash.substring(1)}]`);
+        const hashInputElement = Array.from(hashElementList).find((element) => element.tagName === "INPUT");
+        if (hashInputElement) {
+          removeMutationObserver();
+          scrollToAndSetFocus(`[id=${hashInputElement.id}]`);
+        }
+      });
+      mutationObserverRef.current.observe(document, { subtree: true, childList: true });
+    }
+  }, [hash]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
