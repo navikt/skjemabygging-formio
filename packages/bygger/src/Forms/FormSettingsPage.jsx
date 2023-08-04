@@ -19,16 +19,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function FormSettingsPage({
-  form,
-  publishedForm,
-  onSave,
-  onChange,
-  onPublish,
-  onUnpublish,
-  visSkjemaMeny,
-  validateAndSave,
-}) {
+export function FormSettingsPage({ form, publishedForm, onSave, onChange, onPublish, onUnpublish, validateAndSave }) {
   const title = form.title;
   const [openPublishSettingModal, setOpenPublishSettingModal] = useModal(false);
   const styles = useStyles();
