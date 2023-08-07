@@ -13,7 +13,7 @@ export interface SubmissionFieldsProps {
 
 const SubmissionFields = ({ onChange, diff, form, errors }: SubmissionFieldsProps) => {
   const innsending = form.properties.innsending || "PAPIR_OG_DIGITAL";
-  const ettersending = form.properties.ettersending;
+  const ettersending = form.properties.ettersending || "PAPIR_OG_DIGITAL";
   const ettersendelsesfrist = form.properties.ettersendelsesfrist;
 
   return (
