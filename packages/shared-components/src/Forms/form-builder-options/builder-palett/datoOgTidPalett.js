@@ -51,6 +51,7 @@ const datoOgTidPalett = {
         key: "manedAr",
         input: true,
         dataGridLabel: true,
+        fieldSize: "input--s",
         clearOnHide: true,
         validateOn: "blur",
         validate: {
