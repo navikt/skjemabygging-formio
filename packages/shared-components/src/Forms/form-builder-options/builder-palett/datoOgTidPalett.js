@@ -59,7 +59,7 @@ const datoOgTidPalett = {
         },
         fields: {
           day: {
-            fieldSize: "input--xs",
+            fieldSize: "input--s",
             required: false,
             hide: true,
           },

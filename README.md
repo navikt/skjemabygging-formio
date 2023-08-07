@@ -25,7 +25,7 @@ _(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/fr
 | ------------------ | ------------------------------------------------------------------------------------- |
 | yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
 | yarn watch         | transpilerer felleskoden når den endres                                               |
-| yarn start         | starter både bygger og fyllut, inkludert backend                                      |
+| yarn start         | starter både bygger og fyllut, inkludert backend (husk yarn:watch om nødvendig)       |
 | yarn start:bygger  | starter bygger, inkludert backend                                                     |
 | yarn start:fyllut  | starter fyllut, inkludert backend                                                     |
 | yarn build         | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
@@ -35,6 +35,8 @@ _(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/fr
 | yarn check-types   | sjekker at typene er korrekte                                                         |
 | yarn clean         | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
 | yarn lint          | se etter problemer i koden                                                            |
+
+> Husk å kjøre `yarn:watch` hvis du gjør endringer i `shared-components` eller `shared-domain`
 
 ## Lokal konfigurasjon med dotenv
 
