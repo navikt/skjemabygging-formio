@@ -288,6 +288,7 @@
       "skjemanummer": "cypress-innstillinger",
       "tema": "CYPRESSTEST",
       "innsending": "PAPIR_OG_DIGITAL",
+      "ettersending": "PAPIR_OG_DIGITAL",
       "signatures": [
         { "label": "Lege", "description": "Instruksjoner fra lege...", "key": "5b2366f2-ed4f-4172-b89a-42202de00f2f" }
       ],

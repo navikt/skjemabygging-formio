@@ -29,6 +29,7 @@ describe("FormSettingsPage", () => {
       expect(req.body.properties.skjemanummer).to.include(_submitData.skjemanummer);
       expect(req.body.properties.descriptionOfSignatures).to.include(_submitData.descriptionOfSignatures);
       expect(req.body.properties.innsending).to.include(_submitData.innsending);
+      expect(req.body.properties.ettersending).to.include(_submitData.ettersending);
       expect(req.body.properties.signatures[0].label).to.include(_submitData.signatureLabel);
       expect(req.body.properties.signatures[0].description).to.include(_submitData.signatureDescription);
       req.reply(req.body);
