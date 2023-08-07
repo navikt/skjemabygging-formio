@@ -132,7 +132,7 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/), bortsett fra under
 utvikling på lokal maskin, hvor utviklerene logger inn
-med [Formio-brukere](https://help.form.io/userguide/user-authentication).
+med [Formio-brukere](https://help.form.io/userguide/user-authentication). Se [oppretting av bruker](#opprette-formio-bruker-for-lokal-utvikling).
 
 I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
 "Skjemabygging", og kan søkes fram på Microsofts
@@ -142,6 +142,11 @@ _Eierene_ av gruppene kan legge til nye medlemmer.
 En oversikt over gruppenes id'er vil dessuten ligge i koden for bygger backend såfremt de faktisk er i bruk:
 
 -   [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger/server/src/middleware/azureAd.ts)
+
+### Opprette Formio-bruker for lokal utvikling
+
+-   Logg inn på https://formio-api.intern.dev.nav.no med brukernavn og passord fra Google Secrets
+-   Velg `Nav Skjemabase` -> `User` -> `Use` og skriv inn ønsket brukernavn/passord
 
 ### Fyllut
 

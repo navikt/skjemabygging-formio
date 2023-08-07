@@ -158,3 +158,5 @@ export interface Submission {
   };
   state: string;
 }
+
+export type UsageContext = "create" | "edit";
