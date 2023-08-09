@@ -8,15 +8,16 @@ import {
 import { useLanguages } from "../../context/languages";
 import { useAppConfig } from "../../index";
 import ComponentSummary from "./ComponentSummary";
+import { PanelValidation } from "./SummaryPage";
 
 interface Props {
   form: NavFormType;
   formUrl: string;
   submission?: Submission;
-  panelsWithValidationErrors?: string[];
+  panelValidationList?: PanelValidation[];
 }
 
-const FormSummary = ({ form, formUrl, submission, panelsWithValidationErrors }: Props) => {
+const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) => {
   const { translate } = useLanguages();
   const { submissionMethod } = useAppConfig();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
@@ -34,12 +35,6 @@ const FormSummary = ({ form, formUrl, submission, panelsWithValidationErrors }: 
   if (summaryPanels.length === 0) {
     return null;
   }
-  return (
-    <ComponentSummary
-      components={summaryPanels}
-      formUrl={formUrl}
-      panelsWithValidationErrors={panelsWithValidationErrors}
-    />
-  );
+  return <ComponentSummary components={summaryPanels} formUrl={formUrl} panelValidationList={panelValidationList} />;
 };
 export default FormSummary;

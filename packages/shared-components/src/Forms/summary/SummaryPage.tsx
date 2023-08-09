@@ -1,10 +1,19 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading } from "@navikt/ds-react";
-import { DeclarationType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  Component,
+  DeclarationType,
+  NavFormType,
+  Submission,
+  TEXTS,
+  formSummaryUtil,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { Form as FormioForm } from "formiojs";
 import { useEffect, useRef, useState } from "react";
+import NavForm from "../../components/NavForm";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import Styles from "../../styles";
+import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import makeStyles from "../../util/jss";
 import FormStepper from "../components/FormStepper";
@@ -38,10 +47,20 @@ const useStyles = makeStyles({
   },
 });
 
+export type PanelValidation = {
+  key: string;
+  summaryComponents?: string[];
+  hasValidationErrors: boolean;
+  firstInputWithValidationError?: string;
+};
 export interface Props {
   form: NavFormType;
   submission?: Submission;
   formUrl: string;
+}
+
+function delay(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
@@ -51,27 +70,48 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const [panelsWithValidationErrors, setPanelsWithValidationErrors] = useState<string[] | undefined>();
+
+  const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
 
   useEffect(() => {
-    const initializeFormio = async () => {
+    const initializePanelValidation = async () => {
       const formio = new FormioForm(document.getElementById("formio-summary-hidden"), form, {
         language: "nb-NO",
         i18n: {},
+        sanitizeConfig: SANITIZE_CONFIG,
+        events: NavForm.getDefaultEmitter(),
       });
 
       const instance = await formio.ready;
       await instance.setSubmission(submission ?? { data: {} });
-      const validation = instance.components
-        .map((panel) => !panel.checkValidity(submission?.data ?? {}) && panel.key)
-        .filter((key) => key);
+      await instance.submissionReady;
+      await instance.formReady;
+      await instance.dataReady;
+
+      //TODO: For some reason, formio mutates the components in more than one iteration, but returns before all changes are done,
+      // leaving us with components that are false positively "valid" (e.g. components hidden by conditionals).
+      // find a way to re-render/re-calculate when formio instance changes due to
+      await delay(150);
+
+      const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, translate, false);
+      const panelValidations = instance.components
+        .map((panel): PanelValidation => {
+          const firstInputWithValidationError: Component | undefined =
+            formSummaryUtil.findFirstInputWithValidationError(panel, submission?.data ?? {});
+          return {
+            key: panel.key as string,
+            hasValidationErrors: firstInputWithValidationError !== undefined,
+            firstInputWithValidationError: firstInputWithValidationError?.key,
+            summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key)
+              .components,
+          };
+        })
+        .filter((panelValidation) => panelValidation);
+      setPanelValidationList(panelValidations);
       instance.destroy(true);
-      setPanelsWithValidationErrors(validation);
     };
-    if (!panelsWithValidationErrors) {
-      initializeFormio();
-    }
-  }, [form, panelsWithValidationErrors, submission]);
+    initializePanelValidation();
+  }, [form, submission, translate]);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -105,7 +145,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               submission={submission}
               form={form}
               formUrl={formUrl}
-              panelsWithValidationErrors={panelsWithValidationErrors}
+              panelValidationList={panelValidationList}
             />
           </div>
           {hasDeclaration && (
@@ -128,6 +168,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             form={form}
             submission={submission}
             formUrl={formUrl}
+            panelValidationList={panelValidationList}
             isValid={isValid}
             onError={(err) => setErrorMessage(err.message)}
           />

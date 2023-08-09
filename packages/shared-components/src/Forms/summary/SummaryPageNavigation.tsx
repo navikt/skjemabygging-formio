@@ -1,5 +1,6 @@
 import { Link as NavLink } from "@navikt/ds-react";
 import {
+  Component,
   formSummaryUtil,
   InnsendingType,
   NavFormType,
@@ -14,26 +15,51 @@ import { getPanels } from "../../util/form";
 import { hasRelevantAttachments } from "../components/attachmentsUtil";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
+import { PanelValidation } from "./SummaryPage";
 
-function getUrlToLastPanel(form, formUrl, submission) {
-  const formSummary = formSummaryUtil.createFormSummaryPanels(form, submission);
-  const lastPanel = formSummary[formSummary.length - 1];
-  const lastPanelSlug = lastPanel?.key;
-  if (!lastPanelSlug) {
-    return formUrl;
+const getPathToFirstErrorOrPanelWithoutSubmission = (
+  form: NavFormType,
+  formUrl: string,
+  panelValidations?: PanelValidation[]
+): { pathname: string; hash?: string } => {
+  if (!panelValidations || panelValidations.length === 0) {
+    return { pathname: `${formUrl}/${form.components[0].key}` };
   }
-  return `${formUrl}/${lastPanelSlug}`;
-}
+  let indexOfFirstPanelWithEmptySubmission;
+  let indexOfFirstPanelWithError;
+
+  panelValidations.forEach((validation, index) => {
+    if (validation.hasValidationErrors && indexOfFirstPanelWithError === undefined) {
+      indexOfFirstPanelWithError = index;
+    }
+    if (validation.summaryComponents?.length === 0 && indexOfFirstPanelWithEmptySubmission === undefined) {
+      indexOfFirstPanelWithEmptySubmission = index;
+    }
+  });
+
+  if (indexOfFirstPanelWithError < indexOfFirstPanelWithEmptySubmission) {
+    const hash = panelValidations[indexOfFirstPanelWithError].firstInputWithValidationError;
+    return { pathname: `${formUrl}/${panelValidations[indexOfFirstPanelWithError].key}`, hash };
+  }
+
+  const panel = panelValidations[indexOfFirstPanelWithEmptySubmission].key;
+  const firstInputInPanel: Component | undefined = formSummaryUtil.findFirstInput(
+    form.components?.[indexOfFirstPanelWithEmptySubmission]
+  );
+  const hash = firstInputInPanel?.key ?? "";
+  return { pathname: `${formUrl}/${panel}`, hash };
+};
 
 export interface Props {
   form: NavFormType;
   submission?: Submission;
   formUrl: string;
+  panelValidationList?: PanelValidation[];
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (error: Error) => void;
 }
 
-const SummaryPageNavigation = ({ form, submission, formUrl, isValid, onError }: Props) => {
+const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid, onError }: Props) => {
   const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { search } = useLocation();
@@ -117,10 +143,10 @@ const SummaryPageNavigation = ({ form, submission, formUrl, isValid, onError }: 
           onClick={() =>
             loggNavigering({
               lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-              destinasjon: getUrlToLastPanel(form, formUrl, submission),
+              destinasjon: getPathToFirstErrorOrPanelWithoutSubmission(form, formUrl, panelValidationList).pathname,
             })
           }
-          to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
+          to={{ ...getPathToFirstErrorOrPanelWithoutSubmission(form, formUrl, panelValidationList), search }}
         >
           <span aria-live="polite" className="navds-body-short font-bold">
             {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}

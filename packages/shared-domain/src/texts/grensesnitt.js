@@ -32,7 +32,7 @@ export const grensesnitt = {
   },
   summaryPage: {
     edit: "Rediger",
-    editAnswers: "Forrige steg",
+    editAnswers: "Fortsett utfylling",
   },
   prepareLetterPage: {
     downloadCoverPage: "Last ned førsteside",

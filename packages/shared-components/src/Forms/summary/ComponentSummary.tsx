@@ -5,27 +5,25 @@ import ImageSummary from "./ImageSummary";
 import PanelSummary from "./PanelSummary";
 import SelectBoxesSummary from "./SelectBoxesSummary";
 import SummaryField from "./SummaryField";
+import { PanelValidation } from "./SummaryPage";
 
 interface Props {
   components: Summary.Component[];
   formUrl?: string;
-  panelsWithValidationErrors?: string[];
+  panelValidationList?: PanelValidation[];
 }
 
-const ComponentSummary = ({ components, formUrl = "", panelsWithValidationErrors = [] }: Props) => {
+const ComponentSummary = ({ components, formUrl = "", panelValidationList = [] }: Props) => {
   return (
     <>
       {components.map((comp) => {
         const { type, key } = comp;
         switch (type) {
           case "panel":
+            const panelValidation = panelValidationList!.find((panelValidation) => panelValidation.key === key);
+            const hasValidationErrors = !!panelValidation?.hasValidationErrors;
             return (
-              <PanelSummary
-                key={key}
-                component={comp}
-                formUrl={formUrl}
-                hasValidationErrors={panelsWithValidationErrors?.includes(key)}
-              />
+              <PanelSummary key={key} component={comp} formUrl={formUrl} hasValidationErrors={hasValidationErrors} />
             );
           case "fieldset":
           case "navSkjemagruppe":

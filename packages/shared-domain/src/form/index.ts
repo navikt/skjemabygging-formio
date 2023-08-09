@@ -106,6 +106,7 @@ export interface Component {
   buttonText?: string;
   addAnother?: string;
   removeAnother?: string;
+  input?: boolean;
 }
 
 export interface ComponentProperties {
