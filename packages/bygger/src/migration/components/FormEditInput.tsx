@@ -1,6 +1,6 @@
 import { TextField } from "@navikt/ds-react";
 import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Dispatch, Fragment } from "react";
+import { Dispatch } from "react";
 import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
 import DeleteButton from "./DeleteButton";
@@ -22,7 +22,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
   const styles = useStyles();
   const { key, value } = formEdit;
   return (
-    <Fragment>
+    <>
       <TextField
         className={styles.input}
         label="Feltnavn"
@@ -55,7 +55,7 @@ const FormEditInput = ({ id, formEdit, dispatch }: FormEditInputProps) => {
         }
       />
       <DeleteButton className={styles.input} onClick={() => dispatch({ type: "remove", payload: { id } })} />
-    </Fragment>
+    </>
   );
 };
 

@@ -100,9 +100,9 @@ describe("NavSelect", () => {
     expect(nedtrekksliste).toBeInTheDocument();
     expect(nedtrekksliste.value).toBe("");
 
-    userEvent.click(nedtrekksliste);
+    await userEvent.click(nedtrekksliste);
     const optionPersimon = await screen.findByText("Persimon");
-    userEvent.click(optionPersimon);
+    await userEvent.click(optionPersimon);
 
     await waitFor(() => {
       const valgtFrukt = screen.getByText("Persimon");

@@ -36,7 +36,7 @@ describe("FyllUtRouter", () => {
         <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/${firstPanelSlug}` }]}>
           <FyllUtRouter form={form} translations={translationsForNavForm} />
         </MemoryRouter>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   };
 
@@ -62,10 +62,10 @@ describe("FyllUtRouter", () => {
       expect(screen.queryByRole("heading", { name: engelskTittel })).toBeNull();
 
       const velgSprakButton = screen.getByRole("button", { name: labelNorskBokmal });
-      userEvent.click(velgSprakButton);
+      await userEvent.click(velgSprakButton);
 
       const englishOption = screen.getByRole("link", { name: "English" });
-      userEvent.click(englishOption);
+      await userEvent.click(englishOption);
 
       expect(await screen.findByRole("heading", { name: engelskTittel })).toBeTruthy();
       expect(screen.queryByRole("heading", { name: norskTittel })).toBeNull();

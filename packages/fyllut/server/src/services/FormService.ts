@@ -7,7 +7,9 @@ const { useFormioApi, skjemaDir, formioProjectUrl } = config;
 class FormService {
   async loadForm(formPath: string): Promise<NavFormType> {
     if (useFormioApi) {
-      const forms = await fetchFromFormioApi(`${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`);
+      const forms: any = await fetchFromFormioApi(
+        `${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`,
+      );
       return forms.length > 0 ? forms[0] : null;
     } else {
       return await loadFileFromDirectory(skjemaDir, formPath, undefined);
@@ -19,7 +21,7 @@ class FormService {
     if (useFormioApi) {
       const select = "_id,title,path,modified,properties.skjemanummer,properties.innsending";
       forms = await fetchFromFormioApi(
-        `${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`
+        `${formioProjectUrl}/form?type=form&tags=nav-skjema&limit=1000&select=${select}`,
       );
     } else {
       forms = await loadAllJsonFilesFromDirectory(skjemaDir);

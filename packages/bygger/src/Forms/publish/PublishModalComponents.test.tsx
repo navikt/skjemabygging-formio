@@ -23,14 +23,14 @@ describe("PublishModalComponents", () => {
         setOpenPublishSettingModal={mockedCloseModal}
         onPublish={mockedOnPublish}
         form={form}
-      />
+      />,
     );
   };
 
   const createFormWithAttachment = (attachmentProps) =>
     createFormObject(
       [createPanelObject("Personinformasjon", [createDummyAttachment("Bekreftelse fra skole", attachmentProps)])],
-      "Veiledning"
+      "Veiledning",
     );
 
   describe("When attachment definition is complete", () => {
@@ -48,10 +48,10 @@ describe("PublishModalComponents", () => {
       expect(publishButton).toBeInTheDocument();
     });
 
-    it("confirm modal is shown when clicking 'Publiser' button", () => {
+    it("confirm modal is shown when clicking 'Publiser' button", async () => {
       const publishButton = screen.queryByRole("button", { name: "Publiser" });
       expect(publishButton).toBeInTheDocument();
-      userEvent.click(publishButton!);
+      await userEvent.click(publishButton!);
 
       expect(screen.queryByText("Er du sikker på at dette skjemaet skal publiseres?")).toBeInTheDocument();
       expect(screen.queryByRole("button", { name: "Ja, publiser skjemaet" })).toBeInTheDocument();

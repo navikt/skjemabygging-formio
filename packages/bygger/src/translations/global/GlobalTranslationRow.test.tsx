@@ -10,7 +10,7 @@ describe("GlobalTranslationRow", () => {
   const renderGlobalTranslationRow = (
     mockedOriginalText: string,
     mockedTranslation: string,
-    mockedCurrentOriginalTextList: string[]
+    mockedCurrentOriginalTextList: string[],
   ) => {
     mockedUpdateTranslation = vi.fn();
     mockedUpdateOriginalText = vi.fn();
@@ -25,7 +25,7 @@ describe("GlobalTranslationRow", () => {
         deleteOneRow={mockedDeleteOneRow}
         currentOriginalTextList={mockedCurrentOriginalTextList}
         predefinedGlobalOriginalTexts={["FORRIGE", "NESTE", "FJERN"]}
-      />
+      />,
     );
   };
 
@@ -48,23 +48,23 @@ describe("GlobalTranslationRow", () => {
     expect(screen.getByTestId("translation")).toHaveValue("Norway");
   });
 
-  it("renders disabled translation input when original text exists in predefined original text list ", () => {
+  it("renders disabled translation input when original text exists in predefined original text list ", async () => {
     renderGlobalTranslationRow("forrige", "", []);
     const originalTextInput = screen.getByTestId("originalText");
     const translationInput = screen.getByTestId("translation");
     expect(originalTextInput).toHaveValue("forrige");
     expect(translationInput).toHaveValue("");
     originalTextInput.focus();
-    userEvent.tab();
+    await userEvent.tab();
     expect(screen.getByText("Denne teksten er allerede oversatt.")).toBeTruthy();
     expect(translationInput).toBeDisabled();
   });
 
-  it("renders same original text and translation when there is no change only tabbed over", () => {
+  it("renders same original text and translation when there is no change only tabbed over", async () => {
     renderGlobalTranslationRow("Norge", "Norway", ["FORNAVN", "ETTERNAVN"]);
     const originalTextInput = screen.getByTestId("originalText");
     const translationInput = screen.getByTestId("translation");
-    userEvent.tab();
+    await userEvent.tab();
     expect(mockedUpdateOriginalText).not.toBeCalled();
     expect(originalTextInput).toHaveValue("Norge");
     expect(translationInput).toHaveValue("Norway");

@@ -42,7 +42,7 @@ describe("DigitalSubmissionButton", () => {
             <DigitalSubmissionButton {...defaultProps} />
           </LanguagesProvider>
         </SendInnProvider>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   };
 
@@ -77,7 +77,7 @@ describe("DigitalSubmissionButton", () => {
       renderButton({ onError, onSuccess });
       const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
-      userEvent.click(button);
+      await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
       expect(windowLocation.href).toEqual(baseUrl);
     });
@@ -87,7 +87,7 @@ describe("DigitalSubmissionButton", () => {
       renderButton({ onError, onSuccess });
       const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
-      userEvent.click(button);
+      await userEvent.click(button);
       await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
       expect(onError).toHaveBeenCalledTimes(0);
       expect(windowLocation.href).toEqual(SEND_INN_URL);
@@ -98,10 +98,10 @@ describe("DigitalSubmissionButton", () => {
       renderButton({ onError, onSuccess }, { app: "bygger" });
       const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
-      userEvent.click(button);
+      await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
       expect(onError.mock.calls[0][0].message).toEqual(
-        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren."
+        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren.",
       );
       expect(windowLocation.href).toEqual(baseUrl);
     });

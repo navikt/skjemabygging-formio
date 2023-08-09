@@ -79,14 +79,14 @@ const formWithProperties = (props) => {
 function renderPrepareLetterPage(
   form = defaultForm,
   submission = defaultSubmission,
-  translations = DEFAULT_TRANSLATIONS
+  translations = DEFAULT_TRANSLATIONS,
 ) {
   render(
     <MemoryRouter>
       <AppConfigProvider enableFrontendLogger>
         <PrepareLetterPage form={form} submission={submission} translations={translations} />
       </AppConfigProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -127,7 +127,7 @@ describe("PrepareLetterPage", () => {
     it("Laster ned pdf for førsteside", async () => {
       renderPrepareLetterPage();
 
-      userEvent.click(screen.getByRole("button", { name: "Last ned førsteside" }));
+      await userEvent.click(screen.getByRole("button", { name: "Last ned førsteside" }));
       await waitFor(() => expect(pdf.lastNedFilBase64).toHaveBeenCalledTimes(1));
       expect(pdfDownloads).toHaveLength(1);
       expect(pdfDownloads[0].tittel).toEqual("Førstesideark");
@@ -140,7 +140,7 @@ describe("PrepareLetterPage", () => {
       });
       renderPrepareLetterPage(form);
 
-      userEvent.click(await screen.findByRole("button", { name: "Last ned førsteside" }));
+      await userEvent.click(await screen.findByRole("button", { name: "Last ned førsteside" }));
       expect(await screen.findByText(TEXTS.statiske.prepareLetterPage.entityNotSelectedError));
       expect(pdfDownloads).toHaveLength(0);
     });
@@ -197,7 +197,7 @@ describe("PrepareLetterPage", () => {
             enhetMaVelgesVedPapirInnsending: true,
             enhetstyper: ["GAMMEL_TYPE"],
             skjemanummer: SKJEMANUMMER,
-          })
+          }),
         );
         await waitFor(() => expect(fetchMock).toHaveBeenCalled());
       });
@@ -268,7 +268,7 @@ describe("PrepareLetterPage", () => {
 
         const enhetSelectList = screen.getAllByText(/^NAV-ENHET/);
         expect(enhetSelectList).toHaveLength(6);
-      }
+      },
     );
   });
 });

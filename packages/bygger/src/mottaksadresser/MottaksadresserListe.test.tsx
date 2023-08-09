@@ -44,12 +44,12 @@ describe("MottaksadresseListe", () => {
     const panel = screen.getByTestId(`mottaksadressepanel-${adresse._id}`);
     const endreKnapp = await within(panel).getByRole("button", { name: "Endre" });
     expect(endreKnapp).toBeTruthy();
-    userEvent.click(endreKnapp);
+    await userEvent.click(endreKnapp);
 
     const postnummerInput = await screen.findByLabelText("Postnummer");
     expect(postnummerInput).toBeTruthy();
-    userEvent.clear(postnummerInput);
-    userEvent.type(postnummerInput, "1234");
+    await userEvent.clear(postnummerInput);
+    await userEvent.type(postnummerInput, "1234");
 
     const saveButton = await within(panel).findByRole("button", { name: "Lagre" });
     await waitFor(() => userEvent.click(saveButton));
@@ -58,7 +58,7 @@ describe("MottaksadresseListe", () => {
     expect(formioSpy).toHaveBeenNthCalledWith(
       2,
       `${DEFAULT_PROJECT_URL}/mottaksadresse/submission/${adresse._id}`,
-      expect.objectContaining({ method: "PUT" })
+      expect.objectContaining({ method: "PUT" }),
     );
 
     expect(await within(panel).findByRole("button", { name: "Endre" })).toBeTruthy();
@@ -68,14 +68,14 @@ describe("MottaksadresseListe", () => {
     await renderMottaksadresseListe();
     const leggTilNyKnapp = screen.getByRole("button", { name: "Legg til ny" });
     expect(leggTilNyKnapp).toBeTruthy();
-    userEvent.click(leggTilNyKnapp);
+    await userEvent.click(leggTilNyKnapp);
 
     const panel = await screen.findByTestId("mottaksadressepanel-new");
 
-    userEvent.type(screen.getByLabelText("Adresselinje1"), "TEST skanning");
-    userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
-    userEvent.type(screen.getByLabelText("Postnummer"), "1500");
-    userEvent.type(screen.getByLabelText("Poststed"), "Dalen");
+    await userEvent.type(screen.getByLabelText("Adresselinje1"), "TEST skanning");
+    await userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
+    await userEvent.type(screen.getByLabelText("Postnummer"), "1500");
+    await userEvent.type(screen.getByLabelText("Poststed"), "Dalen");
 
     const saveButton = await within(panel).findByRole("button", { name: "Lagre" });
     await waitFor(() => userEvent.click(saveButton));
@@ -84,7 +84,7 @@ describe("MottaksadresseListe", () => {
     expect(formioSpy).toHaveBeenNthCalledWith(
       2,
       `${DEFAULT_PROJECT_URL}/mottaksadresse/submission`,
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({ method: "POST" }),
     );
 
     const data = JSON.parse(formioSpy.mock.calls[1][1].body).data;
@@ -96,17 +96,17 @@ describe("MottaksadresseListe", () => {
 
   it.skip("Lagrer ikke ny mottaksadresse når poststed ikke er oppgitt", async () => {
     await renderMottaksadresseListe();
-    userEvent.click(screen.getByRole("button", { name: "Legg til ny" }));
+    await userEvent.click(screen.getByRole("button", { name: "Legg til ny" }));
 
     const panel = await screen.findByTestId("mottaksadressepanel-new");
 
-    userEvent.type(screen.getByLabelText("Adresselinje1"), "TEST skanning");
-    userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
-    userEvent.type(screen.getByLabelText("Postnummer"), "1500");
+    await userEvent.type(screen.getByLabelText("Adresselinje1"), "TEST skanning");
+    await userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
+    await userEvent.type(screen.getByLabelText("Postnummer"), "1500");
 
     // Ignore console.log from formio that logs the components when error.
     vi.spyOn(console, "log").mockImplementation(() => {});
-    userEvent.click(await within(panel).findByRole("button", { name: "Lagre" }));
+    await userEvent.click(await within(panel).findByRole("button", { name: "Lagre" }));
     expect(await screen.findByText("Du må fylle ut: Poststed")).toBeTruthy();
   });
 
@@ -114,13 +114,13 @@ describe("MottaksadresseListe", () => {
     await renderMottaksadresseListe();
     const adresse = mockMottaksadresser[1];
     const panel = screen.getByTestId(`mottaksadressepanel-${adresse._id}`);
-    userEvent.click(await within(panel).getByRole("button", { name: "Endre" }));
+    await userEvent.click(await within(panel).getByRole("button", { name: "Endre" }));
 
     const adresselinje1Input = await screen.findByLabelText("Adresselinje1");
     expect(adresselinje1Input).toBeTruthy();
-    userEvent.clear(adresselinje1Input);
-    userEvent.type(adresselinje1Input, "Skogen");
-    userEvent.click(await within(panel).findByRole("button", { name: "Avbryt" }));
+    await userEvent.clear(adresselinje1Input);
+    await userEvent.type(adresselinje1Input, "Skogen");
+    await userEvent.click(await within(panel).findByRole("button", { name: "Avbryt" }));
 
     expect(await within(panel).findByRole("button", { name: "Endre" })).toBeTruthy();
     expect(await within(panel).findByRole("heading", { name: adresse.data.adresselinje1 })).toBeTruthy();
@@ -130,7 +130,7 @@ describe("MottaksadresseListe", () => {
     await renderMottaksadresseListe();
     const adresse = mockMottaksadresser[2];
     const panel = screen.getByTestId(`mottaksadressepanel-${adresse._id}`);
-    userEvent.click(await within(panel).findByRole("button", { name: "Endre" }));
+    await userEvent.click(await within(panel).findByRole("button", { name: "Endre" }));
 
     const slettKnapp = await within(panel).findByRole("button", { name: "Slett" });
     await waitFor(() => userEvent.click(slettKnapp));
@@ -139,7 +139,7 @@ describe("MottaksadresseListe", () => {
     expect(globalFetchSpy).toHaveBeenNthCalledWith(
       3,
       `${DEFAULT_PROJECT_URL}/mottaksadresse/submission/${adresse._id}`,
-      expect.objectContaining({ method: "DELETE" })
+      expect.objectContaining({ method: "DELETE" }),
     );
   });
 });

@@ -35,15 +35,15 @@ describe("NewFormPage", () => {
         <AppConfigProvider featureToggles={featureToggles}>
           <NewFormPage formio={{ saveForm }} onLogout={onLogout} />
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => screen.getByText("Opprett nytt skjema"));
 
-    userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
-    userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
-    userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
-    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
+    await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
+    await userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    await userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
+    await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
     const savedForm = saveForm.mock.calls[0][0];
@@ -73,15 +73,15 @@ describe("NewFormPage", () => {
             <NewFormPage formio={{ saveForm }} onLogout={onLogout} />
           </AppConfigProvider>
         </MemoryRouter>
-      </FeedbackProvider>
+      </FeedbackProvider>,
     );
     await screen.findByText("Opprett nytt skjema");
 
-    userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
-    userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
-    userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
-    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
+    await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
+    await userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    await userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
+    await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
 

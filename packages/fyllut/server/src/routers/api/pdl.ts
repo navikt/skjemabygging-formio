@@ -29,7 +29,7 @@ const pdl = {
         req.headers.AzureAccessToken as string,
         req.query.theme as string,
         req.params.id,
-        "BARN"
+        "BARN",
       );
       res.send(data);
     } catch (e) {
@@ -79,7 +79,7 @@ const getPerson = async (accessToken: string, theme: string, personId: string): 
       variables: {
         ident: personId,
       },
-    })
+    }),
   );
 
   const person = response.hentPerson;
@@ -147,7 +147,7 @@ const getPersonWithRelations = async (
   accessToken: string,
   theme: string,
   personId: string,
-  role?: "BARN" | "MOR" | "FAR" // More roles probably exist.
+  role?: "BARN" | "MOR" | "FAR", // More roles probably exist.
 ): Promise<Person[]> => {
   logger.debug(`Fetch person with children from pdl.`);
 
@@ -173,7 +173,7 @@ const getPersonWithRelations = async (
       variables: {
         ident: personId,
       },
-    })
+    }),
   );
 
   const person = response.hentPerson;
@@ -203,7 +203,7 @@ const pdlRequest = async (accessToken: string, theme: string, query: string) => 
     body: query,
   });
 
-  const body = await response.json();
+  const body: any = await response.json();
 
   if (body.errors?.length > 0) {
     const message = body.errors[0].message;
