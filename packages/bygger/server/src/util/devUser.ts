@@ -14,7 +14,7 @@ export const getDevUser = async (req: Request): Promise<User> => {
   const formioToken = getFormioToken(req);
   if (formioToken) {
     try {
-      const formioUser = await formioService.getFormioUser(formioToken);
+      const formioUser: any = await formioService.getFormioUser(formioToken);
       return {
         name: formioUser.data.email,
         preferredUsername: formioUser.data.email,

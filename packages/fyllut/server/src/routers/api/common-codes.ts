@@ -65,7 +65,11 @@ const sortAsc = (list: { label: string; value: string }[], languageCode: string)
  * Doc: https://navikt.github.io/felleskodeverk/
  * Swagger: https://kodeverk.dev.intern.nav.no/swagger-ui.html
  */
-const fetchCommonCodeDescriptions = async (req: Request, commonCode: commonCodeType, languageCode: string) => {
+const fetchCommonCodeDescriptions = async (
+  req: Request,
+  commonCode: commonCodeType,
+  languageCode: string,
+): Promise<any> => {
   const languageParam = languageCode ? `&spraak=${languageCode}` : "";
 
   const response = await fetch(
@@ -78,7 +82,7 @@ const fetchCommonCodeDescriptions = async (req: Request, commonCode: commonCodeT
         "Nav-Call-Id": correlator.getId(),
         "Nav-Consumer-Id": clientId,
       } as HeadersInit,
-    }
+    },
   );
 
   if (response.ok) {

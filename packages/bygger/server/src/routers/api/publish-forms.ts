@@ -16,7 +16,7 @@ const publishForms = async (req: Request, res: Response, next: NextFunction) => 
   const logMeta = { formPaths, userName };
   logger.info("Attempting to publish forms", logMeta);
   try {
-    const forms = await formioService.getForms(formPaths);
+    const forms: any = await formioService.getForms(formPaths);
     const gitSha = await publisherService.publishForms(forms, { formioToken, userName });
     logger.info("Forms are published", logMeta);
     res.json({ changed: !!gitSha, gitSha });

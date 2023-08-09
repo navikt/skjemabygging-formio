@@ -1,7 +1,7 @@
 import { Select, TextField } from "@navikt/ds-react";
 import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import { Operator, migrationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { Dispatch, Fragment } from "react";
+import { migrationUtils, Operator } from "@navikt/skjemadigitalisering-shared-domain";
+import { Dispatch } from "react";
 import { MigrationOption } from "../../../types/migration";
 import { isJSON } from "../utils";
 import DeleteButton from "./DeleteButton";
@@ -36,7 +36,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
   const isValueInputDisabled = !key || migrationUtils.isUnaryOperator(operator);
 
   return (
-    <Fragment>
+    <>
       <TextField
         className={styles.input}
         label="Feltnavn"
@@ -90,7 +90,7 @@ const SearchFilterInput = ({ id, searchFilter, dispatch }: SearchFilterInputProp
         }
       />
       <DeleteButton className={styles.input} onClick={() => dispatch({ type: "remove", payload: { id } })} />
-    </Fragment>
+    </>
   );
 };
 
