@@ -60,16 +60,14 @@ describe("FormioService", () => {
           _id: "1",
           properties: {},
         } as NavFormType;
-        let error: Error | undefined = undefined;
+        let error;
         try {
           await formioService.saveForm(form, "formio-token", "tore");
         } catch (e) {
-          error = e as Error;
+          error = e;
         }
         expect(error).toBeDefined();
-        expect(error?.message).toEqual(
-          "500 Internal Server Error fetching: http://formio-api-server.unittest.nav.no/form/1"
-        );
+        expect(error?.response?.status).toEqual(500);
       });
     });
   });

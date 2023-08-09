@@ -1,5 +1,4 @@
 import "@navikt/ds-css";
-import "@navikt/ds-css-internal";
 import { NavFormioJs, Styles, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { useMemo } from "react";
 import AuthenticatedApp from "./AuthenticatedApp";

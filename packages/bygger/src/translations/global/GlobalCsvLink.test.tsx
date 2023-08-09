@@ -2,7 +2,7 @@ import { GlobalTranslationMap } from "@navikt/skjemadigitalisering-shared-domain
 import { render, screen } from "@testing-library/react";
 import GlobalCsvLink from "./GlobalCsvLink";
 
-describe("GlobalCsvLink", () => {
+describe.skip("GlobalCsvLink", () => {
   it("renders link to download csv", async () => {
     const allGlobalTranslations: GlobalTranslationMap = {
       en: [

@@ -30,7 +30,9 @@ describe("ObsoleteTranslationsPanel", () => {
 
   it("Viser ikke detaljer før panelet er åpnet", () => {
     const inputFields = screen.queryAllByRole("textbox");
-    expect(inputFields).toHaveLength(0);
+    expect(inputFields[0]).toBeDisabled();
+    expect(inputFields[1]).toBeDisabled();
+    expect(inputFields[2]).toBeDisabled();
   });
 
   describe("Åpent panel", () => {
@@ -44,11 +46,11 @@ describe("ObsoleteTranslationsPanel", () => {
       expect(inputFields).toHaveLength(3);
     });
 
-    it("Sletter oversettelse når slett-knappen trykkes", () => {
+    it("Sletter oversettelse når slett-knappen trykkes", async () => {
       const deleteButton = screen.getAllByRole("button", { name: "Slett" })[1];
       expect(deleteButton).toBeInTheDocument();
 
-      userEvent.click(deleteButton);
+      await userEvent.click(deleteButton);
       expect(onDelete).toBeCalledTimes(1);
       expect(onDelete).toBeCalledWith(obsoleteTranslations[1]);
     });
