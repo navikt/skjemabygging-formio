@@ -56,7 +56,7 @@ jobs:
 
       - name: Build and push Docker image for bygger
         uses: nais/docker-build-push@v0
-        id: docker-build-push
+        id: docker-build-push-bygger
         with:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -67,7 +67,7 @@ jobs:
           dockerfile: ./packages/bygger/Dockerfile
           docker_context: ./packages/bygger
     outputs:
-      image: ${{ steps.docker-build-push.outputs.image }}
+      image: ${{ steps.docker-build-push-bygger.outputs.image }}
 
   package-and-push-fyllut-base:
     if: github.ref == 'refs/heads/master'
