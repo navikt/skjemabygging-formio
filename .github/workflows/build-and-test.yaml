@@ -64,6 +64,8 @@ jobs:
           image_suffix: ${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}
           build_args: |
             git_sha=${{ github.sha }}
+          dockerfile: ./packages/bygger/Dockerfile
+          dockerContext: ./packages/bygger
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
