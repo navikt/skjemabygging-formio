@@ -44,7 +44,7 @@ jobs:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: ${{ inputs.environment }}
+          image_suffix: bygger-${{ inputs.environment }}
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/bygger/Dockerfile
@@ -92,14 +92,14 @@ jobs:
           REACT_APP_GIT_BRANCH: ${{ github.ref_name }}
         run: bin/build-application.sh fyllut
 
-      - name: "Build and push Docker image for bygger"
+      - name: "Build and push Docker image for fyllut"
         uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: ${{ inputs.environment }}
+          image_suffix: fyllut-${{ inputs.environment }}
           dockerfile: ./packages/fyllut/Dockerfile-base
           docker_context: ./packages/fyllut
           build_args: |
