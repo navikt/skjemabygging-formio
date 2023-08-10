@@ -65,7 +65,7 @@ jobs:
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/bygger/Dockerfile
-          dockerContext: ./packages/bygger
+          docker_context: ./packages/bygger
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
@@ -103,7 +103,7 @@ jobs:
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/fyllut/Dockerfile-base
-          dockerContext: ./packages/fyllut
+          docker_context: ./packages/fyllut
           pull: true
           tag: ${{ github.sha }}
 
@@ -119,7 +119,7 @@ jobs:
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/fyllut/Dockerfile-base
-          dockerContext: ./packages/fyllut
+          docker_context: ./packages/fyllut
           pull: true
           tag: ${{ github.sha }}
 

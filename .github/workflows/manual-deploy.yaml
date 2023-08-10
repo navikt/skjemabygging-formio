@@ -48,7 +48,8 @@ jobs:
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/bygger/Dockerfile
-          dockerContext: ./packages/bygger
+          docker_context: ./packages/bygger
+
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
@@ -100,7 +101,7 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           image_suffix: ${{ inputs.environment }}
           dockerfile: ./packages/fyllut/Dockerfile-base
-          dockerContext: ./packages/fyllut
+          docker_context: ./packages/fyllut
           build_args: |
             git_sha=${{ github.sha }}
           pull: true
