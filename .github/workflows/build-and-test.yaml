@@ -99,7 +99,7 @@ jobs:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: fyllut-base-dev
+          image_suffix: fyllut-base-dev # base image for dev
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/fyllut/Dockerfile-base
@@ -115,7 +115,7 @@ jobs:
           team: skjemadigitalisering
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          image_suffix: fyllut-base
+          image_suffix: fyllut-base # base image for prod
           build_args: |
             git_sha=${{ github.sha }}
           dockerfile: ./packages/fyllut/Dockerfile-base
