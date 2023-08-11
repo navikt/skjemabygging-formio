@@ -20,6 +20,7 @@ import Row from "./components/Row";
 import SelectBoxes from "./components/SelectBoxes";
 import Textarea from "./components/TextArea";
 import TextField from "./components/TextField";
+import NavDatepicker from "./components/NavDatepicker";
 
 const customComponents = {
   container: Container,
@@ -30,6 +31,7 @@ const customComponents = {
   htmlelement: HTMLElement,
   landvelger: CountrySelect,
   valutavelger: CurrencySelect,
+  navDatepicker: NavDatepicker,
   navSelect: NavSelect,
   radiopanel: Radio,
   navCheckbox: NavCheckbox,
