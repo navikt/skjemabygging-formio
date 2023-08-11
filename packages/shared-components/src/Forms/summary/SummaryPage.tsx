@@ -1,3 +1,4 @@
+import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, ConfirmationPanel, Heading } from "@navikt/ds-react";
 import {
   Component,
@@ -17,6 +18,7 @@ import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import makeStyles from "../../util/jss";
 import FormStepper from "../components/FormStepper";
+import EditAnswersButton from "./EditAnswersButton";
 import FormSummary from "./FormSummary";
 import SummaryPageNavigation from "./SummaryPageNavigation";
 
@@ -45,6 +47,13 @@ const useStyles = makeStyles({
       paddingBottom: "2.5rem",
     },
   },
+  validationAlert: {
+    marginBottom: "1rem",
+  },
+  exclamationmarkIcon: {
+    verticalAlign: "sub",
+    color: "var(--a-orange-600)",
+  },
 });
 
 export type PanelValidation = {
@@ -64,7 +73,7 @@ function delay(time) {
 }
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
-  const { submissionMethod } = useAppConfig();
+  const { submissionMethod, featureToggles } = useAppConfig();
   const { translate } = useLanguages();
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
@@ -110,8 +119,10 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    initializePanelValidation();
-  }, [form, submission, translate]);
+    if (featureToggles?.enableMellomlagring) {
+      initializePanelValidation();
+    }
+  }, [featureToggles, form, submission, translate]);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -132,6 +143,8 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     return true;
   };
 
+  const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
+
   return (
     <div className={styles.content}>
       <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
@@ -139,7 +152,25 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           <Heading level="2" size="large" spacing>
             {translate(TEXTS.statiske.summaryPage.title)}
           </Heading>
-          <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
+          {!hasValidationErrors && (
+            <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
+          )}
+          {hasValidationErrors && (
+            <>
+              <Alert variant="info" className={styles.validationAlert}>
+                <span>
+                  {translate(TEXTS.statiske.summaryPage.validationMessage.start)}
+                  <ExclamationmarkTriangleFillIcon
+                    className={styles.exclamationmarkIcon}
+                    title="Opplysninger mangler"
+                    fontSize="1.5rem"
+                  />
+                  {translate(TEXTS.statiske.summaryPage.validationMessage.end)}
+                </span>
+              </Alert>
+              <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+            </>
+          )}
           <div className="form-summary">
             <FormSummary
               submission={submission}

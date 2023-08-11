@@ -29,6 +29,11 @@ export const statiske = {
     description:
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.",
     confirmationError: "Du må samtykke før du kan fortsette",
+    validationMessage: {
+      start:
+        "Nedenfor finner du all informasjonen du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon er markert med ",
+      end: ". Klikk på Fortsett utfylling for å gå til det første feltet i skjemaet som mangler informasjon. Klikk på Rediger...-lenken under hver stegoverskrift for å fortsette utfylling på det steget.",
+    },
   },
   warningAboutDifficultSubmission: {
     modal: {
