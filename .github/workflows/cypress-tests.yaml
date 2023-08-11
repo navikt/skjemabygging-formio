@@ -8,6 +8,7 @@ jobs:
   cypress-run-fyllut:
     runs-on: ubuntu-latest
     permissions:
+      contents: "read"
       packages: read
     steps:
       - name: "Checkout"
@@ -33,6 +34,7 @@ jobs:
   cypress-run-bygger:
     runs-on: ubuntu-latest
     permissions:
+      contents: "read"
       packages: read
     steps:
       - name: "Checkout"
