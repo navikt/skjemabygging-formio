@@ -73,7 +73,7 @@ const sendInnSoknad = {
         return;
       }
 
-      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}`, {
+      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}?opprettNySoknad=true`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
