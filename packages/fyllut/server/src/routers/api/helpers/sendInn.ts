@@ -39,13 +39,15 @@ export interface SendInnSoknadBody {
   kanLasteOppAnnet?: boolean;
 }
 
-const DEFAULT_LANGUAGE = "nb-NO";
-const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
-
 const isValidUuid = (innsendingsId: string): boolean => {
   const validUuidExpr = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
   return validUuidExpr.test(innsendingsId);
 };
+
+const DEFAULT_LANGUAGE = "nb-NO";
+const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+
+export const byteArrayToObject = (byteArray: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
 
 export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[\./]/g, "");
 

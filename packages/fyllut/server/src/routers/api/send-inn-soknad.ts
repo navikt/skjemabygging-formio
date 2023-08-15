@@ -7,6 +7,7 @@ import { base64Decode } from "../../utils/base64";
 import { responseToError } from "../../utils/errorHandling";
 import {
   assembleSendInnSoknadBody,
+  byteArrayToObject,
   isMellomLagringEnabled,
   sanitizeInnsendingsId,
   validateInnsendingsId,
@@ -49,7 +50,7 @@ const sendInnSoknad = {
           ...json,
           hoveddokumentVariant: {
             ...json.hoveddokumentVariant,
-            document: JSON.parse(String.fromCharCode(...base64Decode(json.hoveddokumentVariant.document))),
+            document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
           },
         };
         console.log("GET json", json);
