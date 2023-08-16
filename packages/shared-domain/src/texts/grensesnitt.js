@@ -3,6 +3,7 @@ export const grensesnitt = {
   navigation: {
     previous: "Forrige steg",
     next: "Neste steg",
+    saveAndContinue: "Lagre og fortsett",
     cancel: "Avbryt",
     cancelAndDelete: "Avbryt og slett",
     saveDraft: "Lagre utkast og fortsett senere",

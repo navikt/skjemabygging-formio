@@ -51,11 +51,9 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
     });
   };
 
-  console.log("search", search);
-
   return (
     <nav>
-      <div className="button-row button-row__start">
+      <div className="button-row">
         {(submissionMethod === "paper" ||
           innsending === "KUN_PAPIR" ||
           (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
@@ -81,7 +79,9 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
               }}
               onSuccess={() => loggSkjemaFullfort()}
             >
-              {translate(TEXTS.grensesnitt.moveForward)}
+              {translate(
+                isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward
+              )}
             </DigitalSubmissionButton>
           ) : (
             <DigitalSubmissionWithPrompt

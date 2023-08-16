@@ -49,10 +49,11 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const { translate } = useLanguages();
 
   const pathAndHashForNavigation = getPathToFirstErrorOrPanelWithoutSubmission(form, formUrl, panelValidationList);
+  const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
     <Link
-      className="navds-button navds-button--primary"
+      className={`navds-button navds-button--${hasValidationErrors ? "primary" : "secondary"}`}
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),

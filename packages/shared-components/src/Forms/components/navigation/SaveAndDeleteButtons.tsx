@@ -64,7 +64,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
 
   return (
     <>
-      <div className="button-row button-row__center">
+      <div className="button-row">
         <Button
           className={"navds-button navds-button--tertiary"}
           onClick={() => {
@@ -87,7 +87,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
         onClose={() => setIsSaveModalOpen(false)}
       >
         <BodyShort className={styles.modalBody}>{translate(TEXTS.grensesnitt.confirmSavePrompt.body)}</BodyShort>
-        <div className="button-row button-row__start">
+        <div className="button-row">
           <Button variant="primary" onClick={onClickSave} loading={isSaving}>
             {translate(TEXTS.grensesnitt.confirmSavePrompt.confirm)}
           </Button>
@@ -102,7 +102,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
         onClose={() => setIsDeleteModalOpen(false)}
       >
         <BodyShort className={styles.modalBody}>{translate(TEXTS.grensesnitt.confirmDeletePrompt.body)}</BodyShort>
-        <div className="button-row button-row__start">
+        <div className="button-row">
           <Button variant="danger" onClick={onClickDelete} loading={isDeleting}>
             {translate(TEXTS.grensesnitt.confirmDeletePrompt.confirm)}
           </Button>
