@@ -1,5 +1,5 @@
 import { I18nTranslations, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
   SendInnSoknadResponse,
@@ -44,13 +44,16 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const history = useHistory();
   const { search } = useLocation();
 
-  const addQueryParamToUrl = (key, value) => {
-    if (key && value) {
-      const searchParams = new URLSearchParams(history.location.search);
-      searchParams.set(key, value);
-      history.push({ search: searchParams.toString() });
-    }
-  };
+  const addQueryParamToUrl = useCallback(
+    (key, value) => {
+      if (key && value) {
+        const searchParams = new URLSearchParams(history.location.search);
+        searchParams.set(key, value);
+        history.push({ search: searchParams.toString() });
+      }
+    },
+    [history]
+  );
 
   useEffect(() => {
     const retrievePreviousSubmission = async () => {
@@ -61,7 +64,6 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           setInnsendingsId(innsendingsId);
           setMellomlagringStarted(true);
           const response = await getSoknad(innsendingsId, appConfig);
-          console.log("response", response);
           if (response?.hoveddokumentVariant.document) {
             addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
             updateSubmission(response.hoveddokumentVariant.document?.data);
