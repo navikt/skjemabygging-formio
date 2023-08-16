@@ -100,6 +100,15 @@ export const updateUtfyltSoknad = async (
   }
 };
 
+export const deleteSoknad = async (appConfig: AppConfigContextType, innsendingsId: string) => {
+  const { http, baseUrl, logger } = appConfig;
+  if (innsendingsId) {
+    return http?.delete(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
+  } else {
+    logger?.info("Kunne ikke slette søknaden fordi innsendingsId mangler");
+  }
+};
+
 // Deprecated. Uses old end-point for submitting until mellomlagring is turned on.
 export const createSoknadWithoutInnsendingsId = async (
   appConfig: AppConfigContextType,

@@ -18,7 +18,7 @@ import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import makeStyles from "../../util/jss";
 import FormStepper from "../components/FormStepper";
-import EditAnswersButton from "./EditAnswersButton";
+import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import FormSummary from "./FormSummary";
 import SummaryPageNavigation from "./SummaryPageNavigation";
 

@@ -139,6 +139,44 @@ const sendInnSoknad = {
       next(err);
     }
   },
+  delete: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tokenxAccessToken = getTokenxAccessToken(req);
+
+      const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
+      if (errorMessage) {
+        next(new Error(errorMessage));
+        return;
+      }
+
+      if (!isMellomLagringEnabled(featureToggles)) {
+        res.status(501).end();
+        return;
+      }
+
+      const sendInnResponse = await fetch(
+        `${sendInnConfig.host}${sendInnConfig.paths.soknad}/${sanitizedInnsendingsId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenxAccessToken}`,
+          },
+        }
+      );
+
+      if (sendInnResponse.ok) {
+        logger.debug(`Successfylly deleted soknad with innsendingsId ${sanitizedInnsendingsId}`);
+        res.json(await sendInnResponse.json());
+      } else {
+        logger.debug(`Failed to delete soknad with innsendingsId ${sanitizedInnsendingsId}`);
+        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+      }
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 export default sendInnSoknad;

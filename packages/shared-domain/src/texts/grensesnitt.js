@@ -4,6 +4,8 @@ export const grensesnitt = {
     previous: "Forrige steg",
     next: "Neste steg",
     cancel: "Avbryt",
+    cancelAndDelete: "Avbryt og slett",
+    saveDraft: "Lagre utkast og fortsett senere",
     exit: "Avslutt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
     submit: "Neste steg",
@@ -14,6 +16,12 @@ export const grensesnitt = {
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
+  confirmDeletePrompt: {
+    body: "Er du sikker på at du vil slette søknaden?",
+    confirm: "ja, slett søknaden",
+    cancel: "Avbryt",
+    arialabel: "Bekreft sletting",
+  },
   submitToNavPrompt: {
     open: "Send til NAV",
     body: "Er du sikker på at du vil sende søknaden nå?",

@@ -5,6 +5,7 @@ import {
   SendInnSoknadResponse,
   createSoknad,
   createSoknadWithoutInnsendingsId,
+  deleteSoknad,
   getSoknad,
   updateSoknad,
   updateUtfyltSoknad,
@@ -118,6 +119,16 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     }
   };
 
+  const deleteMellomlagring = async () => {
+    if (isMellomLagringEnabled && innsendingsId) {
+      try {
+        return await deleteSoknad(appConfig, innsendingsId);
+      } catch (error: any) {
+        logger?.info("Sletting av mellomlagring feilet", error);
+      }
+    }
+  };
+
   const submitSoknad = async (submission: Submission) => {
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
@@ -130,6 +141,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const value = {
     startMellomlagring,
     updateMellomlagring,
+    deleteMellomlagring,
     submitSoknad,
     innsendingsId,
     isMellomlagringReady,

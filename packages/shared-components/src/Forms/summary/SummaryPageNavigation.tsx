@@ -8,7 +8,8 @@ import { getPanels } from "../../util/form";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
 import { hasRelevantAttachments } from "../components/attachmentsUtil";
-import EditAnswersButton from "./EditAnswersButton";
+import EditAnswersButton from "../components/navigation/EditAnswersButton";
+import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
 import { PanelValidation } from "./SummaryPage";
 
 export interface Props {
@@ -21,20 +22,20 @@ export interface Props {
 }
 
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid, onError }: Props) => {
-  const { submissionMethod, app } = useAppConfig();
+  const { submissionMethod, app, featureToggles } = useAppConfig();
   const { url } = useRouteMatch();
   const { search } = useLocation();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
-
-  console.log("formUrl", formUrl);
-  console.log("url", url);
+  const innsendingsId = new URLSearchParams(search).get("innsendingsId");
+  const isMellomlagringActive = featureToggles?.enableMellomlagring && innsendingsId && submissionMethod === "digital";
 
   const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
   const linkBtStyle = {
     textDecoration: "none",
   };
   const hasAttachments = hasRelevantAttachments(form, submission);
+  const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
 
   const onClickPapirOrIngenInnsending = (e, path) => {
     if (!isValid(e)) {
@@ -50,9 +51,11 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
     });
   };
 
+  console.log("search", search);
+
   return (
     <nav>
-      <div className="button-row button-row__center">
+      <div className="button-row button-row__start">
         {(submissionMethod === "paper" ||
           innsending === "KUN_PAPIR" ||
           (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
@@ -66,7 +69,8 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             </span>
           </Link>
         )}
-        {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
+        {canSubmit &&
+          (submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
           (hasAttachments ? (
             <DigitalSubmissionButton
               submission={submission}
@@ -104,23 +108,26 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
         )}
         <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
       </div>
-      <div className="button-row button-row__center">
-        <NavLink
-          className={"navds-button navds-button--tertiary"}
-          onClick={() =>
-            loggNavigering({
-              lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-              destinasjon: "https://www.nav.no",
-            })
-          }
-          href="https://www.nav.no"
-          style={linkBtStyle}
-        >
-          <span aria-live="polite" className="navds-body-short font-bold">
-            {translate(TEXTS.grensesnitt.navigation.cancel)}
-          </span>
-        </NavLink>
-      </div>
+      {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
+      {!isMellomlagringActive && (
+        <div className="button-row button-row__center">
+          <NavLink
+            className={"navds-button navds-button--tertiary"}
+            onClick={() =>
+              loggNavigering({
+                lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+                destinasjon: "https://www.nav.no",
+              })
+            }
+            href="https://www.nav.no"
+            style={linkBtStyle}
+          >
+            <span aria-live="polite" className="navds-body-short font-bold">
+              {translate(TEXTS.grensesnitt.navigation.cancel)}
+            </span>
+          </NavLink>
+        </div>
+      )}
     </nav>
   );
 };

@@ -58,6 +58,16 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
   return await handleResponse(response, opts);
 };
 
+const httpDelete = async <T>(url: string, body?: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: defaultHeaders(headers),
+    body: JSON.stringify(body),
+  });
+
+  return await handleResponse(response, opts);
+};
+
 const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
     method: "PUT",
@@ -115,6 +125,7 @@ const http = {
   get,
   post,
   put,
+  delete: httpDelete,
   MimeType,
   HttpError,
   UnauthenticatedError,

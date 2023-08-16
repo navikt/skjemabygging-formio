@@ -1,8 +1,8 @@
 import { Component, formSummaryUtil, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Link, useLocation } from "react-router-dom";
-import { useAmplitude } from "../../context/amplitude";
-import { useLanguages } from "../../context/languages";
-import { PanelValidation } from "./SummaryPage";
+import { useAmplitude } from "../../../context/amplitude";
+import { useLanguages } from "../../../context/languages";
+import { PanelValidation } from "../../summary/SummaryPage";
 
 interface Props {
   form: NavFormType;
