@@ -15,8 +15,9 @@ import { UseDatepickerOptions } from "@navikt/ds-react/esm/date/hooks/useDatepic
 
 const SUBMISSION_DATE_FORMAT = "YYYY-MM-DD";
 
-const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
+const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, inputRef }) => {
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
+    required: component.validate.required,
     onDateChange: (val) => {
       onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : "");
     },
@@ -34,6 +35,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
     <DatePicker
       id={component.id}
       selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
+      locale={locale}
       {...datepickerProps}
     >
       <DatePicker.Input
@@ -334,7 +336,6 @@ export default class NavDatepicker extends FormioReactComponent {
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
         checkValidity={this.checkValidity}
-        isValid={this.isValid}
         locale={this.root.i18next.language}
         readOnly={this.options.readOnly}
         inputRef={(r) => (this.input = r)}

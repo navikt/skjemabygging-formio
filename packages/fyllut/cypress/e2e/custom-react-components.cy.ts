@@ -76,7 +76,11 @@ describe("Custom react components", () => {
       cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("zy");
       cy.findByRole("combobox", { name: "Velg valuta" }).click().should("have.focus").type("Norske{enter}");
       cy.findByRole("combobox", { name: "Velg instrument (valgfritt)" }).should("exist").type("{backspace}");
-      cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("exist").should("contain.value", "01.01.2023");
+      cy.findByRole("textbox", { name: "Gyldig fra dato" })
+        .should("exist")
+        .should("contain.value", "01.01.2023")
+        .focus()
+        .type("{selectall}02.01.2023");
       cy.findByRole("navigation", { name: "Søknadssteg" })
         .should("exist")
         .within(() => {
@@ -94,7 +98,7 @@ describe("Custom react components", () => {
           cy.get("dt").eq(2).should("contain.text", "Velg valuta");
           cy.get("dd").eq(2).should("contain.text", "Norske kroner (NOK)");
           cy.get("dt").eq(3).should("contain.text", "Gyldig fra dato");
-          cy.get("dd").eq(3).should("contain.text", "1.1.2023");
+          cy.get("dd").eq(3).should("contain.text", "2.1.2023");
         });
     });
 
