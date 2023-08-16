@@ -1,16 +1,16 @@
-describe.skip("Custom react components", () => {
+describe("Custom react components", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/customcomps", { fixture: "custom-components.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/api/translations/customcomps", { fixture: "custom-components-translations.json" }).as(
-      "getTranslations"
+      "getTranslations",
     );
     cy.intercept("GET", "/fyllut/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
     cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
-      "getCurrencies"
+      "getCurrencies",
     );
     cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation"
+      "getGlobalTranslation",
     );
   });
 
@@ -44,12 +44,12 @@ describe.skip("Custom react components", () => {
       cy.findByLabelText("Annen dokumentasjon")
         .should("exist")
         .within(() =>
-          cy.findByLabelText("Ja, jeg legger det ved denne søknaden.").should("exist").check({ force: true })
+          cy.findByLabelText("Ja, jeg legger det ved denne søknaden.").should("exist").check({ force: true }),
         );
       cy.findByLabelText("Bekreftelse på skoleplass")
         .should("exist")
         .within(() =>
-          cy.findByLabelText("Jeg har levert denne dokumentasjonen tidligere").should("exist").check({ force: true })
+          cy.findByLabelText("Jeg har levert denne dokumentasjonen tidligere").should("exist").check({ force: true }),
         );
       cy.clickNextStep();
 
@@ -76,6 +76,7 @@ describe.skip("Custom react components", () => {
       cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("zy");
       cy.findByRole("combobox", { name: "Velg valuta" }).click().should("have.focus").type("Norske{enter}");
       cy.findByRole("combobox", { name: "Velg instrument (valgfritt)" }).should("exist").type("{backspace}");
+      cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("exist").should("contain.value", "01.01.2023");
       cy.findByRole("navigation", { name: "Søknadssteg" })
         .should("exist")
         .within(() => {

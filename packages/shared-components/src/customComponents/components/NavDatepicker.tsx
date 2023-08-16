@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DatePicker, DatePickerProps, useDatepicker } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
@@ -12,20 +13,18 @@ import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent.jsx";
 import { UseDatepickerOptions } from "@navikt/ds-react/esm/date/hooks/useDatepicker";
 
+const SUBMISSION_DATE_FORMAT = "YYYY-MM-DD";
+
 const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     onDateChange: (val) => {
-      console.log("onDateChange", val);
-      onChange(val ? moment(val, "YYYY-MM-DD") : undefined);
+      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : undefined);
     },
   } as UseDatepickerOptions);
 
   useEffect(() => {
-    console.log("useEffect value", value);
     if (value) {
-      const valueAsDate = moment(value, "YYYY-MM-DD").toDate();
-      console.log("useEffect valueAsDate", valueAsDate);
-      setSelected(valueAsDate);
+      setSelected(moment(value, SUBMISSION_DATE_FORMAT).toDate());
     } else {
       reset();
     }
@@ -34,7 +33,7 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
   return (
     <DatePicker
       id={component.id}
-      selected={value ? moment(value, "YYYY-MM-DD").toDate() : undefined}
+      selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
       disabled={readOnly}
       {...datepickerProps}
     >
