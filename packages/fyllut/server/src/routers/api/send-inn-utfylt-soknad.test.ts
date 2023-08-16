@@ -14,8 +14,7 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
   return req;
 };
 
-// TODO: Fix, it works alone but not together when running full test suit.
-describe.skip("[endpoint] send-inn/utfyltsoknad", () => {
+describe("[endpoint] send-inn/utfyltsoknad", () => {
   const innsendingsId = "12345678-1234-1234-1234-12345678abcd";
   const defaultBody = {
     form: { title: "default form", components: [], properties: { skjemanummer: "NAV 12.34-56" } },

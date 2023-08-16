@@ -1,8 +1,8 @@
 import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import waitForExpect from "wait-for-expect";
 import columnsForm from "../../example_data/columnsForm.json";
+import { waitFor } from "@testing-library/react";
 
-describe.skip("Formio.js replica", () => {
+describe("Formio.js replica", () => {
   let builderElement;
   let builder;
   let spy;
@@ -65,7 +65,6 @@ describe.skip("Formio.js replica", () => {
 
   const saveComponent = () => {
     const click = new MouseEvent("click", {
-      view: window,
       bubbles: true,
       cancelable: true,
     });
@@ -78,10 +77,10 @@ describe.skip("Formio.js replica", () => {
 
   it("renders the builder on the dom node", async () => {
     vi.runOnlyPendingTimers();
-    await waitForExpect(() => expect(spy).toHaveBeenCalled());
-    const sidebar = builderElement.querySelector("div.builder-sidebar");
-    expect(sidebar).toBeVisible();
-    const basicPanel = sidebar.querySelector("[ref=group-panel-basic]");
+    await waitFor(() => {
+      expect(builderElement.querySelector("div.builder-sidebar")).toBeVisible();
+    });
+    const basicPanel = builderElement.querySelector("[ref=group-panel-basic]");
     expect(basicPanel).toBeVisible();
     expect(basicPanel).not.toBeEmptyDOMElement();
   });

@@ -11,6 +11,7 @@ describe("MottaksadresseListe", () => {
   beforeAll(() => {
     NavFormioJs.Formio.setProjectUrl(DEFAULT_PROJECT_URL);
     windowSpy = vi.spyOn(window, "scrollTo");
+    windowSpy.mockImplementation(() => {});
     formioSpy = vi.spyOn(NavFormioJs.Formio, "fetch");
     formioSpy.mockImplementation(createMockImplementation());
     globalFetchSpy = vi.spyOn(global, "fetch");
@@ -64,7 +65,7 @@ describe("MottaksadresseListe", () => {
     expect(await within(panel).findByRole("button", { name: "Endre" })).toBeTruthy();
   });
 
-  it.skip("Lagrer ny mottaksadresse", async () => {
+  it("Lagrer ny mottaksadresse", async () => {
     await renderMottaksadresseListe();
     const leggTilNyKnapp = screen.getByRole("button", { name: "Legg til ny" });
     expect(leggTilNyKnapp).toBeTruthy();
@@ -72,10 +73,10 @@ describe("MottaksadresseListe", () => {
 
     const panel = await screen.findByTestId("mottaksadressepanel-new");
 
-    await userEvent.type(screen.getByLabelText("Adresselinje1"), "TEST skanning");
-    await userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
-    await userEvent.type(screen.getByLabelText("Postnummer"), "1500");
-    await userEvent.type(screen.getByLabelText("Poststed"), "Dalen");
+    await userEvent.type(screen.getByLabelText("Adresselinje1", { exact: false }), "TEST skanning");
+    await userEvent.type(screen.getByLabelText("Adresselinje2", { exact: false }), "Postboks 3");
+    await userEvent.type(screen.getByLabelText("Postnummer", { exact: false }), "1500");
+    await userEvent.type(screen.getByLabelText("Poststed", { exact: false }), "Dalen");
 
     const saveButton = await within(panel).findByRole("button", { name: "Lagre" });
     await waitFor(() => userEvent.click(saveButton));
@@ -94,20 +95,21 @@ describe("MottaksadresseListe", () => {
     expect(data.poststed).toEqual("Dalen");
   });
 
-  it.skip("Lagrer ikke ny mottaksadresse når poststed ikke er oppgitt", async () => {
+  it("Lagrer ikke ny mottaksadresse når poststed ikke er oppgitt", async () => {
     await renderMottaksadresseListe();
     await userEvent.click(screen.getByRole("button", { name: "Legg til ny" }));
 
     const panel = await screen.findByTestId("mottaksadressepanel-new");
 
-    await userEvent.type(screen.getByLabelText("Adresselinje1"), "TEST skanning");
-    await userEvent.type(screen.getByLabelText("Adresselinje2"), "Postboks 3");
-    await userEvent.type(screen.getByLabelText("Postnummer"), "1500");
+    await userEvent.type(screen.getByLabelText("Adresselinje1", { exact: false }), "TEST skanning");
+    await userEvent.type(screen.getByLabelText("Adresselinje2", { exact: false }), "Postboks 3");
+    await userEvent.type(screen.getByLabelText("Postnummer", { exact: false }), "1500");
 
     // Ignore console.log from formio that logs the components when error.
     vi.spyOn(console, "log").mockImplementation(() => {});
+
     await userEvent.click(await within(panel).findByRole("button", { name: "Lagre" }));
-    expect(await screen.findByText("Du må fylle ut: Poststed")).toBeTruthy();
+    expect(await screen.findAllByText("Du må fylle ut: Poststed", { exact: false })).toHaveLength(2);
   });
 
   it("Avbryter endring av mottaksadresser", async () => {

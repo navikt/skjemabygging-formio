@@ -8,7 +8,7 @@ import GlobalTranslationsPage from "./GlobalTranslationsPage";
 import globalTranslations from "./testdata/global-translations.js";
 import { tags } from "./utils";
 
-describe.skip("GlobalTranslationsPage", () => {
+describe("GlobalTranslationsPage", () => {
   let mockedDeleteTranslation;
   let mockedSaveTranslations;
 
