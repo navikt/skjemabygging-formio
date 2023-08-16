@@ -18,7 +18,7 @@ const SUBMISSION_DATE_FORMAT = "YYYY-MM-DD";
 const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOnly, inputRef }) => {
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     onDateChange: (val) => {
-      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : undefined);
+      onChange(val ? moment(val).format(SUBMISSION_DATE_FORMAT) : "");
     },
   } as UseDatepickerOptions);
 
@@ -34,14 +34,13 @@ const DatovelgerWrapper = ({ component, onChange, value, isValid, locale, readOn
     <DatePicker
       id={component.id}
       selected={value ? moment(value, SUBMISSION_DATE_FORMAT).toDate() : undefined}
-      disabled={readOnly}
       {...datepickerProps}
     >
       <DatePicker.Input
         id={`${component.id}-${component.key}`}
-        ref={inputRef}
-        disabled={readOnly}
+        readOnly={readOnly}
         {...inputProps}
+        ref={inputRef}
         hideLabel
       />
     </DatePicker>

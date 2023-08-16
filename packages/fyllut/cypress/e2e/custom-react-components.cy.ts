@@ -97,5 +97,31 @@ describe("Custom react components", () => {
           cy.get("dd").eq(3).should("contain.text", "1.1.2023");
         });
     });
+
+    it("validates date input", () => {
+      cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Storm");
+      cy.findByRole("combobox", { name: "I hvilket land bor du?" })
+        .should("exist")
+        .click()
+        .type("Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}");
+      cy.findByRole("combobox", { name: "Velg valuta" }).focus().type("{upArrow}{enter}");
+      cy.clickNextStep();
+
+      cy.findAllByText("Du må fylle ut: Gyldig fra dato").should("have.length", 1);
+      cy.findAllByText("Gyldig fra dato: Du må fylle ut: Gyldig fra dato").should("have.length", 1).first().click();
+
+      cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("have.focus").type("02.02.2023");
+      cy.clickNextStep();
+
+      cy.findByRole("heading", { name: "Vedlegg" }).should("exist");
+      cy.clickPreviousStep();
+
+      cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("exist").type("{selectall}{backspace}");
+      cy.clickNextStep();
+
+      cy.findByRole("heading", { name: "Vedlegg" }).should("not.exist");
+      cy.findAllByText("Du må fylle ut: Gyldig fra dato").should("have.length", 1);
+      cy.findAllByText("Gyldig fra dato: Du må fylle ut: Gyldig fra dato").should("have.length", 1);
+    });
   });
 });
