@@ -288,6 +288,20 @@ const createDummyAmountWithCurrency = (label = "AmountWithCurrency"): Component 
     isAmountWithCurrencySelector: true,
   } as Component);
 
+const createDummyBankAccountField = (label = "bankAccount"): Component =>
+  ({
+    label,
+    key: keyFromLabel(label),
+    type: "bankAccount",
+  } as Component);
+
+const createDummyOrgNrField = (label = "orgNr"): Component =>
+  ({
+    label,
+    key: keyFromLabel(label),
+    type: "orgNr",
+  } as Component);
+
 const mockedComponentObjectForTest = {
   keyFromLabel,
   createDummyCheckbox,
@@ -315,5 +329,7 @@ const mockedComponentObjectForTest = {
   createDummyCurrencyField,
   createDummyNumberField,
   createDummyAmountWithCurrency,
+  createDummyBankAccountField,
+  createDummyOrgNrField,
 };
 export default mockedComponentObjectForTest;

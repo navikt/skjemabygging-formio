@@ -59,6 +59,8 @@ const pengerOgKontoPalett = {
         spellcheck: false,
         validateOn: "blur",
         clearOnHide: true,
+        displayMask: "9999 99 99999",
+        inputMaskPlaceholderChar: " ", // U+00a0 -space
         validate: {
           required: true,
           custom: "valid = instance.validateAccountNumber(input)",
