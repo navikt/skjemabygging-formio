@@ -104,6 +104,10 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, translate, false);
       const panelValidations = instance.components
+        .filter(
+          (wizardComponent) =>
+            wizardComponent.component.type === "panel" && !wizardComponent.component.isAttachmentPanel
+        )
         .map((panel): PanelValidation => {
           const firstInputWithValidationError: Component | undefined =
             formSummaryUtil.findFirstInputWithValidationError(panel, submission?.data ?? {});
@@ -168,7 +172,9 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
                   {translate(TEXTS.statiske.summaryPage.validationMessage.end)}
                 </span>
               </Alert>
-              <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+              <div className="button-row">
+                <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+              </div>
             </>
           )}
           <div className="form-summary">
