@@ -16,11 +16,17 @@ export const grensesnitt = {
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
+  confirmSavePrompt: {
+    title: "Lagre utkast og fortsett senere?",
+    body: "Skjemaet lagres som et utkast på Min Side i 14 dager, slik at du kan fullføre senere.",
+    confirm: "Ja, lagre og fortsett senere",
+    cancel: "Nei, fortsett utfylling",
+  },
   confirmDeletePrompt: {
-    body: "Er du sikker på at du vil slette søknaden?",
-    confirm: "ja, slett søknaden",
-    cancel: "Avbryt",
-    arialabel: "Bekreft sletting",
+    title: "Avbryt og slett utkast?",
+    body: "Alle opplysningene du har fylt ut vil bli slettet.",
+    confirm: "Ja, avbryt og slett utkast",
+    cancel: "Nei, fortsett utfylling",
   },
   submitToNavPrompt: {
     open: "Send til NAV",

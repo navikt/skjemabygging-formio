@@ -17,6 +17,7 @@ interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
+  deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   innsendingsId: string | undefined;
   mellomlagringError: HttpError | Error | undefined;
 }
@@ -119,7 +120,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     }
   };
 
-  const deleteMellomlagring = async () => {
+  const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
     if (isMellomLagringEnabled && innsendingsId) {
       try {
         return await deleteSoknad(appConfig, innsendingsId);
