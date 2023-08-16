@@ -1,6 +1,6 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Prompt, Redirect, Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { SendInnProvider } from "../context/sendInn/sendInnContext";
@@ -31,8 +31,12 @@ const ALERT_MESSAGE_BACK_BUTTON =
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
   const { path, url: formBaseUrl } = useRouteMatch();
+  const { search } = useLocation();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
+
+  const innsendingsId = new URLSearchParams(search).get("innsendingsId");
+  const isMellomLagringActive = featureToggles.enableMellomlagring && innsendingsId;
 
   const styles = useStyles();
   useEffect(() => {
@@ -40,13 +44,13 @@ const FyllUtRouter = ({ form, translations }) => {
   }, [form, submissionMethod]);
 
   useEffect(() => {
-    addBeforeUnload();
-    return () => {
-      removeBeforeUnload();
-    };
-  }, []);
-
-  console.log("FyllutRouter", submission);
+    if (!isMellomLagringActive) {
+      addBeforeUnload();
+      return () => {
+        removeBeforeUnload();
+      };
+    }
+  }, [isMellomLagringActive]);
 
   return (
     <LanguagesProvider translations={translations}>
@@ -102,7 +106,7 @@ const FyllUtRouter = ({ form, translations }) => {
             <Route path={`${path}/:panelSlug`}>
               {formForRendering && (
                 <>
-                  {app !== "bygger" && (
+                  {app !== "bygger" && !isMellomLagringActive && (
                     <Prompt
                       message={(location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true)}
                     />
