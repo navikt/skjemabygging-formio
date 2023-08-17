@@ -6,7 +6,7 @@
  * TODO: Maybe we should also have tests for opening sub=digital or sub=paper directly, to see that the "skjema startet" logging is handled correctly.
  */
 
-describe.skip("Amplitude", () => {
+describe("Amplitude", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
@@ -43,12 +43,10 @@ describe.skip("Amplitude", () => {
     cy.findByRole("textbox", { name: "Etternavn" }).type("Norman").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Etternavn" });
 
-    // Radio panel is currently not reachable by role. Additionally {force: true} is needed here because
-    // the input is overlapping with the label element, which makes cypress assume it's not interactable
     cy.get(".navds-radio-group")
       .first()
       .should("exist")
-      .within(($radio) => cy.findByLabelText("Nei").should("exist").check({ force: true }));
+      .within(($radio) => cy.findByLabelText("Nei").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Har du norsk fødselsnummer eller D-nummer?" });
 
     cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995").blur();
@@ -57,13 +55,13 @@ describe.skip("Amplitude", () => {
     cy.get(".navds-radio-group")
       .eq(1)
       .should("exist")
-      .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
+      .within(($radio) => cy.findByLabelText("Ja").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Bor du i Norge?" });
 
     cy.get(".navds-radio-group")
       .eq(2)
       .should("exist")
-      .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
+      .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", {
       spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",
     });
