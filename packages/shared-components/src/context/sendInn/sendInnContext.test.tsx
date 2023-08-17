@@ -133,21 +133,21 @@ describe("sendInnContext", () => {
 
     describe("startMellomlagring", () => {
       it("does not send a POST request to /api/send-inn/soknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
         expect(mockHttp.post).not.toHaveBeenCalled();
       });
     });
 
     describe("updateMellomlagring", () => {
       it("does not send a PUT request to /api/send-inn/soknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
         expect(mockHttp.put).not.toHaveBeenCalled();
       });
     });
 
     describe("submitSoknad", () => {
       it("sends a POST request to /api/send-inn", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
+        await userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
         await waitFor(() => expect(mockHttp.post).toHaveBeenCalledTimes(1));
         expect(mockHttp.post).toHaveBeenCalledWith(
           "http://test.example.no/api/send-inn",

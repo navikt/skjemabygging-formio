@@ -45,9 +45,7 @@ describe("Axe: Accessibility testing", () => {
 
     it("Layout", () => {
       cy.contains("Layout").click();
-      cy.checkA11y({
-        exclude: [".alertstripe"],
-      });
+      cy.checkA11y();
     });
 
     it("Data", () => {
