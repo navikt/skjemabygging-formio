@@ -10,6 +10,15 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   const innsendingsId = new URLSearchParams(search).get("innsendingsId");
   const expectsSavedSubmissionFromMellomlagring = featureToggles.enableMellomlagring && innsendingsId;
 
+  const removeParamIfItExists = (searchParamsString, param) => {
+    const urlSearchParams = new URLSearchParams(searchParamsString);
+    if (urlSearchParams.get(param)) {
+      urlSearchParams.delete(param);
+      return `?${urlSearchParams.toString()}`;
+    }
+    return searchParamsString;
+  };
+
   if (mellomlagringError && mellomlagringError.type === "NOT FOUND") {
     //TODO: bedre visning av feilmeldinger
     return <ErrorPage errorMessage={mellomlagringError.message} />;
@@ -20,7 +29,7 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   }
 
   if (!expectsSavedSubmissionFromMellomlagring && !submission) {
-    return <Redirect to={`${url}${search}`} />;
+    return <Redirect to={`${url}${removeParamIfItExists(search, "innsendingsId")}`} />;
   }
   return (
     <>
