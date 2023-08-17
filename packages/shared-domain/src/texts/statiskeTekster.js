@@ -24,6 +24,27 @@ export const statiske = {
       digital: "Send digitalt (krever innlogging)",
     },
   },
+  mellomlagringError: {
+    get: {
+      title: "Beklager, vi kunne ikke hente den lagrede søknaden akkurat nå",
+      message: "Prøv igjen senere, eller fyll ut en ny søknad",
+      notFoundMessage: "Vi kunne ikke finne denne søknaden",
+    },
+    update: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      message:
+        "Vi klarte ikke å lagre søknaden. Vennligst prøv igjen senere. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.",
+    },
+    delete: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      message: "Vi klarte ikke å slette den lagrede søknaden. Vennligst prøv igjen senere.",
+    },
+    submit: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      savedDraftMessage: "Skjemaet er lagret som et utkast på Min Side - Utkast.",
+      tryLaterMessage: "Vennligst prøv igjen senere.",
+    },
+  },
   summaryPage: {
     title: "Oppsummering",
     description:

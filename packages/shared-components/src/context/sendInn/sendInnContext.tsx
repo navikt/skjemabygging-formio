@@ -1,4 +1,4 @@
-import { I18nTranslations, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslations, Language, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
@@ -10,8 +10,8 @@ import {
   updateSoknad,
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
-import { HttpError } from "../../components/error";
 import { useAppConfig } from "../../configContext";
+import { useLanguages } from "../languages";
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -19,7 +19,7 @@ interface SendInnContextType {
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   innsendingsId: string | undefined;
-  mellomlagringError: HttpError | Error | undefined;
+  mellomlagringError: MellomlagringError | undefined;
 }
 
 interface SendInnProviderProps {
@@ -29,13 +29,17 @@ interface SendInnProviderProps {
   updateSubmission: (submission?: Submission) => void;
 }
 
+type MellomlagringErrorType = "START" | "GET" | "NOT FOUND" | "UPDATE" | "SUBMIT" | "DELETE";
+type MellomlagringError = { title: string; message: string; type: MellomlagringErrorType };
+
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
 const SendInnProvider = ({ children, form, translations, updateSubmission }: SendInnProviderProps) => {
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
-  const [mellomlagringError, setMellomlagringError] = useState<Error>();
+  const [mellomlagringError, setMellomlagringError] = useState<MellomlagringError>();
 
+  const { translate } = useLanguages();
   const appConfig = useAppConfig();
   const { app, submissionMethod, featureToggles, logger } = appConfig;
   const isMellomLagringEnabled =
@@ -71,11 +75,23 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           setIsMellomlagringReady(true);
         }
       } catch (error: any) {
-        setMellomlagringError(error as Error);
+        const getError: MellomlagringError =
+          error.status === 404
+            ? {
+                type: "NOT FOUND",
+                message: translate(TEXTS.statiske.mellomlagringError.get.notFoundMessage),
+                title: "",
+              }
+            : {
+                type: "GET",
+                title: translate(TEXTS.statiske.mellomlagringError.get.title),
+                message: translate(TEXTS.statiske.mellomlagringError.get.message),
+              };
+        setMellomlagringError(getError);
       }
     };
     retrievePreviousSubmission();
-  }, [addQueryParamToUrl, appConfig, mellomlagringStarted, search, updateSubmission]);
+  }, [addQueryParamToUrl, appConfig, mellomlagringStarted, search, translate, updateSubmission]);
 
   const nbNO: Language = "nb-NO";
 
@@ -104,7 +120,6 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       } catch (error: any) {
         logger?.info("Oppretting av mellomlagring feilet", error);
         setIsMellomlagringReady(true);
-        // Sak for å kommunisere feil til bruker: https://trello.com/c/3y65psdc
       }
     }
   };
@@ -114,10 +129,16 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       try {
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        return await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        const response = await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        setMellomlagringError(undefined);
+        return response;
       } catch (error: any) {
+        setMellomlagringError({
+          type: "UPDATE",
+          title: translate(TEXTS.statiske.mellomlagringError.update.title),
+          message: translate(TEXTS.statiske.mellomlagringError.update.message),
+        });
         logger?.info("Oppdatering av mellomlagring feilet", error);
-        // Sak for å kommunisere feil til bruker: https://trello.com/c/3y65psdc
       }
     }
   };
@@ -125,8 +146,15 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
     if (isMellomLagringEnabled && innsendingsId) {
       try {
-        return await deleteSoknad(appConfig, innsendingsId);
+        const response = await deleteSoknad(appConfig, innsendingsId);
+        setMellomlagringError(undefined);
+        return response;
       } catch (error: any) {
+        setMellomlagringError({
+          type: "DELETE",
+          title: translate(TEXTS.statiske.mellomlagringError.delete.title),
+          message: translate(TEXTS.statiske.mellomlagringError.delete.message),
+        });
         logger?.info("Sletting av mellomlagring feilet", error);
       }
     }
@@ -136,9 +164,38 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
     if (isMellomLagringEnabled && innsendingsId) {
-      return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+      try {
+        const response = await updateUtfyltSoknad(
+          appConfig,
+          form,
+          submission,
+          currentLanguage,
+          translation,
+          innsendingsId
+        );
+        setMellomlagringError(undefined);
+        return response;
+      } catch (error: any) {
+        try {
+          await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+          setMellomlagringError({
+            type: "SUBMIT",
+            title: translate(TEXTS.statiske.mellomlagringError.submit.title),
+            message: `${translate(TEXTS.statiske.mellomlagringError.submit.savedDraftMessage)} ${translate(
+              TEXTS.statiske.mellomlagringError.submit.tryLaterMessage
+            )}`,
+          });
+        } catch (error) {
+          setMellomlagringError({
+            type: "SUBMIT",
+            title: translate(TEXTS.statiske.mellomlagringError.submit.title),
+            message: translate(TEXTS.statiske.mellomlagringError.submit.tryLaterMessage),
+          });
+        }
+      }
+    } else {
+      return await createSoknadWithoutInnsendingsId(appConfig, form, submission, currentLanguage, translation);
     }
-    return await createSoknadWithoutInnsendingsId(appConfig, form, submission, currentLanguage, translation);
   };
 
   const value = {

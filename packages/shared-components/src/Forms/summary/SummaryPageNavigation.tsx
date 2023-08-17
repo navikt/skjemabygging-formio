@@ -1,9 +1,11 @@
-import { Link as NavLink } from "@navikt/ds-react";
+import { Alert, Heading, Link as NavLink } from "@navikt/ds-react";
 import { InnsendingType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useState } from "react";
 import { Link, useLocation, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
+import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { getPanels } from "../../util/form";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
@@ -18,15 +20,16 @@ export interface Props {
   formUrl: string;
   panelValidationList?: PanelValidation[];
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
-  onError: (error: Error) => void;
 }
 
-const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid, onError }: Props) => {
+const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app, featureToggles } = useAppConfig();
   const { url } = useRouteMatch();
   const { search } = useLocation();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
+  const { mellomlagringError } = useSendInn();
+  const [error, setError] = useState<Error>();
   const innsendingsId = new URLSearchParams(search).get("innsendingsId");
   const isMellomlagringActive = featureToggles?.enableMellomlagring && innsendingsId && submissionMethod === "digital";
 
@@ -52,83 +55,99 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   };
 
   return (
-    <nav>
-      <div className="button-row">
-        {(submissionMethod === "paper" ||
-          innsending === "KUN_PAPIR" ||
-          (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
-          <Link
-            className="navds-button navds-button--primary"
-            onClick={(e) => onClickPapirOrIngenInnsending(e, "send-i-posten")}
-            to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
-          >
-            <span aria-live="polite" className="navds-body-short font-bold">
-              {translate(TEXTS.grensesnitt.moveForward)}
-            </span>
-          </Link>
-        )}
-        {canSubmit &&
-          (submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
-          (hasAttachments ? (
-            <DigitalSubmissionButton
-              submission={submission}
-              isValid={isValid}
-              onError={(err) => {
-                onError(err);
-                loggSkjemaInnsendingFeilet();
-              }}
-              onSuccess={() => loggSkjemaFullfort()}
-            >
-              {translate(
-                isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward
-              )}
-            </DigitalSubmissionButton>
-          ) : (
-            <DigitalSubmissionWithPrompt
-              submission={submission}
-              isValid={isValid}
-              onError={(err) => {
-                onError(err);
-                loggSkjemaInnsendingFeilet();
-              }}
-              onSuccess={() => loggSkjemaFullfort()}
-            />
-          ))}
-
-        {innsending === "INGEN" && (
-          <Link
-            className="navds-button navds-button--primary"
-            onClick={(e) => onClickPapirOrIngenInnsending(e, "ingen-innsending")}
-            to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
-          >
-            <span aria-live="polite" className="navds-body-short font-bold">
-              {translate(TEXTS.grensesnitt.moveForward)}
-            </span>
-          </Link>
-        )}
-        <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
-      </div>
-      {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
-      {!isMellomlagringActive && (
-        <div className="button-row button-row__center">
-          <NavLink
-            className={"navds-button navds-button--tertiary"}
-            onClick={() =>
-              loggNavigering({
-                lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-                destinasjon: "https://www.nav.no",
-              })
-            }
-            href="https://www.nav.no"
-            style={linkBtStyle}
-          >
-            <span aria-live="polite" className="navds-body-short font-bold">
-              {translate(TEXTS.grensesnitt.navigation.cancel)}
-            </span>
-          </NavLink>
-        </div>
+    <>
+      {mellomlagringError && (
+        <Alert variant="error" className="mb">
+          <Heading size="small" level="4">
+            {mellomlagringError.title}
+          </Heading>
+          {mellomlagringError.message}
+        </Alert>
       )}
-    </nav>
+      {error && !mellomlagringError && (
+        <Alert variant="error" className="mb" data-testid="error-message">
+          {error.message}
+        </Alert>
+      )}
+
+      <nav>
+        <div className="button-row">
+          {(submissionMethod === "paper" ||
+            innsending === "KUN_PAPIR" ||
+            (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
+            <Link
+              className="navds-button navds-button--primary"
+              onClick={(e) => onClickPapirOrIngenInnsending(e, "send-i-posten")}
+              to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
+            >
+              <span aria-live="polite" className="navds-body-short font-bold">
+                {translate(TEXTS.grensesnitt.moveForward)}
+              </span>
+            </Link>
+          )}
+          {canSubmit &&
+            (submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
+            (hasAttachments ? (
+              <DigitalSubmissionButton
+                submission={submission}
+                isValid={isValid}
+                onError={(err) => {
+                  setError(err);
+                  loggSkjemaInnsendingFeilet();
+                }}
+                onSuccess={() => loggSkjemaFullfort()}
+              >
+                {translate(
+                  isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward
+                )}
+              </DigitalSubmissionButton>
+            ) : (
+              <DigitalSubmissionWithPrompt
+                submission={submission}
+                isValid={isValid}
+                onError={(err) => {
+                  setError(err);
+                  loggSkjemaInnsendingFeilet();
+                }}
+                onSuccess={() => loggSkjemaFullfort()}
+              />
+            ))}
+
+          {innsending === "INGEN" && (
+            <Link
+              className="navds-button navds-button--primary"
+              onClick={(e) => onClickPapirOrIngenInnsending(e, "ingen-innsending")}
+              to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+            >
+              <span aria-live="polite" className="navds-body-short font-bold">
+                {translate(TEXTS.grensesnitt.moveForward)}
+              </span>
+            </Link>
+          )}
+          <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+        </div>
+        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
+        {!isMellomlagringActive && (
+          <div className="button-row button-row__center">
+            <NavLink
+              className={"navds-button navds-button--tertiary"}
+              onClick={() =>
+                loggNavigering({
+                  lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+                  destinasjon: "https://www.nav.no",
+                })
+              }
+              href="https://www.nav.no"
+              style={linkBtStyle}
+            >
+              <span aria-live="polite" className="navds-body-short font-bold">
+                {translate(TEXTS.grensesnitt.navigation.cancel)}
+              </span>
+            </NavLink>
+          </div>
+        )}
+      </nav>
+    </>
   );
 };
 

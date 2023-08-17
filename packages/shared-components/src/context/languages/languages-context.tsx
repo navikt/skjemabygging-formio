@@ -6,7 +6,7 @@ interface LanguageContextType {
   availableLanguages: string[];
   currentLanguage: string;
   initialLanguage: string;
-  translate: Function;
+  translate: (originalText: string | undefined, params?: Record<string | number, any>) => string;
   translationsForNavForm: object;
 }
 
@@ -35,7 +35,7 @@ export const LanguagesProvider = ({ children, translations }) => {
     setTranslationsForNavForm(translations);
   }, [translations]);
 
-  function translate(originalText, params?) {
+  function translate(originalText: string = "", params?: Record<string | number, any>): string {
     const currentTranslation = translations[currentLanguage];
     return currentTranslation && currentTranslation[originalText]
       ? injectParams(currentTranslation[originalText], params)

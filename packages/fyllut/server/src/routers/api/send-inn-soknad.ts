@@ -53,7 +53,6 @@ const sendInnSoknad = {
             document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
           },
         };
-        console.log("GET json", json);
         res.json(response);
       } else {
         logger.debug("Failed to fetch data from SendInn");

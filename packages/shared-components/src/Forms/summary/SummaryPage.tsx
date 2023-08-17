@@ -78,7 +78,6 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
 
@@ -207,13 +206,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
             formUrl={formUrl}
             panelValidationList={panelValidationList}
             isValid={isValid}
-            onError={(err) => setErrorMessage(err.message)}
           />
-          {errorMessage && (
-            <Alert variant="error" data-testid="error-message">
-              {errorMessage}
-            </Alert>
-          )}
         </div>
         <aside className="right-col">
           <FormStepper form={form} formUrl={formUrl} submissionMethod={submissionMethod} submission={submission} />
