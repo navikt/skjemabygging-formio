@@ -1,12 +1,10 @@
 import FormioUtils from "formiojs/utils";
 import moment from "moment";
+import "moment/locale/nb";
 import TEXTS from "../texts";
 import sanitizeJavaScriptCode from "../utils/formio/sanitize-javascript-code";
 import { addToMap } from "../utils/objectUtils";
 import { toPascalCase } from "../utils/stringUtils";
-
-// TODO: Fix/remove moment
-//require("moment/locale/nb.js");
 
 function createComponentKey(parentContainerKey, key) {
   return parentContainerKey.length > 0 ? `${parentContainerKey}.${key}` : key;
@@ -17,7 +15,7 @@ function formatValue(component, value, translate) {
     case "radiopanel":
     case "radio":
       const valueObject = component.values.find(
-        (valueObject) => String(valueObject.value).toString() === String(value).toString()
+        (valueObject) => String(valueObject.value).toString() === String(value).toString(),
       );
       if (!valueObject) {
         console.log(`'${value}' is not in ${JSON.stringify(component.values)}`);
@@ -75,7 +73,7 @@ function handlePanel(component, submission, formSummaryObject, parentContainerKe
   const subComponents = components.reduce(
     (subComponents, subComponent) =>
       handleComponent(subComponent, submission, subComponents, parentContainerKey, translate, evaluatedConditionals),
-    []
+    [],
   );
   if (subComponents.length === 0) {
     return [...formSummaryObject];
@@ -99,7 +97,7 @@ function handleContainer(component, submission, formSummaryObject, translate, ev
     const mappedSubComponents = components.reduce(
       (subComponents, subComponent) =>
         handleComponent(subComponent, submission, subComponents, key, translate, evaluatedConditionals),
-      []
+      [],
     );
     return [...formSummaryObject, ...mappedSubComponents];
   }
@@ -136,7 +134,7 @@ function handleDataGridRows(component, submission, translate) {
     const dataGridRowComponents = components.reduce(
       (handledComponents, subComponent) =>
         handleComponent(subComponent, { data: rowSubmission }, handledComponents, "", translate),
-      []
+      [],
     );
     return {
       type: "datagrid-row",
@@ -172,7 +170,7 @@ function handleFieldSet(
   formSummaryObject,
   parentContainerKey,
   translate,
-  evaluatedConditionals
+  evaluatedConditionals,
 ) {
   const { legend, key, components, type } = component;
   if (!components || components.length === 0) {
@@ -181,7 +179,7 @@ function handleFieldSet(
   const mappedSubComponents = components.reduce(
     (subComponents, subComponent) =>
       handleComponent(subComponent, submission, subComponents, parentContainerKey, translate, evaluatedConditionals),
-    []
+    [],
   );
   if (mappedSubComponents.length === 0) {
     return formSummaryObject;
@@ -317,7 +315,7 @@ function handleComponent(
   formSummaryObject,
   parentContainerKey = "",
   translate,
-  evaluatedConditionals = {}
+  evaluatedConditionals = {},
 ) {
   if (!shouldShowInSummary(component.key, evaluatedConditionals)) {
     return formSummaryObject;
@@ -330,7 +328,7 @@ function handleComponent(
         formSummaryObject,
         parentContainerKey,
         translate,
-        evaluatedConditionals
+        evaluatedConditionals,
       );
     case "button":
     case "content":
@@ -354,7 +352,7 @@ function handleComponent(
         formSummaryObject,
         parentContainerKey,
         translate,
-        evaluatedConditionals
+        evaluatedConditionals,
       );
     case "image":
       return handleImage(component, formSummaryObject, parentContainerKey, translate);
@@ -365,7 +363,7 @@ function handleComponent(
           submission,
           formSummaryObject,
           parentContainerKey,
-          translate
+          translate,
         );
       } else {
         return handleContainer(component, submission, formSummaryObject, translate);
@@ -415,7 +413,7 @@ function createFormSummaryObject(form, submission, translate = (txt) => txt) {
   return form.components.reduce(
     (formSummaryObject, component) =>
       handleComponent(component, submission, formSummaryObject, "", translate, evaluatedConditionalsMap),
-    []
+    [],
   );
 }
 

@@ -2,24 +2,20 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { act } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import PusherNotificationsProvider, { CHANNEL, EVENT, usePusherNotifications } from "./NotificationsContext";
+import Pusher, { Channel } from "pusher-js";
 
 const channelSubscriptions = {};
-vi.mock("pusher-js", () => {
+
+vi.spyOn(Pusher.prototype, "subscribe").mockImplementation((channel) => {
   return {
-    default: () => ({
-      subscribe: (channel) => {
-        channelSubscriptions[channel] = {};
-        return {
-          bind: (eventName, callback) => {
-            channelSubscriptions[channel][eventName] = callback;
-          },
-          unbind: (eventName) => {
-            channelSubscriptions[channel][eventName] = undefined;
-          },
-        };
-      },
-    }),
-  };
+    bind: (eventName, callback) => {
+      if (!channelSubscriptions[channel]) channelSubscriptions[channel] = {};
+      channelSubscriptions[channel][eventName] = callback;
+    },
+    unbind: (eventName) => {
+      channelSubscriptions[channel][eventName] = undefined;
+    },
+  } as Channel;
 });
 
 const wrapper = ({ children }) => (
@@ -28,7 +24,7 @@ const wrapper = ({ children }) => (
   </AppConfigProvider>
 );
 
-describe.skip("NotificationsContext", () => {
+describe("NotificationsContext", () => {
   describe("usePusherNotifications", () => {
     it("initially returns no messages", () => {
       const { result } = renderHook(() => usePusherNotifications(), { wrapper });

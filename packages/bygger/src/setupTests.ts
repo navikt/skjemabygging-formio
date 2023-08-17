@@ -1,10 +1,15 @@
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 import createFetchMock from "vitest-fetch-mock";
-import waitForExpect from "wait-for-expect";
+import { URL } from "node:url";
+import { Blob } from "node:buffer";
 
 const fetchMock = createFetchMock(vi);
 
 fetchMock.enableMocks();
 
-waitForExpect.defaults.timeout = 250;
+// GlobalCsvLink.test.tsx contains test for createObjectURL to reproduce this error.
+// @ts-ignore
+globalThis.URL = URL;
+// @ts-ignore
+globalThis.Blob = Blob;

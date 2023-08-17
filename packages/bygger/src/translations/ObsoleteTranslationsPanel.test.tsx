@@ -36,9 +36,9 @@ describe("ObsoleteTranslationsPanel", () => {
   });
 
   describe("Åpent panel", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const panelTitle = screen.getByRole("button", { name: "Antall ubrukte oversettelser: 3" });
-      userEvent.click(panelTitle);
+      await userEvent.click(panelTitle);
     });
 
     it("Viser detaljer om ubrukte oversettelser", () => {

@@ -37,7 +37,7 @@ describe("FormsRouter", () => {
             </AppConfigProvider>
           </FeedbackProvider>
         </AuthContext.Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   }
 
@@ -48,18 +48,18 @@ describe("FormsRouter", () => {
     expect(await screen.findByRole("button", { name: "Opprett" })).toBeInTheDocument();
   });
 
-  it.skip("can edit a form", async () => {
+  it("can edit a form", async () => {
     renderApp("/forms/debugskjema/edit");
     expect(await screen.findByRole("heading", { name: "debug skjema" })).toBeInTheDocument();
-    expect(await screen.findByLabelText("Text Area")).toBeInTheDocument();
+    expect(await screen.findByLabelText("Text Area", { exact: false })).toBeInTheDocument();
   });
 
-  it.skip("navigates from the list to the editor", async () => {
+  it("navigates from the list to the editor", async () => {
     renderApp("/forms");
     const link = await screen.findByRole("link", { name: "debug skjema" });
     await userEvent.click(link);
     expect(await screen.findByRole("heading", { name: "debug skjema" }));
-    expect(await screen.findByLabelText("Text Area")).toBeInTheDocument();
+    expect(await screen.findByLabelText("Text Area", { exact: false })).toBeInTheDocument();
   });
 
   it("displays all the forms with an edit link", async () => {
@@ -67,7 +67,7 @@ describe("FormsRouter", () => {
     const editLinks = await screen.findAllByTestId("editLink");
     expect(editLinks).toHaveLength(2);
     editLinks.forEach((link) =>
-      expect(link.href).toMatch(/http:\/\/localhost(:\d+)?\/forms\/(columns|debugskjema)\/edit/)
+      expect(link.href).toMatch(/http:\/\/localhost(:\d+)?\/forms\/(columns|debugskjema)\/edit/),
     );
   });
 });

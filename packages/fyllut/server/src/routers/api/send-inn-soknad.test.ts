@@ -12,8 +12,7 @@ const mockRequestWithPidAndTokenX = ({ headers = {}, body }: MockRequestParams) 
   return req;
 };
 
-// TODO: Fix, it works alone but not together when running full test suit.
-describe.skip("[endpoint] send-inn/soknad", () => {
+describe("[endpoint] send-inn/soknad", () => {
   const innsendingsId = "12345678-1234-1234-1234-12345678abcd";
   const defaultBody = {
     form: { title: "default form", components: [], properties: { skjemanummer: "NAV 12.34-57" } },
@@ -94,7 +93,7 @@ describe.skip("[endpoint] send-inn/soknad", () => {
     });
   });
 
-  describe.skip("PUT", () => {
+  describe("PUT", () => {
     it("returns response body if success", async () => {
       const sendInnNockScope = nock(sendInnConfig.host)
         .put(`${sendInnConfig.paths.soknad}/${innsendingsId}`)

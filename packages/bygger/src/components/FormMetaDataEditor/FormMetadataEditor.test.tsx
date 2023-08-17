@@ -49,15 +49,7 @@ describe("FormMetadataEditor", () => {
   });
 
   describe("Usage context: EDIT", () => {
-    beforeEach(() => {
-      vi.useFakeTimers();
-    });
-
-    afterEach(() => {
-      vi.useRealTimers();
-    });
-
-    it.skip("should update form when title is changed", async () => {
+    it("should update form when title is changed", async () => {
       const { rerender } = render(
         <AppConfigProvider featureToggles={featureToggles}>
           <FormMetadataEditor form={testform} onChange={mockOnChange} />
