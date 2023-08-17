@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
-describe.skip("When form has panels that are hidden unless a condition is true", () => {
+describe("When form has panels that are hidden unless a condition is true", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", {
@@ -10,7 +10,7 @@ describe.skip("When form has panels that are hidden unless a condition is true",
       fixture: "conditionalxmas-translation.json",
     }).as("getTranslation");
     cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation"
+      "getGlobalTranslation",
     );
     cy.visit("/fyllut/conditionalxmas");
     cy.wait("@getForm");
@@ -46,7 +46,7 @@ describe.skip("When form has panels that are hidden unless a condition is true",
     });
   });
 
-  describe.skip("Summary page", () => {
+  describe("Summary page", () => {
     beforeEach(() => {
       cy.findByRole("group", { name: "Julemiddag" }).within(() => {
         cy.findByLabelText("Pinnekjøtt").check({ force: true });
@@ -99,8 +99,8 @@ describe.skip("When form has panels that are hidden unless a condition is true",
       cy.findByRole("link", { name: "English" }).click();
       cy.findByRole("link", { name: "Edit lamb ribs" }).click();
       cy.url().should("include", "/pinnekjott?lang=en");
-      cy.findByRole("checkbox", { name: "Root stew (Optional)" }).should("exist");
-      cy.findByRole("checkbox", { name: "Root stew (Optional)" }).should("be.checked");
+      cy.findByRole("checkbox", { name: "Root stew (optional)" }).should("exist");
+      cy.findByRole("checkbox", { name: "Root stew (optional)" }).should("be.checked");
     });
   });
 });

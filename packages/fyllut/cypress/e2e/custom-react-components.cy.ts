@@ -1,16 +1,16 @@
-describe.skip("Custom react components", () => {
+describe("Custom react components", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/customcomps", { fixture: "custom-components.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/api/translations/customcomps", { fixture: "custom-components-translations.json" }).as(
-      "getTranslations"
+      "getTranslations",
     );
     cy.intercept("GET", "/fyllut/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
     cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
-      "getCurrencies"
+      "getCurrencies",
     );
     cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation"
+      "getGlobalTranslation",
     );
   });
 
@@ -44,12 +44,12 @@ describe.skip("Custom react components", () => {
       cy.findByLabelText("Annen dokumentasjon")
         .should("exist")
         .within(() =>
-          cy.findByLabelText("Ja, jeg legger det ved denne søknaden.").should("exist").check({ force: true })
+          cy.findByLabelText("Ja, jeg legger det ved denne søknaden.").should("exist").check({ force: true }),
         );
       cy.findByLabelText("Bekreftelse på skoleplass")
         .should("exist")
         .within(() =>
-          cy.findByLabelText("Jeg har levert denne dokumentasjonen tidligere").should("exist").check({ force: true })
+          cy.findByLabelText("Jeg har levert denne dokumentasjonen tidligere").should("exist").check({ force: true }),
         );
       cy.clickNextStep();
 
@@ -76,6 +76,11 @@ describe.skip("Custom react components", () => {
       cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("zy");
       cy.findByRole("combobox", { name: "Velg valuta" }).click().should("have.focus").type("Norske{enter}");
       cy.findByRole("combobox", { name: "Velg instrument (valgfritt)" }).should("exist").type("{backspace}");
+      cy.findByRole("textbox", { name: "Gyldig fra dato" })
+        .should("exist")
+        .should("contain.value", "01.01.2023")
+        .focus()
+        .type("{selectall}02.01.2023");
       cy.findByRole("navigation", { name: "Søknadssteg" })
         .should("exist")
         .within(() => {
@@ -93,8 +98,34 @@ describe.skip("Custom react components", () => {
           cy.get("dt").eq(2).should("contain.text", "Velg valuta");
           cy.get("dd").eq(2).should("contain.text", "Norske kroner (NOK)");
           cy.get("dt").eq(3).should("contain.text", "Gyldig fra dato");
-          cy.get("dd").eq(3).should("contain.text", "1.1.2023");
+          cy.get("dd").eq(3).should("contain.text", "2.1.2023");
         });
+    });
+
+    it("validates date input", () => {
+      cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Storm");
+      cy.findByRole("combobox", { name: "I hvilket land bor du?" })
+        .should("exist")
+        .click()
+        .type("Nor{downArrow}{downArrow}{downArrow}{downArrow}{enter}");
+      cy.findByRole("combobox", { name: "Velg valuta" }).focus().type("{upArrow}{enter}");
+      cy.clickNextStep();
+
+      cy.findAllByText("Du må fylle ut: Gyldig fra dato").should("have.length", 1);
+      cy.findAllByText("Gyldig fra dato: Du må fylle ut: Gyldig fra dato").should("have.length", 1).first().click();
+
+      cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("have.focus").type("02.02.2023");
+      cy.clickNextStep();
+
+      cy.findByRole("heading", { name: "Vedlegg" }).should("exist");
+      cy.clickPreviousStep();
+
+      cy.findByRole("textbox", { name: "Gyldig fra dato" }).should("exist").type("{selectall}{backspace}");
+      cy.clickNextStep();
+
+      cy.findByRole("heading", { name: "Vedlegg" }).should("not.exist");
+      cy.findAllByText("Du må fylle ut: Gyldig fra dato").should("have.length", 1);
+      cy.findAllByText("Gyldig fra dato: Du må fylle ut: Gyldig fra dato").should("have.length", 1);
     });
   });
 });
