@@ -8,6 +8,7 @@ describe("Translations", () => {
     cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
       "getGlobalTranslation",
     );
+    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   });
 
   describe("Change translations based on url params", () => {

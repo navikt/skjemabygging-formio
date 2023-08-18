@@ -5,8 +5,10 @@ const BACK_BUTTON_CONFIRMATION_TEXT =
 
 describe("Form navigation", () => {
   beforeEach(() => {
+    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
     cy.intercept("GET", "/fyllut/api/translations/cypress101", { body: {} }).as("getTranslation");
+    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
     cy.visit("/fyllut/cypress101?sub=paper");
     cy.wait("@getCypress101");
   });
