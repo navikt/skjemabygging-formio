@@ -8,6 +8,7 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "start": "cross-env-shell NODE_ENV=development vite",
+    "start:github": "NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check-types": "tsc",

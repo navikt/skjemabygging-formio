@@ -23,7 +23,7 @@ jobs:
         with:
           install: false
           working-directory: ./packages/fyllut
-          start: yarn --cwd ./server start, yarn start
+          start: yarn --cwd ./server start:github, yarn start:github
           wait-on: 'http://127.0.0.1:3001, http://127.0.0.1:8081/fyllut/internal/isready'
           wait-on-timeout: 120
 
@@ -44,6 +44,6 @@ jobs:
         with:
           install: false
           working-directory: ./packages/bygger
-          start: yarn --cwd ./server start, yarn start
+          start: yarn --cwd ./server start:github, yarn start:github
           wait-on: 'http://127.0.0.1:3000, http://127.0.0.1:8080/internal/isready'
           wait-on-timeout: 120
