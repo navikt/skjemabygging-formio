@@ -44,6 +44,7 @@
     "prettier-plugin-organize-imports": "^3.2.3",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6",
+    "vite": "^4.4.8",
     "vitest": "^0.34.1"
   },
   "engines": {
