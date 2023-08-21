@@ -2,13 +2,20 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import jose from "node-jose";
 
-const HOST_REGEX = /(https?:\/\/.*nav.no).*/;
-const PATH_REGEX = /https?:\/\/.*nav.no(\/.*)/;
-
 const keystore = jose.JWK.createKeyStore();
 
-const extractHost = (url: string): string => HOST_REGEX.exec(url)?.[1]!;
-const extractPath = (url: string): string => PATH_REGEX.exec(url)?.[1]!;
+const getPosition = (string, subString, index) => {
+  return string.split(subString, index).join(subString).length;
+};
+
+const extractHost = (url: string): string => {
+  // Returns substring before third occurrence of slash
+  return url.substring(0, getPosition(url, "/", 3));
+};
+const extractPath = (url: string): string => {
+  // Returns substring after and including third occurrence of slash
+  return url.substring(getPosition(url, "/", 3));
+};
 
 function mockResponse(): Response {
   return {
