@@ -7,6 +7,7 @@ import form from "../../../example_data/Form.json";
 import featureToggles from "../../../test/featureToggles";
 import mockMottaksadresser from "../../fakeBackend/mock-mottaksadresser";
 import { CreationFormMetadataEditor, FormMetadataEditor } from "./FormMetadataEditor";
+import { UpdateFormFunction } from "./utils";
 
 const testform = form as unknown as NavFormType;
 

@@ -1,5 +1,6 @@
 import { logger } from "../logger";
 import { containsIgnoredString, logFormNotFound } from "./formError";
+import { Mock } from "vitest";
 
 vi.mock("../logger", () => ({
   logger: {
@@ -27,7 +28,7 @@ describe("containsIgnoredString", () => {
 
 describe("logFormNotFound", () => {
   beforeEach(() => {
-    (logger.error as vi.Mock).mockClear();
+    (logger.error as Mock).mockClear();
   });
 
   it("calls logger.error when path doesn't contain ignored string", () => {
