@@ -25,7 +25,7 @@ _(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/fr
 | ------------------ | ------------------------------------------------------------------------------------- |
 | yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
 | yarn watch         | transpilerer felleskoden når den endres                                               |
-| yarn start         | starter både bygger og fyllut, inkludert backend                                      |
+| yarn start         | starter både bygger og fyllut, inkludert backend (husk yarn:watch om nødvendig)       |
 | yarn start:bygger  | starter bygger, inkludert backend                                                     |
 | yarn start:fyllut  | starter fyllut, inkludert backend                                                     |
 | yarn build         | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
@@ -35,6 +35,8 @@ _(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/fr
 | yarn check-types   | sjekker at typene er korrekte                                                         |
 | yarn clean         | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
 | yarn lint          | se etter problemer i koden                                                            |
+
+> Husk å kjøre `yarn:watch` hvis du gjør endringer i `shared-components` eller `shared-domain`
 
 ## Lokal konfigurasjon med dotenv
 
@@ -132,7 +134,7 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/), bortsett fra under
 utvikling på lokal maskin, hvor utviklerene logger inn
-med [Formio-brukere](https://help.form.io/userguide/user-authentication).
+med [Formio-brukere](https://help.form.io/userguide/user-authentication). Se [oppretting av bruker](#opprette-formio-bruker-for-lokal-utvikling).
 
 I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
 "Skjemabygging", og kan søkes fram på Microsofts
@@ -142,6 +144,11 @@ _Eierene_ av gruppene kan legge til nye medlemmer.
 En oversikt over gruppenes id'er vil dessuten ligge i koden for bygger backend såfremt de faktisk er i bruk:
 
 -   [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger/server/src/middleware/azureAd.ts)
+
+### Opprette Formio-bruker for lokal utvikling
+
+-   Logg inn på https://formio-api.intern.dev.nav.no med brukernavn og passord fra Google Secrets
+-   Velg `Nav Skjemabase` -> `User` -> `Use` og skriv inn ønsket brukernavn/passord
 
 ### Fyllut
 

@@ -59,6 +59,21 @@ function formatValue(component, value, translate) {
     }
     case "currency":
       return Number(value).toLocaleString("no", { style: "currency", currency: component.currency || "nok" });
+    case "bankAccount":
+      const bankAccountRegex = /^(\d{4})(\d{2})(\d{5})$/;
+      const [bankAccountMatch, ...bankAccountGroups] =
+        (typeof value === "string" && value?.match(bankAccountRegex)) || [];
+      if (bankAccountMatch) {
+        return bankAccountGroups.join(" ");
+      }
+      return value;
+    case "orgNr":
+      const orgNrRegex = /^(\d{3})(\d{3})(\d{3})$/;
+      const [orgNrMatch, ...orgNrGroups] = (typeof value === "string" && value?.match(orgNrRegex)) || [];
+      if (orgNrMatch) {
+        return orgNrGroups.join(" ");
+      }
+      return value;
     case "number":
       const prefix = component.prefix ? `${component.prefix} ` : "";
       const suffix = component.suffix ? ` ${component.suffix}` : "";

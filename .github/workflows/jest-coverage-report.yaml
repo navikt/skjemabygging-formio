@@ -1,22 +1,24 @@
-name: 'Test coverage'
+name: "Test coverage"
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   test-coverage:
+    permissions:
+      contents: "read"
+      packages: read
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.16.1'
+          node-version: "18.16.1"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: "Bootstrap"
         run: yarn bootstrap
       - name: "Test with coverage report"
         run: yarn test:coverage
-

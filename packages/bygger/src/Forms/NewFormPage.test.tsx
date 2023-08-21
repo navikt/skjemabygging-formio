@@ -1,4 +1,5 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -18,10 +19,11 @@ const mockTemaKoder = { ABC: "Tema 1", XYZ: "Tema 3", DEF: "Tema 2" };
 describe("NewFormPage", () => {
   beforeEach(() => {
     fetchMock.mockImplementation((url) => {
-      if (url.endsWith("/mottaksadresse/submission")) {
+      const stringUrl = url as string;
+      if (stringUrl.endsWith("/mottaksadresse/submission")) {
         return Promise.resolve(new Response(JSON.stringify(mockMottaksadresser), RESPONSE_HEADERS));
       }
-      if (url.endsWith("/temakoder")) {
+      if (stringUrl.endsWith("/temakoder")) {
         return Promise.resolve(new Response(JSON.stringify(mockTemaKoder), RESPONSE_HEADERS));
       }
       throw new Error(`Manglende testoppsett: Ukjent url ${url}`);
@@ -29,11 +31,10 @@ describe("NewFormPage", () => {
   });
   it("should create a new form with correct path, title and name", async () => {
     const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
-    const onLogout = vi.fn();
     render(
       <MemoryRouter>
         <AppConfigProvider featureToggles={featureToggles}>
-          <NewFormPage formio={{ saveForm }} onLogout={onLogout} />
+          <NewFormPage formio={{ saveForm }} />
         </AppConfigProvider>
       </MemoryRouter>,
     );
@@ -42,11 +43,11 @@ describe("NewFormPage", () => {
     await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
     await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
     await userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    await userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
     await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
-    const savedForm = saveForm.mock.calls[0][0];
+    // @ts-ignore
+    const savedForm = saveForm.mock.calls[0][0] as NavFormType;
     expect(savedForm).toMatchObject({
       type: "form",
       path: "nav102030",
@@ -57,20 +58,17 @@ describe("NewFormPage", () => {
       properties: {
         skjemanummer: "NAV 10-20.30",
         tema: "ABC",
-        innsending: "PAPIR_OG_DIGITAL",
-        ettersending: "KUN_DIGITAL",
       },
     });
   });
   it("should handle exception from saveForm, with message to user", async () => {
     const saveForm = vi.fn(() => Promise.reject(new Error("Form.io feil")));
-    const onLogout = vi.fn();
     console.error = vi.fn();
     render(
       <FeedbackProvider>
         <MemoryRouter>
           <AppConfigProvider featureToggles={featureToggles}>
-            <NewFormPage formio={{ saveForm }} onLogout={onLogout} />
+            <NewFormPage formio={{ saveForm }} />
           </AppConfigProvider>
         </MemoryRouter>
       </FeedbackProvider>,
@@ -80,7 +78,6 @@ describe("NewFormPage", () => {
     await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
     await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
     await userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    await userEvent.selectOptions(screen.getByLabelText("Ettersending"), "KUN_DIGITAL");
     await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);

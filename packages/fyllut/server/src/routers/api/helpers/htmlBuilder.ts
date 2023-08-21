@@ -21,7 +21,7 @@ const createHtmlFromSubmission = (
   submission: Submission,
   submissionMethod: string,
   translate: (text: string) => string,
-  lang: string = "nb"
+  lang: string = "nb",
 ) => {
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
   const confirmation = createConfirmationSection(form, translate);
@@ -131,14 +131,14 @@ ${component.value.map((val) => `<div class="svar">: ${val}</div>`).join("")}`;
 
 const signature = ({ label, description, key }: NewFormSignatureType, translate: TranslateFunction) => `
 <h3>${translate(label)}</h3>
-<div class="underskrift">${translate(description)}</div>
+<div class="underskrift">${description ? translate(description) : ""}</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.placeAndDate)} _________________________________________</div>
 <div class="underskrift">${translate(TEXTS.pdfStatiske.signature)} _________________________________________</div>`;
 
 const signatureSection = (
   formProperties: FormPropertiesType,
   submissionMethod: string,
-  translate: TranslateFunction
+  translate: TranslateFunction,
 ) => {
   if (submissionMethod === "digital") {
     return "";

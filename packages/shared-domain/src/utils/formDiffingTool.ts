@@ -70,12 +70,12 @@ const toSignaturesDiff = (arrayDiff: any): SignaturesDiff | undefined => {
   return diff;
 };
 
-type NavFormSettingsDiff = {
+export type NavFormSettingsDiff = {
   [key in keyof FormPropertiesType]?: object;
 } & { errorMessage?: string; title?: string };
 const generateNavFormSettingsDiff = (
   originalForm: NavFormType | undefined,
-  navForm: NavFormType
+  navForm: NavFormType,
 ): NavFormSettingsDiff => {
   try {
     if (!originalForm) {
@@ -150,7 +150,7 @@ const createDiffSummary = (changes: any) => {
       diffSummary.deletedComponents.push(...components.value);
     } else {
       diffSummary.deletedComponents.push(
-        ...components.filter((c: any) => c.status === "Slettet").map((c: any) => c.originalValue)
+        ...components.filter((c: any) => c.status === "Slettet").map((c: any) => c.originalValue),
       );
     }
   }
@@ -164,7 +164,7 @@ const generateFormDiff = (
   originalElement: any,
   newElement: any,
   allowNesting: boolean = false,
-  originalIndex?: number
+  originalIndex?: number,
 ): object | undefined => {
   if (JSON.stringify(originalElement) !== JSON.stringify(newElement) || !isNullOrUndefined(originalIndex)) {
     if (isArray(originalElement) || isArray(newElement)) {
@@ -242,7 +242,7 @@ const generateObjectDiff = (originalObject: any, newObject: any, originalIndex?:
 
       return acc;
     },
-    isNullOrUndefined(originalIndex) ? {} : { originalIndex, status: DiffStatus.CHANGED }
+    isNullOrUndefined(originalIndex) ? {} : { originalIndex, status: DiffStatus.CHANGED },
   );
 };
 
@@ -281,7 +281,7 @@ const generateArrayDiff = (originalArray: Array<any>, newArray: Array<any>, allo
           originalArray[originalIndex],
           value,
           allowNesting,
-          newIndex !== originalIndex ? originalIndex : undefined
+          newIndex !== originalIndex ? originalIndex : undefined,
         );
       }
     });

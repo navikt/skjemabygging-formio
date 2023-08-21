@@ -19,6 +19,8 @@ const organisasjonPalett = {
         truncateMultipleSpaces: false,
         requireDecimal: false,
         maxLength: 9,
+        displayMask: "999 999 999",
+        inputMaskPlaceholderChar: " ", // U+00a0 -space
         validate: {
           required: true,
           custom: "valid = instance.validateOrganizationNumber(input)",

@@ -9,6 +9,7 @@ import { formService } from "./services";
 import { QueryParamSub } from "./types/custom";
 import { ErrorWithCause } from "./utils/errors";
 import { excludeQueryParam } from "./utils/express";
+import { logFormNotFound } from "./utils/formError";
 import { getDefaultPageMeta, getFormMeta } from "./utils/page";
 
 const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +23,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
           query: {
             ...excludeQueryParam("form", req.query),
           },
-        })
+        }),
       );
     }
 
@@ -46,7 +47,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 url.format({
                   pathname: targetUrl,
                   query: req.query as ParsedUrlQueryInput,
-                })
+                }),
               );
             }
           } else if (innsending === "KUN_DIGITAL") {
@@ -58,7 +59,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                   ...(req.query as ParsedUrlQueryInput),
                   sub: "digital",
                 },
-              })
+              }),
             );
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
@@ -73,14 +74,14 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 query: {
                   ...excludeQueryParam("sub", req.query),
                 },
-              })
+              }),
             );
           }
         }
 
         pageMeta = getFormMeta(form);
       } else {
-        logger.error("Form not found", { formPath });
+        logFormNotFound(formPath);
       }
     }
 

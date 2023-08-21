@@ -4,53 +4,31 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         required: true
-        default: 'preprod'
+        default: "preprod"
         type: choice
         options:
           - preprod
           - preprod-alt
 env:
-  BYGGER_IMAGE: "ghcr.io/${{ github.repository }}/bygger-dev:${{ github.sha }}"
-  FYLLUT_IMAGE: "ghcr.io/${{ github.repository }}/fyllut-base-dev:${{ github.sha }}"
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  init:
-    name: "Initialization"
-    runs-on: ubuntu-latest
-    outputs:
-      byggerImageExists: ${{ steps.bygger-image.outputs.exists }}
-      fyllutImageExists: ${{ steps.fyllut-image.outputs.exists }}
-    steps:
-      - name: Check if bygger-dev image exists
-        id: bygger-image
-        run: |
-          byggerImageExists=$(gh api -H "Accept: application/vnd.github+json" /orgs/navikt/packages/container/skjemabygging-formio%2Fbygger-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
-          echo "exists=$(echo $byggerImageExists)" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Check if fyllut-base-dev image exists
-        id: fyllut-image
-        run: |
-          fyllutImageExists=$(gh api -H "Accept: application/vnd.github+json" /orgs/navikt/packages/container/skjemabygging-formio%2Ffyllut-base-dev/versions | jq 'any(.metadata.container.tags[] == "${{ github.sha }}")')
-          echo "exists=$(echo $fyllutImageExists)" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   package-and-push-bygger:
     name: "Package bygger"
     runs-on: ubuntu-latest-8-cores
-    needs: [init]
-    if: ${{ needs.init.outputs.byggerImageExists == 'false' }}
+    permissions:
+      contents: "read"
+      id-token: "write"
+      packages: "read"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.16.1'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          node-version: "18.16.1"
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: "Build application: Bygger"
@@ -58,17 +36,22 @@ jobs:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
         run: bin/build-application.sh bygger
-      - name: Login to GitHub Package Repository
-        uses: docker/login-action@v2
+
+      - name: "Build and push Docker image for bygger"
+        uses: nais/docker-build-push@v0
+        id: docker-build-push-bygger
         with:
-          registry: ghcr.io
-          username: ${{ github.repository }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Build and publish Docker image"
-        working-directory: ./packages/bygger
-        run: |
-          docker build --pull --tag ${BYGGER_IMAGE} --build-arg git_sha=${{ github.sha }} .
-          docker push ${BYGGER_IMAGE}
+          team: skjemadigitalisering
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          image_suffix: bygger-${{ inputs.environment }}
+          build_args: |
+            git_sha=${{ github.sha }}
+          dockerfile: ./packages/bygger/Dockerfile
+          docker_context: ./packages/bygger
+
+    outputs:
+      image: ${{ steps.docker-build-push-bygger.outputs.image }}
 
   deploy-bygger-to-preprod:
     name: "Deploy bygger to preprod"
@@ -77,27 +60,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
-      - run: echo "IMAGE=$BYGGER_IMAGE" >> $GITHUB_ENV
       - name: "Deploy to preprod"
+        uses: "nais/deploy/actions/deploy@v1"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           CLUSTER: "dev-gcp"
           RESOURCE: "./packages/bygger/.nais/nais.yaml"
           VARS: "./packages/bygger/.nais/${{ github.event.inputs.environment }}.yaml"
-        uses: "nais/deploy/actions/deploy@v1"
+          VAR: image=${{ needs.package-and-push-bygger.outputs.image }}
 
   package-and-push-fyllut:
-    needs: [init]
-    if: ${{ needs.init.outputs.fyllutImageExists == 'false' }}
     name: "Package fyllut"
     runs-on: ubuntu-latest-8-cores
+    permissions:
+      contents: "read"
+      id-token: "write"
+      packages: "read"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.16.1'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          node-version: "18.16.1"
+          cache: "yarn"
+          cache-dependency-path: "**/yarn.lock"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: "Build application: Fyllut"
@@ -105,17 +90,22 @@ jobs:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
         run: bin/build-application.sh fyllut
-      - name: Login to GitHub Package Repository
-        uses: docker/login-action@v2
+
+      - name: "Build and push Docker image for fyllut"
+        uses: nais/docker-build-push@v0
+        id: docker-build-push-fyllut
         with:
-          registry: ghcr.io
-          username: ${{ github.repository }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Build and push Docker image: fyllut-base-dev"
-        working-directory: ./packages/fyllut
-        run: |
-          docker build --pull -t ${FYLLUT_IMAGE} -f Dockerfile-base --build-arg git_sha=${{ github.sha }} .
-          docker push ${FYLLUT_IMAGE}
+          team: skjemadigitalisering
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          image_suffix: fyllut-${{ inputs.environment }}
+          dockerfile: ./packages/fyllut/Dockerfile-base
+          docker_context: ./packages/fyllut
+          build_args: |
+            git_sha=${{ github.sha }}
+          pull: true
+    outputs:
+      image: ${{ steps.docker-build-push-fyllut.outputs.image }}
 
   deploy-fyllut-to-preprod:
     name: "Deploy fyllut to preprod"
@@ -124,11 +114,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v3"
-      - run: echo "IMAGE=$FYLLUT_IMAGE" >> $GITHUB_ENV
       - name: "Deploy to preprod"
+        uses: "nais/deploy/actions/deploy@v1"
         env:
           APIKEY: "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           CLUSTER: "dev-gcp"
           RESOURCE: "./packages/fyllut/.nais/config.yaml"
           VARS: "./packages/fyllut/.nais/${{ github.event.inputs.environment }}.yaml"
-        uses: "nais/deploy/actions/deploy@v1"
+          VAR: image=${{ needs.package-and-push-fyllut.outputs.image }}

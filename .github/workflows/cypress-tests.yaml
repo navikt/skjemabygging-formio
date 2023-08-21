@@ -1,19 +1,21 @@
 name: Cypress Tests
 
-on:
-  push
+on: push
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   cypress-run-fyllut:
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      packages: read
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.16.1'
+          node-version: "18.16.1"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: "Bootstrap"
@@ -24,17 +26,21 @@ jobs:
           install: false
           working-directory: ./packages/fyllut
           start: yarn --cwd ./server start, yarn start
-          wait-on: 'http://127.0.0.1:3001, http://127.0.0.1:8081/fyllut/internal/isready'
+          wait-on: "http://127.0.0.1:3001, http://127.0.0.1:8081/fyllut/internal/isready"
           wait-on-timeout: 120
+          config: video=false
 
   cypress-run-bygger:
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      packages: read
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.16.1'
+          node-version: "18.16.1"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: "Bootstrap"
@@ -45,5 +51,7 @@ jobs:
           install: false
           working-directory: ./packages/bygger
           start: yarn --cwd ./server start, yarn start
-          wait-on: 'http://127.0.0.1:3000, http://127.0.0.1:8080/internal/isready'
+          wait-on: "http://127.0.0.1:3000, http://127.0.0.1:8080/internal/isready"
           wait-on-timeout: 120
+          config: video=false
+          config-file: cypress.config.ts
