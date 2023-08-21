@@ -1,9 +1,9 @@
 import { logger } from "../logger";
 import { containsIgnoredString, logFormNotFound } from "./formError";
 
-jest.mock("../logger", () => ({
+vi.mock("../logger", () => ({
   logger: {
-    error: jest.fn(),
+    error: vi.fn(),
   },
 }));
 
@@ -27,7 +27,7 @@ describe("containsIgnoredString", () => {
 
 describe("logFormNotFound", () => {
   beforeEach(() => {
-    (logger.error as jest.Mock).mockClear();
+    (logger.error as vi.Mock).mockClear();
   });
 
   it("calls logger.error when path doesn't contain ignored string", () => {
