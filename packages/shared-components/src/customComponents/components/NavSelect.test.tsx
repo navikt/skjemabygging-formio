@@ -148,9 +148,9 @@ describe("NavSelect", () => {
     const dropdownEnglish = (await screen.findByLabelText(/Choose fruit.*/)) as HTMLInputElement;
     expect(dropdownEnglish).toBeInTheDocument();
 
-    userEvent.click(dropdownEnglish);
+    await userEvent.click(dropdownEnglish);
     const optionApple = await screen.findByText("Apple");
-    userEvent.click(optionApple);
+    await userEvent.click(optionApple);
 
     await waitFor(() => {
       const valgtFrukt = screen.getByText("Apple");

@@ -434,7 +434,7 @@ describe("FormMetadataEditor", () => {
         form = formMedProps({});
       });
 
-      it("Legger til signatur", () => {
+      it("Legger til signatur", async () => {
         render(<FormMetadataEditor form={form} onChange={mockOnChange} />);
 
         const signaturFieldsets = screen.getAllByTestId("signatures");
@@ -556,7 +556,7 @@ describe("FormMetadataEditor", () => {
       it("oppdaterer skjema når bruker velger et nytt tema", async () => {
         const form: NavFormType = formMedProps({ tema: "ABC" });
         render(<CreationFormMetadataEditor form={form} onChange={mockOnChange} />);
-        userEvent.selectOptions(screen.getByRole("combobox", { name: "Tema" }), "XYZ");
+        await userEvent.selectOptions(screen.getByRole("combobox", { name: "Tema" }), "XYZ");
 
         expect(mockOnChange).toHaveBeenCalledTimes(1);
         const updatedForm = mockOnChange.mock.calls[0][0] as NavFormType;
