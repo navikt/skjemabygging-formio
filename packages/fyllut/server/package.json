@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@elastic/ecs-morgan-format": "^1.1.0",
-    "@navikt/nav-dekoratoren-moduler": "^2.1.1",
+    "@navikt/nav-dekoratoren-moduler": "^1.9.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -26,7 +26,6 @@
     "express-correlation-id": "^2.0.1",
     "express-rate-limit": "^6.8.1",
     "formiojs": "4.14.6",
-    "glob": "^10.3.3",
     "i18n-iso-countries": "^7.6.0",
     "jose": "^4.14.4",
     "jsonwebtoken": "^9.0.1",
