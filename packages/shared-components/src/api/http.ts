@@ -25,7 +25,6 @@ class HttpError extends Error {
   constructor(message, status) {
     super(message);
     this.status = status;
-    console.log(this.status);
   }
 }
 

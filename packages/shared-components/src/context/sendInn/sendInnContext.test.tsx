@@ -1,6 +1,7 @@
 import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { AppConfigProvider } from "../../configContext";
 import { http } from "../../index";
 import { SendInnProvider, useSendInn } from "./sendInnContext";
@@ -47,9 +48,11 @@ describe("sendInnContext", () => {
           baseUrl={"http://test.example.no"}
           config={{ isTest: true }}
         >
-          <SendInnProvider form={form} translations={translations}>
-            <TestComponent submission={submission} />
-          </SendInnProvider>
+          <MemoryRouter>
+            <SendInnProvider form={form} translations={translations}>
+              <TestComponent submission={submission} />
+            </SendInnProvider>
+          </MemoryRouter>
         </AppConfigProvider>
       );
     });
@@ -124,9 +127,11 @@ describe("sendInnContext", () => {
           baseUrl={"http://test.example.no"}
           config={{ isTest: true }}
         >
-          <SendInnProvider form={form} translations={translations}>
-            <TestComponent submission={submission} />
-          </SendInnProvider>
+          <MemoryRouter>
+            <SendInnProvider form={form} translations={translations}>
+              <TestComponent submission={submission} />
+            </SendInnProvider>
+          </MemoryRouter>
         </AppConfigProvider>
       );
     });
