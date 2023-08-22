@@ -25,7 +25,6 @@
     "express": "^4.18.2",
     "express-correlation-id": "^2.0.1",
     "express-rate-limit": "^6.8.1",
-    "formiojs": "4.14.6",
     "i18n-iso-countries": "^7.6.0",
     "jose": "^4.14.4",
     "jsonwebtoken": "^9.0.1",
