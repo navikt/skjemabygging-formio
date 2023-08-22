@@ -1,5 +1,5 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import FormioUtils from "formiojs/utils";
+import FormioUtils from "formiojs/utils/utils";
 import UtilsOverrides from "../../formio-overrides/utils-overrides";
 
 interface Attachment {
