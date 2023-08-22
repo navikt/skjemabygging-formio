@@ -7,8 +7,8 @@ import {
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { useLanguages } from "../../context/languages";
 import { useAppConfig } from "../../index";
+import { PanelValidation } from "../../util/panelValidation";
 import ComponentSummary from "./ComponentSummary";
-import { PanelValidation } from "./SummaryPage";
 
 interface Props {
   form: NavFormType;

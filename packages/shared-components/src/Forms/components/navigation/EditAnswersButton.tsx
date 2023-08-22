@@ -1,8 +1,8 @@
-import { Component, formSummaryUtil, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Link, useLocation } from "react-router-dom";
 import { useAmplitude } from "../../../context/amplitude";
 import { useLanguages } from "../../../context/languages";
-import { PanelValidation } from "../../summary/SummaryPage";
+import { PanelValidation, findFormStartingPoint } from "../../../util/panelValidation";
 
 interface Props {
   form: NavFormType;
@@ -10,45 +10,12 @@ interface Props {
   panelValidationList: PanelValidation[] | undefined;
 }
 
-const getPathToFirstErrorOrPanelWithoutSubmission = (
-  form: NavFormType,
-  formUrl: string,
-  panelValidations?: PanelValidation[]
-): { pathname: string; hash?: string } => {
-  if (!panelValidations || panelValidations.length === 0) {
-    return { pathname: `${formUrl}/${form.components[0].key}` };
-  }
-  let indexOfFirstPanelWithEmptySubmission;
-  let indexOfFirstPanelWithError;
-
-  panelValidations.forEach((validation, index) => {
-    if (validation.hasValidationErrors && indexOfFirstPanelWithError === undefined) {
-      indexOfFirstPanelWithError = index;
-    }
-    if (validation.summaryComponents?.length === 0 && indexOfFirstPanelWithEmptySubmission === undefined) {
-      indexOfFirstPanelWithEmptySubmission = index;
-    }
-  });
-
-  if (indexOfFirstPanelWithError < indexOfFirstPanelWithEmptySubmission) {
-    const hash = panelValidations[indexOfFirstPanelWithError].firstInputWithValidationError;
-    return { pathname: `${formUrl}/${panelValidations[indexOfFirstPanelWithError].key}`, hash };
-  }
-
-  const panel = panelValidations[indexOfFirstPanelWithEmptySubmission].key;
-  const firstInputInPanel: Component | undefined = formSummaryUtil.findFirstInput(
-    form.components?.[indexOfFirstPanelWithEmptySubmission]
-  );
-  const hash = firstInputInPanel?.key ?? "";
-  return { pathname: `${formUrl}/${panel}`, hash };
-};
-
 const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const { loggNavigering } = useAmplitude();
   const { search } = useLocation();
   const { translate } = useLanguages();
 
-  const pathAndHashForNavigation = getPathToFirstErrorOrPanelWithoutSubmission(form, formUrl, panelValidationList);
+  const formStartingPoint = findFormStartingPoint(form, panelValidationList);
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
@@ -57,10 +24,14 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-          destinasjon: pathAndHashForNavigation.pathname,
+          destinasjon: `${formUrl}/${formStartingPoint.panel}`,
         })
       }
-      to={{ ...pathAndHashForNavigation, search }}
+      to={
+        formStartingPoint.component
+          ? { pathname: formStartingPoint.panel, hash: formStartingPoint.component, search }
+          : { pathname: formStartingPoint.panel, search }
+      }
     >
       <span aria-live="polite" className="navds-body-short font-bold">
         {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}

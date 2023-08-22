@@ -1,11 +1,11 @@
 import { Summary } from "@navikt/skjemadigitalisering-shared-domain";
+import { PanelValidation } from "../../util/panelValidation";
 import DataGridSummary from "./DataGridSummary";
 import FieldsetSummary from "./FieldsetSummary";
 import ImageSummary from "./ImageSummary";
 import PanelSummary from "./PanelSummary";
 import SelectBoxesSummary from "./SelectBoxesSummary";
 import SummaryField from "./SummaryField";
-import { PanelValidation } from "./SummaryPage";
 
 interface Props {
   components: Summary.Component[];

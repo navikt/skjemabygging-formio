@@ -456,26 +456,10 @@ const findFirstInput = (component) => {
   return undefined;
 };
 
-const findFirstInputWithValidationError = (wizardComponent, data) => {
-  const valid = wizardComponent.checkValidity(data);
-  if (!valid && wizardComponent.component.input) {
-    return wizardComponent.component;
-  }
-
-  for (const subComponent of wizardComponent?.components ?? []) {
-    const firstInputWithError = findFirstInputWithValidationError(subComponent, data);
-    if (!!firstInputWithError) {
-      return firstInputWithError;
-    }
-  }
-  return undefined;
-};
-
 export default {
   createFormSummaryObject,
   createFormSummaryPanels,
   handleComponent,
   mapAndEvaluateConditionals,
   findFirstInput,
-  findFirstInputWithValidationError,
 };

@@ -7,12 +7,12 @@ import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { getPanels } from "../../util/form";
+import { PanelValidation } from "../../util/panelValidation";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
 import { hasRelevantAttachments } from "../components/attachmentsUtil";
 import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
-import { PanelValidation } from "./SummaryPage";
 
 export interface Props {
   form: NavFormType;

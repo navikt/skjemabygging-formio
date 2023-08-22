@@ -1,13 +1,6 @@
 import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, ConfirmationPanel, Heading } from "@navikt/ds-react";
-import {
-  Component,
-  DeclarationType,
-  NavFormType,
-  Submission,
-  TEXTS,
-  formSummaryUtil,
-} from "@navikt/skjemadigitalisering-shared-domain";
+import { DeclarationType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { Form as FormioForm } from "formiojs";
 import { useEffect, useRef, useState } from "react";
 import NavForm from "../../components/NavForm";
@@ -17,6 +10,7 @@ import Styles from "../../styles";
 import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../../util/focus-management";
 import makeStyles from "../../util/jss";
+import { PanelValidation, validateWizardPanels } from "../../util/panelValidation";
 import FormStepper from "../components/FormStepper";
 import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import FormSummary from "./FormSummary";
@@ -56,12 +50,6 @@ const useStyles = makeStyles({
   },
 });
 
-export type PanelValidation = {
-  key: string;
-  summaryComponents?: string[];
-  hasValidationErrors: boolean;
-  firstInputWithValidationError?: string;
-};
 export interface Props {
   form: NavFormType;
   submission?: Submission;
@@ -101,31 +89,14 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       // find a way to re-render/re-calculate when formio instance changes due to
       await delay(150);
 
-      const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, translate, false);
-      const panelValidations = instance.components
-        .filter(
-          (wizardComponent) =>
-            wizardComponent.component.type === "panel" && !wizardComponent.component.isAttachmentPanel
-        )
-        .map((panel): PanelValidation => {
-          const firstInputWithValidationError: Component | undefined =
-            formSummaryUtil.findFirstInputWithValidationError(panel, submission?.data ?? {});
-          return {
-            key: panel.key as string,
-            hasValidationErrors: firstInputWithValidationError !== undefined,
-            firstInputWithValidationError: firstInputWithValidationError?.key,
-            summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key)
-              .components,
-          };
-        })
-        .filter((panelValidation) => panelValidation);
+      const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
     if (featureToggles?.enableMellomlagring) {
       initializePanelValidation();
     }
-  }, [featureToggles, form, submission, translate]);
+  }, [featureToggles, form, submission]);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);
