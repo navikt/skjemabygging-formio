@@ -19,6 +19,7 @@ import sendInn from "./send-inn";
 import sendInnSoknad from "./send-inn-soknad";
 import sendInnUtfyltSoknad from "./send-inn-utfylt-soknad";
 import translations from "./translations.js";
+import tryCatch from "../../middleware/tryCatch";
 
 const apiRouter = express.Router();
 
@@ -29,12 +30,12 @@ apiRouter.all("*", idportenAuthHandler);
 apiRouter.get("/config", config.get);
 apiRouter.get("/countries", countries.get);
 apiRouter.get("/enhetsliste", azureSkjemabyggingProxy, enhetsliste.get);
-apiRouter.get("/forms", forms.get);
-apiRouter.get("/forms/:formPath", form.get);
+apiRouter.get("/forms", tryCatch(forms.get));
+apiRouter.get("/forms/:formPath", tryCatch(form.get));
 apiRouter.post("/foersteside", azureSkjemabyggingProxy, forsteside.post);
-apiRouter.get("/global-translations/:languageCode", globalTranslations.get);
-apiRouter.get("/translations/:form", translations.get);
-apiRouter.get("/mottaksadresser", mottaksadresser.get);
+apiRouter.get("/global-translations/:languageCode", tryCatch(globalTranslations.get));
+apiRouter.get("/translations/:form", tryCatch(translations.get));
+apiRouter.get("/mottaksadresser", tryCatch(mottaksadresser.get));
 // endpoint /send-inn is deprecated and will be replaced by /send-inn/soknad and /send-inn/utfyltsoknad when mellomlagring is turned on
 apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
 apiRouter.post("/send-inn/soknad", tokenxSendInn, sendInnSoknad.post);
