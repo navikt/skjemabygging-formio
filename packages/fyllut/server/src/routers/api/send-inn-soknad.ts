@@ -67,13 +67,13 @@ const sendInnSoknad = {
       const idportenPid = getIdportenPid(req);
       const tokenxAccessToken = getTokenxAccessToken(req);
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
-
+      const forceCreateParam = !!req.query?.opprettNySoknad ? "?opprettNySoknad=true" : "";
       if (!isMellomLagringEnabled(featureToggles)) {
         res.json(body);
         return;
       }
 
-      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}?opprettNySoknad=true`, {
+      const sendInnResponse = await fetch(`${sendInnConfig.host}${sendInnConfig.paths.soknad}${forceCreateParam}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

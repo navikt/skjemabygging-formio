@@ -65,7 +65,7 @@ describe("sendInnContext", () => {
         await screen.findByTestId("innsendings-id");
         expect(mockHttp.post).toHaveBeenCalledTimes(1);
         expect(mockHttp.post).toHaveBeenCalledWith(
-          "http://test.example.no/api/send-inn/soknad",
+          "http://test.example.no/api/send-inn/soknad?opprettNySoknad=true",
           expect.objectContaining({
             form,
             submission,

@@ -26,7 +26,7 @@ export const createSoknad = async (
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   return http?.post<SendInnSoknadResponse>(
-    `${baseUrl}/api/send-inn/soknad`,
+    `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`,
     {
       form,
       submission,

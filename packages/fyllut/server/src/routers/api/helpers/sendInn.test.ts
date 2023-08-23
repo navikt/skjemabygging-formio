@@ -132,7 +132,6 @@ describe("sendInn API helper", () => {
       });
 
       it("creates hovedDokumentVariant with vedleggsnr, tittel and document", () => {
-        console.log("hoveddokumentVariant", body.hoveddokumentVariant.document);
         expect(body.hoveddokumentVariant).toEqual(
           expect.objectContaining({
             vedleggsnr: defaultFormProperties.skjemanummer,
