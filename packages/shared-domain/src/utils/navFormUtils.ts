@@ -1,5 +1,5 @@
 // @ts-ignore
-import FormioUtils from "formiojs/utils/utils";
+import FormioUtils from "formiojs/utils";
 import { Component, NavFormType } from "../form";
 import { camelCase } from "./stringUtils";
 
@@ -174,7 +174,7 @@ export const isSubmissionMethodAllowed = (submissionMethod: string, form: NavFor
 
 export const enrichComponentsWithNavIds = (
   components: Component[] | undefined,
-  navIdGenerator: () => string = FormioUtils.getRandomComponentId,
+  navIdGenerator: () => string = FormioUtils.getRandomComponentId
 ): Component[] | undefined => {
   if (components) {
     return components.map((component) => {

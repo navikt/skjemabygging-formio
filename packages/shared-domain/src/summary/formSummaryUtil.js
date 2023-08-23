@@ -1,4 +1,4 @@
-import FormioUtils from "formiojs/utils/utils";
+import FormioUtils from "formiojs/utils";
 import moment from "moment";
 import "moment/locale/nb";
 import TEXTS from "../texts";
