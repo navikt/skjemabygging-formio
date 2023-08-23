@@ -38,7 +38,7 @@
     "eslint-plugin-vitest": "^0.2.8",
     "eslint-plugin-vitest-globals": "^1.4.0",
     "husky": "^8.0.3",
-    "lerna": "^6.6.2",
+    "lerna": "^4.0.0",
     "lint-staged": "^13.2.3",
     "prettier": "^3.0.0",
     "prettier-plugin-organize-imports": "^3.2.3",
