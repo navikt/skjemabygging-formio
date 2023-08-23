@@ -91,16 +91,21 @@ describe("Amplitude", () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.findByRoleWhenAttached("link", { name: "Forrige steg" }).should("exist").click();
-    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Forrige steg", destinasjon: "/cypress101/personopplysninger" });
+    cy.findByRoleWhenAttached("link", { name: "Fortsett utfylling" }).should("exist").click();
+    cy.checkLogToAmplitude("navigere", {
+      lenkeTekst: "Fortsett utfylling",
+      destinasjon: "/cypress101/veiledning",
+    });
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("not.exist");
+    cy.clickNextStep();
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/personopplysninger" });
     cy.clickNextStep();
     cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/oppsummering" });
 
     // Oppsummering
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
     cy.get("dl")
-      .first()
+      .eq(1)
       .within(() => {
         cy.get("dt").eq(0).should("contain.text", "Tittel");
         cy.get("dd").eq(0).should("contain.text", "Fru");
