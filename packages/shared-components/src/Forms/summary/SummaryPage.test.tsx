@@ -6,7 +6,7 @@ import { Router } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import { Props, SummaryPage } from "./SummaryPage";
-import { formWithProperties, getButtons } from "./test/helpers";
+import { Buttons, formWithProperties, getButtons } from "./test/helpers";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -34,7 +34,7 @@ const renderSummaryPage = async (
   } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}}>
+      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={jest.fn()}>
         <Router history={history}>
           <SummaryPage {...summaryPageProps} />
           <div id="formio-summary-hidden" hidden />

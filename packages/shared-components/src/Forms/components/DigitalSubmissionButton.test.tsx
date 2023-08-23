@@ -35,7 +35,11 @@ describe("DigitalSubmissionButton", () => {
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
         <MemoryRouter>
-          <SendInnProvider form={{ components: [] } as unknown as NavFormType} translations={{}}>
+          <SendInnProvider
+            form={{ components: [] } as unknown as NavFormType}
+            translations={{}}
+            updateSubmission={jest.fn()}
+          >
             <LanguagesProvider translations={defaultTranslations}>
               <DigitalSubmissionButton {...defaultProps} />
             </LanguagesProvider>

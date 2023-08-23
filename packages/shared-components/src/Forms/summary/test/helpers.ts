@@ -14,7 +14,7 @@ export const formWithProperties = (
     },
   } as unknown as NavFormType);
 
-type Buttons = {
+export type Buttons = {
   redigerSvarKnapp: HTMLButtonElement;
   gaVidereKnapp: HTMLButtonElement;
   sendTilNavKnapp: HTMLButtonElement;

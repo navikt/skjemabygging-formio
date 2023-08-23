@@ -1,3 +1,5 @@
+import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+
 const form = {
   _id: "123",
   title: "Inntektsopplysninger for selvstendig næringsdrivende og/eller frilansere som skal ha sykepenger",
@@ -5182,7 +5184,7 @@ const form = {
   project: "628ca77305690db58c974cfd",
   _vid: 0,
   revisions: "",
-};
+} as unknown as NavFormType;
 
 const submission = {
   data: {
@@ -5232,7 +5234,7 @@ const submission = {
     onLine: true,
   },
   state: "submitted",
-};
+} as unknown as Submission;
 
 const data = { form, submission };
 

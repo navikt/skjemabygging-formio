@@ -1,3 +1,4 @@
+import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { getRelevantAttachments, hasOtherDocumentation } from "./attachmentsUtil";
 import {
   borDuINorgeRadiopanel,
@@ -30,16 +31,16 @@ describe("attachmentUtil", () => {
             ],
           },
         ],
-      };
+      } as unknown as NavFormType;
 
       it("return attachment which is relevant", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
       });
 
       it("attachment contains correct data", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
         expect(attachments[0].vedleggsnr).toEqual(vedleggBekreftelseBostedsadresse.properties.vedleggskode);
@@ -48,7 +49,7 @@ describe("attachmentUtil", () => {
       });
 
       it("does not return attachment which is not relevant", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(0);
       });
@@ -70,16 +71,16 @@ describe("attachmentUtil", () => {
             ],
           },
         ],
-      };
+      } as unknown as NavFormType;
 
       it("return attachment which is relevant", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
       });
 
       it("does not return attachment which is not relevant", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(0);
       });
@@ -101,16 +102,16 @@ describe("attachmentUtil", () => {
             ],
           },
         ],
-      };
+      } as unknown as NavFormType;
 
       it("return attachment which is relevant", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "nei" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(1);
       });
 
       it("does not return attachment which is not relevant", () => {
-        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } };
+        const submission = { data: { [borDuINorgeRadiopanel.key]: "ja" } } as Submission;
         const attachments = getRelevantAttachments(form, submission);
         expect(attachments).toHaveLength(0);
       });
@@ -122,7 +123,7 @@ describe("attachmentUtil", () => {
         expect(attachments).toHaveLength(3);
       });
       it("Some attachments are triggered", () => {
-        const submissionCopy = JSON.parse(JSON.stringify(vedleggConditional.submission));
+        const submissionCopy: Submission = JSON.parse(JSON.stringify(vedleggConditional.submission));
         submissionCopy.data.harDuDokumentasjonDuOnskerALeggeVedSoknaden = "ja";
         submissionCopy.data.hvaOnskerDuALeggeVed = {
           personinntektsskjema: false,

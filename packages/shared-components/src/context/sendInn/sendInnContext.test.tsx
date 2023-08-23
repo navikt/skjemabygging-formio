@@ -49,7 +49,7 @@ describe("sendInnContext", () => {
           config={{ isTest: true }}
         >
           <MemoryRouter>
-            <SendInnProvider form={form} translations={translations}>
+            <SendInnProvider form={form} translations={translations} updateSubmission={jest.fn()}>
               <TestComponent submission={submission} />
             </SendInnProvider>
           </MemoryRouter>
@@ -128,7 +128,7 @@ describe("sendInnContext", () => {
           config={{ isTest: true }}
         >
           <MemoryRouter>
-            <SendInnProvider form={form} translations={translations}>
+            <SendInnProvider form={form} translations={translations} updateSubmission={jest.fn()}>
               <TestComponent submission={submission} />
             </SendInnProvider>
           </MemoryRouter>
