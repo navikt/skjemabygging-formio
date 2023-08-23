@@ -129,9 +129,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       try {
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        const response = await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
-        setMellomlagringError(undefined);
-        return response;
+        return updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
       } catch (error: any) {
         setMellomlagringError({
           type: "UPDATE",
@@ -146,9 +144,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
     if (isMellomLagringEnabled && innsendingsId) {
       try {
-        const response = await deleteSoknad(appConfig, innsendingsId);
-        setMellomlagringError(undefined);
-        return response;
+        return await deleteSoknad(appConfig, innsendingsId);
       } catch (error: any) {
         setMellomlagringError({
           type: "DELETE",
@@ -165,16 +161,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     const translation = translationForLanguage(currentLanguage);
     if (isMellomLagringEnabled && innsendingsId) {
       try {
-        const response = await updateUtfyltSoknad(
-          appConfig,
-          form,
-          submission,
-          currentLanguage,
-          translation,
-          innsendingsId
-        );
-        setMellomlagringError(undefined);
-        return response;
+        return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
       } catch (error: any) {
         try {
           await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
