@@ -56,10 +56,6 @@ export interface Props {
   formUrl: string;
 }
 
-function delay(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
 export function SummaryPage({ form, submission, formUrl }: Props) {
   const { submissionMethod, featureToggles } = useAppConfig();
   const { translate } = useLanguages();
@@ -80,14 +76,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
       const instance = await formio.ready;
       await instance.setSubmission(submission ?? { data: {} });
-      await instance.submissionReady;
-      await instance.formReady;
-      await instance.dataReady;
-
-      //TODO: For some reason, formio mutates the components in more than one iteration, but returns before all changes are done,
-      // leaving us with components that are false positively "valid" (e.g. components hidden by conditionals).
-      // find a way to re-render/re-calculate when formio instance changes due to
-      await delay(150);
+      instance.checkData(submission?.data, [], undefined);
 
       const panelValidations = validateWizardPanels(instance, form, submission);
       setPanelValidationList(panelValidations);
