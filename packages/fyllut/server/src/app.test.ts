@@ -53,6 +53,25 @@ describe("app", () => {
       });
     });
 
+    describe("Query param 'innsendingsId'", () => {
+      it("redirects with sub=digital if it was not present", async () => {
+        const res = await request(createApp()).get("/fyllut/testform001?innsendingsId=12345678").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?innsendingsId=12345678&sub=digital");
+      });
+
+      it("redirects and changes sub to 'digital' if it was something else", async () => {
+        const res = await request(createApp()).get("/fyllut/testform001?innsendingsId=12345678&sub=paper").expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?innsendingsId=12345678&sub=digital");
+      });
+
+      it("preserves other query params and moves query param form to the path", async () => {
+        const res = await request(createApp())
+          .get("/fyllut/?form=testform001&innsendingsId=12345678&lang=en")
+          .expect(302);
+        expect(res.get("location")).toEqual("/fyllut/testform001?innsendingsId=12345678&lang=en&sub=digital");
+      });
+    });
+
     describe("Form property 'innsending'", () => {
       describe("innsending KUN_PAPIR", () => {
         it("renders index.html when query param sub is missing", async () => {
