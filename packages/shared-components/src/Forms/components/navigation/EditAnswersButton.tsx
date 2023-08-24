@@ -16,6 +16,7 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
   const { translate } = useLanguages();
 
   const formStartingPoint = findFormStartingPoint(form, panelValidationList);
+  const pathname = `${formUrl}/${formStartingPoint.panel}`;
   const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
 
   return (
@@ -24,14 +25,10 @@ const EditAnswersButton = ({ form, formUrl, panelValidationList }: Props) => {
       onClick={() =>
         loggNavigering({
           lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-          destinasjon: `${formUrl}/${formStartingPoint.panel}`,
+          destinasjon: pathname,
         })
       }
-      to={
-        formStartingPoint.component
-          ? { pathname: formStartingPoint.panel, hash: formStartingPoint.component, search }
-          : { pathname: formStartingPoint.panel, search }
-      }
+      to={formStartingPoint.component ? { pathname, hash: formStartingPoint.component, search } : { pathname, search }}
     >
       <span aria-live="polite" className="navds-body-short font-bold">
         {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
