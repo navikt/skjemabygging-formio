@@ -90,8 +90,18 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         setMellomlagringError(getError);
       }
     };
-    retrievePreviousSubmission();
-  }, [addQueryParamToUrl, appConfig, mellomlagringStarted, search, translate, updateSubmission]);
+    if (isMellomLagringEnabled) {
+      retrievePreviousSubmission();
+    }
+  }, [
+    addQueryParamToUrl,
+    appConfig,
+    isMellomLagringEnabled,
+    mellomlagringStarted,
+    search,
+    translate,
+    updateSubmission,
+  ]);
 
   const nbNO: Language = "nb-NO";
 
