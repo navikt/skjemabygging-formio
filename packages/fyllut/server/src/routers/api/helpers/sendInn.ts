@@ -51,12 +51,15 @@ export const byteArrayToObject = (byteArray: Buffer) => JSON.parse(new TextDecod
 
 export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[\./]/g, "");
 
-export const validateInnsendingsId = (innsendingsId: string | undefined) => {
+export const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryMessage?: string) => {
   let errorMessage;
   if (!innsendingsId) {
-    errorMessage = "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon";
+    errorMessage = "InnsendingsId mangler.";
   } else if (!isValidUuid(innsendingsId)) {
-    errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`;
+    errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId.`;
+  }
+  if (errorMessage && supplementaryMessage) {
+    errorMessage = `${errorMessage} ${supplementaryMessage}`;
   }
   if (errorMessage) {
     logger.error(errorMessage);

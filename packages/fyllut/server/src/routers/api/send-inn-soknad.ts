@@ -14,6 +14,10 @@ import {
 } from "./helpers/sendInn";
 
 const { featureToggles, sendInnConfig } = config;
+const getErrorMessage = "Kan ikke hente mellomlagret søknad.";
+const postErrorMessage = "Kan ikke starte mellomlagring av søknaden.";
+const putErrorMessage = "Kan ikke oppdatere mellomlagret søknad.";
+const deleteErrorMessage = "Kan ikke slette mellomlagret søknad.";
 
 const sendInnSoknad = {
   get: async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +30,7 @@ const sendInnSoknad = {
       }
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
-      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, getErrorMessage);
       if (errorMessage) {
         next(new Error(errorMessage));
         return;
@@ -56,7 +60,7 @@ const sendInnSoknad = {
         res.json(response);
       } else {
         logger.debug("Failed to fetch data from SendInn");
-        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${getErrorMessage}`, true));
       }
     } catch (error) {
       next(error);
@@ -88,7 +92,7 @@ const sendInnSoknad = {
         res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to post data to SendInn");
-        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${postErrorMessage}`, true));
       }
     } catch (err) {
       next(err);
@@ -102,12 +106,11 @@ const sendInnSoknad = {
       const { innsendingsId } = req.body;
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
-      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, putErrorMessage);
       if (errorMessage) {
         next(new Error(errorMessage));
         return;
       }
-
       const body = assembleSendInnSoknadBody(req.body, idportenPid, null);
 
       if (!isMellomLagringEnabled(featureToggles)) {
@@ -132,7 +135,7 @@ const sendInnSoknad = {
         res.json(await sendInnResponse.json());
       } else {
         logger.debug("Failed to update data in SendInn");
-        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${putErrorMessage}`, true));
       }
     } catch (err) {
       next(err);
@@ -143,7 +146,7 @@ const sendInnSoknad = {
       const tokenxAccessToken = getTokenxAccessToken(req);
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(req.params.innsendingsId);
-      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
+      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId, deleteErrorMessage);
       if (errorMessage) {
         next(new Error(errorMessage));
         return;
@@ -167,10 +170,11 @@ const sendInnSoknad = {
 
       if (sendInnResponse.ok) {
         logger.debug(`Successfylly deleted soknad with innsendingsId ${sanitizedInnsendingsId}`);
-        res.json(await sendInnResponse.json());
+        const json = await sendInnResponse.json();
+        res.json(json);
       } else {
         logger.debug(`Failed to delete soknad with innsendingsId ${sanitizedInnsendingsId}`);
-        next(await responseToError(sendInnResponse, "Feil ved kall til SendInn", true));
+        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${deleteErrorMessage}`, true));
       }
     } catch (err) {
       next(err);

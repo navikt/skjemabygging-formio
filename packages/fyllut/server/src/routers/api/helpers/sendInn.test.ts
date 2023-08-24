@@ -67,18 +67,16 @@ describe("sendInn API helper", () => {
       expect(validateInnsendingsId("12345678-ABCD-cdef-9876-12345678abcd")).toBeUndefined();
     });
     it("returns an error message when innsendingsId is missing", () => {
-      expect(validateInnsendingsId(undefined)).toBe(
-        "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
-      );
+      expect(validateInnsendingsId(undefined)).toBe("InnsendingsId mangler.");
     });
     it("returns an error message when innsendingsId contains illegal character /", () => {
       expect(validateInnsendingsId("abcd/123-ABCD-cdef-9876-12345678abcd")).toBe(
-        "abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+        "abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId."
       );
     });
     it("returns an error message when innsendingsId contains illegal character .", () => {
       expect(validateInnsendingsId("abcd.123-ABCD-cdef-9876-12345678abcd")).toBe(
-        "abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+        "abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId."
       );
     });
   });

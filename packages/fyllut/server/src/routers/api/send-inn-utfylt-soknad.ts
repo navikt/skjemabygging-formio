@@ -27,7 +27,10 @@ const sendInnUtfyltSoknad = {
       }
 
       const sanitizedInnsendingsId = sanitizeInnsendingsId(innsendingsId);
-      const errorMessage = validateInnsendingsId(sanitizedInnsendingsId);
+      const errorMessage = validateInnsendingsId(
+        sanitizedInnsendingsId,
+        "Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+      );
       if (errorMessage) {
         next(new Error(errorMessage));
         return;
