@@ -30,6 +30,8 @@ const {
   createDummyCurrencyField,
   createDummyNumberField,
   createDummyAmountWithCurrency,
+  createDummyBankAccountField,
+  createDummyOrgNrField,
 } = MockedComponentObjectForTest;
 
 const onlyAlertstripes = (comp) => comp.type === "alertstripe";
@@ -533,6 +535,26 @@ describe("When handling component", () => {
       );
       expect(actual).toEqual([]);
     });
+  });
+});
+
+describe("BankAccount", () => {
+  it("to be formated correctly", () => {
+    const actual = handleComponent(
+      createDummyBankAccountField(),
+      { data: { bankaccount: "12345678911" } },
+      [],
+      "",
+      mockedTranslate
+    );
+    expect(actual[0].value).toEqual("1234 56 78911");
+  });
+});
+
+describe("OrgNr", () => {
+  it("to be formated correctly", () => {
+    const actual = handleComponent(createDummyOrgNrField(), { data: { orgnr: "111111111" } }, [], "", mockedTranslate);
+    expect(actual[0].value).toEqual("111 111 111");
   });
 });
 

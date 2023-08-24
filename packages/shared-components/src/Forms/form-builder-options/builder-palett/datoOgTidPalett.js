@@ -51,6 +51,7 @@ const datoOgTidPalett = {
         key: "manedAr",
         input: true,
         dataGridLabel: true,
+        fieldSize: "input--s",
         clearOnHide: true,
         validateOn: "blur",
         validate: {
@@ -58,7 +59,7 @@ const datoOgTidPalett = {
         },
         fields: {
           day: {
-            fieldSize: "input--xs",
+            fieldSize: "input--s",
             required: false,
             hide: true,
           },

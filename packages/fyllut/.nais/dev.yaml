@@ -1,7 +1,6 @@
 app-name: skjemautfylling
 ingresses:
   - "https://skjemautfylling-formio.intern.dev.nav.no/fyllut"
-image: {{image}}
 enabled-features: translations,sendInnIntegration
 foersteside-url: https://www.nav.no/soknader/api/forsteside
 dekorator-url: https://www.nav.no/dekoratoren?simple=true

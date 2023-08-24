@@ -44,6 +44,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         skjemanummer: "",
         tema: "",
         innsending: "PAPIR_OG_DIGITAL",
+        ettersending: "PAPIR_OG_DIGITAL",
         signatures: [{ label: "", description: "", key: uuidv4() }],
       },
       components: defaultFormFields() as unknown as Component[],
@@ -63,7 +64,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
     });
   };
   const validateAndSave = async (form) => {
-    const updatedErrors = validateFormMetadata(form);
+    const updatedErrors = validateFormMetadata(form, "create");
     const trimmedFormNumber = state.form.properties.skjemanummer.trim();
     if (isFormMetadataValid(updatedErrors)) {
       setErrors({});

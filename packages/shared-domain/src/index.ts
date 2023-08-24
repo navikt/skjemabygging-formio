@@ -11,6 +11,7 @@ import {
   NewFormSignatureType,
   Panel,
   Submission,
+  UsageContext,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
 import languagesUtil from "./languages/languagesUtil";
@@ -39,7 +40,7 @@ import MockedComponentObjectForTest from "./summary/MockedComponentObjectForTest
 import TEXTS from "./texts";
 import dateUtils from "./utils/date";
 import featureUtils, { FeatureTogglesMap } from "./utils/featureUtils";
-import formDiffingTool from "./utils/formDiffingTool";
+import formDiffingTool, { NavFormSettingsDiff } from "./utils/formDiffingTool";
 import navFormioUtils from "./utils/formio";
 import { guid } from "./utils/guid";
 import localizationUtils from "./utils/localization";
@@ -109,4 +110,6 @@ export type {
   UkjentBruker,
   ReportDefinition,
   Operator,
+  NavFormSettingsDiff,
+  UsageContext,
 };
