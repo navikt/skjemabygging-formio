@@ -1,6 +1,12 @@
+import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import { FormSignaturesType, NewFormSignatureType } from "../form";
 
+// workaround: getRandomValues is not supported (fjern når vi går opp til node 20)
+if (typeof global.crypto !== "object") {
+  // @ts-ignore
+  global.crypto = crypto;
+}
 const defaultSignature = [{ label: "", description: "", key: uuidv4() }];
 
 export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[] | FormSignaturesType) => {
@@ -16,7 +22,7 @@ export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[
 };
 
 export const mapBackwardCompatibleSignatures = (
-  signatures?: NewFormSignatureType[] | FormSignaturesType
+  signatures?: NewFormSignatureType[] | FormSignaturesType,
 ): NewFormSignatureType[] => {
   if (Array.isArray(signatures)) {
     return signatures;
