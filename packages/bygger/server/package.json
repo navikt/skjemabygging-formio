@@ -2,8 +2,8 @@
   "name": "@navikt/bygger-backend",
   "version": "1.0.0",
   "private": true,
-  "main": "dist/server.mjs",
-  "type": "commonjs",
+  "main": "dist/server.js",
+  "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "start": "node ../../../node_modules/cross-env/src/bin/cross-env-shell.js NODE_ENV=development node ../../../node_modules/vite/bin/vite.js",
