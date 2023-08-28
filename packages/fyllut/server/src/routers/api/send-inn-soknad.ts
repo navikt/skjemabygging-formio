@@ -47,21 +47,24 @@ const sendInnSoknad = {
         }
       );
 
-      if (sendInnResponse.ok) {
-        logger.debug("Successfylly fetched data from SendInn");
-        const json = await sendInnResponse.json();
-        const response = {
-          ...json,
-          hoveddokumentVariant: {
-            ...json.hoveddokumentVariant,
-            document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
-          },
-        };
-        res.json(response);
-      } else {
+      if (!sendInnResponse.ok) {
+        if (sendInnResponse.status === 404) {
+          return res.sendStatus(404);
+        }
         logger.debug("Failed to fetch data from SendInn");
-        next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${getErrorMessage}`, true));
+        return next(await responseToError(sendInnResponse, `Feil ved kall til SendInn. ${getErrorMessage}`, true));
       }
+
+      logger.debug("Successfylly fetched data from SendInn");
+      const json = await sendInnResponse.json();
+      const response = {
+        ...json,
+        hoveddokumentVariant: {
+          ...json.hoveddokumentVariant,
+          document: byteArrayToObject(base64Decode(json.hoveddokumentVariant.document)),
+        },
+      };
+      res.json(response);
     } catch (error) {
       next(error);
     }

@@ -175,7 +175,7 @@ describe("app", () => {
       .post("/foersteside")
       .reply(400, "Validering av ident feilet. brukerId=110550, brukerType=PERSON. Kunne ikke opprette førsteside.");
 
-    const res = await request(createApp()).post("/fyllut/api/foersteside").expect("Content-Type", /json/).expect(400);
+    const res = await request(createApp()).post("/fyllut/api/foersteside").expect("Content-Type", /json/).expect(500);
 
     expect(res.body.message).toEqual("Feil ved generering av førsteside");
     expect(res.body.correlation_id).not.toBeNull();

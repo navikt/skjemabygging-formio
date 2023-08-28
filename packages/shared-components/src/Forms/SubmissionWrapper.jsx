@@ -8,7 +8,7 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   const { featureToggles } = useAppConfig();
   const { isMellomlagringReady, mellomlagringError } = useSendInn();
   const innsendingsId = new URLSearchParams(search).get("innsendingsId");
-  const expectsSavedSubmissionFromMellomlagring = featureToggles.enableMellomlagring && innsendingsId;
+  const expectsSavedSubmissionFromMellomlagring = featureToggles.enableMellomlagring && !!innsendingsId;
 
   const removeParamIfItExists = (searchParamsString, param) => {
     const urlSearchParams = new URLSearchParams(searchParamsString);

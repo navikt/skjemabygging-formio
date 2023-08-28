@@ -72,7 +72,6 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
             addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
             updateSubmission(response.hoveddokumentVariant.document?.data);
           }
-          setIsMellomlagringReady(true);
         }
       } catch (error: any) {
         const getError: MellomlagringError =
@@ -88,6 +87,8 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
                 message: translate(TEXTS.statiske.mellomlagringError.get.message),
               };
         setMellomlagringError(getError);
+      } finally {
+        setIsMellomlagringReady(true);
       }
     };
     if (isMellomLagringEnabled) {

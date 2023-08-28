@@ -73,6 +73,24 @@ describe("[endpoint] send-inn/soknad", () => {
       expect(sendInnNockScope.isDone()).toBe(true);
     });
 
+    it("responsds with status 404 if SendInn returns status 404", async () => {
+      const sendInnNockScope = nock(sendInnConfig.host)
+        .get(`${sendInnConfig.paths.soknad}/${innsendingsId}`)
+        .reply(404, "error body");
+      const req = mockRequestWithPidAndTokenX({
+        body: requestBody,
+        params: { innsendingsId },
+      });
+      const res = mockResponse();
+      const next = jest.fn();
+      await sendInnSoknad.get(req, res, next);
+
+      expect(next).not.toHaveBeenCalled();
+      expect(res.sendStatus).toHaveBeenCalledWith(404);
+      expect(res.json).not.toHaveBeenCalled();
+      expect(sendInnNockScope.isDone()).toBe(true);
+    });
+
     it("calls next with error if tokenx access token is missing", async () => {
       const req = mockRequest({ body: requestBody, params: { innsendingsId } });
       req.getIdportenPid = () => "12345678911";
