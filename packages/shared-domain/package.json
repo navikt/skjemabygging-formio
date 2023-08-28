@@ -23,10 +23,8 @@
     "prepare": "yarn build"
   },
   "dependencies": {
-    "@types/uuid": "^9.0.2",
     "formiojs": "4.14.6",
-    "moment": "^2.29.4",
-    "uuid": "^9.0.0"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^0.34.1",
