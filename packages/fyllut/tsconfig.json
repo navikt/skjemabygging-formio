@@ -11,8 +11,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "paths": {
-      "@navikt/skjemadigitalisering-shared-components": ["../shared-components"],
-      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain"]
+      "@navikt/skjemadigitalisering-shared-components": ["../shared-components/src"],
+      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
     }
   },
   "include": [
