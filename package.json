@@ -8,26 +8,45 @@
     "url": "https://github.com/navikt/skjemabygging-formio.git"
   },
   "license": "SEE LICENSE IN LICENSE.md",
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/bygger-backend/**",
+      "**/fyllut-backend/**"
+    ]
+  },
   "scripts": {
-    "check-types": "lerna run check-types",
-    "clean": "lerna run clean && lerna clean -y",
-    "bootstrap": "yarn --prefer-offline && lerna bootstrap",
-    "watch": "lerna run --parallel watch",
-    "build": "lerna run build",
-    "prepare": "husky install",
-    "start": "lerna run start --stream",
-    "start:bygger": "lerna run --scope @navikt/bygger --scope @navikt/bygger-backend start --stream",
-    "start:fyllut": "lerna run --scope @navikt/fyllut-frontend --scope @navikt/fyllut-backend start --stream",
-    "test": "cross-env-shell CI=true lerna run --stream test",
-    "test:coverage": "cross-env-shell CI=true lerna run --stream test:coverage",
-    "cypress": "lerna run --stream cypress",
+    "start": "concurrently --kill-others-on-fail \"yarn:start:*\"",
+    "start:bygger:frontend": "yarn workspace @navikt/bygger start",
+    "start:bygger:backend": "yarn workspace @navikt/bygger-backend start",
+    "start:fyllut:frontend": "yarn workspace @navikt/fyllut-frontend start",
+    "start:fyllut:backend": "yarn workspace @navikt/fyllut-backend start",
+    "test": "concurrently \"yarn:test:*\"",
+    "test:bygger:frontend": "yarn workspace @navikt/bygger test",
+    "test:bygger:backend": "yarn workspace @navikt/bygger-backend test",
+    "test:fyllut:frontend": "yarn workspace @navikt/fyllut-frontend test",
+    "test:fyllut:backend": "yarn workspace @navikt/fyllut-backend test",
+    "cypress": "concurrently \"yarn:cypress:*\"",
+    "cypress:bygger:frontend": "yarn workspace @navikt/bygger cypress",
+    "cypress:bygger:backend": "yarn workspace @navikt/bygger-backend cypress",
+    "cypress:fyllut:frontend": "yarn workspace @navikt/fyllut-frontend cypress",
+    "cypress:fyllut:backend": "yarn workspace @navikt/fyllut-backend cypress",
+    "check-types": "concurrently \"yarn:check-types:*\"",
+    "check-types:bygger:frontend": "yarn workspace @navikt/bygger check-types",
+    "check-types:bygger:backend": "yarn workspace @navikt/bygger-backend check-types",
+    "check-types:fyllut:frontend": "yarn workspace @navikt/fyllut-frontend check-types",
+    "check-types:fyllut:backend": "yarn workspace @navikt/fyllut-backend check-types",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
-    "lint:staged": "lint-staged"
+    "lint:staged": "lint-staged",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "@vitest/coverage-v8": "^0.34.1",
+    "concurrently": "^8.2.1",
     "cross-env": "^7.0.3",
     "eslint": "^8.46.0",
     "eslint-plugin-cypress": "^2.13.3",
@@ -38,7 +57,6 @@
     "eslint-plugin-vitest": "^0.2.8",
     "eslint-plugin-vitest-globals": "^1.4.0",
     "husky": "^8.0.3",
-    "lerna": "^6.6.2",
     "lint-staged": "^13.2.3",
     "prettier": "^3.0.0",
     "prettier-plugin-organize-imports": "^3.2.3",

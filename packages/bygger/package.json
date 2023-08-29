@@ -1,6 +1,6 @@
 {
   "name": "@navikt/bygger",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "WYSIWYG-skjemaeditor som lar deg bygge form.io-skjemaer.",
   "repository": {
@@ -11,7 +11,7 @@
   "type": "module",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "node ../../node_modules/cross-env/src/bin/cross-env-shell.js NODE_ENV=development node ../../node_modules/vite/bin/vite.js",
+    "start": "cross-env-shell NODE_ENV=development vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check-types": "tsc",
@@ -25,8 +25,8 @@
     "@navikt/ds-css": "^4.7.2",
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^4.7.2",
-    "@navikt/skjemadigitalisering-shared-components": "1.0.0",
-    "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
+    "@navikt/skjemadigitalisering-shared-components": "*",
+    "@navikt/skjemadigitalisering-shared-domain": "*",
     "classnames": "^2.3.2",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",

@@ -1,6 +1,7 @@
 {
   "name": "@navikt/skjemadigitalisering-shared-domain",
   "version": "1.0.0",
+  "private": true,
   "description": "Kode som er delt mellom bygger og utfyller",
   "repository": {
     "type": "git",
