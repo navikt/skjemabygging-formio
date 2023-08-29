@@ -10,6 +10,8 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "workspaces": {
     "packages": [
+      "packages/shared-domain",
+      "packages/shared-components",
       "packages/*"
     ],
     "nohoist": [
@@ -18,6 +20,7 @@
     ]
   },
   "scripts": {
+    "build": "yarn workspaces run build",
     "start": "concurrently --kill-others-on-fail \"yarn:start:*\"",
     "start:bygger:frontend": "yarn workspace @navikt/bygger start",
     "start:bygger:backend": "yarn workspace @navikt/bygger-backend start",
