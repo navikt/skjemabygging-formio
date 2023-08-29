@@ -5,7 +5,7 @@ import {
   Dependencies,
   FormMigrationDiff,
   FormMigrationLogData,
-} from "../../../types/migration";
+} from "../types/migration";
 import { generateDiff } from "./diffingTool";
 
 interface AffectedComponent {

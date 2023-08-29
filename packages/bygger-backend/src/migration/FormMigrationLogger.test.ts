@@ -1,5 +1,5 @@
 import { Component, DependencyType } from "@navikt/skjemadigitalisering-shared-domain";
-import { FormMigrationLogData } from "../../../types/migration";
+import { FormMigrationLogData } from "../types/migration";
 import FormMigrationLogger from "./FormMigrationLogger";
 import { componentWithSimpleConditionalToRadio, formWithSimpleConditionalToRadio, radioComponent } from "./testData";
 

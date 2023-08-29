@@ -1,5 +1,5 @@
 import { DependencyType, FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-// se duplikat: bygger-backend/src/types/migration.d.ts
+// se duplikat: bygger/types/migration.d.ts
 
 export type ParsedInput = number | string | boolean | null | object | Array;
 

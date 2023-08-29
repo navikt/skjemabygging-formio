@@ -3,10 +3,10 @@ ENV NODE_ENV production
 ARG git_sha
 
 WORKDIR /app
-COPY dist build
-COPY server/dist server
-COPY server/fonts server/fonts
-COPY server/node_modules server/node_modules
+COPY fyllut/dist build
+COPY fyllut-backend/dist server
+COPY fyllut-backend/fonts server/fonts
+COPY fyllut-backend/node_modules server/node_modules
 
 ENV GIT_SHA=${git_sha}
 ENV MONOREPO_GIT_SHA=${git_sha}

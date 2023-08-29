@@ -5,7 +5,7 @@ import {
   navFormUtils,
   Operator,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import { ParsedInput } from "../../../types/migration";
+import { ParsedInput } from "../types/migration";
 
 interface Filter {
   key: string;
