@@ -19,8 +19,9 @@ interface SendInnContextType {
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
   isMellomlagringActive: boolean;
+  isMellomlagringEnabled: boolean;
   isMellomlagringReady: boolean;
-  innsendingsId: string | undefined;
+  innsendingsId?: string;
   mellomlagringError: MellomlagringError | undefined;
 }
 
@@ -44,15 +45,15 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const { translate } = useLanguages();
   const appConfig = useAppConfig();
   const { app, submissionMethod, featureToggles, logger } = appConfig;
-  const isMellomLagringEnabled =
-    app === "fyllut" && submissionMethod === "digital" && featureToggles?.enableMellomlagring;
-  const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomLagringEnabled);
+  const isMellomlagringEnabled =
+    app === "fyllut" && submissionMethod === "digital" && !!featureToggles?.enableMellomlagring;
+  const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
   const history = useHistory();
   const { search } = useLocation();
 
   const isMellomlagringActive = useMemo(
-    () => isMellomLagringEnabled && new URLSearchParams(search).get("innsendingsId"),
-    [isMellomLagringEnabled, search]
+    () => isMellomlagringEnabled && !!new URLSearchParams(search).get("innsendingsId"),
+    [isMellomlagringEnabled, search]
   );
   const addQueryParamToUrl = useCallback(
     (key, value) => {
@@ -70,7 +71,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       try {
         const searchParams = new URLSearchParams(search);
         const innsendingsId = searchParams.get("innsendingsId");
-        if (!mellomlagringStarted) {
+        if (!mellomlagringStarted && innsendingsId) {
           setInnsendingsId(innsendingsId);
           setMellomlagringStarted(true);
           const response = await getSoknad(innsendingsId, appConfig);
@@ -116,7 +117,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   };
 
   const startMellomlagring = async (submission: Submission) => {
-    if (isMellomLagringEnabled && !mellomlagringStarted) {
+    if (isMellomlagringEnabled && !mellomlagringStarted) {
       try {
         setMellomlagringStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
@@ -134,7 +135,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   };
 
   const updateMellomlagring = async (submission: Submission): Promise<SendInnSoknadResponse | undefined> => {
-    if (isMellomLagringEnabled) {
+    if (isMellomlagringEnabled) {
       try {
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
@@ -151,7 +152,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   };
 
   const deleteMellomlagring = async (): Promise<{ status: string; info: string } | undefined> => {
-    if (isMellomLagringEnabled && innsendingsId) {
+    if (isMellomlagringEnabled && innsendingsId) {
       try {
         return await deleteSoknad(appConfig, innsendingsId);
       } catch (error: any) {
@@ -168,7 +169,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const submitSoknad = async (submission: Submission) => {
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
-    if (isMellomLagringEnabled && innsendingsId) {
+    if (isMellomlagringEnabled && innsendingsId) {
       try {
         return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
       } catch (error: any) {
@@ -194,13 +195,14 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     }
   };
 
-  const value = {
+  const value: SendInnContextType = {
     startMellomlagring,
     updateMellomlagring,
     deleteMellomlagring,
     submitSoknad,
     innsendingsId,
     isMellomlagringActive,
+    isMellomlagringEnabled,
     isMellomlagringReady,
     mellomlagringError,
   };
