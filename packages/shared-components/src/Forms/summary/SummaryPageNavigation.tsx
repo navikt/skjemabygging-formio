@@ -126,7 +126,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
           )}
           <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
         </div>
-        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} />}
+        {isMellomlagringActive && <SaveAndDeleteButtons submission={submission} onError={(error) => setError(error)} />}
         {!isMellomlagringActive && (
           <div className="button-row button-row__center">
             <NavLink

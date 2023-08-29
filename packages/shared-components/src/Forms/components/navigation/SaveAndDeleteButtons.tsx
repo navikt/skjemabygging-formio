@@ -17,9 +17,10 @@ const useStyles = makeStyles({
 
 interface Props {
   submission?: Submission;
+  onError: Function;
 }
 
-const SaveAndDeleteButtons = ({ submission }: Props) => {
+const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
   const { translate } = useLanguages();
   const { loggNavigering } = useAmplitude();
   const { updateMellomlagring, deleteMellomlagring } = useSendInn();
@@ -44,7 +45,7 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
       setIsSaveModalOpen(false);
       window.location.href = "https://www.nav.no";
     } catch (error: any) {
-      //TODO: Vis feilmelding
+      onError(error);
     }
   };
 
@@ -59,7 +60,9 @@ const SaveAndDeleteButtons = ({ submission }: Props) => {
       setIsDeleteModalOpen(false);
       setIsDeleting(false);
       window.location.href = "https://www.nav.no";
-    } catch (error: any) {}
+    } catch (error: any) {
+      onError(error);
+    }
   };
 
   return (
