@@ -1,5 +1,5 @@
 import { I18nTranslations, Language, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
   SendInnSoknadResponse,
@@ -18,6 +18,8 @@ interface SendInnContextType {
   updateMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   submitSoknad: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
   deleteMellomlagring: () => Promise<{ status: string; info: string } | undefined>;
+  isMellomlagringActive: boolean;
+  isMellomlagringReady: boolean;
   innsendingsId: string | undefined;
   mellomlagringError: MellomlagringError | undefined;
 }
@@ -48,6 +50,10 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const history = useHistory();
   const { search } = useLocation();
 
+  const isMellomlagringActive = useMemo(
+    () => isMellomLagringEnabled && new URLSearchParams(search).get("innsendingsId"),
+    [isMellomLagringEnabled, search]
+  );
   const addQueryParamToUrl = useCallback(
     (key, value) => {
       if (key && value) {
@@ -64,7 +70,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       try {
         const searchParams = new URLSearchParams(search);
         const innsendingsId = searchParams.get("innsendingsId");
-        if (!mellomlagringStarted && innsendingsId && appConfig.submissionMethod === "digital") {
+        if (!mellomlagringStarted) {
           setInnsendingsId(innsendingsId);
           setMellomlagringStarted(true);
           const response = await getSoknad(innsendingsId, appConfig);
@@ -91,18 +97,10 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         setIsMellomlagringReady(true);
       }
     };
-    if (isMellomLagringEnabled) {
+    if (isMellomlagringActive) {
       retrievePreviousSubmission();
     }
-  }, [
-    addQueryParamToUrl,
-    appConfig,
-    isMellomLagringEnabled,
-    mellomlagringStarted,
-    search,
-    translate,
-    updateSubmission,
-  ]);
+  }, [addQueryParamToUrl, appConfig, isMellomlagringActive, mellomlagringStarted, search, translate, updateSubmission]);
 
   const nbNO: Language = "nb-NO";
 
@@ -202,6 +200,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     deleteMellomlagring,
     submitSoknad,
     innsendingsId,
+    isMellomlagringActive,
     isMellomlagringReady,
     mellomlagringError,
   };

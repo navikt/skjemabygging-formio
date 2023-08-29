@@ -23,15 +23,13 @@ export interface Props {
 }
 
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
-  const { submissionMethod, app, featureToggles } = useAppConfig();
+  const { submissionMethod, app } = useAppConfig();
   const { url } = useRouteMatch();
   const { search } = useLocation();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
-  const { mellomlagringError } = useSendInn();
+  const { mellomlagringError, isMellomlagringActive } = useSendInn();
   const [error, setError] = useState<Error>();
-  const innsendingsId = new URLSearchParams(search).get("innsendingsId");
-  const isMellomlagringActive = featureToggles?.enableMellomlagring && innsendingsId && submissionMethod === "digital";
 
   const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
   const linkBtStyle = {

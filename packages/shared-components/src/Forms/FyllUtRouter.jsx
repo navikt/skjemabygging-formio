@@ -1,9 +1,9 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Prompt, Redirect, Route, Switch, useLocation, useRouteMatch } from "react-router-dom";
+import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
-import { SendInnProvider } from "../context/sendInn/sendInnContext";
+import { SendInnProvider, useSendInn } from "../context/sendInn/sendInnContext";
 import makeStyles from "../util/jss";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
@@ -30,13 +30,10 @@ const ALERT_MESSAGE_BACK_BUTTON =
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
+  const { isMellomLagringActive } = useSendInn();
   const { path, url: formBaseUrl } = useRouteMatch();
-  const { search } = useLocation();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
-
-  const innsendingsId = new URLSearchParams(search).get("innsendingsId");
-  const isMellomLagringActive = featureToggles.enableMellomlagring && innsendingsId;
 
   const styles = useStyles();
   useEffect(() => {

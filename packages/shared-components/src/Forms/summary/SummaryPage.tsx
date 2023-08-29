@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import NavForm from "../../components/NavForm";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
+import { useSendInn } from "../../context/sendInn/sendInnContext";
 import Styles from "../../styles";
 import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../../util/focus-management";
@@ -57,7 +58,8 @@ export interface Props {
 }
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
-  const { submissionMethod, featureToggles } = useAppConfig();
+  const { submissionMethod } = useAppConfig();
+  const { isMellomlagringEnabled } = useSendInn();
   const { translate } = useLanguages();
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
@@ -82,10 +84,10 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
       setPanelValidationList(panelValidations);
       instance.destroy(true);
     };
-    if (featureToggles?.enableMellomlagring) {
+    if (isMellomlagringEnabled) {
       initializePanelValidation();
     }
-  }, [featureToggles, form, submission]);
+  }, [isMellomlagringEnabled, form, submission]);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);

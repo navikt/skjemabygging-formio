@@ -21,7 +21,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring, isMellomlagringReady } = useSendInn();
+  const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
   const { hash } = useLocation();
@@ -32,10 +32,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
+    if (isMellomlagringEnabled) {
       startMellomlagring(submission);
     }
-  }, [submission, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
+  }, [submission, startMellomlagring, isMellomlagringEnabled]);
 
   const removeMutationObserver = () => {
     if (mutationObserverRef.current) {
@@ -62,7 +62,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     return null;
   }
 
-  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !isMellomlagringReady) {
+  if (isMellomlagringEnabled && !isMellomlagringReady) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
 
