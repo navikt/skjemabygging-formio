@@ -37,7 +37,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const linkBtStyle = {
     textDecoration: "none",
   };
-  const hasAttachments = hasRelevantAttachments(form, submission);
+  const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
 
   const onClickPapirOrIngenInnsending = (e, path) => {

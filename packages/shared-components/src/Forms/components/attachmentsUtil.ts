@@ -34,11 +34,11 @@ const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionDat
     }));
 };
 
-const hasOtherDocumentation = (form, submission) => {
+const hasOtherDocumentation = (form, submissionData) => {
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission?.data || {}, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
     .some((component) => component.otherDocumentation);
 };
 
@@ -48,8 +48,8 @@ const sanitize = (component) => {
   return clone;
 };
 
-const hasRelevantAttachments = (form, submission) => {
-  return !!getRelevantAttachments(form, submission.data).length || hasOtherDocumentation(form, submission);
+const hasRelevantAttachments = (form, submissionData) => {
+  return !!getRelevantAttachments(form, submissionData).length || hasOtherDocumentation(form, submissionData);
 };
 
 export type { Attachment };

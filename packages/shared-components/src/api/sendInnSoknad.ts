@@ -77,7 +77,7 @@ export const updateUtfyltSoknad = async (
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   const attachments = getRelevantAttachments(form, submission.data);
-  const otherDocumentation = hasOtherDocumentation(form, submission);
+  const otherDocumentation = hasOtherDocumentation(form, submission.data);
 
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(
@@ -122,7 +122,7 @@ export const createSoknadWithoutInnsendingsId = async (
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   const attachments = getRelevantAttachments(form, submission.data);
-  const otherDocumentation = hasOtherDocumentation(form, submission);
+  const otherDocumentation = hasOtherDocumentation(form, submission.data);
   return http?.post(
     `${baseUrl}/api/send-inn`,
     {
