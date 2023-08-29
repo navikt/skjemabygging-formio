@@ -14,6 +14,8 @@ export const grensesnitt = {
     Fjern: "Fjern",
   },
 
+  emptySubmissionError: "Kan ikke fortsette. Innsendingen er tom.",
+
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",

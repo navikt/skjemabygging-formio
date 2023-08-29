@@ -20,7 +20,6 @@ export const SubmissionWrapper = ({ submission, url, children }) => {
   };
 
   if (mellomlagringError && mellomlagringError.type === "NOT FOUND") {
-    //TODO: bedre visning av feilmeldinger
     return <ErrorPage errorMessage={mellomlagringError.message} />;
   }
 
