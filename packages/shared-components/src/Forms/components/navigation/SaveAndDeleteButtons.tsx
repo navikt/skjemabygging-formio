@@ -33,6 +33,8 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
   const onClickSave = async () => {
     try {
       if (!submission) {
+        onError(new Error("Kunne ikke lagre. Innsendingen er tom."));
+        setIsSaveModalOpen(false);
         return;
       }
       setIsSaving(true);
@@ -43,7 +45,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
       });
       setIsSaving(false);
       setIsSaveModalOpen(false);
-      window.location.href = "https://www.nav.no";
+      window.location.assign("https://www.nav.no");
     } catch (error: any) {
       onError(error);
     }
@@ -59,7 +61,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
       });
       setIsDeleteModalOpen(false);
       setIsDeleting(false);
-      window.location.href = "https://www.nav.no";
+      window.location.assign("https://www.nav.no");
     } catch (error: any) {
       onError(error);
     }
