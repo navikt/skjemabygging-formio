@@ -36,8 +36,7 @@ export const validateWizardPanels = (formioInstance, form, submission): PanelVal
         firstInputWithValidationError: firstInputWithValidationError?.key,
         summaryComponents: formSummaryPanels.find((formSummaryPanel) => formSummaryPanel.key === panel.key).components,
       };
-    })
-    .filter((panelValidation) => panelValidation);
+    });
 };
 
 // Returns key of panel and component for:

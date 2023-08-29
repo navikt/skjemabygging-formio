@@ -26,9 +26,9 @@ export const statiske = {
   },
   mellomlagringError: {
     get: {
-      title: "Beklager, vi kunne ikke hente den lagrede søknaden akkurat nå",
-      message: "Prøv igjen senere, eller fyll ut en ny søknad",
-      notFoundMessage: "Vi kunne ikke finne denne søknaden",
+      title: "Beklager, vi kunne ikke hente den lagrede søknaden akkurat nå.",
+      message: "Prøv igjen senere, eller fyll ut en ny søknad.",
+      notFoundMessage: "Vi kunne ikke finne denne søknaden.",
     },
     update: {
       title: "Beklager, vi har midlertidige tekniske problemer.",
