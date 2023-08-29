@@ -16,18 +16,29 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
   logger.debug("Render index.html", { queryParams: { ...req.query }, baseUrl: req.baseUrl });
   try {
     const qpForm = req.query.form;
+    const qpInnsendingsId = req.query.innsendingsId;
+    const qpSub = req.query.sub as QueryParamSub;
+    let redirectUrl: string | undefined;
+    let redirectParams: { [key: string]: any } = { ...req.query };
     if (qpForm) {
+      redirectUrl = `${config.fyllutPath}/${qpForm}`;
+      redirectParams = { ...excludeQueryParam("form", redirectParams) };
+    }
+
+    if (qpInnsendingsId && qpSub !== "digital") {
+      redirectUrl = redirectUrl ?? req.baseUrl;
+      redirectParams = { ...redirectParams, sub: "digital" };
+    }
+
+    if (redirectUrl) {
       return res.redirect(
         url.format({
-          pathname: `${config.fyllutPath}/${qpForm}`,
-          query: {
-            ...excludeQueryParam("form", req.query),
-          },
+          pathname: redirectUrl,
+          query: redirectParams,
         })
       );
     }
 
-    const qpSub = req.query.sub as QueryParamSub;
     const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
 
