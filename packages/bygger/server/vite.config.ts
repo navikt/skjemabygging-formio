@@ -3,35 +3,38 @@ import { defineConfig } from "vite";
 import { VitePluginNode } from "vite-plugin-node";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
-  server: {
-    host: "127.0.0.1",
-    port: 8080,
-    strictPort: true,
-  },
-  preview: {
-    host: "127.0.0.1",
-    port: 8080,
-    strictPort: true,
-  },
-  build: {
-    rollupOptions: {
-      input: "./src/server.js",
-      output: {
-        entryFileNames: "[name].mjs",
-      },
-    },
-  },
-  plugins: [
-    tsconfigPaths(),
+export default ({ mode }) => {
+  const plugins = mode === "production" ? [] : [tsconfigPaths()];
+  plugins.push(
     ...VitePluginNode({
       adapter: "express",
       appPath: "./src/server.js",
     }),
-  ],
-  test: {
-    globals: true,
-    setupFiles: "./src/setupTests.ts",
-    include: ["src/(**/)?*.test.[jt]s(x)?"],
-  },
-});
+  );
+  return defineConfig({
+    server: {
+      host: "127.0.0.1",
+      port: 8080,
+      strictPort: true,
+    },
+    preview: {
+      host: "127.0.0.1",
+      port: 8080,
+      strictPort: true,
+    },
+    build: {
+      rollupOptions: {
+        input: "./src/server.js",
+        output: {
+          entryFileNames: "[name].mjs",
+        },
+      },
+    },
+    plugins,
+    test: {
+      globals: true,
+      setupFiles: "./src/setupTests.ts",
+      include: ["src/(**/)?*.test.[jt]s(x)?"],
+    },
+  });
+};
