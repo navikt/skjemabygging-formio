@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "yarn workspaces run build",
+    "clean": "yarn workspaces run clean",
     "start": "concurrently --kill-others-on-fail \"yarn:start:*\"",
     "start:bygger:frontend": "yarn workspace @navikt/bygger start",
     "start:bygger:backend": "yarn workspace @navikt/bygger-backend start",
