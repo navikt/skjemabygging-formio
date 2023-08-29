@@ -18,6 +18,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: "./src/server.js",
+      output: {
+        entryFileNames: "[name].mjs",
+      },
     },
   },
   plugins: [

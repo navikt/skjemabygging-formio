@@ -22,6 +22,6 @@ COPY $translation_dir/ $TRANSLATION_DIR
 ENV GIT_SHA=${git_sha}
 ENV MONOREPO_GIT_SHA=${monorepo_git_sha}
 WORKDIR server
-CMD ["node", "server.js"]
+CMD ["node", "server.mjs"]
 
 EXPOSE 8080

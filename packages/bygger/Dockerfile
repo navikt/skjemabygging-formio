@@ -9,4 +9,4 @@ COPY server/node_modules server/node_modules
 
 ENV GIT_SHA=${git_sha}
 WORKDIR server
-CMD ["node", "server.js"]
+CMD ["node", "server.mjs"]
