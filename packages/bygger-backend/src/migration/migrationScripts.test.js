@@ -1,4 +1,4 @@
-import mockedForm from "../../../example_data/Form";
+import mockedForm from "./testdata/Form";
 import { getEditScript, migrateForm, migrateForms } from "./migrationScripts";
 import {
   formWithAdvancedConditionalToRadio,
