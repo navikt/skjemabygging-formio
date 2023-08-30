@@ -6,7 +6,7 @@ env:
 
 jobs:
   cypress-run-fyllut:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     permissions:
       contents: "read"
       packages: read
@@ -33,7 +33,7 @@ jobs:
           config: video=false
 
   cypress-run-bygger:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8-cores
     permissions:
       contents: "read"
       packages: read
