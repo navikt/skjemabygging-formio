@@ -35,7 +35,7 @@ jobs:
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
-        run: bin/build-application.sh bygger
+        run: yarn --frozen-lockfile && yarn build
 
       - name: "Build and push Docker image for bygger"
         uses: nais/docker-build-push@v0
@@ -47,8 +47,8 @@ jobs:
           image_suffix: bygger-${{ inputs.environment }}
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/bygger/Dockerfile
-          docker_context: ./packages/bygger
+          dockerfile: ./packages/Dockerfile.bygger
+          docker_context: ./packages
 
     outputs:
       image: ${{ steps.docker-build-push-bygger.outputs.image }}
@@ -89,7 +89,7 @@ jobs:
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
           VITE_GIT_BRANCH: ${{ github.ref_name }}
-        run: bin/build-application.sh fyllut
+        run: yarn --frozen-lockfile && yarn build
 
       - name: "Build and push Docker image for fyllut"
         uses: nais/docker-build-push@v0
@@ -99,8 +99,8 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           image_suffix: fyllut-${{ inputs.environment }}
-          dockerfile: ./packages/fyllut/Dockerfile-base
-          docker_context: ./packages/fyllut
+          dockerfile: ./packages/Dockerfile.fyllut-base
+          docker_context: ./packages
           build_args: |
             git_sha=${{ github.sha }}
           pull: true

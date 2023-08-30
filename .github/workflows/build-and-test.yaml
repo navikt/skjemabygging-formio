@@ -21,8 +21,8 @@ jobs:
           cache-dependency-path: "**/yarn.lock"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
-      - name: "Bootstrap"
-        run: yarn bootstrap
+      - name: "Install dependencies"
+        run: yarn --frozen-lockfile
       - name: "No unstaged changes allowed (changes in yarn.lock?)"
         run: git diff --quiet
       - name: "Check types"
@@ -53,7 +53,7 @@ jobs:
       - name: "Build application: Bygger"
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: bin/build-application.sh bygger
+        run: yarn --frozen-lockfile && yarn build
 
       - name: Build and push Docker image for bygger
         uses: nais/docker-build-push@v0
@@ -65,8 +65,8 @@ jobs:
           image_suffix: ${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/bygger/Dockerfile
-          docker_context: ./packages/bygger
+          dockerfile: ./packages/Dockerfile.bygger
+          docker_context: ./packages
     outputs:
       image: ${{ steps.docker-build-push-bygger.outputs.image }}
 
@@ -91,7 +91,7 @@ jobs:
       - name: "Build application: Fyllut"
         env:
           VITE_GIT_VERSION: ${{ github.sha }}
-        run: bin/build-application.sh fyllut
+        run: yarn --frozen-lockfile && yarn build
 
       - name: "Build and push Docker image: fyllut-base-dev"
         uses: nais/docker-build-push@v0
@@ -103,8 +103,8 @@ jobs:
           image_suffix: fyllut-base-dev # base image for dev
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/fyllut/Dockerfile-base
-          docker_context: ./packages/fyllut
+          dockerfile: ./packages/Dockerfile.fyllut-base
+          docker_context: ./packages
           pull: true
           tag: ${{ github.sha }}
 
@@ -119,8 +119,8 @@ jobs:
           image_suffix: fyllut-base # base image for prod
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/fyllut/Dockerfile-base
-          docker_context: ./packages/fyllut
+          dockerfile: ./packages/Dockerfile.fyllut-base
+          docker_context: ./packages
           pull: true
           tag: ${{ github.sha }}
 

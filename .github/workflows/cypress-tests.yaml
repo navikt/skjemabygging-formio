@@ -18,8 +18,10 @@ jobs:
           node-version: "18.16.1"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
-      - name: "Bootstrap"
-        run: yarn bootstrap
+      - name: "Install dependencies"
+        run: yarn --frozen-lockfile
+      - name: "Build application"
+        run: yarn build
       - name: "Cypress tests (fyllut)"
         uses: cypress-io/github-action@v5
         with:
@@ -43,8 +45,10 @@ jobs:
           node-version: "18.16.1"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
-      - name: "Bootstrap"
-        run: yarn bootstrap
+      - name: "Install dependencies"
+        run: yarn --frozen-lockfile
+      - name: "Build application"
+        run: yarn build
       - name: "Cypress tests (bygger)"
         uses: cypress-io/github-action@v5
         with:
