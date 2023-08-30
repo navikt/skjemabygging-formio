@@ -26,10 +26,10 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          working-directory: ./packages/fyllut
-          start: yarn --cwd ./server start, yarn start
+          start: yarn start:fyllut
           wait-on: "http://127.0.0.1:3001, http://127.0.0.1:8081/fyllut/internal/isready"
           wait-on-timeout: 120
+          command: yarn cypress:fyllut
           config: video=false
 
   cypress-run-bygger:
@@ -53,9 +53,9 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          working-directory: ./packages/bygger
-          start: yarn --cwd ./server start, yarn start
+          start: yarn start:bygger
           wait-on: "http://127.0.0.1:3000, http://127.0.0.1:8080/internal/isready"
           wait-on-timeout: 120
+          command: yarn cypress:bygger
           config: video=false
           config-file: cypress.config.ts
