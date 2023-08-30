@@ -32,6 +32,8 @@
     "test:bygger:backend": "yarn workspace @navikt/bygger-backend test",
     "test:fyllut:frontend": "yarn workspace @navikt/fyllut-frontend test",
     "test:fyllut:backend": "yarn workspace @navikt/fyllut-backend test",
+    "test:fyllut:shared-domain": "yarn workspace @navikt/skjemadigitalisering-shared-domain test",
+    "test:fyllut:shared-components": "yarn workspace @navikt/skjemadigitalisering-shared-components test",
     "cypress": "concurrently \"yarn:cypress:*\"",
     "cypress:bygger:frontend": "yarn workspace @navikt/bygger cypress",
     "cypress:bygger:backend": "yarn workspace @navikt/bygger-backend cypress",
@@ -42,6 +44,8 @@
     "check-types:bygger:backend": "yarn workspace @navikt/bygger-backend check-types",
     "check-types:fyllut:frontend": "yarn workspace @navikt/fyllut-frontend check-types",
     "check-types:fyllut:backend": "yarn workspace @navikt/fyllut-backend check-types",
+    "check-types:fyllut:shared-domain": "yarn workspace @navikt/skjemadigitalisering-shared-domain check-types",
+    "check-types:fyllut:shared-components": "yarn workspace @navikt/skjemadigitalisering-shared-components check-types",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.mjs",
     "lint:staged": "lint-staged",
     "prepare": "husky install"
