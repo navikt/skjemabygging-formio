@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
     },
     resolve: {
-      dedupe: ["react-router-dom", "react-jss", "@navikt/ds-react", "@navikt/ds-icons"],
+      dedupe: ["react-router-dom", "@navikt/ds-react", "@navikt/ds-icons"],
     },
     plugins: [
       react(),

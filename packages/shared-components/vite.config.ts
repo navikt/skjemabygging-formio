@@ -16,15 +16,7 @@ export default defineConfig({
       fileName: "index",
     },
     rollupOptions: {
-      external: [
-        "react",
-        "react-dom",
-        "react-router-dom",
-        "react-jss",
-        "@navikt/ds-css",
-        "@navikt/ds-icons",
-        "@navikt/ds-react",
-      ],
+      external: ["react", "react-dom", "react-router-dom", "@navikt/ds-css", "@navikt/ds-icons", "@navikt/ds-react"],
     },
   },
   plugins: [
