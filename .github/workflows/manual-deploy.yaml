@@ -47,7 +47,7 @@ jobs:
           image_suffix: bygger-${{ inputs.environment }}
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/Dockerfile.bygger
+          dockerfile: ./docker/Dockerfile.bygger
           docker_context: ./packages
 
     outputs:
@@ -99,7 +99,7 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           image_suffix: fyllut-${{ inputs.environment }}
-          dockerfile: ./packages/Dockerfile.fyllut-base
+          dockerfile: ./docker/Dockerfile.fyllut-base
           docker_context: ./packages
           build_args: |
             git_sha=${{ github.sha }}

@@ -65,7 +65,7 @@ jobs:
           image_suffix: ${{ github.ref == 'refs/heads/master' && 'bygger' || 'bygger-dev' }}
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/Dockerfile.bygger
+          dockerfile: ./docker/Dockerfile.bygger
           docker_context: ./packages
     outputs:
       image: ${{ steps.docker-build-push-bygger.outputs.image }}
@@ -103,7 +103,7 @@ jobs:
           image_suffix: fyllut-base-dev # base image for dev
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/Dockerfile.fyllut-base
+          dockerfile: ./docker/Dockerfile.fyllut-base
           docker_context: ./packages
           pull: true
           tag: ${{ github.sha }}
@@ -119,7 +119,7 @@ jobs:
           image_suffix: fyllut-base # base image for prod
           build_args: |
             git_sha=${{ github.sha }}
-          dockerfile: ./packages/Dockerfile.fyllut-base
+          dockerfile: ./docker/Dockerfile.fyllut-base
           docker_context: ./packages
           pull: true
           tag: ${{ github.sha }}
