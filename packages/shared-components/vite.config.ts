@@ -3,11 +3,11 @@ import react from "@vitejs/plugin-react";
 import { readFileSync } from "fs";
 import lodashTemplate from "lodash/template";
 import * as path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, PluginOption } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default ({ mode }) => {
-  const plugins = [
+export default defineConfig(({ mode }) => {
+  const plugins: PluginOption = [
     react(),
     {
       name: "formio-template-handler",
@@ -36,7 +36,7 @@ export default ({ mode }) => {
     plugins.push(tsconfigPaths());
   }
 
-  return defineConfig({
+  return {
     build: {
       minify: true,
       lib: {
@@ -64,5 +64,5 @@ export default ({ mode }) => {
       setupFiles: "./src/setupTests.ts",
       include: ["src/(**/)?*.test.[jt]s(x)?"],
     },
-  });
-};
+  };
+});
