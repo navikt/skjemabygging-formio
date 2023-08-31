@@ -1,10 +1,10 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite";
+import { defineConfig, PluginOption } from "vite";
 import { VitePluginNode } from "vite-plugin-node";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default ({ mode }) => {
-  const plugins = [
+export default defineConfig(({ mode }) => {
+  const plugins: PluginOption = [
     ...VitePluginNode({
       adapter: "express",
       appPath: "./src/server.js",
@@ -15,7 +15,7 @@ export default ({ mode }) => {
     plugins.push(tsconfigPaths());
   }
 
-  return defineConfig({
+  return {
     base: "/fyllut",
     server: {
       host: "127.0.0.1",
@@ -41,5 +41,5 @@ export default ({ mode }) => {
       setupFiles: "./src/setupTests.ts",
       include: ["src/(**/)?*.test.[jt]s(x)?"],
     },
-  });
-};
+  };
+});

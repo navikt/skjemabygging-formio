@@ -1,21 +1,20 @@
 /// <reference types="vitest" />
 import * as path from "path";
 import { defineConfig } from "vite";
-export default () => {
-  return defineConfig({
-    build: {
-      minify: true,
-      lib: {
-        entry: path.resolve(__dirname, "src/index.ts"),
-        name: "shared-domain",
-        formats: ["es"],
-        fileName: "index",
-      },
+
+export default defineConfig({
+  build: {
+    minify: true,
+    lib: {
+      entry: path.resolve(__dirname, "src/index.ts"),
+      name: "shared-domain",
+      formats: ["es"],
+      fileName: "index",
     },
-    test: {
-      globals: true,
-      setupFiles: "./src/setupTests.ts",
-      include: ["src/(**/)?*.test.[jt]s(x)?"],
-    },
-  });
-};
+  },
+  test: {
+    globals: true,
+    setupFiles: "./src/setupTests.ts",
+    include: ["src/(**/)?*.test.[jt]s(x)?"],
+  },
+});
