@@ -4,24 +4,11 @@ import { readFileSync } from "fs";
 import lodashTemplate from "lodash/template";
 import * as path from "path";
 import { defineConfig } from "vite";
-import viteTsconfigPaths from "vite-tsconfig-paths";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
-  build: {
-    minify: true,
-    lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: "shared-component",
-      formats: ["es"],
-      fileName: "index",
-    },
-    rollupOptions: {
-      external: ["react", "react-dom", "react-router-dom", "@navikt/ds-css", "@navikt/ds-icons", "@navikt/ds-react"],
-    },
-  },
-  plugins: [
+export default ({ mode }) => {
+  const plugins = [
     react(),
-    viteTsconfigPaths(),
     {
       name: "formio-template-handler",
       enforce: "pre",
@@ -43,11 +30,39 @@ export default defineConfig({
         return `export default ${template}`;
       },
     },
-  ],
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./src/setupTests.ts",
-    include: ["src/(**/)?*.test.[jt]s(x)?"],
-  },
-});
+  ];
+
+  if (mode !== "production") {
+    plugins.push(tsconfigPaths());
+  }
+
+  return defineConfig({
+    build: {
+      minify: true,
+      lib: {
+        entry: path.resolve(__dirname, "src/index.ts"),
+        name: "shared-component",
+        formats: ["es"],
+        fileName: "index",
+      },
+      rollupOptions: {
+        external: [
+          "react",
+          "react-dom",
+          "react-router-dom",
+          "react-jss",
+          "@navikt/ds-css",
+          "@navikt/ds-icons",
+          "@navikt/ds-react",
+        ],
+      },
+    },
+    plugins,
+    test: {
+      globals: true,
+      environment: "jsdom",
+      setupFiles: "./src/setupTests.ts",
+      include: ["src/(**/)?*.test.[jt]s(x)?"],
+    },
+  });
+};

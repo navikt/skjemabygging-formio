@@ -33,7 +33,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     const initialRef = await repo.getRef(branch);
     logger.info(`Perform ${files.length} change(s) on ${branch}, ref: ${initialRef}`);
     for (const file of files) {
-      logger.debug("Push file to repo", { repo, branch, path: file.path, type: file.type, name: file.name });
+      logger.debug("Push file to repo", { branch, path: file.path, type: file.type, name: file.name });
       await pushFileToRepo(
         repo,
         branch,
@@ -44,7 +44,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
     }
 
     if (await repo.hasBranchChanged(initialRef, branch)) {
-      logger.info("Update monorepo ref", { newGitSha: newMonorepoGitSha, original: initialRef, branch, repo });
+      logger.info("Update monorepo ref", { newGitSha: newMonorepoGitSha, original: initialRef, branch });
       await pushFileToRepo(
         repo,
         branch,
