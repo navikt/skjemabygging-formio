@@ -24,7 +24,8 @@ const findFirstInputWithValidationError = (wizardComponent, data): Component | u
 
 export const validateWizardPanels = (formioInstance, form, submission): PanelValidation[] => {
   const formSummaryPanels = formSummaryUtil.createFormSummaryPanels(form, submission, (txt) => txt, false);
-  return formioInstance.components
+  return formSummaryPanels
+    .map((panel) => formioInstance.components.find((wizardComponent) => wizardComponent.key === panel.key))
     .filter(
       (wizardComponent) => wizardComponent.component.type === "panel" && !wizardComponent.component.isAttachmentPanel
     )
