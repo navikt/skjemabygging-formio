@@ -4,13 +4,17 @@ import { VitePluginNode } from "vite-plugin-node";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default ({ mode }) => {
-  const plugins = mode === "production" ? [] : [tsconfigPaths()];
-  plugins.push(
+  const plugins = [
     ...VitePluginNode({
       adapter: "express",
       appPath: "./src/server.js",
     }),
-  );
+  ];
+
+  if (mode !== "production") {
+    plugins.push(tsconfigPaths());
+  }
+
   return defineConfig({
     base: "/fyllut",
     server: {
