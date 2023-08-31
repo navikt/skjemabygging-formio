@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createRemoteJWKSet, FlattenedJWSInput, JWSHeaderParameters, jwtVerify } from "jose";
+import { FlattenedJWSInput, JWSHeaderParameters, createRemoteJWKSet, jwtVerify } from "jose";
 import { GetKeyFunction } from "jose/dist/types/types";
 import { config } from "../config/config";
 import { logger } from "../logger.js";
@@ -8,7 +8,7 @@ import { IdportenTokenPayload } from "../types/custom";
 const { isDevelopment, mockIdportenJwt, mockIdportenPid } = config;
 
 const getIdportenRemoteJWKSet: GetKeyFunction<JWSHeaderParameters, FlattenedJWSInput> = createRemoteJWKSet(
-  new URL(config.idporten!.idportenJwksUri)
+  new URL(config.idporten!.idportenJwksUri),
 );
 
 const verifyToken = async (token: string): Promise<IdportenTokenPayload> => {
@@ -40,7 +40,7 @@ const idportenAuthHandler = async (req: Request, res: Response, next: NextFuncti
     const currentTime = new Date().getTime() / 1000;
     const expired = tokenContent.exp! - 10 < currentTime;
     const idportenClientIdMismatch = tokenContent.client_id !== config.idporten!.idportenClientId;
-    const wrongSecurityLevel = tokenContent.acr !== "Level4";
+    const wrongSecurityLevel = tokenContent.acr !== "Level4" && tokenContent.acr !== "idporten-loa-high";
     if (expired || idportenClientIdMismatch || wrongSecurityLevel) {
       logger.debug("Validation of jwt failed", {
         jwtErrors: {

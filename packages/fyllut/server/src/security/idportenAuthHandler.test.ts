@@ -60,6 +60,18 @@ describe("idportenAuthHandler", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
+    it("Returns 401 when token acr is not idporten-loa-high", async () => {
+      const accessToken = createMockIdportenJwt({ acr: "idporten-loa-substantial" }, "1h", key);
+      const req = mockRequestWithAccessToken(accessToken);
+      const res = mockResponse();
+      const next = jest.fn();
+      await idportenAuthHandler(req, res, next);
+      expect(res.sendStatus).toHaveBeenCalledTimes(1);
+      // @ts-expect-error
+      expect(res.sendStatus.mock.calls[0][0]).toEqual(401);
+      expect(next).not.toHaveBeenCalled();
+    });
+
     it("Returns 401 when token cliend_id is not correct", async () => {
       const accessToken = createMockIdportenJwt({ client_id: "wrong-client-id" }, "1h", key);
       const req = mockRequestWithAccessToken(accessToken);
