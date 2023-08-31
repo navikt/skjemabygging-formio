@@ -17,7 +17,7 @@
   "dependencies": {
     "@octokit/auth-app": "^6.0.0",
     "@octokit/rest": "^20.0.1",
-    "@octokit/webhooks-types": "^7.1.0",
+    "@octokit/webhooks-types": "^7.2.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
     "bcryptjs": "^2.4.3",
     "csv-stringify": "^6.4.0",
