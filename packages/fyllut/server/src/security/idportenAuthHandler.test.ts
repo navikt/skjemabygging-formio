@@ -64,7 +64,7 @@ describe("idportenAuthHandler", () => {
       const accessToken = createMockIdportenJwt({ acr: "idporten-loa-substantial" }, "1h", key);
       const req = mockRequestWithAccessToken(accessToken);
       const res = mockResponse();
-      const next = jest.fn();
+      const next = vi.fn();
       await idportenAuthHandler(req, res, next);
       expect(res.sendStatus).toHaveBeenCalledTimes(1);
       // @ts-expect-error
