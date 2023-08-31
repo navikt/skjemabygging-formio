@@ -45,7 +45,8 @@ const localDevelopmentConfig: DefaultConfig = {
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || "IDPORTEN_JWT",
   tokenx: {
     ...tokenx,
-    wellKnownUrl: tokenx.wellKnownUrl || "https://tokendings.dev-gcp.nais.io/.well-known/oauth-authorization-server",
+    wellKnownUrl:
+      tokenx.wellKnownUrl || "https://tokenx.dev-gcp.nav.cloud.nais.io/.well-known/oauth-authorization-server",
     fyllutClientId: tokenx.fyllutClientId || "dev-gcp:skjemadigitalisering:fyllut",
   },
   sendInnConfig: {
@@ -55,7 +56,7 @@ const localDevelopmentConfig: DefaultConfig = {
   },
   idporten: {
     ...idporten,
-    idportenJwksUri: idporten.idportenJwksUri || "https://oidc-ver2.difi.no/idporten-oidc-provider/jwk",
+    idportenJwksUri: idporten.idportenJwksUri || "https://test.idporten.no/jwks.json",
   },
 };
 
