@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="theme-color" content="#000000"/>
     <% if (process.env.NODE_ENV !== 'development') { %>
-    <meta name="git-version" content="%VITE_GIT_VERSION%"/>
-    <meta name="git-branch" content="%VITE_GIT_BRANCH%"/>
+    <meta name="git-version" content="<%- VITE_GIT_VERSION %>"/>
+    <meta name="git-branch" content="<%- VITE_GIT_BRANCH %>"/>
     <meta name="robots" content="{{{ROBOTS}}}"/>
     <meta name="google-site-verification" content="lLm_tEVoko28mgQfCVHXDqqDPg-5nalBbEmRH_wTqUc"/>
     <meta property="og:title" content="{{{PAGE_TITLE}}}"/>
