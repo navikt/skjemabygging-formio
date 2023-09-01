@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
-    "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
   },

@@ -21,35 +21,33 @@ _(Les mer om bruk av Github npm registry i NAV her: https://github.com/navikt/fr
 
 ## Kommandoer
 
-| Kommando           | Beskrivelse                                                                           |
-| ------------------ | ------------------------------------------------------------------------------------- |
-| yarn bootstrap     | laster ned avhengigheter, og symlink'er inn felleskoden i node_modules der den brukes |
-| yarn watch         | transpilerer felleskoden når den endres                                               |
-| yarn start         | starter både bygger og fyllut, inkludert backend (husk yarn:watch om nødvendig)       |
-| yarn start:bygger  | starter bygger, inkludert backend                                                     |
-| yarn start:fyllut  | starter fyllut, inkludert backend                                                     |
-| yarn build         | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start og watch) |
-| yarn test          | kjører alle tester                                                                    |
-| yarn test:coverage | kjører alle tester med rapportering av dekningsgrad                                   |
-| yarn cypress       | kjører Cypress-tester                                                                 |
-| yarn check-types   | sjekker at typene er korrekte                                                         |
-| yarn clean         | sletter node_modules / dist / build / coverage for alle pakker i monorepoet           |
-| yarn lint          | se etter problemer i koden                                                            |
-
-> Husk å kjøre `yarn:watch` hvis du gjør endringer i `shared-components` eller `shared-domain`
+| Kommando            | Beskrivelse                                                                     |
+| ------------------- | ------------------------------------------------------------------------------- |
+| yarn install        | laster ned avhengigheter                                                        |
+| yarn start          | starter både bygger og fyllut, inkludert backend (husk yarn:watch om nødvendig) |
+| yarn start:bygger   | starter bygger, inkludert backend                                               |
+| yarn start:fyllut   | starter fyllut, inkludert backend                                               |
+| yarn build          | bygger react-applikasjonene, ikke nødvendig for lokal utvikling (bruk start)    |
+| yarn test           | kjører alle tester                                                              |
+| yarn test:coverage  | kjører alle tester med rapportering av dekningsgrad                             |
+| yarn cypress:bygger | kjører Cypress-tester for bygger                                                |
+| yarn cypress:fyllut | kjører Cypress-tester for fyllut                                                |
+| yarn check-types    | sjekker at typene er korrekte                                                   |
+| yarn clean          | sletter node_modules / dist / build / coverage for alle pakker i monorepoet     |
+| yarn lint           | se etter problemer i koden                                                      |
 
 ## Lokal konfigurasjon med dotenv
 
 Vi bruker hovedsaklig [dotenv](https://www.npmjs.com/package/dotenv) for å konfigurere applikasjonene ved kjøring
 lokalt, og det er to steder det kan være interessant å opprette .env-filer:
 
-### 1) `packages/bygger/server/.env`
+### 1) `packages/bygger-backend/.env`
 
 For å kjøre opp byggeren lokalt er det én miljøvariabel som _må_ settes, og det er `PUSHER_KEY`. Denne finner man ved
 å logge på pusher.com (se [avsnitt nedenfor](#pushercom) for instruksjoner), gå til Channel `skjemabyggeren-dev`, og
 App Keys i venstremenyen. Eventuelt kan man opprette sin egen Pusher-applikasjon.
 
-### 2) `packages/fyllut/server/.env`
+### 2) `packages/fyllut-backend/.env`
 
 FyllUt kan startes lokalt uten å sette noen miljøvariabler, men for at alle funksjoner skal fungere så må man legge
 inn konfigurasjon i denne filen.
@@ -62,7 +60,7 @@ liste med navn på features, eventuelt etterfulgt av likhetstegn og `true` (defa
 
 Dette gjør det mulig å enable features i et enkelt miljø ved å sette denne miljøvariabelen
 i miljøets nais-config. Lokalt kan man overstyre default feature toggles ved å legge inn miljøvariabelen i en `.env`-fil
-under `fyllut/server` eller `bygger/server`.
+under `fyllut-backend` eller `bygger-backend`.
 
     // Eksempel på hvordan miljøvariabelen kan se ut
     ENABLED_FEATURES="translations,digitalInnsending,autoComplete=true,diff=false"
@@ -90,7 +88,7 @@ til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_
 Byggeren er konfigurert med default-verdier lokalt som sørger for at eventuelle publiseringer blir gjort mot en
 test-branch i repo'et [skjemaufylling-formio](https://github.com/navikt/skjemautfylling-formio). Hvilken branch som
 benyttes defineres av `PUBLISH_REPO_BASE`, og
-default-verdi kan overstyres i `packages/bygger/server/.env`, men ikke test mot `master` siden det starter
+default-verdi kan overstyres i `packages/bygger-backend/.env`, men ikke test mot `master` siden det starter
 en deploy til produksjon :nerd_face:
 
 For å autentisere deg er det anbefalt å bruke en personlig access token. Det vil gjøre det enklere å spore endringene i
@@ -99,7 +97,7 @@ med en app installation token, som genereres av
 en [GitHub app](https://github.com/apps/nav-team-fyllut-sendinn-workflows). For å teste publisering lokalt med app
 installation token finner du de nødvendige miljøvariablene i secreten `github-app-installation` i Google Cloud Console.
 
-I `packages/bygger/server/.env` kan man legge inn følgende miljøvariabler:
+I `packages/bygger-backend/.env` kan man legge inn følgende miljøvariabler:
 
 | Miljøvariabel                        | Beskrivelse                                                                                                                                                        |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -120,9 +118,9 @@ Velg `repo` under `scopes`, og _authorize_ dette token for organisasjon `navikt`
 Vi kommuniserer med fagsystemsonen blant annet for å hente enheter og generere førsteside, og det skjer ved kall
 via [skjemabygging-proxy](https://github.com/navikt/skjemabygging-proxy) som kjører i fss.
 
-For å få til dette lokalt trenger du å kjøre naisdevice. I tillegg trenger fyllut/server og bygger/server tilgang
-til sin client secret som miljøvariabel. Variablene kan f.eks legges til i en `.env`-fil i fyllut/server og
-bygger/server, med innhold `AZURE_APP_CLIENT_SECRET=<den-respektive-appen-sin-client-secret>`. Client secret til
+For å få til dette lokalt trenger du å kjøre naisdevice. I tillegg trenger fyllut-backend og bygger-backend tilgang
+til sin client secret som miljøvariabel. Variablene kan f.eks legges til i en `.env`-fil i fyllut-backend og
+bygger-backend, med innhold `AZURE_APP_CLIENT_SECRET=<den-respektive-appen-sin-client-secret>`. Client secret til
 fyllut og bygger i dev-gcp finner du ved å gå inn i dev-gcp clusteret med kubectl (krever naisdevice og tilgang
 til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
@@ -143,7 +141,7 @@ _Eierene_ av gruppene kan legge til nye medlemmer.
 
 En oversikt over gruppenes id'er vil dessuten ligge i koden for bygger backend såfremt de faktisk er i bruk:
 
--   [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger/server/src/middleware/azureAd.ts)
+-   [azureAd.ts](https://github.com/navikt/skjemabygging-formio/tree/master/packages/bygger-backend/src/middleware/azureAd.ts)
 
 ### Opprette Formio-bruker for lokal utvikling
 
