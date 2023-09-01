@@ -7,8 +7,8 @@
     <meta content="#000000" name="theme-color"/>
     <meta content="Formio.js basert skjemabygger for NAV" name="description"/>
     <% if (process.env.NODE_ENV !== 'development') { %>
-    <meta content="%VITE_GIT_VERSION%" name="git-version"/>
-    <meta content="%VITE_GIT_BRANCH%" name="git-branch"/>
+    <meta name="git-version" content="<%- VITE_GIT_VERSION %>"/>
+    <meta name="git-branch" content="<%- VITE_GIT_BRANCH %>"/>
     <% } %>
     <meta name="robots" content="noindex"/>
     <title>Skjemabygging</title>

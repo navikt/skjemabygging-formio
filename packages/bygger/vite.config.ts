@@ -13,7 +13,11 @@ export default defineConfig(({ mode }) => {
     createHtmlPlugin({
       minify: true,
       inject: {
-        data: { ...env },
+        data: {
+          ...env,
+          VITE_GIT_VERSION: env.VITE_GIT_VERSION ?? "",
+          VITE_GIT_BRANCH: env.VITE_GIT_BRANCH ?? "",
+        },
       },
     }),
     {
