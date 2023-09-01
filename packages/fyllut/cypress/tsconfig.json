@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "target": "ESNext",
     "lib": ["ESNext", "dom"],
-    "types": ["cypress", "@testing-library/cypress", "cypress-wait-until"]
+    "types": ["cypress", "@testing-library/cypress", "cypress-wait-until"],
+    "paths": {
+      "@navikt/skjemadigitalisering-shared-components": ["../../shared-components/src"],
+      "@navikt/skjemadigitalisering-shared-domain": ["../../shared-domain/src"]
+    }
   },
   "include": ["**/*.ts"]
 }
