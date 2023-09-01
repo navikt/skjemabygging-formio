@@ -1,5 +1,5 @@
 import fs from "fs";
-import glob from "glob";
+import { glob } from "glob";
 import fetch from "node-fetch";
 
 const readFile = async (filepath) => {
