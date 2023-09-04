@@ -3,9 +3,6 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 describe("Mellomlagring", () => {
   beforeEach(() => {
     cy.intercept("GET", "/api/config", { fixture: "config.json" }).as("getConfig");
-    cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", { fixture: "conditionalxmas.json" }).as(
-      "getConditionalxmas"
-    );
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
       "getTestMellomlagringForm"
     );
@@ -19,47 +16,64 @@ describe("Mellomlagring", () => {
     // it("renders error if url has query param innsendingsId", () => {});
 
     it("does not fetch or update mellomlagring", () => {
-      cy.visit("/fyllut/conditionalxmas?sub=paper");
-      cy.wait("@getConditionalxmas");
+      cy.visit("/fyllut/testmellomlagring?sub=paper");
+      cy.wait("@getTestMellomlagringForm");
       cy.clickStart();
       cy.get("@createMellomlagringSpy").should("not.have.been.called");
-      cy.findByRole("group", { name: "Julemiddag" }).within(() => {
-        cy.findByLabelText("Lutefisk").check({ force: true });
+      cy.clickNextStep();
+      cy.get("@updateMellomlagringSpy").should("not.have.been.called");
+      cy.findByRole("group", { name: "Ønsker du å få gaven innpakket" }).within(() => {
+        cy.findByLabelText("Nei").check({ force: true });
       });
       cy.clickNextStep();
       cy.get("@updateMellomlagringSpy").should("not.have.been.called");
+      cy.findByLabelText("Hvordan ønsker du å motta pakken?").click().type("På døra{enter}");
       cy.clickNextStep();
+      cy.get("@createMellomlagringSpy").should("not.have.been.called");
+      cy.clickNextStep();
+      cy.findByRole("group", { name: "Annen dokumentasjon" }).within(() => {
+        cy.findByLabelText("Ja, jeg legger det ved denne søknaden.").check({ force: true });
+      });
+      cy.findByRole("group", { name: "Oppmøtebekreftelse" }).within(() => {
+        cy.findByLabelText("Jeg har levert denne dokumentasjonen tidligere").check({ force: true });
+      });
+      cy.findByRole("group", {
+        name: "Bekreftelse på at du av helsemessige årsaker må benytte dyrere transport",
+      }).within(() => {
+        cy.findByLabelText("Jeg har levert denne dokumentasjonen tidligere").check({ force: true });
+      });
       cy.clickNextStep();
       cy.findByRole("button", { name: TEXTS.grensesnitt.navigation.saveDraft }).should("not.exist");
       cy.findByRole("button", { name: TEXTS.grensesnitt.navigation.cancelAndDelete }).should("not.exist");
       cy.findByRole("link", { name: TEXTS.grensesnitt.summaryPage.editAnswers })
         .should("exist")
-        .and("have.attr", "href", "/fyllut/conditionalxmas/veiledning?sub=paper");
+        .and("have.attr", "href", "/fyllut/testmellomlagring/valgfrieOpplysninger?sub=paper");
     });
-
-    // it("does not give you the option to save your application", () => {});
   });
 
   describe('When submission method is "digital"', () => {
     beforeEach(() => {
-      cy.intercept("POST", "/fyllut/api/send-inn/soknad*", { fixture: "mellomlagring/create-xmas.json" }).as(
-        "createMellomlagring"
-      );
-      cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", { fixture: "mellomlagring/create-xmas.json" }).as(
-        "updateMellomlagring"
-      );
+      cy.intercept("POST", "/fyllut/api/send-inn/soknad*", {
+        fixture: "mellomlagring/responseWithInnsendingsId.json",
+      }).as("createMellomlagring");
+      cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", {
+        fixture: "mellomlagring/responseWithInnsendingsId.json",
+      }).as("updateMellomlagring");
     });
 
     it("fetches and updates mellomlagring", () => {
-      cy.visit("/fyllut/conditionalxmas?sub=digital");
-      cy.wait("@getConditionalxmas");
+      cy.visit("/fyllut/testmellomlagring?sub=digital");
+      cy.wait("@getTestMellomlagringForm");
       cy.clickStart();
       cy.wait("@createMellomlagring");
-      cy.findByRole("group", { name: "Julemiddag" }).within(() => {
-        cy.findByLabelText("Lutefisk").check({ force: true });
+      cy.clickNextStep();
+      cy.wait("@updateMellomlagring");
+      cy.findByRole("group", { name: "Ønsker du å få gaven innpakket" }).within(() => {
+        cy.findByLabelText("Nei").check({ force: true });
       });
       cy.clickNextStep();
       cy.wait("@updateMellomlagring");
+      cy.findByLabelText("Hvordan ønsker du å motta pakken?").click().type("På døra{enter}");
       cy.clickNextStep();
       cy.wait("@updateMellomlagring");
       cy.clickNextStep();
@@ -71,7 +85,7 @@ describe("Mellomlagring", () => {
         .and(
           "have.attr",
           "href",
-          "/fyllut/conditionalxmas/lutefisk?sub=digital&innsendingsId=75eedb4c-1253-44d8-9fde-3648f4bb1878#rotmos"
+          "/fyllut/testmellomlagring/valgfrieOpplysninger?sub=digital&innsendingsId=75eedb4c-1253-44d8-9fde-3648f4bb1878#hvaDrakkDuTilFrokost"
         );
     });
   });
