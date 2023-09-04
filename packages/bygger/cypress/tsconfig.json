@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "target": "ESNext",
-    "lib": ["ESNext", "dom"],
+    "target": "ES2021",
+    "lib": ["ES2021", "dom"],
     "types": ["cypress", "@testing-library/cypress"],
     "paths": {
       "@navikt/skjemadigitalisering-shared-components": ["../../shared-components/src"],
