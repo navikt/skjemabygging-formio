@@ -3,6 +3,10 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 describe("Mellomlagring", () => {
   beforeEach(() => {
     cy.intercept("GET", "/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.intercept("GET", "/fyllut/translations/testmellomlagring").as("getTranslation");
+    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
+      "getGlobalTranslation"
+    );
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
       "getTestMellomlagringForm"
     );
@@ -92,7 +96,7 @@ describe("Mellomlagring", () => {
 
   describe("When starting on the summary page", () => {
     it('redirects to start page if url does not contain "innsendingsId"', () => {
-      cy.visit("http://localhost:3001/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO");
+      cy.visit("/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO");
       cy.wait("@getTestMellomlagringForm");
       cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("exist");
     });

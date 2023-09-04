@@ -48,7 +48,7 @@ Cypress.Commands.add("clickNextStep", () => {
 });
 
 Cypress.Commands.add("clickStart", () => {
-  return cy.findByRoleWhenAttached("link", { name: "Start" }).click();
+  return cy.findByRoleWhenAttached("link", { name: "Start" }).should("exist").click();
 });
 
 Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
