@@ -1,5 +1,5 @@
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
 import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
@@ -81,7 +81,7 @@ export const useFormioForms = (formio) => {
         method: "PUT",
         headers: {
           "content-type": "application/json",
-          "Bygger-Formio-Token": Formiojs.getToken(),
+          "Bygger-Formio-Token": NavFormioJs.Formio.getToken(),
         },
         body: payload,
       });
@@ -107,7 +107,7 @@ export const useFormioForms = (formio) => {
     async (form) => {
       const response = await fetch(`/api/published-forms/${form.path}`, {
         method: "DELETE",
-        headers: { "Bygger-Formio-Token": Formiojs.getToken() },
+        headers: { "Bygger-Formio-Token": NavFormioJs.Formio.getToken() },
       });
       if (response.ok) {
         const { form } = await response.json();

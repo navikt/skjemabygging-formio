@@ -52,10 +52,6 @@ build() {
     yarn build || exit 1
 }
 
-build_prod() {
-    yarn build:prod || exit 1
-}
-
 yarn && yarn clean
 node bin/prepare-production-build.mjs
 
@@ -68,6 +64,6 @@ if [ "$APP" == "bygger" ]; then
 fi
 
 if [ "$APP" == "fyllut" ]; then
-    cd_package "fyllut" && install && build_prod
+    cd_package "fyllut" && install && build
     cd_package "fyllut/server" && install && build
 fi

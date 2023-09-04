@@ -5,7 +5,7 @@ import { PublishStatusProperties, Status, StreetLightSize } from "./types";
 
 export function determineStatus(publishProperties: PublishStatusProperties): Status {
   const { modified, published, isTestForm, unpublished } = publishProperties;
-  let modifiedDate = moment(modified);
+  const modifiedDate = moment(modified);
   const unpublishedDate = unpublished !== undefined ? moment(unpublished) : undefined;
 
   if (isTestForm) {

@@ -6,13 +6,14 @@ describe("When form has panels that are hidden unless a condition is true", () =
     cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", {
       fixture: "conditionalxmas.json",
     }).as("getForm");
-    cy.intercept("GET", "/fyllut/translations/conditionalxmas", {
+    cy.intercept("GET", "/fyllut/api/translations/conditionalxmas", {
       fixture: "conditionalxmas-translation.json",
     }).as("getTranslation");
-    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation"
+    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
+      "getGlobalTranslation",
     );
     cy.visit("/fyllut/conditionalxmas");
+    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
     cy.wait("@getForm");
     cy.clickStart(); // <-- navigate from information page to the form
   });
@@ -99,8 +100,8 @@ describe("When form has panels that are hidden unless a condition is true", () =
       cy.findByRole("link", { name: "English" }).click();
       cy.findByRole("link", { name: "Edit lamb ribs" }).click();
       cy.url().should("include", "/pinnekjott?lang=en");
-      cy.findByRole("checkbox", { name: "Root stew (Optional)" }).should("exist");
-      cy.findByRole("checkbox", { name: "Root stew (Optional)" }).should("be.checked");
+      cy.findByRole("checkbox", { name: "Root stew (optional)" }).should("exist");
+      cy.findByRole("checkbox", { name: "Root stew (optional)" }).should("be.checked");
     });
   });
 });

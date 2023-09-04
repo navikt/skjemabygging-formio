@@ -5,7 +5,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 
-jest.mock("../context/languages", () => ({
+vi.mock("../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
@@ -46,7 +46,7 @@ describe("PrepareIngenInnsendingPage", () => {
     render(
       <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
         <PrepareIngenInnsendingPage form={testForm} submission={{}} formUrl="/testskjema" translations={{}} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 
@@ -55,9 +55,9 @@ describe("PrepareIngenInnsendingPage", () => {
     expect(screen.queryByText(testForm.properties.innsendingForklaring)).toBeTruthy();
   });
 
-  test("Nedlasting av pdf", () => {
+  test("Nedlasting av pdf", async () => {
     const lastNedSoknadKnapp = screen.getByRole("button", { name: TEXTS.grensesnitt.downloadApplication });
-    userEvent.click(lastNedSoknadKnapp);
+    await userEvent.click(lastNedSoknadKnapp);
     expect(submitCalls).toHaveLength(1);
 
     // @ts-ignore

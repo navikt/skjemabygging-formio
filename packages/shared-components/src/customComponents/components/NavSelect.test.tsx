@@ -100,9 +100,9 @@ describe("NavSelect", () => {
     expect(nedtrekksliste).toBeInTheDocument();
     expect(nedtrekksliste.value).toBe("");
 
-    userEvent.click(nedtrekksliste);
+    await userEvent.click(nedtrekksliste);
     const optionPersimon = await screen.findByText("Persimon");
-    userEvent.click(optionPersimon);
+    await userEvent.click(optionPersimon);
 
     await waitFor(() => {
       const valgtFrukt = screen.getByText("Persimon");
@@ -148,9 +148,9 @@ describe("NavSelect", () => {
     const dropdownEnglish = (await screen.findByLabelText(/Choose fruit.*/)) as HTMLInputElement;
     expect(dropdownEnglish).toBeInTheDocument();
 
-    userEvent.click(dropdownEnglish);
+    await userEvent.click(dropdownEnglish);
     const optionApple = await screen.findByText("Apple");
-    userEvent.click(optionApple);
+    await userEvent.click(optionApple);
 
     await waitFor(() => {
       const valgtFrukt = screen.getByText("Apple");

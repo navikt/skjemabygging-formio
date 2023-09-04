@@ -11,7 +11,6 @@ import HTMLElement from "./components/HTMLElement";
 import IBAN from "./components/IBAN";
 import Image from "./components/Image";
 import NavCheckbox from "./components/NavCheckbox";
-import NavDatepicker from "./components/NavDatepicker.jsx";
 import NavSelect from "./components/NavSelect";
 import NavSkjemagruppe from "./components/NavSkjemagruppe";
 import Number from "./components/Number";
@@ -21,6 +20,7 @@ import Row from "./components/Row";
 import SelectBoxes from "./components/SelectBoxes";
 import Textarea from "./components/TextArea";
 import TextField from "./components/TextField";
+import NavDatepicker from "./components/NavDatepicker";
 
 const customComponents = {
   container: Container,

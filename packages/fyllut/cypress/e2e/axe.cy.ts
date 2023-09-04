@@ -3,7 +3,8 @@ describe("Axe: Accessibility testing", () => {
     before(() => {
       cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
       cy.intercept("GET", "/fyllut/api/forms/cypressaxe", { fixture: "cypressaxe.json" }).as("getCypressAxe");
-      cy.intercept("GET", "/fyllut/translations/cypressaxe", { body: {} }).as("getTranslation");
+      cy.intercept("GET", "/fyllut/api/translations/cypressaxe", { body: {} }).as("getTranslation");
+      cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
       cy.visit("/fyllut/cypressaxe");
       cy.wait("@getConfig");
       cy.wait("@getCypressAxe");
@@ -44,9 +45,7 @@ describe("Axe: Accessibility testing", () => {
 
     it("Layout", () => {
       cy.contains("Layout").click();
-      cy.checkA11y({
-        exclude: [".alertstripe"],
-      });
+      cy.checkA11y();
     });
 
     it("Data", () => {

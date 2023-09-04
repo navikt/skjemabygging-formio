@@ -20,8 +20,8 @@ describe("sendInnContext", () => {
   };
 
   const mockHttp = {
-    post: jest.fn(),
-    put: jest.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
   };
   const innsendingsId = "abc-123-456";
   const form = { title: "TestSkjema", components: [] } as unknown as NavFormType;
@@ -32,7 +32,7 @@ describe("sendInnContext", () => {
   const opts = { redirectToLocation: false };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("When mellomlagring is enabled", () => {
@@ -50,13 +50,13 @@ describe("sendInnContext", () => {
           <SendInnProvider form={form} translations={translations}>
             <TestComponent submission={submission} />
           </SendInnProvider>
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
     });
 
     describe("startMellomlagring", () => {
       it("sends a POST request to /api/send-inn/soknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
         await waitFor(() => expect(screen.getByTestId("innsendings-id")).toHaveTextContent(innsendingsId));
         expect(mockHttp.post).toHaveBeenCalledTimes(1);
         expect(mockHttp.post).toHaveBeenCalledWith(
@@ -67,16 +67,16 @@ describe("sendInnContext", () => {
             submissionMethod,
           }),
           headers,
-          opts
+          opts,
         );
       });
     });
 
     describe("updateMellomlagring", () => {
       it("sends a PUT request to /api/send-inn/soknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
         await waitFor(() => expect(screen.getByTestId("innsendings-id")).toHaveTextContent(innsendingsId));
-        userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
         expect(mockHttp.put).toHaveBeenCalledTimes(1);
         expect(mockHttp.put).toHaveBeenCalledWith(
           "http://test.example.no/api/send-inn/soknad",
@@ -87,16 +87,16 @@ describe("sendInnContext", () => {
             innsendingsId,
           }),
           headers,
-          opts
+          opts,
         );
       });
     });
 
     describe("submitSoknad", () => {
       it("sends a PUT request to /api/send-inn/utfyltsoknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
         await waitFor(() => expect(screen.getByTestId("innsendings-id")).toHaveTextContent(innsendingsId));
-        userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
+        await userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
         expect(mockHttp.put).toHaveBeenCalledTimes(1);
         expect(mockHttp.put).toHaveBeenCalledWith(
           "http://test.example.no/api/send-inn/utfyltsoknad",
@@ -107,7 +107,7 @@ describe("sendInnContext", () => {
             innsendingsId,
           }),
           headers,
-          { redirectToLocation: true }
+          { redirectToLocation: true },
         );
       });
     });
@@ -127,27 +127,27 @@ describe("sendInnContext", () => {
           <SendInnProvider form={form} translations={translations}>
             <TestComponent submission={submission} />
           </SendInnProvider>
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
     });
 
     describe("startMellomlagring", () => {
       it("does not send a POST request to /api/send-inn/soknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
         expect(mockHttp.post).not.toHaveBeenCalled();
       });
     });
 
     describe("updateMellomlagring", () => {
       it("does not send a PUT request to /api/send-inn/soknad", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
+        await userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
         expect(mockHttp.put).not.toHaveBeenCalled();
       });
     });
 
     describe("submitSoknad", () => {
       it("sends a POST request to /api/send-inn", async () => {
-        userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
+        await userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
         await waitFor(() => expect(mockHttp.post).toHaveBeenCalledTimes(1));
         expect(mockHttp.post).toHaveBeenCalledWith(
           "http://test.example.no/api/send-inn",
@@ -157,7 +157,7 @@ describe("sendInnContext", () => {
             submissionMethod,
           }),
           headers,
-          { redirectToLocation: true }
+          { redirectToLocation: true },
         );
       });
     });

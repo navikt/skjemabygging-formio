@@ -6,11 +6,14 @@ const { wrongBBANLength, noIBANCountry, invalidIBAN } = TEXTS.validering;
 
 const iban = new IBAN();
 
-jest.mock("ibantools", () => ({
-  ...jest.requireActual("ibantools"),
-  validateIBAN: jest.fn().mockReturnValue({ valid: true, errorCodes: [] }),
-}));
-jest.spyOn(IBAN.prototype, "getErrorMessage").mockImplementation((key) => TEXTS.validering[key]);
+vi.mock("ibantools", async () => {
+  const actual = await vi.importActual("ibantools");
+  return {
+    ...actual,
+    validateIBAN: vi.fn().mockReturnValue({ valid: true, errorCodes: [] }),
+  };
+});
+vi.spyOn(IBAN.prototype, "getErrorMessage").mockImplementation((key) => TEXTS.validering[key]);
 
 describe("IBAN", () => {
   describe("validateIban", () => {

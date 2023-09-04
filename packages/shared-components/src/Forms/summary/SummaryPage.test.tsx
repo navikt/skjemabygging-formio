@@ -11,12 +11,15 @@ import { Props, SummaryPage } from "./SummaryPage";
 
 const originalWindowLocation = window.location;
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useRouteMatch: () => ({ url: "/forms/previous" }),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<object>("react-router-dom");
+  return {
+    ...actual,
+    useRouteMatch: () => ({ url: "/forms/previous" }),
+  };
+});
 
-jest.mock("../../context/languages", () => ({
+vi.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
@@ -64,7 +67,7 @@ const defaultFormWithAttachment = {
 
 const formWithProperties = (
   props: Partial<FormPropertiesType>,
-  originalForm: Partial<NavFormType> = defaultForm
+  originalForm: Partial<NavFormType> = defaultForm,
 ): NavFormType =>
   ({
     ...originalForm,
@@ -72,7 +75,7 @@ const formWithProperties = (
       ...originalForm.properties,
       ...props,
     },
-  } as unknown as NavFormType);
+  }) as unknown as NavFormType;
 
 type Buttons = {
   redigerSvarKnapp: HTMLButtonElement;
@@ -93,7 +96,7 @@ const getButtons = (): Buttons => {
 
 const renderSummaryPage = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {} as AppConfigContextType
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType,
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -110,7 +113,7 @@ const renderSummaryPage = async (
           <SummaryPage {...summaryPageProps} />
         </Router>
       </SendInnProvider>
-    </AppConfigProvider>
+    </AppConfigProvider>,
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { name: TEXTS.grensesnitt.title });
@@ -135,7 +138,7 @@ describe("SummaryPage", () => {
       const form = formWithProperties({ innsending: undefined });
       const { history, buttons } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -143,7 +146,7 @@ describe("SummaryPage", () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
       const { history, buttons } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -154,7 +157,7 @@ describe("SummaryPage", () => {
       const appConfigProps = { submissionMethod: "paper", app: "bygger" } as AppConfigContextType;
       const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -163,7 +166,7 @@ describe("SummaryPage", () => {
       const appConfigProps = { submissionMethod: "digital", app: "bygger" } as AppConfigContextType;
       const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -179,7 +182,7 @@ describe("SummaryPage", () => {
       const appConfigProps = { app: "bygger" } as AppConfigContextType;
       const { history, buttons } = await renderSummaryPage({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -189,7 +192,7 @@ describe("SummaryPage", () => {
       const form = formWithProperties({ innsending: "KUN_PAPIR" });
       const { buttons, history } = await renderSummaryPage({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -214,7 +217,7 @@ describe("SummaryPage", () => {
       const { buttons } = await renderSummaryPage({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
 
@@ -240,8 +243,8 @@ describe("SummaryPage", () => {
       const { buttons } = await renderSummaryPage({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
 
-      userEvent.click(buttons.sendTilNavKnapp);
-      userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
+      await userEvent.click(buttons.sendTilNavKnapp);
+      await userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
 
@@ -255,7 +258,7 @@ describe("SummaryPage", () => {
       const { history, buttons } = await renderSummaryPage({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/ingen-innsending");
     });
   });
@@ -282,11 +285,11 @@ describe("SummaryPage", () => {
         {
           submissionMethod: "digital",
           baseUrl: basePath,
-        }
+        },
       );
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
-      userEvent.click(buttons.sendTilNavKnapp);
-      userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
+      await userEvent.click(buttons.sendTilNavKnapp);
+      await userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
 
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
@@ -298,7 +301,7 @@ describe("SummaryPage", () => {
       const { history, buttons } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -309,7 +312,7 @@ describe("SummaryPage", () => {
       const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).not.toBeInTheDocument();
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -318,10 +321,9 @@ describe("SummaryPage", () => {
       const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
-      userEvent.click(confirmCheckbox!);
-      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "false");
-      expect(confirmCheckbox).toHaveAttribute("aria-checked", "true");
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(confirmCheckbox!);
+      expect(confirmCheckbox).toBeChecked();
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -330,7 +332,7 @@ describe("SummaryPage", () => {
       const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(confirmCheckbox).toHaveAttribute("aria-invalid", "true");
       expect(confirmCheckbox).toHaveAttribute("aria-checked", "false");
       expect(history.location.pathname).not.toBe("/testform/send-i-posten");

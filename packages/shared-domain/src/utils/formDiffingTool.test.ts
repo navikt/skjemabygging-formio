@@ -1,4 +1,4 @@
-import form from "../../../bygger/server/src/util/testData/nav100750";
+import form from "./testdata/nav100750";
 import { Component, FormPropertiesType, NavFormType } from "../form";
 import { navFormUtils } from "../index";
 import tool, { DiffStatus, generateNavFormDiff } from "./formDiffingTool";
@@ -201,7 +201,7 @@ describe("formDiffingTool", () => {
       checkDefaultComponentsValues(changes.components[0]);
       checkDefaultComponentsValues(changes.components[0].components[0]);
       expect(changes.components[0].components[0].diff.content.originalValue).toBe(
-        form.components[0].components[0].content
+        form.components[0].components[0].content,
       );
       expect(changes.components[0].components[0].diff.content.value).toBe(content);
       expect(changes.components[0].components[0].diff.content.status).toBe(DiffStatus.CHANGED);

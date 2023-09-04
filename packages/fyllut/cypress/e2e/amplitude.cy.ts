@@ -8,8 +8,9 @@
 
 describe("Amplitude", () => {
   beforeEach(() => {
+    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
-    cy.intercept("GET", "/fyllut/translations/cypress101", { body: {} }).as("getTranslation");
+    cy.intercept("GET", "/fyllut/api/translations/cypress101", { body: {} }).as("getTranslation");
     cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
     cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 200 }).as("submitToSendinnSuccess");
     cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 500 }).as("submitToSendinnFailed");
@@ -35,18 +36,17 @@ describe("Amplitude", () => {
     cy.checkLogToAmplitude("skjema startet");
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Tittel" });
 
-    cy.findByRole("textbox", { name: "Fornavn" }).should("exist").type("Kari").blur();
+    cy.findByRole("textbox", { name: "Fornavn" }).should("exist");
+    cy.findByRole("textbox", { name: "Fornavn" }).type("Kari").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Fornavn" });
 
     cy.findByRole("textbox", { name: "Etternavn" }).type("Norman").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Etternavn" });
 
-    // Radio panel is currently not reachable by role. Additionally {force: true} is needed here because
-    // the input is overlapping with the label element, which makes cypress assume it's not interactable
     cy.get(".navds-radio-group")
       .first()
       .should("exist")
-      .within(($radio) => cy.findByLabelText("Nei").should("exist").check({ force: true }));
+      .within(($radio) => cy.findByLabelText("Nei").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Har du norsk fødselsnummer eller D-nummer?" });
 
     cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995").blur();
@@ -55,13 +55,13 @@ describe("Amplitude", () => {
     cy.get(".navds-radio-group")
       .eq(1)
       .should("exist")
-      .within(($radio) => cy.findByLabelText("Ja").should("exist").check({ force: true }));
+      .within(($radio) => cy.findByLabelText("Ja").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Bor du i Norge?" });
 
     cy.get(".navds-radio-group")
       .eq(2)
       .should("exist")
-      .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check({ force: true }));
+      .within(($radio) => cy.findByLabelText("Vegadresse").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", {
       spørsmål: "Er kontaktadressen din en vegadresse eller postboksadresse?",
     });

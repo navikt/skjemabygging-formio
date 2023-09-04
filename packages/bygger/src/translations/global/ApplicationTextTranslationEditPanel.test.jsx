@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import React from "react";
 import ApplicationTextTranslationEditPanel, {
   getTranslationByOriginalText,
 } from "./ApplicationTextTranslationEditPanel";
@@ -26,7 +25,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
   });
 
   describe("Rendering with Grensesnitt texts and one translation", () => {
-    const mockedUpdateTranslation = jest.fn();
+    const mockedUpdateTranslation = vi.fn();
     beforeEach(() => {
       render(
         <ApplicationTextTranslationEditPanel

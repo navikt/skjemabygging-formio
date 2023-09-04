@@ -1,11 +1,14 @@
 import { Enhet, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import React from "react";
 import { LanguagesProvider } from "../../context/languages";
 import EnhetSelector from "./EnhetSelector";
 
-jest.mock("../../context/languages/useLanguageCodeFromURL", () => jest.fn(() => ""));
-const mockOnSelectEnhet = jest.fn();
+vi.mock("../../context/languages/useLanguageCodeFromURL", () => {
+  return {
+    default: () => "",
+  };
+});
+const mockOnSelectEnhet = vi.fn();
 const mockEnhetsListe = [
   { enhetNr: "1", navn: "NAV abc" },
   { enhetNr: "2", navn: "NAV def" },

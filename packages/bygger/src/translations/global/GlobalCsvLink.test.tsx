@@ -22,4 +22,12 @@ describe("GlobalCsvLink", () => {
     expect(link.getAttribute("download")).toEqual("globale-oversettelser-en.csv");
     expect(link).toHaveAttribute("href");
   });
+
+  it("Test for createObjectURL (blob) issue solved with overrides in setupTests.ts", async () => {
+    const csv = '"Globale tekster";"EN"\n"Personopplysninger";"Personal information"';
+    const blob = new Blob(["\uFEFF", csv], { type: "text/csv" });
+
+    // This is the error we get from react-csv, but have isolated this to this simple test.
+    expect(() => URL.createObjectURL(blob)).not.toThrow();
+  });
 });

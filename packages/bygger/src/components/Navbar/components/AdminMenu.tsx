@@ -1,16 +1,15 @@
 import { System } from "@navikt/ds-icons";
-import { Dropdown, Header } from "@navikt/ds-react-internal";
-import React from "react";
 import { Link } from "react-router-dom";
 import { useDropdownStyles } from "../styles";
+import { Dropdown, InternalHeader } from "@navikt/ds-react";
 
 const AdminMenu = () => {
   const dropdownStyles = useDropdownStyles();
   return (
     <Dropdown>
-      <Header.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
+      <InternalHeader.Button as={Dropdown.Toggle} className="ml-auto" aria-label="Åpne meny">
         <System fontSize={"1.5rem"} role="presentation" />
-      </Header.Button>
+      </InternalHeader.Button>
       <Dropdown.Menu className={dropdownStyles.dropdownMenu}>
         <Dropdown.Menu.GroupedList>
           <Dropdown.Menu.GroupedList.Item>

@@ -1,5 +1,7 @@
 import testForm from "../example_data/Form.json";
 import loginForm from "../example_data/LoginForm.json";
+import mottaksadresse from "../example_data/mottaksadresse.json";
+import mottaksadresser from "../example_data/mottaksadresser.json";
 
 const RESPONSE_HEADERS = {
   headers: {
@@ -19,17 +21,18 @@ const countriesWithLocale = {
   ],
 };
 
-const GET_USER_LOGIN_REGEX = /http.*\/user\/login/;
-const GET_FORM_REGEX = /http.*\/form\?type=form(&.*)?/;
-const GET_RESOURCE_REGEX = /http.*\/form\?type=resource(&.*)?/;
-const GET_LANGUAGES_REGEX = /http.*\/language\/submission(\?.*)?$/;
-const GET_LANGUAGE_REGEX = /http.*\/language\/submission\/(.*)$/;
-const GET_COUNTRIES_REGEX = /http.*\/countries\??lang=(.*)$/;
-const GET_MOTTAKSADRESSER_REGEX = /http.*\/mottaksadresse\/submission/;
-const GET_TEMAKODER_REGEX = /http.*\/api\/temakoder/;
-const GET_FORM_DIFF = /http.*\/form\/.*\/diff/;
+const USER_LOGIN_REGEX = /http.*\/user\/login/;
+const FORM_REGEX = /http.*\/form\?type=form(&.*)?/;
+const RESOURCE_REGEX = /http.*\/form\?type=resource(&.*)?/;
+const LANGUAGES_REGEX = /http.*\/language\/submission(\?.*)?$/;
+const LANGUAGE_REGEX = /http.*\/language\/submission\/(.*)$/;
+const COUNTRIES_REGEX = /http.*\/countries\??lang=(.*)$/;
+const MOTTAKSADRESSER_REGEX = /http.*\/mottaksadresse\/submission/;
+const MOTTAKSADRESSE_REGEX = /http.*\/mottaksadresse$/;
+const TEMAKODER_REGEX = /http.*\/api\/temakoder/;
+const FORM_DIFF = /http.*\/form\/.*\/diff/;
 
-const DEFAULT_PROJECT_URL = "http://myproject.example.org";
+export const DEFAULT_PROJECT_URL = "http://myproject.example.org";
 
 const defaultParams = {
   projectUrl: DEFAULT_PROJECT_URL,
@@ -44,40 +47,55 @@ const createMockImplementation =
   ({ projectUrl } = defaultParams) =>
   (url, options: FetchOptions = {}) => {
     if (projectUrl === url) {
-      return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
+      return Promise.resolve(new Response(JSON.stringify({ builder: {} }), RESPONSE_HEADERS));
     }
-    if (GET_USER_LOGIN_REGEX.test(url)) {
+    if (USER_LOGIN_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify(loginForm), RESPONSE_HEADERS));
     }
-    if (GET_FORM_REGEX.test(url)) {
+    if (FORM_REGEX.test(url)) {
+      if (/mottaksadresseId=mockDeleteId/.test(url)) {
+        return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
+      }
       return Promise.resolve(new Response(JSON.stringify([testForm]), RESPONSE_HEADERS));
     }
-    if (GET_RESOURCE_REGEX.test(url)) {
+    if (RESOURCE_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
     }
-    if (GET_LANGUAGES_REGEX.test(url)) {
+    if (LANGUAGES_REGEX.test(url)) {
       if (options.method === "POST") {
         return Promise.resolve(new Response(JSON.stringify({ _id: "_translationId" }), RESPONSE_HEADERS));
       }
       return Promise.resolve(new Response(JSON.stringify(translations), RESPONSE_HEADERS));
     }
-    if (GET_LANGUAGE_REGEX.test(url)) {
+    if (LANGUAGE_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
     }
-    if (GET_MOTTAKSADRESSER_REGEX.test(url)) {
-      return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
+    if (MOTTAKSADRESSER_REGEX.test(url)) {
+      if (options.method === "POST") {
+        return Promise.resolve(new Response(JSON.stringify(mottaksadresser[0]), RESPONSE_HEADERS));
+      }
+      if (options.method === "PUT") {
+        return Promise.resolve(new Response(JSON.stringify(mottaksadresser[0]), RESPONSE_HEADERS));
+      }
+      if (options.method === "DELETE") {
+        return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
+      }
+      return Promise.resolve(new Response(JSON.stringify(mottaksadresser), RESPONSE_HEADERS));
     }
-    if (GET_TEMAKODER_REGEX.test(url)) {
+    if (MOTTAKSADRESSE_REGEX.test(url)) {
+      return Promise.resolve(new Response(JSON.stringify(mottaksadresse), RESPONSE_HEADERS));
+    }
+    if (TEMAKODER_REGEX.test(url)) {
       return Promise.resolve(new Response(JSON.stringify({ TEST: "test" }), RESPONSE_HEADERS));
     }
-    if (GET_COUNTRIES_REGEX.test(url)) {
-      const matches = GET_COUNTRIES_REGEX.exec(url);
+    if (COUNTRIES_REGEX.test(url)) {
+      const matches = COUNTRIES_REGEX.exec(url);
       if (matches) {
         const lang = matches[1];
         return Promise.resolve(new Response(JSON.stringify(countriesWithLocale[lang]), RESPONSE_HEADERS));
       }
     }
-    if (GET_FORM_DIFF.test(url)) {
+    if (FORM_DIFF.test(url)) {
       return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
     }
 

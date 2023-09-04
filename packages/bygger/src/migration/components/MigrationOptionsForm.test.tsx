@@ -2,8 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import MigrationOptionsForm from "./MigrationOptionsForm";
 
 describe("MigrationOptionsForm", () => {
-  const onSubmitMock = jest.fn();
-  const dispatchMock = jest.fn();
+  const onSubmitMock = vi.fn();
+  const dispatchMock = vi.fn();
   beforeEach(() => {
     render(
       <MigrationOptionsForm title="title" addRowText="addRowText" dispatch={dispatchMock} testId="search-filters">

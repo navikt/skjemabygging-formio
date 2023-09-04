@@ -7,7 +7,7 @@ describe("Fodselsnummer", () => {
 
     beforeEach(() => {
       fnrComp = new Fodselsnummer();
-      jest.spyOn(Fodselsnummer.prototype, "t").mockImplementation((text) => text);
+      vi.spyOn(Fodselsnummer.prototype, "t").mockImplementation((text) => text);
     });
 
     it("successfully validates a fnr", () => {

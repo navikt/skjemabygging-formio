@@ -28,19 +28,21 @@ describe("UserMessageModal", () => {
   describe("User message", () => {
     beforeEach(() => {
       render(<TestComponent />);
-      const showMessageButton = screen.getByRole("button", { name: "Show message" });
-      userEvent.click(showMessageButton);
     });
 
-    it("is rendered", () => {
+    it("is rendered", async () => {
+      const showMessageButton = screen.getByRole("button", { name: "Show message" });
+      await userEvent.click(showMessageButton);
       expect(screen.queryByText(THIS_IS_THE_MESSAGE)).toBeInTheDocument();
       const okButton = screen.queryByRole("button", { name: "Ok" });
       expect(okButton).toBeInTheDocument();
     });
 
-    it("is hid", () => {
+    it("is hid", async () => {
+      const showMessageButton = screen.getByRole("button", { name: "Show message" });
+      await userEvent.click(showMessageButton);
       const okButton = screen.getByRole("button", { name: "Ok" });
-      userEvent.click(okButton);
+      await userEvent.click(okButton);
       expect(screen.queryByText(THIS_IS_THE_MESSAGE)).not.toBeInTheDocument();
       expect(screen.queryByRole("button", { name: "Ok" })).not.toBeInTheDocument();
     });

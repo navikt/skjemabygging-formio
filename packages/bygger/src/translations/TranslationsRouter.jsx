@@ -1,11 +1,10 @@
-import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
-import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 import NewTranslation from "./NewTranslation";
 import { TranslationsByFormRoute } from "./TranslationsByFormRoute.tsx";
 import { TranslationsListPage } from "./TranslationsListPage";
+import GlobalTranslationsPage from "./global/GlobalTranslationsPage";
 
 const TranslationsRouter = ({ formio, serverURL }) => {
   let { path } = useRouteMatch();

@@ -1,12 +1,11 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from "@testing-library/react";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResults, FormMigrationLogData } from "../../types/migration";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
-import { TestId } from "./components/MigrationOptionsForm";
 import MigrationPage from "./MigrationPage";
+import { TestId } from "./components/MigrationOptionsForm";
 import { migrationOptionsAsMap } from "./utils";
 
 Modal.setAppElement(document.createElement("div"));
@@ -42,7 +41,7 @@ describe("MigrationPage", () => {
   );
 
   beforeEach(() => {
-    fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
+    fetchSpy = vi.spyOn(global, "fetch").mockImplementation(() =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
           headers: {

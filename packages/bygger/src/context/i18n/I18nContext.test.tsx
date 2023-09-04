@@ -43,7 +43,7 @@ describe("I18nStateProvider", () => {
     return <div>Loaded translations for {Object.keys(state.translationsForNavForm).length} languages</div>;
   };
 
-  const onStateUpdated = jest.fn();
+  const onStateUpdated = vi.fn();
 
   beforeEach(async () => {
     render(

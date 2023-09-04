@@ -1,11 +1,7 @@
-import { CustomComponents, Template as navdesign } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Formio } from "formiojs";
-import Components from "formiojs/components/Components";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
-import createMockImplementation from "../../test/backendMockImplementation";
+import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
 import NavFormBuilder from "./NavFormBuilder";
 import testform from "./testdata/conditional-multiple-dependencies";
 
@@ -23,13 +19,8 @@ const BUILDER_COMP_TESTID_ATTR = { name: "data-testid", value: "builder-componen
 
 describe("NavFormBuilder", () => {
   beforeAll(() => {
-    Formio.use(navdesign);
-    Components.setComponents(CustomComponents);
-    new Formio("http://unittest.nav-formio-api.no");
-  });
-
-  beforeEach(() => {
-    fetchMock.mockImplementation(createMockImplementation({ projectUrl: "http://unittest.nav-formio-api.no" }));
+    new NavFormioJs.Formio(DEFAULT_PROJECT_URL);
+    vi.spyOn(NavFormioJs.Formio, "fetch").mockImplementation(createMockImplementation());
   });
 
   afterEach(() => {
@@ -42,8 +33,8 @@ describe("NavFormBuilder", () => {
     let onReadyMock;
 
     beforeEach(async () => {
-      onChangeMock = jest.fn();
-      onReadyMock = jest.fn();
+      onChangeMock = vi.fn();
+      onReadyMock = vi.fn();
       render(<NavFormBuilder form={testform} onChange={onChangeMock} onReady={onReadyMock} />);
       await waitFor(() => expect(onReadyMock.mock.calls).toHaveLength(1));
       onChangeMock.mockReset();
@@ -55,7 +46,7 @@ describe("NavFormBuilder", () => {
 
     it("adds another page", async () => {
       const leggTilNyttStegKnapp = await screen.findByRole("button", { name: "Legg til nytt steg" });
-      userEvent.click(leggTilNyttStegKnapp);
+      await userEvent.click(leggTilNyttStegKnapp);
       expect(await screen.findByRole("link", { name: "Page 2" })).toBeTruthy();
       await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
     }, 10000);
@@ -68,47 +59,47 @@ describe("NavFormBuilder", () => {
         const builderComponent = findClosestWithAttribute(checkbox, BUILDER_COMP_TESTID_ATTR);
 
         const removeComponentButton = await within(builderComponent).findByTitle("Slett");
-        userEvent.click(removeComponentButton);
+        await userEvent.click(removeComponentButton);
 
         expect(screen.queryByLabelText("Oppgi din favorittfarge")).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
       });
 
       it("prompts user when removing a component which other components depends on", async () => {
-        window.confirm = jest.fn().mockImplementation(() => true);
+        window.confirm = vi.fn().mockImplementation(() => true);
         const fieldset = screen.queryByRole("group", { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
         const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
 
         const removeComponentButton = await within(builderComponent).findByTitle("Slett");
-        userEvent.click(removeComponentButton);
+        await userEvent.click(removeComponentButton);
 
         expect(screen.queryByRole("group", { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
         await waitFor(() => expect(onChangeMock.mock.calls).toHaveLength(1));
       });
 
       it("does not remove component if user declines prompt", async () => {
-        window.confirm = jest.fn().mockImplementation(() => false);
+        window.confirm = vi.fn().mockImplementation(() => false);
         const fieldset = screen.queryByRole("group", { name: /Your favorite time of the year/ });
         expect(fieldset).toBeInTheDocument();
 
         const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
 
         const removeComponentButton = await within(builderComponent).findByTitle("Slett");
-        userEvent.click(removeComponentButton);
+        await userEvent.click(removeComponentButton);
 
         expect(screen.queryByRole("group", { name: /Your favorite time of the year/ })).toBeInTheDocument();
         expect(onChangeMock.mock.calls).toHaveLength(0);
 
         expect(window.confirm.mock.calls).toHaveLength(1);
         expect(window.confirm.mock.calls[0][0]).toEqual(
-          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?"
+          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?",
         );
       });
 
       it("prompts user when removing component containing component which other components depends on", async () => {
-        window.confirm = jest.fn().mockImplementation(() => true);
+        window.confirm = vi.fn().mockImplementation(() => true);
         const panel = screen.queryByText("Tilbakemelding");
         expect(panel).toBeInTheDocument();
 
@@ -117,7 +108,7 @@ describe("NavFormBuilder", () => {
         expect(fieldset).toBeInTheDocument();
 
         const removeComponentButtons = await within(builderComponent).findAllByTitle("Slett");
-        userEvent.click(removeComponentButtons[0]);
+        await userEvent.click(removeComponentButtons[0]);
 
         expect(screen.queryByText("Tilbakemelding")).not.toBeInTheDocument();
         expect(screen.queryByRole("group", { name: /Your favorite time of the year/ })).not.toBeInTheDocument();
@@ -125,10 +116,10 @@ describe("NavFormBuilder", () => {
 
         expect(window.confirm.mock.calls).toHaveLength(2);
         expect(window.confirm.mock.calls[0][0]).toEqual(
-          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?"
+          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?",
         );
         expect(window.confirm.mock.calls[1][0]).toEqual(
-          "Removing this component will also remove all of its children. Are you sure you want to do this?"
+          "Removing this component will also remove all of its children. Are you sure you want to do this?",
         );
       });
     });
@@ -141,7 +132,7 @@ describe("NavFormBuilder", () => {
         const builderComponent = findClosestWithAttribute(fieldset, BUILDER_COMP_TESTID_ATTR);
 
         const editComponentButton = await within(builderComponent).findByTitle("Rediger");
-        userEvent.click(editComponentButton);
+        await userEvent.click(editComponentButton);
 
         const conditionalAlert = screen.queryByRole("list", {
           name: "Følgende komponenter har avhengighet til denne:",
@@ -158,7 +149,7 @@ describe("NavFormBuilder", () => {
         const builderComponent = findClosestWithAttribute(textInput, BUILDER_COMP_TESTID_ATTR);
 
         const editComponentButton = await within(builderComponent).findByTitle("Rediger");
-        userEvent.click(editComponentButton);
+        await userEvent.click(editComponentButton);
 
         const conditionalAlert = screen.queryByRole("list", {
           name: "Følgende komponenter har avhengighet til denne:",

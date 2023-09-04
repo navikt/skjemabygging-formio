@@ -1,7 +1,7 @@
 import { formDiffingTool, navFormioUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import { Formio, Utils } from "formiojs";
+import { Utils } from "formiojs";
 
-Formio.Utils.additionalDescription = (ctx) => {
+const additionalDescription = (ctx) => {
   if (!ctx.component.additionalDescription) return "";
 
   const descriptionId = `${ctx.component.id}-${ctx.component.key}-additional-description`;
@@ -30,7 +30,7 @@ Formio.Utils.additionalDescription = (ctx) => {
   </div>`;
 };
 
-Utils.translateHTMLTemplate = (template, translate) => {
+const translateHTMLTemplate = (template, translate) => {
   return translate(template);
 };
 
@@ -76,7 +76,6 @@ const createList = (components, labelId) => {
   }
   return "";
 };
-Formio.Utils.navFormDiffToHtml = navFormDiffToHtml;
 
 const TAG = (text) =>
   `<span class="navds-tag navds-tag--warning-filled navds-tag--xsmall navds-detail navds-detail--small">${text}</span>`;
@@ -100,7 +99,6 @@ const getDiffTag = (ctx) => {
   }
   return "";
 };
-Formio.Utils.getDiffTag = getDiffTag;
 
 /*
  * This function is overridden because FormioUtils.sanitize calls dompurify.sanitize, which has a bug.
@@ -113,16 +111,34 @@ Formio.Utils.getDiffTag = getDiffTag;
  * This is messy, but we consider it safer than turning off sanitizing by sending in "sanitize = false" to NavForm.
  */
 const originalSanitize = Utils.sanitize;
-Formio.Utils.sanitize = (string, options) => {
+const sanitize = (string, options) => {
   return originalSanitize(originalSanitize(string, options), options);
 };
 
 const originalEvaluate = Utils.evaluate;
 
-function evaluateOverride(func, args, ret, tokenize) {
+const evaluateOverride = (func, args, ret, tokenize) => {
   return originalEvaluate(sanitizeJavaScriptCode(func), args, ret, tokenize);
-}
+};
 
 const { sanitizeJavaScriptCode } = navFormioUtils;
 
-export { evaluateOverride, sanitizeJavaScriptCode, navFormDiffToHtml, getDiffTag };
+const UtilsOverrides = {
+  additionalDescription,
+  translateHTMLTemplate,
+  evaluateOverride,
+  sanitize,
+  sanitizeJavaScriptCode,
+  navFormDiffToHtml,
+  getDiffTag,
+};
+
+if (typeof global === "object" && global.FormioUtils) {
+  Object.entries(UtilsOverrides).forEach(([key, value]) => {
+    Utils[key] = value;
+    // FormioUtils is set on global scope by Formio if global is object
+    global.FormioUtils[key] = value;
+  });
+}
+
+export default UtilsOverrides;

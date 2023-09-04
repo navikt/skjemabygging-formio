@@ -1,7 +1,6 @@
 import { Button, Heading, Pagination } from "@navikt/ds-react";
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { NavFormioJs, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType, paginationUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { FormMigrationLogData } from "../../types/migration";
@@ -129,7 +128,7 @@ const MigrationPage = () => {
   };
 
   const onConfirm = async () => {
-    const updatedForms = await runMigrationWithUpdate(Formiojs.getToken(), {
+    const updatedForms = await runMigrationWithUpdate(NavFormioJs.Formio.getToken(), {
       searchFilters: searchFiltersAsParams(searchFilters),
       dependencyFilters: searchFiltersAsParams(dependencyFilters),
       editOptions: migrationOptionsAsMap(editInputs),

@@ -1,4 +1,5 @@
 import { http } from "@navikt/skjemadigitalisering-shared-components";
+import { vi } from "vitest";
 import httpFyllut from "./httpFyllut";
 
 const originalWindowLocation = window.location;
@@ -19,7 +20,7 @@ describe("httpFyllut", () => {
   });
 
   it("401 redirect", async () => {
-    const replace = jest.fn();
+    const replace = vi.fn();
     Object.defineProperty(window, "location", {
       value: {
         replace,
@@ -27,7 +28,7 @@ describe("httpFyllut", () => {
       writable: true,
     });
 
-    jest.spyOn(http, "get").mockImplementation(() => {
+    vi.spyOn(http, "get").mockImplementation(() => {
       return new Promise((resolve, reject) => {
         reject(new httpFyllut.UnauthenticatedError());
       });

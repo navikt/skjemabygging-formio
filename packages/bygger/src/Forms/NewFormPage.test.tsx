@@ -2,11 +2,10 @@ import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-component
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock from "jest-fetch-mock";
 import { MemoryRouter } from "react-router-dom";
+import mockMottaksadresser from "../../example_data/mottaksadresser.json";
 import featureToggles from "../../test/featureToggles";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
-import mockMottaksadresser from "../mottaksadresser/testdata/mottaksadresser";
 import NewFormPage from "./NewFormPage";
 
 const RESPONSE_HEADERS = {
@@ -31,20 +30,20 @@ describe("NewFormPage", () => {
     });
   });
   it("should create a new form with correct path, title and name", async () => {
-    const saveForm = jest.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
+    const saveForm = vi.fn(() => Promise.resolve(new Response(JSON.stringify({}))));
     render(
       <MemoryRouter>
         <AppConfigProvider featureToggles={featureToggles}>
           <NewFormPage formio={{ saveForm }} />
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => screen.getByText("Opprett nytt skjema"));
 
-    userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
-    userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
-    userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
+    await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
+    await userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
     // @ts-ignore
@@ -63,8 +62,8 @@ describe("NewFormPage", () => {
     });
   });
   it("should handle exception from saveForm, with message to user", async () => {
-    const saveForm = jest.fn(() => Promise.reject(new Error("Form.io feil")));
-    console.error = jest.fn();
+    const saveForm = vi.fn(() => Promise.reject(new Error("Form.io feil")));
+    console.error = vi.fn();
     render(
       <FeedbackProvider>
         <MemoryRouter>
@@ -72,14 +71,14 @@ describe("NewFormPage", () => {
             <NewFormPage formio={{ saveForm }} />
           </AppConfigProvider>
         </MemoryRouter>
-      </FeedbackProvider>
+      </FeedbackProvider>,
     );
     await screen.findByText("Opprett nytt skjema");
 
-    userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
-    userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
-    userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
-    userEvent.click(screen.getByRole("button", { name: "Opprett" }));
+    await userEvent.type(screen.getByLabelText("Skjemanummer"), "NAV 10-20.30 ");
+    await userEvent.type(screen.getByLabelText("Tittel"), "Et testskjema");
+    await userEvent.selectOptions(screen.getByLabelText("Tema"), "ABC");
+    await userEvent.click(screen.getByRole("button", { name: "Opprett" }));
 
     expect(saveForm).toHaveBeenCalledTimes(1);
 

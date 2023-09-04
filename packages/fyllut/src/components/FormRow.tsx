@@ -2,6 +2,7 @@ import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 
 const FormRow = ({ form }) => {
+  // @ts-ignore
   const { config } = useAppConfig();
   const paper = navFormUtils.isSubmissionMethodAllowed("paper", form);
   const digital = navFormUtils.isSubmissionMethodAllowed("digital", form);

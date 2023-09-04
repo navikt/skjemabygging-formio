@@ -40,10 +40,12 @@ const FyllUtRouter = ({ form, translations }) => {
   }, [form, submissionMethod]);
 
   useEffect(() => {
-    addBeforeUnload();
-    return () => {
-      removeBeforeUnload();
-    };
+    if (process.env.NODE_ENV !== "development") {
+      addBeforeUnload();
+      return () => {
+        removeBeforeUnload();
+      };
+    }
   }, []);
 
   return (

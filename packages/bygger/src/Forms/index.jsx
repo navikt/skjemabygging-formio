@@ -1,5 +1,3 @@
-import { CustomComponents } from "@navikt/skjemadigitalisering-shared-components";
-import Components from "formiojs/components/Components";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
@@ -8,7 +6,6 @@ import { FormsListPage } from "./FormsListPage";
 import NewFormPage from "./NewFormPage";
 
 export const FormsRouter = ({ formio, serverURL }) => {
-  Components.setComponents(CustomComponents);
   let { path, url } = useRouteMatch();
   const { loadForm, loadFormsList, onSave, onPublish, onUnpublish } = useFormioForms(formio);
   const { loadTranslationsForEditPage } = useFormioTranslations(serverURL, formio);

@@ -1,0 +1,17 @@
+FROM node:18.16.1-alpine
+ENV NODE_ENV production
+ARG git_sha
+
+WORKDIR /app
+COPY fyllut/dist build
+COPY fyllut-backend/dist server
+COPY fyllut-backend/fonts server/fonts
+COPY fyllut-backend/node_modules server/node_modules
+
+ENV GIT_SHA=${git_sha}
+ENV MONOREPO_GIT_SHA=${git_sha}
+
+WORKDIR server
+CMD ["node", "server.mjs"]
+
+EXPOSE 8080
