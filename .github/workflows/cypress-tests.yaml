@@ -26,8 +26,8 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: yarn start:fyllut
-          wait-on: "http://127.0.0.1:3001, http://127.0.0.1:8081/fyllut/internal/isready"
+          start: yarn preview:fyllut
+          wait-on: "http://127.0.0.1:3001/fyllut/internal/isready"
           wait-on-timeout: 120
           command: yarn cypress:fyllut
           config: video=false

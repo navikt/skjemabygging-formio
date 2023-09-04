@@ -80,7 +80,9 @@ const defaultConfig: DefaultConfig = {
 };
 
 const config: ConfigType = {
-  ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
+  ...(process.env.NODE_ENV === "development" || process.env.USE_CONFIG === "dev"
+    ? localDevelopmentConfig
+    : defaultConfig),
   fyllutPath: "/fyllut",
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,

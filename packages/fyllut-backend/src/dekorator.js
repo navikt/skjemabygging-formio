@@ -19,7 +19,9 @@ const getDecorator = async (redirect) => {
 
 const createRedirectUrl = (req, res) => {
   const formId = res.locals.formId;
-  const baseUrl = `https://${req.get("host")}/fyllut`;
+  // TODO nav-dekoratøren tillater ikke redirect til 127.0.0.1
+  const host = req.get("host").replace("127.0.0.1", "localhost");
+  const baseUrl = `https://${host}/fyllut`;
   if (formId) {
     return `${baseUrl}?form=${res.locals.formId}`;
   }

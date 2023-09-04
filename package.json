@@ -25,6 +25,7 @@
     "start": "concurrently --kill-others-on-fail \"yarn:start:*\"",
     "start:bygger": "concurrently --kill-others-on-fail \"yarn workspace @navikt/bygger-backend start\" \"yarn workspace @navikt/bygger-frontend start\"",
     "start:fyllut": "concurrently --kill-others-on-fail \"yarn workspace @navikt/fyllut-backend start\" \"yarn workspace @navikt/fyllut-frontend start\"",
+    "preview:fyllut": "yarn workspace @navikt/fyllut-backend preview",
     "test": "concurrently \"yarn workspace @navikt/bygger-frontend test\" \"yarn workspace @navikt/bygger-backend test\" \"yarn workspace @navikt/fyllut-frontend test\" \"yarn workspace @navikt/fyllut-backend test\" \"yarn workspace @navikt/skjemadigitalisering-shared-domain test\" \"yarn workspace @navikt/skjemadigitalisering-shared-components test\"",
     "test:coverage": "yarn workspaces run test:coverage",
     "cypress:bygger": "yarn workspace @navikt/bygger-frontend cypress",
