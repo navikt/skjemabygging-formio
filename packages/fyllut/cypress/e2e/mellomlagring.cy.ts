@@ -2,6 +2,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 describe("Mellomlagring", () => {
   beforeEach(() => {
+    cy.intercept("GET", "/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", { fixture: "conditionalxmas.json" }).as(
       "getConditionalxmas"
     );
