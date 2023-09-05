@@ -2,9 +2,9 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 describe("Mellomlagring", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/api/config", { fixture: "config.json" }).as("getConfig");
-    cy.intercept("GET", "/fyllut/translations/testmellomlagring").as("getTranslation");
-    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
+    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.intercept("GET", "/fyllut/api/translations/testmellomlagring").as("getTranslation");
+    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
       "getGlobalTranslation"
     );
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
@@ -17,7 +17,6 @@ describe("Mellomlagring", () => {
       cy.intercept("POST", "/fyllut/api/send-inn/soknad*", cy.spy().as("createMellomlagringSpy"));
       cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", cy.spy().as("updateMellomlagringSpy"));
     });
-    // it("renders error if url has query param innsendingsId", () => {});
 
     it("does not fetch or update mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=paper");
