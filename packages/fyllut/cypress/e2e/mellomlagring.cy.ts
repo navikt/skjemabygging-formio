@@ -3,10 +3,10 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 describe("Mellomlagring", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
-    cy.intercept("GET", "/fyllut/api/translations/testmellomlagring").as("getTranslation");
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
       "getTestMellomlagringForm"
     );
+    cy.intercept("GET", "/fyllut/translations/testmellomlagring", { body: {} }).as("getTranslation");
   });
 
   describe('When submission method is "paper"', () => {
@@ -18,6 +18,7 @@ describe("Mellomlagring", () => {
     it("does not fetch or update mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=paper");
       cy.wait("@getTestMellomlagringForm");
+      cy.wait("@getTranslation");
       cy.findByRole("heading", { name: TEXTS.statiske.introPage.title });
       cy.clickStart();
       cy.get("@createMellomlagringSpy").should("not.have.been.called");
@@ -69,6 +70,7 @@ describe("Mellomlagring", () => {
     it("creates and updates mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=digital");
       cy.wait("@getTestMellomlagringForm");
+      cy.wait("@getTranslation");
       cy.findByRole("heading", { name: TEXTS.statiske.introPage.title });
       cy.clickStart();
       cy.wait("@createMellomlagring");
