@@ -1,6 +1,6 @@
 import { NavFormType, SubmissionData, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import FormioUtils from "formiojs/utils";
-import { sanitizeJavaScriptCode } from "../../formio-overrides";
+import UtilsOverrides from "../../formio-overrides/utils-overrides";
 
 interface Attachment {
   vedleggsnr: string;
@@ -44,7 +44,7 @@ const hasOtherDocumentation = (form, submissionData) => {
 
 const sanitize = (component) => {
   const clone = JSON.parse(JSON.stringify(component));
-  clone.customConditional = sanitizeJavaScriptCode(clone.customConditional);
+  clone.customConditional = UtilsOverrides.sanitizeJavaScriptCode(clone.customConditional);
   return clone;
 };
 

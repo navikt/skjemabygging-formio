@@ -1,7 +1,6 @@
 import { Alert, BodyShort, Button, Checkbox, Heading, Panel, Table } from "@navikt/ds-react";
-import { Modal, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { Modal, NavFormioJs, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import { useEffect, useReducer, useState } from "react";
 import FormStatus, { determineStatus } from "../../Forms/status/FormStatus";
 import { bulkPublish } from "../api";
@@ -59,7 +58,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
 
   const onBulkPublish = async (formPaths) => {
     setIsLoading(true);
-    await bulkPublish(Formiojs.getToken(), { formPaths });
+    await bulkPublish(NavFormioJs.Formio.getToken(), { formPaths });
     setIsLoading(false);
   };
 

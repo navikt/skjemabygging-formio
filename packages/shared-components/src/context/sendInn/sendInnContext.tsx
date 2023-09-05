@@ -53,7 +53,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
 
   const isMellomlagringActive = useMemo(
     () => isMellomlagringEnabled && !!new URLSearchParams(search).get("innsendingsId"),
-    [isMellomlagringEnabled, search]
+    [isMellomlagringEnabled, search],
   );
   const addQueryParamToUrl = useCallback(
     (key, value) => {
@@ -63,7 +63,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         history.push({ search: searchParams.toString() });
       }
     },
-    [history]
+    [history],
   );
 
   useEffect(() => {
@@ -179,7 +179,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
             type: "SUBMIT",
             title: translate(TEXTS.statiske.mellomlagringError.submit.title),
             message: `${translate(TEXTS.statiske.mellomlagringError.submit.savedDraftMessage)} ${translate(
-              TEXTS.statiske.mellomlagringError.submit.tryLaterMessage
+              TEXTS.statiske.mellomlagringError.submit.tryLaterMessage,
             )}`,
           });
         } catch (error) {

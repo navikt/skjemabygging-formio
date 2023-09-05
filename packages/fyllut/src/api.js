@@ -4,15 +4,15 @@ import httpFyllut from "./util/httpFyllut";
 const { getLanguageCodeAsIso639_1, zipCountryNames } = localizationUtils;
 
 const loadCountryNames = async (locale) => {
-  return httpFyllut.get(`/fyllut/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
+  return httpFyllut.get(`/fyllut/api/countries?lang=${getLanguageCodeAsIso639_1(locale)}`);
 };
 
 const loadGlobalTranslations = async (languageCode) => {
-  return httpFyllut.get(`/fyllut/global-translations/${languageCode}`);
+  return httpFyllut.get(`/fyllut/api/global-translations/${languageCode}`);
 };
 
 export const loadFormTranslations = async (formPath) => {
-  return httpFyllut.get(`/fyllut/translations/${formPath}`);
+  return httpFyllut.get(`/fyllut/api/translations/${formPath}`);
 };
 
 export const loadCountryNamesForLanguages = async (languages) => {
@@ -27,11 +27,11 @@ export const loadCountryNamesForLanguages = async (languages) => {
         [languages[index]]: zipCountryNames(
           countryNamesInBokmaal,
           countryNamesPerLocale,
-          (countryName) => countryName.label
+          (countryName) => countryName.label,
         ),
       }),
-      {}
-    )
+      {},
+    ),
   );
 };
 
@@ -42,9 +42,9 @@ export const loadGlobalTranslationsForLanguages = async (languages) =>
         ...accumulated,
         ...Object.keys(translationsForLanguage).reduce(
           (translations, lang) => ({ ...translations, [lang]: { ...translationsForLanguage[lang] } }),
-          {}
+          {},
         ),
       }),
-      {}
-    )
+      {},
+    ),
   );

@@ -7,20 +7,22 @@ describe("Diff", () => {
     cy.intercept("GET", "/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/form?*", { fixture: "form123456.json" }).as("getForm");
     cy.intercept("GET", "/api/published-forms/dif123456", { fixture: "form123456-published.json" }).as(
-      "getPublishedForm"
+      "getPublishedForm",
     );
     cy.intercept("GET", "/mottaksadresse/submission", { fixture: "mottakadresse.json" }).as("getMottakAdresse");
     cy.intercept("GET", "/api/temakoder", { fixture: "temakoder.json" }).as("getTemaKoder");
-    cy.intercept("GET", "/api/countries?*", { fixture: "getCountriesLangNb.json" }).as("getCountriesLangNb");
+    cy.intercept("GET", "/api/countries*", { fixture: "getCountriesLangNb.json" }).as("getCountriesLangNb");
   });
 
   describe("Settings page", () => {
     beforeEach(() => {
       cy.visit("forms/dif123456/settings");
+      cy.wait("@getConfig");
       cy.wait("@getForm");
       cy.wait("@getPublishedForm");
-      cy.wait("@getTemaKoder");
       cy.wait("@getMottakAdresse");
+      cy.wait("@getTemaKoder");
+      cy.wait("@getCountriesLangNb");
     });
 
     it("Renders settings page without any diffs", () => {
@@ -51,8 +53,10 @@ describe("Diff", () => {
   describe("Form builder page", () => {
     beforeEach(() => {
       cy.visit("forms/dif123456/edit");
+      cy.wait("@getConfig");
       cy.wait("@getForm");
       cy.wait("@getPublishedForm");
+      cy.wait("@getCountriesLangNb");
     });
 
     describe("Tags", () => {

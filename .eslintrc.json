@@ -1,14 +1,54 @@
 {
-  "extends": "react-app",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:vitest/recommended",
+    "plugin:vitest-globals/recommended",
+    "plugin:cypress/recommended"
+  ],
+  "plugins": [
+    "react",
+    "react-hooks",
+    "import",
+    "@typescript-eslint",
+    "vitest",
+    "cypress"
+  ],
+  "globals": {
+    "fetchMock": true,
+    "vi": true,
+    "FormioUtils": true
+  },
+  "env": {
+    "vitest-globals/env": true,
+    "cypress/globals": true
+  },
   "rules": {
     "no-unused-labels": "error",
     "no-unused-vars": "off",
-    "no-duplicate-imports": "error",
+    "import/no-duplicates": "error",
     "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "no-extra-boolean-cast": "off",
+    "no-case-declarations": "off",
+    "vitest/prefer-to-be": "off",
+    "vitest/no-identical-title": "off",
+    "vitest/valid-expect": "off",
+    "vitest/valid-title": "off",
+    "vitest/expect-expect": "off",
+    "cypress/unsafe-to-chain-command": "off",
     "import/no-internal-modules": ["error", {
       "forbid": [
-        "@navikt/skjemadigitalisering-shared-@(components|domain)/**/!(*.less)"
+        "@navikt/skjemadigitalisering-shared-@(components|domain)/**"
       ]
     }]
-  }
+  },
+  "root": true
 }

@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { setupNavFormio } from "../../test/navform-render";
 import { languagesInOriginalLanguage } from "../components/FyllUtLanguageSelector";
@@ -11,10 +10,16 @@ import { form, translationsForNavForm } from "./testdata/skjema-med-oversettelse
 
 const mockFormPath = `/${form.path}`;
 const firstPanelSlug = getPanelSlug(form, 0);
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useRouteMatch: () => ({ path: mockFormPath }),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useRouteMatch: () => ({
+      url: mockFormPath,
+      path: mockFormPath,
+    }),
+  };
+});
 
 const labelNorskBokmal = languagesInOriginalLanguage["nb-NO"];
 
@@ -31,7 +36,7 @@ describe("FyllUtRouter", () => {
         <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/${firstPanelSlug}` }]}>
           <FyllUtRouter form={form} translations={translationsForNavForm} />
         </MemoryRouter>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   };
 
@@ -57,10 +62,10 @@ describe("FyllUtRouter", () => {
       expect(screen.queryByRole("heading", { name: engelskTittel })).toBeNull();
 
       const velgSprakButton = screen.getByRole("button", { name: labelNorskBokmal });
-      userEvent.click(velgSprakButton);
+      await userEvent.click(velgSprakButton);
 
       const englishOption = screen.getByRole("link", { name: "English" });
-      userEvent.click(englishOption);
+      await userEvent.click(englishOption);
 
       expect(await screen.findByRole("heading", { name: engelskTittel })).toBeTruthy();
       expect(screen.queryByRole("heading", { name: norskTittel })).toBeNull();

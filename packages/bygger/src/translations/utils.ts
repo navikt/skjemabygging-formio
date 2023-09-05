@@ -1,3 +1,4 @@
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import {
   Component,
   FormioTranslationMap,
@@ -6,7 +7,6 @@ import {
   navFormUtils,
   signatureUtils,
 } from "@navikt/skjemadigitalisering-shared-domain";
-import FormioUtils from "formiojs/utils";
 
 type TextObjectType = ReturnType<typeof textObject>;
 type InputType = ReturnType<typeof getInputType>;
@@ -83,7 +83,8 @@ const getContent = (content: string | undefined) => {
   if (content) {
     // Formio.js runs code that changes the original text before translating,
     // and to avoid mismatch in translation object keys we need to do the same.
-    return FormioUtils.translateHTMLTemplate(content, (text) => text);
+    // @ts-ignore
+    return NavFormioJs.Utils.translateHTMLTemplate(content, (text) => text);
   }
   return content;
 };
@@ -145,7 +146,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         buttonText: getTextFromComponentProperty(buttonText),
         addAnother: getTextFromComponentProperty(addAnother),
         removeAnother: getTextFromComponentProperty(removeAnother),
-      })
+      }),
     );
 
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
@@ -186,7 +187,7 @@ const getFormTexts = (form?: NavFormType, withInputType = false) => {
               .map((value) => textObject(withInputType, value)) as TextObjectType;
           }
           return textObject(withInputType, component[key]);
-        })
+        }),
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
@@ -220,7 +221,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
           [languageCode]: translation,
         };
       },
-      { text: sanitizeForCsv(textComponent.text)! }
+      { text: sanitizeForCsv(textComponent.text)! },
     );
   });
 };
@@ -236,7 +237,7 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
         },
       ];
     },
-    [{ label: "Skjematekster", key: "text" }]
+    [{ label: "Skjematekster", key: "text" }],
   );
 };
 

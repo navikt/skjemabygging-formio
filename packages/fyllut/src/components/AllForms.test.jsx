@@ -1,6 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AllForms } from "./AllForms";
 
@@ -23,7 +21,7 @@ describe("AllForms", () => {
     render(
       <MemoryRouter initialEntries={["/fyllut"]}>
         <AllForms />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByRole("heading", { name: "Laster..." })).toBeInTheDocument();
@@ -48,7 +46,7 @@ describe("AllForms", () => {
     render(
       <MemoryRouter initialEntries={["/fyllut"]}>
         <AllForms />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(await screen.findByRole("heading", { name: "Velg et skjema" })).toBeInTheDocument();

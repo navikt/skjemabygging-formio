@@ -1,42 +1,30 @@
 {
   "name": "@navikt/skjemadigitalisering-shared-domain",
   "version": "1.0.0",
+  "private": true,
   "description": "Kode som er delt mellom bygger og utfyller",
   "repository": {
     "type": "git",
     "url": "https://github.com/navikt/skjemabygging-formio.git",
     "directory": "packages/shared-domain"
   },
+  "type": "module",
   "main": "dist/index.js",
-  "types": "src/index.ts",
   "files": [
     "dist"
   ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "build": "babel src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
+    "build": "tsc && vite build",
     "check-types": "tsc",
-    "clean": "rimraf dist coverage",
-    "watch": "babel -w src --out-dir dist --extensions \".ts,.js\"  --ignore \"**/*.test.js,**/*.test.ts,**/testdata/**\"",
-    "prepare": "yarn build && tsc",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "clean": "rimraf dist coverage node_modules",
+    "watch": "vite build --watch",
+    "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
+    "prepare": "yarn build"
   },
   "dependencies": {
-    "@types/uuid": "^8.3.4",
-    "uuid": "^8.3.2",
+    "formiojs": "4.14.6",
     "moment": "^2.29.4"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.13.16",
-    "@babel/core": "^7.14.0",
-    "@babel/preset-env": "^7.14.1",
-    "@babel/preset-typescript": "^7.16.7",
-    "@types/jest": "^27.4.1",
-    "jest": "^27.0.4",
-    "typescript": "^5.0.2"
-  },
-  "peerDependencies": {
-    "formiojs": "4.14.6"
   }
 }

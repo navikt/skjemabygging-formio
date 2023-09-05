@@ -1,7 +1,6 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { FormPropertiesType, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import React from "react";
 import * as api from "../api";
 import BulkPublishPanel from "./BulkPublishPanel";
 
@@ -55,10 +54,10 @@ const testForm2 = {
 const testForm3 = { ...form, path: "form3", name: "Form 3", properties: { ...properties, skjemanummer: "003" } };
 
 describe("BulkPublishPanel", () => {
-  const bulkPublish = jest.fn();
+  const bulkPublish = vi.fn();
 
   beforeEach(() => {
-    jest.spyOn(api, "bulkPublish").mockImplementation(bulkPublish);
+    vi.spyOn(api, "bulkPublish").mockImplementation(bulkPublish);
     render(<BulkPublishPanel forms={[testForm1, testForm2, testForm3]} />);
   });
 

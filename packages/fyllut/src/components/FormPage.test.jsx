@@ -1,14 +1,8 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock from "jest-fetch-mock";
 import { MemoryRouter } from "react-router-dom";
 import FormPage from "./FormPage";
-
-jest.mock("@navikt/skjemadigitalisering-shared-components", () => ({
-  ...jest.requireActual("@navikt/skjemadigitalisering-shared-components"),
-  AmplitudeProvider: ({ children }) => <>{children}</>,
-}));
 
 const RESPONSE_HEADERS = {
   headers: {
@@ -40,7 +34,7 @@ describe("FormPage", () => {
         <AppConfigProvider featureToggles={featureToggles}>
           <FormPage form={form} />
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   };
 
@@ -60,13 +54,13 @@ describe("FormPage", () => {
   describe("Language selector", () => {
     it("is not rendered if no translations are available", async () => {
       fetchMock.mockImplementation((url, options) => {
-        if (url === "/fyllut/translations/testskjema") {
+        if (url === "/fyllut/api/translations/testskjema") {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/countries")) {
+        if (url.startsWith("/fyllut/api/countries")) {
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/global-translations/")) {
+        if (url.startsWith("/fyllut/api/global-translations")) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));
@@ -80,13 +74,13 @@ describe("FormPage", () => {
 
     it("allows selection of other language for the form", async () => {
       fetchMock.mockImplementation((url, options) => {
-        if (url === "/fyllut/translations/testskjema") {
+        if (url === "/fyllut/api/translations/testskjema") {
           return Promise.resolve(new Response(JSON.stringify(translations), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/countries")) {
+        if (url.startsWith("/fyllut/api/countries")) {
           return Promise.resolve(new Response(JSON.stringify([]), RESPONSE_HEADERS));
         }
-        if (url.startsWith("/fyllut/global-translations/")) {
+        if (url.startsWith("/fyllut/api/global-translations")) {
           return Promise.resolve(new Response(JSON.stringify({}), RESPONSE_HEADERS));
         }
         return Promise.reject(new Error(`Ukjent url: ${url}`));

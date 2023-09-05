@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import React from "react";
 import ObsoleteTranslationsPanel from "./ObsoleteTranslationsPanel";
 
 describe("ObsoleteTranslationsPanel", () => {
@@ -17,7 +16,7 @@ describe("ObsoleteTranslationsPanel", () => {
   };
 
   beforeEach(() => {
-    onDelete = jest.fn();
+    onDelete = vi.fn();
     renderComponent({
       translations: obsoleteTranslations,
       onDelete,
@@ -31,13 +30,15 @@ describe("ObsoleteTranslationsPanel", () => {
 
   it("Viser ikke detaljer før panelet er åpnet", () => {
     const inputFields = screen.queryAllByRole("textbox");
-    expect(inputFields).toHaveLength(0);
+    expect(inputFields[0]).toBeDisabled();
+    expect(inputFields[1]).toBeDisabled();
+    expect(inputFields[2]).toBeDisabled();
   });
 
   describe("Åpent panel", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const panelTitle = screen.getByRole("button", { name: "Antall ubrukte oversettelser: 3" });
-      userEvent.click(panelTitle);
+      await userEvent.click(panelTitle);
     });
 
     it("Viser detaljer om ubrukte oversettelser", () => {
@@ -45,11 +46,11 @@ describe("ObsoleteTranslationsPanel", () => {
       expect(inputFields).toHaveLength(3);
     });
 
-    it("Sletter oversettelse når slett-knappen trykkes", () => {
+    it("Sletter oversettelse når slett-knappen trykkes", async () => {
       const deleteButton = screen.getAllByRole("button", { name: "Slett" })[1];
       expect(deleteButton).toBeInTheDocument();
 
-      userEvent.click(deleteButton);
+      await userEvent.click(deleteButton);
       expect(onDelete).toBeCalledTimes(1);
       expect(onDelete).toBeCalledWith(obsoleteTranslations[1]);
     });

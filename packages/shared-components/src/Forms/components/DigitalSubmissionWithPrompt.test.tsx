@@ -5,13 +5,17 @@ import { LanguagesProvider } from "../../context/languages";
 import { Modal } from "../../index";
 import DigitalSubmissionWithPrompt from "./DigitalSubmissionWithPrompt";
 
-jest.mock("../../context/languages/useLanguageCodeFromURL", () => () => "nb-NO");
+vi.mock("../../context/languages/useLanguageCodeFromURL", () => {
+  return {
+    default: () => "nb-NO",
+  };
+});
 
 Modal.setAppElement(document.createElement("div"));
 
 describe("DigitalSubmissionWithPrompt", () => {
-  const onError = jest.fn();
-  const onSuccess = jest.fn();
+  const onError = vi.fn();
+  const onSuccess = vi.fn();
   const BASE_URL = "http://www.unittest.nav.no/fyllut";
 
   beforeEach(() => {
@@ -20,7 +24,7 @@ describe("DigitalSubmissionWithPrompt", () => {
         <LanguagesProvider translations={{}}>
           <DigitalSubmissionWithPrompt submission={{} as Submission} onError={onError} onSuccess={onSuccess} />
         </LanguagesProvider>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   });
 

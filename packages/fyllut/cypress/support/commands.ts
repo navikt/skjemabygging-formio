@@ -39,13 +39,17 @@ Cypress.Commands.add("findByRoleWhenAttached", (role, options) => {
           .as("elementWhenAttached")
           .wait(100) // for some reason this is needed, otherwise isAttached returns `true` regardless
           .then(($el) => Cypress.dom.isAttached($el)),
-      { timeout: 2000, interval: 10 }
+      { timeout: 2000, interval: 10 },
     )
     .get("@elementWhenAttached");
 });
 
 Cypress.Commands.add("clickNextStep", () => {
   return cy.findByRoleWhenAttached("button", { name: TEXTS.grensesnitt.navigation.next }).click();
+});
+
+Cypress.Commands.add("clickPreviousStep", () => {
+  return cy.findByRoleWhenAttached("button", { name: "Forrige steg" }).click();
 });
 
 Cypress.Commands.add("clickStart", () => {

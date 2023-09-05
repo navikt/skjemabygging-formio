@@ -1,5 +1,5 @@
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { dateUtils, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import { useCallback } from "react";
 import { useAuth } from "../context/auth-context";
 import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
@@ -34,7 +34,7 @@ export const useFormioForms = (formio) => {
         })
         .then((forms) => forms[0]);
     },
-    [formio]
+    [formio],
   );
 
   const onSave = useCallback(
@@ -57,12 +57,12 @@ export const useFormioForms = (formio) => {
         .catch(() => {
           feedbackEmit.error(
             "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
-              "Last siden på nytt for å få siste versjon."
+              "Last siden på nytt for å få siste versjon.",
           );
           return { error: true };
         });
     },
-    [formio, userData, feedbackEmit]
+    [formio, userData, feedbackEmit],
   );
 
   const deleteForm = useCallback(
@@ -71,7 +71,7 @@ export const useFormioForms = (formio) => {
         feedbackEmit.success("Slettet skjemaet " + title);
       });
     },
-    [formio, feedbackEmit]
+    [formio, feedbackEmit],
   );
 
   const onPublish = useCallback(
@@ -81,7 +81,7 @@ export const useFormioForms = (formio) => {
         method: "PUT",
         headers: {
           "content-type": "application/json",
-          "Bygger-Formio-Token": Formiojs.getToken(),
+          "Bygger-Formio-Token": NavFormioJs.Formio.getToken(),
         },
         body: payload,
       });
@@ -100,14 +100,14 @@ export const useFormioForms = (formio) => {
         return await loadForm(form.path);
       }
     },
-    [loadForm, feedbackEmit]
+    [loadForm, feedbackEmit],
   );
 
   const onUnpublish = useCallback(
     async (form) => {
       const response = await fetch(`/api/published-forms/${form.path}`, {
         method: "DELETE",
-        headers: { "Bygger-Formio-Token": Formiojs.getToken() },
+        headers: { "Bygger-Formio-Token": NavFormioJs.Formio.getToken() },
       });
       if (response.ok) {
         const { form } = await response.json();
@@ -119,7 +119,7 @@ export const useFormioForms = (formio) => {
         return await loadForm(form.path);
       }
     },
-    [loadForm, feedbackEmit]
+    [loadForm, feedbackEmit],
   );
 
   return {

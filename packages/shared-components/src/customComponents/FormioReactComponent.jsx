@@ -59,10 +59,12 @@ export default class FormioReactComponent extends Field {
     super.component = component;
   }
 
+  // eslint-disable-next-line no-dupe-class-members
   get input() {
     return this.input;
   }
 
+  // eslint-disable-next-line no-dupe-class-members
   set input(input) {
     this.input = input;
   }

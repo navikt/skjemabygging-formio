@@ -8,7 +8,11 @@ import { LanguagesProvider } from "../../context/languages";
 import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import DigitalSubmissionButton, { Props } from "./DigitalSubmissionButton";
 
-jest.mock("../../context/languages/useLanguageCodeFromURL", () => () => "nb-NO");
+vi.mock("../../context/languages/useLanguageCodeFromURL", () => {
+  return {
+    default: () => "nb-NO",
+  };
+});
 
 const BASE_URL = "http://www.unittest.nav.no/fyllut";
 const SEND_INN_URL = "http://www.unittest.nav.no/sendInn/soknad/123";
@@ -27,8 +31,8 @@ describe("DigitalSubmissionButton", () => {
   const renderButton = (props: Partial<Props> = {}, appConfigProps: Partial<AppConfigContextType> = {}) => {
     const defaultProps: Props = {
       submission: defaultSubmission,
-      onError: jest.fn(),
-      onSuccess: jest.fn(),
+      onError: vi.fn(),
+      onSuccess: vi.fn(),
       children: "Digital submission",
       ...props,
     } as Props;
@@ -38,14 +42,14 @@ describe("DigitalSubmissionButton", () => {
           <SendInnProvider
             form={{ components: [] } as unknown as NavFormType}
             translations={{}}
-            updateSubmission={jest.fn()}
+            updateSubmission={vi.fn()}
           >
             <LanguagesProvider translations={defaultTranslations}>
               <DigitalSubmissionButton {...defaultProps} />
             </LanguagesProvider>
           </SendInnProvider>
         </MemoryRouter>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   };
 
@@ -66,8 +70,8 @@ describe("DigitalSubmissionButton", () => {
         value: windowLocation,
         writable: true,
       });
-      onError = jest.fn();
-      onSuccess = jest.fn();
+      onError = vi.fn();
+      onSuccess = vi.fn();
     });
 
     afterEach(() => {
@@ -80,7 +84,7 @@ describe("DigitalSubmissionButton", () => {
       renderButton({ onError, onSuccess });
       const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
-      userEvent.click(button);
+      await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
       expect(windowLocation.href).toEqual(baseUrl);
     });
@@ -90,7 +94,7 @@ describe("DigitalSubmissionButton", () => {
       renderButton({ onError, onSuccess });
       const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
-      userEvent.click(button);
+      await userEvent.click(button);
       await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
       expect(onError).toHaveBeenCalledTimes(0);
       expect(windowLocation.href).toEqual(SEND_INN_URL);
@@ -101,10 +105,10 @@ describe("DigitalSubmissionButton", () => {
       renderButton({ onError, onSuccess }, { app: "bygger" });
       const button = screen.getByRole("button", { name: "Digital submission" });
       expect(button).toBeInTheDocument();
-      userEvent.click(button);
+      await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
       expect(onError.mock.calls[0][0].message).toEqual(
-        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren."
+        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren.",
       );
       expect(windowLocation.href).toEqual(baseUrl);
     });

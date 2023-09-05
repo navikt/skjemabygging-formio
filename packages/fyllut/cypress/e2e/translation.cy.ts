@@ -2,12 +2,13 @@ describe("Translations", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getForm");
-    cy.intercept("GET", "/fyllut/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
-      "getTranslation"
+    cy.intercept("GET", "/fyllut/api/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
+      "getTranslation",
     );
-    cy.intercept("GET", "/fyllut/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation"
+    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
+      "getGlobalTranslation",
     );
+    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   });
 
   describe("Change translations based on url params", () => {
@@ -75,7 +76,7 @@ describe("Translations", () => {
         .first()
         .should("exist")
         .within(($radio) =>
-          cy.findByLabelText("No, I have no other documentation.").should("exist").check({ force: true })
+          cy.findByLabelText("No, I have no other documentation.").should("exist").check({ force: true }),
         );
       cy.clickNextStep();
 
@@ -94,9 +95,8 @@ describe("Translations", () => {
       cy.findByRole("link", { name: "English" }).click();
       cy.clickNextStep();
 
-      // Both these examples fail without the override in translateHTMLTemplate
-      cy.get("[id='alert-i18n1']").contains("Example correct translation").should("exist");
-      cy.get("[id='alert-i18n2']").contains("Example correct translation").should("exist");
+      // This example will fail without the override in translateHTMLTemplate
+      cy.get(".formio-component-alertstripe").contains("Example correct translation").should("exist");
     });
   });
 });

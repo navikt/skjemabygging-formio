@@ -1,11 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import React from "react";
 import FormEditInput from "./FormEditInput";
 
 describe("FormEditInput", () => {
-  const dispatchMock = jest.fn();
+  const dispatchMock = vi.fn();
   beforeEach(() => {
     render(<FormEditInput id={"a"} formEdit={{ key: "Feltnavn", value: "" }} dispatch={dispatchMock} />);
+  });
+  afterEach(() => {
+    dispatchMock.mockReset();
   });
   describe("Feltnavn input field", () => {
     it("is rendered", () => {

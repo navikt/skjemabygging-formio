@@ -11,7 +11,11 @@ const renderFeedbackContext = (onMessagesUpdated, execute) => {
 
   const TestFeedbackEmit = ({ execute }) => {
     const emit = useFeedbackEmit();
-    useEffect(() => execute(emit), []);
+    useEffect(
+      () => execute(emit),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [],
+    );
     return <></>;
   };
 
@@ -21,7 +25,7 @@ const renderFeedbackContext = (onMessagesUpdated, execute) => {
         <TestFeedbackEmit execute={execute} />
         <TestFeedbackMessages onMessagesUpdated={onMessagesUpdated} />
       </>
-    </FeedbackProvider>
+    </FeedbackProvider>,
   );
 };
 
@@ -36,8 +40,8 @@ describe("FeedbackContext", () => {
 
   describe("useFeedbackMessages", () => {
     beforeEach(() => {
-      onMessagesUpdated = jest.fn();
-      execute = jest.fn().mockImplementation((emit) => {
+      onMessagesUpdated = vi.fn();
+      execute = vi.fn().mockImplementation((emit) => {
         emit.success("Success message");
         emit.error("Error message");
         emit.warning("Warning message");

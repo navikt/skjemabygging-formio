@@ -1,4 +1,4 @@
-const amplitude = require("amplitude-js");
+import amplitude from "amplitude-js";
 
 export const initAmplitude = () => {
   amplitude.getInstance().init("default", "", {
@@ -22,7 +22,6 @@ export function logAmplitudeEvent(eventName, eventData) {
   setTimeout(() => {
     try {
       amplitude.getInstance().logEvent(eventName, eventData);
-      console.debug(eventName, eventData);
     } catch (error) {
       console.error(error);
     }
@@ -45,7 +44,7 @@ export function loggEventSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd
         spørsmål: sporsmal,
         spørsmålId: id,
         påkrevd: pakrevd,
-      })
+      }),
     );
   }
 }

@@ -59,6 +59,7 @@ const Harness = {
   builderBefore(done, options = {}) {
     let html; // Unsure what _your code_ needs here -- using `undefined` to trigger default value
     let opt = { url: "http://localhost/" };
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     this.jsdom = require("jsdom-global")(html, opt);
     window.confirm = () => true;
     formBuilderElement = document.createElement("div");
@@ -164,8 +165,8 @@ const Harness = {
         {
           events: new EventEmitter(),
         },
-        options
-      )
+        options,
+      ),
     );
     component.pristine = false;
     return new Promise((resolve, reject) => {
@@ -221,7 +222,6 @@ const Harness = {
   },
   clickElement(component, query) {
     const clickEvent = new MouseEvent("click", {
-      view: window,
       bubbles: true,
       cancelable: true,
     });
@@ -274,12 +274,12 @@ const Harness = {
     assert.equal(
       modalWrapper.className.split(" ").includes("formio-error-wrapper"),
       shouldBeInvalid,
-      `Should ${shouldBeInvalid ? "" : "not"} have error class`
+      `Should ${shouldBeInvalid ? "" : "not"} have error class`,
     );
     assert.equal(
       modalWrapper.className.split(" ").includes("has-message"),
       shouldBeInvalid,
-      `Should ${shouldBeInvalid ? "" : "not"} have class indicating that the component has a message`
+      `Should ${shouldBeInvalid ? "" : "not"} have class indicating that the component has a message`,
     );
   },
   testElementAttribute(element, attribute, expected) {

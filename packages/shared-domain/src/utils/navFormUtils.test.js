@@ -26,13 +26,13 @@ describe("navFormUtils", () => {
     it("should create path from title (legacy)", () => {
       expect(
         toFormPath(
-          "Erklæring fra ergo- eller fysioterapeut i forbindelse med søknad om motorkjøretøy og / eller spesialutstyr og tilpassing"
-        )
+          "Erklæring fra ergo- eller fysioterapeut i forbindelse med søknad om motorkjøretøy og / eller spesialutstyr og tilpassing",
+        ),
       ).toEqual(
-        "erklaeringfraergoellerfysioterapeutiforbindelsemedsoknadommotorkjoretoyogellerspesialutstyrogtilpassing"
+        "erklaeringfraergoellerfysioterapeutiforbindelsemedsoknadommotorkjoretoyogellerspesialutstyrogtilpassing",
       );
       expect(toFormPath("Søknad om forlenget barnepensjon etter fylte 18 år")).toEqual(
-        "soknadomforlengetbarnepensjonetterfylte18ar"
+        "soknadomforlengetbarnepensjonetterfylte18ar",
       );
       expect(toFormPath("Søknad om utstedelse av attest PD U2")).toEqual("soknadomutstedelseavattestpdu2");
       expect(toFormPath("Underveis- og sluttevaluering av AMO-KURS")).toEqual("underveisogsluttevalueringavamokurs");
@@ -426,7 +426,7 @@ describe("navFormUtils", () => {
       const regex = /.*Vedlegg.*/;
       const actualForm = removeComponents(
         form,
-        (component) => component.type === "panel" && regex.test(component.title)
+        (component) => component.type === "panel" && regex.test(component.title),
       );
       expect(actualForm.components).toHaveLength(1);
       expect(actualForm.components[0].title).toEqual("Veiledning");
@@ -479,7 +479,7 @@ describe("navFormUtils", () => {
       expect(actualForm.components).toHaveLength(1);
     });
 
-    describe("A form with a component that calculates value based on another", () => {
+    it("A form with a component that calculates value based on another", () => {
       const formWithComponentsThatCalulateValueBasedOnAnother = {
         id: "myForm",
         title: "Form with components that calculate value based on another",
@@ -520,11 +520,11 @@ describe("navFormUtils", () => {
           expect.objectContaining({
             key: "aComponentThatCalculatesValueBasedOnSomeCheckbox",
           }),
-        ])
+        ]),
       );
     });
 
-    describe("A form with a component that validates based on another", () => {
+    it("A form with a component that validates based on another", () => {
       const formWithComponentsThatValidatesBasedOnAnother = {
         id: "myForm",
         title: "Form with components that calculate value based on another",
@@ -605,7 +605,7 @@ describe("navFormUtils", () => {
           expect.objectContaining({
             key: "aComponentThatHasJSONLogicValidationBasedOnSomeCheckbox",
           }),
-        ])
+        ]),
       );
     });
   });
@@ -688,7 +688,7 @@ describe("navFormUtils", () => {
     let navIdGenerator;
 
     beforeEach(() => {
-      navIdGenerator = jest.fn();
+      navIdGenerator = vi.fn();
     });
 
     it("ignores undefined input", () => {

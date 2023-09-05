@@ -1,0 +1,4 @@
+*
+!bygger/dist
+!bygger-backend/dist
+!bygger-backend/node_modules

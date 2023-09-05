@@ -1,7 +1,6 @@
 import { Button, Heading, Panel } from "@navikt/ds-react";
-import { AppConfigProvider, NavForm, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, NavForm, NavFormioJs, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Mottaksadresse } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import cloneDeep from "lodash.clonedeep";
 import { useState } from "react";
 import Column from "../components/layout/Column";
@@ -58,7 +57,7 @@ const MottaksadresseEditor = ({
             )}
             <AppConfigProvider>
               <NavForm
-                src={`${Formiojs.getProjectUrl()}/mottaksadresse`}
+                src={`${NavFormioJs.Formio.getProjectUrl()}/mottaksadresse`}
                 submission={mottaksadresse ? cloneDeep(mottaksadresse) : undefined}
                 /* @ts-ignore */
                 onSubmitDone={onSubmitDone}

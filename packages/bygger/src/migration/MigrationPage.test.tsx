@@ -1,12 +1,11 @@
 import { Modal } from "@navikt/skjemadigitalisering-shared-components";
 import { Operator } from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, getAllByLabelText, render, screen, waitFor, within } from "@testing-library/react";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DryRunResults, FormMigrationLogData } from "../../types/migration";
 import FeedbackProvider from "../context/notifications/FeedbackContext";
-import { TestId } from "./components/MigrationOptionsForm";
 import MigrationPage from "./MigrationPage";
+import { TestId } from "./components/MigrationOptionsForm";
 import { migrationOptionsAsMap } from "./utils";
 
 Modal.setAppElement(document.createElement("div"));
@@ -42,14 +41,14 @@ describe("MigrationPage", () => {
   );
 
   beforeEach(() => {
-    fetchSpy = jest.spyOn(global, "fetch").mockImplementation(() =>
+    fetchSpy = vi.spyOn(global, "fetch").mockImplementation(() =>
       Promise.resolve(
         new Response(JSON.stringify(dryRunResponse), {
           headers: {
             "content-type": "application/json",
           },
-        })
-      )
+        }),
+      ),
     );
     // @ts-ignore
     render(<MigrationPage />, { wrapper });
@@ -104,7 +103,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
 
@@ -119,7 +118,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
 
@@ -135,7 +134,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":false}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
 
@@ -149,7 +148,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true}&editOptions={"prop1":false,"prop2":"new value"}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
   });
@@ -202,7 +201,7 @@ describe("MigrationPage", () => {
         expect(screen.getByText("Skjemaer som ikke vil bli migrert")).toBeTruthy();
         expect(within(tables[1]).getAllByRole("row")[1]).toHaveTextContent("Skjema 1");
         expect(
-          screen.getByText("Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering")
+          screen.getByText("Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering"),
         ).toBeTruthy();
         expect(within(tables[2]).getAllByRole("row")[1]).toHaveTextContent("Skjema 2");
       });

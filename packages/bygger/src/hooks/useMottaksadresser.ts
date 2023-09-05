@@ -1,5 +1,5 @@
+import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import { Mottaksadresse, NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
-import Formiojs from "formiojs/Formio";
 import { useEffect, useState } from "react";
 import { useFeedbackEmit } from "../context/notifications/FeedbackContext";
 
@@ -19,7 +19,7 @@ const useMottaksadresser = (): Output => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   const loadMottaksadresser = () => {
-    fetch(`${Formiojs.getProjectUrl()}/mottaksadresse/submission`, {
+    fetch(`${NavFormioJs.Formio.getProjectUrl()}/mottaksadresse/submission`, {
       method: "GET",
     })
       .then(async (res) => {
@@ -36,7 +36,9 @@ const useMottaksadresser = (): Output => {
         setMottaksadresser(mottaksadresser);
         setReady(true);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const validateThemes = (addresses: Mottaksadresse[] = []) => {
@@ -59,9 +61,9 @@ const useMottaksadresser = (): Output => {
       feedbackEmit.error(`Mottaksadressen brukes i følgende skjema: ${skjemanummerliste}`);
       return Promise.reject();
     } else {
-      return fetch(`${Formiojs.getProjectUrl()}/mottaksadresse/submission/${mottaksadresseId}`, {
+      return fetch(`${NavFormioJs.Formio.getProjectUrl()}/mottaksadresse/submission/${mottaksadresseId}`, {
         headers: {
-          "x-jwt-token": Formiojs.getToken(),
+          "x-jwt-token": NavFormioJs.Formio.getToken(),
         },
         method: "DELETE",
       })
@@ -79,7 +81,7 @@ const useMottaksadresser = (): Output => {
 
   const publishMottaksadresser = async () => {
     const payload = {
-      token: Formiojs.getToken(),
+      token: NavFormioJs.Formio.getToken(),
       resource: mottaksadresser,
     };
 
@@ -96,7 +98,7 @@ const useMottaksadresser = (): Output => {
       feedbackEmit.success("Publisering startet");
     } else if (response.ok && !changed) {
       feedbackEmit.warning(
-        "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+        "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)",
       );
     } else {
       feedbackEmit.error(`Publisering feilet: ${response.status}`);
@@ -105,10 +107,10 @@ const useMottaksadresser = (): Output => {
 
   const getFormsWithMottaksadresse = async (mottaksadresseId): Promise<NavFormType[]> => {
     return fetch(
-      `${Formiojs.getProjectUrl()}/form?type=form&tags=nav-skjema&limit=1000&properties.mottaksadresseId=${mottaksadresseId}`,
+      `${NavFormioJs.Formio.getProjectUrl()}/form?type=form&tags=nav-skjema&limit=1000&properties.mottaksadresseId=${mottaksadresseId}`,
       {
         method: "GET",
-      }
+      },
     ).then((forms) => forms.json());
   };
 

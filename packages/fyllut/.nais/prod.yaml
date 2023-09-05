@@ -30,5 +30,4 @@ accessPolicy:
     external:
       - host: www.nav.no
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
-      - host: tokendings.prod-gcp.nais.io
       - host: formio-api.intern.nav.no

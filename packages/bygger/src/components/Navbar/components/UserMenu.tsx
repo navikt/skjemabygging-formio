@@ -1,8 +1,8 @@
-import { Dropdown, Header } from "@navikt/ds-react-internal";
 import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/auth-context";
 import { useDropdownStyles } from "../styles";
+import { Dropdown, InternalHeader } from "@navikt/ds-react";
 
 const useStyles = makeStyles({
   logOutBtn: {
@@ -21,7 +21,7 @@ const UserMenu = () => {
 
   return (
     <Dropdown>
-      <Header.UserButton as={Dropdown.Toggle} name={userData.name ? userData.name : ""} />
+      <InternalHeader.UserButton as={Dropdown.Toggle} name={userData.name ? userData.name : ""} />
       <Dropdown.Menu className={dropdownStyles.dropdownMenu}>
         <Dropdown.Menu.List>
           <Dropdown.Menu.List.Item className={styles.logOutBtn}>

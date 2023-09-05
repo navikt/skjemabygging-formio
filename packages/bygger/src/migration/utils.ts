@@ -17,19 +17,17 @@ const isEmpty = (obj) => {
 export const createUrlParams = (
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
-  editOptions: MigrationOptions
+  editOptions: MigrationOptions,
 ) => {
-  let searchFilterParameters;
-  let dependencyFilterParameters;
   let editOptionsParameters;
 
   const encodedSearchFilters = searchFiltersAsParams(searchFilters);
-  searchFilterParameters = isEmpty(encodedSearchFilters)
+  const searchFilterParameters = isEmpty(encodedSearchFilters)
     ? null
     : `searchFilters=${JSON.stringify(encodedSearchFilters)}`;
 
   const encodedDependencyFilters = searchFiltersAsParams(dependencyFilters);
-  dependencyFilterParameters = isEmpty(encodedDependencyFilters)
+  const dependencyFilterParameters = isEmpty(encodedDependencyFilters)
     ? null
     : `dependencyFilters=${JSON.stringify(encodedDependencyFilters)}`;
 
@@ -111,7 +109,7 @@ export const createSearchFiltersFromParams = (filtersFromParam: Record<string, s
           key: prop,
           value,
           operator: (operator as Operator) || undefined,
-        })
+        }),
       );
     }
   } else {

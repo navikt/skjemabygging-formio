@@ -8,21 +8,25 @@ import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import { Props, SummaryPage } from "./SummaryPage";
 import { Buttons, formWithProperties, getButtons } from "./test/helpers";
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useLocation: jest.fn().mockReturnValue({
-    pathname: "/oppsummering",
-    search: "",
-  }),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<object>("react-router-dom");
+  return {
+    ...actual,
+    useRouteMatch: () => ({ url: "/forms/previous" }),
+    useLocation: vi.fn().mockReturnValue({
+      pathname: "/oppsummering",
+      search: "",
+    }),
+  };
+});
 
-jest.mock("../../context/languages", () => ({
+vi.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
 const renderSummaryPage = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {} as AppConfigContextType
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType,
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -34,13 +38,13 @@ const renderSummaryPage = async (
   } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={jest.fn()}>
+      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={vi.fn()}>
         <Router history={history}>
           <SummaryPage {...summaryPageProps} />
           <div id="formio-summary-hidden" hidden />
         </Router>
       </SendInnProvider>
-    </AppConfigProvider>
+    </AppConfigProvider>,
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { level: 2, name: TEXTS.grensesnitt.title });
@@ -54,7 +58,7 @@ describe("SummaryPage", () => {
       const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).not.toBeInTheDocument();
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -63,10 +67,9 @@ describe("SummaryPage", () => {
       const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
-      userEvent.click(confirmCheckbox!);
-      expect(confirmCheckbox).toHaveAttribute("aria-invalid", "false");
-      expect(confirmCheckbox).toHaveAttribute("aria-checked", "true");
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(confirmCheckbox!);
+      expect(confirmCheckbox).toBeChecked();
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -75,7 +78,7 @@ describe("SummaryPage", () => {
       const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(confirmCheckbox).toHaveAttribute("aria-invalid", "true");
       expect(confirmCheckbox).toHaveAttribute("aria-checked", "false");
       expect(history.location.pathname).not.toBe("/testform/send-i-posten");

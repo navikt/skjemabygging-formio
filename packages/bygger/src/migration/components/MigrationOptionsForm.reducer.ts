@@ -35,7 +35,7 @@ export const reducer = (state: MigrationOptions = {}, action: Action) => {
     }
     case "remove": {
       const { id } = action.payload;
-      let copyOfState = { ...state };
+      const copyOfState = { ...state };
       delete copyOfState[id];
       return copyOfState;
     }

@@ -2,13 +2,13 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Modal from "./Modal";
 
 describe("Modal", () => {
-  let onClose = jest.fn();
+  const onClose = vi.fn();
   beforeAll(() => {
     Modal.setAppElement(document.createElement("div"));
     render(
       <Modal onClose={onClose} open={true} appElement={document.createElement("div")}>
         Test
-      </Modal>
+      </Modal>,
     );
   });
 

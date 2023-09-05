@@ -22,8 +22,7 @@
  * SOFTWARE.
  * */
 
-import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
-import * as formiojs from "formiojs";
+import { NavFormioJs, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import cloneDeep from "lodash.clonedeep";
 import isEqual from "lodash.isequal";
 import PropTypes from "prop-types";
@@ -57,10 +56,10 @@ class NavFormBuilder extends Component {
   };
 
   createBuilder = (page) => {
-    this.builder = new formiojs.FormBuilder(
+    this.builder = new NavFormioJs.Formio.FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
-      this.props.formBuilderOptions
+      this.props.formBuilderOptions,
     );
     if (page) {
       this.builder.instance?.setPage?.(page);

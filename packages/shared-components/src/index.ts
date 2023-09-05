@@ -4,7 +4,8 @@ import preset from "jss-preset-default";
 import FyllUtRouter from "./Forms/FyllUtRouter";
 import FormBuilderOptions from "./Forms/form-builder-options";
 import FormBuilderSchemas from "./Forms/form-builder-options/schemas";
-import http, { FetchHeader, FetchOptions } from "./api/http";
+import type { FetchHeader, FetchOptions } from "./api/http";
+import http from "./api/http";
 import ErrorPage from "./components/ErrorPage";
 import LanguageSelector from "./components/LanguageSelector";
 import LoadingComponent from "./components/LoadingComponent";
@@ -16,10 +17,10 @@ import { LanguagesProvider, useLanguages } from "./context/languages";
 import { mapTranslationsToFormioI18nObject } from "./context/languages/translationsMapper";
 import useCurrentLanguage from "./context/languages/useCurrentLanguage";
 import useLanguageCodeFromURL from "./context/languages/useLanguageCodeFromURL";
-import CustomComponents from "./customComponents";
+import "./formio-overrides";
+import NavFormioJs from "./formiojs";
 import i18nData from "./i18nData";
 import Styles from "./styles";
-import Template from "./template";
 import * as formUtils from "./util/form.js";
 import makeStyles from "./util/jss";
 import { navCssVariables } from "./util/navCssVariables";
@@ -31,13 +32,11 @@ export {
   Styles,
   makeStyles,
   NavForm,
-  Template,
   FormBuilderOptions,
   FormBuilderSchemas,
   AmplitudeProvider,
   AppConfigProvider,
   useAppConfig,
-  CustomComponents,
   FyllUtRouter,
   LanguagesProvider,
   i18nData,
@@ -54,5 +53,6 @@ export {
   formUtils,
   ErrorPage,
   Modal,
+  NavFormioJs,
 };
 export type { FetchHeader, FetchOptions };

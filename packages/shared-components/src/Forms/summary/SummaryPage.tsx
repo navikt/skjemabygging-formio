@@ -153,7 +153,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               error={declaration === false && translate(TEXTS.statiske.summaryPage.confirmationError)}
               label={
                 declarationType === DeclarationType.custom
-                  ? declarationText
+                  ? translate(declarationText)
                   : translate(TEXTS.statiske.declaration.defaultText)
               }
               ref={declarationRef}

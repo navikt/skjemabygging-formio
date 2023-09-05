@@ -1,8 +1,7 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor } from "@testing-library/react";
-import fetchMock from "jest-fetch-mock";
-import React from "react";
 import { MemoryRouter, Route } from "react-router-dom";
+import { vi } from "vitest";
 import { FormPageWrapper } from "./FormPageWrapper";
 
 const RESPONSE_HEADERS = {
@@ -13,13 +12,12 @@ const RESPONSE_HEADERS = {
 
 describe("FormPageWrapper", () => {
   beforeEach(() => {
-    console.log = jest.fn();
+    console.log = vi.fn();
     fetchMock.doMock();
   });
 
   afterEach(() => {
-    fetchMock.resetMocks();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("Show loading when fetching a form from backend and no form founded when there is no form fetched", async () => {
@@ -35,13 +33,13 @@ describe("FormPageWrapper", () => {
         <Route path="/fyllut/:formPath">
           <FormPageWrapper />
         </Route>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(
       screen.getByRole("heading", {
         name: "Laster...",
-      })
+      }),
     ).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Fant ikke siden" })).toBeInTheDocument();
     await waitFor(() => expect(document.title).toEqual(""));
@@ -57,6 +55,7 @@ describe("FormPageWrapper", () => {
       properties: {},
     };
     fetchMock.mockImplementation((url) => {
+      console.log(url);
       if (url === "/fyllut/api/forms/knownForm") {
         return Promise.resolve(new Response(JSON.stringify(mockedForm), RESPONSE_HEADERS));
       }
@@ -70,7 +69,7 @@ describe("FormPageWrapper", () => {
             <FormPageWrapper />
           </Route>
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => expect(document.title).toEqual("New form | www.nav.no"));
   });
@@ -104,10 +103,10 @@ describe("FormPageWrapper", () => {
               <FormPageWrapper />
             </Route>
           </AppConfigProvider>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
       await waitFor(() =>
-        expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).toBeInTheDocument()
+        expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).toBeInTheDocument(),
       );
       expect(screen.queryByRole("heading", { name: mockedForm.title })).not.toBeInTheDocument();
     });
@@ -120,7 +119,7 @@ describe("FormPageWrapper", () => {
               <FormPageWrapper />
             </Route>
           </AppConfigProvider>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
       await waitFor(() => expect(screen.queryByRole("heading", { name: mockedForm.title })).toBeInTheDocument());
       expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).not.toBeInTheDocument();

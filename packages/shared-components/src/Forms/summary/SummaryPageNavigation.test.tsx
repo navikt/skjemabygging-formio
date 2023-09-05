@@ -11,28 +11,31 @@ import SummaryPageNavigation, { Props } from "./SummaryPageNavigation";
 import { defaultFormWithAttachment } from "./test/data";
 import { Buttons, formWithProperties, getButtons } from "./test/helpers";
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useRouteMatch: () => ({ url: "/forms/previous" }),
-  useLocation: jest.fn().mockReturnValue({
-    pathname: "/oppsummering",
-    search: "",
-  }),
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<object>("react-router-dom");
+  return {
+    ...actual,
+    useRouteMatch: () => ({ url: "/forms/previous" }),
+    useLocation: vi.fn().mockReturnValue({
+      pathname: "/oppsummering",
+      search: "",
+    }),
+  };
+});
 
-jest.mock("../../context/languages", () => ({
+vi.mock("../../context/languages", () => ({
   useLanguages: () => ({ translate: (text) => text }),
 }));
 
 Modal.setAppElement(document.createElement("div"));
 
 const originalWindowLocation = window.location;
-const isValid = jest.fn().mockReturnValue(true);
-const onError = jest.fn();
+const isValid = vi.fn().mockReturnValue(true);
+const onError = vi.fn();
 
 const renderSummaryPageNavigation = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {} as AppConfigContextType
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType,
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -45,13 +48,13 @@ const renderSummaryPageNavigation = async (
   } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={jest.fn()}>
+      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={vi.fn()}>
         <Router history={history}>
           <SummaryPageNavigation {...summaryPageProps} />
           <div id="formio-summary-hidden" hidden />
         </Router>
       </SendInnProvider>
-    </AppConfigProvider>
+    </AppConfigProvider>,
   );
   await screen.getByRole("navigation");
   return { history, buttons: getButtons(screen) };
@@ -75,7 +78,7 @@ describe("SummaryPageNavigation", () => {
       const form = formWithProperties({ innsending: undefined });
       const { history, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -83,7 +86,7 @@ describe("SummaryPageNavigation", () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL" });
       const { history, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -94,7 +97,7 @@ describe("SummaryPageNavigation", () => {
       const appConfigProps = { submissionMethod: "paper", app: "bygger" } as AppConfigContextType;
       const { history, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -103,7 +106,7 @@ describe("SummaryPageNavigation", () => {
       const appConfigProps = { submissionMethod: "digital", app: "bygger" } as AppConfigContextType;
       const { history, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
 
@@ -119,7 +122,7 @@ describe("SummaryPageNavigation", () => {
       const appConfigProps = { app: "bygger" } as AppConfigContextType;
       const { history, buttons } = await renderSummaryPageNavigation({ form }, appConfigProps);
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -129,7 +132,7 @@ describe("SummaryPageNavigation", () => {
       const form = formWithProperties({ innsending: "KUN_PAPIR" });
       const { buttons, history } = await renderSummaryPageNavigation({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });
@@ -154,7 +157,7 @@ describe("SummaryPageNavigation", () => {
       const { buttons } = await renderSummaryPageNavigation({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
 
@@ -180,8 +183,8 @@ describe("SummaryPageNavigation", () => {
       const { buttons } = await renderSummaryPageNavigation({ form }, { baseUrl: basePath });
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
 
-      userEvent.click(buttons.sendTilNavKnapp);
-      userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
+      await userEvent.click(buttons.sendTilNavKnapp);
+      await userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
 
@@ -195,7 +198,7 @@ describe("SummaryPageNavigation", () => {
       const { history, buttons } = await renderSummaryPageNavigation({ form });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/ingen-innsending");
     });
   });
@@ -222,11 +225,11 @@ describe("SummaryPageNavigation", () => {
         {
           submissionMethod: "digital",
           baseUrl: basePath,
-        }
+        },
       );
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
-      userEvent.click(buttons.sendTilNavKnapp);
-      userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
+      await userEvent.click(buttons.sendTilNavKnapp);
+      await userEvent.click(screen.getByRole("button", { name: TEXTS.grensesnitt.submitToNavPrompt.confirm }));
 
       await waitFor(() => expect(windowLocation.href).toBe("https://www.unittest.nav.no/send-inn/123"));
       nock.isDone();
@@ -238,7 +241,7 @@ describe("SummaryPageNavigation", () => {
       const { history, buttons } = await renderSummaryPageNavigation({ form }, { submissionMethod: "paper" });
       expectKnapperForRedigerSvarEllerGaVidere(buttons);
 
-      userEvent.click(buttons.gaVidereKnapp);
+      await userEvent.click(buttons.gaVidereKnapp);
       expect(history.location.pathname).toBe("/testform/send-i-posten");
     });
   });

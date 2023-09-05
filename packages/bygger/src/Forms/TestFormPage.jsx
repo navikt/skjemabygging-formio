@@ -1,5 +1,4 @@
 import { FyllUtRouter, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
 import { AppLayout } from "../components/AppLayout";
 import { useI18nState } from "../context/i18n/I18nContext";
 

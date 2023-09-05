@@ -35,7 +35,7 @@ const DownloadPdfButton = ({
           required
           value={JSON.stringify(translationsForPDF)}
         />
-        <input type="text" name="language" value={currentLanguage} />
+        <input type="text" name="language" value={currentLanguage} readOnly={true} />
       </form>
       <div className="mb">
         <input

@@ -1,12 +1,15 @@
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { LanguagesProvider, useLanguages } from "./languages-context";
 
-jest.mock("./useCurrentLanguage", () => () => ({
-  currentLanguage: "en",
-  initialLanguage: "en",
-}));
+vi.mock("./useCurrentLanguage", () => {
+  return {
+    default: () => ({
+      currentLanguage: "en",
+      initialLanguage: "en",
+    }),
+  };
+});
 
 const TestComponent = ({ text, params }) => {
   const { translate } = useLanguages();
@@ -23,7 +26,7 @@ const renderTestComponent = ({ text, params }: TestComponentInput, translations:
       <LanguagesProvider translations={translations || defaultTranslations}>
         <TestComponent text={text} params={params} />
       </LanguagesProvider>
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 
