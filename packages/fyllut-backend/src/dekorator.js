@@ -1,6 +1,7 @@
 import { fetchDecoratorHtml } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { config } from "./config/config";
 import { NaisCluster } from "./config/nais-cluster.js";
+import { logger } from "./logger.js";
 
 const { naisClusterName } = config;
 
@@ -8,6 +9,10 @@ const getDecorator = async (redirect) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
+  if (process.env.NO_DECORATOR === "true") {
+    logger.debug("Skipping decorator");
+    return {};
+  }
   return fetchDecoratorHtml({
     env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
     redirectToUrl: redirect,
@@ -19,9 +24,7 @@ const getDecorator = async (redirect) => {
 
 const createRedirectUrl = (req, res) => {
   const formId = res.locals.formId;
-  // TODO nav-dekoratøren tillater ikke redirect til 127.0.0.1
-  const host = req.get("host").replace("127.0.0.1", "localhost");
-  const baseUrl = `https://${host}/fyllut`;
+  const baseUrl = `https://${req.get("host")}/fyllut`;
   if (formId) {
     return `${baseUrl}?form=${res.locals.formId}`;
   }
