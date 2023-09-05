@@ -16,6 +16,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      - dependency-name: "formiojs"
 
   - package-ecosystem: "github-actions"
     directory: "/"
