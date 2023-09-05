@@ -9,7 +9,7 @@ const getDecorator = async (redirect) => {
   /**
    * https://github.com/navikt/nav-dekoratoren
    */
-  if (process.env.NO_DECORATOR === "true") {
+  if (config.noDecorator) {
     logger.debug("Skipping decorator");
     return {};
   }

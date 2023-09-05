@@ -43,6 +43,8 @@ const localDevelopmentConfig: DefaultConfig = {
   clientId: process.env.AZURE_APP_CLIENT_ID || "a1eddc14-0e91-40bc-b910-a0cf39ac3223", // <-- fyllut i dev-gcp
   mockIdportenPid: process.env.MOCK_IDPORTEN_PID || "12345678911",
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || "IDPORTEN_JWT",
+  noFormValidation: process.env.NO_FORM_VALIDATION === "true",
+  noDecorator: process.env.NO_DECORATOR === "true",
   tokenx: {
     ...tokenx,
     wellKnownUrl:
@@ -74,15 +76,15 @@ const defaultConfig: DefaultConfig = {
   skjemaDir: process.env.SKJEMA_DIR!,
   resourcesDir: process.env.RESOURCES_DIR!,
   translationDir: process.env.TRANSLATION_DIR!,
+  noFormValidation: false,
+  noDecorator: false,
   tokenx,
   sendInnConfig,
   idporten,
 };
 
 const config: ConfigType = {
-  ...(process.env.NODE_ENV === "development" || process.env.USE_CONFIG === "dev"
-    ? localDevelopmentConfig
-    : defaultConfig),
+  ...(process.env.NODE_ENV === "development" ? localDevelopmentConfig : defaultConfig),
   fyllutPath: "/fyllut",
   clientSecret: process.env.AZURE_APP_CLIENT_SECRET!,
   naisClusterName: process.env.NAIS_CLUSTER_NAME!,

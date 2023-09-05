@@ -41,6 +41,8 @@ export type DefaultConfig = {
   idporten: IdportenConfig;
   mockIdportenPid?: string;
   mockIdportenJwt?: string;
+  noFormValidation?: boolean;
+  noDecorator?: boolean;
 };
 
 export type ConfigType = DefaultConfig & {

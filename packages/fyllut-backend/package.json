@@ -9,7 +9,7 @@
   "scripts": {
     "start": "cross-env-shell NODE_ENV=development vite",
     "build": "tsc && vite build",
-    "preview": "cross-env-shell USE_CONFIG=dev FYLLUT_BUILD_DIR=\"../../fyllut/dist\" PORT=3001 NO_DECORATOR=true \"cd dist && node server.mjs\"",
+    "preview": "cross-env-shell NODE_ENV=development NO_DECORATOR=true NO_FORM_VALIDATION=true FYLLUT_BUILD_DIR=\"../../fyllut/dist\" PORT=3001 \"cd dist && node server.mjs\"",
     "check-types": "tsc",
     "clean": "rimraf dist coverage node_modules",
     "test": "vitest --run",
