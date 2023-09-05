@@ -4,9 +4,6 @@ describe("Mellomlagring", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/translations/testmellomlagring").as("getTranslation");
-    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation"
-    );
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
       "getTestMellomlagringForm"
     );

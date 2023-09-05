@@ -3,8 +3,8 @@
   "form": {
     "_id": "63f8ad991fefba14a5dc27d1",
     "title": "Test mellomlagring",
-    "name": "testMellomlagring",
-    "path": "testMellomlagring",
+    "name": "testmellomlagring",
+    "path": "testmellomlagring",
     "type": "form",
     "display": "wizard",
     "tags": [
@@ -1865,7 +1865,7 @@
     "submissionAccess": [],
     "created": "2023-02-24T12:29:13.488Z",
     "modified": "2023-08-30T12:17:46.722Z",
-    "machineName": "jvcemxwcpghcqjn:testMellomlagring"
+    "machineName": "jvcemxwcpghcqjn:testmellomlagring"
   },
   "submission": {
     "data": {
