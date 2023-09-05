@@ -22,8 +22,10 @@ describe("Mellomlagring", () => {
     it("does not fetch or update mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=paper");
       cy.wait("@getTestMellomlagringForm");
+      cy.findByRole("heading", { name: TEXTS.statiske.introPage.title });
       cy.clickStart();
       cy.get("@createMellomlagringSpy").should("not.have.been.called");
+      cy.findByRole("heading", { name: "Valgfrie opplysninger" }).should("exist");
       cy.clickNextStep();
       cy.get("@updateMellomlagringSpy").should("not.have.been.called");
       cy.findByRole("group", { name: "Ønsker du å få gaven innpakket" }).within(() => {
@@ -63,13 +65,18 @@ describe("Mellomlagring", () => {
       cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", {
         fixture: "mellomlagring/responseWithInnsendingsId.json",
       }).as("updateMellomlagring");
+      cy.intercept("GET", "/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3", {
+        fixture: "mellomlagring/getTestMellomlagring-valid.json",
+      }).as("getMellomlagringValid");
     });
 
-    it("fetches and updates mellomlagring", () => {
+    it("creates and updates mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=digital");
       cy.wait("@getTestMellomlagringForm");
+      cy.findByRole("heading", { name: TEXTS.statiske.introPage.title });
       cy.clickStart();
       cy.wait("@createMellomlagring");
+      cy.findByRole("heading", { name: "Valgfrie opplysninger" }).should("exist");
       cy.clickNextStep();
       cy.wait("@updateMellomlagring");
       cy.findByRole("group", { name: "Ønsker du å få gaven innpakket" }).within(() => {
@@ -92,53 +99,57 @@ describe("Mellomlagring", () => {
           "/fyllut/testmellomlagring/valgfrieOpplysninger?sub=digital&innsendingsId=75eedb4c-1253-44d8-9fde-3648f4bb1878#hvaDrakkDuTilFrokost"
         );
     });
-  });
 
-  describe("When starting on the summary page", () => {
-    it('redirects to start page if url does not contain "innsendingsId"', () => {
-      cy.visit("/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO");
-      cy.wait("@getTestMellomlagringForm");
+    it('fetches mellomlagring and navigates to "/summary" on start, when url contains "innsendingsId"', () => {
+      cy.visit("/fyllut/testmellomlagring?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO");
+      cy.wait("@getMellomlagringValid");
       cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("exist");
+      cy.clickStart();
+      cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
     });
 
-    describe('When url contains query param "innsendingsId"', () => {
-      beforeEach(() => {
-        cy.intercept("GET", "/fyllut/api/send-inn/soknad/8e3c3621-76d7-4ebd-90d4-34448ebcccc3", {
-          fixture: "mellomlagring/getTestMellomlagring-valid.json",
-        }).as("getMellomlagringValid");
+    describe("When starting on the summary page", () => {
+      it('redirects to start page if url does not contain "innsendingsId"', () => {
+        cy.visit("/fyllut/testmellomlagring/oppsummering?sub=digital&lang=nb-NO");
+        cy.wait("@getTestMellomlagringForm");
+        cy.findByRole("heading", { name: TEXTS.statiske.introPage.title }).should("exist");
+      });
 
-        cy.fixture("mellomlagring/submitTestMellomlagring.json").then((fixture) => {
-          cy.intercept("PUT", "/fyllut/api/send-inn/utfyltsoknad", (req) => {
-            const { submission: bodySubmission, ...bodyRest } = req.body;
-            const { submission: fixtureSubmission, ...fixtureRest } = fixture;
-            expect(bodySubmission.data).to.deep.contain(fixtureSubmission.data);
-            expect(bodyRest).to.deep.eq(fixtureRest);
-            req.redirect("/fyllut", 201);
-          }).as("submitMellomlagring");
+      describe('When url contains query param "innsendingsId"', () => {
+        beforeEach(() => {
+          cy.fixture("mellomlagring/submitTestMellomlagring.json").then((fixture) => {
+            cy.intercept("PUT", "/fyllut/api/send-inn/utfyltsoknad", (req) => {
+              const { submission: bodySubmission, ...bodyRest } = req.body;
+              const { submission: fixtureSubmission, ...fixtureRest } = fixture;
+              expect(bodySubmission.data).to.deep.contain(fixtureSubmission.data);
+              expect(bodyRest).to.deep.eq(fixtureRest);
+              req.redirect("/fyllut", 201);
+            }).as("submitMellomlagring");
+          });
         });
-      });
 
-      it("retrieves mellomlagring and redirects after submitting", () => {
-        cy.visit(
-          "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO"
-        );
-        cy.wait("@getMellomlagringValid");
-        cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
-        cy.findByText("Ønsker du å få gaven innpakket").should("exist");
-        cy.findByRole("button", { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should("exist").click();
-        cy.wait("@submitMellomlagring");
-        cy.url().should("not.include", "testMellomlagring");
-      });
+        it("retrieves mellomlagring and redirects after submitting", () => {
+          cy.visit(
+            "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO"
+          );
+          cy.wait("@getMellomlagringValid");
+          cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
+          cy.findByText("Ønsker du å få gaven innpakket").should("exist");
+          cy.findByRole("button", { name: TEXTS.grensesnitt.navigation.saveAndContinue }).should("exist").click();
+          cy.wait("@submitMellomlagring");
+          cy.url().should("not.include", "testMellomlagring");
+        });
 
-      it("retrieves mellomlagring and lets you navigate to first empty panel", () => {
-        cy.visit(
-          "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO"
-        );
-        cy.wait("@getMellomlagringValid");
-        cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
-        cy.findByRole("link", { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should("exist").click();
-        cy.url().should("include", "/valgfrieOpplysninger");
-        cy.findByRole("textbox", { name: "Hva drakk du til frokost (valgfritt)" }).should("have.focus");
+        it("retrieves mellomlagring and lets you navigate to first empty panel", () => {
+          cy.visit(
+            "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO"
+          );
+          cy.wait("@getMellomlagringValid");
+          cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
+          cy.findByRole("link", { name: TEXTS.grensesnitt.summaryPage.editAnswers }).should("exist").click();
+          cy.url().should("include", "/valgfrieOpplysninger");
+          cy.findByRole("textbox", { name: "Hva drakk du til frokost (valgfritt)" }).should("have.focus");
+        });
       });
     });
   });
