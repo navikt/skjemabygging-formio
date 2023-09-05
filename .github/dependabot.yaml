@@ -7,7 +7,7 @@ updates:
     versioning-strategy: increase
     open-pull-requests-limit: 20
     groups:
-      aksel:
+      navikt:
         patterns:
           - "@navikt/*"
       all-minor-patch:
