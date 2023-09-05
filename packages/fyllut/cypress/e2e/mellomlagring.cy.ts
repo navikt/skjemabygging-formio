@@ -18,8 +18,6 @@ describe("Mellomlagring", () => {
     it("does not fetch or update mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=paper");
       cy.wait("@getTestMellomlagringForm");
-      cy.wait("@getTranslation");
-      cy.findByRole("heading", { name: TEXTS.statiske.introPage.title });
       cy.clickStart();
       cy.get("@createMellomlagringSpy").should("not.have.been.called");
       cy.findByRole("heading", { name: "Valgfrie opplysninger" }).should("exist");
@@ -70,8 +68,6 @@ describe("Mellomlagring", () => {
     it("creates and updates mellomlagring", () => {
       cy.visit("/fyllut/testmellomlagring?sub=digital");
       cy.wait("@getTestMellomlagringForm");
-      cy.wait("@getTranslation");
-      cy.findByRole("heading", { name: TEXTS.statiske.introPage.title });
       cy.clickStart();
       cy.wait("@createMellomlagring");
       cy.findByRole("heading", { name: "Valgfrie opplysninger" }).should("exist");
