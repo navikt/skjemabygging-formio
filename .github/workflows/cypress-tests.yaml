@@ -54,7 +54,7 @@ jobs:
         with:
           install: false
           start: yarn preview:bygger
-          wait-on: "http://127.0.0.1:3000, http://127.0.0.1:8080/internal/isready"
+          wait-on: "http://127.0.0.1:3000/internal/isready"
           wait-on-timeout: 120
           command: yarn cypress:bygger
           config: video=false
