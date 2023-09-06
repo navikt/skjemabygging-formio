@@ -53,7 +53,7 @@ jobs:
         uses: cypress-io/github-action@v5
         with:
           install: false
-          start: yarn start:bygger
+          start: yarn preview:bygger
           wait-on: "http://127.0.0.1:3000, http://127.0.0.1:8080/internal/isready"
           wait-on-timeout: 120
           command: yarn cypress:bygger

@@ -10,6 +10,7 @@ describe("Diff", () => {
       "getPublishedForm",
     );
     cy.intercept("GET", "/mottaksadresse/submission", { fixture: "mottakadresse.json" }).as("getMottakAdresse");
+    cy.intercept("GET", /language\/submission?.*/, { fixture: "globalTranslations.json" }).as("getTranslations");
     cy.intercept("GET", "/api/temakoder", { fixture: "temakoder.json" }).as("getTemaKoder");
     cy.intercept("GET", "/api/countries*", { fixture: "getCountriesLangNb.json" }).as("getCountriesLangNb");
   });
@@ -23,6 +24,7 @@ describe("Diff", () => {
       cy.wait("@getMottakAdresse");
       cy.wait("@getTemaKoder");
       cy.wait("@getCountriesLangNb");
+      cy.wait("@getTranslations");
     });
 
     it("Renders settings page without any diffs", () => {
@@ -57,6 +59,7 @@ describe("Diff", () => {
       cy.wait("@getForm");
       cy.wait("@getPublishedForm");
       cy.wait("@getCountriesLangNb");
+      cy.wait("@getTranslations");
     });
 
     describe("Tags", () => {
