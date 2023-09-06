@@ -44,8 +44,8 @@ const navFormDiffToHtml = (diffSummary) => {
       html.push(`<ul aria-labelledby="${labelId}">`);
       html.push(
         ...changesToCurrentComponent.map(
-          (change) => `<li>${change.key}: Fra '${change.oldValue}' til '${change.newValue}'</li>`
-        )
+          (change) => `<li>${change.key}: Fra '${change.oldValue}' til '${change.newValue}'</li>`,
+        ),
       );
       html.push("</ul>");
     }
@@ -70,7 +70,7 @@ const createList = (components, labelId) => {
           .map((component) => {
             return `<li>${component.type}: ${component.label}${createList(component.components)}</li>`;
           })
-          .join("")
+          .join(""),
       )
       .concat("</ul>");
   }
@@ -117,7 +117,7 @@ const sanitize = (string, options) => {
 
 const originalEvaluate = Utils.evaluate;
 
-const evaluateOverride = (func, args, ret, tokenize) => {
+const evaluate = (func, args, ret, tokenize) => {
   return originalEvaluate(sanitizeJavaScriptCode(func), args, ret, tokenize);
 };
 
@@ -126,7 +126,7 @@ const { sanitizeJavaScriptCode } = navFormioUtils;
 const UtilsOverrides = {
   additionalDescription,
   translateHTMLTemplate,
-  evaluateOverride,
+  evaluate,
   sanitize,
   sanitizeJavaScriptCode,
   navFormDiffToHtml,
