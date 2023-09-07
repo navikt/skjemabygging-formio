@@ -7,7 +7,7 @@ const port = parseInt(process.env.PORT || "8080");
 const app = createApp();
 
 logger.info(`serving on ${port}`);
-if (process.env.NODE_ENV !== "development") {
+if (import.meta.env.PROD) {
   app.listen(port);
 }
 

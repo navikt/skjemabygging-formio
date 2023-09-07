@@ -21,8 +21,8 @@ app.use("/internal", internalRouter);
 app.use("/api", authHandler, apiRouter);
 app.use("/notifications", notificationsRouter);
 
-if (config.isProduction) {
-  // serve built app in production (served by webpack dev server in development)
+if (import.meta.env.PROD) {
+  // serve built app in production (served by vite in development)
   app.use(express.static(buildDirectory));
   app.get("/*", fsAccessRateLimiter, (req, res) => {
     res.sendFile(buildDirectoryIndexHtml);
@@ -31,7 +31,7 @@ if (config.isProduction) {
 
 const { port, nodeEnv } = config;
 console.log(`serving on ${port} (${nodeEnv})`);
-if (process.env.NODE_ENV !== "development") {
+if (import.meta.env.PROD) {
   app.listen(port);
 }
 
