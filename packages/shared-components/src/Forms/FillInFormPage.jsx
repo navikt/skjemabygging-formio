@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -11,7 +11,7 @@ import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     loggSkjemaApnet,
     loggSkjemaSporsmalBesvart,
@@ -44,7 +44,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
-    history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
+    navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
@@ -116,7 +116,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
       skjemastegNokkel,
     });
-    history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+    navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
   const onError = () => {

@@ -2,7 +2,7 @@ import { Back, Close } from "@navikt/ds-icons";
 import { Button, Stepper } from "@navikt/ds-react";
 import { NavFormType, Panel, TEXTS, formSummaryUtil, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useMemo, useRef, useState } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 
@@ -15,7 +15,8 @@ type FormStepperProps = {
 
 const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormStepperProps) => {
   const openButton = useRef<HTMLButtonElement>(null);
-  const { url } = useRouteMatch();
+  const location = useLocation();
+  const url = location.pathname;
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
   const { search } = useLocation();

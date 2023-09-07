@@ -1,7 +1,7 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
@@ -21,12 +21,12 @@ const supportsPapirOgDigital = (form: NavFormType) => {
 export function IntroPage({ form, formUrl }: Props) {
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
   const [mustSelectSubmissionMethod, setMustSelectSubmissionMethod] = useState<boolean>(
-    !submissionMethod && supportsPapirOgDigital(form)
+    !submissionMethod && supportsPapirOgDigital(form),
   );
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
@@ -138,7 +138,7 @@ export function IntroPage({ form, formUrl }: Props) {
               </span>
             </Link>
           )}
-          <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
+          <button onClick={() => navigate(-1)} className="navds-button navds-button--tertiary">
             <span aria-live="polite" className="navds-body-short font-bold">
               {translate(TEXTS.grensesnitt.goBack)}
             </span>

@@ -1,11 +1,12 @@
 import { AppConfigProvider, Modal, url } from "@navikt/skjemadigitalisering-shared-components";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import ConfirmDelingslenkeModal from "./components/ConfirmDelingslenkeModal";
 import getDokumentinnsendingBaseURL from "./getDokumentinnsendingBaseURL";
 import httpFyllut from "./util/httpFyllut";
+import { ConfigType } from "@navikt/skjemadigitalisering-shared-domain";
 
 if (process.env.NODE_ENV !== "test") Modal.setAppElement("#root");
 
@@ -14,7 +15,7 @@ let featureToggles = {};
 const subissionMethod = url.getUrlParam(window.location.search, "sub");
 
 httpFyllut
-  .get("/fyllut/api/config")
+  .get<ConfigType>("/fyllut/api/config")
   .then((json) => {
     if (json.FEATURE_TOGGLES) {
       featureToggles = json.FEATURE_TOGGLES;
@@ -25,8 +26,10 @@ httpFyllut
     console.error(`Could not fetch config from server: ${error}`);
   });
 
-function renderReact(dokumentInnsendingBaseURL, config) {
-  ReactDOM.render(
+const renderReact = (dokumentInnsendingBaseURL, config) => {
+  const container = document.getElementById("root");
+  const root = createRoot(container!);
+  root.render(
     <React.StrictMode>
       <BrowserRouter basename="/fyllut">
         <AppConfigProvider
@@ -45,6 +48,5 @@ function renderReact(dokumentInnsendingBaseURL, config) {
         </AppConfigProvider>
       </BrowserRouter>
     </React.StrictMode>,
-    document.getElementById("root")
   );
-}
+};

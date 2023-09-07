@@ -1,14 +1,14 @@
 import { Alert, BodyShort, ConfirmationPanel, Heading, Link as NavLink } from "@navikt/ds-react";
 import {
   DeclarationType,
+  formSummaryUtil,
   InnsendingType,
   NavFormType,
   Submission,
   TEXTS,
-  formSummaryUtil,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
@@ -67,7 +67,8 @@ function getUrlToLastPanel(form, formUrl, submission) {
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
-  const { url } = useRouteMatch();
+  const location = useLocation();
+  const url = location.pathname;
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
   const { search } = useLocation();

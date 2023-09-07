@@ -1,10 +1,10 @@
 import React from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 export const SubmissionWrapper = ({ submission, url, children }) => {
   const { search } = useLocation();
   if (!submission) {
-    return <Redirect to={`${url}${search}`} />;
+    return <Navigate to={`${url}${search}`} replace />;
   }
   return children(submission);
 };

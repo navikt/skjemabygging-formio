@@ -2,7 +2,7 @@ import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/AppLayout";
 import PrimaryButtonWithSpinner from "../../components/PrimaryButtonWithSpinner";
 import UserFeedback from "../../components/UserFeedback";
@@ -76,11 +76,11 @@ const GlobalTranslationsPage = ({
   const classes = useGlobalTranslationsPageStyles();
   const [allGlobalTranslations, setAllGlobalTranslations] = useState({});
   const [globalTranslationsWithLanguagecodeAndTag, setGlobalTranslationsWithLanguagecodeAndTag] = useState({});
-  const history = useHistory();
+  const navigate = useNavigate();
   const [currentTranslation, dispatch] = useReducer(
     (state, action) => getCurrenttranslationsReducer(state, action),
     [],
-    (state) => state
+    (state) => state,
   );
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const GlobalTranslationsPage = ({
   useEffect(() => {
     if (languageCode && allGlobalTranslations[languageCode])
       setGlobalTranslationsWithLanguagecodeAndTag(
-        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, selectedTag)
+        getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, selectedTag),
       );
     else setGlobalTranslationsWithLanguagecodeAndTag({});
   }, [allGlobalTranslations, languageCode, selectedTag]);
@@ -201,14 +201,14 @@ const GlobalTranslationsPage = ({
       alert(
         `Du har fortsatt ${
           duplicatedOriginalText.length > 1 ? "flere dupliserte original tekster" : "en duplisert original tekst"
-        } (${duplicatedOriginalText})`
+        } (${duplicatedOriginalText})`,
       );
     } else {
       const response = await saveTranslation(
         globalTranslationsWithLanguagecodeAndTag?.id,
         languageCode,
         globalTranslationsToSave(selectedTag),
-        selectedTag
+        selectedTag,
       );
       if (response.ok) {
         const translations = await loadGlobalTranslations();
@@ -289,7 +289,7 @@ const GlobalTranslationsPage = ({
         onConfirm={() => {
           if (allGlobalTranslations[languageCode]) {
             getTranslationIdsForLanguage().forEach((translationId) => deleteTranslation(translationId));
-            history.push("/translations");
+            navigate("/translations");
           }
         }}
         language={languagesInNorwegian[languageCode]}

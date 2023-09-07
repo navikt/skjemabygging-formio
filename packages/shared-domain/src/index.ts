@@ -29,6 +29,7 @@ import type {
   TranslationScope,
   TranslationTag,
 } from "./languages/types";
+import type { ConfigType } from "./config";
 import migrationUtils from "./migration";
 import { Operator } from "./migration/operator";
 import type { Mottaksadresse, MottaksadresseData } from "./mottaksadresse";
@@ -112,4 +113,5 @@ export type {
   Operator,
   NavFormSettingsDiff,
   UsageContext,
+  ConfigType,
 };

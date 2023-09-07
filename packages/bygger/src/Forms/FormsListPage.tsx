@@ -3,15 +3,15 @@ import { Button, Heading } from "@navikt/ds-react";
 import { LoadingComponent, makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
 import ActionRow from "../components/layout/ActionRow";
 import {
-  FormMetadata,
-  SortDirection,
   asFormMetadata,
+  FormMetadata,
   sortByFormNumber,
   sortByStatus,
+  SortDirection,
   sortFormsByProperty,
 } from "./formsListUtils";
 import FormStatus from "./status/FormStatus";
@@ -143,7 +143,7 @@ interface FormsListPageProps {
 }
 
 const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState<NavFormType[]>();
@@ -168,7 +168,7 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
     return <h1>Finner ingen skjemaer...</h1>;
   }
 
-  const onNew = () => history.push("/forms/new");
+  const onNew = () => navigate("/forms/new");
 
   return (
     <AppLayout

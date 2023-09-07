@@ -1,10 +1,12 @@
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Routes, useMatch } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
 import MigrationFormPreview from "./MigrationFormPreview";
 import MigrationPage from "./MigrationPage";
 
 const MigrationRouter = () => {
-  const { path } = useRouteMatch("/migrering");
+  const match = useMatch("/migrering");
+  const path = match ? match.pathname : "";
+
   return (
     <AppLayout
       navBarProps={{
@@ -13,14 +15,10 @@ const MigrationRouter = () => {
         visSkjemaMeny: false,
       }}
     >
-      <Switch>
-        <Route path={`${path}/forhandsvis/:formPath`}>
-          <MigrationFormPreview />
-        </Route>
-        <Route exact path={path}>
-          <MigrationPage />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path={`${path}/forhandsvis/:formPath`} element={<MigrationFormPreview />} />
+        <Route path={path} element={<MigrationPage />} />
+      </Routes>
     </AppLayout>
   );
 };

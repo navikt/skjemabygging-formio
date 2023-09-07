@@ -4,7 +4,7 @@ import { rateLimiter } from "../../middleware/ratelimit";
 import idportenAuthHandler from "../../security/idportenAuthHandler";
 import { initApiConfig } from "./api-helper";
 import commonCodes from "./common-codes";
-import config from "./config.js";
+import config from "./config";
 import countries from "./countries.js";
 import enhetsliste from "./enhetsliste.js";
 import exstream from "./exstream";

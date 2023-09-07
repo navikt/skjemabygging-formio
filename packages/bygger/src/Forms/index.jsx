@@ -1,4 +1,4 @@
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Routes, useRouteMatch } from "react-router-dom";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
 import { FormPage } from "./FormPage";
@@ -11,22 +11,21 @@ export const FormsRouter = ({ formio, serverURL }) => {
   const { loadTranslationsForEditPage } = useFormioTranslations(serverURL, formio);
 
   return (
-    <Switch>
-      <Route path={`${path}/new`}>
-        <NewFormPage formio={formio} />
-      </Route>
-      <Route path={`${path}/:formPath`}>
-        <FormPage
-          loadForm={loadForm}
-          loadTranslations={loadTranslationsForEditPage}
-          onSave={onSave}
-          onPublish={onPublish}
-          onUnpublish={onUnpublish}
-        />
-      </Route>
-      <Route path={path}>
-        <FormsListPage loadFormsList={loadFormsList} url={url} />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path={`${path}/new`} element={<NewFormPage formio={formio} />} />
+      <Route
+        path={`${path}/:formPath`}
+        element={
+          <FormPage
+            loadForm={loadForm}
+            loadTranslations={loadTranslationsForEditPage}
+            onSave={onSave}
+            onPublish={onPublish}
+            onUnpublish={onUnpublish}
+          />
+        }
+      />
+      <Route path={path} element={<FormsListPage loadFormsList={loadFormsList} url={url} />} />
+    </Routes>
   );
 };

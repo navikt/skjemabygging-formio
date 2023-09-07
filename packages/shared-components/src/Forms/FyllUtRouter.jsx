@@ -1,6 +1,6 @@
 import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, unstable_usePrompt as usePrompt } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { SendInnProvider } from "../context/sendInn/sendInnContext";
@@ -30,7 +30,7 @@ const ALERT_MESSAGE_BACK_BUTTON =
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
-  const { path, url: formBaseUrl } = useRouteMatch();
+  const { path, pathname: formBaseUrl } = useLocation();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
 
@@ -57,60 +57,67 @@ const FyllUtRouter = ({ form, translations }) => {
             <div className="main-col"></div>
             <div className="right-col">{featureToggles.enableTranslations && <LanguageSelector />}</div>
           </div>
-          <Switch>
-            <Redirect from="/:url*(/+)" to={path.slice(0, -1)} />
-            <Route exact path={path}>
-              <>
-                <IntroPage form={form} formUrl={formBaseUrl} />
-              </>
-            </Route>
-            <Route path={`${path}/oppsummering`}>
-              <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                {(submissionObject) => <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />}
-              </SubmissionWrapper>
-            </Route>
-            <Route path={`${path}/send-i-posten`}>
-              <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                {(submissionObject) => (
-                  <PrepareLetterPage
-                    form={form}
-                    submission={submissionObject}
-                    formUrl={formBaseUrl}
-                    translations={translations}
-                  />
-                )}
-              </SubmissionWrapper>
-            </Route>
-            <Route path={`${path}/ingen-innsending`}>
-              <SubmissionWrapper submission={submission} url={formBaseUrl}>
-                {(submissionObject) => (
-                  <PrepareIngenInnsendingPage
-                    form={form}
-                    submission={submissionObject}
-                    formUrl={formBaseUrl}
-                    translations={translations}
-                  />
-                )}
-              </SubmissionWrapper>
-            </Route>
-            <Route path={`${path}/:panelSlug`}>
-              {formForRendering && (
-                <>
-                  {app !== "bygger" && (
-                    <Prompt
-                      message={(location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true)}
+          <Routes>
+            <Route path="/:url*(/+)" element={<Navigate to={path.slice(0, -1)} replace />} />
+            <Route exact path={path} element={<IntroPage form={form} formUrl={formBaseUrl} />} />
+            <Route
+              path={`${path}/oppsummering`}
+              element={
+                <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                  {(submissionObject) => (
+                    <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />
+                  )}
+                </SubmissionWrapper>
+              }
+            />
+            <Route
+              path={`${path}/send-i-posten`}
+              element={
+                <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                  {(submissionObject) => (
+                    <PrepareLetterPage
+                      form={form}
+                      submission={submissionObject}
+                      formUrl={formBaseUrl}
+                      translations={translations}
                     />
                   )}
-                  <FillInFormPage
-                    form={formForRendering}
-                    submission={submission}
-                    setSubmission={setSubmission}
-                    formUrl={formBaseUrl}
-                  />
-                </>
-              )}
-            </Route>
-          </Switch>
+                </SubmissionWrapper>
+              }
+            />
+            <Route
+              path={`${path}/ingen-innsending`}
+              element={
+                <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                  {(submissionObject) => (
+                    <PrepareIngenInnsendingPage
+                      form={form}
+                      submission={submissionObject}
+                      formUrl={formBaseUrl}
+                      translations={translations}
+                    />
+                  )}
+                </SubmissionWrapper>
+              }
+            />
+            <Route
+              path={`${path}/:panelSlug`}
+              element={
+                formForRendering && (
+                  <>
+                    {app !== "bygger" &&
+                      usePrompt((location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true))}
+                    <FillInFormPage
+                      form={formForRendering}
+                      submission={submission}
+                      setSubmission={setSubmission}
+                      formUrl={formBaseUrl}
+                    />
+                  </>
+                )
+              }
+            />
+          </Routes>
         </div>
       </SendInnProvider>
     </LanguagesProvider>

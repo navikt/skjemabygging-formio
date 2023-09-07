@@ -1,12 +1,11 @@
 import { Button } from "@navikt/ds-react";
 import { useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export const FormEditNavigation = ({ editFormUrl, testFormUrl, formSettingsUrl, form, onSave }) => {
   const { featureToggles } = useAppConfig();
-  const history = useHistory();
-  const params = new URLSearchParams(history.location.search);
-  const currentLanguage = params.get("lang");
+  const [searchParams] = useSearchParams();
+  const currentLanguage = searchParams.get("lang");
   return (
     <ul className="list-inline">
       {editFormUrl && (

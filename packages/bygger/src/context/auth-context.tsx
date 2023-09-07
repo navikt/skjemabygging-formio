@@ -1,6 +1,6 @@
 import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name?: string;
@@ -32,11 +32,11 @@ const enforceUserName = (formioUser) => {
 const AuthContext = React.createContext<ContextProps>({});
 function AuthProvider(props) {
   const [userData, setUserData] = useState(props.user || enforceUserName(NavFormioJs.Formio.getUser()));
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const login = (user) => {
     setUserData(enforceUserName(user));
-    history.push("/forms");
+    navigate("/forms");
   };
   const logout = async () => {
     try {

@@ -1,4 +1,4 @@
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Routes, useRouteMatch } from "react-router-dom";
 import { useFormioForms } from "../hooks/useFormioForms";
 import { useFormioTranslations } from "../hooks/useFormioTranslations";
 import NewTranslation from "./NewTranslation";
@@ -19,13 +19,9 @@ const TranslationsRouter = ({ formio, serverURL }) => {
   } = useFormioTranslations(serverURL, formio);
 
   return (
-    <Switch>
-      <Route exact path={`${path}/`}>
-        <TranslationsListPage loadFormsList={loadFormsList} />
-      </Route>
-      <Route path={`${path}/new`}>
-        <NewTranslation projectURL={formio.projectURL} />
-      </Route>
+    <Routes>
+      <Route exact path={`${path}/`} element={<TranslationsListPage loadFormsList={loadFormsList} />} />
+      <Route path={`${path}/new`} element={<NewTranslation projectURL={formio.projectURL} />} />
       <Route
         path={`${path}/global/:languageCode?/:tag?`}
         render={({ match }) => (
@@ -49,7 +45,7 @@ const TranslationsRouter = ({ formio, serverURL }) => {
           />
         )}
       />
-    </Switch>
+    </Routes>
   );
 };
 

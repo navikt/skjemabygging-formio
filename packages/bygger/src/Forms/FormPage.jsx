@@ -1,6 +1,6 @@
 import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useCallback, useEffect, useReducer } from "react";
-import { Prompt, Redirect, Route, Switch, useParams, useRouteMatch } from "react-router-dom";
+import { Navigate, Prompt, Route, Routes, useParams, useRouteMatch } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
 import { loadPublishedForm } from "./diffing/publishedForm";
 import { EditFormPage } from "./EditFormPage";
@@ -15,11 +15,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   const [state, dispatch] = useReducer(
     formPageReducer,
     { status: "LOADING", hasUnsavedChanges: false },
-    (state) => state
+    (state) => state,
   );
   const loadTranslationsForFormPath = useCallback(
     () => loadTranslations(state.form?.path),
-    [loadTranslations, state.form?.path]
+    [loadTranslations, state.form?.path],
   );
 
   useEffect(() => {
@@ -93,34 +93,36 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
         when={state.hasUnsavedChanges}
         message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
       />
-      <Switch>
-        <Route path={`${url}/edit`}>
-          <EditFormPage
-            form={state.form}
-            publishedForm={diffOn ? state.publishedForm : undefined}
-            onSave={saveFormAndResetIsUnsavedChanges}
-            onChange={onChange}
-            onPublish={publishForm}
-            onUnpublish={unpublishForm}
-          />
-        </Route>
-        <Route path={`${url}/view`}>
-          <TestFormPage form={state.form} />
-        </Route>
-        <Route path={`${url}/settings`}>
-          <FormSettingsPage
-            form={state.form}
-            publishedForm={diffOn ? state.publishedForm : undefined}
-            onSave={saveFormAndResetIsUnsavedChanges}
-            onChange={onChange}
-            onPublish={publishForm}
-            onUnpublish={unpublishForm}
-          />
-        </Route>
-        <Route path={url}>
-          <Redirect to={`${url}/edit`} />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route
+          path={`${url}/edit`}
+          element={
+            <EditFormPage
+              form={state.form}
+              publishedForm={diffOn ? state.publishedForm : undefined}
+              onSave={saveFormAndResetIsUnsavedChanges}
+              onChange={onChange}
+              onPublish={publishForm}
+              onUnpublish={unpublishForm}
+            />
+          }
+        />
+        <Route path={`${url}/view`} element={<TestFormPage form={state.form} />} />
+        <Route
+          path={`${url}/settings`}
+          element={
+            <FormSettingsPage
+              form={state.form}
+              publishedForm={diffOn ? state.publishedForm : undefined}
+              onSave={saveFormAndResetIsUnsavedChanges}
+              onChange={onChange}
+              onPublish={publishForm}
+              onUnpublish={unpublishForm}
+            />
+          }
+        />
+        <Route path={url} element={<Navigate to={`${url}/edit`} replace />} />
+      </Routes>
     </I18nStateProvider>
   );
 };

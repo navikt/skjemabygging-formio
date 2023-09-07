@@ -1,7 +1,6 @@
 import "@navikt/ds-css";
 import { makeStyles, Styles } from "@navikt/skjemadigitalisering-shared-components";
-import classNames from "classnames";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { AllForms } from "./components/AllForms";
 import { FormPageWrapper } from "./components/FormPageWrapper";
 
@@ -12,20 +11,16 @@ const useStyles = makeStyles({
   },
 });
 
-function App({ className }) {
+const App = () => {
   const styles = useStyles();
   return (
-    <div className={classNames(className, styles.app, "cool")}>
-      <Switch>
-        <Route exact path="/">
-          <AllForms />
-        </Route>
-        <Route path="/:formPath">
-          <FormPageWrapper />
-        </Route>
-      </Switch>
+    <div className={styles.app}>
+      <Routes>
+        <Route exact path="/" element={<AllForms />} />
+        <Route path="/:formPath" element={<FormPageWrapper />} />
+      </Routes>
     </div>
   );
-}
+};
 
 export default App;
