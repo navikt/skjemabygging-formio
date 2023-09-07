@@ -38,7 +38,6 @@ export function TranslationsListPage({ loadFormsList }) {
   const classes = useTranslationsListStyles();
   const [forms, setForms] = useState();
   const [status, setStatus] = useState("LOADING");
-
   useEffect(() => {
     loadFormsList().then((forms) => {
       setForms(forms);
@@ -65,7 +64,7 @@ export function TranslationsListPage({ loadFormsList }) {
           </Heading>
           <ul className={classes.list}>
             <li className={classes.globalListItem}>
-              <Link to="/translations/global/nn-NO/skjematekster">Felles oversettelser for alle skjemaer</Link>
+              <Link to="global/nn-NO/skjematekster">Felles oversettelser for alle skjemaer</Link>
             </li>
           </ul>
         </nav>
@@ -79,10 +78,10 @@ export function TranslationsListPage({ loadFormsList }) {
             <FormsList className={classes.list} formMetadataList={forms?.map(asFormMetadata)}>
               {(formMetadata) => (
                 <li className={classes.listItem} key={formMetadata.path}>
-                  <Link className="lenke" data-testid="editLink" to={`/translations/${formMetadata.path}`}>
+                  <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}`}>
                     {formMetadata.skjemanummer}
                   </Link>
-                  <Link className="lenke" data-testid="editLink" to={`/translations/${formMetadata.path}`}>
+                  <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}`}>
                     {formMetadata.title}
                   </Link>
                   <FormStatus status={formMetadata.status} size={"small"} />

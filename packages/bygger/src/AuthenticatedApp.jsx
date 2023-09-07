@@ -11,10 +11,10 @@ function AuthenticatedApp({ serverURL, formio }) {
   return (
     <>
       <Routes>
-        <Route path="/forms" element={<FormsRouter formio={formio} serverURL={serverURL} />} />
-        <Route path="/translations" element={<TranslationsRouter formio={formio} serverURL={serverURL} />} />
+        <Route path="/forms/*" element={<FormsRouter formio={formio} serverURL={serverURL} />} />
+        <Route path="/translations/*" element={<TranslationsRouter formio={formio} serverURL={serverURL} />} />
         <Route path="/mottaksadresser" element={<MottaksadresserPage />} />
-        <Route path="/migrering" element={<MigrationRouter />} />
+        <Route path="/migrering/*" element={<MigrationRouter />} />
         <Route path="/rapporter" element={<ReportsPage />} />
         <Route path="/" element={<Navigate to="/forms" replace />} />
       </Routes>

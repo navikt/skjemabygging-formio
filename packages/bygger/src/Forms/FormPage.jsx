@@ -1,6 +1,6 @@
 import { LoadingComponent, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import React, { useCallback, useEffect, useReducer } from "react";
-import { Navigate, Prompt, Route, Routes, useParams, useRouteMatch } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 import I18nStateProvider from "../context/i18n/I18nContext";
 import { loadPublishedForm } from "./diffing/publishedForm";
 import { EditFormPage } from "./EditFormPage";
@@ -10,7 +10,6 @@ import { TestFormPage } from "./TestFormPage";
 
 export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpublish }) => {
   const { featureToggles, diffOn } = useAppConfig();
-  let { url } = useRouteMatch();
   const { formPath } = useParams();
   const [state, dispatch] = useReducer(
     formPageReducer,
@@ -83,19 +82,19 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
+  /*
+  TODO: Add popup
   const onLeaveMessage =
     "Hvis du går vekk fra denne siden uten å lagre, så mister du alle endringene." +
     "Er du sikker på at du vil gå videre?";
 
+   */
+
   return (
     <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={state.form}>
-      <Prompt
-        when={state.hasUnsavedChanges}
-        message={(location) => (location.pathname.startsWith(url) ? true : onLeaveMessage)}
-      />
       <Routes>
         <Route
-          path={`${url}/edit`}
+          path={"/edit"}
           element={
             <EditFormPage
               form={state.form}
@@ -107,9 +106,9 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
             />
           }
         />
-        <Route path={`${url}/view`} element={<TestFormPage form={state.form} />} />
+        <Route path={"/view/*"} element={<TestFormPage form={state.form} />} />
         <Route
-          path={`${url}/settings`}
+          path={"/settings"}
           element={
             <FormSettingsPage
               form={state.form}
@@ -121,7 +120,7 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
             />
           }
         />
-        <Route path={url} element={<Navigate to={`${url}/edit`} replace />} />
+        <Route path="/" element={<Navigate to={"edit"} replace />} />
       </Routes>
     </I18nStateProvider>
   );

@@ -138,11 +138,10 @@ const useFormsListPageStyles = makeStyles({
 });
 
 interface FormsListPageProps {
-  url: string;
   loadFormsList: () => Promise<NavFormType[]>;
 }
 
-const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
+const FormsListPage = ({ loadFormsList }: FormsListPageProps) => {
   const navigate = useNavigate();
   const classes = useFormsListPageStyles();
   const [status, setStatus] = useState("LOADING");
@@ -190,10 +189,10 @@ const FormsListPage = ({ url, loadFormsList }: FormsListPageProps) => {
         <FormsList formMetadataList={forms.map(asFormMetadata)}>
           {(formMetadata) => (
             <li className={classes.listItem} key={formMetadata.path}>
-              <Link className="lenke" data-testid="editLink" to={`${url}/${formMetadata.path}/edit`}>
+              <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}/edit`}>
                 {formMetadata.skjemanummer}
               </Link>
-              <Link className="lenke" data-testid="editLink" to={`${url}/${formMetadata.path}/edit`}>
+              <Link className="lenke" data-testid="editLink" to={`${formMetadata.path}/edit`}>
                 {formMetadata.title}
               </Link>
               <FormStatus status={formMetadata.status} size="small" />

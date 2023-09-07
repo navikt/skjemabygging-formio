@@ -1,6 +1,6 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useEffect, useState } from "react";
+import { useHref, useLocation, useNavigate, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -10,7 +10,7 @@ import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
-export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
+export const FillInFormPage = ({ form, submission, setSubmission }) => {
   const navigate = useNavigate();
   const {
     loggSkjemaApnet,
@@ -21,9 +21,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
+  const [formForRendering, setFormForRendering] = useState();
   const { startMellomlagring, updateMellomlagring, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
+  const { search } = useLocation();
+  const formUrl = useHref("../");
+
+  useEffect(() => {
+    setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
+  }, [form, submissionMethod]);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
@@ -44,7 +51,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
-    navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
+    navigate({ pathname: `${formUrl}${panelPath}`, search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
@@ -67,7 +74,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     updateMellomlagring(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
-      destinasjon: `${formUrl}/${currentPanels?.[page]}`,
+      destinasjon: `${formUrl}${currentPanels?.[page]}`,
     });
     loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
@@ -76,7 +83,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   function onPreviousPage({ page, currentPanels }) {
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
-      destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
+      destinasjon: `${formUrl}${currentPanels?.[page - 2]}`,
     });
     onNextOrPreviousPage(page, currentPanels);
   }
@@ -96,7 +103,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function onWizardPageSelected(panel) {
-    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
+    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}${panel.path}` });
     updatePanelUrl(panel.path);
   }
 
@@ -109,41 +116,40 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
-      destinasjon: `${formUrl}/oppsummering`,
+      destinasjon: `${formUrl}oppsummering`,
     });
-    const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
-      steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
-      skjemastegNokkel,
+      steg: form.components.findIndex((panel) => panel.key === panelSlug) + 1,
+      panelSlug,
     });
-    navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+    navigate({ pathname: `${formUrl}oppsummering`, search });
   };
 
   const onError = () => {
     loggSkjemaValideringFeilet();
-    // Commenting out as temporary fix for issue where we scroll to errorsList when onChange is triggered
-    //scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
 
   return (
     <div>
-      <NavForm
-        form={form}
-        language={featureToggles.enableTranslations ? currentLanguage : undefined}
-        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
-        submission={submission}
-        onBlur={loggSkjemaSporsmalBesvart}
-        onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
-        onError={onError}
-        onSubmit={onSubmit}
-        onNextPage={onNextPage}
-        onPrevPage={onPreviousPage}
-        onCancel={onCancel}
-        formReady={onFormReady}
-        submissionReady={goToPanelFromUrlParam}
-        onWizardPageSelected={onWizardPageSelected}
-        className="nav-form"
-      />
+      {formForRendering && (
+        <NavForm
+          form={formForRendering}
+          language={featureToggles.enableTranslations ? currentLanguage : undefined}
+          i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
+          submission={submission}
+          onBlur={loggSkjemaSporsmalBesvart}
+          onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
+          onError={onError}
+          onSubmit={onSubmit}
+          onNextPage={onNextPage}
+          onPrevPage={onPreviousPage}
+          onCancel={onCancel}
+          formReady={onFormReady}
+          submissionReady={goToPanelFromUrlParam}
+          onWizardPageSelected={onWizardPageSelected}
+          className="nav-form"
+        />
+      )}
     </div>
   );
 };

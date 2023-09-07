@@ -1,12 +1,12 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { renderHook, WrapperComponent } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
 import createMockImplementation from "../../test/backendMockImplementation";
 import useTemaKoder from "./useTemaKoder";
 
 describe("useTemaKoder", () => {
   // @ts-ignore
   let fetchSpy: vi.SpyInstance;
-  let appConfig: WrapperComponent<any>;
+  let appConfig: any;
   const projectUrl = "http://test.example.org";
 
   beforeEach(() => {
@@ -20,18 +20,18 @@ describe("useTemaKoder", () => {
   });
 
   it("returns ready: false and empty temakoder initially", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
+    const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
     expect(result.current.ready).toBe(false);
     expect(result.current.temaKoder).toEqual([]);
-    await waitForNextUpdate();
   });
 
   it("fetches temakoder and returns them when ready", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
-    await waitForNextUpdate();
-    expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/temakoder`);
-    expect(result.current.ready).toBe(true);
-    expect(result.current.temaKoder).toEqual([{ key: "TEST", value: "test" }]);
+    const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(`${projectUrl}/api/temakoder`);
+      expect(result.current.ready).toBe(true);
+      expect(result.current.temaKoder).toEqual([{ key: "TEST", value: "test" }]);
+    });
   });
 
   describe("When fetch returns with not ok", () => {
@@ -42,10 +42,10 @@ describe("useTemaKoder", () => {
 
     it("returns an error message", async () => {
       fetchSpy.mockImplementation(() => Promise.resolve(new Response(null, { status: 503 })));
-      const { result, waitForNextUpdate } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
-      await waitForNextUpdate();
-
-      expect(result.current.errorMessage).toEqual("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
+      const { result } = renderHook(() => useTemaKoder(), { wrapper: appConfig });
+      await waitFor(() => {
+        expect(result.current.errorMessage).toEqual("Feil ved henting av temakoder. Vennligst prøv igjen senere.");
+      });
     });
   });
 });

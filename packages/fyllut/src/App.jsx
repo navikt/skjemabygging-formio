@@ -16,8 +16,8 @@ const App = () => {
   return (
     <div className={styles.app}>
       <Routes>
-        <Route exact path="/" element={<AllForms />} />
-        <Route path="/:formPath" element={<FormPageWrapper />} />
+        <Route path="/" element={<AllForms />} />
+        <Route path="/:formPath/*" element={<FormPageWrapper />} />
       </Routes>
     </div>
   );

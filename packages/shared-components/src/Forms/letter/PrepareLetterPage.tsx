@@ -1,8 +1,8 @@
 import { Heading } from "@navikt/ds-react";
-import { Enhet, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Enhet, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useHref } from "react-router-dom";
 import { fetchEnhetsliste, isEnhetSupported } from "../../api/fetchEnhetsliste";
 import ErrorPage from "../../components/ErrorPage";
 import LoadingComponent from "../../components/LoadingComponent";
@@ -21,8 +21,7 @@ const compareEnheter = (enhetA, enhetB) => enhetA.navn.localeCompare(enhetB.navn
 
 interface Props {
   form: NavFormType;
-  submission: any;
-  formUrl?: string;
+  submission: Submission;
   translations: any;
 }
 
@@ -37,22 +36,16 @@ const useStyles = makeStyles({
   },
 });
 
-export function PrepareLetterPage({ form, submission, formUrl, translations }: Props) {
+export function PrepareLetterPage({ form, submission, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL, baseUrl, logger } = useAppConfig();
   const { translate } = useLanguages();
-  const { state } = useLocation();
-  const [goBackUrl, setGoBackURL] = useState("");
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
+  const formUrl = useHref("../");
 
   const styles = useStyles();
-
-  useEffect(() => {
-    if (!state) setGoBackURL(`${formUrl}/oppsummering`);
-    else setGoBackURL(state.previousPage);
-  }, [state, formUrl]);
 
   const { enhetMaVelgesVedPapirInnsending, enhetstyper, skjemanummer } = form.properties;
 
@@ -107,7 +100,7 @@ export function PrepareLetterPage({ form, submission, formUrl, translations }: P
           />
           {hasAttachments && <LetterAddAttachment index={2} vedleggSomSkalSendes={attachments} translate={translate} />}
           <LetterInTheMail index={hasAttachments ? 3 : 2} vedleggSomSkalSendes={attachments} translate={translate} />
-          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
+          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}oppsummering`} />
           {
             // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
             skjemanummer === "NAV 08-09.06" && <LetterUXSignals code="study-dont9j6txe" />

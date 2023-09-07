@@ -8,17 +8,16 @@ import SummaryField from "./SummaryField";
 
 interface Props {
   components: Summary.Component[];
-  formUrl?: string;
 }
 
-const ComponentSummary = ({ components, formUrl = "" }: Props) => {
+const ComponentSummary = ({ components }: Props) => {
   return (
     <>
       {components.map((comp) => {
         const { type, key } = comp;
         switch (type) {
           case "panel":
-            return <PanelSummary key={key} component={comp} formUrl={formUrl} />;
+            return <PanelSummary key={key} component={comp} />;
           case "fieldset":
           case "navSkjemagruppe":
             return <FieldsetSummary key={key} component={comp} />;

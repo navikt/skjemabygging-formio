@@ -1,7 +1,7 @@
 import { BodyShort, Heading } from "@navikt/ds-react";
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { useEffect } from "react";
+import { useHref } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
@@ -12,8 +12,7 @@ import DownloadPdfButton from "./components/DownloadPdfButton";
 
 export interface Props {
   form: any;
-  submission: any;
-  formUrl: string;
+  submission: Submission;
   translations: { [key: string]: string } | {};
 }
 
@@ -25,19 +24,13 @@ const useStyles = makeStyles({
   },
 });
 
-export function PrepareIngenInnsendingPage({ form, submission, formUrl, translations }: Props) {
+export function PrepareIngenInnsendingPage({ form, submission, translations }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
-  const { state } = useLocation();
-  const [goBackUrl, setGoBackURL] = useState("");
   const { loggSkjemaFullfort } = useAmplitude();
   const styles = useStyles();
-
-  useEffect(() => {
-    if (!state) setGoBackURL(`${formUrl}/oppsummering`);
-    else setGoBackURL(state.previousPage);
-  }, [state, formUrl]);
+  const formUrl = useHref("../");
 
   return (
     <div className={styles.content}>
@@ -58,7 +51,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
               submissionMethod={"ingen"}
             />
           </div>
-          <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
+          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}oppsummering`} />
         </section>
       </main>
     </div>

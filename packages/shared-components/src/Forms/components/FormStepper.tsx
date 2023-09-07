@@ -1,25 +1,24 @@
 import { Back, Close } from "@navikt/ds-icons";
 import { Button, Stepper } from "@navikt/ds-react";
-import { NavFormType, Panel, TEXTS, formSummaryUtil, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { formSummaryUtil, NavFormType, navFormUtils, Panel, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useMemo, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHref, useLocation } from "react-router-dom";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
+import { useAppConfig } from "../../configContext";
 
 type FormStepperProps = {
   form: NavFormType;
-  formUrl: string;
-  submissionMethod?: string;
   submission: object;
 };
 
-const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormStepperProps) => {
+const FormStepper = ({ form, submission }: FormStepperProps) => {
+  const { submissionMethod } = useAppConfig();
   const openButton = useRef<HTMLButtonElement>(null);
-  const location = useLocation();
-  const url = location.pathname;
+  const { search, pathname } = useLocation();
+  const formUrl = useHref("../");
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
-  const { search } = useLocation();
   const { loggNavigering } = useAmplitude();
   const formSteps = useMemo(() => {
     const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission);
@@ -27,7 +26,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
       .filter((component) => component.type === "panel")
       .filter((component) => conditionals[component.key] !== false)
       .filter((component) => !(submissionMethod === "digital" && navFormUtils.isVedleggspanel(component)))
-      .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
+      .map((panel) => ({ label: panel.title, url: `${formUrl}${panel.key}` }));
   }, [form, formUrl, submissionMethod, submission]);
 
   const onOpen = () => {
@@ -89,7 +88,7 @@ const FormStepper = ({ form, formUrl, submissionMethod, submission }: FormSteppe
                 {translate(step.label)}
               </Stepper.Step>
             ))}
-            <Stepper.Step to={url} as={Link}>
+            <Stepper.Step to={pathname} as={Link}>
               {translate(TEXTS.statiske.summaryPage.title)}
             </Stepper.Step>
           </Stepper>

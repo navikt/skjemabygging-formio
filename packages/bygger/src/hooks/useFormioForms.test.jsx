@@ -1,6 +1,5 @@
 import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import { getNodeText, render, screen, waitFor } from "@testing-library/react";
-import { renderHook } from "@testing-library/react-hooks";
+import { getNodeText, render, screen, waitFor, renderHook } from "@testing-library/react";
 import { useEffect, useState } from "react";
 import { AuthProvider } from "../context/auth-context";
 import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
@@ -69,7 +68,7 @@ describe("useFormioForms", () => {
       formioFetch.mockImplementation((url) => {
         if (
           url.includes(
-            "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id"
+            "/form?type=form&tags=nav-skjema&limit=1000&select=title%2C%20path%2C%20tags%2C%20properties%2C%20modified%2C%20_id",
           )
         ) {
           return Promise.resolve(new Response(JSON.stringify(forms), RESPONSE_HEADERS_OK));
@@ -213,7 +212,7 @@ describe("useFormioForms", () => {
         fetchMock.mockImplementation((url) => {
           if (url.endsWith("/api/published-forms/testform")) {
             return Promise.resolve(
-              new Response(JSON.stringify({ message: "Publisering feilet" }), RESPONSE_HEADERS_ERROR)
+              new Response(JSON.stringify({ message: "Publisering feilet" }), RESPONSE_HEADERS_ERROR),
             );
           }
           return Promise.reject(new Error(`ukjent url ${url}`));
@@ -257,7 +256,7 @@ describe("useFormioForms", () => {
         fetchMock.mockImplementation((url) => {
           if (url.endsWith("/api/published-forms/testform")) {
             return Promise.resolve(
-              new Response(JSON.stringify({ message: "Avpublisering feilet" }), RESPONSE_HEADERS_ERROR)
+              new Response(JSON.stringify({ message: "Avpublisering feilet" }), RESPONSE_HEADERS_ERROR),
             );
           }
           return Promise.reject(new Error(`ukjent url ${url}`));

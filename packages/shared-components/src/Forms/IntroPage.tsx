@@ -1,7 +1,7 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useHref, useLocation, useNavigate } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
@@ -10,7 +10,6 @@ import { removeBeforeUnload } from "../util/unload";
 
 export interface Props {
   form: NavFormType;
-  formUrl: string;
 }
 
 const supportsPapirOgDigital = (form: NavFormType) => {
@@ -18,10 +17,11 @@ const supportsPapirOgDigital = (form: NavFormType) => {
   return !innsending || innsending === "PAPIR_OG_DIGITAL";
 };
 
-export function IntroPage({ form, formUrl }: Props) {
+export function IntroPage({ form }: Props) {
   const { translate } = useLanguages();
   const { search } = useLocation();
   const navigate = useNavigate();
+  const currentPath = useHref("");
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
@@ -64,11 +64,10 @@ export function IntroPage({ form, formUrl }: Props) {
     event.preventDefault();
     if (selectedSubmissionMethod) {
       removeBeforeUnload();
-      const { pathname, search } = window.location;
       const params = new URLSearchParams(search);
       params.set("sub", selectedSubmissionMethod);
       // important to reload page due to forced idporten login if sub=digital
-      window.location.href = `${pathname}/${firstPanelSlug}?${params.toString()}`;
+      window.location.href = `${currentPath.replace(/\/+$/, "")}/${firstPanelSlug}?${params.toString()}`;
     }
   };
 
@@ -129,10 +128,7 @@ export function IntroPage({ form, formUrl }: Props) {
             </a>
           )}
           {!mustSelectSubmissionMethod && (
-            <Link
-              className="navds-button navds-button--primary"
-              to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
-            >
+            <Link className="navds-button navds-button--primary" to={{ pathname: `${firstPanelSlug}`, search }}>
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}
               </span>

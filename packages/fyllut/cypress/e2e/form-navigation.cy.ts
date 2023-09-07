@@ -26,6 +26,7 @@ describe("Form navigation", () => {
     describe("Click on browser back button", () => {
       it("Navigates back to information page when user confirms", { defaultCommandTimeout: 10000 }, () => {
         cy.go("back");
+        // @ts-ignore
         cy.on("window:confirm", (text) => {
           expect(text).to.contains(BACK_BUTTON_CONFIRMATION_TEXT);
           return true; // <-- confirms

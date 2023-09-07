@@ -8,9 +8,9 @@ const useRedirectIfNoLanguageCode = (languageCode, translations) => {
     if (!languageCode) {
       const firstAvailableLanguageCode = Object.keys(translations)[0];
       if (translations["nn-NO"]) {
-        navigate(`${location.pathname}/nn-NO`);
+        navigate(`${location.pathname}/nn-NO`, { replace: true });
       } else if (firstAvailableLanguageCode) {
-        navigate(`${location.pathname}/${firstAvailableLanguageCode}`);
+        navigate(`${location.pathname}/${firstAvailableLanguageCode}`, { replace: true });
       }
     }
   }, [navigate, languageCode, location.pathname, translations]);

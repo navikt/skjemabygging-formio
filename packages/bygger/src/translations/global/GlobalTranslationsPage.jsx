@@ -64,13 +64,12 @@ const useGlobalTranslationsPageStyles = makeStyles({
 
 const GlobalTranslationsPage = ({
   deleteTranslation,
-  languageCode,
   loadGlobalTranslations,
   publishGlobalTranslations,
   saveTranslation,
 }) => {
-  const params = useParams();
-  const selectedTag = params.tag || tags.SKJEMATEKSTER;
+  const { tag, languageCode } = useParams();
+  const selectedTag = tag || tags.SKJEMATEKSTER;
   const [isDeleteLanguageModalOpen, setIsDeleteLanguageModalOpen] = useModal();
 
   const classes = useGlobalTranslationsPageStyles();

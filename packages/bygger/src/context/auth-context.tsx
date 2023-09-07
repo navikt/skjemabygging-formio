@@ -1,5 +1,5 @@
 import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface UserData {
@@ -15,7 +15,7 @@ interface UserData {
 interface ContextProps {
   userData?: UserData;
   login?: Function;
-  logout?: Function;
+  logout?: MouseEventHandler<HTMLAnchorElement> | undefined;
 }
 
 const enforceUserName = (formioUser) => {
