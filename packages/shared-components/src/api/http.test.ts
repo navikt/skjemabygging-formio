@@ -147,7 +147,7 @@ describe("http requests", () => {
           "https://www.unittest.nav.no/fyllut/api/send-inn",
           {},
           {},
-          { redirectToLocation: true }
+          { redirectToLocation: true },
         );
         expect(windowLocation.href).toEqual("https://www.nav.no/sendInn/123");
         expect(response).toEqual("CREATED");

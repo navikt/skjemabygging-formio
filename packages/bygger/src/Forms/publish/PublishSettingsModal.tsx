@@ -40,7 +40,7 @@ interface Props {
 
 export const getCompleteTranslationLanguageCodeList = (
   allFormOriginalTexts: string[],
-  translationsForNavForm: I18nTranslations
+  translationsForNavForm: I18nTranslations,
 ): string[] => {
   const completeTranslationList: string[] = [];
   if (allFormOriginalTexts.length !== 0) {
@@ -48,7 +48,7 @@ export const getCompleteTranslationLanguageCodeList = (
       .filter((lang) => lang !== "nb-NO")
       .forEach((languageCode) => {
         const incompleteTranslationList: string[] = allFormOriginalTexts.filter(
-          (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0
+          (formText) => Object.keys(translationsForNavForm[languageCode]).indexOf(formText) < 0,
         );
 
         if (incompleteTranslationList.length === 0) {
@@ -71,7 +71,7 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
       getFormTexts(form).reduce((allTexts, texts) => {
         const { text } = texts;
         return [...allTexts, text];
-      }, [] as string[])
+      }, [] as string[]),
     );
   }, [form]);
 
@@ -171,14 +171,14 @@ const PublishSettingsModal = ({ openModal, closeModal, onPublish, form }: Props)
               {`OBS! ${languagesInNorwegian[languageCode]} 
               (${languageCode.toUpperCase()}) vil bli avpublisert hvis du publiserer med disse innstillingene.`}
             </Alert>
-          )
+          ),
       )}
 
       <Button
         className={styles.modal_button}
         onClick={() =>
           onPublish(
-            completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages.includes(languageCode))
+            completeTranslationLanguageCodeList.filter((languageCode) => checkedLanguages.includes(languageCode)),
           )
         }
       >

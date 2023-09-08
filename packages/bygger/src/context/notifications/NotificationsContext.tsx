@@ -29,10 +29,10 @@ const PusherNotificationsProvider = ({ children }: { children: React.ReactElemen
   useEffect(() => {
     const fyllutDeploymentChannel = pusher.subscribe(CHANNEL);
     fyllutDeploymentChannel.bind(EVENT.success, ({ title, message }) =>
-      messageQueue.push({ title, message, type: "success" })
+      messageQueue.push({ title, message, type: "success" }),
     );
     fyllutDeploymentChannel.bind(EVENT.failure, ({ title, message }) =>
-      messageQueue.push({ title, message, type: "error" })
+      messageQueue.push({ title, message, type: "error" }),
     );
     return () => {
       fyllutDeploymentChannel.unbind(EVENT.success);

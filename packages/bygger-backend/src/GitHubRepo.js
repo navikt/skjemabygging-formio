@@ -40,7 +40,7 @@ export class GitHubRepo {
     const auth = this.authentication?.token ?? this.credentials.token;
     if (auth === undefined) {
       logger.error(
-        "Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables"
+        "Github authentication token is missing. Make sure that either GITHUB_ACCESS_TOKEN or github app credentials are present as environment variables",
       );
     }
     this.octokit = new Octokit({

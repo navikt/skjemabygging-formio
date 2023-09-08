@@ -56,18 +56,18 @@ const isTranslationResourceForSelectedTag =
 const getGlobalTranslationsWithLanguageAndTag = (
   allGlobalTranslations: object,
   languageCode: string,
-  selectedTag: string
+  selectedTag: string,
 ): TranslationResource => {
   const globalTranslationsResourcesForSelectedLanguage = allGlobalTranslations[languageCode];
   const translationsResourceWithSelectedLanguageAndTag = globalTranslationsResourcesForSelectedLanguage?.find(
-    isTranslationResourceForSelectedTag(selectedTag)
+    isTranslationResourceForSelectedTag(selectedTag),
   ) || { translations: {} };
   if (selectedTag === "skjematekster") {
     Object.keys(allGlobalTranslations)
       .filter((language) => language !== languageCode)
       .map((language) => allGlobalTranslations[language])
       .map((translationResourcesWithDifferentTags) =>
-        translationResourcesWithDifferentTags.find(isTranslationResourceForSelectedTag(selectedTag))
+        translationResourcesWithDifferentTags.find(isTranslationResourceForSelectedTag(selectedTag)),
       )
       .map((translationResource) => (translationResource ? translationResource.translations : {}))
       .reduce(
@@ -76,17 +76,17 @@ const getGlobalTranslationsWithLanguageAndTag = (
           ...Object.keys(translations).filter(
             (key) =>
               translationsResourceWithSelectedLanguageAndTag.translations[key] === undefined &&
-              missingOriginalTexts.indexOf(key) === -1
+              missingOriginalTexts.indexOf(key) === -1,
           ),
         ],
-        []
+        [],
       )
       .forEach(
         (missingKey) =>
           (translationsResourceWithSelectedLanguageAndTag.translations[missingKey] = {
             scope: "global",
             value: undefined,
-          })
+          }),
       );
   }
   return translationsResourceWithSelectedLanguageAndTag;
@@ -95,7 +95,7 @@ const getGlobalTranslationsWithLanguageAndTag = (
 const transformGlobalTranslationsToCsvData = (
   allGlobalTranslations: GlobalTranslationMap,
   allPredefinedOriginalTexts,
-  languageCode: string
+  languageCode: string,
 ) => {
   const translations: ScopedTranslationMap = Object.values(tags)
     .map((tag) => getGlobalTranslationsWithLanguageAndTag(allGlobalTranslations, languageCode, tag))

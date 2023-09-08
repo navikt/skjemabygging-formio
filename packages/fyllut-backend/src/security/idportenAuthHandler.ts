@@ -8,7 +8,7 @@ import { IdportenTokenPayload } from "../types/custom";
 const { isDevelopment, mockIdportenJwt, mockIdportenPid } = config;
 
 const getIdportenRemoteJWKSet: GetKeyFunction<JWSHeaderParameters, FlattenedJWSInput> = createRemoteJWKSet(
-  new URL(config.idporten!.idportenJwksUri)
+  new URL(config.idporten!.idportenJwksUri),
 );
 
 const verifyToken = async (token: string): Promise<IdportenTokenPayload> => {

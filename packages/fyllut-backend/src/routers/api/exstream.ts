@@ -10,7 +10,7 @@ import { base64Decode } from "../../utils/base64";
 import { createPdf } from "./helpers/pdfService";
 
 const parseBody = (
-  req: Request
+  req: Request,
 ): {
   form: NavFormType;
   submission: Submission;
@@ -36,7 +36,7 @@ const exstream = {
         submission,
         submissionMethod,
         translations,
-        localizationUtils.getLanguageCodeAsIso639_1(language)
+        localizationUtils.getLanguageCodeAsIso639_1(language),
       );
       res.contentType(pdf.contentType);
       res.send(base64Decode(pdf.data));

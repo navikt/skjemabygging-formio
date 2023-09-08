@@ -44,7 +44,7 @@ describe("Migration of signatures", () => {
           signature4: "Signature 4",
           signature5: "Signature 5",
         },
-        true
+        true,
       );
       const actual = migrationScript(mockForm);
       expect(actual.properties.signatures).toEqual([
@@ -64,7 +64,7 @@ describe("Migration of signatures", () => {
           signature2: "Signature 2",
           signature2Description: "Signature 2 description",
         },
-        true
+        true,
       );
       const actual = migrationScript(mockForm);
       expect(actual.properties.signatures).toEqual([
@@ -82,7 +82,7 @@ describe("Migration of signatures", () => {
     it("only adds a default object with empty strings for label and description where no signatures are used", () => {
       const mockForm = createMockForm(
         { signature1: "", signature2: "", signature3: "", signature4: "", signature5: "" },
-        true
+        true,
       );
       const actual = migrationScript(mockForm);
       expect(actual.properties.signatures).toEqual([{ label: "", description: "" }]);

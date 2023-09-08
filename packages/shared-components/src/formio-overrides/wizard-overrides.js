@@ -213,7 +213,7 @@ Wizard.prototype.attachHeader = function () {
   this.addEventListener(
     this.refs[`${this.wizardKey}-stepper-summary`],
     "click",
-    validateEveryStepInSuccessionBeforeSubmitting
+    validateEveryStepInSuccessionBeforeSubmitting,
   );
 
   this.attachStepper();

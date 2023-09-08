@@ -39,7 +39,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
         branch,
         file.path,
         `${file.type} "${file.name}", monorepo ref: ${newMonorepoGitSha}`,
-        file.contentAsBase64
+        file.contentAsBase64,
       );
     }
 
@@ -50,7 +50,7 @@ export function pushFilesAndUpdateMonorepoRefCallback(files, newMonorepoGitSha) 
         branch,
         "MONOREPO",
         `oppdater monorepo ref: ${newMonorepoGitSha}`,
-        stringTobase64(newMonorepoGitSha)
+        stringTobase64(newMonorepoGitSha),
       );
     }
   };

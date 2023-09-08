@@ -86,7 +86,7 @@ describe("FormMetadataEditor", () => {
       const { rerender } = render(
         <AppConfigProvider featureToggles={featureToggles}>
           <FormMetadataEditor form={testform} onChange={mockOnChange} />
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
 
       await userEvent.clear(screen.getByRole("textbox", { name: /Tittel/i }));
@@ -96,7 +96,7 @@ describe("FormMetadataEditor", () => {
       rerender(
         <AppConfigProvider featureToggles={featureToggles}>
           <FormMetadataEditor form={clearedForm} onChange={mockOnChange} />
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
       await userEvent.type(screen.getByRole("textbox", { name: /Tittel/i }), "Søknad om førerhund");
       const updatedForm: NavFormType = { ...testform, title: "Søknad om førerhund" };
@@ -104,7 +104,7 @@ describe("FormMetadataEditor", () => {
       rerender(
         <AppConfigProvider featureToggles={featureToggles}>
           <FormMetadataEditor form={updatedForm} onChange={mockOnChange} />
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
       expect(screen.getByRole("textbox", { name: /Tittel/i })).toHaveValue("Søknad om førerhund");
     });

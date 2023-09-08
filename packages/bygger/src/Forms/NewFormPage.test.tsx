@@ -36,7 +36,7 @@ describe("NewFormPage", () => {
         <AppConfigProvider featureToggles={featureToggles}>
           <NewFormPage formio={{ saveForm }} />
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => screen.getByText("Opprett nytt skjema"));
 
@@ -71,7 +71,7 @@ describe("NewFormPage", () => {
             <NewFormPage formio={{ saveForm }} />
           </AppConfigProvider>
         </MemoryRouter>
-      </FeedbackProvider>
+      </FeedbackProvider>,
     );
     await screen.findByText("Opprett nytt skjema");
 

@@ -24,7 +24,7 @@ export const LanguagesProvider = ({ children, translations }) => {
   const languageCodeFromUrl: string = useLanguageCodeFromURL();
   const { currentLanguage, initialLanguage } = useCurrentLanguage(
     languageCodeFromUrl,
-    translations
+    translations,
   ) as unknown as CurrentLanguageType;
 
   useEffect(() => {

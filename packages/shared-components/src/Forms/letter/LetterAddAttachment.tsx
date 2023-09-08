@@ -14,7 +14,7 @@ const LetterAddAttachment = ({ index, vedleggSomSkalSendes, translate }: Props) 
     .concat(
       skalSendeFlereVedlegg
         ? translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleTheseAttachments)
-        : translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment)
+        : translate(TEXTS.statiske.prepareLetterPage.attachmentSectionTitleThisAttachment),
     );
   return (
     <section className="wizard-page" aria-label={`${index}. ${attachmentSectionTitle}`}>

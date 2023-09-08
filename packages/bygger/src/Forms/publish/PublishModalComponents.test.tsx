@@ -23,14 +23,14 @@ describe("PublishModalComponents", () => {
         setOpenPublishSettingModal={mockedCloseModal}
         onPublish={mockedOnPublish}
         form={form}
-      />
+      />,
     );
   };
 
   const createFormWithAttachment = (attachmentProps) =>
     createFormObject(
       [createPanelObject("Personinformasjon", [createDummyAttachment("Bekreftelse fra skole", attachmentProps)])],
-      "Veiledning"
+      "Veiledning",
     );
 
   describe("When attachment definition is complete", () => {

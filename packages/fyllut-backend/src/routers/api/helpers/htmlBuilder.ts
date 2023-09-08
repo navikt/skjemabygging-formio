@@ -21,7 +21,7 @@ const createHtmlFromSubmission = (
   submission: Submission,
   submissionMethod: string,
   translate: (text: string) => string,
-  lang: string = "nb"
+  lang: string = "nb",
 ) => {
   const symmaryPanels: Summary.Panel[] = formSummaryUtil.createFormSummaryPanels(form, submission, translate);
   const confirmation = createConfirmationSection(form, translate);
@@ -138,7 +138,7 @@ const signature = ({ label, description, key }: NewFormSignatureType, translate:
 const signatureSection = (
   formProperties: FormPropertiesType,
   submissionMethod: string,
-  translate: TranslateFunction
+  translate: TranslateFunction,
 ) => {
   if (submissionMethod === "digital") {
     return "";

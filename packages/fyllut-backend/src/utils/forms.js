@@ -12,7 +12,7 @@ const readFile = async (filepath) => {
 const loadFileFromDirectory = async (dir, filename, defaultReturn = {}) => {
   const existingFileNames = fs.readdirSync(dir);
   const existingFileName = existingFileNames.find(
-    (approvedFileName) => approvedFileName.replace(".json", "") === filename.replace(".json", "")
+    (approvedFileName) => approvedFileName.replace(".json", "") === filename.replace(".json", ""),
   );
   if (existingFileName) {
     const file = await readFile(`${dir}/${existingFileName}`);

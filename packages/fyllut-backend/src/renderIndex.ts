@@ -35,7 +35,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
         url.format({
           pathname: redirectUrl,
           query: redirectParams,
-        })
+        }),
       );
     }
 
@@ -58,7 +58,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 url.format({
                   pathname: targetUrl,
                   query: req.query as ParsedUrlQueryInput,
-                })
+                }),
               );
             }
           } else if (innsending === "KUN_DIGITAL") {
@@ -70,7 +70,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                   ...(req.query as ParsedUrlQueryInput),
                   sub: "digital",
                 },
-              })
+              }),
             );
           }
         } else if (qpSub && !navFormUtils.isSubmissionMethodAllowed(qpSub, form)) {
@@ -85,7 +85,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
                 query: {
                   ...excludeQueryParam("sub", req.query),
                 },
-              })
+              }),
             );
           }
         }

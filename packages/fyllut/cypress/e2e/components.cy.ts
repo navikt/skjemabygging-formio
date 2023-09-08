@@ -3,11 +3,11 @@ describe("Components", () => {
     beforeEach(() => {
       cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
       cy.intercept("GET", "/fyllut/api/forms/pengerogkonto", { fixture: "pengerOgKonto.json" }).as(
-        "getPengerOgKontoForm"
+        "getPengerOgKontoForm",
       );
       cy.intercept("GET", "/fyllut/api/translations/pengerogkonto", { body: {} }).as("getTranslation");
       cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
-        "getCurrencies"
+        "getCurrencies",
       );
       cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
       cy.visit("/fyllut/pengerogkonto/skjema");
@@ -21,7 +21,7 @@ describe("Components", () => {
       cy.clickNextStep();
       cy.findByText("Kontonummer: Dette er ikke et gyldig kontonummer").should("exist");
       cy.findByText(
-        "IBAN: Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)"
+        "IBAN: Oppgitt IBAN inneholder ugyldig landkode (to store bokstaver i starten av IBAN-koden)",
       ).should("exist");
       cy.findAllByText("Du må fylle ut: Velg valuta").should("have.length", 2);
       cy.findAllByText("Du må fylle ut: Beløp").should("have.length", 2);

@@ -31,19 +31,19 @@ export class FormioService {
 
   async getPublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
-      `/form?type=form&tags=nav-skjema&properties.published__exists=true&select=${select}&limit=${limit}`
+      `/form?type=form&tags=nav-skjema&properties.published__exists=true&select=${select}&limit=${limit}`,
     );
   }
 
   async getUnpublishedForms(select = "", limit = 1000): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
-      `/form?type=form&tags=nav-skjema&properties.unpublished__exists=true&select=${select}&limit=${limit}`
+      `/form?type=form&tags=nav-skjema&properties.unpublished__exists=true&select=${select}&limit=${limit}`,
     );
   }
 
   async getAllForms(limit = 1000, excludeDeleted = true, select = ""): Promise<NavFormType[]> {
     return this.fetchFromProjectApi(
-      `/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&select=${select}&limit=${limit}`
+      `/form?type=form${excludeDeleted ? "&tags=nav-skjema" : ""}&select=${select}&limit=${limit}`,
     );
   }
 
@@ -62,7 +62,7 @@ export class FormioService {
     form: NavFormType,
     formioToken: string,
     userName: string,
-    formProps: Partial<FormPropertiesType> = {}
+    formProps: Partial<FormPropertiesType> = {},
   ): Promise<NavFormType> {
     const updateFormUrl = `${this.projectUrl}/form`;
     const props = { ...formProps };
@@ -102,6 +102,6 @@ const updateProps = (form: NavFormType, props: Partial<FormPropertiesType>): Nav
         ...form.properties,
         ...props,
       },
-    })
+    }),
   );
 };

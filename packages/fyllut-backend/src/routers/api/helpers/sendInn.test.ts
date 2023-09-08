@@ -64,17 +64,17 @@ describe("sendInn API helper", () => {
     });
     it("returns an error message when innsendingsId is missing", () => {
       expect(validateInnsendingsId(undefined)).toBe(
-        "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+        "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon",
       );
     });
     it("returns an error message when innsendingsId contains illegal character /", () => {
       expect(validateInnsendingsId("abcd/123-ABCD-cdef-9876-12345678abcd")).toBe(
-        "abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+        "abcd/123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon",
       );
     });
     it("returns an error message when innsendingsId contains illegal character .", () => {
       expect(validateInnsendingsId("abcd.123-ABCD-cdef-9876-12345678abcd")).toBe(
-        "abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon"
+        "abcd.123-ABCD-cdef-9876-12345678abcd er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon",
       );
     });
   });
@@ -112,7 +112,7 @@ describe("sendInn API helper", () => {
             tema: defaultFormProperties.tema,
             tittel: defaultForm.title,
             spraak: defaultRequestBody.language,
-          })
+          }),
         );
       });
 
@@ -123,7 +123,7 @@ describe("sendInn API helper", () => {
             tittel: defaultForm.title,
             mimetype: "application/pdf",
             document: submissionPdfAsByteArray,
-          })
+          }),
         );
       });
 
@@ -134,7 +134,7 @@ describe("sendInn API helper", () => {
             tittel: defaultForm.title,
             mimetype: "application/json",
             document: expectedSubmissionAsByteArray,
-          })
+          }),
         );
       });
 
@@ -178,7 +178,7 @@ describe("sendInn API helper", () => {
           expect.objectContaining({
             spraak: "en",
             tittel: "Form",
-          })
+          }),
         );
         expect(body.hoveddokument).toEqual(expect.objectContaining({ label: "Form", tittel: "Form" }));
         expect(body.hoveddokumentVariant).toEqual(expect.objectContaining({ label: "Form", tittel: "Form" }));

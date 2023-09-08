@@ -7,7 +7,7 @@ describe("Diff", () => {
     cy.intercept("GET", "/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/form?*", { fixture: "form123456.json" }).as("getForm");
     cy.intercept("GET", "/api/published-forms/dif123456", { fixture: "form123456-published.json" }).as(
-      "getPublishedForm"
+      "getPublishedForm",
     );
     cy.intercept("GET", "/mottaksadresse/submission", { fixture: "mottakadresse.json" }).as("getMottakAdresse");
     cy.intercept("GET", /language\/submission?.*/, { fixture: "globalTranslations.json" }).as("getTranslations");

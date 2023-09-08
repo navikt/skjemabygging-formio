@@ -35,7 +35,7 @@ describe("App", () => {
             <App projectURL={DEFAULT_PROJECT_URL} pusher={{ subscribe: () => createFakeChannel() }} />
           </AppConfigProvider>
         </AuthContext.Provider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   };
 

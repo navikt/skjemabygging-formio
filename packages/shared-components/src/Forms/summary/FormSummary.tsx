@@ -17,7 +17,7 @@ const FormSummary = ({ form, formUrl, submission }: Props) => {
   const summaryPanels = summaryComponents.filter((component) => component.type === "panel");
   if (summaryPanels.length < summaryComponents.length) {
     logger?.info(
-      `OBS! Skjemaet ${form.title} (${form.properties.skjemanummer}) har komponenter som ikke ligger inne i et panel`
+      `OBS! Skjemaet ${form.title} (${form.properties.skjemanummer}) har komponenter som ikke ligger inne i et panel`,
     );
   }
 

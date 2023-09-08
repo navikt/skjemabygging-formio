@@ -79,14 +79,14 @@ const formWithProperties = (props) => {
 function renderPrepareLetterPage(
   form = defaultForm,
   submission = defaultSubmission,
-  translations = DEFAULT_TRANSLATIONS
+  translations = DEFAULT_TRANSLATIONS,
 ) {
   render(
     <MemoryRouter>
       <AppConfigProvider enableFrontendLogger>
         <PrepareLetterPage form={form} submission={submission} translations={translations} />
       </AppConfigProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -197,7 +197,7 @@ describe("PrepareLetterPage", () => {
             enhetMaVelgesVedPapirInnsending: true,
             enhetstyper: ["GAMMEL_TYPE"],
             skjemanummer: SKJEMANUMMER,
-          })
+          }),
         );
         await waitFor(() => expect(fetchMock).toHaveBeenCalled());
       });
@@ -268,7 +268,7 @@ describe("PrepareLetterPage", () => {
 
         const enhetSelectList = screen.getAllByText(/^NAV-ENHET/);
         expect(enhetSelectList).toHaveLength(6);
-      }
+      },
     );
   });
 });

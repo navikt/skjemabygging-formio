@@ -45,7 +45,7 @@ describe("PublishSettingsModal", () => {
     mockedCloseModal = vi.fn();
     mockedOnPublish = vi.fn();
     render(
-      <PublishSettingsModal openModal={true} closeModal={mockedCloseModal} onPublish={mockedOnPublish} form={form} />
+      <PublishSettingsModal openModal={true} closeModal={mockedCloseModal} onPublish={mockedOnPublish} form={form} />,
     );
   };
 
@@ -60,7 +60,7 @@ describe("PublishSettingsModal", () => {
   it("renders checked checkbox for language with complete translation", async () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
-      "Veiledning"
+      "Veiledning",
     );
     renderPublishSettingsModal(form);
     expect(screen.queryByRole("checkbox", { name: "Engelsk (EN)" })).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe("PublishSettingsModal", () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning",
-      createFormPropertiesObject({ publishedLanguages: ["nn-NO"] })
+      createFormPropertiesObject({ publishedLanguages: ["nn-NO"] }),
     );
     renderPublishSettingsModal(form);
     expect(screen.queryByRole("checkbox", { name: "Norsk nynorsk (NN-NO)" })).toBeInTheDocument();
@@ -84,15 +84,15 @@ describe("PublishSettingsModal", () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning",
-      createFormPropertiesObject({ publishedLanguages: ["en"] })
+      createFormPropertiesObject({ publishedLanguages: ["en"] }),
     );
     renderPublishSettingsModal(form);
     expect(
-      screen.queryByText("OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene.")
+      screen.queryByText("OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene."),
     ).not.toBeInTheDocument();
     await userEvent.click(await screen.findByRole("checkbox", { name: "Engelsk (EN)" }));
     expect(
-      screen.queryByText("OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene.")
+      screen.queryByText("OBS! Engelsk (EN) vil bli avpublisert hvis du publiserer med disse innstillingene."),
     ).toBeInTheDocument();
   });
 
@@ -100,18 +100,18 @@ describe("PublishSettingsModal", () => {
     const form = createFormObject(
       [createPanelObject("Dine opplysninger", [createDummyRadioPanel("Bor du i Norge?")])],
       "Veiledning",
-      createFormPropertiesObject({ publishedLanguages: ["nn-NO"] })
+      createFormPropertiesObject({ publishedLanguages: ["nn-NO"] }),
     );
     renderPublishSettingsModal(form);
     expect(
-      screen.queryByText("OBS! Norsk nynorsk (NN-NO) vil bli avpublisert hvis du publiserer med disse innstillingene.")
+      screen.queryByText("OBS! Norsk nynorsk (NN-NO) vil bli avpublisert hvis du publiserer med disse innstillingene."),
     ).toBeInTheDocument();
   });
 
   it("publish will send en-languageCode if the English checkbox is checked ", async () => {
     const form = createFormObject(
       [createPanelObject("Personinformasjon", [createDummyRadioPanel("Bor du i Norge?")])],
-      "Veiledning"
+      "Veiledning",
     );
     renderPublishSettingsModal(form);
     const englishCheckbox = await screen.findByRole("checkbox", { name: "Engelsk (EN)" });
@@ -137,7 +137,7 @@ describe("PublishSettingsModal", () => {
   it("onPublish will send empty array when the English checkbox is checked off", async () => {
     const form = createFormObject(
       [createPanelObject("Personinformasjon", [createDummyRadioPanel("Bor du i Norge?")])],
-      "Veiledning"
+      "Veiledning",
     );
     renderPublishSettingsModal(form);
     const englishCheckbox = await screen.findByRole("checkbox", { name: "Engelsk (EN)" });

@@ -15,7 +15,7 @@ export const createPdfAsByteArray = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: string
+  language: string,
 ) => {
   const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
   return Array.from(base64Decode(pdf.data));
@@ -27,7 +27,7 @@ export const createPdf = async (
   submission: Submission,
   submissionMethod: string,
   translations: I18nTranslationMap,
-  language: string
+  language: string,
 ) => {
   const translate = (text: string): string => translations[text] || text;
   const html = createHtmlFromSubmission(form, submission, submissionMethod, translate, language);
@@ -43,7 +43,7 @@ export const createPdf = async (
       form.properties.skjemanummer,
       language,
       html,
-      (fodselsnummerDNummerSoker as string | undefined) || "—"
+      (fodselsnummerDNummerSoker as string | undefined) || "—",
     );
   } catch (e) {
     appMetrics.exstreamPdfFailuresCounter.inc({ formPath: form.path, submissionMethod });
@@ -57,7 +57,7 @@ export const createPdfFromHtml = async (
   skjemanummer: string,
   language: string,
   html: string,
-  pid: string
+  pid: string,
 ) => {
   const response = await fetch(`${skjemabyggingProxyUrl}/exstream`, {
     headers: {
@@ -77,7 +77,7 @@ export const createPdfFromHtml = async (
             brukersFnr: pid,
             skjemaversjon: gitVersion,
             html: base64Encode(html),
-          })
+          }),
         ),
         async: "true",
       },

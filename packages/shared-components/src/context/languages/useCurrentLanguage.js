@@ -4,7 +4,7 @@ const defaultLanguage = "nb-NO";
 
 const useCurrentLanguage = (languageCodeFromUrl, translations) => {
   const initialLanguage = useRef(
-    Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage
+    Object.keys(translations).indexOf(languageCodeFromUrl) !== -1 ? languageCodeFromUrl : defaultLanguage,
   );
 
   const [currentLanguage, setCurrentLanguage] = useState(initialLanguage.current);

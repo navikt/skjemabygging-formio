@@ -84,7 +84,7 @@ export const assembleSendInnSoknadBody = (
     otherDocumentation?: boolean | undefined;
   },
   idportenPid: string,
-  submissionPdfAsByteArray: number[] | null = null
+  submissionPdfAsByteArray: number[] | null = null,
 ): SendInnSoknadBody => {
   const { form, submission, language, translation = {}, attachments, otherDocumentation } = requestBody;
   const translate = (term: string) => translation[term] ?? term;

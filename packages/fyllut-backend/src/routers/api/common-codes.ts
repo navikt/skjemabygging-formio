@@ -68,7 +68,7 @@ const sortAsc = (list: { label: string; value: string }[], languageCode: string)
 const fetchCommonCodeDescriptions = async (
   req: Request,
   commonCode: commonCodeType,
-  languageCode: string
+  languageCode: string,
 ): Promise<any> => {
   const languageParam = languageCode ? `&spraak=${languageCode}` : "";
 
@@ -82,7 +82,7 @@ const fetchCommonCodeDescriptions = async (
         "Nav-Call-Id": correlator.getId(),
         "Nav-Consumer-Id": clientId,
       } as HeadersInit,
-    }
+    },
   );
 
   if (response.ok) {

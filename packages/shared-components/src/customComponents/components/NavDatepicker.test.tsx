@@ -24,7 +24,7 @@ describe("NavDatePicker", () => {
   beforeEach(() => {
     datePicker = new NavDatePicker();
     vi.spyOn(NavDatePicker.prototype, "showNorwegianOrTranslation").mockImplementation((text, params) =>
-      mockedShowNorwegianOrTranslation(text, params)
+      mockedShowNorwegianOrTranslation(text, params),
     );
   });
 
@@ -33,7 +33,7 @@ describe("NavDatePicker", () => {
       beforeDateInputKey,
       mayBeEqual,
       earliestAllowedDate,
-      latestAllowedDate?: number | undefined
+      latestAllowedDate?: number | undefined,
     ) => ({
       beforeDateInputKey,
       mayBeEqual,
@@ -55,11 +55,11 @@ describe("NavDatePicker", () => {
           { fromDate: "2030-05-21" },
           comp.beforeDateInputKey,
           comp.mayBeEqual,
-          comp.earliestAllowedDate
-        )
+          comp.earliestAllowedDate,
+        ),
       ).toBe(expectedValidationErrorMessage);
       expect(datePicker.validateDatePickerV2("2030-05-20", { fromDate: "2030-05-21" }, comp)).toBe(
-        expectedValidationErrorMessage
+        expectedValidationErrorMessage,
       );
     });
 
@@ -72,11 +72,11 @@ describe("NavDatePicker", () => {
           { fromDate: "2030-05-19" },
           comp.beforeDateInputKey,
           comp.mayBeEqual,
-          comp.earliestAllowedDate
-        )
+          comp.earliestAllowedDate,
+        ),
       ).toBe(expectedValidationErrorMessage);
       expect(datePicker.validateDatePickerV2("2030-05-20", { fromDate: "2030-05-19" }, comp)).toBe(
-        expectedValidationErrorMessage
+        expectedValidationErrorMessage,
       );
     });
 
@@ -91,11 +91,11 @@ describe("NavDatePicker", () => {
           comp.beforeDateInputKey,
           comp.mayBeEqual,
           comp.earliestAllowedDate,
-          comp.latestAllowedDate
-        )
+          comp.latestAllowedDate,
+        ),
       ).toBe(expectedValidationErrorMessage);
       expect(datePicker.validateDatePickerV2("2030-05-20", { fromDate: "2030-05-19" }, comp)).toBe(
-        expectedValidationErrorMessage
+        expectedValidationErrorMessage,
       );
     });
 
@@ -114,8 +114,8 @@ describe("NavDatePicker", () => {
             comp.mayBeEqual,
             comp.earliestAllowedDate,
             comp.latestAllowedDate,
-            row
-          )
+            row,
+          ),
         ).toBe(expectedValidationErrorMessage);
         expect(datePicker.validateDatePickerV2(input, submissionData, comp, row)).toBe(expectedValidationErrorMessage);
       });
@@ -133,8 +133,8 @@ describe("NavDatePicker", () => {
             comp.mayBeEqual,
             comp.earliestAllowedDate,
             comp.latestAllowedDate,
-            row
-          )
+            row,
+          ),
         ).toBe(true);
         expect(datePicker.validateDatePickerV2(input, submissionData, comp, row)).toBe(true);
       });
@@ -156,7 +156,7 @@ describe("NavDatePicker", () => {
       describe("When mayBeEqual is true", () => {
         it("Fails with appropriate message when inputDate is earlier than from-date", () => {
           expect(datePicker.validateToAndFromDate(fromDate, earlierThanFromDate, true)).toBe(
-            "Datoen kan ikke være tidligere enn 31.12.2030"
+            "Datoen kan ikke være tidligere enn 31.12.2030",
           );
         });
 
@@ -172,13 +172,13 @@ describe("NavDatePicker", () => {
       describe("When mayBeEqual is false", () => {
         it("fails with appropriate message when input is earlier than from-date", () => {
           expect(datePicker.validateToAndFromDate(fromDate, earlierThanFromDate, false)).toBe(
-            "Datoen må være senere enn 31.12.2030"
+            "Datoen må være senere enn 31.12.2030",
           );
         });
 
         it("fails with appropriate message when input is same as from-date", () => {
           expect(datePicker.validateToAndFromDate(fromDate, earlierThanFromDate, false)).toBe(
-            "Datoen må være senere enn 31.12.2030"
+            "Datoen må være senere enn 31.12.2030",
           );
         });
 
@@ -196,13 +196,13 @@ describe("NavDatePicker", () => {
 
         it("fails with appropriate message if input is before earliest date", () => {
           expect(datePicker.validateEarliestAndLatestDate("1", "2", moment())).toBe(
-            "Datoen kan ikke være tidligere enn 16.05.2030 eller senere enn 17.05.2030"
+            "Datoen kan ikke være tidligere enn 16.05.2030 eller senere enn 17.05.2030",
           );
         });
 
         it("fails with appropriate message if input is after latest date", () => {
           expect(datePicker.validateEarliestAndLatestDate("-2", "-1", moment())).toBe(
-            "Datoen kan ikke være tidligere enn 13.05.2030 eller senere enn 14.05.2030"
+            "Datoen kan ikke være tidligere enn 13.05.2030 eller senere enn 14.05.2030",
           );
         });
 
@@ -222,7 +222,7 @@ describe("NavDatePicker", () => {
       describe("When earliestFromToday is set", () => {
         it("fails with appropriate message if input is before earliest date", () => {
           expect(datePicker.validateEarliestAndLatestDate("1", "", moment())).toBe(
-            "Datoen kan ikke være tidligere enn 16.05.2030"
+            "Datoen kan ikke være tidligere enn 16.05.2030",
           );
         });
 
@@ -238,7 +238,7 @@ describe("NavDatePicker", () => {
       describe("When latestFromToday is set", () => {
         it("fails with appropriate message if input is after latest date", () => {
           expect(datePicker.validateEarliestAndLatestDate("", "-1", moment())).toBe(
-            "Datoen kan ikke være senere enn 14.05.2030"
+            "Datoen kan ikke være senere enn 14.05.2030",
           );
         });
 
@@ -254,7 +254,7 @@ describe("NavDatePicker", () => {
       describe("both earliestFromToday and latestFromToday is set to number 0", () => {
         it("fails if selected date is tomorrow", () => {
           expect(datePicker.validateEarliestAndLatestDate(0, 0, moment().add(1, "d"))).toBe(
-            "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030"
+            "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030",
           );
         });
 
@@ -264,7 +264,7 @@ describe("NavDatePicker", () => {
 
         it("validates ok if selected date is yesterday", () => {
           expect(datePicker.validateEarliestAndLatestDate(0, 0, moment().subtract(1, "d"))).toBe(
-            "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030"
+            "Datoen kan ikke være tidligere enn 15.05.2030 eller senere enn 15.05.2030",
           );
         });
       });
@@ -272,7 +272,7 @@ describe("NavDatePicker", () => {
       describe("latestFromToday is set to number 0", () => {
         it("fails if selected date is tomorrow", () => {
           expect(datePicker.validateEarliestAndLatestDate(undefined, 0, moment().add(1, "d"))).toBe(
-            "Datoen kan ikke være senere enn 15.05.2030"
+            "Datoen kan ikke være senere enn 15.05.2030",
           );
         });
 
@@ -288,7 +288,7 @@ describe("NavDatePicker", () => {
       describe("earliestFromToday is set to number 0", () => {
         it("fails if selected date is yesterday", () => {
           expect(datePicker.validateEarliestAndLatestDate(0, undefined, moment().subtract(1, "d"))).toBe(
-            "Datoen kan ikke være tidligere enn 15.05.2030"
+            "Datoen kan ikke være tidligere enn 15.05.2030",
           );
         });
 
@@ -343,7 +343,7 @@ describe("NavDatePicker", () => {
               component.mayBeEqual,
               component.earliestAllowedDate,
               component.latestAllowedDate,
-              row
+              row,
             );
             expect(validationResultV1).toEqual("Datoen kan ikke være senere enn 01.05.2030");
           });
@@ -366,7 +366,7 @@ describe("NavDatePicker", () => {
               component.mayBeEqual,
               component.earliestAllowedDate,
               component.latestAllowedDate,
-              row
+              row,
             );
             expect(validationResultV1).toBe(true);
           });
@@ -434,7 +434,7 @@ describe("NavDatePicker", () => {
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-04", submissionData, component, row);
           expect(validationResultV2).toEqual(
-            "Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030"
+            "Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030",
           );
         });
 
@@ -443,7 +443,7 @@ describe("NavDatePicker", () => {
           const row = submissionData;
           const validationResultV2 = datePicker.validateDatePickerV2("2030-05-01", submissionData, component, row);
           expect(validationResultV2).toEqual(
-            "Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030"
+            "Datoen kan ikke være tidligere enn 02.05.2030 eller senere enn 03.05.2030",
           );
         });
 
@@ -555,7 +555,7 @@ describe("NavDatePicker", () => {
       const renderReturn = render(
         <AppConfigProvider dokumentinnsendingBaseURL={undefined} fyllutBaseURL={undefined}>
           <NavForm {...props} formReady={formReady} />
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
       await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
       return renderReturn;

@@ -100,7 +100,7 @@ describe("GitHubRepo", () => {
         "files/existingFile.json",
         "Update existingFile.json",
         "base64-string",
-        "sha for existingFile.json"
+        "sha for existingFile.json",
       );
       expect(mockCreateOrUpdateFileContents).toHaveBeenCalledTimes(1);
       expect(mockCreateOrUpdateFileContents).toHaveBeenCalledWith({

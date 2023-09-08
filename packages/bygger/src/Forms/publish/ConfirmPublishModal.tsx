@@ -14,7 +14,7 @@ interface Props {
 
 const getCompleteLocalTranslationsForNavForm = (
   localTranslationsForNavForm: I18nTranslations,
-  publishLanguageCodeList: string[]
+  publishLanguageCodeList: string[],
 ): I18nTranslations => {
   return Object.keys(localTranslationsForNavForm).reduce((translations: {}, languageCode: string) => {
     if (publishLanguageCodeList.indexOf(languageCode) >= 0) {
@@ -30,7 +30,7 @@ const ConfirmPublishModal = ({ openModal, closeModal, form, publishLanguageCodeL
 
   useEffect(() => {
     setCompleteLocalTranslationsForNavForm(
-      getCompleteLocalTranslationsForNavForm(localTranslationsForNavForm, publishLanguageCodeList)
+      getCompleteLocalTranslationsForNavForm(localTranslationsForNavForm, publishLanguageCodeList),
     );
   }, [publishLanguageCodeList, localTranslationsForNavForm]);
 

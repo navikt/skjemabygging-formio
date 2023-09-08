@@ -14,7 +14,7 @@ const renderFeedbackContext = (onMessagesUpdated, execute) => {
     useEffect(
       () => execute(emit),
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      []
+      [],
     );
     return <></>;
   };
@@ -25,7 +25,7 @@ const renderFeedbackContext = (onMessagesUpdated, execute) => {
         <TestFeedbackEmit execute={execute} />
         <TestFeedbackMessages onMessagesUpdated={onMessagesUpdated} />
       </>
-    </FeedbackProvider>
+    </FeedbackProvider>,
   );
 };
 

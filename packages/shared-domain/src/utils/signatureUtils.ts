@@ -16,7 +16,7 @@ export const hasOnlyDefaultSignaturesValues = (signature?: NewFormSignatureType[
 };
 
 export const mapBackwardCompatibleSignatures = (
-  signatures?: NewFormSignatureType[] | FormSignaturesType
+  signatures?: NewFormSignatureType[] | FormSignaturesType,
 ): NewFormSignatureType[] => {
   if (Array.isArray(signatures)) {
     return signatures;

@@ -59,7 +59,7 @@ describe("MottaksadresseListe", () => {
     expect(formioSpy).toHaveBeenNthCalledWith(
       2,
       `${DEFAULT_PROJECT_URL}/mottaksadresse/submission/${adresse._id}`,
-      expect.objectContaining({ method: "PUT" })
+      expect.objectContaining({ method: "PUT" }),
     );
 
     expect(await within(panel).findByRole("button", { name: "Endre" })).toBeTruthy();
@@ -85,7 +85,7 @@ describe("MottaksadresseListe", () => {
     expect(formioSpy).toHaveBeenNthCalledWith(
       2,
       `${DEFAULT_PROJECT_URL}/mottaksadresse/submission`,
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({ method: "POST" }),
     );
 
     const data = JSON.parse(formioSpy.mock.calls[1][1].body).data;
@@ -141,7 +141,7 @@ describe("MottaksadresseListe", () => {
     expect(globalFetchSpy).toHaveBeenNthCalledWith(
       3,
       `${DEFAULT_PROJECT_URL}/mottaksadresse/submission/${adresse._id}`,
-      expect.objectContaining({ method: "DELETE" })
+      expect.objectContaining({ method: "DELETE" }),
     );
   });
 });

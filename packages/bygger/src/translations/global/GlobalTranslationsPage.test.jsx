@@ -32,7 +32,7 @@ describe("GlobalTranslationsPage", () => {
               </Route>
             </I18nStateProvider>
           </MemoryRouter>
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
     });
   };
@@ -46,7 +46,7 @@ describe("GlobalTranslationsPage", () => {
     beforeEach(async () => {
       await renderGlobalTranslationsPage(
         vi.fn(() => Promise.resolve({})),
-        ""
+        "",
       );
     });
 

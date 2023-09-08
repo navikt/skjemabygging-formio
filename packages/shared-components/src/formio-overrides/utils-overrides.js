@@ -44,8 +44,8 @@ const navFormDiffToHtml = (diffSummary) => {
       html.push(`<ul aria-labelledby="${labelId}">`);
       html.push(
         ...changesToCurrentComponent.map(
-          (change) => `<li>${change.key}: Fra '${change.oldValue}' til '${change.newValue}'</li>`
-        )
+          (change) => `<li>${change.key}: Fra '${change.oldValue}' til '${change.newValue}'</li>`,
+        ),
       );
       html.push("</ul>");
     }
@@ -70,7 +70,7 @@ const createList = (components, labelId) => {
           .map((component) => {
             return `<li>${component.type}: ${component.label}${createList(component.components)}</li>`;
           })
-          .join("")
+          .join(""),
       )
       .concat("</ul>");
   }

@@ -20,7 +20,7 @@ const initialState: I18nState = {
 
 const loadTranslationsAndInitState = async (
   loadTranslations: () => Promise<FormioTranslationMap>,
-  dispatch: React.Dispatch<I18nAction>
+  dispatch: React.Dispatch<I18nAction>,
 ): Promise<void> => {
   const translations = await loadTranslations();
   dispatch({ type: "init", payload: translations });
@@ -58,7 +58,7 @@ function I18nStateProvider({ children, loadTranslations, form }: I18nStateProvid
   useEffect(() => {
     const localTranslationsForNavForm = mapTranslationsToFormioI18nObject(
       state.translations,
-      (translation) => translation.scope !== "component-countryName" && translation.scope !== "global"
+      (translation) => translation.scope !== "component-countryName" && translation.scope !== "global",
     );
     dispatch({ type: "updateLocalTranslationsForNavForm", payload: localTranslationsForNavForm });
   }, [state.translations, dispatch]);

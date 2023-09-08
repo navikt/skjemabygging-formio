@@ -39,7 +39,7 @@ const sendInnUtfyltSoknad = {
         submission,
         submissionMethod,
         translation,
-        localizationUtils.getLanguageCodeAsIso639_1(language)
+        localizationUtils.getLanguageCodeAsIso639_1(language),
       );
 
       const body = assembleSendInnSoknadBody(req.body, idportenPid, pdfByteArray);
@@ -59,7 +59,7 @@ const sendInnUtfyltSoknad = {
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
           body: JSON.stringify(body),
-        }
+        },
       );
 
       if (sendInnResponse.ok || sendInnResponse.status === 302) {

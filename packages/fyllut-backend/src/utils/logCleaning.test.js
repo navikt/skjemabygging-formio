@@ -20,7 +20,7 @@ describe("logCleaning", () => {
       const cleaned = clean(
         replace(logStatement1, {
           Authorization: "authorization",
-        })
+        }),
       );
       expect(JSON.stringify(cleaned)).not.toContain("Bearer 123456789");
       expect(JSON.stringify(cleaned)).not.toContain("Complete-azure-access-token");

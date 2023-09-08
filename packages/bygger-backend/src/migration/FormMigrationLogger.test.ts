@@ -53,12 +53,12 @@ describe("FormMigrationLogger", () => {
       beforeEach(() => {
         logger.add(
           { ...componentA, customProperty: "old value" } as Component,
-          { ...componentA, customProperty: "new value" } as Component
+          { ...componentA, customProperty: "new value" } as Component,
         );
         logger.add(idKeyAndLabel("no-changes"), idKeyAndLabel("no-changes"));
         logger.add(
           { ...componentB, customProperty: "old value" } as Component,
-          { ...componentB, customProperty: "new value" } as Component
+          { ...componentB, customProperty: "new value" } as Component,
         );
         log = logger.getLog();
       });
@@ -99,7 +99,7 @@ describe("FormMigrationLogger", () => {
           ...componentWithSimpleConditionalToRadio,
           label: "New Label",
         },
-        [dependency]
+        [dependency],
       );
 
       expect(logger.getDependencies()).toEqual({ [componentWithSimpleConditionalToRadio.key]: [dependency] });

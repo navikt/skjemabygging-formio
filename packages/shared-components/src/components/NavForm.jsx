@@ -47,7 +47,7 @@ const NavForm = (props) => {
         formio.destroy(true);
       }
     },
-    [formio]
+    [formio],
   );
 
   const createWebformInstance = (srcOrForm) => {

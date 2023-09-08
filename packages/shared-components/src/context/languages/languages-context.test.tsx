@@ -26,7 +26,7 @@ const renderTestComponent = ({ text, params }: TestComponentInput, translations:
       <LanguagesProvider translations={translations || defaultTranslations}>
         <TestComponent text={text} params={params} />
       </LanguagesProvider>
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 

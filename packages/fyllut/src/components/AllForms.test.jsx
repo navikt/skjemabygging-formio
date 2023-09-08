@@ -21,7 +21,7 @@ describe("AllForms", () => {
     render(
       <MemoryRouter initialEntries={["/fyllut"]}>
         <AllForms />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByRole("heading", { name: "Laster..." })).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("AllForms", () => {
     render(
       <MemoryRouter initialEntries={["/fyllut"]}>
         <AllForms />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(await screen.findByRole("heading", { name: "Velg et skjema" })).toBeInTheDocument();

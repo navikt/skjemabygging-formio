@@ -164,7 +164,7 @@ export default class Image extends Component {
     return super.render(
       this.renderTemplate("image", {
         component: this.component,
-      })
+      }),
     );
   }
 }

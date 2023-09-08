@@ -17,7 +17,7 @@ describe("diffingTool", () => {
   it("lists original and new values of all properties that have changed", () => {
     const actual = generateDiff(
       { value1: "the original value 1", value2: "the original value 2" },
-      { value1: "the new value 1", value2: "the new value 2" }
+      { value1: "the new value 1", value2: "the new value 2" },
     );
     expect(actual).toEqual({
       value1_NEW: "the new value 1",
@@ -30,7 +30,7 @@ describe("diffingTool", () => {
   it("lists only changes for properties that have changed values, not the others", () => {
     const actual = generateDiff(
       { value1: "the original value 1", value2: "the same value 2" },
-      { value1: "the new value 1", value2: "the same value 2" }
+      { value1: "the new value 1", value2: "the same value 2" },
     );
     expect(actual).toEqual({
       value1_NEW: "the new value 1",
@@ -49,7 +49,7 @@ describe("diffingTool", () => {
         nested: {
           value: "new nested value",
         },
-      }
+      },
     );
 
     expect(actual).toEqual({
@@ -75,7 +75,7 @@ describe("diffingTool", () => {
           value: "new nested value",
           same: "same nested value",
         },
-      }
+      },
     );
 
     expect(actual).toEqual({
@@ -103,7 +103,7 @@ describe("diffingTool", () => {
           value: "new nested value",
           same: "same nested value",
         },
-      }
+      },
     );
 
     expect(actual).toEqual({
@@ -127,7 +127,7 @@ describe("diffingTool", () => {
         id: "new ID",
         key: "new key",
         label: "new label",
-      }
+      },
     );
 
     expect(actual).toEqual({

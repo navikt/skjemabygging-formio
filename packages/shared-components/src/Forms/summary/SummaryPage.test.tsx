@@ -67,7 +67,7 @@ const defaultFormWithAttachment = {
 
 const formWithProperties = (
   props: Partial<FormPropertiesType>,
-  originalForm: Partial<NavFormType> = defaultForm
+  originalForm: Partial<NavFormType> = defaultForm,
 ): NavFormType =>
   ({
     ...originalForm,
@@ -96,7 +96,7 @@ const getButtons = (): Buttons => {
 
 const renderSummaryPage = async (
   props: Partial<Props>,
-  appConfigProps: AppConfigContextType = {} as AppConfigContextType
+  appConfigProps: AppConfigContextType = {} as AppConfigContextType,
 ): Promise<{ history: any; buttons: Buttons }> => {
   const history = createMemoryHistory();
   const summaryPageProps: Props = {
@@ -113,7 +113,7 @@ const renderSummaryPage = async (
           <SummaryPage {...summaryPageProps} />
         </Router>
       </SendInnProvider>
-    </AppConfigProvider>
+    </AppConfigProvider>,
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { name: TEXTS.grensesnitt.title });
@@ -285,7 +285,7 @@ describe("SummaryPage", () => {
         {
           submissionMethod: "digital",
           baseUrl: basePath,
-        }
+        },
       );
       expectKnapperForRedigerSvarEllerSendTilNav(buttons);
       await userEvent.click(buttons.sendTilNavKnapp);

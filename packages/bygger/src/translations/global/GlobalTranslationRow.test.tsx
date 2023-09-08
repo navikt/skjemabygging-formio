@@ -10,7 +10,7 @@ describe("GlobalTranslationRow", () => {
   const renderGlobalTranslationRow = (
     mockedOriginalText: string,
     mockedTranslation: string,
-    mockedCurrentOriginalTextList: string[]
+    mockedCurrentOriginalTextList: string[],
   ) => {
     mockedUpdateTranslation = vi.fn();
     mockedUpdateOriginalText = vi.fn();
@@ -25,7 +25,7 @@ describe("GlobalTranslationRow", () => {
         deleteOneRow={mockedDeleteOneRow}
         currentOriginalTextList={mockedCurrentOriginalTextList}
         predefinedGlobalOriginalTexts={["FORRIGE", "NESTE", "FJERN"]}
-      />
+      />,
     );
   };
 

@@ -20,7 +20,7 @@ async function postJson(url, bodyAsJSON, token) {
 export async function runMigrationDryRun(
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
-  editOptions: MigrationOptions
+  editOptions: MigrationOptions,
 ) {
   try {
     const response = await fetch(`/api/migrate${createUrlParams(searchFilters, dependencyFilters, editOptions)}`, {

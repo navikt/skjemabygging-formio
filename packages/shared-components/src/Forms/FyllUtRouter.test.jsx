@@ -36,7 +36,7 @@ describe("FyllUtRouter", () => {
         <MemoryRouter initialEntries={[{ pathname: `${mockFormPath}/${firstPanelSlug}` }]}>
           <FyllUtRouter form={form} translations={translationsForNavForm} />
         </MemoryRouter>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   };
 

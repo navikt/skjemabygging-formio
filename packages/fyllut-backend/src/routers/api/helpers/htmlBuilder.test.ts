@@ -4,7 +4,7 @@ import { body, createHtmlFromSubmission, signatureSection } from "./htmlBuilder"
 const createContainer = (
   label: string,
   type: Summary.FieldsetType | "panel" | "datagrid" | "datagrid-row",
-  components: Summary.Component[] = []
+  components: Summary.Component[] = [],
 ) =>
   ({
     label,
@@ -20,7 +20,7 @@ const createComponent = (
   label: string,
   value: Summary.SubmissionValue | string[],
   type = "textfield",
-  optionalProps = {}
+  optionalProps = {},
 ) =>
   ({
     label,
@@ -248,7 +248,7 @@ describe("htmlBuilder", () => {
 <div class="spm">This is an image</div>
 <img src="data:image/png;base64,image" alt="alt text" width="200"/>
 <div class="alt">alt text</div>
-</div>`
+</div>`,
         );
       });
     });
@@ -318,7 +318,7 @@ describe("htmlBuilder", () => {
       const element = signatureSection(
         { signatures, descriptionOfSignatures: "Description of signatures" } as unknown as FormPropertiesType,
         "paper",
-        mockTranslate
+        mockTranslate,
       );
       expect(element).toContain(`<p class="underskrift">Description of signatures</p>`);
     });

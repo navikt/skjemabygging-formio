@@ -34,7 +34,7 @@ export const useFormioForms = (formio) => {
         })
         .then((forms) => forms[0]);
     },
-    [formio]
+    [formio],
   );
 
   const onSave = useCallback(
@@ -57,12 +57,12 @@ export const useFormioForms = (formio) => {
         .catch(() => {
           feedbackEmit.error(
             "Lagring feilet. Skjemaet kan ha blitt lagret fra en annen nettleser. " +
-              "Last siden på nytt for å få siste versjon."
+              "Last siden på nytt for å få siste versjon.",
           );
           return { error: true };
         });
     },
-    [formio, userData, feedbackEmit]
+    [formio, userData, feedbackEmit],
   );
 
   const deleteForm = useCallback(
@@ -71,7 +71,7 @@ export const useFormioForms = (formio) => {
         feedbackEmit.success("Slettet skjemaet " + title);
       });
     },
-    [formio, feedbackEmit]
+    [formio, feedbackEmit],
   );
 
   const onPublish = useCallback(
@@ -100,7 +100,7 @@ export const useFormioForms = (formio) => {
         return await loadForm(form.path);
       }
     },
-    [loadForm, feedbackEmit]
+    [loadForm, feedbackEmit],
   );
 
   const onUnpublish = useCallback(
@@ -119,7 +119,7 @@ export const useFormioForms = (formio) => {
         return await loadForm(form.path);
       }
     },
-    [loadForm, feedbackEmit]
+    [loadForm, feedbackEmit],
   );
 
   return {

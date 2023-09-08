@@ -45,7 +45,7 @@ describe("Migration scripts", () => {
         },
         { type: "fnrfield" },
         {},
-        fnrEditOptions
+        fnrEditOptions,
       );
 
       expect(actual).toEqual({
@@ -86,7 +86,7 @@ describe("Migration scripts", () => {
         },
         { type: "navSkjemagruppe" },
         {},
-        { modifiedByTest: true }
+        { modifiedByTest: true },
       );
 
       expect(actual).toEqual({
@@ -144,7 +144,7 @@ describe("Migration scripts", () => {
             formWithSimpleConditionalToRadio, // match on searchFilters
             formWithAdvancedConditionalToRadio, // no match
             formWithSimpleConditionalToCheckbox, // match on searchFilters
-          ]
+          ],
         );
         migratedForms = migrated.migratedForms;
         log = migrated.log;
@@ -200,7 +200,7 @@ describe("Migration scripts", () => {
             formWithSimpleConditionalToRadio, // match on both search and dependency filters
             formWithAdvancedConditionalToRadio, // match on dependencyFilters
             formWithSimpleConditionalToCheckbox, // match on searchFilters
-          ]
+          ],
         );
         migratedForms = migrated.migratedForms;
         log = migrated.log;

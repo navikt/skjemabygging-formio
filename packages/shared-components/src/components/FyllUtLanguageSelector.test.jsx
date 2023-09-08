@@ -13,7 +13,7 @@ const renderFyllUtLanguageSelector = (translations, path = "") => {
       <LanguagesProvider translations={translations || defaultTranslations}>
         <FyllUtLanguageSelector />
       </LanguagesProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 };
 
@@ -34,7 +34,7 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
   it("render languageSelector with Nynorsk as label and Bokmål as option when the selected language is nynorsk and there is only nynorsk translations ", async () => {
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
-      "/testForm/view?lang=nn-NO"
+      "/testForm/view?lang=nn-NO",
     );
     const languageSelector = screen.getByRole("button", { name: "Norsk nynorsk" });
     expect(languageSelector).toBeDefined();
@@ -45,7 +45,7 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
   it("render languageSelector with Nynorsk as label and Bokmål as option when there are bokmål translations and nynorsk translations ", async () => {
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
-      "/testForm/view?lang=nn-NO"
+      "/testForm/view?lang=nn-NO",
     );
     const languageSelector = screen.getByRole("button", { name: "Norsk nynorsk" });
     expect(languageSelector).toBeDefined();
@@ -69,7 +69,7 @@ describe("Test FyllUtLanguageSelector in FyllUtRouter", () => {
 
     renderFyllUtLanguageSelector(
       { "nn-NO": { Etternavn: "Etternamn", Fornavn: "Fornamn" } },
-      "/nav123456?sub=digital&lang=nn-NO&foo=bar"
+      "/nav123456?sub=digital&lang=nn-NO&foo=bar",
     );
     const languageSelector = screen.getByRole("button", { name: "Norsk nynorsk" });
     await userEvent.click(languageSelector); // <-- open language selector

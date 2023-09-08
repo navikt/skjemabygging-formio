@@ -188,7 +188,7 @@ class NavSelect extends FormioReactComponent {
         { key: "logic", ignore: true },
         { key: "layout", ignore: true },
       ],
-      ...extend
+      ...extend,
     );
   }
 
@@ -249,7 +249,7 @@ class NavSelect extends FormioReactComponent {
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
       />,
-      element
+      element,
     );
   }
 

@@ -17,7 +17,7 @@ function toExpiredDateString(exp?: number) {
 }
 
 const getAzureRemoteJWKSet: GetKeyFunction<JWSHeaderParameters, FlattenedJWSInput> = createRemoteJWKSet(
-  new URL(config.azure.openidConfigJwksUri)
+  new URL(config.azure.openidConfigJwksUri),
 );
 
 const verifyToken = async (token: string): Promise<AzureAdTokenPayload> => {

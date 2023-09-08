@@ -46,7 +46,7 @@ describe("PrepareIngenInnsendingPage", () => {
     render(
       <MemoryRouter initialEntries={[`/forms/${testForm.path}/ingen-innsending`]}>
         <PrepareIngenInnsendingPage form={testForm} submission={{}} formUrl="/testskjema" translations={{}} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   });
 

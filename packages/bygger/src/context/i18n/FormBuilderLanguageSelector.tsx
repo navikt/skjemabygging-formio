@@ -29,7 +29,7 @@ const FormBuilderLanguageSelector = ({
 }: FormBuilderLanguageSelectorProps) => {
   const { currentLanguage } = useCurrentLanguage(useLanguageCodeFromURL(), i18nData);
   const supportedLanguageLists = (Object.keys(i18nData) as Language[]).filter(
-    (languageCode) => languageCode !== "nb-NO"
+    (languageCode) => languageCode !== "nb-NO",
   );
 
   const styles = useStyles();
@@ -41,7 +41,7 @@ const FormBuilderLanguageSelector = ({
       href: `/translations/${formPath}/${languageCode}${tag ? `/${tag}` : ""}`,
     }))
     .sort((lang1, lang2) =>
-      lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0
+      lang1.optionLabel.startsWith("Legg til") ? 1 : lang2.optionLabel.startsWith("Legg til") ? -1 : 0,
     );
 
   const getLanguageSelectorLabel = () => {
