@@ -6,14 +6,7 @@
     "plugin:vitest-globals/recommended",
     "plugin:cypress/recommended"
   ],
-  "plugins": [
-    "react",
-    "react-hooks",
-    "import",
-    "@typescript-eslint",
-    "vitest",
-    "cypress"
-  ],
+  "plugins": ["react", "react-hooks", "import", "@typescript-eslint", "vitest", "cypress"],
   "globals": {
     "fetchMock": true,
     "vi": true,
@@ -45,11 +38,12 @@
     "vitest/expect-expect": "off",
     "cypress/unsafe-to-chain-command": "off",
     "react/jsx-key": ["error", { "checkFragmentShorthand": true }],
-    "import/no-internal-modules": ["error", {
-      "forbid": [
-        "@navikt/skjemadigitalisering-shared-@(components|domain)/**"
-      ]
-    }]
+    "import/no-internal-modules": [
+      "error",
+      {
+        "forbid": ["@navikt/skjemadigitalisering-shared-@(components|domain)/**"]
+      }
+    ]
   },
   "root": true
 }

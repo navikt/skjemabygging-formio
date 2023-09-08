@@ -12,7 +12,7 @@ const createTranslationsMapForEditor =
   (
     translationResource: FormioTranslationDataWithId,
     translationsByLanguage: FormioTranslationMap,
-    getTranslatedText: (arg: string) => string | undefined
+    getTranslatedText: (arg: string) => string | undefined,
   ) =>
   (translationsObjects: ScopedTranslationMap, translatedText: string): ScopedTranslationMap => {
     let value = getTranslatedText(translatedText);
@@ -33,7 +33,7 @@ const createTranslationsMapForEditor =
 
 const combineTranslationResources = (
   translationsByLanguage: FormioTranslationMap,
-  translationResource: FormioTranslationDataWithId
+  translationResource: FormioTranslationDataWithId,
 ): FormioTranslationMap => {
   const accumulatedTranslationForLanguage = translationsByLanguage[translationResource.language];
   const accumulatedTranslationsMapForLanguage = accumulatedTranslationForLanguage?.translations || {};
@@ -51,7 +51,7 @@ const combineTranslationResources = (
       id,
       translations: newOriginalTexts.reduce(
         createTranslationsMapForEditor(translationResource, translationsByLanguage, getTranslatedText),
-        accumulatedTranslationsMapForLanguage
+        accumulatedTranslationsMapForLanguage,
       ),
     },
   };

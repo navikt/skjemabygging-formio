@@ -65,7 +65,7 @@ describe("i18nReducer", () => {
 
     it("assigns payload to translationsForNavForm on action type 'updateTranslationsForNavForm'", () => {
       expect(
-        reducer(initialState, { type: "updateTranslationsForNavForm", payload: mockedTranslationsForNavForm })
+        reducer(initialState, { type: "updateTranslationsForNavForm", payload: mockedTranslationsForNavForm }),
       ).toEqual({
         ...initialState,
         translationsForNavForm: mockedTranslationsForNavForm,
@@ -74,7 +74,10 @@ describe("i18nReducer", () => {
 
     it("assigns payload to localTranslationsForNavForm on action type 'updateLocalTranslationsForNavForm'", () => {
       expect(
-        reducer(initialState, { type: "updateLocalTranslationsForNavForm", payload: mockedLocalTranslationsForNavForm })
+        reducer(initialState, {
+          type: "updateLocalTranslationsForNavForm",
+          payload: mockedLocalTranslationsForNavForm,
+        }),
       ).toEqual({
         ...initialState,
         localTranslationsForNavForm: mockedLocalTranslationsForNavForm,

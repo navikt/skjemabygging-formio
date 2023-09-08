@@ -15,11 +15,11 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
   const [state, dispatch] = useReducer(
     formPageReducer,
     { status: "LOADING", hasUnsavedChanges: false },
-    (state) => state
+    (state) => state,
   );
   const loadTranslationsForFormPath = useCallback(
     () => loadTranslations(state.form?.path),
-    [loadTranslations, state.form?.path]
+    [loadTranslations, state.form?.path],
   );
 
   useEffect(() => {

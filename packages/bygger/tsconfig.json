@@ -2,11 +2,7 @@
   "extends": "../../tsconfig-base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ES2021"
-    ],
+    "lib": ["dom", "dom.iterable", "ES2021"],
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "paths": {
@@ -14,7 +10,5 @@
       "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

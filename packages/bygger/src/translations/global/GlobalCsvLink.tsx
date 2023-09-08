@@ -27,7 +27,7 @@ const GlobalCsvLink = ({ allGlobalTranslations, languageCode }: Props) => {
     const { data, headers } = transformGlobalTranslationsToCsvData(
       allGlobalTranslations,
       allPredefinedOriginalTexts,
-      languageCode
+      languageCode,
     );
     setCsvData(data);
     setCsvHeaders(headers);

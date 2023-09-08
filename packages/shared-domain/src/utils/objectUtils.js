@@ -6,14 +6,14 @@ export const flattenToArray = (nestedObject, callback, parentKey = "") => {
   return Object.entries(nestedObject).flatMap(([key, value]) =>
     typeof value === "object"
       ? flattenToArray(value, callback, concatKeys(key, parentKey))
-      : callback([key, value], parentKey)
+      : callback([key, value], parentKey),
   );
 };
 
 export const flatten = (nestedObject, withValueAsKey = false) =>
   flattenToArray(
     nestedObject,
-    withValueAsKey ? ([_, value]) => ({ key: value, value }) : ([key, value]) => ({ key, value })
+    withValueAsKey ? ([_, value]) => ({ key: value, value }) : ([key, value]) => ({ key, value }),
   ).reduce(addToMap, {});
 
 function isObject(item) {

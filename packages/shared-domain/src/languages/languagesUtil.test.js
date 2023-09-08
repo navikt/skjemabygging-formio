@@ -1,7 +1,4 @@
-import {
-  flattenGlobalI18nGroupedByTag,
-  globalEntitiesToI18nGroupedByTag,
-} from "./languagesUtil";
+import { flattenGlobalI18nGroupedByTag, globalEntitiesToI18nGroupedByTag } from "./languagesUtil";
 import globalGrensesnittEn from "./testdata/language-globalGrensesnitt-en";
 import globalValideringEn from "./testdata/language-globalValidering-en";
 import globalGrensesnittNnNO from "./testdata/language-globalGrensesnitt-nn-NO";
@@ -10,9 +7,7 @@ import globalTranslationsEn from "./testdata/global-translations-en";
 import globalTranslationsNnNO from "./testdata/global-translations-nn-NO";
 
 describe("languagesUtil", () => {
-
   describe("globalEntitiesToI18nGroupedByTag", () => {
-
     it("converts global entities and groups by tag", () => {
       const i18n = globalEntitiesToI18nGroupedByTag([
         globalGrensesnittEn,
@@ -23,16 +18,14 @@ describe("languagesUtil", () => {
       expect(Object.keys(i18n)).toEqual(["en", "nn-NO"]);
 
       expect(i18n["en"]).toHaveLength(2);
-      expect(i18n["en"].map(t => t.tag)).toEqual(["grensesnitt", "validering"]);
+      expect(i18n["en"].map((t) => t.tag)).toEqual(["grensesnitt", "validering"]);
 
       expect(i18n["nn-NO"]).toHaveLength(2);
-      expect(i18n["nn-NO"].map(t => t.tag)).toEqual(["grensesnitt", "validering"]);
+      expect(i18n["nn-NO"].map((t) => t.tag)).toEqual(["grensesnitt", "validering"]);
     });
-
   });
 
   describe("flattenGlobalI18nGroupedByTag", () => {
-
     it("flattens", () => {
       const i18nGroupedByTag = {
         ...globalTranslationsEn,
@@ -49,7 +42,5 @@ describe("languagesUtil", () => {
       expect(i18n["nn-NO"]["Forrige"]).toEqual("Førre");
       expect(i18n["nn-NO"]["Dette er ikke et gyldig {{field}}."]).toEqual("Dette er ikkje eit gyldig {{field}}.");
     });
-
   });
-
 });

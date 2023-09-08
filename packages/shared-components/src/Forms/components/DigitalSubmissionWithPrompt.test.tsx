@@ -24,7 +24,7 @@ describe("DigitalSubmissionWithPrompt", () => {
         <LanguagesProvider translations={{}}>
           <DigitalSubmissionWithPrompt submission={{} as Submission} onError={onError} onSuccess={onSuccess} />
         </LanguagesProvider>
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
   });
 

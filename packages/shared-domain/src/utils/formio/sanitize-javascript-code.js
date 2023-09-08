@@ -39,7 +39,7 @@ function mapChainedLookups(text) {
    */
   const arrayOfChainedLookups = text.match(/((\w+\.)+\w+\b)(?![(.])/g) || [];
   [...new Set(arrayOfChainedLookups)].forEach(
-    (chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString))
+    (chainedLookup) => (mappedString = addNullChecksToChainedLookup(chainedLookup, mappedString)),
   );
   return mappedString;
 }

@@ -26,7 +26,7 @@ export function IntroPage({ form, formUrl }: Props) {
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
   const [mustSelectSubmissionMethod, setMustSelectSubmissionMethod] = useState<boolean>(
-    !submissionMethod && supportsPapirOgDigital(form)
+    !submissionMethod && supportsPapirOgDigital(form),
   );
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
