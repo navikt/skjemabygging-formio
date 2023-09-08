@@ -52,14 +52,14 @@ class TranslationsService {
     return {};
   }
 
-  async loadTranslation(formPath: string) {
+  async loadTranslation(formPath: string): Promise<{}> {
     const { useFormioApi, translationDir } = this._config;
     return useFormioApi
       ? await this.fetchTranslationsFromFormioApi(formPath)
       : await loadFileFromDirectory(translationDir, formPath);
   }
 
-  async loadGlobalTranslations(lang: string) {
+  async loadGlobalTranslations(lang: string): Promise<{}> {
     const { useFormioApi, resourcesDir } = this._config;
     const globalTranslations = useFormioApi
       ? await this.fetchGlobalTranslationsFromFormioApi(lang)
@@ -69,10 +69,9 @@ class TranslationsService {
 
   async getTranslationsForLanguage(formPath: string, lang: string): Promise<Record<string, string>> {
     const fyllutLang = toFyllutLang(lang);
-    const translations = await this.loadTranslation(formPath);
-    const globalTranslations = await this.loadGlobalTranslations(fyllutLang);
-    const g = globalTranslations[fyllutLang] ? { ...globalTranslations[fyllutLang] } : {};
-    return { ...g, ...(translations[fyllutLang] || {}) };
+    const formTranslations = (await this.loadTranslation(formPath))[fyllutLang];
+    const globalTranslations = (await this.loadGlobalTranslations(fyllutLang))[fyllutLang];
+    return { ...globalTranslations, ...formTranslations };
   }
 }
 
