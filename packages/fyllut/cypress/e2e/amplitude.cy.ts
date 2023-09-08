@@ -92,6 +92,12 @@ describe("Amplitude", () => {
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
     cy.findByRoleWhenAttached("link", { name: "Fortsett utfylling" }).should("exist").click();
+    // There is a weird re-render happening after navigating back to the form,
+    // where the first panel will be rendered for a time before redirecting to the intended panel.
+    // If the user navigates during this time period, the navigation is ignored.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+
     cy.checkLogToAmplitude("navigere", {
       lenkeTekst: "Fortsett utfylling",
       destinasjon: "/cypress101/veiledning",

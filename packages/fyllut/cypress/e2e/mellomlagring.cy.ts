@@ -4,9 +4,9 @@ describe("Mellomlagring", () => {
   beforeEach(() => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
-      "getTestMellomlagringForm"
+      "getTestMellomlagringForm",
     );
-    cy.intercept("GET", "/fyllut/translations/testmellomlagring", { body: {} }).as("getTranslation");
+    cy.intercept("GET", "/fyllut/api/translations/testmellomlagring", { body: {} }).as("getTranslation");
   });
 
   describe('When submission method is "paper"', () => {
@@ -90,7 +90,7 @@ describe("Mellomlagring", () => {
         .and(
           "have.attr",
           "href",
-          "/fyllut/testmellomlagring/valgfrieOpplysninger?sub=digital&innsendingsId=75eedb4c-1253-44d8-9fde-3648f4bb1878#hvaDrakkDuTilFrokost"
+          "/fyllut/testmellomlagring/valgfrieOpplysninger?sub=digital&innsendingsId=75eedb4c-1253-44d8-9fde-3648f4bb1878#hvaDrakkDuTilFrokost",
         );
     });
 
@@ -124,7 +124,7 @@ describe("Mellomlagring", () => {
 
         it("retrieves mellomlagring and redirects after submitting", () => {
           cy.visit(
-            "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO"
+            "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO",
           );
           cy.wait("@getMellomlagringValid");
           cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
@@ -136,7 +136,7 @@ describe("Mellomlagring", () => {
 
         it("retrieves mellomlagring and lets you navigate to first empty panel", () => {
           cy.visit(
-            "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO"
+            "/fyllut/testmellomlagring/oppsummering?sub=digital&innsendingsId=8e3c3621-76d7-4ebd-90d4-34448ebcccc3&lang=nb-NO",
           );
           cy.wait("@getMellomlagringValid");
           cy.findByRole("heading", { name: TEXTS.statiske.summaryPage.title }).should("exist");
