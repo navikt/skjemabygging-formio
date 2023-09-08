@@ -69,7 +69,7 @@ describe("Backend", () => {
         expect(GitHubRepo).toHaveBeenCalledWith(
           "publish-repo-owner",
           "publish-repo",
-          expect.objectContaining(configForTest.githubApp),
+          expect.objectContaining(configForTest.githubApp)
         );
       });
 
@@ -85,14 +85,14 @@ describe("Backend", () => {
           `forms/${formPath}.json`,
           'skjema "Form", monorepo ref: publish-repo-git-sha',
           "eyJ0aXRsZSI6IkZvcm0ifQ==",
-          "existing-file-sha",
+          "existing-file-sha"
         );
         expect(mockRepoCreateOrUpdateFileContents).toHaveBeenCalledWith(
           expectedBranchName,
           `translations/${formPath}.json`,
           'oversettelse "Form", monorepo ref: publish-repo-git-sha',
           "eyJlbiI6e319",
-          "existing-file-sha",
+          "existing-file-sha"
         );
       });
 
@@ -145,7 +145,7 @@ describe("Backend", () => {
         expect(mockRepoCreatePullRequest).toHaveBeenCalledWith(
           "Automatic publishing job",
           expectedBranchName,
-          "publish-repo-main-branch",
+          "publish-repo-main-branch"
         );
       });
 
@@ -153,7 +153,7 @@ describe("Backend", () => {
         expect(mockRepoMergePullRequest).toHaveBeenCalledTimes(1);
         expect(mockRepoMergePullRequest).toHaveBeenCalledWith(
           14,
-          '[publisering] skjema "Form", monorepo ref: publish-repo-git-sha',
+          '[publisering] skjema "Form", monorepo ref: publish-repo-git-sha'
         );
       });
     });
@@ -200,7 +200,7 @@ describe("Backend", () => {
         expect(GitHubRepo).toHaveBeenCalledWith(
           "publish-repo-owner",
           "publish-repo",
-          expect.objectContaining(configForTest.githubApp),
+          expect.objectContaining(configForTest.githubApp)
         );
       });
 
@@ -216,7 +216,7 @@ describe("Backend", () => {
           "resources/settings.json",
           'ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
-          "existing-file-sha",
+          "existing-file-sha"
         );
       });
 
@@ -245,7 +245,7 @@ describe("Backend", () => {
           "resources/settings.json",
           'ressurs "settings", monorepo ref: publish-repo-git-sha',
           "eyJ0b2dnbGUiOiJvbiJ9",
-          undefined,
+          undefined
         );
       });
     });

@@ -37,7 +37,7 @@ describe("filterUtils", () => {
             value: "input--xxl",
           },
           { key: "validateOn", value: "blur" },
-        ]),
+        ])
       ).toBe(true);
     });
 
@@ -49,7 +49,7 @@ describe("filterUtils", () => {
             value: "input--s",
           },
           { key: "validateOn", value: "blur" },
-        ]),
+        ])
       ).toBe(false);
     });
 
@@ -61,7 +61,7 @@ describe("filterUtils", () => {
             value: true,
           },
           { key: "validateOn", value: "blur" },
-        ]),
+        ])
       ).toBe(true);
       expect(
         componentMatchesFilters(originalTextFieldComponent, [
@@ -70,7 +70,7 @@ describe("filterUtils", () => {
             value: false,
           },
           { key: "validateOn", value: "blur" },
-        ]),
+        ])
       ).toBe(false);
     });
 
@@ -88,7 +88,7 @@ describe("filterUtils", () => {
                 ...typeEqTextfield,
                 operator: "eq",
               },
-            ]),
+            ])
           ).toBe(true);
 
           expect(componentMatchesFilters(originalTextFieldComponent, [typeEqRadio])).toBe(false);
@@ -98,7 +98,7 @@ describe("filterUtils", () => {
                 ...typeEqRadio,
                 operator: "eq",
               },
-            ]),
+            ])
           ).toBe(false);
 
           expect(componentMatchesFilters(originalTextFieldComponent, [nonExistingProp])).toBe(false);
@@ -108,7 +108,7 @@ describe("filterUtils", () => {
                 ...nonExistingProp,
                 operator: "eq",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -119,7 +119,7 @@ describe("filterUtils", () => {
                 ...typeEqTextfield,
                 operator: "n_eq",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -130,7 +130,7 @@ describe("filterUtils", () => {
                 ...typeEqRadio,
                 operator: "n_eq",
               },
-            ]),
+            ])
           ).toBe(true);
         });
 
@@ -141,7 +141,7 @@ describe("filterUtils", () => {
                 ...nonExistingProp,
                 operator: "n_eq",
               },
-            ]),
+            ])
           ).toBe(true);
         });
       });
@@ -155,7 +155,7 @@ describe("filterUtils", () => {
                 value: "",
                 operator: "exists",
               },
-            ]),
+            ])
           ).toBe(true);
         });
 
@@ -167,7 +167,7 @@ describe("filterUtils", () => {
                 value: "",
                 operator: "exists",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -179,7 +179,7 @@ describe("filterUtils", () => {
                 value: "",
                 operator: "n_exists",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -191,7 +191,7 @@ describe("filterUtils", () => {
                 value: "",
                 operator: "n_exists",
               },
-            ]),
+            ])
           ).toBe(true);
         });
       });
@@ -211,7 +211,7 @@ describe("filterUtils", () => {
                 value: "substring-in-custom-long-text",
                 operator: "contains",
               },
-            ]),
+            ])
           ).toBe(true);
         });
 
@@ -223,7 +223,7 @@ describe("filterUtils", () => {
                 value: "substring-NOT-in-custom-long-text",
                 operator: "contains",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -235,7 +235,7 @@ describe("filterUtils", () => {
                 value: "substring-in-custom-long-text",
                 operator: "n_contains",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -247,7 +247,7 @@ describe("filterUtils", () => {
                 value: "substring-NOT-in-custom-long-text",
                 operator: "n_contains",
               },
-            ]),
+            ])
           ).toBe(true);
         });
 
@@ -259,7 +259,7 @@ describe("filterUtils", () => {
                 value: "member-of-array",
                 operator: "contains",
               },
-            ]),
+            ])
           ).toBe(true);
         });
 
@@ -271,7 +271,7 @@ describe("filterUtils", () => {
                 value: "not-a-member-of-array",
                 operator: "contains",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -283,7 +283,7 @@ describe("filterUtils", () => {
                 value: "substring-in-custom-long-text",
                 operator: "n_contains",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -295,7 +295,7 @@ describe("filterUtils", () => {
                 value: "substring-NOT-in-custom-long-text",
                 operator: "n_contains",
               },
-            ]),
+            ])
           ).toBe(true);
         });
 
@@ -307,7 +307,7 @@ describe("filterUtils", () => {
                 value: "substring-NOT-in-custom-long-text",
                 operator: "contains",
               },
-            ]),
+            ])
           ).toBe(false);
         });
 
@@ -319,7 +319,7 @@ describe("filterUtils", () => {
                 value: "substring-NOT-in-custom-long-text",
                 operator: "n_contains",
               },
-            ]),
+            ])
           ).toBe(true);
         });
       });
@@ -331,7 +331,7 @@ describe("filterUtils", () => {
       expect(
         componentHasDependencyMatchingFilters(formWithSimpleConditionalToRadio, componentWithSimpleConditionalToRadio, [
           { key: "type", value: "radio" },
-        ]),
+        ])
       ).toBe(true);
     });
 
@@ -340,7 +340,7 @@ describe("filterUtils", () => {
         componentHasDependencyMatchingFilters(formWithSimpleConditionalToRadio, componentWithSimpleConditionalToRadio, [
           { key: "type", value: "radio" },
           { key: "disabled", value: "true" },
-        ]),
+        ])
       ).toBe(false);
     });
 
@@ -349,8 +349,8 @@ describe("filterUtils", () => {
         componentHasDependencyMatchingFilters(
           formWithSimpleConditionalToRadio,
           componentWithAdvancedConditionalToRadio,
-          [{ key: "type", value: "radio" }],
-        ),
+          [{ key: "type", value: "radio" }]
+        )
       ).toBe(true);
     });
 
@@ -362,8 +362,8 @@ describe("filterUtils", () => {
           [
             { key: "type", value: "radio" },
             { key: "disabled", value: "true" },
-          ],
-        ),
+          ]
+        )
       ).toBe(false);
     });
   });

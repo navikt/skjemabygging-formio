@@ -131,7 +131,7 @@ export default class NavDatepicker extends FormioReactComponent {
     mayBeEqual,
     relativeEarliestAllowedDate = "",
     relativeLatestAllowedDate = "",
-    row,
+    row
   ) {
     if (!input) {
       return true;
@@ -176,7 +176,7 @@ export default class NavDatepicker extends FormioReactComponent {
       component.mayBeEqual,
       component.earliestAllowedDate,
       component.latestAllowedDate,
-      row,
+      row
     );
     if (result === true) {
       const { specificEarliestAllowedDate, specificLatestAllowedDate } = component;
@@ -340,7 +340,7 @@ export default class NavDatepicker extends FormioReactComponent {
         readOnly={this.options.readOnly}
         inputRef={(r) => (this.input = r)}
       />,
-      element,
+      element
     );
   }
 

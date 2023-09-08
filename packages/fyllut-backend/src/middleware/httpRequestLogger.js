@@ -15,12 +15,12 @@ const httpRequestLogger = morgan(
         ...logEntry,
         level: res.statusCode < 500 ? "Info" : "Error",
         correlation_id: correlator.getId(),
-      }),
+      })
     );
   },
   {
     skip: (req) => isTest || INTERNAL_PATHS.test(req.originalUrl),
-  },
+  }
 );
 
 export default httpRequestLogger;

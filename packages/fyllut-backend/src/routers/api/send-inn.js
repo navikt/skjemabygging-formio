@@ -39,7 +39,7 @@ const sendInn = {
         submission,
         submissionMethod,
         translations,
-        localizationUtils.getLanguageCodeAsIso639_1(language),
+        localizationUtils.getLanguageCodeAsIso639_1(language)
       );
 
       const body = {

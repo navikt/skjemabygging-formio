@@ -37,7 +37,7 @@ describe("FormsRouter", () => {
             </AppConfigProvider>
           </FeedbackProvider>
         </AuthContext.Provider>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
   }
 
@@ -67,7 +67,7 @@ describe("FormsRouter", () => {
     const editLinks = await screen.findAllByTestId("editLink");
     expect(editLinks).toHaveLength(2);
     editLinks.forEach((link) =>
-      expect(link.href).toMatch(/http:\/\/localhost(:\d+)?\/forms\/(columns|debugskjema)\/edit/),
+      expect(link.href).toMatch(/http:\/\/localhost(:\d+)?\/forms\/(columns|debugskjema)\/edit/)
     );
   });
 });

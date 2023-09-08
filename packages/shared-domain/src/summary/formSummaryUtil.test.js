@@ -96,7 +96,7 @@ describe("form summary", () => {
           {},
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "panel")).toBeUndefined();
       });
@@ -107,7 +107,7 @@ describe("form summary", () => {
           { data: { textfield: "textValue" } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([
           {
@@ -144,7 +144,7 @@ describe("form summary", () => {
           { data: { radiopanel: "yes" } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "radiopanel").value).toBe("YES-label");
       });
@@ -155,7 +155,7 @@ describe("form summary", () => {
           { data: { radiopanelwithnumbervalues: 40 } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "radiopanel").value).toBe("40-label");
       });
@@ -199,7 +199,7 @@ describe("form summary", () => {
           dummySubmission,
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "htmlelement").value).toBe("contentForPdf");
       });
@@ -217,7 +217,7 @@ describe("form summary", () => {
           dummySubmission,
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
       });
@@ -235,7 +235,7 @@ describe("form summary", () => {
             [],
             "",
             mockedTranslate(),
-            { alertstripewithconditional: false },
+            { alertstripewithconditional: false }
           );
           expect(actual.find((component) => component.type === "alertstripe")).toBeUndefined();
         });
@@ -247,7 +247,7 @@ describe("form summary", () => {
             [],
             "",
             mockedTranslate,
-            { alertstripewithconditional: true },
+            { alertstripewithconditional: true }
           );
           expect(actual.find((component) => component.type === "alertstripe").value).toBe("contentForPdf");
         });
@@ -266,7 +266,7 @@ describe("form summary", () => {
           {},
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "container")).toBeUndefined();
         expect(actual.find((component) => component.type === "content")).toBeUndefined();
@@ -279,7 +279,7 @@ describe("form summary", () => {
           { data: { container: dummySubmission.data } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([
           {
@@ -308,7 +308,7 @@ describe("form summary", () => {
           },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([
           {
@@ -352,7 +352,7 @@ describe("form summary", () => {
           dummySubmission,
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         const actualNavSkjemagruppe = actual.find((component) => component.type === "navSkjemagruppe");
         expect(actualNavSkjemagruppe).toBeDefined();
@@ -367,7 +367,7 @@ describe("form summary", () => {
           { data: { selectboxes: { milk: true, bread: false, juice: true } } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([
           {
@@ -384,7 +384,7 @@ describe("form summary", () => {
           { data: { selectboxes: { milk: false, bread: false, juice: false } } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([]);
       });
@@ -409,7 +409,7 @@ describe("form summary", () => {
           { data: { land: { value: "NO", label: "Norge" } } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([
           {
@@ -451,7 +451,7 @@ describe("form summary", () => {
           { data: { datagrid: [] } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual.find((component) => component.type === "datagrid")).toBeUndefined();
       });
@@ -462,7 +462,7 @@ describe("form summary", () => {
           { data: { datagrid: [dummySubmission.data] } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
 
         expect(actual).toEqual([
@@ -490,7 +490,7 @@ describe("form summary", () => {
           { data: { number: 2512.3889999999997 } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual[0].value).toEqual("2 512,39".replaceAll(" ", "\u00A0"));
       });
@@ -501,7 +501,7 @@ describe("form summary", () => {
           { data: { number: 25 } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual[0].value).toEqual("MVA: 25 %");
       });
@@ -514,7 +514,7 @@ describe("form summary", () => {
           { data: { penger: 2512.3889999999997 } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual[0].value).toEqual("kr 2 512,39".replaceAll(" ", "\u00A0"));
       });
@@ -527,7 +527,7 @@ describe("form summary", () => {
           { data: { amountwithcurrency: { valutavelger: { value: "NOK" }, belop: 2512.3889999999997 } } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual[0].value).toEqual("NOK 2 512,39".replaceAll(" ", "\u00A0"));
       });
@@ -538,7 +538,7 @@ describe("form summary", () => {
           { data: { amountwithcurrency: { valutavelger: { value: "NOK" } } } },
           [],
           "",
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toEqual([]);
       });
@@ -552,7 +552,7 @@ describe("form summary", () => {
         { data: { bankaccount: "12345678911" } },
         [],
         "",
-        mockedTranslate,
+        mockedTranslate
       );
       expect(actual[0].value).toEqual("1234 56 78911");
     });
@@ -565,7 +565,7 @@ describe("form summary", () => {
         { data: { orgnr: "111111111" } },
         [],
         "",
-        mockedTranslate,
+        mockedTranslate
       );
       expect(actual[0].value).toEqual("111 111 111");
     });
@@ -663,7 +663,7 @@ describe("form summary", () => {
             monthisnotrequired: "00/00/2000",
           },
         },
-        mockedTranslate,
+        mockedTranslate
       );
       expect(actual).toEqual([
         {
@@ -860,7 +860,7 @@ describe("form summary", () => {
             createPanelObject("Panel 2", [createDummyEmail()]),
           ]),
           dummySubmission,
-          mockedTranslate,
+          mockedTranslate
         );
         expect(actual).toBeInstanceOf(Array);
         expect(actual.length).toEqual(2);
@@ -943,7 +943,7 @@ describe("form summary", () => {
         const actual = createFormSummaryObject(
           testformCustomConditional.form,
           testformCustomConditional.submissionVegghengtOmitted,
-          mockedTranslate,
+          mockedTranslate
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(0);
@@ -953,7 +953,7 @@ describe("form summary", () => {
         const actual = createFormSummaryObject(
           testformCustomConditional.form,
           testformCustomConditional.submissionVegghengtNei,
-          mockedTranslate,
+          mockedTranslate
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(0);
@@ -963,7 +963,7 @@ describe("form summary", () => {
         const actual = createFormSummaryObject(
           testformCustomConditional.form,
           testformCustomConditional.submissionVegghengtJa,
-          mockedTranslate,
+          mockedTranslate
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
@@ -976,7 +976,7 @@ describe("form summary", () => {
         const actual = createFormSummaryObject(
           testformContainerConditional.form,
           testformContainerConditional.submissionKjokken,
-          mockedTranslate,
+          mockedTranslate
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(0);
@@ -986,7 +986,7 @@ describe("form summary", () => {
         const actual = createFormSummaryObject(
           testformContainerConditional.form,
           testformContainerConditional.submissionBad,
-          mockedTranslate,
+          mockedTranslate
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
@@ -997,7 +997,7 @@ describe("form summary", () => {
         const actual = createFormSummaryObject(
           testformContainerConditional.form,
           testformContainerConditional.submissionStue,
-          mockedTranslate,
+          mockedTranslate
         );
         const alertstripes = flattenComponents(actual).filter(onlyAlertstripes);
         expect(alertstripes).toHaveLength(1);
@@ -1009,7 +1009,7 @@ describe("form summary", () => {
       const actual = createFormSummaryObject(
         datoISkjemagruppeIDatagrid.form,
         datoISkjemagruppeIDatagrid.submission,
-        mockedTranslate,
+        mockedTranslate
       );
       expect(actual).toHaveLength(1);
       expect(actual[0].components).toHaveLength(3);

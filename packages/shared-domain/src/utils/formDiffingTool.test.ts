@@ -201,7 +201,7 @@ describe("formDiffingTool", () => {
       checkDefaultComponentsValues(changes.components[0]);
       checkDefaultComponentsValues(changes.components[0].components[0]);
       expect(changes.components[0].components[0].diff.content.originalValue).toBe(
-        form.components[0].components[0].content,
+        form.components[0].components[0].content
       );
       expect(changes.components[0].components[0].diff.content.value).toBe(content);
       expect(changes.components[0].components[0].diff.content.status).toBe(DiffStatus.CHANGED);

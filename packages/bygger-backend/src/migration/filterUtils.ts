@@ -50,7 +50,7 @@ function componentMatchesFilters(component: Component, filters: Filter[]) {
 function componentHasDependencyMatchingFilters(
   form: NavFormType,
   dependentComponent: Component,
-  dependencyFilters: Filter[],
+  dependencyFilters: Filter[]
 ) {
   if (Object.keys(dependencyFilters).length > 0) {
     const dependees = navFormUtils.findDependeeComponents(dependentComponent, form);

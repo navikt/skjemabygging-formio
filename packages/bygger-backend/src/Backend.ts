@@ -48,7 +48,7 @@ export class Backend {
         formContent.title,
         getTranslationFilePath(formPath),
         "oversettelse",
-        translationsContent,
+        translationsContent
       );
       files.push(translationsFile);
     }
@@ -63,14 +63,14 @@ export class Backend {
         path: formFile.path,
         type: formFile.type,
         sha: this.config.gitSha,
-      },
+      }
     );
     return performChangesOnSeparateBranch(
       skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       pushFilesAndUpdateMonorepoRefCallback(files, this.config.gitSha),
-      `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`,
+      `[publisering] skjema "${formFile.name}", monorepo ref: ${this.config.gitSha}`
     );
   }
 
@@ -85,14 +85,14 @@ export class Backend {
         branch: branchName,
         path: formPath,
         sha: this.config.gitSha,
-      },
+      }
     );
     return performChangesOnSeparateBranch(
       skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       deleteFilesAndUpdateMonorepoRefCallback([getFormFilePath(formPath), getTranslationFilePath(formPath)]),
-      `[avpublisering] skjema ${formPath}, monorepo ref: ${this.config.gitSha}`,
+      `[avpublisering] skjema ${formPath}, monorepo ref: ${this.config.gitSha}`
     );
   }
 
@@ -103,7 +103,7 @@ export class Backend {
       resourceName,
       `resources/${resourceName}.json`,
       "ressurs",
-      resourceContent,
+      resourceContent
     );
 
     logger.info(
@@ -116,14 +116,14 @@ export class Backend {
         path: resourceFile.path,
         type: resourceFile.type,
         sha: this.config.gitSha,
-      },
+      }
     );
     return performChangesOnSeparateBranch(
       skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       pushFilesAndUpdateMonorepoRefCallback([resourceFile], this.config.gitSha),
-      `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`,
+      `[resources] publiserer ${resourceName}, monorepo ref: ${this.config.gitSha}`
     );
   }
 
@@ -136,7 +136,7 @@ export class Backend {
     const skjemautfyllingRepo = await this.createGitHubRepo();
     const branchName = `bulkpublish--${uuidv4()}`;
     const formFiles = forms.map((formContent: NavFormType) =>
-      createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent),
+      createFileForPushingToRepo(formContent.title, `forms/${formContent.path}.json`, "skjema", formContent)
     );
 
     logger.info(
@@ -146,14 +146,14 @@ export class Backend {
         repo: this.config.publishRepo.name,
         branch: branchName,
         sha: this.config.gitSha,
-      },
+      }
     );
     return performChangesOnSeparateBranch(
       skjemautfyllingRepo,
       this.config.publishRepo.base,
       branchName,
       pushFilesAndUpdateMonorepoRefCallback(formFiles, this.config.gitSha),
-      `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`,
+      `[bulk-publisering] ${formFiles.length} skjemaer publisert, monorepo ref: ${this.config.gitSha}`
     );
   }
 

@@ -86,13 +86,13 @@ class PublisherService {
             originalForm,
             formioToken,
             userName,
-            formProps,
+            formProps
           );
           return {
             originalForm,
             formWithPublishProps,
           };
-        }),
+        })
       );
       gitSha = await this.backend.publishForms(publications.map((pub) => pub.formWithPublishProps));
     } catch (error) {
@@ -102,7 +102,7 @@ class PublisherService {
             const { originalForm, formWithPublishProps } = pub;
             const rollbackFormProps = createRollbackProps(originalForm);
             return this.formioService.saveForm(formWithPublishProps, formioToken, userName, rollbackFormProps);
-          }),
+          })
         );
       }
       throw new ApiError("Bulk-publisering feilet", true, error as Error);
@@ -114,7 +114,7 @@ class PublisherService {
 const createPublishProps = (
   now: string,
   userName: string,
-  publishedLanguages?: string[] | undefined,
+  publishedLanguages?: string[] | undefined
 ): FormPropertiesPublishing => ({
   modified: now,
   modifiedBy: userName,

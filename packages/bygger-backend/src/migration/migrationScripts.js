@@ -8,7 +8,7 @@ function recursivelyMigrateComponentAndSubcomponents(
   searchFilters,
   dependencyFilters,
   script,
-  logger,
+  logger
 ) {
   let modifiedComponent = component;
   if (
@@ -29,8 +29,8 @@ function recursivelyMigrateComponentAndSubcomponents(
           searchFilters,
           dependencyFilters,
           script,
-          logger,
-        ),
+          logger
+        )
       ),
     };
   }
@@ -48,7 +48,7 @@ function migrateForm(form, searchFiltersFromParam, dependencyFiltersFromParam, e
     searchFilters,
     dependencyFilters,
     getEditScript(editOptions),
-    logger,
+    logger
   );
   return { migratedForm, logger };
 }
@@ -57,7 +57,7 @@ function getEditScript(editOptions) {
   const editOptionObjects = Object.entries(editOptions).map(([editOptionKey, editOptionValue]) =>
     editOptionKey.split(".").reduceRight((acc, currentValue) => {
       return { [currentValue]: acc };
-    }, editOptionValue),
+    }, editOptionValue)
   );
   const mergedEditOptionObject = editOptionObjects.reduce(objectUtils.deepMerge, {});
 

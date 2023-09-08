@@ -228,7 +228,7 @@ describe("ReportService", () => {
         const writableStream = createWritableStream();
         await reportService.generate("forms-published-languages", writableStream);
         expect(writableStream.toString()).toEqual(
-          CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\nTEST2;Testskjema2;en\nTEST3;Testskjema3;\n",
+          CSV_HEADER_LINE + "TEST1;Testskjema1;en,nn-NO\nTEST2;Testskjema2;en\nTEST3;Testskjema3;\n"
         );
       });
 

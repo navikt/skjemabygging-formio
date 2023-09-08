@@ -8,7 +8,7 @@ const { useFormioApi, resourcesDir, formioProjectUrl } = config;
 const fetchGlobalTranslationsFromFormioApi = async (lang) => {
   const response = await fetch(
     `${formioProjectUrl}/language/submission?data.name=global&data.language=${lang}&limit=1000`,
-    { method: "GET" },
+    { method: "GET" }
   );
   if (response.ok) {
     const responseJson = await response.json();

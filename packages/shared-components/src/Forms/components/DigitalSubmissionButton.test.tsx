@@ -42,7 +42,7 @@ describe("DigitalSubmissionButton", () => {
             <DigitalSubmissionButton {...defaultProps} />
           </LanguagesProvider>
         </SendInnProvider>
-      </AppConfigProvider>,
+      </AppConfigProvider>
     );
   };
 
@@ -101,7 +101,7 @@ describe("DigitalSubmissionButton", () => {
       await userEvent.click(button);
       await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
       expect(onError.mock.calls[0][0].message).toEqual(
-        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren.",
+        "Digital innsending er ikke støttet ved forhåndsvisning i byggeren."
       );
       expect(windowLocation.href).toEqual(baseUrl);
     });

@@ -52,7 +52,7 @@ const createDummyRadioPanel = (
   values: RadioPanelOption[] = [
     { label: "NO-label", value: "no" },
     { label: "YES-label", value: "yes" },
-  ],
+  ]
 ): Component =>
   ({
     label,
@@ -86,7 +86,7 @@ const defaultAttachmentProperties: ComponentProperties = {
 const createDummyAttachment = (
   label = "Vedlegg1",
   properties: ComponentProperties = defaultAttachmentProperties,
-  values: RadioPanelOption[] = defaultAttachmentValues,
+  values: RadioPanelOption[] = defaultAttachmentValues
 ): Component =>
   ({
     label,
@@ -101,7 +101,7 @@ const createDummyRadioPanelWithNumberValues = (
   values: RadioPanelOption[] = [
     { label: "30-label", value: "30" },
     { label: "40-label", value: "40" },
-  ],
+  ]
 ): Component =>
   ({
     label,
@@ -116,7 +116,7 @@ const createDummySelectboxes = (
     { label: "Milk", value: "milk" },
     { label: "Bread", value: "bread" },
     { label: "Juice", value: "juice" },
-  ],
+  ]
 ): Component =>
   ({
     label,
@@ -146,7 +146,7 @@ const createDummyAlertstripe = (
   label = "Alertstripe",
   content?: string,
   contentForPdf = "",
-  conditional = {},
+  conditional = {}
 ): Component =>
   ({
     label,
@@ -205,7 +205,7 @@ const createDummySelectComponent = (
     { label: "Milk", value: "milk" },
     { label: "Bread", value: "bread" },
     { label: "Juice", value: "juice" },
-  ],
+  ]
 ) => ({
   label,
   key: keyFromLabel(label),
@@ -242,7 +242,7 @@ const createFormPropertiesObject = (partialFormProperties: Partial<FormPropertie
 const createFormObject = (
   panels: Component[] = [],
   title: string = "Test form",
-  properties: Partial<FormPropertiesType> = {},
+  properties: Partial<FormPropertiesType> = {}
 ): NavFormType =>
   ({
     components: panels,

@@ -3,10 +3,10 @@ describe("Submission method", () => {
     cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" });
     cy.intercept("GET", "/fyllut/api/forms/bug101010", { fixture: "submission-method.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/api/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
-      "getFormTranslations",
+      "getFormTranslations"
     );
     cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslations",
+      "getGlobalTranslations"
     );
     cy.intercept("GET", "/fyllut/api/countries?*", { fixture: "countries.json" }).as("getCountries");
     cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");

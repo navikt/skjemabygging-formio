@@ -94,7 +94,7 @@ describe("NavFormBuilder", () => {
 
         expect(window.confirm.mock.calls).toHaveLength(1);
         expect(window.confirm.mock.calls[0][0]).toEqual(
-          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?",
+          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?"
         );
       });
 
@@ -116,10 +116,10 @@ describe("NavFormBuilder", () => {
 
         expect(window.confirm.mock.calls).toHaveLength(2);
         expect(window.confirm.mock.calls[0][0]).toEqual(
-          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?",
+          "En eller flere andre komponenter har avhengighet til denne. Vil du fremdeles slette den?"
         );
         expect(window.confirm.mock.calls[1][0]).toEqual(
-          "Removing this component will also remove all of its children. Are you sure you want to do this?",
+          "Removing this component will also remove all of its children. Are you sure you want to do this?"
         );
       });
     });

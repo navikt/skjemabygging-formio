@@ -50,7 +50,7 @@ describe("sendInnContext", () => {
           <SendInnProvider form={form} translations={translations}>
             <TestComponent submission={submission} />
           </SendInnProvider>
-        </AppConfigProvider>,
+        </AppConfigProvider>
       );
     });
 
@@ -67,7 +67,7 @@ describe("sendInnContext", () => {
             submissionMethod,
           }),
           headers,
-          opts,
+          opts
         );
       });
     });
@@ -87,7 +87,7 @@ describe("sendInnContext", () => {
             innsendingsId,
           }),
           headers,
-          opts,
+          opts
         );
       });
     });
@@ -107,7 +107,7 @@ describe("sendInnContext", () => {
             innsendingsId,
           }),
           headers,
-          { redirectToLocation: true },
+          { redirectToLocation: true }
         );
       });
     });
@@ -127,7 +127,7 @@ describe("sendInnContext", () => {
           <SendInnProvider form={form} translations={translations}>
             <TestComponent submission={submission} />
           </SendInnProvider>
-        </AppConfigProvider>,
+        </AppConfigProvider>
       );
     });
 
@@ -157,7 +157,7 @@ describe("sendInnContext", () => {
             submissionMethod,
           }),
           headers,
-          { redirectToLocation: true },
+          { redirectToLocation: true }
         );
       });
     });

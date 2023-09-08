@@ -76,7 +76,7 @@ const sendInnSoknad = {
             Authorization: `Bearer ${tokenxAccessToken}`,
           },
           body: JSON.stringify(body),
-        },
+        }
       );
 
       if (sendInnResponse.ok) {
