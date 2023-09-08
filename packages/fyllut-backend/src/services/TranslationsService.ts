@@ -1,4 +1,4 @@
-import { languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslations, languagesUtil } from "@navikt/skjemadigitalisering-shared-domain";
 import fetch from "node-fetch";
 import { loadFileFromDirectory } from "../utils/forms";
 import { ConfigType } from "../config/types";
@@ -52,14 +52,14 @@ class TranslationsService {
     return {};
   }
 
-  async loadTranslation(formPath: string): Promise<{}> {
+  async loadTranslation(formPath: string): Promise<I18nTranslations> {
     const { useFormioApi, translationDir } = this._config;
     return useFormioApi
       ? await this.fetchTranslationsFromFormioApi(formPath)
       : await loadFileFromDirectory(translationDir, formPath);
   }
 
-  async loadGlobalTranslations(lang: string): Promise<{}> {
+  async loadGlobalTranslations(lang: string): Promise<I18nTranslations> {
     const { useFormioApi, resourcesDir } = this._config;
     const globalTranslations = useFormioApi
       ? await this.fetchGlobalTranslationsFromFormioApi(lang)
