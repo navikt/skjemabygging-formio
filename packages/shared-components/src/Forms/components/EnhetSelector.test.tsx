@@ -21,7 +21,7 @@ describe("EnhetSelector", () => {
     render(
       <LanguagesProvider translations={{}}>
         <EnhetSelector enhetsliste={enhetsListe as Enhet[]} onSelectEnhet={mockOnSelectEnhet} />,
-      </LanguagesProvider>
+      </LanguagesProvider>,
     );
   };
 

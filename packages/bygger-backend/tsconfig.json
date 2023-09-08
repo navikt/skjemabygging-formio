@@ -3,10 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "paths": {
-      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"],
+      "@navikt/skjemadigitalisering-shared-domain": ["../shared-domain/src"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

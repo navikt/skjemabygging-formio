@@ -35,6 +35,5 @@
     "lodash.template": "^4.5.0",
     "moment": "^2.29.4",
     "prop-types": "^15.8.1"
-
   }
 }

@@ -37,7 +37,7 @@ describe("objectUtils", () => {
         [
           { key: "a", value: "a" },
           { key: "b", value: "b" },
-        ].reduce(objectUtils.addToMap, {})
+        ].reduce(objectUtils.addToMap, {}),
       ).toEqual({ a: "a", b: "b" });
     });
   });
@@ -72,7 +72,7 @@ describe("objectUtils", () => {
     });
     it("merges two nested objects", () => {
       expect(
-        objectUtils.deepMerge({ a: { a1: { a12: "foo" } }, b: "b" }, { a: { a1: { a12: "bar" }, a2: "baz" } })
+        objectUtils.deepMerge({ a: { a1: { a12: "foo" } }, b: "b" }, { a: { a1: { a12: "bar" }, a2: "baz" } }),
       ).toEqual({ a: { a1: { a12: "bar" }, a2: "baz" }, b: "b" });
     });
     it("overwrites a value in objectA with undefined, when the key is set to undefined in objectB", () => {

@@ -183,7 +183,7 @@ describe("FormStatusPanel", () => {
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
               <FormStatusPanel publishProperties={properties as FormPropertiesType} />
-            </AppConfigProvider>
+            </AppConfigProvider>,
           );
           expect(screen.queryByRole("button", { name: "Skjul endringer" })).toBeInTheDocument();
         });
@@ -193,7 +193,7 @@ describe("FormStatusPanel", () => {
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={false} setDiffOn={setDiffOn}>
               <FormStatusPanel publishProperties={properties as FormPropertiesType} />
-            </AppConfigProvider>
+            </AppConfigProvider>,
           );
           expect(screen.queryByRole("button", { name: "Vis endringer" })).toBeInTheDocument();
         });
@@ -205,7 +205,7 @@ describe("FormStatusPanel", () => {
           render(
             <AppConfigProvider featureToggles={{ enableDiff: true }} diffOn={true} setDiffOn={setDiffOn}>
               <FormStatusPanel publishProperties={properties as FormPropertiesType} />
-            </AppConfigProvider>
+            </AppConfigProvider>,
           );
           expect(screen.queryByRole("button", { name: "Skjul endringer" })).not.toBeInTheDocument();
         });
@@ -217,7 +217,7 @@ describe("FormStatusPanel", () => {
       render(
         <AppConfigProvider featureToggles={{ enableDiff: false }} diffOn={true} setDiffOn={setDiffOn}>
           <FormStatusPanel publishProperties={properties as FormPropertiesType} />
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
       expect(screen.queryByRole("button", { name: "Skjul endringer" })).not.toBeInTheDocument();
       expect(screen.queryByRole("button", { name: "Vis endringer" })).not.toBeInTheDocument();

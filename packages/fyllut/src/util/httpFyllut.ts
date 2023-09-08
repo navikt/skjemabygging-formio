@@ -23,7 +23,7 @@ const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): 
         ...getDefaultHeaders(),
         ...headers,
       },
-      opts
+      opts,
     );
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
@@ -43,7 +43,7 @@ const put = async <T>(url: string, body: object, headers?: FetchHeader, opts?: F
         ...getDefaultHeaders(),
         ...headers,
       },
-      opts
+      opts,
     );
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {
@@ -63,7 +63,7 @@ const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: 
         ...getDefaultHeaders(),
         ...headers,
       },
-      opts
+      opts,
     );
   } catch (e) {
     if (e instanceof http.UnauthenticatedError) {

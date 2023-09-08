@@ -7,6 +7,6 @@ const ejs = {
     interpolate: /\{\{([\s\S]+?)\}\}/g,
     escape: /\{\{\{([\s\S]+?)\}\}\}/g,
     esModule: false,
-  }
+  },
 };
 export default ejs;

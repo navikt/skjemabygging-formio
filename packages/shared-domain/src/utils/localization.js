@@ -17,7 +17,7 @@ const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) =>
       ...acc,
       [label]: mapToValue(valueNames[index]),
     }),
-    {}
+    {},
   );
 };
 

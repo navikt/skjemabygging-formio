@@ -8,7 +8,7 @@ describe("MigrationOptionsForm", () => {
     render(
       <MigrationOptionsForm title="title" addRowText="addRowText" dispatch={dispatchMock} testId="search-filters">
         <></>
-      </MigrationOptionsForm>
+      </MigrationOptionsForm>,
     );
   });
 

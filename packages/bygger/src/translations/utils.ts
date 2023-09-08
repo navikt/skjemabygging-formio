@@ -146,7 +146,7 @@ const getTranslatablePropertiesFromForm = (form: NavFormType) =>
         buttonText: getTextFromComponentProperty(buttonText),
         addAnother: getTextFromComponentProperty(addAnother),
         removeAnother: getTextFromComponentProperty(removeAnother),
-      })
+      }),
     );
 
 const withoutDuplicatedComponents = (textObject: TextObjectType, index: number, currentComponents: TextObjectType[]) =>
@@ -187,7 +187,7 @@ const getFormTexts = (form?: NavFormType, withInputType = false) => {
               .map((value) => textObject(withInputType, value)) as TextObjectType;
           }
           return textObject(withInputType, component[key]);
-        })
+        }),
     )
     .concat(extractTextsFromProperties(form.properties))
     .filter((component, index, currentComponents) => withoutDuplicatedComponents(component, index, currentComponents));
@@ -221,7 +221,7 @@ const getTextsAndTranslationsForForm = (form: NavFormType, translations: FormioT
           [languageCode]: translation,
         };
       },
-      { text: sanitizeForCsv(textComponent.text)! }
+      { text: sanitizeForCsv(textComponent.text)! },
     );
   });
 };
@@ -237,7 +237,7 @@ const getTextsAndTranslationsHeaders = (translations: FormioTranslationMap) => {
         },
       ];
     },
-    [{ label: "Skjematekster", key: "text" }]
+    [{ label: "Skjematekster", key: "text" }],
   );
 };
 
