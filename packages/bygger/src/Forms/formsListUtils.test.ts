@@ -12,7 +12,7 @@ const createFormMetadata = (properties: Partial<FormMetadata>): FormMetadata =>
     skjemanummer: "000",
     status: "UNKNOWN",
     ...properties,
-  } as FormMetadata);
+  }) as FormMetadata;
 
 describe("formsListUtils", () => {
   describe("sortFormsByProperty", () => {

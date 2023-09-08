@@ -203,7 +203,7 @@ export default class CheckboxComponent extends FormioReactComponent {
         checkboxRef={(r) => (this.input = r)}
         translate={(text) => this.t(text)}
       />,
-      element
+      element,
     );
   }
 

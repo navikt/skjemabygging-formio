@@ -1,9 +1,7 @@
 {
   "form": {
     "type": "form",
-    "tags": [
-      "nav-skjema"
-    ],
+    "tags": ["nav-skjema"],
     "owner": "5ee0eacc7665226ea32fd389",
     "components": [
       {
@@ -9171,11 +9169,7 @@
     "path": "070208soknadomgravferdsstonad",
     "access": [
       {
-        "roles": [
-          "5ee0eaaf7665226ea32fd37b",
-          "5ee0eaaf7665226ea32fd37c",
-          "5ee0eab07665226ea32fd37d"
-        ],
+        "roles": ["5ee0eaaf7665226ea32fd37b", "5ee0eaaf7665226ea32fd37c", "5ee0eab07665226ea32fd37d"],
         "type": "read_all"
       }
     ],

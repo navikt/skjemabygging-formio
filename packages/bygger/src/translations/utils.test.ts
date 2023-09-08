@@ -39,12 +39,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyEmail(),
               createDummyTextfield("wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV"),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -64,20 +64,20 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyHTMLElement("HTML", "Test html element"),
               createDummyHTMLElement(
                 "HTML",
-                "VB2fDXfOP4frsF1EAggorIU2H4jdosE4J3jYQYn0vZGtqK5yqVWAFLPelnffebNBKxMaUbQ4IKFp6QsD9"
+                "VB2fDXfOP4frsF1EAggorIU2H4jdosE4J3jYQYn0vZGtqK5yqVWAFLPelnffebNBKxMaUbQ4IKFp6QsD9",
               ),
               createDummyContentElement("Content", "Test content"),
               createDummyContentElement(
                 "Content",
-                "VrcUdaapouM1tt1nPQmW4qlUs7P0bbkAoiFLHyRmP0qlkDCptvszDEntC5iGZB2hkkBgYkU8I8CQzwgn1"
+                "VrcUdaapouM1tt1nPQmW4qlUs7P0bbkAoiFLHyRmP0qlkDCptvszDEntC5iGZB2hkkBgYkU8I8CQzwgn1",
               ),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -98,16 +98,16 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyNavSkjemagruppe("NavSkjemagruppe", [
                 createDummyRadioPanel(),
                 createDummyRadioPanel(
-                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF"
+                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF",
                 ),
               ]),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -129,22 +129,22 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyNavSkjemagruppe("NavSkjemagruppe", [
                 createDummyRadioPanel(),
                 createDummyRadioPanel(
-                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF"
+                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF",
                 ),
                 createDummyDataGrid("DataGrid", [createDummyRadioPanel("Radio panel inside data grid")]),
                 createDummyDataGrid(
                   "DataGrid",
                   [createDummyRadioPanel("Radio panel inside data grid without label")],
-                  true
+                  true,
                 ),
               ]),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -169,7 +169,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyContainerElement("Container", [
                 createDummyCheckbox(),
                 createDummyCheckbox(
-                  "zJ6lzq1ED1N7yDoi0J892Vbk3Wt1qwTQOlr7R639KAq1Xlzlf3tXozLD5a3abswyyl7qE9wcUlJWddlUV"
+                  "zJ6lzq1ED1N7yDoi0J892Vbk3Wt1qwTQOlr7R639KAq1Xlzlf3tXozLD5a3abswyyl7qE9wcUlJWddlUV",
                 ),
               ]),
               createDummyContainerElement(
@@ -177,18 +177,18 @@ describe("testGetAllTextsAndTypeForForm", () => {
                 [
                   createDummyCheckbox("NavCheckbox in a container without label"),
                   createDummyCheckbox(
-                    "RyiX3OuRGRdTT1AIoP6qK2MLGPkXdij36yFs0NiTY1WfptfYkuY0cBZOIk4mLLMJWgEEt0SpaQUojObrM"
+                    "RyiX3OuRGRdTT1AIoP6qK2MLGPkXdij36yFs0NiTY1WfptfYkuY0cBZOIk4mLLMJWgEEt0SpaQUojObrM",
                   ),
                 ],
-                true
+                true,
               ),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -211,12 +211,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
               { ...createDummyTextfield("TestFieldWithprefix"), prefix: "+47" },
               createDummyTextfield("wktcZylADGp1ewUpfHa6f0DSAhCWjNzDW7b1RJkiigXise0QQaw92SJoMpGvlt8BEL8vAcXRset4KjAIV"),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -239,12 +239,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
               { ...createDummyTextfield(), suffix: "kg" },
               { ...createDummyTextfield(), suffix: "%" },
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -259,12 +259,12 @@ describe("testGetAllTextsAndTypeForForm", () => {
           createPanelObject(
             "Introduksjon",
             [createDummyTextfield("Same textfield"), createDummyEmail(), createDummyTextfield("Same textfield")],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -284,25 +284,25 @@ describe("testGetAllTextsAndTypeForForm", () => {
               createDummyAlertstripe("Alertstripe without content"),
               createDummyAlertstripe(
                 "Alertstripe with a long content",
-                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.'
+                'Mer informasjon finner dere på Brønnøysundregistrenes nettside <a href= "https://www.brreg.no/bedrift/underenhet/" target="_blank">Underenhet (åpnes i ny fane)</a>.',
               ),
               createDummyAlertstripe("Alertstripe", "Alertstrip with content", "show content in Pdf"),
               createDummyHTMLElement(
                 "HTML element",
-                '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>'
+                '<h3>Eventuell utbetaling av AAP</h3> Du kan bare ha ett kontonummer registrert hos NAV. Du kan enkelt <a href="https://www.nav.no/soknader/nb/person/diverse/endre-opplysninger-om-bankkontonummer#papirsoknader" target="_blank"> endre hvilket kontonummer vi benytter (åpnes i ny fane)</a>. <br/>',
               ),
               createDummyHTMLElement(
                 "HTML element",
                 "<h3>Eventuell utbetaling av AAP</h3>",
-                "Eventuell utbetaling av AAP"
+                "Eventuell utbetaling av AAP",
               ),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -325,7 +325,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
   it("Test form with select component", () => {
     const actual = getFormTexts(
       createFormObject([createPanelObject("Introduksjon", [createDummySelectComponent()], "Introduksjon")], "title"),
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "title", type: "text" },
@@ -340,9 +340,9 @@ describe("testGetAllTextsAndTypeForForm", () => {
     const actual = getFormTexts(
       createFormObject(
         [createPanelObject("Introduksjon", [createDummyButtonComponent("buttonText")], "Introduksjon")],
-        "title"
+        "title",
       ),
-      true
+      true,
     );
 
     expect(actual).toEqual([
@@ -365,7 +365,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
           innsendingForklaring: "Skriv ut skjemaet",
         },
       } as NavFormType,
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "Testskjema", type: "text" },
@@ -385,7 +385,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
           downloadPdfButtonText: "Last ned pdf",
         },
       } as NavFormType,
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "Testskjema", type: "text" },
@@ -409,7 +409,7 @@ describe("testGetAllTextsAndTypeForForm", () => {
           },
         },
       } as NavFormType,
-      true
+      true,
     );
     expect(actual).toEqual([
       { text: "Testskjema", type: "text" },
@@ -432,7 +432,7 @@ describe("test get all texts", () => {
               createDummyNavSkjemagruppe("NavSkjemagruppe", [
                 createDummyRadioPanel(),
                 createDummyRadioPanel(
-                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF"
+                  "FlGufFRHJLytgypGcRa0kqP1M9mgYTC8FZWCTJTn7sVnfqDWDNQI0eT5TvovfWB3oWDVwrBqBfLThXeUF",
                 ),
                 createDummyDataGrid("DataGrid", [
                   createDummyRadioPanel("Radio panel inside data grid"),
@@ -441,15 +441,15 @@ describe("test get all texts", () => {
                 createDummyDataGrid(
                   "DataGrid",
                   [createDummyRadioPanel("Radio panel inside data grid without label")],
-                  true
+                  true,
                 ),
               ]),
             ],
-            "Introduksjon"
+            "Introduksjon",
           ),
         ],
-        "title"
-      )
+        "title",
+      ),
     );
     expect(actual).toEqual([
       { text: "title" },
@@ -479,10 +479,10 @@ describe("testGetTextsAndTranslationsForForm", () => {
           createDummyTextfield("Jeg"),
           createDummyHTMLElement("HTML", "<p>Test linjeskift linux\nwindows\r\napple\r</p>"),
         ],
-        "Introduksjon"
+        "Introduksjon",
       ),
     ],
-    "test"
+    "test",
   );
   const translations: FormioTranslationMap = {
     en: {
@@ -557,13 +557,13 @@ describe("Skjema med globale oversettelser som inneholder linjeskift", () => {
     expect(eksport[0]["nn-NO"]).toEqual("Rettleiing (Global Tekst)");
 
     expect(eksport[1].text).toEqual(
-      'NAV sender svar. <br> Se <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>.'
+      'NAV sender svar. <br> Se <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>.',
     );
     expect(eksport[1].en).toEqual(
-      'NAV sends answers. <br> See <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>. (Global Tekst)'
+      'NAV sends answers. <br> See <a href=""https://www.nav.no/person/"" target=""_blank"">link</a>. (Global Tekst)',
     );
     expect(eksport[1]["nn-NO"]).toEqual(
-      'NAV sender svar. <br> Sjå <a href=""https://www.nav.no/person/"" target=""_blank"">lenke</a>. (Global Tekst)'
+      'NAV sender svar. <br> Sjå <a href=""https://www.nav.no/person/"" target=""_blank"">lenke</a>. (Global Tekst)',
     );
   });
 });

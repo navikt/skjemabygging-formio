@@ -16,7 +16,7 @@ export default function useSkjemaSporsmalBesvart(form) {
           lastEvent.component.label,
           lastEvent.component.key,
           lastEvent._data[componentKey],
-          lastEvent.component.validate.required
+          lastEvent.component.validate.required,
         );
       }
     }

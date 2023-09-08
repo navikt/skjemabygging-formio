@@ -30,7 +30,7 @@ function FormPage({ form }) {
               ...localTranslationsForForm[lang],
             },
           }),
-          { "nb-NO": i18nData["nb-NO"] }
+          { "nb-NO": i18nData["nb-NO"] },
         );
       } else {
         return {};

@@ -17,8 +17,7 @@
       "origin": "http://localhost:3000",
       "referrer": "http://localhost:3000/mottaksadresser",
       "browserName": "Netscape",
-      "userAgent":
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
       "pathName": "/mottaksadresser",
       "onLine": true
     },
@@ -45,8 +44,7 @@
       "origin": "http://localhost:3000",
       "referrer": "http://localhost:3000/mottaksadresser",
       "browserName": "Netscape",
-      "userAgent":
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
       "pathName": "/mottaksadresser",
       "onLine": true
     },
@@ -73,8 +71,7 @@
       "origin": "http://localhost:3000",
       "referrer": "http://localhost:3000/mottaksadresser",
       "browserName": "Netscape",
-      "userAgent":
-      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36",
       "pathName": "/mottaksadresser",
       "onLine": true
     },

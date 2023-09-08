@@ -24,10 +24,10 @@ const LetterInTheMail = ({ index, vedleggSomSkalSendes, translate }: Props) => (
             .concat(
               vedleggSomSkalSendes.length > 1
                 ? translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachments)
-                : translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment)
+                : translate(TEXTS.statiske.prepareLetterPage.sendInPapirSectionAttachment),
             )
             .concat(" ")
-            .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection))
+            .concat(translate(TEXTS.statiske.prepareLetterPage.sendInPapirSection)),
         )}
     </BodyShort>
   </section>

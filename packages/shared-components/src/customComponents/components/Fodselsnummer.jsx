@@ -132,7 +132,7 @@ export default class Fodselsnummer extends TextFieldComponent {
           components: false,
         },
       ],
-      ...extend
+      ...extend,
     );
   }
 }

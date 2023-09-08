@@ -8,6 +8,7 @@ describe("Submission method", () => {
     cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
       "getGlobalTranslations",
     );
+    cy.intercept("GET", "/fyllut/api/countries?*", { fixture: "countries.json" }).as("getCountries");
     cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   });
 

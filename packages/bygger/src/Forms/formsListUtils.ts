@@ -9,7 +9,7 @@ export type FormMetadata = Pick<NavFormType, "_id" | "title" | "path" | "tags"> 
 export function sortFormsByProperty(
   formMetadataList: FormMetadata[],
   sortingKey: keyof FormMetadata,
-  sortingOrder?: SortDirection
+  sortingOrder?: SortDirection,
 ) {
   return formMetadataList.sort((a, b) => {
     const valueA = a[sortingKey] || "";
@@ -34,7 +34,7 @@ export function sortByFormNumber(formMetaDataList: FormMetadata[], sortDirection
       ...sortFormsByProperty(
         formMetaDataList.filter((data) => !matchesNavSkjemanummer(data)),
         "skjemanummer",
-        "ascending"
+        "ascending",
       ),
     ];
   }
@@ -43,7 +43,7 @@ export function sortByFormNumber(formMetaDataList: FormMetadata[], sortDirection
       ...sortFormsByProperty(
         formMetaDataList.filter((data) => !matchesNavSkjemanummer(data)),
         "skjemanummer",
-        "descending"
+        "descending",
       ),
       ...sortFormsByProperty(formMetaDataList.filter(matchesNavSkjemanummer), "skjemanummer", "descending"),
     ];

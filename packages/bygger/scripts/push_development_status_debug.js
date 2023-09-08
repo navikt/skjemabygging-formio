@@ -9,7 +9,7 @@ const pusherApp = {
   appId: pusherAppValue("id"),
   key: pusherAppValue("key"),
   secret: pusherAppValue("secret"),
-  cluster: pusherAppValue('cluster')
+  cluster: pusherAppValue("cluster"),
 };
 
 const pusher = new Pusher({
