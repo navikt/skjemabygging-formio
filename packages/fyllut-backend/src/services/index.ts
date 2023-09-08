@@ -1,8 +1,9 @@
 import AppMetrics from "./AppMetrics";
 import FormService from "./FormService";
 import TranslationsService from "./TranslationsService";
+import { config } from "../config/config";
 
-const translationsService = new TranslationsService();
+const translationsService = new TranslationsService(config);
 
 const formService = new FormService();
 
