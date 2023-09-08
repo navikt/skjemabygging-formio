@@ -11,12 +11,11 @@ import { form, translationsForNavForm } from "./testdata/skjema-med-oversettelse
 const mockFormPath = `/${form.path}`;
 const firstPanelSlug = getPanelSlug(form, 0);
 vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
+  const actual = await vi.importActual<object>("react-router-dom");
   return {
     ...actual,
-    useRouteMatch: () => ({
-      url: mockFormPath,
-      path: mockFormPath,
+    useResolvedPath: () => ({
+      pathname: mockFormPath,
     }),
   };
 });

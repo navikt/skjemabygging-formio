@@ -2,7 +2,6 @@ import { Heading } from "@navikt/ds-react";
 import { Enhet, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useHref } from "react-router-dom";
 import { fetchEnhetsliste, isEnhetSupported } from "../../api/fetchEnhetsliste";
 import ErrorPage from "../../components/ErrorPage";
 import LoadingComponent from "../../components/LoadingComponent";
@@ -23,6 +22,7 @@ interface Props {
   form: NavFormType;
   submission: Submission;
   translations: any;
+  formUrl: string;
 }
 
 const useStyles = makeStyles({
@@ -36,14 +36,13 @@ const useStyles = makeStyles({
   },
 });
 
-export function PrepareLetterPage({ form, submission, translations }: Props) {
+export function PrepareLetterPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL, baseUrl, logger } = useAppConfig();
   const { translate } = useLanguages();
   const [enhetsListe, setEnhetsListe] = useState<Enhet[]>([]);
   const [enhetsListeError, setEnhetsListeError] = useState(false);
   const [enhetslisteFilteringError, setEnhetslisteFilteringError] = useState(false);
-  const formUrl = useHref("../");
 
   const styles = useStyles();
 
@@ -100,7 +99,7 @@ export function PrepareLetterPage({ form, submission, translations }: Props) {
           />
           {hasAttachments && <LetterAddAttachment index={2} vedleggSomSkalSendes={attachments} translate={translate} />}
           <LetterInTheMail index={hasAttachments ? 3 : 2} vedleggSomSkalSendes={attachments} translate={translate} />
-          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}oppsummering`} />
+          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
           {
             // TODO: If the UXSignal pilot is successful, the study code should be a new setting on the form.
             skjemanummer === "NAV 08-09.06" && <LetterUXSignals code="study-dont9j6txe" />

@@ -1,6 +1,6 @@
 import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { useHref, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -10,7 +10,7 @@ import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 
-export const FillInFormPage = ({ form, submission, setSubmission }) => {
+export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const navigate = useNavigate();
   const {
     loggSkjemaApnet,
@@ -26,7 +26,6 @@ export const FillInFormPage = ({ form, submission, setSubmission }) => {
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
   const { search } = useLocation();
-  const formUrl = useHref("../");
 
   useEffect(() => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
@@ -51,7 +50,7 @@ export const FillInFormPage = ({ form, submission, setSubmission }) => {
   }
 
   function updatePanelUrl(panelPath) {
-    navigate({ pathname: `${formUrl}${panelPath}`, search });
+    navigate({ pathname: `${formUrl}/${panelPath}`, search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
@@ -74,7 +73,7 @@ export const FillInFormPage = ({ form, submission, setSubmission }) => {
     updateMellomlagring(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.next),
-      destinasjon: `${formUrl}${currentPanels?.[page]}`,
+      destinasjon: `${formUrl}/${currentPanels?.[page]}`,
     });
     loggSkjemaStegFullfort({ steg: page, skjemastegNokkel: currentPanels?.[page - 1] || "" });
     onNextOrPreviousPage(page, currentPanels);
@@ -83,7 +82,7 @@ export const FillInFormPage = ({ form, submission, setSubmission }) => {
   function onPreviousPage({ page, currentPanels }) {
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.previous),
-      destinasjon: `${formUrl}${currentPanels?.[page - 2]}`,
+      destinasjon: `${formUrl}/${currentPanels?.[page - 2]}`,
     });
     onNextOrPreviousPage(page, currentPanels);
   }
@@ -103,7 +102,7 @@ export const FillInFormPage = ({ form, submission, setSubmission }) => {
   }
 
   function onWizardPageSelected(panel) {
-    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}${panel.path}` });
+    loggNavigering({ lenkeTekst: translate(panel.component.title), destinasjon: `${formUrl}/${panel.path}` });
     updatePanelUrl(panel.path);
   }
 
@@ -116,13 +115,13 @@ export const FillInFormPage = ({ form, submission, setSubmission }) => {
     setSubmission(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
-      destinasjon: `${formUrl}oppsummering`,
+      destinasjon: `${formUrl}/oppsummering`,
     });
     loggSkjemaStegFullfort({
       steg: form.components.findIndex((panel) => panel.key === panelSlug) + 1,
       panelSlug,
     });
-    navigate({ pathname: `${formUrl}oppsummering`, search });
+    navigate({ pathname: `${formUrl}/oppsummering`, search });
   };
 
   const onError = () => {

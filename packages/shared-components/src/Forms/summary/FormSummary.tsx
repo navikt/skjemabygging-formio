@@ -6,9 +6,10 @@ import ComponentSummary from "./ComponentSummary";
 interface Props {
   form: NavFormType;
   submission: object;
+  formUrl: string;
 }
 
-const FormSummary = ({ form, submission }: Props) => {
+const FormSummary = ({ form, submission, formUrl }: Props) => {
   const { logger } = useAppConfig();
   const { translate } = useLanguages();
   // @ts-ignore <- remove when createFormSummaryObject is converted to typescript
@@ -23,6 +24,6 @@ const FormSummary = ({ form, submission }: Props) => {
   if (summaryPanels.length === 0) {
     return null;
   }
-  return <ComponentSummary components={summaryPanels} />;
+  return <ComponentSummary components={summaryPanels} formUrl={formUrl} />;
 };
 export default FormSummary;

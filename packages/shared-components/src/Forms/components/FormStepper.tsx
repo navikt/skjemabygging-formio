@@ -1,22 +1,29 @@
 import { Back, Close } from "@navikt/ds-icons";
 import { Button, Stepper } from "@navikt/ds-react";
-import { formSummaryUtil, NavFormType, navFormUtils, Panel, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  formSummaryUtil,
+  NavFormType,
+  navFormUtils,
+  Panel,
+  Submission,
+  TEXTS,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { useMemo, useRef, useState } from "react";
-import { Link, useHref, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { useAppConfig } from "../../configContext";
 
 type FormStepperProps = {
   form: NavFormType;
-  submission: object;
+  submission: Submission;
+  formUrl: string;
 };
 
-const FormStepper = ({ form, submission }: FormStepperProps) => {
+const FormStepper = ({ form, submission, formUrl }: FormStepperProps) => {
   const { submissionMethod } = useAppConfig();
   const openButton = useRef<HTMLButtonElement>(null);
   const { search, pathname } = useLocation();
-  const formUrl = useHref("../");
   const { translate } = useLanguages();
   const [isOpen, setIsOpen] = useState(false);
   const { loggNavigering } = useAmplitude();
@@ -26,7 +33,7 @@ const FormStepper = ({ form, submission }: FormStepperProps) => {
       .filter((component) => component.type === "panel")
       .filter((component) => conditionals[component.key] !== false)
       .filter((component) => !(submissionMethod === "digital" && navFormUtils.isVedleggspanel(component)))
-      .map((panel) => ({ label: panel.title, url: `${formUrl}${panel.key}` }));
+      .map((panel) => ({ label: panel.title, url: `${formUrl}/${panel.key}` }));
   }, [form, formUrl, submissionMethod, submission]);
 
   const onOpen = () => {

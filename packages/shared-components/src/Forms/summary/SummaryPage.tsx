@@ -8,7 +8,7 @@ import {
   TEXTS,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useRef, useState } from "react";
-import { Link, useHref, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
@@ -52,6 +52,7 @@ const useStyles = makeStyles({
 export interface Props {
   form: NavFormType;
   submission: Submission;
+  formUrl: string;
 }
 
 function getUrlToLastPanel(form, formUrl, submission) {
@@ -59,12 +60,12 @@ function getUrlToLastPanel(form, formUrl, submission) {
   const lastPanel = formSummary[formSummary.length - 1];
   const lastPanelSlug = lastPanel?.key;
   if (!lastPanelSlug) {
-    return useHref("");
+    return formUrl;
   }
-  return `${formUrl}${lastPanelSlug}`;
+  return `${formUrl}/${lastPanelSlug}`;
 }
 
-export function SummaryPage({ form, submission }: Props) {
+export function SummaryPage({ form, submission, formUrl }: Props) {
   const { submissionMethod, app } = useAppConfig();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
@@ -73,7 +74,6 @@ export function SummaryPage({ form, submission }: Props) {
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const formUrl = useHref("../");
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);
@@ -140,14 +140,14 @@ export function SummaryPage({ form, submission }: Props) {
                     }
                     loggNavigering({
                       lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
-                      destinasjon: `${formUrl}send-i-posten`,
+                      destinasjon: `${formUrl}/send-i-posten`,
                     });
                     loggSkjemaStegFullfort({
                       steg: getPanels(form.components).length + 1,
                       skjemastegNokkel: "oppsummering",
                     });
                   }}
-                  to={{ pathname: `${formUrl}send-i-posten`, search }}
+                  to={{ pathname: `${formUrl}/send-i-posten`, search }}
                 >
                   <span aria-live="polite" className="navds-body-short font-bold">
                     {translate(TEXTS.grensesnitt.moveForward)}
@@ -192,7 +192,7 @@ export function SummaryPage({ form, submission }: Props) {
                       skjemastegNokkel: "oppsummering",
                     });
                   }}
-                  to={{ pathname: `${formUrl}ingen-innsending`, search }}
+                  to={{ pathname: `${formUrl}/ingen-innsending`, search }}
                 >
                   <span aria-live="polite" className="navds-body-short font-bold">
                     {translate(TEXTS.grensesnitt.moveForward)}
@@ -239,7 +239,7 @@ export function SummaryPage({ form, submission }: Props) {
           )}
         </div>
         <aside className="right-col">
-          <FormStepper form={form} submission={submission} />
+          <FormStepper form={form} submission={submission} formUrl={formUrl} />
         </aside>
       </main>
     </div>

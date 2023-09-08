@@ -1,7 +1,6 @@
 import { BodyShort, Heading } from "@navikt/ds-react";
 import { Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect } from "react";
-import { useHref } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
 import { useLanguages } from "../context/languages";
@@ -14,6 +13,7 @@ export interface Props {
   form: any;
   submission: Submission;
   translations: { [key: string]: string } | {};
+  formUrl: string;
 }
 
 const useStyles = makeStyles({
@@ -24,13 +24,12 @@ const useStyles = makeStyles({
   },
 });
 
-export function PrepareIngenInnsendingPage({ form, submission, translations }: Props) {
+export function PrepareIngenInnsendingPage({ form, submission, translations, formUrl }: Props) {
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const { fyllutBaseURL } = useAppConfig();
   const { translate } = useLanguages();
   const { loggSkjemaFullfort } = useAmplitude();
   const styles = useStyles();
-  const formUrl = useHref("../");
 
   return (
     <div className={styles.content}>
@@ -51,7 +50,7 @@ export function PrepareIngenInnsendingPage({ form, submission, translations }: P
               submissionMethod={"ingen"}
             />
           </div>
-          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}oppsummering`} />
+          <NavigateButtonComponent translate={translate} goBackUrl={`${formUrl}/oppsummering`} />
         </section>
       </main>
     </div>

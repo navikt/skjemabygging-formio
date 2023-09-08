@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useResolvedPath } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { SendInnProvider } from "../context/sendInn/sendInnContext";
@@ -12,6 +12,7 @@ import { FormTitle } from "./components/FormTitle";
 import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 import { SummaryPage } from "./summary/SummaryPage";
 import { Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { SubmissionWrapper } from "./SubmissionWrapper";
 
 const useStyles = makeStyles({
   container: {
@@ -32,8 +33,8 @@ const ALERT_MESSAGE_BACK_BUTTON =
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
-  const [submission, setSubmission] = useState<Submission>({} as Submission);
-
+  const [submission, setSubmission] = useState<Submission>();
+  const formBaseUrl = useResolvedPath("").pathname;
   const styles = useStyles();
 
   useEffect(() => {
@@ -55,19 +56,57 @@ const FyllUtRouter = ({ form, translations }) => {
             <div className="right-col">{featureToggles!.enableTranslations && <LanguageSelector />}</div>
           </div>
           <Routes>
-            <Route path="/" element={<IntroPage form={form} />} />
-            <Route path={"/oppsummering"} element={<SummaryPage form={form} submission={submission} />} />
+            <Route path="/" element={<IntroPage form={form} formUrl={formBaseUrl} />} />
+            <Route
+              path={"/oppsummering"}
+              element={
+                <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                  {(submissionObject) => (
+                    <SummaryPage form={form} submission={submissionObject} formUrl={formBaseUrl} />
+                  )}
+                </SubmissionWrapper>
+              }
+            />
             <Route
               path={"/send-i-posten"}
-              element={<PrepareLetterPage form={form} submission={submission} translations={translations} />}
+              element={
+                <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                  {(submissionObject) => (
+                    <PrepareLetterPage
+                      form={form}
+                      submission={submissionObject}
+                      translations={translations}
+                      formUrl={formBaseUrl}
+                    />
+                  )}
+                </SubmissionWrapper>
+              }
             />
             <Route
               path={"/ingen-innsending"}
-              element={<PrepareIngenInnsendingPage form={form} submission={submission} translations={translations} />}
+              element={
+                <SubmissionWrapper submission={submission} url={formBaseUrl}>
+                  {(submissionObject) => (
+                    <PrepareIngenInnsendingPage
+                      form={form}
+                      submission={submissionObject}
+                      translations={translations}
+                      formUrl={formBaseUrl}
+                    />
+                  )}
+                </SubmissionWrapper>
+              }
             />
             <Route
               path={"/:panelSlug"}
-              element={<FillInFormPage form={form} submission={submission} setSubmission={setSubmission} />}
+              element={
+                <FillInFormPage
+                  form={form}
+                  submission={submission}
+                  setSubmission={setSubmission}
+                  formUrl={formBaseUrl}
+                />
+              }
             />
           </Routes>
         </div>
