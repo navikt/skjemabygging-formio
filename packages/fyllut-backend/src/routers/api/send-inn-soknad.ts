@@ -10,6 +10,7 @@ import {
   byteArrayToObject,
   isMellomLagringEnabled,
   sanitizeInnsendingsId,
+  SendInnSoknadBody,
   validateInnsendingsId,
 } from "./helpers/sendInn";
 
@@ -56,7 +57,7 @@ const sendInnSoknad = {
       }
 
       logger.debug("Successfylly fetched data from SendInn");
-      const json = await sendInnResponse.json();
+      const json = (await sendInnResponse.json()) as SendInnSoknadBody;
       const response = {
         ...json,
         hoveddokumentVariant: {

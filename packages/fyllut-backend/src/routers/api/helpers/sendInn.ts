@@ -47,7 +47,7 @@ const isValidUuid = (innsendingsId: string): boolean => {
 const DEFAULT_LANGUAGE = "nb-NO";
 export const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
 
-export const byteArrayToObject = (byteArray: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
+export const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
 
 export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, "");
 
