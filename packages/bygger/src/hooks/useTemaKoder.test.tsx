@@ -1,5 +1,6 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { renderHook, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
+import { renderHook } from "@testing-library/react-hooks";
 import createMockImplementation from "../../test/backendMockImplementation";
 import useTemaKoder from "./useTemaKoder";
 

@@ -5,7 +5,6 @@ import ReactDOM from "react-dom";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { advancedDescription } from "./fields/advancedDescription.js";
-import { createRoot } from "react-dom/client.js";
 
 /**
  * The wrapper for our custom React component
@@ -196,8 +195,7 @@ export default class CheckboxComponent extends FormioReactComponent {
   }
 
   renderReact(element) {
-    const root = createRoot(element);
-    return root.render(
+    return ReactDOM.render(
       <CheckboxWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
@@ -205,6 +203,7 @@ export default class CheckboxComponent extends FormioReactComponent {
         checkboxRef={(r) => (this.input = r)}
         translate={(text) => this.t(text)}
       />,
+      element,
     );
   }
 

@@ -1,7 +1,7 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useHref, useLocation, useNavigate } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
@@ -30,6 +30,7 @@ export function IntroPage({ form, formUrl }: Props) {
   );
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
+  const basename = useHref("/");
 
   useEffect(() => {
     if (selectedSubmissionMethod) {
@@ -67,7 +68,7 @@ export function IntroPage({ form, formUrl }: Props) {
       const params = new URLSearchParams(search);
       params.set("sub", selectedSubmissionMethod);
       // important to reload page due to forced idporten login if sub=digital
-      window.location.href = `${formUrl}/${firstPanelSlug}?${params.toString()}`;
+      window.location.href = `${basename}${formUrl}/${firstPanelSlug}?${params.toString()}`;
     }
   };
 

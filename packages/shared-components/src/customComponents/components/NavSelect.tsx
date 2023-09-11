@@ -8,7 +8,6 @@ import http from "../../api/http";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
 import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
-import { createRoot } from "react-dom/client";
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 
@@ -237,9 +236,7 @@ class NavSelect extends FormioReactComponent {
           });
       }
     }
-
-    const root = createRoot(element);
-    return root.render(
+    return ReactDOM.render(
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
@@ -252,6 +249,7 @@ class NavSelect extends FormioReactComponent {
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
       />,
+      element,
     );
   }
 

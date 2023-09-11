@@ -119,7 +119,7 @@ const renderSummaryPage = async (
   return { history, buttons: getButtons() };
 };
 
-describe.skip("SummaryPage", () => {
+describe("SummaryPage", () => {
   const expectKnapperForRedigerSvarEllerGaVidere = (buttons: Buttons) => {
     const { redigerSvarKnapp, gaVidereKnapp } = buttons;
     expect(redigerSvarKnapp).toBeInTheDocument();

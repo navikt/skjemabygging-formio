@@ -109,7 +109,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           </Heading>
           <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
           <div className="form-summary">
-            <FormSummary submission={submission} form={form} />
+            <FormSummary submission={submission} form={form} formUrl={formUrl} />
           </div>
           {hasDeclaration && (
             <ConfirmationPanel

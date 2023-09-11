@@ -1,6 +1,6 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { vi } from "vitest";
 import { FormPageWrapper } from "./FormPageWrapper";
 
@@ -30,9 +30,9 @@ describe("FormPageWrapper", () => {
 
     render(
       <MemoryRouter initialEntries={["/fyllut/unknownForm"]}>
-        <Route path="/fyllut/:formPath">
-          <FormPageWrapper />
-        </Route>
+        <Routes>
+          <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+        </Routes>
       </MemoryRouter>,
     );
 
@@ -65,9 +65,9 @@ describe("FormPageWrapper", () => {
     render(
       <MemoryRouter initialEntries={["/fyllut/knownForm"]}>
         <AppConfigProvider featureToggles={{}}>
-          <Route path="/fyllut/:formPath">
-            <FormPageWrapper />
-          </Route>
+          <Routes>
+            <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+          </Routes>
         </AppConfigProvider>
       </MemoryRouter>,
     );
@@ -99,9 +99,9 @@ describe("FormPageWrapper", () => {
       render(
         <MemoryRouter initialEntries={["/fyllut/nav123456"]}>
           <AppConfigProvider featureToggles={{}} submissionMethod="digital">
-            <Route path="/fyllut/:formPath">
-              <FormPageWrapper />
-            </Route>
+            <Routes>
+              <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+            </Routes>
           </AppConfigProvider>
         </MemoryRouter>,
       );
@@ -115,9 +115,9 @@ describe("FormPageWrapper", () => {
       render(
         <MemoryRouter initialEntries={["/fyllut/nav123456"]}>
           <AppConfigProvider featureToggles={{}} submissionMethod="paper">
-            <Route path="/fyllut/:formPath">
-              <FormPageWrapper />
-            </Route>
+            <Routes>
+              <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+            </Routes>
           </AppConfigProvider>
         </MemoryRouter>,
       );
