@@ -53,7 +53,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       mutationObserverRef.current = new MutationObserver(() => {
         const fragment = hash.substring(1);
         // Look for elements that may match the provided hash and pick the first that is an input element
-        // #e09drq2-pinnekjott
         const hashElementList = document.querySelectorAll(`[id$=${fragment}],[name*=${fragment}]`);
         const hashInputElement = Array.from(hashElementList).find((element) => element.tagName === "INPUT");
         if (hashInputElement) {

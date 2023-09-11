@@ -27,7 +27,7 @@ export const validateWizardPanels = (formioInstance, form, submission): PanelVal
   return formSummaryPanels
     .map((panel) => formioInstance.components.find((wizardComponent) => wizardComponent.key === panel.key))
     .filter(
-      (wizardComponent) => wizardComponent.component.type === "panel" && !wizardComponent.component.isAttachmentPanel
+      (wizardComponent) => wizardComponent.component.type === "panel" && !wizardComponent.component.isAttachmentPanel,
     )
     .map((panel): PanelValidation => {
       const firstInputWithValidationError = findFirstInputWithValidationError(panel, submission?.data ?? {});
@@ -40,14 +40,12 @@ export const validateWizardPanels = (formioInstance, form, submission): PanelVal
     });
 };
 
-// Returns key of panel and component for:
-// the first input component with validation error or
-// the first input component of the first panel with no submission values or
-// key of the first panel
+// Returns key of panel (and possibly component) that either has validation errors or no submission
 export const findFormStartingPoint = (
   form: NavFormType,
-  panelValidations?: PanelValidation[]
+  panelValidations?: PanelValidation[],
 ): { panel?: string; component?: string } => {
+  // If no panels are empty or contains errors, return the first panel
   if (!panelValidations || panelValidations.length === 0) {
     return { panel: form.components[0]?.key };
   }
@@ -55,6 +53,7 @@ export const findFormStartingPoint = (
   let firstEmptyPanelIndex;
   let firstPanelWithError;
 
+  // find the first panel with error and the first panel with no submission values
   panelValidations.forEach((validation, index) => {
     if (validation.hasValidationErrors && firstPanelWithError === undefined) {
       firstPanelWithError = index;
@@ -65,15 +64,18 @@ export const findFormStartingPoint = (
   });
 
   const lastPanelIndex = panelValidations.length - 1;
+  // return first panel with error if it comes before the first panel with no submissions
   if ((firstPanelWithError ?? lastPanelIndex) < (firstEmptyPanelIndex ?? lastPanelIndex)) {
     const component = panelValidations[firstPanelWithError].firstInputWithValidationError;
     return { panel: panelValidations[firstPanelWithError].key, component };
   }
-  if (!firstEmptyPanelIndex) firstEmptyPanelIndex = 0;
 
+  // if no panels were empty, default to the last panel
+  if (!firstEmptyPanelIndex) firstEmptyPanelIndex = 0;
+  // return the key of the panel and the key of the panel's first input component, if any
   const panel = panelValidations[firstEmptyPanelIndex].key;
   const firstInputInPanel: Component | undefined = formSummaryUtil.findFirstInput(
-    form.components?.[firstEmptyPanelIndex]
+    form.components?.[firstEmptyPanelIndex],
   );
   const component = firstInputInPanel?.key ?? "";
   return { panel, component };
