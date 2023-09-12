@@ -10,6 +10,9 @@ const getLanguageCodeAsIso639_1 = (locale) => {
 };
 
 const zipCountryNames = (keyNames, valueNames, mapToValue = (value) => value) => {
+  if (keyNames.length !== valueNames.length) {
+    return {};
+  }
   keyNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
   valueNames.sort((first, second) => first.value.localeCompare(second.value, "nb"));
   return keyNames.reduce(
