@@ -115,7 +115,7 @@ const useStyles = makeStyles({
 const PageNotFound = () => {
   const styles = useStyles();
   return (
-    <div role="main" className="content-wrapper" id="maincontent" tabIndex="-1">
+    <section className="content-wrapper" id="maincontent" tabIndex="-1">
       <div className={styles.errorPage}>
         <div className={styles.errorPageHeader}>
           <h1 className={styles.heading}>Fant ikke siden</h1>
@@ -189,7 +189,7 @@ const PageNotFound = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

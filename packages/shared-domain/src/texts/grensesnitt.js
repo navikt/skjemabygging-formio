@@ -16,6 +16,9 @@ export const grensesnitt = {
 
   emptySubmissionError: "Kan ikke fortsette. Innsendingen er tom.",
 
+  languageSelector: {
+    ariaLabel: "Velg språk",
+  },
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",

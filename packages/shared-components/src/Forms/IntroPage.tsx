@@ -74,7 +74,7 @@ export function IntroPage({ form, formUrl }: Props) {
   };
 
   return (
-    <main className="fyllut-layout">
+    <section className="fyllut-layout">
       <div className="main-col">
         {mustSelectSubmissionMethod && (
           <>
@@ -149,6 +149,6 @@ export function IntroPage({ form, formUrl }: Props) {
           </button>
         </nav>
       </div>
-    </main>
+    </section>
   );
 }
