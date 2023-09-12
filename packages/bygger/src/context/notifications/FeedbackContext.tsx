@@ -14,7 +14,7 @@ const FeedbackProvider = ({ children }: { children: React.ReactElement }) => {
   const [messages, messageQueue] = useMessageQueue();
 
   useEffect(() => {
-    const callback = (error) => {
+    const callback = (error: PromiseRejectionEvent) => {
       if (error?.reason?.message) {
         messageQueue.push({ message: error.reason.message, type: "error" });
       }
