@@ -44,7 +44,7 @@ export const FormList = ({
               return (
                 <Table.Row key={i + skjemanummer}>
                   <Table.HeaderCell scope="row">{skjemanummer}</Table.HeaderCell>
-                  <Table.DataCell>{element.name}</Table.DataCell>
+                  <Table.DataCell>{element.name ?? element.title}</Table.DataCell>
                   <Table.DataCell>
                     <FormStatus
                       status={determineStatus(isNavForm(element) ? element.properties : element)}

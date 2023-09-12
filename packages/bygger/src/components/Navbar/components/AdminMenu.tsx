@@ -22,6 +22,10 @@ const AdminMenu = () => {
           </Dropdown.Menu.GroupedList.Item>
           <Dropdown.Menu.GroupedList.Item>
             {" "}
+            <Link to="/bulk-publisering">Bulkpublisering</Link>
+          </Dropdown.Menu.GroupedList.Item>
+          <Dropdown.Menu.GroupedList.Item>
+            {" "}
             <Link to="/mottaksadresser">Rediger mottaksadresser</Link>
           </Dropdown.Menu.GroupedList.Item>
 
