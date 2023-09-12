@@ -64,6 +64,7 @@ export class FormioService {
     formioToken: string,
     userName: string,
     formProps: Partial<FormPropertiesType> = {},
+    enrichComponents: boolean = false,
   ): Promise<NavFormType> {
     const updateFormUrl = `${this.projectUrl}/form`;
     const props = { ...formProps };
@@ -73,15 +74,15 @@ export class FormioService {
     if (!props.modifiedBy) {
       props.modifiedBy = userName;
     }
-    const formWithProps = updateProps(form, props);
-    const formWithPropsAndNavid = addNavIdToComponents(formWithProps);
+    const enrichedForm = enrichComponents ? addNavIdToComponents(form) : form;
+    const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-jwt-token": formioToken,
       },
-      body: JSON.stringify(formWithPropsAndNavid),
+      body: JSON.stringify(formWithProps),
     });
     return response.data;
   }
