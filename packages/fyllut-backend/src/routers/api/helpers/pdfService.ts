@@ -18,7 +18,7 @@ export const createPdfAsByteArray = async (
   language: string,
 ) => {
   const pdf = await createPdf(accessToken, form, submission, submissionMethod, translations, language);
-  return Array.from(base64Decode(pdf.data));
+  return Array.from(base64Decode(pdf.data) ?? []);
 };
 
 export const createPdf = async (

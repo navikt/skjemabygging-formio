@@ -12,14 +12,10 @@ const useStyles = makeStyles({
     paddingBottom: "4rem",
     fontSize: "1.25rem",
   },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
 });
 
 export interface Props {
-  submission: Submission;
+  submission?: Submission;
   isValid?: (e: React.MouseEvent<HTMLElement>) => boolean;
   onError: (err: Error) => void;
   onSuccess?: () => void;
@@ -47,7 +43,7 @@ const DigitalSubmissionWithPrompt = ({ submission, isValid, onError, onSuccess }
         onClose={() => setIsOpen(false)}
       >
         <BodyShort className={styles.body}>{translate(TEXTS.grensesnitt.submitToNavPrompt.body)}</BodyShort>
-        <div className={styles.buttonRow}>
+        <div className="button-row">
           <DigitalSubmissionButton
             submission={submission}
             onError={(err) => {

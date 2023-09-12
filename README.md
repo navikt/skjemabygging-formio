@@ -81,7 +81,7 @@ mellomlagring skrudd på må du ha en lokal instans av `innsending-api` kjørend
 Se [innsending-api](https://github.com/navikt/innsending-api) for instrukser om hvordan du kan kjøre api-et lokalt. Legg
 til url til den lokale instansen av innsending-api i miljøvariabelen `SEND_INN_HOST` i fyllut. For eksempel slik:
 
-    SEND_INN_HOST=http://localhost:9064
+    SEND_INN_HOST=http://127.0.0.1:9064
 
 ## Teste publisering av skjema på lokal maskin
 
@@ -132,7 +132,8 @@ til google cloud) og hente ut miljøvariabler fra podden, f.eks slik:
 
 I byggeren logger vi inn med [Azure AD](https://doc.nais.io/security/auth/azure-ad/sidecar/), bortsett fra under
 utvikling på lokal maskin, hvor utviklerene logger inn
-med [Formio-brukere](https://help.form.io/userguide/user-authentication). Se [oppretting av bruker](#opprette-formio-bruker-for-lokal-utvikling).
+med [Formio-brukere](https://help.form.io/userguide/user-authentication).
+Se [oppretting av bruker](#opprette-formio-bruker-for-lokal-utvikling).
 
 I Azure AD er det opprettet grupper for tilgangsstyring til ulike funksjoner i applikasjonen. Gruppene har prefiks
 "Skjemabygging", og kan søkes fram på Microsofts

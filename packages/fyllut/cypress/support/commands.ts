@@ -8,6 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import "@testing-library/cypress/add-commands";
 import "cypress-wait-until";
 import { parse } from "querystring";
@@ -44,7 +45,7 @@ Cypress.Commands.add("findByRoleWhenAttached", (role, options) => {
 });
 
 Cypress.Commands.add("clickNextStep", () => {
-  return cy.findByRoleWhenAttached("button", { name: "Neste steg" }).click();
+  return cy.findByRoleWhenAttached("button", { name: TEXTS.grensesnitt.navigation.next }).click();
 });
 
 Cypress.Commands.add("clickPreviousStep", () => {
@@ -52,7 +53,7 @@ Cypress.Commands.add("clickPreviousStep", () => {
 });
 
 Cypress.Commands.add("clickStart", () => {
-  return cy.findByRoleWhenAttached("link", { name: "Start" }).click();
+  return cy.findByRoleWhenAttached("link", { name: TEXTS.grensesnitt.introPage.start }).click();
 });
 
 Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {

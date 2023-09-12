@@ -31,13 +31,15 @@ function mockResponse(): Response {
 type MockRequestParams = {
   headers?: { [name: string]: string };
   body?: object;
+  params?: { [name: string]: string };
 };
 
-function mockRequest({ headers = {}, body }: MockRequestParams): Request {
+function mockRequest({ headers = {}, body, params = {} }: MockRequestParams): Request {
   return {
     header: (name: string) => headers?.[name],
     headers: { ...headers },
     body,
+    params: { ...params },
     get: () => "",
   } as unknown as Request;
 }
