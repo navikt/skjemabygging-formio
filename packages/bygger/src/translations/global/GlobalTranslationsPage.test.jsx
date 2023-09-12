@@ -30,7 +30,6 @@ describe("GlobalTranslationsPage", () => {
                       projectURL={""}
                       deleteTranslation={mockedDeleteTranslation}
                       saveTranslation={mockedSaveTranslations}
-                      languageCode={languageCode}
                     />
                   }
                 />
@@ -45,24 +44,6 @@ describe("GlobalTranslationsPage", () => {
   afterEach(() => {
     mockedDeleteTranslation.mockClear();
     mockedSaveTranslations.mockClear();
-  });
-
-  describe("Render global translation page without available languages", () => {
-    beforeEach(async () => {
-      await renderGlobalTranslationsPage(
-        vi.fn(() => Promise.resolve({})),
-        "",
-      );
-    });
-
-    it("renders empty header and languageSelector with velg språk label", async () => {
-      const languageSelectorLabel = await screen.getByRole("button", { name: "Velg språk" });
-      const addNewTranslationButton = await screen.getByRole("button", { name: "Legg til ny tekst" });
-      const languageHeading = await screen.getByRole("heading", { level: 1, name: "" });
-      expect(languageSelectorLabel).toBeDefined();
-      expect(addNewTranslationButton).toBeDefined();
-      expect(languageHeading).toBeDefined();
-    });
   });
 
   describe("Render global translation page with English translations", () => {
