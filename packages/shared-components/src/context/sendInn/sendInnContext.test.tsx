@@ -1,19 +1,21 @@
 import { NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { AppConfigProvider } from "../../configContext";
 import { http } from "../../index";
 import { SendInnProvider, useSendInn } from "./sendInnContext";
 
 describe("sendInnContext", () => {
   const TestComponent = ({ submission }) => {
-    const { startMellomlagring, updateMellomlagring, submitSoknad, innsendingsId } = useSendInn();
+    const { startMellomlagring, updateMellomlagring, deleteMellomlagring, submitSoknad, innsendingsId } = useSendInn();
 
     return (
       <>
         <div data-testid={"innsendings-id"}>{innsendingsId}</div>
         <button onClick={() => startMellomlagring(submission)}>Start mellomlagring</button>
         <button onClick={() => updateMellomlagring(submission)}>Oppdater mellomlagring</button>
+        <button onClick={() => deleteMellomlagring()}>Slett mellomlagring</button>
         <button onClick={() => submitSoknad(submission)}>Send inn søknad</button>
       </>
     );
@@ -22,6 +24,7 @@ describe("sendInnContext", () => {
   const mockHttp = {
     post: vi.fn(),
     put: vi.fn(),
+    delete: vi.fn(),
   };
   const innsendingsId = "abc-123-456";
   const form = { title: "TestSkjema", components: [] } as unknown as NavFormType;
@@ -47,9 +50,11 @@ describe("sendInnContext", () => {
           baseUrl={"http://test.example.no"}
           config={{ isTest: true }}
         >
-          <SendInnProvider form={form} translations={translations}>
-            <TestComponent submission={submission} />
-          </SendInnProvider>
+          <MemoryRouter>
+            <SendInnProvider form={form} translations={translations} updateSubmission={vi.fn()}>
+              <TestComponent submission={submission} />
+            </SendInnProvider>
+          </MemoryRouter>
         </AppConfigProvider>,
       );
     });
@@ -57,10 +62,10 @@ describe("sendInnContext", () => {
     describe("startMellomlagring", () => {
       it("sends a POST request to /api/send-inn/soknad", async () => {
         await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
-        await waitFor(() => expect(screen.getByTestId("innsendings-id")).toHaveTextContent(innsendingsId));
+        await screen.findByTestId("innsendings-id");
         expect(mockHttp.post).toHaveBeenCalledTimes(1);
         expect(mockHttp.post).toHaveBeenCalledWith(
-          "http://test.example.no/api/send-inn/soknad",
+          "http://test.example.no/api/send-inn/soknad?opprettNySoknad=true",
           expect.objectContaining({
             form,
             submission,
@@ -75,7 +80,7 @@ describe("sendInnContext", () => {
     describe("updateMellomlagring", () => {
       it("sends a PUT request to /api/send-inn/soknad", async () => {
         await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
-        await waitFor(() => expect(screen.getByTestId("innsendings-id")).toHaveTextContent(innsendingsId));
+        await screen.findByTestId("innsendings-id");
         await userEvent.click(screen.getByRole("button", { name: "Oppdater mellomlagring" }));
         expect(mockHttp.put).toHaveBeenCalledTimes(1);
         expect(mockHttp.put).toHaveBeenCalledWith(
@@ -92,10 +97,20 @@ describe("sendInnContext", () => {
       });
     });
 
+    describe("deleteMellomlagring", () => {
+      it("sends a DELETE request to /api/send-inn/soknad", async () => {
+        await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
+        await screen.findByTestId("innsendings-id");
+        await userEvent.click(screen.getByRole("button", { name: "Slett mellomlagring" }));
+        expect(mockHttp.delete).toHaveBeenCalledTimes(1);
+        expect(mockHttp.delete).toHaveBeenCalledWith(`http://test.example.no/api/send-inn/soknad/${innsendingsId}`);
+      });
+    });
+
     describe("submitSoknad", () => {
       it("sends a PUT request to /api/send-inn/utfyltsoknad", async () => {
         await userEvent.click(screen.getByRole("button", { name: "Start mellomlagring" }));
-        await waitFor(() => expect(screen.getByTestId("innsendings-id")).toHaveTextContent(innsendingsId));
+        await screen.findByTestId("innsendings-id");
         await userEvent.click(screen.getByRole("button", { name: "Send inn søknad" }));
         expect(mockHttp.put).toHaveBeenCalledTimes(1);
         expect(mockHttp.put).toHaveBeenCalledWith(
@@ -124,9 +139,11 @@ describe("sendInnContext", () => {
           baseUrl={"http://test.example.no"}
           config={{ isTest: true }}
         >
-          <SendInnProvider form={form} translations={translations}>
-            <TestComponent submission={submission} />
-          </SendInnProvider>
+          <MemoryRouter>
+            <SendInnProvider form={form} translations={translations} updateSubmission={vi.fn()}>
+              <TestComponent submission={submission} />
+            </SendInnProvider>
+          </MemoryRouter>
         </AppConfigProvider>,
       );
     });

@@ -106,6 +106,7 @@ export interface Component {
   buttonText?: string;
   addAnother?: string;
   removeAnother?: string;
+  input?: boolean;
 }
 
 export interface ComponentProperties {
@@ -141,7 +142,7 @@ export interface NavFormType {
   components: Component[];
 }
 
-export type SubmissionData = Record<string, string | number | any[] | object>;
+export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 export interface Submission {
   data: SubmissionData;

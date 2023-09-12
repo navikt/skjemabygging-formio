@@ -19,7 +19,14 @@ interface FetchOptions {
   redirectToLocation?: boolean;
 }
 
-class HttpError extends Error {}
+class HttpError extends Error {
+  public readonly status: number;
+
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
 
 class UnauthenticatedError extends Error {}
 
@@ -43,6 +50,16 @@ const get = async <T>(url: string, headers?: FetchHeader, opts?: FetchOptions): 
 const post = async <T>(url: string, body: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
   const response = await fetch(url, {
     method: "POST",
+    headers: defaultHeaders(headers),
+    body: JSON.stringify(body),
+  });
+
+  return await handleResponse(response, opts);
+};
+
+const httpDelete = async <T>(url: string, body?: object, headers?: FetchHeader, opts?: FetchOptions): Promise<T> => {
+  const response = await fetch(url, {
+    method: "DELETE",
     headers: defaultHeaders(headers),
     body: JSON.stringify(body),
   });
@@ -76,7 +93,7 @@ const handleResponse = async (response: Response, opts?: FetchOptions) => {
       errorMessage = await response.text();
     }
 
-    throw new HttpError(errorMessage || response.statusText);
+    throw new HttpError(errorMessage || response.statusText, response.status);
   }
 
   if (opts && opts.redirectToLocation) {
@@ -107,6 +124,7 @@ const http = {
   get,
   post,
   put,
+  delete: httpDelete,
   MimeType,
   HttpError,
   UnauthenticatedError,

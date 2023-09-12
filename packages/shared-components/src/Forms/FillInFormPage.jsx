@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -21,25 +21,55 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring, isMellomlagringReady } = useSendInn();
+  const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
+  const { hash } = useLocation();
+  const mutationObserverRef = useRef(undefined);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
   }, [loggSkjemaApnet, submissionMethod]);
 
   useEffect(() => {
-    if (featureToggles.enableMellomlagring && submissionMethod === "digital") {
+    if (isMellomlagringEnabled) {
       startMellomlagring(submission);
     }
-  }, [submission, startMellomlagring, featureToggles.enableMellomlagring, submissionMethod]);
+  }, [submission, startMellomlagring, isMellomlagringEnabled]);
+
+  // Clean up mutationObserver
+  const removeMutationObserver = () => {
+    if (mutationObserverRef.current) {
+      mutationObserverRef.current.disconnect();
+      mutationObserverRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    // Try to find the input corresponding to the anchor/fragment in the url (e.g. #nameInput)
+    // Since the input fields are rendered by Formio, we need to monitor the DOM to know when the element is ready
+    if (hash && !mutationObserverRef.current) {
+      // Create a MutationObserver to monitor the DOM. The callback is executed whenever the DOM changes.
+      mutationObserverRef.current = new MutationObserver(() => {
+        const fragment = hash.substring(1);
+        // Look for elements that may match the provided hash and pick the first that is an input element
+        const hashElementList = document.querySelectorAll(`[id$=${fragment}],[name*=${fragment}]`);
+        const hashInputElement = Array.from(hashElementList).find((element) => element.tagName === "INPUT");
+        if (hashInputElement) {
+          removeMutationObserver();
+          scrollToAndSetFocus(`[id=${hashInputElement.id}]`);
+        }
+      });
+      // Start monitoring the DOM
+      mutationObserverRef.current.observe(document, { subtree: true, childList: true });
+    }
+  }, [hash]);
 
   if (featureToggles.enableTranslations && !translationsForNavForm) {
     return null;
   }
 
-  if (featureToggles.enableMellomlagring && submissionMethod === "digital" && !isMellomlagringReady) {
+  if (isMellomlagringEnabled && !isMellomlagringReady) {
     return <LoadingComponent heightOffsetRem={18} />;
   }
 

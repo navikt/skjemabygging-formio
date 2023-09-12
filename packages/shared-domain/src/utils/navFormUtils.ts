@@ -1,6 +1,7 @@
 // @ts-ignore
 import FormioUtils from "formiojs/utils";
-import { Component, NavFormType } from "../form";
+import { Component, NavFormType, Panel, Submission } from "../form";
+import { formSummaryUtil } from "../index";
 import { camelCase } from "./stringUtils";
 
 export const toFormPath = (text: string) => camelCase(text).toLowerCase();
@@ -195,6 +196,14 @@ export const enrichComponentsWithNavIds = (
   return components;
 };
 
+const getActivePanelsFromForm = (form: NavFormType, submission?: Submission, submissionMethod?: string): Panel[] => {
+  const conditionals = formSummaryUtil.mapAndEvaluateConditionals(form, submission?.data ?? {});
+  return form.components
+    .filter((component: Component) => component.type === "panel")
+    .filter((panel): panel is Panel => conditionals[panel.key] !== false)
+    .filter((panel) => !(submissionMethod === "digital" && isVedleggspanel(panel)));
+};
+
 const navFormUtils = {
   formMatcherPredicate,
   toFormPath,
@@ -208,5 +217,6 @@ const navFormUtils = {
   findByNavId,
   findByNavIdOrKey,
   enrichComponentsWithNavIds,
+  getActivePanelsFromForm,
 };
 export default navFormUtils;
