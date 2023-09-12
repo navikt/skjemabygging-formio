@@ -3,6 +3,7 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   NavFormType,
+  navFormUtils,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils";
 
@@ -73,13 +74,14 @@ export class FormioService {
       props.modifiedBy = userName;
     }
     const formWithProps = updateProps(form, props);
+    const formWithPropsAndNavid = addNavIdToComponents(formWithProps);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-jwt-token": formioToken,
       },
-      body: JSON.stringify(formWithProps),
+      body: JSON.stringify(formWithPropsAndNavid),
     });
     return response.data;
   }
@@ -105,3 +107,8 @@ const updateProps = (form: NavFormType, props: Partial<FormPropertiesType>): Nav
     }),
   );
 };
+
+const addNavIdToComponents = (form: NavFormType): NavFormType => ({
+  ...form,
+  components: navFormUtils.enrichComponentsWithNavIds(form.components)!,
+});
