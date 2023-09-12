@@ -14,7 +14,11 @@ const FeedbackProvider = ({ children }: { children: React.ReactElement }) => {
   const [messages, messageQueue] = useMessageQueue();
 
   useEffect(() => {
-    const callback = (error) => messageQueue.push({ message: error, type: "error" });
+    const callback = (error) => {
+      if (error?.reason?.message) {
+        messageQueue.push({ message: error.reason.message, type: "error" });
+      }
+    };
     window.addEventListener("unhandledrejection", callback);
     return () => window.removeEventListener("unhandledrejection", callback);
   }, [messageQueue]);
