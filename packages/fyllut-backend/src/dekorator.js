@@ -15,10 +15,12 @@ const getDecorator = async (redirect) => {
   }
   return fetchDecoratorHtml({
     env: naisClusterName === NaisCluster.PROD ? "prod" : "dev",
-    redirectToUrl: redirect,
-    level: "Level4",
-    simple: true,
-    urlLookupTable: false,
+    params: {
+      redirectToUrl: redirect,
+      level: "Level4",
+      simple: true,
+      urlLookupTable: false,
+    },
   });
 };
 
