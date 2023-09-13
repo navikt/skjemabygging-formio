@@ -24,7 +24,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-correlation-id": "^2.0.1",
-    "express-rate-limit": "^6.10.0",
+    "express-rate-limit": "^7.0.0",
     "glob": "^10.3.4",
     "i18n-iso-countries": "^7.6.0",
     "jose": "^4.14.6",
