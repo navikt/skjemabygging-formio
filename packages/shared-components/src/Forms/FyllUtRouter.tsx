@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Route, Routes, useResolvedPath } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
-import { SendInnProvider } from "../context/sendInn/sendInnContext";
+import { SendInnProvider, useSendInn } from "../context/sendInn/sendInnContext";
 import makeStyles from "../util/jss";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
@@ -34,21 +34,28 @@ const ALERT_MESSAGE_BACK_BUTTON =
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
   const [submission, setSubmission] = useState<Submission>();
+  const { isMellomLagringActive } = useSendInn();
   const formBaseUrl = useResolvedPath("").pathname;
   const styles = useStyles();
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development") {
+    if (!isMellomLagringActive) {
       addBeforeUnload();
       return () => {
         removeBeforeUnload();
       };
     }
-  }, []);
+  }, [isMellomLagringActive]);
 
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider form={form} translations={translations}>
+      <SendInnProvider
+        form={form}
+        translations={translations}
+        updateSubmission={(submission) => {
+          setSubmission(submission);
+        }}
+      >
         <FormTitle form={form} />
         <div className={styles.container}>
           <div className="fyllut-layout">

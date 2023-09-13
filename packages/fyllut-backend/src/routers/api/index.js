@@ -38,6 +38,8 @@ apiRouter.get("/translations/:form", tryCatch(translations.get));
 apiRouter.get("/mottaksadresser", tryCatch(mottaksadresser.get));
 // endpoint /send-inn is deprecated and will be replaced by /send-inn/soknad and /send-inn/utfyltsoknad when mellomlagring is turned on
 apiRouter.post("/send-inn", azureSkjemabyggingProxy, tokenxSendInn, sendInn.post);
+apiRouter.get("/send-inn/soknad/:innsendingsId", tokenxSendInn, sendInnSoknad.get);
+apiRouter.delete("/send-inn/soknad/:innsendingsId", tokenxSendInn, sendInnSoknad.delete);
 apiRouter.post("/send-inn/soknad", tokenxSendInn, sendInnSoknad.post);
 apiRouter.put("/send-inn/soknad", tokenxSendInn, sendInnSoknad.put);
 apiRouter.put("/send-inn/utfyltsoknad", azureSkjemabyggingProxy, tokenxSendInn, sendInnUtfyltSoknad.put);

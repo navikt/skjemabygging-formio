@@ -1,7 +1,7 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Link, useHref, useLocation, useNavigate } from "react-router-dom";
+import { Link, useHref, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
@@ -21,6 +21,8 @@ const supportsPapirOgDigital = (form: NavFormType) => {
 export function IntroPage({ form, formUrl }: Props) {
   const { translate } = useLanguages();
   const { search } = useLocation();
+  const [searchParams] = useSearchParams();
+  const innsendingsIdFromUrl = searchParams.get("innsendingsId");
   const navigate = useNavigate();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
@@ -65,10 +67,9 @@ export function IntroPage({ form, formUrl }: Props) {
     event.preventDefault();
     if (selectedSubmissionMethod) {
       removeBeforeUnload();
-      const params = new URLSearchParams(search);
-      params.set("sub", selectedSubmissionMethod);
+      searchParams.set("sub", selectedSubmissionMethod);
       // important to reload page due to forced idporten login if sub=digital
-      window.location.href = `${basename}${formUrl}/${firstPanelSlug}?${params.toString()}`;
+      window.location.href = `${basename}${formUrl}/${firstPanelSlug}?${searchParams.toString()}`;
     }
   };
 
@@ -131,7 +132,10 @@ export function IntroPage({ form, formUrl }: Props) {
           {!mustSelectSubmissionMethod && (
             <Link
               className="navds-button navds-button--primary"
-              to={{ pathname: `${formUrl}/${firstPanelSlug}`, search }}
+              to={{
+                pathname: innsendingsIdFromUrl ? `${formUrl}/oppsummering` : `${formUrl}/${firstPanelSlug}`,
+                search,
+              }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.introPage.start)}

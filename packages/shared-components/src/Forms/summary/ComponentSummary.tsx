@@ -1,4 +1,5 @@
 import { Summary } from "@navikt/skjemadigitalisering-shared-domain";
+import { PanelValidation } from "../../util/panelValidation";
 import DataGridSummary from "./DataGridSummary";
 import FieldsetSummary from "./FieldsetSummary";
 import ImageSummary from "./ImageSummary";
@@ -8,17 +9,22 @@ import SummaryField from "./SummaryField";
 
 interface Props {
   components: Summary.Component[];
-  formUrl: string;
+  formUrl?: string;
+  panelValidationList?: PanelValidation[];
 }
 
-const ComponentSummary = ({ components, formUrl }: Props) => {
+const ComponentSummary = ({ components, formUrl = "", panelValidationList = [] }: Props) => {
   return (
     <>
       {components.map((comp) => {
         const { type, key } = comp;
         switch (type) {
           case "panel":
-            return <PanelSummary key={key} component={comp} formUrl={formUrl} />;
+            const panelValidation = panelValidationList!.find((panelValidation) => panelValidation.key === key);
+            const hasValidationErrors = !!panelValidation?.hasValidationErrors;
+            return (
+              <PanelSummary key={key} component={comp} formUrl={formUrl} hasValidationErrors={hasValidationErrors} />
+            );
           case "fieldset":
           case "navSkjemagruppe":
             return <FieldsetSummary key={key} component={comp} formUrl={formUrl} />;

@@ -31,7 +31,7 @@ describe("FormPageWrapper", () => {
     render(
       <MemoryRouter initialEntries={["/fyllut/unknownForm"]}>
         <Routes>
-          <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+          <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
         </Routes>
       </MemoryRouter>,
     );
@@ -66,7 +66,7 @@ describe("FormPageWrapper", () => {
       <MemoryRouter initialEntries={["/fyllut/knownForm"]}>
         <AppConfigProvider featureToggles={{}}>
           <Routes>
-            <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+            <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
           </Routes>
         </AppConfigProvider>
       </MemoryRouter>,
@@ -100,7 +100,7 @@ describe("FormPageWrapper", () => {
         <MemoryRouter initialEntries={["/fyllut/nav123456"]}>
           <AppConfigProvider featureToggles={{}} submissionMethod="digital">
             <Routes>
-              <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+              <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
             </Routes>
           </AppConfigProvider>
         </MemoryRouter>,
@@ -116,7 +116,7 @@ describe("FormPageWrapper", () => {
         <MemoryRouter initialEntries={["/fyllut/nav123456"]}>
           <AppConfigProvider featureToggles={{}} submissionMethod="paper">
             <Routes>
-              <Route path="/fyllut/:formPath" element={<FormPageWrapper />} />
+              <Route path="/fyllut/:formPath/*" element={<FormPageWrapper />} />
             </Routes>
           </AppConfigProvider>
         </MemoryRouter>,

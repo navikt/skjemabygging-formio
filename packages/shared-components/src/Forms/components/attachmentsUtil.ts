@@ -1,4 +1,4 @@
-import { navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
+import { NavFormType, SubmissionData, navFormUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import FormioUtils from "formiojs/utils";
 import UtilsOverrides from "../../formio-overrides/utils-overrides";
 
@@ -12,12 +12,12 @@ interface Attachment {
   formioId: string;
 }
 
-const getRelevantAttachments = (form, submission): Attachment[] => {
+const getRelevantAttachments = (form: NavFormType, submissionData: SubmissionData): Attachment[] => {
   return navFormUtils
     .flattenComponents(form.components)
     .filter((component) => component.properties && !!component.properties.vedleggskode && !component.otherDocumentation)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
     .map((comp) => ({
       vedleggsnr: comp.properties.vedleggskode,
       tittel: comp.properties.vedleggstittel,
@@ -34,11 +34,11 @@ const getRelevantAttachments = (form, submission): Attachment[] => {
     }));
 };
 
-const hasOtherDocumentation = (form, submission) => {
+const hasOtherDocumentation = (form, submissionData) => {
   return navFormUtils
     .flattenComponents(form.components)
     .map(sanitize)
-    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submission.data, form))
+    .filter((comp) => FormioUtils.checkCondition(comp, undefined, submissionData, form))
     .some((component) => component.otherDocumentation);
 };
 
@@ -48,8 +48,8 @@ const sanitize = (component) => {
   return clone;
 };
 
-const hasRelevantAttachments = (form, submission) => {
-  return !!getRelevantAttachments(form, submission).length || hasOtherDocumentation(form, submission);
+const hasRelevantAttachments = (form, submissionData) => {
+  return !!getRelevantAttachments(form, submissionData).length || hasOtherDocumentation(form, submissionData);
 };
 
 export type { Attachment };

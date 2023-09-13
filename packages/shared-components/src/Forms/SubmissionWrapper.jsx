@@ -1,10 +1,41 @@
-import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useSearchParams } from "react-router-dom";
+import { useAppConfig } from "../configContext";
+import { useSendInn } from "../context/sendInn/sendInnContext";
+import { ErrorPage, LoadingComponent } from "../index";
 
 export const SubmissionWrapper = ({ submission, url, children }) => {
   const { search } = useLocation();
-  if (!submission) {
-    return <Navigate to={`${url}${search}`} replace />;
+  const { featureToggles } = useAppConfig();
+  const { isMellomlagringReady, mellomlagringError } = useSendInn();
+  const [searchParams] = useSearchParams();
+  const innsendingsId = searchParams.get("innsendingsId");
+
+  const expectsSavedSubmissionFromMellomlagring = featureToggles.enableMellomlagring && !!innsendingsId;
+
+  const removeParamIfItExists = (searchParamsString, param) => {
+    const urlSearchParams = new URLSearchParams(searchParamsString);
+    if (urlSearchParams.get(param)) {
+      urlSearchParams.delete(param);
+      return `?${urlSearchParams.toString()}`;
+    }
+    return searchParamsString;
+  };
+
+  if (mellomlagringError && mellomlagringError.type === "NOT FOUND") {
+    return <ErrorPage errorMessage={mellomlagringError.message} />;
   }
-  return children(submission);
+
+  if (expectsSavedSubmissionFromMellomlagring && !isMellomlagringReady) {
+    return <LoadingComponent />;
+  }
+
+  if (!expectsSavedSubmissionFromMellomlagring && !submission) {
+    return <Navigate to={`${url}${removeParamIfItExists(search, "innsendingsId")}`} />;
+  }
+  return (
+    <>
+      {children(submission)}
+      <div id="formio-summary-hidden" hidden />
+    </>
+  );
 };

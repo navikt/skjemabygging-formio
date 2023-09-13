@@ -2,6 +2,7 @@ import { NavFormType } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import nock from "nock";
+import { MemoryRouter } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { LanguagesProvider } from "../../context/languages";
 import { SendInnProvider } from "../../context/sendInn/sendInnContext";
@@ -37,11 +38,17 @@ describe("DigitalSubmissionButton", () => {
     } as Props;
     render(
       <AppConfigProvider {...defaultAppConfigProps} {...appConfigProps}>
-        <SendInnProvider form={{ components: [] } as unknown as NavFormType} translations={{}}>
-          <LanguagesProvider translations={defaultTranslations}>
-            <DigitalSubmissionButton {...defaultProps} />
-          </LanguagesProvider>
-        </SendInnProvider>
+        <MemoryRouter>
+          <SendInnProvider
+            form={{ components: [] } as unknown as NavFormType}
+            translations={{}}
+            updateSubmission={vi.fn()}
+          >
+            <LanguagesProvider translations={defaultTranslations}>
+              <DigitalSubmissionButton {...defaultProps} />
+            </LanguagesProvider>
+          </SendInnProvider>
+        </MemoryRouter>
       </AppConfigProvider>,
     );
   };
