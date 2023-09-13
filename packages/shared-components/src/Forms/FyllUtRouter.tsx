@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Route, Routes, useResolvedPath } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
-import { SendInnProvider, useSendInn } from "../context/sendInn/sendInnContext";
+import { SendInnProvider } from "../context/sendInn/sendInnContext";
 import makeStyles from "../util/jss";
-import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { IntroPage } from "./IntroPage";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
@@ -28,18 +27,8 @@ const useStyles = makeStyles({
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
   const [submission, setSubmission] = useState<Submission>();
-  const { isMellomlagringActive } = useSendInn();
   const formBaseUrl = useResolvedPath("").pathname;
   const styles = useStyles();
-
-  useEffect(() => {
-    if (!isMellomlagringActive) {
-      addBeforeUnload();
-      return () => {
-        removeBeforeUnload();
-      };
-    }
-  }, [isMellomlagringActive]);
 
   return (
     <LanguagesProvider translations={translations}>

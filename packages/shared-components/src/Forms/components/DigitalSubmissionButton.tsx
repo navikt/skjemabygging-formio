@@ -5,7 +5,6 @@ import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
-import { addBeforeUnload, removeBeforeUnload } from "../../util/unload";
 
 export interface Props {
   submission?: Submission;
@@ -41,11 +40,9 @@ const DigitalSubmissionButton = ({ submission, isValid, onError, onSuccess = noo
     try {
       setLoading(true);
       loggNavigering({ lenkeTekst: children, destinasjon: "/sendinn" });
-      removeBeforeUnload();
       const response = await submitSoknad(submission);
       onSuccess(response);
     } catch (err: any) {
-      addBeforeUnload();
       onError(err);
     } finally {
       setLoading(false);
