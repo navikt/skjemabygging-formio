@@ -25,7 +25,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { panelSlug } = useParams();
-  const { search } = useLocation();
   const { hash } = useLocation();
   const mutationObserverRef = useRef(undefined);
 
@@ -80,7 +79,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
-    navigate({ pathname: `${formUrl}/${panelPath}`, search });
+    navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
@@ -151,7 +150,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       steg: form.components.findIndex((panel) => panel.key === panelSlug) + 1,
       panelSlug,
     });
-    navigate({ pathname: `${formUrl}/oppsummering`, search });
+    navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
   const onError = () => {
