@@ -22,7 +22,7 @@
     "@navikt/ds-react": "^4.7.2",
     "@navikt/skjemadigitalisering-shared-components": "1.0.0",
     "@navikt/skjemadigitalisering-shared-domain": "1.0.0",
-    "axe-core": "^4.7.2",
+    "axe-core": "^4.8.1",
     "classnames": "^2.3.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
