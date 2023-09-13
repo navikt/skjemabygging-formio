@@ -25,27 +25,21 @@ const useStyles = makeStyles({
   },
 });
 
-/*
-const ALERT_MESSAGE_BACK_BUTTON =
-  "Hvis du går vekk fra denne siden kan du miste dataene du har fylt ut. Er du sikker på at du vil gå tilbake?";
-*/
-// TODO: Add propmpt back again
-
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
   const [submission, setSubmission] = useState<Submission>();
-  const { isMellomLagringActive } = useSendInn();
+  const { isMellomlagringActive } = useSendInn();
   const formBaseUrl = useResolvedPath("").pathname;
   const styles = useStyles();
 
   useEffect(() => {
-    if (!isMellomLagringActive) {
+    if (!isMellomlagringActive) {
       addBeforeUnload();
       return () => {
         removeBeforeUnload();
       };
     }
-  }, [isMellomLagringActive]);
+  }, [isMellomlagringActive]);
 
   return (
     <LanguagesProvider translations={translations}>

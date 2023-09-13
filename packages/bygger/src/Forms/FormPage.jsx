@@ -82,14 +82,6 @@ export const FormPage = ({ loadForm, loadTranslations, onSave, onPublish, onUnpu
     return <h1>Vi fant ikke dette skjemaet...</h1>;
   }
 
-  /*
-  TODO: Add popup
-  const onLeaveMessage =
-    "Hvis du går vekk fra denne siden uten å lagre, så mister du alle endringene." +
-    "Er du sikker på at du vil gå videre?";
-
-   */
-
   return (
     <I18nStateProvider loadTranslations={loadTranslationsForFormPath} form={state.form}>
       <Routes>
