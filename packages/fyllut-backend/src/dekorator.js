@@ -20,6 +20,7 @@ const getDecorator = async (redirect) => {
       level: "Level4",
       simple: true,
       urlLookupTable: false,
+      logoutWarning: true,
     },
   });
 };
