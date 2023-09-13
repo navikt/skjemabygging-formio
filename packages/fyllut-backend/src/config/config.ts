@@ -44,7 +44,7 @@ const localDevelopmentConfig: DefaultConfig = {
   mockIdportenPid: process.env.MOCK_IDPORTEN_PID || "12345678911",
   mockIdportenJwt: process.env.MOCK_IDPORTEN_JWT || "IDPORTEN_JWT",
   noFormValidation: process.env.NO_FORM_VALIDATION === "true",
-  noDecorator: process.env.NO_DECORATOR === "true",
+  noDecorator: process.env.NO_DECORATOR === "false",
   tokenx: {
     ...tokenx,
     wellKnownUrl:
@@ -91,6 +91,7 @@ const config: ConfigType = {
   featureToggles: featureUtils.toFeatureToggles(process.env.ENABLED_FEATURES ?? defaultEnabledFeatures),
   isDevelopment: process.env.NODE_ENV === "development",
   isTest: process.env.NODE_ENV === "test",
+  isProduction: process.env.NODE_ENV === "production",
   isDelingslenke: process.env.NAIS_APP_NAME === "skjemautfylling-delingslenke",
   pdlTokenScopeCluster: process.env.PDL_TOKEN_SCOPE_CLUSTER!,
 };

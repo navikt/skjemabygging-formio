@@ -2,6 +2,8 @@ import classNames from "classnames";
 import makeStyles from "../util/jss";
 import { navCssVariables } from "../util/navCssVariables";
 import Select from "./Select";
+import { useLanguages } from "../context/languages";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 const useLanguageSelectorStyling = makeStyles({
   languageToggleWrapper: {
@@ -68,13 +70,19 @@ const useLanguageSelectorStyling = makeStyles({
 
 const LanguageSelector = ({ label, options, className }) => {
   const classes = useLanguageSelectorStyling();
+  const { translate } = useLanguages();
   return (
     <div
       className={classNames(classes.languageToggleWrapper, {
         [className]: className,
       })}
     >
-      <Select className={classes.languageSelect} label={label} options={options} />
+      <Select
+        className={classes.languageSelect}
+        label={label}
+        options={options}
+        ariaLabel={translate(TEXTS.grensesnitt.languageSelector.ariaLabel)}
+      />
     </div>
   );
 };

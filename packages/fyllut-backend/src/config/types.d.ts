@@ -52,6 +52,7 @@ export type ConfigType = DefaultConfig & {
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;
+  isProduction: boolean;
   isDelingslenke: boolean;
   pdlTokenScopeCluster: string;
 };

@@ -1,10 +1,12 @@
-<div class="{{ctx.className}}">
+<div class="{{ ctx.className }}">
   <div>
-    <main id="maincontent" class="fyllut-layout" tabIndex="-1">
+    <section id="maincontent" class="fyllut-layout" tabIndex="-1">
       <div class="main-col">
-        <h2 id="form-id" class="mb navds-heading navds-heading--large">{{ctx.t(ctx.panels[ctx.currentPage].title)}}</h2>
+        <h2 id="form-id" class="mb navds-heading navds-heading--large">
+          {{ ctx.t(ctx.panels[ctx.currentPage].title) }}
+        </h2>
         <form aria-labelledby="form-id">
-          <div ref="{{ctx.wizardKey}}" class="mb-14">
+          <div ref="{{ ctx.wizardKey }}" class="mb-14">
             {{ ctx.components }}
           </div>
           <div class="mb-4">
@@ -15,6 +17,6 @@
       <aside class="right-col">
         {{ ctx.wizardHeader }}
       </aside>
-    </main>
+    </section>
   </div>
 </div>

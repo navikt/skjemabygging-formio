@@ -112,7 +112,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
 
   return (
     <div className={styles.content}>
-      <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
+      <section id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
         <div className="main-col">
           <Heading level="2" size="large" spacing>
             {translate(TEXTS.statiske.summaryPage.title)}
@@ -173,7 +173,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
         <aside className="right-col">
           <FormStepper form={form} formUrl={formUrl} submissionMethod={submissionMethod} submission={submission} />
         </aside>
-      </main>
+      </section>
     </div>
   );
 }
