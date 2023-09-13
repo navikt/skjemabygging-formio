@@ -122,9 +122,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         const translation = translationForLanguage(currentLanguage);
         const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
         setInnsendingsId(response?.innsendingsId);
-        console.log("12", pathname, search);
         addQueryParamToUrl("innsendingsId", response?.innsendingsId);
-        console.log("13", pathname, search);
         setIsMellomlagringReady(true);
         return response;
       } catch (error: any) {

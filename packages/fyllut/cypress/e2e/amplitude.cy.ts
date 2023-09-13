@@ -14,6 +14,13 @@ describe("Amplitude", () => {
     cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
     cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 200 }).as("submitToSendinnSuccess");
     cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 500 }).as("submitToSendinnFailed");
+    cy.intercept("POST", "/fyllut/api/send-inn/soknad*", {
+      fixture: "mellomlagring/responseWithInnsendingsId.json",
+    }).as("createMellomlagring");
+    cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", {
+      fixture: "mellomlagring/responseWithInnsendingsId.json",
+    }).as("updateMellomlagring");
+    cy.intercept("POST", "/fyllut/api/log").as("logger");
   });
 
   it("logs for all relevant events", () => {
