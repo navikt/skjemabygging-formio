@@ -2,11 +2,11 @@ import { I18nTranslations, Language, NavFormType, Submission, TEXTS } from "@nav
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import {
-  SendInnSoknadResponse,
   createSoknad,
   createSoknadWithoutInnsendingsId,
   deleteSoknad,
   getSoknad,
+  SendInnSoknadResponse,
   updateSoknad,
   updateUtfyltSoknad,
 } from "../../api/sendInnSoknad";
@@ -47,19 +47,22 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   const isMellomlagringEnabled =
     app === "fyllut" && submissionMethod === "digital" && !!featureToggles?.enableMellomlagring;
   const [isMellomlagringReady, setIsMellomlagringReady] = useState(!isMellomlagringEnabled);
-  const { search } = useLocation();
+  const { pathname, search } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isMellomlagringActive = useMemo(
     () => isMellomlagringEnabled && !!searchParams.get("innsendingsId"),
     [isMellomlagringEnabled, search],
   );
-  const addQueryParamToUrl = useCallback((key, value) => {
-    if (key && value) {
-      searchParams.set(key, value);
-      setSearchParams(searchParams);
-    }
-  }, []);
+  const addQueryParamToUrl = useCallback(
+    (key, value) => {
+      if (key && value) {
+        searchParams.set(key, value);
+        setSearchParams(searchParams);
+      }
+    },
+    [pathname],
+  );
 
   useEffect(() => {
     const retrievePreviousSubmission = async () => {
@@ -119,7 +122,9 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         const translation = translationForLanguage(currentLanguage);
         const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
         setInnsendingsId(response?.innsendingsId);
+        console.log("12", pathname, search);
         addQueryParamToUrl("innsendingsId", response?.innsendingsId);
+        console.log("13", pathname, search);
         setIsMellomlagringReady(true);
         return response;
       } catch (error: any) {
