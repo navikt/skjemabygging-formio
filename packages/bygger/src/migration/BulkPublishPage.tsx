@@ -23,9 +23,11 @@ const useStyles = makeStyles({
     marginLeft: "2rem",
   },
 });
+
+type Status = "LOADING" | "FORMS NOT FOUND" | "FINISHED LOADING";
 const BulkPublishPage = ({ formio }) => {
   const [forms, setForms] = useState<NavFormType[]>();
-  const [status, setStatus] = useState("LOADING");
+  const [status, setStatus] = useState<Status>("LOADING");
   const { loadFormsList } = useFormioForms(formio);
   const styles = useStyles();
 
