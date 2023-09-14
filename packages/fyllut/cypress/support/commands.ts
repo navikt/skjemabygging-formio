@@ -73,9 +73,11 @@ Cypress.Commands.add("defaultIntercepts", () => {
   cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   cy.intercept("POST", /\/fyllut\/api\/log.*/, { body: "ok" }).as("logger");
   cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
-  cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
+  cy.intercept("GET", /\/fyllut\/api\/global-translations\.*/, { fixture: "global-translation.json" }).as(
     "getGlobalTranslation",
   );
+  cy.intercept("GET", /fyllut\/api\/countries.*/, { fixture: "countries.json" }).as("getCountries");
+  cy.intercept("GET", /fyllut\/api\/common-codes\/currencies.*/, { fixture: "currencies.json" }).as("getCurrencies");
 
   return cy;
 });

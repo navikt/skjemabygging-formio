@@ -5,7 +5,6 @@ describe("Basic form", () => {
     cy.intercept("GET", "/fyllut/api/config", {
       body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
     }).as("getConfig");
-    cy.intercept("GET", "/fyllut/api/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
     cy.intercept("GET", "/fyllut/api/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
       "getTranslation",

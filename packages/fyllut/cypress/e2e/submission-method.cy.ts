@@ -6,7 +6,6 @@ describe("Submission method", () => {
     cy.intercept("GET", "/fyllut/api/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
       "getFormTranslations",
     );
-    cy.intercept("GET", /\/fyllut\/api\/countries.*/, { fixture: "countries.json" }).as("getCountries");
   });
 
   describe("Subscription method 'digital'", () => {

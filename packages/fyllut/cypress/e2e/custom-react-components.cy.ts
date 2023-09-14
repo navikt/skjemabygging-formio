@@ -13,10 +13,6 @@ describe("Custom react components", () => {
     cy.intercept("GET", "/fyllut/api/translations/navdatepicker", { fixture: "empty-translations.json" }).as(
       "getNavDatepickerTranslations",
     );
-    cy.intercept("GET", "/fyllut/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
-    cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
-      "getCurrencies",
-    );
   });
 
   describe("Fill in form and view summary", () => {
