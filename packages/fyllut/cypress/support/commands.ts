@@ -68,3 +68,26 @@ Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
       }
     });
 });
+
+Cypress.Commands.add("defaultIntercepts", () => {
+  cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
+  cy.intercept("POST", /\/fyllut\/api\/log.*/, { body: "ok" }).as("logger");
+  cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+  cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
+    "getGlobalTranslation",
+  );
+
+  return cy;
+});
+
+Cypress.Commands.add("defaultInterceptsMellomlagring", () => {
+  cy.intercept("POST", "/fyllut/api/send-inn/soknad*", {
+    fixture: "mellomlagring/responseWithInnsendingsId.json",
+  }).as("createMellomlagring");
+  cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", {
+    fixture: "mellomlagring/responseWithInnsendingsId.json",
+  }).as("updateMellomlagring");
+  cy.intercept("PUT", "/fyllut/api/send-inn/utfyltsoknad*", { statusCode: 201 }).as("completeMellomlagring");
+
+  return cy;
+});
