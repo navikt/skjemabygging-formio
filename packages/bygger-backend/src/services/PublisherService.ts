@@ -87,6 +87,7 @@ class PublisherService {
             formioToken,
             userName,
             formProps,
+            true,
           );
           return {
             originalForm,

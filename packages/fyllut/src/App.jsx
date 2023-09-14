@@ -14,12 +14,12 @@ const useStyles = makeStyles({
 const App = () => {
   const styles = useStyles();
   return (
-    <div className={styles.app}>
+    <main className={styles.app}>
       <Routes>
         <Route path="/" element={<AllForms />} />
         <Route path="/:formPath/*" element={<FormPageWrapper />} />
       </Routes>
-    </div>
+    </main>
   );
 };
 

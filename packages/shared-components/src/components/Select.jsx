@@ -17,9 +17,6 @@ const useSelectStyle = makeStyles({
     "& .navds-select__input": {
       textAlign: "start",
     },
-    "& .navds-select__chevron": {
-      marginTop: "0.25rem",
-    },
   },
 });
 
@@ -36,7 +33,7 @@ const handleTabKeyPressed = (event, firstItem, lastItem, index, numberOfItemsInL
   }
 };
 
-const Select = ({ label, className, options }) => {
+const Select = ({ label, className, options, ariaLabel }) => {
   const buttonRef = useRef(null);
   const firstListItemLinkRef = useRef(null);
   const lastListItemLinkRef = useRef(null);
@@ -57,7 +54,7 @@ const Select = ({ label, className, options }) => {
   return (
     <>
       {showItems && <div className={classes.overlay} onClick={closeListAndResetFocus} />}
-      <nav className={`${className} ${classes.nav}`} onKeyUp={closeOnEscape}>
+      <nav className={`${className} ${classes.nav}`} onKeyUp={closeOnEscape} aria-label={ariaLabel}>
         <button
           className="navds-select__input navds-body-short navds-body--medium"
           aria-expanded={showItems}
@@ -66,7 +63,11 @@ const Select = ({ label, className, options }) => {
           ref={buttonRef}
         >
           {label}
-          {showItems ? <Collapse className="navds-select__chevron" /> : <Expand className="navds-select__chevron" />}
+          {showItems ? (
+            <Collapse className="navds-select__chevron" aria-hidden />
+          ) : (
+            <Expand className="navds-select__chevron" aria-hidden />
+          )}
         </button>
         {showItems && (
           <ul className="select-list">

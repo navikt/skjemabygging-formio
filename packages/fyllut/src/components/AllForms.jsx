@@ -49,7 +49,7 @@ export const AllForms = () => {
   }
 
   return (
-    <main className={styles.maxContentWidth}>
+    <section className={styles.maxContentWidth}>
       <h1>Velg et skjema</h1>
       <nav>
         <table className={styles.skjemaliste}>
@@ -70,6 +70,6 @@ export const AllForms = () => {
           </tbody>
         </table>
       </nav>
-    </main>
+    </section>
   );
 };

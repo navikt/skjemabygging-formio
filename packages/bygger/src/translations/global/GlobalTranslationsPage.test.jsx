@@ -1,4 +1,4 @@
-import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
+import { AppConfigProvider, LanguagesProvider } from "@navikt/skjemadigitalisering-shared-components";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
@@ -25,12 +25,14 @@ describe("GlobalTranslationsPage", () => {
                 <Route
                   path="/translations/global/:languageCode?/:tag?"
                   element={
-                    <GlobalTranslationsPage
-                      loadGlobalTranslations={loadTranslation}
-                      projectURL={""}
-                      deleteTranslation={mockedDeleteTranslation}
-                      saveTranslation={mockedSaveTranslations}
-                    />
+                    <LanguagesProvider translations={{}}>
+                      <GlobalTranslationsPage
+                        loadGlobalTranslations={loadTranslation}
+                        projectURL={""}
+                        deleteTranslation={mockedDeleteTranslation}
+                        saveTranslation={mockedSaveTranslations}
+                      />
+                    </LanguagesProvider>
                   }
                 />
               </Routes>

@@ -86,7 +86,7 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
       <Heading level="2" size="large" spacing>
         {translate(TEXTS.statiske.prepareLetterPage.subTitle)}
       </Heading>
-      <main className="fyllut-layout" id="maincontent" tabIndex={-1}>
+      <section className="fyllut-layout" id="maincontent" tabIndex={-1}>
         <section className="main-col">
           <LetterDownload
             index={1}
@@ -105,7 +105,7 @@ export function PrepareLetterPage({ form, submission, translations, formUrl }: P
             skjemanummer === "NAV 08-09.06" && <LetterUXSignals code="study-dont9j6txe" />
           }
         </section>
-      </main>
+      </section>
     </div>
   );
 }
