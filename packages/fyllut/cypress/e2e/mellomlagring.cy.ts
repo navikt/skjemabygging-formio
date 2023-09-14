@@ -2,7 +2,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 describe("Mellomlagring", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.defaultIntercepts();
     cy.intercept("GET", "/fyllut/api/forms/testmellomlagring", { fixture: "test-mellomlagring.json" }).as(
       "getTestMellomlagringForm",
     );

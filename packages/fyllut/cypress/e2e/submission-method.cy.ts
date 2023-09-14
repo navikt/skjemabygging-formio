@@ -1,15 +1,11 @@
 describe("Submission method", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" });
+    cy.defaultIntercepts();
+    cy.defaultInterceptsMellomlagring();
     cy.intercept("GET", "/fyllut/api/forms/bug101010", { fixture: "submission-method.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/api/translations/bug101010", { fixture: "submission-method-translations.json" }).as(
       "getFormTranslations",
     );
-    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslations",
-    );
-    cy.intercept("GET", "/fyllut/api/countries?*", { fixture: "countries.json" }).as("getCountries");
-    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   });
 
   describe("Subscription method 'digital'", () => {
@@ -17,7 +13,7 @@ describe("Submission method", () => {
       cy.visit("/fyllut/bug101010/veiledning?sub=digital");
       cy.wait("@getForm");
       cy.wait("@getFormTranslations");
-      cy.wait("@getGlobalTranslations");
+      cy.wait("@getGlobalTranslation");
     });
 
     it("Renders stepper without 'Vedlegg'", () => {
@@ -60,22 +56,22 @@ describe("Submission method", () => {
       });
 
       it("includes zero attachments, but has flag otherDocumentation", () => {
-        cy.intercept("POST", "/fyllut/api/send-inn", (req) => {
+        cy.intercept("PUT", "/fyllut/api/send-inn/utfyltsoknad", (req) => {
           expect(req.body.attachments).to.have.length(0);
           expect(req.body.otherDocumentation).to.eq(true);
-          req.reply(200);
+          req.reply(201);
         }).as("sendInn");
 
         // submit application
-        cy.findByRole("button", { name: "Gå videre" }).click();
+        cy.findByRole("button", { name: "Lagre og fortsett" }).click();
         cy.wait("@sendInn");
       });
 
       it("includes one attachment, and has flag otherDocumentation", () => {
-        cy.intercept("POST", "/fyllut/api/send-inn", (req) => {
+        cy.intercept("PUT", "/fyllut/api/send-inn/utfyltsoknad", (req) => {
           expect(req.body.attachments).to.have.length(1);
           expect(req.body.otherDocumentation).to.eq(true);
-          req.reply(200);
+          req.reply(201);
         }).as("sendInn");
 
         // edit data so that conditional attachment is triggered
@@ -84,7 +80,7 @@ describe("Submission method", () => {
         cy.findByRole("link", { name: "Oppsummering" }).click();
 
         // submit application
-        cy.findByRole("button", { name: "Gå videre" }).click();
+        cy.findByRole("button", { name: "Lagre og fortsett" }).click();
         cy.wait("@sendInn");
       });
     });
@@ -95,7 +91,7 @@ describe("Submission method", () => {
       cy.visit("/fyllut/bug101010/veiledning?sub=paper");
       cy.wait("@getForm");
       cy.wait("@getFormTranslations");
-      cy.wait("@getGlobalTranslations");
+      cy.wait("@getGlobalTranslation");
     });
 
     it("Renders stepper with 'Vedlegg'", () => {

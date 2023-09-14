@@ -1,14 +1,10 @@
 describe("Translations", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.defaultIntercepts();
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/api/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
       "getTranslation",
     );
-    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation",
-    );
-    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   });
 
   describe("Change translations based on url params", () => {

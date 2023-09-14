@@ -2,7 +2,7 @@ import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 describe("When form has panels that are hidden unless a condition is true", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.defaultIntercepts();
     cy.intercept("GET", "/fyllut/api/forms/conditionalxmas", {
       fixture: "conditionalxmas.json",
     }).as("getForm");
@@ -13,7 +13,6 @@ describe("When form has panels that are hidden unless a condition is true", () =
       "getGlobalTranslation",
     );
     cy.visit("/fyllut/conditionalxmas");
-    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
     cy.wait("@getForm");
     cy.clickStart(); // <-- navigate from information page to the form
   });
