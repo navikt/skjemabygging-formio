@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^12.1.5",
-    "cypress-axe": "^1.4.0",
+    "cypress-axe": "^1.5.0",
     "cypress-wait-until": "^2.0.1",
     "lodash.template": "^4.5.0",
     "moment": "^2.29.4",
