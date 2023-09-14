@@ -1,5 +1,5 @@
 import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
@@ -146,9 +146,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
       destinasjon: `${formUrl}/oppsummering`,
     });
+    const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
-      steg: form.components.findIndex((panel) => panel.key === panelSlug) + 1,
-      panelSlug,
+      steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
+      skjemastegNokkel,
     });
     navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
