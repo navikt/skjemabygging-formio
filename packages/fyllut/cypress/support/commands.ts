@@ -62,7 +62,9 @@ Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
       expect(event.event_type).to.equal(eventType);
       if (properties && Object.keys(properties).length > 0) {
         const propertyKeys = Object.keys(properties);
-        propertyKeys.forEach((key) => expect(event.event_properties?.[key]).to.equal(properties[key]));
+        propertyKeys.forEach((key) =>
+          expect(event.event_properties?.[key]).to.equal(properties[key], `Assertion for amplitude key: "${key}"`),
+        );
       }
     });
 });
