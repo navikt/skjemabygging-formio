@@ -140,6 +140,9 @@ const NavForm = (props) => {
     const { submission } = props;
     if (formio && submission) {
       formio.submission = JSON.parse(JSON.stringify(submission));
+      if (submission.fyllutState) {
+        formio.triggerRedraw();
+      }
     }
   }, [props.submission, formio]);
 

@@ -1,3 +1,7 @@
+<div>
+{% if (ctx.submission?.fyllutState?.mellomlagring?.modified) { %}
+<p class="navigation-detail">{{ctx.t('Sist lagret') + ' ' + ctx.submission.fyllutState.mellomlagring.modified}}</p>
+{% } %}
 <nav id="{{ ctx.wizardKey }}-nav" >
   {% if ((ctx.buttons.next || ctx.buttons.submit) && ctx.buttons.previous) { %}
     <div class="button-row button-row__center">
@@ -35,3 +39,4 @@
   {% } %}
     </div>
 </nav>
+</div>

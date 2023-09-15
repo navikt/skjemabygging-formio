@@ -1,4 +1,11 @@
-import { I18nTranslations, Language, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  I18nTranslations,
+  Language,
+  NavFormType,
+  Submission,
+  TEXTS,
+  FyllutState,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
@@ -35,6 +42,14 @@ interface SendInnProviderProps {
 type MellomlagringErrorType = "START" | "GET" | "NOT FOUND" | "UPDATE" | "SUBMIT" | "DELETE";
 type MellomlagringError = { title: string; message: string; type: MellomlagringErrorType };
 
+const dateFormat: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "2-digit",
+  year: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+};
+
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
 const SendInnProvider = ({ children, form, translations, updateSubmission }: SendInnProviderProps) => {
@@ -66,6 +81,22 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     [history],
   );
 
+  const getSubmissionWithFyllutState = (response?: SendInnSoknadResponse) => {
+    if (response) {
+      const submission = response.hoveddokumentVariant.document?.data;
+      const modified = new Date(response.endretDato).toLocaleString("no", dateFormat);
+      const fyllutState: FyllutState = {
+        ...submission?.fyllutState,
+        mellomlagring: {
+          ...submission?.fyllutState?.mellomlagring,
+          isActive: true,
+          modified,
+        },
+      };
+      return { ...submission, fyllutState };
+    }
+  };
+
   useEffect(() => {
     const retrievePreviousSubmission = async () => {
       try {
@@ -77,7 +108,7 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           const response = await getSoknad(innsendingsId, appConfig);
           if (response?.hoveddokumentVariant.document) {
             addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
-            updateSubmission(response.hoveddokumentVariant.document?.data);
+            updateSubmission(getSubmissionWithFyllutState(response));
           }
         }
       } catch (error: any) {

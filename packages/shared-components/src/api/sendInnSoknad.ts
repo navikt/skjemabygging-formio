@@ -7,6 +7,7 @@ export interface SendInnSoknadResponse {
   hoveddokumentVariant: {
     document: { data: Submission; language: Language };
   };
+  endretDato: string;
 }
 
 export const getSoknad = async (
