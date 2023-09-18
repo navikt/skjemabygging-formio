@@ -57,6 +57,15 @@ const FyllUtRouter = ({ form, translations }) => {
         updateSubmission={(submission) => {
           setSubmission(submission);
         }}
+        onFyllutStateChange={(fyllutState) => {
+          setSubmission((prevSubmission) => {
+            const newSub = {
+              ...prevSubmission,
+              fyllutState: { ...(prevSubmission?.fyllutState ?? {}), ...fyllutState },
+            };
+            return newSub;
+          });
+        }}
       >
         <FormTitle form={form} />
         <div className={styles.container}>

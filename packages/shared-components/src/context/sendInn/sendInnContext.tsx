@@ -37,6 +37,7 @@ interface SendInnProviderProps {
   form: NavFormType;
   translations: I18nTranslations;
   updateSubmission: (submission?: Submission) => void;
+  onFyllutStateChange: (fyllutState: Partial<FyllutState>) => void;
 }
 
 type MellomlagringErrorType = "START" | "GET" | "NOT FOUND" | "UPDATE" | "SUBMIT" | "DELETE";
@@ -52,10 +53,17 @@ const dateFormat: Intl.DateTimeFormatOptions = {
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
-const SendInnProvider = ({ children, form, translations, updateSubmission }: SendInnProviderProps) => {
+const SendInnProvider = ({
+  children,
+  form,
+  translations,
+  updateSubmission,
+  onFyllutStateChange,
+}: SendInnProviderProps) => {
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [mellomlagringError, setMellomlagringError] = useState<MellomlagringError>();
+  const [fyllutMellomlagringState, setFyllutMellomlagringState] = useState<FyllutState["mellomlagring"]>();
 
   const { translate } = useLanguages();
   const appConfig = useAppConfig();
@@ -81,21 +89,34 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     [history],
   );
 
+  const getFyllutMellomlagringState = (response?: SendInnSoknadResponse): FyllutState["mellomlagring"] | undefined => {
+    if (response) {
+      const submission = response.hoveddokumentVariant.document?.data;
+      const savedDate = new Date(response.endretDato).toLocaleString("no", dateFormat);
+      return {
+        ...submission?.fyllutState?.mellomlagring,
+        isActive: true,
+        savedDate,
+      };
+    }
+  };
+
   const getSubmissionWithFyllutState = (response?: SendInnSoknadResponse) => {
     if (response) {
       const submission = response.hoveddokumentVariant.document?.data;
-      const modified = new Date(response.endretDato).toLocaleString("no", dateFormat);
-      const fyllutState: FyllutState = {
-        ...submission?.fyllutState,
-        mellomlagring: {
-          ...submission?.fyllutState?.mellomlagring,
-          isActive: true,
-          modified,
+      return {
+        ...submission,
+        fyllutState: {
+          ...submission?.fyllutState,
+          mellomlagring: getFyllutMellomlagringState(response) ?? submission?.fyllutState?.mellomlagring,
         },
       };
-      return { ...submission, fyllutState };
     }
   };
+
+  useEffect(() => {
+    onFyllutStateChange({ mellomlagring: fyllutMellomlagringState });
+  }, [fyllutMellomlagringState]);
 
   useEffect(() => {
     const retrievePreviousSubmission = async () => {
@@ -170,7 +191,9 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       try {
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        return updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        const response = await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        setFyllutMellomlagringState(getFyllutMellomlagringState(response));
+        return response;
       } catch (error: any) {
         setMellomlagringError({
           type: "UPDATE",
