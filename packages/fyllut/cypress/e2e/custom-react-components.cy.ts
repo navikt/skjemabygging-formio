@@ -2,7 +2,7 @@ import * as moment from "moment";
 
 describe("Custom react components", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.defaultIntercepts();
     cy.intercept("GET", "/fyllut/api/forms/customcomps", { fixture: "custom-components.json" }).as("getForm");
     cy.intercept("GET", "/fyllut/api/translations/customcomps", { fixture: "custom-components-translations.json" }).as(
       "getTranslations",
@@ -13,14 +13,6 @@ describe("Custom react components", () => {
     cy.intercept("GET", "/fyllut/api/translations/navdatepicker", { fixture: "empty-translations.json" }).as(
       "getNavDatepickerTranslations",
     );
-    cy.intercept("GET", "/fyllut/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
-    cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
-      "getCurrencies",
-    );
-    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation",
-    );
-    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
   });
 
   describe("Fill in form and view summary", () => {

@@ -48,10 +48,6 @@ Cypress.Commands.add("clickNextStep", () => {
   return cy.findByRoleWhenAttached("button", { name: TEXTS.grensesnitt.navigation.next }).click();
 });
 
-Cypress.Commands.add("clickPreviousStep", () => {
-  return cy.findByRoleWhenAttached("button", { name: "Forrige steg" }).click();
-});
-
 Cypress.Commands.add("clickStart", () => {
   return cy.findByRoleWhenAttached("link", { name: TEXTS.grensesnitt.introPage.start }).click();
 });
@@ -66,7 +62,34 @@ Cypress.Commands.add("checkLogToAmplitude", (eventType: string, properties) => {
       expect(event.event_type).to.equal(eventType);
       if (properties && Object.keys(properties).length > 0) {
         const propertyKeys = Object.keys(properties);
-        propertyKeys.forEach((key) => expect(event.event_properties?.[key]).to.equal(properties[key]));
+        propertyKeys.forEach((key) =>
+          expect(event.event_properties?.[key]).to.equal(properties[key], `Assertion for amplitude key: "${key}"`),
+        );
       }
     });
+});
+
+Cypress.Commands.add("defaultIntercepts", () => {
+  cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
+  cy.intercept("POST", /\/fyllut\/api\/log.*/, { body: "ok" }).as("logger");
+  cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+  cy.intercept("GET", /\/fyllut\/api\/global-translations\.*/, { fixture: "global-translation.json" }).as(
+    "getGlobalTranslation",
+  );
+  cy.intercept("GET", /fyllut\/api\/countries.*/, { fixture: "countries.json" }).as("getCountries");
+  cy.intercept("GET", /fyllut\/api\/common-codes\/currencies.*/, { fixture: "currencies.json" }).as("getCurrencies");
+
+  return cy;
+});
+
+Cypress.Commands.add("defaultInterceptsMellomlagring", () => {
+  cy.intercept("POST", "/fyllut/api/send-inn/soknad*", {
+    fixture: "mellomlagring/responseWithInnsendingsId.json",
+  }).as("createMellomlagring");
+  cy.intercept("PUT", "/fyllut/api/send-inn/soknad*", {
+    fixture: "mellomlagring/responseWithInnsendingsId.json",
+  }).as("updateMellomlagring");
+  cy.intercept("PUT", "/fyllut/api/send-inn/utfyltsoknad*", { statusCode: 201 }).as("completeMellomlagring");
+
+  return cy;
 });

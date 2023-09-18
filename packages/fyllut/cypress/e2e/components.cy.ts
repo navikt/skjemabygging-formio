@@ -1,15 +1,11 @@
 describe("Components", () => {
   describe("Penger og konto", () => {
     beforeEach(() => {
-      cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+      cy.defaultIntercepts();
       cy.intercept("GET", "/fyllut/api/forms/pengerogkonto", { fixture: "pengerOgKonto.json" }).as(
         "getPengerOgKontoForm",
       );
       cy.intercept("GET", "/fyllut/api/translations/pengerogkonto", { body: {} }).as("getTranslation");
-      cy.intercept("GET", "/fyllut/api/common-codes/currencies?lang=nb", { fixture: "currencies.json" }).as(
-        "getCurrencies",
-      );
-      cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
       cy.visit("/fyllut/pengerogkonto/skjema");
       cy.wait("@getCurrencies");
       cy.wait("@getPengerOgKontoForm");

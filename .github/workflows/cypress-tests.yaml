@@ -27,7 +27,7 @@ jobs:
         with:
           install: false
           start: yarn preview:fyllut
-          wait-on: "http://127.0.0.1:3001/fyllut/internal/isready"
+          wait-on: "http://localhost:3001/fyllut/internal/isready"
           wait-on-timeout: 120
           command: yarn cypress:fyllut
           config: video=false
@@ -54,7 +54,7 @@ jobs:
         with:
           install: false
           start: yarn preview:bygger
-          wait-on: "http://127.0.0.1:3000/internal/isready"
+          wait-on: "http://localhost:3000/internal/isready"
           wait-on-timeout: 120
           command: yarn cypress:bygger
           config: video=false

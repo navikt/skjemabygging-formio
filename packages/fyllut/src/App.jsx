@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 function App({ className }) {
   const styles = useStyles();
   return (
-    <div className={classNames(className, styles.app, "cool")}>
+    <main className={classNames(className, styles.app, "cool")}>
       <Switch>
         <Route exact path="/">
           <AllForms />
@@ -24,7 +24,7 @@ function App({ className }) {
           <FormPageWrapper />
         </Route>
       </Switch>
-    </div>
+    </main>
   );
 }
 
