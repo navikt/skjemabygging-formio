@@ -43,6 +43,7 @@ describe("DigitalSubmissionButton", () => {
             form={{ components: [] } as unknown as NavFormType}
             translations={{}}
             updateSubmission={vi.fn()}
+            onFyllutStateChange={vi.fn()}
           >
             <LanguagesProvider translations={defaultTranslations}>
               <DigitalSubmissionButton {...defaultProps} />
