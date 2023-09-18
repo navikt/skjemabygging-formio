@@ -1,6 +1,6 @@
 <div>
-{% if (ctx.submission?.fyllutState?.mellomlagring?.modified) { %}
-<p class="navigation-detail">{{ctx.t('Sist lagret') + ' ' + ctx.submission.fyllutState.mellomlagring.modified}}</p>
+{% if (ctx.submission?.fyllutState?.mellomlagring?.savedDate) { %}
+<p class="navigation-detail">{{ctx.t('Sist lagret') + ' ' + ctx.submission.fyllutState.mellomlagring.savedDate}}</p>
 {% } %}
 <nav id="{{ ctx.wizardKey }}-nav" >
   {% if ((ctx.buttons.next || ctx.buttons.submit) && ctx.buttons.previous) { %}

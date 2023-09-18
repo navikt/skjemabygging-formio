@@ -148,9 +148,9 @@ export interface NavFormType {
 export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
 
 export interface FyllutState {
-  mellomlagring: {
+  mellomlagring?: {
     isActive?: boolean;
-    modified?: string;
+    savedDate?: string;
   };
 }
 
