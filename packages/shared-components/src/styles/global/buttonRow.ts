@@ -20,7 +20,7 @@ const buttonRow = {
   },
   ".navigation-detail": {
     display: "flex",
-    justifyContent: "flex-center",
+    justifyContent: "center",
   },
 };
 
