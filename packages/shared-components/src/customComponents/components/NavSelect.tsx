@@ -1,13 +1,13 @@
 import { Component, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import selectEditForm from "formiojs/components/select/Select.form";
 import { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import ReactSelect, { components } from "react-select";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import http from "../../api/http";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
 import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
+import { createRoot } from "react-dom/client";
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 
@@ -236,7 +236,8 @@ class NavSelect extends FormioReactComponent {
           });
       }
     }
-    return ReactDOM.render(
+    const root = createRoot(element);
+    return root.render(
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
@@ -249,7 +250,6 @@ class NavSelect extends FormioReactComponent {
         inputRef={(ref) => (this.input = ref)}
         isLoading={this.isLoading}
       />,
-      element,
     );
   }
 
@@ -261,7 +261,8 @@ class NavSelect extends FormioReactComponent {
 
   detachReact(element) {
     if (element) {
-      ReactDOM.unmountComponentAtNode(element);
+      const root = createRoot(element);
+      root.unmount();
     }
   }
 

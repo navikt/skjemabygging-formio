@@ -8,10 +8,10 @@ import validationEditForm from "formiojs/components/_classes/component/editForm/
 import { getContextComponents } from "formiojs/utils/utils";
 import moment from "moment";
 import React, { useEffect } from "react";
-import ReactDOM from "react-dom";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent.jsx";
 import { UseDatepickerOptions } from "@navikt/ds-react/esm/date/hooks/useDatepicker";
+import { createRoot } from "react-dom/client";
 
 const SUBMISSION_DATE_FORMAT = "YYYY-MM-DD";
 
@@ -330,7 +330,8 @@ export default class NavDatepicker extends FormioReactComponent {
   }
 
   renderReact(element) {
-    return ReactDOM.render(
+    const root = createRoot(element);
+    return root.render(
       <DatovelgerWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
@@ -340,7 +341,6 @@ export default class NavDatepicker extends FormioReactComponent {
         readOnly={this.options.readOnly}
         inputRef={(r) => (this.input = r)}
       />,
-      element,
     );
   }
 
@@ -352,7 +352,8 @@ export default class NavDatepicker extends FormioReactComponent {
 
   detachReact(element) {
     if (element) {
-      ReactDOM.unmountComponentAtNode(element);
+      const root = createRoot(element);
+      root.unmount();
     }
   }
 

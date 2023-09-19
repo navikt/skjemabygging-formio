@@ -1,10 +1,10 @@
 import { AppConfigProvider, Modal } from "@navikt/skjemadigitalisering-shared-components";
 import Pusher from "pusher-js";
 import React from "react";
-import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/auth-context";
+import { createRoot } from "react-dom/client";
 
 const dokumentinnsendingDevURL = "https://tjenester-q0.nav.no/dokumentinnsending";
 
@@ -24,7 +24,8 @@ fetch("/api/config")
   .then((config) => renderReact(config));
 
 const renderReact = (config) => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById("root")!);
+  root.render(
     <React.StrictMode>
       <BrowserRouter>
         <AppConfigProvider
@@ -40,6 +41,5 @@ const renderReact = (config) => {
         </AppConfigProvider>
       </BrowserRouter>
     </React.StrictMode>,
-    document.getElementById("root"),
   );
 };
