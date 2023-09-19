@@ -13,7 +13,7 @@ import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithProm
 import { hasRelevantAttachments } from "../components/attachmentsUtil";
 import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
-import { makeStyles } from "../../index";
+import makeStyles from "../../util/jss";
 
 export interface Props {
   form: NavFormType;
