@@ -31,7 +31,7 @@ export function IntroPage({ form, formUrl }: Props) {
   );
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
-  const basename = useHref("/");
+  const basePath = useHref("/");
 
   useEffect(() => {
     if (selectedSubmissionMethod) {
@@ -67,7 +67,7 @@ export function IntroPage({ form, formUrl }: Props) {
     if (selectedSubmissionMethod) {
       searchParams.set("sub", selectedSubmissionMethod);
       // important to reload page due to forced idporten login if sub=digital
-      window.location.href = `${basename}${formUrl}/${firstPanelSlug}?${searchParams.toString()}`;
+      window.location.href = `${basePath}${formUrl}/${firstPanelSlug}?${searchParams.toString()}`;
     }
   };
 
