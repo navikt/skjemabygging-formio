@@ -19,6 +19,7 @@ import {
 } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../languages";
+import { getFyllutMellomlagringState, getSubmissionWithFyllutState, removeFyllutState } from "./utils";
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -42,14 +43,6 @@ interface SendInnProviderProps {
 
 type MellomlagringErrorType = "START" | "GET" | "NOT FOUND" | "UPDATE" | "SUBMIT" | "DELETE";
 type MellomlagringError = { title: string; message: string; type: MellomlagringErrorType };
-
-const dateFormat: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "2-digit",
-  year: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-};
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
@@ -89,31 +82,6 @@ const SendInnProvider = ({
     [history],
   );
 
-  const getFyllutMellomlagringState = (response?: SendInnSoknadResponse): FyllutState["mellomlagring"] | undefined => {
-    if (response) {
-      const submission = response.hoveddokumentVariant.document?.data;
-      const savedDate = new Date(response.endretDato).toLocaleString("no", dateFormat);
-      return {
-        ...submission?.fyllutState?.mellomlagring,
-        isActive: true,
-        savedDate,
-      };
-    }
-  };
-
-  const getSubmissionWithFyllutState = (response?: SendInnSoknadResponse) => {
-    if (response) {
-      const submission = response.hoveddokumentVariant.document?.data;
-      return {
-        ...submission,
-        fyllutState: {
-          ...submission?.fyllutState,
-          mellomlagring: getFyllutMellomlagringState(response) ?? submission?.fyllutState?.mellomlagring,
-        },
-      };
-    }
-  };
-
   useEffect(() => {
     if (fyllutMellomlagringState) {
       onFyllutStateChange({ mellomlagring: fyllutMellomlagringState });
@@ -132,6 +100,7 @@ const SendInnProvider = ({
           if (response?.hoveddokumentVariant.document) {
             addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
             updateSubmission(getSubmissionWithFyllutState(response));
+            setFyllutMellomlagringState(getFyllutMellomlagringState(response));
           }
         }
       } catch (error: any) {
@@ -176,7 +145,13 @@ const SendInnProvider = ({
         setMellomlagringStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
+        const response = await createSoknad(
+          appConfig,
+          form,
+          removeFyllutState(submission),
+          currentLanguage,
+          translation,
+        );
         setInnsendingsId(response?.innsendingsId);
         addQueryParamToUrl("innsendingsId", response?.innsendingsId);
         setIsMellomlagringReady(true);
@@ -193,7 +168,14 @@ const SendInnProvider = ({
       try {
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        const response = await updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        const response = await updateSoknad(
+          appConfig,
+          form,
+          removeFyllutState(submission),
+          currentLanguage,
+          translation,
+          innsendingsId,
+        );
         setFyllutMellomlagringState(getFyllutMellomlagringState(response));
         return response;
       } catch (error: any) {
@@ -222,9 +204,10 @@ const SendInnProvider = ({
     }
   };
 
-  const submitSoknad = async (submission: Submission) => {
+  const submitSoknad = async (appSubmission: Submission) => {
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
+    const submission = removeFyllutState(appSubmission);
     if (isMellomlagringEnabled && innsendingsId) {
       try {
         return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);

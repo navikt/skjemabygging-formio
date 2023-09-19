@@ -73,10 +73,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
+    // We need to get location data from window, since this function runs inside formio
     history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
+    // We need to get location data from window, since this function runs inside formio
+    // www.nav.no/fyllut/:form/:panel
     const panelFromUrl = window.location.pathname.split("/")[3];
     if (!panelFromUrl) {
       const pathOfPanel = getPanelSlug(form, 0);
@@ -141,11 +144,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
       destinasjon: `${formUrl}/oppsummering`,
     });
+    // We need to get location data from window, since this function runs inside formio
     const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
       steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
       skjemastegNokkel,
     });
+    // We need to get location data from window, since this function runs inside formio
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
