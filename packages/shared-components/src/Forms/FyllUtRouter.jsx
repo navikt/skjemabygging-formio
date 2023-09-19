@@ -49,6 +49,15 @@ const FyllUtRouter = ({ form, translations }) => {
     }
   }, [isMellomLagringActive]);
 
+  const onFyllutStateChange = (fyllutState) => {
+    setSubmission((prevSubmission) => {
+      return {
+        ...prevSubmission,
+        fyllutState,
+      };
+    });
+  };
+
   return (
     <LanguagesProvider translations={translations}>
       <SendInnProvider
@@ -57,15 +66,7 @@ const FyllUtRouter = ({ form, translations }) => {
         updateSubmission={(submission) => {
           setSubmission(submission);
         }}
-        onFyllutStateChange={(fyllutState) => {
-          setSubmission((prevSubmission) => {
-            const newSub = {
-              ...prevSubmission,
-              fyllutState: { ...(prevSubmission?.fyllutState ?? {}), ...fyllutState },
-            };
-            return newSub;
-          });
-        }}
+        onFyllutStateChange={onFyllutStateChange}
       >
         <FormTitle form={form} />
         <div className={styles.container}>
