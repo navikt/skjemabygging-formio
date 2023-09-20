@@ -22,6 +22,16 @@ const buttonRow = {
     display: "flex",
     justifyContent: "center",
   },
+  ".modal-close": {
+    position: "absolute",
+    right: "1rem",
+    top: "1rem",
+    width: "initial",
+    minWidth: "initial",
+  },
+  ".cancel-warning-overlay": {
+    display: "none",
+  },
 };
 
 export default buttonRow;
