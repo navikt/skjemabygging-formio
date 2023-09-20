@@ -1,6 +1,6 @@
 import { AppConfigProvider, Modal } from "@navikt/skjemadigitalisering-shared-components";
 import Pusher from "pusher-js";
-import React from "react";
+import React, { StrictMode } from "react";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/auth-context";
@@ -26,7 +26,7 @@ fetch("/api/config")
 const renderReact = (config) => {
   const root = createRoot(document.getElementById("root")!);
   root.render(
-    <React.StrictMode>
+    <StrictMode>
       <BrowserRouter>
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentinnsendingDevURL}
@@ -40,6 +40,6 @@ const renderReact = (config) => {
           </AuthProvider>
         </AppConfigProvider>
       </BrowserRouter>
-    </React.StrictMode>,
+    </StrictMode>,
   );
 };

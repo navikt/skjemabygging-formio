@@ -30,6 +30,8 @@ describe("Amplitude", () => {
     cy.get('[type="radio"]').check("digital");
     cy.clickStart();
     cy.checkLogToAmplitude("skjema åpnet", { innsendingskanal: "digital" });
+    // This runs twice since react 18 render the initial twice in Strict mode
+    cy.checkLogToAmplitude("skjema åpnet", { innsendingskanal: "digital" });
 
     // Veiledning step
     cy.clickNextStep();
@@ -51,12 +53,19 @@ describe("Amplitude", () => {
 
     cy.get(".navds-radio-group")
       .first()
-      .should("exist")
+      .should("be.visible")
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Har du norsk fødselsnummer eller D-nummer?" });
 
-    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("be.visible").type("10.05.1995").blur();
+    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" })
+      .should("be.visible")
+      .focus()
+      .type("10.05.1995")
+      .blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Din fødselsdato (dd.mm.åååå)" });
+
+    // Problems with blur for date, so click an element instead.
+    cy.findByRole("textbox", { name: "Fornavn" }).click();
 
     cy.get(".navds-radio-group")
       .eq(1)

@@ -1,5 +1,5 @@
 import { AppConfigProvider, Modal, url } from "@navikt/skjemadigitalisering-shared-components";
-import React from "react";
+import React, { StrictMode } from "react";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import ConfirmDelingslenkeModal from "./components/ConfirmDelingslenkeModal";
@@ -29,7 +29,7 @@ httpFyllut
 const renderReact = (dokumentInnsendingBaseURL, config) => {
   const root = createRoot(document.getElementById("root")!);
   root.render(
-    <React.StrictMode>
+    <StrictMode>
       <BrowserRouter basename="/fyllut">
         <AppConfigProvider
           dokumentinnsendingBaseURL={dokumentInnsendingBaseURL}
@@ -46,6 +46,6 @@ const renderReact = (dokumentInnsendingBaseURL, config) => {
           <App />
         </AppConfigProvider>
       </BrowserRouter>
-    </React.StrictMode>,
+    </StrictMode>,
   );
 };

@@ -38,6 +38,7 @@ const CheckboxWrapper = ({ component, checkboxRef, translate, onChange, value })
 
 export default class CheckboxComponent extends FormioReactComponent {
   input = null;
+  rootElement;
 
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
@@ -195,8 +196,8 @@ export default class CheckboxComponent extends FormioReactComponent {
   }
 
   renderReact(element) {
-    const root = createRoot(element);
-    return root.render(
+    if (!this.rootElement) this.rootElement = createRoot(element);
+    return this.rootElement.render(
       <CheckboxWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
@@ -226,8 +227,9 @@ export default class CheckboxComponent extends FormioReactComponent {
    */
   detachReact(element) {
     if (element) {
-      const root = createRoot(element);
-      root.unmount();
+      if (!this.rootElement) this.rootElement = createRoot(element);
+      this.rootElement.unmount();
+      this.rootElement = undefined;
     }
   }
 

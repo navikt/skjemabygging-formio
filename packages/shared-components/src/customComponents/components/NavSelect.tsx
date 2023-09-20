@@ -1,6 +1,6 @@
 import { Component, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import selectEditForm from "formiojs/components/select/Select.form";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactSelect, { components } from "react-select";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import http from "../../api/http";
@@ -96,6 +96,8 @@ class NavSelect extends FormioReactComponent {
   isLoading = false;
   loadFinished = false;
   selectOptions: any[] = [];
+
+  rootElement;
 
   static schema(...extend) {
     // @ts-ignore
@@ -236,8 +238,10 @@ class NavSelect extends FormioReactComponent {
           });
       }
     }
-    const root = createRoot(element);
-    return root.render(
+
+    if (!this.rootElement) this.rootElement = createRoot(element);
+
+    return this.rootElement.render(
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
@@ -261,8 +265,9 @@ class NavSelect extends FormioReactComponent {
 
   detachReact(element) {
     if (element) {
-      const root = createRoot(element);
-      root.unmount();
+      if (!this.rootElement) this.rootElement = createRoot(element);
+      this.rootElement.unmount();
+      this.rootElement = undefined;
     }
   }
 
