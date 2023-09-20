@@ -32,6 +32,10 @@ const buttonRow = {
   ".cancel-warning-overlay": {
     display: "none",
   },
+  ".modal-heading": {
+    marginTop: 0,
+    fontSize: "1.5rem",
+  },
 };
 
 export default buttonRow;

@@ -13,10 +13,10 @@
               </svg>
             </span>
           </button>
-          <h3>Avbryt og slett utkast?</h3>
-          <p>Alle opplysningene du har fylt ut vil bli slettet.</p>
+          <h3 class="modal-heading">{{ctx.t('Avbryt og slett utkast?')}}</h3>
+          <p>{{ctx.t('Alle opplysningene du har fylt ut vil bli slettet.')}}</p>
           <nav class="button-row">
-            <button class="navds-button navds-button--primary" ref="{{ctx.wizardKey}}-cancel" type="submit">
+            <button class="navds-button navds-button--danger" ref="{{ctx.wizardKey}}-cancel" type="submit">
               <span aria-live="polite" class="navds-label">{{ctx.t('Ja, avbryt og slett utkast')}}</span>
             </button>
             <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel-warning-close" type="button">
