@@ -1,6 +1,6 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useRef } from "react";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -23,7 +23,6 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { featureToggles, submissionMethod } = useAppConfig();
   const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
-  const { panelSlug } = useParams();
   const { hash } = useLocation();
   const mutationObserverRef = useRef(undefined);
 
@@ -74,16 +73,20 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
+    // We need to get location data from window, since this function runs inside formio
     history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
-    if (!panelSlug) {
+    // We need to get location data from window, since this function runs inside formio
+    // www.nav.no/fyllut/:form/:panel
+    const panelFromUrl = window.location.pathname.split("/")[3];
+    if (!panelFromUrl) {
       const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
     } else {
       if (typeof formioInstance?.setPage === "function") {
-        const panelIndex = formioInstance.currentPanels.indexOf(panelSlug);
+        const panelIndex = formioInstance.currentPanels.indexOf(panelFromUrl);
         if (panelIndex >= 0) {
           formioInstance.setPage(panelIndex);
         } else {
@@ -141,11 +144,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
       destinasjon: `${formUrl}/oppsummering`,
     });
+    // We need to get location data from window, since this function runs inside formio
     const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
       steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
       skjemastegNokkel,
     });
+    // We need to get location data from window, since this function runs inside formio
     history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 

@@ -12,6 +12,7 @@ import {
   Panel,
   Submission,
   SubmissionData,
+  FyllutState,
   UsageContext,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
@@ -86,6 +87,7 @@ export type {
   NavFormType,
   SubmissionData,
   Submission,
+  FyllutState,
   Component,
   Panel,
   Enhet,

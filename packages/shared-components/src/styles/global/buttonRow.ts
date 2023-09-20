@@ -18,6 +18,10 @@ const buttonRow = {
       },
     },
   },
+  ".navigation-detail": {
+    display: "flex",
+    justifyContent: "center",
+  },
 };
 
 export default buttonRow;

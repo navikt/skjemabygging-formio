@@ -14,6 +14,7 @@ export const grensesnitt = {
     Fjern: "Fjern",
   },
 
+  mostRecentSave: "Sist lagret",
   emptySubmissionError: "Kan ikke fortsette. Innsendingen er tom.",
 
   languageSelector: {

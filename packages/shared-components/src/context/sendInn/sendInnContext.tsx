@@ -1,4 +1,11 @@
-import { I18nTranslations, Language, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  I18nTranslations,
+  Language,
+  NavFormType,
+  Submission,
+  TEXTS,
+  FyllutState,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {
@@ -12,6 +19,7 @@ import {
 } from "../../api/sendInnSoknad";
 import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../languages";
+import { getFyllutMellomlagringState, getSubmissionWithFyllutState, removeFyllutState } from "./utils";
 
 interface SendInnContextType {
   startMellomlagring: (submission: Submission) => Promise<SendInnSoknadResponse | undefined>;
@@ -30,6 +38,7 @@ interface SendInnProviderProps {
   form: NavFormType;
   translations: I18nTranslations;
   updateSubmission: (submission?: Submission) => void;
+  onFyllutStateChange: (fyllutState: Partial<FyllutState>) => void;
 }
 
 type MellomlagringErrorType = "START" | "GET" | "NOT FOUND" | "UPDATE" | "SUBMIT" | "DELETE";
@@ -37,10 +46,17 @@ type MellomlagringError = { title: string; message: string; type: MellomlagringE
 
 const SendInnContext = createContext<SendInnContextType>({} as SendInnContextType);
 
-const SendInnProvider = ({ children, form, translations, updateSubmission }: SendInnProviderProps) => {
+const SendInnProvider = ({
+  children,
+  form,
+  translations,
+  updateSubmission,
+  onFyllutStateChange,
+}: SendInnProviderProps) => {
   const [mellomlagringStarted, setMellomlagringStarted] = useState(false);
   const [innsendingsId, setInnsendingsId] = useState<string>();
   const [mellomlagringError, setMellomlagringError] = useState<MellomlagringError>();
+  const [fyllutMellomlagringState, setFyllutMellomlagringState] = useState<FyllutState["mellomlagring"]>();
 
   const { translate } = useLanguages();
   const appConfig = useAppConfig();
@@ -67,6 +83,12 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
   );
 
   useEffect(() => {
+    if (fyllutMellomlagringState) {
+      onFyllutStateChange({ mellomlagring: fyllutMellomlagringState });
+    }
+  }, [fyllutMellomlagringState]);
+
+  useEffect(() => {
     const retrievePreviousSubmission = async () => {
       try {
         const searchParams = new URLSearchParams(search);
@@ -77,7 +99,8 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
           const response = await getSoknad(innsendingsId, appConfig);
           if (response?.hoveddokumentVariant.document) {
             addQueryParamToUrl("lang", response.hoveddokumentVariant.document.language);
-            updateSubmission(response.hoveddokumentVariant.document?.data);
+            updateSubmission(getSubmissionWithFyllutState(response));
+            setFyllutMellomlagringState(getFyllutMellomlagringState(response));
           }
         }
       } catch (error: any) {
@@ -122,7 +145,13 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
         setMellomlagringStarted(true);
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        const response = await createSoknad(appConfig, form, submission, currentLanguage, translation);
+        const response = await createSoknad(
+          appConfig,
+          form,
+          removeFyllutState(submission),
+          currentLanguage,
+          translation,
+        );
         setInnsendingsId(response?.innsendingsId);
         addQueryParamToUrl("innsendingsId", response?.innsendingsId);
         setIsMellomlagringReady(true);
@@ -139,7 +168,16 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
       try {
         const currentLanguage = getLanguageFromSearchParams();
         const translation = translationForLanguage(currentLanguage);
-        return updateSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);
+        const response = await updateSoknad(
+          appConfig,
+          form,
+          removeFyllutState(submission),
+          currentLanguage,
+          translation,
+          innsendingsId,
+        );
+        setFyllutMellomlagringState(getFyllutMellomlagringState(response));
+        return response;
       } catch (error: any) {
         setMellomlagringError({
           type: "UPDATE",
@@ -166,9 +204,10 @@ const SendInnProvider = ({ children, form, translations, updateSubmission }: Sen
     }
   };
 
-  const submitSoknad = async (submission: Submission) => {
+  const submitSoknad = async (appSubmission: Submission) => {
     const currentLanguage = getLanguageFromSearchParams();
     const translation = translationForLanguage(currentLanguage);
+    const submission = removeFyllutState(appSubmission);
     if (isMellomlagringEnabled && innsendingsId) {
       try {
         return await updateUtfyltSoknad(appConfig, form, submission, currentLanguage, translation, innsendingsId);

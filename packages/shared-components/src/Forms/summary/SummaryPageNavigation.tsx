@@ -13,6 +13,7 @@ import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithProm
 import { hasRelevantAttachments } from "../components/attachmentsUtil";
 import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import SaveAndDeleteButtons from "../components/navigation/SaveAndDeleteButtons";
+import makeStyles from "../../util/jss";
 
 export interface Props {
   form: NavFormType;
@@ -21,6 +22,13 @@ export interface Props {
   panelValidationList?: PanelValidation[];
   isValid: (e: React.MouseEvent<HTMLElement>) => boolean;
 }
+
+const useStyles = makeStyles({
+  navigationDetail: {
+    display: "flex",
+    justifyContent: "center",
+  },
+});
 
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
@@ -35,6 +43,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const linkBtStyle = {
     textDecoration: "none",
   };
+  const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
 
@@ -68,6 +77,12 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
         </Alert>
       )}
 
+      {submission?.fyllutState?.mellomlagring?.savedDate && (
+        <p
+          className={styles.navigationDetail}
+        >{`${TEXTS.grensesnitt.mostRecentSave} ${submission.fyllutState?.mellomlagring?.savedDate}`}</p>
+      )}
+
       <nav>
         <div className="button-row">
           {(submissionMethod === "paper" ||
@@ -96,7 +111,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
                 onSuccess={() => loggSkjemaFullfort()}
               >
                 {translate(
-                  isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward
+                  isMellomlagringActive ? TEXTS.grensesnitt.navigation.saveAndContinue : TEXTS.grensesnitt.moveForward,
                 )}
               </DigitalSubmissionButton>
             ) : (

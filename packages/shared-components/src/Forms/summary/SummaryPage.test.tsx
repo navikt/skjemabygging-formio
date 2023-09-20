@@ -38,7 +38,12 @@ const renderSummaryPage = async (
   } as Props;
   render(
     <AppConfigProvider {...appConfigProps}>
-      <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={vi.fn()}>
+      <SendInnProvider
+        form={(props.form ?? {}) as NavFormType}
+        translations={{}}
+        updateSubmission={vi.fn()}
+        onFyllutStateChange={vi.fn()}
+      >
         <Router history={history}>
           <SummaryPage {...summaryPageProps} />
           <div id="formio-summary-hidden" hidden />
