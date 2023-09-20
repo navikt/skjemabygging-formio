@@ -27,6 +27,8 @@ Wizard.prototype.attach = function (element) {
     [this.wizardKey]: "single",
     [`${this.wizardKey}-cancel-warning-overlay`]: "single",
     [`${this.wizardKey}-cancel-warning-open`]: "single",
+    [`${this.wizardKey}-cancel-warning-close`]: "single",
+    [`${this.wizardKey}-modal-close`]: "single",
     [`${this.wizardKey}-cancel`]: "single",
     [`${this.wizardKey}-previous`]: "single",
     [`${this.wizardKey}-next`]: "single",
@@ -67,10 +69,18 @@ Wizard.prototype.attach = function (element) {
 Wizard.prototype.attachCustomNavigationEvents = function () {
   const openCancelWarningButton = this.refs[`${this.wizardKey}-cancel-warning-open`];
   const cancelWarningOverlay = this.refs[`${this.wizardKey}-cancel-warning-overlay`];
+  const closeCancelWarningButton = this.refs[`${this.wizardKey}-cancel-warning-close`];
+  const closeModalButton = this.refs[`${this.wizardKey}-modal-close`];
   const openCancelWarning = () => {
     cancelWarningOverlay.style.display = "flex";
   };
+  const closeCancelWarning = (event) => {
+    event.preventDefault();
+    cancelWarningOverlay.style.display = "none";
+  };
   this.addEventListener(openCancelWarningButton, "click", openCancelWarning);
+  this.addEventListener(closeCancelWarningButton, "click", closeCancelWarning);
+  this.addEventListener(closeModalButton, "click", closeCancelWarning);
 };
 
 Wizard.prototype.detachCustomNavigationEvents = function () {
@@ -131,6 +141,28 @@ Wizard.prototype.redrawHeader = function () {
   }
 };
 
+Wizard.prototype.redrawNavigation = function () {
+  if (this.element) {
+    let navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+    if (navElement) {
+      this.detachNav();
+      navElement.outerHTML = this.renderTemplate("wizardNav", this.renderContext);
+      navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+      this.loadRefs(navElement, {
+        [`${this.wizardKey}-cancel`]: "single",
+        [`${this.wizardKey}-previous`]: "single",
+        [`${this.wizardKey}-next`]: "single",
+        [`${this.wizardKey}-submit`]: "single",
+        [`${this.wizardKey}-cancel-warning-overlay`]: "single",
+        [`${this.wizardKey}-cancel-warning-open`]: "single",
+        [`${this.wizardKey}-cancel-warning-close`]: "single",
+        [`${this.wizardKey}-modal-close`]: "single",
+      });
+      this.attachNav();
+    }
+  }
+};
+
 // Override original attachNav, in order to add custom events (like save, delete, show warning on cancel)
 Wizard.prototype.attachNav = function () {
   if (this.component.navigateOnEnter) {
@@ -140,7 +172,6 @@ Wizard.prototype.attachNav = function () {
     this.addEventListener(document, "keyup", this.handleSaveOnEnter.bind(this));
   }
 
-  console.log(this.buttons);
   Object.values(this.buttons).forEach((button) => {
     const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
     this.addEventListener(buttonElement, "click", (event) => {
