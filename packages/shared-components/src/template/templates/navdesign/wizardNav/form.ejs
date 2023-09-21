@@ -4,7 +4,7 @@
 {% } %}
   <nav id="{{ ctx.wizardKey }}-nav">
     <div class="navds-modal__overlay cancel-warning-overlay" ref="{{ctx.wizardKey}}-cancel-warning-overlay">
-      <div class="navds-modal" ref="{{ctx.wizardKey}}-cancel-warning">
+      <div class="navds-modal wizard-nav-modal" ref="{{ctx.wizardKey}}-cancel-warning">
         <div class="navds-modal__content">
           <button class="modal-close navds-button navds-button--tertiary navds-button--medium" ref="{{ctx.wizardKey}}-modal-close" aria-label="{{ctx.t('Lukk')}}">
             <span class="navds-button__icon">
@@ -13,16 +13,25 @@
               </svg>
             </span>
           </button>
-          <h3 class="modal-heading">{{ctx.t('Avbryt og slett utkast?')}}</h3>
-          <p>{{ctx.t('Alle opplysningene du har fylt ut vil bli slettet.')}}</p>
-          <nav class="button-row">
+          {% if (ctx.submission?.fyllutState?.mellomlagring?.isActive) { %}
+            <h3 class="modal-heading">{{ctx.t('Avbryt og slett utkast?')}}</h3>
+            <p>{{ctx.t('Alle opplysningene du har fylt ut vil bli slettet.')}}</p>
+          {% } else { %}
+            <h3 class="modal-heading">{{ctx.t('Avbryt og forkast?')}}</h3>
+            <p>{{ctx.t('Alle opplysningene du har fylt ut vil bli slettet. Hvis du ønsker å fortsette utfyllingen senere kan du la nettleservinduet stå åpent til neste gang.')}}</p>
+          {% } %}
+          <div class="button-row">
             <button class="navds-button navds-button--danger" ref="{{ctx.wizardKey}}-cancel" type="submit">
-              <span aria-live="polite" class="navds-label">{{ctx.t('Ja, avbryt og slett utkast')}}</span>
+              {% if (ctx.submission?.fyllutState?.mellomlagring?.isActive) { %}
+                <span aria-live="polite" class="navds-label">{{ctx.t('Ja, avbryt og slett utkast')}}</span>
+              {% } else { %}
+                <span aria-live="polite" class="navds-label">{{ctx.t('Ja, avbryt og forkast')}}</span>
+              {% } %}
             </button>
             <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel-warning-close" type="button">
               <span aria-live="polite" class="navds-label">{{ctx.t('Nei, fortsett utfyllingen')}}</span>
             </button>
-          </nav>
+          </div>
         </div>
       </div>
     </div>
@@ -57,7 +66,7 @@
   {% } %}
   {% if (ctx.buttons.cancel) { %}
     <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel-warning-open" type="button">
-      <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt')}}</span>
+      <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt og slett')}}</span>
     </button>
   {% } %}
     </div>
