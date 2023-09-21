@@ -23,9 +23,6 @@
     <% } %>
     <link rel="manifest" href="/manifest.json"/>
     <link rel="shortcut icon" href="/favicon.ico"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
-            integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <% if (process.env.NODE_ENV !== 'development') { %>
     {{{DECORATOR_STYLES}}}
     <% } %>
@@ -42,6 +39,9 @@
 <% if (process.env.NODE_ENV !== 'development') { %>
 {{{DECORATOR_FOOTER}}} {{{DECORATOR_SCRIPTS}}}
 <% } %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+        integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="module" src="src/index.jsx"></script>
 <script>var global = global || window</script>
 </body>
