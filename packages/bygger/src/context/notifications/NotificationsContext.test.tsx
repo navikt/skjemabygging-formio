@@ -1,6 +1,5 @@
 import { AppConfigProvider } from "@navikt/skjemadigitalisering-shared-components";
-import { act } from "@testing-library/react";
-import { renderHook } from "@testing-library/react-hooks";
+import { act, renderHook } from "@testing-library/react";
 import PusherNotificationsProvider, { CHANNEL, EVENT, usePusherNotifications } from "./NotificationsContext";
 import Pusher, { Channel } from "pusher-js";
 

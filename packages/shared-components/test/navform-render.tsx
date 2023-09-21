@@ -1,13 +1,8 @@
 import { render, waitFor } from "@testing-library/react";
 import { Formio } from "formiojs";
-import Components from "formiojs/components/Components";
 import { AppConfigProvider, NavForm } from "../src";
-import CustomComponents from "../src/customComponents";
-import Template from "../src/template";
 
 const setupNavFormio = () => {
-  Formio.use(Template);
-  Components.setComponents(CustomComponents);
   new Formio("http://unittest.nav-formio-api.no");
 };
 

@@ -42,8 +42,7 @@
     "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
-    "@testing-library/react": "^12.1.5",
-    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/react": "^14.0.0",
     "lodash.template": "^4.5.0"
   }
 }

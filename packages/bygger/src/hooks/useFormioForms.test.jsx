@@ -1,6 +1,5 @@
 import { NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import { getNodeText, render, screen, waitFor } from "@testing-library/react";
-import { renderHook } from "@testing-library/react-hooks";
+import { getNodeText, render, renderHook, screen, waitFor } from "@testing-library/react";
 import { useEffect, useState } from "react";
 import { AuthProvider } from "../context/auth-context";
 import { FeedbackEmitContext } from "../context/notifications/FeedbackContext";
