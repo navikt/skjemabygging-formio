@@ -1,5 +1,5 @@
-import { AppConfigProvider, LanguagesProvider, NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
-import { render, screen } from "@testing-library/react";
+import { AppConfigProvider, NavFormioJs } from "@navikt/skjemadigitalisering-shared-components";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import createMockImplementation, { DEFAULT_PROJECT_URL } from "../../test/backendMockImplementation";
@@ -33,12 +33,7 @@ describe("FormsRouter", () => {
         >
           <FeedbackProvider>
             <AppConfigProvider featureToggles={featureToggles} baseUrl={DEFAULT_PROJECT_URL}>
-              <LanguagesProvider translations={{}}>
-                <AuthenticatedApp
-                  formio={new NavFormioJs.Formio(DEFAULT_PROJECT_URL)}
-                  serverURL={DEFAULT_PROJECT_URL}
-                />
-              </LanguagesProvider>
+              <AuthenticatedApp formio={new NavFormioJs.Formio(DEFAULT_PROJECT_URL)} serverURL={DEFAULT_PROJECT_URL} />
             </AppConfigProvider>
           </FeedbackProvider>
         </AuthContext.Provider>
@@ -55,8 +50,10 @@ describe("FormsRouter", () => {
 
   it("can edit a form", async () => {
     renderApp("/forms/debugskjema/edit");
-    expect(await screen.findByRole("heading", { name: "debug skjema" })).toBeInTheDocument();
-    expect(await screen.findByLabelText("Text Area", { exact: false })).toBeInTheDocument();
+    await waitFor(async () => {
+      expect(await screen.findByRole("heading", { name: "debug skjema" })).toBeInTheDocument();
+      expect(await screen.findByLabelText("Text Area", { exact: false })).toBeInTheDocument();
+    });
   });
 
   it("navigates from the list to the editor", async () => {
