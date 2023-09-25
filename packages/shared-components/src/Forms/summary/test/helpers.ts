@@ -4,7 +4,7 @@ import { defaultForm } from "./data";
 
 export const formWithProperties = (
   props: Partial<FormPropertiesType>,
-  originalForm: Partial<NavFormType> = defaultForm
+  originalForm: Partial<NavFormType> = defaultForm,
 ): NavFormType =>
   ({
     ...originalForm,
@@ -12,7 +12,7 @@ export const formWithProperties = (
       ...originalForm.properties,
       ...props,
     },
-  } as unknown as NavFormType);
+  }) as unknown as NavFormType;
 
 export type Buttons = {
   redigerSvarKnapp: HTMLButtonElement;

@@ -1,6 +1,7 @@
 import fs from "fs";
 import { glob } from "glob";
 import fetch from "node-fetch";
+import { logger } from "../logger.js";
 
 const readFile = async (filepath) => {
   const filehandle = await fs.promises.open(filepath, "r");
@@ -18,7 +19,7 @@ const loadFileFromDirectory = async (dir, filename, defaultReturn = {}) => {
     const file = await readFile(`${dir}/${existingFileName}`);
     return JSON.parse(file);
   }
-  console.warn(`File "${filename}" does not exist in directory "${dir}"`);
+  logger.warn(`File "${filename}" does not exist in directory "${dir}"`);
   return defaultReturn;
 };
 
@@ -29,7 +30,7 @@ const loadAllJsonFilesFromDirectory = async (dir) => {
     const fileContentsList = await Promise.all(promises);
     return fileContentsList.map(JSON.parse);
   }
-  console.warn("Directory does not exist:", dir);
+  logger.warn(`Directory does not exist: ${dir}`);
   return [];
 };
 
@@ -39,7 +40,7 @@ const fetchFromFormioApi = async (url) => {
     if (response.ok) {
       return await response.json();
     }
-    console.log("Failed to retrieve forms from ", url);
+    logger.warn(`Failed to retrieve forms from ${url}`);
   }
   return [];
 };
