@@ -143,7 +143,7 @@ if (typeof global === "object" && global.FormioUtils) {
 
 // Formio require lodash to be available on window for custom conditionals.
 if (!!Utils._ && !window._) {
-  window._ = Utils["_"];
+  window._ = Utils._;
 }
 
 export default UtilsOverrides;
