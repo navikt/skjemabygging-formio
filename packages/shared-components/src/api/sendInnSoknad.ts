@@ -1,21 +1,33 @@
-import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { I18nTranslationMap, Language, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { getRelevantAttachments, hasOtherDocumentation } from "../Forms/components/attachmentsUtil";
 import { AppConfigContextType } from "../configContext";
 
 export interface SendInnSoknadResponse {
   innsendingsId: string;
+  hoveddokumentVariant: {
+    document: { data: Submission; language: Language };
+  };
+  endretDato: string;
 }
+
+export const getSoknad = async (
+  innsendingsId: string,
+  appConfig: AppConfigContextType,
+): Promise<SendInnSoknadResponse | undefined> => {
+  const { http, baseUrl } = appConfig;
+  return http?.get<SendInnSoknadResponse>(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
+};
 
 export const createSoknad = async (
   appConfig: AppConfigContextType,
   form: NavFormType,
   submission: Submission,
   language: string,
-  translation: I18nTranslationMap = {}
+  translation: I18nTranslationMap = {},
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
   return http?.post<SendInnSoknadResponse>(
-    `${baseUrl}/api/send-inn/soknad`,
+    `${baseUrl}/api/send-inn/soknad?opprettNySoknad=true`,
     {
       form,
       submission,
@@ -24,7 +36,7 @@ export const createSoknad = async (
       submissionMethod,
     },
     {},
-    { redirectToLocation: false }
+    { redirectToLocation: false },
   );
 };
 
@@ -34,7 +46,7 @@ export const updateSoknad = async (
   submission: Submission,
   language: string,
   translation: I18nTranslationMap = {},
-  innsendingsId?: string
+  innsendingsId?: string,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
   if (innsendingsId) {
@@ -49,7 +61,7 @@ export const updateSoknad = async (
         submissionMethod,
       },
       {},
-      { redirectToLocation: false }
+      { redirectToLocation: false },
     );
   } else {
     logger?.info("Kunne ikke mellomlagre søknaden fordi innsendingsId mangler");
@@ -62,11 +74,11 @@ export const updateUtfyltSoknad = async (
   submission: Submission,
   language: string,
   translation: I18nTranslationMap = {},
-  innsendingsId?: string
+  innsendingsId?: string,
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod, logger } = appConfig;
-  const attachments = getRelevantAttachments(form, submission);
-  const otherDocumentation = hasOtherDocumentation(form, submission);
+  const attachments = getRelevantAttachments(form, submission.data);
+  const otherDocumentation = hasOtherDocumentation(form, submission.data);
 
   if (innsendingsId) {
     return http?.put<SendInnSoknadResponse>(
@@ -82,10 +94,22 @@ export const updateUtfyltSoknad = async (
         otherDocumentation,
       },
       {},
-      { redirectToLocation: true }
+      { redirectToLocation: true },
     );
   } else {
     logger?.info("Kunne ikke sende inn søknaden fordi innsendingsId mangler");
+  }
+};
+
+export const deleteSoknad = async (
+  appConfig: AppConfigContextType,
+  innsendingsId: string,
+): Promise<{ status: string; info: string } | undefined> => {
+  const { http, baseUrl, logger } = appConfig;
+  if (innsendingsId) {
+    return http?.delete(`${baseUrl}/api/send-inn/soknad/${innsendingsId}`);
+  } else {
+    logger?.info("Kunne ikke slette søknaden fordi innsendingsId mangler");
   }
 };
 
@@ -95,11 +119,11 @@ export const createSoknadWithoutInnsendingsId = async (
   form: NavFormType,
   submission: Submission,
   language: string,
-  translations: I18nTranslationMap = {}
+  translations: I18nTranslationMap = {},
 ): Promise<SendInnSoknadResponse | undefined> => {
   const { http, baseUrl, submissionMethod } = appConfig;
-  const attachments = getRelevantAttachments(form, submission);
-  const otherDocumentation = hasOtherDocumentation(form, submission);
+  const attachments = getRelevantAttachments(form, submission.data);
+  const otherDocumentation = hasOtherDocumentation(form, submission.data);
   return http?.post(
     `${baseUrl}/api/send-inn`,
     {
@@ -112,6 +136,6 @@ export const createSoknadWithoutInnsendingsId = async (
       submissionMethod,
     },
     {},
-    { redirectToLocation: true }
+    { redirectToLocation: true },
   );
 };

@@ -10,7 +10,7 @@ export default function useSkjemaSporsmalEvent(form) {
     if (
       event.changed &&
       ["radio", "checkbox", "navDatepicker", "day", "radiopanel", "navCheckbox", "navSelect"].includes(
-        event.changed.component.type
+        event.changed.component.type,
       )
     ) {
       setLastSporsmalEvent({

@@ -11,6 +11,8 @@ import {
   NewFormSignatureType,
   Panel,
   Submission,
+  SubmissionData,
+  FyllutState,
   UsageContext,
 } from "./form";
 import { ForstesideRequestBody, KjentBruker, UkjentBruker } from "./forsteside";
@@ -83,7 +85,9 @@ export type {
   FormPropertiesPublishing,
   Summary,
   NavFormType,
+  SubmissionData,
   Submission,
+  FyllutState,
   Component,
   Panel,
   Enhet,

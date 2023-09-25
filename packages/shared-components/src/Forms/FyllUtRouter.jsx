@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Prompt, Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
-import { SendInnProvider } from "../context/sendInn/sendInnContext";
+import { SendInnProvider, useSendInn } from "../context/sendInn/sendInnContext";
 import makeStyles from "../util/jss";
 import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
@@ -30,6 +30,7 @@ const ALERT_MESSAGE_BACK_BUTTON =
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles, submissionMethod, app } = useAppConfig();
+  const { isMellomLagringActive } = useSendInn();
   const { path, url: formBaseUrl } = useRouteMatch();
   const [formForRendering, setFormForRendering] = useState();
   const [submission, setSubmission] = useState();
@@ -40,17 +41,33 @@ const FyllUtRouter = ({ form, translations }) => {
   }, [form, submissionMethod]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development") {
+    if (!isMellomLagringActive) {
       addBeforeUnload();
       return () => {
         removeBeforeUnload();
       };
     }
-  }, []);
+  }, [isMellomLagringActive]);
+
+  const onFyllutStateChange = (fyllutState) => {
+    setSubmission((prevSubmission) => {
+      return {
+        ...prevSubmission,
+        fyllutState,
+      };
+    });
+  };
 
   return (
     <LanguagesProvider translations={translations}>
-      <SendInnProvider form={form} translations={translations}>
+      <SendInnProvider
+        form={form}
+        translations={translations}
+        updateSubmission={(submission) => {
+          setSubmission(submission);
+        }}
+        onFyllutStateChange={onFyllutStateChange}
+      >
         <FormTitle form={form} />
         <div className={styles.container}>
           <div className="fyllut-layout">
@@ -96,7 +113,7 @@ const FyllUtRouter = ({ form, translations }) => {
             <Route path={`${path}/:panelSlug`}>
               {formForRendering && (
                 <>
-                  {app !== "bygger" && (
+                  {app !== "bygger" && !isMellomLagringActive && (
                     <Prompt
                       message={(location) => (location.pathname === formBaseUrl ? ALERT_MESSAGE_BACK_BUTTON : true)}
                     />

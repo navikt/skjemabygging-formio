@@ -13,10 +13,14 @@ const buttonRow = {
     },
     "&__center": {
       justifyContent: "center",
-      "@media (max-width: var(--a-breakpoint-md))": {
+      "@media (max-width: var(--a-breakpoint-md-down))": {
         justifyContent: "flex-end",
       },
     },
+  },
+  ".navigation-detail": {
+    display: "flex",
+    justifyContent: "center",
   },
 };
 

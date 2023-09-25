@@ -27,11 +27,11 @@ export const loadCountryNamesForLanguages = async (languages) => {
         [languages[index]]: zipCountryNames(
           countryNamesInBokmaal,
           countryNamesPerLocale,
-          (countryName) => countryName.label
+          (countryName) => countryName.label,
         ),
       }),
-      {}
-    )
+      {},
+    ),
   );
 };
 
@@ -42,9 +42,9 @@ export const loadGlobalTranslationsForLanguages = async (languages) =>
         ...accumulated,
         ...Object.keys(translationsForLanguage).reduce(
           (translations, lang) => ({ ...translations, [lang]: { ...translationsForLanguage[lang] } }),
-          {}
+          {},
         ),
       }),
-      {}
-    )
+      {},
+    ),
   );

@@ -4,7 +4,7 @@ const flattenTranslationObject = (translationObject) => {
       ...acc,
       [val]: translationObject[val].value ? translationObject[val].value : translationObject[val],
     }),
-    {}
+    {},
   );
 };
 
@@ -23,7 +23,7 @@ const mapTranslationsToFormioI18nObject = (translations, filterPredicate) => {
         ...flattenTranslationObject(getTranslationsForLanguageCode(languageCode) || {}),
       },
     }),
-    {}
+    {},
   );
 };
 

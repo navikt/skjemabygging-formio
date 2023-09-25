@@ -52,18 +52,16 @@ export default defineConfig(({ mode }) => {
     base: "/fyllut",
     server: {
       open: false,
-      host: "127.0.0.1",
       port: 3001,
       strictPort: true,
       proxy: {
         "/fyllut/api": {
-          target: "http://127.0.0.1:8081",
+          target: "http://localhost:8081",
           changeOrigin: true,
         },
       },
     },
     preview: {
-      host: "127.0.0.1",
       port: 3001,
       strictPort: true,
     },

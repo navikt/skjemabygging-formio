@@ -40,8 +40,8 @@ function mockRequest({ headers = {}, body, params = {}, query = {} }: MockReques
     header: (name: string) => headers?.[name],
     headers: { ...headers },
     body,
-    params,
-    query,
+    params: { ...params },
+    query: { ...query },
     get: () => "",
   } as unknown as Request;
 }

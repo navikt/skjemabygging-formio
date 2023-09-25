@@ -3,6 +3,7 @@ import {
   FormPropertiesPublishing,
   FormPropertiesType,
   NavFormType,
+  navFormUtils,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { fetchWithErrorHandling } from "../fetchUtils";
 
@@ -63,6 +64,7 @@ export class FormioService {
     formioToken: string,
     userName: string,
     formProps: Partial<FormPropertiesType> = {},
+    enrichComponents: boolean = false,
   ): Promise<NavFormType> {
     const updateFormUrl = `${this.projectUrl}/form`;
     const props = { ...formProps };
@@ -72,7 +74,8 @@ export class FormioService {
     if (!props.modifiedBy) {
       props.modifiedBy = userName;
     }
-    const formWithProps = updateProps(form, props);
+    const enrichedForm = enrichComponents ? addNavIdToComponents(form) : form;
+    const formWithProps = updateProps(enrichedForm, props);
     const response: any = await fetchWithErrorHandling(`${updateFormUrl}/${form._id}`, {
       method: "PUT",
       headers: {
@@ -105,3 +108,8 @@ const updateProps = (form: NavFormType, props: Partial<FormPropertiesType>): Nav
     }),
   );
 };
+
+const addNavIdToComponents = (form: NavFormType): NavFormType => ({
+  ...form,
+  components: navFormUtils.enrichComponentsWithNavIds(form.components)!,
+});

@@ -85,12 +85,12 @@ const TranslationsFormPage = ({ skjemanummer, translations, title, flattenedComp
 
   useEffect(
     () => setCurrentTranslation((translations[languageCode] && translations[languageCode].translations) || {}),
-    [translations, languageCode]
+    [translations, languageCode],
   );
 
   useEffect(() => {
     const unusedTranslationsAsEntries = Object.entries(
-      (translations[languageCode] && translations[languageCode].translations) || {}
+      (translations[languageCode] && translations[languageCode].translations) || {},
     )
       .filter(([_, value]) => value.scope === "local")
       .filter(([key, _]) => !flattenedComponents.some(({ text }) => text === key));

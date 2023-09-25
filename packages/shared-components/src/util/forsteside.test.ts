@@ -57,7 +57,7 @@ describe("genererPersonalia", () => {
 
   it("throws error is both fodselsNummer and address is missing", () => {
     expect(() => genererPersonalia(undefined, undefined)).toThrowError(
-      "User needs to submit either fodselsNummer or address"
+      "User needs to submit either fodselsNummer or address",
     );
   });
 });
@@ -76,7 +76,7 @@ describe("getVedleggsFelterSomSkalSendes", () => {
         vedleggQ7: "leggerVedNaa",
         vedleggO9: "leggerVedNaa",
       },
-      formMedVedlegg
+      formMedVedlegg,
     );
     expect(actual.map((component) => component.key)).toEqual(["vedleggO9", "vedleggQ7"]);
   });
@@ -86,7 +86,7 @@ describe("getVedleggsFelterSomSkalSendes", () => {
         vedleggQ7: "levertTidligere",
         vedleggO9: "ettersender",
       },
-      formMedVedlegg
+      formMedVedlegg,
     );
     expect(actual.map((component) => component.key)).toEqual([]);
   });
@@ -103,7 +103,7 @@ describe("getVedleggsFelterSomSkalSendes", () => {
           genererVedleggComponent("vedlegg2", "Label 2", "O9", "Vedleggstittel 2"),
           genererVedleggComponent("vedlegg3", "Label 3", "Q7", "Vedleggstittel 3"),
         ],
-      }
+      },
     );
     expect(actual.map((component) => component.key)).toEqual(["vedlegg1", "vedlegg2", "vedlegg3"]);
   });
@@ -148,13 +148,13 @@ const formMedVedlegg = {
           "vedleggO9",
           "Skriftlig bekreftelse på studieplass",
           "O9",
-          "Bekreftelse fra studiested/skole"
+          "Bekreftelse fra studiested/skole",
         ),
         genererVedleggComponent(
           "vedleggQ7",
           "Faktura fra utdanningsinstitusjon",
           "Q7",
-          "Dokumentasjon av utgifter i forbindelse med utdanning"
+          "Dokumentasjon av utgifter i forbindelse med utdanning",
         ),
       ],
     },
@@ -185,7 +185,7 @@ describe("genererDokumentListeFoersteside", () => {
       {
         vedleggQ7: "leggerVedNaa",
         vedleggO9: "leggerVedNaa",
-      }
+      },
     );
     expect(actual).toEqual([
       "NAV 76-07.10 Registreringsskjema for tilskudd til utdanning",
@@ -268,7 +268,7 @@ describe("genererMottaksAdresse", () => {
           },
         },
         { _id: "003", data: { adresselinje1: "Gate 3", postnummer: "0003", poststed: "By" } },
-      ] as Mottaksadresse[])
+      ] as Mottaksadresse[]),
     ).toStrictEqual({
       adresse: {
         adresselinje1: "Gate 2",
@@ -284,7 +284,7 @@ describe("genererMottaksAdresse", () => {
     expect(
       genererMottaksadresse("123", [
         { _id: "001", data: { adresselinje1: "Gate 1", postnummer: "0001", poststed: "By" } },
-      ] as Mottaksadresse[])
+      ] as Mottaksadresse[]),
     ).toStrictEqual({ netsPostboks: "1400" });
   });
 
@@ -320,7 +320,7 @@ describe("genererFoerstesideData", () => {
         fodselsnummerDNummerSoker: "12345678911",
         vedleggQ7: "leggerVedNaa",
         vedleggO9: "leggerVedNaa",
-      }
+      },
     );
     expect(actual).toEqual({
       foerstesidetype: "SKJEMA",
@@ -416,7 +416,7 @@ describe("genererFoerstesideData", () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo).toEqual(
-          "Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge."
+          "Solan Gundersen, c/o Reodor Felgen, Flåklypatoppen 1, 3520 Jevnaker, Norge.",
         );
       });
     });
@@ -435,7 +435,7 @@ describe("genererFoerstesideData", () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo).toEqual(
-          "Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge."
+          "Solan Gundersen, c/o Reodor Felgen, Postboks 55 Toppen, 3520 Jevnaker, Norge.",
         );
       });
 
@@ -472,7 +472,7 @@ describe("genererFoerstesideData", () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo).toEqual(
-          "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA."
+          "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.",
         );
       });
 
@@ -492,7 +492,7 @@ describe("genererFoerstesideData", () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo).toEqual(
-          "Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA."
+          "Solan Gundersen, c/o Bart Simpson, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, USA.",
         );
       });
 
@@ -512,7 +512,7 @@ describe("genererFoerstesideData", () => {
         };
         const forsteside: ForstesideRequestBody = genererFoerstesideData(defaultForm, submission);
         expect(forsteside.ukjentBrukerPersoninfo).toEqual(
-          "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA."
+          "Solan Gundersen, 12603 Denmark Drive, Apt.556, VA 22071-9945 Herndon, Dulles, USA.",
         );
       });
     });

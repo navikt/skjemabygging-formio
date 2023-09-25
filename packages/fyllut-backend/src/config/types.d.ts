@@ -41,6 +41,8 @@ export type DefaultConfig = {
   idporten: IdportenConfig;
   mockIdportenPid?: string;
   mockIdportenJwt?: string;
+  noFormValidation?: boolean;
+  noDecorator?: boolean;
 };
 
 export type ConfigType = DefaultConfig & {
@@ -50,6 +52,7 @@ export type ConfigType = DefaultConfig & {
   naisClusterName: string;
   isDevelopment: boolean;
   isTest: boolean;
+  isProduction: boolean;
   isDelingslenke: boolean;
   pdlTokenScopeCluster: string;
 };

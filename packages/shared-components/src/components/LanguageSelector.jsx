@@ -66,7 +66,7 @@ const useLanguageSelectorStyling = makeStyles({
   },
 });
 
-const LanguageSelector = ({ label, options, className }) => {
+const LanguageSelector = ({ label, ariaLabel = "Velg språk", options, className }) => {
   const classes = useLanguageSelectorStyling();
   return (
     <div
@@ -74,7 +74,7 @@ const LanguageSelector = ({ label, options, className }) => {
         [className]: className,
       })}
     >
-      <Select className={classes.languageSelect} label={label} options={options} />
+      <Select className={classes.languageSelect} label={label} options={options} ariaLabel={ariaLabel} />
     </div>
   );
 };

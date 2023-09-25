@@ -11,7 +11,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
           { id: "id1", originalText: "aaa", translatedText: "AAA" },
           { id: "id2", originalText: "bbb", translatedText: "BBB" },
           { id: "id3", originalText: "ccc", translatedText: "CCC" },
-        ])
+        ]),
       ).toEqual({ id: "id2", originalText: "bbb", translatedText: "BBB" });
     });
 
@@ -19,7 +19,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
       expect(
         getTranslationByOriginalText("original text", [
           { id: "id", originalText: "a different original text", translatedText: "translated text" },
-        ])
+        ]),
       ).toBeUndefined();
     });
   });
@@ -33,7 +33,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
           translations={[{ id: "id", originalText: "Juli", translatedText: "July" }]}
           languageCode={"en"}
           updateTranslation={mockedUpdateTranslation}
-        />
+        />,
       );
     });
 
@@ -42,7 +42,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
     });
 
     it("renders all grensesnitt inputs", () => {
-      expect(screen.getAllByRole("textbox")).toHaveLength(49);
+      expect(screen.getAllByRole("textbox")).toHaveLength(63);
     });
 
     it("renders originalText with translatedText as value", () => {

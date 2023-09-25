@@ -64,7 +64,7 @@ const TranslationsByFormPage = ({ loadForm, saveTranslation }: TranslationsByFor
       languageCode,
       translations[languageCode]?.translations,
       path,
-      title
+      title,
     );
 
     if (!translationId && savedTranslation._id) {

@@ -16,7 +16,7 @@ describe("ConfirmDeleteLanguageModal", () => {
         onConfirm={mockedOnConfirm}
         language={language}
         isGlobal={isGlobal}
-      />
+      />,
     );
   };
 
@@ -45,7 +45,7 @@ describe("ConfirmDeleteLanguageModal", () => {
 
     it("displays text for global translations, with language in lowercase", () => {
       const modalText = screen.queryByText(
-        'Ved å klikke på "slett språk" fjerner du alle oversettelser til norsk for dette skjemaet, for godt. Denne handlingen kan ikke angres.'
+        'Ved å klikke på "slett språk" fjerner du alle oversettelser til norsk for dette skjemaet, for godt. Denne handlingen kan ikke angres.',
       );
       expect(modalText).toBeDefined();
     });
@@ -58,7 +58,7 @@ describe("ConfirmDeleteLanguageModal", () => {
 
     it("displays text for form translations, with language in lowercase", () => {
       const modalText = screen.queryByText(
-        `Ved å klikke på "slett språk" fjerner du alle oversettelser til "svensk" for dette skjemaet, for godt. Denne handlingen kan ikke angres.`
+        `Ved å klikke på "slett språk" fjerner du alle oversettelser til "svensk" for dette skjemaet, for godt. Denne handlingen kan ikke angres.`,
       );
       expect(modalText).toBeDefined();
     });

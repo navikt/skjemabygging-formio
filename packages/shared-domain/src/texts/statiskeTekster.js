@@ -24,11 +24,37 @@ export const statiske = {
       digital: "Send digitalt (krever innlogging)",
     },
   },
+  mellomlagringError: {
+    get: {
+      title: "Beklager, vi kunne ikke hente den lagrede søknaden akkurat nå.",
+      message: "Prøv igjen senere, eller fyll ut en ny søknad.",
+      notFoundMessage: "Vi kunne ikke finne denne søknaden.",
+    },
+    update: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      message:
+        "Vi klarte ikke å lagre søknaden. Vennligst prøv igjen senere. Vær oppmerksom på at du kan miste endringene dine hvis du forlater nettstedet.",
+    },
+    delete: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      message: "Vi klarte ikke å slette den lagrede søknaden. Vennligst prøv igjen senere.",
+    },
+    submit: {
+      title: "Beklager, vi har midlertidige tekniske problemer.",
+      savedDraftMessage: "Skjemaet er lagret som et utkast på Min Side - Utkast.",
+      tryLaterMessage: "Vennligst prøv igjen senere.",
+    },
+  },
   summaryPage: {
     title: "Oppsummering",
     description:
       "Vennligst sjekk at alle opplysningene dine er riktige. Hvis alle opplysningene er riktige går du videre til neste steg.",
     confirmationError: "Du må samtykke før du kan fortsette",
+    validationMessage: {
+      start:
+        "Nedenfor finner du all informasjonen du allerede har fylt inn i skjemaet, fordelt på de forskjellige stegene i skjemaet. Alle steg som mangler informasjon er markert med ",
+      end: ". Klikk på Fortsett utfylling for å gå til det første feltet i skjemaet som mangler informasjon. Klikk på Rediger...-lenken under hver stegoverskrift for å fortsette utfylling på det steget.",
+    },
   },
   warningAboutDifficultSubmission: {
     modal: {

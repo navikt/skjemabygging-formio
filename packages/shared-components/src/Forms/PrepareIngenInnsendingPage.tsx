@@ -41,7 +41,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
 
   return (
     <div className={styles.content}>
-      <main id="maincontent" className="fyllut-layout" tabIndex={-1}>
+      <section id="maincontent" className="fyllut-layout" tabIndex={-1}>
         <section className="main-col" aria-label={translate(form.properties.innsendingOverskrift)}>
           <div className="wizard-page">
             <Heading level="3" size="medium" spacing>
@@ -60,7 +60,7 @@ export function PrepareIngenInnsendingPage({ form, submission, formUrl, translat
           </div>
           <NavigateButtonComponent translate={translate} goBackUrl={goBackUrl} />
         </section>
-      </main>
+      </section>
     </div>
   );
 }

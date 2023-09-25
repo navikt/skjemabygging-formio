@@ -98,7 +98,7 @@ const useMottaksadresser = (): Output => {
       feedbackEmit.success("Publisering startet");
     } else if (response.ok && !changed) {
       feedbackEmit.warning(
-        "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)"
+        "Publiseringen inneholdt ingen endringer og ble avsluttet (nytt bygg av Fyllut ble ikke trigget)",
       );
     } else {
       feedbackEmit.error(`Publisering feilet: ${response.status}`);
@@ -110,7 +110,7 @@ const useMottaksadresser = (): Output => {
       `${NavFormioJs.Formio.getProjectUrl()}/form?type=form&tags=nav-skjema&limit=1000&properties.mottaksadresseId=${mottaksadresseId}`,
       {
         method: "GET",
-      }
+      },
     ).then((forms) => forms.json());
   };
 

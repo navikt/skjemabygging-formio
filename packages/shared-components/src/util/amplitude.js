@@ -44,7 +44,7 @@ export function loggEventSkjemaSporsmalBesvart(form, sporsmal, id, svar, pakrevd
         spørsmål: sporsmal,
         spørsmålId: id,
         påkrevd: pakrevd,
-      })
+      }),
     );
   }
 }

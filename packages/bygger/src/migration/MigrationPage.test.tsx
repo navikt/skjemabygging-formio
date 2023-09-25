@@ -47,8 +47,8 @@ describe("MigrationPage", () => {
           headers: {
             "content-type": "application/json",
           },
-        })
-      )
+        }),
+      ),
     );
     // @ts-ignore
     render(<MigrationPage />, { wrapper });
@@ -103,7 +103,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true,"prop2":99,"prop3":false}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
 
@@ -118,7 +118,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1__n_eq":"hello","prop2":"world!","prop3":true}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
 
@@ -134,7 +134,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":false}&editOptions={"prop1":true,"prop2":99,"prop3":false}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
 
@@ -148,7 +148,7 @@ describe("MigrationPage", () => {
       expect(fetchSpy).toHaveBeenCalledTimes(1);
       expect(fetchSpy).toHaveBeenCalledWith(
         '/api/migrate?searchFilters={"prop1":true}&editOptions={"prop1":false,"prop2":"new value"}',
-        expectedGetOptions
+        expectedGetOptions,
       );
     });
   });
@@ -201,7 +201,7 @@ describe("MigrationPage", () => {
         expect(screen.getByText("Skjemaer som ikke vil bli migrert")).toBeTruthy();
         expect(within(tables[1]).getAllByRole("row")[1]).toHaveTextContent("Skjema 1");
         expect(
-          screen.getByText("Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering")
+          screen.getByText("Skjemaer som matcher søkekriteriene, men ikke er aktuelle for migrering"),
         ).toBeTruthy();
         expect(within(tables[2]).getAllByRole("row")[1]).toHaveTextContent("Skjema 2");
       });

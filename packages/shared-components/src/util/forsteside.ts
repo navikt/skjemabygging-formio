@@ -185,7 +185,7 @@ const parseLanguage = (language) => {
 export function genererMottaksadresse(
   mottaksadresseId: string | undefined,
   mottaksadresser: Mottaksadresse[],
-  enhetNummer?: string
+  enhetNummer?: string,
 ): { adresse: MottaksadresseData } | { enhetsnummer?: string; netsPostboks: string } {
   if (mottaksadresseId) {
     const mottaksadresse = mottaksadresser.find((a) => a._id === mottaksadresseId);
@@ -207,7 +207,7 @@ export function genererFoerstesideData(
   submission,
   language = "nb-NO",
   mottaksadresser: Mottaksadresse[] = [],
-  enhetNummer?: string
+  enhetNummer?: string,
 ): ForstesideRequestBody {
   const {
     properties: { skjemanummer, tema, mottaksadresseId },

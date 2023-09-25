@@ -17,7 +17,7 @@ const isEmpty = (obj) => {
 export const createUrlParams = (
   searchFilters: MigrationOptions,
   dependencyFilters: MigrationOptions,
-  editOptions: MigrationOptions
+  editOptions: MigrationOptions,
 ) => {
   let editOptionsParameters;
 
@@ -109,7 +109,7 @@ export const createSearchFiltersFromParams = (filtersFromParam: Record<string, s
           key: prop,
           value,
           operator: (operator as Operator) || undefined,
-        })
+        }),
       );
     }
   } else {

@@ -58,8 +58,8 @@ function reducer(state: I18nState, action: I18nAction) {
             ...state.translations[action.payload.lang],
             translations: Object.fromEntries(
               Object.entries(state.translations[action.payload.lang].translations).filter(
-                ([key]) => key !== action.payload.key
-              )
+                ([key]) => key !== action.payload.key,
+              ),
             ),
           },
         },

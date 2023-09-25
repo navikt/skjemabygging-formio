@@ -5,6 +5,7 @@ import {
   Submission,
 } from "@navikt/skjemadigitalisering-shared-domain";
 import { logger } from "../../../logger";
+import { base64Encode } from "../../../utils/base64";
 
 interface HovedDokument {
   vedleggsnr: string;
@@ -12,7 +13,7 @@ interface HovedDokument {
   tittel: string;
   mimetype: "application/json" | "application/pdf";
   pakrevd: boolean;
-  document: number[] | null;
+  document: string | null;
 }
 
 export interface Attachment {
@@ -38,22 +39,27 @@ export interface SendInnSoknadBody {
   kanLasteOppAnnet?: boolean;
 }
 
-const DEFAULT_LANGUAGE = "nb-NO";
-const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
-
 const isValidUuid = (innsendingsId: string): boolean => {
   const validUuidExpr = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
   return validUuidExpr.test(innsendingsId);
 };
 
+const DEFAULT_LANGUAGE = "nb-NO";
+export const objectToByteArray = (obj: object) => Array.from(new TextEncoder().encode(JSON.stringify(obj)));
+
+export const byteArrayToObject = (byteArray?: Buffer) => JSON.parse(new TextDecoder().decode(byteArray));
+
 export const sanitizeInnsendingsId = (innsendingsId: string) => innsendingsId.replace(/[./]/g, "");
 
-export const validateInnsendingsId = (innsendingsId: string | undefined) => {
+export const validateInnsendingsId = (innsendingsId: string | undefined, supplementaryMessage?: string) => {
   let errorMessage;
   if (!innsendingsId) {
-    errorMessage = "InnsendingsId mangler. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon";
+    errorMessage = "InnsendingsId mangler.";
   } else if (!isValidUuid(innsendingsId)) {
-    errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId. Kan ikke oppdatere mellomlagret søknad med ferdig utfylt versjon`;
+    errorMessage = `${innsendingsId} er ikke en gyldig innsendingsId.`;
+  }
+  if (errorMessage && supplementaryMessage) {
+    errorMessage = `${errorMessage} ${supplementaryMessage}`;
   }
   if (errorMessage) {
     logger.error(errorMessage);
@@ -99,17 +105,19 @@ export const assembleSendInnSoknadBody = (
     ...dokumentMetaData,
     mimetype: "application/pdf",
     pakrevd: true,
-    document: submissionPdfAsByteArray,
+    document: submissionPdfAsByteArray ? base64Encode(submissionPdfAsByteArray) : null,
   };
 
   const hoveddokumentVariant: HovedDokument = {
     ...dokumentMetaData,
     mimetype: "application/json",
     pakrevd: false,
-    document: objectToByteArray({
-      language: language || DEFAULT_LANGUAGE,
-      data: submission,
-    }),
+    document: base64Encode(
+      objectToByteArray({
+        language: language || DEFAULT_LANGUAGE,
+        data: submission,
+      }),
+    ),
   };
 
   const body: SendInnSoknadBody = {

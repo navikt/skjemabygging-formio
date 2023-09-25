@@ -17,7 +17,7 @@ describe("MottaksadressePage", () => {
         <AppConfigProvider featureToggles={featureToggles}>
           <MottaksadresserPage />
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(await screen.findByRole("heading", { name: "Mottaksadresser" })).toBeTruthy();
   });

@@ -2,6 +2,7 @@ import { Enhetstype } from "../enhet";
 
 export type DisplayType = "wizard" | "form";
 export type InnsendingType = "PAPIR_OG_DIGITAL" | "KUN_PAPIR" | "KUN_DIGITAL" | "INGEN";
+
 export enum DeclarationType {
   none = "none",
   default = "default",
@@ -10,6 +11,7 @@ export enum DeclarationType {
 
 export interface FormSignaturesType {
   [key: string]: any;
+
   signature1?: string;
   signature1Description?: string;
   signature2?: string;
@@ -24,6 +26,7 @@ export interface FormSignaturesType {
 
 export interface NewFormSignatureType {
   [key: string]: string;
+
   label: string;
   description: string;
   key: string;
@@ -106,6 +109,7 @@ export interface Component {
   buttonText?: string;
   addAnother?: string;
   removeAnother?: string;
+  input?: boolean;
 }
 
 export interface ComponentProperties {
@@ -141,7 +145,14 @@ export interface NavFormType {
   components: Component[];
 }
 
-export type SubmissionData = Record<string, string | number | any[] | object>;
+export type SubmissionData = Record<string, string | number | boolean | any[] | object>;
+
+export interface FyllutState {
+  mellomlagring?: {
+    isActive?: boolean;
+    savedDate?: string;
+  };
+}
 
 export interface Submission {
   data: SubmissionData;
@@ -157,6 +168,7 @@ export interface Submission {
     onLine: boolean;
   };
   state: string;
+  fyllutState?: FyllutState;
 }
 
 export type UsageContext = "create" | "edit";

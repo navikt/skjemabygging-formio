@@ -18,6 +18,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     const qpForm = req.query.form;
     const qpInnsendingsId = req.query.innsendingsId;
     const qpSub = req.query.sub as QueryParamSub;
+    const qbDisableDecorator = req.query.disableDecorator;
     let redirectUrl: string | undefined;
     let redirectParams: { [key: string]: any } = { ...req.query };
     if (qpForm) {
@@ -42,7 +43,7 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
     const formPath = res.locals.formId;
     let pageMeta = getDefaultPageMeta();
 
-    if (formPath) {
+    if (formPath && !config.noFormValidation) {
       logger.debug("Loading form...", { formPath });
       const form = await formService.loadForm(formPath);
       if (form && form.properties) {
@@ -94,6 +95,9 @@ const renderIndex = async (req: Request, res: Response, next: NextFunction) => {
       } else {
         logFormNotFound(formPath);
       }
+    }
+    if (!config.isProduction && qbDisableDecorator === "true") {
+      return res.render("index.html", pageMeta);
     }
 
     const decoratorFragments = await getDecorator(createRedirectUrl(req, res));

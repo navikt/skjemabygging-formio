@@ -8,16 +8,22 @@
 
 describe("Amplitude", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
+    cy.defaultIntercepts();
+    // TODO: Remove this when mellomlagring is default
+    cy.intercept("GET", "/fyllut/api/config", {
+      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
+    }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
     cy.intercept("GET", "/fyllut/api/translations/cypress101", { body: {} }).as("getTranslation");
-    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
-    cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 200 }).as("submitToSendinnSuccess");
-    cy.intercept({ pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 500 }).as("submitToSendinnFailed");
   });
 
   it("logs for all relevant events", () => {
-    cy.visit("/fyllut/cypress101");
+    // Disabler dekoratør, siden den også gjør kall til "/collect-auto". Det fører til at checkLogToAmplitude feiler, siden den er avhengig av at kall gjørers i riktig rekkefølge
+    cy.visit("/fyllut/cypress101", {
+      qs: {
+        disableDecorator: "true",
+      },
+    });
     cy.wait("@getCypress101");
 
     // Select digital submission and go to the form
@@ -91,16 +97,27 @@ describe("Amplitude", () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.findByRoleWhenAttached("link", { name: "Forrige steg" }).should("exist").click();
-    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Forrige steg", destinasjon: "/cypress101/personopplysninger" });
+    cy.findByRoleWhenAttached("link", { name: "Fortsett utfylling" }).should("exist").click();
+    // There is a weird re-render happening after navigating back to the form,
+    // where the first panel will be rendered for a time before redirecting to the intended panel.
+    // If the user navigates during this time period, the navigation is ignored.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+
+    cy.checkLogToAmplitude("navigere", {
+      lenkeTekst: "Fortsett utfylling",
+      destinasjon: "/cypress101/veiledning",
+    });
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("not.exist");
+    cy.clickNextStep();
+    cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/personopplysninger" });
     cy.clickNextStep();
     cy.checkLogToAmplitude("navigere", { lenkeTekst: "Neste steg", destinasjon: "/cypress101/oppsummering" });
 
     // Oppsummering
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
     cy.get("dl")
-      .first()
+      .eq(1)
       .within(() => {
         cy.get("dt").eq(0).should("contain.text", "Tittel");
         cy.get("dd").eq(0).should("contain.text", "Fru");
@@ -114,11 +131,19 @@ describe("Amplitude", () => {
         cy.get("dd").eq(4).should("contain.text", "10.5.1995");
       });
 
+    cy.intercept({ method: "POST", pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 500 }).as(
+      "submitToSendinnFailed",
+    );
+
     // First attempt is intercepted and fails, so we can test "innsending feilet"
     cy.findByRole("button", { name: "Gå videre" }).click();
     cy.checkLogToAmplitude("navigere", { lenkeTekst: "Gå videre", destinasjon: "/sendinn" });
     cy.wait("@submitToSendinnFailed");
     cy.checkLogToAmplitude("skjemainnsending feilet");
+
+    cy.intercept({ method: "POST", pathname: "/fyllut/api/send-inn", times: 1 }, { statusCode: 200 }).as(
+      "submitToSendinnSuccess",
+    );
 
     // The second attempt is successful, causing "skjema fullført"
     cy.findByRole("button", { name: "Gå videre" }).click();
