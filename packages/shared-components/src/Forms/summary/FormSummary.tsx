@@ -25,7 +25,7 @@ const FormSummary = ({ form, formUrl, submission, panelValidationList }: Props) 
     form,
     submission,
     translate,
-    false
+    false,
   );
   const activePanels = navFormUtils
     .getActivePanelsFromForm(form, submission, submissionMethod)
