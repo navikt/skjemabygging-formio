@@ -56,8 +56,11 @@ export const createPdf = async (
     appMetrics.exstreamPdfFailuresCounter.inc({ formPath: form.path, submissionMethod });
     throw e;
   } finally {
-    const duration = stopMetricRequestDuration({ error: String(errorOccurred) });
-    logger.debug(`Request to exstream pdf service completed after ${duration} ms`, { error: errorOccurred, duration });
+    const durationSeconds = stopMetricRequestDuration({ error: String(errorOccurred) });
+    logger.info(`Request to exstream pdf service completed after ${durationSeconds} seconds`, {
+      error: errorOccurred,
+      durationSeconds,
+    });
   }
 };
 

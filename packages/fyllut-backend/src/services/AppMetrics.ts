@@ -28,10 +28,10 @@ class AppMetrics {
   });
 
   public outgoingRequestDuration = new Histogram({
-    name: "fyllut_outgoing_request_duration",
+    name: "fyllut_outgoing_request_duration_seconds",
     help: "Request duration for outgoing requests made by FyllUt",
     labelNames: ["service", "method", "error"],
-    buckets: [5.0, 100.0, 500.0, 1000.0, 5000.0, 15000.0, 30000.0, 60000.0],
+    buckets: [1.0, 2.0, 5.0, 10.0, 15.0, 30.0, 60.0],
     registers: [this._register],
   });
 }
