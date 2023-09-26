@@ -10,13 +10,16 @@ const useStyles = makeStyles({
     paddingBottom: "4rem",
     fontSize: "1.25rem",
   },
+  modal: {
+    maxWidth: "40rem",
+  },
 });
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => Promise<any>;
-  onError: Function;
+  onConfirm: () => Promise<any> | void;
+  onError?: Function;
   exitUrl?: string;
   confirmType: "primary" | "danger";
   texts: {
@@ -27,12 +30,14 @@ interface Props {
   };
 }
 
+const noop = () => {};
+
 const ConfirmationModal = (props: Props) => {
   const { translate } = useLanguages();
   const [isLoading, setIsLoading] = useState(false);
   const styles = useStyles();
 
-  const { onConfirm, onError, exitUrl, confirmType, texts, ...modalProps } = props;
+  const { onConfirm, onError = noop, exitUrl, confirmType, texts, ...modalProps } = props;
 
   const onClickConfirm = async () => {
     try {
@@ -48,7 +53,7 @@ const ConfirmationModal = (props: Props) => {
   };
 
   return (
-    <Modal {...modalProps} title={translate(texts.title)}>
+    <Modal className={styles.modal} {...modalProps} title={translate(texts.title)}>
       <BodyShort className={styles.modalBody}>{translate(texts.body)}</BodyShort>
       <div className="button-row">
         <Button variant={confirmType} onClick={onClickConfirm} loading={isLoading}>

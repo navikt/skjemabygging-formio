@@ -122,8 +122,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     onNextOrPreviousPage(page, currentPanels);
   }
 
-  function onCancel({ url }) {
-    console.log("onCancel", url);
+  function onCancel({ submission }) {
+    setSubmission(submission);
     setIsCancelModalOpen(true);
   }
 

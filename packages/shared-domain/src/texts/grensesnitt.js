@@ -6,6 +6,7 @@ export const grensesnitt = {
     saveAndContinue: "Lagre og fortsett",
     cancel: "Avbryt",
     cancelAndDelete: "Avbryt og slett",
+    cancelAndDiscard: "Avbryt og forkast",
     saveDraft: "Lagre utkast og fortsett senere",
     exit: "Avslutt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
