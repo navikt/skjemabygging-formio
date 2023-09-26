@@ -17,12 +17,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     server: {
-      host: "127.0.0.1",
       port: 8080,
       strictPort: true,
     },
     preview: {
-      host: "127.0.0.1",
       port: 8080,
       strictPort: true,
     },

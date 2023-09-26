@@ -59,7 +59,7 @@ class NavFormBuilder extends Component {
     this.builder = new NavFormioJs.Formio.FormBuilder(
       this.element.current,
       cloneDeep(this.props.form),
-      this.props.formBuilderOptions
+      this.props.formBuilderOptions,
     );
     if (page) {
       this.builder.instance?.setPage?.(page);

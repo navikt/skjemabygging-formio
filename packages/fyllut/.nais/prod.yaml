@@ -27,7 +27,9 @@ accessPolicy:
       - application: pdl-api
         namespace: pdl
         cluster: prod-fss
+      - application: nav-dekoratoren
+        namespace: personbruker
+        cluster: prod-gcp
     external:
-      - host: www.nav.no
       - host: skjemabygging-proxy.prod-fss-pub.nais.io
       - host: formio-api.intern.nav.no

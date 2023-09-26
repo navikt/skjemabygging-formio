@@ -1,10 +1,7 @@
 {
   "_id": "5eaade5c079444e68b89235d",
   "type": "form",
-  "tags": [
-    "common",
-    "nav-skjema"
-  ],
+  "tags": ["common", "nav-skjema"],
   "owner": "5ea6eef73e156464e5c23b0f",
   "components": [
     {
@@ -356,11 +353,7 @@
   "project": "5ea0851745312d4099f71ba0",
   "access": [
     {
-      "roles": [
-        "5ea0851745312d2be9f71ba1",
-        "5ea0851745312d18b9f71ba2",
-        "5ea0851745312db5baf71ba3"
-      ],
+      "roles": ["5ea0851745312d2be9f71ba1", "5ea0851745312d18b9f71ba2", "5ea0851745312db5baf71ba3"],
       "type": "read_all"
     }
   ],
@@ -368,5 +361,5 @@
   "created": "2020-04-30T14:19:08.140Z",
   "modified": "2020-05-04T15:09:00.692Z",
   "machineName": "kxzxmneixaglyxf:debugSkjema",
-  "properties": {"skjemanummer": "NAV 12-13.14"}
+  "properties": { "skjemanummer": "NAV 12-13.14" }
 }

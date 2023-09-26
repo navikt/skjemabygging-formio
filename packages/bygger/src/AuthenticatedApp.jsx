@@ -6,6 +6,7 @@ import MigrationRouter from "./migration/MigrationRouter";
 import MottaksadresserPage from "./mottaksadresser/MottaksadresserPage";
 import ReportsPage from "./reports/ReportsPage";
 import TranslationsRouter from "./translations/TranslationsRouter";
+import BulkPublishPage from "./migration/BulkPublishPage";
 
 function AuthenticatedApp({ serverURL, formio }) {
   return (
@@ -22,6 +23,9 @@ function AuthenticatedApp({ serverURL, formio }) {
         </Route>
         <Route path="/migrering">
           <MigrationRouter />
+        </Route>
+        <Route path="/bulk-publisering">
+          <BulkPublishPage formio={formio} />
         </Route>
         <Route path="/rapporter">
           <ReportsPage />

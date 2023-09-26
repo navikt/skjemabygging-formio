@@ -47,7 +47,7 @@ const NavForm = (props) => {
         formio.destroy(true);
       }
     },
-    [formio]
+    [formio],
   );
 
   const createWebformInstance = (srcOrForm) => {
@@ -139,7 +139,11 @@ const NavForm = (props) => {
   useEffect(() => {
     const { submission } = props;
     if (formio && submission) {
-      formio.submission = JSON.parse(JSON.stringify(submission));
+      formio.setSubmission(JSON.parse(JSON.stringify(submission))).then(() => {
+        if (submission.fyllutState) {
+          formio.triggerRedraw();
+        }
+      });
     }
   }, [props.submission, formio]);
 

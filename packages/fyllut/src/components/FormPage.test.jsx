@@ -34,7 +34,7 @@ describe("FormPage", () => {
         <AppConfigProvider featureToggles={featureToggles}>
           <FormPage form={form} />
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
   };
 

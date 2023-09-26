@@ -27,7 +27,7 @@ describe("localization", () => {
     ];
     it("returns an object combined of the arrays where value is used as identifier", () => {
       expect(
-        localizationUtils.zipCountryNames(countryNames1, countryNames2, (countryName) => countryName.label)
+        localizationUtils.zipCountryNames(countryNames1, countryNames2, (countryName) => countryName.label),
       ).toStrictEqual({
         Country1: "CountryA",
         Country2: "CountryB",

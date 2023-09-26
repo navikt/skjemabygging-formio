@@ -33,13 +33,13 @@ describe("FormPageWrapper", () => {
         <Route path="/fyllut/:formPath">
           <FormPageWrapper />
         </Route>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(
       screen.getByRole("heading", {
         name: "Laster...",
-      })
+      }),
     ).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Fant ikke siden" })).toBeInTheDocument();
     await waitFor(() => expect(document.title).toEqual(""));
@@ -69,7 +69,7 @@ describe("FormPageWrapper", () => {
             <FormPageWrapper />
           </Route>
         </AppConfigProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => expect(document.title).toEqual("New form | www.nav.no"));
   });
@@ -103,10 +103,10 @@ describe("FormPageWrapper", () => {
               <FormPageWrapper />
             </Route>
           </AppConfigProvider>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
       await waitFor(() =>
-        expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).toBeInTheDocument()
+        expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).toBeInTheDocument(),
       );
       expect(screen.queryByRole("heading", { name: mockedForm.title })).not.toBeInTheDocument();
     });
@@ -119,7 +119,7 @@ describe("FormPageWrapper", () => {
               <FormPageWrapper />
             </Route>
           </AppConfigProvider>
-        </MemoryRouter>
+        </MemoryRouter>,
       );
       await waitFor(() => expect(screen.queryByRole("heading", { name: mockedForm.title })).toBeInTheDocument());
       expect(screen.queryByRole("heading", { name: "Ugyldig innsendingsvalg" })).not.toBeInTheDocument();

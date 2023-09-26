@@ -1,11 +1,10 @@
 describe("Basic form", () => {
   beforeEach(() => {
-    cy.intercept("POST", "/collect-auto", { body: "success" }).as("amplitudeLogging");
-    cy.intercept("GET", "/fyllut/api/config", { fixture: "config.json" }).as("getConfig");
-    cy.intercept("GET", "/fyllut/api/countries?lang=nb", { fixture: "countries.json" }).as("getCountries");
-    cy.intercept("GET", "/fyllut/api/global-translations/en", { fixture: "global-translation.json" }).as(
-      "getGlobalTranslation",
-    );
+    cy.defaultIntercepts();
+    // TODO: Remove this when mellomlagring is default
+    cy.intercept("GET", "/fyllut/api/config", {
+      body: { FEATURE_TOGGLES: { enableTranslations: true, enableMellomlagring: false } },
+    }).as("getConfig");
     cy.intercept("GET", "/fyllut/api/forms/cypress101", { fixture: "cypress101.json" }).as("getCypress101");
     cy.intercept("GET", "/fyllut/api/translations/cypress101", { fixture: "cypress101-translation.json" }).as(
       "getTranslation",
@@ -60,14 +59,26 @@ describe("Basic form", () => {
 
     // Gå tilbake til skjema fra oppsummering, og naviger til oppsummering på nytt
     // for å verifisere at ingen valideringsfeil oppstår grunnet manglende verdier.
-    cy.findByRoleWhenAttached("link", { name: "Forrige steg" }).should("exist").click();
-    cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("not.exist");
+    cy.findByRoleWhenAttached("link", { name: "Fortsett utfylling" }).should("exist").click();
+
+    // There is a weird re-render happening after navigating back to the form,
+    // where the first panel will be rendered for a time before redirecting to the intended panel.
+    // If the user navigates during this time period, the navigation is ignored.
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+
+    cy.clickNextStep();
+    cy.findByRole("heading", { level: 2, name: "Dine opplysninger" }).should("exist");
+    if (expectVedleggspanel) {
+      cy.clickNextStep();
+      cy.findByRole("heading", { level: 2, name: "Vedlegg" }).should("exist");
+    }
     cy.clickNextStep();
 
     // Oppsummering
     cy.findByRole("heading", { level: 2, name: "Oppsummering" }).should("exist");
     cy.get("dl")
-      .first()
+      .eq(1)
       .within(() => {
         cy.get("dt").eq(0).should("contain.text", "Tittel");
         cy.get("dd").eq(0).should("contain.text", "Fru");

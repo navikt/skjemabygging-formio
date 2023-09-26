@@ -18,7 +18,7 @@ export const globalEntitiesToI18nGroupedByTag = (entities) => {
             scope,
           },
         }),
-        {}
+        {},
       ),
     });
 
@@ -48,7 +48,7 @@ export const flattenGlobalI18nGroupedByTag = (globalI18nGroupedByTag) => {
         }, {}),
       },
     }),
-    {}
+    {},
   );
 };
 

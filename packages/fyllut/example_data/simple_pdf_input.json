@@ -2,9 +2,7 @@
   "form": {
     "_id": "5f2812a61cd355000301f0d0",
     "type": "form",
-    "tags": [
-      "nav-skjema"
-    ],
+    "tags": ["nav-skjema"],
     "owner": "5ee0eacc7665226ea32fd389",
     "display": "wizard",
     "name": "testChristianOgMona",

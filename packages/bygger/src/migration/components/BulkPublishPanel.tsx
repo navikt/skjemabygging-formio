@@ -69,7 +69,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
     <>
       <Panel className="mb">
         <Heading level="3" size="medium">
-          Disse skjemaene ble migrert
+          Skjemaer som er klare for publisering
         </Heading>
         <BodyShort>Her kan du velge skjemaer du ønsker å publisere samlet</BodyShort>
         <Alert variant="warning">
@@ -100,7 +100,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                 return (
                   <Table.Row key={i + form.properties.skjemanummer}>
                     <Table.HeaderCell scope="row">{form.properties.skjemanummer}</Table.HeaderCell>
-                    <Table.DataCell>{form.name}</Table.DataCell>
+                    <Table.DataCell>{form.name ?? form.title}</Table.DataCell>
                     <Table.DataCell>
                       {<FormStatus status={determineStatus(form.properties)} size={"small"} />}
                     </Table.DataCell>
@@ -117,7 +117,7 @@ const BulkPublishPanel = ({ forms }: Props) => {
                             }
                           }}
                         >
-                          {form.name}
+                          {form.name ?? form.title}
                         </Checkbox>
                       }
                     </Table.DataCell>

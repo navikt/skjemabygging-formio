@@ -23,7 +23,7 @@ const useTemaKoder = () => {
         setTemaKoder(
           Object.entries(koder)
             .map(([key, value]) => ({ key, value }))
-            .sort((a, b) => a.value.localeCompare(b.value))
+            .sort((a, b) => a.value.localeCompare(b.value)),
         );
         setReady(true);
       })

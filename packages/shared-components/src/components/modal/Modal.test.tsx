@@ -8,7 +8,7 @@ describe("Modal", () => {
     render(
       <Modal onClose={onClose} open={true} appElement={document.createElement("div")}>
         Test
-      </Modal>
+      </Modal>,
     );
   });
 

@@ -80,7 +80,7 @@ describe("NavForm", () => {
     const renderReturn = render(
       <AppConfigProvider>
         <NavForm {...props} formReady={formReady} />
-      </AppConfigProvider>
+      </AppConfigProvider>,
     );
     await waitFor(() => expect(formReady).toHaveBeenCalledTimes(1));
     return renderReturn;
@@ -121,7 +121,7 @@ describe("NavForm", () => {
       rerender(
         <AppConfigProvider>
           <NavForm form={testskjemaForOversettelser} language="en" i18n={i18n} />
-        </AppConfigProvider>
+        </AppConfigProvider>,
       );
       expect(await screen.findByLabelText("First name")).toBeInTheDocument();
     });

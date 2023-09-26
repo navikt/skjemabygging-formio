@@ -47,7 +47,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
         ],
       },
       "nb-NO",
-      "skjematekster"
+      "skjematekster",
     );
     expect(actual.id).toEqual(1);
     expect(actual.tag).toEqual("skjematekster");
@@ -86,7 +86,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
         ],
       },
       "nb-NO",
-      "skjematekster"
+      "skjematekster",
     );
     expect(actual.translations).toHaveProperty("Originaltekst 1");
     expect(actual.translations).toHaveProperty("Originaltekst 2");
@@ -137,7 +137,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
         ],
       },
       "nb-NO",
-      "skjematekster"
+      "skjematekster",
     );
     expect(actual.translations).toHaveProperty("Originaltekst 1");
     expect(actual.translations).not.toHaveProperty("Originaltekst 2");
@@ -203,7 +203,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       const { data, headers } = transformGlobalTranslationsToCsvData(
         allGlobalTranslations,
         allPredefinedOriginalTexts,
-        "en"
+        "en",
       );
       expect(data).toEqual([
         { text: "Personopplysninger", en: "Personal information" },
@@ -221,7 +221,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       const { data, headers } = transformGlobalTranslationsToCsvData(
         allGlobalTranslations,
         allPredefinedOriginalTexts,
-        languageCode
+        languageCode,
       );
       const translationEntry = data.find((entry) => entry.text === "Personopplysninger");
       expect(translationEntry).toBeDefined();
@@ -237,7 +237,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       const { data, headers } = transformGlobalTranslationsToCsvData(
         allGlobalTranslations,
         allPredefinedOriginalTexts,
-        languageCode
+        languageCode,
       );
       const translationEntryPrevious = data.find((entry) => entry.text === TEXTS.grensesnitt.navigation.previous);
       expect(translationEntryPrevious).toBeDefined();
@@ -252,7 +252,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       const { data, headers } = transformGlobalTranslationsToCsvData(
         allGlobalTranslations,
         allPredefinedOriginalTexts,
-        "nn-NO"
+        "nn-NO",
       );
       expect(data).toEqual([
         {
@@ -272,7 +272,7 @@ describe("getGlobalTranslationsWithLanguageAndTag", () => {
       const { data, headers } = transformGlobalTranslationsToCsvData(
         allGlobalTranslations,
         allPredefinedOriginalTexts,
-        "se"
+        "se",
       );
       expect(data).toEqual([
         { text: "Personopplysninger" },

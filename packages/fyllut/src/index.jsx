@@ -45,6 +45,6 @@ function renderReact(dokumentInnsendingBaseURL, config) {
         </AppConfigProvider>
       </BrowserRouter>
     </React.StrictMode>,
-    document.getElementById("root")
+    document.getElementById("root"),
   );
 }

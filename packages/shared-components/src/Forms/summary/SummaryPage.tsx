@@ -1,26 +1,21 @@
-import { Alert, BodyShort, ConfirmationPanel, Heading, Link as NavLink } from "@navikt/ds-react";
-import {
-  DeclarationType,
-  InnsendingType,
-  NavFormType,
-  Submission,
-  TEXTS,
-  formSummaryUtil,
-} from "@navikt/skjemadigitalisering-shared-domain";
+import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
+import { Alert, BodyShort, ConfirmationPanel, Heading } from "@navikt/ds-react";
+import { DeclarationType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { Form as FormioForm } from "formiojs";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import NavForm from "../../components/NavForm";
 import { useAppConfig } from "../../configContext";
-import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
+import { useSendInn } from "../../context/sendInn/sendInnContext";
 import Styles from "../../styles";
+import { SANITIZE_CONFIG } from "../../template/sanitizeConfig";
 import { scrollToAndSetFocus } from "../../util/focus-management";
-import { getPanels } from "../../util/form";
 import makeStyles from "../../util/jss";
-import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
-import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
+import { PanelValidation, validateWizardPanels } from "../../util/panelValidation";
 import FormStepper from "../components/FormStepper";
-import { hasRelevantAttachments } from "../components/attachmentsUtil";
+import EditAnswersButton from "../components/navigation/EditAnswersButton";
 import FormSummary from "./FormSummary";
+import SummaryPageNavigation from "./SummaryPageNavigation";
 
 const useStyles = makeStyles({
   "@global": {
@@ -47,43 +42,55 @@ const useStyles = makeStyles({
       paddingBottom: "2.5rem",
     },
   },
+  validationAlert: {
+    marginBottom: "1rem",
+  },
+  exclamationmarkIcon: {
+    verticalAlign: "sub",
+    color: "var(--a-orange-600)",
+  },
 });
 
 export interface Props {
   form: NavFormType;
-  submission: Submission;
+  submission?: Submission;
   formUrl: string;
 }
 
-function getUrlToLastPanel(form, formUrl, submission) {
-  const formSummary = formSummaryUtil.createFormSummaryPanels(form, submission);
-  const lastPanel = formSummary[formSummary.length - 1];
-  const lastPanelSlug = lastPanel?.key;
-  if (!lastPanelSlug) {
-    return formUrl;
-  }
-  return `${formUrl}/${lastPanelSlug}`;
-}
-
 export function SummaryPage({ form, submission, formUrl }: Props) {
-  const { submissionMethod, app } = useAppConfig();
-  const { url } = useRouteMatch();
-  const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
+  const { submissionMethod } = useAppConfig();
+  const { isMellomlagringEnabled } = useSendInn();
   const { translate } = useLanguages();
-  const { search } = useLocation();
   const styles = useStyles();
   const { declarationType, declarationText } = form.properties;
   const [declaration, setDeclaration] = useState<boolean | undefined>(undefined);
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+
+  const [panelValidationList, setPanelValidationList] = useState<PanelValidation[] | undefined>();
+
+  useEffect(() => {
+    const initializePanelValidation = async () => {
+      const formio = new FormioForm(document.getElementById("formio-summary-hidden"), form, {
+        language: "nb-NO",
+        i18n: {},
+        sanitizeConfig: SANITIZE_CONFIG,
+        events: NavForm.getDefaultEmitter(),
+      });
+
+      const instance = await formio.ready;
+      await instance.setSubmission(submission ?? { data: {} });
+      instance.checkData(submission?.data, [], undefined);
+
+      const panelValidations = validateWizardPanels(instance, form, submission);
+      setPanelValidationList(panelValidations);
+      instance.destroy(true);
+    };
+    if (isMellomlagringEnabled) {
+      initializePanelValidation();
+    }
+  }, [isMellomlagringEnabled, form, submission]);
 
   useEffect(() => scrollToAndSetFocus("main", "start"), []);
   const declarationRef = useRef<HTMLInputElement>(null);
-
-  const innsending: InnsendingType = form.properties.innsending || "PAPIR_OG_DIGITAL";
-  const linkBtStyle = {
-    textDecoration: "none",
-  };
-  const hasAttachments = hasRelevantAttachments(form, submission);
 
   const hasDeclaration = declarationType === DeclarationType.custom || declarationType === DeclarationType.default;
 
@@ -101,16 +108,43 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
     return true;
   };
 
+  const hasValidationErrors = panelValidationList?.some((panelValidation) => panelValidation.hasValidationErrors);
+
   return (
     <div className={styles.content}>
-      <main id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
+      <section id="maincontent" className="fyllut-layout formio-form" tabIndex={-1}>
         <div className="main-col">
           <Heading level="2" size="large" spacing>
             {translate(TEXTS.statiske.summaryPage.title)}
           </Heading>
-          <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
+          {!hasValidationErrors && (
+            <BodyShort className="mb-4">{translate(TEXTS.statiske.summaryPage.description)}</BodyShort>
+          )}
+          {hasValidationErrors && (
+            <>
+              <Alert variant="info" className={styles.validationAlert}>
+                <span>
+                  {translate(TEXTS.statiske.summaryPage.validationMessage.start)}
+                  <ExclamationmarkTriangleFillIcon
+                    className={styles.exclamationmarkIcon}
+                    title="Opplysninger mangler"
+                    fontSize="1.5rem"
+                  />
+                  {translate(TEXTS.statiske.summaryPage.validationMessage.end)}
+                </span>
+              </Alert>
+              <div className="button-row">
+                <EditAnswersButton form={form} formUrl={formUrl} panelValidationList={panelValidationList} />
+              </div>
+            </>
+          )}
           <div className="form-summary">
-            <FormSummary submission={submission} form={form} formUrl={formUrl} />
+            <FormSummary
+              submission={submission}
+              form={form}
+              formUrl={formUrl}
+              panelValidationList={panelValidationList}
+            />
           </div>
           {hasDeclaration && (
             <ConfirmationPanel
@@ -128,121 +162,18 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
               }}
             />
           )}
-          <nav>
-            <div className="button-row button-row__center">
-              {(submissionMethod === "paper" ||
-                innsending === "KUN_PAPIR" ||
-                (app === "bygger" && innsending === "PAPIR_OG_DIGITAL")) && (
-                <Link
-                  className="navds-button navds-button--primary"
-                  onClick={(e) => {
-                    if (!isValid(e)) {
-                      return;
-                    }
-                    loggNavigering({
-                      lenkeTekst: translate(TEXTS.grensesnitt.moveForward),
-                      destinasjon: `${formUrl}/send-i-posten`,
-                    });
-                    loggSkjemaStegFullfort({
-                      steg: getPanels(form.components).length + 1,
-                      skjemastegNokkel: "oppsummering",
-                    });
-                  }}
-                  to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
-                >
-                  <span aria-live="polite" className="navds-body-short font-bold">
-                    {translate(TEXTS.grensesnitt.moveForward)}
-                  </span>
-                </Link>
-              )}
-              {(submissionMethod === "digital" || innsending === "KUN_DIGITAL") &&
-                (hasAttachments ? (
-                  <DigitalSubmissionButton
-                    submission={submission}
-                    isValid={isValid}
-                    onError={(err) => {
-                      setErrorMessage(err.message);
-                      loggSkjemaInnsendingFeilet();
-                    }}
-                    onSuccess={() => loggSkjemaFullfort()}
-                  >
-                    {translate(TEXTS.grensesnitt.moveForward)}
-                  </DigitalSubmissionButton>
-                ) : (
-                  <DigitalSubmissionWithPrompt
-                    submission={submission}
-                    isValid={isValid}
-                    onError={(err) => {
-                      setErrorMessage(err.message);
-                      loggSkjemaInnsendingFeilet();
-                    }}
-                    onSuccess={() => loggSkjemaFullfort()}
-                  />
-                ))}
-
-              {innsending === "INGEN" && (
-                <Link
-                  className="navds-button navds-button--primary"
-                  onClick={(e) => {
-                    if (!isValid(e)) {
-                      return;
-                    }
-
-                    loggSkjemaStegFullfort({
-                      steg: getPanels(form.components).length + 1,
-                      skjemastegNokkel: "oppsummering",
-                    });
-                  }}
-                  to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
-                >
-                  <span aria-live="polite" className="navds-body-short font-bold">
-                    {translate(TEXTS.grensesnitt.moveForward)}
-                  </span>
-                </Link>
-              )}
-              <Link
-                className="navds-button navds-button--secondary"
-                onClick={() =>
-                  loggNavigering({
-                    lenkeTekst: translate(TEXTS.grensesnitt.summaryPage.editAnswers),
-                    destinasjon: getUrlToLastPanel(form, formUrl, submission),
-                  })
-                }
-                to={{ pathname: getUrlToLastPanel(form, formUrl, submission), search }}
-              >
-                <span aria-live="polite" className="navds-body-short font-bold">
-                  {translate(TEXTS.grensesnitt.summaryPage.editAnswers)}
-                </span>
-              </Link>
-            </div>
-            <div className="button-row button-row__center">
-              <NavLink
-                className={"navds-button navds-button--tertiary"}
-                onClick={() =>
-                  loggNavigering({
-                    lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-                    destinasjon: "https://www.nav.no",
-                  })
-                }
-                href="https://www.nav.no"
-                style={linkBtStyle}
-              >
-                <span aria-live="polite" className="navds-body-short font-bold">
-                  {translate(TEXTS.grensesnitt.navigation.cancel)}
-                </span>
-              </NavLink>
-            </div>
-          </nav>
-          {errorMessage && (
-            <Alert variant="error" data-testid="error-message">
-              {errorMessage}
-            </Alert>
-          )}
+          <SummaryPageNavigation
+            form={form}
+            submission={submission}
+            formUrl={formUrl}
+            panelValidationList={panelValidationList}
+            isValid={isValid}
+          />
         </div>
         <aside className="right-col">
           <FormStepper form={form} formUrl={formUrl} submissionMethod={submissionMethod} submission={submission} />
         </aside>
-      </main>
+      </section>
     </div>
   );
 }

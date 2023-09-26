@@ -18,7 +18,7 @@ export const TranslationsByFormRoute = ({
 }: TranslationRouteProps) => {
   const loadTranslations = useCallback(
     () => loadTranslationsForEditPage(formPath),
-    [formPath, loadTranslationsForEditPage]
+    [formPath, loadTranslationsForEditPage],
   );
 
   return (

@@ -1,6 +1,7 @@
 import { useAmplitude } from "../context/amplitude/index.jsx";
 import { useLanguages } from "../context/languages";
 import LanguageSelector from "./LanguageSelector";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 
 export const languagesInOriginalLanguage = {
   "nb-NO": "Norsk bokmål",
@@ -11,7 +12,7 @@ export const languagesInOriginalLanguage = {
 
 const FyllUtLanguageSelector = () => {
   const { loggSpraakValg } = useAmplitude();
-  const { currentLanguage, availableLanguages } = useLanguages();
+  const { currentLanguage, availableLanguages, translate } = useLanguages();
   if (availableLanguages.length === 0) {
     return null;
   }
@@ -37,7 +38,15 @@ const FyllUtLanguageSelector = () => {
     ? languagesInOriginalLanguage[currentLanguage]
     : "Norsk bokmål";
 
-  return options.length > 0 ? <LanguageSelector label={label} options={options} /> : <></>;
+  return options.length > 0 ? (
+    <LanguageSelector
+      label={label}
+      ariaLabel={translate(TEXTS.grensesnitt.languageSelector.ariaLabel)}
+      options={options}
+    />
+  ) : (
+    <></>
+  );
 };
 
 export default FyllUtLanguageSelector;

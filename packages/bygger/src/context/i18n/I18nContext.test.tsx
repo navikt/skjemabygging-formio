@@ -49,7 +49,7 @@ describe("I18nStateProvider", () => {
     render(
       <I18nStateProvider loadTranslations={loadTranslations} form={form}>
         <TestStateComponent onStateUpdated={onStateUpdated} />
-      </I18nStateProvider>
+      </I18nStateProvider>,
     );
     expect(await screen.findByText("Loaded translations for 3 languages")).toBeInTheDocument();
   });
@@ -65,11 +65,11 @@ describe("I18nStateProvider", () => {
     expect(translationsForNavForm["en"].Testskjema).toEqual(mockedTranslations["en"].translations.Testskjema.value);
     expect(translationsForNavForm["en"].Fornavn).toEqual(mockedTranslations["en"].translations.Fornavn.value);
     expect(translationsForNavForm["en"]["Global oversettelse"]).toEqual(
-      mockedTranslations["en"].translations["Global oversettelse"].value
+      mockedTranslations["en"].translations["Global oversettelse"].value,
     );
     expect(translationsForNavForm["en"].Norge).toEqual(mockedTranslations["en"].translations.Norge.value);
     expect(translationsForNavForm["nn-NO"].Testskjema).toEqual(
-      mockedTranslations["nn-NO"].translations.Testskjema.value
+      mockedTranslations["nn-NO"].translations.Testskjema.value,
     );
     expect(translationsForNavForm["nn-NO"].Fornavn).toEqual(mockedTranslations["nn-NO"].translations.Fornavn.value);
   });
@@ -83,14 +83,14 @@ describe("I18nStateProvider", () => {
   it("adds translations to localTranslationsForNavForm in i18n format", () => {
     const { localTranslationsForNavForm } = onStateUpdated.mock.calls[onStateUpdated.mock.calls.length - 1][0];
     expect(localTranslationsForNavForm["en"].Testskjema).toEqual(
-      mockedTranslations["en"].translations.Testskjema.value
+      mockedTranslations["en"].translations.Testskjema.value,
     );
     expect(localTranslationsForNavForm["en"].Fornavn).toEqual(mockedTranslations["en"].translations.Fornavn.value);
     expect(localTranslationsForNavForm["nn-NO"].Testskjema).toEqual(
-      mockedTranslations["nn-NO"].translations.Testskjema.value
+      mockedTranslations["nn-NO"].translations.Testskjema.value,
     );
     expect(localTranslationsForNavForm["nn-NO"].Fornavn).toEqual(
-      mockedTranslations["nn-NO"].translations.Fornavn.value
+      mockedTranslations["nn-NO"].translations.Fornavn.value,
     );
   });
 

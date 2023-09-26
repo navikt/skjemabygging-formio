@@ -79,20 +79,20 @@ const MigrationPage = () => {
   const totalNumberOfPages = Math.ceil((dryRunSearchResults || []).length / MAX_ITEMS_PER_PAGE);
   const resultsForCurrentPage = useMemo(
     () => paginationUtils.retrieveRangeOfList(dryRunSearchResults || [], currentPage, MAX_ITEMS_PER_PAGE),
-    [dryRunSearchResults, currentPage]
+    [dryRunSearchResults, currentPage],
   );
 
   const history = useHistory();
   const params = new URLSearchParams(history.location.search);
 
   const [searchFilters, dispatchSearchFilters] = useReducer(reducer, {}, () =>
-    createSearchFiltersFromParams(getUrlParamMap(params, "searchFilters"))
+    createSearchFiltersFromParams(getUrlParamMap(params, "searchFilters")),
   );
   const [dependencyFilters, dispatchDependencyFilters] = useReducer(reducer, {}, () =>
-    createSearchFiltersFromParams(getUrlParamMap(params, "dependencyFilters"))
+    createSearchFiltersFromParams(getUrlParamMap(params, "dependencyFilters")),
   );
   const [editInputs, dispatchEditInputs] = useReducer(reducer, {}, () =>
-    createEditOptions(getUrlParamMap(params, "editOptions"))
+    createEditOptions(getUrlParamMap(params, "editOptions")),
   );
 
   const onSearch = async () => {
@@ -109,7 +109,7 @@ const MigrationPage = () => {
         {
           numberOfComponentsFound: 0,
           numberOfComponentsChanged: 0,
-        }
+        },
       ),
     });
     setSelectedToMigrate(
@@ -120,7 +120,7 @@ const MigrationPage = () => {
           const dryRunResultForForm = dryRunSearchResults.find((form) => form.path === path);
           const numberOfBreakingChanges = dryRunResultForForm?.breakingChanges?.length || 0;
           return numberOfBreakingChanges === 0;
-        })
+        }),
     );
 
     setIsLoading(false);

@@ -10,7 +10,7 @@ describe("TranslationTextInput", () => {
     value = "native translation",
     hasGlobalTranslation = false,
     showGlobalTranslation = false,
-    tempGlobalTranslation = undefined
+    tempGlobalTranslation = undefined,
   ) => {
     render(
       <TranslationTextInput
@@ -23,7 +23,7 @@ describe("TranslationTextInput", () => {
         setHasGlobalTranslation={mockedSetHasGlobalTranslation}
         setGlobalTranslation={mockedSetGlobalTranslation}
         tempGlobalTranslation={tempGlobalTranslation}
-      />
+      />,
     );
   };
 

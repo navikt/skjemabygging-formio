@@ -3,7 +3,10 @@ export const grensesnitt = {
   navigation: {
     previous: "Forrige steg",
     next: "Neste steg",
+    saveAndContinue: "Lagre og fortsett",
     cancel: "Avbryt",
+    cancelAndDelete: "Avbryt og slett",
+    saveDraft: "Lagre utkast og fortsett senere",
     exit: "Avslutt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
     submit: "Neste steg",
@@ -11,9 +14,27 @@ export const grensesnitt = {
     Fjern: "Fjern",
   },
 
+  mostRecentSave: "Sist lagret",
+  emptySubmissionError: "Kan ikke fortsette. Innsendingen er tom.",
+
+  languageSelector: {
+    ariaLabel: "Velg språk",
+  },
   downloadApplication: "Last ned søknaden",
   goBack: "Gå tilbake",
   moveForward: "Gå videre",
+  confirmSavePrompt: {
+    title: "Lagre utkast og fortsett senere?",
+    body: "Skjemaet lagres som et utkast på Min Side i 14 dager, slik at du kan fullføre senere.",
+    confirm: "Ja, lagre og fortsett senere",
+    cancel: "Nei, fortsett utfylling",
+  },
+  confirmDeletePrompt: {
+    title: "Avbryt og slett utkast?",
+    body: "Alle opplysningene du har fylt ut vil bli slettet.",
+    confirm: "Ja, avbryt og slett utkast",
+    cancel: "Nei, fortsett utfylling",
+  },
   submitToNavPrompt: {
     open: "Send til NAV",
     body: "Er du sikker på at du vil sende søknaden nå?",
@@ -32,7 +53,7 @@ export const grensesnitt = {
   },
   summaryPage: {
     edit: "Rediger",
-    editAnswers: "Forrige steg",
+    editAnswers: "Fortsett utfylling",
   },
   prepareLetterPage: {
     downloadCoverPage: "Last ned førsteside",

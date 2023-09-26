@@ -165,8 +165,8 @@ const Harness = {
         {
           events: new EventEmitter(),
         },
-        options
-      )
+        options,
+      ),
     );
     component.pristine = false;
     return new Promise((resolve, reject) => {
@@ -274,12 +274,12 @@ const Harness = {
     assert.equal(
       modalWrapper.className.split(" ").includes("formio-error-wrapper"),
       shouldBeInvalid,
-      `Should ${shouldBeInvalid ? "" : "not"} have error class`
+      `Should ${shouldBeInvalid ? "" : "not"} have error class`,
     );
     assert.equal(
       modalWrapper.className.split(" ").includes("has-message"),
       shouldBeInvalid,
-      `Should ${shouldBeInvalid ? "" : "not"} have class indicating that the component has a message`
+      `Should ${shouldBeInvalid ? "" : "not"} have class indicating that the component has a message`,
     );
   },
   testElementAttribute(element, attribute, expected) {

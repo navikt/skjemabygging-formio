@@ -5,7 +5,7 @@ import { fetchFromFormioApi, loadAllJsonFilesFromDirectory, loadFileFromDirector
 const { useFormioApi, skjemaDir, formioProjectUrl } = config;
 
 class FormService {
-  async loadForm(formPath: string): Promise<NavFormType> {
+  async loadForm(formPath: string): Promise<NavFormType | null | undefined> {
     if (useFormioApi) {
       const forms: any = await fetchFromFormioApi(
         `${formioProjectUrl}/form?type=form&tags=nav-skjema&path=${formPath}`,
