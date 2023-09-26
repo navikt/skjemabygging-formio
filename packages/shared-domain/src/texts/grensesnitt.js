@@ -35,6 +35,12 @@ export const grensesnitt = {
     confirm: "Ja, avbryt og slett utkast",
     cancel: "Nei, fortsett utfylling",
   },
+  confirmDiscardPrompt: {
+    title: "Avbryt og forkast?",
+    body: "Alle opplysningene du har fylt ut vil bli slettet. Hvis du ønsker å fortsette utfyllingen senere kan du la nettleservinduet stå åpent til neste gang.",
+    confirm: "Ja, avbryt og forkast",
+    cancel: "Nei, fortsett utfylling",
+  },
   submitToNavPrompt: {
     open: "Send til NAV",
     body: "Er du sikker på at du vil sende søknaden nå?",
