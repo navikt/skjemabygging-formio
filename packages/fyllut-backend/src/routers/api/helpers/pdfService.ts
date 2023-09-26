@@ -6,6 +6,7 @@ import { appMetrics } from "../../../services";
 import { base64Decode, base64Encode } from "../../../utils/base64";
 import { responseToError, synchronousResponseToError } from "../../../utils/errorHandling";
 import { createHtmlFromSubmission } from "./htmlBuilder";
+import { logger } from "../../../logger";
 
 const { skjemabyggingProxyUrl, gitVersion } = config;
 
@@ -36,6 +37,11 @@ export const createPdf = async (
   }
   const { fodselsnummerDNummerSoker } = submission.data;
   appMetrics.exstreamPdfRequestsCounter.inc({ formPath: form.path, submissionMethod });
+  let errorOccurred = false;
+  const stopMetricRequestDuration = appMetrics.outgoingRequestDuration.startTimer({
+    service: "exstream",
+    method: "createPdf",
+  });
   try {
     return await createPdfFromHtml(
       accessToken,
@@ -46,8 +52,12 @@ export const createPdf = async (
       (fodselsnummerDNummerSoker as string | undefined) || "—",
     );
   } catch (e) {
+    errorOccurred = true;
     appMetrics.exstreamPdfFailuresCounter.inc({ formPath: form.path, submissionMethod });
     throw e;
+  } finally {
+    const duration = stopMetricRequestDuration({ error: String(errorOccurred) });
+    logger.debug(`Request to exstream pdf service completed after ${duration} ms`, { error: errorOccurred, duration });
   }
 };
 
