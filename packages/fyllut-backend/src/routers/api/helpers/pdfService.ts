@@ -1,6 +1,6 @@
 import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import correlator from "express-correlation-id";
-import fetch, { HeadersInit } from "node-fetch";
+import fetchWithRetry, { HeadersInit } from "../../../utils/fetchWithRetry";
 import { config } from "../../../config/config";
 import { appMetrics } from "../../../services";
 import { base64Decode, base64Encode } from "../../../utils/base64";
@@ -59,7 +59,8 @@ export const createPdfFromHtml = async (
   html: string,
   pid: string,
 ) => {
-  const response = await fetch(`${skjemabyggingProxyUrl}/exstream`, {
+  const response = await fetchWithRetry(`${skjemabyggingProxyUrl}/exstream`, {
+    retry: 3,
     headers: {
       Authorization: `Bearer ${azureAccessToken}`,
       "x-correlation-id": correlator.getId(),
