@@ -12,7 +12,9 @@ const FormioReactComponent = class extends ReactComponent {
   }
 
   attachReact(element) {
-    this.rootElement = createRoot(element);
+    if (!this.rootElement) {
+      this.rootElement = createRoot(element);
+    }
     this.renderReact(this.rootElement);
     return this.rootElement;
   }
@@ -37,6 +39,13 @@ const FormioReactComponent = class extends ReactComponent {
     super.setValue(value);
     if (this.rootElement) {
       this.renderReact(this.rootElement);
+    }
+  }
+
+  focus() {
+    if (this.input) {
+      // @ts-ignore
+      this.input.focus();
     }
   }
 };

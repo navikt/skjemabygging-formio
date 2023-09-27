@@ -53,6 +53,8 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
 }
 
 export default class NavDatepicker extends FormioReactComponent {
+  isValid = this.errors.length === 0;
+
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
    *
@@ -336,4 +338,21 @@ export default class NavDatepicker extends FormioReactComponent {
       />,
     );
   }
+
+  checkValidity(data, dirty, rowData) {
+    const isValid = super.checkValidity(data, dirty, rowData);
+    this.componentIsValid(isValid);
+
+    if (!isValid) {
+      return false;
+    }
+    return this.validate(data, dirty, rowData);
+  }
+
+  componentIsValid = (isValid) => {
+    if (isValid !== this.isValid) {
+      this.isValid = !this.isValid;
+      this.renderReact(this.rootElement);
+    }
+  };
 }
