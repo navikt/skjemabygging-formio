@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import FormioReactComponent from "../FormioReactComponent";
 import { advancedDescription } from "./fields/advancedDescription.js";
-import { createRoot } from "react-dom/client.js";
 
 /**
  * The wrapper for our custom React component
@@ -196,8 +195,7 @@ export default class CheckboxComponent extends FormioReactComponent {
   }
 
   renderReact(element) {
-    if (!this.rootElement) this.rootElement = createRoot(element);
-    return this.rootElement.render(
+    return element.render(
       <CheckboxWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
@@ -206,46 +204,6 @@ export default class CheckboxComponent extends FormioReactComponent {
         translate={(text) => this.t(text)}
       />,
     );
-  }
-
-  /**
-   * This function is called when the DIV has been rendered and added to the DOM. You can now instantiate the react component.
-   *
-   * @param DOMElement
-   * #returns ReactInstance
-   */
-  attachReact(element) {
-    this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
-  }
-
-  /**
-   * Automatically detach any react components.
-   *
-   * @param element
-   */
-  detachReact(element) {
-    if (element) {
-      if (!this.rootElement) this.rootElement = createRoot(element);
-      this.rootElement.unmount();
-      this.rootElement = undefined;
-    }
-  }
-
-  getValue() {
-    return this.dataValue;
-  }
-
-  setValue(value, flags = {}) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-    return super.setValue(value, flags);
   }
 
   checkValidity(data, dirty, rowData) {

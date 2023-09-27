@@ -1,4 +1,4 @@
-import { Component, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import selectEditForm from "formiojs/components/select/Select.form";
 import React, { useEffect, useState } from "react";
 import ReactSelect, { components } from "react-select";
@@ -7,7 +7,6 @@ import http from "../../api/http";
 import FormioReactComponent from "../FormioReactComponent";
 import { fieldSizeField } from "./fields/fieldSize";
 import { ariaLiveMessages } from "./navSelect/ariaLiveMessages";
-import { createRoot } from "react-dom/client";
 
 const { navSelect: SELECT_TEXTS } = TEXTS.grensesnitt;
 
@@ -90,14 +89,9 @@ const ReactSelectWrapper = ({
 };
 
 class NavSelect extends FormioReactComponent {
-  reactElement = null;
-  dataForSetting = null;
-  shouldSetValue = false;
   isLoading = false;
   loadFinished = false;
-  selectOptions: any[] = [];
-
-  rootElement;
+  selectOptions: any = [];
 
   static schema(...extend) {
     // @ts-ignore
@@ -207,7 +201,7 @@ class NavSelect extends FormioReactComponent {
   }
 
   renderReact(element) {
-    const component: Component = this.component as Component;
+    const component = this.component!;
     if (component.dataSrc === "values") {
       this.selectOptions = component.data.values;
     } else if (component.dataSrc === "url") {
@@ -239,9 +233,7 @@ class NavSelect extends FormioReactComponent {
       }
     }
 
-    if (!this.rootElement) this.rootElement = createRoot(element);
-
-    return this.rootElement.render(
+    return element.render(
       <ReactSelectWrapper
         component={component}
         options={this.translateOptionLabels(this.selectOptions)}
@@ -255,35 +247,6 @@ class NavSelect extends FormioReactComponent {
         isLoading={this.isLoading}
       />,
     );
-  }
-
-  attachReact(element) {
-    this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
-  }
-
-  detachReact(element) {
-    if (element) {
-      if (!this.rootElement) this.rootElement = createRoot(element);
-      this.rootElement.unmount();
-      this.rootElement = undefined;
-    }
-  }
-
-  getValue() {
-    return this.dataValue;
-  }
-
-  setValue(value, flag) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-    return super.setValue(value, flag);
   }
 }
 

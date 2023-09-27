@@ -4,8 +4,8 @@ import DataGridDataEditForm from "formiojs/components/datagrid/editForm/DataGrid
 import DataGridDisplayEditForm from "formiojs/components/datagrid/editForm/DataGrid.edit.display";
 import FormBuilderOptions from "../../Forms/form-builder-options";
 import { scrollToAndSetFocus } from "../../util/focus-management";
-import FormioReactComponent from "../FormioReactComponent";
 import { description } from "./fields/description.js";
+import Field from "formiojs/components/_classes/field/Field";
 
 const originalAddRow = DataGrid.prototype.addRow;
 const originalRemoveRow = DataGrid.prototype.removeRow;
@@ -152,7 +152,7 @@ class NavDataGrid extends DataGrid {
   }
 
   static schema(...extend) {
-    return FormioReactComponent.schema({
+    return Field.schema({
       ...FormBuilderOptions.builder.data.components.navDataGrid.schema,
       ...extend,
     });

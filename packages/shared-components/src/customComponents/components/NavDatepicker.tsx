@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { DatePicker, DatePickerProps, useDatepicker } from "@navikt/ds-react";
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import apiEditForm from "formiojs/components/_classes/component/editForm/Component.edit.api";
@@ -9,13 +8,13 @@ import { getContextComponents } from "formiojs/utils/utils";
 import moment from "moment";
 import React, { useEffect } from "react";
 import FormBuilderOptions from "../../Forms/form-builder-options";
-import FormioReactComponent from "../FormioReactComponent.jsx";
+import FormioReactComponent from "../FormioReactComponent";
 import { UseDatepickerOptions } from "@navikt/ds-react/esm/date/hooks/useDatepicker";
-import { createRoot } from "react-dom/client";
 
 const SUBMISSION_DATE_FORMAT = "YYYY-MM-DD";
 
 const DatovelgerWrapper = ({ component, onChange, value, locale, readOnly, inputRef }) => {
+  // @ts-ignore
   const { datepickerProps, inputProps, setSelected, reset }: DatePickerProps = useDatepicker({
     required: component.validate.required,
     onDateChange: (val) => {
@@ -54,11 +53,6 @@ function isCorrectOrder(beforeDate, afterDate, mayBeEqual = false) {
 }
 
 export default class NavDatepicker extends FormioReactComponent {
-  isValid = this.errors.length === 0;
-  reactElement = undefined;
-  private shouldSetValue: boolean;
-  rootElement;
-
   /**
    * This function tells the form builder about your component. It's name, icon and what group it should be in.
    *
@@ -331,63 +325,15 @@ export default class NavDatepicker extends FormioReactComponent {
   }
 
   renderReact(element) {
-    if (!this.rootElement) this.rootElement = createRoot(element);
-    return this.rootElement.render(
+    return element.render(
       <DatovelgerWrapper
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataForSetting || this.dataValue} // The starting value of the component.
         onChange={this.updateValue} // The onChange event to call when the value changes.
-        checkValidity={this.checkValidity}
         locale={this.root.i18next.language}
         readOnly={this.options.readOnly}
         inputRef={(r) => (this.input = r)}
       />,
     );
   }
-
-  attachReact(element) {
-    this.reactElement = element;
-    this.renderReact(element);
-    return this.reactElement;
-  }
-
-  detachReact(element) {
-    if (element) {
-      if (!this.rootElement) this.rootElement = createRoot(element);
-      this.rootElement.unmount();
-      this.rootElement = undefined;
-    }
-  }
-
-  getValue() {
-    return this.dataValue;
-  }
-
-  setValue(value, flag = {}) {
-    this.dataForSetting = value;
-    if (this.reactElement) {
-      this.renderReact(this.reactElement);
-      this.shouldSetValue = false;
-    } else {
-      this.shouldSetValue = true;
-    }
-    return super.setValue(value, flag);
-  }
-
-  checkValidity(data, dirty, rowData) {
-    const isValid = super.checkValidity(data, dirty, rowData);
-    this.componentIsValid(isValid);
-
-    if (!isValid) {
-      return false;
-    }
-    return this.validate(data, dirty, rowData);
-  }
-
-  componentIsValid = (isValid) => {
-    if (isValid !== this.isValid) {
-      this.isValid = !this.isValid;
-      this.renderReact(this.reactElement);
-    }
-  };
 }
