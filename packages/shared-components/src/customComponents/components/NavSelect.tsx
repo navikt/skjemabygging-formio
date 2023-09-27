@@ -204,34 +204,35 @@ class NavSelect extends FormioReactComponent {
     const component = this.component!;
     if (component.dataSrc === "values") {
       this.selectOptions = component.data.values;
-    } else if (component.dataSrc === "url") {
-      if (!this.isLoading && !this.loadFinished) {
-        const dataUrl = component.data.url;
-        this.isLoading = true;
-        http
-          .get<any[]>(dataUrl)
-          .then((data) => {
-            const { valueProperty, labelProperty } = component;
-            this.selectOptions = data.map((obj) => ({
-              label: obj[labelProperty || "label"],
-              value: obj[valueProperty || "value"],
-            }));
-          })
-          .catch((err) => {
-            this.emit("componentError", {
-              component,
-              message: err.toString(),
-            });
-            // @ts-ignore
-            console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
-          })
-          .finally(() => {
-            this.isLoading = false;
-            this.loadFinished = true;
-            super.redraw();
+    } else if (component.dataSrc === "url" && !this.isLoading && !this.loadFinished) {
+      const dataUrl = component.data.url;
+      this.isLoading = true;
+      http
+        .get<any[]>(dataUrl)
+        .then((data) => {
+          const { valueProperty, labelProperty } = component;
+          this.selectOptions = data.map((obj) => ({
+            label: obj[labelProperty || "label"],
+            value: obj[valueProperty || "value"],
+          }));
+        })
+        .catch((err) => {
+          this.emit("componentError", {
+            component,
+            message: err.toString(),
           });
-      }
+          // @ts-ignore
+          console.warn(`Unable to load resources for ${this.key} (dataUrl=${dataUrl})`);
+        })
+        .finally(() => {
+          this.isLoading = false;
+          this.loadFinished = true;
+          console.log("redraw", element);
+          super.redraw();
+        });
     }
+
+    console.log("renderReact", element);
 
     return element.render(
       <ReactSelectWrapper

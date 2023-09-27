@@ -352,7 +352,7 @@ export default class NavDatepicker extends FormioReactComponent {
   componentIsValid = (isValid) => {
     if (isValid !== this.isValid) {
       this.isValid = !this.isValid;
-      this.renderReact(this.rootElement);
+      this.renderReact(this.reactInstance);
     }
   };
 }

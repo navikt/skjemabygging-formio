@@ -57,6 +57,7 @@ interface FieldType {
   errors: any[];
   root: any;
   options: any;
+  visible: any | boolean;
   init(): any;
   redraw(): any;
   attach(element: any): any;
@@ -68,8 +69,11 @@ interface FieldType {
   loadRefs(element: any, refs: any): any;
   checkValidity(data: any, dirty: any | boolean, rowData: any): boolean;
   getValue(): any;
-  setValue(value: any): void;
+  setValue(value: any, flags: any): void;
   hasChanged(before: any, after: any): boolean;
+  clearOnHide(): void;
+  deleteValue(): void;
+  hasValue(): boolean;
 
   // Element
   id?: any;
@@ -198,8 +202,9 @@ const ReactComponent = class extends (Field as IField) {
    * Something external has set a value and our component needs to be updated to reflect that. For example, loading a submission.
    *
    * @param value
+   * @param flags
    */
-  setValue(value) {
+  setValue(value, flags = {}) {
     if (this.reactInstance) {
       this.reactInstance.setState({
         value: value,

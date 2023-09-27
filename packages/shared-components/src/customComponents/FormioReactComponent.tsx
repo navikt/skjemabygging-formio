@@ -2,28 +2,22 @@ import ReactComponent from "./ReactComponent";
 import { createRoot } from "react-dom/client";
 
 const FormioReactComponent = class extends ReactComponent {
-  rootElement;
   input = null;
 
-  constructor(component, options, data) {
-    super(component, options, data);
-    this.reactInstance = null;
-    this.rootElement = undefined;
-  }
-
-  attachReact(element) {
-    if (!this.rootElement) {
-      this.rootElement = createRoot(element);
-    }
-    this.renderReact(this.rootElement);
-    return this.rootElement;
+  attachReact(element, setReactInstance) {
+    console.log("attachReact", element, this.reactInstance);
+    const root = createRoot(element);
+    this.renderReact(root);
+    //setReactInstance(root);
+    return root;
   }
 
   detachReact(element) {
-    if (element && this.rootElement) {
+    console.log("detachReact", element, this.reactInstance);
+    if (element && this.reactInstance) {
       setTimeout(() => {
-        this.rootElement.unmount();
-        this.rootElement = undefined;
+        this.reactInstance.unmount();
+        //this.reactInstance = null;
       });
     }
   }
@@ -35,11 +29,20 @@ const FormioReactComponent = class extends ReactComponent {
    */
   renderReact(element) {}
 
-  setValue(value) {
-    super.setValue(value);
-    if (this.rootElement) {
-      this.renderReact(this.rootElement);
-    }
+  clearOnHide() {
+    super.clearOnHide();
+    /*
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (this.component.clearOnHide !== false && !this.options.readOnly && !this.options.showHiddenFields) {
+      if (!this.visible) {
+        this.deleteValue();
+      } else if (!this.hasValue() && this.shouldAddDefaultValue) {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true,
+        });
+      }
+    }*/
   }
 
   focus() {
