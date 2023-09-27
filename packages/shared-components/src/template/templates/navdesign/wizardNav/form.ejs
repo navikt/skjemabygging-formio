@@ -33,9 +33,15 @@
     <div class="button-row">
   {% } %}
   {% if (ctx.buttons.cancel) { %}
-    <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
-      <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt og forkast')}}</span>
-    </button>
+    {% if (ctx.submission?.fyllutState?.mellomlagring?.isActive) { %}
+      <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
+        <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt og lagre')}}</span>
+      </button>
+    {% } else { %}
+      <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
+        <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt og forkast')}}</span>
+      </button>
+    {% } %}
   {% } %}
     </div>
   </nav>
