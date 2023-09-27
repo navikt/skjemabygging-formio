@@ -1,6 +1,6 @@
 import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -9,6 +9,8 @@ import { useSendInn } from "../context/sendInn/sendInnContext";
 import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
+import ConfirmationModal from "./components/navigation/ConfirmationModal";
+import urlUtils from "../util/url";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const navigate = useNavigate();
@@ -22,11 +24,19 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
   const [formForRendering, setFormForRendering] = useState();
-  const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
+  const {
+    startMellomlagring,
+    updateMellomlagring,
+    isMellomlagringEnabled,
+    isMellomlagringReady,
+    isMellomlagringActive,
+  } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
-  const { panelSlug } = useParams();
   const { hash } = useLocation();
   const mutationObserverRef = useRef(undefined);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   useEffect(() => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
@@ -79,16 +89,20 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   }
 
   function updatePanelUrl(panelPath) {
+    // We need to get location data from window, since this function runs inside formio
     navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
-    if (!panelSlug) {
+    // We need to get location data from window, since this function runs inside formio
+    // www.nav.no/fyllut/:form/:panel
+    const panelFromUrl = window.location.pathname.split("/")[3];
+    if (!panelFromUrl) {
       const pathOfPanel = getPanelSlug(form, 0);
       updatePanelUrl(pathOfPanel);
     } else {
       if (typeof formioInstance?.setPage === "function") {
-        const panelIndex = formioInstance.currentPanels.indexOf(panelSlug);
+        const panelIndex = formioInstance.currentPanels.indexOf(panelFromUrl);
         if (panelIndex >= 0) {
           formioInstance.setPage(panelIndex);
         } else {
@@ -116,11 +130,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     onNextOrPreviousPage(page, currentPanels);
   }
 
-  function onCancel({ url }) {
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-      destinasjon: url,
-    });
+  function onCancel({ submission }) {
+    setSubmission(submission);
+    setIsCancelModalOpen(true);
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -146,11 +158,13 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.submit),
       destinasjon: `${formUrl}/oppsummering`,
     });
+    // We need to get location data from window, since this function runs inside formio
     const skjemastegNokkel = window.location.pathname.split(`${formUrl}/`)[1];
     loggSkjemaStegFullfort({
       steg: form.components.findIndex((panel) => panel.key === skjemastegNokkel) + 1,
       skjemastegNokkel,
     });
+    // We need to get location data from window, since this function runs inside formio
     navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
@@ -158,27 +172,50 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggSkjemaValideringFeilet();
   };
 
+  const onConfirmCancel = async () => {
+    if (submission && isMellomlagringActive) {
+      await updateMellomlagring(submission);
+    }
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      destinasjon: exitUrl,
+    });
+  };
+
+  if (!formForRendering) {
+    return null;
+  }
+
   return (
     <div>
-      {formForRendering && (
-        <NavForm
-          form={formForRendering}
-          language={featureToggles.enableTranslations ? currentLanguage : undefined}
-          i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
-          submission={submission}
-          onBlur={loggSkjemaSporsmalBesvart}
-          onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
-          onError={onError}
-          onSubmit={onSubmit}
-          onNextPage={onNextPage}
-          onPrevPage={onPreviousPage}
-          onCancel={onCancel}
-          formReady={onFormReady}
-          submissionReady={goToPanelFromUrlParam}
-          onWizardPageSelected={onWizardPageSelected}
-          className="nav-form"
-        />
-      )}
+      <NavForm
+        form={formForRendering}
+        language={featureToggles.enableTranslations ? currentLanguage : undefined}
+        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
+        submission={submission}
+        onBlur={loggSkjemaSporsmalBesvart}
+        onChange={loggSkjemaSporsmalBesvartForSpesialTyper}
+        onError={onError}
+        onSubmit={onSubmit}
+        onNextPage={onNextPage}
+        onPrevPage={onPreviousPage}
+        onCancel={onCancel}
+        formReady={onFormReady}
+        submissionReady={goToPanelFromUrlParam}
+        onWizardPageSelected={onWizardPageSelected}
+        className="nav-form"
+      />
+      <ConfirmationModal
+        open={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={onConfirmCancel}
+        onError={(err) => {
+          console.error(err);
+        }}
+        confirmType={isMellomlagringActive ? "primary" : "danger"}
+        texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
+        exitUrl={exitUrl}
+      />
     </div>
   );
 };

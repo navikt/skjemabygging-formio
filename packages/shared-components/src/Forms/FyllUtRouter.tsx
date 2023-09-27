@@ -10,7 +10,7 @@ import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { FormTitle } from "./components/FormTitle";
 import { PrepareLetterPage } from "./letter/PrepareLetterPage";
 import { SummaryPage } from "./summary/SummaryPage";
-import { Submission } from "@navikt/skjemadigitalisering-shared-domain";
+import { FyllutState, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import { SubmissionWrapper } from "./SubmissionWrapper";
 
 const useStyles = makeStyles({
@@ -26,9 +26,18 @@ const useStyles = makeStyles({
 
 const FyllUtRouter = ({ form, translations }) => {
   const { featureToggles } = useAppConfig();
-  const [submission, setSubmission] = useState<Submission>();
+  const [submission, setSubmission] = useState<Submission | { fyllutState: FyllutState }>();
   const formBaseUrl = useResolvedPath("").pathname;
   const styles = useStyles();
+
+  const onFyllutStateChange = (fyllutState: FyllutState) => {
+    setSubmission((prevSubmission) => {
+      return {
+        ...prevSubmission,
+        fyllutState,
+      };
+    });
+  };
 
   return (
     <LanguagesProvider translations={translations}>
@@ -38,6 +47,7 @@ const FyllUtRouter = ({ form, translations }) => {
         updateSubmission={(submission) => {
           setSubmission(submission);
         }}
+        onFyllutStateChange={onFyllutStateChange}
       >
         <FormTitle form={form} />
         <div className={styles.container}>

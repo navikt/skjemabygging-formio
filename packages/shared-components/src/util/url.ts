@@ -4,8 +4,13 @@ const getUrlParam = (queryStr, name) => {
   return data[name];
 };
 
+const getExitUrl = (url) => {
+  return url.indexOf(".dev.nav.") > 0 ? "https://www.dev.nav.no" : "https://www.nav.no";
+};
+
 const url = {
   getUrlParam,
+  getExitUrl,
 };
 
 export default url;

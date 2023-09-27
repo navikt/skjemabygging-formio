@@ -32,14 +32,16 @@ type MockRequestParams = {
   headers?: { [name: string]: string };
   body?: object;
   params?: { [name: string]: string };
+  query?: { [name: string]: string };
 };
 
-function mockRequest({ headers = {}, body, params = {} }: MockRequestParams): Request {
+function mockRequest({ headers = {}, body, params = {}, query = {} }: MockRequestParams): Request {
   return {
     header: (name: string) => headers?.[name],
     headers: { ...headers },
     body,
     params: { ...params },
+    query: { ...query },
     get: () => "",
   } as unknown as Request;
 }

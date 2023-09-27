@@ -46,8 +46,14 @@ const renderSummaryPageNavigation = async (
       {
         path: "/testform/*",
         element: (
-          <SendInnProvider form={(props.form ?? {}) as NavFormType} translations={{}} updateSubmission={vi.fn()}>
+          <SendInnProvider
+            form={(props.form ?? {}) as NavFormType}
+            translations={{}}
+            updateSubmission={vi.fn()}
+            onFyllutStateChange={vi.fn()}
+          >
             <SummaryPageNavigation {...summaryPageProps} />
+            <div id="formio-summary-hidden" hidden />
           </SendInnProvider>
         ),
       },

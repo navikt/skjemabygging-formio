@@ -1,4 +1,8 @@
-<nav id="{{ ctx.wizardKey }}-nav" >
+<div>
+{% if (ctx.submission?.fyllutState?.mellomlagring?.savedDate) { %}
+  <p class="navigation-detail">{{ctx.t('Sist lagret') + ' ' + ctx.submission.fyllutState.mellomlagring.savedDate}}</p>
+{% } %}
+  <nav id="{{ ctx.wizardKey }}-nav">
   {% if ((ctx.buttons.next || ctx.buttons.submit) && ctx.buttons.previous) { %}
     <div class="button-row button-row__center">
   {% } else { %}
@@ -29,9 +33,16 @@
     <div class="button-row">
   {% } %}
   {% if (ctx.buttons.cancel) { %}
-    <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
-      <span aria-live="polite" class="navds-label">{{ctx.t('Avbryt')}}</span>
-    </button>
+      <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
+        <span aria-live="polite" class="navds-label">
+      {% if (ctx.submission?.fyllutState?.mellomlagring?.isActive) { %}
+            {{ctx.t('Avbryt og lagre')}}
+      {% } else { %}
+            {{ctx.t('Avbryt og forkast')}}
+      {% } %}
+        </span>
+      </button>
   {% } %}
     </div>
-</nav>
+  </nav>
+</div>

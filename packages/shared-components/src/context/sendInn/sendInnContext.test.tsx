@@ -51,7 +51,12 @@ describe("sendInnContext", () => {
           config={{ isTest: true }}
         >
           <MemoryRouter>
-            <SendInnProvider form={form} translations={translations} updateSubmission={vi.fn()}>
+            <SendInnProvider
+              form={form}
+              translations={translations}
+              updateSubmission={vi.fn()}
+              onFyllutStateChange={vi.fn()}
+            >
               <TestComponent submission={submission} />
             </SendInnProvider>
           </MemoryRouter>
@@ -140,7 +145,12 @@ describe("sendInnContext", () => {
           config={{ isTest: true }}
         >
           <MemoryRouter>
-            <SendInnProvider form={form} translations={translations} updateSubmission={vi.fn()}>
+            <SendInnProvider
+              form={form}
+              translations={translations}
+              updateSubmission={vi.fn()}
+              onFyllutStateChange={vi.fn()}
+            >
               <TestComponent submission={submission} />
             </SendInnProvider>
           </MemoryRouter>
