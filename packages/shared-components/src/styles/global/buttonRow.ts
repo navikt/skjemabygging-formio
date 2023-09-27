@@ -22,24 +22,6 @@ const buttonRow = {
     display: "flex",
     justifyContent: "center",
   },
-  ".modal-close": {
-    position: "absolute",
-    right: "1rem",
-    top: "1rem",
-    width: "initial",
-    minWidth: "initial",
-  },
-  ".cancel-warning-overlay": {
-    display: "none",
-  },
-  ".wizard-nav-modal": {
-    maxWidth: "34rem",
-
-    ".modal-heading": {
-      marginTop: 0,
-      fontSize: "1.5rem",
-    },
-  },
 };
 
 export default buttonRow;
