@@ -6,7 +6,6 @@ import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
 import { getPanelSlug } from "../util/form";
-import { removeBeforeUnload } from "../util/unload";
 
 export interface Props {
   form: NavFormType;
@@ -64,7 +63,6 @@ export function IntroPage({ form, formUrl }: Props) {
   const navigateToFormPage = (event) => {
     event.preventDefault();
     if (selectedSubmissionMethod) {
-      removeBeforeUnload();
       const { pathname, search } = window.location;
       const params = new URLSearchParams(search);
       params.set("sub", selectedSubmissionMethod);

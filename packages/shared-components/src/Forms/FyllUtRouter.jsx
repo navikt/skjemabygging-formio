@@ -5,7 +5,6 @@ import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { SendInnProvider, useSendInn } from "../context/sendInn/sendInnContext";
 import makeStyles from "../util/jss";
-import { addBeforeUnload, removeBeforeUnload } from "../util/unload";
 import { FillInFormPage } from "./FillInFormPage.jsx";
 import { IntroPage } from "./IntroPage.tsx";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
@@ -39,15 +38,6 @@ const FyllUtRouter = ({ form, translations }) => {
   useEffect(() => {
     setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
   }, [form, submissionMethod]);
-
-  useEffect(() => {
-    if (!isMellomLagringActive) {
-      addBeforeUnload();
-      return () => {
-        removeBeforeUnload();
-      };
-    }
-  }, [isMellomLagringActive]);
 
   const onFyllutStateChange = (fyllutState) => {
     setSubmission((prevSubmission) => {

@@ -55,11 +55,6 @@ Wizard.prototype.attach = function (element) {
   });
 };
 
-Wizard.prototype.detachCustomNavigationEvents = function () {
-  const openCancelWarningButton = this.refs[`${this.wizardKey}-cancel-warning-open`];
-  this.removeEventListener(openCancelWarningButton, "click");
-};
-
 Wizard.prototype.attachStepper = function () {
   const stepperOpenButton = this.refs[`${this.wizardKey}-stepper-open`];
   const stepperBackdrop = this.refs[`${this.wizardKey}-stepper-backdrop`];
