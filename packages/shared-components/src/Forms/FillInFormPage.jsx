@@ -172,11 +172,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const onConfirmCancel = async () => {
     if (submission && isMellomlagringActive) {
       await updateMellomlagring(submission);
-      loggNavigering({
-        lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-        destinasjon: exitUrl,
-      });
     }
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      destinasjon: exitUrl,
+    });
   };
 
   return (
