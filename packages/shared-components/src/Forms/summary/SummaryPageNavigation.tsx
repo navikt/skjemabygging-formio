@@ -7,6 +7,7 @@ import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
 import { getPanels } from "../../util/form";
+import urlUtils from "../../util/url";
 import { PanelValidation } from "../../util/panelValidation";
 import DigitalSubmissionButton from "../components/DigitalSubmissionButton";
 import DigitalSubmissionWithPrompt from "../components/DigitalSubmissionWithPrompt";
@@ -45,6 +46,8 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
   const styles = useStyles();
   const hasAttachments = hasRelevantAttachments(form, submission?.data ?? {});
   const canSubmit = (panelValidationList ?? []).every((panelValidation) => !panelValidation.hasValidationErrors);
+
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   const onClickPapirOrIngenInnsending = (e, path) => {
     if (!isValid(e)) {
@@ -153,12 +156,12 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
         onConfirm={() => {
           loggNavigering({
             lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDiscard),
-            destinasjon: "https://www.nav.no",
+            destinasjon: exitUrl,
           });
         }}
         confirmType={"danger"}
         texts={TEXTS.grensesnitt.confirmDiscardPrompt}
-        exitUrl={"https://www.nav.no"}
+        exitUrl={exitUrl}
       />
     </>
   );

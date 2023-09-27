@@ -5,6 +5,7 @@ import { useAmplitude } from "../../../context/amplitude";
 import { useLanguages } from "../../../context/languages";
 import { useSendInn } from "../../../context/sendInn/sendInnContext";
 import ConfirmationModal from "./ConfirmationModal";
+import urlUtils from "../../../util/url";
 
 interface Props {
   submission?: Submission;
@@ -18,6 +19,8 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
+
   const saveSubmission = async () => {
     if (!submission) {
       setIsSaveModalOpen(false);
@@ -26,7 +29,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
     await updateMellomlagring(submission);
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.saveDraft),
-      destinasjon: "https://www.nav.no",
+      destinasjon: exitUrl,
     });
   };
 
@@ -34,7 +37,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
     await deleteMellomlagring();
     loggNavigering({
       lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancelAndDelete),
-      destinasjon: "https://www.nav.no",
+      destinasjon: exitUrl,
     });
     setIsDeleteModalOpen(false);
   };
@@ -65,7 +68,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
         onError={onError}
         confirmType={"primary"}
         texts={TEXTS.grensesnitt.confirmSavePrompt}
-        exitUrl="https://www.nav.no"
+        exitUrl={exitUrl}
       />
       <ConfirmationModal
         open={isDeleteModalOpen}
@@ -74,7 +77,7 @@ const SaveAndDeleteButtons = ({ submission, onError }: Props) => {
         onError={onError}
         confirmType={"danger"}
         texts={TEXTS.grensesnitt.confirmDeletePrompt}
-        exitUrl="https://www.nav.no"
+        exitUrl={exitUrl}
       />
     </>
   );

@@ -10,6 +10,7 @@ import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
 import ConfirmationModal from "./components/navigation/ConfirmationModal";
+import urlUtils from "../util/url";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
@@ -33,6 +34,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { hash } = useLocation();
   const mutationObserverRef = useRef(undefined);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
@@ -171,7 +174,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       await updateMellomlagring(submission);
       loggNavigering({
         lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-        destinasjon: "www.nav.no",
+        destinasjon: exitUrl,
       });
     }
   };
@@ -204,7 +207,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         }}
         confirmType={isMellomlagringActive ? "primary" : "danger"}
         texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
-        exitUrl="https://www.nav.no"
+        exitUrl={exitUrl}
       />
     </div>
   );
