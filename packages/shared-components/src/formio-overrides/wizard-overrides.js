@@ -11,24 +11,13 @@ Wizard.prototype.emitPrevPage = function () {
 };
 
 WebForm.prototype.cancel = function () {
-  const url = window.location.href.indexOf(".dev.nav.") > 0 ? "https://www.dev.nav.no" : "https://www.nav.no";
-  this.emit("cancel", { page: this.page, submission: this.submission, currentPanels: this.currentPanels, url });
-  const shouldReset = this.hook("beforeCancel", true);
-  if (shouldReset) {
-    window.location.href = url;
-  } else {
-    return false;
-  }
+  this.emit("cancel", { page: this.page, submission: this.submission, currentPanels: this.currentPanels });
 };
 
 Wizard.prototype.attach = function (element) {
   this.element = element;
   this.loadRefs(element, {
     [this.wizardKey]: "single",
-    [`${this.wizardKey}-cancel-warning-overlay`]: "single",
-    [`${this.wizardKey}-cancel-warning-open`]: "single",
-    [`${this.wizardKey}-cancel-warning-close`]: "single",
-    [`${this.wizardKey}-modal-close`]: "single",
     [`${this.wizardKey}-cancel`]: "single",
     [`${this.wizardKey}-previous`]: "single",
     [`${this.wizardKey}-next`]: "single",
@@ -64,23 +53,6 @@ Wizard.prototype.attach = function (element) {
       this.scrollPageToTop();
     }
   });
-};
-
-Wizard.prototype.attachCustomNavigationEvents = function () {
-  const openCancelWarningButton = this.refs[`${this.wizardKey}-cancel-warning-open`];
-  const cancelWarningOverlay = this.refs[`${this.wizardKey}-cancel-warning-overlay`];
-  const closeCancelWarningButton = this.refs[`${this.wizardKey}-cancel-warning-close`];
-  const closeModalButton = this.refs[`${this.wizardKey}-modal-close`];
-  const openCancelWarning = () => {
-    cancelWarningOverlay.style.display = "flex";
-  };
-  const closeCancelWarning = (event) => {
-    event.preventDefault();
-    cancelWarningOverlay.style.display = "none";
-  };
-  this.addEventListener(openCancelWarningButton, "click", openCancelWarning);
-  this.addEventListener(closeCancelWarningButton, "click", closeCancelWarning);
-  this.addEventListener(closeModalButton, "click", closeCancelWarning);
 };
 
 Wizard.prototype.detachCustomNavigationEvents = function () {
@@ -139,75 +111,6 @@ Wizard.prototype.redrawHeader = function () {
       this.attachHeader();
     }
   }
-};
-
-Wizard.prototype.redrawNavigation = function () {
-  if (this.element) {
-    let navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
-    if (navElement) {
-      this.detachNav();
-      navElement.outerHTML = this.renderTemplate("wizardNav", this.renderContext);
-      navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
-      this.loadRefs(navElement, {
-        [`${this.wizardKey}-cancel`]: "single",
-        [`${this.wizardKey}-previous`]: "single",
-        [`${this.wizardKey}-next`]: "single",
-        [`${this.wizardKey}-submit`]: "single",
-        [`${this.wizardKey}-cancel-warning-overlay`]: "single",
-        [`${this.wizardKey}-cancel-warning-open`]: "single",
-        [`${this.wizardKey}-cancel-warning-close`]: "single",
-        [`${this.wizardKey}-modal-close`]: "single",
-      });
-      this.attachNav();
-    }
-  }
-};
-
-// Override original attachNav, in order to add custom events (like save, delete, show warning on cancel)
-Wizard.prototype.attachNav = function () {
-  if (this.component.navigateOnEnter) {
-    this.addEventListener(document, "keyup", this.handleNaviageteOnEnter.bind(this));
-  }
-  if (this.component.saveOnEnter) {
-    this.addEventListener(document, "keyup", this.handleSaveOnEnter.bind(this));
-  }
-
-  Object.values(this.buttons).forEach((button) => {
-    const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
-    this.addEventListener(buttonElement, "click", (event) => {
-      event.preventDefault();
-
-      // Disable the button until done.
-      buttonElement.setAttribute("disabled", "disabled");
-      this.setLoading(buttonElement, true);
-
-      // Call the button method, then re-enable the button.
-      this[button.method]()
-        .then(() => {
-          buttonElement.removeAttribute("disabled");
-          this.setLoading(buttonElement, false);
-        })
-        .catch(() => {
-          buttonElement.removeAttribute("disabled");
-          this.setLoading(buttonElement, false);
-        });
-    });
-  });
-
-  this.attachCustomNavigationEvents();
-};
-
-Wizard.prototype.detachNav = function () {
-  if (this.component.navigateOnEnter) {
-    this.removeEventListener(document, "keyup", this.handleNaviageteOnEnter.bind(this));
-  }
-  if (this.component.saveOnEnter) {
-    this.removeEventListener(document, "keyup", this.handleSaveOnEnter.bind(this));
-  }
-  Object.values(this.buttons).forEach((button) => {
-    this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], "click");
-  });
-  this.detachCustomNavigationEvents();
 };
 
 // Overridden to re-set focus to the link after clicking on it, as a re-render will reset focus to the top of the page.
