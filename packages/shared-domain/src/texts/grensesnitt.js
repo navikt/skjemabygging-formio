@@ -6,6 +6,7 @@ export const grensesnitt = {
     saveAndContinue: "Lagre og fortsett",
     cancel: "Avbryt",
     cancelAndDelete: "Avbryt og slett",
+    cancelAndDiscard: "Avbryt og forkast",
     saveDraft: "Lagre utkast og fortsett senere",
     exit: "Avslutt",
     confirmCancel: "Er du sikker på at du vil avbryte?",
@@ -33,6 +34,12 @@ export const grensesnitt = {
     title: "Avbryt og slett utkast?",
     body: "Alle opplysningene du har fylt ut vil bli slettet.",
     confirm: "Ja, avbryt og slett utkast",
+    cancel: "Nei, fortsett utfylling",
+  },
+  confirmDiscardPrompt: {
+    title: "Avbryt og forkast?",
+    body: "Alle opplysningene du har fylt ut vil bli slettet. Hvis du ønsker å fortsette utfyllingen senere kan du la nettleservinduet stå åpent til neste gang.",
+    confirm: "Ja, avbryt og forkast",
     cancel: "Nei, fortsett utfylling",
   },
   submitToNavPrompt: {

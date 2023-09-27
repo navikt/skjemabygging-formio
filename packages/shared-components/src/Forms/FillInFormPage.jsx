@@ -1,5 +1,5 @@
 import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
@@ -9,6 +9,8 @@ import { useSendInn } from "../context/sendInn/sendInnContext";
 import { LoadingComponent } from "../index";
 import { scrollToAndSetFocus } from "../util/focus-management.js";
 import { getPanelSlug } from "../util/form";
+import ConfirmationModal from "./components/navigation/ConfirmationModal";
+import urlUtils from "../util/url";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const history = useHistory();
@@ -21,10 +23,19 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
-  const { startMellomlagring, updateMellomlagring, isMellomlagringEnabled, isMellomlagringReady } = useSendInn();
+  const {
+    startMellomlagring,
+    updateMellomlagring,
+    isMellomlagringEnabled,
+    isMellomlagringReady,
+    isMellomlagringActive,
+  } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
   const mutationObserverRef = useRef(undefined);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
+  const exitUrl = urlUtils.getExitUrl(window.location.href);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
@@ -114,11 +125,9 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     onNextOrPreviousPage(page, currentPanels);
   }
 
-  function onCancel({ url }) {
-    loggNavigering({
-      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
-      destinasjon: url,
-    });
+  function onCancel({ submission }) {
+    setSubmission(submission);
+    setIsCancelModalOpen(true);
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -160,6 +169,16 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     //scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
 
+  const onConfirmCancel = async () => {
+    if (submission && isMellomlagringActive) {
+      await updateMellomlagring(submission);
+    }
+    loggNavigering({
+      lenkeTekst: translate(TEXTS.grensesnitt.navigation.cancel),
+      destinasjon: exitUrl,
+    });
+  };
+
   return (
     <div>
       <NavForm
@@ -178,6 +197,17 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
         className="nav-form"
+      />
+      <ConfirmationModal
+        open={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={onConfirmCancel}
+        onError={(err) => {
+          console.error(err);
+        }}
+        confirmType={isMellomlagringActive ? "primary" : "danger"}
+        texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
+        exitUrl={exitUrl}
       />
     </div>
   );

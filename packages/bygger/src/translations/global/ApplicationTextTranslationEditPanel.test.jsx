@@ -42,7 +42,7 @@ describe("ApplicationTextTranslationEditPanel", () => {
     });
 
     it("renders all grensesnitt inputs", () => {
-      expect(screen.getAllByRole("textbox")).toHaveLength(63);
+      expect(screen.getAllByRole("textbox")).toHaveLength(67);
     });
 
     it("renders originalText with translatedText as value", () => {
