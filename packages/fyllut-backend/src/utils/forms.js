@@ -19,7 +19,7 @@ const loadFileFromDirectory = async (dir, filename, defaultReturn = {}) => {
     const file = await readFile(`${dir}/${existingFileName}`);
     return JSON.parse(file);
   }
-  logger.warn(`File "${filename}" does not exist in directory "${dir}"`);
+  logger.info(`File "${filename}" does not exist in directory "${dir}"`);
   return defaultReturn;
 };
 
