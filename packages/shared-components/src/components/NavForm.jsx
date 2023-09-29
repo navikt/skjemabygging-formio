@@ -161,6 +161,7 @@ NavForm.propTypes = {
   onPrevPage: PropTypes.func,
   onNextPage: PropTypes.func,
   onCancel: PropTypes.func,
+  onSave: PropTypes.func,
   onChange: PropTypes.func,
   onCustomEvent: PropTypes.func,
   onComponentChange: PropTypes.func,

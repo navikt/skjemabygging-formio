@@ -62,15 +62,22 @@
     <div class="button-row">
   {% } %}
   {% if (ctx.buttons.cancel) { %}
+    {% if (ctx.submission?.fyllutState?.mellomlagring?.isActive) { %}
       <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
         <span aria-live="polite" class="navds-label">
-      {% if (ctx.submission?.fyllutState?.mellomlagring?.isActive) { %}
-            {{ctx.t('Avbryt og lagre')}}
-      {% } else { %}
-            {{ctx.t('Avbryt og forkast')}}
-      {% } %}
-        </span>
+            {{ctx.t('Avbryt og slett')}}
+            </span>
       </button>
+      <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-save" type="button">
+        <span aria-live="polite" class="navds-label">{{ctx.t('Lagre utkast og fortsett senere')}}</span>
+      </button>
+    {% } else { %}
+      <button class="navds-button navds-button--tertiary" ref="{{ctx.wizardKey}}-cancel" type="button">
+      <span aria-live="polite" class="navds-label">
+          {{ctx.t('Avbryt og forkast')}}
+          </span>
+      </button>
+    {% } %}
   {% } %}
     </div>
   </nav>

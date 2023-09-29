@@ -19,6 +19,7 @@ Wizard.prototype.attach = function (element) {
   this.loadRefs(element, {
     [this.wizardKey]: "single",
     [`${this.wizardKey}-cancel`]: "single",
+    [`${this.wizardKey}-save`]: "single",
     [`${this.wizardKey}-previous`]: "single",
     [`${this.wizardKey}-next`]: "single",
     [`${this.wizardKey}-submit`]: "single",
@@ -53,6 +54,86 @@ Wizard.prototype.attach = function (element) {
       this.scrollPageToTop();
     }
   });
+};
+
+Wizard.prototype.attachCustomNavigationEvents = function () {
+  const saveButton = this.refs[`${this.wizardKey}-save`];
+  const onSave = () => {
+    this.emit("save", { page: this.page, submission: this.submission, currentPanels: this.currentPanels });
+  };
+  this.addEventListener(saveButton, "click", onSave);
+};
+
+Wizard.prototype.detachCustomNavigationEvents = function () {
+  const saveButton = this.refs[`${this.wizardKey}-save`];
+  this.removeEventListener(saveButton, "click");
+};
+
+// Override original attachNav, in order to add custom events (like save)
+Wizard.prototype.attachNav = function () {
+  if (this.component.navigateOnEnter) {
+    this.addEventListener(document, "keyup", this.handleNaviageteOnEnter.bind(this));
+  }
+  if (this.component.saveOnEnter) {
+    this.addEventListener(document, "keyup", this.handleSaveOnEnter.bind(this));
+  }
+
+  Object.values(this.buttons).forEach((button) => {
+    const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
+    this.addEventListener(buttonElement, "click", (event) => {
+      event.preventDefault();
+
+      // Disable the button until done.
+      buttonElement.setAttribute("disabled", "disabled");
+      this.setLoading(buttonElement, true);
+
+      // Call the button method, then re-enable the button.
+      this[button.method]()
+        .then(() => {
+          buttonElement.removeAttribute("disabled");
+          this.setLoading(buttonElement, false);
+        })
+        .catch(() => {
+          buttonElement.removeAttribute("disabled");
+          this.setLoading(buttonElement, false);
+        });
+    });
+  });
+
+  this.attachCustomNavigationEvents();
+};
+
+// Override original detachNav, in order to add custom events (like save)
+Wizard.prototype.detachNav = function () {
+  if (this.component.navigateOnEnter) {
+    this.removeEventListener(document, "keyup", this.handleNaviageteOnEnter.bind(this));
+  }
+  if (this.component.saveOnEnter) {
+    this.removeEventListener(document, "keyup", this.handleSaveOnEnter.bind(this));
+  }
+  Object.values(this.buttons).forEach((button) => {
+    this.removeEventListener(this.refs[`${this.wizardKey}-${button.name}`], "click");
+  });
+  this.detachCustomNavigationEvents();
+};
+
+Wizard.prototype.redrawNavigation = function () {
+  if (this.element) {
+    let navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+    if (navElement) {
+      this.detachNav();
+      navElement.outerHTML = this.renderTemplate("wizardNav", this.renderContext);
+      navElement = this.element.querySelector(`#${this.wizardKey}-nav`);
+      this.loadRefs(navElement, {
+        [`${this.wizardKey}-cancel`]: "single",
+        [`${this.wizardKey}-save`]: "single",
+        [`${this.wizardKey}-previous`]: "single",
+        [`${this.wizardKey}-next`]: "single",
+        [`${this.wizardKey}-submit`]: "single",
+      });
+      this.attachNav();
+    }
+  }
 };
 
 Wizard.prototype.attachStepper = function () {
