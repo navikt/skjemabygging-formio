@@ -8,6 +8,7 @@ const mapForm = (form) => ({
   properties: {
     skjemanummer: form.properties.skjemanummer,
     innsending: form.properties.innsending,
+    ettersending: form.properties.ettersending,
   },
 });
 
