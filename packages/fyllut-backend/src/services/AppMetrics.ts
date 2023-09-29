@@ -1,4 +1,4 @@
-import { Counter, Registry, collectDefaultMetrics } from "prom-client";
+import { Counter, Histogram, Registry, collectDefaultMetrics } from "prom-client";
 import { logger } from "../logger";
 
 class AppMetrics {
@@ -24,6 +24,14 @@ class AppMetrics {
     name: "fyllut_exstream_pdf_failures_total",
     help: "Number of exstream pdf requests which failed",
     labelNames: ["formPath", "submissionMethod"],
+    registers: [this._register],
+  });
+
+  public outgoingRequestDuration = new Histogram({
+    name: "fyllut_outgoing_request_duration_seconds",
+    help: "Request duration for outgoing requests made by FyllUt",
+    labelNames: ["service", "method", "error"],
+    buckets: [1.0, 2.0, 5.0, 10.0, 15.0, 30.0, 60.0],
     registers: [this._register],
   });
 }
