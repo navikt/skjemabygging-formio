@@ -9,7 +9,7 @@ interface RetryInit {
 type RequestInitWithRetry = RequestInit & RetryInit;
 
 const DEFAULT_RETRY = 3;
-const DEFAULT_RETRY_DELAY_MS = 5000;
+const DEFAULT_RETRY_DELAY_MS = 2000;
 
 const fetchWithRetry = (url: RequestInfo, init: RequestInitWithRetry): Promise<Response> => {
   return new Promise((resolve, reject) => {
