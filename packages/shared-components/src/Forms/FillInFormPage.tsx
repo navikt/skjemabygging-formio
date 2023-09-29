@@ -33,7 +33,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   } = useSendInn();
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
-  const mutationObserverRef = useRef(undefined);
+  const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
@@ -56,7 +56,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const removeMutationObserver = () => {
     if (mutationObserverRef.current) {
       mutationObserverRef.current.disconnect();
-      mutationObserverRef.current = null;
+      mutationObserverRef.current = undefined;
     }
   };
 
@@ -80,7 +80,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     }
   }, [hash]);
 
-  if (featureToggles.enableTranslations && !translationsForNavForm) {
+  if (featureToggles?.enableTranslations && !translationsForNavForm) {
     return null;
   }
 
@@ -190,8 +190,8 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     <div>
       <NavForm
         form={formForRendering}
-        language={featureToggles.enableTranslations ? currentLanguage : undefined}
-        i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
+        language={featureToggles?.enableTranslations ? currentLanguage : undefined}
+        i18n={featureToggles?.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
         onBlur={loggSkjemaSporsmalBesvart}
         onChange={loggSkjemaSporsmalBesvartForSpesialTyper}

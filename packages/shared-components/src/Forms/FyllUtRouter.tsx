@@ -4,7 +4,7 @@ import { useAppConfig } from "../configContext";
 import { LanguageSelector, LanguagesProvider } from "../context/languages";
 import { SendInnProvider } from "../context/sendInn/sendInnContext";
 import makeStyles from "../util/jss";
-import { FillInFormPage } from "./FillInFormPage.jsx";
+import { FillInFormPage } from "./FillInFormPage";
 import { IntroPage } from "./IntroPage";
 import { PrepareIngenInnsendingPage } from "./PrepareIngenInnsendingPage";
 import { FormTitle } from "./components/FormTitle";

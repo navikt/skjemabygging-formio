@@ -174,7 +174,9 @@ NavForm.propTypes = {
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
   onInitialized: PropTypes.func,
+  onWizardPageSelected: PropTypes.func,
   formReady: PropTypes.func,
+  submissionReady: PropTypes.func,
   formioform: PropTypes.any,
 };
 
