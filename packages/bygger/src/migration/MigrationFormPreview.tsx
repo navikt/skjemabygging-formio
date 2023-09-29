@@ -8,7 +8,7 @@ import {
   Styles,
 } from "@navikt/skjemadigitalisering-shared-components";
 import { useEffect, useState } from "react";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const useStyles = makeStyles({
   "@global": Styles.global,
@@ -23,7 +23,7 @@ const MigrationFormPreview = () => {
   const [error, setError] = useState<string>();
   const { formPath } = useParams();
   const { search } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const styles = useStyles();
   useEffect(() => {
@@ -50,7 +50,7 @@ const MigrationFormPreview = () => {
   return (
     <div>
       <div className={styles.backContainer}>
-        <Button variant="tertiary" icon={<Close aria-hidden />} onClick={history.goBack} type="button">
+        <Button variant="tertiary" icon={<Close aria-hidden />} onClick={() => navigate(-1)} type="button">
           Tilbake
         </Button>
       </div>

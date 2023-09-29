@@ -1,7 +1,7 @@
 import { Alert, Button, Heading } from "@navikt/ds-react";
 import { InnsendingType, NavFormType, Submission, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useState } from "react";
-import { Link, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppConfig } from "../../configContext";
 import { useAmplitude } from "../../context/amplitude";
 import { useLanguages } from "../../context/languages";
@@ -35,7 +35,6 @@ const useStyles = makeStyles({
 
 const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList, isValid }: Props) => {
   const { submissionMethod, app } = useAppConfig();
-  const { url } = useRouteMatch();
   const { search } = useLocation();
   const { loggSkjemaStegFullfort, loggSkjemaFullfort, loggSkjemaInnsendingFeilet, loggNavigering } = useAmplitude();
   const { translate } = useLanguages();
@@ -94,7 +93,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <Link
               className="navds-button navds-button--primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, "send-i-posten")}
-              to={{ pathname: `${formUrl}/send-i-posten`, search, state: { previousPage: url } }}
+              to={{ pathname: `${formUrl}/send-i-posten`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}
@@ -137,7 +136,7 @@ const SummaryPageNavigation = ({ form, submission, formUrl, panelValidationList,
             <Link
               className="navds-button navds-button--primary"
               onClick={(e) => onClickPapirOrIngenInnsending(e, "ingen-innsending")}
-              to={{ pathname: `${formUrl}/ingen-innsending`, search, state: { previousPage: url } }}
+              to={{ pathname: `${formUrl}/ingen-innsending`, search }}
             >
               <span aria-live="polite" className="navds-body-short font-bold">
                 {translate(TEXTS.grensesnitt.moveForward)}

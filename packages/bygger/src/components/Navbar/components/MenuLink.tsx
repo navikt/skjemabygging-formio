@@ -45,7 +45,7 @@ export const MenuLink = ({ children, to, dataKey, noIconStyling }: Props) => {
         className={`${noIconStyling ? styles.navBarLinkNoIcon : styles.navBarLink}`}
         to={to}
         data-key={dataKey}
-        activeStyle={navLinkActiveStyle}
+        style={({ isActive }) => (isActive ? navLinkActiveStyle : {})}
       >
         {children}
       </NavLink>

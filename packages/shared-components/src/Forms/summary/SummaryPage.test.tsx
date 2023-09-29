@@ -1,8 +1,7 @@
 import { DeclarationType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { createMemoryHistory } from "history";
-import { Router } from "react-router-dom";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { AppConfigContextType, AppConfigProvider } from "../../configContext";
 import { SendInnProvider } from "../../context/sendInn/sendInnContext";
 import { Props, SummaryPage } from "./SummaryPage";
@@ -13,10 +12,6 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useRouteMatch: () => ({ url: "/forms/previous" }),
-    useLocation: vi.fn().mockReturnValue({
-      pathname: "/oppsummering",
-      search: "",
-    }),
   };
 });
 
@@ -27,8 +22,7 @@ vi.mock("../../context/languages", () => ({
 const renderSummaryPage = async (
   props: Partial<Props>,
   appConfigProps: AppConfigContextType = {} as AppConfigContextType,
-): Promise<{ history: any; buttons: Buttons }> => {
-  const history = createMemoryHistory();
+): Promise<{ router: any; buttons: Buttons }> => {
   const summaryPageProps: Props = {
     formUrl: "/testform",
     submission: {},
@@ -36,57 +30,70 @@ const renderSummaryPage = async (
     translations: {},
     ...props,
   } as Props;
+
+  const router = createMemoryRouter(
+    [
+      {
+        path: "/testform/*",
+        element: (
+          <SendInnProvider
+            form={(props.form ?? {}) as NavFormType}
+            translations={{}}
+            updateSubmission={vi.fn()}
+            onFyllutStateChange={vi.fn()}
+          >
+            <SummaryPage {...summaryPageProps} />
+            <div id="formio-summary-hidden" hidden />
+          </SendInnProvider>
+        ),
+      },
+    ],
+    {
+      initialEntries: ["/testform"],
+    },
+  );
+
   render(
     <AppConfigProvider {...appConfigProps}>
-      <SendInnProvider
-        form={(props.form ?? {}) as NavFormType}
-        translations={{}}
-        updateSubmission={vi.fn()}
-        onFyllutStateChange={vi.fn()}
-      >
-        <Router history={history}>
-          <SummaryPage {...summaryPageProps} />
-          <div id="formio-summary-hidden" hidden />
-        </Router>
-      </SendInnProvider>
+      <RouterProvider router={router} />
     </AppConfigProvider>,
   );
   // verifiser render ved å sjekke at overskrift finnes
   await screen.getByRole("heading", { level: 2, name: TEXTS.grensesnitt.title });
-  return { history, buttons: getButtons(screen) };
+  return { router, buttons: getButtons(screen) };
 };
 
 describe("SummaryPage", () => {
   describe("ConfirmationPanel", () => {
     it("Ikke vis bekreftelse", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.none });
-      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).not.toBeInTheDocument();
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(history.location.pathname).toBe("/testform/send-i-posten");
+      expect(router.state.location.pathname).toBe("/testform/send-i-posten");
     });
 
     it("Bekreft dataene dine", async () => {
       const form = formWithProperties({ innsending: "KUN_PAPIR", declarationType: DeclarationType.default });
-      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
       await userEvent.click(confirmCheckbox!);
       expect(confirmCheckbox).toBeChecked();
       await userEvent.click(buttons.gaVidereKnapp);
-      expect(history.location.pathname).toBe("/testform/send-i-posten");
+      expect(router.state.location.pathname).toBe("/testform/send-i-posten");
     });
 
     it("Ikke gå videre, uten å bekrefte dataene", async () => {
       const form = formWithProperties({ innsending: "PAPIR_OG_DIGITAL", declarationType: DeclarationType.default });
-      const { buttons, history } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
+      const { buttons, router } = await renderSummaryPage({ form }, { submissionMethod: "paper" });
       const confirmCheckbox = screen.queryByRole("checkbox", { name: TEXTS.statiske.declaration.defaultText });
       expect(confirmCheckbox).toBeInTheDocument();
       await userEvent.click(buttons.gaVidereKnapp);
       expect(confirmCheckbox).toHaveAttribute("aria-invalid", "true");
       expect(confirmCheckbox).toHaveAttribute("aria-checked", "false");
-      expect(history.location.pathname).not.toBe("/testform/send-i-posten");
+      expect(router.state.location.pathname).not.toBe("/testform/send-i-posten");
     });
   });
 });

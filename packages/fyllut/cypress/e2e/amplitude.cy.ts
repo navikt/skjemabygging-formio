@@ -55,7 +55,7 @@ describe("Amplitude", () => {
       .within(($radio) => cy.findByLabelText("Nei").should("exist").check());
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Har du norsk fødselsnummer eller D-nummer?" });
 
-    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("exist").type("10.05.1995").blur();
+    cy.findByRole("textbox", { name: "Din fødselsdato (dd.mm.åååå)" }).should("be.visible").type("10.05.1995").blur();
     cy.checkLogToAmplitude("skjemaspørsmål besvart", { spørsmål: "Din fødselsdato (dd.mm.åååå)" });
 
     cy.get(".navds-radio-group")

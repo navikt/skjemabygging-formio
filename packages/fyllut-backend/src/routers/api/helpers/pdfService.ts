@@ -1,11 +1,12 @@
 import { I18nTranslationMap, NavFormType, Submission } from "@navikt/skjemadigitalisering-shared-domain";
 import correlator from "express-correlation-id";
-import fetch, { HeadersInit } from "node-fetch";
+import fetchWithRetry, { HeadersInit } from "../../../utils/fetchWithRetry";
 import { config } from "../../../config/config";
 import { appMetrics } from "../../../services";
 import { base64Decode, base64Encode } from "../../../utils/base64";
 import { responseToError, synchronousResponseToError } from "../../../utils/errorHandling";
 import { createHtmlFromSubmission } from "./htmlBuilder";
+import { logger } from "../../../logger";
 
 const { skjemabyggingProxyUrl, gitVersion } = config;
 
@@ -36,6 +37,11 @@ export const createPdf = async (
   }
   const { fodselsnummerDNummerSoker } = submission.data;
   appMetrics.exstreamPdfRequestsCounter.inc({ formPath: form.path, submissionMethod });
+  let errorOccurred = false;
+  const stopMetricRequestDuration = appMetrics.outgoingRequestDuration.startTimer({
+    service: "exstream",
+    method: "createPdf",
+  });
   try {
     return await createPdfFromHtml(
       accessToken,
@@ -46,8 +52,15 @@ export const createPdf = async (
       (fodselsnummerDNummerSoker as string | undefined) || "—",
     );
   } catch (e) {
+    errorOccurred = true;
     appMetrics.exstreamPdfFailuresCounter.inc({ formPath: form.path, submissionMethod });
     throw e;
+  } finally {
+    const durationSeconds = stopMetricRequestDuration({ error: String(errorOccurred) });
+    logger.info(`Request to exstream pdf service completed after ${durationSeconds} seconds`, {
+      error: errorOccurred,
+      durationSeconds,
+    });
   }
 };
 
@@ -59,7 +72,8 @@ export const createPdfFromHtml = async (
   html: string,
   pid: string,
 ) => {
-  const response = await fetch(`${skjemabyggingProxyUrl}/exstream`, {
+  const response = await fetchWithRetry(`${skjemabyggingProxyUrl}/exstream`, {
+    retry: 3,
     headers: {
       Authorization: `Bearer ${azureAccessToken}`,
       "x-correlation-id": correlator.getId(),

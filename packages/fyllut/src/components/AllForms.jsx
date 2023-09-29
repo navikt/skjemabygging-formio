@@ -1,6 +1,6 @@
 import { LoadingComponent, makeStyles, useAppConfig } from "@navikt/skjemadigitalisering-shared-components";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import httpFyllut from "../util/httpFyllut";
 import FormRow from "./FormRow";
 
@@ -17,15 +17,14 @@ const useStyles = makeStyles({
 export const AllForms = () => {
   const [status, setStatus] = useState("LOADING");
   const [forms, setForms] = useState([]);
-  const history = useHistory();
+  const [searchParams] = useSearchParams();
   const styles = useStyles();
   const { config } = useAppConfig();
 
   const isDevelopment = config && config.isDevelopment;
 
   useEffect(() => {
-    const params = new URLSearchParams(history.location.search);
-    const formId = params.get("form");
+    const formId = searchParams.get("form");
     if (formId) {
       history.replace(`/${formId}`);
     } else {

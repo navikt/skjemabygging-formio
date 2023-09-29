@@ -21,6 +21,15 @@ const RESPONSE_HEADERS_ERROR = {
 };
 
 const USER_NAME = "Bond, James";
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => vi.fn(),
+  };
+});
+
 describe("useFormioForms", () => {
   let mockFeedbackEmit;
 
