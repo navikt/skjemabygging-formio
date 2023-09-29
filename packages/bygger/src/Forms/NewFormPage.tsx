@@ -3,7 +3,7 @@ import { makeStyles } from "@navikt/skjemadigitalisering-shared-components";
 import { Component, NavFormType, navFormUtils, stringUtils } from "@navikt/skjemadigitalisering-shared-domain";
 import cloneDeep from "lodash.clonedeep";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { AppLayout } from "../components/AppLayout";
 import { CreationFormMetadataEditor } from "../components/FormMetaDataEditor/FormMetadataEditor";
@@ -30,7 +30,7 @@ interface State {
 
 const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
   const feedbackEmit = useFeedbackEmit();
-  const history = useHistory();
+  const navigate = useNavigate();
   const styles = useStyles();
   const [state, setState] = useState<State>({
     form: {
@@ -72,7 +72,7 @@ const NewFormPage: React.FC<Props> = ({ formio }): React.ReactElement => {
         .saveForm({ ...state.form, properties: { ...state.form.properties, skjemanummer: trimmedFormNumber } })
         .then((form) => {
           feedbackEmit.success(`Opprettet skjemaet ${form.title}`);
-          history.push(`/forms/${form.path}/edit`);
+          navigate(`/forms/${form.path}/edit`);
         })
         .catch((e) => {
           feedbackEmit.error("Det valgte skjema-nummeret er allerede i bruk.");

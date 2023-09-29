@@ -1,7 +1,7 @@
 import { GuidePanel, Heading, Radio, RadioGroup } from "@navikt/ds-react";
 import { NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHref, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import http from "../api/http";
 import { useLanguages } from "../context/languages";
 import { useAppConfig } from "../index";
@@ -20,8 +20,9 @@ const supportsPapirOgDigital = (form: NavFormType) => {
 export function IntroPage({ form, formUrl }: Props) {
   const { translate } = useLanguages();
   const { search } = useLocation();
-  const innsendingsIdFromUrl = new URLSearchParams(search).get("innsendingsId");
-  const history = useHistory();
+  const [searchParams] = useSearchParams();
+  const innsendingsIdFromUrl = searchParams.get("innsendingsId");
+  const navigate = useNavigate();
   const [description, setDescription] = useState<string>();
   const [descriptionBold, setDescriptionBold] = useState<string>();
   const { submissionMethod } = useAppConfig();
@@ -30,6 +31,7 @@ export function IntroPage({ form, formUrl }: Props) {
   );
   const [selectedSubmissionMethod, setSelectedSubmissionMethod] = useState<string | undefined>(submissionMethod);
   const firstPanelSlug = getPanelSlug(form, 0);
+  const basePath = useHref("/");
 
   useEffect(() => {
     if (selectedSubmissionMethod) {
@@ -63,11 +65,9 @@ export function IntroPage({ form, formUrl }: Props) {
   const navigateToFormPage = (event) => {
     event.preventDefault();
     if (selectedSubmissionMethod) {
-      const { pathname, search } = window.location;
-      const params = new URLSearchParams(search);
-      params.set("sub", selectedSubmissionMethod);
+      searchParams.set("sub", selectedSubmissionMethod);
       // important to reload page due to forced idporten login if sub=digital
-      window.location.href = `${pathname}/${firstPanelSlug}?${params.toString()}`;
+      window.location.href = `${basePath}${formUrl}/${firstPanelSlug}?${searchParams.toString()}`;
     }
   };
 
@@ -140,7 +140,7 @@ export function IntroPage({ form, formUrl }: Props) {
               </span>
             </Link>
           )}
-          <button onClick={() => history.goBack()} className="navds-button navds-button--tertiary">
+          <button onClick={() => navigate(-1)} className="navds-button navds-button--tertiary">
             <span aria-live="polite" className="navds-body-short font-bold">
               {translate(TEXTS.grensesnitt.goBack)}
             </span>

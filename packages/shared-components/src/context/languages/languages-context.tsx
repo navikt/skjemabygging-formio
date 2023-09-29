@@ -21,7 +21,7 @@ export const LanguagesProvider = ({ children, translations }) => {
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [translationsForNavForm, setTranslationsForNavForm] = useState<object>({});
 
-  const languageCodeFromUrl: string = useLanguageCodeFromURL();
+  const languageCodeFromUrl: string = useLanguageCodeFromURL() ?? "nb-NO";
   const { currentLanguage, initialLanguage } = useCurrentLanguage(
     languageCodeFromUrl,
     translations,

@@ -4,7 +4,6 @@ import { DeclarationType, NavFormType, Submission, TEXTS } from "@navikt/skjemad
 import { Form as FormioForm } from "formiojs";
 import { useEffect, useRef, useState } from "react";
 import NavForm from "../../components/NavForm";
-import { useAppConfig } from "../../configContext";
 import { useLanguages } from "../../context/languages";
 import { useSendInn } from "../../context/sendInn/sendInnContext";
 import Styles from "../../styles";
@@ -53,12 +52,11 @@ const useStyles = makeStyles({
 
 export interface Props {
   form: NavFormType;
-  submission?: Submission;
+  submission: Submission;
   formUrl: string;
 }
 
 export function SummaryPage({ form, submission, formUrl }: Props) {
-  const { submissionMethod } = useAppConfig();
   const { isMellomlagringEnabled } = useSendInn();
   const { translate } = useLanguages();
   const styles = useStyles();
@@ -171,7 +169,7 @@ export function SummaryPage({ form, submission, formUrl }: Props) {
           />
         </div>
         <aside className="right-col">
-          <FormStepper form={form} formUrl={formUrl} submissionMethod={submissionMethod} submission={submission} />
+          <FormStepper form={form} formUrl={formUrl} submission={submission} />
         </aside>
       </section>
     </div>

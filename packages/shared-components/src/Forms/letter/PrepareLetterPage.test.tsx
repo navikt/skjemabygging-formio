@@ -1,4 +1,10 @@
-import { FormPropertiesType, NavFormType, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import {
+  FormPropertiesType,
+  NavFormType,
+  Submission,
+  SubmissionData,
+  TEXTS,
+} from "@navikt/skjemadigitalisering-shared-domain";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
@@ -64,8 +70,8 @@ const defaultForm = {
 const defaultSubmission = {
   data: {
     fornavn: "Mie",
-  },
-};
+  } as SubmissionData,
+} as Submission;
 const formWithProperties = (props) => {
   return {
     ...defaultForm,
@@ -84,7 +90,7 @@ function renderPrepareLetterPage(
   render(
     <MemoryRouter>
       <AppConfigProvider enableFrontendLogger>
-        <PrepareLetterPage form={form} submission={submission} translations={translations} />
+        <PrepareLetterPage form={form} submission={submission} translations={translations} formUrl="/" />
       </AppConfigProvider>
     </MemoryRouter>,
   );

@@ -1,6 +1,6 @@
-import { TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
+import { navFormUtils, TEXTS } from "@navikt/skjemadigitalisering-shared-domain";
 import { useEffect, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NavForm from "../components/NavForm.jsx";
 import { useAppConfig } from "../configContext";
 import { useAmplitude } from "../context/amplitude";
@@ -13,7 +13,7 @@ import ConfirmationModal from "./components/navigation/ConfirmationModal";
 import urlUtils from "../util/url";
 
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     loggSkjemaApnet,
     loggSkjemaSporsmalBesvart,
@@ -23,6 +23,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     loggNavigering,
   } = useAmplitude();
   const { featureToggles, submissionMethod } = useAppConfig();
+  const [formForRendering, setFormForRendering] = useState();
   const {
     startMellomlagring,
     updateMellomlagring,
@@ -36,6 +37,10 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
+
+  useEffect(() => {
+    setFormForRendering(submissionMethod === "digital" ? navFormUtils.removeVedleggspanel(form) : form);
+  }, [form, submissionMethod]);
 
   useEffect(() => {
     loggSkjemaApnet(submissionMethod);
@@ -85,7 +90,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function updatePanelUrl(panelPath) {
     // We need to get location data from window, since this function runs inside formio
-    history.push({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
+    navigate({ pathname: `${formUrl}/${panelPath}`, search: window.location.search });
   }
 
   function goToPanelFromUrlParam(formioInstance) {
@@ -160,13 +165,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
       skjemastegNokkel,
     });
     // We need to get location data from window, since this function runs inside formio
-    history.push({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
+    navigate({ pathname: `${formUrl}/oppsummering`, search: window.location.search });
   };
 
   const onError = () => {
     loggSkjemaValideringFeilet();
-    // Commenting out as temporary fix for issue where we scroll to errorsList when onChange is triggered
-    //scrollToAndSetFocus("div[id^='error-list-'] li:first-of-type");
   };
 
   const onConfirmCancel = async () => {
@@ -179,10 +182,14 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
     });
   };
 
+  if (!formForRendering) {
+    return null;
+  }
+
   return (
     <div>
       <NavForm
-        form={form}
+        form={formForRendering}
         language={featureToggles.enableTranslations ? currentLanguage : undefined}
         i18n={featureToggles.enableTranslations ? translationsForNavForm : undefined}
         submission={submission}
