@@ -12,6 +12,8 @@ import { getPanelSlug } from "../util/form";
 import ConfirmationModal from "./components/navigation/ConfirmationModal";
 import urlUtils from "../util/url";
 
+type ModalType = "save" | "delete" | "discard";
+
 export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => {
   const navigate = useNavigate();
   const {
@@ -34,7 +36,7 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   const { currentLanguage, translationsForNavForm, translate } = useLanguages();
   const { hash } = useLocation();
   const mutationObserverRef = useRef<MutationObserver | undefined>(undefined);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState<ModalType>();
 
   const exitUrl = urlUtils.getExitUrl(window.location.href);
 
@@ -132,7 +134,11 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
 
   function onCancel({ submission }) {
     setSubmission(submission);
-    setIsCancelModalOpen(true);
+    setShowModal(isMellomlagringActive ? "delete" : "discard");
+  }
+
+  function onSave({ submission }) {
+    setShowModal("save");
   }
 
   function onNextOrPreviousPage(page, currentPanels) {
@@ -150,6 +156,18 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
   function onFormReady(formioInstance) {
     goToPanelFromUrlParam(formioInstance);
   }
+
+  const getModalTexts = (modalType?: ModalType) => {
+    switch (modalType) {
+      case "save":
+        return TEXTS.grensesnitt.confirmSavePrompt;
+      case "delete":
+        return TEXTS.grensesnitt.confirmDeletePrompt;
+      case "discard":
+      default:
+        return TEXTS.grensesnitt.confirmDiscardPrompt;
+    }
+  };
 
   const onSubmit = (submission) => {
     updateMellomlagring(submission);
@@ -200,20 +218,21 @@ export const FillInFormPage = ({ form, submission, setSubmission, formUrl }) => 
         onNextPage={onNextPage}
         onPrevPage={onPreviousPage}
         onCancel={onCancel}
+        onSave={onSave}
         formReady={onFormReady}
         submissionReady={goToPanelFromUrlParam}
         onWizardPageSelected={onWizardPageSelected}
         className="nav-form"
       />
       <ConfirmationModal
-        open={isCancelModalOpen}
-        onClose={() => setIsCancelModalOpen(false)}
+        open={!!showModal}
+        onClose={() => setShowModal(undefined)}
         onConfirm={onConfirmCancel}
         onError={(err) => {
           console.error(err);
         }}
-        confirmType={isMellomlagringActive ? "primary" : "danger"}
-        texts={isMellomlagringActive ? TEXTS.grensesnitt.confirmSavePrompt : TEXTS.grensesnitt.confirmDiscardPrompt}
+        confirmType={showModal === "save" ? "primary" : "danger"}
+        texts={getModalTexts(showModal)}
         exitUrl={exitUrl}
       />
     </div>
